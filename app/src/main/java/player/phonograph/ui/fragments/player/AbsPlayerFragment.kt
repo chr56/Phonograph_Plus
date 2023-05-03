@@ -11,37 +11,34 @@ import mt.tint.viewtint.setMenuColor
 import mt.util.color.toolbarIconColor
 import player.phonograph.R
 import player.phonograph.adapter.display.PlayingQueueAdapter
-import player.phonograph.ui.dialogs.LyricsDialog
-import player.phonograph.ui.dialogs.SleepTimerDialog
+import player.phonograph.mechanism.Favorite.toggleFavorite
+import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.mechanism.event.QueueStateTracker
 import player.phonograph.model.PaletteColorHolder
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
-import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
-import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.dialogs.CreatePlaylistDialog
+import player.phonograph.ui.dialogs.LyricsDialog
+import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
 import player.phonograph.ui.dialogs.QueueSnapshotsDialog
+import player.phonograph.ui.dialogs.SleepTimerDialog
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
-import player.phonograph.mechanism.Favorite.toggleFavorite
-import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.model.listener.MediaStoreChangedListener
-import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.NavigationUtil
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.warning
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -83,6 +80,8 @@ abstract class AbsPlayerFragment :
 
         addFavoriteSateObserver()
         addLyricsObserver()
+
+        observeState()
     }
 
     private fun initRecyclerView() {
@@ -364,14 +363,6 @@ abstract class AbsPlayerFragment :
         lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
     }
 
-    override fun onQueueChanged() {
-        updateQueue()
-    }
-
-    override fun onShuffleModeChanged() {
-        refreshAdapter()
-    }
-
     open fun onShow() {
         playbackControlsFragment.show()
     }
@@ -402,15 +393,11 @@ abstract class AbsPlayerFragment :
     }
 
     protected open fun updateQueue() {
-        refreshAdapter()
-    }
-
-    protected open fun updateQueuePosition() {
+        playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
         playingQueueAdapter.current = MusicPlayerRemote.position
     }
 
-    private fun refreshAdapter() {
-        playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
+    protected open fun updateQueuePosition() {
         playingQueueAdapter.current = MusicPlayerRemote.position
     }
 
@@ -421,6 +408,29 @@ abstract class AbsPlayerFragment :
         fun setUpPanelAndAlbumCoverHeight()
     }
 
+    private fun observeState() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                QueueStateTracker.queue.collect { queue ->
+                    playingQueueAdapter.dataset = queue
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                QueueStateTracker.position.collect { position ->
+                    playingQueueAdapter.current = position
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                QueueStateTracker.shuffleMode.collect {
+                    updateQueue()
+                }
+            }
+        }
+    }
 
     override val paletteColor
         @ColorInt get() = viewModel.paletteColor.value
