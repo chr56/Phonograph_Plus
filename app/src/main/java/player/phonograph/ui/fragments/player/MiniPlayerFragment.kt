@@ -1,5 +1,19 @@
 package player.phonograph.ui.fragments.player
 
+import mt.pref.ThemeColor
+import mt.util.color.resolveColor
+import mt.util.color.secondaryTextColor
+import player.phonograph.R
+import player.phonograph.databinding.FragmentMiniPlayerBinding
+import player.phonograph.mechanism.event.PlayerStateTracker
+import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
+import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.ui.fragments.AbsMusicServiceFragment
+import player.phonograph.ui.views.PlayPauseDrawable
+import player.phonograph.util.theme.nightMode
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.PorterDuff
@@ -9,17 +23,8 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import mt.pref.ThemeColor
-import mt.util.color.resolveColor
-import mt.util.color.secondaryTextColor
-import player.phonograph.R
-import player.phonograph.databinding.FragmentMiniPlayerBinding
-import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
-import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.ui.fragments.AbsMusicServiceFragment
-import player.phonograph.util.theme.nightMode
-import player.phonograph.ui.views.PlayPauseDrawable
 import kotlin.math.abs
+import kotlinx.coroutines.launch
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -70,6 +75,15 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
             PorterDuff.Mode.SRC_IN
         )
         binding.miniPlayerPlayPauseButton.setOnClickListener(PlayPauseButtonOnClickHandler())
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                PlayerStateTracker.state.collect { newState ->
+                    updatePlayPauseDrawableState(
+                        lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+                    )
+                }
+            }
+        }
     }
 
     private fun updateSongTitle() {
@@ -83,10 +97,6 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
 
     override fun onPlayingMetaChanged() {
         updateSongTitle()
-    }
-
-    override fun onPlayStateChanged() {
-        updatePlayPauseDrawableState(true)
     }
 
     fun updateProgressViews(progress: Int, total: Int) {

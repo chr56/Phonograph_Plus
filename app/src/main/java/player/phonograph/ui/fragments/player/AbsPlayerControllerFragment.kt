@@ -9,6 +9,7 @@ import mt.util.color.primaryTextColor
 import mt.util.color.secondaryDisabledTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
+import player.phonograph.mechanism.event.PlayerStateTracker
 import player.phonograph.mechanism.event.QueueStateTracker
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.misc.SimpleOnSeekbarChangeListener
@@ -77,7 +78,6 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        observeState()
         super.onViewCreated(view, savedInstanceState)
 
         setUpPlayPauseButton()
@@ -88,6 +88,7 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
         setUpProgressSlider()
 
         updateProgressTextColor()
+        observeState()
     }
 
     private fun observeState() {
@@ -102,6 +103,15 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 QueueStateTracker.shuffleMode.collect { shuffleMode ->
                     updateShuffleState(shuffleMode)
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                PlayerStateTracker.state.collect { newState ->
+                    updatePlayPauseDrawableState(
+                        lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+                    )
                 }
             }
         }
@@ -145,10 +155,6 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
 
     override fun onServiceConnected() {
         updatePlayPauseDrawableState(false)
-    }
-
-    override fun onPlayStateChanged() {
-        updatePlayPauseDrawableState(true)
     }
 
     private fun calculateColor(context: Context, backgroundColor: Int) {
