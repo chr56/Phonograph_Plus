@@ -5,13 +5,17 @@
 package player.phonograph.ui.activities.base
 
 import lib.phonograph.activity.ToolbarActivity
+import player.phonograph.App
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
+import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.util.debug
 import player.phonograph.util.permissions.NonGrantedPermission
 import player.phonograph.util.permissions.Permission
 import player.phonograph.util.permissions.checkStorageReadPermission
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import android.content.ComponentName
 import android.content.ServiceConnection
 import android.media.AudioManager
@@ -61,6 +65,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
             )
         }
         volumeControlStream = AudioManager.STREAM_MUSIC
+        lifecycle.addObserver(LifeCycleObserver())
     }
 
     override fun onStart() {
@@ -91,6 +96,32 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
 
     fun removeMusicServiceEventListener(listener: MusicServiceEventListener) {
         mMusicServiceEventListeners.remove(listener)
+    }
+
+    //
+    // CurrentQueueState
+    //
+
+    inner class LifeCycleObserver : DefaultLifecycleObserver {
+
+        private var registered = false
+
+        private val shouldUnregister get() = mMusicServiceEventListeners.isEmpty()
+
+        override fun onCreate(owner: LifecycleOwner) {
+            if (!registered) {
+                registered = true
+                CurrentQueueState.init(App.instance.queueManager)
+                CurrentQueueState.register(App.instance.queueManager)
+            }
+        }
+
+        override fun onDestroy(owner: LifecycleOwner) {
+            if (shouldUnregister) {
+                CurrentQueueState.unregister(App.instance.queueManager)
+                registered = false
+            }
+        }
     }
 
     //

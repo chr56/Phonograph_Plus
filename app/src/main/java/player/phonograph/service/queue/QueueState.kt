@@ -86,7 +86,7 @@ object CurrentQueueState {
         queueManager.removeObserver(Observer)
     }
 
-    fun init(context: App) {
-        refreshAll(context.queueManager)
+    fun init(queueManager: QueueManager) {
+        refreshAll(queueManager)
     }
 }
