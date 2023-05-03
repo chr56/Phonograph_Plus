@@ -6,5 +6,4 @@ package player.phonograph.model
 interface MusicServiceEventListener {
     fun onServiceConnected()
     fun onServiceDisconnected()
-    fun onPlayingMetaChanged()
 }

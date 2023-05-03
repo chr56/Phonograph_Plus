@@ -35,7 +35,6 @@ open class AbsMusicServiceFragment : Fragment(), MusicServiceEventListener {
         bindingActivity!!.removeMusicServiceEventListener(this)
     }
 
-    override fun onPlayingMetaChanged() {}
     override fun onServiceConnected() {}
     override fun onServiceDisconnected() {}
 }
