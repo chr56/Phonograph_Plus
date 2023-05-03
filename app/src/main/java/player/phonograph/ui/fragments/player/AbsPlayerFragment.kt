@@ -412,7 +412,7 @@ abstract class AbsPlayerFragment :
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 QueueStateTracker.queue.collect { queue ->
-                    playingQueueAdapter.dataset = queue
+                    playingQueueAdapter.dataset = queue.get() ?: MusicPlayerRemote.playingQueue
                 }
             }
         }

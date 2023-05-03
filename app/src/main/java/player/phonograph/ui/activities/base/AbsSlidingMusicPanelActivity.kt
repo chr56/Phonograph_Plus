@@ -106,7 +106,7 @@ abstract class AbsSlidingMusicPanelActivity :
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 QueueStateTracker.queue.collect { queue ->
-                    hideBottomBar(queue.isEmpty())
+                    hideBottomBar(queue.get()?.isEmpty() ?: false)
                 }
             }
         }

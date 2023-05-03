@@ -13,6 +13,7 @@ import player.phonograph.service.queue.ShuffleMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.lang.ref.WeakReference
 
 @Suppress("ObjectPropertyName")
 object QueueStateTracker {
@@ -32,11 +33,11 @@ object QueueStateTracker {
         _repeatMode.update { newMode }
     }
 
-    private val _queue = MutableStateFlow(listOf<Song>())
+    private val _queue = MutableStateFlow(WeakReference(listOf<Song>()))
     val queue get() = _queue.asStateFlow()
 
     private fun refreshQueue(queue: List<Song>) {
-        _queue.update { ArrayList(queue) } // todo: memory save
+        _queue.update { WeakReference(queue) } // todo: memory save
     }
 
     private val _position = MutableStateFlow(-1)
