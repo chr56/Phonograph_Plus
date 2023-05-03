@@ -24,6 +24,7 @@ import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Setting
 import player.phonograph.mechanism.StatusBarLyric
+import player.phonograph.mechanism.event.PlayerStateTracker
 import android.content.ContentUris
 import android.provider.MediaStore
 
@@ -109,6 +110,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                 _playerState = value
             }
             observers.executeForEach { onPlayerStateChanged(oldState, value) }
+            PlayerStateTracker.refreshState(value)
         }
 
     /**
