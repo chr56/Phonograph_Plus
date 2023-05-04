@@ -360,7 +360,7 @@ abstract class AbsPlayerFragment :
             updateQueue()
         }
         observe(viewModel.favoriteState) {
-            if (it.first == viewModel.currentSong) {
+            if (it.first == viewModel.currentSong.value) {
                 updateFavoriteIcon(it.second)
             }
         }

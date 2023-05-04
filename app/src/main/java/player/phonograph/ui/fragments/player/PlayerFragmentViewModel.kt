@@ -33,12 +33,11 @@ class PlayerFragmentViewModel : ViewModel() {
 
     private var _favoriteState: MutableStateFlow<Pair<Song, Boolean>> =
         MutableStateFlow(Song.EMPTY_SONG to false)
-    val favoriteState = _favoriteState.asStateFlow()
+    val favoriteState get() = _favoriteState.asStateFlow()
 
     private var loadFavoriteStateJob: Job? = null
     fun updateFavoriteState(song: Song, context: Context?) {
         loadFavoriteStateJob?.cancel()
-        _favoriteState.value = Song.EMPTY_SONG to false
         loadFavoriteStateJob = viewModelScope.launch {
             if (song == Song.EMPTY_SONG) return@launch
             _favoriteState.emit(song to isFavorite(context ?: App.instance, song))
