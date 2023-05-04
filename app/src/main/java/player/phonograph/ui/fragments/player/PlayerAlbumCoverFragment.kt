@@ -12,6 +12,7 @@ import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
+import androidx.annotation.ColorInt
 import androidx.collection.LruCache
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -19,6 +20,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.whenResumed
 import androidx.lifecycle.whenStarted
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -39,6 +41,8 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -65,16 +69,25 @@ class PlayerAlbumCoverFragment :
     private fun observeState() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                CurrentQueueState.queue.collect {
-                    updatePlayingQueue()
-                    updatePosition()
+                viewModel.adapterPosition.collect { position ->
+                    if (position >= 0) {
+                        binding.playerCoverViewpager.setCurrentItem(MusicPlayerRemote.position, false)
+                        updateColorAt(position)
+                    }
                 }
             }
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                CurrentQueueState.position.collect {
-                    updatePosition()
+                CurrentQueueState.queue.collect {
+                    updateAdapter()
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                CurrentQueueState.position.collect { position ->
+                    if (position >= 0) viewModel.updateAdapterPosition(position)
                 }
             }
         }
@@ -171,38 +184,29 @@ class PlayerAlbumCoverFragment :
         _viewBinding = null
     }
 
-    private suspend fun updatePlayingQueue() {
+    private suspend fun updateAdapter() {
         lifecycle.whenStarted {
             val queue = MusicPlayerRemote.playingQueue
             val position = MusicPlayerRemote.position
             albumCoverPagerAdapter = AlbumCoverPagerAdapter(this@PlayerAlbumCoverFragment, queue)
             binding.playerCoverViewpager.adapter = albumCoverPagerAdapter
             binding.playerCoverViewpager.setCurrentItem(position, false)
-            onPageSelected(position)
-        }
-    }
-
-    private suspend fun updatePosition() {
-        lifecycle.whenStarted {
-            binding.playerCoverViewpager.setCurrentItem(MusicPlayerRemote.position, false)
+            viewModel.updateAdapterPosition(position)
         }
     }
 
     private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
-            this@PlayerAlbumCoverFragment.onPageSelected(position)
-        }
-    }
-
-    private fun onPageSelected(position: Int) {
-        updateColorAt(position)
-        if (position != MusicPlayerRemote.position) {
-            MusicPlayerRemote.playSongAt(position)
+            viewModel.updateAdapterPosition(position)
+            if (position != MusicPlayerRemote.position) {
+                MusicPlayerRemote.playSongAt(position)
+            }
         }
     }
 
     private fun updateColorAt(position: Int) {
-        albumCoverPagerAdapter?.let { adapter ->
+        val adapter = albumCoverPagerAdapter
+        if (adapter != null) {
             lifecycleScope.launch(Dispatchers.Default) {
                 val song = adapter.dataSet.getOrElse(position) { return@launch }
                 val color = viewModel.getPaletteColor(requireContext(), song)
@@ -336,6 +340,15 @@ class AlbumCoverViewModel : ViewModel() {
             loaded.bitmap
         } else {
             cached
+        }
+    }
+
+    private val _currentPosition: MutableStateFlow<Int> = MutableStateFlow(-1)
+    val adapterPosition get() = _currentPosition.asStateFlow()
+
+    fun updateAdapterPosition(@ColorInt newColor: Int) {
+        viewModelScope.launch {
+            _currentPosition.emit(newColor)
         }
     }
 
