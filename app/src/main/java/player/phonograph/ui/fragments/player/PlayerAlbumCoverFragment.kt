@@ -92,12 +92,16 @@ class PlayerAlbumCoverFragment :
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                playerViewModel.favoriteState.collect {
-                    showHeartAnimation()
+                playerViewModel.favoriteState.collect { newState ->
+                    if (newState.first == lastFavoriteState.first && newState.second && !lastFavoriteState.second)
+                        showHeartAnimation()
+                    lastFavoriteState = newState
                 }
             }
         }
     }
+
+    private var lastFavoriteState: Pair<Song, Boolean> = Song.EMPTY_SONG to false
 
     private suspend fun resetLyricsLayout() {
         lifecycle.whenResumed {
