@@ -261,9 +261,7 @@ class PlayerAlbumCoverFragment :
         }
     }
 
-
-
-    fun showHeartAnimation() {
+    private fun showHeartAnimation() {
         binding.playerFavoriteIcon.apply {
             clearAnimation()
             alpha = 0f
@@ -305,12 +303,12 @@ class PlayerAlbumCoverFragment :
 class AlbumCoverViewModel : ViewModel() {
     private val colorCache: LruCache<Song, PaletteBitmap> = LruCache(6)
 
-    internal fun putColor(song: Song, bitmap: Bitmap, color: Int) {
+    private fun putColor(song: Song, bitmap: Bitmap, color: Int) {
         colorCache.put(song, PaletteBitmap(bitmap, color))
     }
 
-    internal fun getPaletteColorFromCache(song: Song) = colorCache[song]?.paletteColor
-    internal fun getImageFromCache(song: Song) = colorCache[song]?.bitmap
+    private fun getPaletteColorFromCache(song: Song) = colorCache[song]?.paletteColor
+    private fun getImageFromCache(song: Song) = colorCache[song]?.bitmap
 
     suspend fun getPaletteColor(context: Context, song: Song): Int {
         val cached = getPaletteColorFromCache(song)
