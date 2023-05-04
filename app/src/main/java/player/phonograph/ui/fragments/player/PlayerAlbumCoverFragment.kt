@@ -220,15 +220,9 @@ class PlayerAlbumCoverFragment :
             lifecycleScope.launch(Dispatchers.Default) {
                 val song = adapter.dataSet.getOrElse(position) { return@launch }
                 val color = viewModel.getPaletteColor(requireContext(), song)
-                lifecycle.whenStarted {
-                    notifyColorChange(color)
-                }
+                playerViewModel.updatePaletteColor(color)
             }
         }
-    }
-
-    private fun notifyColorChange(color: Int) {
-        callbacks?.updatePaletteColor(color)
     }
 
     fun setCallbacks(listener: Callbacks) {
@@ -326,7 +320,6 @@ class PlayerAlbumCoverFragment :
     }
 
     interface Callbacks {
-        fun updatePaletteColor(color: Int)
         fun onToolbarToggled()
     }
 

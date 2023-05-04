@@ -437,11 +437,9 @@ abstract class AbsPlayerFragment :
     override val paletteColor
         @ColorInt get() = viewModel.paletteColor.value
 
-    override fun updatePaletteColor(color: Int) = viewModel.updatePaletteColor(color)
-
     private fun setupPaletteColorObserver() {
         lifecycleScope.launch {
-            updatePaletteColor(requireContext().primaryColor()) // init
+            viewModel.updatePaletteColor(requireContext().primaryColor()) // init
             observePaletteColor { newColor ->
                 playbackControlsFragment.modifyColor(newColor)
             }
