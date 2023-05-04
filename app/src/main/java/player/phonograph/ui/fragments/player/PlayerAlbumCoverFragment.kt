@@ -7,7 +7,6 @@ import player.phonograph.databinding.FragmentAlbumCoverBinding
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.model.Song
-import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.settings.Setting
@@ -51,10 +50,10 @@ class PlayerAlbumCoverFragment :
     private val binding: FragmentPlayerAlbumCoverBinding get() = _viewBinding!!
 
     private val viewModel: AlbumCoverViewModel by viewModels()
+    private val playerViewModel: PlayerFragmentViewModel by viewModels({ requireParentFragment() })
 
     private var callbacks: Callbacks? = null
     private var currentPosition = 0
-    private var lyrics: LrcLyrics? = null
 
     private var albumCoverPagerAdapter: AlbumCoverPagerAdapter? = null
 
@@ -64,7 +63,6 @@ class PlayerAlbumCoverFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycle.addObserver(progressViewUpdateHelperDelegate)
-        observeState()
     }
 
     private fun observeState() {
@@ -81,6 +79,50 @@ class PlayerAlbumCoverFragment :
                 CurrentQueueState.position.collect {
                     updatePosition()
                 }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                playerViewModel.lyrics.collect {
+                    if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) &&
+                        Setting.instance.synchronizedLyricsShow
+                    ) {
+                        resetLyricsLayout()
+                    } else {
+                        hideLyricsLayout()
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun resetLyricsLayout() {
+        lifecycle.whenResumed {
+            withContext(Dispatchers.Main) {
+                binding.playerLyricsLine1.text = null
+                binding.playerLyricsLine2.text = null
+                binding.playerLyrics.apply {
+                    visibility = View.VISIBLE
+                    animate().alpha(1f).duration = VISIBILITY_ANIM_DURATION
+                }
+            }
+        }
+    }
+
+    private suspend fun hideLyricsLayout() {
+        lifecycle.whenResumed {
+            withContext(Dispatchers.Main) {
+                binding.playerLyrics
+                    .animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION)
+                    .withEndAction {
+                        lifecycleScope.launch {
+                            lifecycle.whenResumed {
+                                binding.playerLyrics.visibility = View.GONE
+                                binding.playerLyricsLine1.text = null
+                                binding.playerLyricsLine2.text = null
+                            }
+                        }
+                    }
             }
         }
     }
@@ -120,6 +162,7 @@ class PlayerAlbumCoverFragment :
             })
             offscreenPageLimit = 1
         }
+        observeState()
     }
 
     override fun onDestroyView() {
@@ -210,51 +253,6 @@ class PlayerAlbumCoverFragment :
         }
     }
 
-    private fun hideLyricsLayout() {
-        lifecycleScope.launch {
-            lifecycle.whenResumed {
-                binding.playerLyrics
-                    .animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION)
-                    .withEndAction {
-                        lifecycleScope.launch {
-                            lifecycle.whenResumed {
-                                binding.playerLyrics.visibility = View.GONE
-                                binding.playerLyricsLine1.text = null
-                                binding.playerLyricsLine2.text = null
-                            }
-                        }
-                    }
-            }
-        }
-    }
-
-    private fun resetLyricsLayout() {
-        lifecycleScope.launch {
-            lifecycle.whenResumed {
-                binding.playerLyricsLine1.text = null
-                binding.playerLyricsLine2.text = null
-                binding.playerLyrics.apply {
-                    visibility = View.VISIBLE
-                    animate().alpha(1f).duration = VISIBILITY_ANIM_DURATION
-                }
-            }
-        }
-    }
-
-    fun setLyrics(newLrcLyrics: LrcLyrics) {
-        if (Setting.instance.synchronizedLyricsShow && this.isVisible) {
-            lyrics = newLrcLyrics
-            resetLyricsLayout()
-        } else {
-            clearLyrics()
-        }
-    }
-
-    fun clearLyrics() {
-        lyrics = null
-        hideLyricsLayout()
-    }
-
     private fun notifyColorChange(color: Int) {
         callbacks?.updatePaletteColor(color)
     }
@@ -263,28 +261,28 @@ class PlayerAlbumCoverFragment :
         callbacks = listener
     }
 
-    private fun isLyricsAvailable(): Boolean =
-        lyrics != null && Setting.instance.synchronizedLyricsShow
-
     private fun updateProgressViews(progress: Int, total: Int) {
         lifecycleScope.launch(Dispatchers.Unconfined) {
-            lifecycle.whenResumed {
-                if (!isLyricsAvailable()) {
-                    hideLyricsLayout()
-                    return@whenResumed
-                }
+            updateLyrics(progress)
+        }
+    }
 
-
+    private suspend fun updateLyrics(progress: Int) {
+        lifecycle.whenResumed {
+            val lyrics = playerViewModel.lyrics.value
+            if (lyrics != null) {
                 binding.playerLyrics.apply {
                     visibility = View.VISIBLE
                     alpha = 1f
                 }
                 val oldLine = binding.playerLyricsLine2.text.toString()
-                val line = lyrics!!.getLine(progress).first
+                val line = lyrics.getLine(progress).first
 
                 if (oldLine != line || oldLine.isEmpty()) {
                     updateLyricsImpl(oldLine, line)
                 }
+            } else {
+                hideLyricsLayout()
             }
         }
     }

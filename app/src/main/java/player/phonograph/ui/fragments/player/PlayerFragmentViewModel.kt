@@ -7,6 +7,7 @@ package player.phonograph.ui.fragments.player
 import player.phonograph.App
 import player.phonograph.mechanism.Favorite.isFavorite
 import player.phonograph.model.Song
+import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.util.reportError
 import androidx.annotation.ColorInt
 import androidx.lifecycle.ViewModel
@@ -54,6 +55,16 @@ class PlayerFragmentViewModel : ViewModel() {
     fun updatePaletteColor(@ColorInt newColor: Int) {
         viewModelScope.launch {
             _paletteColor.emit(newColor)
+        }
+    }
+
+
+    private val _lyrics: MutableStateFlow<LrcLyrics?> = MutableStateFlow(null)
+    val lyrics get() = _lyrics.asStateFlow()
+
+    fun updateLrcLyrics(lyrics: LrcLyrics?) {
+        viewModelScope.launch {
+            _lyrics.emit(lyrics)
         }
     }
 }
