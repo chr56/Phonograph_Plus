@@ -326,10 +326,6 @@ abstract class AbsPlayerFragment :
 
     abstract fun onBackPressed(): Boolean
 
-    protected open fun updateCurrentSong() {
-        viewModel.updateCurrentSong(MusicPlayerRemote.currentSong, context)
-    }
-
     protected open suspend fun updateQueue() {
         lifecycle.whenStarted {
             withContext(Dispatchers.Main) {
@@ -357,8 +353,7 @@ abstract class AbsPlayerFragment :
             playingQueueAdapter.current = position
         }
         observe(CurrentQueueState.currentSong) {
-            updateCurrentSong()
-            viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
+            viewModel.updateCurrentSong(MusicPlayerRemote.currentSong, context)
             lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
         }
         observe(CurrentQueueState.shuffleMode) {
