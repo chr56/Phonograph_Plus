@@ -28,6 +28,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.whenResumed
 import android.animation.AnimatorSet
 import android.graphics.PorterDuff
@@ -38,6 +39,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.PopupMenu
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class FlatPlayerFragment :
@@ -74,6 +76,17 @@ class FlatPlayerFragment :
                 impl.setUpPanelAndAlbumCoverHeight()
             }
         })
+        observeState()
+    }
+
+    private fun observeState() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.showToolbar.collect {
+                    toggleToolbar(viewBinding.toolbarContainer)
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -130,9 +143,7 @@ class FlatPlayerFragment :
         return wasExpanded
     }
 
-    override fun onToolbarToggled() {
-        toggleToolbar(viewBinding.toolbarContainer)
-    }
+    override fun onToolbarToggled() {}
 
     override fun onPanelSlide(view: View, slide: Float) {}
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {

@@ -28,6 +28,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.whenResumed
 import android.animation.Animator
 import android.animation.AnimatorSet
@@ -85,6 +86,17 @@ class CardPlayerFragment :
         viewBinding.playingQueueCard.setCardBackgroundColor(
             resolveColor(requireContext(), androidx.cardview.R.attr.cardBackgroundColor)
         )
+        observeState()
+    }
+
+    private fun observeState() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.showToolbar.collect {
+                    toggleToolbar(viewBinding.toolbarContainer)
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -135,9 +147,7 @@ class CardPlayerFragment :
         return wasExpanded
     }
 
-    override fun onToolbarToggled() {
-        toggleToolbar(viewBinding.toolbarContainer)
-    }
+    override fun onToolbarToggled() {}
 
     @SuppressLint("ObsoleteSdkInt")
     override fun onPanelSlide(view: View, slide: Float) {

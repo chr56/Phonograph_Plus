@@ -262,26 +262,22 @@ abstract class AbsPlayerFragment :
 
     abstract fun getImplToolbar(): Toolbar
 
-    private var isToolbarShown: Boolean = true
-
     protected fun toggleToolbar(toolbar: View?) {
-        if (isToolbarShown) {
-            hideToolbar(toolbar)
-        } else {
+        if (viewModel.showToolbar.value) {
             showToolbar(toolbar)
+        } else {
+            hideToolbar(toolbar)
         }
     }
 
     private fun showToolbar(toolbar: View?) {
         if (toolbar == null) return
-        isToolbarShown = true
         toolbar.visibility = View.VISIBLE
         toolbar.animate().alpha(1f).duration = VISIBILITY_ANIM_DURATION
     }
 
     private fun hideToolbar(toolbar: View?) {
         if (toolbar == null) return
-        isToolbarShown = false
         toolbar.animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION)
             .withEndAction { toolbar.visibility = View.GONE }
     }
@@ -289,9 +285,9 @@ abstract class AbsPlayerFragment :
     abstract fun getToolBarContainer(): View?
     protected fun checkToggleToolbar() {
         val toolbar = getToolBarContainer() ?: return
-        if (!isToolbarShown && toolbar.visibility != View.GONE) {
+        if (!viewModel.showToolbar.value && toolbar.visibility != View.GONE) {
             hideToolbar(toolbar)
-        } else if (isToolbarShown && toolbar.visibility != View.VISIBLE) {
+        } else if (viewModel.showToolbar.value && toolbar.visibility != View.VISIBLE) {
             showToolbar(toolbar)
         }
     }

@@ -67,4 +67,13 @@ class PlayerFragmentViewModel : ViewModel() {
             _lyrics.emit(lyrics)
         }
     }
+
+    private var _shownToolbar: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    val showToolbar get() = _shownToolbar.asStateFlow()
+
+    fun toggleToolbar() =
+        _shownToolbar.tryEmit(
+            !_shownToolbar.value
+        )
+
 }

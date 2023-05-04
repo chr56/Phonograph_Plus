@@ -154,11 +154,7 @@ class PlayerAlbumCoverFragment :
                     activity,
                     object : SimpleOnGestureListener() {
                         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                            callbacks?.let { callbacks ->
-                                callbacks.onToolbarToggled()
-                                return true
-                            }
-                            return super.onSingleTapConfirmed(e)
+                            return playerViewModel.toggleToolbar()
                         }
                     }
                 )
