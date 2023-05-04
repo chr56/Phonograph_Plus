@@ -147,8 +147,6 @@ class CardPlayerFragment :
         return wasExpanded
     }
 
-    override fun onToolbarToggled() {}
-
     @SuppressLint("ObsoleteSdkInt")
     override fun onPanelSlide(view: View, slide: Float) {
         if (SDK_INT >= LOLLIPOP) {

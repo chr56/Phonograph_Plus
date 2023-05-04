@@ -52,7 +52,6 @@ class PlayerAlbumCoverFragment :
     private val viewModel: AlbumCoverViewModel by viewModels()
     private val playerViewModel: PlayerFragmentViewModel by viewModels({ requireParentFragment() })
 
-    private var callbacks: Callbacks? = null
     private var currentPosition = 0
 
     private var albumCoverPagerAdapter: AlbumCoverPagerAdapter? = null
@@ -221,10 +220,6 @@ class PlayerAlbumCoverFragment :
         }
     }
 
-    fun setCallbacks(listener: Callbacks) {
-        callbacks = listener
-    }
-
     private fun updateProgressViews(progress: Int, total: Int) {
         lifecycleScope.launch(Dispatchers.Unconfined) {
             updateLyrics(progress)
@@ -313,10 +308,6 @@ class PlayerAlbumCoverFragment :
                 }
                 .start()
         }
-    }
-
-    interface Callbacks {
-        fun onToolbarToggled()
     }
 
     companion object {

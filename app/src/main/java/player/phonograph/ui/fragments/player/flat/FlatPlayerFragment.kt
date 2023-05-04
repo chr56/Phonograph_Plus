@@ -143,8 +143,6 @@ class FlatPlayerFragment :
         return wasExpanded
     }
 
-    override fun onToolbarToggled() {}
-
     override fun onPanelSlide(view: View, slide: Float) {}
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
         when (newState) {

@@ -51,9 +51,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 abstract class AbsPlayerFragment :
-        AbsMusicServiceFragment(), PaletteColorHolder, PlayerAlbumCoverFragment.Callbacks {
+        AbsMusicServiceFragment(), PaletteColorHolder {
 
-    protected lateinit var playerAlbumCoverFragment: PlayerAlbumCoverFragment
     protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment
     protected val viewModel: PlayerFragmentViewModel by viewModels()
     protected val lyricsViewModel: LyricsViewModel by viewModels()
@@ -75,7 +74,6 @@ abstract class AbsPlayerFragment :
         initRecyclerView()
         initToolbar()
         setUpControllerFragment()
-        setUpCoverFragment()
         setupPaletteColorObserver()
 
         addFavoriteSateObserver()
@@ -99,12 +97,6 @@ abstract class AbsPlayerFragment :
     protected abstract fun implementRecyclerView()
 
     abstract fun setUpControllerFragment()
-
-    private fun setUpCoverFragment() {
-        playerAlbumCoverFragment =
-            (childFragmentManager.findFragmentById(R.id.player_album_cover_fragment) as PlayerAlbumCoverFragment)
-        playerAlbumCoverFragment.setCallbacks(this)
-    }
 
     override fun onDestroyView() {
         favoriteMenuItem = null
@@ -388,8 +380,6 @@ abstract class AbsPlayerFragment :
     protected open fun updateQueuePosition() {
         playingQueueAdapter.current = MusicPlayerRemote.position
     }
-
-    abstract override fun onToolbarToggled()
 
     internal interface Impl {
         fun init()
