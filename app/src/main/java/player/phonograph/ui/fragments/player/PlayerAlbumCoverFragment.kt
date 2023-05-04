@@ -1,16 +1,25 @@
 package player.phonograph.ui.fragments.player
 
 import lib.phonograph.misc.SimpleAnimatorListener
+import player.phonograph.R
 import player.phonograph.adapter.AlbumCoverPagerAdapter
+import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
+import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
+import androidx.annotation.ColorInt
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.collection.LruCache
+import androidx.core.graphics.drawable.toBitmap
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.whenResumed
@@ -18,6 +27,10 @@ import androidx.lifecycle.whenStarted
 import androidx.viewpager2.widget.ViewPager2
 import android.animation.Animator
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
@@ -38,6 +51,8 @@ class PlayerAlbumCoverFragment :
 
     private var _viewBinding: FragmentPlayerAlbumCoverBinding? = null
     private val binding: FragmentPlayerAlbumCoverBinding get() = _viewBinding!!
+
+    private val viewModel: AlbumCoverViewModel by viewModels()
 
     private var callbacks: Callbacks? = null
     private var currentPosition = 0
@@ -156,8 +171,10 @@ class PlayerAlbumCoverFragment :
         albumCoverPagerAdapter?.let { adapter ->
             lifecycleScope.launch(Dispatchers.Default) {
                 val song = adapter.dataSet.getOrElse(position) { return@launch }
-                val color = adapter.getPaletteColor(song)
-                notifyColorChange(color)
+                val color = viewModel.getPaletteColor(requireContext(), song)
+                lifecycle.whenStarted {
+                    notifyColorChange(color)
+                }
             }
         }
     }
@@ -312,3 +329,77 @@ class PlayerAlbumCoverFragment :
         const val VISIBILITY_ANIM_DURATION = 300L
     }
 }
+
+
+class AlbumCoverViewModel : ViewModel() {
+    private val colorCache: LruCache<Song, ImageWrapper> = LruCache(6)
+
+    internal fun putColor(song: Song, bitmap: Bitmap, color: Int) {
+        colorCache.put(song, ImageWrapper(bitmap, color))
+    }
+
+    internal fun getPaletteColorFromCache(song: Song) = colorCache[song]?.color
+    internal fun getImageFromCache(song: Song) = colorCache[song]?.bitmap
+
+    suspend fun getPaletteColor(context: Context, song: Song): Int {
+        val cached = getPaletteColorFromCache(song)
+        return if (cached == null) {
+            val loaded = loadImage(context, song)
+            putColor(song, loaded.bitmap, loaded.color)
+            loaded.color
+        } else {
+            cached
+        }
+    }
+
+    suspend fun getImage(context: Context, song: Song): Bitmap {
+        val cached = getImageFromCache(song)
+        return if (cached == null) {
+            val loaded = loadImage(context, song)
+            putColor(song, loaded.bitmap, loaded.color)
+            loaded.bitmap
+        } else {
+            cached
+        }
+    }
+
+
+    data class ImageWrapper(val bitmap: Bitmap, @ColorInt val color: Int)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private suspend fun loadImage(context: Context, song: Song): ImageWrapper = try {
+        withTimeout(1600) {
+            suspendCancellableCoroutine { continuation ->
+                loadImage(context, song) { _, drawable, color ->
+                    require(drawable is BitmapDrawable)
+                    continuation.resume(ImageWrapper(drawable.bitmap, color)) { cancel() }
+                }
+            }
+        }
+    } catch (e: TimeoutCancellationException) {
+        ImageWrapper(
+            AppCompatResources.getDrawable(context, R.drawable.default_album_art)!!.toBitmap(),
+            context.getColor(R.color.defaultFooterColor)
+        )
+    }
+
+
+    private fun loadImage(
+        context: Context,
+        song: Song,
+        colorCallback: (Song, Drawable, Int) -> Unit,
+    ) {
+        player.phonograph.coil.loadImage(context)
+            .from(song)
+            .into(
+                PaletteTargetBuilder(context)
+                    .onResourceReady { result, palette ->
+                        colorCallback(song, result, palette)
+                    }
+                    .build()
+            )
+            .enqueue()
+    }
+
+}
+
