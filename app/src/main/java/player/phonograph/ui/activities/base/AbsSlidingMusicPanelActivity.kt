@@ -83,12 +83,12 @@ abstract class AbsSlidingMusicPanelActivity :
                     override fun onGlobalLayout() {
                         layout.viewTreeObserver.removeOnGlobalLayoutListener(this)
                         when (panelState) {
-                            PanelState.EXPANDED -> {
+                            PanelState.EXPANDED  -> {
                                 onPanelSlide(layout, 1f)
                                 onPanelExpanded(layout)
                             }
                             PanelState.COLLAPSED -> onPanelCollapsed(layout)
-                            else -> playerFragment.onHide()
+                            else                 -> playerFragment.onHide()
                         }
                     }
                 })
@@ -140,9 +140,9 @@ abstract class AbsSlidingMusicPanelActivity :
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
         when (newState) {
             PanelState.COLLAPSED -> onPanelCollapsed(panel)
-            PanelState.EXPANDED -> onPanelExpanded(panel)
-            PanelState.ANCHORED -> collapsePanel() // this fixes a bug where the panel would get stuck for some reason
-            else -> {}
+            PanelState.EXPANDED  -> onPanelExpanded(panel)
+            PanelState.ANCHORED  -> collapsePanel() // this fixes a bug where the panel would get stuck for some reason
+            else                 -> {}
         }
     }
 
@@ -204,7 +204,7 @@ abstract class AbsSlidingMusicPanelActivity :
     }
 
     override fun onBackPressed() {
-        if (!handleBackPress())  onBackPressedDispatcher.onBackPressed()
+        if (!handleBackPress()) onBackPressedDispatcher.onBackPressed()
     }
 
     open fun handleBackPress(): Boolean {
@@ -217,13 +217,11 @@ abstract class AbsSlidingMusicPanelActivity :
     }
 
     private fun setupPaletteColorObserver() {
-        playerFragment.lifecycleScope.launch {
-            playerFragment.observePaletteColor { color ->
-                if (panelState == PanelState.EXPANDED) {
-                    animateThemeColorChange(playerColor, color)
-                }
-                playerColor = color
+        playerFragment.observePaletteColor(this) { color ->
+            if (panelState == PanelState.EXPANDED) {
+                animateThemeColorChange(playerColor, color)
             }
+            playerColor = color
         }
     }
 
@@ -237,7 +235,7 @@ abstract class AbsSlidingMusicPanelActivity :
             PanelState.EXPANDED -> {
                 setTaskDescriptionColorEXt(playerFragment.paletteColor)
             }
-            else -> {
+            else                -> {
                 setTaskDescriptionColorEXt(color)
             }
         }

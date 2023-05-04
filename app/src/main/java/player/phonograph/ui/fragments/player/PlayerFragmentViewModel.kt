@@ -21,10 +21,6 @@ import kotlinx.coroutines.launch
 
 class PlayerFragmentViewModel : ViewModel() {
 
-    val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        reportError(throwable, "PlayerFragment", "")
-    }
-
     private val _currentSong: MutableStateFlow<Song> = MutableStateFlow(Song.EMPTY_SONG)
     val currentSong get() = _currentSong.asStateFlow()
 
@@ -43,7 +39,7 @@ class PlayerFragmentViewModel : ViewModel() {
     fun updateFavoriteState(song: Song, context: Context?) {
         loadFavoriteStateJob?.cancel()
         _favoriteState.value = Song.EMPTY_SONG to false
-        loadFavoriteStateJob = viewModelScope.launch(exceptionHandler) {
+        loadFavoriteStateJob = viewModelScope.launch {
             if (song == Song.EMPTY_SONG) return@launch
             _favoriteState.emit(song to isFavorite(context ?: App.instance, song))
         }

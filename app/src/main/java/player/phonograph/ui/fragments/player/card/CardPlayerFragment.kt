@@ -241,11 +241,10 @@ class CardPlayerFragment :
                         }
                     }
                 }
-                lifecycleScope.launch {
-                    fragment.observePaletteColor(fragment) { newColor ->
-                        animateColorChange(newColor)
-                    }
+                fragment.observePaletteColor(fragment) { newColor ->
+                    animateColorChange(newColor)
                 }
+
             }
         }
 
