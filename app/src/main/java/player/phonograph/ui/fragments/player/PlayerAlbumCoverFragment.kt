@@ -52,8 +52,6 @@ class PlayerAlbumCoverFragment :
     private val viewModel: AlbumCoverViewModel by viewModels()
     private val playerViewModel: PlayerFragmentViewModel by viewModels({ requireParentFragment() })
 
-    private var currentPosition = 0
-
     private var albumCoverPagerAdapter: AlbumCoverPagerAdapter? = null
 
     private val progressViewUpdateHelperDelegate =
@@ -203,7 +201,6 @@ class PlayerAlbumCoverFragment :
     }
 
     private fun onPageSelected(position: Int) {
-        currentPosition = position
         updateColorAt(position)
         if (position != MusicPlayerRemote.position) {
             MusicPlayerRemote.playSongAt(position)
