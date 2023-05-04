@@ -336,13 +336,6 @@ abstract class AbsPlayerFragment :
         checkToggleToolbar()
     }
 
-    override fun onServiceConnected() {
-        updateQueue()
-        updateCurrentSong()
-        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
-        lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
-    }
-
     open fun onShow() {
         playbackControlsFragment.show()
     }
