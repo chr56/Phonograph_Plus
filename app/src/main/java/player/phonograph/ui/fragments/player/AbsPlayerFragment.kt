@@ -294,10 +294,6 @@ abstract class AbsPlayerFragment :
         }
     }
 
-    protected open fun updateQueuePosition() {
-        playingQueueAdapter.current = MusicPlayerRemote.position
-    }
-
     internal interface Impl {
         fun init()
         fun setUpPanelAndAlbumCoverHeight()
@@ -306,7 +302,7 @@ abstract class AbsPlayerFragment :
     private fun observeState() {
         observe(CurrentQueueState.queue) { queue ->
             playingQueueAdapter.dataset = queue.get() ?: MusicPlayerRemote.playingQueue
-            updateQueuePosition()
+            playingQueueAdapter.current = MusicPlayerRemote.position
         }
         observe(CurrentQueueState.position) { position ->
             playingQueueAdapter.current = position
@@ -367,7 +363,7 @@ abstract class AbsPlayerFragment :
     override val paletteColor @ColorInt get() = viewModel.paletteColor.value
 
 
-    private inline fun <reified T> observe(
+    protected inline fun <reified T> observe(
         flow: StateFlow<T>,
         state: Lifecycle.State = Lifecycle.State.CREATED,
         lifecycle: Lifecycle = this.lifecycle,

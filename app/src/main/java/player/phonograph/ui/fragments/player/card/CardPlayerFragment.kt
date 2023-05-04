@@ -15,6 +15,7 @@ import player.phonograph.databinding.FragmentCardPlayerBinding
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
@@ -92,7 +93,16 @@ class CardPlayerFragment :
         observeState()
     }
 
-    private fun observeState() {}
+    private fun observeState() {
+        observe(CurrentQueueState.position) {
+            whenStarted {
+                viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
+                if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
+                    resetToCurrentPosition()
+                }
+            }
+        }
+    }
 
     override fun onDestroyView() {
         viewBinding.playerRecyclerView.itemAnimator = null
@@ -112,14 +122,6 @@ class CardPlayerFragment :
                     resetToCurrentPosition()
                 }
             }
-        }
-    }
-
-    override fun updateQueuePosition() {
-        super.updateQueuePosition()
-        viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
-        if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
-            resetToCurrentPosition()
         }
     }
 
