@@ -94,6 +94,13 @@ class PlayerAlbumCoverFragment :
                 }
             }
         }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                playerViewModel.favoriteState.collect {
+                    showHeartAnimation()
+                }
+            }
+        }
     }
 
     private suspend fun resetLyricsLayout() {
@@ -220,39 +227,6 @@ class PlayerAlbumCoverFragment :
         }
     }
 
-    fun showHeartAnimation() {
-        binding.playerFavoriteIcon.apply {
-            clearAnimation()
-            alpha = 0f
-            scaleX = 0f
-            scaleY = 0f
-            visibility = View.VISIBLE
-            pivotX = width / 2f
-            pivotY = height / 2f
-            animate()
-                .setDuration(PHONOGRAPH_ANIM_TIME / 2)
-                .setInterpolator(DecelerateInterpolator())
-                .scaleX(1f)
-                .scaleY(1f)
-                .alpha(1f)
-                .setListener(object : SimpleAnimatorListener() {
-                    override fun onAnimationCancel(animation: Animator) {
-                        visibility = View.INVISIBLE
-                    }
-                })
-                .withEndAction {
-                    animate()
-                        .setDuration(PHONOGRAPH_ANIM_TIME / 2)
-                        .setInterpolator(AccelerateInterpolator())
-                        .scaleX(0f)
-                        .scaleY(0f)
-                        .alpha(0f)
-                        .start()
-                }
-                .start()
-        }
-    }
-
     private fun notifyColorChange(color: Int) {
         callbacks?.updatePaletteColor(color)
     }
@@ -313,6 +287,41 @@ class PlayerAlbumCoverFragment :
             alpha = 0f
             translationY = height.toFloat()
             animate().alpha(1f).translationY(0f).duration = VISIBILITY_ANIM_DURATION
+        }
+    }
+
+
+
+    fun showHeartAnimation() {
+        binding.playerFavoriteIcon.apply {
+            clearAnimation()
+            alpha = 0f
+            scaleX = 0f
+            scaleY = 0f
+            visibility = View.VISIBLE
+            pivotX = width / 2f
+            pivotY = height / 2f
+            animate()
+                .setDuration(PHONOGRAPH_ANIM_TIME / 2)
+                .setInterpolator(DecelerateInterpolator())
+                .scaleX(1f)
+                .scaleY(1f)
+                .alpha(1f)
+                .setListener(object : SimpleAnimatorListener() {
+                    override fun onAnimationCancel(animation: Animator) {
+                        visibility = View.INVISIBLE
+                    }
+                })
+                .withEndAction {
+                    animate()
+                        .setDuration(PHONOGRAPH_ANIM_TIME / 2)
+                        .setInterpolator(AccelerateInterpolator())
+                        .scaleX(0f)
+                        .scaleY(0f)
+                        .alpha(0f)
+                        .start()
+                }
+                .start()
         }
     }
 

@@ -180,7 +180,6 @@ abstract class AbsPlayerFragment :
                 onClick {
                     val result = toggleFavorite(requireContext(), viewModel.currentSong.value)
                     if (viewModel.currentSong.value.id == MusicPlayerRemote.currentSong.id && result) {
-                        playerAlbumCoverFragment.showHeartAnimation()
                         viewModel.updateFavoriteState(viewModel.currentSong.value, context)
                     }
                     true
