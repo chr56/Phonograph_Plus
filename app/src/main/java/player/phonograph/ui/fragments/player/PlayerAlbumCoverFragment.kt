@@ -171,12 +171,6 @@ class PlayerAlbumCoverFragment :
         _viewBinding = null
     }
 
-    override fun onServiceConnected() {
-        lifecycleScope.launch {
-            updatePlayingQueue()
-        }
-    }
-
     private suspend fun updatePlayingQueue() {
         lifecycle.whenStarted {
             val queue = MusicPlayerRemote.playingQueue
