@@ -13,8 +13,6 @@ import player.phonograph.adapter.display.PlayingQueueAdapter
 import player.phonograph.mechanism.Favorite.toggleFavorite
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.PaletteColorHolder
-import player.phonograph.model.buildInfoString
-import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
@@ -245,15 +243,6 @@ abstract class AbsPlayerFragment :
     abstract fun getToolBarContainer(): View?
 
     var favoriteMenuItem: MenuItem? = null
-
-    protected val upNextAndQueueTime: String
-        get() {
-            val duration = MusicPlayerRemote.getQueueDurationMillis(MusicPlayerRemote.position)
-            return buildInfoString(
-                resources.getString(R.string.up_next),
-                getReadableDurationString(duration)
-            )
-        }
 
     override fun onPause() {
         recyclerViewDragDropManager.cancelDrag()

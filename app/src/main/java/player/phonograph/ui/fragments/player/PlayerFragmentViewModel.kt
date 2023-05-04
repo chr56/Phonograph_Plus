@@ -5,14 +5,19 @@
 package player.phonograph.ui.fragments.player
 
 import player.phonograph.App
+import player.phonograph.R
 import player.phonograph.mechanism.Favorite.isFavorite
 import player.phonograph.model.Song
+import player.phonograph.model.buildInfoString
+import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.lyrics.LrcLyrics
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.reportError
 import androidx.annotation.ColorInt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
+import android.content.res.Resources
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -71,4 +76,11 @@ class PlayerFragmentViewModel : ViewModel() {
             !_shownToolbar.value
         )
 
+    fun upNextAndQueueTime(resources: Resources): String {
+        val duration = MusicPlayerRemote.getQueueDurationMillis(MusicPlayerRemote.position)
+        return buildInfoString(
+            resources.getString(R.string.up_next),
+            getReadableDurationString(duration)
+        )
+    }
 }

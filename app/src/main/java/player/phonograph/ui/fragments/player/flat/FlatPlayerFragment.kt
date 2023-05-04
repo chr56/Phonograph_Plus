@@ -17,19 +17,18 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
-import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
-import player.phonograph.util.ui.backgroundColorTransitionAnimator
-import player.phonograph.util.ui.textColorTransitionAnimator
-import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.theme.isWindowBackgroundDarkSafe
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.requireDarkenColor
+import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
+import player.phonograph.util.ui.backgroundColorTransitionAnimator
 import player.phonograph.util.ui.convertDpToPixel
+import player.phonograph.util.ui.isLandscape
+import player.phonograph.util.ui.textColorTransitionAnimator
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.whenResumed
 import androidx.lifecycle.whenStarted
 import android.animation.AnimatorSet
@@ -85,7 +84,7 @@ class FlatPlayerFragment :
     private fun observeState() {
         observe(CurrentQueueState.position) {
             whenStarted {
-                viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
+                viewBinding.playerQueueSubHeader.text = viewModel.upNextAndQueueTime(resources)
                 if (viewBinding.playerSlidingLayout == null ||
                     viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED
                 ) {
@@ -111,7 +110,7 @@ class FlatPlayerFragment :
         super.updateAdapter()
         lifecycle.whenStarted {
             withContext(Dispatchers.Main) {
-                viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
+                viewBinding.playerQueueSubHeader.text = viewModel.upNextAndQueueTime(resources)
                 if (viewBinding.playerSlidingLayout == null || viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED) {
                     resetToCurrentPosition()
                 }

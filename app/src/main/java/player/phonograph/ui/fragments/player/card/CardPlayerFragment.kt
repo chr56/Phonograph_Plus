@@ -96,7 +96,7 @@ class CardPlayerFragment :
     private fun observeState() {
         observe(CurrentQueueState.position) {
             whenStarted {
-                viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
+                viewBinding.playerQueueSubHeader.text = viewModel.upNextAndQueueTime(resources)
                 if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
                     resetToCurrentPosition()
                 }
@@ -117,7 +117,7 @@ class CardPlayerFragment :
         super.updateAdapter()
         lifecycle.whenStarted {
             withContext(Dispatchers.Main) {
-                viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
+                viewBinding.playerQueueSubHeader.text = viewModel.upNextAndQueueTime(resources)
                 if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
                     resetToCurrentPosition()
                 }
