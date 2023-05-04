@@ -35,7 +35,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.whenStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.graphics.Color
@@ -317,7 +319,7 @@ abstract class AbsPlayerFragment :
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
-            updateQueue()
+            lifecycleScope.launch { updateQueue() }
             viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
         }
     }
@@ -328,9 +330,13 @@ abstract class AbsPlayerFragment :
         viewModel.updateCurrentSong(MusicPlayerRemote.currentSong, context)
     }
 
-    protected open fun updateQueue() {
-        playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
-        playingQueueAdapter.current = MusicPlayerRemote.position
+    protected open suspend fun updateQueue() {
+        lifecycle.whenStarted {
+            withContext(Dispatchers.Main) {
+                playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
+                playingQueueAdapter.current = MusicPlayerRemote.position
+            }
+        }
     }
 
     protected open fun updateQueuePosition() {

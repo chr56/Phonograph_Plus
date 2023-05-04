@@ -30,6 +30,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.whenResumed
+import androidx.lifecycle.whenStarted
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.annotation.SuppressLint
@@ -45,7 +46,9 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.PopupMenu
 import kotlin.math.max
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CardPlayerFragment :
         AbsPlayerFragment(),
@@ -108,11 +111,15 @@ class CardPlayerFragment :
     }
 
 
-    override fun updateQueue() {
+    override suspend fun updateQueue() {
         super.updateQueue()
-        viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
-        if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
-            resetToCurrentPosition()
+        lifecycle.whenStarted {
+            withContext(Dispatchers.Main) {
+                viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
+                if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
+                    resetToCurrentPosition()
+                }
+            }
         }
     }
 

@@ -30,6 +30,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.whenResumed
+import androidx.lifecycle.whenStarted
 import android.animation.AnimatorSet
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -39,8 +40,9 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.PopupMenu
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class FlatPlayerFragment :
         AbsPlayerFragment(),
@@ -101,11 +103,15 @@ class FlatPlayerFragment :
     }
 
 
-    override fun updateQueue() {
+    override suspend fun updateQueue() {
         super.updateQueue()
-        viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
-        if (viewBinding.playerSlidingLayout == null || viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED) {
-            resetToCurrentPosition()
+        lifecycle.whenStarted {
+            withContext(Dispatchers.Main) {
+                viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
+                if (viewBinding.playerSlidingLayout == null || viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED) {
+                    resetToCurrentPosition()
+                }
+            }
         }
     }
 
