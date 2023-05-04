@@ -92,15 +92,7 @@ class CardPlayerFragment :
         observeState()
     }
 
-    private fun observeState() {
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.showToolbar.collect {
-                    toggleToolbar(viewBinding.toolbarContainer)
-                }
-            }
-        }
-    }
+    private fun observeState() {}
 
     override fun onDestroyView() {
         viewBinding.playerRecyclerView.itemAnimator = null
@@ -111,8 +103,8 @@ class CardPlayerFragment :
     }
 
 
-    override suspend fun updateQueue() {
-        super.updateQueue()
+    override suspend fun updateAdapter() {
+        super.updateAdapter()
         lifecycle.whenStarted {
             withContext(Dispatchers.Main) {
                 viewBinding.playerQueueSubHeader.text = upNextAndQueueTime

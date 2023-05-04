@@ -149,10 +149,7 @@ abstract class AbsPlayerFragment :
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 itemId = R.id.action_toggle_favorite
                 onClick {
-                    val result = toggleFavorite(requireContext(), viewModel.currentSong.value)
-                    if (viewModel.currentSong.value.id == MusicPlayerRemote.currentSong.id && result) {
-                        viewModel.updateFavoriteState(viewModel.currentSong.value, context)
-                    }
+                    toggleFavorite(requireContext(), viewModel.currentSong.value)
                     true
                 }
             }.apply {
@@ -233,14 +230,6 @@ abstract class AbsPlayerFragment :
 
     abstract fun getImplToolbar(): Toolbar
 
-    protected fun toggleToolbar(toolbar: View?) {
-        if (viewModel.showToolbar.value) {
-            showToolbar(toolbar)
-        } else {
-            hideToolbar(toolbar)
-        }
-    }
-
     private fun showToolbar(toolbar: View?) {
         if (toolbar == null) return
         toolbar.visibility = View.VISIBLE
@@ -254,33 +243,8 @@ abstract class AbsPlayerFragment :
     }
 
     abstract fun getToolBarContainer(): View?
-    protected fun checkToggleToolbar() {
-        val toolbar = getToolBarContainer() ?: return
-        if (!viewModel.showToolbar.value && toolbar.visibility != View.GONE) {
-            hideToolbar(toolbar)
-        } else if (viewModel.showToolbar.value && toolbar.visibility != View.VISIBLE) {
-            showToolbar(toolbar)
-        }
-    }
 
     var favoriteMenuItem: MenuItem? = null
-
-    /**
-     * delayed and run on main-thread
-     */
-    private suspend fun updateFavoriteIcon(isFavorite: Boolean) {
-        val activity = activity ?: return
-        withContext(Dispatchers.Main) {
-            val res = if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
-            val color = toolbarIconColor(activity, Color.TRANSPARENT)
-            favoriteMenuItem?.apply {
-                icon = activity.getTintedDrawable(res, color)
-                title =
-                    if (isFavorite) getString(R.string.action_remove_from_favorites)
-                    else getString(R.string.action_add_to_favorites)
-            }
-        }
-    }
 
     protected val upNextAndQueueTime: String
         get() {
@@ -294,11 +258,6 @@ abstract class AbsPlayerFragment :
     override fun onPause() {
         recyclerViewDragDropManager.cancelDrag()
         super.onPause()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        checkToggleToolbar()
     }
 
     open fun onShow() {
@@ -319,14 +278,14 @@ abstract class AbsPlayerFragment :
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
-            lifecycleScope.launch { updateQueue() }
+            lifecycleScope.launch { updateAdapter() }
             viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
         }
     }
 
     abstract fun onBackPressed(): Boolean
 
-    protected open suspend fun updateQueue() {
+    protected open suspend fun updateAdapter() {
         lifecycle.whenStarted {
             withContext(Dispatchers.Main) {
                 playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
@@ -357,11 +316,34 @@ abstract class AbsPlayerFragment :
             lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
         }
         observe(CurrentQueueState.shuffleMode) {
-            updateQueue()
+            updateAdapter()
         }
         observe(viewModel.favoriteState) {
             if (it.first == viewModel.currentSong.value) {
-                updateFavoriteIcon(it.second)
+                val isFavorite = it.second
+                lifecycle.whenStarted {
+                    withContext(Dispatchers.Main) {
+                        val res =
+                            if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
+                        val color = toolbarIconColor(requireContext(), Color.TRANSPARENT)
+                        favoriteMenuItem?.apply {
+                            icon = requireContext().getTintedDrawable(res, color)
+                            title =
+                                if (isFavorite) getString(R.string.action_remove_from_favorites)
+                                else getString(R.string.action_add_to_favorites)
+                        }
+                    }
+                }
+            }
+        }
+        observe(viewModel.showToolbar) {
+            whenStarted {
+                val container = getToolBarContainer() ?: return@whenStarted
+                if (it) {
+                    showToolbar(container)
+                } else {
+                    hideToolbar(container)
+                }
             }
         }
         observe(lyricsViewModel.lyricsInfo) { lyricsList ->
