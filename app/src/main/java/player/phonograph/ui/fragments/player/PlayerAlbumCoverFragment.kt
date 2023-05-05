@@ -72,6 +72,13 @@ class PlayerAlbumCoverFragment :
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                CurrentQueueState.shuffleMode.collect {
+                    updateAdapter()
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 CurrentQueueState.position.collect { position ->
                     refreshCurrentPosition(position)
                 }
