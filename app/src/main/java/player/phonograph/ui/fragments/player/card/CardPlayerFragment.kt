@@ -27,7 +27,6 @@ import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.ui.textColorTransitionAnimator
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenResumed
 import androidx.lifecycle.whenStarted
@@ -319,11 +318,13 @@ class CardPlayerFragment :
         }
 
         override fun animateColorChange(newColor: Int) {
-            val showed = fragment.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-            if (!showed) return
-            currentAnimatorSet?.cancel()
-            currentAnimatorSet = defaultColorChangeAnimatorSet(newColor)
-            if (fragment.view != null) currentAnimatorSet?.start()
+            fragment.lifecycleScope.launch(Dispatchers.Main) {
+                fragment.whenResumed {
+                    currentAnimatorSet?.cancel()
+                    currentAnimatorSet = defaultColorChangeAnimatorSet(newColor)
+                    currentAnimatorSet?.start()
+                }
+            }
         }
     }
 
@@ -345,22 +346,24 @@ class CardPlayerFragment :
         }
 
         override fun animateColorChange(newColor: Int) {
-            val showed = fragment.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-            if (!showed) return
-            currentAnimatorSet?.cancel()
-            currentAnimatorSet = defaultColorChangeAnimatorSet(newColor).also {
-                it.play(
-                    fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(
-                        fragment.paletteColor, newColor
-                    )
-                ).with(
-                    fragment.requireView().findViewById<View>(R.id.status_bar)
-                        .backgroundColorTransitionAnimator(
-                            darkenColor(fragment.paletteColor),
-                            darkenColor(newColor)
+            fragment.lifecycleScope.launch(Dispatchers.Main) {
+                fragment.whenResumed {
+                    currentAnimatorSet?.cancel()
+                    currentAnimatorSet = defaultColorChangeAnimatorSet(newColor).also {
+                        it.play(
+                            fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(
+                                fragment.paletteColor, newColor
+                            )
+                        ).with(
+                            fragment.requireView().findViewById<View>(R.id.status_bar)
+                                .backgroundColorTransitionAnimator(
+                                    darkenColor(fragment.paletteColor),
+                                    darkenColor(newColor)
+                                )
                         )
-                )
-                it.start()
+                        it.start()
+                    }
+                }
             }
         }
     }

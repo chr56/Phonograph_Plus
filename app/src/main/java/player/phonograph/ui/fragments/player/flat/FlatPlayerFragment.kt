@@ -27,7 +27,8 @@ import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.ui.textColorTransitionAnimator
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
-import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenResumed
 import androidx.lifecycle.whenStarted
 import android.animation.AnimatorSet
 import android.graphics.PorterDuff
@@ -39,6 +40,7 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.PopupMenu
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class FlatPlayerFragment :
@@ -277,11 +279,13 @@ class FlatPlayerFragment :
         }
 
         override fun animateColorChange(newColor: Int) {
-            val showed = fragment.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-            if (!showed) return
-            currentAnimatorSet?.cancel()
-            currentAnimatorSet = defaultColorChangeAnimatorSet(newColor)
-            if (fragment.view != null) currentAnimatorSet?.start()
+            fragment.lifecycleScope.launch(Dispatchers.Main) {
+                fragment.whenResumed {
+                    currentAnimatorSet?.cancel()
+                    currentAnimatorSet = defaultColorChangeAnimatorSet(newColor)
+                    currentAnimatorSet?.start()
+                }
+            }
         }
     }
 
@@ -299,16 +303,18 @@ class FlatPlayerFragment :
         }
 
         override fun animateColorChange(newColor: Int) {
-            val showed = fragment.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-            if (!showed) return
-            currentAnimatorSet?.cancel()
-            currentAnimatorSet = defaultColorChangeAnimatorSet(newColor).also {
-                it.play(
-                    fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(
-                        fragment.paletteColor, newColor
-                    )
-                )
-                it.start()
+            fragment.lifecycleScope.launch(Dispatchers.Main) {
+                fragment.whenResumed {
+                    currentAnimatorSet?.cancel()
+                    currentAnimatorSet = defaultColorChangeAnimatorSet(newColor).also {
+                        it.play(
+                            fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(
+                                fragment.paletteColor, newColor
+                            )
+                        )
+                        it.start()
+                    }
+                }
             }
         }
     }
