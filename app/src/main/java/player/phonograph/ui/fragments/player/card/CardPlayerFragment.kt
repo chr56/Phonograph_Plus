@@ -203,7 +203,7 @@ class CardPlayerFragment :
             require(progressSliderHeight >= 0) { "CardPlayer's progressSliderHeight is less than 0: $progressSliderHeight" }
 
             val backgroundAnimator: Animator =
-                if (SDK_INT >= LOLLIPOP) {
+                if (SDK_INT >= LOLLIPOP && fragment.viewBinding.root.isAttachedToWindow) {
                     val x =
                         fab.x + fab.width / 2 + fragment.playbackControlsFragment.requireView().x
                     val y =
