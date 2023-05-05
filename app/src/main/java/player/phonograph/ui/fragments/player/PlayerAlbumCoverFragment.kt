@@ -1,6 +1,7 @@
 package player.phonograph.ui.fragments.player
 
 import lib.phonograph.misc.SimpleAnimatorListener
+import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteBitmap
 import player.phonograph.databinding.FragmentAlbumCoverBinding
@@ -210,6 +211,7 @@ class PlayerAlbumCoverFragment :
         val adapter = albumCoverPagerAdapter
         if (adapter != null) {
             lifecycleScope.launch(Dispatchers.Default) {
+                playerViewModel.updatePaletteColor(resources.getColor(R.color.defaultFooterColor, null))
                 val song = adapter.dataSet.getOrElse(position) { return@launch }
                 val color = viewModel.getPaletteColor(requireContext(), song)
                 playerViewModel.updatePaletteColor(color)
