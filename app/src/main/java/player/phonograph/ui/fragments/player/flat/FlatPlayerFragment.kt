@@ -42,6 +42,7 @@ import android.widget.PopupMenu
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 
 class FlatPlayerFragment :
         AbsPlayerFragment(),
@@ -281,7 +282,10 @@ class FlatPlayerFragment :
         override fun animateColorChange(newColor: Int) {
             fragment.lifecycleScope.launch(Dispatchers.Main) {
                 fragment.whenResumed {
-                    currentAnimatorSet?.cancel()
+                    val current = currentAnimatorSet
+                    if (current != null) {
+                        while (current.isRunning) yield()
+                    }
                     currentAnimatorSet = defaultColorChangeAnimatorSet(newColor)
                     currentAnimatorSet?.start()
                 }
@@ -305,7 +309,10 @@ class FlatPlayerFragment :
         override fun animateColorChange(newColor: Int) {
             fragment.lifecycleScope.launch(Dispatchers.Main) {
                 fragment.whenResumed {
-                    currentAnimatorSet?.cancel()
+                    val current = currentAnimatorSet
+                    if (current != null) {
+                        while (current.isRunning) yield()
+                    }
                     currentAnimatorSet = defaultColorChangeAnimatorSet(newColor).also {
                         it.play(
                             fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(
