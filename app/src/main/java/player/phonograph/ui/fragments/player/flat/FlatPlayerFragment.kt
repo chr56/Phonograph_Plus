@@ -92,6 +92,9 @@ class FlatPlayerFragment :
         observe(CurrentQueueState.currentSong, lifecycle = lifecycle) { song ->
             impl.updateCurrentSong(song)
         }
+        observePaletteColor(this) { newColor ->
+            impl.animateColorChange(newColor)
+        }
     }
 
     override fun onDestroyView() {
@@ -190,13 +193,7 @@ class FlatPlayerFragment :
             }
         }
 
-        override fun init() {
-            fragment.observePaletteColor(fragment) { newColor ->
-                animateColorChange(newColor)
-            }
-        }
-
-        abstract fun animateColorChange(newColor: Int)
+        override fun init() {}
     }
 
     private class PortraitImpl(fragment: FlatPlayerFragment) : BaseImpl(fragment) {

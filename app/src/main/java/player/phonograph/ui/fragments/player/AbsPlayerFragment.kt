@@ -288,6 +288,7 @@ abstract class AbsPlayerFragment :
         fun init()
         fun updateCurrentSong(song: Song)
         fun setUpPanelAndAlbumCoverHeight()
+        fun animateColorChange(newColor: Int)
     }
 
     private fun observeState() {

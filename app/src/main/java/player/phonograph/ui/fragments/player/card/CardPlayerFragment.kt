@@ -28,6 +28,8 @@ import player.phonograph.util.ui.textColorTransitionAnimator
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenResumed
 import androidx.lifecycle.whenStarted
 import android.animation.Animator
 import android.animation.AnimatorSet
@@ -45,6 +47,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import kotlin.math.max
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class CardPlayerFragment :
@@ -100,6 +103,11 @@ class CardPlayerFragment :
         }
         observe(CurrentQueueState.currentSong, lifecycle = lifecycle) { song ->
             impl.updateCurrentSong(song)
+        }
+        observe(viewModel.paletteColor) { newColor ->
+            whenResumed {
+                impl.animateColorChange(newColor)
+            }
         }
     }
 
@@ -232,13 +240,7 @@ class CardPlayerFragment :
                 }
         }
 
-        override fun init() {
-            fragment.observePaletteColor(fragment) { newColor ->
-                animateColorChange(newColor)
-            }
-        }
-
-        abstract fun animateColorChange(newColor: Int)
+        override fun init() {}
     }
 
     private class PortraitImpl(fragment: CardPlayerFragment) : BaseImpl(fragment) {
