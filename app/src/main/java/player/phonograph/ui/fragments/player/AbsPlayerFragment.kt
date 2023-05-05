@@ -13,6 +13,7 @@ import player.phonograph.adapter.display.PlayingQueueAdapter
 import player.phonograph.mechanism.Favorite.toggleFavorite
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.PaletteColorHolder
+import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
@@ -285,6 +286,7 @@ abstract class AbsPlayerFragment :
 
     internal interface Impl {
         fun init()
+        fun updateCurrentSong(song: Song)
         fun setUpPanelAndAlbumCoverHeight()
     }
 

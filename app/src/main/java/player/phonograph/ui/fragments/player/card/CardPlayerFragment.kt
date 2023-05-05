@@ -18,19 +18,16 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
+import player.phonograph.util.theme.nightMode
+import player.phonograph.util.theme.requireDarkenColor
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.ui.backgroundColorTransitionAnimator
-import player.phonograph.util.ui.textColorTransitionAnimator
-import player.phonograph.util.theme.requireDarkenColor
-import player.phonograph.util.theme.nightMode
-import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.ui.convertDpToPixel
+import player.phonograph.util.ui.isLandscape
+import player.phonograph.util.ui.textColorTransitionAnimator
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.whenResumed
 import androidx.lifecycle.whenStarted
 import android.animation.Animator
 import android.animation.AnimatorSet
@@ -48,7 +45,6 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import kotlin.math.max
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class CardPlayerFragment :
@@ -101,6 +97,9 @@ class CardPlayerFragment :
                     resetToCurrentPosition()
                 }
             }
+        }
+        observe(CurrentQueueState.currentSong, lifecycle = lifecycle) { song ->
+            impl.updateCurrentSong(song)
         }
     }
 
@@ -234,22 +233,11 @@ class CardPlayerFragment :
         }
 
         override fun init() {
-            with(fragment) {
-                lifecycleScope.launch {
-                    viewModel.currentSong.collect {
-                        lifecycle.whenResumed {
-                            updateCurrentSong(it)
-                        }
-                    }
-                }
-                fragment.observePaletteColor(fragment) { newColor ->
-                    animateColorChange(newColor)
-                }
-
+            fragment.observePaletteColor(fragment) { newColor ->
+                animateColorChange(newColor)
             }
         }
 
-        abstract fun updateCurrentSong(song: Song)
         abstract fun animateColorChange(newColor: Int)
     }
 

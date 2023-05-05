@@ -28,8 +28,6 @@ import player.phonograph.util.ui.textColorTransitionAnimator
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenResumed
 import androidx.lifecycle.whenStarted
 import android.animation.AnimatorSet
 import android.graphics.PorterDuff
@@ -41,7 +39,6 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.PopupMenu
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class FlatPlayerFragment :
@@ -91,6 +88,9 @@ class FlatPlayerFragment :
                     resetToCurrentPosition()
                 }
             }
+        }
+        observe(CurrentQueueState.currentSong, lifecycle = lifecycle) { song ->
+            impl.updateCurrentSong(song)
         }
     }
 
@@ -191,21 +191,11 @@ class FlatPlayerFragment :
         }
 
         override fun init() {
-            with(fragment) {
-                lifecycleScope.launch {
-                    viewModel.currentSong.collect {
-                        lifecycle.whenResumed {
-                            updateCurrentSong(it)
-                        }
-                    }
-                }
-                fragment.observePaletteColor(fragment) { newColor ->
-                    animateColorChange(newColor)
-                }
+            fragment.observePaletteColor(fragment) { newColor ->
+                animateColorChange(newColor)
             }
         }
 
-        abstract fun updateCurrentSong(song: Song)
         abstract fun animateColorChange(newColor: Int)
     }
 
