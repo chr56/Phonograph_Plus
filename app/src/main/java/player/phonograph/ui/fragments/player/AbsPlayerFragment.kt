@@ -54,7 +54,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 abstract class AbsPlayerFragment :
-        AbsMusicServiceFragment(), PaletteColorHolder {
+        AbsMusicServiceFragment()/* , PaletteColorHolder */ {
 
     protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment
     protected val viewModel: PlayerFragmentViewModel by viewModels()
@@ -377,7 +377,8 @@ abstract class AbsPlayerFragment :
         }
     }
 
-    override val paletteColor @ColorInt get() = viewModel.paletteColor.value
+    /* override val paletteColor @ColorInt get() = viewModel.paletteColor.value */
+    val paletteColorState get() = viewModel.paletteColor
 
 
     protected inline fun <reified T> observe(
@@ -394,13 +395,4 @@ abstract class AbsPlayerFragment :
         }
     }
 
-    fun observePaletteColor(owner: LifecycleOwner? = null, callback: (Int) -> Unit) {
-        observe(
-            viewModel.paletteColor,
-            state = Lifecycle.State.STARTED,
-            lifecycle = owner?.lifecycle ?: this.lifecycle
-        ) {
-            callback(it)
-        }
-    }
 }

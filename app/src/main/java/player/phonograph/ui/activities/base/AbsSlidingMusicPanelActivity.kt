@@ -24,6 +24,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import mt.tint.setTaskDescriptionColor as setTaskDescriptionColorEXt
 
@@ -72,7 +73,7 @@ abstract class AbsSlidingMusicPanelActivity :
         miniPlayerFragment.requireView().setOnClickListener { expandPanel() }
 
         playerColor =
-            if (playerFragment.paletteColor != 0) playerFragment.paletteColor
+            if (playerFragment.paletteColorState.value != 0) playerFragment.paletteColorState.value
             else getColor(R.color.defaultFooterColor)
         activityColor = primaryColor
 
@@ -132,7 +133,7 @@ abstract class AbsSlidingMusicPanelActivity :
         setMiniPlayerAlphaProgress(slideOffset)
         cancelThemeColorChange()
         val color: Int =
-            argbEvaluator.evaluate(slideOffset, activityColor, playerFragment.paletteColor) as Int
+            argbEvaluator.evaluate(slideOffset, activityColor, playerFragment.paletteColorState.value) as Int
         super.setStatusbarColor(color)
         setNavigationBarColor(color)
     }
@@ -217,11 +218,15 @@ abstract class AbsSlidingMusicPanelActivity :
     }
 
     private fun setupPaletteColorObserver() {
-        playerFragment.observePaletteColor(this) { color ->
-            if (panelState == PanelState.EXPANDED) {
-                animateThemeColorChange(playerColor, color)
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                playerFragment.paletteColorState.collect { color ->
+                    if (panelState == PanelState.EXPANDED) {
+                        animateThemeColorChange(playerColor, color)
+                    }
+                    playerColor = color
+                }
             }
-            playerColor = color
         }
     }
 
@@ -233,7 +238,7 @@ abstract class AbsSlidingMusicPanelActivity :
     fun setTaskDescriptionColor(@ColorInt color: Int) {
         when (panelState) {
             PanelState.EXPANDED -> {
-                setTaskDescriptionColorEXt(playerFragment.paletteColor)
+                setTaskDescriptionColorEXt(playerFragment.paletteColorState.value)
             }
             else                -> {
                 setTaskDescriptionColorEXt(color)
