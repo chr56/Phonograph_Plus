@@ -50,7 +50,6 @@ class PlayerAlbumCoverFragment :
     private var _viewBinding: FragmentPlayerAlbumCoverBinding? = null
     private val binding: FragmentPlayerAlbumCoverBinding get() = _viewBinding!!
 
-    private val viewModel: AlbumCoverViewModel by viewModels()
     private val playerViewModel: PlayerFragmentViewModel by viewModels({ requireParentFragment() })
 
     private var albumCoverPagerAdapter: AlbumCoverPagerAdapter? = null
@@ -212,8 +211,7 @@ class PlayerAlbumCoverFragment :
         if (adapter != null) {
             lifecycleScope.launch(Dispatchers.Default) {
                 val song = adapter.dataSet.getOrElse(position) { return@launch }
-                val color = viewModel.getPaletteColor(requireContext(), song)
-                playerViewModel.updatePaletteColor(color)
+                playerViewModel.refreshPaletteColor(requireContext(), song)
             }
         }
     }
@@ -311,40 +309,6 @@ class PlayerAlbumCoverFragment :
     }
 }
 
-
-class AlbumCoverViewModel : ViewModel() {
-    private val colorCache: LruCache<Song, PaletteBitmap> = LruCache(6)
-
-    private fun putColor(song: Song, bitmap: Bitmap, color: Int) {
-        colorCache.put(song, PaletteBitmap(bitmap, color))
-    }
-
-    private fun getPaletteColorFromCache(song: Song) = colorCache[song]?.paletteColor
-    private fun getImageFromCache(song: Song) = colorCache[song]?.bitmap
-
-    suspend fun getPaletteColor(context: Context, song: Song): Int {
-        val cached = getPaletteColorFromCache(song)
-        return if (cached == null) {
-            val loaded = loadImage(context, song)
-            putColor(song, loaded.bitmap, loaded.paletteColor)
-            loaded.paletteColor
-        } else {
-            cached
-        }
-    }
-
-    suspend fun getImage(context: Context, song: Song): Bitmap {
-        val cached = getImageFromCache(song)
-        return if (cached == null) {
-            val loaded = loadImage(context, song)
-            putColor(song, loaded.bitmap, loaded.paletteColor)
-            loaded.bitmap
-        } else {
-            cached
-        }
-    }
-}
-
 class AlbumCoverPagerAdapter(
     val fragment: Fragment,
     dataSet: List<Song>,
@@ -374,7 +338,7 @@ class AlbumCoverPagerAdapter(
         private var _binding: FragmentAlbumCoverBinding? = null
         val binding get() = _binding!!
 
-        private val viewModel: AlbumCoverViewModel by viewModels({ requireParentFragment() })
+        private val viewModel: PlayerFragmentViewModel by viewModels({ requireParentFragment() })
 
         private lateinit var song: Song
 
@@ -396,7 +360,7 @@ class AlbumCoverPagerAdapter(
             super.onViewCreated(view, savedInstanceState)
             forceSquareAlbumCover(false)
             lifecycleScope.launch {
-                val bitmap = viewModel.getImage(requireContext(), song)
+                val bitmap = viewModel.imageModel.getImage(requireContext(), song)
                 withContext(Dispatchers.Main) {
                     binding.playerImage.setImageBitmap(bitmap)
                 }
