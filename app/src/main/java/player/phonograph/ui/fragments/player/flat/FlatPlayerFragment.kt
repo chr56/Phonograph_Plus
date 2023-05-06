@@ -27,6 +27,7 @@ import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.ui.textColorTransitionAnimator
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.Toolbar
+import androidx.core.animation.doOnEnd
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenResumed
@@ -43,7 +44,6 @@ import android.widget.PopupMenu
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 
 class FlatPlayerFragment :
         AbsPlayerFragment(),
@@ -80,7 +80,6 @@ class FlatPlayerFragment :
             }
         })
         observeState()
-        lastColor = requireContext().getColor(R.color.defaultFooterColor)
     }
 
     private fun observeState() {
@@ -99,11 +98,8 @@ class FlatPlayerFragment :
         }
         observePaletteColor(this) { newColor ->
             impl.animateColorChange(newColor)
-            lastColor = newColor
         }
     }
-
-    var lastColor: Int = 0
 
     override fun onDestroyView() {
         if (viewBinding.playerSlidingLayout != null) {
@@ -199,12 +195,33 @@ class FlatPlayerFragment :
             }
         }
 
-        override fun init() {}
+        protected var lastColor = 0
+        override fun animateColorChange(newColor: Int) {
+            fragment.lifecycleScope.launch(Dispatchers.Main) {
+                fragment.whenResumed {
+                    currentAnimatorSet?.end()
+                    currentAnimatorSet?.cancel()
+                    currentAnimatorSet = generateAnimators(lastColor, newColor).also {
+                        it.start()
+                        it.doOnEnd {
+                            lastColor = newColor
+                        }
+                    }
+                }
+            }
+        }
+
+        abstract fun generateAnimators(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet
+
+        override fun init() {
+            lastColor = fragment.resources.getColor(R.color.defaultFooterColor, null)
+        }
     }
 
     private class PortraitImpl(fragment: FlatPlayerFragment) : BaseImpl(fragment) {
         var currentSongViewHolder: MediaEntryViewHolder? = null
         override fun init() {
+            super.init()
             currentSongViewHolder = MediaEntryViewHolder(
                 fragment.requireView().findViewById(R.id.current_song)
             )
@@ -282,16 +299,8 @@ class FlatPlayerFragment :
             currentSongViewHolder!!.text!!.text = song.infoString()
         }
 
-        override fun animateColorChange(newColor: Int) {
-            fragment.lifecycleScope.launch(Dispatchers.Main) {
-                fragment.whenResumed {
-                    currentAnimatorSet?.end()
-                    currentAnimatorSet = defaultColorChangeAnimatorSet(fragment.lastColor, newColor).also {
-                        it.start()
-                    }
-                }
-            }
-        }
+        override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
+            defaultColorChangeAnimatorSet(oldColor, newColor)
     }
 
     private class LandscapeImpl(fragment: FlatPlayerFragment) : BaseImpl(fragment) {
@@ -307,20 +316,11 @@ class FlatPlayerFragment :
             fragment.viewBinding.playerToolbar.subtitle = song.infoString()
         }
 
-        override fun animateColorChange(newColor: Int) {
-            fragment.lifecycleScope.launch(Dispatchers.Main) {
-                fragment.whenResumed {
-                    currentAnimatorSet?.end()
-                    currentAnimatorSet = defaultColorChangeAnimatorSet(fragment.lastColor, newColor).also {
-                        it.play(
-                            fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(
-                                fragment.lastColor, newColor
-                            )
-                        )
-                        it.start()
-                    }
-                }
+        override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
+            defaultColorChangeAnimatorSet(oldColor, newColor).also {
+                it.play(
+                    fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(oldColor, newColor)
+                )
             }
-        }
     }
 }
