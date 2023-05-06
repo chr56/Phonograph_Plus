@@ -181,7 +181,7 @@ class FlatPlayerFragment :
                     )
                 else null
             return AnimatorSet().apply {
-                duration = PHONOGRAPH_ANIM_TIME
+                duration = PHONOGRAPH_ANIM_TIME / 2
                 play(backgroundAnimator).with(statusBarAnimator).apply {
                     if (lightMode) with(subHeaderAnimator)
                 }

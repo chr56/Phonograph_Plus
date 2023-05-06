@@ -225,7 +225,7 @@ class CardPlayerFragment :
                 else null
             return AnimatorSet()
                 .apply {
-                    duration = PHONOGRAPH_ANIM_TIME
+                    duration = PHONOGRAPH_ANIM_TIME / 2
                     play(backgroundAnimator).apply {
                         if (lightMode) with(subHeaderAnimator)
                     }
