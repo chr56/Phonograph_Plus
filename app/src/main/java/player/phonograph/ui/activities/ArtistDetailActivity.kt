@@ -20,7 +20,6 @@ import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.adapter.legacy.HorizontalAlbumAdapter
 import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.databinding.ActivityArtistDetailBinding
-import player.phonograph.model.PaletteColorHolder
 import lib.phonograph.misc.menuProvider
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Artist
@@ -45,16 +44,13 @@ import android.view.MenuItem
 import android.view.View
 import kotlinx.coroutines.launch
 
-class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder {
+class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
 
     private lateinit var viewBinding: ActivityArtistDetailBinding
     private lateinit var model: ArtistDetailActivityViewModel
 
     private lateinit var albumAdapter: HorizontalAlbumAdapter
     private lateinit var songAdapter: SongDisplayAdapter
-
-    override val paletteColor: Int
-        get() = model.paletteColor.value
 
     private var usePalette = Setting.instance.albumArtistColoredFooters
         set(value) {
