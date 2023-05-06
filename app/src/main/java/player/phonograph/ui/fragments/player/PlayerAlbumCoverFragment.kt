@@ -211,7 +211,6 @@ class PlayerAlbumCoverFragment :
         val adapter = albumCoverPagerAdapter
         if (adapter != null) {
             lifecycleScope.launch(Dispatchers.Default) {
-                playerViewModel.updatePaletteColor(resources.getColor(R.color.defaultFooterColor, null))
                 val song = adapter.dataSet.getOrElse(position) { return@launch }
                 val color = viewModel.getPaletteColor(requireContext(), song)
                 playerViewModel.updatePaletteColor(color)
