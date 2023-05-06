@@ -51,16 +51,6 @@ class PlayerFragmentViewModel : ViewModel() {
         }
     }
 
-    private val _paletteColor: MutableStateFlow<Int> = MutableStateFlow(0)
-    val paletteColor get() = _paletteColor.asStateFlow()
-
-    fun updatePaletteColor(@ColorInt newColor: Int) {
-        viewModelScope.launch {
-            _paletteColor.emit(newColor)
-        }
-    }
-
-
     private val _lyrics: MutableStateFlow<LrcLyrics?> = MutableStateFlow(null)
     val lyrics get() = _lyrics.asStateFlow()
 
@@ -86,47 +76,49 @@ class PlayerFragmentViewModel : ViewModel() {
         )
     }
 
-    val imageModel = ImageModel()
 
-    fun refreshPaletteColor(context: Context, song: Song = currentSong.value) {
+    //region Image & PaletteColor
+
+    private val _paletteColor: MutableStateFlow<Int> = MutableStateFlow(0)
+    val paletteColor get() = _paletteColor.asStateFlow()
+
+    fun refreshPaletteColor(context: Context, song: Song?) {
         viewModelScope.launch {
-            val color = imageModel.getPaletteColor(context, song)
-            updatePaletteColor(color)
+            val color = fetchPaletteColor(context, song = song ?: currentSong.value)
+            _paletteColor.emit(color)
         }
     }
 
-    class ImageModel {
+    private val imageCache: LruCache<Song, PaletteBitmap> = LruCache(6)
 
-        private val colorCache: LruCache<Song, PaletteBitmap> = LruCache(6)
+    private fun putCache(song: Song, bitmap: Bitmap, color: Int) {
+        imageCache.put(song, PaletteBitmap(bitmap, color))
+    }
 
-        private fun putColor(song: Song, bitmap: Bitmap, color: Int) {
-            colorCache.put(song, PaletteBitmap(bitmap, color))
-        }
+    private fun getPaletteColorFromCache(song: Song) = imageCache[song]?.paletteColor
+    private fun getImageFromCache(song: Song) = imageCache[song]?.bitmap
 
-        private fun getPaletteColorFromCache(song: Song) = colorCache[song]?.paletteColor
-        private fun getImageFromCache(song: Song) = colorCache[song]?.bitmap
-
-        suspend fun getPaletteColor(context: Context, song: Song): Int {
-            val cached = getPaletteColorFromCache(song)
-            return if (cached == null) {
-                val loaded = loadImage(context, song)
-                putColor(song, loaded.bitmap, loaded.paletteColor)
-                loaded.paletteColor
-            } else {
-                cached
-            }
-        }
-
-        suspend fun getImage(context: Context, song: Song): Bitmap {
-            val cached = getImageFromCache(song)
-            return if (cached == null) {
-                val loaded = loadImage(context, song)
-                putColor(song, loaded.bitmap, loaded.paletteColor)
-                loaded.bitmap
-            } else {
-                cached
-            }
+    private suspend fun fetchPaletteColor(context: Context, song: Song): Int {
+        val cached = getPaletteColorFromCache(song)
+        return if (cached == null) {
+            val loaded = loadImage(context, song)
+            putCache(song, loaded.bitmap, loaded.paletteColor)
+            loaded.paletteColor
+        } else {
+            cached
         }
     }
+
+    suspend fun fetchBitmap(context: Context, song: Song): Bitmap {
+        val cached = getImageFromCache(song)
+        return if (cached == null) {
+            val loaded = loadImage(context, song)
+            putCache(song, loaded.bitmap, loaded.paletteColor)
+            loaded.bitmap
+        } else {
+            cached
+        }
+    }
+    //endregion
 
 }

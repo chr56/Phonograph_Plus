@@ -198,20 +198,20 @@ class PlayerAlbumCoverFragment :
         }
     }
 
-    private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
-        override fun onPageSelected(position: Int) {
-            if (position != MusicPlayerRemote.position) {
-                MusicPlayerRemote.playSongAt(position)
+    private fun refreshPaletteColor(position: Int) {
+        val adapter = albumCoverPagerAdapter
+        lifecycleScope.launch(Dispatchers.Default) {
+            if (adapter!=null) {
+                val song = adapter.dataSet.getOrNull(position) ?: return@launch
+                playerViewModel.refreshPaletteColor(requireContext(), song)
             }
         }
     }
 
-    private fun refreshPaletteColor(position: Int) {
-        val adapter = albumCoverPagerAdapter
-        if (adapter != null) {
-            lifecycleScope.launch(Dispatchers.Default) {
-                val song = adapter.dataSet.getOrElse(position) { return@launch }
-                playerViewModel.refreshPaletteColor(requireContext(), song)
+    private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            if (position != MusicPlayerRemote.position) {
+                MusicPlayerRemote.playSongAt(position)
             }
         }
     }
@@ -360,7 +360,7 @@ class AlbumCoverPagerAdapter(
             super.onViewCreated(view, savedInstanceState)
             forceSquareAlbumCover(false)
             lifecycleScope.launch {
-                val bitmap = viewModel.imageModel.getImage(requireContext(), song)
+                val bitmap = viewModel.fetchBitmap(requireContext(), song)
                 withContext(Dispatchers.Main) {
                     binding.playerImage.setImageBitmap(bitmap)
                 }
