@@ -105,11 +105,6 @@ class CardPlayerFragment :
         observe(CurrentQueueState.currentSong, lifecycle = lifecycle) { song ->
             impl.updateCurrentSong(song)
         }
-        observe(viewModel.paletteColor) { newColor ->
-            whenResumed {
-                impl.animateColorChange(newColor)
-            }
-        }
     }
 
     override fun onDestroyView() {
@@ -242,16 +237,14 @@ class CardPlayerFragment :
         }
 
         protected var lastColor = 0
-        override fun animateColorChange(newColor: Int) {
-            fragment.lifecycleScope.launch(Dispatchers.Main) {
-                fragment.whenResumed {
-                    currentAnimatorSet?.end()
-                    currentAnimatorSet?.cancel()
-                    currentAnimatorSet = generateAnimators(lastColor, newColor).also {
-                        it.start()
-                        it.doOnEnd {
-                            lastColor = newColor
-                        }
+        override suspend fun requestAnimateColorChanging(newColor: Int) {
+            fragment.whenResumed {
+                currentAnimatorSet?.end()
+                currentAnimatorSet?.cancel()
+                currentAnimatorSet = generateAnimators(lastColor, newColor).also {
+                    it.start()
+                    it.doOnEnd {
+                        lastColor = newColor
                     }
                 }
             }

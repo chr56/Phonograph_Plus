@@ -96,9 +96,6 @@ class FlatPlayerFragment :
         observe(CurrentQueueState.currentSong, lifecycle = lifecycle) { song ->
             impl.updateCurrentSong(song)
         }
-        observePaletteColor(this) { newColor ->
-            impl.animateColorChange(newColor)
-        }
     }
 
     override fun onDestroyView() {
@@ -196,16 +193,14 @@ class FlatPlayerFragment :
         }
 
         protected var lastColor = 0
-        override fun animateColorChange(newColor: Int) {
-            fragment.lifecycleScope.launch(Dispatchers.Main) {
-                fragment.whenResumed {
-                    currentAnimatorSet?.end()
-                    currentAnimatorSet?.cancel()
-                    currentAnimatorSet = generateAnimators(lastColor, newColor).also {
-                        it.start()
-                        it.doOnEnd {
-                            lastColor = newColor
-                        }
+        override suspend fun requestAnimateColorChanging(newColor: Int) {
+            fragment.whenResumed {
+                currentAnimatorSet?.end()
+                currentAnimatorSet?.cancel()
+                currentAnimatorSet = generateAnimators(lastColor, newColor).also {
+                    it.start()
+                    it.doOnEnd {
+                        lastColor = newColor
                     }
                 }
             }

@@ -36,6 +36,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.whenResumed
 import androidx.lifecycle.whenStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -288,7 +289,7 @@ abstract class AbsPlayerFragment :
         fun init()
         fun updateCurrentSong(song: Song)
         fun setUpPanelAndAlbumCoverHeight()
-        fun animateColorChange(newColor: Int)
+        suspend fun requestAnimateColorChanging(newColor: Int)
     }
 
     private fun observeState() {
@@ -348,7 +349,10 @@ abstract class AbsPlayerFragment :
             }
         }
         observe(viewModel.paletteColor) { newColor ->
-            playbackControlsFragment.modifyColor(newColor)
+            whenResumed {
+                playbackControlsFragment.modifyColor(newColor)
+                impl.requestAnimateColorChanging(newColor)
+            }
         }
     }
 
