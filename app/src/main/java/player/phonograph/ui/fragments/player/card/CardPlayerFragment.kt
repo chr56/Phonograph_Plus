@@ -321,10 +321,7 @@ class CardPlayerFragment :
         override fun animateColorChange(newColor: Int) {
             fragment.lifecycleScope.launch(Dispatchers.Main) {
                 fragment.whenResumed {
-                    val current = currentAnimatorSet
-                    if (current != null) {
-                        while (current.isRunning) yield()
-                    }
+                    currentAnimatorSet?.end()
                     currentAnimatorSet = defaultColorChangeAnimatorSet(newColor)
                     currentAnimatorSet?.start()
                 }
@@ -352,10 +349,7 @@ class CardPlayerFragment :
         override fun animateColorChange(newColor: Int) {
             fragment.lifecycleScope.launch(Dispatchers.Main) {
                 fragment.whenResumed {
-                    val current = currentAnimatorSet
-                    if (current != null) {
-                        while (current.isRunning) yield()
-                    }
+                    currentAnimatorSet?.end()
                     currentAnimatorSet = defaultColorChangeAnimatorSet(newColor).also {
                         it.play(
                             fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(

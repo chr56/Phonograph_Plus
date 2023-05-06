@@ -285,7 +285,7 @@ class FlatPlayerFragment :
         override fun animateColorChange(newColor: Int) {
             fragment.lifecycleScope.launch(Dispatchers.Main) {
                 fragment.whenResumed {
-                    currentAnimatorSet?.cancel()
+                    currentAnimatorSet?.end()
                     currentAnimatorSet = defaultColorChangeAnimatorSet(fragment.lastColor, newColor).also {
                         it.start()
                     }
@@ -310,10 +310,7 @@ class FlatPlayerFragment :
         override fun animateColorChange(newColor: Int) {
             fragment.lifecycleScope.launch(Dispatchers.Main) {
                 fragment.whenResumed {
-                    val current = currentAnimatorSet
-                    if (current != null) {
-                        while (current.isRunning) yield()
-                    }
+                    currentAnimatorSet?.end()
                     currentAnimatorSet = defaultColorChangeAnimatorSet(fragment.lastColor, newColor).also {
                         it.play(
                             fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(
