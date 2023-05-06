@@ -25,6 +25,7 @@ import androidx.core.graphics.BlendModeCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.whenResumed
 import android.content.Context
 import android.graphics.PorterDuff.Mode.SRC_IN
 import android.os.Bundle
@@ -166,8 +167,7 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
 
     fun modifyColor(backgroundColor: Int) {
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                require(context != null) { "ControllerFragment is not available now!" }
+            whenResumed {
                 calculateColor(requireContext(), backgroundColor)
                 updateAll()
             }
