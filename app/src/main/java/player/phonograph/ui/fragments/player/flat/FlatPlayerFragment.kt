@@ -27,10 +27,7 @@ import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.ui.textColorTransitionAnimator
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.Toolbar
-import androidx.core.animation.doOnEnd
 import androidx.fragment.app.FragmentContainerView
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenResumed
 import androidx.lifecycle.whenStarted
 import android.animation.AnimatorSet
 import android.graphics.PorterDuff
@@ -42,7 +39,6 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.PopupMenu
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class FlatPlayerFragment :
@@ -169,8 +165,11 @@ class FlatPlayerFragment :
         layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
     }
 
+    override fun generatePaletteColorAnimators(oldColor: Int, newColor: Int): AnimatorSet =
+        impl.generateAnimators(oldColor, newColor)
+
     private abstract class BaseImpl(protected var fragment: FlatPlayerFragment) : Impl {
-        protected var currentAnimatorSet: AnimatorSet? = null
+
         fun defaultColorChangeAnimatorSet(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet {
             val lightMode = App.instance.nightMode
             val backgroundAnimator =
@@ -192,25 +191,7 @@ class FlatPlayerFragment :
             }
         }
 
-        protected var lastColor = 0
-        override suspend fun requestAnimateColorChanging(newColor: Int) {
-            fragment.whenResumed {
-                currentAnimatorSet?.end()
-                currentAnimatorSet?.cancel()
-                currentAnimatorSet = generateAnimators(lastColor, newColor).also {
-                    it.start()
-                    it.doOnEnd {
-                        lastColor = newColor
-                    }
-                }
-            }
-        }
-
-        abstract fun generateAnimators(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet
-
-        override fun init() {
-            lastColor = fragment.resources.getColor(R.color.defaultFooterColor, null)
-        }
+        override fun init() {}
     }
 
     private class PortraitImpl(fragment: FlatPlayerFragment) : BaseImpl(fragment) {

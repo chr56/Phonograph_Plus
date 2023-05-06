@@ -30,6 +30,7 @@ import player.phonograph.util.warning
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.animation.doOnEnd
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -40,6 +41,7 @@ import androidx.lifecycle.whenResumed
 import androidx.lifecycle.whenStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.animation.AnimatorSet
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
@@ -77,6 +79,7 @@ abstract class AbsPlayerFragment :
         setUpControllerFragment()
 
         observeState()
+        lastPaletteColor = resources.getColor(R.color.defaultFooterColor, null)
     }
 
     private fun initRecyclerView() {
@@ -289,8 +292,25 @@ abstract class AbsPlayerFragment :
         fun init()
         fun updateCurrentSong(song: Song)
         fun setUpPanelAndAlbumCoverHeight()
-        suspend fun requestAnimateColorChanging(newColor: Int)
+        fun generateAnimators(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet
     }
+
+    protected var lastPaletteColor = 0
+    protected var currentAnimatorSet: AnimatorSet? = null
+    protected suspend fun requestAnimateColorChanging(newColor: Int) {
+        whenResumed {
+            currentAnimatorSet?.end()
+            currentAnimatorSet?.cancel()
+            currentAnimatorSet = generatePaletteColorAnimators(lastPaletteColor, newColor).also {
+                it.start()
+                it.doOnEnd {
+                    lastPaletteColor = newColor
+                }
+            }
+        }
+    }
+
+    abstract fun generatePaletteColorAnimators(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet
 
     private fun observeState() {
         observe(CurrentQueueState.queue) { queue ->
@@ -351,7 +371,7 @@ abstract class AbsPlayerFragment :
         observe(viewModel.paletteColor) { newColor ->
             whenResumed {
                 playbackControlsFragment.modifyColor(newColor)
-                impl.requestAnimateColorChanging(newColor)
+                requestAnimateColorChanging(newColor)
             }
         }
     }
