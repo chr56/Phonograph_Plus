@@ -25,6 +25,7 @@ import player.phonograph.util.ui.backgroundColorTransitionAnimator
 import player.phonograph.util.ui.convertDpToPixel
 import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.ui.textColorTransitionAnimator
+import androidx.annotation.ColorInt
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.lifecycleScope
@@ -79,6 +80,7 @@ class FlatPlayerFragment :
             }
         })
         observeState()
+        lastColor = requireContext().getColor(R.color.defaultFooterColor)
     }
 
     private fun observeState() {
@@ -97,8 +99,11 @@ class FlatPlayerFragment :
         }
         observePaletteColor(this) { newColor ->
             impl.animateColorChange(newColor)
+            lastColor = newColor
         }
     }
+
+    var lastColor: Int = 0
 
     override fun onDestroyView() {
         if (viewBinding.playerSlidingLayout != null) {
@@ -173,19 +178,17 @@ class FlatPlayerFragment :
 
     private abstract class BaseImpl(protected var fragment: FlatPlayerFragment) : Impl {
         protected var currentAnimatorSet: AnimatorSet? = null
-        fun defaultColorChangeAnimatorSet(newColor: Int): AnimatorSet {
+        fun defaultColorChangeAnimatorSet(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet {
             val lightMode = App.instance.nightMode
             val backgroundAnimator =
-                fragment.playbackControlsFragment.requireView()
-                    .backgroundColorTransitionAnimator(fragment.paletteColor, newColor)
+                fragment.playbackControlsFragment.requireView().backgroundColorTransitionAnimator(oldColor, newColor)
             val statusBarAnimator =
-                fragment.viewBinding.playerStatusBar
-                    .backgroundColorTransitionAnimator(fragment.paletteColor, newColor)
+                fragment.viewBinding.playerStatusBar.backgroundColorTransitionAnimator(oldColor, newColor)
             // darken the text color
             val subHeaderAnimator =
                 if (lightMode)
                     fragment.viewBinding.playerQueueSubHeader.textColorTransitionAnimator(
-                        requireDarkenColor(fragment.paletteColor), requireDarkenColor(newColor)
+                        requireDarkenColor(oldColor), requireDarkenColor(newColor)
                     )
                 else null
             return AnimatorSet().apply {
@@ -282,12 +285,10 @@ class FlatPlayerFragment :
         override fun animateColorChange(newColor: Int) {
             fragment.lifecycleScope.launch(Dispatchers.Main) {
                 fragment.whenResumed {
-                    val current = currentAnimatorSet
-                    if (current != null) {
-                        while (current.isRunning) yield()
+                    currentAnimatorSet?.cancel()
+                    currentAnimatorSet = defaultColorChangeAnimatorSet(fragment.lastColor, newColor).also {
+                        it.start()
                     }
-                    currentAnimatorSet = defaultColorChangeAnimatorSet(newColor)
-                    currentAnimatorSet?.start()
                 }
             }
         }
@@ -313,10 +314,10 @@ class FlatPlayerFragment :
                     if (current != null) {
                         while (current.isRunning) yield()
                     }
-                    currentAnimatorSet = defaultColorChangeAnimatorSet(newColor).also {
+                    currentAnimatorSet = defaultColorChangeAnimatorSet(fragment.lastColor, newColor).also {
                         it.play(
                             fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(
-                                fragment.paletteColor, newColor
+                                fragment.lastColor, newColor
                             )
                         )
                         it.start()
