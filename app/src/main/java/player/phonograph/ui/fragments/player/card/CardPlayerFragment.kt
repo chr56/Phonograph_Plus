@@ -25,7 +25,9 @@ import player.phonograph.util.ui.backgroundColorTransitionAnimator
 import player.phonograph.util.ui.convertDpToPixel
 import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.ui.textColorTransitionAnimator
+import androidx.annotation.ColorInt
 import androidx.appcompat.widget.Toolbar
+import androidx.core.animation.doOnEnd
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenResumed
@@ -48,7 +50,6 @@ import kotlin.math.max
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 
 class CardPlayerFragment :
         AbsPlayerFragment(),
@@ -195,7 +196,7 @@ class CardPlayerFragment :
     private abstract class BaseImpl(protected var fragment: CardPlayerFragment) : Impl {
         protected var currentAnimatorSet: AnimatorSet? = null
         @SuppressLint("ObsoleteSdkInt")
-        fun defaultColorChangeAnimatorSet(newColor: Int): AnimatorSet {
+        fun defaultColorChangeAnimatorSet(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet {
             val lightMode = App.instance.nightMode
             val controllerFragment =
                 (fragment.playbackControlsFragment as CardPlayerControllerFragment)
@@ -221,14 +222,14 @@ class CardPlayerFragment :
                     )
                 } else {
                     fragment.viewBinding.colorBackground.backgroundColorTransitionAnimator(
-                        fragment.paletteColor, newColor
+                        oldColor, newColor
                     )
                 }
             // darken the text color
             val subHeaderAnimator =
                 if (lightMode)
                     fragment.viewBinding.playerQueueSubHeader.textColorTransitionAnimator(
-                        requireDarkenColor(fragment.paletteColor), requireDarkenColor(newColor)
+                        requireDarkenColor(oldColor), requireDarkenColor(newColor)
                     )
                 else null
             return AnimatorSet()
@@ -240,12 +241,33 @@ class CardPlayerFragment :
                 }
         }
 
-        override fun init() {}
+        protected var lastColor = 0
+        override fun animateColorChange(newColor: Int) {
+            fragment.lifecycleScope.launch(Dispatchers.Main) {
+                fragment.whenResumed {
+                    currentAnimatorSet?.end()
+                    currentAnimatorSet?.cancel()
+                    currentAnimatorSet = generateAnimators(lastColor, newColor).also {
+                        it.start()
+                        it.doOnEnd {
+                            lastColor = newColor
+                        }
+                    }
+                }
+            }
+        }
+
+        abstract fun generateAnimators(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet
+
+        override fun init() {
+            lastColor = fragment.resources.getColor(R.color.defaultFooterColor, null)
+        }
     }
 
     private class PortraitImpl(fragment: CardPlayerFragment) : BaseImpl(fragment) {
         var currentSongViewHolder: MediaEntryViewHolder? = null
         override fun init() {
+            super.init()
             currentSongViewHolder = MediaEntryViewHolder(
                 fragment.requireView().findViewById(R.id.current_song)
             )
@@ -318,15 +340,9 @@ class CardPlayerFragment :
             currentSongViewHolder!!.text!!.text = song.infoString()
         }
 
-        override fun animateColorChange(newColor: Int) {
-            fragment.lifecycleScope.launch(Dispatchers.Main) {
-                fragment.whenResumed {
-                    currentAnimatorSet?.end()
-                    currentAnimatorSet = defaultColorChangeAnimatorSet(newColor)
-                    currentAnimatorSet?.start()
-                }
-            }
-        }
+        override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
+            defaultColorChangeAnimatorSet(oldColor, newColor)
+
     }
 
     private class LandscapeImpl(fragment: CardPlayerFragment) : BaseImpl(fragment) {
@@ -346,25 +362,15 @@ class CardPlayerFragment :
             fragment.viewBinding.playerToolbar.subtitle = song.infoString()
         }
 
-        override fun animateColorChange(newColor: Int) {
-            fragment.lifecycleScope.launch(Dispatchers.Main) {
-                fragment.whenResumed {
-                    currentAnimatorSet?.end()
-                    currentAnimatorSet = defaultColorChangeAnimatorSet(newColor).also {
-                        it.play(
-                            fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(
-                                fragment.paletteColor, newColor
-                            )
-                        ).with(
-                            fragment.requireView().findViewById<View>(R.id.status_bar)
-                                .backgroundColorTransitionAnimator(
-                                    darkenColor(fragment.paletteColor),
-                                    darkenColor(newColor)
-                                )
-                        )
-                        it.start()
-                    }
-                }
+
+        override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet {
+            return defaultColorChangeAnimatorSet(oldColor, newColor).also {
+                it.play(
+                    fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(oldColor, newColor)
+                ).with(
+                    fragment.requireView().findViewById<View>(R.id.status_bar)
+                        .backgroundColorTransitionAnimator(darkenColor(oldColor), darkenColor(newColor))
+                )
             }
         }
     }
