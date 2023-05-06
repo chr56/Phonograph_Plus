@@ -302,10 +302,10 @@ abstract class AbsPlayerFragment :
             currentAnimatorSet?.end()
             currentAnimatorSet?.cancel()
             currentAnimatorSet = generatePaletteColorAnimators(lastPaletteColor, newColor).also {
-                it.start()
                 it.doOnEnd {
                     lastPaletteColor = newColor
                 }
+                it.start()
             }
         }
     }
@@ -323,6 +323,7 @@ abstract class AbsPlayerFragment :
         observe(CurrentQueueState.currentSong) {
             viewModel.updateCurrentSong(MusicPlayerRemote.currentSong, context)
             lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
+            whenStarted{ impl.updateCurrentSong(it) }
         }
         observe(CurrentQueueState.shuffleMode) {
             updateAdapter()

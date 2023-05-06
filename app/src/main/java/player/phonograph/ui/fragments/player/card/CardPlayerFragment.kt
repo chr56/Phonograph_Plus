@@ -98,9 +98,6 @@ class CardPlayerFragment :
                 }
             }
         }
-        observe(CurrentQueueState.currentSong, lifecycle = lifecycle) { song ->
-            impl.updateCurrentSong(song)
-        }
     }
 
     override fun onDestroyView() {
