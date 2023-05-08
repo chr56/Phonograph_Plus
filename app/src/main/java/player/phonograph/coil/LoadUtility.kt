@@ -13,8 +13,55 @@ import coil.request.ImageRequest
 import coil.size.Dimension
 import coil.size.Size
 import coil.target.Target
+import player.phonograph.R
+import player.phonograph.coil.target.PaletteBitmap
+import player.phonograph.coil.target.PaletteTargetBuilder
+import player.phonograph.model.Song
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.toBitmap
+import android.graphics.drawable.BitmapDrawable
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withTimeout
+
+@OptIn(ExperimentalCoroutinesApi::class)
+suspend fun loadImage(context: Context, song: Song): PaletteBitmap = try {
+    withTimeout(2000) {
+        suspendCancellableCoroutine { continuation ->
+            loadImage(context, song) { _, drawable, color ->
+                require(drawable is BitmapDrawable)
+                continuation.resume(PaletteBitmap(drawable.bitmap, color)) { cancel() }
+            }
+        }
+    }
+} catch (e: TimeoutCancellationException) {
+    PaletteBitmap(
+        AppCompatResources.getDrawable(context, R.drawable.default_album_art)!!.toBitmap(),
+        context.getColor(R.color.defaultFooterColor)
+    )
+}
+
+
+fun loadImage(
+    context: Context,
+    song: Song,
+    colorCallback: (Song, Drawable, Int) -> Unit,
+) {
+    loadImage(context)
+        .from(song)
+        .into(
+            PaletteTargetBuilder(context)
+                .onResourceReady { result, palette ->
+                    colorCallback(song, result, palette)
+                }
+                .build()
+        )
+        .enqueue()
+}
 
 inline fun loadImage(context: Context, cfg: ImageRequest.Builder.() -> Unit) {
     Coil.imageLoader(context).enqueue(

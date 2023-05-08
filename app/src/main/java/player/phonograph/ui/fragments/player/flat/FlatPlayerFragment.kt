@@ -14,21 +14,21 @@ import player.phonograph.databinding.FragmentFlatPlayerBinding
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
-import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
-import player.phonograph.util.ui.backgroundColorTransitionAnimator
-import player.phonograph.util.ui.textColorTransitionAnimator
-import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.theme.isWindowBackgroundDarkSafe
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.requireDarkenColor
+import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
+import player.phonograph.util.ui.backgroundColorTransitionAnimator
 import player.phonograph.util.ui.convertDpToPixel
+import player.phonograph.util.ui.isLandscape
+import player.phonograph.util.ui.textColorTransitionAnimator
+import androidx.annotation.ColorInt
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenResumed
+import androidx.lifecycle.whenStarted
 import android.animation.AnimatorSet
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -38,7 +38,8 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.PopupMenu
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class FlatPlayerFragment :
         AbsPlayerFragment(),
@@ -74,6 +75,20 @@ class FlatPlayerFragment :
                 impl.setUpPanelAndAlbumCoverHeight()
             }
         })
+        observeState()
+    }
+
+    private fun observeState() {
+        observe(CurrentQueueState.position) {
+            whenStarted {
+                viewBinding.playerQueueSubHeader.text = viewModel.upNextAndQueueTime(resources)
+                if (viewBinding.playerSlidingLayout == null ||
+                    viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED
+                ) {
+                    resetToCurrentPosition()
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -88,21 +103,18 @@ class FlatPlayerFragment :
     }
 
 
-    override fun updateQueue() {
-        super.updateQueue()
-        viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
-        if (viewBinding.playerSlidingLayout == null || viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED) {
-            resetToCurrentPosition()
+    override suspend fun updateAdapter() {
+        super.updateAdapter()
+        lifecycle.whenStarted {
+            withContext(Dispatchers.Main) {
+                viewBinding.playerQueueSubHeader.text = viewModel.upNextAndQueueTime(resources)
+                if (viewBinding.playerSlidingLayout == null || viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED) {
+                    resetToCurrentPosition()
+                }
+            }
         }
     }
 
-    override fun updateQueuePosition() {
-        super.updateQueuePosition()
-        viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
-        if (viewBinding.playerSlidingLayout == null || viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED) {
-            resetToCurrentPosition()
-        }
-    }
 
     override fun setUpControllerFragment() {
         playbackControlsFragment = childFragmentManager.findFragmentById(
@@ -130,10 +142,6 @@ class FlatPlayerFragment :
         return wasExpanded
     }
 
-    override fun onToolbarToggled() {
-        toggleToolbar(viewBinding.toolbarContainer)
-    }
-
     override fun onPanelSlide(view: View, slide: Float) {}
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
         when (newState) {
@@ -154,55 +162,39 @@ class FlatPlayerFragment :
         layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
     }
 
+    override fun generatePaletteColorAnimators(oldColor: Int, newColor: Int): AnimatorSet =
+        impl.generateAnimators(oldColor, newColor)
+
     private abstract class BaseImpl(protected var fragment: FlatPlayerFragment) : Impl {
-        protected var currentAnimatorSet: AnimatorSet? = null
-        fun defaultColorChangeAnimatorSet(newColor: Int): AnimatorSet {
+
+        fun defaultColorChangeAnimatorSet(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet {
             val lightMode = App.instance.nightMode
             val backgroundAnimator =
-                fragment.playbackControlsFragment.requireView()
-                    .backgroundColorTransitionAnimator(fragment.paletteColor, newColor)
+                fragment.playbackControlsFragment.requireView().backgroundColorTransitionAnimator(oldColor, newColor)
             val statusBarAnimator =
-                fragment.viewBinding.playerStatusBar
-                    .backgroundColorTransitionAnimator(fragment.paletteColor, newColor)
+                fragment.viewBinding.playerStatusBar.backgroundColorTransitionAnimator(oldColor, newColor)
             // darken the text color
             val subHeaderAnimator =
                 if (lightMode)
                     fragment.viewBinding.playerQueueSubHeader.textColorTransitionAnimator(
-                        requireDarkenColor(fragment.paletteColor), requireDarkenColor(newColor)
+                        requireDarkenColor(oldColor), requireDarkenColor(newColor)
                     )
                 else null
             return AnimatorSet().apply {
-                duration = PHONOGRAPH_ANIM_TIME
+                duration = PHONOGRAPH_ANIM_TIME / 2
                 play(backgroundAnimator).with(statusBarAnimator).apply {
                     if (lightMode) with(subHeaderAnimator)
                 }
             }
         }
 
-        override fun init() {
-            with(fragment) {
-                lifecycleScope.launch {
-                    viewModel.currentSong.collect {
-                        lifecycle.whenResumed {
-                            updateCurrentSong(it)
-                        }
-                    }
-                }
-                lifecycleScope.launch {
-                    fragment.observePaletteColor(fragment) { newColor ->
-                        animateColorChange(newColor)
-                    }
-                }
-            }
-        }
-
-        abstract fun updateCurrentSong(song: Song)
-        abstract fun animateColorChange(newColor: Int)
+        override fun init() {}
     }
 
     private class PortraitImpl(fragment: FlatPlayerFragment) : BaseImpl(fragment) {
         var currentSongViewHolder: MediaEntryViewHolder? = null
         override fun init() {
+            super.init()
             currentSongViewHolder = MediaEntryViewHolder(
                 fragment.requireView().findViewById(R.id.current_song)
             )
@@ -280,13 +272,8 @@ class FlatPlayerFragment :
             currentSongViewHolder!!.text!!.text = song.infoString()
         }
 
-        override fun animateColorChange(newColor: Int) {
-            val showed = fragment.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-            if (!showed) return
-            currentAnimatorSet?.cancel()
-            currentAnimatorSet = defaultColorChangeAnimatorSet(newColor)
-            if (fragment.view != null) currentAnimatorSet?.start()
-        }
+        override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
+            defaultColorChangeAnimatorSet(oldColor, newColor)
     }
 
     private class LandscapeImpl(fragment: FlatPlayerFragment) : BaseImpl(fragment) {
@@ -302,18 +289,11 @@ class FlatPlayerFragment :
             fragment.viewBinding.playerToolbar.subtitle = song.infoString()
         }
 
-        override fun animateColorChange(newColor: Int) {
-            val showed = fragment.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-            if (!showed) return
-            currentAnimatorSet?.cancel()
-            currentAnimatorSet = defaultColorChangeAnimatorSet(newColor).also {
+        override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
+            defaultColorChangeAnimatorSet(oldColor, newColor).also {
                 it.play(
-                    fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(
-                        fragment.paletteColor, newColor
-                    )
+                    fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(oldColor, newColor)
                 )
-                it.start()
             }
-        }
     }
 }

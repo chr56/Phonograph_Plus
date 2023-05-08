@@ -6,19 +6,17 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropM
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenDocumentContract
-import mt.pref.primaryColor
 import mt.tint.viewtint.setMenuColor
 import mt.util.color.toolbarIconColor
 import player.phonograph.R
 import player.phonograph.adapter.display.PlayingQueueAdapter
 import player.phonograph.mechanism.Favorite.toggleFavorite
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.model.PaletteColorHolder
-import player.phonograph.model.buildInfoString
-import player.phonograph.model.getReadableDurationString
+import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.dialogs.CreatePlaylistDialog
 import player.phonograph.ui.dialogs.LyricsDialog
 import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
@@ -32,28 +30,32 @@ import player.phonograph.util.warning
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.animation.doOnEnd
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.whenResumed
+import androidx.lifecycle.whenStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.animation.AnimatorSet
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.MenuItem
 import android.view.View
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 abstract class AbsPlayerFragment :
-        AbsMusicServiceFragment(), PaletteColorHolder, PlayerAlbumCoverFragment.Callbacks {
+        AbsMusicServiceFragment()/* , PaletteColorHolder */ {
 
-    protected lateinit var playerAlbumCoverFragment: PlayerAlbumCoverFragment
     protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment
     protected val viewModel: PlayerFragmentViewModel by viewModels()
     protected val lyricsViewModel: LyricsViewModel by viewModels()
@@ -75,13 +77,9 @@ abstract class AbsPlayerFragment :
         initRecyclerView()
         initToolbar()
         setUpControllerFragment()
-        setUpCoverFragment()
-        setupPaletteColorObserver()
-
-        addFavoriteSateObserver()
-        addLyricsObserver()
 
         observeState()
+        lastPaletteColor = resources.getColor(R.color.defaultFooterColor, null)
     }
 
     private fun initRecyclerView() {
@@ -100,12 +98,6 @@ abstract class AbsPlayerFragment :
 
     abstract fun setUpControllerFragment()
 
-    private fun setUpCoverFragment() {
-        playerAlbumCoverFragment =
-            (childFragmentManager.findFragmentById(R.id.player_album_cover_fragment) as PlayerAlbumCoverFragment)
-        playerAlbumCoverFragment.setCallbacks(this)
-    }
-
     override fun onDestroyView() {
         favoriteMenuItem = null
         lyricsMenuItem = null
@@ -117,24 +109,6 @@ abstract class AbsPlayerFragment :
         _wrappedAdapter?.let {
             WrapperAdapterUtils.releaseAll(wrappedAdapter)
             _wrappedAdapter = null
-        }
-    }
-
-    private fun addLyricsObserver() {
-        lifecycleScope.launch(viewModel.exceptionHandler) {
-            lyricsViewModel.lyricsInfo.collect { lyricsList ->
-                withContext(Dispatchers.Main) {
-                    val activated = lyricsList.activatedLyrics
-                    if (lyricsList.isNotEmpty() && activated is LrcLyrics) {
-                        playerAlbumCoverFragment.setLyrics(activated)
-                        MusicPlayerRemote.musicService?.replaceLyrics(activated)
-                    } else {
-                        playerAlbumCoverFragment.clearLyrics()
-                        MusicPlayerRemote.musicService?.replaceLyrics(null)
-                    }
-                    lyricsMenuItem?.isVisible = lyricsList.isNotEmpty()
-                }
-            }
         }
     }
 
@@ -178,11 +152,7 @@ abstract class AbsPlayerFragment :
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 itemId = R.id.action_toggle_favorite
                 onClick {
-                    val result = toggleFavorite(requireContext(), viewModel.currentSong.value)
-                    if (viewModel.currentSong.value.id == MusicPlayerRemote.currentSong.id && result) {
-                        playerAlbumCoverFragment.showHeartAnimation()
-                        viewModel.updateFavoriteState(viewModel.currentSong.value, context)
-                    }
+                    toggleFavorite(requireContext(), viewModel.currentSong.value)
                     true
                 }
             }.apply {
@@ -263,97 +233,25 @@ abstract class AbsPlayerFragment :
 
     abstract fun getImplToolbar(): Toolbar
 
-    private var isToolbarShown: Boolean = true
-
-    protected fun toggleToolbar(toolbar: View?) {
-        if (isToolbarShown) {
-            hideToolbar(toolbar)
-        } else {
-            showToolbar(toolbar)
-        }
-    }
-
     private fun showToolbar(toolbar: View?) {
         if (toolbar == null) return
-        isToolbarShown = true
         toolbar.visibility = View.VISIBLE
         toolbar.animate().alpha(1f).duration = VISIBILITY_ANIM_DURATION
     }
 
     private fun hideToolbar(toolbar: View?) {
         if (toolbar == null) return
-        isToolbarShown = false
         toolbar.animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION)
             .withEndAction { toolbar.visibility = View.GONE }
     }
 
     abstract fun getToolBarContainer(): View?
-    protected fun checkToggleToolbar() {
-        val toolbar = getToolBarContainer() ?: return
-        if (!isToolbarShown && toolbar.visibility != View.GONE) {
-            hideToolbar(toolbar)
-        } else if (isToolbarShown && toolbar.visibility != View.VISIBLE) {
-            showToolbar(toolbar)
-        }
-    }
 
     var favoriteMenuItem: MenuItem? = null
-
-    fun addFavoriteSateObserver() {
-        lifecycleScope.launch(viewModel.exceptionHandler) {
-            viewModel.favoriteState.collectLatest {
-                if (it.first == viewModel.currentSong) {
-                    updateFavoriteIcon(it.second)
-                }
-            }
-        }
-    }
-
-    /**
-     * delayed and run on main-thread
-     */
-    fun updateFavoriteIcon(isFavorite: Boolean) {
-        Handler(Looper.getMainLooper()).postDelayed(
-            {
-                val activity =
-                    activity ?: return@postDelayed
-                val res =
-                    if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
-                val color = toolbarIconColor(activity, Color.TRANSPARENT)
-                favoriteMenuItem?.apply {
-                    icon = activity.getTintedDrawable(res, color)
-                    title =
-                        if (isFavorite) getString(R.string.action_remove_from_favorites)
-                        else getString(R.string.action_add_to_favorites)
-                }
-            }, 200
-        )
-    }
-
-    protected val upNextAndQueueTime: String
-        get() {
-            val duration = MusicPlayerRemote.getQueueDurationMillis(MusicPlayerRemote.position)
-            return buildInfoString(
-                resources.getString(R.string.up_next),
-                getReadableDurationString(duration)
-            )
-        }
 
     override fun onPause() {
         recyclerViewDragDropManager.cancelDrag()
         super.onPause()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        checkToggleToolbar()
-    }
-
-    override fun onServiceConnected() {
-        updateQueue()
-        updateCurrentSong()
-        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
-        lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
     }
 
     open fun onShow() {
@@ -374,86 +272,127 @@ abstract class AbsPlayerFragment :
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
-            updateQueue()
+            lifecycleScope.launch { updateAdapter() }
             viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
         }
     }
 
     abstract fun onBackPressed(): Boolean
 
-    protected open fun updateCurrentSong() {
-        viewModel.updateCurrentSong(MusicPlayerRemote.currentSong, context)
+    protected open suspend fun updateAdapter() {
+        lifecycle.whenStarted {
+            withContext(Dispatchers.Main) {
+                playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
+                playingQueueAdapter.current = MusicPlayerRemote.position
+            }
+        }
     }
-
-    protected open fun updateQueue() {
-        playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
-        playingQueueAdapter.current = MusicPlayerRemote.position
-    }
-
-    protected open fun updateQueuePosition() {
-        playingQueueAdapter.current = MusicPlayerRemote.position
-    }
-
-    abstract override fun onToolbarToggled()
 
     internal interface Impl {
         fun init()
+        fun updateCurrentSong(song: Song)
         fun setUpPanelAndAlbumCoverHeight()
+        fun generateAnimators(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet
     }
+
+    protected var lastPaletteColor = 0
+    protected var currentAnimatorSet: AnimatorSet? = null
+    protected suspend fun requestAnimateColorChanging(newColor: Int) {
+        whenResumed {
+            currentAnimatorSet?.end()
+            currentAnimatorSet?.cancel()
+            currentAnimatorSet = generatePaletteColorAnimators(lastPaletteColor, newColor).also {
+                it.doOnEnd {
+                    lastPaletteColor = newColor
+                }
+                it.start()
+            }
+        }
+    }
+
+    abstract fun generatePaletteColorAnimators(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet
 
     private fun observeState() {
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                CurrentQueueState.queue.collect { queue ->
-                    playingQueueAdapter.dataset = queue.get() ?: MusicPlayerRemote.playingQueue
-                    updateQueuePosition()
+        observe(CurrentQueueState.queue) { queue ->
+            playingQueueAdapter.dataset = queue.get() ?: MusicPlayerRemote.playingQueue
+            playingQueueAdapter.current = MusicPlayerRemote.position
+        }
+        observe(CurrentQueueState.position) { position ->
+            playingQueueAdapter.current = position
+        }
+        observe(CurrentQueueState.currentSong) {
+            viewModel.updateCurrentSong(MusicPlayerRemote.currentSong, context)
+            lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
+            whenStarted{ impl.updateCurrentSong(it) }
+        }
+        observe(CurrentQueueState.shuffleMode) {
+            updateAdapter()
+        }
+        observe(viewModel.favoriteState) {
+            if (it.first == viewModel.currentSong.value) {
+                val isFavorite = it.second
+                lifecycle.whenStarted {
+                    withContext(Dispatchers.Main) {
+                        val res =
+                            if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
+                        val color = toolbarIconColor(requireContext(), Color.TRANSPARENT)
+                        favoriteMenuItem?.apply {
+                            icon = requireContext().getTintedDrawable(res, color)
+                            title =
+                                if (isFavorite) getString(R.string.action_remove_from_favorites)
+                                else getString(R.string.action_add_to_favorites)
+                        }
+                    }
                 }
             }
         }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                CurrentQueueState.position.collect { position ->
-                    playingQueueAdapter.current = position
+        observe(viewModel.showToolbar) {
+            whenStarted {
+                val container = getToolBarContainer() ?: return@whenStarted
+                if (it) {
+                    showToolbar(container)
+                } else {
+                    hideToolbar(container)
                 }
             }
         }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                CurrentQueueState.currentSong.collect { song ->
-                    updateCurrentSong()
-                    viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
-                    lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
+        observe(lyricsViewModel.lyricsInfo) { lyricsList ->
+            withContext(Dispatchers.Main) {
+                val activated = lyricsList.activatedLyrics
+                if (lyricsList.isNotEmpty() && activated is LrcLyrics) {
+                    MusicPlayerRemote.musicService?.replaceLyrics(activated)
+                    viewModel.updateLrcLyrics(activated)
+                } else {
+                    MusicPlayerRemote.musicService?.replaceLyrics(null)
+                    viewModel.updateLrcLyrics(null)
                 }
+                lyricsMenuItem?.isVisible = lyricsList.isNotEmpty()
             }
         }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                CurrentQueueState.shuffleMode.collect {
-                    updateQueue()
-                }
-            }
-        }
-    }
-
-    override val paletteColor
-        @ColorInt get() = viewModel.paletteColor.value
-
-    override fun updatePaletteColor(color: Int) = viewModel.updatePaletteColor(color)
-
-    private fun setupPaletteColorObserver() {
-        lifecycleScope.launch {
-            updatePaletteColor(requireContext().primaryColor()) // init
-            observePaletteColor { newColor ->
+        observe(viewModel.paletteColor) { newColor ->
+            whenResumed {
                 playbackControlsFragment.modifyColor(newColor)
+                requestAnimateColorChanging(newColor)
             }
         }
     }
 
-    suspend fun observePaletteColor(owner: LifecycleOwner? = null, callback: (Int) -> Unit) {
-        (owner?.lifecycle ?: this.lifecycle).repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.paletteColor.collect {
-                callback(it)
+    /* override val paletteColor @ColorInt get() = viewModel.paletteColor.value */
+    val paletteColorState get() = viewModel.paletteColor
+
+
+    protected inline fun <reified T> observe(
+        flow: StateFlow<T>,
+        state: Lifecycle.State = Lifecycle.State.CREATED,
+        lifecycle: Lifecycle = this.lifecycle,
+        scope: CoroutineScope = lifecycle.coroutineScope,
+        flowCollector: FlowCollector<T>,
+    ) {
+        scope.launch {
+            lifecycle.repeatOnLifecycle(state) {
+                flow.collect(flowCollector)
             }
         }
     }
+
 }

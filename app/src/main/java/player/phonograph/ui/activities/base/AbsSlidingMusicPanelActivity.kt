@@ -24,6 +24,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import mt.tint.setTaskDescriptionColor as setTaskDescriptionColorEXt
 
@@ -72,7 +73,7 @@ abstract class AbsSlidingMusicPanelActivity :
         miniPlayerFragment.requireView().setOnClickListener { expandPanel() }
 
         playerColor =
-            if (playerFragment.paletteColor != 0) playerFragment.paletteColor
+            if (playerFragment.paletteColorState.value != 0) playerFragment.paletteColorState.value
             else getColor(R.color.defaultFooterColor)
         activityColor = primaryColor
 
@@ -83,12 +84,12 @@ abstract class AbsSlidingMusicPanelActivity :
                     override fun onGlobalLayout() {
                         layout.viewTreeObserver.removeOnGlobalLayoutListener(this)
                         when (panelState) {
-                            PanelState.EXPANDED -> {
+                            PanelState.EXPANDED  -> {
                                 onPanelSlide(layout, 1f)
                                 onPanelExpanded(layout)
                             }
                             PanelState.COLLAPSED -> onPanelCollapsed(layout)
-                            else -> playerFragment.onHide()
+                            else                 -> playerFragment.onHide()
                         }
                     }
                 })
@@ -132,7 +133,7 @@ abstract class AbsSlidingMusicPanelActivity :
         setMiniPlayerAlphaProgress(slideOffset)
         cancelThemeColorChange()
         val color: Int =
-            argbEvaluator.evaluate(slideOffset, activityColor, playerFragment.paletteColor) as Int
+            argbEvaluator.evaluate(slideOffset, activityColor, playerFragment.paletteColorState.value) as Int
         super.setStatusbarColor(color)
         setNavigationBarColor(color)
     }
@@ -140,9 +141,9 @@ abstract class AbsSlidingMusicPanelActivity :
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
         when (newState) {
             PanelState.COLLAPSED -> onPanelCollapsed(panel)
-            PanelState.EXPANDED -> onPanelExpanded(panel)
-            PanelState.ANCHORED -> collapsePanel() // this fixes a bug where the panel would get stuck for some reason
-            else -> {}
+            PanelState.EXPANDED  -> onPanelExpanded(panel)
+            PanelState.ANCHORED  -> collapsePanel() // this fixes a bug where the panel would get stuck for some reason
+            else                 -> {}
         }
     }
 
@@ -204,7 +205,7 @@ abstract class AbsSlidingMusicPanelActivity :
     }
 
     override fun onBackPressed() {
-        if (!handleBackPress())  onBackPressedDispatcher.onBackPressed()
+        if (!handleBackPress()) onBackPressedDispatcher.onBackPressed()
     }
 
     open fun handleBackPress(): Boolean {
@@ -217,12 +218,14 @@ abstract class AbsSlidingMusicPanelActivity :
     }
 
     private fun setupPaletteColorObserver() {
-        playerFragment.lifecycleScope.launch {
-            playerFragment.observePaletteColor { color ->
-                if (panelState == PanelState.EXPANDED) {
-                    animateThemeColorChange(playerColor, color)
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                playerFragment.paletteColorState.collect { color ->
+                    if (panelState == PanelState.EXPANDED) {
+                        animateThemeColorChange(playerColor, color)
+                    }
+                    playerColor = color
                 }
-                playerColor = color
             }
         }
     }
@@ -235,9 +238,9 @@ abstract class AbsSlidingMusicPanelActivity :
     fun setTaskDescriptionColor(@ColorInt color: Int) {
         when (panelState) {
             PanelState.EXPANDED -> {
-                setTaskDescriptionColorEXt(playerFragment.paletteColor)
+                setTaskDescriptionColorEXt(playerFragment.paletteColorState.value)
             }
-            else -> {
+            else                -> {
                 setTaskDescriptionColorEXt(color)
             }
         }

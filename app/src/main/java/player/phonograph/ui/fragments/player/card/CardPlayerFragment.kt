@@ -15,20 +15,20 @@ import player.phonograph.databinding.FragmentCardPlayerBinding
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
+import player.phonograph.util.theme.nightMode
+import player.phonograph.util.theme.requireDarkenColor
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.ui.backgroundColorTransitionAnimator
-import player.phonograph.util.ui.textColorTransitionAnimator
-import player.phonograph.util.theme.requireDarkenColor
-import player.phonograph.util.theme.nightMode
-import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.ui.convertDpToPixel
+import player.phonograph.util.ui.isLandscape
+import player.phonograph.util.ui.textColorTransitionAnimator
+import androidx.annotation.ColorInt
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenResumed
+import androidx.lifecycle.whenStarted
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.annotation.SuppressLint
@@ -44,7 +44,8 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.PopupMenu
 import kotlin.math.max
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class CardPlayerFragment :
         AbsPlayerFragment(),
@@ -85,6 +86,18 @@ class CardPlayerFragment :
         viewBinding.playingQueueCard.setCardBackgroundColor(
             resolveColor(requireContext(), androidx.cardview.R.attr.cardBackgroundColor)
         )
+        observeState()
+    }
+
+    private fun observeState() {
+        observe(CurrentQueueState.position) {
+            whenStarted {
+                viewBinding.playerQueueSubHeader.text = viewModel.upNextAndQueueTime(resources)
+                if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
+                    resetToCurrentPosition()
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -96,19 +109,15 @@ class CardPlayerFragment :
     }
 
 
-    override fun updateQueue() {
-        super.updateQueue()
-        viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
-        if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
-            resetToCurrentPosition()
-        }
-    }
-
-    override fun updateQueuePosition() {
-        super.updateQueuePosition()
-        viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
-        if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
-            resetToCurrentPosition()
+    override suspend fun updateAdapter() {
+        super.updateAdapter()
+        lifecycle.whenStarted {
+            withContext(Dispatchers.Main) {
+                viewBinding.playerQueueSubHeader.text = viewModel.upNextAndQueueTime(resources)
+                if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
+                    resetToCurrentPosition()
+                }
+            }
         }
     }
 
@@ -133,10 +142,6 @@ class CardPlayerFragment :
         val wasExpanded = viewBinding.playerSlidingLayout.panelState == PanelState.EXPANDED
         viewBinding.playerSlidingLayout.panelState = PanelState.COLLAPSED
         return wasExpanded
-    }
-
-    override fun onToolbarToggled() {
-        toggleToolbar(viewBinding.toolbarContainer)
     }
 
     @SuppressLint("ObsoleteSdkInt")
@@ -176,10 +181,13 @@ class CardPlayerFragment :
         layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
     }
 
+    override fun generatePaletteColorAnimators(oldColor: Int, newColor: Int): AnimatorSet =
+        impl.generateAnimators(oldColor, newColor)
+
     private abstract class BaseImpl(protected var fragment: CardPlayerFragment) : Impl {
-        protected var currentAnimatorSet: AnimatorSet? = null
+
         @SuppressLint("ObsoleteSdkInt")
-        fun defaultColorChangeAnimatorSet(newColor: Int): AnimatorSet {
+        fun defaultColorChangeAnimatorSet(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet {
             val lightMode = App.instance.nightMode
             val controllerFragment =
                 (fragment.playbackControlsFragment as CardPlayerControllerFragment)
@@ -188,7 +196,7 @@ class CardPlayerFragment :
             require(progressSliderHeight >= 0) { "CardPlayer's progressSliderHeight is less than 0: $progressSliderHeight" }
 
             val backgroundAnimator: Animator =
-                if (SDK_INT >= LOLLIPOP) {
+                if (SDK_INT >= LOLLIPOP && fragment.viewBinding.root.isAttachedToWindow) {
                     val x =
                         fab.x + fab.width / 2 + fragment.playbackControlsFragment.requireView().x
                     val y =
@@ -205,49 +213,32 @@ class CardPlayerFragment :
                     )
                 } else {
                     fragment.viewBinding.colorBackground.backgroundColorTransitionAnimator(
-                        fragment.paletteColor, newColor
+                        oldColor, newColor
                     )
                 }
             // darken the text color
             val subHeaderAnimator =
                 if (lightMode)
                     fragment.viewBinding.playerQueueSubHeader.textColorTransitionAnimator(
-                        requireDarkenColor(fragment.paletteColor), requireDarkenColor(newColor)
+                        requireDarkenColor(oldColor), requireDarkenColor(newColor)
                     )
                 else null
             return AnimatorSet()
                 .apply {
-                    duration = PHONOGRAPH_ANIM_TIME
+                    duration = PHONOGRAPH_ANIM_TIME / 2
                     play(backgroundAnimator).apply {
                         if (lightMode) with(subHeaderAnimator)
                     }
                 }
         }
 
-        override fun init() {
-            with(fragment) {
-                lifecycleScope.launch {
-                    viewModel.currentSong.collect {
-                        lifecycle.whenResumed {
-                            updateCurrentSong(it)
-                        }
-                    }
-                }
-                lifecycleScope.launch {
-                    fragment.observePaletteColor(fragment) { newColor ->
-                        animateColorChange(newColor)
-                    }
-                }
-            }
-        }
-
-        abstract fun updateCurrentSong(song: Song)
-        abstract fun animateColorChange(newColor: Int)
+        override fun init() {}
     }
 
     private class PortraitImpl(fragment: CardPlayerFragment) : BaseImpl(fragment) {
         var currentSongViewHolder: MediaEntryViewHolder? = null
         override fun init() {
+            super.init()
             currentSongViewHolder = MediaEntryViewHolder(
                 fragment.requireView().findViewById(R.id.current_song)
             )
@@ -320,13 +311,9 @@ class CardPlayerFragment :
             currentSongViewHolder!!.text!!.text = song.infoString()
         }
 
-        override fun animateColorChange(newColor: Int) {
-            val showed = fragment.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-            if (!showed) return
-            currentAnimatorSet?.cancel()
-            currentAnimatorSet = defaultColorChangeAnimatorSet(newColor)
-            if (fragment.view != null) currentAnimatorSet?.start()
-        }
+        override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
+            defaultColorChangeAnimatorSet(oldColor, newColor)
+
     }
 
     private class LandscapeImpl(fragment: CardPlayerFragment) : BaseImpl(fragment) {
@@ -346,23 +333,15 @@ class CardPlayerFragment :
             fragment.viewBinding.playerToolbar.subtitle = song.infoString()
         }
 
-        override fun animateColorChange(newColor: Int) {
-            val showed = fragment.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-            if (!showed) return
-            currentAnimatorSet?.cancel()
-            currentAnimatorSet = defaultColorChangeAnimatorSet(newColor).also {
+
+        override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet {
+            return defaultColorChangeAnimatorSet(oldColor, newColor).also {
                 it.play(
-                    fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(
-                        fragment.paletteColor, newColor
-                    )
+                    fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(oldColor, newColor)
                 ).with(
                     fragment.requireView().findViewById<View>(R.id.status_bar)
-                        .backgroundColorTransitionAnimator(
-                            darkenColor(fragment.paletteColor),
-                            darkenColor(newColor)
-                        )
+                        .backgroundColorTransitionAnimator(darkenColor(oldColor), darkenColor(newColor))
                 )
-                it.start()
             }
         }
     }
