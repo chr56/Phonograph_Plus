@@ -50,26 +50,32 @@ jobs:
           distribution: 'adopt'
           cache: gradle
 
+      - name: Generate Sign Config
+        env:
+          KEYSTORE_FILE: ${{ github.workspace }}/key.jdk
+          CONFIG_FILE: ${{ github.workspace }}/signing.properties
+        run: |
+          # recover keystore from base64
+          echo "${{ secrets.KEY }}"  | base64 -d > $KEYSTORE_FILE
+          # write signing.properties
+          echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> $CONFIG_FILE
+          echo "storeFile=$KEYSTORE_FILE"                    >> $CONFIG_FILE
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}"           >> $CONFIG_FILE
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}"     >> $CONFIG_FILE
+          # print information
+          echo "keystore file ($KEYSTORE_FILE):"
+          sha256sum $KEYSTORE_FILE
+          #echo "config file($CONFIG_FILE):"
+          #cat $CONFIG_FILE
+
       - name: Build with Gradle (Assemble CheckoutDebug)
         run: |
           ./gradlew assembleCheckoutDebug --stacktrace --parallel
-
-      - name: Signing Apk
-        uses: r0adkll/sign-android-release@v1.0.4
-        id: sign_app
-        env:
-          BUILD_TOOLS_VERSION: 33.0.0
-        with:
-          releaseDirectory: ./app/build/outputs/apk/checkout/debug
-          signingKeyBase64: ${{ secrets.KEY }}
-          keyStorePassword: ${{ secrets.STORE_PASSWORD }}
-          alias: ${{ secrets.KEY_ALIAS }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
           name: dev
-          path: ${{ steps.sign_app.outputs.signedReleaseFile }}
+          path: ./app/build/outputs/apk/preview/debug/*.apk
           retention-days: 3
 
