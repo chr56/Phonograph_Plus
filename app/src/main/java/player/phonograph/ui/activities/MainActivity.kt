@@ -2,6 +2,7 @@ package player.phonograph.ui.activities
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import lib.phonograph.misc.CreateFileStorageAccessTool
 import lib.phonograph.misc.ICreateFileStorageAccess
@@ -9,6 +10,7 @@ import lib.phonograph.misc.IOpenDirStorageAccess
 import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenDirStorageAccessTool
 import lib.phonograph.misc.OpenFileStorageAccessTool
+import lib.phonograph.misc.Reboot
 import mt.tint.viewtint.setItemIconColors
 import mt.tint.viewtint.setItemTextColors
 import mt.util.color.resolveColor
@@ -43,6 +45,8 @@ import player.phonograph.ui.dialogs.ScanMediaFolderDialog
 import player.phonograph.ui.dialogs.UpgradeDialog
 import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.util.debug
+import player.phonograph.util.permissions.navigateToAppDetailSetting
+import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.warning
@@ -275,6 +279,24 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 icon = getTintedDrawable(R.drawable.ic_more_vert_white_24dp, textColorPrimary)
                 titleRes(R.string.more_actions)
                 onClick {
+                    val items = listOf(
+                        context.getString(R.string.permission_desc_read_external_storage) to {
+                            navigateToStorageSetting(context)
+                        },
+                        context.getString(R.string.grant_permission) to {
+                            navigateToAppDetailSetting(context)
+                        },
+                        context.getString(R.string.action_reboot) to {
+                            Reboot.reboot(context)
+                        }
+                    )
+                    MaterialAlertDialogBuilder(context)
+                        .setTitle(R.string.more_actions)
+                        .setItems(items.map { it.first }.toTypedArray()) { dialog, index ->
+                            dialog.dismiss()
+                            items[index].second.invoke()
+                        }
+                        .show()
                     true
                 }
             }
