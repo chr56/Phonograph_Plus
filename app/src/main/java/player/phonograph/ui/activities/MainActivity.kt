@@ -269,6 +269,16 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 }
             }
 
+
+            menuItem {
+                groupId = groupIds[3]
+                icon = getTintedDrawable(R.drawable.ic_more_vert_white_24dp, textColorPrimary)
+                titleRes(R.string.more_actions)
+                onClick {
+                    true
+                }
+            }
+
             for (id in groupIds) {
                 rootMenu.setGroupEnabled(id, true)
                 rootMenu.setGroupCheckable(id, false, false)
