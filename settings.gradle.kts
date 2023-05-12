@@ -46,6 +46,8 @@ dependencyResolutionManagement {
                     "androidx.cardview:cardview:1.0.0")
             library("androidx.palette",
                     "androidx.palette:palette-ktx:1.0.0")
+            library("androidx.datastore",
+                    "androidx.datastore:datastore-preferences:1.0.0")
 
             library("google.material",
                     "com.google.android.material:material:1.8.0")
