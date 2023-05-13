@@ -10,10 +10,12 @@ import player.phonograph.App
 import player.phonograph.BuildConfig.GIT_COMMIT_HASH
 import player.phonograph.BuildConfig.VERSION_CODE
 import player.phonograph.R
-import player.phonograph.settings.Setting
+import player.phonograph.settings.dataStore
 import player.phonograph.util.FileUtil.saveToFile
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.preference.PreferenceManager
 import android.annotation.SuppressLint
 import android.content.Context
@@ -21,6 +23,8 @@ import android.content.SharedPreferences.Editor
 import android.net.Uri
 import android.widget.Toast
 import kotlin.LazyThreadSafetyMode.NONE
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -32,9 +36,12 @@ object SettingDataManager {
 
     private val parser by lazy(NONE) { Json { prettyPrint = true } }
 
-    fun exportSettings(uri: Uri, context: Context): Boolean =
+    suspend fun rawMainPreference(context: Context): Map<Preferences.Key<*>, Any> =
+        context.dataStore.data.first().asMap()
+
+    suspend fun exportSettings(uri: Uri, context: Context): Boolean =
         try {
-            val prefs = Setting.instance.rawMainPreference.all
+            val prefs = rawMainPreference(context)
             val model = serializedPref(prefs)
             val content = parser.encodeToString(model)
             saveToFile(uri, content, context.contentResolver)
@@ -44,9 +51,9 @@ object SettingDataManager {
             false
         }
 
-    fun exportSettings(sink: BufferedSink): Boolean =
+    suspend fun exportSettings(sink: BufferedSink, context: Context): Boolean =
         try {
-            val prefs = Setting.instance.rawMainPreference.all
+            val prefs = rawMainPreference(context)
             val model = serializedPref(prefs)
             val content = parser.encodeToString(model)
             sink.writeString(content, Charsets.UTF_8)
@@ -67,9 +74,9 @@ object SettingDataManager {
     fun importSetting(inputStream: InputStream, context: Context): Boolean =
         loadSettings(inputStream, context)
 
-    private fun serializedPref(prefs: Map<String, Any?>): SettingExport {
+    private fun serializedPref(prefs: Map<Preferences.Key<*>, Any?>): SettingExport {
         val content = JsonObject(
-            prefs.mapValues { serializedValue(it.value) }
+            prefs.mapKeys { it.key.name }.mapValues { serializedValue(it.value) }
         )
         return SettingExport(
             VERSION,
@@ -156,8 +163,11 @@ object SettingDataManager {
      */
     @SuppressLint("ApplySharedPref") // must do immediately!
     fun clearAllPreference() {
-        Setting.instance.forceUnregisterAllListener()
-        Setting.instance.rawMainPreference.edit().clear().commit()
+        runBlocking {
+            // todo forceUnregisterAllListener
+            //Setting.instance.forceUnregisterAllListener()
+            App.instance.dataStore.edit { it.clear() }
+        }
         ThemeColor.editTheme(App.instance).clearAllPreference() // lib
 
         Toast.makeText(App.instance, R.string.success, Toast.LENGTH_SHORT).show()
