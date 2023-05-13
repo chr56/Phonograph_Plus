@@ -14,7 +14,7 @@ object StyleConfig {
 
     @StyleRes
     fun generalTheme(context: Context): Int =
-        getThemeResFromPrefValue(Setting.instance(context).themeString)
+        getThemeResFromPrefValue(Setting.instance.themeString)
 
     fun setGeneralTheme(theme: String) {
         Setting.instance.themeString = theme
