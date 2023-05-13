@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 chr_56 & Abou Zeid (kabouzeid) (original author)
+ * Copyright (c) 2021-2013 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
 package player.phonograph.ui.fragments
@@ -23,18 +23,20 @@ import player.phonograph.mechanism.StatusBarLyric
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.mechanism.setting.StyleConfig
-import player.phonograph.ui.dialogs.HomeTabConfigDialog
-import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
 import player.phonograph.settings.Setting
+import player.phonograph.settings.SettingFlowStore
 import player.phonograph.ui.dialogs.ClickModeSettingDialog
+import player.phonograph.ui.dialogs.HomeTabConfigDialog
 import player.phonograph.ui.dialogs.ImageSourceConfigDialog
+import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
 import player.phonograph.ui.dialogs.PathFilterDialog
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.theme.applyMonet
 import util.phonograph.misc.ColorChooserListener
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenStarted
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -47,7 +49,7 @@ import android.media.audiofx.AudioEffect
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -105,32 +107,37 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Setting.instance.observe(
-            this, arrayOf(
-                Setting.NOW_PLAYING_SCREEN_ID,
-                Setting.PATH_FILTER_EXCLUDE_MODE,
-                Setting.CLASSIC_NOTIFICATION,
-                Setting.BROADCAST_SYNCHRONIZED_LYRICS,
-            )
-        ) { sharedPreferences, key ->
-            lifecycleScope.launch {
-                lifecycle.whenStarted {
-                    when (key) {
-                        Setting.NOW_PLAYING_SCREEN_ID         -> updateNowPlayingScreenSummary()
-                        Setting.PATH_FILTER_EXCLUDE_MODE      -> updatePathFilterExcludeMode()
-                        Setting.CLASSIC_NOTIFICATION          ->
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                findPreference<Preference>("colored_notification")!!.isEnabled =
-                                    sharedPreferences.getBoolean(key, false)
-                            }
-                        Setting.BROADCAST_SYNCHRONIZED_LYRICS -> {
-                            delay(200)
-                            // clear lyrics displaying on the statusbar now
-                            StatusBarLyric.stopLyric()
-                        }
-                    }
-                }
+        observeSetting()
+    }
 
+    private fun observeSetting() {
+        val settingFlowStore = SettingFlowStore(requireContext())
+        fun observe(block: suspend CoroutineScope.() -> Unit) {
+            lifecycleScope.launch {
+                lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED, block)
+            }
+        }
+        observe {
+            settingFlowStore.nowPlayingScreenId.collect {
+                updateNowPlayingScreenSummary()
+            }
+        }
+        observe {
+            settingFlowStore.pathFilterExcludeMode.collect {
+                updatePathFilterExcludeMode()
+            }
+        }
+        observe {
+            settingFlowStore.classicNotification.collect {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    findPreference<Preference>("colored_notification")!!.isEnabled = it
+                }
+            }
+        }
+        observe {
+            settingFlowStore.broadcastSynchronizedLyrics.collect {
+                // clear lyrics displaying on the status bar now
+                StatusBarLyric.stopLyric()
             }
         }
     }

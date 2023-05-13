@@ -10,18 +10,27 @@ import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
 import player.phonograph.service.queue.CurrentQueueState
+import player.phonograph.settings.CLASSIC_NOTIFICATION
+import player.phonograph.settings.COLORED_NOTIFICATION
+import player.phonograph.settings.GAPLESS_PLAYBACK
+import player.phonograph.settings.SettingFlowStore
 import player.phonograph.util.debug
 import player.phonograph.util.permissions.NonGrantedPermission
 import player.phonograph.util.permissions.Permission
 import player.phonograph.util.permissions.checkStorageReadPermission
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import android.content.ComponentName
 import android.content.ServiceConnection
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.lang.System.currentTimeMillis
 
 /**
@@ -66,6 +75,24 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         }
         volumeControlStream = AudioManager.STREAM_MUSIC
         lifecycle.addObserver(LifeCycleObserver())
+        observeSetting()
+    }
+    private fun observeSetting() {
+        fun observe(block: suspend CoroutineScope.() -> Unit) {
+            lifecycleScope.launch {
+                lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED, block)
+            }
+        }
+        val store = SettingFlowStore(this)
+        observe {
+            store.gaplessPlayback.collect { MusicPlayerRemote.musicService?.updateSetting(GAPLESS_PLAYBACK) }
+        }
+        observe {
+            store.coloredNotification.collect { MusicPlayerRemote.musicService?.updateSetting(COLORED_NOTIFICATION) }
+        }
+        observe {
+            store.classicNotification.collect { MusicPlayerRemote.musicService?.updateSetting(CLASSIC_NOTIFICATION) }
+        }
     }
 
     override fun onStart() {

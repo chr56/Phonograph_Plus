@@ -29,12 +29,14 @@ import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.AbsPage
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.mechanism.setting.HomeTabConfig
+import player.phonograph.settings.SettingFlowStore
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.whenStarted
 import androidx.viewpager2.widget.ViewPager2
 import android.content.Intent
@@ -47,6 +49,8 @@ import android.view.MenuItem.SHOW_AS_ACTION_ALWAYS
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -55,16 +59,18 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Setting.instance.observe(
-            this,
-            arrayOf(Setting.HOME_TAB_CONFIG, Setting.FIXED_TAB_LAYOUT)
-        ) { _, key ->
-            lifecycleScope.launch {
-                lifecycle.whenStarted {
-                    when (key) {
-                        Setting.HOME_TAB_CONFIG  -> reloadPages()
-                        Setting.FIXED_TAB_LAYOUT -> reloadTabsLayout()
-                    }
+        val store = SettingFlowStore(requireContext())
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                store.homeTabConfig.collect() {
+                    reloadPages()
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                store.fixedTabLayout.collect() {
+                    reloadPages()
                 }
             }
         }

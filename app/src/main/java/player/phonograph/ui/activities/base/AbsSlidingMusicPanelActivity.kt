@@ -8,7 +8,7 @@ import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.model.NowPlayingScreen
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.settings.Setting
+import player.phonograph.settings.SettingFlowStore
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.MiniPlayerFragment
 import player.phonograph.ui.fragments.player.card.CardPlayerFragment
@@ -97,13 +97,13 @@ abstract class AbsSlidingMusicPanelActivity :
             }
 
         setupPaletteColorObserver()
-        Setting.instance.observe(
-            this, arrayOf(Setting.NOW_PLAYING_SCREEN_ID)
-        ) { _, key ->
-            if (key == Setting.NOW_PLAYING_SCREEN_ID)
-                recreate()
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED){
+                SettingFlowStore(this@AbsSlidingMusicPanelActivity).nowPlayingScreenId.collect{
+                    recreate()
+                }
+            }
         }
-
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 CurrentQueueState.queue.collect { queue ->

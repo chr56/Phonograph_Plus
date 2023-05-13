@@ -39,6 +39,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
+import player.phonograph.settings.SettingFlowStore
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.ScanMediaFolderDialog
@@ -109,6 +110,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
         Handler(Looper.getMainLooper()).postDelayed(
             {
+                lifecycleScope.launch(Dispatchers.Main) {
                 val showUpgradeDialog = intent.getBooleanExtra(UPGRADABLE, false)
                 if (showUpgradeDialog) {
                     showUpgradeDialog(intent.getParcelableExtra(VERSION_INFO) as? VersionCatalog)
@@ -116,15 +118,14 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                     checkUpdate()
                 }
                 versionCheck()
-                Setting.instance.observe(
-                    this,
-                    arrayOf(Setting.HOME_TAB_CONFIG)
-                ) { _, key ->
-                    if (key == Setting.HOME_TAB_CONFIG)
+                lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED){
+                    SettingFlowStore(this@MainActivity).homeTabConfig.collect {
                         with(drawerBinding.navigationView.menu) {
                             clear()
                             inflateDrawerMenu(this)
                         }
+                    }
+                }
                 }
             }, 900
         )

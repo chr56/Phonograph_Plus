@@ -33,6 +33,9 @@ import player.phonograph.service.util.MediaButtonIntentReceiver
 import player.phonograph.service.util.MediaStoreObserverUtil
 import player.phonograph.service.util.MusicServiceUtil
 import player.phonograph.service.util.SongPlayCountHelper
+import player.phonograph.settings.CLASSIC_NOTIFICATION
+import player.phonograph.settings.COLORED_NOTIFICATION
+import player.phonograph.settings.GAPLESS_PLAYBACK
 import player.phonograph.settings.Setting
 import android.app.Service
 import android.appwidget.AppWidgetManager
@@ -40,8 +43,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.SharedPreferences
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.res.Configuration
 import android.media.audiofx.AudioEffect
 import android.os.Binder
@@ -53,7 +54,7 @@ import android.util.Log
 /**
  * @author Karim Abou Zeid (kabouzeid), Andrew Neal
  */
-class MusicService : Service(), OnSharedPreferenceChangeListener {
+class MusicService : Service() {
 
     private val songPlayCountHelper = SongPlayCountHelper()
 
@@ -103,7 +104,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
             this@MusicService::handleAndSendChangeInternal
         )
         registerReceiver(widgetIntentReceiver, IntentFilter(APP_WIDGET_UPDATE))
-        Setting.instance.registerOnSharedPreferenceChangedListener(this)
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"))
     }
 
@@ -220,7 +220,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         playNotificationManager.mediaSession.release()
         unregisterReceiver(widgetIntentReceiver)
         mediaStoreObserverUtil.unregisterMediaStoreObserver(this)
-        Setting.instance.unregisterOnSharedPreferenceChangedListener(this)
         controller.stopAndDestroy()
         controller.removeObserver(playerStateObserver)
         queueManager.removeObserver(queueChangeObserver)
@@ -363,10 +362,10 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         AppWidgetCard.instance.notifyChange(this, what)
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+    fun updateSetting(key: String) {
         when (key) {
-            Setting.GAPLESS_PLAYBACK -> {
-                val gaplessPlayback = sharedPreferences.getBoolean(key, false)
+            GAPLESS_PLAYBACK     -> {
+                val gaplessPlayback = Setting.instance.gaplessPlayback
                 controller.switchGaplessPlayback(gaplessPlayback)
                 controller.handler.apply {
                     if (gaplessPlayback) {
@@ -378,8 +377,8 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
                     }
                 }
             }
-            Setting.COLORED_NOTIFICATION -> playNotificationManager.updateNotification()
-            Setting.CLASSIC_NOTIFICATION -> {
+            COLORED_NOTIFICATION -> playNotificationManager.updateNotification()
+            CLASSIC_NOTIFICATION -> {
                 playNotificationManager.setUpNotification()
                 playNotificationManager.updateNotification()
             }
