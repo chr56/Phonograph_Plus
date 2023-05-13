@@ -77,7 +77,7 @@ private class MigrateOperator(
         migration.tryMigrate(context, from, to)
 }
 
-private class SortOrderMigration : Migration(introduced = 210) {
+private class SortOrderMigration : Migration(introduced = 210, deprecated = 532) {
     override fun doMigrate(context: Context) {
         removePreference(context, keyName = SortOrder.ARTIST_SORT_ORDER)
         removePreference(context, keyName = SortOrder.ARTIST_SONG_SORT_ORDER)
@@ -90,7 +90,7 @@ private class SortOrderMigration : Migration(introduced = 210) {
 
 }
 
-private class QueuePreferenceMigration : Migration(introduced = 460) {
+private class QueuePreferenceMigration : Migration(introduced = 460, deprecated = 532) {
     override fun doMigrate(context: Context) {
         fun moveTargetPreference(oldKeyName: String, newKeyName: String) =
             moveIntPreference(
@@ -124,7 +124,7 @@ private class PagesMigration : Migration(introduced = 460) {
     }
 }
 
-private class LockScreenCoverMigration : Migration(introduced = 522) {
+private class LockScreenCoverMigration : Migration(introduced = 522, deprecated = 531) {
     override fun doMigrate(context: Context) {
         removePreference(context, keyName = DeprecatedPreference.LockScreenCover.ALBUM_ART_ON_LOCKSCREEN)
         removePreference(context, keyName = DeprecatedPreference.LockScreenCover.BLURRED_ALBUM_ART)
@@ -135,7 +135,7 @@ private fun moveIntPreference(
     oldPreference: SharedPreferences,
     oldKeyName: String,
     newPreference: SharedPreferences,
-    newKeyName: String
+    newKeyName: String,
 ) {
     try {
         val value = oldPreference.getInt(oldKeyName, 0)
