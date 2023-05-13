@@ -2,8 +2,6 @@
  * Copyright (c) 2022-2023 chr_56
  */
 
-@file:Suppress("unused")
-
 package player.phonograph.settings
 
 import player.phonograph.App
@@ -45,11 +43,11 @@ val Context.dataStore: DataStore<Preferences>
             }
         )
 
-class SettingStore {
+
+class Setting {
     //region Preferences
 
     // Theme and Color
-
     var themeString: String by stringPref(GENERAL_THEME, StyleConfig.THEME_AUTO)
     var enableMonet: Boolean by booleanPref(ENABLE_MONET, false)
 
@@ -215,15 +213,17 @@ class SettingStore {
 
     companion object {
         //region Singleton
-        private var singleton: SettingStore? = null
-        val instance: SettingStore
+        private var singleton: Setting? = null
+        val instance: Setting
             @JvmStatic get() {
-                if (singleton == null) singleton = SettingStore()
+                if (singleton == null) singleton = Setting()
                 return singleton!!
             }
 
-        @JvmStatic
-        fun instance(): SettingStore = instance
+        // @JvmStatic
+        // fun instance(): Setting = instance
+
+
         //endregion
     }
 
