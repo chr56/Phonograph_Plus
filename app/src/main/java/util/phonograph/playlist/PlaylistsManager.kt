@@ -21,6 +21,9 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.settings.Setting
 import player.phonograph.util.coroutineToast
 import player.phonograph.mechanism.PlaylistsManagement
+import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_AUTO
+import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY
+import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF
 import player.phonograph.util.warning
 import util.phonograph.playlist.m3u.M3UGenerator
 import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore
@@ -158,12 +161,12 @@ object PlaylistsManager {
     private val shouldUseSAF: Boolean
         get() {
             return when (val behavior = Setting.instance.playlistFilesOperationBehaviour) {
-                Setting.PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF    -> true
-                Setting.PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY -> false
-                Setting.PLAYLIST_OPS_BEHAVIOUR_AUTO         -> Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+                PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF    -> true
+                PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY -> false
+                PLAYLIST_OPS_BEHAVIOUR_AUTO         -> Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
                 else                                        -> {
                     Setting.instance.playlistFilesOperationBehaviour =
-                        Setting.PLAYLIST_OPS_BEHAVIOUR_AUTO // reset to default
+                        PLAYLIST_OPS_BEHAVIOUR_AUTO // reset to default
                     throw IllegalStateException("$behavior is not a valid option")
                 }
             }
