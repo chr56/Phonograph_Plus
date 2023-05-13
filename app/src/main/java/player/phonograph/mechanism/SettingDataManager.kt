@@ -15,11 +15,14 @@ import player.phonograph.util.FileUtil.saveToFile
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.preference.PreferenceManager
+import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences.Editor
 import android.net.Uri
 import android.widget.Toast
 import kotlin.LazyThreadSafetyMode.NONE
@@ -111,11 +114,11 @@ object SettingDataManager {
             warning(TAG, "This file is using legacy format")
         }
 
-        PreferenceManager.getDefaultSharedPreferences(context).edit().let { editor ->
-            for ((key, value) in json.entries) {
-                deserializeValue(editor, key, value)
+        runBlocking {
+            val prefArray = deserializeValue(json)
+            context.dataStore.edit { preferences ->
+                preferences.putAll(*prefArray)
             }
-            editor.apply()
         }
         true
     } catch (e: Exception) {
@@ -123,39 +126,32 @@ object SettingDataManager {
         false
     }
 
-    private fun deserializeValue(editor: Editor, key: String, jsonElement: JsonElement) {
-        when (jsonElement) {
-            is JsonPrimitive -> {
-                with(jsonElement) {
-                    if (content.getOrNull(0) != SEP) {
-                        if (jsonElement is JsonNull) {
-                            editor.remove(key)
-                        } else {
-                            warning(TAG, "in key $key value $content is glitch")
-                        }
-                    } else {
+    private fun deserializeValue(elements: Map<String, JsonElement>): Array<Preferences.Pair<*>> =
+        elements.mapNotNull { (jsonKey, jsonValue) ->
+            val v = (jsonValue as? JsonPrimitive)
+            if (v != null) {
+                with(v) {
+                    if (content.getOrNull(0) == SEP) {
                         val type = content[1]
                         val data = content.substring(3)
                         when (type) {
-                            TB   -> editor.putBoolean(key, data.toBoolean())
-                            TS   -> editor.putString(key, data)
-                            TI   -> editor.putInt(key, data.toInt())
-                            TL   -> editor.putLong(key, data.toLong())
-                            TF   -> editor.putFloat(key, data.toFloat())
-                            else -> warning(TAG, "unsupported type $type")
+                            TB   -> booleanPreferencesKey(jsonKey) to data.toBoolean()
+                            TS   -> stringPreferencesKey(jsonKey) to data
+                            TI   -> intPreferencesKey(jsonKey) to data.toInt()
+                            TL   -> longPreferencesKey(jsonKey) to data.toLong()
+                            TF   -> floatPreferencesKey(jsonKey) to data.toFloat()
+                            else -> throw IllegalStateException("unsupported type $type")
                         }
+                    } else {
+                        warning(TAG, "in key $jsonKey value $content is glitch")
+                        null
                     }
                 }
-            }
-            is JsonArray     -> {
-                val data = jsonElement.map { it.jsonPrimitive.content }
-                editor.putStringSet(key, java.util.HashSet(data))
-            }
-            else             -> {
+            } else {
                 warning(TAG, "unexpected element")
+                null
             }
-        }
-    }
+        }.toTypedArray()
 
 
     /**
