@@ -25,6 +25,7 @@ import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.mechanism.setting.StyleConfig
 import player.phonograph.settings.Setting
 import player.phonograph.settings.SettingFlowStore
+import player.phonograph.settings.dataStore
 import player.phonograph.ui.dialogs.ClickModeSettingDialog
 import player.phonograph.ui.dialogs.HomeTabConfigDialog
 import player.phonograph.ui.dialogs.ImageSourceConfigDialog
@@ -33,6 +34,7 @@ import player.phonograph.ui.dialogs.PathFilterDialog
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.theme.applyMonet
 import util.phonograph.misc.ColorChooserListener
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -43,6 +45,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import androidx.preference.TwoStatePreference
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.audiofx.AudioEffect
@@ -50,7 +53,9 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -188,7 +193,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     fun invalidateSettings() {
         //
         val generalTheme = findPreference<Preference>("general_theme")!!
-        setSummary(generalTheme)
+        setStringSummary(generalTheme, requireContext())
         generalTheme.onPreferenceChangeListener =
             Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any? ->
                 setSummary(generalTheme, newValue!!)
@@ -207,8 +212,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setSummary(appLanguage as Preference, Localization.currentLocale(requireContext()).displayLanguage)
 
         //
-        val autoDownloadImagesPolicy = findPreference<Preference>("auto_download_images_policy")
-        setSummary(autoDownloadImagesPolicy!!)
+        val autoDownloadImagesPolicy = findPreference<Preference>("auto_download_images_policy")!!
+        setStringSummary(autoDownloadImagesPolicy, requireContext())
         autoDownloadImagesPolicy.onPreferenceChangeListener =
             Preference.OnPreferenceChangeListener { _: Preference?, o: Any? ->
                 setSummary(autoDownloadImagesPolicy, o!!)
@@ -326,12 +331,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     companion object {
 
-        private fun setSummary(preference: Preference) {
-            setSummary(
-                preference,
-                PreferenceManager.getDefaultSharedPreferences(preference.context)
-                    .getString(preference.key, "")!!
-            )
+        private fun setStringSummary(preference: Preference, context: Context) {
+            runBlocking {
+                val key = preference.key
+                setSummary(
+                    preference,
+                    context.dataStore.data.first()[stringPreferencesKey(key)] ?: ""
+                )
+            }
         }
 
         private fun setSummary(preference: Preference, value: Any) {
