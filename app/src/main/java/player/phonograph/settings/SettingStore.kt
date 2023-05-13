@@ -7,7 +7,6 @@
 package player.phonograph.settings
 
 import player.phonograph.App
-import player.phonograph.actions.click.mode.SongClickMode
 import player.phonograph.actions.click.mode.SongClickMode.FLAG_MASK_PLAY_QUEUE_IF_EMPTY
 import player.phonograph.actions.click.mode.SongClickMode.SONG_PLAY_NOW
 import player.phonograph.mechanism.setting.StyleConfig
@@ -31,8 +30,8 @@ import android.net.NetworkCapabilities
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
 private const val PREFERENCE_NAME = "settings"
@@ -229,6 +228,37 @@ class SettingStore {
     }
 
 
+}
+
+class SettingFlowStore(val context: Context) {
+    private val prefs: Flow<Preferences> = context.dataStore.data
+
+    val homeTabConfig: Flow<String>
+        get() = flow(stringPreferencesKey(HOME_TAB_CONFIG), "")
+
+    val nowPlayingScreenId: Flow<Int>
+        get() = flow(intPreferencesKey(NOW_PLAYING_SCREEN_ID), 0)
+
+    val fixedTabLayout: Flow<Boolean>
+        get() = flow(booleanPreferencesKey(FIXED_TAB_LAYOUT), false)
+
+    val pathFilterExcludeMode: Flow<Boolean>
+        get() = flow(booleanPreferencesKey(PATH_FILTER_EXCLUDE_MODE), false)
+
+    val classicNotification: Flow<Boolean>
+        get() = flow(booleanPreferencesKey(CLASSIC_NOTIFICATION), false)
+
+    val broadcastSynchronizedLyrics: Flow<Boolean>
+        get() = flow(booleanPreferencesKey(BROADCAST_SYNCHRONIZED_LYRICS), true)
+
+    val gaplessPlayback: Flow<Boolean>
+        get() = flow(booleanPreferencesKey(GAPLESS_PLAYBACK), true)
+
+    val coloredNotification: Flow<Boolean>
+        get() = flow(booleanPreferencesKey(COLORED_NOTIFICATION), true)
+
+    private fun <T> flow(key: Preferences.Key<T>, defaultValue: T): Flow<T> =
+        prefs.map { preferences -> preferences[key] ?: defaultValue }
 }
 
 
