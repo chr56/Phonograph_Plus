@@ -141,9 +141,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
         observe {
-            settingFlowStore.broadcastSynchronizedLyrics.distinctUntilChanged().collect {
-                // clear lyrics displaying on the status bar now
-                StatusBarLyric.stopLyric()
+            settingFlowStore.broadcastSynchronizedLyrics.distinctUntilChanged().collect { newValue ->
+                if (!newValue) {
+                    // clear lyrics displaying on the status bar now
+                    StatusBarLyric.stopLyric()
+                }
             }
         }
     }
