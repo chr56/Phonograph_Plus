@@ -30,6 +30,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.lang.System.currentTimeMillis
 
@@ -85,13 +86,16 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         }
         val store = SettingFlowStore(this)
         observe {
-            store.gaplessPlayback.collect { MusicPlayerRemote.musicService?.updateSetting(GAPLESS_PLAYBACK) }
+            store.gaplessPlayback.distinctUntilChanged()
+                .collect { MusicPlayerRemote.musicService?.updateSetting(GAPLESS_PLAYBACK) }
         }
         observe {
-            store.coloredNotification.collect { MusicPlayerRemote.musicService?.updateSetting(COLORED_NOTIFICATION) }
+            store.coloredNotification.distinctUntilChanged()
+                .collect { MusicPlayerRemote.musicService?.updateSetting(COLORED_NOTIFICATION) }
         }
         observe {
-            store.classicNotification.collect { MusicPlayerRemote.musicService?.updateSetting(CLASSIC_NOTIFICATION) }
+            store.classicNotification.distinctUntilChanged()
+                .collect { MusicPlayerRemote.musicService?.updateSetting(CLASSIC_NOTIFICATION) }
         }
     }
 

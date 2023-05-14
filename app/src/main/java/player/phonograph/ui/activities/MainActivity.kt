@@ -55,6 +55,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.whenResumed
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -70,6 +71,7 @@ import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 class MainActivity : AbsSlidingMusicPanelActivity(),
@@ -119,10 +121,12 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 }
                 versionCheck()
                 lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED){
-                    SettingFlowStore(this@MainActivity).homeTabConfig.collect {
-                        with(drawerBinding.navigationView.menu) {
-                            clear()
-                            inflateDrawerMenu(this)
+                    SettingFlowStore(this@MainActivity).homeTabConfig.distinctUntilChanged().collect {
+                        whenResumed {
+                            with(drawerBinding.navigationView.menu) {
+                                clear()
+                                inflateDrawerMenu(this)
+                            }
                         }
                     }
                 }

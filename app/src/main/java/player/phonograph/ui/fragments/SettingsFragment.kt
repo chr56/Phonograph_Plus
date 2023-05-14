@@ -53,6 +53,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -123,24 +124,24 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
         observe {
-            settingFlowStore.nowPlayingScreenId.collect {
+            settingFlowStore.nowPlayingScreenId.distinctUntilChanged().collect {
                 updateNowPlayingScreenSummary()
             }
         }
         observe {
-            settingFlowStore.pathFilterExcludeMode.collect {
+            settingFlowStore.pathFilterExcludeMode.distinctUntilChanged().collect {
                 updatePathFilterExcludeMode()
             }
         }
         observe {
-            settingFlowStore.classicNotification.collect {
+            settingFlowStore.classicNotification.distinctUntilChanged().collect {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     findPreference<Preference>("colored_notification")!!.isEnabled = it
                 }
             }
         }
         observe {
-            settingFlowStore.broadcastSynchronizedLyrics.collect {
+            settingFlowStore.broadcastSynchronizedLyrics.distinctUntilChanged().collect {
                 // clear lyrics displaying on the status bar now
                 StatusBarLyric.stopLyric()
             }
