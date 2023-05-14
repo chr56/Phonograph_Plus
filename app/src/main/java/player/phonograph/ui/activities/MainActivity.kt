@@ -55,7 +55,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.whenResumed
+import androidx.lifecycle.whenStarted
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -112,7 +112,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
         Handler(Looper.getMainLooper()).postDelayed(
             {
-                lifecycleScope.launch(Dispatchers.Main) {
                 val showUpgradeDialog = intent.getBooleanExtra(UPGRADABLE, false)
                 if (showUpgradeDialog) {
                     showUpgradeDialog(intent.getParcelableExtra(VERSION_INFO) as? VersionCatalog)
@@ -120,16 +119,14 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                     checkUpdate()
                 }
                 versionCheck()
-                lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED){
-                    SettingFlowStore(this@MainActivity).homeTabConfig.distinctUntilChanged().collect {
-                        whenResumed {
-                            with(drawerBinding.navigationView.menu) {
-                                clear()
-                                inflateDrawerMenu(this)
+                lifecycleScope.launch(Dispatchers.Main) {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED){
+                        SettingFlowStore(this@MainActivity).homeTabConfig.distinctUntilChanged().collect {
+                            whenStarted {
+                                setupDrawerMenu(drawerBinding.navigationView.menu)
                             }
                         }
                     }
-                }
                 }
             }, 900
         )
@@ -167,7 +164,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
     override fun requestPermissions() {} // not allow
 
-    private fun inflateDrawerMenu(menu: Menu) {
+    private fun setupDrawerMenu(menu: Menu) {
+        menu.clear()
         attach(this, menu) {
             val activity = this@MainActivity
 
@@ -315,8 +313,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
     }
 
     private fun setUpDrawer() {
-        // inflate & setup drawer menu item
-        inflateDrawerMenu(drawerBinding.navigationView.menu)
 
         // padding
         with(drawerBinding.drawerLayout) {
