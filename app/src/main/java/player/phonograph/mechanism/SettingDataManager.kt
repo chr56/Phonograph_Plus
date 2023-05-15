@@ -115,7 +115,12 @@ object SettingDataManager {
         }
 
         runBlocking {
-            val prefArray = deserializeValue(json)
+            val prefArray = try {
+                deserializeValue(json)
+            } catch (e: Exception) {
+                reportError(e, TAG, "Failed to deserialize setting.")
+                emptyArray()
+            }
             context.dataStore.edit { preferences ->
                 preferences.putAll(*prefArray)
             }
