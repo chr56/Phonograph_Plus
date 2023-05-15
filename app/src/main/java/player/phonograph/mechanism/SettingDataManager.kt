@@ -116,7 +116,7 @@ object SettingDataManager {
 
         runBlocking {
             val prefArray = try {
-                deserializeValue(json)
+                deserializeSettingJson(json)
             } catch (e: Exception) {
                 reportError(e, TAG, "Failed to deserialize setting.")
                 emptyArray()
@@ -131,7 +131,7 @@ object SettingDataManager {
         false
     }
 
-    private fun deserializeValue(elements: Map<String, JsonElement>): Array<Preferences.Pair<*>> =
+    private fun deserializeSettingJson(elements: Map<String, JsonElement>): Array<Preferences.Pair<*>> =
         elements.mapNotNull { (jsonKey, jsonValue) ->
             val v = (jsonValue as? JsonPrimitive)
             if (v != null) {
