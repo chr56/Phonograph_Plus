@@ -362,10 +362,10 @@ class MusicService : Service() {
         AppWidgetCard.instance.notifyChange(this, what)
     }
 
-    fun updateSetting(key: String) {
+    fun updateSetting(key: String, value: Any) {
         when (key) {
             GAPLESS_PLAYBACK     -> {
-                val gaplessPlayback = Setting.instance.gaplessPlayback
+                val gaplessPlayback = (value as? Boolean) ?: false
                 controller.switchGaplessPlayback(gaplessPlayback)
                 controller.handler.apply {
                     if (gaplessPlayback) {

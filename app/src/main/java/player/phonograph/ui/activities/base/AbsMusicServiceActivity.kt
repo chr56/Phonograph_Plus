@@ -87,15 +87,15 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         val store = SettingFlowStore(this)
         observe {
             store.gaplessPlayback.distinctUntilChanged()
-                .collect { MusicPlayerRemote.musicService?.updateSetting(GAPLESS_PLAYBACK) }
+                .collect { MusicPlayerRemote.musicService?.updateSetting(GAPLESS_PLAYBACK, it) }
         }
         observe {
             store.coloredNotification.distinctUntilChanged()
-                .collect { MusicPlayerRemote.musicService?.updateSetting(COLORED_NOTIFICATION) }
+                .collect { MusicPlayerRemote.musicService?.updateSetting(COLORED_NOTIFICATION, it) }
         }
         observe {
             store.classicNotification.distinctUntilChanged()
-                .collect { MusicPlayerRemote.musicService?.updateSetting(CLASSIC_NOTIFICATION) }
+                .collect { MusicPlayerRemote.musicService?.updateSetting(CLASSIC_NOTIFICATION, it) }
         }
     }
 
