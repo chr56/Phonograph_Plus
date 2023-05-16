@@ -251,6 +251,9 @@ class SettingFlowStore(val context: Context) {
     val broadcastSynchronizedLyrics: Flow<Boolean>
         get() = flow(booleanPreferencesKey(BROADCAST_SYNCHRONIZED_LYRICS), true)
 
+    val broadcastCurrentPlayerState: Flow<Boolean>
+        get() = flow(booleanPreferencesKey(BROADCAST_CURRENT_PLAYER_STATE), true)
+
     val gaplessPlayback: Flow<Boolean>
         get() = flow(booleanPreferencesKey(GAPLESS_PLAYBACK), true)
 

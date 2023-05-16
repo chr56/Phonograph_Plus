@@ -10,6 +10,7 @@ import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
 import player.phonograph.service.queue.CurrentQueueState
+import player.phonograph.settings.BROADCAST_CURRENT_PLAYER_STATE
 import player.phonograph.settings.CLASSIC_NOTIFICATION
 import player.phonograph.settings.COLORED_NOTIFICATION
 import player.phonograph.settings.GAPLESS_PLAYBACK
@@ -92,6 +93,10 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         observe {
             store.coloredNotification.distinctUntilChanged()
                 .collect { MusicPlayerRemote.musicService?.updateSetting(COLORED_NOTIFICATION, it) }
+        }
+        observe {
+            store.broadcastCurrentPlayerState.distinctUntilChanged()
+                .collect { MusicPlayerRemote.musicService?.updateSetting(BROADCAST_CURRENT_PLAYER_STATE, it) }
         }
         observe {
             store.classicNotification.distinctUntilChanged()

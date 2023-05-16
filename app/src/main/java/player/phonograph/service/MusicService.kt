@@ -33,10 +33,10 @@ import player.phonograph.service.util.MediaButtonIntentReceiver
 import player.phonograph.service.util.MediaStoreObserverUtil
 import player.phonograph.service.util.MusicServiceUtil
 import player.phonograph.service.util.SongPlayCountHelper
+import player.phonograph.settings.BROADCAST_CURRENT_PLAYER_STATE
 import player.phonograph.settings.CLASSIC_NOTIFICATION
 import player.phonograph.settings.COLORED_NOTIFICATION
 import player.phonograph.settings.GAPLESS_PLAYBACK
-import player.phonograph.settings.Setting
 import android.app.Service
 import android.appwidget.AppWidgetManager
 import android.content.BroadcastReceiver
@@ -382,13 +382,16 @@ class MusicService : Service() {
                 playNotificationManager.setUpNotification()
                 playNotificationManager.updateNotification()
             }
+            BROADCAST_CURRENT_PLAYER_STATE -> {
+                throttledTimer.broadcastCurrentPlayerState = (value as? Boolean) ?: false
+            }
         }
     }
 
     fun replaceLyrics(lyrics: LrcLyrics?) = controller.replaceLyrics(lyrics)
 
     private inner class ThrottledTimer(private val mHandler: Handler) : Runnable {
-        private val broadcastCurrentPlayerState: Boolean = Setting.instance.broadcastCurrentPlayerState
+        var broadcastCurrentPlayerState: Boolean = false
         fun notifySeek() {
             playNotificationManager.updateMediaSessionMetaData()
             playNotificationManager.updateMediaSessionPlaybackState()
