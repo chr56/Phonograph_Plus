@@ -182,22 +182,22 @@ class MusicService : Service() {
             if (intent.action != null) {
                 controller.restoreIfNecessary()
                 when (intent.action) {
-                    ACTION_TOGGLE_PAUSE -> if (isPlaying) {
+                    ACTION_TOGGLE_PAUSE          -> if (isPlaying) {
                         pause()
                     } else {
                         play()
                     }
-                    ACTION_PAUSE -> pause()
-                    ACTION_PLAY -> play()
-                    ACTION_REWIND -> back(true)
-                    ACTION_SKIP -> playNextSong(true)
-                    ACTION_STOP_AND_QUIT_NOW -> {
+                    ACTION_PAUSE                 -> pause()
+                    ACTION_PLAY                  -> play()
+                    ACTION_REWIND                -> back(true)
+                    ACTION_SKIP                  -> playNextSong(true)
+                    ACTION_STOP_AND_QUIT_NOW     -> {
                         stopSelf()
                     }
                     ACTION_STOP_AND_QUIT_PENDING -> {
                         controller.quitAfterFinishCurrentSong = true
                     }
-                    ACTION_CANCEL_PENDING_QUIT -> {
+                    ACTION_CANCEL_PENDING_QUIT   -> {
                         controller.quitAfterFinishCurrentSong = false
                     }
                 }
@@ -292,7 +292,7 @@ class MusicService : Service() {
 
                 songPlayCountHelper.notifyPlayStateChanged(isPlaying)
             }
-            META_CHANGED -> {
+            META_CHANGED       -> {
                 // update playing notification
                 playNotificationManager.updateNotification()
                 playNotificationManager.updateMediaSessionMetaData()
@@ -309,7 +309,7 @@ class MusicService : Service() {
                 songPlayCountHelper.checkForBumpingPlayCount(this) // old
                 songPlayCountHelper.songMonitored = queueManager.currentSong // new
             }
-            QUEUE_CHANGED -> {
+            QUEUE_CHANGED      -> {
                 // update playing notification
                 playNotificationManager.updateMediaSessionMetaData() // because playing queue size might have changed
 
@@ -342,13 +342,13 @@ class MusicService : Service() {
                     AppWidgetClassic.NAME -> {
                         AppWidgetClassic.instance.performUpdate(this@MusicService, ids)
                     }
-                    AppWidgetSmall.NAME -> {
+                    AppWidgetSmall.NAME   -> {
                         AppWidgetSmall.instance.performUpdate(this@MusicService, ids)
                     }
-                    AppWidgetBig.NAME -> {
+                    AppWidgetBig.NAME     -> {
                         AppWidgetBig.instance.performUpdate(this@MusicService, ids)
                     }
-                    AppWidgetCard.NAME -> {
+                    AppWidgetCard.NAME    -> {
                         AppWidgetCard.instance.performUpdate(this@MusicService, ids)
                     }
                 }
@@ -364,7 +364,7 @@ class MusicService : Service() {
 
     fun updateSetting(key: String, value: Any) {
         when (key) {
-            GAPLESS_PLAYBACK     -> {
+            GAPLESS_PLAYBACK               -> {
                 val gaplessPlayback = (value as? Boolean) ?: false
                 controller.switchGaplessPlayback(gaplessPlayback)
                 controller.handler.apply {
@@ -377,8 +377,8 @@ class MusicService : Service() {
                     }
                 }
             }
-            COLORED_NOTIFICATION -> playNotificationManager.updateNotification()
-            CLASSIC_NOTIFICATION -> {
+            COLORED_NOTIFICATION           -> playNotificationManager.updateNotification()
+            CLASSIC_NOTIFICATION           -> {
                 playNotificationManager.setUpNotification()
                 playNotificationManager.updateNotification()
             }
@@ -407,7 +407,7 @@ class MusicService : Service() {
         }
     }
 
-    internal fun requireRefreshMetadata(){
+    internal fun requireRefreshMetadata() {
         playNotificationManager.updateMediaSessionMetaData()
         playNotificationManager.updateMediaSessionPlaybackState()
     }
