@@ -39,6 +39,7 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.player.AudioPlayer {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.player.PlayerController {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.queue.QueueManager {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.queue.CurrentQueueState$Observer {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.util.** {public <methods>;}
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.player.AlbumCoverPagerAdapter {public <methods>;public <fields>;}
@@ -69,3 +70,4 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.backup.DatabaseManger { boolean *(...);}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.backup.* extends player.phonograph.mechanism.backup.BackupItem { public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.migrate.* extends player.phonograph.mechanism.migrate.Migration { public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.event.* { public <methods>; }
