@@ -43,7 +43,7 @@ android {
 
         applicationId = "player.phonograph.plus"
         versionCode = 531
-        versionName = "0.7.x-dev"
+        versionName = "0.7.0-dev1"
 
         buildConfigField("String",
                          "GIT_COMMIT_HASH",
