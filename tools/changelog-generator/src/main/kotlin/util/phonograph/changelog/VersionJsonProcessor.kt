@@ -22,7 +22,7 @@ private fun ReleaseNoteModel.versionJsonItem(): VersionJsonItem = VersionJsonIte
     link = listOf(
         VersionJsonItem.Link(
             name = "Github Release",
-            url = "https://github.com/chr56/Phonograph_Plus/releases/tag/v$version"
+            url = downloadUrl()
         )
     ),
     releaseNote = VersionJsonItem.ReleaseNote(
@@ -30,6 +30,16 @@ private fun ReleaseNoteModel.versionJsonItem(): VersionJsonItem = VersionJsonIte
         en = generateHTMLNoteMinify(note, "en"),
     )
 )
+
+private const val LINK = "https://github.com/chr56/Phonograph_Plus/releases/tag/"
+
+private fun ReleaseNoteModel.downloadUrl(): String = "$LINK${tag(this)}"
+
+fun tag(model: ReleaseNoteModel): String = when (model.channel) {
+    "stable"  -> "v${model.version}"
+    "preview" -> "preview_${model.version}"
+    else      -> ""
+}
 
 
 fun parseVersionJson(path: String): VersionJson = parseVersionJson(File(path))
