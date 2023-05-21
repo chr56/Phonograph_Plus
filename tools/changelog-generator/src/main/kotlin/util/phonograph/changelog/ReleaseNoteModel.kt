@@ -9,12 +9,12 @@ data class ReleaseNoteModel(
     val versionCode: Int,
     val time: Long,
     val channel: ReleaseChannel?,
-    val note: Note
+    val note: Note,
 ) {
-    data class Note(
-        val en: List<String>,
-        val zh: List<String>
-    )
+    data class Note(private val map: Map<Language, List<String>>) {
+        fun language(lang: Language): List<String> =
+            map[lang] ?: run { println("no note for ${lang.code}"); emptyList() }
+    }
 }
 
 sealed class ReleaseChannel(val name: String) {
@@ -39,9 +39,11 @@ sealed class Language(val code: String, val fullCode: String) {
 
     companion object {
         fun parse(raw: String): Language = when (raw) {
-            "en","en-US" -> EN
-            "zh","zh-CN" -> ZH
-            else -> throw IllegalStateException("Unsupported language $raw")
+            EN.code, EN.fullCode -> EN
+            ZH.code, ZH.fullCode -> ZH
+            else                 -> throw IllegalStateException("Unsupported language $raw")
         }
+
+        val ALL = listOf(EN, ZH)
     }
 }

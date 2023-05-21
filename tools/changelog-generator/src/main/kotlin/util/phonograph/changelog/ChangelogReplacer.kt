@@ -57,7 +57,7 @@ private inline fun updateFile(file: File, block: (String) -> String) {
     }
 }
 
-fun updateStableChangelog(changelog: File, lang: String, releaseNote: Map<String, String>) {
+fun updateStableChangelog(changelog: File, lang: Language, releaseNote: Map<Language, String>) {
     updateFile(changelog) {
         val newItem = releaseNote[lang]
         require(newItem != null) { "changelog $lang is empty!" }
@@ -65,7 +65,7 @@ fun updateStableChangelog(changelog: File, lang: String, releaseNote: Map<String
     }
 }
 
-fun updatePreviewChangelog(changelog: File, lang: String, releaseNote: Map<String, String>) {
+fun updatePreviewChangelog(changelog: File, lang: Language, releaseNote: Map<Language, String>) {
     updateFile(changelog) {
         val newItem = releaseNote[lang]
         require(newItem != null) { "changelog $lang is empty!" }
@@ -79,7 +79,7 @@ fun updateChangelogs(model: ReleaseNoteModel, changelogsDir: File) {
     val en = File(changelogsDir, FILE_CHANGELOG_DEFAULT)
     val zh = File(changelogsDir, FILE_CHANGELOG_ZH)
 
-    listOf(en to "en", zh to "zh").forEach { (file, lang) ->
+    listOf(en to Language.EN, zh to Language.ZH).forEach { (file, lang) ->
         val map = generateHTML(model)
         when (model.channel) {
             ReleaseChannel.PREVIEW -> updatePreviewChangelog(file, lang, map)

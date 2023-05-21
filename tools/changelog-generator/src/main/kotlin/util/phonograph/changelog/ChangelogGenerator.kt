@@ -18,13 +18,13 @@ fun generateGitHubReleaseMarkDown(model: ReleaseNoteModel): String {
     val extra = "**Commit log**:"
 
     val zh = buildString {
-        appendLine(markdownNoteSubtitle("ZH"))
-        appendLine(markdownNoteItem(model.note.zh))
+        appendLine(markdownNoteSubtitle(Language.ZH.code.uppercase()))
+        appendLine(markdownNoteItem(model.note.language(Language.ZH)))
     }
 
     val en = buildString {
-        appendLine(markdownNoteSubtitle("EN"))
-        appendLine(markdownNoteItem(model.note.en))
+        appendLine(markdownNoteSubtitle(Language.EN.code.uppercase()))
+        appendLine(markdownNoteItem(model.note.language(Language.EN)))
     }
 
     return buildString {
@@ -40,13 +40,13 @@ fun generateTGReleaseMarkDown(model: ReleaseNoteModel): String {
     val header = "**v${model.version} ${dateString(model.time)}**"
 
     val zh = buildString {
-        appendLine("**ZH**")
-        appendLine(markdownNoteItem(model.note.zh))
+        appendLine("**${Language.ZH.code.uppercase()}**")
+        appendLine(markdownNoteItem(model.note.language(Language.ZH)))
     }
 
     val en = buildString {
-        appendLine("**EN**")
-        appendLine(markdownNoteItem(model.note.en))
+        appendLine("**${Language.EN.code.uppercase()}**")
+        appendLine(markdownNoteItem(model.note.language(Language.EN)))
     }
 
     return buildString {
@@ -56,20 +56,17 @@ fun generateTGReleaseMarkDown(model: ReleaseNoteModel): String {
     }
 }
 
-fun generateHTML(model: ReleaseNoteModel): Map<String, String> {
-    val en = generateHTMLImpl(model.version, model.time, model.note.en).collect()
-    val zh = generateHTMLImpl(model.version, model.time, model.note.zh).collect()
+fun generateHTML(model: ReleaseNoteModel): Map<Language, String> {
+    val en = generateHTMLImpl(model.version, model.time, model.note.language(Language.EN)).collect()
+    val zh = generateHTMLImpl(model.version, model.time, model.note.language(Language.ZH)).collect()
     return mapOf(
-        "en" to en,
-        "zh" to zh,
+        Language.EN to en,
+        Language.ZH to zh,
     )
 }
 
-fun generateHTMLNoteMinify(note: ReleaseNoteModel.Note, lang: String): String = html {
-    when (lang) {
-        "zh" -> htmlNoteItem(note.zh)
-        "en" -> htmlNoteItem(note.en)
-    }
+fun generateHTMLNoteMinify(note: ReleaseNoteModel.Note, lang: Language): String = html {
+    htmlNoteItem(note.language(lang))
 }.map { it.trimStart() }.reduce { acc, s -> "$acc$s" }.replace("\n", "\\n")
 
 private fun generateHTMLImpl(

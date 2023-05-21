@@ -26,8 +26,8 @@ private fun ReleaseNoteModel.versionJsonItem(): VersionJsonItem = VersionJsonIte
         )
     ),
     releaseNote = VersionJsonItem.ReleaseNote(
-        zh = generateHTMLNoteMinify(note, "zh"),
-        en = generateHTMLNoteMinify(note, "en"),
+        zh = generateHTMLNoteMinify(note, Language.ZH),
+        en = generateHTMLNoteMinify(note, Language.EN),
     )
 )
 
