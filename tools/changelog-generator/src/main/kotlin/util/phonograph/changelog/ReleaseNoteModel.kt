@@ -34,16 +34,16 @@ sealed class ReleaseChannel(val name: String) {
 }
 
 sealed class Language(val code: String, val fullCode: String) {
-    object EN : Language("en", "en-US")
-    object ZH : Language("zh", "zh-CN")
+    object English : Language("en", "en-US")
+    object Chinese : Language("zh", "zh-CN")
 
     companion object {
         fun parse(raw: String): Language = when (raw) {
-            EN.code, EN.fullCode -> EN
-            ZH.code, ZH.fullCode -> ZH
-            else                 -> throw IllegalStateException("Unsupported language $raw")
+            English.code, English.fullCode -> English
+            Chinese.code, Chinese.fullCode -> Chinese
+            else                           -> throw IllegalStateException("Unsupported language $raw")
         }
 
-        val ALL = listOf(EN, ZH)
+        val ALL = listOf(English, Chinese)
     }
 }

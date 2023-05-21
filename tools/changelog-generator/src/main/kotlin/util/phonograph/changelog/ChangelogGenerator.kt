@@ -18,13 +18,13 @@ fun generateGitHubReleaseMarkDown(model: ReleaseNoteModel): String {
     val extra = "**Commit log**:"
 
     val zh = buildString {
-        appendLine(markdownNoteSubtitle(Language.ZH.code.uppercase()))
-        appendLine(markdownNoteItem(model.note.language(Language.ZH)))
+        appendLine(markdownNoteSubtitle(Language.Chinese.code.uppercase()))
+        appendLine(markdownNoteItem(model.note.language(Language.Chinese)))
     }
 
     val en = buildString {
-        appendLine(markdownNoteSubtitle(Language.EN.code.uppercase()))
-        appendLine(markdownNoteItem(model.note.language(Language.EN)))
+        appendLine(markdownNoteSubtitle(Language.English.code.uppercase()))
+        appendLine(markdownNoteItem(model.note.language(Language.English)))
     }
 
     return buildString {
@@ -40,13 +40,13 @@ fun generateTGReleaseMarkDown(model: ReleaseNoteModel): String {
     val header = "**v${model.version} ${dateString(model.time)}**"
 
     val zh = buildString {
-        appendLine("**${Language.ZH.code.uppercase()}**")
-        appendLine(markdownNoteItem(model.note.language(Language.ZH)))
+        appendLine("**${Language.Chinese.code.uppercase()}**")
+        appendLine(markdownNoteItem(model.note.language(Language.Chinese)))
     }
 
     val en = buildString {
-        appendLine("**${Language.EN.code.uppercase()}**")
-        appendLine(markdownNoteItem(model.note.language(Language.EN)))
+        appendLine("**${Language.English.code.uppercase()}**")
+        appendLine(markdownNoteItem(model.note.language(Language.English)))
     }
 
     return buildString {
@@ -57,11 +57,11 @@ fun generateTGReleaseMarkDown(model: ReleaseNoteModel): String {
 }
 
 fun generateHTML(model: ReleaseNoteModel): Map<Language, String> {
-    val en = generateHTMLImpl(model.version, model.time, model.note.language(Language.EN)).collect()
-    val zh = generateHTMLImpl(model.version, model.time, model.note.language(Language.ZH)).collect()
+    val en = generateHTMLImpl(model.version, model.time, model.note.language(Language.English)).collect()
+    val zh = generateHTMLImpl(model.version, model.time, model.note.language(Language.Chinese)).collect()
     return mapOf(
-        Language.EN to en,
-        Language.ZH to zh,
+        Language.English to en,
+        Language.Chinese to zh,
     )
 }
 

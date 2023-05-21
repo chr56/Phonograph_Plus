@@ -79,7 +79,7 @@ fun updateChangelogs(model: ReleaseNoteModel, changelogsDir: File) {
     val en = File(changelogsDir, FILE_CHANGELOG_DEFAULT)
     val zh = File(changelogsDir, FILE_CHANGELOG_ZH)
 
-    listOf(en to Language.EN, zh to Language.ZH).forEach { (file, lang) ->
+    listOf(en to Language.English, zh to Language.Chinese).forEach { (file, lang) ->
         val map = generateHTML(model)
         when (model.channel) {
             ReleaseChannel.PREVIEW -> updatePreviewChangelog(file, lang, map)
