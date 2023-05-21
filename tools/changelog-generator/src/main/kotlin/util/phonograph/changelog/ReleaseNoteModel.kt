@@ -4,10 +4,12 @@
 
 package util.phonograph.changelog
 
+import util.phonograph.format.dateString
+
 data class ReleaseNoteModel(
     val version: String,
     val versionCode: Int,
-    val time: Long,
+    val timestamp: Timestamp,
     val channel: ReleaseChannel?,
     val note: Note,
 ) {
@@ -46,4 +48,9 @@ sealed class Language(val code: String, val fullCode: String) {
 
         val ALL = listOf(English, Chinese)
     }
+}
+
+@JvmInline
+value class Timestamp(val posixTimestamp: Long) {
+    val date: String get() = dateString(posixTimestamp)
 }

@@ -18,7 +18,7 @@ private fun ReleaseNoteModel.versionJsonItem(): VersionJsonItem = VersionJsonIte
     channel = channel?.name ?: "NA",
     versionName = version,
     versionCode = versionCode,
-    date = time,
+    date = timestamp.posixTimestamp,
     link = listOf(
         VersionJsonItem.Link(
             name = "Github Release",

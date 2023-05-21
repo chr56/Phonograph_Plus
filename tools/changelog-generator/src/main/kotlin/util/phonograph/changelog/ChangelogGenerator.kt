@@ -4,14 +4,13 @@
 
 package util.phonograph.changelog
 
-import util.phonograph.format.dateString
 import util.phonograph.format.div
 import util.phonograph.format.html
 import util.phonograph.format.htmlNoteItem
 import util.phonograph.format.markdownNoteItem
 import util.phonograph.format.markdownNoteSubtitle
 
-internal fun ReleaseNoteModel.markdownHeader() = "## **v${version} ${dateString(time)}**"
+internal fun ReleaseNoteModel.markdownHeader() = "## **v${version} ${timestamp.date}**"
 fun generateGitHubReleaseMarkDown(model: ReleaseNoteModel): String {
 
     val header = model.markdownHeader()
@@ -37,7 +36,7 @@ fun generateGitHubReleaseMarkDown(model: ReleaseNoteModel): String {
 
 fun generateTGReleaseMarkDown(model: ReleaseNoteModel): String {
 
-    val header = "**v${model.version} ${dateString(model.time)}**"
+    val header = "**v${model.version} ${model.timestamp.date}**"
 
     val zh = buildString {
         appendLine("**${Language.Chinese.code.uppercase()}**")
@@ -57,8 +56,8 @@ fun generateTGReleaseMarkDown(model: ReleaseNoteModel): String {
 }
 
 fun generateHTML(model: ReleaseNoteModel): Map<Language, String> {
-    val en = generateHTMLImpl(model.version, model.time, model.note.language(Language.English)).collect()
-    val zh = generateHTMLImpl(model.version, model.time, model.note.language(Language.Chinese)).collect()
+    val en = generateHTMLImpl(model.version, model.timestamp, model.note.language(Language.English)).collect()
+    val zh = generateHTMLImpl(model.version, model.timestamp, model.note.language(Language.Chinese)).collect()
     return mapOf(
         Language.English to en,
         Language.Chinese to zh,
@@ -71,16 +70,16 @@ fun generateHTMLNoteMinify(note: ReleaseNoteModel.Note, lang: Language): String 
 
 private fun generateHTMLImpl(
     version: String,
-    date: Long,
+    timestamp: Timestamp,
     items: List<String>,
 ) = html {
-    line(htmlHeader(version, date))
+    line(htmlHeader(version, timestamp))
     div {
         htmlNoteItem(items)
     }
 }
 
-private fun htmlHeader(version: String, date: Long) =
-    "<h4><b>$version</b> ${dateString(date)}</h4>"
+private fun htmlHeader(version: String, timestamp: Timestamp) =
+    "<h4><b>$version</b> ${timestamp.date}</h4>"
 
 private fun List<String>.collect(): String = reduce { acc, s -> "$acc\n$s" }

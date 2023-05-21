@@ -4,12 +4,11 @@
 
 package util.phonograph.changelog
 
-import util.phonograph.format.dateString
 import java.io.File
 
 fun generateFdroidMetadataChangelogText(model: ReleaseNoteModel, language: Language): String =
     buildString {
-        appendLine("<b>${model.version}(${model.versionCode}) ${dateString(model.time)}</b>")
+        appendLine("<b>${model.version}(${model.versionCode}) ${model.timestamp.date}</b>")
         val note = model.note.language(language)
         for (line in note) {
             appendLine("- $line")

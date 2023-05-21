@@ -45,7 +45,7 @@ fun parseReleaseNote(file: File): ReleaseNoteModel {
     return ReleaseNoteModel(
         version = result["version"] ?: "NA",
         versionCode = result["versionCode"]?.toInt() ?: -1,
-        time = result["date"]?.toLongOrNull() ?: 0,
+        timestamp = Timestamp((result["date"]?.toLongOrNull() ?: 0)),
         channel = result["channel"]?.let { ReleaseChannel.parse(it) },
         note = ReleaseNoteModel.Note(note)
     )
