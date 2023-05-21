@@ -15,7 +15,7 @@ internal fun ReleaseNoteModel.markdownHeader() = "## **v${version} ${dateString(
 fun generateGitHubReleaseMarkDown(model: ReleaseNoteModel): String {
 
     val header = model.markdownHeader()
-    val extra = "**Commit log**: https://github.com/"
+    val extra = "**Commit log**:"
 
     val zh = buildString {
         appendLine(markdownNoteSubtitle("ZH"))
