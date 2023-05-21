@@ -33,14 +33,7 @@ private fun ReleaseNoteModel.versionJsonItem(): VersionJsonItem = VersionJsonIte
 
 private const val LINK = "https://github.com/chr56/Phonograph_Plus/releases/tag/"
 
-private fun ReleaseNoteModel.downloadUrl(): String = "$LINK${tag(this)}"
-
-fun tag(model: ReleaseNoteModel): String = when (model.channel) {
-    ReleaseChannel.PREVIEW -> "preview_${model.version}"
-    ReleaseChannel.STABLE  -> "v${model.version}"
-    ReleaseChannel.LTS     -> "v${model.version}"
-    else                   -> throw IllegalStateException("can not process tag for channel ${model.channel?.name}")
-}
+private fun ReleaseNoteModel.downloadUrl(): String = "$LINK$tag"
 
 
 fun parseVersionJson(path: String): VersionJson = parseVersionJson(File(path))

@@ -13,6 +13,16 @@ data class ReleaseNoteModel(
     val channel: ReleaseChannel?,
     val note: Note,
 ) {
+
+    val tag: String
+        get() = when (channel) {
+            ReleaseChannel.PREVIEW -> "preview_$version"
+            ReleaseChannel.STABLE  -> "v$version"
+            ReleaseChannel.LTS     -> "v$version"
+            else                   ->
+                throw IllegalStateException("can not process tag for channel ${channel?.name}")
+        }
+
     data class Note(private val map: Map<Language, List<String>>) {
         fun language(lang: Language): List<String> =
             map[lang] ?: run { println("no note for ${lang.code}"); emptyList() }
