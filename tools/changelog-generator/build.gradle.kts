@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
+
 repositories {
     mavenCentral()
     google()
@@ -100,6 +103,10 @@ tasks.register("GenerateFdroidMetadata", JavaExec::class.java) {
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
+}
+
+tasks.withType(KotlinCompile::class.java) {
+    (kotlinOptions as KotlinJvmOptions).jvmTarget = "17"
 }
 
 dependencies {
