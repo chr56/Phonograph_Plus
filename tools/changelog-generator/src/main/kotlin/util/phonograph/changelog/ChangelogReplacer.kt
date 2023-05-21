@@ -82,10 +82,10 @@ fun updateChangelogs(model: ReleaseNoteModel, changelogsDir: File) {
     listOf(en to "en", zh to "zh").forEach { (file, lang) ->
         val map = generateHTML(model)
         when (model.channel) {
-            "preview" -> updatePreviewChangelog(file, lang, map)
-            "stable"  -> updateStableChangelog(file, lang, map)
-            "lts"     -> updateStableChangelog(file, lang, map)
-            else      -> throw Exception("Unknown channel ${model.channel}")
+            ReleaseChannel.PREVIEW -> updatePreviewChangelog(file, lang, map)
+            ReleaseChannel.STABLE  -> updateStableChangelog(file, lang, map)
+            ReleaseChannel.LTS     -> updateStableChangelog(file, lang, map)
+            else                   -> throw Exception("Unknown channel ${model.channel}")
         }
     }
 

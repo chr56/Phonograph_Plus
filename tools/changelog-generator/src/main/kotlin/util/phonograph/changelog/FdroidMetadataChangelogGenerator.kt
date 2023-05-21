@@ -45,7 +45,7 @@ private fun targetFile(rootPath: String, lang: String, versionCode: Int): File {
 private fun targetPath(rootPath: String, lang: String) = "$rootPath/fastlane/metadata/android/$lang/changelogs"
 
 fun writeFdroidMetadataVersionInfo(model: ReleaseNoteModel, rootPath: String) {
-    if (model.channel == "stable") {
+    if (model.channel is ReleaseChannel.STABLE) {
         val text = generateFdroidMetadataVersionInfo(model)
         val file = File(rootPath, FDROID_METADATA_VERSION_INFO)
         if (file.exists()) file.delete() else file.createNewFile()
