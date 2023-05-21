@@ -4,6 +4,7 @@
 
 package util.phonograph
 
+import util.phonograph.changelog.Language
 import util.phonograph.changelog.parseReleaseNote
 import util.phonograph.changelog.writeFdroidMetadataChangelogText
 import util.phonograph.changelog.writeFdroidMetadataVersionInfo
@@ -16,8 +17,7 @@ fun main(args: Array<String>) {
     val model = parseReleaseNote("$rootPath/$sourcePath")
 
     println("Processing...")
-    val languages = listOf("en-US", "zh-CN")
-    for (lang in languages) {
+    for (lang in Language.ALL) {
         writeFdroidMetadataChangelogText(model, rootPath, lang)
     }
     writeFdroidMetadataVersionInfo(model, rootPath)

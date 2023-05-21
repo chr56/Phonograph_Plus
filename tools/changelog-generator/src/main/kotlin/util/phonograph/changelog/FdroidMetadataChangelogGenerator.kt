@@ -4,29 +4,24 @@
 
 package util.phonograph.changelog
 
-import util.phonograph.format.dateString
 import java.io.File
 
-fun generateFdroidMetadataChangelogText(model: ReleaseNoteModel, lang: String): String =
+fun generateFdroidMetadataChangelogText(model: ReleaseNoteModel, language: Language): String =
     buildString {
-        appendLine("<b>${model.version}(${model.versionCode}) ${dateString(model.time)}</b>")
-        val note = when (lang) {
-            "en-US" -> model.note.en
-            "zh-CN" -> model.note.zh
-            else    -> throw IllegalArgumentException("illegal language $lang")
-        }
+        appendLine("<b>${model.version}(${model.versionCode}) ${model.timestamp.date}</b>")
+        val note = model.note.language(language)
         for (line in note) {
             appendLine("- $line")
         }
     }.cutOff()
 
-fun writeFdroidMetadataChangelogText(model: ReleaseNoteModel, rootPath: String, lang: String) {
+fun writeFdroidMetadataChangelogText(model: ReleaseNoteModel, rootPath: String, lang: Language) {
     val text = generateFdroidMetadataChangelogText(model, lang)
     val file = targetFile(rootPath, lang, model.versionCode)
     writeToFile(text, file)
 }
 
-private fun targetFile(rootPath: String, lang: String, versionCode: Int): File {
+private fun targetFile(rootPath: String, lang: Language, versionCode: Int): File {
     val directory = File(targetPath(rootPath, lang))
     if (directory.exists()) {
         if (!directory.isDirectory) throw Exception("${directory.path} not a Directory")
@@ -42,10 +37,11 @@ private fun targetFile(rootPath: String, lang: String, versionCode: Int): File {
     return file
 }
 
-private fun targetPath(rootPath: String, lang: String) = "$rootPath/fastlane/metadata/android/$lang/changelogs"
+private fun targetPath(rootPath: String, lang: Language) =
+    "$rootPath/fastlane/metadata/android/${lang.fullCode}/changelogs"
 
 fun writeFdroidMetadataVersionInfo(model: ReleaseNoteModel, rootPath: String) {
-    if (model.channel == "stable") {
+    if (model.channel is ReleaseChannel.STABLE) {
         val text = generateFdroidMetadataVersionInfo(model)
         val file = File(rootPath, FDROID_METADATA_VERSION_INFO)
         if (file.exists()) file.delete() else file.createNewFile()

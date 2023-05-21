@@ -15,10 +15,10 @@ import java.io.File
 
 
 private fun ReleaseNoteModel.versionJsonItem(): VersionJsonItem = VersionJsonItem(
-    channel = channel ?: "NA",
+    channel = channel?.name ?: "NA",
     versionName = version,
     versionCode = versionCode,
-    date = time,
+    date = timestamp.posixTimestamp,
     link = listOf(
         VersionJsonItem.Link(
             name = "Github Release",
@@ -26,20 +26,14 @@ private fun ReleaseNoteModel.versionJsonItem(): VersionJsonItem = VersionJsonIte
         )
     ),
     releaseNote = VersionJsonItem.ReleaseNote(
-        zh = generateHTMLNoteMinify(note, "zh"),
-        en = generateHTMLNoteMinify(note, "en"),
+        zh = generateHTMLNoteMinify(note, Language.Chinese),
+        en = generateHTMLNoteMinify(note, Language.English),
     )
 )
 
 private const val LINK = "https://github.com/chr56/Phonograph_Plus/releases/tag/"
 
-private fun ReleaseNoteModel.downloadUrl(): String = "$LINK${tag(this)}"
-
-fun tag(model: ReleaseNoteModel): String = when (model.channel) {
-    "stable"  -> "v${model.version}"
-    "preview" -> "preview_${model.version}"
-    else      -> ""
-}
+private fun ReleaseNoteModel.downloadUrl(): String = "$LINK$tag"
 
 
 fun parseVersionJson(path: String): VersionJson = parseVersionJson(File(path))

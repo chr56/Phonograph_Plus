@@ -15,7 +15,7 @@ fun parseReleaseNote(file: File): ReleaseNoteModel {
 
     var noteCollectTarget: String? = null
     val buffer = mutableListOf<String>()
-    val note = mutableMapOf<String, List<String>>()
+    val note = mutableMapOf<Language, List<String>>()
 
     val lines = file.readLines(Charsets.UTF_8)
     for ((index, line) in lines.withIndex()) {
@@ -24,7 +24,7 @@ fun parseReleaseNote(file: File): ReleaseNoteModel {
             result.putAll(tags)
             if (tags.containsKey("note")) {
                 if (noteCollectTarget != null) { // close last and summit
-                    note[noteCollectTarget] = buffer.toList()
+                    note[Language.parse(noteCollectTarget)] = buffer.toList()
                     buffer.clear()
                 }
                 noteCollectTarget = tags["note"]
@@ -40,17 +40,14 @@ fun parseReleaseNote(file: File): ReleaseNoteModel {
     }
 
     if (noteCollectTarget != null) {
-        note[noteCollectTarget] = buffer
+        note[Language.parse(noteCollectTarget)] = buffer
     }
     return ReleaseNoteModel(
         version = result["version"] ?: "NA",
         versionCode = result["versionCode"]?.toInt() ?: -1,
-        time = result["date"]?.toLongOrNull() ?: 0,
-        channel = result["channel"],
-        note = ReleaseNoteModel.Note(
-            note["en"] ?: emptyList(),
-            note["zh"] ?: emptyList(),
-        )
+        timestamp = Timestamp((result["date"]?.toLongOrNull() ?: 0)),
+        channel = result["channel"]?.let { ReleaseChannel.parse(it) },
+        note = ReleaseNoteModel.Note(note)
     )
 }
 
