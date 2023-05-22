@@ -15,6 +15,7 @@ import player.phonograph.util.text.currentDateTime
 import player.phonograph.util.text.getDeviceInfo
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
+import androidx.lifecycle.lifecycleScope
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -30,7 +31,6 @@ import android.view.Menu.NONE
 import android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM
 import android.view.MenuItem.SHOW_AS_ACTION_NEVER
 import android.widget.Toast
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -128,7 +128,7 @@ class CrashActivity : ToolbarActivity() {
 
         // save crash report
         externalCacheDir?.let { cacheDir ->
-            coroutineScope.launch(Dispatchers.IO) {
+            lifecycleScope.launch(Dispatchers.IO + SupervisorJob()) {
                 val file = File(cacheDir, "Error_Report_${currentDateTime()}.txt")
                 file.writer().use { writer ->
                     writer.write(displayText)
@@ -178,5 +178,4 @@ class CrashActivity : ToolbarActivity() {
         return true
     }
 
-    private val coroutineScope by lazy { CoroutineScope(SupervisorJob()) }
 }
