@@ -16,6 +16,8 @@ import player.phonograph.util.text.getDeviceInfo
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.lifecycle.lifecycleScope
+import android.app.Activity
+import android.app.ActivityManager
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -26,6 +28,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.Process
 import android.view.Menu
 import android.view.Menu.NONE
 import android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM
@@ -178,4 +181,13 @@ class CrashActivity : ToolbarActivity() {
         return true
     }
 
+    companion object {
+        private const val CRASH_PROCESS_NAME_SUFFIX = "crash"
+        fun isCrashProcess(context: Context): Boolean {
+            val manager = context.getSystemService(Activity.ACTIVITY_SERVICE) as ActivityManager
+            val runningProcesses = manager.runningAppProcesses ?: return false
+            val processInfo = runningProcesses.first { it.pid == Process.myPid() }
+            return processInfo.processName.endsWith(CRASH_PROCESS_NAME_SUFFIX)
+        }
+    }
 }
