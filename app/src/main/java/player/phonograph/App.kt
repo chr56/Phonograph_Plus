@@ -87,6 +87,8 @@ class App : Application(), ImageLoaderFactory {
             exitProcess(1)
         }
 
+        if (CrashActivity.isCrashProcess(this)) return
+
         // default theme
         if (!ThemeStore.isConfigured(this, 1)) {
             ThemeColor.editTheme(this)
