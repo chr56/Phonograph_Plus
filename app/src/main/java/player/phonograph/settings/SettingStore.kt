@@ -236,37 +236,37 @@ class SettingFlowStore(val context: Context) {
 
     // Theme and Color
     val themeString: Flow<String>
-        get() = flow(stringPreferencesKey(GENERAL_THEME), StyleConfig.THEME_AUTO)
+        get() = from(stringPreferencesKey(GENERAL_THEME), StyleConfig.THEME_AUTO)
     val enableMonet: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(ENABLE_MONET), false)
+        get() = from(booleanPreferencesKey(ENABLE_MONET), false)
 
     // Appearance
     val homeTabConfigJsonString: Flow<String>
-        get() = flow(stringPreferencesKey(HOME_TAB_CONFIG), "")
+        get() = from(stringPreferencesKey(HOME_TAB_CONFIG), "")
     val coloredNotification: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(COLORED_NOTIFICATION), true)
+        get() = from(booleanPreferencesKey(COLORED_NOTIFICATION), true)
     val classicNotification: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(CLASSIC_NOTIFICATION), false)
+        get() = from(booleanPreferencesKey(CLASSIC_NOTIFICATION), false)
     val coloredAppShortcuts: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(COLORED_APP_SHORTCUTS), true)
+        get() = from(booleanPreferencesKey(COLORED_APP_SHORTCUTS), true)
     val fixedTabLayout: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(FIXED_TAB_LAYOUT), false)
+        get() = from(booleanPreferencesKey(FIXED_TAB_LAYOUT), false)
 
     // Behavior-Retention
     val rememberLastTab: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(REMEMBER_LAST_TAB), true)
+        get() = from(booleanPreferencesKey(REMEMBER_LAST_TAB), true)
     val lastPage: Flow<Int>
-        get() = flow(intPreferencesKey(LAST_PAGE), 0)
+        get() = from(intPreferencesKey(LAST_PAGE), 0)
     val lastMusicChooser: Flow<Int>
-        get() = flow(intPreferencesKey(LAST_MUSIC_CHOOSER), 0)
+        get() = from(intPreferencesKey(LAST_MUSIC_CHOOSER), 0)
     val nowPlayingScreenIndex: Flow<Int>
-        get() = flow(intPreferencesKey(NOW_PLAYING_SCREEN_ID), 0)
+        get() = from(intPreferencesKey(NOW_PLAYING_SCREEN_ID), 0)
 
     // Behavior-File
     val imageSourceConfigJsonString: Flow<String>
-        get() = flow(stringPreferencesKey(IMAGE_SOURCE_CONFIG), "{}")
+        get() = from(stringPreferencesKey(IMAGE_SOURCE_CONFIG), "{}")
     val autoDownloadImagesPolicy: Flow<String>
-        get() = flow(stringPreferencesKey(AUTO_DOWNLOAD_IMAGES_POLICY), DOWNLOAD_IMAGES_POLICY_NEVER)
+        get() = from(stringPreferencesKey(AUTO_DOWNLOAD_IMAGES_POLICY), DOWNLOAD_IMAGES_POLICY_NEVER)
     val isAllowedToDownloadMetadata: Flow<Boolean>
         get() = autoDownloadImagesPolicy.map {
             when (it) {
@@ -288,29 +288,29 @@ class SettingFlowStore(val context: Context) {
 
     // Behavior-Playing
     val songItemClickMode: Flow<Int>
-        get() = flow(intPreferencesKey(SONG_ITEM_CLICK_MODE), SONG_PLAY_NOW)
+        get() = from(intPreferencesKey(SONG_ITEM_CLICK_MODE), SONG_PLAY_NOW)
     val songItemClickExtraFlag: Flow<Int>
-        get() = flow(intPreferencesKey(SONG_ITEM_CLICK_EXTRA_FLAG), FLAG_MASK_PLAY_QUEUE_IF_EMPTY)
+        get() = from(intPreferencesKey(SONG_ITEM_CLICK_EXTRA_FLAG), FLAG_MASK_PLAY_QUEUE_IF_EMPTY)
     val keepPlayingQueueIntact: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(KEEP_PLAYING_QUEUE_INTACT), true)
+        get() = from(booleanPreferencesKey(KEEP_PLAYING_QUEUE_INTACT), true)
     val rememberShuffle: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(REMEMBER_SHUFFLE), true)
+        get() = from(booleanPreferencesKey(REMEMBER_SHUFFLE), true)
     val gaplessPlayback: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(GAPLESS_PLAYBACK), false)
+        get() = from(booleanPreferencesKey(GAPLESS_PLAYBACK), false)
     val audioDucking: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(AUDIO_DUCKING), true)
+        get() = from(booleanPreferencesKey(AUDIO_DUCKING), true)
     val enableLyrics: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(ENABLE_LYRICS), true)
+        get() = from(booleanPreferencesKey(ENABLE_LYRICS), true)
     val broadcastSynchronizedLyrics: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(BROADCAST_SYNCHRONIZED_LYRICS), true)
+        get() = from(booleanPreferencesKey(BROADCAST_SYNCHRONIZED_LYRICS), true)
     val broadcastCurrentPlayerState: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(BROADCAST_CURRENT_PLAYER_STATE), true)
+        get() = from(booleanPreferencesKey(BROADCAST_CURRENT_PLAYER_STATE), true)
 
     // Behavior-Lyrics
     val synchronizedLyricsShow: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(SYNCHRONIZED_LYRICS_SHOW), true)
+        get() = from(booleanPreferencesKey(SYNCHRONIZED_LYRICS_SHOW), true)
     val displaySynchronizedLyricsTimeAxis: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(DISPLAY_LYRICS_TIME_AXIS), true)
+        get() = from(booleanPreferencesKey(DISPLAY_LYRICS_TIME_AXIS), true)
 
     val lastAddedCutoff: Flow<Long>
         get() = lastAddedCutoffPref.map {
@@ -328,35 +328,35 @@ class SettingFlowStore(val context: Context) {
             return@map (System.currentTimeMillis() - interval) / 1000
         }
     val lastAddedCutoffPref: Flow<String>
-        get() = flow(stringPreferencesKey(LAST_ADDED_CUTOFF), "past_one_months")
+        get() = from(stringPreferencesKey(LAST_ADDED_CUTOFF), "past_one_months")
 
     // Upgrade
     val checkUpgradeAtStartup: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(CHECK_UPGRADE_AT_STARTUP), false)
+        get() = from(booleanPreferencesKey(CHECK_UPGRADE_AT_STARTUP), false)
 
     // List-SortMode
     private val _songSortMode: Flow<String>
-        get() = flow(stringPreferencesKey(SONG_SORT_MODE), SortMode(SortRef.ID).serialize())
+        get() = from(stringPreferencesKey(SONG_SORT_MODE), SortMode(SortRef.ID).serialize())
     val songSortMode: Flow<SortMode>
         get() = _songSortMode.map { SortMode.deserialize(it) }
 
     private val _albumSortMode: Flow<String>
-        get() = flow(stringPreferencesKey(ALBUM_SORT_MODE), SortMode(SortRef.ID).serialize())
+        get() = from(stringPreferencesKey(ALBUM_SORT_MODE), SortMode(SortRef.ID).serialize())
     val albumSortMode: Flow<SortMode>
         get() = _albumSortMode.map { SortMode.deserialize(it) }
 
     private val _artistSortMode: Flow<String>
-        get() = flow(stringPreferencesKey(ARTIST_SORT_MODE), SortMode(SortRef.ID).serialize())
+        get() = from(stringPreferencesKey(ARTIST_SORT_MODE), SortMode(SortRef.ID).serialize())
     val artistSortMode: Flow<SortMode>
         get() = _artistSortMode.map { SortMode.deserialize(it) }
 
     private val _genreSortMode: Flow<String>
-        get() = flow(stringPreferencesKey(GENRE_SORT_MODE), SortMode(SortRef.ID).serialize())
+        get() = from(stringPreferencesKey(GENRE_SORT_MODE), SortMode(SortRef.ID).serialize())
     val genreSortMode: Flow<SortMode>
         get() = _genreSortMode.map { SortMode.deserialize(it) }
 
     private val _fileSortMode: Flow<String>
-        get() = flow(stringPreferencesKey(FILE_SORT_MODE), FileSortMode(SortRef.ID).serialize())
+        get() = from(stringPreferencesKey(FILE_SORT_MODE), FileSortMode(SortRef.ID).serialize())
     val fileSortMode: Flow<FileSortMode>
         get() = _fileSortMode.map { FileSortMode.deserialize(it) }
 
@@ -364,48 +364,46 @@ class SettingFlowStore(val context: Context) {
     // List-Appearance
     /*  see also [DisplaySetting] */
     val albumArtistColoredFooters: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(ALBUM_ARTIST_COLORED_FOOTERS), true)
+        get() = from(booleanPreferencesKey(ALBUM_ARTIST_COLORED_FOOTERS), true)
     val showFileImages: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(SHOW_FILE_IMAGINES), false)
+        get() = from(booleanPreferencesKey(SHOW_FILE_IMAGINES), false)
 
     // SleepTimer
     val lastSleepTimerValue: Flow<Int>
-        get() = flow(intPreferencesKey(LAST_SLEEP_TIMER_VALUE), 30)
+        get() = from(intPreferencesKey(LAST_SLEEP_TIMER_VALUE), 30)
     val nextSleepTimerElapsedRealTime: Flow<Long>
-        get() = flow(longPreferencesKey(NEXT_SLEEP_TIMER_ELAPSED_REALTIME), -1L)
+        get() = from(longPreferencesKey(NEXT_SLEEP_TIMER_ELAPSED_REALTIME), -1L)
     val sleepTimerFinishMusic: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(SLEEP_TIMER_FINISH_SONG), false)
+        get() = from(booleanPreferencesKey(SLEEP_TIMER_FINISH_SONG), false)
 
     // Misc
     val ignoreUpgradeDate: Flow<Long>
-        get() = flow(longPreferencesKey(IGNORE_UPGRADE_DATE), 0)
+        get() = from(longPreferencesKey(IGNORE_UPGRADE_DATE), 0)
     val initializedBlacklist: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(INITIALIZED_BLACKLIST), false)
+        get() = from(booleanPreferencesKey(INITIALIZED_BLACKLIST), false)
     val pathFilterExcludeMode: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(PATH_FILTER_EXCLUDE_MODE), true)
+        get() = from(booleanPreferencesKey(PATH_FILTER_EXCLUDE_MODE), true)
 
     // Compatibility
     val useLegacyFavoritePlaylistImpl: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(USE_LEGACY_FAVORITE_PLAYLIST_IMPL), false)
+        get() = from(booleanPreferencesKey(USE_LEGACY_FAVORITE_PLAYLIST_IMPL), false)
     val useLegacyListFilesImpl: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(USE_LEGACY_LIST_FILES_IMPL), false)
+        get() = from(booleanPreferencesKey(USE_LEGACY_LIST_FILES_IMPL), false)
     val playlistFilesOperationBehaviour: Flow<String>
-        get() = flow(stringPreferencesKey(PLAYLIST_FILES_OPERATION_BEHAVIOUR), PLAYLIST_OPS_BEHAVIOUR_AUTO)
+        get() = from(stringPreferencesKey(PLAYLIST_FILES_OPERATION_BEHAVIOUR), PLAYLIST_OPS_BEHAVIOUR_AUTO)
     val useLegacyDetailDialog: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(USE_LEGACY_DETAIL_DIALOG), false)
+        get() = from(booleanPreferencesKey(USE_LEGACY_DETAIL_DIALOG), false)
 
     // Changelog
     val previousVersion: Flow<Int>
-        get() = flow(intPreferencesKey(PREVIOUS_VERSION), -1)
+        get() = from(intPreferencesKey(PREVIOUS_VERSION), -1)
     val introShown: Flow<Boolean>
-        get() = flow(booleanPreferencesKey(INTRO_SHOWN), false)
+        get() = from(booleanPreferencesKey(INTRO_SHOWN), false)
 
     //endregion
 
-
-    private val prefs: Flow<Preferences> = context.dataStore.data
-    private fun <T> flow(key: Preferences.Key<T>, defaultValue: T): Flow<T> =
-        prefs.map { preferences -> preferences[key] ?: defaultValue }
+    private fun <T> from(key: Preferences.Key<T>, defaultValue: T): Flow<T> =
+        context.dataStore.data.map { preferences -> preferences[key] ?: defaultValue }
 }
 
 
