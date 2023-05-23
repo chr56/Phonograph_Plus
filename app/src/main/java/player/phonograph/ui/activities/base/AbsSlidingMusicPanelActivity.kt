@@ -60,7 +60,7 @@ abstract class AbsSlidingMusicPanelActivity :
         // add fragment
         switchNowPlayingScreen(NowPlayingScreenConfig.nowPlayingScreen)
 
-        val flow = SettingFlowStore(this).nowPlayingScreenId
+        val flow = SettingFlowStore(this).nowPlayingScreenIndex
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 flow.distinctUntilChanged().collect {

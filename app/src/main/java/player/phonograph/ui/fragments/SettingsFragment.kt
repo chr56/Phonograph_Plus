@@ -42,7 +42,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
 import androidx.preference.TwoStatePreference
 import android.annotation.SuppressLint
 import android.content.Context
@@ -124,7 +123,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
         observe {
-            settingFlowStore.nowPlayingScreenId.distinctUntilChanged().collect {
+            settingFlowStore.nowPlayingScreenIndex.distinctUntilChanged().collect {
                 updateNowPlayingScreenSummary()
             }
         }

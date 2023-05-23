@@ -233,10 +233,10 @@ class Setting {
 class SettingFlowStore(val context: Context) {
     private val prefs: Flow<Preferences> = context.dataStore.data
 
-    val homeTabConfig: Flow<String>
+    val homeTabConfigJsonString: Flow<String>
         get() = flow(stringPreferencesKey(HOME_TAB_CONFIG), "")
 
-    val nowPlayingScreenId: Flow<Int>
+    val nowPlayingScreenIndex: Flow<Int>
         get() = flow(intPreferencesKey(NOW_PLAYING_SCREEN_ID), 0)
 
     val fixedTabLayout: Flow<Boolean>

@@ -121,7 +121,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 versionCheck()
                 lifecycleScope.launch(Dispatchers.Main) {
                     lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED){
-                        SettingFlowStore(this@MainActivity).homeTabConfig.distinctUntilChanged().collect {
+                        SettingFlowStore(this@MainActivity).homeTabConfigJsonString.distinctUntilChanged().collect {
                             whenStarted {
                                 setupDrawerMenu(drawerBinding.navigationView.menu)
                             }

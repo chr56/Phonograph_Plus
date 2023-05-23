@@ -49,8 +49,6 @@ import android.view.MenuItem.SHOW_AS_ACTION_ALWAYS
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -63,7 +61,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         val store = SettingFlowStore(requireContext())
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                store.homeTabConfig.distinctUntilChanged().collect {
+                store.homeTabConfigJsonString.distinctUntilChanged().collect {
                     whenStarted { reloadPages() }
                 }
             }
