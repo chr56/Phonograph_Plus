@@ -21,7 +21,7 @@ class PathFilterFolderChooserDialog : FileChooserDialog() {
             .message(text = file.absolutePath)
             .positiveButton(android.R.string.ok) {
                 with(PathFilterStore.getInstance(view.context)) {
-                    val mode = Setting.instance(view.context).pathFilterExcludeMode
+                    val mode = Setting.instance.pathFilterExcludeMode
                     if (mode) addBlacklistPath(file) else addWhitelistPath(file)
                 }
 

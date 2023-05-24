@@ -39,6 +39,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
+import player.phonograph.settings.SettingFlowStore
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.ScanMediaFolderDialog
@@ -54,6 +55,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.whenStarted
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -69,6 +71,7 @@ import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 class MainActivity : AbsSlidingMusicPanelActivity(),
@@ -116,15 +119,14 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                     checkUpdate()
                 }
                 versionCheck()
-                Setting.instance.observe(
-                    this,
-                    arrayOf(Setting.HOME_TAB_CONFIG)
-                ) { _, key ->
-                    if (key == Setting.HOME_TAB_CONFIG)
-                        with(drawerBinding.navigationView.menu) {
-                            clear()
-                            inflateDrawerMenu(this)
+                lifecycleScope.launch(Dispatchers.Main) {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED){
+                        SettingFlowStore(this@MainActivity).homeTabConfigJsonString.distinctUntilChanged().collect {
+                            whenStarted {
+                                setupDrawerMenu(drawerBinding.navigationView.menu)
+                            }
                         }
+                    }
                 }
             }, 900
         )
@@ -162,7 +164,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
     override fun requestPermissions() {} // not allow
 
-    private fun inflateDrawerMenu(menu: Menu) {
+    private fun setupDrawerMenu(menu: Menu) {
+        menu.clear()
         attach(this, menu) {
             val activity = this@MainActivity
 
@@ -310,8 +313,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
     }
 
     private fun setUpDrawer() {
-        // inflate & setup drawer menu item
-        inflateDrawerMenu(drawerBinding.navigationView.menu)
 
         // padding
         with(drawerBinding.drawerLayout) {

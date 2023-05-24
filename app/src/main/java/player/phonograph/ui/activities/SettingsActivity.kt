@@ -79,7 +79,7 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                     ) { uri ->
                         uri ?: return@launch
                         CoroutineScope(Dispatchers.IO).launch {
-                            exportSetting(uri).andReport()
+                            SettingDataManager.exportSettings(uri, context).andReport()
                         }
                     }
                     true
@@ -95,7 +95,7 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                     ) { uri ->
                         uri ?: return@launch
                         CoroutineScope(Dispatchers.IO).launch {
-                            importSetting(uri).andReport()
+                            SettingDataManager.importSetting(uri, context).andReport()
                         }
                     }
                     true
@@ -154,12 +154,6 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
             }
         }
     }
-
-    private fun exportSetting(uri: Uri): Boolean =
-        SettingDataManager.exportSettings(uri, App.instance)
-
-    private fun importSetting(uri: Uri): Boolean =
-        SettingDataManager.importSetting(uri, App.instance)
 
     private suspend fun Boolean.andReport() {
         coroutineToast(App.instance, if (this) R.string.success else R.string.failed)

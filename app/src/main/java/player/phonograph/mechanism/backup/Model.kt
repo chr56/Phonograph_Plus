@@ -13,6 +13,7 @@ import player.phonograph.provider.DatabaseConstants
 import androidx.annotation.Keep
 import android.content.Context
 import android.content.res.Resources
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -118,7 +119,7 @@ private fun fromSink(block: (BufferedSink) -> Boolean): InputStream? {
 object SettingBackup : BackupItem(KEY_SETTING, Type.JSON) {
     override fun data(context: Context): InputStream? =
         fromSink {
-            SettingDataManager.exportSettings(it)
+            runBlocking { SettingDataManager.exportSettings(it, context) }
         }
 
     override fun import(inputStream: InputStream, context: Context): Boolean =

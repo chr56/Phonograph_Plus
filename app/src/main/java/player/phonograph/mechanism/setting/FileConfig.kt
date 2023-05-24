@@ -5,9 +5,13 @@
 package player.phonograph.mechanism.setting
 
 import player.phonograph.App
+import player.phonograph.settings.dataStore
 import player.phonograph.util.FileUtil
 import player.phonograph.util.FileUtil.defaultStartDirectory
-import androidx.preference.PreferenceManager
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import java.io.File
 
 object FileConfig {
@@ -19,13 +23,16 @@ object FileConfig {
 
     private var startDirectoryPath: String
         get() =
-            pref.getString(START_DIRECTORY, defaultStartDirectory.path)
-                ?: defaultStartDirectory.path
+            runBlocking {
+                App.instance.dataStore.data.first()[stringPreferencesKey(START_DIRECTORY)] ?: defaultStartDirectory.path
+            }
         set(value) {
-            pref.edit().putString(START_DIRECTORY, value).apply()
+            runBlocking {
+                App.instance.dataStore.edit {
+                    it[stringPreferencesKey(START_DIRECTORY)] = value
+                }
+            }
         }
-
-    private var pref = PreferenceManager.getDefaultSharedPreferences(App.instance)
 
     private const val START_DIRECTORY = "start_directory"
 }

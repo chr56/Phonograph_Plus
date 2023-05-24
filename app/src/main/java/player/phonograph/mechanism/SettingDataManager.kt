@@ -10,17 +10,24 @@ import player.phonograph.App
 import player.phonograph.BuildConfig.GIT_COMMIT_HASH
 import player.phonograph.BuildConfig.VERSION_CODE
 import player.phonograph.R
-import player.phonograph.settings.Setting
+import player.phonograph.settings.dataStore
 import player.phonograph.util.FileUtil.saveToFile
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
-import androidx.preference.PreferenceManager
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences.Editor
 import android.net.Uri
 import android.widget.Toast
 import kotlin.LazyThreadSafetyMode.NONE
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -32,9 +39,12 @@ object SettingDataManager {
 
     private val parser by lazy(NONE) { Json { prettyPrint = true } }
 
-    fun exportSettings(uri: Uri, context: Context): Boolean =
+    suspend fun rawMainPreference(context: Context): Map<Preferences.Key<*>, Any> =
+        context.dataStore.data.first().asMap()
+
+    suspend fun exportSettings(uri: Uri, context: Context): Boolean =
         try {
-            val prefs = Setting.instance.rawMainPreference.all
+            val prefs = rawMainPreference(context)
             val model = serializedPref(prefs)
             val content = parser.encodeToString(model)
             saveToFile(uri, content, context.contentResolver)
@@ -44,9 +54,9 @@ object SettingDataManager {
             false
         }
 
-    fun exportSettings(sink: BufferedSink): Boolean =
+    suspend fun exportSettings(sink: BufferedSink, context: Context): Boolean =
         try {
-            val prefs = Setting.instance.rawMainPreference.all
+            val prefs = rawMainPreference(context)
             val model = serializedPref(prefs)
             val content = parser.encodeToString(model)
             sink.writeString(content, Charsets.UTF_8)
@@ -67,9 +77,9 @@ object SettingDataManager {
     fun importSetting(inputStream: InputStream, context: Context): Boolean =
         loadSettings(inputStream, context)
 
-    private fun serializedPref(prefs: Map<String, Any?>): SettingExport {
+    private fun serializedPref(prefs: Map<Preferences.Key<*>, Any?>): SettingExport {
         val content = JsonObject(
-            prefs.mapValues { serializedValue(it.value) }
+            prefs.mapKeys { it.key.name }.mapValues { serializedValue(it.value) }
         )
         return SettingExport(
             VERSION,
@@ -104,11 +114,16 @@ object SettingDataManager {
             warning(TAG, "This file is using legacy format")
         }
 
-        PreferenceManager.getDefaultSharedPreferences(context).edit().let { editor ->
-            for ((key, value) in json.entries) {
-                deserializeValue(editor, key, value)
+        runBlocking {
+            val prefArray = try {
+                deserializeSettingJson(json)
+            } catch (e: Exception) {
+                reportError(e, TAG, "Failed to deserialize setting.")
+                emptyArray()
             }
-            editor.apply()
+            context.dataStore.edit { preferences ->
+                preferences.putAll(*prefArray)
+            }
         }
         true
     } catch (e: Exception) {
@@ -116,39 +131,32 @@ object SettingDataManager {
         false
     }
 
-    private fun deserializeValue(editor: Editor, key: String, jsonElement: JsonElement) {
-        when (jsonElement) {
-            is JsonPrimitive -> {
-                with(jsonElement) {
-                    if (content.getOrNull(0) != SEP) {
-                        if (jsonElement is JsonNull) {
-                            editor.remove(key)
-                        } else {
-                            warning(TAG, "in key $key value $content is glitch")
-                        }
-                    } else {
+    private fun deserializeSettingJson(elements: Map<String, JsonElement>): Array<Preferences.Pair<*>> =
+        elements.mapNotNull { (jsonKey, jsonValue) ->
+            val v = (jsonValue as? JsonPrimitive)
+            if (v != null) {
+                with(v) {
+                    if (content.getOrNull(0) == SEP) {
                         val type = content[1]
                         val data = content.substring(3)
                         when (type) {
-                            TB   -> editor.putBoolean(key, data.toBoolean())
-                            TS   -> editor.putString(key, data)
-                            TI   -> editor.putInt(key, data.toInt())
-                            TL   -> editor.putLong(key, data.toLong())
-                            TF   -> editor.putFloat(key, data.toFloat())
-                            else -> warning(TAG, "unsupported type $type")
+                            TB   -> booleanPreferencesKey(jsonKey) to data.toBoolean()
+                            TS   -> stringPreferencesKey(jsonKey) to data
+                            TI   -> intPreferencesKey(jsonKey) to data.toInt()
+                            TL   -> longPreferencesKey(jsonKey) to data.toLong()
+                            TF   -> floatPreferencesKey(jsonKey) to data.toFloat()
+                            else -> throw IllegalStateException("unsupported type $type")
                         }
+                    } else {
+                        warning(TAG, "in key $jsonKey value $content is glitch")
+                        null
                     }
                 }
-            }
-            is JsonArray     -> {
-                val data = jsonElement.map { it.jsonPrimitive.content }
-                editor.putStringSet(key, java.util.HashSet(data))
-            }
-            else             -> {
+            } else {
                 warning(TAG, "unexpected element")
+                null
             }
-        }
-    }
+        }.toTypedArray()
 
 
     /**
@@ -156,8 +164,11 @@ object SettingDataManager {
      */
     @SuppressLint("ApplySharedPref") // must do immediately!
     fun clearAllPreference() {
-        Setting.instance.forceUnregisterAllListener()
-        Setting.instance.rawMainPreference.edit().clear().commit()
+        runBlocking {
+            // todo forceUnregisterAllListener
+            //Setting.instance.forceUnregisterAllListener()
+            App.instance.dataStore.edit { it.clear() }
+        }
         ThemeColor.editTheme(App.instance).clearAllPreference() // lib
 
         Toast.makeText(App.instance, R.string.success, Toast.LENGTH_SHORT).show()

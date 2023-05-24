@@ -4,11 +4,11 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import mt.tint.setNavigationBarColor
 import player.phonograph.R
-import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.model.NowPlayingScreen
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.settings.Setting
+import player.phonograph.service.queue.CurrentQueueState
+import player.phonograph.settings.SettingFlowStore
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.MiniPlayerFragment
 import player.phonograph.ui.fragments.player.card.CardPlayerFragment
@@ -18,13 +18,14 @@ import androidx.annotation.FloatRange
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.whenStarted
 import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import mt.tint.setTaskDescriptionColor as setTaskDescriptionColorEXt
 
@@ -48,6 +49,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
     private var playerColor: Int = 0
     protected var activityColor: Int = 0 // original color of this activity
+    private var nowPlayingScreenId = -1
 
     protected abstract fun createContentView(): View
 
@@ -56,16 +58,21 @@ abstract class AbsSlidingMusicPanelActivity :
         setContentView(createContentView())
 
         // add fragment
-        supportFragmentManager.apply {
-            beginTransaction().replace(
-                R.id.player_fragment_container,
-                when (NowPlayingScreenConfig.nowPlayingScreen) {
-                    NowPlayingScreen.FLAT -> FlatPlayerFragment()
-                    NowPlayingScreen.CARD -> CardPlayerFragment()
-                },
-                NOW_PLAYING_FRAGMENT
-            ).commit()
-            executePendingTransactions()
+        switchNowPlayingScreen(NowPlayingScreenConfig.nowPlayingScreen)
+
+        val flow = SettingFlowStore(this).nowPlayingScreenIndex
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                flow.distinctUntilChanged().collect {
+                    // Log.w("NowPlayingScreen", "nowPlayingScreen $it")
+                    if (nowPlayingScreenId >= 0) {
+                        whenStarted {
+                            switchNowPlayingScreen(NowPlayingScreenConfig.nowPlayingScreen)
+                        }
+                    }
+                    nowPlayingScreenId = it
+                }
+            }
         }
 
         playerFragment = supportFragmentManager.findFragmentById(R.id.player_fragment_container) as AbsPlayerFragment
@@ -97,19 +104,26 @@ abstract class AbsSlidingMusicPanelActivity :
             }
 
         setupPaletteColorObserver()
-        Setting.instance.observe(
-            this, arrayOf(Setting.NOW_PLAYING_SCREEN_ID)
-        ) { _, key ->
-            if (key == Setting.NOW_PLAYING_SCREEN_ID)
-                recreate()
-        }
-
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 CurrentQueueState.queue.collect { queue ->
                     hideBottomBar(queue.get()?.isEmpty() ?: false)
                 }
             }
+        }
+    }
+
+    private fun switchNowPlayingScreen(nowPlayingScreen: NowPlayingScreen) {
+        supportFragmentManager.apply {
+            beginTransaction().replace(
+                R.id.player_fragment_container,
+                when (nowPlayingScreen) {
+                    NowPlayingScreen.FLAT -> FlatPlayerFragment()
+                    NowPlayingScreen.CARD -> CardPlayerFragment()
+                },
+                NOW_PLAYING_FRAGMENT
+            ).commit()
+            executePendingTransactions()
         }
     }
 

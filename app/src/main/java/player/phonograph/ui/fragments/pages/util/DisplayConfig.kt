@@ -9,16 +9,23 @@ import player.phonograph.R
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
+import player.phonograph.settings.dataStore
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.AlbumPage
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.ArtistPage
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.GenrePage
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.SongPage
 import player.phonograph.util.ui.isLandscape
-import androidx.preference.PreferenceManager
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import android.content.Context
 import android.content.res.Resources
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 internal sealed class DisplayConfigTarget {
     object SongPage : DisplayConfigTarget()
@@ -164,7 +171,7 @@ class DisplayConfig internal constructor(private val page: DisplayConfigTarget) 
 
 internal class DisplaySetting(context: Context) {
 
-    private val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+    private val store = context.dataStore
     private val resources: Resources = context.resources
 
     // List-Appearance
@@ -203,23 +210,31 @@ internal class DisplaySetting(context: Context) {
     var albumColoredFooters by BooleanPref(ALBUM_COLORED_FOOTERS, true)
     var songColoredFooters by BooleanPref(SONG_COLORED_FOOTERS, true)
     var artistColoredFooters by BooleanPref(ARTIST_COLORED_FOOTERS, true)
-    inner class BooleanPref(private val keyName: String, private val defaultValue: Boolean) :
-            ReadWriteProperty<Any?, Boolean> {
-        override fun getValue(thisRef: Any?, property: KProperty<*>): Boolean =
-            preferences.getBoolean(keyName, defaultValue)
 
-        override fun setValue(thisRef: Any?, property: KProperty<*>, value: Boolean) {
-            preferences.edit().putBoolean(keyName, value).apply()
+    @Suppress("FunctionName")
+    private fun BooleanPref(key: String, defaultValue: Boolean) =
+        Delegate(booleanPreferencesKey(key), defaultValue, store)
+
+    @Suppress("FunctionName")
+    private fun IntPref(key: String, defaultValue: Int) =
+        Delegate(intPreferencesKey(key), defaultValue, store)
+
+    private class Delegate<T>(
+        private val key: Preferences.Key<T>,
+        private val defaultValue: T,
+        private val dataStore: DataStore<Preferences>,
+    ) : ReadWriteProperty<Any?, T> {
+
+        override fun getValue(thisRef: Any?, property: KProperty<*>): T = runBlocking {
+            dataStore.data.first()[key] ?: defaultValue
         }
-    }
 
-    inner class IntPref(private val keyName: String, private val defaultValue: Int) :
-            ReadWriteProperty<Any?, Int> {
-        override fun getValue(thisRef: Any?, property: KProperty<*>): Int =
-            preferences.getInt(keyName, defaultValue)
-
-        override fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
-            preferences.edit().putInt(keyName, value).apply()
+        override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+            runBlocking {
+                dataStore.edit { mutablePreferences ->
+                    mutablePreferences[key] = value
+                }
+            }
         }
     }
 

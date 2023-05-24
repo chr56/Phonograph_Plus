@@ -21,7 +21,7 @@ import player.phonograph.util.theme.createTintedDrawable
 object AppShortcutIconGenerator {
 
     fun generateThemedIcon(context: Context, iconId: Int): Icon =
-        if (Setting.instance(context).coloredAppShortcuts) {
+        if (Setting.instance.coloredAppShortcuts) {
             generateUserThemedIcon(context, iconId).toIcon(context)
         } else {
             generateDefaultThemedIcon(context, iconId).toIcon(context)
