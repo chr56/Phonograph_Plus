@@ -230,7 +230,7 @@ class Setting {
 
 }
 
-class SettingFlowStore(val context: Context) {
+class SettingFlowStore(context: Context) {
 
     //region Preferences
 
@@ -273,7 +273,7 @@ class SettingFlowStore(val context: Context) {
                 DOWNLOAD_IMAGES_POLICY_ALWAYS    -> true
                 DOWNLOAD_IMAGES_POLICY_ONLY_WIFI -> {
                     val cm =
-                        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                        App.instance.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
                     if (!cm.isActiveNetworkMetered) return@map false // we pass first metred Wifi and Cellular
                     val network = cm.activeNetwork ?: return@map false // no active network?
@@ -402,8 +402,9 @@ class SettingFlowStore(val context: Context) {
 
     //endregion
 
+    private val ds = context.dataStore
     private fun <T> from(key: Preferences.Key<T>, defaultValue: T): Flow<T> =
-        context.dataStore.data.map { preferences -> preferences[key] ?: defaultValue }
+        ds.data.map { preferences -> preferences[key] ?: defaultValue }
 }
 
 
