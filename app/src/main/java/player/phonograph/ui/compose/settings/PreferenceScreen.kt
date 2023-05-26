@@ -6,8 +6,11 @@ package player.phonograph.ui.compose.settings
 
 import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
 import com.alorma.compose.settings.storage.datastore.rememberPreferenceDataStoreBooleanSettingState
+import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.alorma.compose.settings.ui.SettingsSwitch
 import player.phonograph.settings.dataStore
+import player.phonograph.util.reportError
+import player.phonograph.util.warning
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,6 +21,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentActivity
+
 
 
 @Composable
@@ -40,6 +46,33 @@ private fun BooleanPref(
         subtitle = subtitle(summaryRes),
         modifier = Modifier.fillMaxWidth()
     )
+}
+
+@Composable
+private fun DialogPref(
+    dialog: Class<out DialogFragment>,
+    @StringRes titleRes: Int,
+    @StringRes summaryRes: Int = 0,
+    enabled: Boolean = true,
+) {
+    val context = LocalContext.current
+    SettingsMenuLink(
+        enabled = enabled,
+        title = title(titleRes),
+        subtitle = subtitle(summaryRes),
+    ) {
+        val fragmentActivity = context as? FragmentActivity
+        if (fragmentActivity != null) {
+            try {
+                val fragmentManager = fragmentActivity.supportFragmentManager
+                dialog.getConstructor().newInstance().show(fragmentManager, dialog.simpleName)
+            } catch (e: Exception) {
+                reportError(e, "DialogPref", "Failed to show dialog ${dialog.name}")
+            }
+        } else {
+            warning("DialogPref", "$context can not show dialog")
+        }
+    }
 }
 
 @Composable
