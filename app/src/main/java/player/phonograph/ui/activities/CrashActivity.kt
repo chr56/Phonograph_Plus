@@ -29,6 +29,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Process
+import android.util.Log
 import android.view.Menu
 import android.view.Menu.NONE
 import android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM
@@ -100,6 +101,8 @@ class CrashActivity : ToolbarActivity() {
 
         stackTraceText = intent.getStringExtra(KEY_STACK_TRACE) ?: getString(R.string.empty)
         crashReportMode = intent.getBooleanExtra(KEY_IS_A_CRASH, true)
+
+        printStackTraceText(stackTraceText)
 
         autoSetStatusBarColor = false
         autoSetNavigationBarColor = false
@@ -188,6 +191,11 @@ class CrashActivity : ToolbarActivity() {
             val runningProcesses = manager.runningAppProcesses ?: return false
             val processInfo = runningProcesses.first { it.pid == Process.myPid() }
             return processInfo.processName.endsWith(CRASH_PROCESS_NAME_SUFFIX)
+        }
+
+        private fun printStackTraceText(stackTraceText: String) {
+            Log.w("Crash", "Crashed!")
+            Log.i("Crash", stackTraceText)
         }
     }
 }
