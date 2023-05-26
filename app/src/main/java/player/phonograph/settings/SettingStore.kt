@@ -491,9 +491,9 @@ const val IGNORE_MEDIA_STORE_ARTWORK = "ignore_media_store_artwork"
 
 //region Values
 // StringArrayPref
-private const val DOWNLOAD_IMAGES_POLICY_ALWAYS = "always"
-private const val DOWNLOAD_IMAGES_POLICY_ONLY_WIFI = "only_wifi"
-private const val DOWNLOAD_IMAGES_POLICY_NEVER = "never"
+const val DOWNLOAD_IMAGES_POLICY_ALWAYS = "always"
+const val DOWNLOAD_IMAGES_POLICY_ONLY_WIFI = "only_wifi"
+const val DOWNLOAD_IMAGES_POLICY_NEVER = "never"
 private const val INTERVAL_TODAY = "today"
 private const val INTERVAL_PAST_SEVEN_DAYS = "past_seven_days"
 private const val INTERVAL_PAST_FOURTEEN_DAYS = "past_fourteen_days"
