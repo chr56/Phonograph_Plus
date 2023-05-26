@@ -56,8 +56,10 @@ dependencyResolutionManagement {
             // Jetpack Compose
             //
             val versionCompose = "compose"
+            val versionComposeL = "composeL"
             val versionComposeCompiler = "composeCompiler"
-            version(versionCompose, "1.3.1")
+            version(versionCompose, "1.3.3")
+            version(versionComposeL, "1.3.1")
             version(versionComposeCompiler, "1.4.3")
 
             library("compose.runtime",
@@ -65,7 +67,7 @@ dependencyResolutionManagement {
                     "runtime").versionRef(versionCompose)
             library("compose.foundation",
                     "androidx.compose.foundation",
-                    "foundation").versionRef(versionCompose)
+                    "foundation").versionRef(versionComposeL)//.versionRef(versionCompose)
             library("compose.ui",
                     "androidx.compose.ui",
                     "ui").versionRef(versionCompose)
@@ -74,7 +76,7 @@ dependencyResolutionManagement {
                     "ui-tooling").versionRef(versionCompose)
             library("compose.material",
                     "androidx.compose.material",
-                    "material").versionRef(versionCompose)
+                    "material").versionRef(versionComposeL)//.versionRef(versionCompose)
             library("compose.activity",
                     "androidx.activity",
                     "activity-compose").versionRef(versionActivity)
