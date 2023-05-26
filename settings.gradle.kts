@@ -150,6 +150,16 @@ dependencyResolutionManagement {
                    listOf("mt.colorRes", "mt.util", "mt.pref", "mt.tint")
             )
 
+
+            library("composeSettingsUi",
+                "com.github.alorma:compose-settings-ui:0.25.0")
+            library("composeSettingsDatastore",
+                "com.github.alorma:compose-settings-storage-datastore:0.25.0")
+
+            bundle("composeSettings",
+                listOf("composeSettingsUi", "composeSettingsDatastore")
+            )
+
             library("menuDsl",
                     "io.github.chr56:android-menu-dsl:0.1.0")
             library("seekArc",
