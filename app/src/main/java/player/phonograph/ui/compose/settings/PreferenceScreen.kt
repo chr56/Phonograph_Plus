@@ -302,7 +302,8 @@ fun PhonographPreferenceScreen() {
                         R.string.this_week,
                         R.string.this_month,
                         R.string.this_year,
-                    )
+                    ),
+                    defaultValueIndex = 1
                 )
             )
         }
@@ -461,15 +462,10 @@ private fun ListPref(
     enabled: Boolean = true,
 ) {
     val context = LocalContext.current
-    val state = rememberIntSettingState(0)
+    val state = rememberIntSettingState(optionGroup.defaultValueIndex)
     if (!LocalInspectionMode.current) {
         LaunchedEffect(key1 = optionGroup.key) {
-            val selected = optionGroup.selected(context)
-            if (selected > -1) {
-                state.value = optionGroup.selected(context)
-            } else {
-                warning("ListPref", "can not read preference ${optionGroup.key}")
-            }
+            state.value = optionGroup.selected(context)
         }
     }
     val items =
@@ -565,6 +561,7 @@ internal class OptionGroup(
     val key: String,
     val optionsValue: List<String>,
     val optionsStringRes: List<Int>,
+    val defaultValueIndex: Int = 0,
 ) {
 
     fun options(context: Context): List<String> {
@@ -573,7 +570,13 @@ internal class OptionGroup(
 
     suspend fun selected(context: Context): Int {
         val value = context.dataStore.data.first()[stringPreferencesKey(key)]
-        return optionsValue.indexOf(value)
+        val index = optionsValue.indexOf(value)
+        return if (index > -1) {
+            index
+        } else {
+            warning("ListPref", "can not read preference $key")
+            defaultValueIndex
+        }
     }
 
     suspend fun onSelect(context: Context, index: Int) {
