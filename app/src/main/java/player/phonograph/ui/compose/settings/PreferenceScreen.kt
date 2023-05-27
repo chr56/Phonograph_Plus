@@ -379,7 +379,12 @@ private fun ListPref(
     val state = rememberIntSettingState(0)
     if (!LocalInspectionMode.current) {
         LaunchedEffect(key1 = optionGroup.key) {
-            state.value = optionGroup.selected(context)
+            val selected = optionGroup.selected(context)
+            if (selected > -1) {
+                state.value = optionGroup.selected(context)
+            } else {
+                warning("ListPref", "can not read preference ${optionGroup.key}")
+            }
         }
     }
     val items =
