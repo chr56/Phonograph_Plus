@@ -20,8 +20,8 @@ import mt.color.R as MR
 fun applyMonet(context: Context, force: Boolean = false) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && (force || Setting.instance.enableMonet)) {
         ThemeColor.editTheme(context)
-            .primaryColor(context.getColor(android.R.color.system_accent1_300))
-            .accentColor(context.getColor(android.R.color.system_accent1_600))
+            .primaryColor(context.getColor(android.R.color.system_accent1_400))
+            .accentColor(context.getColor(android.R.color.system_accent1_700))
             .commit()
     }
 }
