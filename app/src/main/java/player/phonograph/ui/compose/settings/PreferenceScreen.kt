@@ -324,12 +324,17 @@ private fun BooleanPref(
     @StringRes titleRes: Int,
     @StringRes summaryRes: Int = 0,
     enabled: Boolean = true,
+    defaultValue: Boolean = false,
 ) {
     val booleanState =
         if (LocalInspectionMode.current) {
             rememberBooleanSettingState(true)
         } else {
-            rememberPreferenceDataStoreBooleanSettingState(key = key, dataStore = LocalContext.current.dataStore)
+            rememberPreferenceDataStoreBooleanSettingState(
+                key = key,
+                dataStore = LocalContext.current.dataStore,
+                defaultValue = defaultValue
+            )
         }
     SettingsSwitch(
         state = booleanState,
