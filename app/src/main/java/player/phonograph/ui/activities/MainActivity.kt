@@ -41,6 +41,7 @@ import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
 import player.phonograph.settings.SettingFlowStore
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
+import player.phonograph.ui.compose.settings.SettingsActivity
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.ScanMediaFolderDialog
 import player.phonograph.ui.dialogs.UpgradeDialog
