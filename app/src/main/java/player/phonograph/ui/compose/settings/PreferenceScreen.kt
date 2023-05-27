@@ -14,6 +14,7 @@ import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.alorma.compose.settings.ui.SettingsSwitch
 import lib.phonograph.localization.LanguageSettingDialog
 import lib.phonograph.localization.Localization
+import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.NowPlayingScreenConfig
@@ -22,6 +23,7 @@ import player.phonograph.mechanism.setting.StyleConfig.THEME_BLACK
 import player.phonograph.mechanism.setting.StyleConfig.THEME_DARK
 import player.phonograph.mechanism.setting.StyleConfig.THEME_LIGHT
 import player.phonograph.settings.*
+import player.phonograph.ui.compose.theme.Shapes
 import player.phonograph.ui.dialogs.ClickModeSettingDialog
 import player.phonograph.ui.dialogs.HomeTabConfigDialog
 import player.phonograph.ui.dialogs.ImageSourceConfigDialog
@@ -30,21 +32,31 @@ import player.phonograph.ui.dialogs.PathFilterDialog
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
+import util.phonograph.misc.ColorChooserListener
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Shapes
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
@@ -87,6 +99,9 @@ fun PhonographPreferenceScreen() {
                     )
                 )
             )
+
+            PrimaryColorPref()
+            AccentColorPref()
 
             DialogPref(
                 model = DialogPreferenceModel(
@@ -506,6 +521,67 @@ private fun ListPrefImpl(
         subtitle = subtitle(summaryRes),
         items = items,
         onItemSelected = onItemSelected
+    )
+}
+
+
+@Composable
+private fun PrimaryColorPref() {
+    ColorPrefImpl(
+        titleRes = R.string.primary_color,
+        summaryRes = R.string.primary_color_desc,
+        mode = ColorChooserListener.MODE_PRIMARY_COLOR
+    )
+}
+@Composable
+private fun AccentColorPref() {
+    ColorPrefImpl(
+        titleRes = R.string.accent_color,
+        summaryRes = R.string.accent_color_desc,
+        mode = ColorChooserListener.MODE_ACCENT_COLOR
+    )
+}
+
+@Composable
+private fun ColorPrefImpl(
+    @StringRes titleRes: Int,
+    @StringRes summaryRes: Int,
+    mode: Int,
+) {
+    val context = LocalContext.current
+
+    fun currentColor() = when (mode) {
+        ColorChooserListener.MODE_PRIMARY_COLOR -> ThemeColor.primaryColor(context)
+        ColorChooserListener.MODE_ACCENT_COLOR  -> ThemeColor.accentColor(context)
+        else                                    -> 0
+    }
+
+    // noinspection UnrememberedMutableState
+    val colorState = mutableStateOf(Color.Gray)
+    if (!LocalInspectionMode.current)
+        LaunchedEffect(mode) {
+            colorState.value = Color(currentColor())
+        }
+
+    SettingsMenuLink(
+        title = title(titleRes),
+        subtitle = subtitle(summaryRes),
+        action = { ColorCircus(colorState) },
+        onClick = {
+            ColorChooserListener(
+                context, currentColor(), mode
+            ).show()
+        }
+    )
+}
+
+@Composable
+private fun ColorCircus(colorState: MutableState<Color>) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize(0.6f)
+            .clip(CircleShape)
+            .background(colorState.value)
     )
 }
 
