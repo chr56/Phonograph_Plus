@@ -40,6 +40,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -359,6 +361,80 @@ private fun BooleanPref(
         modifier = Modifier.fillMaxWidth()
     )
 }
+
+
+@Composable
+private fun DialogPref(
+    model: DialogPreferenceModel,
+    enabled: Boolean = true,
+) {
+    val context = LocalContext.current
+    val subtitle = remember { mutableStateOf<@Composable (() -> Unit)?>(null) }
+    LaunchedEffect(key1 = model.dialog) {
+        subtitle.value = model.subtitle(context = context)
+    }
+    SettingsMenuLink(
+        enabled = enabled,
+        title = title(model.titleRes),
+        subtitle = subtitle.value,
+        onClick = { model.onShowDialog(context) }
+    )
+}
+
+internal class DialogPreferenceModel(
+    val dialog: Class<out DialogFragment>,
+    @StringRes val titleRes: Int,
+    @StringRes val summaryRes: Int = 0,
+    private val currentValueForHint: (suspend (Context) -> String)? = null,
+) {
+
+    suspend fun subtitle(context: Context): @Composable (() -> Unit)? =
+        if (currentValueForHint != null) {
+            @Composable {
+                val text = remember { mutableStateOf("Loading...") }
+                LaunchedEffect(key1 = dialog) {
+                    val fetched = currentValueForHint.invoke(context)
+                    text.value = fetched
+                }
+                BoxWithConstraints {
+                    Text(
+                        text = text.value,
+                        modifier = Modifier.widthIn(max = maxWidth * 4 / 5)
+                    )
+                }
+            }
+        } else if (summaryRes != 0) {
+            @Composable {
+                BoxWithConstraints {
+                    Text(
+                        text = stringResource(id = summaryRes),
+                        modifier = Modifier.widthIn(max = maxWidth * 4 / 5)
+                    )
+                }
+            }
+        } else {
+            null
+        }
+
+    fun onShowDialog(context: Context) {
+        val fragmentActivity = context as? FragmentActivity
+        if (fragmentActivity != null) {
+            try {
+                val fragmentManager = fragmentActivity.supportFragmentManager
+                dialog.getConstructor().newInstance().show(fragmentManager, dialog.simpleName)
+            } catch (e: Exception) {
+                reportError(e, TAG, "Failed to show dialog ${dialog.name}")
+            }
+        } else {
+            warning(TAG, "$context can not show dialog")
+        }
+    }
+
+    companion object {
+        private const val TAG = "DialogPreference"
+    }
+}
+
 
 @Composable
 private fun DialogPref(
