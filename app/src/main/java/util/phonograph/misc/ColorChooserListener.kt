@@ -39,8 +39,13 @@ class ColorChooserListener(private var context: Context, private var defaultColo
         (this@ColorChooserListener.context as? Activity)?.recreate()
     }
 
-    @SuppressLint("CheckResult")
     override fun onPreferenceClick(preference: Preference): Boolean {
+        show()
+        return true
+    }
+
+    @SuppressLint("CheckResult")
+    fun show() {
         MaterialDialog(context).show {
             title(R.string.pref_header_colors)
             colorChooser(
@@ -85,7 +90,6 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                     getActionButton(WhichButton.NEUTRAL).updateTextColor(accentColor(context))
                 }
         }
-        return true
     }
 
     companion object {
