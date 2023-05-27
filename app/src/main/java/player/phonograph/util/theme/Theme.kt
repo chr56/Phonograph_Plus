@@ -5,13 +5,10 @@
 package player.phonograph.util.theme
 
 import mt.pref.ThemeColor
-import player.phonograph.R
-import player.phonograph.settings.Setting
 import player.phonograph.mechanism.setting.StyleConfig
+import player.phonograph.settings.Setting
 import android.content.Context
-import android.content.res.Configuration
 import android.os.Build
-import mt.color.R as MR
 
 
 /**
@@ -27,15 +24,3 @@ fun applyMonet(context: Context, force: Boolean = false) {
 }
 
 val Context.nightMode: Boolean get() = StyleConfig.isNightMode(this)
-
-fun backgroundColorByTheme(context: Context): Int = context.resources.getColor(
-    when (StyleConfig.generalTheme(context)) {
-        R.style.Theme_Phonograph_Auto  -> R.color.cardBackgroundColor
-        R.style.Theme_Phonograph_Light -> MR.color.md_white_1000
-        R.style.Theme_Phonograph_Black -> MR.color.md_black_1000
-        R.style.Theme_Phonograph_Dark  -> MR.color.md_grey_800
-        else                           -> MR.color.md_grey_700
-    },
-    context.theme
-)
-
