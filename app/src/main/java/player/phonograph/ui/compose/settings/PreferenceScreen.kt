@@ -13,8 +13,10 @@ import com.alorma.compose.settings.ui.SettingsListDropdown
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.alorma.compose.settings.ui.SettingsSwitch
 import lib.phonograph.localization.LanguageSettingDialog
+import lib.phonograph.localization.Localization
 import player.phonograph.R
 import player.phonograph.mechanism.setting.HomeTabConfig
+import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.mechanism.setting.StyleConfig.THEME_AUTO
 import player.phonograph.mechanism.setting.StyleConfig.THEME_BLACK
 import player.phonograph.mechanism.setting.StyleConfig.THEME_DARK
@@ -87,17 +89,23 @@ fun PhonographPreferenceScreen() {
             )
 
             DialogPref(
-                dialog = LanguageSettingDialog::class.java,
-                titleRes = R.string.app_language,
-                //todo
+                model = DialogPreferenceModel(
+                    dialog = LanguageSettingDialog::class.java,
+                    titleRes = R.string.app_language,
+                    currentValueForHint = { context ->
+                        Localization.currentLocale(context).displayLanguage
+                    }
+                )
             )
         }
 
         SettingsGroup(title = header(R.string.pref_header_library)) {
             DialogPref(
-                dialog = HomeTabConfigDialog::class.java,
-                titleRes = R.string.library_categories,
-                summaryRes = R.string.pref_summary_library_categories,
+                model = DialogPreferenceModel(
+                    dialog = HomeTabConfigDialog::class.java,
+                    titleRes = R.string.library_categories,
+                    summaryRes = R.string.pref_summary_library_categories,
+                )
             )
             val context = LocalContext.current
             SettingsMenuLink(
@@ -130,9 +138,19 @@ fun PhonographPreferenceScreen() {
 
         SettingsGroup(title = header(R.string.path_filter)) {
             DialogPref(
-                dialog = PathFilterDialog::class.java,
-                titleRes = R.string.path_filter,
-                //todo
+                model = DialogPreferenceModel(
+                    dialog = PathFilterDialog::class.java,
+                    titleRes = R.string.path_filter,
+                    currentValueForHint = { context ->
+                        with(context) {
+                            if (Setting.instance.pathFilterExcludeMode) {
+                                "${getString(R.string.path_filter_excluded_mode)} - \n${getString(R.string.pref_summary_path_filter_excluded_mode)}"
+                            } else {
+                                "${getString(R.string.path_filter_included_mode)} - \n${getString(R.string.pref_summary_path_filter_included_mode)}"
+                            }
+                        }
+                    }
+                )
             )
         }
 
@@ -158,8 +176,13 @@ fun PhonographPreferenceScreen() {
             title = header(R.string.pref_header_now_playing_screen)
         ) {
             DialogPref(
-                dialog = NowPlayingScreenPreferenceDialog::class.java,
-                titleRes = R.string.pref_title_now_playing_screen_appearance,
+                model = DialogPreferenceModel(
+                    dialog = NowPlayingScreenPreferenceDialog::class.java,
+                    titleRes = R.string.pref_title_now_playing_screen_appearance,
+                    currentValueForHint = { context ->
+                        context.getString(NowPlayingScreenConfig.nowPlayingScreen.titleRes)
+                    }
+                )
             )
             BooleanPref(
                 key = DISPLAY_LYRICS_TIME_AXIS,
@@ -180,8 +203,10 @@ fun PhonographPreferenceScreen() {
             title = header(R.string.pref_header_images)
         ) {
             DialogPref(
-                dialog = ImageSourceConfigDialog::class.java,
-                titleRes = R.string.image_source_config,
+                model = DialogPreferenceModel(
+                    dialog = ImageSourceConfigDialog::class.java,
+                    titleRes = R.string.image_source_config,
+                )
             )
             ListPref(
                 titleRes = R.string.pref_title_auto_download_metadata,
@@ -205,9 +230,11 @@ fun PhonographPreferenceScreen() {
             title = header(R.string.pref_header_player_behaviour)
         ) {
             DialogPref(
-                dialog = ClickModeSettingDialog::class.java,
-                titleRes = R.string.pref_title_click_behavior,
-                summaryRes = R.string.pref_summary_click_behavior,
+                model = DialogPreferenceModel(
+                    dialog = ClickModeSettingDialog::class.java,
+                    titleRes = R.string.pref_title_click_behavior,
+                    summaryRes = R.string.pref_summary_click_behavior,
+                )
             )
             BooleanPref(
                 key = AUDIO_DUCKING,
