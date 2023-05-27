@@ -443,23 +443,7 @@ internal class DialogPreferenceModel(
             null
         }
 
-    fun onShowDialog(context: Context) {
-        val fragmentActivity = context as? FragmentActivity
-        if (fragmentActivity != null) {
-            try {
-                val fragmentManager = fragmentActivity.supportFragmentManager
-                dialog.getConstructor().newInstance().show(fragmentManager, dialog.simpleName)
-            } catch (e: Exception) {
-                reportError(e, TAG, "Failed to show dialog ${dialog.name}")
-            }
-        } else {
-            warning(TAG, "$context can not show dialog")
-        }
-    }
-
-    companion object {
-        private const val TAG = "DialogPreference"
-    }
+    fun onShowDialog(context: Context) = showDialog(context, dialog)
 }
 
 @Composable
@@ -587,3 +571,19 @@ private fun subtitle(res: Int): (@Composable () -> Unit)? =
         null
     }
 //endregion
+
+
+private fun showDialog(context: Context, dialog: Class<out DialogFragment>) {
+    @Suppress("LocalVariableName") val TAG = "showDialog"
+    val fragmentActivity = context as? FragmentActivity
+    if (fragmentActivity != null) {
+        try {
+            val fragmentManager = fragmentActivity.supportFragmentManager
+            dialog.getConstructor().newInstance().show(fragmentManager, dialog.simpleName)
+        } catch (e: Exception) {
+            reportError(e, TAG, "Failed to show dialog ${dialog.name}")
+        }
+    } else {
+        warning(TAG, "$context can not show dialog")
+    }
+}
