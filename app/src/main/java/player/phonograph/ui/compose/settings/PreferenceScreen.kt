@@ -41,8 +41,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -107,28 +111,7 @@ fun PhonographPreferenceScreen() {
         }
 
         SettingsGroup(title = header(R.string.pref_header_library)) {
-            DialogPref(
-                model = DialogPreferenceModel(
-                    dialog = HomeTabConfigDialog::class.java,
-                    titleRes = R.string.library_categories,
-                    summaryRes = R.string.pref_summary_library_categories,
-                )
-            )
-            val context = LocalContext.current
-            SettingsMenuLink(
-                title = title(R.string.pref_title_reset_home_pages_tab_config),
-                subtitle = subtitle(R.string.pref_summary_reset_home_pages_tab_config)
-            ) {
-                AlertDialog.Builder(context)
-                    .setTitle(R.string.pref_title_reset_home_pages_tab_config)
-                    .setMessage(
-                        "${context.getString(R.string.pref_summary_reset_home_pages_tab_config)}\n" +
-                                "${context.getString(R.string.are_you_sure)}\n"
-                    )
-                    .setPositiveButton(android.R.string.ok) { _, _ -> HomeTabConfig.resetHomeTabConfig() }
-                    .setNegativeButton(android.R.string.cancel) { _, _ -> }
-                    .show()
-            }
+            LibraryCategoriesSetting()
             BooleanPref(
                 key = REMEMBER_LAST_TAB,
                 titleRes = R.string.pref_title_remember_last_tab,
@@ -356,6 +339,41 @@ fun PhonographPreferenceScreen() {
 
     }
 }
+
+
+@Composable
+private fun LibraryCategoriesSetting() {
+    val context = LocalContext.current
+    SettingsMenuLink(
+        title = title(R.string.library_categories),
+        subtitle = subtitle(R.string.pref_summary_library_categories),
+        onClick = {
+            showDialog(context, HomeTabConfigDialog::class.java)
+        },
+        action = {
+            IconButton(
+                onClick = {
+                    AlertDialog.Builder(context)
+                        .setTitle(R.string.pref_title_reset_home_pages_tab_config)
+                        .setMessage(
+                            "${context.getString(R.string.pref_summary_reset_home_pages_tab_config)}\n" +
+                                    "${context.getString(R.string.are_you_sure)}\n"
+                        )
+                        .setPositiveButton(android.R.string.ok) { _, _ -> HomeTabConfig.resetHomeTabConfig() }
+                        .setNegativeButton(android.R.string.cancel) { _, _ -> }
+                        .show()
+                },
+                content = {
+                    Icon(
+                        Icons.Default.Refresh,
+                        contentDescription = stringResource(id = R.string.pref_title_reset_home_pages_tab_config)
+                    )
+                }
+            )
+        }
+    )
+}
+
 
 @Composable
 private fun EqualizerSetting() {
