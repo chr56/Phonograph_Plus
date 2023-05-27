@@ -145,6 +145,10 @@
             android:name=".ui.activities.SettingsActivity"
             android:label="@string/action_settings" />
         <activity
+            android:name=".ui.compose.settings.SettingsActivity"
+            android:exported="true"
+            android:label="@string/action_settings" />
+        <activity
             android:name=".ui.activities.AboutActivity"
             android:label="@string/action_about" />
         <activity

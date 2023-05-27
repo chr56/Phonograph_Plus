@@ -26,7 +26,7 @@ import player.phonograph.util.coroutineToast
 import player.phonograph.util.text.currentDateTime
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
-import android.net.Uri
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem.SHOW_AS_ACTION_NEVER
@@ -149,6 +149,14 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                         }
                     }
 
+                    true
+                }
+            }
+
+            menuItem {
+                title = getString(R.string.action_settings)
+                onClick {
+                    startActivity(Intent(this@SettingsActivity, player.phonograph.ui.compose.settings.SettingsActivity::class.java))
                     true
                 }
             }
