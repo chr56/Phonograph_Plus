@@ -116,11 +116,13 @@ fun PhonographPreferenceScreen() {
                 key = REMEMBER_LAST_TAB,
                 titleRes = R.string.pref_title_remember_last_tab,
                 summaryRes = R.string.pref_summary_remember_last_tab,
+                defaultValue = true,
             )
             BooleanPref(
                 key = FIXED_TAB_LAYOUT,
                 titleRes = R.string.perf_title_fixed_tab_layout,
                 summaryRes = R.string.pref_summary_fixed_tab_layout,
+                defaultValue = false,
             )
         }
 
@@ -138,13 +140,15 @@ fun PhonographPreferenceScreen() {
             BooleanPref(
                 key = CLASSIC_NOTIFICATION,
                 titleRes = R.string.pref_title_classic_notification,
-                summaryRes = R.string.pref_summary_classic_notification
+                summaryRes = R.string.pref_summary_classic_notification,
+                defaultValue = false,
             )
             BooleanPref(
                 key = COLORED_NOTIFICATION,
                 titleRes = R.string.pref_title_colored_notification,
                 summaryRes = R.string.pref_summary_colored_notification,
-                enabled = dependOn(CLASSIC_NOTIFICATION)
+                defaultValue = true,
+                enabled = dependOn(CLASSIC_NOTIFICATION),
             )
         }
 
@@ -159,11 +163,13 @@ fun PhonographPreferenceScreen() {
                 key = DISPLAY_LYRICS_TIME_AXIS,
                 titleRes = R.string.pref_title_display_lyrics_time_axis,
                 summaryRes = R.string.pref_summary_display_lyrics_time_axis,
+                defaultValue = true,
             )
             BooleanPref(
                 key = SYNCHRONIZED_LYRICS_SHOW,
                 titleRes = R.string.pref_title_synchronized_lyrics_show,
                 summaryRes = R.string.pref_summary_synchronized_lyrics_show,
+                defaultValue = true,
             )
 
         }
@@ -205,26 +211,31 @@ fun PhonographPreferenceScreen() {
                 key = AUDIO_DUCKING,
                 summaryRes = R.string.pref_summary_audio_ducking,
                 titleRes = R.string.pref_title_audio_ducking,
+                defaultValue = true,
             )
             BooleanPref(
                 key = GAPLESS_PLAYBACK,
                 summaryRes = R.string.pref_summary_gapless_playback,
                 titleRes = R.string.pref_title_gapless_playback,
+                defaultValue = false,
             )
             BooleanPref(
                 key = ENABLE_LYRICS,
                 summaryRes = R.string.pref_summary_load_lyrics,
                 titleRes = R.string.pref_title_load_lyrics,
+                defaultValue = true,
             )
             BooleanPref(
                 key = BROADCAST_SYNCHRONIZED_LYRICS,
                 summaryRes = R.string.pref_summary_send_lyrics,
                 titleRes = R.string.pref_title_send_lyrics,
+                defaultValue = false,
             )
             BooleanPref(
                 key = BROADCAST_CURRENT_PLAYER_STATE,
                 summaryRes = R.string.pref_summary_broadcast_current_player_state,
                 titleRes = R.string.pref_title_broadcast_current_player_state,
+                defaultValue = true,
             )
             EqualizerSetting()
         }
@@ -265,6 +276,7 @@ fun PhonographPreferenceScreen() {
                 key = CHECK_UPGRADE_AT_STARTUP,
                 titleRes = R.string.auto_check_upgrade,
                 summaryRes = R.string.auto_check_upgrade_summary,
+                defaultValue = false,
             )
         }
 
@@ -273,15 +285,18 @@ fun PhonographPreferenceScreen() {
                 key = USE_LEGACY_FAVORITE_PLAYLIST_IMPL,
                 titleRes = R.string.pref_title_use_legacy_favorite_playlist_impl,
                 summaryRes = R.string.pref_summary_use_legacy_favorite_playlist_impl,
+                defaultValue = false,
             )
             BooleanPref(
                 key = USE_LEGACY_LIST_FILES_IMPL,
                 titleRes = R.string.use_legacy_list_Files,
+                defaultValue = false,
             )
             BooleanPref(
                 key = USE_LEGACY_DETAIL_DIALOG,
                 titleRes = R.string.pref_title_use_legacy_detail_dialog,
                 summaryRes = R.string.pref_summary_use_legacy_detail_dialog,
+                defaultValue = false,
             )
             ListPref(
                 titleRes = R.string.pref_title_playlist_files_operation_behaviour,
@@ -323,8 +338,8 @@ private fun BooleanPref(
     key: String,
     @StringRes titleRes: Int,
     @StringRes summaryRes: Int = 0,
+    defaultValue: Boolean,
     enabled: Boolean = true,
-    defaultValue: Boolean = false,
 ) {
     val booleanState =
         if (LocalInspectionMode.current) {
