@@ -39,6 +39,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -50,8 +51,10 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import android.app.Activity
 import android.content.Context
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 
 @Composable
 fun PhonographPreferenceScreen() {
@@ -373,12 +376,12 @@ private fun ListPref(
     enabled: Boolean = true,
 ) {
     val context = LocalContext.current
-    val state =
-        if (LocalInspectionMode.current) {
-            rememberIntSettingState(0)
-        } else {
-            rememberIntSettingState(optionGroup.selected(context))
+    val state = rememberIntSettingState(0)
+    if (!LocalInspectionMode.current) {
+        LaunchedEffect(key1 = optionGroup.key) {
+            state.value = optionGroup.selected(context)
         }
+    }
     val items =
         if (LocalInspectionMode.current) {
             optionGroup.optionsValue
@@ -390,7 +393,9 @@ private fun ListPref(
             { _, _ -> }
         } else {
             { index, _ ->
-                optionGroup.onSelect(context, index)
+                CoroutineScope(Dispatchers.IO).launch {
+                    optionGroup.onSelect(context, index)
+                }
             }
         }
 
@@ -431,12 +436,12 @@ internal class OptionGroup(
         return optionsStringRes.map { context.getString(it) }
     }
 
-    fun selected(context: Context): Int = runBlocking {//todo no runBlocking
+    suspend fun selected(context: Context): Int {
         val value = context.dataStore.data.first()[stringPreferencesKey(key)]
-        optionsValue.indexOf(value)
+        return optionsValue.indexOf(value)
     }
 
-    fun onSelect(context: Context, index: Int) = runBlocking {
+    suspend fun onSelect(context: Context, index: Int) {
         context.dataStore.edit { preferences ->
             val newValue = optionsValue.getOrElse(index) { optionsValue.first() }
             preferences[stringPreferencesKey(key)] = newValue
