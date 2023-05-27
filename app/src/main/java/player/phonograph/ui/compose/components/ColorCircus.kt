@@ -10,14 +10,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 
 @Composable
-fun ColorCircus(colorState: MutableState<Color>) {
+fun ColorCircus(color: Color) {
     Box {
         Box(
             modifier = Modifier
@@ -33,7 +32,7 @@ fun ColorCircus(colorState: MutableState<Color>) {
                 .align(Alignment.Center)
                 .fillMaxSize(0.55f)
                 .clip(CircleShape)
-                .background(colorState.value)
+                .background(color)
         )
     }
 }
