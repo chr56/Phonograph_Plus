@@ -20,14 +20,15 @@ import mt.util.color.primaryTextColor
 import mt.util.color.shiftColor
 import player.phonograph.App
 import player.phonograph.ui.compose.textColorOn
+import androidx.compose.ui.platform.LocalInspectionMode
 import android.content.Context
 
 @Composable
 fun PhonographTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    previewMode: Boolean = false,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
+    val previewMode = LocalInspectionMode.current
     val colors =
         if (darkTheme) {
             colorsNight(previewMode)
