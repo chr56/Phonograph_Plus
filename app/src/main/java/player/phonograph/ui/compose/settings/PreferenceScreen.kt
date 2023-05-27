@@ -15,8 +15,10 @@ import player.phonograph.settings.dataStore
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -180,13 +182,23 @@ private fun header(res: Int) = @Composable {
 }
 
 private fun title(res: Int) = @Composable {
-    Text(text = stringResource(id = res))
+    BoxWithConstraints {
+        Text(
+            text = stringResource(id = res),
+            modifier = Modifier.widthIn(max = maxWidth * 4 / 5)
+        )
+    }
 }
 
 private fun subtitle(res: Int): (@Composable () -> Unit)? =
     if (res != 0) {
         @Composable {
-            Text(text = stringResource(id = res))
+            BoxWithConstraints {
+                Text(
+                    text = stringResource(id = res),
+                    modifier = Modifier.widthIn(max = maxWidth * 4 / 5)
+                )
+            }
         }
     } else {
         null
