@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 @Preview(showBackground = true)
 @Composable
 fun ContentPreview() {
-    PhonographTheme(previewMode = true) {
+    PhonographTheme {
         TagBrowserScreen(
             DetailScreenViewModel(Song.EMPTY_SONG, Color.Black), null
         )
