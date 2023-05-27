@@ -462,35 +462,6 @@ internal class DialogPreferenceModel(
     }
 }
 
-
-@Composable
-private fun DialogPref(
-    dialog: Class<out DialogFragment>,
-    @StringRes titleRes: Int,
-    @StringRes summaryRes: Int = 0,
-    enabled: Boolean = true,
-) {
-    val context = LocalContext.current
-    SettingsMenuLink(
-        enabled = enabled,
-        title = title(titleRes),
-        subtitle = subtitle(summaryRes),
-    ) {
-        val fragmentActivity = context as? FragmentActivity
-        if (fragmentActivity != null) {
-            try {
-                val fragmentManager = fragmentActivity.supportFragmentManager
-                dialog.getConstructor().newInstance().show(fragmentManager, dialog.simpleName)
-            } catch (e: Exception) {
-                reportError(e, "DialogPref", "Failed to show dialog ${dialog.name}")
-            }
-        } else {
-            warning("DialogPref", "$context can not show dialog")
-        }
-    }
-}
-
-
 @Composable
 private fun ListPref(
     optionGroup: OptionGroup,
