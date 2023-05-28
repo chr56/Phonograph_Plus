@@ -341,6 +341,8 @@ fun PhonographPreferenceScreen() {
 }
 
 
+//region Special Preferences
+
 @Composable
 private fun LibraryCategoriesSetting() {
     val context = LocalContext.current
@@ -376,6 +378,51 @@ private fun LibraryCategoriesSetting() {
 
 
 @Composable
+private fun PrimaryColorPref() {
+    ColorPrefImpl(
+        titleRes = R.string.primary_color,
+        summaryRes = R.string.primary_color_desc,
+        mode = ColorChooserListener.MODE_PRIMARY_COLOR
+    )
+}
+@Composable
+private fun AccentColorPref() {
+    ColorPrefImpl(
+        titleRes = R.string.accent_color,
+        summaryRes = R.string.accent_color_desc,
+        mode = ColorChooserListener.MODE_ACCENT_COLOR
+    )
+}
+
+@Composable
+private fun ColorPrefImpl(
+    @StringRes titleRes: Int,
+    @StringRes summaryRes: Int,
+    mode: Int,
+) {
+    val context = LocalContext.current
+
+    val color =
+        when (mode) {
+            ColorChooserListener.MODE_PRIMARY_COLOR -> MaterialTheme.colors.primary
+            ColorChooserListener.MODE_ACCENT_COLOR  -> MaterialTheme.colors.secondary
+            else                                    -> MaterialTheme.colors.error
+        }
+
+    SettingsMenuLink(
+        title = title(titleRes),
+        subtitle = subtitle(summaryRes),
+        action = { ColorCircus(color) },
+        onClick = {
+            ColorChooserListener(
+                context, color.toArgb(), mode
+            ).show()
+        }
+    )
+}
+
+
+@Composable
 private fun EqualizerSetting() {
     val activity = if (!LocalInspectionMode.current) LocalContext.current as? Activity else null
     SettingsMenuLink(title = title(R.string.equalizer)) {
@@ -387,6 +434,9 @@ private fun EqualizerSetting() {
     }
 }
 
+//endregion
+
+//region Common Preferences
 
 @Composable
 private fun BooleanPref(
@@ -530,51 +580,6 @@ private fun ListPrefImpl(
     )
 }
 
-
-@Composable
-private fun PrimaryColorPref() {
-    ColorPrefImpl(
-        titleRes = R.string.primary_color,
-        summaryRes = R.string.primary_color_desc,
-        mode = ColorChooserListener.MODE_PRIMARY_COLOR
-    )
-}
-@Composable
-private fun AccentColorPref() {
-    ColorPrefImpl(
-        titleRes = R.string.accent_color,
-        summaryRes = R.string.accent_color_desc,
-        mode = ColorChooserListener.MODE_ACCENT_COLOR
-    )
-}
-
-@Composable
-private fun ColorPrefImpl(
-    @StringRes titleRes: Int,
-    @StringRes summaryRes: Int,
-    mode: Int,
-) {
-    val context = LocalContext.current
-
-    val color =
-        when (mode) {
-            ColorChooserListener.MODE_PRIMARY_COLOR -> MaterialTheme.colors.primary
-            ColorChooserListener.MODE_ACCENT_COLOR  -> MaterialTheme.colors.secondary
-            else                                    -> MaterialTheme.colors.error
-        }
-
-    SettingsMenuLink(
-        title = title(titleRes),
-        subtitle = subtitle(summaryRes),
-        action = { ColorCircus(color) },
-        onClick = {
-            ColorChooserListener(
-                context, color.toArgb(), mode
-            ).show()
-        }
-    )
-}
-
 internal class OptionGroup(
     val key: String,
     val optionsValue: List<String>,
@@ -615,6 +620,8 @@ private fun dependOn(key: String, required: Boolean = true): Boolean {
         rememberPreferenceDataStoreBooleanSettingState(key = key, dataStore = datastore).value == required
     }
 }
+
+//endregion
 
 //region Text
 private fun header(res: Int) = @Composable {
