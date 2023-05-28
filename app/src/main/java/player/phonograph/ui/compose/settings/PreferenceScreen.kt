@@ -17,6 +17,7 @@ import lib.phonograph.localization.Localization
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
+import player.phonograph.mechanism.StatusBarLyric
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.mechanism.setting.StyleConfig.THEME_AUTO
@@ -204,6 +205,12 @@ fun PhonographPreferenceScreen() {
                 titleRes = R.string.pref_title_synchronized_lyrics_show,
                 summaryRes = R.string.pref_summary_synchronized_lyrics_show,
                 defaultValue = true,
+                onCheckedChange = { newValue ->
+                    if (!newValue) {
+                        // clear lyrics displaying on the status bar now
+                        StatusBarLyric.stopLyric()
+                    }
+                }
             )
 
         }
