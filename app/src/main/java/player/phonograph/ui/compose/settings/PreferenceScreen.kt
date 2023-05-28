@@ -87,30 +87,7 @@ fun PhonographPreferenceScreen() {
 
         SettingsGroup(title = header(R.string.pref_header_appearance)) {
 
-            val context = LocalContext.current
-            ListPref(
-                titleRes = R.string.pref_title_general_theme,
-                optionGroup =
-                OptionGroup(
-                    key = GENERAL_THEME,
-                    optionsValue = listOf(
-                        THEME_AUTO,
-                        THEME_DARK,
-                        THEME_BLACK,
-                        THEME_LIGHT,
-                    ),
-                    optionsStringRes = listOf(
-                        R.string.auto_theme_name,
-                        R.string.dark_theme_name,
-                        R.string.black_theme_name,
-                        R.string.light_theme_name,
-                    )
-                ),
-                onChange = { _, _ ->
-                    (context as? Activity)?.recreate()
-                }
-            )
-
+            GeneralThemeSetting()
             if (SDK_INT >= S) MonetSetting()
             PrimaryColorPref()
             AccentColorPref()
@@ -412,6 +389,33 @@ private fun LibraryCategoriesSetting() {
     )
 }
 
+
+@Composable
+private fun GeneralThemeSetting(){
+    val context = LocalContext.current
+    ListPref(
+        titleRes = R.string.pref_title_general_theme,
+        optionGroup =
+        OptionGroup(
+            key = GENERAL_THEME,
+            optionsValue = listOf(
+                THEME_AUTO,
+                THEME_DARK,
+                THEME_BLACK,
+                THEME_LIGHT,
+            ),
+            optionsStringRes = listOf(
+                R.string.auto_theme_name,
+                R.string.dark_theme_name,
+                R.string.black_theme_name,
+                R.string.light_theme_name,
+            )
+        ),
+        onChange = { _, _ ->
+            (context as? Activity)?.recreate()
+        }
+    )
+}
 
 @Composable
 private fun PrimaryColorPref() {
