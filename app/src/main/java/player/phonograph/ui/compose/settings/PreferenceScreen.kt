@@ -65,6 +65,7 @@ import androidx.fragment.app.FragmentActivity
 import android.app.Activity
 import android.content.Context
 import android.os.Build.VERSION_CODES.N_MR1
+import android.os.Build.VERSION_CODES.S
 import android.os.Build.VERSION.SDK_INT
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -99,7 +100,7 @@ fun PhonographPreferenceScreen() {
                 )
             )
 
-            MonetSetting()
+            if (SDK_INT >= S) MonetSetting()
             PrimaryColorPref()
             AccentColorPref()
             ColoredNavigationBarSetting()
