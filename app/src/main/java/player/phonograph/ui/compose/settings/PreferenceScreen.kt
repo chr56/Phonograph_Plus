@@ -87,7 +87,8 @@ fun PhonographPreferenceScreen() {
 
         SettingsGroup(title = header(R.string.pref_header_appearance)) {
 
-            ListPref( //todo
+            val context = LocalContext.current
+            ListPref(
                 titleRes = R.string.pref_title_general_theme,
                 optionGroup =
                 OptionGroup(
@@ -104,7 +105,10 @@ fun PhonographPreferenceScreen() {
                         R.string.black_theme_name,
                         R.string.light_theme_name,
                     )
-                )
+                ),
+                onChange = { _, _ ->
+                    (context as? Activity)?.recreate()
+                }
             )
 
             if (SDK_INT >= S) MonetSetting()
