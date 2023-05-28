@@ -16,6 +16,7 @@ import lib.phonograph.localization.LanguageSettingDialog
 import lib.phonograph.localization.Localization
 import mt.pref.ThemeColor
 import player.phonograph.R
+import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.mechanism.setting.StyleConfig.THEME_AUTO
@@ -31,6 +32,7 @@ import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
 import player.phonograph.ui.dialogs.PathFilterDialog
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.reportError
+import player.phonograph.util.theme.applyMonet
 import player.phonograph.util.warning
 import util.phonograph.misc.ColorChooserListener
 import androidx.annotation.StringRes
@@ -460,10 +462,19 @@ private fun MonetSetting() {
             MonetSettingValueState()
         }
 
+    val context = LocalContext.current
+
     BooleanPrefImpl(
         titleRes = R.string.pref_title_enable_monet,
         summaryRes = R.string.pref_summary_enable_monet,
         state = booleanState,
+        onCheckedChange = { newValue ->
+            if (newValue) {
+                applyMonet(context, true)
+                DynamicShortcutManager(context).updateDynamicShortcuts()
+                (context as? Activity)?.recreate()
+            }
+        }
     )
 }
 
@@ -492,10 +503,15 @@ private fun ColoredNavigationBarSetting() {
             ColoredNavigationBarSettingValueState(LocalContext.current)
         }
 
+    val context = LocalContext.current
+
     BooleanPrefImpl(
         titleRes = R.string.pref_title_navigation_bar,
         summaryRes = R.string.pref_summary_colored_navigation_bar,
         state = booleanState,
+        onCheckedChange = {
+            (context as? Activity)?.recreate()
+        }
     )
 }
 
@@ -522,6 +538,7 @@ private fun BooleanPref(
     @StringRes summaryRes: Int = 0,
     defaultValue: Boolean,
     enabled: Boolean = true,
+    onCheckedChange: (Boolean) -> Unit = {},
 ) {
     val booleanState =
         if (LocalInspectionMode.current) {
@@ -537,7 +554,8 @@ private fun BooleanPref(
         state = booleanState,
         enabled = enabled,
         titleRes = titleRes,
-        summaryRes = summaryRes
+        summaryRes = summaryRes,
+        onCheckedChange = onCheckedChange
     )
 }
 
@@ -547,13 +565,15 @@ private fun BooleanPrefImpl(
     @StringRes summaryRes: Int,
     state: SettingValueState<Boolean>,
     enabled: Boolean = true,
+    onCheckedChange: (Boolean) -> Unit,
 ) {
     SettingsSwitch(
         state = state,
         enabled = enabled,
         title = title(titleRes),
         subtitle = subtitle(summaryRes),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        onCheckedChange = onCheckedChange,
     )
 }
 
