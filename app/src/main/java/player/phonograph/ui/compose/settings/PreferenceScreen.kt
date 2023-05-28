@@ -14,6 +14,7 @@ import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.alorma.compose.settings.ui.SettingsSwitch
 import lib.phonograph.localization.LanguageSettingDialog
 import lib.phonograph.localization.Localization
+import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.NowPlayingScreenConfig
@@ -99,6 +100,7 @@ fun PhonographPreferenceScreen() {
             MonetSetting()
             PrimaryColorPref()
             AccentColorPref()
+            ColoredNavigationBarSetting()
 
             DialogPref(
                 model = DialogPreferenceModel(
@@ -449,6 +451,38 @@ private fun MonetSetting() {
     BooleanPrefImpl(
         titleRes = R.string.pref_title_enable_monet,
         summaryRes = R.string.pref_summary_enable_monet,
+        state = booleanState,
+    )
+}
+
+@Composable
+private fun ColoredNavigationBarSetting() {
+    class ColoredNavigationBarSettingValueState(val context: Context) : SettingValueState<Boolean> {
+        private val _state = mutableStateOf(ThemeColor.coloredNavigationBar(context))
+        override var value: Boolean
+            get() = _state.value
+            set(value) {
+                _state.value = value
+                ThemeColor.edit(context) {
+                    coloredNavigationBar(value)
+                }
+            }
+
+        override fun reset() {
+            value = true
+        }
+    }
+
+    val booleanState =
+        if (LocalInspectionMode.current) {
+            rememberBooleanSettingState(false)
+        } else {
+            ColoredNavigationBarSettingValueState(LocalContext.current)
+        }
+
+    BooleanPrefImpl(
+        titleRes = R.string.pref_title_navigation_bar,
+        summaryRes = R.string.pref_summary_colored_navigation_bar,
         state = booleanState,
     )
 }
