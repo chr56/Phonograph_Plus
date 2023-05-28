@@ -15,6 +15,7 @@ import com.alorma.compose.settings.ui.SettingsSwitch
 import lib.phonograph.localization.LanguageSettingDialog
 import lib.phonograph.localization.Localization
 import mt.pref.ThemeColor
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.mechanism.StatusBarLyric
@@ -114,7 +115,10 @@ fun PhonographPreferenceScreen() {
                     key = COLORED_APP_SHORTCUTS,
                     titleRes = R.string.pref_title_app_shortcuts,
                     summaryRes = R.string.pref_summary_colored_app_shortcuts,
-                    defaultValue = true
+                    defaultValue = true,
+                    onCheckedChange = {
+                        DynamicShortcutManager(App.instance).updateDynamicShortcuts()
+                    }
                 )
             }
 
