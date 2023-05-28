@@ -64,6 +64,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import android.app.Activity
 import android.content.Context
+import android.os.Build.VERSION_CODES.N_MR1
+import android.os.Build.VERSION.SDK_INT
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -101,6 +103,15 @@ fun PhonographPreferenceScreen() {
             PrimaryColorPref()
             AccentColorPref()
             ColoredNavigationBarSetting()
+
+            if (SDK_INT >= N_MR1) {
+                BooleanPref(
+                    key = COLORED_APP_SHORTCUTS,
+                    titleRes = R.string.pref_title_app_shortcuts,
+                    summaryRes = R.string.pref_summary_colored_app_shortcuts,
+                    defaultValue = true
+                )
+            }
 
             DialogPref(
                 model = DialogPreferenceModel(
