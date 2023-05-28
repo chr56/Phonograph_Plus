@@ -669,6 +669,7 @@ private fun ListPref(
     @StringRes titleRes: Int,
     @StringRes summaryRes: Int = 0,
     enabled: Boolean = true,
+    onChange: (Int, String) -> Unit = { _, _ -> },
 ) {
     val context = LocalContext.current
     val state = rememberIntSettingState(optionGroup.defaultValueIndex)
@@ -687,9 +688,13 @@ private fun ListPref(
         if (LocalInspectionMode.current) {
             { _, _ -> }
         } else {
-            { index, _ ->
-                CoroutineScope(Dispatchers.IO).launch {
+            { index, text ->
+                val scope = CoroutineScope(Dispatchers.Unconfined)
+                scope.launch(Dispatchers.IO) {
                     optionGroup.onSelect(context, index)
+                }
+                scope.launch {
+                    onChange(index, text)
                 }
             }
         }
