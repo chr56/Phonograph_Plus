@@ -76,8 +76,10 @@ import android.os.Build.VERSION_CODES.S
 import android.os.Build.VERSION.SDK_INT
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun PhonographPreferenceScreen() {
@@ -391,7 +393,7 @@ private fun LibraryCategoriesSetting() {
 
 
 @Composable
-private fun GeneralThemeSetting(){
+private fun GeneralThemeSetting() {
     val context = LocalContext.current
     ListPref(
         titleRes = R.string.pref_title_general_theme,
@@ -412,7 +414,10 @@ private fun GeneralThemeSetting(){
             )
         ),
         onChange = { _, _ ->
-            (context as? Activity)?.recreate()
+            delay(200)
+            withContext(Dispatchers.Main) {
+                (context as? Activity)?.recreate()
+            }
         }
     )
 }
@@ -677,7 +682,7 @@ private fun ListPref(
     @StringRes titleRes: Int,
     @StringRes summaryRes: Int = 0,
     enabled: Boolean = true,
-    onChange: (Int, String) -> Unit = { _, _ -> },
+    onChange: suspend (Int, String) -> Unit = { _, _ -> },
 ) {
     val context = LocalContext.current
     val state = rememberIntSettingState(optionGroup.defaultValueIndex)
@@ -697,11 +702,8 @@ private fun ListPref(
             { _, _ -> }
         } else {
             { index, text ->
-                val scope = CoroutineScope(Dispatchers.Unconfined)
-                scope.launch(Dispatchers.IO) {
+                CoroutineScope(Dispatchers.IO).launch {
                     optionGroup.onSelect(context, index)
-                }
-                scope.launch {
                     onChange(index, text)
                 }
             }
