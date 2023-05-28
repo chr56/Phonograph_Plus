@@ -96,6 +96,7 @@ fun PhonographPreferenceScreen() {
                 )
             )
 
+            MonetSetting()
             PrimaryColorPref()
             AccentColorPref()
 
@@ -421,6 +422,36 @@ private fun ColorPrefImpl(
     )
 }
 
+@Composable
+private fun MonetSetting() {
+    class MonetSettingValueState : SettingValueState<Boolean> {
+        private val _state = mutableStateOf(Setting.instance.enableMonet)
+        override var value: Boolean
+            get() = _state.value
+            set(value) {
+                _state.value = value
+                Setting.instance.enableMonet = value
+            }
+
+        override fun reset() {
+            value = true
+        }
+
+    }
+
+    val booleanState =
+        if (LocalInspectionMode.current) {
+            rememberBooleanSettingState(false)
+        } else {
+            MonetSettingValueState()
+        }
+
+    BooleanPrefImpl(
+        titleRes = R.string.pref_title_enable_monet,
+        summaryRes = R.string.pref_summary_enable_monet,
+        state = booleanState,
+    )
+}
 
 @Composable
 private fun EqualizerSetting() {
@@ -456,8 +487,23 @@ private fun BooleanPref(
                 defaultValue = defaultValue
             )
         }
-    SettingsSwitch(
+    BooleanPrefImpl(
         state = booleanState,
+        enabled = enabled,
+        titleRes = titleRes,
+        summaryRes = summaryRes
+    )
+}
+
+@Composable
+private fun BooleanPrefImpl(
+    @StringRes titleRes: Int,
+    @StringRes summaryRes: Int,
+    state: SettingValueState<Boolean>,
+    enabled: Boolean = true,
+) {
+    SettingsSwitch(
+        state = state,
         enabled = enabled,
         title = title(titleRes),
         subtitle = subtitle(summaryRes),
