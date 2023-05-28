@@ -68,6 +68,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.media.audiofx.AudioEffect
 import android.os.Build.VERSION_CODES.N
 import android.os.Build.VERSION_CODES.N_MR1
 import android.os.Build.VERSION_CODES.S
@@ -531,7 +533,21 @@ private fun ColoredNavigationBarSetting() {
 @Composable
 private fun EqualizerSetting() {
     val activity = if (!LocalInspectionMode.current) LocalContext.current as? Activity else null
-    SettingsMenuLink(title = title(R.string.equalizer)) {
+
+    val hasEqualizer = remember { mutableStateOf(false) }
+    if (!LocalInspectionMode.current) {
+        LaunchedEffect("hasEqualizer") {
+            hasEqualizer.value = activity?.packageManager
+                ?.resolveActivity(Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL), 0) != null
+        }
+    }
+
+    SettingsMenuLink(
+        title = title(R.string.equalizer),
+        subtitle = {
+            if (!hasEqualizer.value) Text(text = stringResource(id = R.string.no_equalizer))
+        }
+    ) {
         if (activity != null) {
             NavigationUtil.openEqualizer(activity)
         } else {
