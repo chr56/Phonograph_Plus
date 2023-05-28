@@ -66,6 +66,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import android.app.Activity
 import android.content.Context
+import android.os.Build.VERSION_CODES.N
 import android.os.Build.VERSION_CODES.N_MR1
 import android.os.Build.VERSION_CODES.S
 import android.os.Build.VERSION.SDK_INT
@@ -164,7 +165,8 @@ fun PhonographPreferenceScreen() {
         SettingsGroup(
             title = header(R.string.pref_header_notification)
         ) {
-            BooleanPref(
+            // noinspection ObsoleteSdkInt
+            if (SDK_INT >= N) BooleanPref(
                 key = CLASSIC_NOTIFICATION,
                 titleRes = R.string.pref_title_classic_notification,
                 summaryRes = R.string.pref_summary_classic_notification,
