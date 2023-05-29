@@ -218,7 +218,7 @@ fun PhonographPreferenceScreen() {
             )
             ListPref(
                 titleRes = R.string.pref_title_auto_download_metadata,
-                optionGroup = OptionGroup(
+                options = OptionGroupModel(
                     AUTO_DOWNLOAD_IMAGES_POLICY,
                     listOf(
                         DOWNLOAD_IMAGES_POLICY_NEVER,
@@ -281,8 +281,8 @@ fun PhonographPreferenceScreen() {
         SettingsGroup(title = header(R.string.pref_header_playlists)) {
             ListPref(
                 titleRes = R.string.pref_title_last_added_interval,
-                optionGroup =
-                OptionGroup(
+                options =
+                OptionGroupModel(
                     LAST_ADDED_CUTOFF,
                     listOf(
                         INTERVAL_TODAY,
@@ -339,7 +339,7 @@ fun PhonographPreferenceScreen() {
             ListPref(
                 titleRes = R.string.pref_title_playlist_files_operation_behaviour,
                 summaryRes = R.string.pref_summary_playlist_files_operation_behaviour,
-                optionGroup = OptionGroup(
+                options = OptionGroupModel(
                     PLAYLIST_FILES_OPERATION_BEHAVIOUR,
                     listOf(
                         PLAYLIST_OPS_BEHAVIOUR_AUTO,
@@ -399,8 +399,8 @@ private fun GeneralThemeSetting() {
     val context = LocalContext.current
     ListPref(
         titleRes = R.string.pref_title_general_theme,
-        optionGroup =
-        OptionGroup(
+        options =
+        OptionGroupModel(
             key = GENERAL_THEME,
             optionsValue = listOf(
                 THEME_AUTO,
@@ -675,36 +675,16 @@ internal class DialogPreferenceModel(
 
 @Composable
 private fun ListPref(
-    optionGroup: OptionGroup,
+    options: OptionGroupModel,
     @StringRes titleRes: Int,
     @StringRes summaryRes: Int = 0,
     enabled: Boolean = true,
     onChange: suspend (Int, String) -> Unit = { _, _ -> },
 ) {
     val context = LocalContext.current
-    val state = rememberIntSettingState(optionGroup.defaultValueIndex)
-    if (!LocalInspectionMode.current) {
-        LaunchedEffect(key1 = optionGroup.key) {
-            state.value = optionGroup.selected(context)
-        }
-    }
-    val items =
-        if (LocalInspectionMode.current) {
-            optionGroup.optionsValue
-        } else {
-            optionGroup.options(context)
-        }
-    val onItemSelected: (Int, String) -> Unit =
-        if (LocalInspectionMode.current) {
-            { _, _ -> }
-        } else {
-            { index, text ->
-                CoroutineScope(Dispatchers.IO).launch {
-                    optionGroup.onSelect(context, index)
-                    onChange(index, text)
-                }
-            }
-        }
+    val state = options.rememberSettingState()
+    val items = options.items(context)
+    val onItemSelected = options.onItemSelected(context, onChange)
 
     ListPrefImpl(
         state = state,
@@ -733,18 +713,52 @@ private fun ListPrefImpl(
     )
 }
 
-internal class OptionGroup(
+internal class OptionGroupModel(
     val key: String,
     val optionsValue: List<String>,
     val optionsStringRes: List<Int>,
     val defaultValueIndex: Int = 0,
 ) {
 
-    fun options(context: Context): List<String> {
-        return optionsStringRes.map { context.getString(it) }
+    private fun optionsStrings(context: Context): List<String> = optionsStringRes.map { context.getString(it) }
+
+    @Composable
+    fun rememberSettingState(): SettingValueState<Int> {
+        val state = rememberIntSettingState(defaultValueIndex)
+        val context = LocalContext.current
+        if (!LocalInspectionMode.current) {
+            LaunchedEffect(state) {
+                state.value = read(context)
+            }
+        }
+        return state
     }
 
-    suspend fun selected(context: Context): Int {
+    @Composable
+    fun items(context: Context) =
+        if (LocalInspectionMode.current) {
+            optionsValue
+        } else {
+            optionsStrings(context)
+        }
+
+    @Composable
+    fun onItemSelected(
+        context: Context,
+        onChange: suspend (Int, String) -> Unit = { _, _ -> },
+    ): (Int, String) -> Unit =
+        if (LocalInspectionMode.current) {
+            { _, _ -> }
+        } else {
+            { index, text ->
+                CoroutineScope(Dispatchers.IO).launch {
+                    save(context, index)
+                    onChange(index, text)
+                }
+            }
+        }
+
+    private suspend fun read(context: Context): Int {
         val value = context.dataStore.data.first()[stringPreferencesKey(key)]
         val index = optionsValue.indexOf(value)
         return if (index > -1) {
@@ -755,9 +769,9 @@ internal class OptionGroup(
         }
     }
 
-    suspend fun onSelect(context: Context, index: Int) {
+    suspend fun save(context: Context, index: Int) {
         context.dataStore.edit { preferences ->
-            val newValue = optionsValue.getOrElse(index) { optionsValue.first() }
+            val newValue = optionsValue.getOrElse(index) { optionsValue[defaultValueIndex] }
             preferences[stringPreferencesKey(key)] = newValue
         }
     }
