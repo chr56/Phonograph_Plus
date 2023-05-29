@@ -116,6 +116,12 @@
       "url": "https://github.com/AppIntro/AppIntro",
       "copyright": "Copyright (C) 2015-2020 AppIntro Developers",
       "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "Compose-Settings",
+      "url": "https://github.com/alorma/Compose-Settings",
+      "copyright": "Copyright (c) 2021 Bernat Borrás Paronella",
+      "license": "MIT License"
     }
   ]
 }
