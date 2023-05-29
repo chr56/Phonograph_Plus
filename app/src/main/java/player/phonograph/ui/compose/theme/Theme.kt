@@ -4,28 +4,26 @@
 
 package player.phonograph.ui.compose.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
+import mt.pref.ThemeColor
+import mt.util.color.shiftColor
+import player.phonograph.App
+import player.phonograph.ui.compose.composeDarkTheme
+import player.phonograph.ui.compose.textColorOn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import mt.pref.ThemeColor
-import mt.pref.accentColor
-import mt.util.color.primaryTextColor
-import mt.util.color.shiftColor
-import player.phonograph.App
-import player.phonograph.ui.compose.textColorOn
-import androidx.compose.ui.platform.LocalInspectionMode
 import android.content.Context
 
 @Composable
 fun PhonographTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = composeDarkTheme(),
     content: @Composable () -> Unit,
 ) {
     val previewMode = LocalInspectionMode.current
