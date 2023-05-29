@@ -53,9 +53,12 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
@@ -65,7 +68,9 @@ import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -626,14 +631,32 @@ private fun DialogPref(
     enabled: Boolean = true,
 ) {
     val context = LocalContext.current
-    val subtitle = remember { mutableStateOf<@Composable (() -> Unit)?>(null) }
+    val subtitleState = remember { mutableStateOf<String?>(null) }
     LaunchedEffect(key1 = model.dialog) {
-        subtitle.value = model.subtitle(context = context)
+        subtitleState.value = model.subtitle(context = context)
     }
+    val coroutineScope = rememberCoroutineScope { Dispatchers.IO }
+    if (context is FragmentActivity)
+        DisposableEffect(null) {
+            val fragmentManager = context.supportFragmentManager
+            val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
+                override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
+                    if (f::class.java == model.dialog)
+                        coroutineScope.launch {
+                            delay(100)
+                            subtitleState.value = model.subtitle(context = context)
+                        }
+                }
+            }
+            fragmentManager.registerFragmentLifecycleCallbacks(callback, true)
+            onDispose {
+                fragmentManager.unregisterFragmentLifecycleCallbacks(callback)
+            }
+        }
     SettingsMenuLink(
         enabled = enabled,
         title = title(model.titleRes),
-        subtitle = subtitle.value,
+        subtitle = subtitle(subtitleState),
         onClick = { model.onShowDialog(context) }
     )
 }
@@ -645,30 +668,12 @@ internal class DialogPreferenceModel(
     private val currentValueForHint: (suspend (Context) -> String)? = null,
 ) {
 
-    suspend fun subtitle(context: Context): @Composable (() -> Unit)? =
+    @Suppress("IfThenToElvis")
+    suspend fun subtitle(context: Context): String? =
         if (currentValueForHint != null) {
-            @Composable {
-                val text = remember { mutableStateOf("Loading...") }
-                LaunchedEffect(key1 = dialog) {
-                    val fetched = currentValueForHint.invoke(context)
-                    text.value = fetched
-                }
-                BoxWithConstraints {
-                    Text(
-                        text = text.value,
-                        modifier = Modifier.widthIn(max = maxWidth * 4 / 5)
-                    )
-                }
-            }
+            currentValueForHint.invoke(context)
         } else if (summaryRes != 0) {
-            @Composable {
-                BoxWithConstraints {
-                    Text(
-                        text = stringResource(id = summaryRes),
-                        modifier = Modifier.widthIn(max = maxWidth * 4 / 5)
-                    )
-                }
-            }
+            context.getString(summaryRes)
         } else {
             null
         }
@@ -799,6 +804,20 @@ private fun subtitle(res: Int): (@Composable () -> Unit)? =
             BoxWithConstraints {
                 Text(
                     text = stringResource(id = res),
+                    modifier = Modifier.widthIn(max = maxWidth * 4 / 5)
+                )
+            }
+        }
+    } else {
+        null
+    }
+
+private fun subtitle(text: MutableState<String?>): (@Composable () -> Unit)? =
+    if (text.value != null) {
+        @Composable {
+            BoxWithConstraints {
+                Text(
+                    text = text.value ?: "",
                     modifier = Modifier.widthIn(max = maxWidth * 4 / 5)
                 )
             }
