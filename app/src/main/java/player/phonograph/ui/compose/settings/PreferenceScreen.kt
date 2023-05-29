@@ -74,10 +74,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.media.audiofx.AudioEffect
+import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.N
 import android.os.Build.VERSION_CODES.N_MR1
 import android.os.Build.VERSION_CODES.S
-import android.os.Build.VERSION.SDK_INT
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -88,11 +88,7 @@ import java.lang.ref.WeakReference
 
 @Composable
 fun PhonographPreferenceScreen() {
-    DialogWare {
-    Column(
-        Modifier.verticalScroll(rememberScrollState())
-    ) {
-
+    PreferenceScreen {
         SettingsGroup(title = header(R.string.pref_header_appearance)) {
 
             GeneralThemeSetting()
@@ -357,6 +353,16 @@ fun PhonographPreferenceScreen() {
         }
 
     }
+}
+
+@Composable
+private fun PreferenceScreen(block: @Composable (MutableState<WeakReference<DialogFragment?>>) -> Unit) {
+    DialogWare {
+        Column(
+            Modifier.verticalScroll(rememberScrollState())
+        ) {
+            block(it)
+        }
     }
 }
 
