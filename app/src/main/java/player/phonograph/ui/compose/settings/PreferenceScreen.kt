@@ -53,11 +53,11 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
@@ -67,11 +67,12 @@ import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface.OnDismissListener
 import android.content.Intent
 import android.media.audiofx.AudioEffect
 import android.os.Build.VERSION.SDK_INT
@@ -84,11 +85,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.ref.WeakReference
 
 @Composable
 fun PhonographPreferenceScreen() {
-    PreferenceScreen {
+    Column(
+        Modifier.verticalScroll(rememberScrollState())
+    ) {
         SettingsGroup(title = header(R.string.pref_header_appearance)) {
 
             GeneralThemeSetting()
@@ -116,7 +118,7 @@ fun PhonographPreferenceScreen() {
                     currentValueForHint = { context ->
                         Localization.currentLocale(context).displayLanguage
                     }
-                ), state = it
+                )
             )
         }
 
@@ -150,7 +152,8 @@ fun PhonographPreferenceScreen() {
                             }
                         }
                     }
-                ), state = it)
+                )
+            )
         }
 
         SettingsGroup(
@@ -182,7 +185,7 @@ fun PhonographPreferenceScreen() {
                     currentValueForHint = { context ->
                         context.getString(NowPlayingScreenConfig.nowPlayingScreen.titleRes)
                     }
-                ), state = it)
+                ))
             BooleanPref(
                 key = DISPLAY_LYRICS_TIME_AXIS,
                 titleRes = R.string.pref_title_display_lyrics_time_axis,
@@ -211,7 +214,7 @@ fun PhonographPreferenceScreen() {
                 model = DialogPreferenceModel(
                     dialog = ImageSourceConfigDialog::class.java,
                     titleRes = R.string.image_source_config,
-                ), state = it
+                )
             )
             ListPref(
                 titleRes = R.string.pref_title_auto_download_metadata,
@@ -239,7 +242,7 @@ fun PhonographPreferenceScreen() {
                     dialog = ClickModeSettingDialog::class.java,
                     titleRes = R.string.pref_title_click_behavior,
                     summaryRes = R.string.pref_summary_click_behavior,
-                ), state = it
+                )
             )
             BooleanPref(
                 key = AUDIO_DUCKING,
@@ -355,40 +358,6 @@ fun PhonographPreferenceScreen() {
     }
 }
 
-@Composable
-private fun PreferenceScreen(block: @Composable (MutableState<WeakReference<DialogFragment?>>) -> Unit) {
-    DialogWare {
-        Column(
-            Modifier.verticalScroll(rememberScrollState())
-        ) {
-            block(it)
-        }
-    }
-}
-
-@Composable
-private fun DialogWare(block: @Composable (MutableState<WeakReference<DialogFragment?>>) -> Unit) {
-    val context = LocalContext.current
-    val changed = remember { mutableStateOf(WeakReference<DialogFragment?>(null)) }
-    if (context is FragmentActivity) {
-        DisposableEffect(context) {
-            val fragmentManager = context.supportFragmentManager
-            val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
-                override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
-                    if (f is DialogFragment) changed.value = WeakReference(f)
-                }
-            }
-            fragmentManager.registerFragmentLifecycleCallbacks(callback, true)
-            onDispose {
-                fragmentManager.unregisterFragmentLifecycleCallbacks(callback)
-            }
-        }
-    }
-    block(changed)
-}
-
-// private val LocalPreferenceDialog = compositionLocalOf<MutableState<DialogFragment?>> { mutableStateOf(null) }
-
 //region Special Preferences
 
 @Composable
@@ -398,7 +367,7 @@ private fun LibraryCategoriesSetting() {
         title = title(R.string.library_categories),
         subtitle = subtitle(R.string.pref_summary_library_categories),
         onClick = {
-            showDialog(context, HomeTabConfigDialog::class.java)
+            showDialog(context, HomeTabConfigDialog::class.java, null)
         },
         action = {
             IconButton(
@@ -657,18 +626,23 @@ private fun BooleanPrefImpl(
 private fun DialogPref(
     model: DialogPreferenceModel,
     enabled: Boolean = true,
-    state: MutableState<WeakReference<DialogFragment?>>,
 ) {
     val context = LocalContext.current
     val subtitleState = remember { mutableStateOf<String?>(null) }
-    LaunchedEffect(key1 = state.value) {
+    LaunchedEffect(model) {
         subtitleState.value = model.subtitle(context = context)
+    }
+    val coroutineScope = rememberCoroutineScope()
+    val onDismiss = OnDismissListener {
+        coroutineScope.launch {
+            subtitleState.value = model.subtitle(context = context)
+        }
     }
     SettingsMenuLink(
         enabled = enabled,
         title = title(model.titleRes),
         subtitle = subtitle(subtitleState),
-        onClick = { model.onShowDialog(context) }
+        onClick = { model.onShowDialog(context, onDismiss) }
     )
 }
 
@@ -689,7 +663,8 @@ internal class DialogPreferenceModel(
             null
         }
 
-    fun onShowDialog(context: Context) = showDialog(context, dialog)
+    fun onShowDialog(context: Context, onDismissListener: OnDismissListener?) =
+        showDialog(context, dialog, onDismissListener)
 }
 
 @Composable
@@ -839,15 +814,32 @@ private fun subtitle(text: MutableState<String?>): (@Composable () -> Unit)? =
 //endregion
 
 
-private fun showDialog(context: Context, dialog: Class<out DialogFragment>) {
+private fun showDialog(
+    context: Context,
+    dialogClazz: Class<out DialogFragment>,
+    onDismissListener: OnDismissListener?,
+) {
     @Suppress("LocalVariableName") val TAG = "showDialog"
     val fragmentActivity = context as? FragmentActivity
     if (fragmentActivity != null) {
         try {
             val fragmentManager = fragmentActivity.supportFragmentManager
-            dialog.getConstructor().newInstance().show(fragmentManager, dialog.simpleName)
+            val dialog = dialogClazz.getConstructor().newInstance()
+            dialog.show(fragmentManager, dialogClazz.simpleName)
+
+            if (onDismissListener != null) {
+                dialog.lifecycle.addObserver(
+                    object : DefaultLifecycleObserver {
+                        override fun onDestroy(owner: LifecycleOwner) {
+                            super.onDestroy(owner)
+                            onDismissListener.onDismiss(dialog.dialog)
+                        }
+                    }
+                )
+            }
+
         } catch (e: Exception) {
-            reportError(e, TAG, "Failed to show dialog ${dialog.name}")
+            reportError(e, TAG, "Failed to show dialog ${dialogClazz.name}")
         }
     } else {
         warning(TAG, "$context can not show dialog")
