@@ -57,7 +57,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
@@ -70,6 +69,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface.OnDismissListener
@@ -628,15 +628,12 @@ private fun DialogPref(
     enabled: Boolean = true,
 ) {
     val context = LocalContext.current
-    val subtitleState = remember { mutableStateOf<String?>(null) }
+    val subtitleState = remember { model.subtitleState }
     LaunchedEffect(model) {
-        subtitleState.value = model.subtitle(context = context)
+        model.updateSubtitle(context, this) // initial value
     }
-    val coroutineScope = rememberCoroutineScope()
     val onDismiss = OnDismissListener {
-        coroutineScope.launch {
-            subtitleState.value = model.subtitle(context = context)
-        }
+        model.updateSubtitle(context, null) // updated value
     }
     SettingsMenuLink(
         enabled = enabled,
@@ -652,6 +649,15 @@ internal class DialogPreferenceModel(
     @StringRes val summaryRes: Int = 0,
     private val currentValueForHint: (suspend (Context) -> String)? = null,
 ) {
+
+    val subtitleState = mutableStateOf<String?>(null)
+
+    fun updateSubtitle(context: Context, coroutineScope: CoroutineScope?) {
+        val scope = coroutineScope ?: (context as LifecycleOwner).lifecycleScope
+        scope.launch(Dispatchers.IO) {
+            subtitleState.value = subtitle(context)
+        }
+    }
 
     @Suppress("IfThenToElvis")
     suspend fun subtitle(context: Context): String? =
