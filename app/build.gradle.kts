@@ -175,7 +175,7 @@ dependencies {
     implementation(depsLibs.androidx.media)
     implementation(depsLibs.androidx.cardview)
     implementation(depsLibs.androidx.palette)
-    implementation(depsLibs.androidx.datastore)
+    implementation(depsLibs.bundles.androidx.datastore)
 
     implementation(depsLibs.google.material)
 
