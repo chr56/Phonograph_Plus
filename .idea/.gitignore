@@ -9,6 +9,7 @@
 
 gradle.xml
 jarRepositories.xml
+kotlinc.xml
 kotlinScripting.xml
 modules.xml
 render.experimental.xml
