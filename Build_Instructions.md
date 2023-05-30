@@ -2,11 +2,11 @@
 
 _This part is not written very well._
 
-Currently(2023.3.8), this project's toolchain&dependencies are:
+Currently(2023.5.20), this project's toolchain & dependencies are:
 
-- `Android SDK` `33` (no `NDK`), requiring `JDK` `11`
-- `Gradlew` `7.6`
-- `Android Gradle Plugin` `7.4.1`
+- `Android SDK` `33` (no `NDK`)
+- `Gradlew` `8.1`, requiring `JDK` `17`
+- `Android Gradle Plugin` `8.0.2`
 - `kotlin` for JVM(Android) `1.8.10`
 - `kotlinx.serialization`,`kotlinx.parcelize`
 - most popular `androidx`(`Jetpack`) components (most of them are latest)
@@ -26,12 +26,12 @@ see [build.gradle.kts](./build.gradle.kts) for all gradle plugins.
 
 1. a PC : any desktop operate system platform (only `Windows` and `Ubuntu 20.04` are tested), I am not sure if it works
    on `Android(Termux)`.
-2. JDK 11 (we are using AGP 7.6).
+2. JDK 17 (we are using AGP 8.0.2 with gradle 8.1).
 3. The connected and fast network.
 
 **Development**:
 
-Plus `Android Studio` with correspond `Android Gradle Plugin` (currently `Electron Eel (Patch 1)`). (`IDEA` is untested)
+Plus `Android Studio` with correspond `Android Gradle Plugin` (currently `Electron Eel Flamingo (Patch 2)`). (`IDEA` is untested)
 
 ## **Instructions (Build with commandline)**
 
@@ -49,25 +49,23 @@ git clone <REPO-URL> --depth=1 -b <VERSION>
 
 ### 2) install JDK
 
-(JDK 17 is untested)
-
 on Windows
 
 ```shell
-winget install --id EclipseAdoptium.Temurin.11.JDK
+winget install --id EclipseAdoptium.Temurin.17.JDK
 # or JDK by other vendor
 ```
 
 on Linux (`Debian` based)
 
 ```shell
-apt-get install temurin-11-jdk
+apt-get install temurin-17-jdk
 ```
 
 on Linux ( `Fedora` / `RedHat` / `SUSE` )
 
 ```shell
-yum install temurin-11-jdk
+yum install temurin-17-jdk
 ```
 
 ### 3) change your shell to repository's root
