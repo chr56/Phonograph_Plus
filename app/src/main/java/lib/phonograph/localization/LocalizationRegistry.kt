@@ -14,7 +14,7 @@ fun Locale.display(currentLocale: Locale): String {
 
     val tag = this.toLanguageTag()
     val nameInEnglish = this.getDisplayName(Locale.ENGLISH)
-    val note = if (this != Locale.ENGLISH) "$tag, $nameInEnglish" else tag
+    val note = if (currentLocale.language != Locale.ENGLISH.language) "$tag, $nameInEnglish" else tag
 
     return "$nameInCurrentLocale - $nameInNaiveSpeaker ($note)"
 }
