@@ -21,7 +21,7 @@ fun Locale.display(currentLocale: Locale): String {
 
 @Suppress("SpellCheckingInspection")
 val availableLanguageTag = arrayOf(
-    "en",
+    "en-rUS",
     "en-rCA",
     "en-rGB",
     "ar",
