@@ -36,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
-import android.content.Intent
 import android.os.Bundle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -117,15 +116,7 @@ class SettingsActivity : ComposeToolbarActivity(), ICreateFileStorageAccess, IOp
                 },
                 stringResource(id = R.string.action_export).format(stringResource(id = R.string.action_backup)) to {
                     BackupExportDialog().show(supportFragmentManager, "EXPORT")
-                },
-                stringResource(id = R.string.action_settings) to {
-                    startActivity(
-                        Intent(
-                            this@SettingsActivity,
-                            player.phonograph.ui.activities.SettingsActivity::class.java
-                        )
-                    )
-                },
+                }
             )
         )
     }
