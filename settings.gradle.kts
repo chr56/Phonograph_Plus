@@ -21,7 +21,7 @@ dependencyResolutionManagement {
                     "androidx.activity",
                     "activity-ktx").versionRef(versionActivity)
             library("androidx.fragment",
-                    "androidx.fragment:fragment-ktx:1.5.5")
+                    "androidx.fragment:fragment-ktx:1.5.7")
             library("androidx.lifecycle_runtime",
                     "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
 
