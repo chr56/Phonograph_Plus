@@ -11,7 +11,7 @@ dependencyResolutionManagement {
             // Common Androidx/Jetpack
             //
             val versionActivity = "activity"
-            version(versionActivity, "1.6.0")
+            version(versionActivity, "1.7.2")
 
             library("androidx.core",
                     "androidx.core:core-ktx:1.9.0")
