@@ -19,7 +19,6 @@
 -keepnames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.pages.PlaylistPage {<methods>;}
 -keepnames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.pages.**Page extends player.phonograph.ui.fragments.pages.AbsDisplayPage
 -keepnames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.player.** extends androidx.fragment.app.Fragment {public <methods>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.SettingsFragment {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.HomeFragment {public <methods>;}
 
 -keepclassmembernames class player.phonograph.ui.components.explorer.*Explorer {public <methods>;}
