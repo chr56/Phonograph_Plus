@@ -185,11 +185,15 @@ dependencyResolutionManagement {
                    listOf("mt.colorRes", "mt.util", "mt.pref", "mt.tint")
             )
 
+            val versionComposeSetting = "compose_setting"
+            version(versionComposeSetting, "0.27.0")
 
             library("composeSettingsUi",
-                "com.github.alorma:compose-settings-ui:0.25.0")
+                "com.github.alorma",
+                "compose-settings-ui").versionRef(versionComposeSetting)
             library("composeSettingsDatastore",
-                "com.github.alorma:compose-settings-storage-datastore:0.25.0")
+                "com.github.alorma",
+                "compose-settings-storage-datastore").versionRef(versionComposeSetting)
 
             bundle("composeSettings",
                 listOf("composeSettingsUi", "composeSettingsDatastore")
