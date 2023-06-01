@@ -98,6 +98,8 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
 
         initRecyclerView()
         initAppBar()
+
+        binding.panelText.setTextColor(view.context.primaryTextColor(view.context.nightMode))
     }
 
     protected lateinit var adapter: A

@@ -16,7 +16,7 @@
             android:layout_height="56dp"
             app:layout_scrollFlags="scroll|enterAlways">
 
-            <lib.phonograph.view.PrimaryTextViewX
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/panel_text"
                 style="@style/TextAppearance.AppCompat.Button"
                 android:layout_width="wrap_content"

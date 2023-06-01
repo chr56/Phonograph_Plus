@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022 chr_56
+ * Copyright (c) 2022~2023 chr_56
  */
 
-package util.phonograph.misc
+package lib.phonograph.misc
 
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
@@ -14,7 +14,6 @@ import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import androidx.annotation.RequiresApi
-import androidx.preference.Preference
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -22,10 +21,47 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.N_MR1
 import android.os.Build.VERSION_CODES.S
 
-class ColorChooserListener(private var context: Context, private var defaultColor: Int = 0, private var mode: Int = 0) :
-        Preference.OnPreferenceClickListener {
 
-    private fun applyNewColor(color: Int) {
+object ColorChooser {
+
+    @SuppressLint("CheckResult")
+    fun showColorChooserDialog(context: Context, defaultColor: Int, mode: Int) {
+        MaterialDialog(context).show {
+            title(R.string.pref_header_colors)
+            colorChooser(
+                colors = colors, subColors = subColors, allowCustomArgb = true, initialSelection = defaultColor
+            ) { _, color ->
+                applyNewColor(context, color, mode)
+            }
+            if (SDK_INT >= S) {
+                @Suppress("DEPRECATION")
+                neutralButton(res = R.string.dynamic_colors) {
+                    MaterialDialog(context).title(R.string.dynamic_colors).colorChooser(
+                        colors = dynamicColors(context), subColors = allDynamicColors(context)
+                    ) { _, color ->
+                        applyNewColor(context, color, mode)
+                    }.positiveButton {
+                        it.dismiss()
+                        dismiss()
+                    }.negativeButton {
+                        it.dismiss()
+                    }.apply {
+                        getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(context))
+                        getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(context))
+                    }.show()
+                }
+            }
+            positiveButton(res = android.R.string.ok)
+            negativeButton(res = android.R.string.cancel).apply {
+                // set button color
+                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(context))
+                getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(context))
+                getActionButton(WhichButton.NEUTRAL).updateTextColor(accentColor(context))
+            }
+        }
+    }
+
+    private fun applyNewColor(context: Context, color: Int, mode: Int) {
         ThemeColor.editTheme(context).apply {
             when (mode) {
                 MODE_PRIMARY_COLOR -> primaryColor(color)
@@ -36,68 +72,15 @@ class ColorChooserListener(private var context: Context, private var defaultColo
         if (SDK_INT >= N_MR1) {
             DynamicShortcutManager(context).updateDynamicShortcuts()
         }
-        (this@ColorChooserListener.context as? Activity)?.recreate()
+        (context as? Activity)?.recreate()
     }
 
-    override fun onPreferenceClick(preference: Preference): Boolean {
-        show()
-        return true
-    }
+    const val MODE_PRIMARY_COLOR: Int = 1
+    const val MODE_ACCENT_COLOR: Int = 2
 
-    @SuppressLint("CheckResult")
-    fun show() {
-        MaterialDialog(context).show {
-            title(R.string.pref_header_colors)
-            colorChooser(
-                colors = colors,
-                subColors = subColors,
-                allowCustomArgb = true,
-                initialSelection = defaultColor
-            ) { _, color ->
-                applyNewColor(color)
-            }
-            if (SDK_INT >= S) {
-                @Suppress("DEPRECATION")
-                neutralButton(res = R.string.dynamic_colors) {
-                    MaterialDialog(context)
-                        .title(R.string.dynamic_colors)
-                        .colorChooser(
-                            colors = dynamicColors(context),
-                            subColors = allDynamicColors(context)
-                        ) { _, color ->
-                            applyNewColor(color)
-                        }
-                        .positiveButton {
-                            it.dismiss()
-                            dismiss()
-                        }
-                        .negativeButton {
-                            it.dismiss()
-                        }
-                        .apply {
-                            getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(context))
-                            getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(context))
-                        }
-                        .show()
-                }
-            }
-            positiveButton(res = android.R.string.ok)
-            negativeButton(res = android.R.string.cancel)
-                .apply {
-                    // set button color
-                    getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(context))
-                    getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(context))
-                    getActionButton(WhichButton.NEUTRAL).updateTextColor(accentColor(context))
-                }
-        }
-    }
 
-    companion object {
-        const val MODE_PRIMARY_COLOR: Int = 1
-        const val MODE_ACCENT_COLOR: Int = 2
-    }
+    //region Dynamic Colors
 
-    // Dynamic Colors
     @RequiresApi(S)
     private fun dynamicColors(context: Context) = intArrayOf(
         context.getColor(android.R.color.system_accent1_400),
@@ -211,8 +194,7 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                 MaterialColor.Red._A200.asColor,
                 MaterialColor.Red._A400.asColor,
                 MaterialColor.Red._A700.asColor
-            ),
-            intArrayOf(
+            ), intArrayOf(
                 MaterialColor.Pink._50.asColor,
                 MaterialColor.Pink._100.asColor,
                 MaterialColor.Pink._200.asColor,
@@ -227,8 +209,7 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                 MaterialColor.Pink._A200.asColor,
                 MaterialColor.Pink._A400.asColor,
                 MaterialColor.Pink._A700.asColor
-            ),
-            intArrayOf(
+            ), intArrayOf(
                 MaterialColor.Purple._50.asColor,
                 MaterialColor.Purple._100.asColor,
                 MaterialColor.Purple._200.asColor,
@@ -243,8 +224,7 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                 MaterialColor.Purple._A200.asColor,
                 MaterialColor.Purple._A400.asColor,
                 MaterialColor.Purple._A700.asColor
-            ),
-            intArrayOf(
+            ), intArrayOf(
                 MaterialColor.DeepPurple._50.asColor,
                 MaterialColor.DeepPurple._100.asColor,
                 MaterialColor.DeepPurple._200.asColor,
@@ -259,8 +239,7 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                 MaterialColor.DeepPurple._A200.asColor,
                 MaterialColor.DeepPurple._A400.asColor,
                 MaterialColor.DeepPurple._A700.asColor
-            ),
-            intArrayOf(
+            ), intArrayOf(
                 MaterialColor.Indigo._50.asColor,
                 MaterialColor.Indigo._100.asColor,
                 MaterialColor.Indigo._200.asColor,
@@ -275,8 +254,7 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                 MaterialColor.Indigo._A200.asColor,
                 MaterialColor.Indigo._A400.asColor,
                 MaterialColor.Indigo._A700.asColor
-            ),
-            intArrayOf(
+            ), intArrayOf(
                 MaterialColor.Blue._50.asColor,
                 MaterialColor.Blue._100.asColor,
                 MaterialColor.Blue._200.asColor,
@@ -291,8 +269,7 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                 MaterialColor.Blue._A200.asColor,
                 MaterialColor.Blue._A400.asColor,
                 MaterialColor.Blue._A700.asColor
-            ),
-            intArrayOf(
+            ), intArrayOf(
                 MaterialColor.LightBlue._50.asColor,
                 MaterialColor.LightBlue._100.asColor,
                 MaterialColor.LightBlue._200.asColor,
@@ -307,8 +284,7 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                 MaterialColor.LightBlue._A200.asColor,
                 MaterialColor.LightBlue._A400.asColor,
                 MaterialColor.LightBlue._A700.asColor
-            ),
-            intArrayOf(
+            ), intArrayOf(
                 MaterialColor.Cyan._50.asColor,
                 MaterialColor.Cyan._100.asColor,
                 MaterialColor.Cyan._200.asColor,
@@ -323,8 +299,7 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                 MaterialColor.Cyan._A200.asColor,
                 MaterialColor.Cyan._A400.asColor,
                 MaterialColor.Cyan._A700.asColor
-            ),
-            intArrayOf(
+            ), intArrayOf(
                 MaterialColor.Teal._50.asColor,
                 MaterialColor.Teal._100.asColor,
                 MaterialColor.Teal._200.asColor,
@@ -339,8 +314,7 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                 MaterialColor.Teal._A200.asColor,
                 MaterialColor.Teal._A400.asColor,
                 MaterialColor.Teal._A700.asColor
-            ),
-            intArrayOf(
+            ), intArrayOf(
                 MaterialColor.Green._50.asColor,
                 MaterialColor.Green._100.asColor,
                 MaterialColor.Green._200.asColor,
@@ -355,8 +329,7 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                 MaterialColor.Green._A200.asColor,
                 MaterialColor.Green._A400.asColor,
                 MaterialColor.Green._A700.asColor
-            ),
-            intArrayOf(
+            ), intArrayOf(
                 MaterialColor.LightGreen._50.asColor,
                 MaterialColor.LightGreen._100.asColor,
                 MaterialColor.LightGreen._200.asColor,
@@ -371,8 +344,7 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                 MaterialColor.LightGreen._A200.asColor,
                 MaterialColor.LightGreen._A400.asColor,
                 MaterialColor.LightGreen._A700.asColor
-            ),
-            intArrayOf(
+            ), intArrayOf(
                 MaterialColor.Lime._50.asColor,
                 MaterialColor.Lime._100.asColor,
                 MaterialColor.Lime._200.asColor,
@@ -387,8 +359,7 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                 MaterialColor.Lime._A200.asColor,
                 MaterialColor.Lime._A400.asColor,
                 MaterialColor.Lime._A700.asColor
-            ),
-            intArrayOf(
+            ), intArrayOf(
                 MaterialColor.Yellow._50.asColor,
                 MaterialColor.Yellow._100.asColor,
                 MaterialColor.Yellow._200.asColor,
@@ -403,8 +374,7 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                 MaterialColor.Yellow._A200.asColor,
                 MaterialColor.Yellow._A400.asColor,
                 MaterialColor.Yellow._A700.asColor
-            ),
-            intArrayOf(
+            ), intArrayOf(
                 MaterialColor.Amber._50.asColor,
                 MaterialColor.Amber._100.asColor,
                 MaterialColor.Amber._200.asColor,
@@ -419,8 +389,7 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                 MaterialColor.Amber._A200.asColor,
                 MaterialColor.Amber._A400.asColor,
                 MaterialColor.Amber._A700.asColor
-            ),
-            intArrayOf(
+            ), intArrayOf(
                 MaterialColor.Orange._50.asColor,
                 MaterialColor.Orange._100.asColor,
                 MaterialColor.Orange._200.asColor,
@@ -435,8 +404,7 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                 MaterialColor.Orange._A200.asColor,
                 MaterialColor.Orange._A400.asColor,
                 MaterialColor.Orange._A700.asColor
-            ),
-            intArrayOf(
+            ), intArrayOf(
                 MaterialColor.DeepOrange._50.asColor,
                 MaterialColor.DeepOrange._100.asColor,
                 MaterialColor.DeepOrange._200.asColor,
@@ -451,8 +419,7 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                 MaterialColor.DeepOrange._A200.asColor,
                 MaterialColor.DeepOrange._A400.asColor,
                 MaterialColor.DeepOrange._A700.asColor
-            ),
-            intArrayOf(
+            ), intArrayOf(
                 MaterialColor.Brown._50.asColor,
                 MaterialColor.Brown._100.asColor,
                 MaterialColor.Brown._200.asColor,
@@ -463,8 +430,7 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                 MaterialColor.Brown._700.asColor,
                 MaterialColor.Brown._800.asColor,
                 MaterialColor.Brown._900.asColor
-            ),
-            intArrayOf(
+            ), intArrayOf(
                 MaterialColor.BlueGrey._50.asColor,
                 MaterialColor.BlueGrey._100.asColor,
                 MaterialColor.BlueGrey._200.asColor,
@@ -475,8 +441,7 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                 MaterialColor.BlueGrey._700.asColor,
                 MaterialColor.BlueGrey._800.asColor,
                 MaterialColor.BlueGrey._900.asColor
-            ),
-            intArrayOf(
+            ), intArrayOf(
                 MaterialColor.White._1000.asColor,
                 MaterialColor.Grey._50.asColor,
                 MaterialColor.Grey._100.asColor,
@@ -492,4 +457,5 @@ class ColorChooserListener(private var context: Context, private var defaultColo
             )
 
         )
+    //endregion
 }

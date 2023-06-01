@@ -14,6 +14,7 @@ import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.alorma.compose.settings.ui.SettingsSwitch
 import lib.phonograph.localization.LanguageSettingDialog
 import lib.phonograph.localization.Localization
+import lib.phonograph.misc.ColorChooser
 import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
@@ -36,7 +37,6 @@ import player.phonograph.util.NavigationUtil
 import player.phonograph.util.reportError
 import player.phonograph.util.theme.applyMonet
 import player.phonograph.util.warning
-import util.phonograph.misc.ColorChooserListener
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -429,7 +429,7 @@ private fun PrimaryColorPref() {
     ColorPrefImpl(
         titleRes = R.string.primary_color,
         summaryRes = R.string.primary_color_desc,
-        mode = ColorChooserListener.MODE_PRIMARY_COLOR
+        mode = ColorChooser.MODE_PRIMARY_COLOR
     )
 }
 @Composable
@@ -437,7 +437,7 @@ private fun AccentColorPref() {
     ColorPrefImpl(
         titleRes = R.string.accent_color,
         summaryRes = R.string.accent_color_desc,
-        mode = ColorChooserListener.MODE_ACCENT_COLOR
+        mode = ColorChooser.MODE_ACCENT_COLOR
     )
 }
 
@@ -451,9 +451,9 @@ private fun ColorPrefImpl(
 
     val color =
         when (mode) {
-            ColorChooserListener.MODE_PRIMARY_COLOR -> MaterialTheme.colors.primary
-            ColorChooserListener.MODE_ACCENT_COLOR  -> MaterialTheme.colors.secondary
-            else                                    -> MaterialTheme.colors.error
+            ColorChooser.MODE_PRIMARY_COLOR -> MaterialTheme.colors.primary
+            ColorChooser.MODE_ACCENT_COLOR  -> MaterialTheme.colors.secondary
+            else                            -> MaterialTheme.colors.error
         }
 
     SettingsMenuLink(
@@ -461,9 +461,9 @@ private fun ColorPrefImpl(
         subtitle = subtitle(summaryRes),
         action = { ColorCircus(color) },
         onClick = {
-            ColorChooserListener(
+            ColorChooser.showColorChooserDialog(
                 context, color.toArgb(), mode
-            ).show()
+            )
         }
     )
 }
