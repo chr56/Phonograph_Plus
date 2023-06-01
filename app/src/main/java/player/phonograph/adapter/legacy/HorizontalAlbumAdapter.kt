@@ -23,7 +23,7 @@ class HorizontalAlbumAdapter(
     dataSet: List<Album>,
     usePalette: Boolean,
     cabController: MultiSelectionCabController,
-) : AlbumAdapter(activity, dataSet, LAYOUT_RES, usePalette, cabController) {
+) : AlbumAdapter(activity, dataSet, R.layout.item_grid_card_horizontal, usePalette, cabController) {
 
     override fun createViewHolder(view: View, viewType: Int): ViewHolder {
         (view.layoutParams as MarginLayoutParams).applyMarginToLayoutParams(activity, viewType)
@@ -90,7 +90,6 @@ class HorizontalAlbumAdapter(
     override fun getItemId(position: Int): Long = dataSet[position].id
 
     companion object {
-        const val LAYOUT_RES = R.layout.item_grid_card_horizontal
         const val TYPE_FIRST = 1
         const val TYPE_MIDDLE = 2
         const val TYPE_LAST = 3
