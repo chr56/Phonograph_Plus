@@ -155,7 +155,6 @@ sealed class AbsFilesExplorer<M : AbsFileViewModel>(protected val context: Conte
                     Toast.makeText(context, "Unmounted volume", Toast.LENGTH_SHORT).show()
                 } else { // todo
                     model.changeLocation(context, Location.fromAbsolutePath("$path/"))
-                    reload()
                 }
             }
             .title(R.string.folders)
@@ -172,7 +171,6 @@ sealed class AbsFilesExplorer<M : AbsFileViewModel>(protected val context: Conte
         val parent = model.currentLocation.value.parent
         return if (parent != null) {
             model.changeLocation(context, parent)
-            reload()
             true
         } else {
             Snackbar.make(binding.root, context.getString(R.string.reached_to_root), Snackbar.LENGTH_SHORT).show()

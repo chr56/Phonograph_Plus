@@ -51,7 +51,6 @@ class FilesPageExplorer(
         binding.buttonBack.setOnClickListener { gotoTopLevel(true) }
         binding.buttonBack.setOnLongClickListener {
             model.changeLocation(context, Location.HOME)
-            reload()
             true
         }
         // bread crumb
@@ -59,7 +58,6 @@ class FilesPageExplorer(
             location = model.currentLocation.value
             callBack = {
                 model.changeLocation(context, it)
-                reload()
             }
         }
 
@@ -77,7 +75,6 @@ class FilesPageExplorer(
             when (val item = fileEntities[position]) {
                 is FileEntity.Folder -> {
                     model.changeLocation(context, item.location)
-                    reload()
                 }
 
                 is FileEntity.File   -> {

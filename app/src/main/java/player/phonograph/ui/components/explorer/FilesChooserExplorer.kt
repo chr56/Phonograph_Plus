@@ -29,7 +29,6 @@ class FilesChooserExplorer(
         binding.buttonBack.setOnClickListener { gotoTopLevel(true) }
         binding.buttonBack.setOnLongClickListener {
             model.changeLocation(context, Location.HOME)
-            reload()
             true
         }
         // bread crumb
@@ -37,7 +36,6 @@ class FilesChooserExplorer(
             location = model.currentLocation.value
             callBack = {
                 model.changeLocation(context, it)
-                reload()
             }
         }
 
@@ -55,7 +53,6 @@ class FilesChooserExplorer(
             when (it) {
                 is FileEntity.Folder -> {
                     model.changeLocation(context, it.location)
-                    reload()
                 }
 
                 is FileEntity.File   -> {}
