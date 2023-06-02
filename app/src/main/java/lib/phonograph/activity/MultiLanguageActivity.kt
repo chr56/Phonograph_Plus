@@ -7,6 +7,10 @@ import android.content.Context
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import lib.phonograph.localization.ContextLocaleDelegate
+import lib.phonograph.localization.Localization
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
+import android.os.Bundle
 
 open class MultiLanguageActivity : AppCompatActivity() {
 
@@ -19,5 +23,10 @@ open class MultiLanguageActivity : AppCompatActivity() {
         super.onConfigurationChanged(
             ContextLocaleDelegate.onConfigurationChanged(this, newConfig)
         )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(Localization.currentLocale(this)))
     }
 }
