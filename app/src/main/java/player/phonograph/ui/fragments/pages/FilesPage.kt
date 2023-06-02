@@ -8,8 +8,8 @@ import player.phonograph.R
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
-import player.phonograph.ui.components.explorer.FilesPageExplorerFragment
-import player.phonograph.ui.components.explorer.FilesPageViewModel
+import player.phonograph.ui.fragments.explorer.FilesPageExplorerFragment
+import player.phonograph.ui.fragments.explorer.FilesPageViewModel
 import androidx.fragment.app.commitNow
 import android.view.LayoutInflater
 import android.view.ViewGroup

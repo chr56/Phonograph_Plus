@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.ui.components.explorer
+package player.phonograph.ui.fragments.explorer
 
 import androidx.core.app.ComponentActivity
 import androidx.recyclerview.widget.RecyclerView

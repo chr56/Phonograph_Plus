@@ -8,8 +8,8 @@ import lib.phonograph.dialog.LargeDialog
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.model.file.Location
-import player.phonograph.ui.components.explorer.FilesChooserExplorerFragment
-import player.phonograph.ui.components.explorer.FilesChooserViewModel
+import player.phonograph.ui.fragments.explorer.FilesChooserExplorerFragment
+import player.phonograph.ui.fragments.explorer.FilesChooserViewModel
 import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
 import player.phonograph.util.permissions.navigateToStorageSetting

@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.ui.components.explorer
+package player.phonograph.ui.fragments.explorer
 
 import coil.size.ViewSizeResolver
 import mt.util.color.resolveColor
