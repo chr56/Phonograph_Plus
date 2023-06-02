@@ -2,9 +2,8 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.ui.components.explorer
+package player.phonograph.mediastore
 
-import player.phonograph.mediastore.searchSongFiles
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.util.FileUtil
