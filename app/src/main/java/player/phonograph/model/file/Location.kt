@@ -7,8 +7,8 @@ package player.phonograph.model.file
 import lib.phonograph.storage.externalStoragePath
 import lib.phonograph.storage.root
 import player.phonograph.App
-import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.util.FileUtil.defaultStartDirectory
+import player.phonograph.util.warning
 import androidx.core.content.getSystemService
 import android.content.Context
 import android.os.storage.StorageManager
@@ -65,7 +65,6 @@ class Location private constructor(val basePath: String, val storageVolume: Stor
             val basePath = file.getBasePath(storageVolume.root() ?: throw IllegalStateException("unavailable for $storageManager"))
             // path.substringAfter(storageVolume.root()?.path ?: file.getBasePath(context))
 
-            if (DEBUG) Log.w(TAG, "Location Created! path = $path, storageVolume = $storageVolume(${storageVolume.root()})")
             return from(basePath, storageVolume)
         }
 
@@ -88,7 +87,7 @@ class Location private constructor(val basePath: String, val storageVolume: Stor
 
     init {
         if (basePath.isBlank()) {
-            Log.e(TAG, "base path is null!")
+            warning(TAG, "base path is null!")
         }
     }
 
