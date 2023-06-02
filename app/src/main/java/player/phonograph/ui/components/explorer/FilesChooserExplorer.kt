@@ -4,16 +4,15 @@
 
 package player.phonograph.ui.components.explorer
 
-import android.view.View.GONE
-import androidx.core.app.ComponentActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import mt.pref.ThemeColor
 import player.phonograph.App
-import player.phonograph.R
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
+import androidx.core.app.ComponentActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import android.view.View.GONE
 
 class FilesChooserExplorer(
     private val activity: ComponentActivity,
@@ -29,15 +28,15 @@ class FilesChooserExplorer(
         binding.buttonBack.setImageDrawable(activity.getThemedDrawable(com.afollestad.materialdialogs.R.drawable.md_nav_back))
         binding.buttonBack.setOnClickListener { gotoTopLevel(true) }
         binding.buttonBack.setOnLongClickListener {
-            model.currentLocation = Location.HOME
+            model.changeLocation(Location.HOME)
             reload()
             true
         }
         // bread crumb
         binding.header.apply {
-            location = model.currentLocation
+            location = model.currentLocation.value
             callBack = {
-                model.currentLocation = it
+                model.changeLocation(it)
                 reload()
             }
         }
@@ -55,10 +54,11 @@ class FilesChooserExplorer(
         adapter = FilesChooserAdapter(activity, model.currentFileList.toMutableList(), {
             when (it) {
                 is FileEntity.Folder -> {
-                    model.currentLocation = it.location
+                    model.changeLocation(it.location)
                     reload()
                 }
-                is FileEntity.File -> {}
+
+                is FileEntity.File   -> {}
             }
         }, null)
 

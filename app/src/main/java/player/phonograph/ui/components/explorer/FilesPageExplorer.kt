@@ -50,15 +50,15 @@ class FilesPageExplorer(
         binding.buttonBack.setImageDrawable(activity.getThemedDrawable(com.afollestad.materialdialogs.R.drawable.md_nav_back))
         binding.buttonBack.setOnClickListener { gotoTopLevel(true) }
         binding.buttonBack.setOnLongClickListener {
-            model.currentLocation = Location.HOME
+            model.changeLocation(Location.HOME)
             reload()
             true
         }
         // bread crumb
         binding.header.apply {
-            location = model.currentLocation
+            location = model.currentLocation.value
             callBack = {
-                model.currentLocation = it
+                model.changeLocation(it)
                 reload()
             }
         }
@@ -76,9 +76,10 @@ class FilesPageExplorer(
         adapter = FilesPageAdapter(activity, model.currentFileList.toMutableList(), { fileEntities, position ->
             when (val item = fileEntities[position]) {
                 is FileEntity.Folder -> {
-                    model.currentLocation = item.location
+                    model.changeLocation(item.location)
                     reload()
                 }
+
                 is FileEntity.File   -> {
                     val base = Setting.instance.songItemClickMode
                     val extra = Setting.instance.songItemClickExtraFlag

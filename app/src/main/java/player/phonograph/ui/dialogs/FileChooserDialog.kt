@@ -62,7 +62,7 @@ abstract class FileChooserDialog : LargeDialog() {
             }
             space(1)
             button(2, getString(android.R.string.selectAll), accentColor) {
-                affirmative(it, model.currentLocation)
+                affirmative(it, model.currentLocation.value)
             }
         }
 

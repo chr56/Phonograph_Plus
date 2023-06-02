@@ -27,6 +27,13 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.ui.components.ViewComponent
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withStateAtLeast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 sealed class AbsFilesExplorer<M : AbsFileViewModel>(protected val context: Context) : ViewComponent<ViewGroup, M> {
 
@@ -51,6 +58,34 @@ sealed class AbsFilesExplorer<M : AbsFileViewModel>(protected val context: Conte
         this.model = model
         initModel(model)
         binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
+        val lifecycle = (context as LifecycleOwner).lifecycle
+        val scope = (context as LifecycleOwner).lifecycleScope
+        scope.launch {
+            model.currentLocation.collect { newLocation ->
+                lifecycle.withStateAtLeast(Lifecycle.State.STARTED) {
+                    scope.launch(Dispatchers.Main) {
+                        // header
+                        binding.header.apply {
+                            location = newLocation
+                            layoutManager.scrollHorizontallyBy(
+                                binding.header.width / 4,
+                                recyclerView.Recycler(),
+                                RecyclerView.State()
+                            )
+                        }
+                        binding.buttonBack.setImageDrawable(
+                            context.getThemedDrawable(
+                                if (newLocation.parent == null) {
+                                    R.drawable.ic_library_music_white_24dp
+                                } else {
+                                    com.afollestad.materialdialogs.color.R.drawable.icon_back_white
+                                }
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 
     protected abstract fun initModel(model: M)
@@ -77,24 +112,10 @@ sealed class AbsFilesExplorer<M : AbsFileViewModel>(protected val context: Conte
         binding.container.isRefreshing = true
         model.loadFiles(context) {
             updateFilesDisplayed()
-            binding.header.apply {
-                location = model.currentLocation
-                layoutManager.scrollHorizontallyBy(
-                    binding.header.width / 4,
-                    recyclerView.Recycler(),
-                    RecyclerView.State()
-                )
-            }
-            binding.buttonBack.setImageDrawable(
-                if (model.currentLocation.parent == null) {
-                    context.getThemedDrawable(R.drawable.ic_library_music_white_24dp)
-                } else {
-                    context.getThemedDrawable(com.afollestad.materialdialogs.color.R.drawable.icon_back_white)
-                }
-            )
             binding.container.isRefreshing = false
         }
     }
+
     abstract fun updateFilesDisplayed()
 
     /**
@@ -112,7 +133,7 @@ sealed class AbsFilesExplorer<M : AbsFileViewModel>(protected val context: Conte
         MaterialDialog(context)
             .listItemsSingleChoice(
                 items = volumes.map { "${it.getDescription(context)}\n(${it.root()?.path ?: "N/A"})" },
-                initialSelection = volumes.indexOf(model.currentLocation.storageVolume),
+                initialSelection = volumes.indexOf(model.currentLocation.value.storageVolume),
                 waitForPositiveButton = true,
             ) { materialDialog: MaterialDialog, i: Int, _: CharSequence ->
                 materialDialog.dismiss()
@@ -120,7 +141,7 @@ sealed class AbsFilesExplorer<M : AbsFileViewModel>(protected val context: Conte
                 if (path == null) {
                     Toast.makeText(context, "Unmounted volume", Toast.LENGTH_SHORT).show()
                 } else { // todo
-                    model.currentLocation = Location.fromAbsolutePath("$path/")
+                    model.changeLocation(Location.fromAbsolutePath("$path/"))
                     reload()
                 }
             }
@@ -135,9 +156,9 @@ sealed class AbsFilesExplorer<M : AbsFileViewModel>(protected val context: Conte
      * @return success or not
      */
     internal fun gotoTopLevel(allowToChangeVolume: Boolean): Boolean {
-        val parent = model.currentLocation.parent
+        val parent = model.currentLocation.value.parent
         return if (parent != null) {
-            model.currentLocation = parent
+            model.changeLocation(parent)
             reload()
             true
         } else {

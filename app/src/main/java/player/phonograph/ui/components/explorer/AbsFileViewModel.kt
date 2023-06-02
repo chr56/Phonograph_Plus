@@ -11,11 +11,21 @@ import kotlinx.coroutines.*
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.mechanism.setting.FileConfig
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.util.*
 
 abstract class AbsFileViewModel : ViewModel() {
 
-    var currentLocation = Location.from(FileConfig.startDirectory)
+
+    private val _currentLocation: MutableStateFlow<Location> =
+        MutableStateFlow(Location.from(FileConfig.startDirectory))
+    val currentLocation get() = _currentLocation.asStateFlow()
+
+    fun changeLocation(newLocation: Location) {
+        _currentLocation.value = newLocation
+    }
+
     var currentFileList: MutableSet<FileEntity> = TreeSet<FileEntity>()
 
     override fun onCleared() {
@@ -25,7 +35,7 @@ abstract class AbsFileViewModel : ViewModel() {
     private var listFileJob: Job? = null
     fun loadFiles(
         context: Context,
-        location: Location = currentLocation,
+        location: Location = currentLocation.value,
         onFinished: () -> Unit,
     ) {
         listFileJob?.cancel() // cancel current
