@@ -21,7 +21,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 
-class FilesPageExplorer2 : AbsFilesExplorer2<FilesPageViewModel>() {
+class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel>() {
 
     private lateinit var fileModel: FilesPageViewModel
 
@@ -96,8 +96,8 @@ class FilesPageExplorer2 : AbsFilesExplorer2<FilesPageViewModel>() {
             ThemeColor.accentColor(requireContext())
         )
         binding.recyclerView.apply {
-            layoutManager = this@FilesPageExplorer2.layoutManager
-            adapter = this@FilesPageExplorer2.adapter
+            layoutManager = this@FilesPageExplorerFragment.layoutManager
+            adapter = this@FilesPageExplorerFragment.adapter
         }
         model.refreshFiles(activity)
     }

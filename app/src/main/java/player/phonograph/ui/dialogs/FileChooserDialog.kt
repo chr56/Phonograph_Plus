@@ -8,7 +8,7 @@ import lib.phonograph.dialog.LargeDialog
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.model.file.Location
-import player.phonograph.ui.components.explorer.FilesChooserExplorer2
+import player.phonograph.ui.components.explorer.FilesChooserExplorerFragment
 import player.phonograph.ui.components.explorer.FilesChooserViewModel
 import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
@@ -27,7 +27,7 @@ import android.widget.FrameLayout
 
 abstract class FileChooserDialog : LargeDialog() {
 
-    private lateinit var explorer: FilesChooserExplorer2
+    private lateinit var explorer: FilesChooserExplorerFragment
     private val model: FilesChooserViewModel by viewModels()
 
     override fun onCreateView(
@@ -35,12 +35,12 @@ abstract class FileChooserDialog : LargeDialog() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        explorer = FilesChooserExplorer2()
+        explorer = FilesChooserExplorerFragment()
         explorer.initModel(model)
         return setupView(inflater, explorer)
     }
 
-    protected open fun setupView(inflater: LayoutInflater, explorer: FilesChooserExplorer2): ViewGroup {
+    protected open fun setupView(inflater: LayoutInflater, explorer: FilesChooserExplorerFragment): ViewGroup {
         val activity = requireActivity()
 
         val contentPanel = contentPanel(activity) {

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.os.Bundle
 import android.view.View
 
-class FilesChooserExplorer2 : AbsFilesExplorer2<FilesChooserViewModel>() {
+class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewModel>() {
 
     private lateinit var fileModel: FilesChooserViewModel
 
@@ -72,8 +72,8 @@ class FilesChooserExplorer2 : AbsFilesExplorer2<FilesChooserViewModel>() {
             ThemeColor.accentColor(App.instance)
         )
         binding.recyclerView.apply {
-            layoutManager = this@FilesChooserExplorer2.layoutManager
-            adapter = this@FilesChooserExplorer2.adapter
+            layoutManager = this@FilesChooserExplorerFragment.layoutManager
+            adapter = this@FilesChooserExplorerFragment.adapter
         }
         model.refreshFiles(activity)
 

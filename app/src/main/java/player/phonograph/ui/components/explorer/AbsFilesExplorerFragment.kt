@@ -35,7 +35,7 @@ import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-sealed class AbsFilesExplorer2<M : AbsFileViewModel> : Fragment() {
+sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
 
     // view binding
     private var _viewBinding: FragmentFolderPageBinding? = null
