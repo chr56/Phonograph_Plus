@@ -4,16 +4,6 @@
 
 package player.phonograph.ui.components.explorer
 
-import android.content.Context
-import android.graphics.drawable.Drawable
-import android.os.Environment
-import android.os.storage.StorageManager
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.widget.Toast
-import androidx.annotation.DrawableRes
-import androidx.core.content.getSystemService
-import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.google.android.material.appbar.AppBarLayout
@@ -27,13 +17,22 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.ui.components.ViewComponent
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
+import androidx.annotation.DrawableRes
+import androidx.core.content.getSystemService
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStateAtLeast
+import androidx.recyclerview.widget.RecyclerView
+import android.content.Context
+import android.graphics.drawable.Drawable
+import android.os.Environment
+import android.os.storage.StorageManager
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 sealed class AbsFilesExplorer<M : AbsFileViewModel>(protected val context: Context) : ViewComponent<ViewGroup, M> {
 
@@ -86,6 +85,24 @@ sealed class AbsFilesExplorer<M : AbsFileViewModel>(protected val context: Conte
                 }
             }
         }
+        scope.launch {
+            model.currentFiles.collect {
+                lifecycle.withStateAtLeast(Lifecycle.State.STARTED) {
+                    scope.launch(Dispatchers.Main) {
+                        updateFilesDisplayed()
+                    }
+                }
+            }
+        }
+        scope.launch {
+            model.loading.collect {
+                lifecycle.withStateAtLeast(Lifecycle.State.STARTED) {
+                    scope.launch(Dispatchers.Main) {
+                        binding.container.isRefreshing = it
+                    }
+                }
+            }
+        }
     }
 
     protected abstract fun initModel(model: M)
@@ -109,11 +126,7 @@ sealed class AbsFilesExplorer<M : AbsFileViewModel>(protected val context: Conte
      * reload all files (determined by [AbsFileViewModel.currentLocation])
      */
     protected fun reload() {
-        binding.container.isRefreshing = true
-        model.loadFiles(context) {
-            updateFilesDisplayed()
-            binding.container.isRefreshing = false
-        }
+        model.refreshFiles(context)
     }
 
     abstract fun updateFilesDisplayed()
@@ -141,7 +154,7 @@ sealed class AbsFilesExplorer<M : AbsFileViewModel>(protected val context: Conte
                 if (path == null) {
                     Toast.makeText(context, "Unmounted volume", Toast.LENGTH_SHORT).show()
                 } else { // todo
-                    model.changeLocation(Location.fromAbsolutePath("$path/"))
+                    model.changeLocation(context, Location.fromAbsolutePath("$path/"))
                     reload()
                 }
             }
@@ -158,7 +171,7 @@ sealed class AbsFilesExplorer<M : AbsFileViewModel>(protected val context: Conte
     internal fun gotoTopLevel(allowToChangeVolume: Boolean): Boolean {
         val parent = model.currentLocation.value.parent
         return if (parent != null) {
-            model.changeLocation(parent)
+            model.changeLocation(context, parent)
             reload()
             true
         } else {

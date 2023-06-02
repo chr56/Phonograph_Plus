@@ -28,7 +28,7 @@ class FilesChooserExplorer(
         binding.buttonBack.setImageDrawable(activity.getThemedDrawable(com.afollestad.materialdialogs.R.drawable.md_nav_back))
         binding.buttonBack.setOnClickListener { gotoTopLevel(true) }
         binding.buttonBack.setOnLongClickListener {
-            model.changeLocation(Location.HOME)
+            model.changeLocation(context, Location.HOME)
             reload()
             true
         }
@@ -36,7 +36,7 @@ class FilesChooserExplorer(
         binding.header.apply {
             location = model.currentLocation.value
             callBack = {
-                model.changeLocation(it)
+                model.changeLocation(context, it)
                 reload()
             }
         }
@@ -51,10 +51,10 @@ class FilesChooserExplorer(
 
         // recycle view
         layoutManager = LinearLayoutManager(activity)
-        adapter = FilesChooserAdapter(activity, model.currentFileList.toMutableList(), {
+        adapter = FilesChooserAdapter(activity, model.currentFiles.value.toMutableList(), {
             when (it) {
                 is FileEntity.Folder -> {
-                    model.changeLocation(it.location)
+                    model.changeLocation(context, it.location)
                     reload()
                 }
 
@@ -70,12 +70,12 @@ class FilesChooserExplorer(
             layoutManager = this@FilesChooserExplorer.layoutManager
             adapter = this@FilesChooserExplorer.adapter
         }
-        model.loadFiles(activity) { reload() }
+        model.refreshFiles(activity)
 
         binding.innerAppBar.setExpanded(true)
     }
 
     override fun updateFilesDisplayed() {
-        adapter.dataSet = fileModel.currentFileList.toMutableList()
+        adapter.dataSet = model.currentFiles.value.toMutableList()
     }
 }

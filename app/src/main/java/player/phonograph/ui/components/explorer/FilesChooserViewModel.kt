@@ -4,29 +4,28 @@
 
 package player.phonograph.ui.components.explorer
 
-import android.content.Context
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.*
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
+import player.phonograph.util.FileUtil
+import android.content.Context
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.isActive
 import java.io.File
-import java.util.*
+import java.util.TreeSet
 
 class FilesChooserViewModel : AbsFileViewModel() {
 
-    override fun onLoadFiles(location: Location, context: Context, scope: CoroutineScope?) {
-        listFile(location, scope)
+    override fun listFiles(context: Context, location: Location, scope: CoroutineScope?): Set<FileEntity> {
+        return listFilesImpl(location, scope)
     }
 
-    @Synchronized
-    private fun listFile(
+    //todo
+    private fun listFilesImpl(
         location: Location,
         scope: CoroutineScope?,
-    ) {
-        currentFileList.clear()
-        // todo
-        val directory = File(location.absolutePath).also { if (!it.isDirectory) return }
-        val files = directory.listFiles() ?: return
+    ): Set<FileEntity> {
+        val directory = File(location.absolutePath).also { if (!it.isDirectory) return emptySet() }
+        val files = directory.listFiles(FileUtil.FileScanner.audioFileFilter) ?: return emptySet()
         val set = TreeSet<FileEntity>()
         for (file in files) {
             val l = Location.fromAbsolutePath(file.absolutePath)
@@ -41,7 +40,8 @@ class FilesChooserViewModel : AbsFileViewModel() {
                             dateModified = file.lastModified()
                         ).also { it.songCount = 0 }
                     }
-                    file.isFile -> {
+
+                    file.isFile      -> {
                         FileEntity.File(
                             location = l,
                             name = file.name,
@@ -50,11 +50,12 @@ class FilesChooserViewModel : AbsFileViewModel() {
                             dateModified = file.lastModified()
                         )
                     }
-                    else -> null
+
+                    else             -> null
                 }
             item?.let { set.add(it) }
         }
-        currentFileList.addAll(set)
+        return set
     }
 
 }

@@ -50,7 +50,7 @@ class FilesPageExplorer(
         binding.buttonBack.setImageDrawable(activity.getThemedDrawable(com.afollestad.materialdialogs.R.drawable.md_nav_back))
         binding.buttonBack.setOnClickListener { gotoTopLevel(true) }
         binding.buttonBack.setOnLongClickListener {
-            model.changeLocation(Location.HOME)
+            model.changeLocation(context, Location.HOME)
             reload()
             true
         }
@@ -58,7 +58,7 @@ class FilesPageExplorer(
         binding.header.apply {
             location = model.currentLocation.value
             callBack = {
-                model.changeLocation(it)
+                model.changeLocation(context, it)
                 reload()
             }
         }
@@ -73,10 +73,10 @@ class FilesPageExplorer(
 
         // recycle view
         layoutManager = LinearLayoutManager(activity)
-        adapter = FilesPageAdapter(activity, model.currentFileList.toMutableList(), { fileEntities, position ->
+        adapter = FilesPageAdapter(activity, model.currentFiles.value.toMutableList(), { fileEntities, position ->
             when (val item = fileEntities[position]) {
                 is FileEntity.Folder -> {
-                    model.changeLocation(item.location)
+                    model.changeLocation(context, item.location)
                     reload()
                 }
 
@@ -102,7 +102,7 @@ class FilesPageExplorer(
             layoutManager = this@FilesPageExplorer.layoutManager
             adapter = this@FilesPageExplorer.adapter
         }
-        model.loadFiles(activity) { reload() }
+        model.refreshFiles(activity)
     }
 
     private val popup: ListOptionsPopup by lazy(LazyThreadSafetyMode.NONE) {
@@ -138,6 +138,6 @@ class FilesPageExplorer(
     }
 
     override fun updateFilesDisplayed() {
-        adapter.dataSet = fileModel.currentFileList.toMutableList()
+        adapter.dataSet = model.currentFiles.value.toMutableList()
     }
 }
