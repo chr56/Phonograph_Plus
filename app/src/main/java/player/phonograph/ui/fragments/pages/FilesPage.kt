@@ -4,42 +4,39 @@
 
 package player.phonograph.ui.fragments.pages
 
+import player.phonograph.R
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
+import androidx.fragment.app.viewModels
+import player.phonograph.ui.components.explorer.FilesPageExplorer2
+import player.phonograph.ui.components.explorer.FilesPageViewModel
+import androidx.fragment.app.commitNow
+import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
-import androidx.fragment.app.viewModels
-import player.phonograph.ui.components.explorer.FilesPageExplorer
-import player.phonograph.ui.components.explorer.FilesPageViewModel
 
 class FilesPage : AbsPage() {
 
-    private lateinit var explorer: FilesPageExplorer
+    private lateinit var explorer: FilesPageExplorer2
     private val model: FilesPageViewModel by viewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        val rootContainer = FrameLayout(requireContext())
-        container?.addView(rootContainer, LayoutParams(MATCH_PARENT, MATCH_PARENT))
-        explorer = FilesPageExplorer(hostFragment.mainActivity, hostFragment)
-        explorer.inflate(rootContainer, inflater)
-        return container ?: rootContainer
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        explorer.destroy()
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+        FrameLayout(requireContext()).also { frameLayout ->
+            frameLayout.id = R.id.container
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        explorer.loadData(model)
+
+        explorer = FilesPageExplorer2()
+        explorer.controller = hostFragment.cabController
+        explorer.initModel(model)
+
+        childFragmentManager.commitNow {
+            replace(R.id.container, explorer, "FilesPageExplorer")
+        }
+
     }
 
     override fun onBackPress(): Boolean {
