@@ -16,12 +16,12 @@
 -keepnames,allowoptimization,allowshrinking class player.phonograph.ui.activities.** extends android.app.Activity {public <methods>;}
 
 -keepclasseswithmembernames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.pages.AbsDisplayPage {<methods>;}
+-keepnames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.explorer.*Explorer {public <methods>;}
 -keepnames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.pages.PlaylistPage {<methods>;}
 -keepnames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.pages.**Page extends player.phonograph.ui.fragments.pages.AbsDisplayPage
 -keepnames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.player.** extends androidx.fragment.app.Fragment {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.HomeFragment {public <methods>;}
 
--keepclassmembernames class player.phonograph.ui.components.explorer.*Explorer {public <methods>;}
 -keepclassmembernames class player.phonograph.ui.components.popup.ListOptionsPopup {public <methods>;}
 
 -keepclassmembernames class player.phonograph.ui.dialogs.DeleteSongsDialog {public <methods>;}

@@ -1,11 +1,9 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
-
-package player.phonograph.ui.components.explorer
+package player.phonograph.ui.fragments.explorer
 
 import mt.pref.ThemeColor
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.actions.click.fileClick
 import player.phonograph.model.file.FileEntity
@@ -17,49 +15,53 @@ import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.ui.views.StatusBarView
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
-import androidx.core.app.ComponentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.os.Bundle
 import android.view.Gravity
+import android.view.View
+import java.lang.ref.SoftReference
 
-class FilesPageExplorer(
-    private val activity: ComponentActivity,
-    private val homeFragment: HomeFragment,
-) : AbsFilesExplorer<FilesPageViewModel>(activity) {
+class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel>() {
 
     private lateinit var fileModel: FilesPageViewModel
 
     private lateinit var adapter: FilesPageAdapter
     private lateinit var layoutManager: RecyclerView.LayoutManager
 
+    override fun updateFilesDisplayed() {
+        adapter.dataSet = model.currentFiles.value.toMutableList()
+    }
 
-    override fun initModel(model: FilesPageViewModel) {
+    private var _homeFragment: SoftReference<HomeFragment?> = SoftReference(null)
+    var homeFragment: HomeFragment?
+        get() = _homeFragment.get()
+        set(value) {
+            _homeFragment = SoftReference(value)
+        }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val activity = requireActivity()
         fileModel = model
         // header
         binding.buttonPageHeader.setImageDrawable(activity.getThemedDrawable(R.drawable.ic_sort_variant_white_24dp))
         binding.buttonPageHeader.setOnClickListener {
             popup.showAtLocation(
-                binding.root, Gravity.TOP or Gravity.END, 0,
-                (
-                        activity.findViewById<StatusBarView>(R.id.status_bar)?.height
-                            ?: 8
-                        ) +
-                        homeFragment.totalHeaderHeight + binding.innerAppBar.height
+                binding.root, Gravity.TOP or Gravity.END, 0, calculateHeight()
             )
         }
         binding.buttonBack.setImageDrawable(activity.getThemedDrawable(com.afollestad.materialdialogs.R.drawable.md_nav_back))
         binding.buttonBack.setOnClickListener { gotoTopLevel(true) }
         binding.buttonBack.setOnLongClickListener {
-            model.currentLocation = Location.HOME
-            reload()
+            model.changeLocation(requireContext(), Location.HOME)
             true
         }
         // bread crumb
         binding.header.apply {
-            location = model.currentLocation
+            location = model.currentLocation.value
             callBack = {
-                model.currentLocation = it
-                reload()
+                model.changeLocation(context, it)
             }
         }
 
@@ -67,18 +69,18 @@ class FilesPageExplorer(
             setColorSchemeColors(ThemeColor.accentColor(activity))
             setProgressViewOffset(false, 0, 180)
             setOnRefreshListener {
-                reload()
+                refreshFiles()
             }
         }
 
         // recycle view
         layoutManager = LinearLayoutManager(activity)
-        adapter = FilesPageAdapter(activity, model.currentFileList.toMutableList(), { fileEntities, position ->
+        adapter = FilesPageAdapter(activity, model.currentFiles.value.toMutableList(), { fileEntities, position ->
             when (val item = fileEntities[position]) {
                 is FileEntity.Folder -> {
-                    model.currentLocation = item.location
-                    reload()
+                    model.changeLocation(requireContext(), item.location)
                 }
+
                 is FileEntity.File   -> {
                     val base = Setting.instance.songItemClickMode
                     val extra = Setting.instance.songItemClickExtraFlag
@@ -91,21 +93,21 @@ class FilesPageExplorer(
                     )
                 }
             }
-        }, homeFragment.cabController)
+        }, homeFragment?.cabController)//todo
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(
             activity,
-            ThemeColor.accentColor(App.instance)
+            ThemeColor.accentColor(requireContext())
         )
         binding.recyclerView.apply {
-            layoutManager = this@FilesPageExplorer.layoutManager
-            adapter = this@FilesPageExplorer.adapter
+            layoutManager = this@FilesPageExplorerFragment.layoutManager
+            adapter = this@FilesPageExplorerFragment.adapter
         }
-        model.loadFiles(activity) { reload() }
+        model.refreshFiles(activity)
     }
 
     private val popup: ListOptionsPopup by lazy(LazyThreadSafetyMode.NONE) {
-        ListOptionsPopup(context).also {
+        ListOptionsPopup(requireContext()).also {
             it.onShow = this::configPopup
             it.onDismiss = this::dismissPopup
         }
@@ -133,10 +135,13 @@ class FilesPageExplorer(
             adapter.loadCover = fileModel.showFilesImages
             adapter.notifyDataSetChanged()
         }
-        reload()
+        refreshFiles()
     }
 
-    override fun updateFilesDisplayed() {
-        adapter.dataSet = fileModel.currentFileList.toMutableList()
+    private fun calculateHeight(): Int {
+        val statusBarHeight = requireActivity().findViewById<StatusBarView>(R.id.status_bar)?.height ?: 8
+        val appbarHeight = homeFragment?.totalHeaderHeight ?: 0
+        val innerAppBarHeight = binding.innerAppBar.height
+        return statusBarHeight + innerAppBarHeight + appbarHeight // + homeFragment.totalHeaderHeight //todo
     }
 }
