@@ -26,9 +26,9 @@ class FilesPageViewModel : AbsFileViewModel() {
 
     override fun listFiles(context: Context, location: Location, scope: CoroutineScope?): Set<FileEntity> {
         return if (useLegacyListFile) {
-            listFilesLegacyImpl(location, scope)
+            listFilesLegacy(location, scope)
         } else
-            listFilesMediaStoreImpl(location, context, scope)
+            listFilesMediaStore(location, context, scope)
     }
 
 }

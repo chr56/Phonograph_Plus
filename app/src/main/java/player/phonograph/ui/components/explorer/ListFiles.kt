@@ -14,7 +14,10 @@ import kotlinx.coroutines.isActive
 import java.io.File
 import java.util.TreeSet
 
-internal fun listFilesMediaStoreImpl(
+/**
+ * list files in [location] as format of FileEntity via MediaStore
+ */
+fun listFilesMediaStore(
     location: Location,
     context: Context,
     scope: CoroutineScope?,
@@ -22,7 +25,10 @@ internal fun listFilesMediaStoreImpl(
     return searchSongFiles(context, location, scope) ?: emptySet()
 }
 
-internal fun listFilesLegacyImpl(
+/**
+ * list files in [location] as format of FileEntity via File API
+ */
+fun listFilesLegacy(
     location: Location,
     scope: CoroutineScope?,
 ): Set<FileEntity> {
