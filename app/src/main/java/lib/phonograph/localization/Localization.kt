@@ -4,16 +4,15 @@
 
 package lib.phonograph.localization
 
-import android.app.Activity
-import android.content.Context
-import java.util.*
 import lib.phonograph.localization.LocalizationStore.Companion.startUpLocale
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.os.LocaleListCompat
-import androidx.lifecycle.Lifecycle
+import androidx.annotation.RequiresApi
+import android.app.Activity
+import android.app.LocaleManager
+import android.content.Context
 import android.os.Build
 import android.os.Build.VERSION_CODES
+import android.os.LocaleList
+import java.util.*
 
 object Localization {
 
@@ -47,19 +46,26 @@ object Localization {
     ) {
         Locale.setDefault(newLocale)
         LocalizationUtil.updateResources(context.resources, newLocale)
-        if (context is AppCompatActivity) {
-            if (Build.VERSION.SDK_INT < VERSION_CODES.TIRAMISU) {
-                val localeListCompat = LocaleListCompat.create(newLocale)
-                AppCompatDelegate.setApplicationLocales(localeListCompat)
-            } else {
-                if (context.lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
-                    val localeListCompat = LocaleListCompat.create(newLocale)
-                    AppCompatDelegate.setApplicationLocales(localeListCompat)
-                }
-            }
+        if (Build.VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
+            notifySystemLocale(context, newLocale)
         }
         if (recreateActivity && context is Activity) context.recreate()
         if (saveToPersistence) saveCurrentLocale(context, newLocale)
+    }
+
+    @RequiresApi(VERSION_CODES.TIRAMISU)
+    private fun notifySystemLocale(context: Context, newLocale: Locale) {
+        val mLocaleManager = context.getSystemService(Context.LOCALE_SERVICE) as LocaleManager
+        mLocaleManager.applicationLocales = LocaleList(newLocale)
+    }
+
+    @RequiresApi(VERSION_CODES.TIRAMISU)
+    fun syncSystemLocale(context: Context) {
+        val mLocaleManager = context.getSystemService(Context.LOCALE_SERVICE) as LocaleManager
+        val newLocales = mLocaleManager.applicationLocales
+        if (!newLocales.isEmpty) {
+            saveCurrentLocale(context, newLocales[0])
+        }
     }
 
     /**
