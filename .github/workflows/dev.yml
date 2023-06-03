@@ -57,7 +57,6 @@ jobs:
         # just download gradle wrapper, start gradle daemon and prepare composing builds, make actual build logs clean
         run: |
           ./gradlew
-          ./gradlew :release-tool:classes
 
 
       - name: Generate Sign Config

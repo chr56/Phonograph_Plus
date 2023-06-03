@@ -29,14 +29,13 @@ jobs:
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v2.4.2
 
-      - name: Build with Gradle (Assemble PreviewRelease)
-        run: ./gradlew assemblePreviewRelease --parallel --stacktrace
-
       - name: Prepare Gradlew
         # just download gradle wrapper, start gradle daemon and prepare composing builds, make actual build logs clean
         run: |
           ./gradlew
-          ./gradlew :release-tool:classes
+
+      - name: Build with Gradle (Assemble PreviewRelease)
+        run: ./gradlew assemblePreviewRelease --parallel --stacktrace
 
       - name: signing apk
         uses: r0adkll/sign-android-release@v1.0.4
