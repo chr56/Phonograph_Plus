@@ -32,6 +32,12 @@ jobs:
       - name: Build with Gradle (Assemble PreviewRelease)
         run: ./gradlew assemblePreviewRelease --parallel --stacktrace
 
+      - name: Prepare Gradlew
+        # just download gradle wrapper, start gradle daemon and prepare composing builds, make actual build logs clean
+        run: |
+          ./gradlew
+          ./gradlew :release-tool:classes
+
       - name: signing apk
         uses: r0adkll/sign-android-release@v1.0.4
         id: sign_app

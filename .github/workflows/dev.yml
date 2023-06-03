@@ -53,6 +53,12 @@ jobs:
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v2.4.2
 
+      - name: Prepare Gradlew
+        # just download gradle wrapper, start gradle daemon and prepare composing builds, make actual build logs clean
+        run: |
+          ./gradlew
+          ./gradlew :release-tool:classes
+
 
       - name: Generate Sign Config
         env:
