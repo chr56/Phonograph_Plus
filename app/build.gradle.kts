@@ -45,11 +45,11 @@ android {
         versionCode = 531
         versionName = "0.7.0-dev1"
 
-        buildConfigField("String",
-                         "GIT_COMMIT_HASH",
-                         """
-                             "${getGitHash(false)}"
-                         """.trimIndent())
+        buildConfigField(
+            type = "String",
+            name = "GIT_COMMIT_HASH",
+            value = "\"${getGitHash(false)}\""
+        )
         setProperty("archivesBaseName", "PhonographPlus_$versionName")
 
         proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
