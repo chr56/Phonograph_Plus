@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
-private const val PREFERENCE_NAME = "settings"
+private const val PREFERENCE_NAME = "setting_main"
 val Context.dataStore: DataStore<Preferences>
         by preferencesDataStore(
             name = PREFERENCE_NAME,
