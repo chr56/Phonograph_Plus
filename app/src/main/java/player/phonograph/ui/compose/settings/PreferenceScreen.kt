@@ -92,25 +92,6 @@ fun PhonographPreferenceScreen() {
         Modifier.verticalScroll(rememberScrollState())
     ) {
         SettingsGroup(title = header(R.string.pref_header_appearance)) {
-
-            GeneralThemeSetting()
-            if (SDK_INT >= S) MonetSetting()
-            PrimaryColorPref()
-            AccentColorPref()
-            ColoredNavigationBarSetting()
-
-            if (SDK_INT >= N_MR1) {
-                BooleanPref(
-                    key = COLORED_APP_SHORTCUTS,
-                    titleRes = R.string.pref_title_app_shortcuts,
-                    summaryRes = R.string.pref_summary_colored_app_shortcuts,
-                    defaultValue = true,
-                    onCheckedChange = {
-                        DynamicShortcutManager(App.instance).updateDynamicShortcuts()
-                    }
-                )
-            }
-
             DialogPref(
                 model = DialogPreferenceModel(
                     dialog = LanguageSettingDialog::class.java,
@@ -121,9 +102,14 @@ fun PhonographPreferenceScreen() {
                     }
                 )
             )
-        }
-
-        SettingsGroup(title = header(R.string.pref_header_library)) {
+            DialogPref(
+                model = DialogPreferenceModel(
+                    dialog = NowPlayingScreenPreferenceDialog::class.java,
+                    titleRes = R.string.pref_title_player_style,
+                    currentValueForHint = { context ->
+                        context.getString(NowPlayingScreenConfig.nowPlayingScreen.titleRes)
+                    }
+                ))
             LibraryCategoriesSetting()
             BooleanPref(
                 key = REMEMBER_LAST_TAB,
@@ -139,7 +125,26 @@ fun PhonographPreferenceScreen() {
             )
         }
 
-        SettingsGroup(title = header(R.string.path_filter)) {
+        SettingsGroup(title = header(R.string.pref_header_colors)) {
+            if (SDK_INT >= S) MonetSetting()
+            PrimaryColorPref()
+            AccentColorPref()
+            ColoredNavigationBarSetting()
+            if (SDK_INT >= N_MR1) {
+                BooleanPref(
+                    key = COLORED_APP_SHORTCUTS,
+                    titleRes = R.string.pref_title_app_shortcuts,
+                    summaryRes = R.string.pref_summary_colored_app_shortcuts,
+                    defaultValue = true,
+                    onCheckedChange = {
+                        DynamicShortcutManager(App.instance).updateDynamicShortcuts()
+                    }
+                )
+            }
+            GeneralThemeSetting()
+        }
+
+        SettingsGroup(title = header(R.string.pref_header_content)) {
             DialogPref(
                 model = DialogPreferenceModel(
                     dialog = PathFilterDialog::class.java,
@@ -155,131 +160,6 @@ fun PhonographPreferenceScreen() {
                     }
                 )
             )
-        }
-
-        SettingsGroup(
-            title = header(R.string.pref_header_notification)
-        ) {
-            // noinspection ObsoleteSdkInt
-            if (SDK_INT >= N) BooleanPref(
-                key = CLASSIC_NOTIFICATION,
-                titleRes = R.string.pref_title_classic_notification,
-                summaryRes = R.string.pref_summary_classic_notification,
-                defaultValue = false,
-            )
-            BooleanPref(
-                key = COLORED_NOTIFICATION,
-                titleRes = R.string.pref_title_colored_notification,
-                summaryRes = R.string.pref_summary_colored_notification,
-                defaultValue = true,
-                enabled = dependOn(CLASSIC_NOTIFICATION),
-            )
-        }
-
-        SettingsGroup(
-            title = header(R.string.pref_header_now_playing_screen)
-        ) {
-            DialogPref(
-                model = DialogPreferenceModel(
-                    dialog = NowPlayingScreenPreferenceDialog::class.java,
-                    titleRes = R.string.pref_title_now_playing_screen_appearance,
-                    currentValueForHint = { context ->
-                        context.getString(NowPlayingScreenConfig.nowPlayingScreen.titleRes)
-                    }
-                ))
-            BooleanPref(
-                key = DISPLAY_LYRICS_TIME_AXIS,
-                titleRes = R.string.pref_title_display_lyrics_time_axis,
-                summaryRes = R.string.pref_summary_display_lyrics_time_axis,
-                defaultValue = true,
-            )
-            BooleanPref(
-                key = SYNCHRONIZED_LYRICS_SHOW,
-                titleRes = R.string.pref_title_synchronized_lyrics_show,
-                summaryRes = R.string.pref_summary_synchronized_lyrics_show,
-                defaultValue = true,
-                onCheckedChange = { newValue ->
-                    if (!newValue) {
-                        // clear lyrics displaying on the status bar now
-                        StatusBarLyric.stopLyric()
-                    }
-                }
-            )
-
-        }
-
-        SettingsGroup(
-            title = header(R.string.pref_header_images)
-        ) {
-            DialogPref(
-                model = DialogPreferenceModel(
-                    dialog = ImageSourceConfigDialog::class.java,
-                    titleRes = R.string.image_source_config,
-                )
-            )
-            ListPref(
-                titleRes = R.string.pref_title_auto_download_metadata,
-                options = OptionGroupModel(
-                    AUTO_DOWNLOAD_IMAGES_POLICY,
-                    listOf(
-                        DOWNLOAD_IMAGES_POLICY_NEVER,
-                        DOWNLOAD_IMAGES_POLICY_ONLY_WIFI,
-                        DOWNLOAD_IMAGES_POLICY_ALWAYS,
-                    ),
-                    listOf(
-                        R.string.never,
-                        R.string.only_on_wifi,
-                        R.string.always,
-                    )
-                )
-            )
-        }
-
-        SettingsGroup(
-            title = header(R.string.pref_header_player_behaviour)
-        ) {
-            DialogPref(
-                model = DialogPreferenceModel(
-                    dialog = ClickModeSettingDialog::class.java,
-                    titleRes = R.string.pref_title_click_behavior,
-                    summaryRes = R.string.pref_summary_click_behavior,
-                )
-            )
-            BooleanPref(
-                key = AUDIO_DUCKING,
-                summaryRes = R.string.pref_summary_audio_ducking,
-                titleRes = R.string.pref_title_audio_ducking,
-                defaultValue = true,
-            )
-            BooleanPref(
-                key = GAPLESS_PLAYBACK,
-                summaryRes = R.string.pref_summary_gapless_playback,
-                titleRes = R.string.pref_title_gapless_playback,
-                defaultValue = false,
-            )
-            BooleanPref(
-                key = ENABLE_LYRICS,
-                summaryRes = R.string.pref_summary_load_lyrics,
-                titleRes = R.string.pref_title_load_lyrics,
-                defaultValue = true,
-            )
-            BooleanPref(
-                key = BROADCAST_SYNCHRONIZED_LYRICS,
-                summaryRes = R.string.pref_summary_send_lyrics,
-                titleRes = R.string.pref_title_send_lyrics,
-                defaultValue = false,
-            )
-            BooleanPref(
-                key = BROADCAST_CURRENT_PLAYER_STATE,
-                summaryRes = R.string.pref_summary_broadcast_current_player_state,
-                titleRes = R.string.pref_title_broadcast_current_player_state,
-                defaultValue = true,
-            )
-            EqualizerSetting()
-        }
-
-
-        SettingsGroup(title = header(R.string.pref_header_playlists)) {
             ListPref(
                 titleRes = R.string.pref_title_last_added_interval,
                 options =
@@ -308,13 +188,112 @@ fun PhonographPreferenceScreen() {
                     defaultValueIndex = 1
                 )
             )
+            DialogPref(
+                model = DialogPreferenceModel(
+                    dialog = ClickModeSettingDialog::class.java,
+                    titleRes = R.string.pref_title_click_behavior,
+                    summaryRes = R.string.pref_summary_click_behavior,
+                )
+            )
+            DialogPref(
+                model = DialogPreferenceModel(
+                    dialog = ImageSourceConfigDialog::class.java,
+                    titleRes = R.string.image_source_config,
+                )
+            )
+            ListPref(
+                titleRes = R.string.pref_title_auto_download_metadata,
+                options = OptionGroupModel(
+                    AUTO_DOWNLOAD_IMAGES_POLICY,
+                    listOf(
+                        DOWNLOAD_IMAGES_POLICY_NEVER,
+                        DOWNLOAD_IMAGES_POLICY_ONLY_WIFI,
+                        DOWNLOAD_IMAGES_POLICY_ALWAYS,
+                    ),
+                    listOf(
+                        R.string.never,
+                        R.string.only_on_wifi,
+                        R.string.always,
+                    )
+                )
+            )
         }
 
-        SettingsGroup(title = header(R.string.check_upgrade)) {
+
+        SettingsGroup(
+            title = header(R.string.pref_header_player_behaviour)
+        ) {
             BooleanPref(
-                key = CHECK_UPGRADE_AT_STARTUP,
-                titleRes = R.string.auto_check_upgrade,
-                summaryRes = R.string.auto_check_upgrade_summary,
+                key = AUDIO_DUCKING,
+                summaryRes = R.string.pref_summary_audio_ducking,
+                titleRes = R.string.pref_title_audio_ducking,
+                defaultValue = true,
+            )
+            BooleanPref(
+                key = GAPLESS_PLAYBACK,
+                summaryRes = R.string.pref_summary_gapless_playback,
+                titleRes = R.string.pref_title_gapless_playback,
+                defaultValue = false,
+            )
+            BooleanPref(
+                key = BROADCAST_CURRENT_PLAYER_STATE,
+                summaryRes = R.string.pref_summary_broadcast_current_player_state,
+                titleRes = R.string.pref_title_broadcast_current_player_state,
+                defaultValue = true,
+            )
+            EqualizerSetting()
+        }
+
+
+        SettingsGroup(
+            title = header(R.string.pref_header_notification)
+        ) {
+            // noinspection ObsoleteSdkInt
+            if (SDK_INT >= N) BooleanPref(
+                key = CLASSIC_NOTIFICATION,
+                titleRes = R.string.pref_title_classic_notification,
+                summaryRes = R.string.pref_summary_classic_notification,
+                defaultValue = false,
+            )
+            BooleanPref(
+                key = COLORED_NOTIFICATION,
+                titleRes = R.string.pref_title_colored_notification,
+                summaryRes = R.string.pref_summary_colored_notification,
+                defaultValue = true,
+                enabled = dependOn(CLASSIC_NOTIFICATION),
+            )
+        }
+
+
+        SettingsGroup(title = header(R.string.pref_header_lyrics)) {
+            BooleanPref(
+                key = ENABLE_LYRICS,
+                titleRes = R.string.pref_title_load_lyrics,
+                summaryRes = R.string.pref_summary_load_lyrics,
+                defaultValue = true,
+            )
+            BooleanPref(
+                key = SYNCHRONIZED_LYRICS_SHOW,
+                titleRes = R.string.pref_title_synchronized_lyrics_show,
+                summaryRes = R.string.pref_summary_synchronized_lyrics_show,
+                defaultValue = true,
+                onCheckedChange = { newValue ->
+                    if (!newValue) {
+                        // clear lyrics displaying on the status bar now
+                        StatusBarLyric.stopLyric()
+                    }
+                }
+            )
+            BooleanPref(
+                key = DISPLAY_LYRICS_TIME_AXIS,
+                titleRes = R.string.pref_title_display_lyrics_time_axis,
+                summaryRes = R.string.pref_summary_display_lyrics_time_axis,
+                defaultValue = true,
+            )
+            BooleanPref(
+                key = DISPLAY_LYRICS_TIME_AXIS,
+                titleRes = R.string.pref_title_send_lyrics,
+                summaryRes = R.string.pref_summary_send_lyrics,
                 defaultValue = false,
             )
         }
@@ -353,6 +332,15 @@ fun PhonographPreferenceScreen() {
                         R.string.behaviour_force_legacy,
                     )
                 )
+            )
+        }
+
+        SettingsGroup(title = header(R.string.check_upgrade)) {
+            BooleanPref(
+                key = CHECK_UPGRADE_AT_STARTUP,
+                titleRes = R.string.auto_check_upgrade,
+                summaryRes = R.string.auto_check_upgrade_summary,
+                defaultValue = false,
             )
         }
 

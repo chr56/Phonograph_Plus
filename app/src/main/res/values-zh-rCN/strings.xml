@@ -92,6 +92,8 @@
     <string name="this_year">本年</string>
     <string name="equalizer">均衡器</string>
     <string name="pref_header_colors">颜色</string>
+    <string name="pref_header_content">内容</string>
+    <string name="pref_header_lyrics">歌词</string>
     <string name="pref_header_now_playing_screen">正在播放界面</string>
     <string name="pref_title_general_theme">全局主题</string>
     <string name="pref_header_audio">声音</string>
@@ -100,6 +102,7 @@
     <string name="pref_header_images">图片</string>
     <string name="pref_header_playlists">播放列表</string>
     <string name="pref_header_notification">通知</string>
+    <string name="pref_title_player_style">主播放器外观</string>
     <string name="pref_title_navigation_bar">着色导航栏</string>
     <string name="pref_title_app_shortcuts">着色应用快捷方式</string>
     <string name="pref_title_auto_download_metadata">自动下载元数据</string>

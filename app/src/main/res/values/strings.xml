@@ -92,6 +92,8 @@
     <string name="this_year">This year</string>
     <string name="equalizer">Equalizer</string>
     <string name="pref_header_colors">Colors</string>
+    <string name="pref_header_content">Content</string>
+    <string name="pref_header_lyrics">Lyrics</string>
     <string name="pref_header_now_playing_screen">Now playing</string>
     <string name="pref_title_general_theme">General theme</string>
     <string name="pref_header_audio">Audio</string>
@@ -100,6 +102,7 @@
     <string name="pref_header_images">Images</string>
     <string name="pref_header_playlists">Playlists</string>
     <string name="pref_header_notification">Notification</string>
+    <string name="pref_title_player_style">Main Player Style</string>
     <string name="pref_title_navigation_bar">Colored navigation bar</string>
     <string name="pref_title_app_shortcuts">Colored app shortcuts</string>
     <string name="pref_title_auto_download_metadata">Auto download metadata</string>
