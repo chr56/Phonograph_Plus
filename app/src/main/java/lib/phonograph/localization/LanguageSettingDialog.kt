@@ -10,12 +10,12 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.*
 import player.phonograph.R
+import androidx.core.os.LocaleListCompat
 
 class LanguageSettingDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val current: Locale = Localization.storedLocale(requireContext())
-        val default: Locale = Localization.defaultLocale()
         var target: Locale = current
 
         val allNames = getAvailableLanguageNames(current)
@@ -30,21 +30,18 @@ class LanguageSettingDialog : DialogFragment() {
             }
             .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
                 dialog.dismiss()
-                Localization.setCurrentLocale(
+                Localization.saveLocale(requireContext(), target)
+                Localization.modifyLocale(
                     context = requireContext(),
-                    newLocale = target,
-                    recreateActivity = true,
-                    saveToPersistence = true
+                    newLocales = LocaleListCompat.create(target)
                 )
             }
             .setNegativeButton(getString(R.string.reset_action)) { dialog, _ ->
                 dialog.dismiss()
                 Localization.resetStoredLocale(requireContext())
-                Localization.setCurrentLocale(
+                Localization.modifyLocale(
                     context = requireContext(),
-                    newLocale = default,
-                    recreateActivity = true,
-                    saveToPersistence = false
+                    newLocales = LocaleListCompat.getEmptyLocaleList()
                 )
             }
             .create()

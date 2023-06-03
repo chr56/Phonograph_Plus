@@ -6,10 +6,10 @@ package lib.phonograph.localization
 
 import lib.phonograph.localization.LocalizationStore.Companion.startUpLocale
 import androidx.annotation.RequiresApi
-import android.app.Activity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import android.app.LocaleManager
 import android.content.Context
-import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.os.LocaleList
 import java.util.*
@@ -45,22 +45,22 @@ object Localization {
      * default locale from system
      */
     fun defaultLocale(): Locale = startUpLocale
+
+
     /**
      * change runtime locate
      */
-    fun setCurrentLocale(
+    fun modifyLocale(
         context: Context,
-        newLocale: Locale,
-        recreateActivity: Boolean = false,
-        saveToPersistence: Boolean = true
+        newLocales: LocaleListCompat,
     ) {
-        Locale.setDefault(newLocale)
-        LocalizationUtil.updateResources(context.resources, newLocale)
-        if (Build.VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
-            notifySystemLocale(context, newLocale)
+        AppCompatDelegate.setApplicationLocales(newLocales)
+        val locale = newLocales[0]
+        if (locale != null) {
+            Locale.setDefault(locale)
+        } else {
+            Locale.setDefault(defaultLocale())
         }
-        if (recreateActivity && context is Activity) context.recreate()
-        if (saveToPersistence) saveLocale(context, newLocale)
     }
 
     @RequiresApi(VERSION_CODES.TIRAMISU)
