@@ -49,8 +49,6 @@ object LocalizationUtil {
         val newLocales = localeManager.applicationLocales
         if (!newLocales.isEmpty) {
             LocalizationStore.save(context, newLocales[0])
-        } else {
-
         }
     }
 }
