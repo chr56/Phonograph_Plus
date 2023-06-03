@@ -4,7 +4,6 @@
 
 package lib.phonograph.localization
 
-import lib.phonograph.localization.LocalizationStore.Companion.startUpLocale
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
@@ -21,7 +20,7 @@ object Localization {
      * read current locale from persistence
      */
     fun storedLocale(context: Context): Locale {
-        return LocalizationStore.instance(context).read(startUpLocale)
+        return LocalizationStore.instance(context).read()
     }
 
 
@@ -32,19 +31,7 @@ object Localization {
         LocalizationStore.instance(context).save(newLocale)
     }
 
-    /**
-     * reset current locale in persistence
-     */
-    fun resetStoredLocale(context: Context) {
-        LocalizationStore.instance(context).reset()
-    }
     //endregion
-
-
-    /**
-     * default locale from system
-     */
-    fun defaultLocale(): Locale = startUpLocale
 
 
     /**
@@ -55,12 +42,6 @@ object Localization {
         newLocales: LocaleListCompat,
     ) {
         AppCompatDelegate.setApplicationLocales(newLocales)
-        val locale = newLocales[0]
-        if (locale != null) {
-            Locale.setDefault(locale)
-        } else {
-            Locale.setDefault(defaultLocale())
-        }
     }
 
     @RequiresApi(VERSION_CODES.TIRAMISU)

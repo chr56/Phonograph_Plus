@@ -4,13 +4,14 @@
 
 package lib.phonograph.localization
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import player.phonograph.R
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
+import androidx.fragment.app.DialogFragment
 import android.app.Dialog
 import android.os.Bundle
-import androidx.fragment.app.DialogFragment
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.*
-import player.phonograph.R
-import androidx.core.os.LocaleListCompat
 
 class LanguageSettingDialog : DialogFragment() {
 
@@ -30,19 +31,24 @@ class LanguageSettingDialog : DialogFragment() {
             }
             .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
                 dialog.dismiss()
-                Localization.saveLocale(requireContext(), target)
                 Localization.modifyLocale(
                     context = requireContext(),
                     newLocales = LocaleListCompat.create(target)
                 )
+                Localization.saveLocale(requireContext(), target)
             }
             .setNegativeButton(getString(R.string.reset_action)) { dialog, _ ->
                 dialog.dismiss()
-                Localization.resetStoredLocale(requireContext())
+
                 Localization.modifyLocale(
                     context = requireContext(),
                     newLocales = LocaleListCompat.getEmptyLocaleList()
                 )
+
+
+                val locale = AppCompatDelegate.getApplicationLocales()[0] ?: Locale.getDefault()
+
+                Localization.saveLocale(requireContext(), locale)
             }
             .create()
         return dialog
