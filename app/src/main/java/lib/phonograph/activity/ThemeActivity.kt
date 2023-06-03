@@ -16,6 +16,7 @@ import player.phonograph.R
 import player.phonograph.util.theme.applyMonet
 import player.phonograph.util.theme.nightMode
 import player.phonograph.mechanism.setting.StyleConfig
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import android.animation.ValueAnimator
 import android.content.res.Configuration
@@ -31,7 +32,7 @@ import android.view.animation.PathInterpolator
  * An abstract class providing material activity (no toolbar)
  * @author Karim Abou Zeid (kabouzeid)
  */
-abstract class ThemeActivity : MultiLanguageActivity() {
+abstract class ThemeActivity : AppCompatActivity() {
     private var createTime: Long = -1
 
     protected var primaryColor: Int = 0
