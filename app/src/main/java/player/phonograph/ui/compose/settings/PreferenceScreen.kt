@@ -62,6 +62,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -781,7 +782,11 @@ private fun dependOn(key: String, required: Boolean = true): Boolean {
 
 //region Text
 private fun header(res: Int) = @Composable {
-    Text(text = stringResource(id = res), Modifier.padding(start = 16.dp))
+    Text(
+        text = stringResource(id = res),
+        fontWeight = FontWeight.SemiBold,
+        modifier = Modifier.padding(start = 16.dp)
+    )
 }
 
 private fun title(res: Int) = @Composable {
