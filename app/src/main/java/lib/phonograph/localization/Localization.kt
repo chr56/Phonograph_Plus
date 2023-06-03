@@ -16,25 +16,35 @@ import java.util.*
 
 object Localization {
 
+    //region Persistence
     /**
      * read current locale from persistence
      */
-    fun currentLocale(context: Context): Locale {
+    fun storedLocale(context: Context): Locale {
         return LocalizationStore.instance(context).read(startUpLocale)
     }
+
+
+    /**
+     * save current locale to persistence
+     */
+    fun saveLocale(context: Context, newLocale: Locale) {
+        LocalizationStore.instance(context).save(newLocale)
+    }
+
+    /**
+     * reset current locale in persistence
+     */
+    fun resetStoredLocale(context: Context) {
+        LocalizationStore.instance(context).reset()
+    }
+    //endregion
+
 
     /**
      * default locale from system
      */
     fun defaultLocale(): Locale = startUpLocale
-
-    /**
-     * save current locale to persistence
-     */
-    fun saveCurrentLocale(context: Context, newLocale: Locale) {
-        LocalizationStore.instance(context).save(newLocale)
-    }
-
     /**
      * change runtime locate
      */
@@ -50,7 +60,7 @@ object Localization {
             notifySystemLocale(context, newLocale)
         }
         if (recreateActivity && context is Activity) context.recreate()
-        if (saveToPersistence) saveCurrentLocale(context, newLocale)
+        if (saveToPersistence) saveLocale(context, newLocale)
     }
 
     @RequiresApi(VERSION_CODES.TIRAMISU)
@@ -64,14 +74,8 @@ object Localization {
         val mLocaleManager = context.getSystemService(Context.LOCALE_SERVICE) as LocaleManager
         val newLocales = mLocaleManager.applicationLocales
         if (!newLocales.isEmpty) {
-            saveCurrentLocale(context, newLocales[0])
+            saveLocale(context, newLocales[0])
         }
     }
 
-    /**
-     * reset current locale in persistence
-     */
-    fun resetLocale(context: Context) {
-        LocalizationStore.instance(context).reset()
-    }
 }

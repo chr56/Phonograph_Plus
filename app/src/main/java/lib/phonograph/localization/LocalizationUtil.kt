@@ -24,7 +24,7 @@ object LocalizationUtil {
     @JvmOverloads
     fun createNewConfigurationContext(
         context: Context,
-        newLocale: Locale = Localization.currentLocale(context)
+        newLocale: Locale = Localization.storedLocale(context)
     ): Context =
         context.createConfigurationContext(
             amendConfiguration(context.resources.configuration, newLocale)

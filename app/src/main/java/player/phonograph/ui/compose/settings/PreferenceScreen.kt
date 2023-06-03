@@ -116,7 +116,7 @@ fun PhonographPreferenceScreen() {
                     dialog = LanguageSettingDialog::class.java,
                     titleRes = R.string.app_language,
                     currentValueForHint = { context ->
-                        Localization.currentLocale(context).displayLanguage
+                        Localization.storedLocale(context).displayLanguage
                     }
                 )
             )

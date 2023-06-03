@@ -29,7 +29,7 @@ open class MultiLanguageActivity : AppCompatActivity() {
         super.onLocalesChanged(locales)
         if (VERSION.SDK_INT >= TIRAMISU) {
             val locale = locales[0] ?: return
-            Localization.saveCurrentLocale(this, locale)
+            Localization.saveLocale(this, locale)
         }
     }
 }

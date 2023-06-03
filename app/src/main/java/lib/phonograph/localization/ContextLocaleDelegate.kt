@@ -20,7 +20,7 @@ object ContextLocaleDelegate {
         if (newBase != null) {
             createNewConfigurationContext(
                 context = newBase,
-                newLocale = Localization.currentLocale(newBase)
+                newLocale = Localization.storedLocale(newBase)
             )
         } else {
             newBase
@@ -30,5 +30,5 @@ object ContextLocaleDelegate {
      * Wrap [newConfig] with this in [ComponentCallbacks.onConfigurationChanged]
      */
     fun onConfigurationChanged(context: Context, newConfig: Configuration): Configuration =
-        amendConfiguration(newConfig, Localization.currentLocale(context))
+        amendConfiguration(newConfig, Localization.storedLocale(context))
 }

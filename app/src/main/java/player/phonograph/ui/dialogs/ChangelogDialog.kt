@@ -59,7 +59,7 @@ class ChangelogDialog : DialogFragment() {
         // Fetch correct changelog
 
         try {
-            val locale = Localization.currentLocale(requireContext())
+            val locale = Localization.storedLocale(requireContext())
 
             val inputStream = openLocalizedChangelogName(requireContext(), locale)
 

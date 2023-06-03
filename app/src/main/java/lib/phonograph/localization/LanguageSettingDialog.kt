@@ -14,7 +14,7 @@ import player.phonograph.R
 class LanguageSettingDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val current: Locale = Localization.currentLocale(requireContext())
+        val current: Locale = Localization.storedLocale(requireContext())
         val default: Locale = Localization.defaultLocale()
         var target: Locale = current
 
@@ -39,7 +39,7 @@ class LanguageSettingDialog : DialogFragment() {
             }
             .setNegativeButton(getString(R.string.reset_action)) { dialog, _ ->
                 dialog.dismiss()
-                Localization.resetLocale(requireContext())
+                Localization.resetStoredLocale(requireContext())
                 Localization.setCurrentLocale(
                     context = requireContext(),
                     newLocale = default,
