@@ -18,22 +18,20 @@ import lib.phonograph.localization.LocalizationUtil
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
+import android.content.Context
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Bundle
-import android.os.PersistableBundle
 
 open class MultiLanguageActivity : AppCompatActivity() {
 
-
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
         if (VERSION.SDK_INT < TIRAMISU) {
-            AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(LocalizationStore.current(this)))
+            AppCompatDelegate.setApplicationLocales(
+                LocaleListCompat.create(LocalizationStore.current(newBase ?: this))
+            )
         }
-
-        super.onCreate(savedInstanceState, persistentState)
-
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
