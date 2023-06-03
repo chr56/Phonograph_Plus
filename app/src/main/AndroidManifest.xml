@@ -31,6 +31,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Phonograph.Auto"
+        android:localeConfig="@xml/locales_config"
         tools:ignore="UnusedAttribute">
 
         <!--                                          -->
@@ -166,6 +167,15 @@
             android:name=".service.MusicService"
             android:enabled="true"
             android:foregroundServiceType="mediaPlayback" />
+
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false">
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="false" />
+        </service>
 
 
         <!--                                          -->

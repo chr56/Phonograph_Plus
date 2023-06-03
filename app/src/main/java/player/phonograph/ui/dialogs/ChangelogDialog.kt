@@ -4,7 +4,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
-import lib.phonograph.localization.Localization
+import lib.phonograph.localization.LocalizationStore
 import mt.pref.ThemeColor
 import mt.util.color.resolveColor
 import player.phonograph.R
@@ -59,7 +59,7 @@ class ChangelogDialog : DialogFragment() {
         // Fetch correct changelog
 
         try {
-            val locale = Localization.currentLocale(requireContext())
+            val locale = LocalizationStore.current(requireContext())
 
             val inputStream = openLocalizedChangelogName(requireContext(), locale)
 

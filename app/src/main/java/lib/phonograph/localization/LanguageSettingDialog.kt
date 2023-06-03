@@ -4,18 +4,19 @@
 
 package lib.phonograph.localization
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import player.phonograph.R
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
+import androidx.fragment.app.DialogFragment
 import android.app.Dialog
 import android.os.Bundle
-import androidx.fragment.app.DialogFragment
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.*
-import player.phonograph.R
 
 class LanguageSettingDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val current: Locale = Localization.currentLocale(requireContext())
-        val default: Locale = Localization.defaultLocale()
+        val current: Locale = LocalizationStore.current(requireContext())
         var target: Locale = current
 
         val allNames = getAvailableLanguageNames(current)
@@ -30,22 +31,18 @@ class LanguageSettingDialog : DialogFragment() {
             }
             .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
                 dialog.dismiss()
-                Localization.setCurrentLocale(
-                    context = requireContext(),
-                    newLocale = target,
-                    recreateActivity = true,
-                    saveToPersistence = true
+                AppCompatDelegate.setApplicationLocales(
+                    LocaleListCompat.create(target)
                 )
+                LocalizationStore.save(requireContext(), target)
             }
             .setNegativeButton(getString(R.string.reset_action)) { dialog, _ ->
                 dialog.dismiss()
-                Localization.resetLocale(requireContext())
-                Localization.setCurrentLocale(
-                    context = requireContext(),
-                    newLocale = default,
-                    recreateActivity = true,
-                    saveToPersistence = false
+                AppCompatDelegate.setApplicationLocales(
+                    LocaleListCompat.getEmptyLocaleList()
                 )
+                val locale = AppCompatDelegate.getApplicationLocales()[0] ?: Locale.getDefault()
+                LocalizationStore.save(requireContext(), locale)
             }
             .create()
         return dialog

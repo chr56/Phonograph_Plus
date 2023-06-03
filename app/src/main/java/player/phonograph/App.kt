@@ -3,6 +3,7 @@ package player.phonograph
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import lib.phonograph.localization.ContextLocaleDelegate
+import lib.phonograph.localization.LocalizationUtil
 import lib.phonograph.misc.Reboot
 import mt.pref.ThemeColor
 import mt.pref.internal.ThemeStore
@@ -102,6 +103,11 @@ class App : Application(), ImageLoaderFactory {
         // Set up dynamic shortcuts
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             DynamicShortcutManager(this).initDynamicShortcuts()
+        }
+
+        // Sync Locales
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            LocalizationUtil.syncSystemLocale(this)
         }
 
         // state listener
