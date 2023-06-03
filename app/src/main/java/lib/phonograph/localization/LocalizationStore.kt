@@ -6,9 +6,43 @@ package lib.phonograph.localization
 
 import android.content.Context
 import android.content.SharedPreferences
-import java.util.*
+import java.util.Locale
 
 class LocalizationStore private constructor(context: Context) {
+
+    companion object {
+
+        /**
+         * read current locale from persistence
+         */
+        fun current(context: Context): Locale {
+            return instance(context).read()
+        }
+
+        /**
+         * save current locale to persistence
+         */
+        fun save(context: Context, newLocale: Locale) {
+            instance(context).save(newLocale)
+        }
+
+        fun clear(context: Context) {
+            instance(context).clear()
+        }
+
+
+        private var sInstance: LocalizationStore? = null
+        fun instance(context: Context): LocalizationStore {
+            return sInstance ?: LocalizationStore(context).apply { sInstance = this }
+        }
+
+        const val FILE_NAME = "Locale"
+        private const val KEY_LANGUAGE = "language"
+        private const val KEY_REGION = "region"
+
+    }
+
+
 
     val preference: SharedPreferences =
         context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
@@ -56,17 +90,5 @@ class LocalizationStore private constructor(context: Context) {
         } else {
             null
         }
-
-    companion object {
-        const val FILE_NAME = "Locale"
-
-        private var sInstance: LocalizationStore? = null
-        fun instance(context: Context): LocalizationStore {
-            return sInstance ?: LocalizationStore(context).apply { sInstance = this }
-        }
-
-        private const val KEY_LANGUAGE = "language"
-        private const val KEY_REGION = "region"
-
-    }
 }
+

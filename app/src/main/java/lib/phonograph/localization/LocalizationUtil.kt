@@ -27,7 +27,7 @@ object LocalizationUtil {
     @JvmOverloads
     fun createNewConfigurationContext(
         context: Context,
-        newLocale: Locale = Localization.storedLocale(context),
+        newLocale: Locale = LocalizationStore.current(context),
     ): Context =
         context.createConfigurationContext(
             amendConfiguration(context.resources.configuration, newLocale)
@@ -48,7 +48,7 @@ object LocalizationUtil {
         val localeManager = context.getSystemService(Context.LOCALE_SERVICE) as LocaleManager
         val newLocales = localeManager.applicationLocales
         if (!newLocales.isEmpty) {
-            Localization.saveLocale(context, newLocales[0])
+            LocalizationStore.save(context, newLocales[0])
         } else {
 
         }

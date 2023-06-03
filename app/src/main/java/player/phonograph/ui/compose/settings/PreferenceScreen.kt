@@ -13,7 +13,7 @@ import com.alorma.compose.settings.ui.SettingsListDropdown
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.alorma.compose.settings.ui.SettingsSwitch
 import lib.phonograph.localization.LanguageSettingDialog
-import lib.phonograph.localization.Localization
+import lib.phonograph.localization.LocalizationStore
 import lib.phonograph.misc.ColorChooser
 import mt.pref.ThemeColor
 import player.phonograph.App
@@ -116,7 +116,7 @@ fun PhonographPreferenceScreen() {
                     dialog = LanguageSettingDialog::class.java,
                     titleRes = R.string.app_language,
                     currentValueForHint = { context ->
-                        Localization.storedLocale(context).displayLanguage
+                        LocalizationStore.current(context).displayLanguage
                     }
                 )
             )

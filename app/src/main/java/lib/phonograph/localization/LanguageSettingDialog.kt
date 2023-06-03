@@ -16,7 +16,7 @@ import java.util.*
 class LanguageSettingDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val current: Locale = Localization.storedLocale(requireContext())
+        val current: Locale = LocalizationStore.current(requireContext())
         var target: Locale = current
 
         val allNames = getAvailableLanguageNames(current)
@@ -34,7 +34,7 @@ class LanguageSettingDialog : DialogFragment() {
                 AppCompatDelegate.setApplicationLocales(
                     LocaleListCompat.create(target)
                 )
-                Localization.saveLocale(requireContext(), target)
+                LocalizationStore.save(requireContext(), target)
             }
             .setNegativeButton(getString(R.string.reset_action)) { dialog, _ ->
                 dialog.dismiss()
@@ -42,7 +42,7 @@ class LanguageSettingDialog : DialogFragment() {
                     LocaleListCompat.getEmptyLocaleList()
                 )
                 val locale = AppCompatDelegate.getApplicationLocales()[0] ?: Locale.getDefault()
-                Localization.saveLocale(requireContext(), locale)
+                LocalizationStore.save(requireContext(), locale)
             }
             .create()
         return dialog

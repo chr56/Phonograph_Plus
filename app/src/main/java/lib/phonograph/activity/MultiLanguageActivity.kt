@@ -13,7 +13,7 @@
  */
 package lib.phonograph.activity
 
-import lib.phonograph.localization.Localization
+import lib.phonograph.localization.LocalizationStore
 import lib.phonograph.localization.LocalizationUtil
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -29,7 +29,7 @@ open class MultiLanguageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
 
         if (VERSION.SDK_INT < TIRAMISU) {
-            AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(Localization.storedLocale(this)))
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(LocalizationStore.current(this)))
         }
 
         super.onCreate(savedInstanceState, persistentState)
