@@ -31,23 +31,17 @@ class LanguageSettingDialog : DialogFragment() {
             }
             .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
                 dialog.dismiss()
-                Localization.modifyLocale(
-                    context = requireContext(),
-                    newLocales = LocaleListCompat.create(target)
+                AppCompatDelegate.setApplicationLocales(
+                    LocaleListCompat.create(target)
                 )
                 Localization.saveLocale(requireContext(), target)
             }
             .setNegativeButton(getString(R.string.reset_action)) { dialog, _ ->
                 dialog.dismiss()
-
-                Localization.modifyLocale(
-                    context = requireContext(),
-                    newLocales = LocaleListCompat.getEmptyLocaleList()
+                AppCompatDelegate.setApplicationLocales(
+                    LocaleListCompat.getEmptyLocaleList()
                 )
-
-
                 val locale = AppCompatDelegate.getApplicationLocales()[0] ?: Locale.getDefault()
-
                 Localization.saveLocale(requireContext(), locale)
             }
             .create()

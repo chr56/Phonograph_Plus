@@ -3,7 +3,7 @@ package player.phonograph
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import lib.phonograph.localization.ContextLocaleDelegate
-import lib.phonograph.localization.Localization
+import lib.phonograph.localization.LocalizationUtil
 import lib.phonograph.misc.Reboot
 import mt.pref.ThemeColor
 import mt.pref.internal.ThemeStore
@@ -107,7 +107,7 @@ class App : Application(), ImageLoaderFactory {
 
         // Sync Locales
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Localization.syncSystemLocale(this)
+            LocalizationUtil.syncSystemLocale(this)
         }
 
         // state listener

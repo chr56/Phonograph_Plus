@@ -4,16 +4,19 @@
 
 package lib.phonograph.localization
 
+import androidx.annotation.RequiresApi
+import android.app.LocaleManager
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.os.Build
 import java.util.*
 
 object LocalizationUtil {
     @JvmOverloads
     fun updateResources(
         resources: Resources,
-        newLocale: Locale = Locale.getDefault()
+        newLocale: Locale = Locale.getDefault(),
     ) {
         resources.updateConfiguration(
             amendConfiguration(resources.configuration, newLocale),
@@ -24,7 +27,7 @@ object LocalizationUtil {
     @JvmOverloads
     fun createNewConfigurationContext(
         context: Context,
-        newLocale: Locale = Localization.storedLocale(context)
+        newLocale: Locale = Localization.storedLocale(context),
     ): Context =
         context.createConfigurationContext(
             amendConfiguration(context.resources.configuration, newLocale)
@@ -33,10 +36,21 @@ object LocalizationUtil {
     @JvmOverloads
     fun amendConfiguration(
         configuration: Configuration,
-        newLocale: Locale = Locale.getDefault()
+        newLocale: Locale = Locale.getDefault(),
     ): Configuration =
         configuration.apply {
             setLocale(newLocale)
             setLayoutDirection(newLocale)
         }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    fun syncSystemLocale(context: Context) {
+        val localeManager = context.getSystemService(Context.LOCALE_SERVICE) as LocaleManager
+        val newLocales = localeManager.applicationLocales
+        if (!newLocales.isEmpty) {
+            Localization.saveLocale(context, newLocales[0])
+        } else {
+
+        }
+    }
 }

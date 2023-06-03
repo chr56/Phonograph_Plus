@@ -4,18 +4,11 @@
 
 package lib.phonograph.localization
 
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.os.LocaleListCompat
-import android.app.LocaleManager
 import android.content.Context
-import android.os.Build.VERSION_CODES
-import android.os.LocaleList
-import java.util.*
+import java.util.Locale
 
 object Localization {
 
-    //region Persistence
     /**
      * read current locale from persistence
      */
@@ -31,32 +24,8 @@ object Localization {
         LocalizationStore.instance(context).save(newLocale)
     }
 
-    //endregion
-
-
-    /**
-     * change runtime locate
-     */
-    fun modifyLocale(
-        context: Context,
-        newLocales: LocaleListCompat,
-    ) {
-        AppCompatDelegate.setApplicationLocales(newLocales)
-    }
-
-    @RequiresApi(VERSION_CODES.TIRAMISU)
-    private fun notifySystemLocale(context: Context, newLocale: Locale) {
-        val mLocaleManager = context.getSystemService(Context.LOCALE_SERVICE) as LocaleManager
-        mLocaleManager.applicationLocales = LocaleList(newLocale)
-    }
-
-    @RequiresApi(VERSION_CODES.TIRAMISU)
-    fun syncSystemLocale(context: Context) {
-        val mLocaleManager = context.getSystemService(Context.LOCALE_SERVICE) as LocaleManager
-        val newLocales = mLocaleManager.applicationLocales
-        if (!newLocales.isEmpty) {
-            saveLocale(context, newLocales[0])
-        }
+    fun clearStoredLocale(context: Context) {
+        LocalizationStore.instance(context).clear()
     }
 
 }
