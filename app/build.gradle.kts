@@ -204,6 +204,9 @@ dependencies {
     implementation(depsLibs.advrecyclerview)
     implementation(depsLibs.recyclerviewFastscroll)
     implementation(depsLibs.composeReorderable)
-    implementation(depsLibs.bundles.composeSettings)
+    implementation(depsLibs.bundles.composeSettings) {
+        val uiTooling = depsLibs.compose.ui.tooling.get().module
+        exclude(group = uiTooling.group, module = uiTooling.name)
+    }
     implementation(depsLibs.statusBarLyricsApi)
 }
