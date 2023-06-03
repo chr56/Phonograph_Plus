@@ -41,7 +41,7 @@ class LanguageSettingDialog : DialogFragment() {
                 AppCompatDelegate.setApplicationLocales(
                     LocaleListCompat.getEmptyLocaleList()
                 )
-                val locale = ContextLocaleDelegate.startupLocale
+                val locale = ContextLocaleDelegate.systemLocale(requireContext())
                 LocalizationStore.save(requireContext(), locale)
             }
             .create()

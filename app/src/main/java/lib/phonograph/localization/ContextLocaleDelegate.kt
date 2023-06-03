@@ -11,7 +11,9 @@ import android.content.ComponentCallbacks
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Configuration
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.TIRAMISU
+import java.lang.IllegalStateException
 import java.util.Locale
 
 object ContextLocaleDelegate {
@@ -37,26 +39,26 @@ object ContextLocaleDelegate {
         amendConfiguration(newConfig, LocalizationStore.current(context))
 
 
-    var startupLocale: Locale = Locale.getDefault()
-        private set
-    private var firstInit = true
+    private var startupLocale: Locale = Locale.getDefault()
+    private var firstLocaleInit = true
 
     private fun registerSystemLocale(context: Context) {
-        if (firstInit) {
-            startupLocale = systemLocale(context)
-            firstInit = false
+        if (firstLocaleInit) {
+            startupLocale = context.resources.configuration.locales[0]
+            firstLocaleInit = false
         }
     }
 
     /**
      *  read System Locale
      */
-    private fun systemLocale(context: Context): Locale {
-        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            context.resources.configuration.locales[0]
-        } else {
+    fun systemLocale(context: Context): Locale {
+        if (firstLocaleInit && SDK_INT < TIRAMISU) throw IllegalStateException("SystemLocale is unavailable since application is not initialized!")
+        return if (SDK_INT >= TIRAMISU) {
             val localeManager = context.getSystemService(Context.LOCALE_SERVICE) as LocaleManager
-            localeManager.systemLocales[0]
+            localeManager.systemLocales[0] ?: startupLocale
+        } else {
+            startupLocale
         }
     }
 
