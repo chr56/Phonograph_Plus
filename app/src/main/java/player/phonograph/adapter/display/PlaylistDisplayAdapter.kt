@@ -5,6 +5,7 @@
 package player.phonograph.adapter.display
 
 import mt.util.color.primaryTextColor
+import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.mechanism.Favorite
@@ -18,6 +19,9 @@ import player.phonograph.util.theme.nightMode
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import android.graphics.drawable.Drawable
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 
 class PlaylistDisplayAdapter(
     activity: AppCompatActivity,
@@ -61,6 +65,24 @@ class PlaylistDisplayAdapter(
     override fun getItemViewType(position: Int): Int =
         if (dataset[position] is SmartPlaylist) SMART_PLAYLIST else DEFAULT_PLAYLIST
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
+        val view = LayoutInflater.from(activity).inflate(layoutRes, parent, false)
+        return if (viewType == SMART_PLAYLIST) SmartPlaylistViewHolder(view) else CommonPlaylistViewHolder(view)
+    }
+
+    inner class CommonPlaylistViewHolder(itemView: View) : DisplayViewHolder(itemView)
+    inner class SmartPlaylistViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+        init {
+            if (shortSeparator != null) {
+                shortSeparator!!.visibility = View.GONE
+            }
+            itemView.setBackgroundColor(resolveColor(activity, androidx.cardview.R.attr.cardBackgroundColor))
+            // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            itemView.elevation =
+                activity.resources.getDimensionPixelSize(R.dimen.card_elevation).toFloat()
+            // }
+        }
+    }
 
     companion object {
         private const val SMART_PLAYLIST = 0
