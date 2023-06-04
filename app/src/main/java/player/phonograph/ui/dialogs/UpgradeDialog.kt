@@ -11,6 +11,7 @@ import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.UpdateConfig.GITHUB_REPO
+import player.phonograph.mechanism.canAccessGitHub
 import player.phonograph.model.version.Version
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Setting
@@ -20,10 +21,8 @@ import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
 import player.phonograph.ui.components.viewcreater.titlePanel
 import player.phonograph.util.text.dateText
-import player.phonograph.mechanism.canAccessGitHub
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
-import androidx.core.view.setMargins
 import androidx.core.view.setPadding
 import androidx.fragment.app.DialogFragment
 import android.content.DialogInterface
@@ -93,20 +92,20 @@ class UpgradeDialog : DialogFragment() {
             addView(head, MATCH_PARENT, WRAP_CONTENT)
             for (version in versionCatalog.versions) {
                 val card = CardView(context).apply {
-                    setContentPadding(32, 24, 32, 24)
+                    setContentPadding(32, 48, 32, 48)
                     addView(LinearLayout(context).apply {
                         orientation = VERTICAL
                         val title = TextView(context).apply {
                             text = toTitle(version)
                             textSize = 17f
                             typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
-                            setPadding(8)
+                            setPadding(8, 12, 8, 8)
                         }
                         val log = TextView(context).apply {
                             textSize = 14f
                             text = version.releaseNote.parsed(resources)
                             typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
-                            setPadding(8)
+                            setPadding(12, 8, 12, 8)
                         }
                         addView(title, MATCH_PARENT, WRAP_CONTENT)
                         addView(log, MATCH_PARENT, WRAP_CONTENT)
@@ -116,27 +115,36 @@ class UpgradeDialog : DialogFragment() {
                     }
                 }
                 addView(card,
-                        FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-                            .apply { setMargins(36) })
+                    FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+                        .apply {
+                            setMargins(16, 32, 16, 32)
+                        }
+                )
             }
         }
     }
 
     private fun toTitle(version: Version) = with(version) {
-        val channelColor = ForegroundColorSpan(when (channel.lowercase()) {
-                                                   "stable"  -> MaterialColor.Blue._A200.asColor
-                                                   "preview" -> MaterialColor.DeepOrange._A200.asColor
-                                                   "lts"     -> MaterialColor.Green._A200.asColor
-                                                   else      -> MaterialColor.BlueGrey._700.asColor
-                                               })
+        val channelColor = ForegroundColorSpan(
+            when (channel.lowercase()) {
+                "stable" -> MaterialColor.Blue._A200.asColor
+                "preview" -> MaterialColor.DeepOrange._A200.asColor
+                "lts" -> MaterialColor.Green._A200.asColor
+                else -> MaterialColor.BlueGrey._700.asColor
+            }
+        )
         SpannableStringBuilder().apply {
-            append(versionName,
-                   ForegroundColorSpan(accentColor),
-                   SpannableStringBuilder.SPAN_EXCLUSIVE_INCLUSIVE)
+            append(
+                versionName,
+                ForegroundColorSpan(accentColor),
+                SpannableStringBuilder.SPAN_EXCLUSIVE_INCLUSIVE
+            )
             append(" ")
-            append(dateText(date),
-                   ForegroundColorSpan(primaryTextColor),
-                   SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE)
+            append(
+                dateText(date),
+                ForegroundColorSpan(primaryTextColor),
+                SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
             append(" ")
             append(channel, channelColor, SpannableStringBuilder.SPAN_EXCLUSIVE_INCLUSIVE)
         }
