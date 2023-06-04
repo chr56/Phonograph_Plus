@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "0.7.0-dev2",
+      "versionCode": 535,
+      "date": 1685806700,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.7.0-dev2"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>新增 手动加载歌词</li><li>新增 在抽屉主菜单中增加更多选项</li><li>新增 支持 Android T (13) 的系统级分应用语言设置</li><li>修复 播放器色调着色不正确或未更新</li><li>修复 语言卡在英式拼写里面或外面 (针对英语用户)</li><li>翻译 更新日语 (by aorinngo)</li><li>开发 设置界面使用 Jetpack Compose 重构</li><li>改进 设置界面并进行微调</li><li>改进 防止由于文件浏览器导致的崩溃</li><li>开发 使用 Jetpack Datastore Preference</li><li>开发 重构播放器界面，歌词加载等</li><li>开发 改进状态分发</li><li>开发 升级JDK到17</li><li>开发 更新 Gradle 至 8.1, 更新 AGP 至 8.0.2, 启用 `nonTransitiveRClass`</li></ol>",
+        "en": "<ol><li>New: manually load lyrics</li><li>New: add more options in Main Drawer Menu</li><li>New: support per-app language preference for Android T (13) and above</li><li>Fix: palette color of player is incorrect or lacking of update</li><li>Fix: app language is trapped in or out the spelling of British English (for English users only) </li><li>Translation: update Japanese (by aorinngo)</li><li>Development: refactor Setting UI using Jetpack Compose</li><li>Improve: redesign Setting UI and make minor changes</li><li>Improve: avoid random crash caused by the file browser </li><li>Development: use Jetpack Datastore Preference</li><li>Development: refactor player ui, lyrics loading and more</li><li>Development: improve dispatching the changes of states</li><li>Development: upgrade JDK to 17</li><li>Development: upgrade Gradle to 8.1, AGP to 8.0.2, enable `nonTransitiveRClass`</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "0.7.0-dev1",
       "versionCode": 531,
       "date": 1684590000,
