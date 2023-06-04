@@ -16,15 +16,6 @@ import android.graphics.Color.RGBToHSV
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-@Composable
-internal fun composeDarkTheme(): Boolean {
-
-    // val systemUiMode =
-    //     (LocalConfiguration.current.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
-
-    return StyleConfig.isNightMode(LocalContext.current)
-}
-
 fun Color.isColorLight(): Boolean = luminance() >= 0.5f
 
 fun Color.getReverseColor(): Color {
