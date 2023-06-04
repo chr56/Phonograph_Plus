@@ -133,7 +133,7 @@ See [Build_Instructions.md](./Build_Instructions.md)
 
 - [x] Support history of playing queue.
 
-- [ ] Refactor Setting UI (WIP🚧)
+- [x] Refactor Setting UI
 
 - [ ] Refactor Search
 
@@ -146,7 +146,7 @@ See [Build_Instructions.md](./Build_Instructions.md)
 
 - [x] Rewrite Tag Editor
 
-- [ ] Improve data backup/migrate (WIP🚧)
+- [x] Improve data backup/migrate
 
 - [ ] Improve App Intro (WIP🚧)
 
