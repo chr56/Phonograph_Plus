@@ -6,17 +6,22 @@ import player.phonograph.R
 import player.phonograph.mediastore.DeleteSongUtil
 import player.phonograph.mediastore.LyricsLoader
 import player.phonograph.model.Song
-import player.phonograph.ui.components.ViewComponent
-import player.phonograph.ui.components.viewcreater.*
-import player.phonograph.util.createDefaultExceptionHandler
+import player.phonograph.ui.components.viewcreater.ButtonPanel
+import player.phonograph.ui.components.viewcreater.ContentPanel
+import player.phonograph.ui.components.viewcreater.TitlePanel
+import player.phonograph.ui.components.viewcreater.buildDialogView
+import player.phonograph.ui.components.viewcreater.buttonPanel
+import player.phonograph.ui.components.viewcreater.contentPanel
+import player.phonograph.ui.components.viewcreater.titlePanel
 import player.phonograph.util.permissions.hasStorageWritePermission
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.text.ItemGroup
 import player.phonograph.util.text.buildDeletionMessage
 import player.phonograph.util.withLooper
-import androidx.core.view.setMargins
 import androidx.fragment.app.DialogFragment
-import android.annotation.SuppressLint
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
 import android.app.Activity
 import android.net.Uri
 import android.os.Build
@@ -33,8 +38,6 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -49,7 +52,7 @@ class DeleteSongsDialog : DialogFragment() {
 
     private lateinit var model: DeleteSongsModel
 
-    private lateinit var window: DeleteSongsWindow
+    private lateinit var window: DeleteSongsContentFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,19 +67,20 @@ class DeleteSongsDialog : DialogFragment() {
         savedInstanceState: Bundle?,
     ): View {
         val root = container ?: FrameLayout(requireContext())
-        window = DeleteSongsWindow(requireActivity(), this::dismiss)
-        window.inflate(root, inflater)
+        root.id = R.id.container
+        window = DeleteSongsContentFragment().also {
+            it.model = model
+            it.dismiss = this::dismiss
+        }
+        childFragmentManager.commit {
+            replace(R.id.container, window, "DeleteSongsWindow")
+        }
         return root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        window.loadData(model)
-    }
+    class DeleteSongsContentFragment : Fragment() {
 
-    class DeleteSongsWindow(
-        private val activity: Activity,
-        val dismiss: () -> Unit,
-    ) : ViewComponent<ViewGroup, DeleteSongsModel> {
+        lateinit var model: DeleteSongsModel
 
         lateinit var titlePanel: TitlePanel
         lateinit var buttonPanel: ButtonPanel
@@ -84,8 +88,11 @@ class DeleteSongsDialog : DialogFragment() {
 
         lateinit var contentText: TextView
 
-        @SuppressLint("RestrictedApi")
-        override fun inflate(rootContainer: ViewGroup, layoutInflater: LayoutInflater?) {
+        var dismiss: () -> Unit = {}
+
+        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+            val activity = requireActivity()
+
             val accentColor = accentColor(activity)
 
             titlePanel = titlePanel(activity)
@@ -97,14 +104,14 @@ class DeleteSongsDialog : DialogFragment() {
                 }
                 button(1, activity.getString(R.string.delete_action), accentColor) {
                     dismiss()
-                    coroutineScope.launch {
+                    lifecycleScope.launch {
                         delete()
                     }
                 }
                 space(2)
                 button(3, activity.getString(R.string.delete_with_lyrics), accentColor) {
                     dismiss()
-                    coroutineScope.launch {
+                    lifecycleScope.launch {
                         deleteWithLyrics()
                     }
                 }
@@ -112,19 +119,27 @@ class DeleteSongsDialog : DialogFragment() {
 
 
             contentPanel = contentPanel(activity) {
-                this@DeleteSongsWindow.contentText = TextView(activity).apply {
+                this@DeleteSongsContentFragment.contentText = TextView(activity).apply {
                     textSize = 16f
                 }
                 addView(contentText)
             }
 
-            val root = buildDialogView(activity, titlePanel, contentPanel, buttonPanel)
-            rootContainer.addView(root,
-                                  FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-                                      .apply { setMargins(24) })
+            val rootContainer = FrameLayout(activity).apply {
+                addView(
+                    buildDialogView(activity, titlePanel, contentPanel, buttonPanel),
+                    FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
+                        setMargins(16, 8, 16, 8)
+                    }
+                )
+            }
+            return rootContainer
         }
 
-        override fun loadData(model: DeleteSongsModel) {
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+
+            val activity = requireActivity()
             contentText.text =
                 buildDeletionMessage(
                     context = activity,
@@ -162,8 +177,6 @@ class DeleteSongsDialog : DialogFragment() {
                 delete()
             }
         }
-
-        override fun destroy() {}
 
         var delete: () -> Unit = {}
         var deleteWithLyrics: () -> Unit = { }
@@ -237,11 +250,6 @@ class DeleteSongsDialog : DialogFragment() {
 
     companion object {
         private const val TAG = "DeleteSongsDialog"
-        private val coroutineScope =
-            CoroutineScope(
-                Dispatchers.IO +
-                        createDefaultExceptionHandler(TAG, "Fail!")
-            )
 
         fun create(songs: ArrayList<Song>): DeleteSongsDialog =
             DeleteSongsDialog().apply {
