@@ -10,6 +10,7 @@ import player.phonograph.model.Artist
 import player.phonograph.model.Displayable
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.settings.Setting
 import player.phonograph.util.NavigationUtil
 import androidx.core.util.Pair
@@ -32,12 +33,12 @@ fun <T : Displayable> listClick(
 ): Boolean {
     if (list.isEmpty()) return false
     when (list.firstOrNull()) {
-        is Song   -> {
+        is Song     -> {
             val base = Setting.instance.songItemClickMode
             val extra = Setting.instance.songItemClickExtraFlag
             songClick(list.filterIsInstance<Song>(), position, base, extra)
         }
-        is Album  -> {
+        is Album    -> {
             if (activity != null) {
                 if (imageView != null) {
                     NavigationUtil.goToAlbum(
@@ -58,7 +59,7 @@ fun <T : Displayable> listClick(
                 return false
             }
         }
-        is Artist -> {
+        is Artist   -> {
             if (activity != null) {
                 if (imageView != null) {
                     NavigationUtil.goToArtist(
@@ -77,14 +78,21 @@ fun <T : Displayable> listClick(
                 return false
             }
         }
-        is Genre  -> {
+        is Genre    -> {
             if (activity != null) {
                 NavigationUtil.goToGenre(activity, (list[position] as Genre))
             } else {
                 return false
             }
         }
-        else      -> return false
+        is Playlist -> {
+            if (activity != null) {
+                NavigationUtil.goToPlaylist(activity, list[position] as Playlist)
+            } else {
+                return false
+            }
+        }
+        else        -> return false
     }
     return true
 }
