@@ -4,7 +4,6 @@
 
 package player.phonograph.adapter.display
 
-import mt.util.color.primaryTextColor
 import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
@@ -14,10 +13,9 @@ import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
 import player.phonograph.util.text.makeSectionName
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.nightMode
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -43,11 +41,7 @@ class PlaylistDisplayAdapter(
     override fun setImage(holder: DisplayViewHolder, position: Int) {
         holder.image?.also {
             val playlist = dataset[position]
-            it.setImageDrawable(
-                activity.getTintedDrawable(
-                    getIconRes(playlist), activity.primaryTextColor(activity.nightMode)
-                )
-            )
+            it.setImageResource(getIconRes(playlist))
         }
     }
 
@@ -70,8 +64,20 @@ class PlaylistDisplayAdapter(
         return if (viewType == SMART_PLAYLIST) SmartPlaylistViewHolder(view) else CommonPlaylistViewHolder(view)
     }
 
-    inner class CommonPlaylistViewHolder(itemView: View) : DisplayViewHolder(itemView)
-    inner class SmartPlaylistViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+    open inner class CommonPlaylistViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+        init {
+            image?.also { image ->
+                val iconPadding =
+                    activity.resources.getDimensionPixelSize(R.dimen.list_item_image_icon_padding)
+                image.setPadding(iconPadding, iconPadding, iconPadding, iconPadding)
+                image.setColorFilter(
+                    resolveColor(activity, R.attr.iconColor), PorterDuff.Mode.SRC_IN
+                )
+            }
+        }
+    }
+
+    inner class SmartPlaylistViewHolder(itemView: View) : CommonPlaylistViewHolder(itemView) {
         init {
             if (shortSeparator != null) {
                 shortSeparator!!.visibility = View.GONE
