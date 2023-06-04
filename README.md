@@ -58,8 +58,8 @@ All listed features are compared with original Phonograph.
 
 - Add song menu shortcut to add new items to excluded-list (blacklist).
 
-- Co-work-with/Support StatusBar Lyric
-  Xposed Module (api)
+- Co-work-with/Support [StatusBar Lyric
+  Xposed Module (api)](https://github.com/Block-Network/StatusBarLyric)
 
 - Export internal databases for the need of backup.
 
