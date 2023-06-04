@@ -157,9 +157,11 @@ class ListOptionsPopup private constructor(
         set(value) {
             with(viewBinding) {
                 if (value) {
+                    titleSortOrderMethod.visibility = VISIBLE
                     sortMethodAZ.visibility = VISIBLE
                     sortMethodZA.visibility = VISIBLE
                 } else {
+                    titleSortOrderMethod.visibility = GONE
                     sortMethodAZ.visibility = GONE
                     sortMethodZA.visibility = GONE
                 }
