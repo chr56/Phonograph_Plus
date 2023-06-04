@@ -19,24 +19,51 @@ import android.widget.TextView
 import androidx.appcompat.widget.ButtonBarLayout
 import androidx.core.util.valueIterator
 import player.phonograph.R
+import android.view.Gravity
+import android.view.ViewGroup
 import android.widget.LinearLayout.LayoutParams as LinearLayoutLayoutParams
+import android.widget.FrameLayout.LayoutParams as FrameLayoutLayoutParams
 
 
-fun buildDialogView(context: Context, titlePanel: TitlePanel?, contentPanel: ContentPanel, buttonPanel: ButtonPanel): ScrollView {
-    val scrollView = ScrollView(context).apply {
-        val linearLayout = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            val layoutParams =
-                LinearLayoutLayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
-                    setMargins(16, 8, 16, 8)
-                }
-            if (titlePanel != null) addView(titlePanel.panel, layoutParams)
-            addView(contentPanel.panel, layoutParams)
-            addView(buttonPanel.panel, layoutParams)
+fun buildDialogView(
+    context: Context,
+    titlePanel: TitlePanel?,
+    contentPanel: ContentPanel,
+    buttonPanel: ButtonPanel,
+): ViewGroup {
+
+    val defaultLayoutParams =
+        ViewGroup.MarginLayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
+            setMargins(16, 8, 16, 8)
         }
-        addView(linearLayout)
+
+    val frameLayout = FrameLayout(context).also { frameLayout ->
+
+        val contetScrollView = ScrollView(context).also { scrollView ->
+            scrollView.addView(contentPanel.panel, defaultLayoutParams)
+        }
+
+        frameLayout.addView(contetScrollView, FrameLayoutLayoutParams(defaultLayoutParams).also {
+            it.gravity = Gravity.CENTER
+            it.setMargins(8, if (titlePanel != null) 160 else 48, 8, 160)
+        })
+
+        if (titlePanel != null) frameLayout.addView(
+            titlePanel.panel,
+            FrameLayoutLayoutParams(defaultLayoutParams).also {
+                it.gravity = Gravity.TOP
+            }
+        )
+
+        frameLayout.addView(
+            buttonPanel.panel,
+            FrameLayoutLayoutParams(defaultLayoutParams).also {
+                it.gravity = Gravity.BOTTOM
+            }
+        )
     }
-    return scrollView
+
+    return frameLayout
 }
 
 class TitlePanel(val panel: FrameLayout, val titleView: TextView)
