@@ -7,10 +7,18 @@ package player.phonograph.ui.compose.theme
 import mt.pref.ThemeColor
 import mt.util.color.shiftColor
 import player.phonograph.App
+import player.phonograph.mechanism.setting.StyleConfig.THEME_AUTO
+import player.phonograph.mechanism.setting.StyleConfig.THEME_BLACK
+import player.phonograph.mechanism.setting.StyleConfig.THEME_DARK
+import player.phonograph.mechanism.setting.StyleConfig.THEME_LIGHT
+import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.composeDarkTheme
 import player.phonograph.ui.compose.textColorOn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Colors
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Shapes
+import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -26,13 +34,15 @@ fun PhonographTheme(
     darkTheme: Boolean = composeDarkTheme(),
     content: @Composable () -> Unit,
 ) {
+
     val previewMode = LocalInspectionMode.current
-    val colors =
-        if (darkTheme) {
-            colorsNight(previewMode)
-        } else {
-            colorsLight(previewMode)
-        }
+    val colors = when (Setting.instance.themeString) {
+        THEME_AUTO  -> colorAuto(previewMode)
+        THEME_DARK  -> colorsDark(previewMode)
+        THEME_BLACK -> colorsBlack(previewMode)
+        THEME_LIGHT -> colorsLight(previewMode)
+        else        -> colorAuto(previewMode)
+    }
 
     MaterialTheme(
         colors = colors,
@@ -41,6 +51,14 @@ fun PhonographTheme(
         content = content
     )
 }
+
+
+private fun colorAuto(previewMode: Boolean) =
+    if (previewMode) {
+        colorsDark(previewMode)
+    } else {
+        colorsLight(previewMode)
+    }
 
 fun colorsLight(previewMode: Boolean): Colors = with(colorConfig(previewMode)) {
     Colors(
@@ -60,7 +78,7 @@ fun colorsLight(previewMode: Boolean): Colors = with(colorConfig(previewMode)) {
     )
 }
 
-fun colorsNight(previewMode: Boolean): Colors = with(colorConfig(previewMode)) {
+fun colorsDark(previewMode: Boolean): Colors = with(colorConfig(previewMode)) {
     Colors(
         primary = primary,
         primaryVariant = primaryDark,
@@ -73,6 +91,24 @@ fun colorsNight(previewMode: Boolean): Colors = with(colorConfig(previewMode)) {
         onSecondary = onAccent,
         onBackground = Color.White,
         onSurface = Color.White,
+        onError = Color.Black,
+        isLight = true
+    )
+}
+
+fun colorsBlack(previewMode: Boolean): Colors = with(colorConfig(previewMode)) {
+    Colors(
+        primary = primary,
+        primaryVariant = primaryDark,
+        secondary = accent,
+        secondaryVariant = accentDark,
+        background = Color(0xFF000000),
+        surface = Color(0xFF0C0C0C),
+        error = Color(0xFF85002D),
+        onPrimary = onPrimary,
+        onSecondary = onAccent,
+        onBackground = Color(0xFFC4C4C4),
+        onSurface = Color(0xFFD3D3D3),
         onError = Color.Black,
         isLight = true
     )
