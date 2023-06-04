@@ -104,14 +104,14 @@ class DeleteSongsDialog : DialogFragment() {
                 }
                 button(1, activity.getString(R.string.delete_action), accentColor) {
                     dismiss()
-                    lifecycleScope.launch {
+                    activity.lifecycleScope.launch {
                         delete()
                     }
                 }
                 space(2)
                 button(3, activity.getString(R.string.delete_with_lyrics), accentColor) {
                     dismiss()
-                    lifecycleScope.launch {
+                    activity.lifecycleScope.launch {
                         deleteWithLyrics()
                     }
                 }
