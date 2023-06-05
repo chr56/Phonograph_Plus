@@ -14,6 +14,7 @@ import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.PlaylistDisplayAdapter
 import player.phonograph.mechanism.PlaylistsManagement
+import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.playlist.FavoriteSongsPlaylist
 import player.phonograph.model.playlist.HistoryPlaylist
@@ -43,7 +44,26 @@ import kotlinx.coroutines.yield
 class NeoPlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayoutManager>() {
 
 
-    //region PlaylistsModifiedReceiver & FloatingActionButton
+    //region MediaStore & FloatingActionButton
+
+    private lateinit var listener: MediaStoreListener
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        listener = MediaStoreListener()
+        lifecycle.addObserver(listener)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lifecycle.removeObserver(listener)
+    }
+
+    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
+        override fun onMediaStoreChanged() {
+            refreshDataSet()
+        }
+    }
+
     private lateinit var playlistsModifiedReceiver: PlaylistsModifiedReceiver
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
