@@ -21,7 +21,7 @@ class PageConfig private constructor(private val tabs: MutableList<String>) : It
             Pages.SONG     -> SongPage()
             Pages.ALBUM    -> AlbumPage()
             Pages.ARTIST   -> ArtistPage()
-            Pages.PLAYLIST -> NeoPlaylistPage()
+            Pages.PLAYLIST -> PlaylistPage()
             Pages.GENRE    -> GenrePage()
             Pages.FILES    -> FilesPage()
             Pages.FOLDER   -> FlattenFolderPage()
