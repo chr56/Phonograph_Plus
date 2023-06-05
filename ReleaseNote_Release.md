@@ -4,6 +4,8 @@
 - New: manually load lyrics
 - New: add more options in Main Drawer Menu
 - New: support per-app language preference for Android T (13) and above
+- New: support sorting order of playlist (but basic sorting)
+- Fix: new created playlist would not be appeared in list util next entrance
 - Fix: palette color of player is incorrect or lacking of update
 - Fix: app language is trapped in or out the spelling of British English (for English users only) 
 - Translation: update Japanese (by aorinngo)
@@ -21,6 +23,8 @@
 - 新增 手动加载歌词
 - 新增 在抽屉主菜单中增加更多选项
 - 新增 支持 Android T (13) 的系统级分应用语言设置
+- 新增 支持播放列表的排序（基本排序支持）
+- 修复 新建的播放列表不会立即出现在列表中
 - 修复 播放器色调着色不正确或未更新
 - 修复 语言卡在英式拼写里面或外面 (针对英语用户)
 - 翻译 更新日语 (by aorinngo)
