@@ -16,6 +16,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import android.annotation.SuppressLint
 import android.util.Log
@@ -45,7 +46,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
     }
 
     override fun loadDataSet() {
-        loaderCoroutineScope.launch {
+        lifecycleScope.launch {
             val temp = GenreLoader.getAllGenres(App.instance)
             while (!isRecyclerViewPrepared) yield() // wait until ready
 

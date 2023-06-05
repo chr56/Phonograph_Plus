@@ -24,6 +24,7 @@ import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import android.annotation.SuppressLint
 import android.util.Log
@@ -65,7 +66,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
     }
 
     override fun loadDataSet() {
-        loaderCoroutineScope.launch {
+        lifecycleScope.launch {
             val temp = SongLoader.getAllSongs(App.instance)
             while (!isRecyclerViewPrepared) yield() // wait until ready
 

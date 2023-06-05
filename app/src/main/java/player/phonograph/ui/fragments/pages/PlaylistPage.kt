@@ -28,6 +28,7 @@ import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.dialogs.CreatePlaylistDialog
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.GridLayoutManager
 import android.annotation.SuppressLint
@@ -100,7 +101,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayo
     }
 
     override fun loadDataSet() {
-        loaderCoroutineScope.launch {
+        lifecycleScope.launch {
             val context = requireContext()
             val cache = mutableListOf<Playlist>(
                 LastAddedPlaylist(context),
