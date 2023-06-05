@@ -101,7 +101,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayo
 
     override fun loadDataSet() {
         loaderCoroutineScope.launch {
-            val context = hostFragment.mainActivity
+            val context = requireContext()
             val cache = mutableListOf<Playlist>(
                 LastAddedPlaylist(context),
                 HistoryPlaylist(context),
