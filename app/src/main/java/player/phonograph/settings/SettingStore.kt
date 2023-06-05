@@ -179,6 +179,16 @@ class Setting {
             _fileSortMode = value.serialize()
         }
 
+    private var _collectionSortMode: String by stringPref(
+        SONG_COLLECTION_SORT_MODE,
+        SortMode(SortRef.ID, false).serialize()
+    )
+    var collectionSortMode: SortMode
+        get() = SortMode.deserialize(_collectionSortMode)
+        set(value) {
+            _collectionSortMode = value.serialize()
+        }
+
     private var _playlistSortMode: String by stringPref(
         PLAYLIST_SORT_MODE,
         SortMode(SortRef.ID, false).serialize()
@@ -372,6 +382,11 @@ class SettingFlowStore(context: Context) {
     val fileSortMode: Flow<FileSortMode>
         get() = _fileSortMode.map { FileSortMode.deserialize(it) }
 
+    private val _collectionSortMode: Flow<String>
+        get() = from(stringPreferencesKey(SONG_COLLECTION_SORT_MODE), FileSortMode(SortRef.ID).serialize())
+    val collectionSortMode: Flow<SortMode>
+        get() = _collectionSortMode.map { SortMode.deserialize(it) }
+
     private val _playlistSortMode: Flow<String>
         get() = from(stringPreferencesKey(PLAYLIST_SORT_MODE), FileSortMode(SortRef.ID).serialize())
     val playlistSortMode: Flow<SortMode>
@@ -474,6 +489,7 @@ const val ARTIST_SORT_MODE = "artist_sort_mode"
 const val GENRE_SORT_MODE = "genre_sort_mode"
 
 const val FILE_SORT_MODE = "file_sort_mode"
+const val SONG_COLLECTION_SORT_MODE = "song_collection_sort_mode"
 
 const val PLAYLIST_SORT_MODE = "playlist_sort_mode"
 
