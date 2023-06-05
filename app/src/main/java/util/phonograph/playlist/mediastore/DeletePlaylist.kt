@@ -5,14 +5,12 @@
 package util.phonograph.playlist.mediastore
 
 import legacy.phonograph.MediaStoreCompat
-import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.util.coroutineToast
+import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.warning
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.content.Context
-import android.content.Intent
 import android.provider.MediaStore
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
@@ -50,6 +48,6 @@ suspend fun deletePlaylistsViaMediastore(
     )
     if (failList.isNotEmpty())
         warning("DeletePlaylist", failList.fold("Failed to delete:") { acc, s -> "$acc, $s" })
-    LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
+    sentPlaylistChangedLocalBoardCast()
     failList
 }
