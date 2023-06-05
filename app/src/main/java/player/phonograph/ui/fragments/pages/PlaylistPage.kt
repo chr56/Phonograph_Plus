@@ -1,107 +1,107 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2023 chr_56
  */
 
 package player.phonograph.ui.fragments.pages
 
-import android.content.IntentFilter
-import android.content.res.ColorStateList
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import java.util.ArrayList
-import kotlinx.coroutines.*
-import mt.pref.ThemeColor
+import mt.pref.accentColor
+import mt.pref.primaryColor
 import mt.util.color.lightenColor
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
+import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
-import player.phonograph.adapter.PlaylistAdapter
-import player.phonograph.databinding.FragmentDisplayPageBinding
-import player.phonograph.ui.dialogs.CreatePlaylistDialog
+import player.phonograph.adapter.display.DisplayAdapter
+import player.phonograph.adapter.display.PlaylistDisplayAdapter
+import player.phonograph.mechanism.PlaylistsManagement
+import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.playlist.FavoriteSongsPlaylist
 import player.phonograph.model.playlist.HistoryPlaylist
 import player.phonograph.model.playlist.LastAddedPlaylist
 import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.sort.SortMode
+import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
-import player.phonograph.mechanism.PlaylistsManagement
-import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.model.listener.MediaStoreChangedListener
-import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
+import player.phonograph.ui.components.popup.ListOptionsPopup
+import player.phonograph.ui.dialogs.CreatePlaylistDialog
+import player.phonograph.ui.fragments.pages.util.DisplayConfig
+import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.GridLayoutManager
+import android.annotation.SuppressLint
+import android.content.IntentFilter
+import android.content.res.ColorStateList
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 
-class PlaylistPage : AbsPage() {
+class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayoutManager>() {
 
-    private var _viewBinding: FragmentDisplayPageBinding? = null
-    private val binding get() = _viewBinding!!
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        loadPlaylist()
-        _viewBinding = FragmentDisplayPageBinding.inflate(inflater, container, false)
-        return binding.root
+    //region MediaStore & FloatingActionButton
+
+    private lateinit var listener: MediaStoreListener
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        listener = MediaStoreListener()
+        lifecycle.addObserver(listener)
     }
 
-    private lateinit var adapter: PlaylistAdapter
-    private lateinit var layoutManager: RecyclerView.LayoutManager
-    private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
+    override fun onDestroy() {
+        super.onDestroy()
+        lifecycle.removeObserver(listener)
+    }
 
-    private var isRecyclerViewPrepared: Boolean = false
+    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
+        override fun onMediaStoreChanged() {
+            refreshDataSet()
+        }
+    }
 
+    private lateinit var playlistsModifiedReceiver: PlaylistsModifiedReceiver
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.panel.visibility = View.GONE
-
-        layoutManager = LinearLayoutManager(requireActivity())
-
-        adapter = PlaylistAdapter(
-            hostFragment.mainActivity,
-            ArrayList<Playlist>(), R.layout.item_list_single_row,
-            hostFragment.cabController
-        )
-
-        binding.recyclerView.setUpFastScrollRecyclerViewColor(
-            requireActivity(),
-            ThemeColor.accentColor(requireActivity())
-        )
-        binding.recyclerView.apply {
-            layoutManager = this@PlaylistPage.layoutManager
-            adapter = this@PlaylistPage.adapter
-        }
-        isRecyclerViewPrepared = true
-
-        adapterDataObserver = object : RecyclerView.AdapterDataObserver() {
-            override fun onChanged() {
-                super.onChanged()
-                checkEmpty()
-            }
-        }
-        adapter.registerAdapterDataObserver(adapterDataObserver)
-
-        // Receiver
-        playlistsModifiedReceiver = PlaylistsModifiedReceiver(this::loadPlaylist)
+        // PlaylistsModifiedReceiver
+        playlistsModifiedReceiver = PlaylistsModifiedReceiver(this::refreshDataSet)
         LocalBroadcastManager.getInstance(App.instance).registerReceiver(
-            playlistsModifiedReceiver!!,
+            playlistsModifiedReceiver,
             IntentFilter().also { it.addAction(BROADCAST_PLAYLISTS_CHANGED) }
         )
-
+        // AddNewItemButton
         setUpFloatingActionButton()
     }
 
-    private val loaderCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    private fun loadPlaylist() {
+    override fun onDestroyView() {
+        super.onDestroyView()
+        LocalBroadcastManager.getInstance(App.instance).unregisterReceiver(playlistsModifiedReceiver)
+    }
+    //endregion
+
+    override val displayConfigTarget: DisplayConfigTarget get() = DisplayConfigTarget.PlaylistPage
+
+    override fun initLayoutManager(): GridLayoutManager {
+        return GridLayoutManager(hostFragment.requireContext(), 1)
+            .also { it.spanCount = DisplayConfig(displayConfigTarget).gridSize }
+    }
+
+    override fun initAdapter(): DisplayAdapter<Playlist> {
+        return PlaylistDisplayAdapter(
+            hostFragment.mainActivity,
+            hostFragment.cabController,
+        ) {
+            showSectionName = true
+        }
+    }
+
+    override fun loadDataSet() {
         loaderCoroutineScope.launch {
-            val context = hostFragment.mainActivity
+            val context = requireContext()
             val cache = mutableListOf<Playlist>(
                 LastAddedPlaylist(context),
                 HistoryPlaylist(context),
@@ -114,34 +114,50 @@ class PlaylistPage : AbsPage() {
             while (!isRecyclerViewPrepared) yield() // wait until ready
 
             withContext(Dispatchers.Main) {
-                if (isRecyclerViewPrepared) adapter.dataSet = cache
+                if (isRecyclerViewPrepared) adapter.dataset = cache
             }
         }
     }
 
-    private val emptyMessage: Int = R.string.no_playlists
-    private fun checkEmpty() {
-        if (isRecyclerViewPrepared) {
-            binding.empty.setText(emptyMessage)
-            binding.empty.visibility = if (adapter.dataSet.isEmpty()) View.VISIBLE else View.GONE
+    @SuppressLint("NotifyDataSetChanged")
+    override fun refreshDataSet() {
+        adapter.notifyDataSetChanged()
+    }
+
+    override fun getDataSet(): List<Playlist> {
+        return if (isRecyclerViewPrepared) adapter.dataset else emptyList()
+    }
+
+    override fun setupSortOrderImpl(displayConfig: DisplayConfig, popup: ListOptionsPopup) {
+        val currentSortMode = displayConfig.sortMode
+        if (DEBUG) Log.d(TAG, "Read cfg: sortMode $currentSortMode")
+
+        popup.maxGridSize = 0
+        popup.allowRevert = true
+        popup.revert = currentSortMode.revert
+
+        popup.sortRef = currentSortMode.sortRef
+        popup.sortRefAvailable = arrayOf(SortRef.DISPLAY_NAME, SortRef.PATH)
+    }
+
+    override fun saveSortOrderImpl(displayConfig: DisplayConfig, popup: ListOptionsPopup) {
+        val selected = SortMode(popup.sortRef, popup.revert)
+        if (displayConfig.sortMode != selected) {
+            displayConfig.sortMode = selected
+            loadDataSet()
+            Log.d(TAG, "Write cfg: sortMode $selected")
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _viewBinding = null
-        isRecyclerViewPrepared = false
-        LocalBroadcastManager.getInstance(App.instance).unregisterReceiver(playlistsModifiedReceiver!!)
-        playlistsModifiedReceiver = null
+    override fun getHeaderText(): CharSequence {
+        val n = getDataSet().size
+        return resources.getQuantityString(R.plurals.item_playlists, n, n)
     }
 
-    private var playlistsModifiedReceiver: PlaylistsModifiedReceiver? = null
-
     private fun setUpFloatingActionButton() {
-        val primaryColor = ThemeColor.primaryColor(hostFragment.mainActivity)
-        val accentColor = ThemeColor.accentColor(hostFragment.mainActivity)
-
-        binding.addNewItem.backgroundTintList = ColorStateList(
+        val primaryColor = addNewItemButton.context.primaryColor()
+        val accentColor = addNewItemButton.context.accentColor()
+        addNewItemButton.backgroundTintList = ColorStateList(
             arrayOf(
                 intArrayOf(android.R.attr.state_activated),
                 intArrayOf(android.R.attr.state_pressed),
@@ -151,24 +167,9 @@ class PlaylistPage : AbsPage() {
                 lightenColor(primaryColor), accentColor, primaryColor
             )
         )
-
-        binding.addNewItem.setOnClickListener {
+        addNewItemButton.visibility = View.VISIBLE
+        addNewItemButton.setOnClickListener {
             CreatePlaylistDialog.create(null).show(childFragmentManager, "CREATE_NEW_PLAYLIST")
-        }
-
-        binding.addNewItem.visibility = View.VISIBLE
-    }
-
-    private lateinit var listener: MediaStoreListener
-    override fun onCreate(savedInstanceState: Bundle?) {
-        listener = MediaStoreListener()
-        super.onCreate(savedInstanceState)
-        lifecycle.addObserver(listener)
-    }
-
-    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
-        override fun onMediaStoreChanged() {
-            loadPlaylist()
         }
     }
 

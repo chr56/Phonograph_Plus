@@ -14,7 +14,7 @@ import player.phonograph.model.*
  * @author Karim Abou Zeid (kabouzeid)
  */
 
-sealed class Playlist : Parcelable {
+sealed class Playlist : Parcelable, Displayable {
 
     @JvmField
     val id: Long
@@ -46,6 +46,11 @@ sealed class Playlist : Parcelable {
 
     override fun hashCode(): Int = 31 * id.toInt() + name.hashCode()
     override fun toString(): String = "Playlist{id=$id, name='$name'}"
+
+
+    override fun getItemID(): Long = id
+    override fun getDisplayTitle(context: Context): CharSequence = name
+    override fun getDescription(context: Context): CharSequence? = null
 
     override fun describeContents(): Int = 0
     override fun writeToParcel(dest: Parcel, flags: Int) {

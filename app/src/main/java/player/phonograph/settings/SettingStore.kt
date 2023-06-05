@@ -84,6 +84,7 @@ class Setting {
                     cm.getNetworkCapabilities(network) ?: return false // no capabilities?
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
             }
+
             DOWNLOAD_IMAGES_POLICY_NEVER     -> false
             else                             -> false
         }
@@ -176,6 +177,16 @@ class Setting {
         get() = FileSortMode.deserialize(_fileSortMode)
         set(value) {
             _fileSortMode = value.serialize()
+        }
+
+    private var _playlistSortMode: String by stringPref(
+        PLAYLIST_SORT_MODE,
+        SortMode(SortRef.ID, false).serialize()
+    )
+    var playlistSortMode: SortMode
+        get() = SortMode.deserialize(_playlistSortMode)
+        set(value) {
+            _playlistSortMode = value.serialize()
         }
 
     // List-Appearance
@@ -281,6 +292,7 @@ class SettingFlowStore(context: Context) {
                         cm.getNetworkCapabilities(network) ?: return@map false // no capabilities?
                     capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
                 }
+
                 DOWNLOAD_IMAGES_POLICY_NEVER     -> false
                 else                             -> false
             }
@@ -359,6 +371,11 @@ class SettingFlowStore(context: Context) {
         get() = from(stringPreferencesKey(FILE_SORT_MODE), FileSortMode(SortRef.ID).serialize())
     val fileSortMode: Flow<FileSortMode>
         get() = _fileSortMode.map { FileSortMode.deserialize(it) }
+
+    private val _playlistSortMode: Flow<String>
+        get() = from(stringPreferencesKey(PLAYLIST_SORT_MODE), FileSortMode(SortRef.ID).serialize())
+    val playlistSortMode: Flow<FileSortMode>
+        get() = _playlistSortMode.map { FileSortMode.deserialize(it) }
 
 
     // List-Appearance
@@ -457,6 +474,8 @@ const val ARTIST_SORT_MODE = "artist_sort_mode"
 const val GENRE_SORT_MODE = "genre_sort_mode"
 
 const val FILE_SORT_MODE = "file_sort_mode"
+
+const val PLAYLIST_SORT_MODE = "playlist_sort_mode"
 
 // List-Appearance
 /*  see also [DisplaySetting] */

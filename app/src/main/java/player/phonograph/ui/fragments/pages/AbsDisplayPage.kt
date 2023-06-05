@@ -273,6 +273,8 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         }
     }
 
+    protected val addNewItemButton get() = binding.addNewItem
+
 
     protected val loaderCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 

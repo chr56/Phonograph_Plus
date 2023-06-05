@@ -14,6 +14,7 @@ import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.AlbumPage
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.ArtistPage
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.GenrePage
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.SongPage
+import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.PlaylistPage
 import player.phonograph.util.ui.isLandscape
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -32,6 +33,7 @@ internal sealed class DisplayConfigTarget {
     object AlbumPage : DisplayConfigTarget()
     object ArtistPage : DisplayConfigTarget()
     object GenrePage : DisplayConfigTarget()
+    object PlaylistPage : DisplayConfigTarget()
 }
 
 
@@ -50,36 +52,22 @@ class DisplayConfig internal constructor(private val page: DisplayConfigTarget) 
         get() {
             val pref = Setting.instance
             return when (page) {
-                is SongPage   -> {
-                    pref.songSortMode
-                }
-                is AlbumPage  -> {
-                    pref.albumSortMode
-                }
-                is ArtistPage -> {
-                    pref.artistSortMode
-                }
-                is GenrePage  -> {
-                    pref.genreSortMode
-                }
-                else          -> SortMode(SortRef.ID)
+                is SongPage     -> pref.songSortMode
+                is AlbumPage    -> pref.albumSortMode
+                is ArtistPage   -> pref.artistSortMode
+                is GenrePage    -> pref.genreSortMode
+                is PlaylistPage -> pref.playlistSortMode
+                else            -> SortMode(SortRef.ID)
             }
         }
         set(value) {
             val pref = Setting.instance
             when (page) {
-                is SongPage   -> {
-                    pref.songSortMode = value
-                }
-                is AlbumPage  -> {
-                    pref.albumSortMode = value
-                }
-                is ArtistPage -> {
-                    pref.artistSortMode = value
-                }
-                is GenrePage  -> {
-                    pref.genreSortMode = value
-                }
+                is SongPage   -> pref.songSortMode = value
+                is AlbumPage  -> pref.albumSortMode = value
+                is ArtistPage -> pref.artistSortMode = value
+                is GenrePage  -> pref.genreSortMode = value
+                PlaylistPage  -> pref.playlistSortMode = value
                 else          -> {}
             }
         }
@@ -89,23 +77,28 @@ class DisplayConfig internal constructor(private val page: DisplayConfigTarget) 
             val pref = DisplaySetting(App.instance)
 
             return when (page) {
-                is SongPage   -> {
+                is SongPage     -> {
                     if (isLandscape) pref.songGridSizeLand
                     else pref.songGridSize
                 }
-                is AlbumPage  -> {
+
+                is AlbumPage    -> {
                     if (isLandscape) pref.albumGridSizeLand
                     else pref.albumGridSize
                 }
-                is ArtistPage -> {
+
+                is ArtistPage   -> {
                     if (isLandscape) pref.artistGridSizeLand
                     else pref.artistGridSize
                 }
-                is GenrePage  -> {
+
+                is GenrePage    -> {
                     if (isLandscape) pref.genreGridSizeLand
                     else pref.genreGridSize
                 }
-                else          -> 1
+
+                is PlaylistPage -> 1
+                else            -> 1
             }
         }
         set(value) {
@@ -113,23 +106,24 @@ class DisplayConfig internal constructor(private val page: DisplayConfigTarget) 
             val pref = DisplaySetting(App.instance)
             // todo valid input
             when (page) {
-                is SongPage   -> {
+                is SongPage     -> {
                     if (isLandscape) pref.songGridSizeLand = value
                     else pref.songGridSize = value
                 }
-                is AlbumPage  -> {
+                is AlbumPage    -> {
                     if (isLandscape) pref.albumGridSizeLand = value
                     else pref.albumGridSize = value
                 }
-                is ArtistPage -> {
+                is ArtistPage   -> {
                     if (isLandscape) pref.artistGridSizeLand = value
                     else pref.artistGridSize = value
                 }
-                is GenrePage  -> {
+                is GenrePage    -> {
                     if (isLandscape) pref.genreGridSizeLand = value
                     else pref.genreGridSize = value
                 }
-                else          -> false
+                is PlaylistPage -> {}
+                else            -> {}
             }
         }
     var colorFooter: Boolean
@@ -161,10 +155,7 @@ class DisplayConfig internal constructor(private val page: DisplayConfigTarget) 
                 is ArtistPage -> {
                     pref.artistColoredFooters = value
                 }
-                is GenrePage  -> {
-                    // do noting
-                }
-                else          -> false
+                else          -> {}
             }
         }
 }

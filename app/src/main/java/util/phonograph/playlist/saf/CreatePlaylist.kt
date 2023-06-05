@@ -7,17 +7,22 @@ package util.phonograph.playlist.saf
 import lib.phonograph.misc.ActivityResultContractUtil.chooseDirViaSAF
 import lib.phonograph.misc.ActivityResultContractUtil.createFileViaSAF
 import lib.phonograph.misc.IOpenFileStorageAccess
+import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.reportError
+import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.warning
 import util.phonograph.playlist.m3u.M3UGenerator
 import androidx.documentfile.provider.DocumentFile
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.content.Context
+import android.content.Intent
 import android.os.Environment
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import java.io.File
@@ -29,7 +34,7 @@ import java.io.IOException
 suspend fun createPlaylistViaSAF(
     context: Context,
     playlist: Playlist,
-): Unit? = createPlaylistViaSAF(
+) = createPlaylistViaSAF(
     context,
     playlist.name,
     playlist.getSongs(context),
@@ -42,7 +47,7 @@ suspend fun createPlaylistViaSAF(
     context: Context,
     playlistName: String,
     songs: List<Song>?,
-) = withContext(Dispatchers.IO) {
+): Unit = withContext(Dispatchers.IO) {
     // check
     require(context is IOpenFileStorageAccess)
     while (context.openFileStorageAccessTool.busy) yield()
@@ -54,6 +59,8 @@ suspend fun createPlaylistViaSAF(
                 M3UGenerator.generate(stream, songs, true)
             }
             coroutineToast(context, R.string.success)
+            delay(250)
+            sentPlaylistChangedLocalBoardCast()
         } catch (e: Exception) {
             reportError(e, TAG, "Failed to write $uri")
             coroutineToast(context, R.string.failed)

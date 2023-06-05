@@ -15,15 +15,16 @@ import lib.phonograph.misc.IOpenFileStorageAccess
 import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.mechanism.PlaylistsManagement
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.settings.Setting
-import player.phonograph.util.coroutineToast
-import player.phonograph.mechanism.PlaylistsManagement
 import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_AUTO
 import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY
 import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF
+import player.phonograph.settings.Setting
+import player.phonograph.util.coroutineToast
+import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.warning
 import util.phonograph.playlist.m3u.M3UGenerator
 import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore
@@ -67,6 +68,8 @@ object PlaylistsManager {
             songs?.let {
                 addToPlaylistViaMediastore(context, it, id, true)
                 coroutineToast(context, R.string.success)
+                delay(250)
+                sentPlaylistChangedLocalBoardCast()
             }
         } else {
             warning(TAG, "Failed to save playlist (id=$id)")
