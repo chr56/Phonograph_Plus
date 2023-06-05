@@ -316,6 +316,7 @@
     <string name="behaviour_force_legacy">Force to use legacy ways</string>
     <string name="reached_to_root">You have reached to root folder of this storage volume</string>
     <string name="sort_order_size">File Size</string>
+    <string name="sort_order_path">Path</string>
     <string name="use_legacy_list_Files">Use legacy way to read files</string>
     <string name="change_now_playing_screen">Change now playing screen</string>
     <string name="load_images_for_files">Load images for files</string>

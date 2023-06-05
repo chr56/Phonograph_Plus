@@ -276,6 +276,7 @@ class ListOptionsPopup private constructor(
             R.id.sort_order_song_count -> SortRef.SONG_COUNT
             R.id.sort_order_album_count -> SortRef.ALBUM_COUNT
             R.id.sort_order_size -> SortRef.SIZE
+            R.id.sort_order_path -> SortRef.PATH
             else -> SortRef.ID
         }
 
@@ -292,6 +293,7 @@ class ListOptionsPopup private constructor(
             SortRef.SONG_COUNT -> viewBinding.sortOrderSongCount
             SortRef.ALBUM_COUNT -> viewBinding.sortOrderAlbumCount
             SortRef.SIZE -> viewBinding.sortOrderSize
+            SortRef.PATH -> viewBinding.sortOrderPath
             else -> null
         }
 

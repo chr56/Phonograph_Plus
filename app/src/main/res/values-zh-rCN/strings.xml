@@ -316,6 +316,7 @@
     <string name="behaviour_force_legacy">强制使用旧方式</string>
     <string name="reached_to_root">已到达此卷的根目录</string>
     <string name="sort_order_size">文件大小</string>
+    <string name="sort_order_path">路径</string>
     <string name="use_legacy_list_Files">使用旧式方法读取文件</string>
     <string name="change_now_playing_screen">更改正在播放界面</string>
     <string name="load_images_for_files">加载封面</string>
