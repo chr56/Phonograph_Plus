@@ -4,6 +4,9 @@
 
 package player.phonograph.ui.fragments.pages
 
+import mt.pref.accentColor
+import mt.pref.primaryColor
+import mt.util.color.lightenColor
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.BuildConfig.DEBUG
@@ -21,12 +24,14 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
 import player.phonograph.ui.components.popup.ListOptionsPopup
+import player.phonograph.ui.dialogs.CreatePlaylistDialog
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.GridLayoutManager
 import android.annotation.SuppressLint
 import android.content.IntentFilter
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -38,15 +43,18 @@ import kotlinx.coroutines.yield
 class NeoPlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayoutManager>() {
 
 
-    //region PlaylistsModifiedReceiver
+    //region PlaylistsModifiedReceiver & FloatingActionButton
     private lateinit var playlistsModifiedReceiver: PlaylistsModifiedReceiver
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // PlaylistsModifiedReceiver
         playlistsModifiedReceiver = PlaylistsModifiedReceiver(this::refreshDataSet)
         LocalBroadcastManager.getInstance(App.instance).registerReceiver(
             playlistsModifiedReceiver,
             IntentFilter().also { it.addAction(BROADCAST_PLAYLISTS_CHANGED) }
         )
+        // AddNewItemButton
+        setUpFloatingActionButton()
     }
 
     override fun onDestroyView() {
@@ -124,6 +132,25 @@ class NeoPlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridL
     override fun getHeaderText(): CharSequence {
         val n = getDataSet().size
         return resources.getQuantityString(R.plurals.item_playlists, n, n)
+    }
+
+    private fun setUpFloatingActionButton() {
+        val primaryColor = addNewItemButton.context.primaryColor()
+        val accentColor = addNewItemButton.context.accentColor()
+        addNewItemButton.backgroundTintList = ColorStateList(
+            arrayOf(
+                intArrayOf(android.R.attr.state_activated),
+                intArrayOf(android.R.attr.state_pressed),
+                intArrayOf(),
+            ),
+            intArrayOf(
+                lightenColor(primaryColor), accentColor, primaryColor
+            )
+        )
+        addNewItemButton.visibility = View.VISIBLE
+        addNewItemButton.setOnClickListener {
+            CreatePlaylistDialog.create(null).show(childFragmentManager, "CREATE_NEW_PLAYLIST")
+        }
     }
 
     companion object {
