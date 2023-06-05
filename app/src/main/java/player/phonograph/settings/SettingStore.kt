@@ -374,8 +374,8 @@ class SettingFlowStore(context: Context) {
 
     private val _playlistSortMode: Flow<String>
         get() = from(stringPreferencesKey(PLAYLIST_SORT_MODE), FileSortMode(SortRef.ID).serialize())
-    val playlistSortMode: Flow<FileSortMode>
-        get() = _playlistSortMode.map { FileSortMode.deserialize(it) }
+    val playlistSortMode: Flow<SortMode>
+        get() = _playlistSortMode.map { SortMode.deserialize(it) }
 
 
     // List-Appearance
