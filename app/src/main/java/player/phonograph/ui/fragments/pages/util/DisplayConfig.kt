@@ -56,7 +56,7 @@ class DisplayConfig internal constructor(private val page: DisplayConfigTarget) 
                 is AlbumPage    -> pref.albumSortMode
                 is ArtistPage   -> pref.artistSortMode
                 is GenrePage    -> pref.genreSortMode
-                is PlaylistPage -> SortMode(SortRef.ID) //todo
+                is PlaylistPage -> pref.playlistSortMode
                 else            -> SortMode(SortRef.ID)
             }
         }
@@ -67,7 +67,7 @@ class DisplayConfig internal constructor(private val page: DisplayConfigTarget) 
                 is AlbumPage  -> pref.albumSortMode = value
                 is ArtistPage -> pref.artistSortMode = value
                 is GenrePage  -> pref.genreSortMode = value
-                PlaylistPage  -> {} //todo
+                PlaylistPage  -> pref.playlistSortMode = value
                 else          -> {}
             }
         }

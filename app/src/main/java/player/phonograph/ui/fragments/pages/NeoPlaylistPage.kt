@@ -15,6 +15,7 @@ import player.phonograph.model.playlist.LastAddedPlaylist
 import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortMode
+import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
@@ -79,11 +80,11 @@ class NeoPlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridL
         if (DEBUG) Log.d(TAG, "Read cfg: sortMode $currentSortMode")
 
         popup.maxGridSize = 0
-        popup.allowRevert = false
+        popup.allowRevert = true
         popup.revert = currentSortMode.revert
 
         popup.sortRef = currentSortMode.sortRef
-        popup.sortRefAvailable = arrayOf()
+        popup.sortRefAvailable = arrayOf(SortRef.DISPLAY_NAME, SortRef.PATH)
     }
 
     override fun saveSortOrderImpl(displayConfig: DisplayConfig, popup: ListOptionsPopup) {
