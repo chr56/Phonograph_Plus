@@ -4,11 +4,11 @@
 
 package player.phonograph.misc
 
+import player.phonograph.mechanism.StatusBarLyric
 import player.phonograph.mediastore.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.mechanism.StatusBarLyric
 import android.util.Log
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.runBlocking
@@ -62,10 +62,9 @@ class LyricsUpdater(song: Song?) {
         }
     }
 
+    @Synchronized
     fun forceReplaceLyrics(lyrics: LrcLyrics) {
-        synchronized(fetcher) {
-            fetcher = LyricsFetcher(lyrics)
-        }
+        fetcher = LyricsFetcher(lyrics)
     }
 
     fun clear() {
