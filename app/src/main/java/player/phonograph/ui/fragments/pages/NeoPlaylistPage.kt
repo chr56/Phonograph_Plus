@@ -4,11 +4,14 @@
 
 package player.phonograph.ui.fragments.pages
 
+import player.phonograph.App
+import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.PlaylistDisplayAdapter
 import player.phonograph.mechanism.PlaylistsManagement
+import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.playlist.FavoriteSongsPlaylist
 import player.phonograph.model.playlist.HistoryPlaylist
 import player.phonograph.model.playlist.LastAddedPlaylist
@@ -20,15 +23,37 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.GridLayoutManager
 import android.annotation.SuppressLint
+import android.content.IntentFilter
+import android.os.Bundle
 import android.util.Log
+import android.view.View
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 
 class NeoPlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayoutManager>() {
+
+
+    //region PlaylistsModifiedReceiver
+    private lateinit var playlistsModifiedReceiver: PlaylistsModifiedReceiver
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        playlistsModifiedReceiver = PlaylistsModifiedReceiver(this::refreshDataSet)
+        LocalBroadcastManager.getInstance(App.instance).registerReceiver(
+            playlistsModifiedReceiver,
+            IntentFilter().also { it.addAction(BROADCAST_PLAYLISTS_CHANGED) }
+        )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        LocalBroadcastManager.getInstance(App.instance).unregisterReceiver(playlistsModifiedReceiver)
+    }
+    //endregion
 
     override val displayConfigTarget: DisplayConfigTarget get() = DisplayConfigTarget.PlaylistPage
 
