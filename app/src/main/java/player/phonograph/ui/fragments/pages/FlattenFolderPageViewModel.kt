@@ -9,6 +9,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
+import player.phonograph.settings.Setting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -29,9 +30,6 @@ class FlattenFolderPageViewModel : ViewModel() {
 
     private val _currentSongs: MutableStateFlow<List<Song>> = MutableStateFlow(emptyList())
     val currentSongs = _currentSongs.asStateFlow()
-
-    val sortMode: MutableStateFlow<SortMode> =
-        MutableStateFlow(SortMode(SortRef.DISPLAY_NAME))
 
     private var _currentPosition: Int = -1
     val currentFolder get() = _folders.value.getOrNull(_currentPosition)
@@ -60,13 +58,14 @@ class FlattenFolderPageViewModel : ViewModel() {
     }
 
     private fun MutableList<SongCollection>.sort(): List<SongCollection> {
+        val mode = Setting.instance.collectionSortMode
         sortBy {
-            when (sortMode.value.sortRef) {
+            when (mode.sortRef) {
                 SortRef.DISPLAY_NAME -> it.name
                 else                 -> null
             }
         }
-        if (sortMode.value.revert) reverse()
+        if (mode.revert) reverse()
         return this
     }
 }
