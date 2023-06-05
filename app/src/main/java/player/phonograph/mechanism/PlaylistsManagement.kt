@@ -12,6 +12,8 @@ import player.phonograph.mediastore.SQLWhereClause
 import player.phonograph.mediastore.withBasePlaylistFilter
 import player.phonograph.mediastore.withPathFilter
 import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.model.sort.SortRef
+import player.phonograph.settings.Setting
 import androidx.documentfile.provider.DocumentFile
 import android.annotation.SuppressLint
 import android.content.ContentUris
@@ -29,7 +31,7 @@ object PlaylistsManagement {
     fun getAllPlaylists(context: Context): List<FilePlaylist> {
         return getAllPlaylists(
             queryPlaylists(context, null, null)
-        )
+        ).sortAll()
     }
 
     fun getAllPlaylists(cursor: Cursor?): List<FilePlaylist> {
@@ -251,4 +253,20 @@ object PlaylistsManagement {
         return result
     }
 
+    private fun List<FilePlaylist>.sortAll(): List<FilePlaylist> {
+        val revert = Setting.instance.playlistSortMode.revert
+        return when (Setting.instance.playlistSortMode.sortRef) {
+            SortRef.DISPLAY_NAME -> this.sort(revert) { it.name }
+            SortRef.PATH         -> this.sort(revert) { it.associatedFilePath }
+            else                 -> this
+        }
+    }
+
+    private inline fun List<FilePlaylist>.sort(
+        revert: Boolean,
+        crossinline selector: (FilePlaylist) -> Comparable<*>?,
+    ): List<FilePlaylist> {
+        return if (revert) this.sortedWith(compareByDescending(selector))
+        else this.sortedWith(compareBy(selector))
+    }
 }
