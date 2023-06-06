@@ -25,8 +25,10 @@ import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -35,8 +37,7 @@ import android.view.Menu.NONE
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 /**
@@ -44,15 +45,17 @@ import kotlinx.coroutines.Dispatchers
  * @param A relevant Adapter
  * @param LM relevant LayoutManager
  */
-sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLayoutManager> :
-    AbsPage() {
+sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLayoutManager> : AbsPage() {
 
     private var _viewBinding: FragmentDisplayPageBinding? = null
     private val binding get() = _viewBinding!!
 
-    abstract fun getDataSet(): List<IT>
-    abstract fun loadDataSet()
+    abstract val viewModel: AbsDisplayPageViewModel<IT>
 
+    /**
+     * update dataset
+     */
+    abstract fun updateDataset(dataSet: List<IT>)
     /**
      * Notify every [Displayable] items changes, do not reload dataset
      */
@@ -63,7 +66,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        loadDataSet()
+        viewModel.loadDataset(requireContext())
         _viewBinding = FragmentDisplayPageBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -90,8 +93,6 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
             )
         }
 
-//    protected abstract fun
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.empty.text = resources.getText(R.string.loading)
@@ -99,8 +100,32 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         initRecyclerView()
         initAppBar()
 
-        binding.panelText.setTextColor(view.context.primaryTextColor(view.context.nightMode))
+        observeData()
     }
+
+    private fun observeData() {
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.dataSet.collect {
+                    checkEmpty()
+                    updateDataset(it.toList())
+                    updateHeaderText()
+                }
+            }
+        }
+    }
+
+
+    protected open val emptyMessage: Int @StringRes get() = R.string.empty
+    private fun checkEmpty() {
+        binding.empty.setText(emptyMessage)
+        binding.empty.visibility = if (viewModel.isEmpty) View.VISIBLE else View.GONE
+    }
+
+    private fun updateHeaderText() {
+        binding.panelText.text = viewModel.headerText(requireContext())
+    }
+
 
     protected lateinit var adapter: A
     protected lateinit var layoutManager: LM
@@ -108,23 +133,10 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
     protected abstract fun initLayoutManager(): LM
     protected abstract fun initAdapter(): A
 
-    protected var isRecyclerViewPrepared: Boolean = false
-
-    private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
-
     private fun initRecyclerView() {
 
         layoutManager = initLayoutManager()
         adapter = initAdapter()
-
-        adapterDataObserver = object : RecyclerView.AdapterDataObserver() {
-            override fun onChanged() {
-                super.onChanged()
-                checkEmpty()
-                updateHeaderText()
-            }
-        }
-        adapter.registerAdapterDataObserver(adapterDataObserver)
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(
             hostFragment.mainActivity,
@@ -134,7 +146,6 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
             it.adapter = adapter
             it.layoutManager = layoutManager
         }
-        isRecyclerViewPrepared = true
     }
 
     internal abstract val displayConfigTarget: DisplayConfigTarget
@@ -163,6 +174,8 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
                 }
             }
         }
+
+        binding.panelText.setTextColor(context.primaryTextColor(context.nightMode))
         binding.panelToolbar.setTitleTextColor(requireContext().primaryTextColor(requireContext().nightMode))
 
         configAppBar(binding.panelToolbar)
@@ -182,10 +195,13 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         popup.gridSize = displayConfig.gridSize
 
         // color footer
-        if (this !is GenrePage) { // Genre Page never is colored
-            popup.colorFooterVisibility = true
-            popup.colorFooterEnability = displayConfig.gridSize > displayConfig.maxGridSizeForList
-            popup.colorFooter = displayConfig.colorFooter
+        when (this) {
+            is GenrePage, is PlaylistPage -> {} // they are never colored
+            else                          -> {
+                popup.colorFooterVisibility = true
+                popup.colorFooterEnability = displayConfig.gridSize > displayConfig.maxGridSizeForList
+                popup.colorFooter = displayConfig.colorFooter
+            }
         }
 
         // sort order
@@ -211,19 +227,22 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
                 if (gridSizeSelected > displayConfig.maxGridSizeForList) R.layout.item_grid else R.layout.item_list
 
             if (adapter.layoutRes != itemLayoutRes) {
-                loadDataSet()
+                viewModel.loadDataset(requireContext())
                 initRecyclerView() // again
             }
             layoutManager.spanCount = gridSizeSelected
         }
 
-        if (this !is GenrePage) {
-            // color footer
-            val coloredFootersSelected = popup.colorFooter
-            if (displayConfig.colorFooter != coloredFootersSelected) {
-                displayConfig.colorFooter = coloredFootersSelected
-                adapter.usePalette = coloredFootersSelected
-                refreshDataSet()
+        // color footer
+        when (this) {
+            is GenrePage, is PlaylistPage -> {} // they are never colored
+            else                          -> {
+                val coloredFootersSelected = popup.colorFooter
+                if (displayConfig.colorFooter != coloredFootersSelected) {
+                    displayConfig.colorFooter = coloredFootersSelected
+                    adapter.usePalette = coloredFootersSelected
+                    refreshDataSet()
+                }
             }
         }
 
@@ -236,23 +255,8 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         popup: ListOptionsPopup,
     )
 
-    protected open val emptyMessage: Int @StringRes get() = R.string.empty
-    protected fun checkEmpty() {
-        if (isRecyclerViewPrepared) {
-            binding.empty.setText(emptyMessage)
-            binding.empty.visibility = if (getDataSet().isEmpty()) View.VISIBLE else View.GONE
-        }
-    }
-
-    protected fun updateHeaderText() {
-        binding.panelText.text = getHeaderText()
-    }
-
-    protected abstract fun getHeaderText(): CharSequence
-
     override fun onDestroyView() {
         super.onDestroyView()
-        adapter.unregisterAdapterDataObserver(adapterDataObserver)
 
         binding.panel.removeOnOffsetChangedListener(innerAppbarOffsetListener)
         hostFragment.removeOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
@@ -269,7 +273,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
-            loadDataSet()
+            viewModel.loadDataset(requireContext())
         }
     }
 
