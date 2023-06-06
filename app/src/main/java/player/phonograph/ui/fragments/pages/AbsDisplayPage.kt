@@ -25,6 +25,7 @@ import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.os.Bundle
@@ -90,8 +91,6 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
             )
         }
 
-//    protected abstract fun
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.empty.text = resources.getText(R.string.loading)
@@ -99,7 +98,6 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         initRecyclerView()
         initAppBar()
 
-        binding.panelText.setTextColor(view.context.primaryTextColor(view.context.nightMode))
     }
 
     protected lateinit var adapter: A
@@ -107,8 +105,6 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
 
     protected abstract fun initLayoutManager(): LM
     protected abstract fun initAdapter(): A
-
-    protected var isRecyclerViewPrepared: Boolean = false
 
     private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
 
@@ -134,7 +130,6 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
             it.adapter = adapter
             it.layoutManager = layoutManager
         }
-        isRecyclerViewPrepared = true
         updateDataset()
     }
 
@@ -164,6 +159,8 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
                 }
             }
         }
+
+        binding.panelText.setTextColor(context.primaryTextColor(context.nightMode))
         binding.panelToolbar.setTitleTextColor(requireContext().primaryTextColor(requireContext().nightMode))
 
         configAppBar(binding.panelToolbar)
@@ -239,7 +236,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
 
     protected open val emptyMessage: Int @StringRes get() = R.string.empty
     protected fun checkEmpty() {
-        if (isRecyclerViewPrepared) {
+        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
             binding.empty.setText(emptyMessage)
             binding.empty.visibility = if (viewModel.isEmpty) View.VISIBLE else View.GONE
         }
