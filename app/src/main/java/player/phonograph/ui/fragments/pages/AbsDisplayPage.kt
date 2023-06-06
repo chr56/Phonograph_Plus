@@ -50,16 +50,16 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
     private var _viewBinding: FragmentDisplayPageBinding? = null
     private val binding get() = _viewBinding!!
 
-    abstract val viewModel: AbsDisplayPageViewModel<IT>
+    protected abstract val viewModel: AbsDisplayPageViewModel<IT>
 
     /**
      * update dataset
      */
-    abstract fun updateDataset(dataSet: List<IT>)
+    protected abstract fun updateDataset(dataSet: List<IT>)
     /**
      * Notify every [Displayable] items changes, do not reload dataset
      */
-    abstract fun refreshDataSet()
+    protected abstract fun refreshDataSet()
 
     override fun onCreateView(
         inflater: LayoutInflater,

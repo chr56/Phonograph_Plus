@@ -26,7 +26,7 @@ abstract class AbsDisplayPageViewModel<IT> : ViewModel() {
 
 
     val isEmpty get() = dataSet.value.isEmpty()
-    val isEmptyFlow: Flow<Boolean> = _dataSet.map { it.isEmpty() }
+    // val isEmptyFlow: Flow<Boolean> = _dataSet.map { it.isEmpty() }
 
     private var job: Job? = null
     fun loadDataset(context: Context) {
