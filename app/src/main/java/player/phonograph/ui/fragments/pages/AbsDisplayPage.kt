@@ -195,10 +195,13 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         popup.gridSize = displayConfig.gridSize
 
         // color footer
-        if (this !is GenrePage) { // Genre Page never is colored
-            popup.colorFooterVisibility = true
-            popup.colorFooterEnability = displayConfig.gridSize > displayConfig.maxGridSizeForList
-            popup.colorFooter = displayConfig.colorFooter
+        when (this) {
+            is GenrePage, is PlaylistPage -> {} // they are never colored
+            else                          -> {
+                popup.colorFooterVisibility = true
+                popup.colorFooterEnability = displayConfig.gridSize > displayConfig.maxGridSizeForList
+                popup.colorFooter = displayConfig.colorFooter
+            }
         }
 
         // sort order
@@ -230,13 +233,16 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
             layoutManager.spanCount = gridSizeSelected
         }
 
-        if (this !is GenrePage) {
-            // color footer
-            val coloredFootersSelected = popup.colorFooter
-            if (displayConfig.colorFooter != coloredFootersSelected) {
-                displayConfig.colorFooter = coloredFootersSelected
-                adapter.usePalette = coloredFootersSelected
-                refreshDataSet()
+        // color footer
+        when (this) {
+            is GenrePage, is PlaylistPage -> {} // they are never colored
+            else                          -> {
+                val coloredFootersSelected = popup.colorFooter
+                if (displayConfig.colorFooter != coloredFootersSelected) {
+                    displayConfig.colorFooter = coloredFootersSelected
+                    adapter.usePalette = coloredFootersSelected
+                    refreshDataSet()
+                }
             }
         }
 
