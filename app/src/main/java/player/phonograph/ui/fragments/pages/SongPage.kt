@@ -24,19 +24,29 @@ import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import android.view.Menu.NONE
 import android.view.MenuItem
 import kotlin.random.Random
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
+import kotlinx.coroutines.CoroutineScope
 
 class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>() {
+
+    override val viewModel: AbsDisplayPageViewModel<Song> get() = _viewModel
+
+    private val _viewModel: SongPageViewModel by viewModels()
+
+    class SongPageViewModel : AbsDisplayPageViewModel<Song>() {
+        override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Song> {
+            return SongLoader.getAllSongs(App.instance)
+        }
+
+        override val headerTextRes: Int get() = R.plurals.item_songs
+    }
 
     override val displayConfigTarget get() = DisplayConfigTarget.SongPage
 
@@ -52,7 +62,8 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
             if (displayConfig.gridSize > displayConfig.maxGridSizeForList) R.layout.item_grid
             else R.layout.item_list
         Log.d(
-            TAG, "layoutRes: ${if (layoutRes == R.layout.item_grid) "GRID" else if (layoutRes == R.layout.item_list) "LIST" else "UNKNOWN"}"
+            TAG,
+            "layoutRes: ${if (layoutRes == R.layout.item_grid) "GRID" else if (layoutRes == R.layout.item_list) "LIST" else "UNKNOWN"}"
         )
 
         return SongDisplayAdapter(
@@ -65,24 +76,14 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
         }
     }
 
-    override fun loadDataSet() {
-        lifecycleScope.launch {
-            val temp = SongLoader.getAllSongs(App.instance)
-            while (!isRecyclerViewPrepared) yield() // wait until ready
 
-            withContext(Dispatchers.Main) {
-                if (isRecyclerViewPrepared) adapter.dataset = temp
-            }
-        }
+    override fun updateDataset() {
+        adapter.dataset = viewModel.dataSet.value.toList()
     }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun refreshDataSet() {
         adapter.notifyDataSetChanged()
-    }
-
-    override fun getDataSet(): List<Song> {
-        return if (isRecyclerViewPrepared) adapter.dataset else emptyList()
     }
 
     override fun setupSortOrderImpl(
@@ -114,14 +115,9 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
         val selected = SortMode(popup.sortRef, popup.revert)
         if (displayConfig.sortMode != selected) {
             displayConfig.sortMode = selected
-            loadDataSet()
+            viewModel.loadDataset(requireContext())
             Log.d(AlbumPage.TAG, "Write cfg: sortMode $selected")
         }
-    }
-
-    override fun getHeaderText(): CharSequence {
-        val n = getDataSet().size
-        return hostFragment.mainActivity.resources.getQuantityString(R.plurals.item_songs, n, n)
     }
 
     override fun configAppBar(panelToolbar: Toolbar) {
@@ -129,8 +125,10 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
         attach(context, panelToolbar.menu) {
             rootMenu.add(this, NONE, NONE, 1, getString(R.string.action_play)) {
                 icon = context
-                    .getTintedDrawable(R.drawable.ic_play_arrow_white_24dp,
-                                       context.primaryTextColor(context.nightMode))
+                    .getTintedDrawable(
+                        R.drawable.ic_play_arrow_white_24dp,
+                        context.primaryTextColor(context.nightMode)
+                    )
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
                     val allSongs = SongLoader.getAllSongs(context)
@@ -140,8 +138,10 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
             }
             rootMenu.add(this, NONE, NONE, 2, getString(R.string.action_shuffle_all)) {
                 icon = context
-                    .getTintedDrawable(R.drawable.ic_shuffle_white_24dp,
-                                       context.primaryTextColor(context.nightMode))
+                    .getTintedDrawable(
+                        R.drawable.ic_shuffle_white_24dp,
+                        context.primaryTextColor(context.nightMode)
+                    )
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
                     val allSongs = SongLoader.getAllSongs(context)

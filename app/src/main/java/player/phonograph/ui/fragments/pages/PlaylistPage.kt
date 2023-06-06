@@ -14,7 +14,6 @@ import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.PlaylistDisplayAdapter
 import player.phonograph.mechanism.PlaylistsManagement
-import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.playlist.FavoriteSongsPlaylist
 import player.phonograph.model.playlist.HistoryPlaylist
@@ -28,22 +27,41 @@ import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.dialogs.CreatePlaylistDialog
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.GridLayoutManager
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.IntentFilter
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
+import kotlinx.coroutines.CoroutineScope
 
 class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayoutManager>() {
 
+    override val viewModel: AbsDisplayPageViewModel<Playlist> get() = _viewModel
+
+    private val _viewModel: PlaylistPageViewModel by viewModels()
+
+    class PlaylistPageViewModel : AbsDisplayPageViewModel<Playlist>() {
+        override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Playlist> {
+            return mutableListOf<Playlist>(
+                LastAddedPlaylist(context),
+                HistoryPlaylist(context),
+                MyTopTracksPlaylist(context),
+            ).also {
+                if (!Setting.instance.useLegacyFavoritePlaylistImpl) it.add(FavoriteSongsPlaylist(context))
+            }.also {
+                it.addAll(PlaylistsManagement.getAllPlaylists(context))
+            }
+        }
+
+        override val headerTextRes: Int get() = R.plurals.item_playlists
+    }
+
+    // private _viewModel:
 
     //region MediaStore & FloatingActionButton
 
@@ -82,33 +100,14 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayo
         }
     }
 
-    override fun loadDataSet() {
-        lifecycleScope.launch {
-            val context = requireContext()
-            val cache = mutableListOf<Playlist>(
-                LastAddedPlaylist(context),
-                HistoryPlaylist(context),
-                MyTopTracksPlaylist(context),
-            ).also {
-                if (!Setting.instance.useLegacyFavoritePlaylistImpl)
-                    it.add(FavoriteSongsPlaylist(context))
-            }.also { it.addAll(PlaylistsManagement.getAllPlaylists(context)) }
 
-            while (!isRecyclerViewPrepared) yield() // wait until ready
-
-            withContext(Dispatchers.Main) {
-                if (isRecyclerViewPrepared) adapter.dataset = cache
-            }
-        }
+    override fun updateDataset() {
+        adapter.dataset = viewModel.dataSet.value.toList()
     }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun refreshDataSet() {
         adapter.notifyDataSetChanged()
-    }
-
-    override fun getDataSet(): List<Playlist> {
-        return if (isRecyclerViewPrepared) adapter.dataset else emptyList()
     }
 
     override fun setupSortOrderImpl(displayConfig: DisplayConfig, popup: ListOptionsPopup) {
@@ -127,14 +126,9 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayo
         val selected = SortMode(popup.sortRef, popup.revert)
         if (displayConfig.sortMode != selected) {
             displayConfig.sortMode = selected
-            loadDataSet()
+            viewModel.loadDataset(requireContext())
             Log.d(TAG, "Write cfg: sortMode $selected")
         }
-    }
-
-    override fun getHeaderText(): CharSequence {
-        val n = getDataSet().size
-        return resources.getQuantityString(R.plurals.item_playlists, n, n)
     }
 
     private fun setUpFloatingActionButton() {

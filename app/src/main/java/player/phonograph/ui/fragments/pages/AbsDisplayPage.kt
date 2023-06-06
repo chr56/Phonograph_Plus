@@ -35,8 +35,6 @@ import android.view.Menu.NONE
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 
 /**
@@ -44,15 +42,17 @@ import kotlinx.coroutines.Dispatchers
  * @param A relevant Adapter
  * @param LM relevant LayoutManager
  */
-sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLayoutManager> :
-    AbsPage() {
+sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLayoutManager> : AbsPage() {
 
     private var _viewBinding: FragmentDisplayPageBinding? = null
     private val binding get() = _viewBinding!!
 
-    abstract fun getDataSet(): List<IT>
-    abstract fun loadDataSet()
+    abstract val viewModel: AbsDisplayPageViewModel<IT>
 
+    /**
+     * update dataset
+     */
+    abstract fun updateDataset()
     /**
      * Notify every [Displayable] items changes, do not reload dataset
      */
@@ -63,7 +63,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        loadDataSet()
+        viewModel.loadDataset(requireContext())
         _viewBinding = FragmentDisplayPageBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -135,6 +135,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
             it.layoutManager = layoutManager
         }
         isRecyclerViewPrepared = true
+        updateDataset()
     }
 
     internal abstract val displayConfigTarget: DisplayConfigTarget
@@ -211,7 +212,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
                 if (gridSizeSelected > displayConfig.maxGridSizeForList) R.layout.item_grid else R.layout.item_list
 
             if (adapter.layoutRes != itemLayoutRes) {
-                loadDataSet()
+                viewModel.loadDataset(requireContext())
                 initRecyclerView() // again
             }
             layoutManager.spanCount = gridSizeSelected
@@ -240,15 +241,13 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
     protected fun checkEmpty() {
         if (isRecyclerViewPrepared) {
             binding.empty.setText(emptyMessage)
-            binding.empty.visibility = if (getDataSet().isEmpty()) View.VISIBLE else View.GONE
+            binding.empty.visibility = if (viewModel.isEmpty) View.VISIBLE else View.GONE
         }
     }
 
     protected fun updateHeaderText() {
-        binding.panelText.text = getHeaderText()
+        binding.panelText.text = viewModel.headerText(requireContext())
     }
-
-    protected abstract fun getHeaderText(): CharSequence
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -269,7 +268,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
-            loadDataSet()
+            viewModel.loadDataset(requireContext())
         }
     }
 

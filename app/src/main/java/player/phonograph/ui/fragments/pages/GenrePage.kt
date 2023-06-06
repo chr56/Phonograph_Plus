@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.fragments.pages
 
-import player.phonograph.App
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
@@ -16,16 +15,27 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
+import kotlinx.coroutines.CoroutineScope
 
 class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager>() {
+
+    override val viewModel: AbsDisplayPageViewModel<Genre> get() = _viewModel
+
+    private val _viewModel: GenrePageViewModel by viewModels()
+
+    class GenrePageViewModel : AbsDisplayPageViewModel<Genre>() {
+        override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Genre> {
+            return GenreLoader.getAllGenres(context)
+        }
+
+        override val headerTextRes: Int get() = R.plurals.item_genres
+    }
+
 
     override val displayConfigTarget get() = DisplayConfigTarget.GenrePage
 
@@ -45,15 +55,9 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
         }
     }
 
-    override fun loadDataSet() {
-        lifecycleScope.launch {
-            val temp = GenreLoader.getAllGenres(App.instance)
-            while (!isRecyclerViewPrepared) yield() // wait until ready
 
-            withContext(Dispatchers.Main) {
-                if (isRecyclerViewPrepared) adapter.dataset = temp
-            }
-        }
+    override fun updateDataset() {
+        adapter.dataset = viewModel.dataSet.value.toList()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -61,13 +65,10 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
         adapter.notifyDataSetChanged()
     }
 
-    override fun getDataSet(): List<Genre> {
-        return if (isRecyclerViewPrepared) adapter.dataset else emptyList()
-    }
 
     override fun setupSortOrderImpl(
         displayConfig: DisplayConfig,
-        popup: ListOptionsPopup
+        popup: ListOptionsPopup,
     ) {
 
         val currentSortMode = displayConfig.sortMode
@@ -87,14 +88,9 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
         val selected = SortMode(popup.sortRef, popup.revert)
         if (displayConfig.sortMode != selected) {
             displayConfig.sortMode = selected
-            loadDataSet()
+            viewModel.loadDataset(requireContext())
             Log.d(TAG, "Write cfg: sortMode $selected")
         }
-    }
-
-    override fun getHeaderText(): CharSequence {
-        val n = getDataSet().size
-        return hostFragment.mainActivity.resources.getQuantityString(R.plurals.item_genres, n, n)
     }
 
     companion object {
