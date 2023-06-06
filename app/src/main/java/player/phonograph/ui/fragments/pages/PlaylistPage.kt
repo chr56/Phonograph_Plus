@@ -101,8 +101,8 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayo
     }
 
 
-    override fun updateDataset() {
-        adapter.dataset = viewModel.dataSet.value.toList()
+    override fun updateDataset(dataSet: List<Playlist>) {
+        adapter.dataset = dataSet
     }
 
     @SuppressLint("NotifyDataSetChanged")

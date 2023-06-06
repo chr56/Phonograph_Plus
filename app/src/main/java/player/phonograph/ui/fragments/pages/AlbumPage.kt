@@ -65,8 +65,8 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>, GridLayoutManager
     }
 
 
-    override fun updateDataset() {
-        adapter.dataset = viewModel.dataSet.value.toList()
+    override fun updateDataset(dataSet: List<Album>) {
+        adapter.dataset = dataSet
     }
 
     @SuppressLint("NotifyDataSetChanged")

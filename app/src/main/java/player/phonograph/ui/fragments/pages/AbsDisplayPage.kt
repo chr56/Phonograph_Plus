@@ -26,8 +26,9 @@ import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -36,6 +37,7 @@ import android.view.Menu.NONE
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.coroutines.launch
 
 
 /**
@@ -53,7 +55,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
     /**
      * update dataset
      */
-    abstract fun updateDataset()
+    abstract fun updateDataset(dataSet: List<IT>)
     /**
      * Notify every [Displayable] items changes, do not reload dataset
      */
@@ -98,7 +100,32 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         initRecyclerView()
         initAppBar()
 
+        observeData()
     }
+
+    private fun observeData() {
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.dataSet.collect {
+                    checkEmpty()
+                    updateDataset(it.toList())
+                    updateHeaderText()
+                }
+            }
+        }
+    }
+
+
+    protected open val emptyMessage: Int @StringRes get() = R.string.empty
+    private fun checkEmpty() {
+        binding.empty.setText(emptyMessage)
+        binding.empty.visibility = if (viewModel.isEmpty) View.VISIBLE else View.GONE
+    }
+
+    private fun updateHeaderText() {
+        binding.panelText.text = viewModel.headerText(requireContext())
+    }
+
 
     protected lateinit var adapter: A
     protected lateinit var layoutManager: LM
@@ -106,21 +133,10 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
     protected abstract fun initLayoutManager(): LM
     protected abstract fun initAdapter(): A
 
-    private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
-
     private fun initRecyclerView() {
 
         layoutManager = initLayoutManager()
         adapter = initAdapter()
-
-        adapterDataObserver = object : RecyclerView.AdapterDataObserver() {
-            override fun onChanged() {
-                super.onChanged()
-                checkEmpty()
-                updateHeaderText()
-            }
-        }
-        adapter.registerAdapterDataObserver(adapterDataObserver)
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(
             hostFragment.mainActivity,
@@ -130,7 +146,6 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
             it.adapter = adapter
             it.layoutManager = layoutManager
         }
-        updateDataset()
     }
 
     internal abstract val displayConfigTarget: DisplayConfigTarget
@@ -234,21 +249,8 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         popup: ListOptionsPopup,
     )
 
-    protected open val emptyMessage: Int @StringRes get() = R.string.empty
-    protected fun checkEmpty() {
-        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-            binding.empty.setText(emptyMessage)
-            binding.empty.visibility = if (viewModel.isEmpty) View.VISIBLE else View.GONE
-        }
-    }
-
-    protected fun updateHeaderText() {
-        binding.panelText.text = viewModel.headerText(requireContext())
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
-        adapter.unregisterAdapterDataObserver(adapterDataObserver)
 
         binding.panel.removeOnOffsetChangedListener(innerAppbarOffsetListener)
         hostFragment.removeOnAppBarOffsetChangedListener(outerAppbarOffsetListener)

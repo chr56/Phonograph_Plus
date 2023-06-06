@@ -56,8 +56,8 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
     }
 
 
-    override fun updateDataset() {
-        adapter.dataset = viewModel.dataSet.value.toList()
+    override fun updateDataset(dataSet: List<Genre>) {
+        adapter.dataset = dataSet
     }
 
     @SuppressLint("NotifyDataSetChanged")

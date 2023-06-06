@@ -66,8 +66,8 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutMana
     }
 
 
-    override fun updateDataset() {
-        adapter.dataset = viewModel.dataSet.value.toList()
+    override fun updateDataset(dataSet: List<Artist>) {
+        adapter.dataset = dataSet
     }
 
     @SuppressLint("NotifyDataSetChanged")
