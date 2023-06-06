@@ -47,24 +47,6 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayo
 
     //region MediaStore & FloatingActionButton
 
-    private lateinit var listener: MediaStoreListener
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        listener = MediaStoreListener()
-        lifecycle.addObserver(listener)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        lifecycle.removeObserver(listener)
-    }
-
-    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
-        override fun onMediaStoreChanged() {
-            refreshDataSet()
-        }
-    }
-
     private lateinit var playlistsModifiedReceiver: PlaylistsModifiedReceiver
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
