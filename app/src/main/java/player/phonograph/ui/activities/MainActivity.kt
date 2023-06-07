@@ -284,10 +284,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 titleRes(R.string.more_actions)
                 onClick {
                     val items = listOf(
-                        context.getString(R.string.permission_desc_read_external_storage) to {
+                        context.getString(R.string.action_grant_storage_permission) to {
                             navigateToStorageSetting(context)
                         },
-                        context.getString(R.string.grant_permission) to {
+                        context.getString(R.string.app_info) to {
                             navigateToAppDetailSetting(context)
                         },
                         context.getString(R.string.action_reboot) to {
