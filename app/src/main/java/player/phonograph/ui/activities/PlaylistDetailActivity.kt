@@ -24,7 +24,7 @@ import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.menu.playlistToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
-import player.phonograph.adapter.display.PlaylistSongAdapter
+import player.phonograph.adapter.display.PlaylistSongDisplayAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.mechanism.PlaylistsManagement
 import player.phonograph.mechanism.event.MediaStoreTracker
@@ -64,7 +64,7 @@ class PlaylistDetailActivity :
 
     private val model: PlaylistModel by viewModels()
 
-    private lateinit var adapter: PlaylistSongAdapter // init in OnCreate() -> setUpRecyclerView()
+    private lateinit var adapter: PlaylistSongDisplayAdapter // init in OnCreate() -> setUpRecyclerView()
 
     // drag & edit
     private var editMode: Boolean = false
@@ -168,7 +168,7 @@ class PlaylistDetailActivity :
             }
         )
         // Init adapter
-        adapter = PlaylistSongAdapter(this, cabController, ArrayList(), null)
+        adapter = PlaylistSongDisplayAdapter(this, cabController, ArrayList(), null)
         binding.recyclerView.adapter = adapter
     }
 

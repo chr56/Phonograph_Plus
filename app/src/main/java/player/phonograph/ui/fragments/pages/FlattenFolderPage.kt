@@ -11,7 +11,7 @@ import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.adapter.display.SongCollectionAdapter
+import player.phonograph.adapter.display.SongCollectionDisplayAdapter
 import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.model.sort.SortMode
@@ -20,9 +20,9 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
-import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
+import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -84,7 +84,7 @@ class FlattenFolderPage : AbsPage() {
         observeRecyclerView()
 
         binding.recyclerView.also {
-            it.adapter = songCollectionAdapter
+            it.adapter = songCollectionDisplayAdapter
             it.layoutManager = linearLayoutManager
         }
     }
@@ -178,7 +178,7 @@ class FlattenFolderPage : AbsPage() {
         }
     }
 
-    private lateinit var songCollectionAdapter: SongCollectionAdapter
+    private lateinit var songCollectionDisplayAdapter: SongCollectionDisplayAdapter
     private lateinit var songAdapter: SongDisplayAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
 
@@ -186,13 +186,13 @@ class FlattenFolderPage : AbsPage() {
 
         linearLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        songCollectionAdapter = SongCollectionAdapter(
+        songCollectionDisplayAdapter = SongCollectionDisplayAdapter(
             hostFragment.mainActivity,
             hostFragment.cabController,
             emptyList(),
             R.layout.item_list,
         ) {}
-        songCollectionAdapter.onClick = ::onFolderClick
+        songCollectionDisplayAdapter.onClick = ::onFolderClick
 
         songAdapter = SongDisplayAdapter(
             hostFragment.mainActivity,
@@ -206,7 +206,7 @@ class FlattenFolderPage : AbsPage() {
             ThemeColor.accentColor(App.instance.applicationContext)
         )
         binding.recyclerView.layoutManager = linearLayoutManager
-        binding.recyclerView.adapter = songCollectionAdapter
+        binding.recyclerView.adapter = songCollectionDisplayAdapter
 
     }
 
@@ -217,7 +217,7 @@ class FlattenFolderPage : AbsPage() {
         lifecycleScope.launch {
             viewModel.folders.collect { data ->
                 binding.empty.visibility = if (data.isEmpty()) View.VISIBLE else View.GONE
-                songCollectionAdapter.dataset = data
+                songCollectionDisplayAdapter.dataset = data
             }
         }
         lifecycleScope.launch {
@@ -227,10 +227,10 @@ class FlattenFolderPage : AbsPage() {
         }
         lifecycleScope.launch {
             viewModel.mainViewMode.collect { mode ->
-                binding.recyclerView.adapter = if (mode) songCollectionAdapter else songAdapter
+                binding.recyclerView.adapter = if (mode) songCollectionDisplayAdapter else songAdapter
 
                 val size =
-                    if (mode) songCollectionAdapter.dataset.size else songAdapter.dataset.size
+                    if (mode) songCollectionDisplayAdapter.dataset.size else songAdapter.dataset.size
                 binding.panelText.text = if (mode)
                     requireContext().resources.getQuantityString(
                         R.plurals.item_files, size, size

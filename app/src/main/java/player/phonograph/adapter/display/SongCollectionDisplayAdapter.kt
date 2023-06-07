@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.widget.ImageView
 
-class SongCollectionAdapter(
+class SongCollectionDisplayAdapter(
     activity: AppCompatActivity,
     cabController: MultiSelectionCabController?,
     dataSet: List<SongCollection>,
