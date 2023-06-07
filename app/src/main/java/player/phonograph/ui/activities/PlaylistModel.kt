@@ -4,36 +4,34 @@
 
 package player.phonograph.ui.activities
 
-import android.content.Context
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import android.content.Context
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class PlaylistModel : ViewModel() {
 
-    var playlist: MutableLiveData<Playlist> = MutableLiveData()
 
-    fun triggerUpdate() {
-        playlist.postValue(playlist.value)
+    fun initPlaylist(playlist: Playlist) {
+        _playlist = MutableStateFlow(playlist)
     }
 
-    var isRecyclerViewReady = false
+    private lateinit var _playlist: MutableStateFlow<Playlist>
+    val playlist get() = _playlist.asStateFlow()
 
-    fun fetchPlaylist(context: Context, callback: PlaylistCallback) {
+
+    private val _songs: MutableStateFlow<List<Song>> = MutableStateFlow(emptyList())
+    val songs get() = _songs.asStateFlow()
+
+
+    fun fetchSongs(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
-            val songs = playlist.value?.getSongs(context) ?: emptyList()
-            while (!isRecyclerViewReady) yield()
-            withContext(Dispatchers.Main) {
-                callback?.invoke(playlist.value!!, songs)
-            }
+            _songs.emit(playlist.value.getSongs(context))
         }
     }
 }
-
-typealias PlaylistCallback = ((playlist: Playlist, List<Song>) -> Unit)?
