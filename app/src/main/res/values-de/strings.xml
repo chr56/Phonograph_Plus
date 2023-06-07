@@ -389,7 +389,6 @@
     <string name="exit_without_saving">Beenden ohne Speichern</string>
     <string name="save">Speichern</string>
     <string name="no_changes">Keine Veränderungen</string>
-    <string name="image_source_media_metadata_retriever">Android Media Metadatenabruf</string>
     <string name="image_source_external_file">Externe Datei</string>
     <string name="image_source_config">Bildquellenkonfiguration</string>
     <string name="action_backup">Backup</string>

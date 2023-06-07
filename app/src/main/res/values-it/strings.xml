@@ -388,7 +388,6 @@
     <string name="exit_without_saving">Esci senza salvare</string>
     <string name="save">Salva</string>
     <string name="no_changes">Nessuna modifica</string>
-    <string name="image_source_media_metadata_retriever">Recuperatore di metadati multimediali Android</string>
     <string name="image_source_external_file">File esterno</string>
     <string name="image_source_config">Configurazione origine immagine</string>
     <string name="grant_permission_description">Alcuni permessi necessari sono richiesti per assicurare un corretto funzionamento dell\'app.</string>

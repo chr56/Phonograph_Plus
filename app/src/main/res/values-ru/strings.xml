@@ -409,9 +409,6 @@
     <string name="exit_without_saving">Выйти без сохранения</string>
     <string name="save">Сохранить</string>
     <string name="no_changes">Без изменений</string>
-    <string name="image_source_media_store">Android MediaStore</string>
-    <string name="image_source_media_metadata_retriever">Android Media Metadata Retriever</string>
-    <string name="image_source_jaudio_tagger">JAudioTagger</string>
     <string name="image_source_external_file">Внешний файл</string>
     <string name="image_source_config">Настройка источников миниатюр</string>
     <string name="action_backup">Резервная копия</string>

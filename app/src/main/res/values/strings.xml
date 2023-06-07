@@ -393,9 +393,9 @@
     <string name="exit_without_saving">Exit without saving</string>
     <string name="save">Save</string>
     <string name="no_changes">No changes</string>
-    <string name="image_source_media_store">Android MediaStore</string>
-    <string name="image_source_media_metadata_retriever">Android Media Metadata Retriever</string>
-    <string name="image_source_jaudio_tagger">JAudioTagger</string>
+    <string name="image_source_media_store" translatable="false">Android MediaStore</string>
+    <string name="image_source_media_metadata_retriever" translatable="false">Android Media Metadata Retriever</string>
+    <string name="image_source_jaudio_tagger" translatable="false">JAudioTagger</string>
     <string name="image_source_external_file">External File</string>
     <string name="image_source_config">Image Source Config</string>
     <string name="action_backup">Backup</string>
