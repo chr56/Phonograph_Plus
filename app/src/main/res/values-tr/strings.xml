@@ -267,13 +267,13 @@
         <item quantity="one">%1$d Şarkı</item>
         <item quantity="other">%1$d Şarkılar</item>
     </plurals>
-    <plurals name="item_playlists">
-        <item quantity="one">%1$d Çalma Listesi</item>
-        <item quantity="other">%1$d Çalma Listeleri</item>
-    </plurals>
     <plurals name="item_files">
         <item quantity="one">%1$d dosya</item>
         <item quantity="other">%1$d dosyalar</item>
+    </plurals>
+    <plurals name="item_playlists">
+        <item quantity="one">%1$d Çalma Listesi</item>
+        <item quantity="other">%1$d Çalma Listeleri</item>
     </plurals>
     <plurals name="item_playlists_generated">
         <item quantity="one">%1$d Oluşturulan Çalma Listesi</item>

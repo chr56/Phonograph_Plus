@@ -152,7 +152,7 @@
     <string name="cancel_current_timer">Отменить текущий таймер</string>
     <string name="sleep_timer_canceled">Таймер сна отменен.</string>
     <string name="sleep_timer_set">Таймер сна установлен на %d минут(ы) с текущего момента</string>
-    <string name="action_new_playlist">Новый плейлист…</string>
+    <string name="action_new_playlist">Новый плейлист...</string>
     <string name="new_playlist_title">Новый плейлист</string>
     <string name="colored_footers">Окрашенные нижние колонтитулы</string>
     <string name="special_thanks_to">Особая благодарность</string>
@@ -324,6 +324,12 @@
         <item quantity="many">%1$d песен</item>
         <item quantity="other">%1$d песня</item>
     </plurals>
+    <plurals name="item_files">
+        <item quantity="one">%1$d файл</item>
+        <item quantity="few">%1$d файлов</item>
+        <item quantity="many">%1$d файлов</item>
+        <item quantity="other">%1$d файлы</item>
+    </plurals>
     <plurals name="item_albums">
         <item quantity="one">%1$d альбом</item>
         <item quantity="few">%1$d альбомов</item>
@@ -335,6 +341,18 @@
         <item quantity="few">%1$d артистов</item>
         <item quantity="many">%1$d артистов</item>
         <item quantity="other">%1$d артисты</item>
+    </plurals>
+    <plurals name="item_playlists">
+        <item quantity="one">%1$d Плейлист</item>
+        <item quantity="few">%1$d Плейлистов</item>
+        <item quantity="many">%1$d Плейлистов</item>
+        <item quantity="other">%1$d Плейлисты</item>
+    </plurals>
+    <plurals name="item_playlists_generated">
+        <item quantity="one">%1$d Сгенерированный плейлист</item>
+        <item quantity="few">%1$d Сгенерированных плейлистов</item>
+        <item quantity="many">%1$d Сгенерированных плейлистов</item>
+        <item quantity="other">%1$d Сгенерированные плейлисты</item>
     </plurals>
     <plurals name="item_genres">
         <item quantity="one">%1$d жанр</item>
@@ -360,24 +378,6 @@
         <item quantity="few">%1$d / %2$d элементы были успешно удалены.</item>
         <item quantity="many">%1$d / %2$d элементы были успешно удалены.</item>
         <item quantity="other">%1$d / %2$d элемент был успешно удален.</item>
-    </plurals>
-    <plurals name="item_playlists">
-        <item quantity="one">%1$d Плейлист</item>
-        <item quantity="few">%1$d Плейлистов</item>
-        <item quantity="many">%1$d Плейлистов</item>
-        <item quantity="other">%1$d Плейлисты</item>
-    </plurals>
-    <plurals name="item_files">
-        <item quantity="one">%1$d файл</item>
-        <item quantity="few">%1$d файлов</item>
-        <item quantity="many">%1$d файлов</item>
-        <item quantity="other">%1$d файлы</item>
-    </plurals>
-    <plurals name="item_playlists_generated">
-        <item quantity="one">%1$d Сгенерированный плейлист</item>
-        <item quantity="few">%1$d Сгенерированных плейлистов</item>
-        <item quantity="many">%1$d Сгенерированных плейлистов</item>
-        <item quantity="other">%1$d Сгенерированные плейлисты</item>
     </plurals>
     <string name="warning_can_not_retract">Это действие нельзя будет отменить!</string>
     <string name="delete_with_lyrics">Удалить с текстом</string>

@@ -294,44 +294,36 @@
     <string name="_default">Par défaut</string>
     <plurals name="item_songs">
         <item quantity="one">%1$d morceau</item>
-        <item quantity="many">%1$d morceaux</item>
         <item quantity="other">%1$d morceaux</item>
+    </plurals>
+    <plurals name="item_files">
+        <item quantity="one">%1$d fichier</item>
+        <item quantity="other">%1$d fichiers</item>
     </plurals>
     <plurals name="item_artists">
         <item quantity="one">%1$d artiste</item>
-        <item quantity="many">%1$d artistes</item>
         <item quantity="other">%1$d artistes</item>
+    </plurals>
+    <plurals name="item_playlists">
+        <item quantity="one">%1$d Liste de lecture</item>
+        <item quantity="other">%1$d Listes de lecture</item>
+    </plurals>
+    <plurals name="item_playlists_generated">
+        <item quantity="one">%1$d Liste de lecture générée</item>
+        <item quantity="other">%1$d Listes de lecture générées</item>
     </plurals>
     <plurals name="msg_header_delete_items">
         <item quantity="one">%1$d Cet élément sera supprimé :</item>
-        <item quantity="many">%1$d Ces éléments seront supprimés :</item>
         <item quantity="other">%1$d Ces éléments seront supprimés :</item>
     </plurals>
     <plurals name="msg_header_remove_items">
         <!-- %1$s: where -->
         <item quantity="one">Cet élément serait retiré de %1$s :</item>
-        <item quantity="many">Ces éléments seraient retirés de %1$s :</item>
         <item quantity="other">Ces éléments seraient retirés de %1$s :</item>
     </plurals>
     <plurals name="msg_deletion_result">
         <item quantity="one">%1$d / %2$d élément a été supprimé avec succès.</item>
-        <item quantity="many">%1$d / %2$d éléments ont été supprimés avec succès.</item>
         <item quantity="other">%1$d / %2$d éléments ont été supprimés avec succès.</item>
-    </plurals>
-    <plurals name="item_playlists">
-        <item quantity="one">%1$d Liste de lecture</item>
-        <item quantity="many">%1$d Listes de lecture</item>
-        <item quantity="other">%1$d Listes de lecture</item>
-    </plurals>
-    <plurals name="item_files">
-        <item quantity="one">%1$d fichier</item>
-        <item quantity="many">%1$d fichiers</item>
-        <item quantity="other">%1$d fichiers</item>
-    </plurals>
-    <plurals name="item_playlists_generated">
-        <item quantity="one">%1$d Liste de lecture générée</item>
-        <item quantity="many">%1$d Listes de lecture générées</item>
-        <item quantity="other">%1$d Listes de lecture générées</item>
     </plurals>
     <string name="warning_can_not_retract">Cette action ne peut pas être annulée !</string>
 </resources>
