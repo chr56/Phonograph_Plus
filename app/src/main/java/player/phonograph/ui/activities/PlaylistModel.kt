@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.activities
 
+import player.phonograph.model.PlaylistDetailMode
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import androidx.lifecycle.ViewModel
@@ -35,5 +36,6 @@ class PlaylistModel : ViewModel() {
         }
     }
 
-    var editMode: Boolean = false
+    // var editMode: Boolean = false
+    var mode: PlaylistDetailMode = PlaylistDetailMode.Common
 }

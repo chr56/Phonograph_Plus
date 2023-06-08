@@ -28,6 +28,7 @@ import player.phonograph.adapter.display.PlaylistSongDisplayAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.mechanism.PlaylistsManagement
 import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.model.PlaylistDetailMode
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.playlist.FilePlaylist
@@ -281,7 +282,7 @@ class PlaylistDetailActivity :
 
     private fun enterEditMode() {
 
-        model.editMode = true
+        model.mode = PlaylistDetailMode.Editor
         adapter.editMode = true
 
         val playlist = model.playlist.value
@@ -309,7 +310,7 @@ class PlaylistDetailActivity :
     }
 
     private fun exitEditMode() {
-        model.editMode = false
+        model.mode = PlaylistDetailMode.Common
         adapter.editMode = false
 
         setUpRecyclerView()
@@ -317,11 +318,13 @@ class PlaylistDetailActivity :
     }
 
     override fun onBackPressed() {
-        if (model.editMode) {
-            exitEditMode()
-            return
+        when (model.mode) {
+            PlaylistDetailMode.Editor -> exitEditMode()
+            PlaylistDetailMode.Search -> {} //todo
+            PlaylistDetailMode.Common -> {
+                if (cabController.dismiss()) return else super.onBackPressed()
+            }
         }
-        if (cabController.dismiss()) return else super.onBackPressed()
     }
 
     /* *******************
