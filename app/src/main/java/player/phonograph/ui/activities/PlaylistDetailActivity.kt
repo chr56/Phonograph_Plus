@@ -287,10 +287,12 @@ class PlaylistDetailActivity :
     private fun setupMenu(menu: Menu) {
         val playlist: Playlist = model.playlist.value
         val iconColor = primaryTextColor(primaryColor)
-        playlistToolbar(menu, this, playlist, iconColor, ::enterEditMode) {
-            adapter.dataset = emptyList()
-            model.refreshPlaylist(this)
-        }
+        playlistToolbar(menu, this, playlist, iconColor,
+            { switchMode(PlaylistDetailMode.Editor) },
+            {
+                adapter.dataset = emptyList()
+                model.refreshPlaylist(this)
+            })
     }
 
     private fun setupMenuCallback(item: MenuItem): Boolean {
@@ -304,30 +306,65 @@ class PlaylistDetailActivity :
         }
     }
 
-    private fun enterEditMode() {
-        model.mode = PlaylistDetailMode.Editor
 
-        setUpRecyclerView(editMode = true)
-        supportActionBar!!.title = "${model.playlist.value.name} [${getString(R.string.edit)}]"
-    }
+    @Synchronized
+    fun switchMode(newMode: PlaylistDetailMode) {
+        val oldMode = model.mode
 
-    private fun exitEditMode() {
-        model.mode = PlaylistDetailMode.Common
+        when (newMode) {
+            PlaylistDetailMode.Common -> {
+                when (oldMode) {
+                    PlaylistDetailMode.Common -> {}
+                    else                      -> {
+                        setUpRecyclerView(editMode = false)
+                        supportActionBar!!.title = model.playlist.value.name
+                        adapter.dataset = emptyList()
+                        model.refreshPlaylist(this)
+                    }
+                }
+            }
 
-        setUpRecyclerView(editMode = false)
-        supportActionBar!!.title = model.playlist.value.name
+            PlaylistDetailMode.Editor -> {
+                when (oldMode) {
+                    PlaylistDetailMode.Common -> {
+                        setUpRecyclerView(editMode = true)
+                        supportActionBar!!.title = "${model.playlist.value.name} [${getString(R.string.edit)}]"
+                    }
 
-        adapter.dataset = emptyList()
-        model.refreshPlaylist(this)
+                    PlaylistDetailMode.Editor -> {}
+                    PlaylistDetailMode.Search -> {
+                        model.fetchAllSongs(this)
+                        setUpRecyclerView(editMode = true)
+                        supportActionBar!!.title = "${model.playlist.value.name} [${getString(R.string.edit)}]"
+                    }
+                }
+            }
+
+            PlaylistDetailMode.Search -> {
+                when (oldMode) {
+                    PlaylistDetailMode.Common -> {
+                        adapter.dataset = emptyList()
+                        model.searchSongs(this, "")
+                    }
+
+                    PlaylistDetailMode.Editor -> {
+                        setUpRecyclerView(editMode = false)
+                        supportActionBar!!.title = model.playlist.value.name
+                        adapter.dataset = emptyList()
+                        model.searchSongs(this, "")
+                    }
+
+                    PlaylistDetailMode.Search -> {}
+                }
+            }
+        }
+        model.mode = newMode
     }
 
     override fun onBackPressed() {
         when (model.mode) {
-            PlaylistDetailMode.Editor -> exitEditMode()
-            PlaylistDetailMode.Search -> {} //todo
-            PlaylistDetailMode.Common -> {
-                if (cabController.dismiss()) return else super.onBackPressed()
-            }
+            PlaylistDetailMode.Common -> if (cabController.dismiss()) return else super.onBackPressed()
+            else                      -> switchMode(PlaylistDetailMode.Common)
         }
     }
 
