@@ -18,6 +18,7 @@ import lib.phonograph.misc.OpenDirStorageAccessTool
 import lib.phonograph.misc.OpenFileStorageAccessTool
 import lib.phonograph.misc.menuProvider
 import mt.tint.setActivityToolbarColorAuto
+import mt.tint.viewtint.setBackgroundTint
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryDisabledTextColor
 import mt.util.color.secondaryTextColor
@@ -280,10 +281,10 @@ class PlaylistDetailActivity :
 
             with(searchBox) {
                 searchBadge.setImageDrawable(
-                    getTintedDrawable(R.drawable.ic_search_white_24dp, iconColor)
+                    getTintedDrawable(R.drawable.ic_search_white_24dp, textColor)
                 )
                 close.setImageDrawable(
-                    getTintedDrawable(R.drawable.ic_close_white_24dp, iconColor)
+                    getTintedDrawable(R.drawable.ic_close_white_24dp, textColor)
                 )
                 close.setOnClickListener {
                     val editable = editQuery.editableText
@@ -294,6 +295,8 @@ class PlaylistDetailActivity :
                     }
                 }
                 editQuery.setTextColor(textColor)
+                editQuery.setHintTextColor(iconColor)
+                editQuery.setBackgroundTint(textColor)
             }
             searchBox.editQuery.addTextChangedListener { editable ->
                 if (editable != null) {
