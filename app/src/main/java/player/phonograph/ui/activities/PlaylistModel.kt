@@ -34,4 +34,6 @@ class PlaylistModel : ViewModel() {
             _songs.emit(playlist.value.getSongs(context))
         }
     }
+
+    var editMode: Boolean = false
 }

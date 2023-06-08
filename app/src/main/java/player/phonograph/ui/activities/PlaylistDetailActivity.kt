@@ -67,7 +67,6 @@ class PlaylistDetailActivity :
     private lateinit var adapter: PlaylistSongDisplayAdapter // init in OnCreate() -> setUpRecyclerView()
 
     // drag & edit
-    private var editMode: Boolean = false
     private var recyclerViewDragDropManager: RecyclerViewDragDropManager? = null
     private var wrappedAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>? = null
 
@@ -281,10 +280,11 @@ class PlaylistDetailActivity :
     }
 
     private fun enterEditMode() {
-        val playlist = model.playlist.value
 
-        editMode = true
+        model.editMode = true
         adapter.editMode = true
+
+        val playlist = model.playlist.value
 
         adapter.onMove = { fromPosition: Int, toPosition: Int ->
             runBlocking {
@@ -309,7 +309,7 @@ class PlaylistDetailActivity :
     }
 
     private fun exitEditMode() {
-        editMode = false
+        model.editMode = false
         adapter.editMode = false
 
         setUpRecyclerView()
@@ -317,7 +317,7 @@ class PlaylistDetailActivity :
     }
 
     override fun onBackPressed() {
-        if (editMode) {
+        if (model.editMode) {
             exitEditMode()
             return
         }
