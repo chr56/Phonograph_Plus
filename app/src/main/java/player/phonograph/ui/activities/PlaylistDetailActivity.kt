@@ -313,11 +313,23 @@ class PlaylistDetailActivity :
     private fun showSearchBar() {
         binding.searchBar.visibility = VISIBLE
         binding.searchBox.editQuery.setText(model.keyword.value)
+        binding.recyclerView.setPadding(
+            binding.recyclerView.paddingLeft,
+            binding.recyclerView.paddingTop + binding.searchBar.height,
+            binding.recyclerView.paddingRight,
+            binding.recyclerView.paddingBottom
+        )
     }
 
     private fun hideSearchBar() {
         binding.searchBar.visibility = INVISIBLE
         binding.searchBox.editQuery.setText("")
+        binding.recyclerView.setPadding(
+            binding.recyclerView.paddingLeft,
+            binding.recyclerView.paddingTop - binding.searchBar.height,
+            binding.recyclerView.paddingRight,
+            binding.recyclerView.paddingBottom
+        )
     }
 
     private fun updateDashboard(playlist: Playlist, songs: List<Song>) {
