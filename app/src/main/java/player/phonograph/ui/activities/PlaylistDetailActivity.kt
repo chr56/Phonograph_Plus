@@ -323,7 +323,7 @@ class PlaylistDetailActivity :
                 }
 
                 PlaylistDetailMode.Search -> {
-                    model.searchSongs(this, "")
+                    model.searchSongs(this, model.keyword)
                 }
             }
 
@@ -335,7 +335,7 @@ class PlaylistDetailActivity :
                 PlaylistDetailMode.Editor -> {}
                 PlaylistDetailMode.Search -> {
                     updateRecyclerView(editMode = false)
-                    model.searchSongs(this, "")
+                    model.searchSongs(this, model.keyword)
                 }
             }
 

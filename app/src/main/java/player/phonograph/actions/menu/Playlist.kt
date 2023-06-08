@@ -60,6 +60,10 @@ fun playlistToolbar(
                 title = getString(R.string.action_search)
                 icon = getTintedDrawable(R.drawable.ic_search_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                onClick {
+                    model.updateCurrentMode(PlaylistDetailMode.Search)
+                    true
+                }
             }
             menuItem {
                 title = getString(R.string.action_play_next)
