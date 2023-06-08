@@ -19,6 +19,7 @@ import player.phonograph.actions.actionRenamePlaylist
 import player.phonograph.actions.actionSavePlaylist
 import player.phonograph.actions.actionShuffleAndPlay
 import player.phonograph.actions.fragmentActivity
+import player.phonograph.model.PlaylistDetailMode
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.PlaylistType
@@ -26,6 +27,7 @@ import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
+import player.phonograph.ui.activities.PlaylistModel
 import player.phonograph.ui.compose.tag.BatchTagEditorActivity
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.annotation.ColorInt
@@ -36,12 +38,11 @@ import android.view.MenuItem
 fun playlistToolbar(
     menu: Menu,
     context: Context,
-    playlist: Playlist,
+    model: PlaylistModel,
     @ColorInt iconColor: Int,
-    enterEditMode: () -> Unit,
-    refresh: () -> Unit,
 ) =
     context.run {
+        val playlist = model.playlist.value
         attach(menu) {
             menuItem {
                 title = getString(R.string.action_play)
@@ -72,7 +73,7 @@ fun playlistToolbar(
                 icon = getTintedDrawable(R.drawable.ic_refresh_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    refresh()
+                    model.refreshPlaylist(context)
                     true
                 }
             }
@@ -100,7 +101,7 @@ fun playlistToolbar(
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
                         if (playlist is FilePlaylist) {
-                            enterEditMode()
+                            model.currentMode.value = PlaylistDetailMode.Editor
                             true
                         } else {
                             false
@@ -172,7 +173,7 @@ fun playlistToolbar(
                             ) { dialog, index, _ ->
                                 try {
                                     Setting.instance.lastAddedCutoffPref = prefValue[index]
-                                    refresh()
+                                    model.refreshPlaylist(context)
                                 } catch (e: Exception) {
                                     ErrorNotification.postErrorNotification(e)
                                 }

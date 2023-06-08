@@ -296,14 +296,7 @@ class PlaylistDetailActivity :
     }
 
     private fun setupMenu(menu: Menu) {
-        val playlist: Playlist = model.playlist.value
-        val iconColor = primaryTextColor(primaryColor)
-        playlistToolbar(menu, this, playlist, iconColor,
-            { switchMode(PlaylistDetailMode.Editor) },
-            {
-                adapter.dataset = emptyList()
-                model.refreshPlaylist(this)
-            })
+        playlistToolbar(menu, this, model, iconColor = primaryTextColor(primaryColor))
     }
 
     private fun setupMenuCallback(item: MenuItem): Boolean {
