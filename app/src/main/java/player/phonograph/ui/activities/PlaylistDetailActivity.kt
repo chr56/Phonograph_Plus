@@ -103,7 +103,8 @@ class PlaylistDetailActivity :
         super.onCreate(savedInstanceState)
         setUpToolbar()
 
-        setUpRecyclerView(editMode = false)
+        prepareRecyclerView()
+        updateRecyclerView(editMode = false)
         setUpDashBroad()
 
         observeData()
@@ -152,7 +153,7 @@ class PlaylistDetailActivity :
         setActivityToolbarColorAuto(binding.toolbar)
     }
 
-    private fun setUpRecyclerView(editMode: Boolean) {
+    private fun prepareRecyclerView() {
         // FastScrollRecyclerView
         binding.recyclerView.setUpFastScrollRecyclerViewColor(this, accentColor)
         binding.recyclerView.setOnFastScrollStateChangeListener(
@@ -167,6 +168,9 @@ class PlaylistDetailActivity :
         )
         // adapter
         adapter = PlaylistSongDisplayAdapter(this, cabController, ArrayList(), null)
+    }
+
+    private fun updateRecyclerView(editMode: Boolean) {
 
         if (!editMode) {
             adapter.editMode = false
@@ -316,7 +320,7 @@ class PlaylistDetailActivity :
                 when (oldMode) {
                     PlaylistDetailMode.Common -> {}
                     else                      -> {
-                        setUpRecyclerView(editMode = false)
+                        updateRecyclerView(editMode = false)
                         supportActionBar!!.title = model.playlist.value.name
                         adapter.dataset = emptyList()
                         model.refreshPlaylist(this)
@@ -327,14 +331,14 @@ class PlaylistDetailActivity :
             PlaylistDetailMode.Editor -> {
                 when (oldMode) {
                     PlaylistDetailMode.Common -> {
-                        setUpRecyclerView(editMode = true)
+                        updateRecyclerView(editMode = true)
                         supportActionBar!!.title = "${model.playlist.value.name} [${getString(R.string.edit)}]"
                     }
 
                     PlaylistDetailMode.Editor -> {}
                     PlaylistDetailMode.Search -> {
                         model.fetchAllSongs(this)
-                        setUpRecyclerView(editMode = true)
+                        updateRecyclerView(editMode = true)
                         supportActionBar!!.title = "${model.playlist.value.name} [${getString(R.string.edit)}]"
                     }
                 }
@@ -348,7 +352,7 @@ class PlaylistDetailActivity :
                     }
 
                     PlaylistDetailMode.Editor -> {
-                        setUpRecyclerView(editMode = false)
+                        updateRecyclerView(editMode = false)
                         supportActionBar!!.title = model.playlist.value.name
                         adapter.dataset = emptyList()
                         model.searchSongs(this, "")
