@@ -32,7 +32,7 @@ class PlaylistModel : ViewModel() {
         if (playlist is GeneratedPlaylist) {
             playlist.refresh(context)
         }
-        fetchSongs(context)
+        fetchAllSongs(context)
     }
 
 
@@ -40,9 +40,17 @@ class PlaylistModel : ViewModel() {
     val songs get() = _songs.asStateFlow()
 
 
-    fun fetchSongs(context: Context) {
+    fun fetchAllSongs(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             _songs.emit(playlist.value.getSongs(context))
+        }
+    }
+
+    fun searchSongs(context: Context, keyword: String) { // todo better implement
+        viewModelScope.launch(Dispatchers.IO) {
+            val allSongs = playlist.value.getSongs(context)
+            val result = allSongs.filter { it.title.contains(keyword) }
+            _songs.emit(result)
         }
     }
 

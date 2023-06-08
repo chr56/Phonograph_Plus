@@ -120,7 +120,7 @@ class PlaylistDetailActivity :
 
         lifecycleScope.launch {
             model.playlist.collect { playlist ->
-                model.fetchSongs(this@PlaylistDetailActivity)
+                model.fetchAllSongs(this@PlaylistDetailActivity)
                 supportActionBar!!.title = playlist.name
                 if (playlist !is SmartPlaylist &&
                     !PlaylistsManagement.doesPlaylistExist(this@PlaylistDetailActivity, playlist.id)
