@@ -51,7 +51,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
-import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -228,19 +227,9 @@ class PlaylistDetailActivity :
         with(binding) {
             dashBroad.setBackgroundColor(primaryColor)
             dashBroad.addOnOffsetChangedListener { _, verticalOffset ->
-                recyclerView.setPadding(
-                    recyclerView.paddingLeft,
-                    dashBroad.totalScrollRange + verticalOffset,
-                    recyclerView.paddingRight,
-                    recyclerView.paddingBottom
-                )
+                updateRecyclerviewPadding(verticalOffset)
             }
-            recyclerView.setPadding(
-                recyclerView.paddingLeft,
-                recyclerView.paddingTop + dashBroad.height,
-                recyclerView.paddingRight,
-                recyclerView.paddingBottom
-            )
+            updateRecyclerviewPadding(0)
         }
 
         // colors
@@ -315,26 +304,33 @@ class PlaylistDetailActivity :
 
     }
 
+
+    private fun updateRecyclerviewPadding(verticalOffset: Int) {
+        with(binding) {
+            val paddingTop = dashBroad.totalScrollRange + verticalOffset
+            recyclerView.setPadding(
+                recyclerView.paddingLeft,
+                paddingTop,
+                recyclerView.paddingRight,
+                recyclerView.paddingBottom
+            )
+        }
+    }
+
     private fun showSearchBar() {
-        binding.searchBar.visibility = VISIBLE
-        binding.searchBox.editQuery.setText(model.keyword.value)
-        binding.recyclerView.setPadding(
-            binding.recyclerView.paddingLeft,
-            binding.recyclerView.paddingTop + binding.searchBar.height,
-            binding.recyclerView.paddingRight,
-            binding.recyclerView.paddingBottom
-        )
+        with(binding) {
+            searchBar.visibility = VISIBLE
+            searchBox.editQuery.setText(model.keyword.value)
+            updateRecyclerviewPadding(0)
+        }
     }
 
     private fun hideSearchBar() {
-        binding.searchBar.visibility = GONE
-        binding.searchBox.editQuery.setText("")
-        binding.recyclerView.setPadding(
-            binding.recyclerView.paddingLeft,
-            binding.recyclerView.paddingTop - binding.searchBar.height,
-            binding.recyclerView.paddingRight,
-            binding.recyclerView.paddingBottom
-        )
+        with(binding) {
+            searchBar.visibility = GONE
+            searchBox.editQuery.setText("")
+            updateRecyclerviewPadding(searchBar.height)
+        }
     }
 
     private fun updateDashboard(playlist: Playlist, songs: List<Song>) {
