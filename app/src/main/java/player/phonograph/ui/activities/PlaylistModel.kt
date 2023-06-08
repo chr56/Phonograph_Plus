@@ -54,6 +54,5 @@ class PlaylistModel : ViewModel() {
         }
     }
 
-    // var editMode: Boolean = false
-    var mode: PlaylistDetailMode = PlaylistDetailMode.Common
+    val currentMode: MutableStateFlow<PlaylistDetailMode> = MutableStateFlow(PlaylistDetailMode.Common)
 }

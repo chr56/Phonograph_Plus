@@ -120,6 +120,15 @@ class PlaylistDetailActivity :
         }
 
         lifecycleScope.launch {
+            model.currentMode.collect { mode ->
+                supportActionBar!!.title =
+                    if (mode == PlaylistDetailMode.Editor)
+                        "${model.playlist.value.name} [${getString(R.string.edit)}]"
+                    else
+                        model.playlist.value.name
+            }
+        }
+        lifecycleScope.launch {
             model.playlist.collect { playlist ->
                 model.fetchAllSongs(this@PlaylistDetailActivity)
                 supportActionBar!!.title = playlist.name
@@ -311,14 +320,13 @@ class PlaylistDetailActivity :
 
     @Synchronized
     fun switchMode(newMode: PlaylistDetailMode) {
-        val oldMode = model.mode
+        val oldMode = model.currentMode.value
 
         when (oldMode) {
             PlaylistDetailMode.Common -> when (newMode) {
                 PlaylistDetailMode.Common -> {}
                 PlaylistDetailMode.Editor -> {
                     updateRecyclerView(editMode = true)
-                    supportActionBar!!.title = "${model.playlist.value.name} [${getString(R.string.edit)}]"
                 }
 
                 PlaylistDetailMode.Search -> {
@@ -329,7 +337,6 @@ class PlaylistDetailActivity :
             PlaylistDetailMode.Editor -> when (newMode) {
                 PlaylistDetailMode.Common -> {
                     updateRecyclerView(editMode = false)
-                    supportActionBar!!.title = model.playlist.value.name
                 }
 
                 PlaylistDetailMode.Editor -> {}
@@ -347,17 +354,16 @@ class PlaylistDetailActivity :
                 PlaylistDetailMode.Editor -> {
                     model.fetchAllSongs(this)
                     updateRecyclerView(editMode = true)
-                    supportActionBar!!.title = "${model.playlist.value.name} [${getString(R.string.edit)}]"
                 }
 
                 PlaylistDetailMode.Search -> {}
             }
         }
-        model.mode = newMode
+        model.currentMode.tryEmit(newMode)
     }
 
     override fun onBackPressed() {
-        when (model.mode) {
+        when (model.currentMode.value) {
             PlaylistDetailMode.Common -> if (cabController.dismiss()) return else super.onBackPressed()
             else                      -> switchMode(PlaylistDetailMode.Common)
         }
