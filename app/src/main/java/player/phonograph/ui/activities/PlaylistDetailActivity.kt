@@ -121,6 +121,7 @@ class PlaylistDetailActivity :
 
         lifecycleScope.launch {
             model.currentMode.collect { mode ->
+                switchMode(model.previousMode, mode)
                 supportActionBar!!.title =
                     if (mode == PlaylistDetailMode.Editor)
                         "${model.playlist.value.name} [${getString(R.string.edit)}]"
@@ -312,8 +313,7 @@ class PlaylistDetailActivity :
 
 
     @Synchronized
-    fun switchMode(newMode: PlaylistDetailMode) {
-        val oldMode = model.currentMode.value
+    fun switchMode(oldMode: PlaylistDetailMode, newMode: PlaylistDetailMode) {
 
         when (oldMode) {
             PlaylistDetailMode.Common -> when (newMode) {
@@ -352,13 +352,12 @@ class PlaylistDetailActivity :
                 PlaylistDetailMode.Search -> {}
             }
         }
-        model.currentMode.tryEmit(newMode)
     }
 
     override fun onBackPressed() {
         when (model.currentMode.value) {
             PlaylistDetailMode.Common -> if (cabController.dismiss()) return else super.onBackPressed()
-            else                      -> switchMode(PlaylistDetailMode.Common)
+            else                      -> model.updateCurrentMode(PlaylistDetailMode.Common)
         }
     }
 

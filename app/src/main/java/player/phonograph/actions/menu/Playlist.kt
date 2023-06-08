@@ -101,7 +101,7 @@ fun playlistToolbar(
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
                         if (playlist is FilePlaylist) {
-                            model.currentMode.value = PlaylistDetailMode.Editor
+                            model.updateCurrentMode(PlaylistDetailMode.Editor)
                             true
                         } else {
                             false
