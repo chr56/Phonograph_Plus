@@ -54,7 +54,12 @@ class PlaylistModel : ViewModel() {
         }
     }
 
-    var keyword: String = ""
+    private val _keyword: MutableStateFlow<String> = MutableStateFlow("")
+    val keyword get() = _keyword.asStateFlow()
+
+    fun updateKeyword(string: String) {
+        _keyword.value = string
+    }
 
     private val _currentMode: MutableStateFlow<PlaylistDetailMode> = MutableStateFlow(PlaylistDetailMode.Common)
     val currentMode get() = _currentMode.asStateFlow()

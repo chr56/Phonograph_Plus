@@ -42,6 +42,7 @@ import util.phonograph.playlist.mediastore.moveItemViaMediastore
 import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
 import androidx.activity.viewModels
 import androidx.core.graphics.BlendModeCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -50,6 +51,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
+import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -140,6 +142,13 @@ class PlaylistDetailActivity :
                     finish()
                 }
                 updateDashboard(playlist, model.songs.value)
+            }
+        }
+        lifecycleScope.launch {
+            model.keyword.collect { word ->
+                if (model.currentMode.value == PlaylistDetailMode.Search) {
+                    model.searchSongs(this@PlaylistDetailActivity, word)
+                }
             }
         }
     }
@@ -278,7 +287,34 @@ class PlaylistDetailActivity :
             songCountText.setTextColor(textColor)
             durationText.setTextColor(textColor)
             pathText.setTextColor(textColor)
+
+
+            with(searchBox) {
+                searchBadge.setImageDrawable(
+                    getTintedDrawable(R.drawable.ic_search_white_24dp, iconColor)
+                )
+                close.setImageDrawable(
+                    getTintedDrawable(R.drawable.ic_close_white_24dp, iconColor)
+                )
+                editQuery.setTextColor(textColor)
+            }
+            searchBox.editQuery.addTextChangedListener { editable ->
+                if (editable != null) {
+                    model.updateKeyword(editable.toString())
+                }
+            }
         }
+
+    }
+
+    private fun showSearchBar() {
+        binding.searchBar.visibility = VISIBLE
+        binding.searchBox.editQuery.setText(model.keyword.value)
+    }
+
+    private fun hideSearchBar() {
+        binding.searchBar.visibility = INVISIBLE
+        binding.searchBox.editQuery.setText("")
     }
 
     private fun updateDashboard(playlist: Playlist, songs: List<Song>) {
@@ -323,7 +359,8 @@ class PlaylistDetailActivity :
                 }
 
                 PlaylistDetailMode.Search -> {
-                    model.searchSongs(this, model.keyword)
+                    model.searchSongs(this, model.keyword.value)
+                    showSearchBar()
                 }
             }
 
@@ -335,18 +372,21 @@ class PlaylistDetailActivity :
                 PlaylistDetailMode.Editor -> {}
                 PlaylistDetailMode.Search -> {
                     updateRecyclerView(editMode = false)
-                    model.searchSongs(this, model.keyword)
+                    model.searchSongs(this, model.keyword.value)
+                    showSearchBar()
                 }
             }
 
             PlaylistDetailMode.Search -> when (newMode) {
                 PlaylistDetailMode.Common -> {
                     model.fetchAllSongs(this)
+                    hideSearchBar()
                 }
 
                 PlaylistDetailMode.Editor -> {
                     model.fetchAllSongs(this)
                     updateRecyclerView(editMode = true)
+                    hideSearchBar()
                 }
 
                 PlaylistDetailMode.Search -> {}
