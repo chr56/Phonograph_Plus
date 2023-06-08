@@ -296,6 +296,9 @@ class PlaylistDetailActivity :
                 close.setImageDrawable(
                     getTintedDrawable(R.drawable.ic_close_white_24dp, iconColor)
                 )
+                close.setOnClickListener {
+                    editQuery.text?.clear()
+                }
                 editQuery.setTextColor(textColor)
             }
             searchBox.editQuery.addTextChangedListener { editable ->

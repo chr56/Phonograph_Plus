@@ -33,6 +33,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
+        <TextView
+            android:id="@android:id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center_vertical"
+            android:text="@string/playlist_empty_text"
+            android:textColor="?android:textColorSecondary"
+            android:textSize="20sp"
+            android:visibility="gone" />
+
+        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:scrollbars="none"
+            tools:paddingTop="256dp" />
+
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/dash_broad"
             android:layout_width="match_parent"
@@ -183,26 +204,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
-
-        <TextView
-            android:id="@android:id/empty"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:fontFamily="sans-serif-light"
-            android:gravity="center_vertical"
-            android:text="@string/playlist_empty_text"
-            android:textColor="?android:textColorSecondary"
-            android:textSize="20sp"
-            android:visibility="gone" />
-
-        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:scrollbars="none"
-            tools:paddingTop="256dp" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
