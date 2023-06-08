@@ -6,6 +6,7 @@ package player.phonograph.ui.activities
 
 import player.phonograph.model.PlaylistDetailMode
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.GeneratedPlaylist
 import player.phonograph.model.playlist.Playlist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,6 +25,15 @@ class PlaylistModel : ViewModel() {
 
     private lateinit var _playlist: MutableStateFlow<Playlist>
     val playlist get() = _playlist.asStateFlow()
+
+
+    fun refreshPlaylist(context: Context) {
+        val playlist = _playlist.value
+        if (playlist is GeneratedPlaylist) {
+            playlist.refresh(context)
+        }
+        fetchSongs(context)
+    }
 
 
     private val _songs: MutableStateFlow<List<Song>> = MutableStateFlow(emptyList())

@@ -257,16 +257,9 @@ class PlaylistDetailActivity :
         val playlist: Playlist = model.playlist.value
         val iconColor = primaryTextColor(primaryColor)
         playlistToolbar(menu, this, playlist, iconColor, ::enterEditMode) {
-            refresh(playlist)
+            adapter.dataset = emptyList()
+            model.refreshPlaylist(this)
         }
-    }
-
-    private fun refresh(playlist: Playlist) {
-        if (playlist is GeneratedPlaylist) {
-            playlist.refresh(this)
-        }
-        adapter.dataset = emptyList()
-        model.fetchSongs(this)
     }
 
     private fun setupMenuCallback(item: MenuItem): Boolean {
@@ -314,7 +307,9 @@ class PlaylistDetailActivity :
         adapter.editMode = false
 
         setUpRecyclerView()
-        refresh(model.playlist.value)
+
+        adapter.dataset = emptyList()
+        model.refreshPlaylist(this)
     }
 
     override fun onBackPressed() {
@@ -349,7 +344,8 @@ class PlaylistDetailActivity :
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
-            refresh(model.playlist.value)
+            adapter.dataset = emptyList()
+            model.refreshPlaylist(this@PlaylistDetailActivity)
         }
     }
 
