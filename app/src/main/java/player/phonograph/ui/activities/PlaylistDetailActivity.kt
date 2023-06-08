@@ -184,8 +184,6 @@ class PlaylistDetailActivity :
             val playlist = model.playlist.value
             adapter.editMode = true
             binding.recyclerView.also { rv ->
-
-
                 recyclerViewDragDropManager = RecyclerViewDragDropManager()
                 recyclerViewDragDropManager!!.attachRecyclerView(rv)
                 wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(adapter)
@@ -315,51 +313,44 @@ class PlaylistDetailActivity :
     fun switchMode(newMode: PlaylistDetailMode) {
         val oldMode = model.mode
 
-        when (newMode) {
-            PlaylistDetailMode.Common -> {
-                when (oldMode) {
-                    PlaylistDetailMode.Common -> {}
-                    else                      -> {
-                        updateRecyclerView(editMode = false)
-                        supportActionBar!!.title = model.playlist.value.name
-                        adapter.dataset = emptyList()
-                        model.refreshPlaylist(this)
-                    }
+        when (oldMode) {
+            PlaylistDetailMode.Common -> when (newMode) {
+                PlaylistDetailMode.Common -> {}
+                PlaylistDetailMode.Editor -> {
+                    updateRecyclerView(editMode = true)
+                    supportActionBar!!.title = "${model.playlist.value.name} [${getString(R.string.edit)}]"
+                }
+
+                PlaylistDetailMode.Search -> {
+                    model.searchSongs(this, "")
                 }
             }
 
-            PlaylistDetailMode.Editor -> {
-                when (oldMode) {
-                    PlaylistDetailMode.Common -> {
-                        updateRecyclerView(editMode = true)
-                        supportActionBar!!.title = "${model.playlist.value.name} [${getString(R.string.edit)}]"
-                    }
+            PlaylistDetailMode.Editor -> when (newMode) {
+                PlaylistDetailMode.Common -> {
+                    updateRecyclerView(editMode = false)
+                    supportActionBar!!.title = model.playlist.value.name
+                }
 
-                    PlaylistDetailMode.Editor -> {}
-                    PlaylistDetailMode.Search -> {
-                        model.fetchAllSongs(this)
-                        updateRecyclerView(editMode = true)
-                        supportActionBar!!.title = "${model.playlist.value.name} [${getString(R.string.edit)}]"
-                    }
+                PlaylistDetailMode.Editor -> {}
+                PlaylistDetailMode.Search -> {
+                    updateRecyclerView(editMode = false)
+                    model.searchSongs(this, "")
                 }
             }
 
-            PlaylistDetailMode.Search -> {
-                when (oldMode) {
-                    PlaylistDetailMode.Common -> {
-                        adapter.dataset = emptyList()
-                        model.searchSongs(this, "")
-                    }
-
-                    PlaylistDetailMode.Editor -> {
-                        updateRecyclerView(editMode = false)
-                        supportActionBar!!.title = model.playlist.value.name
-                        adapter.dataset = emptyList()
-                        model.searchSongs(this, "")
-                    }
-
-                    PlaylistDetailMode.Search -> {}
+            PlaylistDetailMode.Search -> when (newMode) {
+                PlaylistDetailMode.Common -> {
+                    model.fetchAllSongs(this)
                 }
+
+                PlaylistDetailMode.Editor -> {
+                    model.fetchAllSongs(this)
+                    updateRecyclerView(editMode = true)
+                    supportActionBar!!.title = "${model.playlist.value.name} [${getString(R.string.edit)}]"
+                }
+
+                PlaylistDetailMode.Search -> {}
             }
         }
         model.mode = newMode
