@@ -61,7 +61,11 @@ fun playlistToolbar(
                 icon = getTintedDrawable(R.drawable.ic_search_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    model.updateCurrentMode(PlaylistDetailMode.Search)
+                    if (model.currentMode.value != PlaylistDetailMode.Search) {
+                        model.updateCurrentMode(PlaylistDetailMode.Search)
+                    } else { // exit
+                        model.updateCurrentMode(PlaylistDetailMode.Common)
+                    }
                     true
                 }
             }

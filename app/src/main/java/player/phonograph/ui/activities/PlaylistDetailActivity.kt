@@ -297,7 +297,12 @@ class PlaylistDetailActivity :
                     getTintedDrawable(R.drawable.ic_close_white_24dp, iconColor)
                 )
                 close.setOnClickListener {
-                    editQuery.text?.clear()
+                    val editable = editQuery.editableText
+                    if (editable.isEmpty()) {
+                        model.updateCurrentMode(PlaylistDetailMode.Common)
+                    } else {
+                        editable.clear()
+                    }
                 }
                 editQuery.setTextColor(textColor)
             }
