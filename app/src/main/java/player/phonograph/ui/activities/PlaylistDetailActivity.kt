@@ -327,7 +327,7 @@ class PlaylistDetailActivity :
     }
 
     private fun hideSearchBar() {
-        binding.searchBar.visibility = INVISIBLE
+        binding.searchBar.visibility = GONE
         binding.searchBox.editQuery.setText("")
         binding.recyclerView.setPadding(
             binding.recyclerView.paddingLeft,
@@ -416,9 +416,9 @@ class PlaylistDetailActivity :
 
     override fun onBackPressed() {
         when {
-            cabController.dismiss()                              -> return
+            cabController.dismiss() -> return
             model.currentMode.value == PlaylistDetailMode.Common -> super.onBackPressed()
-            else                                                 -> model.updateCurrentMode(PlaylistDetailMode.Common)
+            else -> model.updateCurrentMode(PlaylistDetailMode.Common)
         }
     }
 
