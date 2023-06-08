@@ -32,7 +32,6 @@ import player.phonograph.model.PlaylistDetailMode
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.model.playlist.GeneratedPlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.totalDuration
@@ -104,7 +103,7 @@ class PlaylistDetailActivity :
         super.onCreate(savedInstanceState)
         setUpToolbar()
 
-        setUpRecyclerView()
+        setUpRecyclerView(editMode = false)
         setUpDashBroad()
 
         observeData()
@@ -153,10 +152,9 @@ class PlaylistDetailActivity :
         setActivityToolbarColorAuto(binding.toolbar)
     }
 
-    private fun setUpRecyclerView() {
+    private fun setUpRecyclerView(editMode: Boolean) {
+        // FastScrollRecyclerView
         binding.recyclerView.setUpFastScrollRecyclerViewColor(this, accentColor)
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
-
         binding.recyclerView.setOnFastScrollStateChangeListener(
             object : OnFastScrollStateChangeListener {
                 override fun onFastScrollStart() {
@@ -167,9 +165,42 @@ class PlaylistDetailActivity :
                 override fun onFastScrollStop() {}
             }
         )
-        // Init adapter
+        // adapter
         adapter = PlaylistSongDisplayAdapter(this, cabController, ArrayList(), null)
-        binding.recyclerView.adapter = adapter
+
+        if (!editMode) {
+            adapter.editMode = false
+            binding.recyclerView.also { rv ->
+                rv.layoutManager = LinearLayoutManager(this)
+                rv.adapter = adapter
+            }
+            adapter.onMove = { _, _ -> true }
+            adapter.onDelete = {}
+        } else {
+            val playlist = model.playlist.value
+            adapter.editMode = true
+            binding.recyclerView.also { rv ->
+
+
+                recyclerViewDragDropManager = RecyclerViewDragDropManager()
+                recyclerViewDragDropManager!!.attachRecyclerView(rv)
+                wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(adapter)
+
+                rv.adapter = wrappedAdapter
+                rv.layoutManager = LinearLayoutManager(this)
+                rv.itemAnimator = RefactoredDefaultItemAnimator()
+            }
+            adapter.onMove = { fromPosition: Int, toPosition: Int ->
+                runBlocking {
+                    moveItemViaMediastore(this@PlaylistDetailActivity, playlist.id, fromPosition, toPosition)
+                }
+            }
+            adapter.onDelete = {
+                runBlocking {
+                    removeFromPlaylistViaMediastore(this@PlaylistDetailActivity, adapter.dataset[it], playlist.id)
+                }
+            }
+        }
     }
 
     private fun setUpDashBroad() {
@@ -274,39 +305,17 @@ class PlaylistDetailActivity :
     }
 
     private fun enterEditMode() {
-
         model.mode = PlaylistDetailMode.Editor
-        adapter.editMode = true
 
-        val playlist = model.playlist.value
-
-        adapter.onMove = { fromPosition: Int, toPosition: Int ->
-            runBlocking {
-                moveItemViaMediastore(this@PlaylistDetailActivity, playlist.id, fromPosition, toPosition)
-            }
-        }
-        adapter.onDelete = {
-            runBlocking {
-                removeFromPlaylistViaMediastore(this@PlaylistDetailActivity, adapter.dataset[it], playlist.id)
-            }
-        }
-
-        with(binding) {
-            supportActionBar!!.title = "${playlist.name} [${getString(R.string.edit)}]"
-
-            recyclerViewDragDropManager = RecyclerViewDragDropManager()
-            wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(adapter)
-            recyclerView.itemAnimator = RefactoredDefaultItemAnimator()
-            recyclerView.adapter = wrappedAdapter
-            recyclerViewDragDropManager!!.attachRecyclerView(binding.recyclerView)
-        }
+        setUpRecyclerView(editMode = true)
+        supportActionBar!!.title = "${model.playlist.value.name} [${getString(R.string.edit)}]"
     }
 
     private fun exitEditMode() {
         model.mode = PlaylistDetailMode.Common
-        adapter.editMode = false
 
-        setUpRecyclerView()
+        setUpRecyclerView(editMode = false)
+        supportActionBar!!.title = model.playlist.value.name
 
         adapter.dataset = emptyList()
         model.refreshPlaylist(this)
