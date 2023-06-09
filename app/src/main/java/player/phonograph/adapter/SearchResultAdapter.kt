@@ -7,6 +7,7 @@ package player.phonograph.adapter
 import coil.size.ViewSizeResolver
 import mt.util.color.resolveColor
 import player.phonograph.R
+import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
@@ -18,12 +19,11 @@ import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.NavigationUtil.goToAlbum
-import player.phonograph.util.NavigationUtil.goToArtist
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ComponentActivity
 import androidx.core.util.Pair
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,27 +47,53 @@ class SearchResultAdapter(
     override fun updateItemCheckStatusForAll() = notifyDataSetChanged()
     override fun updateItemCheckStatus(datasetPosition: Int) = notifyItemChanged(datasetPosition)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == HEADER)
-            HeaderViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+        when (viewType) {
+            HEADER -> HeaderViewHolder(
                 LayoutInflater.from(context).inflate(R.layout.sub_header, parent, false)
             )
-        else ItemViewHolder(
-            LayoutInflater.from(context).inflate(R.layout.item_list, parent, false), context
-        )
-    }
+
+            else   -> ItemViewHolder(
+                LayoutInflater.from(context).inflate(R.layout.item_list, parent, false)
+            )
+        }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = dataSet[position]
         when (val itemViewType = getItemViewType(position)) {
-            HEADER -> (holder as HeaderViewHolder).bind(item as String)
-            else   -> (holder as ItemViewHolder).bind(item, itemViewType)
+            HEADER -> {
+                holder as HeaderViewHolder
+                holder.bind(item as String)
+            }
+
+            else   -> {
+                holder as ItemViewHolder
+                holder.bind(item, itemViewType)
+                holder.itemView.setOnClickListener {
+                    if (isInQuickSelectMode) {
+                        toggleChecked(position)
+                    } else {
+                        holder.onClick()
+                    }
+                }
+                holder.itemView.setOnLongClickListener {
+                    if (!isInQuickSelectMode) toggleChecked(position)
+                    true
+                }
+                holder.itemView.isActivated = isChecked(item)
+            }
         }
     }
 
+    override val multiSelectMenuHandler: (Toolbar) -> Boolean
+        get() = {
+            multiItemsToolbar(it.menu, context, checkedList, cabTextColorColor) {
+                checkAll()
+                true
+            }
+        }
+
     override fun getItemCount(): Int = dataSet.size
-
-
 
     override fun getItemViewType(position: Int): Int =
         when (dataSet[position]) {
@@ -77,8 +103,10 @@ class SearchResultAdapter(
             else      -> HEADER
         }
 
-    class ItemViewHolder(itemView: View, context: Context) : UniversalMediaEntryViewHolder(itemView) {
+    class ItemViewHolder(itemView: View) :
+            UniversalMediaEntryViewHolder(itemView) {
         init {
+            val context = itemView.context
             itemView.setBackgroundColor(resolveColor(context, androidx.cardview.R.attr.cardBackgroundColor))
             itemView.elevation = context.resources.getDimensionPixelSize(R.dimen.card_elevation).toFloat()
             shortSeparator?.visibility = View.GONE
@@ -90,8 +118,11 @@ class SearchResultAdapter(
             }
         }
 
+        private lateinit var item: Any
+
         fun bind(item: Any, itemViewType: Int) {
             val context = itemView.context
+            this.item = item
             when (itemViewType) {
                 SONG   -> {
                     menu?.visibility = View.VISIBLE
@@ -100,10 +131,6 @@ class SearchResultAdapter(
                             (item as Song).initMenu(context, this.menu, showPlay = true)
                         }.show()
                     }
-                    itemView.setOnClickListener {
-                        MusicPlayerRemote.playNow(item as Song)
-                    }
-
                     val song = item as Song
                     title?.text = song.title
                     text?.text = song.infoString()
@@ -118,15 +145,6 @@ class SearchResultAdapter(
                 }
 
                 ARTIST -> {
-                    itemView.setOnClickListener {
-                        goToArtist(
-                            context, (item as Artist).id,
-                            Pair.create(
-                                image, context.resources.getString(R.string.transition_artist_image)
-                            )
-                        )
-                    }
-
                     val artist = item as Artist
                     title?.text = artist.name
                     text?.text = artist.infoString(context)
@@ -140,14 +158,6 @@ class SearchResultAdapter(
                 }
 
                 ALBUM  -> {
-                    itemView.setOnClickListener {
-                        goToAlbum(
-                            context, (item as Album).id,
-                            Pair.create(
-                                image, context.resources.getString(R.string.transition_album_art)
-                            )
-                        )
-                    }
                     val album = item as Album
                     title?.text = album.title
                     text?.text = album.infoString(context)
@@ -163,6 +173,42 @@ class SearchResultAdapter(
                 else   -> {}
             }
         }
+
+        fun onClick() {
+            when (itemViewType) {
+
+                SONG   -> {
+                    MusicPlayerRemote.playNow(item as Song)
+                }
+
+                ARTIST -> {
+                    goToAlbum(
+                        itemView.context, (item as Album).id,
+                        Pair.create(
+                            image, itemView.context.resources.getString(R.string.transition_album_art)
+                        )
+                    )
+                }
+
+                ALBUM  -> {
+                    goToAlbum(
+                        itemView.context, (item as Album).id,
+                        Pair.create(
+                            image, itemView.context.resources.getString(R.string.transition_album_art)
+                        )
+                    )
+                }
+            }
+        }
+
+        // fun onLongClick(): Boolean {
+        //     return when (itemViewType) {
+        //         // SONG   -> true
+        //         // ARTIST -> true
+        //         // ALBUM  -> true
+        //         else -> false
+        //     }
+        // }
     }
 
     class HeaderViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
