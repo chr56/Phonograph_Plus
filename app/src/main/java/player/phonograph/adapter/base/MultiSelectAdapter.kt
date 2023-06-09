@@ -3,10 +3,12 @@
  */
 package player.phonograph.adapter.base
 
-import android.content.Context
+import lib.phonograph.cab.CabStatus
+import androidx.activity.ComponentActivity
+import androidx.activity.addCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
-import lib.phonograph.cab.CabStatus
+import android.content.Context
 
 /**
  * @author chr_56 & Karim Abou Zeid (kabouzeid)
@@ -30,7 +32,19 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
         }
 
         cabController?.showContent(context, checkedList.size)
+
+
+        if (!onBackPressedDispatcherRegistered) {
+            onBackPressedDispatcherRegistered = true
+            val componentActivity = context as? ComponentActivity
+            componentActivity?.onBackPressedDispatcher?.addCallback {
+                val dismissed = cabController?.dismiss() ?: true
+                isEnabled = !dismissed
+            }
+        }
     }
+
+    private var onBackPressedDispatcherRegistered = false
 
     /** must return a real item **/
     protected abstract fun getItem(datasetPosition: Int): I

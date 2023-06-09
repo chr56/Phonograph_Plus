@@ -2,15 +2,15 @@ package player.phonograph.ui.activities
 
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
+import lib.phonograph.misc.menuProvider
 import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.R
 import player.phonograph.actions.menu.genreDetailToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.databinding.ActivityGenreDetailBinding
-import player.phonograph.mediastore.GenreLoader
-import lib.phonograph.misc.menuProvider
 import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.mediastore.GenreLoader
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
@@ -110,10 +110,6 @@ class GenreDetailActivity :
         genreDetailToolbar(menu, this, genre)
     }
 
-
-    override fun onBackPressed() {
-        if (cabController.dismiss()) return else super.onBackPressed()
-    }
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {

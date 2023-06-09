@@ -6,6 +6,7 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.google.android.material.appbar.AppBarLayout
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
+import lib.phonograph.misc.menuProvider
 import mt.pref.ThemeColor.primaryColor
 import mt.tint.requireLightStatusbar
 import mt.tint.setActivityToolbarColor
@@ -22,7 +23,6 @@ import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityAlbumDetailBinding
-import lib.phonograph.misc.menuProvider
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Album
 import player.phonograph.model.getReadableDurationString
@@ -31,8 +31,8 @@ import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
-import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.NavigationUtil.goToArtist
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -259,10 +259,8 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
     }
 
     override fun onBackPressed() {
-        if (cabController.dismiss()) return else {
-            viewBinding.recyclerView.stopScroll()
-            super.onBackPressed()
-        }
+        viewBinding.recyclerView.stopScroll()
+        super.onBackPressed()
     }
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {

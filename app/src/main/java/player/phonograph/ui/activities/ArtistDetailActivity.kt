@@ -4,6 +4,7 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
+import lib.phonograph.misc.menuProvider
 import mt.tint.requireLightStatusbar
 import mt.tint.setActivityToolbarColor
 import mt.tint.setActivityToolbarColorAuto
@@ -20,7 +21,6 @@ import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.adapter.legacy.HorizontalAlbumAdapter
 import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.databinding.ActivityArtistDetailBinding
-import lib.phonograph.misc.menuProvider
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Artist
 import player.phonograph.model.albumCountString
@@ -152,6 +152,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
                 CustomArtistImageStore.instance(this)
                     .setCustomArtistImage(this, artist.id, artist.name, data!!.data!!)
             }
+
             else                      -> if (resultCode == RESULT_OK) {
                 model.load(this)
             }
@@ -220,11 +221,9 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
     }
 
     override fun onBackPressed() {
-        if (!cabController.dismiss()) {
-            viewBinding.albumRecycleView.stopScroll()
-            viewBinding.songsRecycleView.stopScroll()
-            super.onBackPressed()
-        }
+        viewBinding.albumRecycleView.stopScroll()
+        viewBinding.songsRecycleView.stopScroll()
+        super.onBackPressed()
     }
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {

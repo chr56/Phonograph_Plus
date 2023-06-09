@@ -415,7 +415,6 @@ class PlaylistDetailActivity :
 
     override fun onBackPressed() {
         when {
-            cabController.dismiss()                  -> return
             model.currentMode.value == UIMode.Common -> super.onBackPressed()
             else                                     -> model.updateCurrentMode(UIMode.Common)
         }
