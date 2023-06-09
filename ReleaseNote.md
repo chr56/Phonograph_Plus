@@ -1,4 +1,4 @@
-## {{version:0.7.0-dev2}} {{versionCode:535}} {{date:1685851589}} {{channel:preview}}
+## {{version:0.7.0-dev3}} {{versionCode:535}} {{date:1686285000}} {{channel:preview}}
 
 ### {{note:en}}
 - NOTE   only show differences of previous preview release 
@@ -6,6 +6,7 @@
 - Fix: sort order of flat-folders could not be remembered 
 - Fix: new created playlist would not be appeared in list util next entrance
 - New: support sorting order of playlist (but basic sorting)
+- New: support basic search song title in Playlist Detail
 
 ### {{note:zh}}
 - 注意   仅与上个预览版版本对比
@@ -13,3 +14,4 @@
 - 修复 无法记住扁平文件夹的排序方式
 - 修复 新建的播放列表不会立即出现在列表中
 - 新增 支持播放列表的排序（基本排序支持）
+- 新增 播放列表详情类支持简单歌曲搜索
