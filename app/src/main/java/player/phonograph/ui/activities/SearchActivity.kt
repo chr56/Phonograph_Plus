@@ -1,5 +1,6 @@
 package player.phonograph.ui.activities
 
+import lib.phonograph.misc.menuProvider
 import mt.tint.setActivityToolbarColor
 import mt.tint.viewtint.setSearchViewContentColor
 import mt.tint.viewtint.tintCollapseIcon
@@ -7,106 +8,77 @@ import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.adapter.SearchAdapter
 import player.phonograph.databinding.ActivitySearchBinding
-import player.phonograph.mediastore.AlbumLoader
-import player.phonograph.mediastore.ArtistLoader
-import player.phonograph.mediastore.SongLoader
-import lib.phonograph.misc.menuProvider
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
 import player.phonograph.util.ui.hideKeyboard
+import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.content.Context
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 
 class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener {
 
     private var viewBinding: ActivitySearchBinding? = null
     val binding get() = viewBinding!!
 
-    private var searchView: SearchView? = null
+    private val viewModel: SearchActivityViewModel by viewModels()
 
     private lateinit var adapter: SearchAdapter
-    private var query: String? = null
+    private var searchView: SearchView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        viewBinding = ActivitySearchBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
 
-        viewBinding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        setUpRecyclerView()
+        setUpToolBar()
 
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.query.collect { text ->
+                    searchView?.setQuery(text, false)
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.results.collect { results ->
+                    binding.empty.visibility = if (results.isEmpty()) View.GONE else View.VISIBLE
+                    adapter.dataSet = results
+                }
+            }
+        }
+
+        lifecycle.addObserver(MediaStoreListener())
+    }
+
+    private fun setUpRecyclerView() {
         adapter = SearchAdapter(this, emptyList())
+        with(binding) {
+            recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
+            recyclerView.adapter = adapter
+            // noinspection ClickableViewAccessibility
+            recyclerView.setOnTouchListener { _, _ ->
+                hideSoftKeyboard()
+                false
+            }
+        }
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
                 super.onChanged()
                 binding.empty.visibility = if (adapter.itemCount < 1) View.VISIBLE else View.GONE
             }
         })
-        binding.recyclerView.adapter = adapter
-
-        isRecyclerViewPrepared = true
-
-        // noinspection ClickableViewAccessibility
-        binding.recyclerView.setOnTouchListener { _, _ ->
-            hideSoftKeyboard()
-            false
-        }
-
-        setUpToolBar()
-
-        savedInstanceState?.let { query = it.getString(QUERY) }
-
-        lifecycle.addObserver(MediaStoreListener())
-    }
-
-    private var isRecyclerViewPrepared: Boolean = false
-
-    private fun loadDataSet(context: Context, query: String) {
-        loaderCoroutineScope.launch {
-
-            val results: MutableList<Any> = ArrayList()
-
-            if (!TextUtils.isEmpty(query)) {
-                val songs = SongLoader.getSongs(context, query.trim { it <= ' ' })
-                if (songs.isNotEmpty()) {
-                    results.add(context.resources.getString(R.string.songs))
-                    results.addAll(songs)
-                }
-                val artists = ArtistLoader.getArtists(context, query.trim { it <= ' ' })
-                if (artists.isNotEmpty()) {
-                    results.add(context.resources.getString(R.string.artists))
-                    results.addAll(artists)
-                }
-                val albums = AlbumLoader.getAlbums(context, query.trim { it <= ' ' })
-                if (albums.isNotEmpty()) {
-                    results.add(context.resources.getString(R.string.albums))
-                    results.addAll(albums)
-                }
-            }
-
-            while (!isRecyclerViewPrepared) yield() // wait until ready
-
-            withContext(Dispatchers.Main) {
-                if (isRecyclerViewPrepared) adapter.dataSet = results
-            }
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(QUERY, query)
     }
 
     private fun setUpToolBar() {
@@ -137,35 +109,19 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
             }
         })
 
-        searchView!!.setQuery(query, false)
         searchView!!.post { searchView!!.setOnQueryTextListener(this) }
 
         val textColor = primaryTextColor(primaryColor)
         binding.toolbar.tintCollapseIcon(textColor)
         setSearchViewContentColor(searchView, textColor)
     }
-
-    private fun search(query: String) {
-        this.query = query
-        loadDataSet(this, query)
-    }
-
-    private val loaderCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-
-    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
-        override fun onMediaStoreChanged() {
-            if (!query.isNullOrEmpty()) loadDataSet(this@SearchActivity, query!!)
-        }
-    }
-
-
     override fun onQueryTextSubmit(query: String): Boolean {
         hideSoftKeyboard()
         return false
     }
 
     override fun onQueryTextChange(newText: String): Boolean {
-        search(newText)
+        viewModel.query(this, newText)
         return false
     }
 
@@ -174,7 +130,10 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
         searchView?.clearFocus()
     }
 
-    companion object {
-        private const val QUERY = "query"
+    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
+        override fun onMediaStoreChanged() {
+            viewModel.refresh(this@SearchActivity)
+        }
     }
+
 }
