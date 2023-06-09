@@ -4,8 +4,11 @@
 
 package player.phonograph.model
 
-sealed class UIMode {
-    object Common : UIMode()
-    object Editor : UIMode()
-    object Search : UIMode()
+@JvmInline
+value class UIMode(val ordinal: Int) {
+    companion object {
+        val Common = UIMode(2)
+        val Editor = UIMode(4)
+        val Search = UIMode(8)
+    }
 }
