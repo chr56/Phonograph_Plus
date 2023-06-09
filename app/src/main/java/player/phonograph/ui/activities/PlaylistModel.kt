@@ -4,8 +4,8 @@
 
 package player.phonograph.ui.activities
 
-import player.phonograph.model.PlaylistDetailMode
 import player.phonograph.model.Song
+import player.phonograph.model.UIMode
 import player.phonograph.model.playlist.GeneratedPlaylist
 import player.phonograph.model.playlist.Playlist
 import androidx.lifecycle.ViewModel
@@ -61,13 +61,13 @@ class PlaylistModel : ViewModel() {
         _keyword.value = string
     }
 
-    private val _currentMode: MutableStateFlow<PlaylistDetailMode> = MutableStateFlow(PlaylistDetailMode.Common)
+    private val _currentMode: MutableStateFlow<UIMode> = MutableStateFlow(UIMode.Common)
     val currentMode get() = _currentMode.asStateFlow()
 
-    var previousMode: PlaylistDetailMode = PlaylistDetailMode.Common
+    var previousMode: UIMode = UIMode.Common
         private set
 
-    fun updateCurrentMode(newMode: PlaylistDetailMode) {
+    fun updateCurrentMode(newMode: UIMode) {
         previousMode = _currentMode.value
         _currentMode.value = newMode
     }

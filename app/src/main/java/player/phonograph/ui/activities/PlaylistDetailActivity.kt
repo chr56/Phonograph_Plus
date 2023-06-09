@@ -29,8 +29,8 @@ import player.phonograph.adapter.display.PlaylistSongDisplayAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.mechanism.PlaylistsManagement
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.model.PlaylistDetailMode
 import player.phonograph.model.Song
+import player.phonograph.model.UIMode
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
@@ -125,7 +125,7 @@ class PlaylistDetailActivity :
             model.currentMode.collect { mode ->
                 switchMode(model.previousMode, mode)
                 supportActionBar!!.title =
-                    if (mode == PlaylistDetailMode.Editor)
+                    if (mode == UIMode.Editor)
                         "${model.playlist.value.name} [${getString(R.string.edit)}]"
                     else
                         model.playlist.value.name
@@ -146,7 +146,7 @@ class PlaylistDetailActivity :
         }
         lifecycleScope.launch {
             model.keyword.collect { word ->
-                if (model.currentMode.value == PlaylistDetailMode.Search) {
+                if (model.currentMode.value == UIMode.Search) {
                     model.searchSongs(this@PlaylistDetailActivity, word)
                 }
             }
@@ -289,7 +289,7 @@ class PlaylistDetailActivity :
                 close.setOnClickListener {
                     val editable = editQuery.editableText
                     if (editable.isEmpty()) {
-                        model.updateCurrentMode(PlaylistDetailMode.Common)
+                        model.updateCurrentMode(UIMode.Common)
                     } else {
                         editable.clear()
                     }
@@ -368,56 +368,56 @@ class PlaylistDetailActivity :
 
 
     @Synchronized
-    fun switchMode(oldMode: PlaylistDetailMode, newMode: PlaylistDetailMode) {
+    fun switchMode(oldMode: UIMode, newMode: UIMode) {
 
         when (oldMode) {
-            PlaylistDetailMode.Common -> when (newMode) {
-                PlaylistDetailMode.Common -> {}
-                PlaylistDetailMode.Editor -> {
+            UIMode.Common -> when (newMode) {
+                UIMode.Common -> {}
+                UIMode.Editor -> {
                     updateRecyclerView(editMode = true)
                 }
 
-                PlaylistDetailMode.Search -> {
+                UIMode.Search -> {
                     model.searchSongs(this, model.keyword.value)
                     showSearchBar()
                 }
             }
 
-            PlaylistDetailMode.Editor -> when (newMode) {
-                PlaylistDetailMode.Common -> {
+            UIMode.Editor -> when (newMode) {
+                UIMode.Common -> {
                     updateRecyclerView(editMode = false)
                 }
 
-                PlaylistDetailMode.Editor -> {}
-                PlaylistDetailMode.Search -> {
+                UIMode.Editor -> {}
+                UIMode.Search -> {
                     updateRecyclerView(editMode = false)
                     model.searchSongs(this, model.keyword.value)
                     showSearchBar()
                 }
             }
 
-            PlaylistDetailMode.Search -> when (newMode) {
-                PlaylistDetailMode.Common -> {
+            UIMode.Search -> when (newMode) {
+                UIMode.Common -> {
                     model.fetchAllSongs(this)
                     hideSearchBar()
                 }
 
-                PlaylistDetailMode.Editor -> {
+                UIMode.Editor -> {
                     model.fetchAllSongs(this)
                     updateRecyclerView(editMode = true)
                     hideSearchBar()
                 }
 
-                PlaylistDetailMode.Search -> {}
+                UIMode.Search -> {}
             }
         }
     }
 
     override fun onBackPressed() {
         when {
-            cabController.dismiss() -> return
-            model.currentMode.value == PlaylistDetailMode.Common -> super.onBackPressed()
-            else -> model.updateCurrentMode(PlaylistDetailMode.Common)
+            cabController.dismiss()                  -> return
+            model.currentMode.value == UIMode.Common -> super.onBackPressed()
+            else                                     -> model.updateCurrentMode(UIMode.Common)
         }
     }
 

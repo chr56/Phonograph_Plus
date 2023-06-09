@@ -19,7 +19,7 @@ import player.phonograph.actions.actionRenamePlaylist
 import player.phonograph.actions.actionSavePlaylist
 import player.phonograph.actions.actionShuffleAndPlay
 import player.phonograph.actions.fragmentActivity
-import player.phonograph.model.PlaylistDetailMode
+import player.phonograph.model.UIMode
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.PlaylistType
@@ -61,10 +61,10 @@ fun playlistToolbar(
                 icon = getTintedDrawable(R.drawable.ic_search_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    if (model.currentMode.value != PlaylistDetailMode.Search) {
-                        model.updateCurrentMode(PlaylistDetailMode.Search)
+                    if (model.currentMode.value != UIMode.Search) {
+                        model.updateCurrentMode(UIMode.Search)
                     } else { // exit
-                        model.updateCurrentMode(PlaylistDetailMode.Common)
+                        model.updateCurrentMode(UIMode.Common)
                     }
                     true
                 }
@@ -109,7 +109,7 @@ fun playlistToolbar(
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
                         if (playlist is FilePlaylist) {
-                            model.updateCurrentMode(PlaylistDetailMode.Editor)
+                            model.updateCurrentMode(UIMode.Editor)
                             true
                         } else {
                             false
