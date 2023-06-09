@@ -18,6 +18,7 @@ import lib.phonograph.misc.OpenDirStorageAccessTool
 import lib.phonograph.misc.OpenFileStorageAccessTool
 import lib.phonograph.misc.menuProvider
 import mt.tint.setActivityToolbarColorAuto
+import mt.tint.viewtint.setBackgroundTint
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryDisabledTextColor
 import mt.util.color.secondaryTextColor
@@ -29,9 +30,9 @@ import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.mechanism.PlaylistsManagement
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
+import player.phonograph.model.UIMode
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.model.playlist.GeneratedPlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.totalDuration
@@ -42,6 +43,7 @@ import util.phonograph.playlist.mediastore.moveItemViaMediastore
 import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
 import androidx.activity.viewModels
 import androidx.core.graphics.BlendModeCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -103,7 +105,8 @@ class PlaylistDetailActivity :
         super.onCreate(savedInstanceState)
         setUpToolbar()
 
-        setUpRecyclerView()
+        prepareRecyclerView()
+        updateRecyclerView(editMode = false)
         setUpDashBroad()
 
         observeData()
@@ -119,8 +122,18 @@ class PlaylistDetailActivity :
         }
 
         lifecycleScope.launch {
+            model.currentMode.collect { mode ->
+                switchMode(model.previousMode, mode)
+                supportActionBar!!.title =
+                    if (mode == UIMode.Editor)
+                        "${model.playlist.value.name} [${getString(R.string.edit)}]"
+                    else
+                        model.playlist.value.name
+            }
+        }
+        lifecycleScope.launch {
             model.playlist.collect { playlist ->
-                model.fetchSongs(this@PlaylistDetailActivity)
+                model.fetchAllSongs(this@PlaylistDetailActivity)
                 supportActionBar!!.title = playlist.name
                 if (playlist !is SmartPlaylist &&
                     !PlaylistsManagement.doesPlaylistExist(this@PlaylistDetailActivity, playlist.id)
@@ -129,6 +142,13 @@ class PlaylistDetailActivity :
                     finish()
                 }
                 updateDashboard(playlist, model.songs.value)
+            }
+        }
+        lifecycleScope.launch {
+            model.keyword.collect { word ->
+                if (model.currentMode.value == UIMode.Search) {
+                    model.searchSongs(this@PlaylistDetailActivity, word)
+                }
             }
         }
     }
@@ -152,10 +172,9 @@ class PlaylistDetailActivity :
         setActivityToolbarColorAuto(binding.toolbar)
     }
 
-    private fun setUpRecyclerView() {
+    private fun prepareRecyclerView() {
+        // FastScrollRecyclerView
         binding.recyclerView.setUpFastScrollRecyclerViewColor(this, accentColor)
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
-
         binding.recyclerView.setOnFastScrollStateChangeListener(
             object : OnFastScrollStateChangeListener {
                 override fun onFastScrollStart() {
@@ -166,28 +185,52 @@ class PlaylistDetailActivity :
                 override fun onFastScrollStop() {}
             }
         )
-        // Init adapter
+        // adapter
         adapter = PlaylistSongDisplayAdapter(this, cabController, ArrayList(), null)
-        binding.recyclerView.adapter = adapter
+    }
+
+    private fun updateRecyclerView(editMode: Boolean) {
+
+        if (!editMode) {
+            adapter.editMode = false
+            binding.recyclerView.also { rv ->
+                rv.layoutManager = LinearLayoutManager(this)
+                rv.adapter = adapter
+            }
+            adapter.onMove = { _, _ -> true }
+            adapter.onDelete = {}
+        } else {
+            val playlist = model.playlist.value
+            adapter.editMode = true
+            binding.recyclerView.also { rv ->
+                recyclerViewDragDropManager = RecyclerViewDragDropManager()
+                recyclerViewDragDropManager!!.attachRecyclerView(rv)
+                wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(adapter)
+
+                rv.adapter = wrappedAdapter
+                rv.layoutManager = LinearLayoutManager(this)
+                rv.itemAnimator = RefactoredDefaultItemAnimator()
+            }
+            adapter.onMove = { fromPosition: Int, toPosition: Int ->
+                runBlocking {
+                    moveItemViaMediastore(this@PlaylistDetailActivity, playlist.id, fromPosition, toPosition)
+                }
+            }
+            adapter.onDelete = {
+                runBlocking {
+                    removeFromPlaylistViaMediastore(this@PlaylistDetailActivity, adapter.dataset[it], playlist.id)
+                }
+            }
+        }
     }
 
     private fun setUpDashBroad() {
         with(binding) {
             dashBroad.setBackgroundColor(primaryColor)
             dashBroad.addOnOffsetChangedListener { _, verticalOffset ->
-                recyclerView.setPadding(
-                    recyclerView.paddingLeft,
-                    dashBroad.totalScrollRange + verticalOffset,
-                    recyclerView.paddingRight,
-                    recyclerView.paddingBottom
-                )
+                updateRecyclerviewPadding(verticalOffset)
             }
-            recyclerView.setPadding(
-                recyclerView.paddingLeft,
-                recyclerView.paddingTop + dashBroad.height,
-                recyclerView.paddingRight,
-                recyclerView.paddingBottom
-            )
+            updateRecyclerviewPadding(0)
         }
 
         // colors
@@ -234,6 +277,62 @@ class PlaylistDetailActivity :
             songCountText.setTextColor(textColor)
             durationText.setTextColor(textColor)
             pathText.setTextColor(textColor)
+
+
+            with(searchBox) {
+                searchBadge.setImageDrawable(
+                    getTintedDrawable(R.drawable.ic_search_white_24dp, textColor)
+                )
+                close.setImageDrawable(
+                    getTintedDrawable(R.drawable.ic_close_white_24dp, textColor)
+                )
+                close.setOnClickListener {
+                    val editable = editQuery.editableText
+                    if (editable.isEmpty()) {
+                        model.updateCurrentMode(UIMode.Common)
+                    } else {
+                        editable.clear()
+                    }
+                }
+                editQuery.setTextColor(textColor)
+                editQuery.setHintTextColor(iconColor)
+                editQuery.setBackgroundTint(textColor)
+            }
+            searchBox.editQuery.addTextChangedListener { editable ->
+                if (editable != null) {
+                    model.updateKeyword(editable.toString())
+                }
+            }
+        }
+
+    }
+
+
+    private fun updateRecyclerviewPadding(verticalOffset: Int) {
+        with(binding) {
+            val paddingTop = dashBroad.totalScrollRange + verticalOffset
+            recyclerView.setPadding(
+                recyclerView.paddingLeft,
+                paddingTop,
+                recyclerView.paddingRight,
+                recyclerView.paddingBottom
+            )
+        }
+    }
+
+    private fun showSearchBar() {
+        with(binding) {
+            searchBar.visibility = VISIBLE
+            searchBox.editQuery.setText(model.keyword.value)
+            updateRecyclerviewPadding(0)
+        }
+    }
+
+    private fun hideSearchBar() {
+        with(binding) {
+            searchBar.visibility = GONE
+            searchBox.editQuery.setText("")
+            updateRecyclerviewPadding(searchBar.height)
         }
     }
 
@@ -253,19 +352,7 @@ class PlaylistDetailActivity :
     }
 
     private fun setupMenu(menu: Menu) {
-        val playlist: Playlist = model.playlist.value
-        val iconColor = primaryTextColor(primaryColor)
-        playlistToolbar(menu, this, playlist, iconColor, ::enterEditMode) {
-            refresh(playlist)
-        }
-    }
-
-    private fun refresh(playlist: Playlist) {
-        if (playlist is GeneratedPlaylist) {
-            playlist.refresh(this)
-        }
-        adapter.dataset = emptyList()
-        model.fetchSongs(this)
+        playlistToolbar(menu, this, model, iconColor = primaryTextColor(primaryColor))
     }
 
     private fun setupMenuCallback(item: MenuItem): Boolean {
@@ -279,49 +366,59 @@ class PlaylistDetailActivity :
         }
     }
 
-    private fun enterEditMode() {
 
-        model.editMode = true
-        adapter.editMode = true
+    @Synchronized
+    fun switchMode(oldMode: UIMode, newMode: UIMode) {
 
-        val playlist = model.playlist.value
+        when (oldMode) {
+            UIMode.Common -> when (newMode) {
+                UIMode.Common -> {}
+                UIMode.Editor -> {
+                    updateRecyclerView(editMode = true)
+                }
 
-        adapter.onMove = { fromPosition: Int, toPosition: Int ->
-            runBlocking {
-                moveItemViaMediastore(this@PlaylistDetailActivity, playlist.id, fromPosition, toPosition)
+                UIMode.Search -> {
+                    model.searchSongs(this, model.keyword.value)
+                    showSearchBar()
+                }
+            }
+
+            UIMode.Editor -> when (newMode) {
+                UIMode.Common -> {
+                    updateRecyclerView(editMode = false)
+                }
+
+                UIMode.Editor -> {}
+                UIMode.Search -> {
+                    updateRecyclerView(editMode = false)
+                    model.searchSongs(this, model.keyword.value)
+                    showSearchBar()
+                }
+            }
+
+            UIMode.Search -> when (newMode) {
+                UIMode.Common -> {
+                    model.fetchAllSongs(this)
+                    hideSearchBar()
+                }
+
+                UIMode.Editor -> {
+                    model.fetchAllSongs(this)
+                    updateRecyclerView(editMode = true)
+                    hideSearchBar()
+                }
+
+                UIMode.Search -> {}
             }
         }
-        adapter.onDelete = {
-            runBlocking {
-                removeFromPlaylistViaMediastore(this@PlaylistDetailActivity, adapter.dataset[it], playlist.id)
-            }
-        }
-
-        with(binding) {
-            supportActionBar!!.title = "${playlist.name} [${getString(R.string.edit)}]"
-
-            recyclerViewDragDropManager = RecyclerViewDragDropManager()
-            wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(adapter)
-            recyclerView.itemAnimator = RefactoredDefaultItemAnimator()
-            recyclerView.adapter = wrappedAdapter
-            recyclerViewDragDropManager!!.attachRecyclerView(binding.recyclerView)
-        }
-    }
-
-    private fun exitEditMode() {
-        model.editMode = false
-        adapter.editMode = false
-
-        setUpRecyclerView()
-        refresh(model.playlist.value)
     }
 
     override fun onBackPressed() {
-        if (model.editMode) {
-            exitEditMode()
-            return
+        when {
+            cabController.dismiss()                  -> return
+            model.currentMode.value == UIMode.Common -> super.onBackPressed()
+            else                                     -> model.updateCurrentMode(UIMode.Common)
         }
-        if (cabController.dismiss()) return else super.onBackPressed()
     }
 
     /* *******************
@@ -346,7 +443,8 @@ class PlaylistDetailActivity :
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
-            refresh(model.playlist.value)
+            adapter.dataset = emptyList()
+            model.refreshPlaylist(this@PlaylistDetailActivity)
         }
     }
 

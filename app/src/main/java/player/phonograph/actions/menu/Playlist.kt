@@ -10,7 +10,16 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import mt.pref.ThemeColor
 import player.phonograph.R
-import player.phonograph.actions.*
+import player.phonograph.actions.actionAddToCurrentQueue
+import player.phonograph.actions.actionAddToPlaylist
+import player.phonograph.actions.actionDeletePlaylist
+import player.phonograph.actions.actionPlay
+import player.phonograph.actions.actionPlayNext
+import player.phonograph.actions.actionRenamePlaylist
+import player.phonograph.actions.actionSavePlaylist
+import player.phonograph.actions.actionShuffleAndPlay
+import player.phonograph.actions.fragmentActivity
+import player.phonograph.model.UIMode
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.PlaylistType
@@ -18,6 +27,7 @@ import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
+import player.phonograph.ui.activities.PlaylistModel
 import player.phonograph.ui.compose.tag.BatchTagEditorActivity
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.annotation.ColorInt
@@ -28,12 +38,11 @@ import android.view.MenuItem
 fun playlistToolbar(
     menu: Menu,
     context: Context,
-    playlist: Playlist,
+    model: PlaylistModel,
     @ColorInt iconColor: Int,
-    enterEditMode: () -> Unit,
-    refresh: () -> Unit,
 ) =
     context.run {
+        val playlist = model.playlist.value
         attach(menu) {
             menuItem {
                 title = getString(R.string.action_play)
@@ -48,6 +57,19 @@ fun playlistToolbar(
                 onClick { playlist.actionShuffleAndPlay(context) }
             }
             menuItem {
+                title = getString(R.string.action_search)
+                icon = getTintedDrawable(R.drawable.ic_search_white_24dp, iconColor)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                onClick {
+                    if (model.currentMode.value != UIMode.Search) {
+                        model.updateCurrentMode(UIMode.Search)
+                    } else { // exit
+                        model.updateCurrentMode(UIMode.Common)
+                    }
+                    true
+                }
+            }
+            menuItem {
                 title = getString(R.string.action_play_next)
                 icon = getTintedDrawable(R.drawable.ic_redo_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
@@ -59,7 +81,7 @@ fun playlistToolbar(
                 icon = getTintedDrawable(R.drawable.ic_refresh_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    refresh()
+                    model.refreshPlaylist(context)
                     true
                 }
             }
@@ -87,7 +109,7 @@ fun playlistToolbar(
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
                         if (playlist is FilePlaylist) {
-                            enterEditMode()
+                            model.updateCurrentMode(UIMode.Editor)
                             true
                         } else {
                             false
@@ -159,7 +181,7 @@ fun playlistToolbar(
                             ) { dialog, index, _ ->
                                 try {
                                     Setting.instance.lastAddedCutoffPref = prefValue[index]
-                                    refresh()
+                                    model.refreshPlaylist(context)
                                 } catch (e: Exception) {
                                     ErrorNotification.postErrorNotification(e)
                                 }

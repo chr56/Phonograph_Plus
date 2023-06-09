@@ -33,6 +33,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
+        <TextView
+            android:id="@android:id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center_vertical"
+            android:text="@string/playlist_empty_text"
+            android:textColor="?android:textColorSecondary"
+            android:textSize="20sp"
+            android:visibility="gone" />
+
+        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:scrollbars="none"
+            tools:paddingTop="256dp" />
+
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/dash_broad"
             android:layout_width="match_parent"
@@ -43,6 +64,23 @@
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 tools:ignore="HardcodedText">
+
+
+                <FrameLayout
+                    android:id="@+id/search_bar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@id/icon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:visibility="visible">
+
+                    <include
+                        android:id="@+id/search_box"
+                        layout="@layout/layout_search_box" />
+                </FrameLayout>
 
                 <ImageView
                     android:id="@+id/icon"
@@ -56,7 +94,7 @@
                     app:layout_constraintEnd_toStartOf="@id/barrier"
                     app:layout_constraintHorizontal_bias="0.494"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/search_bar"
                     app:layout_constraintVertical_bias="0.0" />
 
 
@@ -90,7 +128,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/song_count_text"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@id/barrier"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/search_bar"
                     app:layout_constraintVertical_chainStyle="packed" />
 
                 <ImageView
@@ -166,25 +204,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
-
-        <TextView
-            android:id="@android:id/empty"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:fontFamily="sans-serif-light"
-            android:gravity="center_vertical"
-            android:text="@string/playlist_empty_text"
-            android:textColor="?android:textColorSecondary"
-            android:textSize="20sp"
-            android:visibility="gone" />
-
-        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:scrollbars="none" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
