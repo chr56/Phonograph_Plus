@@ -6,9 +6,21 @@
 
     <include layout="@layout/status_bar" />
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        style="@style/Toolbar" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:colorBackground"
+        android:elevation="@dimen/toolbar_elevation">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            style="@style/Toolbar" />
+
+        <ViewStub
+            android:id="@+id/cab_stub"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize" />
+    </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"

@@ -1,5 +1,6 @@
 package player.phonograph.ui.activities
 
+import lib.phonograph.cab.createToolbarCab
 import lib.phonograph.misc.menuProvider
 import mt.tint.setActivityToolbarColor
 import mt.tint.viewtint.setSearchViewContentColor
@@ -7,6 +8,7 @@ import mt.tint.viewtint.tintCollapseIcon
 import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.adapter.SearchResultAdapter
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.databinding.ActivitySearchBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
@@ -33,6 +35,7 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
 
     private lateinit var adapter: SearchResultAdapter
     private var searchView: SearchView? = null
+    private lateinit var cabController: MultiSelectionCabController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewBinding = ActivitySearchBinding.inflate(layoutInflater)
@@ -40,8 +43,8 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
 
         setContentView(binding.root)
 
-        setUpRecyclerView()
         setUpToolBar()
+        setUpRecyclerView()
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -63,7 +66,7 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
     }
 
     private fun setUpRecyclerView() {
-        adapter = SearchResultAdapter(this,null)
+        adapter = SearchResultAdapter(this, cabController)
         with(binding) {
             recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
             recyclerView.adapter = adapter
@@ -86,6 +89,8 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
         setActivityToolbarColor(binding.toolbar, primaryColor)
+        val cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
+        cabController = MultiSelectionCabController(cab)
     }
 
     private fun setupMenu(menu: Menu) {
@@ -115,6 +120,7 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
         binding.toolbar.tintCollapseIcon(textColor)
         setSearchViewContentColor(searchView, textColor)
     }
+
     override fun onQueryTextSubmit(query: String): Boolean {
         hideSoftKeyboard()
         return false
