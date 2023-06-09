@@ -6,7 +6,7 @@ import mt.tint.viewtint.setSearchViewContentColor
 import mt.tint.viewtint.tintCollapseIcon
 import mt.util.color.primaryTextColor
 import player.phonograph.R
-import player.phonograph.adapter.SearchAdapter
+import player.phonograph.adapter.SearchResultAdapter
 import player.phonograph.databinding.ActivitySearchBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
@@ -31,7 +31,7 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
 
     private val viewModel: SearchActivityViewModel by viewModels()
 
-    private lateinit var adapter: SearchAdapter
+    private lateinit var adapter: SearchResultAdapter
     private var searchView: SearchView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +63,7 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
     }
 
     private fun setUpRecyclerView() {
-        adapter = SearchAdapter(this, emptyList())
+        adapter = SearchResultAdapter(this,null)
         with(binding) {
             recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
             recyclerView.adapter = adapter
