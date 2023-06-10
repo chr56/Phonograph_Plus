@@ -129,26 +129,36 @@ class FavoritesStore private constructor(context: Context) :
         }
     }
 
-    fun addSongs(songs: Collection<Song>): Boolean =
-        addMultiple(TABLE_NAME_SONGS, songs.map { Triple(it.id, it.data, it.title) })
+    fun addSongs(songs: Collection<Song>): Boolean {
+        val data = songs.map {
+            ContentValues(4).apply {
+                put(COLUMNS_ID, it.id)
+                put(COLUMNS_PATH, it.data)
+                put(COLUMNS_TITLE, it.title)
+                put(COLUMNS_TIMESTAMP, currentTimestamp())
+            }
+        }
+        return addMultipleImpl(TABLE_NAME_SONGS, data)
+    }
 
-    fun addPlaylists(playlists: Collection<FilePlaylist>): Boolean =
-        addMultiple(TABLE_NAME_PLAYLISTS, playlists.map { Triple(it.id, it.associatedFilePath, it.name) })
+    fun addPlaylists(playlists: Collection<FilePlaylist>): Boolean {
+        val data = playlists.map {
+            ContentValues(4).apply {
+                put(COLUMNS_ID, it.id)
+                put(COLUMNS_PATH, it.associatedFilePath)
+                put(COLUMNS_TITLE, it.name)
+                put(COLUMNS_TIMESTAMP, currentTimestamp())
+            }
+        }
+        return addMultipleImpl(TABLE_NAME_PLAYLISTS, data)
+    }
 
-    private fun addMultiple(tableName: String, data: List<Triple<Long, String, String?>>): Boolean {
+    private fun addMultipleImpl(tableName: String, lines: List<ContentValues>): Boolean {
         val database = writableDatabase
         database.beginTransaction()
         return try {
-            val values = ContentValues(4)
-            for ((id, path, name) in data) {
-                with(values) {
-                    put(COLUMNS_ID, id)
-                    put(COLUMNS_PATH, path)
-                    put(COLUMNS_TITLE, name)
-                    put(COLUMNS_TIMESTAMP, currentTimestamp())
-                }
-                database.insert(tableName, null, values)
-                values.clear()
+            for (line in lines) {
+                database.insert(tableName, null, line)
             }
             database.setTransactionSuccessful()
             MediaStoreTracker.notifyAllListeners()
