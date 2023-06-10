@@ -46,7 +46,7 @@ class FavoriteSongsPlaylist : SmartPlaylist, EditablePlaylist {
     }
 
     override fun clear(context: Context) {
-        FavoritesStore.instance.clear()
+        FavoritesStore.instance.clearAllSongs()
     }
 
     override fun toString(): String = "FavoritePlaylist"

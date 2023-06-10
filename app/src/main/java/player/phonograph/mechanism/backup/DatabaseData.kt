@@ -185,7 +185,7 @@ object DatabaseDataManger {
 
         return if (!songs.isNullOrEmpty()) {
             // todo: report imported songs
-            if (override) db.clear()
+            if (override) db.clearAllSongs()
             db.addAll(songs.asReversed())
             MediaStoreTracker.notifyAllListeners()
             true

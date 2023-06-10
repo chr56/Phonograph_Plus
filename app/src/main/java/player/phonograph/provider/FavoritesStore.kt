@@ -18,37 +18,34 @@ import android.database.sqlite.SQLiteOpenHelper
 class FavoritesStore private constructor(context: Context) :
         SQLiteOpenHelper(context, FAVORITE_DB, null, VERSION) {
 
-    private val creatingTableSQL =
-        "CREATE TABLE IF NOT EXISTS $TABLE_NAME ($COLUMNS_ID LONG NOT NULL PRIMARY KEY, $COLUMNS_PATH TEXT NOT NULL, $COLUMNS_TITLE TEXT, $COLUMNS_TIMESTAMP LONG);"
-
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL(creatingTableSQL)
+        db.execSQL(creatingSongsTableSQL)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME") // todo
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_SONGS") // todo
         onCreate(db)
     }
 
-    fun clear() {
+    fun clearAllSongs() {
         val database = writableDatabase
-        database.delete(TABLE_NAME, null, null)
-        notifyMediaStoreChanged()
+        database.delete(TABLE_NAME_SONGS, null, null)
+        MediaStoreTracker.notifyAllListeners()
     }
 
     fun getAllSongs(context: Context): List<Song> {
         val result: MutableList<Song> = ArrayList()
-        for (item in getAll()) {
+        for (item in getAllSongsImpl()) {
             val song = SongLoader.getSong(context, item.first)
             if (song != Song.EMPTY_SONG) result.add(song)
         }
         return result
     }
 
-    fun getAll(): List<Pair<Long, String>> {
+    private fun getAllSongsImpl(): List<Pair<Long, String>> {
         val database = readableDatabase
         val cursor = database.query(
-            TABLE_NAME,
+            TABLE_NAME_SONGS,
             arrayOf(COLUMNS_ID, COLUMNS_PATH, COLUMNS_TITLE, COLUMNS_TIMESTAMP),
             null, null, null, null, "$COLUMNS_TIMESTAMP DESC"
         )
@@ -69,13 +66,13 @@ class FavoritesStore private constructor(context: Context) :
     fun contains(songId: Long?, path: String?): Boolean {
         val database = readableDatabase
         val cursor = database.query(
-            TABLE_NAME,
+            TABLE_NAME_SONGS,
             arrayOf(COLUMNS_ID, COLUMNS_PATH, COLUMNS_TITLE, COLUMNS_TIMESTAMP),
             "$COLUMNS_ID =? OR $COLUMNS_PATH =?",
             arrayOf(songId?.toString() ?: "0", path ?: ""),
             null, null, null,
         )
-        var result: Boolean = false
+        var result = false
         cursor.use {
             result = cursor.moveToFirst()
         }
@@ -95,10 +92,10 @@ class FavoritesStore private constructor(context: Context) :
                     put(COLUMNS_TITLE, song.title)
                     put(COLUMNS_TIMESTAMP, currentTimestamp())
                 }
-            database.insert(TABLE_NAME, null, values)
+            database.insert(TABLE_NAME_SONGS, null, values)
 
             database.setTransactionSuccessful()
-            notifyMediaStoreChanged()
+            MediaStoreTracker.notifyAllListeners()
             result = true
         } finally {
             database.endTransaction()
@@ -122,11 +119,11 @@ class FavoritesStore private constructor(context: Context) :
                     put(COLUMNS_TITLE, song.title)
                     put(COLUMNS_TIMESTAMP, currentTimestamp())
                 }
-                database.insert(TABLE_NAME, null, values)
+                database.insert(TABLE_NAME_SONGS, null, values)
                 values.clear()
             }
             database.setTransactionSuccessful()
-            notifyMediaStoreChanged()
+            MediaStoreTracker.notifyAllListeners()
             result = true
         } finally {
             database.endTransaction()
@@ -143,7 +140,7 @@ class FavoritesStore private constructor(context: Context) :
         try {
 
             database.delete(
-                TABLE_NAME,
+                TABLE_NAME_SONGS,
                 "$COLUMNS_ID =? AND $COLUMNS_PATH =?",
                 arrayOf(songId.toString(), path)
             ).let {
@@ -151,26 +148,34 @@ class FavoritesStore private constructor(context: Context) :
             }
 
             database.setTransactionSuccessful()
-            notifyMediaStoreChanged()
+            MediaStoreTracker.notifyAllListeners()
         } finally {
             database.endTransaction()
         }
 
         return result
     }
-    fun remove(song: Song): Boolean = remove(song.id, song.data!!)
 
-    private fun notifyMediaStoreChanged() { MediaStoreTracker.notifyAllListeners() }
+    fun remove(song: Song): Boolean = remove(song.id, song.data)
 
     companion object {
         private const val VERSION = 1
 
-        private const val TABLE_NAME = "songs"
+        private const val TABLE_NAME_SONGS = "songs"
 
         const val COLUMNS_ID = "id" // long
         const val COLUMNS_PATH = "path" // string
         const val COLUMNS_TITLE = "title" // string
         const val COLUMNS_TIMESTAMP = "timestamp" // long
+
+
+        private const val creatingSongsTableSQL =
+            "CREATE TABLE IF NOT EXISTS $TABLE_NAME_SONGS (" +
+                    "$COLUMNS_ID LONG NOT NULL PRIMARY KEY," +
+                    " $COLUMNS_PATH TEXT NOT NULL," +
+                    " $COLUMNS_TITLE TEXT," +
+                    " $COLUMNS_TIMESTAMP LONG);"
+
 
         private var mInstance: FavoritesStore? = null
         val instance: FavoritesStore
