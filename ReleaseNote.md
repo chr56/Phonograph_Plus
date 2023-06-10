@@ -7,6 +7,7 @@
 - Fix: new created playlist would not be appeared in list util next entrance
 - New: support sorting order of playlist (but basic sorting)
 - New: support basic search song title in Playlist Detail
+- New: support multi-selection in Search Result
 
 ### {{note:zh}}
 - 注意   仅与上个预览版版本对比
@@ -15,3 +16,4 @@
 - 修复 新建的播放列表不会立即出现在列表中
 - 新增 支持播放列表的排序（基本排序支持）
 - 新增 播放列表详情类支持简单歌曲搜索
+- 新增 搜索结果支持多选
