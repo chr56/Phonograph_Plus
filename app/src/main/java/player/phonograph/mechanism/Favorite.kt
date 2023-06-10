@@ -30,7 +30,7 @@ object Favorite {
         doesPlaylistContain(context, getFavoritesPlaylist(context).id, song.id)
 
     private fun isFavoriteDatabaseImpl(song: Song): Boolean =
-        FavoritesStore.instance.contains(song)
+        FavoritesStore.instance.containsSong(song.id, song.data)
 
     /**
      * @return new state
@@ -65,9 +65,9 @@ object Favorite {
      */
     private fun toggleFavoriteDatabaseImpl(context: Context, song: Song): Boolean {
         return if (isFavorite(context, song)) {
-            !FavoritesStore.instance.remove(song)
+            !FavoritesStore.instance.removeSong(song)
         } else {
-            FavoritesStore.instance.add(song)
+            FavoritesStore.instance.addSong(song)
         }
     }
 

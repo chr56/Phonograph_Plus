@@ -8,6 +8,8 @@ import player.phonograph.App
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.provider.DatabaseConstants.FAVORITE_DB
 import player.phonograph.util.text.currentTimestamp
 import android.content.ContentValues
@@ -20,16 +22,30 @@ class FavoritesStore private constructor(context: Context) :
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(creatingSongsTableSQL)
+        db.execSQL(creatingPlaylistsTableSQL)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_SONGS") // todo
-        onCreate(db)
+        if (oldVersion == 1 && newVersion == 2) {
+            db.execSQL(creatingPlaylistsTableSQL)
+        } else {
+            db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_SONGS")
+            db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_PLAYLISTS")
+            onCreate(db)
+        }
     }
 
-    fun clearAllSongs() {
+    fun clearAll() {
+        clearAllSongs()
+        clearAllPlaylists()
+    }
+
+    fun clearAllSongs() = clearTable(TABLE_NAME_SONGS)
+    fun clearAllPlaylists() = clearTable(TABLE_NAME_PLAYLISTS)
+
+    private fun clearTable(tableName: String) {
         val database = writableDatabase
-        database.delete(TABLE_NAME_SONGS, null, null)
+        database.delete(tableName, null, null)
         MediaStoreTracker.notifyAllListeners()
     }
 
@@ -61,107 +77,121 @@ class FavoritesStore private constructor(context: Context) :
         return result
     }
 
-    fun contains(song: Song): Boolean = contains(song.id, song.data)
+    fun containsSong(songId: Long?, path: String?): Boolean =
+        containsImpl(TABLE_NAME_SONGS, songId, path)
 
-    fun contains(songId: Long?, path: String?): Boolean {
+    fun containsPlaylist(playlist: Playlist): Boolean =
+        if (playlist is FilePlaylist)
+            containsImpl(TABLE_NAME_PLAYLISTS, playlist.id, playlist.associatedFilePath)
+        else false
+
+    fun containsPlaylist(playlistId: Long?, path: String?): Boolean =
+        containsImpl(TABLE_NAME_PLAYLISTS, playlistId, path)
+
+    private fun containsImpl(table: String, id: Long?, path: String?): Boolean {
         val database = readableDatabase
         val cursor = database.query(
-            TABLE_NAME_SONGS,
+            table,
             arrayOf(COLUMNS_ID, COLUMNS_PATH, COLUMNS_TITLE, COLUMNS_TIMESTAMP),
             "$COLUMNS_ID =? OR $COLUMNS_PATH =?",
-            arrayOf(songId?.toString() ?: "0", path ?: ""),
+            arrayOf(id?.toString() ?: "0", path ?: ""),
             null, null, null,
         )
-        var result = false
-        cursor.use {
-            result = cursor.moveToFirst()
-        }
-        return result
+        return cursor.use { it.moveToFirst() }
     }
 
-    fun add(song: Song): Boolean {
-        val database = writableDatabase
-        var result = false
+    fun addSong(song: Song): Boolean =
+        addImpl(TABLE_NAME_SONGS, song.id, song.data, song.title)
 
+    fun addPlaylist(playlist: FilePlaylist): Boolean =
+        addImpl(TABLE_NAME_PLAYLISTS, playlist.id, playlist.associatedFilePath, playlist.name)
+
+    private fun addImpl(tableName: String, id: Long, path: String, name: String?): Boolean {
+        val database = writableDatabase
         database.beginTransaction()
-        try {
+        return try {
             val values = ContentValues(4)
                 .apply {
-                    put(COLUMNS_ID, song.id)
-                    put(COLUMNS_PATH, song.data)
-                    put(COLUMNS_TITLE, song.title)
+                    put(COLUMNS_ID, id)
+                    put(COLUMNS_PATH, path)
+                    put(COLUMNS_TITLE, name)
                     put(COLUMNS_TIMESTAMP, currentTimestamp())
                 }
-            database.insert(TABLE_NAME_SONGS, null, values)
-
+            database.insert(tableName, null, values)
             database.setTransactionSuccessful()
             MediaStoreTracker.notifyAllListeners()
-            result = true
+            true
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+            false
         } finally {
             database.endTransaction()
         }
-
-        return result
     }
 
-    fun addAll(songs: Collection<Song>): Boolean {
+    fun addSongs(songs: Collection<Song>): Boolean =
+        addMultiple(TABLE_NAME_SONGS, songs.map { Triple(it.id, it.data, it.title) })
+
+    fun addPlaylists(playlists: Collection<FilePlaylist>): Boolean =
+        addMultiple(TABLE_NAME_PLAYLISTS, playlists.map { Triple(it.id, it.associatedFilePath, it.name) })
+
+    private fun addMultiple(tableName: String, data: List<Triple<Long, String, String?>>): Boolean {
         val database = writableDatabase
-        var result = false
-
         database.beginTransaction()
-        try {
+        return try {
             val values = ContentValues(4)
-
-            for (song in songs) {
+            for ((id, path, name) in data) {
                 with(values) {
-                    put(COLUMNS_ID, song.id)
-                    put(COLUMNS_PATH, song.data)
-                    put(COLUMNS_TITLE, song.title)
+                    put(COLUMNS_ID, id)
+                    put(COLUMNS_PATH, path)
+                    put(COLUMNS_TITLE, name)
                     put(COLUMNS_TIMESTAMP, currentTimestamp())
                 }
-                database.insert(TABLE_NAME_SONGS, null, values)
+                database.insert(tableName, null, values)
                 values.clear()
             }
             database.setTransactionSuccessful()
             MediaStoreTracker.notifyAllListeners()
-            result = true
+            true
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+            false
         } finally {
             database.endTransaction()
         }
-
-        return result
     }
 
-    fun remove(songId: Long, path: String): Boolean {
+    fun removeSong(song: Song): Boolean =
+        removeImpl(TABLE_NAME_SONGS, song.id, song.data)
+
+    fun removePlaylist(playlist: FilePlaylist): Boolean =
+        removeImpl(TABLE_NAME_PLAYLISTS, playlist.id, playlist.associatedFilePath)
+
+    private fun removeImpl(table: String, id: Long, path: String): Boolean {
         val database = writableDatabase
-        var result = false
-
         database.beginTransaction()
-        try {
-
-            database.delete(
-                TABLE_NAME_SONGS,
+        return try {
+            val result = database.delete(
+                table,
                 "$COLUMNS_ID =? AND $COLUMNS_PATH =?",
-                arrayOf(songId.toString(), path)
-            ).let {
-                result = it > 0
-            }
-
+                arrayOf(id.toString(), path)
+            )
             database.setTransactionSuccessful()
             MediaStoreTracker.notifyAllListeners()
+            result > 0
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+            false
         } finally {
             database.endTransaction()
         }
-
-        return result
     }
-
-    fun remove(song: Song): Boolean = remove(song.id, song.data)
 
     companion object {
         private const val VERSION = 1
 
         private const val TABLE_NAME_SONGS = "songs"
+        private const val TABLE_NAME_PLAYLISTS = "playlists"
 
         const val COLUMNS_ID = "id" // long
         const val COLUMNS_PATH = "path" // string
@@ -171,6 +201,14 @@ class FavoritesStore private constructor(context: Context) :
 
         private const val creatingSongsTableSQL =
             "CREATE TABLE IF NOT EXISTS $TABLE_NAME_SONGS (" +
+                    "$COLUMNS_ID LONG NOT NULL PRIMARY KEY," +
+                    " $COLUMNS_PATH TEXT NOT NULL," +
+                    " $COLUMNS_TITLE TEXT," +
+                    " $COLUMNS_TIMESTAMP LONG);"
+
+
+        private const val creatingPlaylistsTableSQL =
+            "CREATE TABLE IF NOT EXISTS $TABLE_NAME_PLAYLISTS (" +
                     "$COLUMNS_ID LONG NOT NULL PRIMARY KEY," +
                     " $COLUMNS_PATH TEXT NOT NULL," +
                     " $COLUMNS_TITLE TEXT," +

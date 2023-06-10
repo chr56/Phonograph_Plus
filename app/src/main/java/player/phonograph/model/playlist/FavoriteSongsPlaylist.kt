@@ -29,7 +29,7 @@ class FavoriteSongsPlaylist : SmartPlaylist, EditablePlaylist {
         FavoritesStore.instance.getAllSongs(context)
 
     override fun containsSong(context: Context, songId: Long): Boolean =
-        FavoritesStore.instance.contains(songId, "")
+        FavoritesStore.instance.containsSong(songId, "")
 
     override fun removeSong(context: Context, song: Song) {
         Favorite.toggleFavorite(context, song)
