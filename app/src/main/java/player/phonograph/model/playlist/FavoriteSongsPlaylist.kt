@@ -4,14 +4,14 @@
 
 package player.phonograph.model.playlist
 
+import player.phonograph.R
+import player.phonograph.mechanism.Favorite
+import player.phonograph.model.Song
+import player.phonograph.provider.FavoritesStore
+import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.annotation.Keep
-import player.phonograph.R
-import player.phonograph.model.Song
-import player.phonograph.provider.FavoriteSongsStore
-import player.phonograph.mechanism.Favorite
 
 class FavoriteSongsPlaylist : SmartPlaylist, EditablePlaylist {
 
@@ -26,10 +26,10 @@ class FavoriteSongsPlaylist : SmartPlaylist, EditablePlaylist {
     override var iconRes: Int = R.drawable.ic_favorite_border_white_24dp
 
     override fun getSongs(context: Context): List<Song> =
-        FavoriteSongsStore.instance.getAllSongs(context)
+        FavoritesStore.instance.getAllSongs(context)
 
     override fun containsSong(context: Context, songId: Long): Boolean =
-        FavoriteSongsStore.instance.contains(songId, "")
+        FavoritesStore.instance.contains(songId, "")
 
     override fun removeSong(context: Context, song: Song) {
         Favorite.toggleFavorite(context, song)
@@ -46,7 +46,7 @@ class FavoriteSongsPlaylist : SmartPlaylist, EditablePlaylist {
     }
 
     override fun clear(context: Context) {
-        FavoriteSongsStore.instance.clear()
+        FavoritesStore.instance.clear()
     }
 
     override fun toString(): String = "FavoritePlaylist"

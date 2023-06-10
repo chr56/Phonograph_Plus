@@ -4,13 +4,13 @@
 package player.phonograph.mechanism
 
 import player.phonograph.R
-import player.phonograph.model.Song
-import player.phonograph.model.playlist.Playlist
-import player.phonograph.provider.FavoriteSongsStore
-import player.phonograph.settings.Setting
 import player.phonograph.mechanism.PlaylistsManagement.doesPlaylistContain
 import player.phonograph.mechanism.PlaylistsManagement.getPlaylist
 import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.model.Song
+import player.phonograph.model.playlist.Playlist
+import player.phonograph.provider.FavoritesStore
+import player.phonograph.settings.Setting
 import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore
 import util.phonograph.playlist.mediastore.createOrFindPlaylistViaMediastore
 import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
@@ -30,7 +30,7 @@ object Favorite {
         doesPlaylistContain(context, getFavoritesPlaylist(context).id, song.id)
 
     private fun isFavoriteDatabaseImpl(song: Song): Boolean =
-        FavoriteSongsStore.instance.contains(song)
+        FavoritesStore.instance.contains(song)
 
     /**
      * @return new state
@@ -65,9 +65,9 @@ object Favorite {
      */
     private fun toggleFavoriteDatabaseImpl(context: Context, song: Song): Boolean {
         return if (isFavorite(context, song)) {
-            !FavoriteSongsStore.instance.remove(song)
+            !FavoritesStore.instance.remove(song)
         } else {
-            FavoriteSongsStore.instance.add(song)
+            FavoritesStore.instance.add(song)
         }
     }
 

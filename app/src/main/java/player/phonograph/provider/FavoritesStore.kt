@@ -15,7 +15,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class FavoriteSongsStore(context: Context = App.instance) :
+class FavoritesStore private constructor(context: Context) :
         SQLiteOpenHelper(context, FAVORITE_DB, null, VERSION) {
 
     private val creatingTableSQL =
@@ -172,11 +172,11 @@ class FavoriteSongsStore(context: Context = App.instance) :
         const val COLUMNS_TITLE = "title" // string
         const val COLUMNS_TIMESTAMP = "timestamp" // long
 
-        private var mInstance: FavoriteSongsStore? = null
-        val instance: FavoriteSongsStore
+        private var mInstance: FavoritesStore? = null
+        val instance: FavoritesStore
             get() {
                 if (mInstance == null) {
-                    mInstance = FavoriteSongsStore(App.instance)
+                    mInstance = FavoritesStore(App.instance)
                 }
                 return mInstance!!
             }

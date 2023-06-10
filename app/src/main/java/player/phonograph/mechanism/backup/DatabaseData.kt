@@ -8,7 +8,7 @@ import okio.BufferedSink
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.mediastore.searchSong
 import player.phonograph.model.Song
-import player.phonograph.provider.FavoriteSongsStore
+import player.phonograph.provider.FavoritesStore
 import player.phonograph.provider.MusicPlaybackQueueStore
 import player.phonograph.provider.PathFilterStore
 import player.phonograph.util.reportError
@@ -155,7 +155,7 @@ object DatabaseDataManger {
     }
 
     private fun exportFavorites(context: Context): JsonObject? {
-        val db = FavoriteSongsStore.instance
+        val db = FavoritesStore.instance
         val songs = db.getAllSongs(context).map(DatabaseDataManger::persistentSong)
         return if (songs.isNotEmpty()) {
             JsonObject(
@@ -179,7 +179,7 @@ object DatabaseDataManger {
     private fun importFavorites(context: Context, json: JsonObject, override: Boolean): Boolean {
         val f = json[FAVORITE] as? JsonArray
 
-        val db = FavoriteSongsStore.instance
+        val db = FavoritesStore.instance
 
         val songs = recoverSongs(context, f)
 
