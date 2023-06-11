@@ -22,6 +22,7 @@ import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
+import player.phonograph.provider.FavoritesStore
 import player.phonograph.settings.Setting
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.dialogs.CreatePlaylistDialog
@@ -54,7 +55,12 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayo
             ).also {
                 if (!Setting.instance.useLegacyFavoritePlaylistImpl) it.add(FavoriteSongsPlaylist(context))
             }.also {
-                it.addAll(PlaylistsManagement.getAllPlaylists(context))
+                val allPlaylist = PlaylistsManagement.getAllPlaylists(context)
+                val (pined, normal) = allPlaylist.partition {
+                    FavoritesStore.instance.containsPlaylist(it.id, it.associatedFilePath)
+                }
+                it.addAll(pined)
+                it.addAll(normal)
             }
         }
 
