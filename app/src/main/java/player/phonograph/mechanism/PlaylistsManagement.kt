@@ -224,6 +224,13 @@ object PlaylistsManagement {
         return false
     }
 
+
+    fun searchPlaylist(context: Context, path: String): FilePlaylist? {
+        return getPlaylist(
+            queryPlaylists(context, "${PlaylistsColumns.DATA} = ?", arrayOf(path))
+        ).takeIf { it.id > 0 }
+    }
+
     fun searchPlaylist(context: Context, dir: DocumentFile, filePlaylists: List<FilePlaylist>): List<DocumentFile> {
         val fileNames = getPlaylistFileNames(context, filePlaylists)
         if (fileNames.isEmpty()) {

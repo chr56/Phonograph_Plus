@@ -419,4 +419,6 @@
     <string name="action_load">Load</string>
     <string name="app_info">App Info</string>
     <string name="action_grant_storage_permission">Grant External Storage Permission</string>
+    <string name="action_pin">Pin</string>
+    <string name="action_unpin">Unpin</string>
 </resources>

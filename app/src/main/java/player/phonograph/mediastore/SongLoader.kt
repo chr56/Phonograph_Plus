@@ -1,9 +1,9 @@
 package player.phonograph.mediastore
 
+import player.phonograph.model.Song
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
-import player.phonograph.model.Song
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -19,6 +19,15 @@ object SongLoader {
         val cursor =
             querySongs(
                 context, "${MediaStore.Audio.AudioColumns._ID} =? ", arrayOf(queryId.toString())
+            )
+        return cursor.getFirstSong()
+    }
+
+    @JvmStatic
+    fun getSong(context: Context, path: String): Song {
+        val cursor =
+            querySongs(
+                context, "${MediaStore.Audio.AudioColumns.DATA} =? ", arrayOf(path)
             )
         return cursor.getFirstSong()
     }

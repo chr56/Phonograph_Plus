@@ -406,4 +406,6 @@
     <string name="action_load">加载</string>
     <string name="app_info">应用信息</string>
     <string name="action_grant_storage_permission">授权储存权限</string>
+    <string name="action_pin">置顶</string>
+    <string name="action_unpin">取消置顶</string>
 </resources>

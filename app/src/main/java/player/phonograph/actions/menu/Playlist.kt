@@ -26,6 +26,7 @@ import player.phonograph.model.playlist.PlaylistType
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.notification.ErrorNotification
+import player.phonograph.provider.FavoritesStore
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.PlaylistModel
 import player.phonograph.ui.compose.tag.BatchTagEditorActivity
@@ -227,6 +228,16 @@ fun playlistPopupMenu(menu: Menu, context: Context, playlist: Playlist) = contex
                         playlist.actionRenamePlaylist(it)
                         true
                     }
+                }
+            }
+            menuItem {
+                val pined = FavoritesStore.instance.containsPlaylist(playlist)
+                title =
+                    getString(if (!pined) R.string.action_pin else R.string.action_unpin)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    val ins = FavoritesStore.instance
+                    if (pined) ins.removePlaylist(playlist) else ins.addPlaylist(playlist)
                 }
             }
         }

@@ -5,10 +5,12 @@
 package player.phonograph.mechanism.backup
 
 import okio.BufferedSink
+import player.phonograph.mechanism.PlaylistsManagement
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.mediastore.searchSong
 import player.phonograph.model.Song
-import player.phonograph.provider.FavoriteSongsStore
+import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.provider.FavoritesStore
 import player.phonograph.provider.MusicPlaybackQueueStore
 import player.phonograph.provider.PathFilterStore
 import player.phonograph.util.reportError
@@ -147,7 +149,8 @@ object DatabaseDataManger {
         }
     }
 
-    private const val FAVORITE = "favorite"
+    private const val FAVORITE_SONG = "favorite"
+    private const val PINED_PLAYLIST = "pined_playlists"
 
 
     fun exportFavorites(sink: BufferedSink, context: Context): Boolean {
@@ -155,13 +158,15 @@ object DatabaseDataManger {
     }
 
     private fun exportFavorites(context: Context): JsonObject? {
-        val db = FavoriteSongsStore.instance
+        val db = FavoritesStore.instance
         val songs = db.getAllSongs(context).map(DatabaseDataManger::persistentSong)
+        val playlists = db.getAllPlaylists(context).map(DatabaseDataManger::persistentPlaylist)
         return if (songs.isNotEmpty()) {
             JsonObject(
                 mapOf(
                     VERSION to JsonPrimitive(VERSION_CODE),
-                    FAVORITE to JsonArray(songs)
+                    FAVORITE_SONG to JsonArray(songs),
+                    PINED_PLAYLIST to JsonArray(playlists),
                 )
             )
         } else {
@@ -177,22 +182,32 @@ object DatabaseDataManger {
     }
 
     private fun importFavorites(context: Context, json: JsonObject, override: Boolean): Boolean {
-        val f = json[FAVORITE] as? JsonArray
+        val s = json[FAVORITE_SONG] as? JsonArray
+        val p = json[PINED_PLAYLIST] as? JsonArray
 
-        val db = FavoriteSongsStore.instance
+        val db = FavoritesStore.instance
 
-        val songs = recoverSongs(context, f)
+        val songs = recoverSongs(context, s)
+        val playlists = recoverPlaylists(context, p)
 
-        return if (!songs.isNullOrEmpty()) {
-            // todo: report imported songs
-            if (override) db.clear()
-            db.addAll(songs.asReversed())
-            MediaStoreTracker.notifyAllListeners()
-            true
+        val r1 = if (!songs.isNullOrEmpty()) {
+            if (override) db.clearAllSongs()
+            db.addSongs(songs.asReversed())
         } else {
-            warning(TAG, "Favorites: Nothing to import")
             false
         }
+
+        val r2 = if (!playlists.isNullOrEmpty()) {
+            if (override) db.clearAllPlaylists()
+            db.addPlaylists(playlists.asReversed())
+        } else {
+            false
+        }
+
+        // todo: report the imported
+        MediaStoreTracker.notifyAllListeners()
+
+        return r1 || r2
     }
 
     private fun persistentSong(song: Song): JsonElement =
@@ -201,6 +216,13 @@ object DatabaseDataManger {
     private fun recoverSongs(context: Context, array: JsonArray?): List<Song>? =
         array?.map { parser.decodeFromJsonElement(PersistentSong.serializer(), it) }
             ?.mapNotNull { it.getMatchingSong(context) }
+
+    private fun persistentPlaylist(playlist: FilePlaylist): JsonElement =
+        parser.encodeToJsonElement(PersistentPlaylist.serializer(), PersistentPlaylist.from(playlist))
+
+    private fun recoverPlaylists(context: Context, array: JsonArray?): List<FilePlaylist>? =
+        array?.map { parser.decodeFromJsonElement(PersistentPlaylist.serializer(), it) }
+            ?.mapNotNull { it.getMatchingPlaylist(context) }
 
 
     @Keep
@@ -221,6 +243,20 @@ object DatabaseDataManger {
             if (song == Song.EMPTY_SONG) return null
             return song
         }
+    }
+    @Keep
+    @Serializable
+    class PersistentPlaylist(
+        @SerialName("path") val path: String,
+        @SerialName("title") val name: String,
+    ) {
+        companion object {
+            fun from(filePlaylist: FilePlaylist): PersistentPlaylist =
+                PersistentPlaylist(filePlaylist.associatedFilePath, filePlaylist.name)
+        }
+
+        fun getMatchingPlaylist(context: Context): FilePlaylist? =
+            PlaylistsManagement.searchPlaylist(context, path)
     }
 
     private fun parseJson(rawString: String, name: String, block: (JsonObject) -> Boolean): Boolean {
