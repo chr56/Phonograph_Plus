@@ -5,6 +5,7 @@
 package player.phonograph.provider
 
 import player.phonograph.App
+import player.phonograph.mechanism.PlaylistsManagement
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
@@ -15,6 +16,7 @@ import player.phonograph.util.text.currentTimestamp
 import player.phonograph.util.warning
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
@@ -51,33 +53,49 @@ class FavoritesStore private constructor(context: Context) :
         MediaStoreTracker.notifyAllListeners()
     }
 
-    fun getAllSongs(context: Context): List<Song> {
-        val result: MutableList<Song> = ArrayList()
-        for (item in getAllSongsImpl()) {
-            val song = SongLoader.getSong(context, item.first)
-            if (song != Song.EMPTY_SONG) result.add(song)
+    fun getAllSongs(context: Context): List<Song> = getAllSongsImpl(context)
+
+    fun getAllPlaylists(context: Context): List<FilePlaylist> = getAllPlaylistsImpl(context)
+
+
+    private fun getAllSongsImpl(context: Context): List<Song> {
+        return parseCursorImpl(TABLE_NAME_SONGS) { cursor ->
+            SongLoader.getSong(context, cursor.getString(1))
         }
-        return result
     }
 
-    private fun getAllSongsImpl(): List<Pair<Long, String>> {
+    private fun getAllPlaylistsImpl(context: Context): List<FilePlaylist> {
+        return parseCursorImpl(TABLE_NAME_PLAYLISTS) { cursor ->
+            PlaylistsManagement.searchPlaylist(context, cursor.getString(1))
+        }
+    }
+
+    private fun <T> parseCursorImpl(tableName: String, ops: (Cursor) -> T?): List<T> {
+        return query(tableName).use { cursor ->
+            val notEmpty = cursor.moveToFirst()
+            if (notEmpty) {
+                val result = mutableListOf<T>()
+                do {
+                    val item = ops(cursor)
+                    if (item != null) result.add(item)
+                } while (cursor.moveToNext())
+                result
+            } else {
+                emptyList()
+            }
+        }
+    }
+
+    private fun query(tableName: String): Cursor {
         val database = readableDatabase
-        val cursor = database.query(
-            TABLE_NAME_SONGS,
+        return database.query(
+            tableName,
             arrayOf(COLUMNS_ID, COLUMNS_PATH, COLUMNS_TITLE, COLUMNS_TIMESTAMP),
             null, null, null, null, "$COLUMNS_TIMESTAMP DESC"
         )
-        val result: MutableList<Pair<Long, String>> = ArrayList()
-        cursor.use {
-            cursor.moveToFirst().let { if (!it) return@use }
-            do {
-                result.add(
-                    Pair(cursor.getLong(0), cursor.getString(1))
-                )
-            } while (cursor.moveToNext())
-        }
-        return result
     }
+
+
 
     fun containsSong(songId: Long?, path: String?): Boolean =
         containsImpl(TABLE_NAME_SONGS, songId, path)
