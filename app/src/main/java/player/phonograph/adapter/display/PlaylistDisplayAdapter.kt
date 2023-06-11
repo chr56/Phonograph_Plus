@@ -11,6 +11,7 @@ import player.phonograph.mechanism.Favorite
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.sort.SortRef
+import player.phonograph.provider.FavoritesStore
 import player.phonograph.settings.Setting
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
@@ -46,9 +47,10 @@ class PlaylistDisplayAdapter(
     }
 
     private fun getIconRes(playlist: Playlist): Int = when {
-        playlist is SmartPlaylist                       -> playlist.iconRes
-        Favorite.isFavoritePlaylist(activity, playlist) -> R.drawable.ic_favorite_white_24dp
-        else                                            -> R.drawable.ic_queue_music_white_24dp
+        playlist is SmartPlaylist                          -> playlist.iconRes
+        FavoritesStore.instance.containsPlaylist(playlist) -> R.drawable.ic_pin_white_24dp
+        Favorite.isFavoritePlaylist(activity, playlist)    -> R.drawable.ic_favorite_white_24dp
+        else                                               -> R.drawable.ic_queue_music_white_24dp
     }
 
 
