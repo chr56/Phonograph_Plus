@@ -121,13 +121,13 @@ class FavoritesStore private constructor(context: Context) :
                 }
             database.insert(tableName, null, values)
             database.setTransactionSuccessful()
-            MediaStoreTracker.notifyAllListeners()
             true
         } catch (e: IllegalStateException) {
             e.printStackTrace()
             false
         } finally {
             database.endTransaction()
+            MediaStoreTracker.notifyAllListeners()
         }
     }
 
@@ -163,13 +163,13 @@ class FavoritesStore private constructor(context: Context) :
                 database.insert(tableName, null, line)
             }
             database.setTransactionSuccessful()
-            MediaStoreTracker.notifyAllListeners()
             true
         } catch (e: IllegalStateException) {
             e.printStackTrace()
             false
         } finally {
             database.endTransaction()
+            MediaStoreTracker.notifyAllListeners()
         }
     }
 
@@ -189,13 +189,13 @@ class FavoritesStore private constructor(context: Context) :
                 arrayOf(id.toString(), path)
             )
             database.setTransactionSuccessful()
-            MediaStoreTracker.notifyAllListeners()
             result > 0
         } catch (e: IllegalStateException) {
             e.printStackTrace()
             false
         } finally {
             database.endTransaction()
+            MediaStoreTracker.notifyAllListeners()
         }
     }
 
