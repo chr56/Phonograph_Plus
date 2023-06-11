@@ -12,6 +12,7 @@ import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.provider.DatabaseConstants.FAVORITE_DB
 import player.phonograph.util.text.currentTimestamp
+import player.phonograph.util.warning
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -29,8 +30,9 @@ class FavoritesStore private constructor(context: Context) :
         if (oldVersion == 1 && newVersion == 2) {
             db.execSQL(creatingPlaylistsTableSQL)
         } else {
-            db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_SONGS")
-            db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_PLAYLISTS")
+            warning(FAVORITE_DB, "Can not upgrade database `favorite.db` from $oldVersion to $newVersion ")
+            // db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_SONGS")
+            // db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_PLAYLISTS")
             onCreate(db)
         }
     }
@@ -198,7 +200,7 @@ class FavoritesStore private constructor(context: Context) :
     }
 
     companion object {
-        private const val VERSION = 1
+        private const val VERSION = 2
 
         private const val TABLE_NAME_SONGS = "songs"
         private const val TABLE_NAME_PLAYLISTS = "playlists"
