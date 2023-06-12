@@ -5,6 +5,8 @@
 - New: add more options in Main Drawer Menu
 - New: support per-app language preference for Android T (13) and above
 - New: support sorting order of playlist (but basic sorting)
+- New: support multi-selection in Search Result
+- New: support pinning playlists
 - Fix: new created playlist would not be appeared in list util next entrance
 - Fix: palette color of player is incorrect or lacking of update
 - Fix: app language is trapped in or out the spelling of British English (for English users only) 
@@ -25,6 +27,8 @@
 - 新增 在抽屉主菜单中增加更多选项
 - 新增 支持 Android T (13) 的系统级分应用语言设置
 - 新增 支持播放列表的排序（基本排序支持）
+- 新增 搜索结果支持多选
+- 新增 支持播放列表置顶
 - 修复 新建的播放列表不会立即出现在列表中
 - 修复 播放器色调着色不正确或未更新
 - 修复 语言卡在英式拼写里面或外面 (针对英语用户)

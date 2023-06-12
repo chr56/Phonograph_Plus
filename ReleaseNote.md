@@ -1,4 +1,4 @@
-## {{version:0.7.0-dev3}} {{versionCode:535}} {{date:1686285000}} {{channel:preview}}
+## {{version:0.7.0-dev3}} {{versionCode:545}} {{date:1686556000}} {{channel:preview}}
 
 ### {{note:en}}
 - NOTE   only show differences of previous preview release 
@@ -8,6 +8,7 @@
 - New: support sorting order of playlist (but basic sorting)
 - New: support basic search song title in Playlist Detail
 - New: support multi-selection in Search Result
+- New: support pinning playlists 
 
 ### {{note:zh}}
 - 注意   仅与上个预览版版本对比
@@ -17,3 +18,4 @@
 - 新增 支持播放列表的排序（基本排序支持）
 - 新增 播放列表详情类支持简单歌曲搜索
 - 新增 搜索结果支持多选
+- 新增 支持播放列表置顶
