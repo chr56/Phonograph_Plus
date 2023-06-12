@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "0.7.0-dev3",
+      "versionCode": 545,
+      "date": 1686556000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.7.0-dev3"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><b>注意 仅与上个预览版版本对比</b><li>改进 部分对话框（如升级对话框）的标题和按钮无法固定，而随内容一起滚动</li><li>修复 无法记住扁平文件夹的排序方式</li><li>修复 新建的播放列表不会立即出现在列表中</li><li>新增 支持播放列表的排序（基本排序支持）</li><li>新增 播放列表详情类支持简单歌曲搜索</li><li>新增 搜索结果支持多选</li><li>新增 支持播放列表置顶</li></ol>",
+        "en": "<ol><b>NOTE: only show differences with previous preview release </b><li>Improve: Title and Buttons of some dialog (like Upgrade Dialog) are not fixed but scrollable with dialog content</li><li>Fix: sort order of flat-folders could not be remembered </li><li>Fix: new created playlist would not be appeared in list util next entrance</li><li>New: support sorting order of playlist (but basic sorting)</li><li>New: support basic search song title in Playlist Detail</li><li>New: support multi-selection in Search Result</li><li>New: support pinning playlists </li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "0.7.0-dev2",
       "versionCode": 535,
       "date": 1685806700,
