@@ -754,7 +754,8 @@ internal class OptionGroupModel(
         return if (index > -1) {
             index
         } else {
-            warning("ListPref", "can not read preference $key: $value")
+            warning("ListPref", "Preference($key)'s value is corrupted or invalid: $value \n reset to default!")
+            reset(context)
             defaultValueIndex
         }
     }
@@ -765,6 +766,8 @@ internal class OptionGroupModel(
             preferences[stringPreferencesKey(key)] = newValue
         }
     }
+
+    suspend fun reset(context: Context) = save(context, defaultValueIndex)
 }
 
 
