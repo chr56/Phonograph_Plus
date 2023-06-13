@@ -80,6 +80,7 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.N
 import android.os.Build.VERSION_CODES.N_MR1
 import android.os.Build.VERSION_CODES.S
+import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -753,6 +754,9 @@ internal class OptionGroupModel(
         val index = optionsValue.indexOf(value)
         return if (index > -1) {
             index
+        } else if (value == null) {
+            Log.v("ListPref", "Preference($key)'s value is unset, ignore!")
+            defaultValueIndex
         } else {
             warning("ListPref", "Preference($key)'s value is corrupted or invalid: $value \n reset to default!")
             reset(context)
