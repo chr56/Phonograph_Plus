@@ -754,7 +754,7 @@ internal class OptionGroupModel(
         return if (index > -1) {
             index
         } else {
-            warning("ListPref", "can not read preference $key")
+            warning("ListPref", "can not read preference $key: $value")
             defaultValueIndex
         }
     }
