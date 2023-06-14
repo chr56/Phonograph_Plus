@@ -202,7 +202,7 @@ class StarterActivity : AppCompatActivity() {
                 val id = parseIdFromIntent(intent, "albumId", "album")
                 if (id >= 0) {
                     val position = intent.getIntExtra("position", 0)
-                    val songs = AlbumLoader.getAlbum(this, id).songs
+                    val songs = AlbumLoader.id(this, id).songs
                     if (songs.isNotEmpty()) return PlayRequest(songs, position)
                 }
             }

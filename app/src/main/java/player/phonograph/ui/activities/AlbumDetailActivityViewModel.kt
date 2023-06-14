@@ -4,15 +4,6 @@
 
 package player.phonograph.ui.activities
 
-import android.content.Context
-import android.text.Html
-import android.text.Spanned
-import android.text.SpannedString
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import java.util.*
-import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mediastore.AlbumLoader
@@ -24,6 +15,19 @@ import retrofit2.Callback
 import retrofit2.Response
 import util.phonograph.lastfm.rest.LastFMRestClient
 import util.phonograph.lastfm.rest.model.LastFmAlbum
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import android.content.Context
+import android.text.Html
+import android.text.Spanned
+import android.text.SpannedString
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
+import java.util.Locale
 
 class AlbumDetailActivityViewModel : ViewModel() {
 
@@ -39,7 +43,7 @@ class AlbumDetailActivityViewModel : ViewModel() {
     ) {
         viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
 
-            _album = AlbumLoader.getAlbum(context, albumId)
+            _album = AlbumLoader.id(context, albumId)
 
             val songs: List<Song> = album.songs
 

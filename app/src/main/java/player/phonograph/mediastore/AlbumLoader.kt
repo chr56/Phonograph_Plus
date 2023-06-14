@@ -24,7 +24,7 @@ object AlbumLoader {
         return if (songs.isEmpty()) return emptyList() else songs.toAlbumList()
     }
 
-    fun getAlbum(context: Context, albumId: Long): Album {
+    fun id(context: Context, albumId: Long): Album {
         val songs = querySongs(context, "${AudioColumns.ALBUM_ID}=?", arrayOf(albumId.toString()), null).getSongs()
         return Album(albumId, getAlbumTitle(songs), songs.toMutableList().sortedBy { it.trackNumber })
     }
