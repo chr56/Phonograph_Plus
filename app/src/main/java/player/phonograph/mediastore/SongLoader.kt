@@ -2,7 +2,6 @@ package player.phonograph.mediastore
 
 import player.phonograph.model.Song
 import android.content.Context
-import android.database.Cursor
 import android.provider.MediaStore
 
 /**
@@ -39,15 +38,4 @@ object SongLoader {
         )
         return cursor.getSongs()
     }
-
-    fun getSongs(cursor: Cursor?): List<Song> = cursor.getSongs() //todo
-
-    @JvmStatic
-    fun makeSongCursor(
-        context: Context,
-        selection: String,
-        selectionValues: Array<String>,
-        sortOrder: String? = null,
-    ): Cursor? =
-        querySongs(context, selection, selectionValues, sortOrder)
 }

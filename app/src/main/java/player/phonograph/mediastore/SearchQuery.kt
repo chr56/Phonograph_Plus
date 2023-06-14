@@ -4,12 +4,12 @@
 
 package player.phonograph.mediastore
 
+import player.phonograph.model.Song
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
 import android.provider.MediaStore
-import player.phonograph.model.Song
-import java.util.*
+import java.util.Locale
 
 private const val TITLE_SELECTION = "lower(" + MediaStore.Audio.AudioColumns.TITLE + ") = ?"
 private const val ALBUM_SELECTION = "lower(" + MediaStore.Audio.AudioColumns.ALBUM + ") = ?"
@@ -25,8 +25,8 @@ fun processQuery(context: Context, extras: Bundle): List<Song> {
     var songs: List<Song> = ArrayList()
 
     if (artistName != null && albumName != null && titleName != null) {
-        songs = SongLoader.getSongs(
-            SongLoader.makeSongCursor(
+        songs =
+            querySongs(
                 context,
                 ARTIST_SELECTION + AND + ALBUM_SELECTION + AND + TITLE_SELECTION,
                 arrayOf(
@@ -34,112 +34,108 @@ fun processQuery(context: Context, extras: Bundle): List<Song> {
                     albumName.lowercase(Locale.getDefault()).trim { it <= ' ' },
                     titleName.lowercase(Locale.getDefault()).trim { it <= ' ' }
                 )
-            )
-        )
+            ).getSongs()
     }
     if (songs.isNotEmpty()) {
         return songs
     }
 
     if (artistName != null && titleName != null) {
-        songs = SongLoader.getSongs(
-            SongLoader.makeSongCursor(
+        songs =
+            querySongs(
                 context,
                 ARTIST_SELECTION + AND + TITLE_SELECTION,
                 arrayOf(
                     artistName.lowercase(Locale.getDefault()).trim { it <= ' ' },
                     titleName.lowercase(Locale.getDefault()).trim { it <= ' ' }
                 )
-            )
-        )
+            ).getSongs()
     }
     if (songs.isNotEmpty()) {
         return songs
     }
 
     if (albumName != null && titleName != null) {
-        songs = SongLoader.getSongs(
-            SongLoader.makeSongCursor(
+        songs =
+            querySongs(
                 context,
                 ALBUM_SELECTION + AND + TITLE_SELECTION,
                 arrayOf(
                     albumName.lowercase(Locale.getDefault()).trim { it <= ' ' },
                     titleName.lowercase(Locale.getDefault()).trim { it <= ' ' }
                 )
-            )
-        )
+            ).getSongs()
     }
     if (songs.isNotEmpty()) {
         return songs
     }
 
     if (artistName != null) {
-        songs = SongLoader.getSongs(
-            SongLoader.makeSongCursor(
+        songs =
+            querySongs(
                 context,
                 ARTIST_SELECTION,
                 arrayOf(artistName.lowercase(Locale.getDefault()).trim { it <= ' ' })
-            )
-        )
+            ).getSongs()
     }
     if (songs.isNotEmpty()) {
         return songs
     }
 
     if (albumName != null) {
-        songs = SongLoader.getSongs(
-            SongLoader.makeSongCursor(
+        songs =
+            querySongs(
                 context,
                 ALBUM_SELECTION,
                 arrayOf(albumName.lowercase(Locale.getDefault()).trim { it <= ' ' })
-            )
-        )
+            ).getSongs()
     }
     if (songs.isNotEmpty()) {
         return songs
     }
 
     if (titleName != null) {
-        songs = SongLoader.getSongs(
-            SongLoader.makeSongCursor(
+        songs =
+            querySongs(
                 context,
                 TITLE_SELECTION,
                 arrayOf(titleName.lowercase(Locale.getDefault()).trim { it <= ' ' })
-            )
-        )
+            ).getSongs()
     }
     if (songs.isNotEmpty()) {
         return songs
     }
 
-    songs = SongLoader.getSongs(
-        SongLoader.makeSongCursor(
+    songs =
+        querySongs(
             context,
             ARTIST_SELECTION,
             arrayOf(query.lowercase(Locale.getDefault()).trim { it <= ' ' })
-        )
-    )
+        ).getSongs()
     if (songs.isNotEmpty()) {
         return songs
     }
 
-    songs = SongLoader.getSongs(
-        SongLoader.makeSongCursor(
+    songs =
+        querySongs(
             context,
             ALBUM_SELECTION,
             arrayOf(query.lowercase(Locale.getDefault()).trim { it <= ' ' })
-        )
-    )
+        ).getSongs()
     if (songs.isNotEmpty()) {
         return songs
     }
 
-    songs = SongLoader.getSongs(
-        SongLoader.makeSongCursor(
+    songs =
+        querySongs(
             context,
             TITLE_SELECTION,
             arrayOf(query.lowercase(Locale.getDefault()).trim { it <= ' ' })
-        )
-    )
-    return songs.ifEmpty { SongLoader.getSongs(context, query) }
+        ).getSongs()
+
+    if (songs.isNotEmpty()) {
+        return songs
+    }
+
+    return emptyList()
 }

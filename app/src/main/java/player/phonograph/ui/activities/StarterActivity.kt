@@ -30,7 +30,9 @@ import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.mediastore.SongLoader
+import player.phonograph.mediastore.getSongs
 import player.phonograph.mediastore.processQuery
+import player.phonograph.mediastore.querySongs
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.LastAddedPlaylist
@@ -169,13 +171,12 @@ class StarterActivity : AppCompatActivity() {
                 }
 
             if (file != null) {
-                songs = SongLoader.getSongs(
-                    SongLoader.makeSongCursor(
+                songs =
+                    querySongs(
                         this,
                         "${MediaStore.Audio.AudioColumns.DATA}=?",
                         arrayOf(file.absolutePath)
-                    )
-                )
+                    ).getSongs()
             }
         }
 
@@ -202,7 +203,8 @@ class StarterActivity : AppCompatActivity() {
                     if (songs.isNotEmpty()) return PlayRequest(songs, position)
                 }
             }
-            MediaStore.Audio.Albums.CONTENT_TYPE    -> {
+
+            MediaStore.Audio.Albums.CONTENT_TYPE          -> {
                 val id = parseIdFromIntent(intent, "albumId", "album")
                 if (id >= 0) {
                     val position = intent.getIntExtra("position", 0)
@@ -210,7 +212,8 @@ class StarterActivity : AppCompatActivity() {
                     if (songs.isNotEmpty()) return PlayRequest(songs, position)
                 }
             }
-            MediaStore.Audio.Artists.CONTENT_TYPE   -> {
+
+            MediaStore.Audio.Artists.CONTENT_TYPE         -> {
                 val id = parseIdFromIntent(intent, "artistId", "artist")
                 if (id >= 0) {
                     val position = intent.getIntExtra("position", 0)
@@ -232,15 +235,18 @@ class StarterActivity : AppCompatActivity() {
                 ShuffleAllPlaylist(applicationContext)
 
             }
+
             SHORTCUT_TYPE_TOP_TRACKS  -> {
                 reportShortcutUsed(this, TopTracksShortcutType.id)
                 MyTopTracksPlaylist(applicationContext)
 
             }
+
             SHORTCUT_TYPE_LAST_ADDED  -> {
                 reportShortcutUsed(this, LastAddedShortcutType.id)
                 LastAddedPlaylist(applicationContext)
             }
+
             else                      -> null
         }
         val songs = playlist?.getSongs(applicationContext)
@@ -317,6 +323,7 @@ class StarterActivity : AppCompatActivity() {
                         queueManager.swapQueue(list, 0, false)
                         queueManager.modifyShuffleMode(ShuffleMode.SHUFFLE, false)
                     }
+
                     else  /* invalided */     -> {}
                 }
                 queueManager.modifyPosition(0, false)

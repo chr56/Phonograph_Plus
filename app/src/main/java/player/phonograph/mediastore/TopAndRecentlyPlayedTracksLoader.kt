@@ -3,21 +3,19 @@
  */
 package player.phonograph.mediastore
 
-import android.content.Context
-import android.database.Cursor
-import android.provider.BaseColumns
 import player.phonograph.mediastore.internal.SortedLongCursor
 import player.phonograph.provider.HistoryStore
 import player.phonograph.provider.SongPlayCountStore
+import android.content.Context
+import android.database.Cursor
+import android.provider.BaseColumns
 
 object TopAndRecentlyPlayedTracksLoader {
     const val NUMBER_OF_TOP_TRACKS = 150
 
-    fun getRecentlyPlayedTracks(context: Context) =
-        SongLoader.getSongs(makeRecentTracksCursorAndClearUpDatabase(context))
+    fun getRecentlyPlayedTracks(context: Context) = makeRecentTracksCursorAndClearUpDatabase(context).getSongs()
 
-    fun getTopTracks(context: Context) =
-        SongLoader.getSongs(makeTopTracksCursorAndClearUpDatabase(context))
+    fun getTopTracks(context: Context) = makeTopTracksCursorAndClearUpDatabase(context).getSongs()
 
     fun makeRecentTracksCursorAndClearUpDatabase(context: Context): Cursor? {
         val cursor = makeRecentTracksCursorImpl(context)
