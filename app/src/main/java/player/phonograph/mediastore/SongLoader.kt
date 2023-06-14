@@ -32,7 +32,7 @@ object SongLoader {
         ).getSongs()
 
     @JvmStatic
-    fun searchSongs(context: Context, title: String): List<Song> {
+    fun searchByTitle(context: Context, title: String): List<Song> {
         val cursor = querySongs(
             context, "${MediaStore.Audio.AudioColumns.TITLE} LIKE ?", arrayOf("%$title%")
         )
