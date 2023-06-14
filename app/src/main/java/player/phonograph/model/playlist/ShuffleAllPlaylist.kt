@@ -23,7 +23,7 @@ class ShuffleAllPlaylist : SmartPlaylist {
 
     override val iconRes: Int = R.drawable.ic_shuffle_white_24dp
 
-    override fun getSongs(context: Context): List<Song> = SongLoader.getAllSongs(context)
+    override fun getSongs(context: Context): List<Song> = SongLoader.all(context)
 
     override fun containsSong(context: Context, songId: Long): Boolean = true
     override fun toString(): String = "ShuffleAllPlaylist"

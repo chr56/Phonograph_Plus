@@ -10,7 +10,7 @@ import android.provider.MediaStore
 object SongLoader {
 
     @JvmStatic
-    fun getAllSongs(context: Context): List<Song> = querySongs(context).getSongs()
+    fun all(context: Context): List<Song> = querySongs(context).getSongs()
 
 
     @JvmStatic

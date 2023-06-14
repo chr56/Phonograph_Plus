@@ -42,7 +42,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
 
     class SongPageViewModel : AbsDisplayPageViewModel<Song>() {
         override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Song> {
-            return SongLoader.getAllSongs(App.instance)
+            return SongLoader.all(App.instance)
         }
 
         override val headerTextRes: Int get() = R.plurals.item_songs
@@ -131,7 +131,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
                     )
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
-                    val allSongs = SongLoader.getAllSongs(context)
+                    val allSongs = SongLoader.all(context)
                     allSongs.actionPlay(ShuffleMode.NONE, 0)
                     true
                 }
@@ -144,7 +144,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
                     )
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
-                    val allSongs = SongLoader.getAllSongs(context)
+                    val allSongs = SongLoader.all(context)
                     allSongs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(allSongs.size))
                     true
                 }
