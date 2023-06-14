@@ -19,14 +19,15 @@ object AlbumLoader {
         return if (songs.isEmpty()) return emptyList() else songs.toAlbumList()
     }
 
-    fun getAlbums(context: Context, query: String): List<Album> {
-        val songs = querySongs(context, "${AudioColumns.ALBUM} LIKE ?", arrayOf("%$query%"), null).getSongs()
-        return if (songs.isEmpty()) return emptyList() else songs.toAlbumList()
-    }
-
     fun id(context: Context, albumId: Long): Album {
         val songs = querySongs(context, "${AudioColumns.ALBUM_ID}=?", arrayOf(albumId.toString()), null).getSongs()
         return Album(albumId, getAlbumTitle(songs), songs.toMutableList().sortedBy { it.trackNumber })
+    }
+
+
+    fun searchByName(context: Context, query: String): List<Album> {
+        val songs = querySongs(context, "${AudioColumns.ALBUM} LIKE ?", arrayOf("%$query%"), null).getSongs()
+        return if (songs.isEmpty()) return emptyList() else songs.toAlbumList()
     }
 
     private fun getAlbumTitle(list: List<Song>): String? {
