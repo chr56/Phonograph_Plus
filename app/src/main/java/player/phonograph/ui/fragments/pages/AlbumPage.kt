@@ -30,7 +30,7 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>, GridLayoutManager
 
     class AlbumPageViewModel : AbsDisplayPageViewModel<Album>() {
         override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Album> {
-            return AlbumLoader.getAllAlbums(context)
+            return AlbumLoader.all(context)
         }
 
         override val headerTextRes: Int get() = R.plurals.item_albums

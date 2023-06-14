@@ -14,7 +14,7 @@ import android.provider.MediaStore.Audio.AudioColumns
  */
 object AlbumLoader {
 
-    fun getAllAlbums(context: Context): List<Album> {
+    fun all(context: Context): List<Album> {
         val songs = querySongs(context, sortOrder = null).getSongs()
         return if (songs.isEmpty()) return emptyList() else songs.toAlbumList()
     }
