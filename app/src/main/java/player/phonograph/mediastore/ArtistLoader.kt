@@ -19,7 +19,7 @@ object ArtistLoader {
         return if (songs.isEmpty()) return emptyList() else songs.toArtistList()
     }
 
-    fun getArtists(context: Context, query: String): List<Artist> {
+    fun searchByName(context: Context, query: String): List<Artist> {
         val songs = querySongs(context, "${AudioColumns.ARTIST} LIKE ?", arrayOf("%$query%"), null).getSongs()
         return if (songs.isEmpty()) return emptyList() else songs.toArtistList()
     }
