@@ -211,7 +211,7 @@ class StarterActivity : AppCompatActivity() {
                 val id = parseIdFromIntent(intent, "artistId", "artist")
                 if (id >= 0) {
                     val position = intent.getIntExtra("position", 0)
-                    val songs = ArtistLoader.getArtist(this, id).songs
+                    val songs = ArtistLoader.id(this, id).songs
                     if (songs.isNotEmpty()) return PlayRequest(songs, position)
                 }
             }

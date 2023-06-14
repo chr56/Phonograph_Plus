@@ -56,7 +56,7 @@ class ArtistDetailActivityViewModel(var artistId: Long) : ViewModel() {
 
     fun load(context: Context) {
         viewModelScope.launch(SupervisorJob()) {
-            val artist = ArtistLoader.getArtist(context, artistId)
+            val artist = ArtistLoader.id(context, artistId)
             _artist.emit(artist)
             _albums.emit(artist.albums)
             _songs.emit(artist.songs)
