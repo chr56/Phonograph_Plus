@@ -30,9 +30,8 @@ import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.mediastore.SongLoader
-import player.phonograph.mediastore.getSongs
+import player.phonograph.mediastore.SongLoader.searchSongsByPath
 import player.phonograph.mediastore.processQuery
-import player.phonograph.mediastore.querySongs
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.LastAddedPlaylist
@@ -171,12 +170,7 @@ class StarterActivity : AppCompatActivity() {
                 }
 
             if (file != null) {
-                songs =
-                    querySongs(
-                        this,
-                        "${MediaStore.Audio.AudioColumns.DATA}=?",
-                        arrayOf(file.absolutePath)
-                    ).getSongs()
+                songs = searchSongsByPath(this, file.absolutePath)
             }
         }
 

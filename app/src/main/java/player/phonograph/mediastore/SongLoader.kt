@@ -14,22 +14,22 @@ object SongLoader {
 
 
     @JvmStatic
-    fun getSong(context: Context, queryId: Long): Song {
-        val cursor =
-            querySongs(
-                context, "${MediaStore.Audio.AudioColumns._ID} =? ", arrayOf(queryId.toString())
-            )
-        return cursor.getFirstSong()
-    }
+    fun getSong(context: Context, queryId: Long): Song =
+        querySongs(
+            context, "${MediaStore.Audio.AudioColumns._ID} =? ", arrayOf(queryId.toString())
+        ).getFirstSong()
 
     @JvmStatic
-    fun getSong(context: Context, path: String): Song {
-        val cursor =
-            querySongs(
-                context, "${MediaStore.Audio.AudioColumns.DATA} =? ", arrayOf(path)
-            )
-        return cursor.getFirstSong()
-    }
+    fun getSong(context: Context, path: String): Song =
+        querySongs(
+            context, "${MediaStore.Audio.AudioColumns.DATA} =? ", arrayOf(path)
+        ).getFirstSong()
+
+    @JvmStatic
+    fun searchSongsByPath(context: Context, path: String): List<Song> =
+        querySongs(
+            context, "${MediaStore.Audio.AudioColumns.DATA} LIKE ? ", arrayOf(path)
+        ).getSongs()
 
     @JvmStatic
     fun searchSongs(context: Context, title: String): List<Song> {
