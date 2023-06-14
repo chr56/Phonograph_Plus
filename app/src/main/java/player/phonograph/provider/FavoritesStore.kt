@@ -60,7 +60,7 @@ class FavoritesStore private constructor(context: Context) :
 
     private fun getAllSongsImpl(context: Context): List<Song> {
         return parseCursorImpl(TABLE_NAME_SONGS) { cursor ->
-            SongLoader.getSong(context, cursor.getString(1))
+            SongLoader.path(context, cursor.getString(1))
         }
     }
 

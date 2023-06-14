@@ -20,7 +20,7 @@ object SongLoader {
         ).getFirstSong()
 
     @JvmStatic
-    fun getSong(context: Context, path: String): Song =
+    fun path(context: Context, path: String): Song =
         querySongs(
             context, "${MediaStore.Audio.AudioColumns.DATA} =? ", arrayOf(path)
         ).getFirstSong()
