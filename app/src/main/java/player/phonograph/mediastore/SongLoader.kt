@@ -14,7 +14,7 @@ object SongLoader {
 
 
     @JvmStatic
-    fun getSong(context: Context, queryId: Long): Song =
+    fun id(context: Context, queryId: Long): Song =
         querySongs(
             context, "${MediaStore.Audio.AudioColumns._ID} =? ", arrayOf(queryId.toString())
         ).getFirstSong()

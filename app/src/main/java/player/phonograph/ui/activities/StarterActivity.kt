@@ -149,7 +149,7 @@ class StarterActivity : AppCompatActivity() {
                     else                     -> null
                 }
             if (songId != null) {
-                songs = listOf(SongLoader.getSong(this, songId.toLong()))
+                songs = listOf(SongLoader.id(this, songId.toLong()))
             }
         }
 

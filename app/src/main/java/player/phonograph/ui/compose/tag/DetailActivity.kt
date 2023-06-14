@@ -63,7 +63,7 @@ class DetailActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
 
     companion object {
         private fun parseIntent(context: Context, intent: Intent): Song =
-            SongLoader.getSong(context, intent.extras?.getLong(SONG_ID) ?: -1)
+            SongLoader.id(context, intent.extras?.getLong(SONG_ID) ?: -1)
 
         private const val SONG_ID = "SONG_ID"
 

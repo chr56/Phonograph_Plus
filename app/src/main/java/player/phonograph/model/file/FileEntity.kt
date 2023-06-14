@@ -74,4 +74,4 @@ sealed class FileEntity(
 }
 
 fun FileEntity.File.linkedSong(context: Context): Song =
-    if (id <= 0) searchSongs(context, location).firstOrNull() ?: Song.EMPTY_SONG else SongLoader.getSong(context, id)
+    if (id <= 0) searchSongs(context, location).firstOrNull() ?: Song.EMPTY_SONG else SongLoader.id(context, id)
