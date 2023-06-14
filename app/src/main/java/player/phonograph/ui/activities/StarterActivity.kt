@@ -30,7 +30,7 @@ import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.mediastore.SongLoader
-import player.phonograph.mediastore.SongLoader.searchSongsByPath
+import player.phonograph.mediastore.SongLoader.searchByPath
 import player.phonograph.mediastore.processQuery
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
@@ -170,7 +170,7 @@ class StarterActivity : AppCompatActivity() {
                 }
 
             if (file != null) {
-                songs = searchSongsByPath(this, file.absolutePath)
+                songs = searchByPath(this, file.absolutePath)
             }
         }
 

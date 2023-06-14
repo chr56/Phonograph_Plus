@@ -26,7 +26,7 @@ object SongLoader {
         ).getFirstSong()
 
     @JvmStatic
-    fun searchSongsByPath(context: Context, path: String): List<Song> =
+    fun searchByPath(context: Context, path: String): List<Song> =
         querySongs(
             context, "${MediaStore.Audio.AudioColumns.DATA} LIKE ? ", arrayOf(path)
         ).getSongs()
