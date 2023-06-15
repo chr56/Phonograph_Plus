@@ -4,13 +4,14 @@
 
 package player.phonograph.mediastore
 
-import android.content.Context
-import android.provider.MediaStore
-import kotlinx.coroutines.CoroutineScope
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.model.file.put
+import android.content.Context
+import android.provider.MediaStore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.isActive
 
 /**
  * This might be time-consuming
@@ -28,6 +29,7 @@ fun searchSongFiles(context: Context, currentLocation: Location, scope: Coroutin
         if (cursor.moveToFirst()) {
             val list: MutableList<FileEntity> = ArrayList()
             do {
+                if (scope?.isActive == false) break
                 val item = parseFileEntity(cursor, currentLocation)
                 list.put(item)
             } while (cursor.moveToNext())
