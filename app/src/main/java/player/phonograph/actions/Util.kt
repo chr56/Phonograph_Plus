@@ -4,8 +4,6 @@
 
 package player.phonograph.actions
 
-import android.content.Context
-import androidx.fragment.app.FragmentActivity
 import player.phonograph.mediastore.GenreLoader
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -14,14 +12,16 @@ import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.linkedSong
 import player.phonograph.model.playlist.Playlist
+import androidx.fragment.app.FragmentActivity
 import android.app.Activity
+import android.content.Context
 
 internal fun convertToSongs(selections: List<Any>, context: Context): List<Song> = selections.flatMap {
     when (it) {
         is Song -> listOf(it)
         is Album -> it.songs
         is Artist -> it.songs
-        is Genre -> GenreLoader.getSongs(context, it.id)
+        is Genre -> GenreLoader.genreSongs(context, it.id)
         is Playlist -> it.getSongs(context)
         is FileEntity.File -> listOf(it.linkedSong(context))
         // is FileEntity.Folder -> TODO()

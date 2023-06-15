@@ -21,7 +21,7 @@ object GenreLoader {
     fun all(context: Context): List<Genre> =
         makeGenreCursor(context)?.getGenresFromCursor(context)?.sortAll() ?: emptyList()
 
-    fun getSongs(context: Context, genreId: Long): List<Song> {
+    fun genreSongs(context: Context, genreId: Long): List<Song> {
         return makeSongCursor(context, genreId).getSongs()
     }
 
@@ -42,7 +42,7 @@ object GenreLoader {
 
     private fun Cursor.extractGenre(context: Context): Genre {
         val id = getLong(0)
-        return Genre(id = id, name = getString(1), songCount = getSongs(context, id).size)
+        return Genre(id = id, name = getString(1), songCount = genreSongs(context, id).size)
     }
 
     private fun makeSongCursor(context: Context, genreId: Long): Cursor? =
@@ -74,7 +74,7 @@ object GenreLoader {
         }
     }
 
-    fun List<Genre>.allGenreSongs(): List<Song> = this.flatMap { getSongs(App.instance, it.id) }
+    fun List<Genre>.allGenreSongs(): List<Song> = this.flatMap { genreSongs(App.instance, it.id) }
 
     private fun List<Genre>.sortAll(): List<Genre> {
         val revert = Setting.instance.genreSortMode.revert
