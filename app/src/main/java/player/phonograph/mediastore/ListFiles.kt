@@ -6,8 +6,10 @@ package player.phonograph.mediastore
 
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
+import player.phonograph.model.file.put
 import player.phonograph.util.FileUtil
 import android.content.Context
+import android.provider.MediaStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
 import java.io.File
@@ -17,11 +19,26 @@ import java.util.TreeSet
  * list files in [location] as format of FileEntity via MediaStore
  */
 fun listFilesMediaStore(
-    location: Location,
+    currentLocation: Location,
     context: Context,
     scope: CoroutineScope?,
 ): Set<FileEntity> {
-    return searchSongFiles(context, location, scope) ?: emptySet()
+    val fileCursor = querySongFiles(
+        context,
+        "${MediaStore.MediaColumns.DATA} LIKE ?",
+        arrayOf("${currentLocation.absolutePath}%"),
+    ) ?: return emptySet()
+    return fileCursor.use { cursor ->
+        if (cursor.moveToFirst()) {
+            val list: MutableList<FileEntity> = ArrayList()
+            do {
+                if (scope?.isActive == false) break
+                val item = parseFileEntity(cursor, currentLocation)
+                list.put(item)
+            } while (cursor.moveToNext())
+            list.toSortedSet()
+        } else emptySet()
+    }
 }
 
 /**
