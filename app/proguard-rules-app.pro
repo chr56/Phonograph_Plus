@@ -44,9 +44,9 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.player.AlbumCoverPagerAdapter {public <methods>;public <fields>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.adapter.HomePagerAdapter {public <methods>;public <fields>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.adapter.sortable.PageTabConfigAdapter {public <methods>;public <fields>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.adapter.PlaylistAdapter {public <methods>;public <fields>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.adapter.display.** {public <methods>;public <fields>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.adapter.base.** {public <methods>;public <fields>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.adapter.SearchResultAdapter {public <methods>;}
 
 -keepnames,allowoptimization,allowshrinking class player.phonograph.dialogs.**
 
