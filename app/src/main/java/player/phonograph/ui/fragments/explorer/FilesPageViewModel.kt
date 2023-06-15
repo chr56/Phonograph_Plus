@@ -26,7 +26,7 @@ class FilesPageViewModel : AbsFileViewModel() {
             Setting.instance.showFileImages = value
         }
 
-    override fun listFiles(context: Context, location: Location, scope: CoroutineScope?): Set<FileEntity> {
+    override suspend fun listFiles(context: Context, location: Location, scope: CoroutineScope?): Set<FileEntity> {
         return if (useLegacyListFile) {
             listFilesLegacy(location, scope)
         } else

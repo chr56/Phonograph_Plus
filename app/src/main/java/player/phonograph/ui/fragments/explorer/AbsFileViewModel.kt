@@ -54,5 +54,9 @@ abstract class AbsFileViewModel : ViewModel() {
         viewModelScope.cancel()
     }
 
-    protected abstract fun listFiles(context: Context, location: Location, scope: CoroutineScope?): Set<FileEntity>
+    protected abstract suspend fun listFiles(
+        context: Context,
+        location: Location,
+        scope: CoroutineScope?,
+    ): Set<FileEntity>
 }

@@ -12,6 +12,6 @@ import kotlinx.coroutines.CoroutineScope
 
 class FilesChooserViewModel : AbsFileViewModel() {
 
-    override fun listFiles(context: Context, location: Location, scope: CoroutineScope?): Set<FileEntity> =
+    override suspend fun listFiles(context: Context, location: Location, scope: CoroutineScope?): Set<FileEntity> =
         listFilesLegacy(location, scope)
 }
