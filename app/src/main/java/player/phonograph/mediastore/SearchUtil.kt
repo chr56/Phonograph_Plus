@@ -4,7 +4,6 @@
 
 package player.phonograph.mediastore
 
-import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.model.file.put
@@ -36,20 +35,4 @@ fun searchSongFiles(context: Context, currentLocation: Location, scope: Coroutin
             list.toSortedSet()
         } else null
     }
-}
-
-fun searchSongs(context: Context, currentLocation: Location, scope: CoroutineScope? = null): List<Song> {
-    val cursor = querySongs(
-        context, "${MediaStore.MediaColumns.DATA} LIKE ?", arrayOf("%${currentLocation.absolutePath}%")
-    )
-    return cursor.getSongs()
-}
-
-fun searchSong(context: Context, fileName: String): Song {
-    val cursor = querySongs(
-        context,
-        "${MediaStore.MediaColumns.DATA} LIKE ? OR ${MediaStore.MediaColumns.DISPLAY_NAME} LIKE ? ",
-        arrayOf(fileName, fileName)
-    )
-    return cursor.getFirstSong()
 }

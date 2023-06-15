@@ -1,6 +1,7 @@
 package player.phonograph.mediastore
 
 import player.phonograph.model.Song
+import player.phonograph.model.file.Location
 import android.content.Context
 import android.provider.MediaStore
 
@@ -30,6 +31,10 @@ object SongLoader {
         querySongs(
             context, "${MediaStore.Audio.AudioColumns.DATA} LIKE ? ", arrayOf(path)
         ).getSongs()
+
+    @JvmStatic
+    fun searchByLocation(context: Context, currentLocation: Location): List<Song> =
+        searchByPath(context, "%${currentLocation.absolutePath}%")
 
     @JvmStatic
     fun searchByTitle(context: Context, title: String): List<Song> {

@@ -4,12 +4,11 @@
 
 package player.phonograph.model.file
 
-import android.content.Context
 import player.phonograph.mediastore.SongLoader
-import player.phonograph.mediastore.searchSongs
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
+import android.content.Context
 
 /**
  * Presenting a file
@@ -74,4 +73,5 @@ sealed class FileEntity(
 }
 
 fun FileEntity.File.linkedSong(context: Context): Song =
-    if (id <= 0) searchSongs(context, location).firstOrNull() ?: Song.EMPTY_SONG else SongLoader.id(context, id)
+    if (id <= 0) SongLoader.searchByLocation(context, location).firstOrNull() ?: Song.EMPTY_SONG
+    else SongLoader.id(context, id)
