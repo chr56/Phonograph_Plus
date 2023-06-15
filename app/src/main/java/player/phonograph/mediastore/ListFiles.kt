@@ -33,7 +33,7 @@ fun listFilesMediaStore(
             val list: MutableList<FileEntity> = ArrayList()
             do {
                 if (scope?.isActive == false) break
-                val item = parseFileEntity(cursor, currentLocation)
+                val item = readFileEntity(cursor, currentLocation)
                 list.put(item)
             } while (cursor.moveToNext())
             list.toSortedSet()

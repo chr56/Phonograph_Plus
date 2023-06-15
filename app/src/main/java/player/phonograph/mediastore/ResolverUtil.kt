@@ -17,7 +17,7 @@ import android.database.Cursor
 fun Cursor?.intoFirstSong(): Song {
     return this?.use {
         if (moveToFirst()) {
-            parseSong(this)
+            readSong(this)
         } else {
             Song.EMPTY_SONG
         }
@@ -32,7 +32,7 @@ fun Cursor?.intoSongs(): List<Song> {
         val songs = mutableListOf<Song>()
         if (moveToFirst()) {
             do {
-                songs.add(parseSong(this))
+                songs.add(readSong(this))
             } while (moveToNext())
         }
         songs
@@ -40,11 +40,11 @@ fun Cursor?.intoSongs(): List<Song> {
 }
 
 /**
- * convert song cursor to [Song]
+ * read cursor as [Song]
  * (**require [cursor] not empty**)
  * @see [BASE_SONG_PROJECTION]
  */
-fun parseSong(cursor: Cursor): Song {
+fun readSong(cursor: Cursor): Song {
     val id = cursor.getLong(0)
     val title = cursor.getString(1)
     val trackNumber = cursor.getInt(2)
@@ -74,13 +74,13 @@ fun parseSong(cursor: Cursor): Song {
 }
 
 /**
- * convert audio file cursor to [FileEntity]
+ * read audio file cursor as [FileEntity]
  * (**require [cursor] not empty**)
  * @param currentLocation location where treats as base
  * @see [BASE_FILE_PROJECTION]
  */
 @SuppressLint("Range")
-fun parseFileEntity(cursor: Cursor, currentLocation: Location): FileEntity {
+fun readFileEntity(cursor: Cursor, currentLocation: Location): FileEntity {
     val id = cursor.getLong(0)
     val displayName = cursor.getString(1)
     val absolutePath = cursor.getString(2)
