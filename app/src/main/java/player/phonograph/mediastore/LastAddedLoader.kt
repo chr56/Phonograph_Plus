@@ -12,7 +12,7 @@ import android.provider.MediaStore
 
 object LastAddedLoader {
     fun getLastAddedSongs(context: Context): List<Song> {
-        return makeLastAddedCursor(context).getSongs()
+        return makeLastAddedCursor(context).intoSongs()
     }
 
     private fun makeLastAddedCursor(context: Context): Cursor? {

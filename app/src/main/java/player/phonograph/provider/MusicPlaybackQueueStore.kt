@@ -15,7 +15,7 @@
 */
 package player.phonograph.provider
 
-import player.phonograph.mediastore.getSongs
+import player.phonograph.mediastore.intoSongs
 import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
 import android.content.ContentValues
@@ -200,7 +200,7 @@ class MusicPlaybackQueueStore(context: Context?) : SQLiteOpenHelper(
         return readableDatabase.query(
             tableName, null,
             null, null, null, null, null
-        ).use { cursor -> cursor.getSongs() }
+        ).use { cursor -> cursor.intoSongs() }
     }
 
     companion object {

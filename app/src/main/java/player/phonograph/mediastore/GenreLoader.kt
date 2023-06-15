@@ -22,7 +22,7 @@ object GenreLoader {
         makeGenreCursor(context)?.getGenresFromCursor(context)?.sortAll() ?: emptyList()
 
     fun genreSongs(context: Context, genreId: Long): List<Song> {
-        return makeSongCursor(context, genreId).getSongs()
+        return makeSongCursor(context, genreId).intoSongs()
     }
 
     private fun Cursor.getGenresFromCursor(context: Context): List<Genre> = this.use {

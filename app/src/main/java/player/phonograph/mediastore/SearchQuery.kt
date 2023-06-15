@@ -34,7 +34,7 @@ fun processQuery(context: Context, extras: Bundle): List<Song> {
                     albumName.lowercase(Locale.getDefault()).trim { it <= ' ' },
                     titleName.lowercase(Locale.getDefault()).trim { it <= ' ' }
                 )
-            ).getSongs()
+            ).intoSongs()
     }
     if (songs.isNotEmpty()) {
         return songs
@@ -49,7 +49,7 @@ fun processQuery(context: Context, extras: Bundle): List<Song> {
                     artistName.lowercase(Locale.getDefault()).trim { it <= ' ' },
                     titleName.lowercase(Locale.getDefault()).trim { it <= ' ' }
                 )
-            ).getSongs()
+            ).intoSongs()
     }
     if (songs.isNotEmpty()) {
         return songs
@@ -64,7 +64,7 @@ fun processQuery(context: Context, extras: Bundle): List<Song> {
                     albumName.lowercase(Locale.getDefault()).trim { it <= ' ' },
                     titleName.lowercase(Locale.getDefault()).trim { it <= ' ' }
                 )
-            ).getSongs()
+            ).intoSongs()
     }
     if (songs.isNotEmpty()) {
         return songs
@@ -76,7 +76,7 @@ fun processQuery(context: Context, extras: Bundle): List<Song> {
                 context,
                 ARTIST_SELECTION,
                 arrayOf(artistName.lowercase(Locale.getDefault()).trim { it <= ' ' })
-            ).getSongs()
+            ).intoSongs()
     }
     if (songs.isNotEmpty()) {
         return songs
@@ -88,7 +88,7 @@ fun processQuery(context: Context, extras: Bundle): List<Song> {
                 context,
                 ALBUM_SELECTION,
                 arrayOf(albumName.lowercase(Locale.getDefault()).trim { it <= ' ' })
-            ).getSongs()
+            ).intoSongs()
     }
     if (songs.isNotEmpty()) {
         return songs
@@ -100,7 +100,7 @@ fun processQuery(context: Context, extras: Bundle): List<Song> {
                 context,
                 TITLE_SELECTION,
                 arrayOf(titleName.lowercase(Locale.getDefault()).trim { it <= ' ' })
-            ).getSongs()
+            ).intoSongs()
     }
     if (songs.isNotEmpty()) {
         return songs
@@ -111,7 +111,7 @@ fun processQuery(context: Context, extras: Bundle): List<Song> {
             context,
             ARTIST_SELECTION,
             arrayOf(query.lowercase(Locale.getDefault()).trim { it <= ' ' })
-        ).getSongs()
+        ).intoSongs()
     if (songs.isNotEmpty()) {
         return songs
     }
@@ -121,7 +121,7 @@ fun processQuery(context: Context, extras: Bundle): List<Song> {
             context,
             ALBUM_SELECTION,
             arrayOf(query.lowercase(Locale.getDefault()).trim { it <= ' ' })
-        ).getSongs()
+        ).intoSongs()
     if (songs.isNotEmpty()) {
         return songs
     }
@@ -131,7 +131,7 @@ fun processQuery(context: Context, extras: Bundle): List<Song> {
             context,
             TITLE_SELECTION,
             arrayOf(query.lowercase(Locale.getDefault()).trim { it <= ' ' })
-        ).getSongs()
+        ).intoSongs()
 
     if (songs.isNotEmpty()) {
         return songs

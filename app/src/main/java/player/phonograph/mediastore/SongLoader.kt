@@ -11,26 +11,26 @@ import android.provider.MediaStore
 object SongLoader {
 
     @JvmStatic
-    fun all(context: Context): List<Song> = querySongs(context).getSongs()
+    fun all(context: Context): List<Song> = querySongs(context).intoSongs()
 
 
     @JvmStatic
     fun id(context: Context, queryId: Long): Song =
         querySongs(
             context, "${MediaStore.Audio.AudioColumns._ID} =? ", arrayOf(queryId.toString())
-        ).getFirstSong()
+        ).intoFirstSong()
 
     @JvmStatic
     fun path(context: Context, path: String): Song =
         querySongs(
             context, "${MediaStore.Audio.AudioColumns.DATA} =? ", arrayOf(path)
-        ).getFirstSong()
+        ).intoFirstSong()
 
     @JvmStatic
     fun searchByPath(context: Context, path: String): List<Song> =
         querySongs(
             context, "${MediaStore.Audio.AudioColumns.DATA} LIKE ? ", arrayOf(path)
-        ).getSongs()
+        ).intoSongs()
 
     @JvmStatic
     fun searchByLocation(context: Context, currentLocation: Location): List<Song> =
@@ -41,6 +41,6 @@ object SongLoader {
         val cursor = querySongs(
             context, "${MediaStore.Audio.AudioColumns.TITLE} LIKE ?", arrayOf("%$title%")
         )
-        return cursor.getSongs()
+        return cursor.intoSongs()
     }
 }

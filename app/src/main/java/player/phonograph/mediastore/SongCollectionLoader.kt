@@ -17,7 +17,7 @@ object SongCollectionLoader {
 
 
     fun all(context: Context): List<SongCollection> = runBlocking {
-        val allSongs = querySongs(context).getSongs()
+        val allSongs = querySongs(context).intoSongs()
         convertSongsToSongCollections(context, allSongs)
     }
 

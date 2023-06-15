@@ -13,9 +13,9 @@ import android.provider.BaseColumns
 object TopAndRecentlyPlayedTracksLoader {
     private const val NUMBER_OF_TOP_TRACKS = 150
 
-    fun getRecentlyPlayedTracks(context: Context) = makeRecentTracksCursorAndClearUpDatabase(context).getSongs()
+    fun getRecentlyPlayedTracks(context: Context) = makeRecentTracksCursorAndClearUpDatabase(context).intoSongs()
 
-    fun getTopTracks(context: Context) = makeTopTracksCursorAndClearUpDatabase(context).getSongs()
+    fun getTopTracks(context: Context) = makeTopTracksCursorAndClearUpDatabase(context).intoSongs()
 
     fun makeRecentTracksCursorAndClearUpDatabase(context: Context): Cursor? {
         val cursor = makeRecentTracksCursorImpl(context)

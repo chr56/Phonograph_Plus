@@ -4,18 +4,17 @@
 
 package player.phonograph.mediastore
 
-import android.annotation.SuppressLint
-import android.database.Cursor
-import android.provider.MediaStore
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
+import android.annotation.SuppressLint
+import android.database.Cursor
 
 
 /**
- * read [Song] from cursor safely
+ * consume cursor (read & close) and convert into a song that at top of cursor
  */
-fun Cursor?.getFirstSong(): Song {
+fun Cursor?.intoFirstSong(): Song {
     return this?.use {
         if (moveToFirst()) {
             parseSong(this)
@@ -25,15 +24,19 @@ fun Cursor?.getFirstSong(): Song {
     } ?: Song.EMPTY_SONG
 }
 
-fun Cursor?.getSongs(): List<Song> {
-    val songs: MutableList<Song> = ArrayList()
-    if (this != null && moveToFirst()) {
-        do {
-            songs.add(parseSong(this))
-        } while (moveToNext())
-        close()
-    }
-    return songs
+/**
+ * consume cursor (read & close) and convert into song list
+ */
+fun Cursor?.intoSongs(): List<Song> {
+    return this?.use {
+        val songs = mutableListOf<Song>()
+        if (moveToFirst()) {
+            do {
+                songs.add(parseSong(this))
+            } while (moveToNext())
+        }
+        songs
+    } ?: emptyList()
 }
 
 /**

@@ -15,17 +15,17 @@ import android.provider.MediaStore.Audio.AudioColumns
 object AlbumLoader {
 
     fun all(context: Context): List<Album> {
-        val songs = querySongs(context, sortOrder = null).getSongs()
+        val songs = querySongs(context, sortOrder = null).intoSongs()
         return if (songs.isEmpty()) return emptyList() else songs.toAlbumList()
     }
 
     fun id(context: Context, albumId: Long): Album {
-        val songs = querySongs(context, "${AudioColumns.ALBUM_ID}=?", arrayOf(albumId.toString()), null).getSongs()
+        val songs = querySongs(context, "${AudioColumns.ALBUM_ID}=?", arrayOf(albumId.toString()), null).intoSongs()
         return Album(albumId, albumTitle(songs), songs.toMutableList().sortedBy { it.trackNumber })
     }
 
     fun searchByName(context: Context, query: String): List<Album> {
-        val songs = querySongs(context, "${AudioColumns.ALBUM} LIKE ?", arrayOf("%$query%"), null).getSongs()
+        val songs = querySongs(context, "${AudioColumns.ALBUM} LIKE ?", arrayOf("%$query%"), null).intoSongs()
         return if (songs.isEmpty()) return emptyList() else songs.toAlbumList()
     }
 
