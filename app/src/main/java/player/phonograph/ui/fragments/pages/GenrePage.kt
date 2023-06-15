@@ -30,7 +30,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
 
     class GenrePageViewModel : AbsDisplayPageViewModel<Genre>() {
         override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Genre> {
-            return GenreLoader.getAllGenres(context)
+            return GenreLoader.all(context)
         }
 
         override val headerTextRes: Int get() = R.plurals.item_genres

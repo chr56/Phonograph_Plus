@@ -18,7 +18,7 @@ import player.phonograph.settings.Setting
 @SuppressLint("Recycle")
 object GenreLoader {
 
-    fun getAllGenres(context: Context): List<Genre> {
+    fun all(context: Context): List<Genre> {
         return getGenresFromCursor(context, makeGenreCursor(context)).sortAll()
     }
 
