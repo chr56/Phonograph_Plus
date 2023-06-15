@@ -57,7 +57,8 @@ fun parseSong(cursor: Cursor): Song {
     val albumName = cursor.getString(9)
     val artistId = cursor.getLong(10)
     val artistName = cursor.getString(11)
-    return Song(id = id,
+    return Song(
+        id = id,
         title = title,
         trackNumber = trackNumber,
         year = year,
@@ -68,7 +69,8 @@ fun parseSong(cursor: Cursor): Song {
         albumId = albumId,
         albumName = albumName,
         artistId = artistId,
-        artistName = artistName)
+        artistName = artistName
+    )
 }
 
 /**
@@ -92,18 +94,22 @@ fun parseFileEntity(cursor: Cursor, currentLocation: Location): FileEntity {
     return if (songRelativePath.contains('/')) {
         val folderName = songRelativePath.substringBefore('/')
         // folder
-        FileEntity.Folder(location = currentLocation.changeTo("$basePath/$folderName"),
+        FileEntity.Folder(
+            location = currentLocation.changeTo("$basePath/$folderName"),
             name = folderName,
             dateAdded = dateAdded,
-            dateModified = dateModified)
+            dateModified = dateModified
+        )
     } else {
         // file
-        FileEntity.File(location = currentLocation.changeTo("$basePath/$songRelativePath"),
+        FileEntity.File(
+            location = currentLocation.changeTo("$basePath/$songRelativePath"),
             name = displayName,
             id = id,
             size = size,
             dateAdded = dateAdded,
-            dateModified = dateModified)
+            dateModified = dateModified
+        )
     }
 }
 
