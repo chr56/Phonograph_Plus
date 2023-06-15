@@ -3,8 +3,8 @@ package player.phonograph.ui.dialogs
 import lib.phonograph.dialog.alertDialog
 import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
-import player.phonograph.mediastore.DeleteSongUtil
 import player.phonograph.mediastore.LyricsLoader
+import player.phonograph.mediastore.deleteSongsViaMediaStore
 import player.phonograph.model.Song
 import player.phonograph.ui.components.viewcreater.ButtonPanel
 import player.phonograph.ui.components.viewcreater.ContentPanel
@@ -156,7 +156,7 @@ class DeleteSongsDialog : DialogFragment() {
             titlePanel.titleView.text = activity.getString(R.string.delete_action)
             delete = {
                 val total = model.songs.size
-                val fails = DeleteSongUtil.deleteSongs(activity, model.songs)
+                val fails = deleteSongsViaMediaStore(activity, model.songs)
 
                 val msg: String =
                     activity.resources.getQuantityString(
