@@ -92,6 +92,8 @@ val BASE_SONG_PROJECTION = arrayOf(
     AudioColumns.ALBUM, // 9
     AudioColumns.ARTIST_ID, // 10
     AudioColumns.ARTIST, // 11
+    AudioColumns.ALBUM_ARTIST, // 12 (hidden api before R)
+    AudioColumns.COMPOSER, // 13 (hidden api before R)
 )
 
 val BASE_FILE_PROJECTION = arrayOf(
