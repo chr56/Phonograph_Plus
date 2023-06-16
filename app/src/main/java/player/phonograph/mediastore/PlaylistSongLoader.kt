@@ -40,8 +40,10 @@ object PlaylistSongLoader {
             albumName = cursor.getString(9),
             artistId = cursor.getLong(10),
             artistName = cursor.getString(11),
+            albumArtist = cursor.getString(12),
+            composer = cursor.getString(13),
             playlistId = playlistId,
-            idInPlayList = cursor.getLong(12),
+            idInPlayList = cursor.getLong(14),
         )
 
     private fun makeCursor(context: Context, playlistId: Long): Cursor? {
@@ -61,7 +63,9 @@ object PlaylistSongLoader {
                     AudioColumns.ALBUM, // 9
                     AudioColumns.ARTIST_ID, // 10
                     AudioColumns.ARTIST, // 11
-                    Playlists.Members._ID // 12
+                    AudioColumns.ALBUM_ARTIST, // 12 (hidden api before R)
+                    AudioColumns.COMPOSER, // 13 (hidden api before R)
+                    Playlists.Members._ID // 14
                 ),
                 BASE_AUDIO_SELECTION, null,
                 Playlists.Members.DEFAULT_SORT_ORDER

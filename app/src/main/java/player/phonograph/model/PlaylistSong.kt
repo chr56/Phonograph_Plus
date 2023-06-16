@@ -1,8 +1,8 @@
 package player.phonograph.model
 
+import androidx.annotation.Keep
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.annotation.Keep
 
 open class PlaylistSong : Song {
     val playlistId: Long
@@ -21,9 +21,26 @@ open class PlaylistSong : Song {
         albumName: String?,
         artistId: Long,
         artistName: String?,
+        albumArtist: String?,
+        composer: String?,
         playlistId: Long,
-        idInPlayList: Long
-    ) : super(id, title, trackNumber, year, duration, data, dateAdded, dateModified, albumId, albumName, artistId, artistName) {
+        idInPlayList: Long,
+    ) : super(
+        id,
+        title,
+        trackNumber,
+        year,
+        duration,
+        data,
+        dateAdded,
+        dateModified,
+        albumId,
+        albumName,
+        artistId,
+        artistName,
+        albumArtist,
+        composer
+    ) {
         this.playlistId = playlistId
         this.idInPlayList = idInPlayList
     }
@@ -84,6 +101,8 @@ open class PlaylistSong : Song {
             albumName = "",
             artistId = -1,
             artistName = "",
+            albumArtist = "",
+            composer = "",
             playlistId = -1,
             idInPlayList = -1
         )
