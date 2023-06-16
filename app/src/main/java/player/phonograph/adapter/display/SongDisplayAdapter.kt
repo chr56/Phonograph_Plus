@@ -52,17 +52,20 @@ open class SongDisplayAdapter(
         val song = dataset[position]
         val sectionName: String =
             when (Setting.instance.songSortMode.sortRef) {
-                SortRef.SONG_NAME -> makeSectionName(song.title)
-                SortRef.ARTIST_NAME -> makeSectionName(song.artistName)
-                SortRef.ALBUM_NAME -> makeSectionName(song.albumName)
-                SortRef.YEAR -> getYearString(song.year)
-                SortRef.DURATION -> getReadableDurationString(song.duration)
-                SortRef.MODIFIED_DATE ->
-                    SimpleDateFormat("yy.MM.dd", Locale.getDefault()).format(song.dateModified * 1000)
-                SortRef.ADDED_DATE ->
-                    SimpleDateFormat("yy.MM.dd", Locale.getDefault()).format(song.dateAdded * 1000)
-                else -> ""
+                SortRef.SONG_NAME         -> makeSectionName(song.title)
+                SortRef.ARTIST_NAME       -> makeSectionName(song.artistName)
+                SortRef.ALBUM_NAME        -> makeSectionName(song.albumName)
+                SortRef.ALBUM_ARTIST_NAME -> makeSectionName(song.albumArtistName)
+                SortRef.COMPOSER          -> makeSectionName(song.composer)
+                SortRef.YEAR              -> getYearString(song.year)
+                SortRef.DURATION          -> getReadableDurationString(song.duration)
+                SortRef.MODIFIED_DATE     -> shortDate(song.dateModified)
+                SortRef.ADDED_DATE        -> shortDate(song.dateAdded)
+                else                      -> ""
             }
         return sectionName
     }
+
+    private fun shortDate(timestamp: Long): String =
+        SimpleDateFormat("yy.MM.dd", Locale.getDefault()).format(timestamp * 1000)
 }

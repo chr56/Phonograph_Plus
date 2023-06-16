@@ -1,9 +1,9 @@
 package player.phonograph.model
 
+import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.annotation.Keep
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -34,7 +34,11 @@ class Album : Parcelable, Displayable {
     val artistId: Long
         get() = safeGetFirstSong().artistId
     val artistName: String
-        get() = safeGetFirstSong().artistName ?: "UNKNOWN"
+        get() = safeGetFirstSong().let {
+            if (!it.albumArtistName.isNullOrEmpty()) it.albumArtistName
+            else if (!it.artistName.isNullOrEmpty()) it.artistName
+            else "UNKNOWN"
+        }
     val year: Int
         get() = safeGetFirstSong().year
     val dateModified: Long
