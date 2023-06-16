@@ -57,6 +57,8 @@ fun readSong(cursor: Cursor): Song {
     val albumName = cursor.getString(9)
     val artistId = cursor.getLong(10)
     val artistName = cursor.getString(11)
+    val albumArtist = cursor.getString(12)
+    val composer = cursor.getString(13)
     return Song(
         id = id,
         title = title,
