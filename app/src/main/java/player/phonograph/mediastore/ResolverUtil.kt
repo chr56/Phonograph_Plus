@@ -72,7 +72,7 @@ fun readSong(cursor: Cursor): Song {
         albumName = albumName,
         artistId = artistId,
         artistName = artistName,
-        albumArtist = albumArtist,
+        albumArtistName = albumArtist,
         composer = composer,
     )
 }

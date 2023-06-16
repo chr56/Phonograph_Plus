@@ -21,7 +21,7 @@ open class PlaylistSong : Song {
         albumName: String?,
         artistId: Long,
         artistName: String?,
-        albumArtist: String?,
+        albumArtistName: String?,
         composer: String?,
         playlistId: Long,
         idInPlayList: Long,
@@ -38,7 +38,7 @@ open class PlaylistSong : Song {
         albumName,
         artistId,
         artistName,
-        albumArtist,
+        albumArtistName,
         composer
     ) {
         this.playlistId = playlistId
@@ -101,7 +101,7 @@ open class PlaylistSong : Song {
             albumName = "",
             artistId = -1,
             artistName = "",
-            albumArtist = "",
+            albumArtistName = "",
             composer = "",
             playlistId = -1,
             idInPlayList = -1

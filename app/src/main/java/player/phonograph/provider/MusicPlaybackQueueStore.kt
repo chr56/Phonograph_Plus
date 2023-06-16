@@ -212,7 +212,7 @@ class MusicPlaybackQueueStore(context: Context?) : SQLiteOpenHelper(
                     values.put(AudioColumns.ALBUM, song.albumName)
                     values.put(AudioColumns.ARTIST_ID, song.artistId)
                     values.put(AudioColumns.ARTIST, song.artistName)
-                    values.put(AudioColumns.ALBUM_ARTIST, song.albumArtist)
+                    values.put(AudioColumns.ALBUM_ARTIST, song.albumArtistName)
                     values.put(AudioColumns.COMPOSER, song.composer)
                     database.insert(tableName, null, values)
                     i++

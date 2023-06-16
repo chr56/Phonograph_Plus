@@ -55,7 +55,7 @@ open class SongDisplayAdapter(
                 SortRef.SONG_NAME         -> makeSectionName(song.title)
                 SortRef.ARTIST_NAME       -> makeSectionName(song.artistName)
                 SortRef.ALBUM_NAME        -> makeSectionName(song.albumName)
-                SortRef.ALBUM_ARTIST_NAME -> makeSectionName(song.albumArtist)
+                SortRef.ALBUM_ARTIST_NAME -> makeSectionName(song.albumArtistName)
                 SortRef.COMPOSER          -> makeSectionName(song.composer)
                 SortRef.YEAR              -> getYearString(song.year)
                 SortRef.DURATION          -> getReadableDurationString(song.duration)

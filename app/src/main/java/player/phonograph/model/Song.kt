@@ -34,7 +34,7 @@ open class Song : Parcelable, Displayable {
     @JvmField
     val artistName: String?
     @JvmField
-    val albumArtist: String?
+    val albumArtistName: String?
     @JvmField
     val composer: String?
 
@@ -51,7 +51,7 @@ open class Song : Parcelable, Displayable {
         albumName: String?,
         artistId: Long,
         artistName: String?,
-        albumArtist: String?,
+        albumArtistName: String?,
         composer: String?,
     ) {
         this.id = id
@@ -66,7 +66,7 @@ open class Song : Parcelable, Displayable {
         this.albumName = albumName
         this.artistId = artistId
         this.artistName = artistName
-        this.albumArtist = albumArtist
+        this.albumArtistName = albumArtistName
         this.composer = composer
     }
 
@@ -86,7 +86,7 @@ open class Song : Parcelable, Displayable {
         if (albumName != o.albumName) return false
         if (artistId != o.artistId) return false
         if (artistName != o.artistName) return false
-        if (albumArtist != o.albumArtist) return false
+        if (albumArtistName != o.albumArtistName) return false
         if (composer != o.composer) return false
 
         return true
@@ -105,13 +105,13 @@ open class Song : Parcelable, Displayable {
         result = 31 * result + (albumName?.hashCode() ?: 0)
         result = 31 * result + artistId.toInt()
         result = 31 * result + (artistName?.hashCode() ?: 0)
-        result = 31 * result + (albumArtist?.hashCode() ?: 0)
+        result = 31 * result + (albumArtistName?.hashCode() ?: 0)
         result = 31 * result + (composer?.hashCode() ?: 0)
         return result
     }
 
     override fun toString(): String {
-        return "Song{id=$id, title='$title', trackNumber=$trackNumber, year=$year, duration=$duration, data='$data', dateModified=$dateModified, dataAdded=$dateAdded, albumId=$albumId, albumName='$albumName', artistId=$artistId, artistName='$artistName', albumArtist='$albumArtist', composer='$composer'}"
+        return "Song{id=$id, title='$title', trackNumber=$trackNumber, year=$year, duration=$duration, data='$data', dateModified=$dateModified, dataAdded=$dateAdded, albumId=$albumId, albumName='$albumName', artistId=$artistId, artistName='$artistName', albumArtistName='$albumArtistName', composer='$composer'}"
     }
 
     override fun describeContents(): Int = 0
@@ -129,7 +129,7 @@ open class Song : Parcelable, Displayable {
         dest.writeString(albumName)
         dest.writeLong(artistId)
         dest.writeString(artistName)
-        dest.writeString(albumArtist)
+        dest.writeString(albumArtistName)
         dest.writeString(composer)
     }
 
@@ -146,7 +146,7 @@ open class Song : Parcelable, Displayable {
         albumName = parcel.readString()
         artistId = parcel.readLong()
         artistName = parcel.readString()
-        albumArtist = parcel.readString()
+        albumArtistName = parcel.readString()
         composer = parcel.readString()
     }
 
@@ -171,7 +171,7 @@ open class Song : Parcelable, Displayable {
             albumName = "",
             artistId = -1,
             artistName = "",
-            albumArtist = "",
+            albumArtistName = "",
             composer = "",
         )
 

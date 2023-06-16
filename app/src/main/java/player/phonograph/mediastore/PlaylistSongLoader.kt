@@ -40,7 +40,7 @@ object PlaylistSongLoader {
             albumName = cursor.getString(9),
             artistId = cursor.getLong(10),
             artistName = cursor.getString(11),
-            albumArtist = cursor.getString(12),
+            albumArtistName = cursor.getString(12),
             composer = cursor.getString(13),
             playlistId = playlistId,
             idInPlayList = cursor.getLong(14),
