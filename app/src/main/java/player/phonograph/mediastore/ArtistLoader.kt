@@ -4,36 +4,28 @@
 
 package player.phonograph.mediastore
 
-import android.content.Context
-import android.provider.MediaStore.Audio.AudioColumns
-import player.phonograph.mediastore.SongLoader.getSongs
-import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
+import android.content.Context
+import android.provider.MediaStore.Audio.AudioColumns
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 object ArtistLoader {
 
-    fun getAllArtists(context: Context): List<Artist> {
-        val songs = getSongs(
-            querySongs(context, sortOrder = null)
-        )
+    fun all(context: Context): List<Artist> {
+        val songs = querySongs(context, sortOrder = null).intoSongs()
         return if (songs.isEmpty()) return emptyList() else songs.toArtistList()
     }
 
-    fun getArtists(context: Context, query: String): List<Artist> {
-        val songs = getSongs(
-            makeSongCursor(context, "${AudioColumns.ARTIST} LIKE ?", arrayOf("%$query%"), null)
-        )
+    fun searchByName(context: Context, query: String): List<Artist> {
+        val songs = querySongs(context, "${AudioColumns.ARTIST} LIKE ?", arrayOf("%$query%"), null).intoSongs()
         return if (songs.isEmpty()) return emptyList() else songs.toArtistList()
     }
 
-    fun getArtist(context: Context, artistId: Long): Artist {
-        val songs = getSongs(
-            makeSongCursor(context, "${AudioColumns.ARTIST_ID}=?", arrayOf(artistId.toString()), null)
-        )
+    fun id(context: Context, artistId: Long): Artist {
+        val songs = querySongs(context, "${AudioColumns.ARTIST_ID}=?", arrayOf(artistId.toString()), null).intoSongs()
         return if (songs.isEmpty()) Artist(artistId, Artist.UNKNOWN_ARTIST_DISPLAY_NAME, ArrayList())
         else Artist(artistId, songs[0].artistName, songs.toAlbumList())
     }

@@ -16,12 +16,12 @@ import kotlinx.coroutines.runBlocking
 object SongCollectionLoader {
 
 
-    fun getAllSongCollection(context: Context): List<SongCollection> = runBlocking {
-        val allSongs = querySongs(context).getSongs()
-        getAllSongCollectionImpl(context, allSongs)
+    fun all(context: Context): List<SongCollection> = runBlocking {
+        val allSongs = querySongs(context).intoSongs()
+        convertSongsToSongCollections(context, allSongs)
     }
 
-    private suspend fun getAllSongCollectionImpl(
+    private suspend fun convertSongsToSongCollections(
         context: Context,
         allSongs: List<Song>
     ): List<SongCollection> {

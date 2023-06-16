@@ -4,8 +4,7 @@
 
 package player.phonograph.ui.fragments.explorer
 
-import player.phonograph.mediastore.listFilesLegacy
-import player.phonograph.mediastore.listFilesMediaStore
+import player.phonograph.mediastore.FileEntityLoader
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.settings.Setting
@@ -26,11 +25,11 @@ class FilesPageViewModel : AbsFileViewModel() {
             Setting.instance.showFileImages = value
         }
 
-    override fun listFiles(context: Context, location: Location, scope: CoroutineScope?): Set<FileEntity> {
+    override suspend fun listFiles(context: Context, location: Location, scope: CoroutineScope?): Set<FileEntity> {
         return if (useLegacyListFile) {
-            listFilesLegacy(location, scope)
+            FileEntityLoader.listFilesLegacy(location, scope)
         } else
-            listFilesMediaStore(location, context, scope)
+            FileEntityLoader.listFilesMediaStore(location, context, scope)
     }
 
 }

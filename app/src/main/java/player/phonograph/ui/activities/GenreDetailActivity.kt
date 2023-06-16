@@ -62,7 +62,7 @@ class GenreDetailActivity :
 
     private fun loadDataSet(context: Context) {
         loaderCoroutineScope.launch {
-            val list: List<Song> = GenreLoader.getSongs(context, genre.id)
+            val list: List<Song> = GenreLoader.genreSongs(context, genre.id)
 
             while (!isRecyclerViewPrepared) yield() // wait until ready
 

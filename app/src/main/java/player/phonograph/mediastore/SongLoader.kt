@@ -1,8 +1,8 @@
 package player.phonograph.mediastore
 
 import player.phonograph.model.Song
+import player.phonograph.model.file.Location
 import android.content.Context
-import android.database.Cursor
 import android.provider.MediaStore
 
 /**
@@ -11,43 +11,36 @@ import android.provider.MediaStore
 object SongLoader {
 
     @JvmStatic
-    fun getAllSongs(context: Context): List<Song> = querySongs(context).getSongs()
+    fun all(context: Context): List<Song> = querySongs(context).intoSongs()
 
 
     @JvmStatic
-    fun getSong(context: Context, queryId: Long): Song {
-        val cursor =
-            querySongs(
-                context, "${MediaStore.Audio.AudioColumns._ID} =? ", arrayOf(queryId.toString())
-            )
-        return cursor.getFirstSong()
-    }
+    fun id(context: Context, queryId: Long): Song =
+        querySongs(
+            context, "${MediaStore.Audio.AudioColumns._ID} =? ", arrayOf(queryId.toString())
+        ).intoFirstSong()
 
     @JvmStatic
-    fun getSong(context: Context, path: String): Song {
-        val cursor =
-            querySongs(
-                context, "${MediaStore.Audio.AudioColumns.DATA} =? ", arrayOf(path)
-            )
-        return cursor.getFirstSong()
-    }
+    fun path(context: Context, path: String): Song =
+        querySongs(
+            context, "${MediaStore.Audio.AudioColumns.DATA} =? ", arrayOf(path)
+        ).intoFirstSong()
 
     @JvmStatic
-    fun getSongs(context: Context, title: String): List<Song> {
+    fun searchByPath(context: Context, path: String): List<Song> =
+        querySongs(
+            context, "${MediaStore.Audio.AudioColumns.DATA} LIKE ? ", arrayOf(path)
+        ).intoSongs()
+
+    @JvmStatic
+    fun searchByLocation(context: Context, currentLocation: Location): List<Song> =
+        searchByPath(context, "%${currentLocation.absolutePath}%")
+
+    @JvmStatic
+    fun searchByTitle(context: Context, title: String): List<Song> {
         val cursor = querySongs(
             context, "${MediaStore.Audio.AudioColumns.TITLE} LIKE ?", arrayOf("%$title%")
         )
-        return cursor.getSongs()
+        return cursor.intoSongs()
     }
-
-    fun getSongs(cursor: Cursor?): List<Song> = cursor.getSongs() //todo
-
-    @JvmStatic
-    fun makeSongCursor(
-        context: Context,
-        selection: String,
-        selectionValues: Array<String>,
-        sortOrder: String? = null,
-    ): Cursor? =
-        querySongs(context, selection, selectionValues, sortOrder)
 }

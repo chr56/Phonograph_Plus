@@ -100,7 +100,7 @@ class BatchTagEditorActivity :
         private fun parseIntent(context: Context, intent: Intent): List<Song> {
             val songs: ArrayList<Song>? = intent.extras?.getParcelableArrayList(SONGS)
             val ids: LongArray? = intent.extras?.getLongArray(SONG_IDS)
-            return songs ?: (ids?.map { SongLoader.getSong(context, it) }
+            return songs ?: (ids?.map { SongLoader.id(context, it) }
                 ?: emptyList())
         }
 

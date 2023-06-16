@@ -7,7 +7,6 @@ package player.phonograph.ui.fragments.pages
 import player.phonograph.mediastore.SongCollectionLoader
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
-import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
 import androidx.lifecycle.ViewModel
@@ -38,7 +37,7 @@ class FlattenFolderPageViewModel : ViewModel() {
     fun loadFolders(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             _folders.emit(
-                SongCollectionLoader.getAllSongCollection(context = context).toMutableList().sort()
+                SongCollectionLoader.all(context = context).toMutableList().sort()
             )
         }
     }

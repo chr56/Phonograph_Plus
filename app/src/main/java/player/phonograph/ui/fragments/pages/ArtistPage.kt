@@ -31,7 +31,7 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutMana
 
     class ArtistPageViewModel : AbsDisplayPageViewModel<Artist>() {
         override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Artist> {
-            return ArtistLoader.getAllArtists(App.instance)
+            return ArtistLoader.all(App.instance)
         }
 
         override val headerTextRes: Int get() = R.plurals.item_artists

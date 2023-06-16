@@ -29,7 +29,7 @@ import player.phonograph.mechanism.Update
 import player.phonograph.mechanism.migrate.migrate
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.StyleConfig
-import player.phonograph.mediastore.SongLoader.getAllSongs
+import player.phonograph.mediastore.SongLoader.all
 import player.phonograph.model.infoString
 import player.phonograph.model.pages.Pages
 import player.phonograph.model.version.VersionCatalog
@@ -225,7 +225,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                     drawerBinding.drawerLayout.closeDrawers()
                     Handler(Looper.getMainLooper()).postDelayed(
                         {
-                            val songs = getAllSongs(activity)
+                            val songs = all(activity)
                             songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
                         }, 350
                     )

@@ -3,21 +3,19 @@
  */
 package player.phonograph.mediastore
 
-import android.content.Context
-import android.database.Cursor
-import android.provider.BaseColumns
 import player.phonograph.mediastore.internal.SortedLongCursor
 import player.phonograph.provider.HistoryStore
 import player.phonograph.provider.SongPlayCountStore
+import android.content.Context
+import android.database.Cursor
+import android.provider.BaseColumns
 
 object TopAndRecentlyPlayedTracksLoader {
-    const val NUMBER_OF_TOP_TRACKS = 150
+    private const val NUMBER_OF_TOP_TRACKS = 150
 
-    fun getRecentlyPlayedTracks(context: Context) =
-        SongLoader.getSongs(makeRecentTracksCursorAndClearUpDatabase(context))
+    fun getRecentlyPlayedTracks(context: Context) = makeRecentTracksCursorAndClearUpDatabase(context).intoSongs()
 
-    fun getTopTracks(context: Context) =
-        SongLoader.getSongs(makeTopTracksCursorAndClearUpDatabase(context))
+    fun getTopTracks(context: Context) = makeTopTracksCursorAndClearUpDatabase(context).intoSongs()
 
     fun makeRecentTracksCursorAndClearUpDatabase(context: Context): Cursor? {
         val cursor = makeRecentTracksCursorImpl(context)
@@ -52,53 +50,42 @@ object TopAndRecentlyPlayedTracksLoader {
 
     private fun makeRecentTracksCursorImpl(context: Context): SortedLongCursor? {
         // first get the top results ids from the internal database
-        val cursor = HistoryStore.getInstance(context).queryRecentIds()
-        return cursor.use { songs ->
-            makeSortedCursor(
-                context, songs,
-                songs!!.getColumnIndex(HistoryStore.RecentStoreColumns.ID)
+        return HistoryStore.getInstance(context).queryRecentIds().use { cursor ->
+            cursor.makeSortedCursor(
+                context, cursor.getColumnIndex(HistoryStore.RecentStoreColumns.ID)
             )
         }
     }
 
     private fun makeTopTracksCursorImpl(context: Context): SortedLongCursor? {
         // first get the top results ids from the internal database
-        val cursor = SongPlayCountStore.getInstance(context).getTopPlayedResults(NUMBER_OF_TOP_TRACKS)
-        return cursor.use { songs ->
-            makeSortedCursor(
-                context, songs,
-                songs!!.getColumnIndex(SongPlayCountStore.SongPlayCountColumns.ID)
-            )
-        }
+        return SongPlayCountStore.getInstance(context).getTopPlayedResults(NUMBER_OF_TOP_TRACKS)
+            .use { cursor ->
+                cursor.makeSortedCursor(
+                    context, cursor.getColumnIndex(SongPlayCountStore.SongPlayCountColumns.ID)
+                )
+            }
     }
 
-    private fun makeSortedCursor(context: Context, cursor: Cursor?, idColumn: Int): SortedLongCursor? {
-        if (cursor != null && cursor.moveToFirst()) {
-            // create the list of ids to select against
-            val selection = StringBuilder()
-            selection.append(BaseColumns._ID)
-            selection.append(" IN (")
+    private fun Cursor.makeSortedCursor(context: Context, idColumn: Int): SortedLongCursor? {
+        moveToFirst()
 
-            // this tracks the order of the ids
-            val order = LongArray(cursor.count)
-            var id = cursor.getLong(idColumn)
-            selection.append(id)
-            order[cursor.position] = id
-            while (cursor.moveToNext()) {
-                selection.append(",")
-                id = cursor.getLong(idColumn)
-                order[cursor.position] = id
-                selection.append(id.toString())
-            }
-            selection.append(")")
-
-            // get a list of songs with the data given the selection statement
-            val songCursor = querySongs(context, selection = selection.toString()) //todo: SQL injection
-            if (songCursor != null) {
-                // now return the wrapped TopTracksCursor to handle sorting given order
-                return SortedLongCursor(songCursor, order, BaseColumns._ID)
-            }
+        val selectionPlaceHolder = when {
+            count > 1  -> "?" + ",?".repeat(count - 1)
+            count == 1 -> "?"
+            else       -> return null // empty cursor
         }
-        return null
+
+        val ids = LongArray(count) {
+            getLong(idColumn).also { moveToNext() }
+        }
+
+        val songCursor = querySongs(
+            context,
+            selection = "${BaseColumns._ID}  IN ( $selectionPlaceHolder )",
+            selectionValues = ids.map { it.toString() }.toTypedArray()
+        ) ?: return null
+
+        return SortedLongCursor(songCursor, ids, BaseColumns._ID)
     }
 }

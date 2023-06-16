@@ -15,15 +15,15 @@
 */
 package player.phonograph.provider
 
+import player.phonograph.mediastore.intoSongs
+import player.phonograph.model.Song
+import player.phonograph.notification.ErrorNotification
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
 import android.provider.MediaStore.Audio.AudioColumns
-import player.phonograph.mediastore.SongLoader.getSongs
-import player.phonograph.model.Song
-import player.phonograph.notification.ErrorNotification
 
 /**
  * @author Andrew Neal, modified for Phonograph by Karim Abou Zeid
@@ -31,7 +31,12 @@ import player.phonograph.notification.ErrorNotification
  *
  * This keeps track of the music playback and history state of the playback service
  */
-class MusicPlaybackQueueStore(context: Context?) : SQLiteOpenHelper(context, DatabaseConstants.MUSIC_PLAYBACK_STATE_DB, null, VERSION) {
+class MusicPlaybackQueueStore(context: Context?) : SQLiteOpenHelper(
+    context,
+    DatabaseConstants.MUSIC_PLAYBACK_STATE_DB,
+    null,
+    VERSION
+) {
 
     override fun onCreate(db: SQLiteDatabase) {
         createTable(db, PLAYING_QUEUE_TABLE_NAME)
@@ -39,19 +44,19 @@ class MusicPlaybackQueueStore(context: Context?) : SQLiteOpenHelper(context, Dat
     }
 
     private val mainTable: String = "(" +
-        "${BaseColumns._ID} LONG NOT NULL," +
-        "${AudioColumns.TITLE} TEXT NOT NULL," +
-        "${AudioColumns.TRACK} INT NOT NULL," +
-        "${AudioColumns.YEAR} INT NOT NULL," +
-        "${AudioColumns.DURATION} LONG NOT NULL," +
-        "${AudioColumns.DATA} TEXT NOT NULL," +
-        "${AudioColumns.DATE_ADDED} LONG NOT NULL," +
-        "${AudioColumns.DATE_MODIFIED} LONG NOT NULL," +
-        "${AudioColumns.ALBUM_ID} LONG NOT NULL," +
-        "${AudioColumns.ALBUM} TEXT NOT NULL," +
-        "${AudioColumns.ARTIST_ID} LONG NOT NULL," +
-        "${AudioColumns.ARTIST} TEXT NOT NULL" +
-        ")"
+            "${BaseColumns._ID} LONG NOT NULL," +
+            "${AudioColumns.TITLE} TEXT NOT NULL," +
+            "${AudioColumns.TRACK} INT NOT NULL," +
+            "${AudioColumns.YEAR} INT NOT NULL," +
+            "${AudioColumns.DURATION} LONG NOT NULL," +
+            "${AudioColumns.DATA} TEXT NOT NULL," +
+            "${AudioColumns.DATE_ADDED} LONG NOT NULL," +
+            "${AudioColumns.DATE_MODIFIED} LONG NOT NULL," +
+            "${AudioColumns.ALBUM_ID} LONG NOT NULL," +
+            "${AudioColumns.ALBUM} TEXT NOT NULL," +
+            "${AudioColumns.ARTIST_ID} LONG NOT NULL," +
+            "${AudioColumns.ARTIST} TEXT NOT NULL" +
+            ")"
 
     private fun createTable(db: SQLiteDatabase, tableName: String) {
         db.execSQL("CREATE TABLE IF NOT EXISTS $tableName $mainTable;")
@@ -81,37 +86,41 @@ class MusicPlaybackQueueStore(context: Context?) : SQLiteOpenHelper(context, Dat
             db.execSQL("DROP TABLE IF EXISTS $temp")
             db.execSQL(
                 "CREATE TABLE $temp" +
-                    "(" +
-                    "${BaseColumns._ID} LONG NOT NULL," +
-                    "${AudioColumns.TITLE} TEXT NOT NULL," +
-                    "${AudioColumns.TRACK} INT NOT NULL," +
-                    "${AudioColumns.YEAR} INT NOT NULL," +
-                    "${AudioColumns.DURATION} LONG NOT NULL," +
-                    "${AudioColumns.DATA} TEXT NOT NULL," +
-                    "${AudioColumns.DATE_ADDED} LONG NOT NULL DEFAULT 0," +
-                    "${AudioColumns.DATE_MODIFIED} LONG NOT NULL," +
-                    "${AudioColumns.ALBUM_ID} LONG NOT NULL," +
-                    "${AudioColumns.ALBUM} TEXT NOT NULL," +
-                    "${AudioColumns.ARTIST_ID} LONG NOT NULL," +
-                    "${AudioColumns.ARTIST} TEXT NOT NULL" +
-                    ");"
+                        "(" +
+                        "${BaseColumns._ID} LONG NOT NULL," +
+                        "${AudioColumns.TITLE} TEXT NOT NULL," +
+                        "${AudioColumns.TRACK} INT NOT NULL," +
+                        "${AudioColumns.YEAR} INT NOT NULL," +
+                        "${AudioColumns.DURATION} LONG NOT NULL," +
+                        "${AudioColumns.DATA} TEXT NOT NULL," +
+                        "${AudioColumns.DATE_ADDED} LONG NOT NULL DEFAULT 0," +
+                        "${AudioColumns.DATE_MODIFIED} LONG NOT NULL," +
+                        "${AudioColumns.ALBUM_ID} LONG NOT NULL," +
+                        "${AudioColumns.ALBUM} TEXT NOT NULL," +
+                        "${AudioColumns.ARTIST_ID} LONG NOT NULL," +
+                        "${AudioColumns.ARTIST} TEXT NOT NULL" +
+                        ");"
             )
             db.execSQL(
                 "INSERT INTO $temp(${BaseColumns._ID},${AudioColumns.TITLE},${AudioColumns.TRACK},${AudioColumns.YEAR},${AudioColumns.DURATION},${AudioColumns.DATA},${AudioColumns.DATE_MODIFIED},${AudioColumns.ALBUM_ID},${AudioColumns.ALBUM},${AudioColumns.ARTIST_ID},${AudioColumns.ARTIST}) " +
-                    "SELECT ${BaseColumns._ID},${AudioColumns.TITLE},${AudioColumns.TRACK},${AudioColumns.YEAR},${AudioColumns.DURATION},${AudioColumns.DATA},${AudioColumns.DATE_MODIFIED},${AudioColumns.ALBUM_ID},${AudioColumns.ALBUM},${AudioColumns.ARTIST_ID},${AudioColumns.ARTIST}" +
-                    " FROM $tableName"
+                        "SELECT ${BaseColumns._ID},${AudioColumns.TITLE},${AudioColumns.TRACK},${AudioColumns.YEAR},${AudioColumns.DURATION},${AudioColumns.DATA},${AudioColumns.DATE_MODIFIED},${AudioColumns.ALBUM_ID},${AudioColumns.ALBUM},${AudioColumns.ARTIST_ID},${AudioColumns.ARTIST}" +
+                        " FROM $tableName"
             )
             db.execSQL("DROP TABLE IF EXISTS $tableName ")
             db.execSQL("ALTER TABLE $temp RENAME TO $tableName")
             db.setTransactionSuccessful()
         } catch (e: Exception) {
-            ErrorNotification.postErrorNotification(e, "Fail to transaction playback database, playing queue now corrupted  ")
+            ErrorNotification.postErrorNotification(
+                e,
+                "Fail to transaction playback database, playing queue now corrupted  "
+            )
 
             try {
                 // fallback
                 db.execSQL("ALTER TABLE $PLAYING_QUEUE_TABLE_NAME ADD ${AudioColumns.DATE_ADDED} LONG NOT NULL DEFAULT 0")
                 db.execSQL("ALTER TABLE $ORIGINAL_PLAYING_QUEUE_TABLE_NAME ADD ${AudioColumns.DATE_ADDED} LONG NOT NULL DEFAULT 0")
-            } catch (e: Exception) {} finally {
+            } catch (e: Exception) {
+            } finally {
                 db.setTransactionSuccessful()
             }
 
@@ -188,11 +197,10 @@ class MusicPlaybackQueueStore(context: Context?) : SQLiteOpenHelper(context, Dat
         get() = getQueue(ORIGINAL_PLAYING_QUEUE_TABLE_NAME)
 
     private fun getQueue(tableName: String): List<Song> {
-        val cursor = readableDatabase.query(
+        return readableDatabase.query(
             tableName, null,
             null, null, null, null, null
-        )
-        return getSongs(cursor)
+        ).use { cursor -> cursor.intoSongs() }
     }
 
     companion object {

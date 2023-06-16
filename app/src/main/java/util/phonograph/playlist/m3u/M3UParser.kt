@@ -4,9 +4,9 @@
 
 package util.phonograph.playlist.m3u
 
-import android.content.Context
+import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
-import player.phonograph.mediastore.searchSong
+import android.content.Context
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
@@ -18,7 +18,7 @@ object M3UParser {
         val songs: MutableList<Song> = ArrayList(15)
         for (file in songFiles) {
             songs.add(
-                searchSong(context, file)
+                SongLoader.searchByPath(context, file).firstOrNull() ?: Song.EMPTY_SONG
             )
         }
         return if (songs.isNotEmpty()) songs else ArrayList(1)

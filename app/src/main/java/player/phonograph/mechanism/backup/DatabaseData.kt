@@ -7,7 +7,7 @@ package player.phonograph.mechanism.backup
 import okio.BufferedSink
 import player.phonograph.mechanism.PlaylistsManagement
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.mediastore.searchSong
+import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.provider.FavoritesStore
@@ -238,11 +238,8 @@ object DatabaseDataManger {
                 PersistentSong(song.data, song.title, song.albumName, song.artistName)
         }
 
-        fun getMatchingSong(context: Context): Song? {
-            val song = searchSong(context, path)
-            if (song == Song.EMPTY_SONG) return null
-            return song
-        }
+        fun getMatchingSong(context: Context): Song? =
+            SongLoader.searchByPath(context, path).firstOrNull()
     }
     @Keep
     @Serializable

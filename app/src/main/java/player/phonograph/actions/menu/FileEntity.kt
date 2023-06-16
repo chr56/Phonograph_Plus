@@ -17,7 +17,6 @@ import player.phonograph.actions.actionDelete
 import player.phonograph.actions.fragmentActivity
 import player.phonograph.actions.actionGotoDetail
 import player.phonograph.actions.actionShare
-import player.phonograph.mediastore.searchSongs
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
@@ -26,6 +25,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.compose.tag.TagEditorActivity
 import player.phonograph.mechanism.PathFilter
 import player.phonograph.mechanism.setting.FileConfig
+import player.phonograph.mediastore.SongLoader
 import android.app.Activity
 import android.content.Context
 import android.media.MediaScannerConnection
@@ -126,7 +126,7 @@ private inline fun action(
     block(
         when (fileItem) {
             is FileEntity.File   -> listOf(fileItem.linkedSong(context))
-            is FileEntity.Folder -> searchSongs(context, fileItem.location)
+            is FileEntity.Folder -> SongLoader.searchByLocation(context, fileItem.location)
         }
     )
 

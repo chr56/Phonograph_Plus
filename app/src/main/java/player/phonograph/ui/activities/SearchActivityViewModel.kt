@@ -37,9 +37,9 @@ class SearchActivityViewModel : ViewModel() {
 
                 val dataset: MutableList<Any> = mutableListOf()
 
-                val songs = async(Dispatchers.IO) { SongLoader.getSongs(context, query) }
-                val artists = async(Dispatchers.IO) { ArtistLoader.getArtists(context, query) }
-                val albums = async(Dispatchers.IO) { AlbumLoader.getAlbums(context, query) }
+                val songs = async(Dispatchers.IO) { SongLoader.searchByTitle(context, query) }
+                val artists = async(Dispatchers.IO) { ArtistLoader.searchByName(context, query) }
+                val albums = async(Dispatchers.IO) { AlbumLoader.searchByName(context, query) }
 
                 val songList = songs.await()
                 if (songList.isNotEmpty()) {
