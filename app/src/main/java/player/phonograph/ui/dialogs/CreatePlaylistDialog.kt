@@ -14,11 +14,11 @@ import player.phonograph.mediastore.PlaylistLoader
 import player.phonograph.model.Song
 import util.phonograph.playlist.PlaylistsManager
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
 import android.app.Dialog
 import android.os.Bundle
 import android.text.InputType
 import android.widget.Toast
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -44,7 +44,7 @@ class CreatePlaylistDialog : DialogFragment() {
                 }
                 val activity = requireActivity()
                 if (!PlaylistLoader.checkExistence(activity, name)) {
-                    CoroutineScope(Dispatchers.Default).launch {
+                    lifecycleScope.launch(Dispatchers.IO) {
                         PlaylistsManager.createPlaylist(
                             context = activity,
                             name = name,

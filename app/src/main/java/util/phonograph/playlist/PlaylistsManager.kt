@@ -46,13 +46,15 @@ import java.io.IOException
 
 object PlaylistsManager {
 
+    private const val TAG = "PlaylistManager"
+
     /**
      * @param context must be ICreateFileStorageAccess
      */
     suspend fun createPlaylist(
         context: Context,
         name: String,
-        songs: List<Song>? = null,
+        songs: List<Song>,
         path: String? = null,
     ) = withContext(Dispatchers.Default) {
         if (shouldUseSAF && context is ICreateFileStorageAccess) {
@@ -62,15 +64,13 @@ object PlaylistsManager {
         }
     }
 
-    private suspend fun createPlaylistLegacy(context: Context, playlistName: String, songs: List<Song>?) {
+    private suspend fun createPlaylistLegacy(context: Context, playlistName: String, songs: List<Song>) {
         val id = createOrFindPlaylistViaMediastore(context, playlistName)
         if (PlaylistLoader.checkExistence(context, id)) {
-            songs?.let {
-                addToPlaylistViaMediastore(context, it, id, true)
-                coroutineToast(context, R.string.success)
-                delay(250)
-                sentPlaylistChangedLocalBoardCast()
-            }
+            addToPlaylistViaMediastore(context, songs, id, true)
+            coroutineToast(context, R.string.success)
+            delay(250)
+            sentPlaylistChangedLocalBoardCast()
         } else {
             warning(TAG, "Failed to save playlist (id=$id)")
             coroutineToast(context, R.string.failed)
@@ -85,11 +85,7 @@ object PlaylistsManager {
     ) = withContext(Dispatchers.Default) {
         if (shouldUseSAF && context is IOpenFileStorageAccess) {
             coroutineToast(context, R.string.direction_open_file_with_saf)
-            appendToPlaylistViaSAF(
-                context,
-                songs = songs,
-                filePlaylist = filePlaylist,
-            )
+            appendToPlaylistViaSAF(context, songs = songs, filePlaylist = filePlaylist)
         } else {
             addToPlaylistViaMediastore(context, songs, filePlaylist.id, true)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
@@ -167,7 +163,7 @@ object PlaylistsManager {
                 PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF    -> true
                 PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY -> false
                 PLAYLIST_OPS_BEHAVIOUR_AUTO         -> Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-                else                                        -> {
+                else                                -> {
                     Setting.instance.playlistFilesOperationBehaviour =
                         PLAYLIST_OPS_BEHAVIOUR_AUTO // reset to default
                     throw IllegalStateException("$behavior is not a valid option")
@@ -220,6 +216,4 @@ object PlaylistsManager {
             )
         coroutineToast(context, msg)
     }
-
-    private const val TAG = "PlaylistManager"
 }

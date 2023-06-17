@@ -11,7 +11,6 @@ import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.playlist.PlaylistType
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.util.permissions.hasStorageWritePermission
