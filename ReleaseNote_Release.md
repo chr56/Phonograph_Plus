@@ -4,7 +4,8 @@
 - New: manually load lyrics
 - New: add more options in Main Drawer Menu
 - New: support per-app language preference for Android T (13) and above
-- New: support sorting order of playlist (but basic sorting)
+- New: sort order `Album Artist` and `Composer` for songs
+- New: support sorting order of playlist (name, path, date)
 - New: support multi-selection in Search Result
 - New: support pinning playlists
 - Fix: new created playlist would not be appeared in list util next entrance
@@ -20,13 +21,16 @@
 - Development: refactor player ui, lyrics loading and more
 - Development: improve dispatching the changes of states
 - Development: upgrade JDK to 17
-- Development: upgrade Gradle to 8.1, AGP to 8.0.2, enable `nonTransitiveRClass`
+- Development: upgrade Gradle to 8.1
+- Development: AGP to 8.0.2
+- Development: clean up codes
 
 ### {{note:zh}}
 - 新增 手动加载歌词
 - 新增 在抽屉主菜单中增加更多选项
 - 新增 支持 Android T (13) 的系统级分应用语言设置
-- 新增 支持播放列表的排序（基本排序支持）
+- 新增 歌曲排序 `专辑艺术家` 和 `作曲家`
+- 新增 支持播放列表的排序（名称、路径、时间）
 - 新增 搜索结果支持多选
 - 新增 支持播放列表置顶
 - 修复 新建的播放列表不会立即出现在列表中
@@ -41,5 +45,7 @@
 - 开发 使用 Jetpack Datastore Preference
 - 开发 重构播放器界面，歌词加载等
 - 开发 改进状态分发
-- 开发 升级JDK到17
-- 开发 更新 Gradle 至 8.1, 更新 AGP 至 8.0.2, 启用 `nonTransitiveRClass`
+- 开发 升级 JDK 到17
+- 开发 更新 Gradle 至 8.1
+- 开发 更新 AGP 至 8.0.2
+- 开发 清理代码
