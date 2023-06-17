@@ -23,17 +23,21 @@ import kotlinx.coroutines.runBlocking
 
 class FilePlaylist : Playlist, EditablePlaylist {
 
-    var associatedFilePath: String
+    val associatedFilePath: String
 
-    var dateAdded: Long = 0
-    var dateModified: Long = 0
+    val dateAdded: Long
+    val dateModified: Long
 
-    constructor(id: Long, name: String?, path: String) : super(id, name) {
-        associatedFilePath = path
+    constructor(id: Long, name: String?, path: String, dateAdded: Long, dateModified: Long) : super(id, name) {
+        this.associatedFilePath = path
+        this.dateAdded = dateAdded
+        this.dateModified = dateModified
     }
 
     constructor() : super() {
-        associatedFilePath = "-"
+        this.associatedFilePath = "-"
+        this.dateAdded = -1
+        this.dateModified = -1
     }
 
     override fun getSongs(context: Context): List<Song> =

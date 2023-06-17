@@ -39,7 +39,13 @@ object PlaylistsManagement {
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 filePlaylists.add(
-                    FilePlaylist(cursor.getLong(0), cursor.getString(1), cursor.getString(2))
+                    FilePlaylist(
+                        id = cursor.getLong(0),
+                        name = cursor.getString(1),
+                        path = cursor.getString(2),
+                        dateAdded = cursor.getLong(3),
+                        dateModified = cursor.getLong(4),
+                    )
                 )
             } while (cursor.moveToNext())
         }
@@ -69,7 +75,9 @@ object PlaylistsManagement {
                 FilePlaylist(
                     id = cursor.getLong(0),
                     name = cursor.getString(1),
-                    path = cursor.getString(2)
+                    path = cursor.getString(2),
+                    dateAdded = cursor.getLong(3),
+                    dateModified = cursor.getLong(4),
                 )
             else
                 FilePlaylist()
@@ -100,9 +108,11 @@ object PlaylistsManagement {
             context.contentResolver.query(
                 Playlists.EXTERNAL_CONTENT_URI,
                 arrayOf(
-                    BaseColumns._ID, /* 0 */
-                    PlaylistsColumns.NAME, /* 1 */
-                    PlaylistsColumns.DATA /* 2 */
+                    BaseColumns._ID, // 0
+                    PlaylistsColumns.NAME, // 1
+                    PlaylistsColumns.DATA, // 2
+                    PlaylistsColumns.DATE_ADDED, // 3
+                    PlaylistsColumns.DATE_MODIFIED, // 4
                 ),
                 actual.selection, actual.selectionValues, Playlists.DEFAULT_SORT_ORDER
             )
