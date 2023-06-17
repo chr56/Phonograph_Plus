@@ -7,30 +7,19 @@
 package player.phonograph.mechanism
 
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
+import player.phonograph.mediastore.PlaylistLoader
 import player.phonograph.model.playlist.FilePlaylist
 import androidx.documentfile.provider.DocumentFile
 import android.content.Context
-import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import android.util.Log
 
 object PlaylistsManagement {
     private const val TAG: String = "PlaylistsManagement"
 
-    fun getPlaylistUris(filePlaylist: FilePlaylist): Uri = getPlaylistUris(filePlaylist.id)
-
-    fun getPlaylistUris(playlistId: Long): Uri =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            Playlists.Members.getContentUri(MediaStore.VOLUME_EXTERNAL, playlistId)
-        else {
-            Playlists.Members.getContentUri("external", playlistId)
-        }
-
     fun doesPlaylistContain(context: Context, playlistId: Long, songId: Long): Boolean {
         if (playlistId != -1L) {
             val cursor = context.contentResolver.query(
-                getPlaylistUris(playlistId),
+                PlaylistLoader.idToMediastoreUri(playlistId),
                 arrayOf(Playlists.Members.AUDIO_ID),
                 Playlists.Members.AUDIO_ID + "=?", arrayOf(songId.toString()), null
             ) ?: return false

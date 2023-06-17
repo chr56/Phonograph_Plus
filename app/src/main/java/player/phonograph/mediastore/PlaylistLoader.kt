@@ -10,7 +10,11 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
 import android.content.Context
 import android.database.Cursor
+import android.net.Uri
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.Q
 import android.provider.BaseColumns
+import android.provider.MediaStore.VOLUME_EXTERNAL
 
 object PlaylistLoader {
 
@@ -123,6 +127,9 @@ object PlaylistLoader {
         context.contentResolver
             .query(MediaStoreCompat.Audio.Playlists.EXTERNAL_CONTENT_URI, arrayOf(), selection, values, null)
             ?.use { it.count >= 0 } ?: false
+
+    fun idToMediastoreUri(id: Long): Uri =
+        MediaStoreCompat.Audio.Playlists.Members.getContentUri(if (SDK_INT >= Q) VOLUME_EXTERNAL else "external", id)
 
 
     private fun List<FilePlaylist>.sortAll(): List<FilePlaylist> {
