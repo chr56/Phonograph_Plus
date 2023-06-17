@@ -85,7 +85,7 @@ private fun searchPlaylist(
     root: DocumentFile,
     filePlaylists: List<FilePlaylist>
 ): List<DocumentFile> {
-    val fileNames = PlaylistsManagement.getPlaylistFileNames(context, filePlaylists)
+    val fileNames = filePlaylists.map { it.associatedFilePath }
     return if (fileNames.isEmpty()) {
         Log.w(TAG, "No playlist display name?")
         emptyList()

@@ -7,51 +7,16 @@
 package player.phonograph.mechanism
 
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
-import legacy.phonograph.MediaStoreCompat.Audio.PlaylistsColumns
 import player.phonograph.model.playlist.FilePlaylist
 import androidx.documentfile.provider.DocumentFile
-import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
 import android.os.Build
-import android.provider.BaseColumns
 import android.provider.MediaStore
 import android.util.Log
 
 object PlaylistsManagement {
     private const val TAG: String = "PlaylistsManagement"
-
-    /**
-     * WARNING: random order (perhaps)
-     */
-    fun getPlaylistFileNames(context: Context, filePlaylists: List<FilePlaylist>): List<String> {
-
-        val ids: List<Long> = List(filePlaylists.size) { filePlaylists[it].id }
-
-        val cursor = context.contentResolver.query(
-            Playlists.EXTERNAL_CONTENT_URI,
-            arrayOf(
-                BaseColumns._ID /* 0 */,
-                MediaStore.MediaColumns.DISPLAY_NAME /* 1 */
-            ),
-            null, null, null
-        )
-
-        val displayNames = mutableListOf<String>()
-        cursor?.use {
-            if (cursor.moveToFirst()) {
-                do {
-                    ids.forEach { id ->
-                        if (cursor.getLong(0) == id) {
-                            displayNames.add(cursor.getString(1))
-                        }
-                    }
-                } while (cursor.moveToNext())
-            }
-        }
-
-        return displayNames.ifEmpty { emptyList() }
-    }
 
     fun getPlaylistUris(filePlaylist: FilePlaylist): Uri = getPlaylistUris(filePlaylist.id)
 
@@ -76,7 +41,7 @@ object PlaylistsManagement {
 
 
     fun searchPlaylist(context: Context, dir: DocumentFile, filePlaylists: List<FilePlaylist>): List<DocumentFile> {
-        val fileNames = getPlaylistFileNames(context, filePlaylists)
+        val fileNames = filePlaylists.map { it.associatedFilePath }
         if (fileNames.isEmpty()) {
             Log.w(TAG, "No playlist display name?")
             return mutableListOf()
