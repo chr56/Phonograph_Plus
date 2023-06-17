@@ -31,7 +31,6 @@
 
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mediastore.QueryUtilKt {public <methods>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mediastore.ModelTransformKt { <methods>;}
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.MusicService {public <methods>;public <fields>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.notification.** {public <methods>;public <fields>;}
