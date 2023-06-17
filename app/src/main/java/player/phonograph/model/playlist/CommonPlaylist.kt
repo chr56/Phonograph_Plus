@@ -4,6 +4,7 @@
 
 package player.phonograph.model.playlist
 
+import legacy.phonograph.MediaStoreCompat.Audio
 import player.phonograph.R
 import player.phonograph.mechanism.PlaylistsManagement
 import player.phonograph.mediastore.PlaylistSongLoader
@@ -14,8 +15,12 @@ import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
 import androidx.annotation.DrawableRes
 import androidx.annotation.Keep
 import android.content.Context
+import android.net.Uri
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.Q
 import android.os.Parcel
 import android.os.Parcelable
+import android.provider.MediaStore.VOLUME_EXTERNAL
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -71,6 +76,10 @@ class FilePlaylist : Playlist, EditablePlaylist {
             PlaylistsManager.deletePlaylistWithGuide(context, listOf(this@FilePlaylist))
         }
     }
+
+    val mediastoreUri: Uri
+        get() = Audio.Playlists.Members.getContentUri(if (SDK_INT >= Q) VOLUME_EXTERNAL else "external", id)
+
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
