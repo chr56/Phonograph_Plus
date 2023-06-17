@@ -136,9 +136,11 @@ object PlaylistLoader {
     private fun List<FilePlaylist>.sortAll(): List<FilePlaylist> {
         val revert = Setting.instance.playlistSortMode.revert
         return when (Setting.instance.playlistSortMode.sortRef) {
-            SortRef.DISPLAY_NAME -> this.sort(revert) { it.name }
-            SortRef.PATH         -> this.sort(revert) { it.associatedFilePath }
-            else                 -> this
+            SortRef.DISPLAY_NAME  -> this.sort(revert) { it.name }
+            SortRef.PATH          -> this.sort(revert) { it.associatedFilePath }
+            SortRef.ADDED_DATE    -> this.sort(revert) { it.dateAdded }
+            SortRef.MODIFIED_DATE -> this.sort(revert) { it.dateModified }
+            else                  -> this
         }
     }
 

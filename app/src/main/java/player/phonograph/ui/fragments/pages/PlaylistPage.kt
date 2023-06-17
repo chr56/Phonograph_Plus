@@ -125,7 +125,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayo
         popup.revert = currentSortMode.revert
 
         popup.sortRef = currentSortMode.sortRef
-        popup.sortRefAvailable = arrayOf(SortRef.DISPLAY_NAME, SortRef.PATH)
+        popup.sortRefAvailable = arrayOf(SortRef.DISPLAY_NAME, SortRef.PATH, SortRef.ADDED_DATE, SortRef.MODIFIED_DATE)
     }
 
     override fun saveSortOrderImpl(displayConfig: DisplayConfig, popup: ListOptionsPopup) {
