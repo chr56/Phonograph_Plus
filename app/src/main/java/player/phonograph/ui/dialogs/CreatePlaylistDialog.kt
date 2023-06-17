@@ -10,8 +10,8 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
 import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
+import player.phonograph.mediastore.PlaylistLoader
 import player.phonograph.model.Song
-import player.phonograph.mechanism.PlaylistsManagement
 import util.phonograph.playlist.PlaylistsManager
 import androidx.fragment.app.DialogFragment
 import android.app.Dialog
@@ -43,7 +43,7 @@ class CreatePlaylistDialog : DialogFragment() {
                     return@input
                 }
                 val activity = requireActivity()
-                if (!PlaylistsManagement.doesPlaylistExist(activity, name)) {
+                if (!PlaylistLoader.checkExistence(activity, name)) {
                     CoroutineScope(Dispatchers.Default).launch {
                         PlaylistsManager.createPlaylist(
                             context = activity,

@@ -15,7 +15,6 @@ import lib.phonograph.misc.IOpenFileStorageAccess
 import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.mechanism.PlaylistsManagement
 import player.phonograph.mediastore.PlaylistLoader
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
@@ -65,7 +64,7 @@ object PlaylistsManager {
 
     private suspend fun createPlaylistLegacy(context: Context, playlistName: String, songs: List<Song>?) {
         val id = createOrFindPlaylistViaMediastore(context, playlistName)
-        if (PlaylistsManagement.doesPlaylistExist(context, id)) {
+        if (PlaylistLoader.checkExistence(context, id)) {
             songs?.let {
                 addToPlaylistViaMediastore(context, it, id, true)
                 coroutineToast(context, R.string.success)

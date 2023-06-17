@@ -21,37 +21,6 @@ import android.util.Log
 object PlaylistsManagement {
     private const val TAG: String = "PlaylistsManagement"
 
-    fun getPlaylistPath(context: Context, filePlaylist: FilePlaylist): String {
-        val cursor = context.contentResolver.query(
-            Playlists.EXTERNAL_CONTENT_URI,
-            arrayOf(
-                BaseColumns._ID /* 0 */,
-                PlaylistsColumns.NAME /* 1 */,
-                PlaylistsColumns.DATA /* 2 */
-            ),
-            "${BaseColumns._ID} = ? AND ${PlaylistsColumns.NAME} = ?",
-            arrayOf(filePlaylist.id.toString(), filePlaylist.name), null
-        )
-        var path = "-"
-        cursor?.use {
-            it.moveToFirst()
-            path = it.getString(2)
-        }
-        return path
-    }
-
-    fun doesPlaylistExist(context: Context, name: String): Boolean {
-        return doesPlaylistExistImp(context, PlaylistsColumns.NAME + "=?", arrayOf(name))
-    }
-
-    fun doesPlaylistExist(context: Context, playlistId: Long): Boolean =
-        playlistId != -1L && doesPlaylistExistImp(context, Playlists._ID + "=?", arrayOf(playlistId.toString()))
-
-    private fun doesPlaylistExistImp(context: Context, selection: String, values: Array<String>): Boolean =
-        context.contentResolver
-            .query(Playlists.EXTERNAL_CONTENT_URI, arrayOf(), selection, values, null)
-            ?.use { it.count >= 0 } ?: false
-
     fun getNameForPlaylist(context: Context, id: Long): String {
         val cursor = context.contentResolver.query(
             ContentUris.withAppendedId(Playlists.EXTERNAL_CONTENT_URI, id),

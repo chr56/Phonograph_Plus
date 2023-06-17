@@ -6,7 +6,6 @@ package util.phonograph.playlist.saf
 
 import lib.phonograph.storage.getAbsolutePath
 import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.mechanism.PlaylistsManagement
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import android.annotation.SuppressLint
@@ -31,7 +30,7 @@ internal fun openOutputStreamSafe(context: Context, uri: Uri, mode: String): Out
 
 
 internal fun checkUri(context: Context, target: FilePlaylist, uri: Uri): Boolean =
-    uri.getAbsolutePath(context) == PlaylistsManagement.getPlaylistPath(context, target)
+    uri.getAbsolutePath(context) == target.associatedFilePath
 
 /**
  * common path root of a list of paths

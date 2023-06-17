@@ -10,7 +10,6 @@ import lib.phonograph.misc.ActivityResultContractUtil.chooseFileViaSAF
 import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.storage.getAbsolutePath
 import player.phonograph.R
-import player.phonograph.mechanism.PlaylistsManagement
 import player.phonograph.mediastore.PlaylistLoader
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
@@ -49,9 +48,10 @@ suspend fun appendToPlaylistViaSAF(
     // check
     if (songs.isEmpty()) return@withContext
     require(context is IOpenFileStorageAccess)
+    require(filePlaylist.id > 0 || filePlaylist.associatedFilePath.contains('/'))
     while (context.openFileStorageAccessTool.busy) yield()
     // config
-    val playlistPath = PlaylistsManagement.getPlaylistPath(context, filePlaylist)
+    val playlistPath = filePlaylist.associatedFilePath
     val mimeTypes = arrayOf("audio/x-mpegurl", CONTENT_TYPE, ENTRY_CONTENT_TYPE)
     // launch
     val uri = chooseFileViaSAF(context, File(playlistPath), mimeTypes)

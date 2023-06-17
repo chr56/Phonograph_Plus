@@ -37,7 +37,7 @@ suspend fun tryToDeletePlaylistsViaSAF(
     require(context is IOpenDirStorageAccess)
     while (context.openDirStorageAccessTool.busy) yield()
     // common root
-    val playlistPaths = filePlaylists.map { PlaylistsManagement.getPlaylistPath(context, it) }
+    val playlistPaths = filePlaylists.map { it.associatedFilePath }
     val commonRoot = commonPathRoot(playlistPaths)
     coroutineToast(
         context,

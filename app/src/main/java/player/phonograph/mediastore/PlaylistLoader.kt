@@ -105,6 +105,26 @@ object PlaylistLoader {
         MediaStoreCompat.Audio.PlaylistsColumns.DATE_MODIFIED, // 4
     )
 
+    fun checkExistence(context: Context, name: String): Boolean =
+        checkExistenceImpl(
+            context = context,
+            selection = MediaStoreCompat.Audio.PlaylistsColumns.NAME + "=?",
+            values = arrayOf(name)
+        )
+
+    fun checkExistence(context: Context, playlistId: Long): Boolean =
+        playlistId != -1L && checkExistenceImpl(
+            context = context,
+            selection = MediaStoreCompat.Audio.Playlists._ID + "=?",
+            values = arrayOf(playlistId.toString())
+        )
+
+    private fun checkExistenceImpl(context: Context, selection: String, values: Array<String>): Boolean =
+        context.contentResolver
+            .query(MediaStoreCompat.Audio.Playlists.EXTERNAL_CONTENT_URI, arrayOf(), selection, values, null)
+            ?.use { it.count >= 0 } ?: false
+
+
     private fun List<FilePlaylist>.sortAll(): List<FilePlaylist> {
         val revert = Setting.instance.playlistSortMode.revert
         return when (Setting.instance.playlistSortMode.sortRef) {
