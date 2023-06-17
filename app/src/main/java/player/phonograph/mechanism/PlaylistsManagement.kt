@@ -21,18 +21,6 @@ import android.util.Log
 object PlaylistsManagement {
     private const val TAG: String = "PlaylistsManagement"
 
-    fun getNameForPlaylist(context: Context, id: Long): String {
-        val cursor = context.contentResolver.query(
-            ContentUris.withAppendedId(Playlists.EXTERNAL_CONTENT_URI, id),
-            arrayOf(PlaylistsColumns.NAME), null, null, null
-        ) ?: return ""
-        return if (cursor.moveToFirst()) {
-            cursor.use { it.getString(0).orEmpty() }
-        } else {
-            ""
-        }
-    }
-
     /**
      * WARNING: random order (perhaps)
      */

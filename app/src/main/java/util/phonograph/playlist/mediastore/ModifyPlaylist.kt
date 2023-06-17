@@ -11,6 +11,7 @@ import player.phonograph.model.PlaylistSong
 import player.phonograph.model.Song
 import player.phonograph.util.coroutineToast
 import player.phonograph.mechanism.PlaylistsManagement
+import player.phonograph.mediastore.PlaylistLoader
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
@@ -99,7 +100,7 @@ suspend fun addToPlaylistViaMediastore(
                 context,
                 context.resources.getString(
                     R.string.inserted_x_songs_into_playlist_x, numInserted,
-                    PlaylistsManagement.getNameForPlaylist(context, playlistId)
+                    PlaylistLoader.playlistId(context, playlistId).name
                 ),
             )
         }
