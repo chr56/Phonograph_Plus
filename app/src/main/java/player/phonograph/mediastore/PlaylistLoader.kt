@@ -126,7 +126,7 @@ object PlaylistLoader {
     private fun checkExistenceImpl(context: Context, selection: String, values: Array<String>): Boolean =
         context.contentResolver
             .query(MediaStoreCompat.Audio.Playlists.EXTERNAL_CONTENT_URI, arrayOf(), selection, values, null)
-            ?.use { it.count >= 0 } ?: false
+            ?.use { it.count > 0 } ?: false
 
     fun idToMediastoreUri(id: Long): Uri =
         MediaStoreCompat.Audio.Playlists.Members.getContentUri(if (SDK_INT >= Q) VOLUME_EXTERNAL else "external", id)
