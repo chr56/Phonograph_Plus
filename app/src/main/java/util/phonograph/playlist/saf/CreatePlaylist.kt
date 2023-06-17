@@ -7,7 +7,6 @@ package util.phonograph.playlist.saf
 import lib.phonograph.misc.ActivityResultContractUtil.chooseDirViaSAF
 import lib.phonograph.misc.ActivityResultContractUtil.createFileViaSAF
 import lib.phonograph.misc.IOpenFileStorageAccess
-import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
@@ -17,9 +16,7 @@ import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.warning
 import util.phonograph.playlist.m3u.M3UGenerator
 import androidx.documentfile.provider.DocumentFile
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.content.Context
-import android.content.Intent
 import android.os.Environment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -46,7 +43,7 @@ suspend fun createPlaylistViaSAF(
 suspend fun createPlaylistViaSAF(
     context: Context,
     playlistName: String,
-    songs: List<Song>?,
+    songs: List<Song>,
 ): Unit = withContext(Dispatchers.IO) {
     // check
     require(context is IOpenFileStorageAccess)
@@ -55,7 +52,7 @@ suspend fun createPlaylistViaSAF(
     val uri = createFileViaSAF(context, "$playlistName.m3u")
     openOutputStreamSafe(context, uri, "rwt")?.use { stream ->
         try {
-            if (!songs.isNullOrEmpty()) {
+            if (songs.isNotEmpty()) {
                 M3UGenerator.generate(stream, songs, true)
             }
             coroutineToast(context, R.string.success)

@@ -5,8 +5,8 @@
 package player.phonograph.provider
 
 import player.phonograph.App
-import player.phonograph.mechanism.PlaylistsManagement
 import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.mediastore.PlaylistLoader
 import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
@@ -66,7 +66,7 @@ class FavoritesStore private constructor(context: Context) :
 
     private fun getAllPlaylistsImpl(context: Context): List<FilePlaylist> {
         return parseCursorImpl(TABLE_NAME_PLAYLISTS) { cursor ->
-            PlaylistsManagement.searchPlaylist(context, cursor.getString(1))
+            PlaylistLoader.searchByPath(context, cursor.getString(1))
         }
     }
 

@@ -27,8 +27,8 @@ import player.phonograph.actions.menu.playlistToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.PlaylistSongDisplayAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
-import player.phonograph.mechanism.PlaylistsManagement
 import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.mediastore.PlaylistLoader
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
 import player.phonograph.model.getReadableDurationString
@@ -136,7 +136,7 @@ class PlaylistDetailActivity :
                 model.fetchAllSongs(this@PlaylistDetailActivity)
                 supportActionBar!!.title = playlist.name
                 if (playlist !is SmartPlaylist &&
-                    !PlaylistsManagement.doesPlaylistExist(this@PlaylistDetailActivity, playlist.id)
+                    !PlaylistLoader.checkExistence(this@PlaylistDetailActivity, playlist.id)
                 ) {
                     // File Playlist was deleted
                     finish()

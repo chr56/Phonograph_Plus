@@ -4,6 +4,7 @@
 
 package player.phonograph.actions
 
+import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
@@ -39,8 +40,8 @@ fun Playlist.actionAddToPlaylist(activity: FragmentActivity) {
         .show(activity.supportFragmentManager, "ADD_PLAYLIST")
 }
 
-fun Playlist.actionRenamePlaylist(activity: FragmentActivity) {
-    RenamePlaylistDialog.create(this.id)
+fun FilePlaylist.actionRenamePlaylist(activity: FragmentActivity) {
+    RenamePlaylistDialog.create(this)
         .show(activity.supportFragmentManager, "RENAME_PLAYLIST")
 }
 

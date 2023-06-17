@@ -7,10 +7,10 @@ package util.phonograph.playlist.mediastore
 import legacy.phonograph.MediaStoreCompat
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
 import player.phonograph.R
+import player.phonograph.mediastore.PlaylistLoader
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.Song
 import player.phonograph.util.coroutineToast
-import player.phonograph.mechanism.PlaylistsManagement
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
@@ -29,7 +29,7 @@ suspend fun renamePlaylistViaMediastore(
     id: Long,
     newName: String,
 ): Boolean = withContext(Dispatchers.IO) {
-    val playlistUri = PlaylistsManagement.getPlaylistUris(id)
+    val playlistUri = PlaylistLoader.idToMediastoreUri(id)
     try {
         val result = context.contentResolver.update(playlistUri, ContentValues().apply {
             put(MediaStoreCompat.Audio.PlaylistsColumns.NAME, newName)
@@ -99,7 +99,7 @@ suspend fun addToPlaylistViaMediastore(
                 context,
                 context.resources.getString(
                     R.string.inserted_x_songs_into_playlist_x, numInserted,
-                    PlaylistsManagement.getNameForPlaylist(context, playlistId)
+                    PlaylistLoader.playlistId(context, playlistId).name
                 ),
             )
         }
@@ -159,13 +159,13 @@ suspend fun removeFromPlaylistViaMediastore(
                     MediaStore.getExternalVolumeNames(context).firstOrNull(), playlistId
                 )
             } else {
-                PlaylistsManagement.getPlaylistUris(playlistId)
+                PlaylistLoader.idToMediastoreUri(playlistId)
             },
             /* where = */ Playlists.Members.AUDIO_ID + " =?",
             /* selectionArgs = */ arrayOf(song.id.toString())
         )
         // Necessary because somehow the MediaStoreObserver doesn't work for playlists
-        context.contentResolver.notifyChange(PlaylistsManagement.getPlaylistUris(playlistId), null)
+        context.contentResolver.notifyChange(PlaylistLoader.idToMediastoreUri(playlistId), null)
         true
     } catch (ignored: SecurityException) {
         false
@@ -199,13 +199,13 @@ suspend fun removeFromPlaylistViaMediastore(
             )
         else
             context.contentResolver.delete(
-                PlaylistsManagement.getPlaylistUris(songs[0].playlistId),
+                PlaylistLoader.idToMediastoreUri(songs[0].playlistId),
                 selection,
                 selectionArgs
             )
         // Necessary because somehow the MediaStoreObserver is not notified when adding a playlist
         context.contentResolver.notifyChange(
-            PlaylistsManagement.getPlaylistUris(songs[0].playlistId),
+            PlaylistLoader.idToMediastoreUri(songs[0].playlistId),
             null
         )
         true

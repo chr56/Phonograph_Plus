@@ -48,6 +48,8 @@ object MediaStoreCompat {
         object PlaylistsColumns {
             const val NAME = MediaStore.Audio.PlaylistsColumns.NAME
             const val DATA = MediaStore.Audio.PlaylistsColumns.DATA
+            const val DATE_ADDED = MediaStore.Audio.PlaylistsColumns.DATE_ADDED
+            const val DATE_MODIFIED = MediaStore.Audio.PlaylistsColumns.DATE_MODIFIED
         }
     }
 }
