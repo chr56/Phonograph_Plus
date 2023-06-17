@@ -34,12 +34,6 @@ class FilePlaylist : Playlist, EditablePlaylist {
         this.dateModified = dateModified
     }
 
-    constructor() : super() {
-        this.associatedFilePath = "-"
-        this.dateAdded = -1
-        this.dateModified = -1
-    }
-
     override fun getSongs(context: Context): List<Song> =
         PlaylistSongLoader.getPlaylistSongList(context, id)
 
@@ -130,5 +124,7 @@ class FilePlaylist : Playlist, EditablePlaylist {
                 return arrayOfNulls(size)
             }
         }
+
+        val EMPTY_PLAYLIST = FilePlaylist(id = -1, name = "N/A", path = "-", dateAdded = -1, dateModified = -1)
     }
 }

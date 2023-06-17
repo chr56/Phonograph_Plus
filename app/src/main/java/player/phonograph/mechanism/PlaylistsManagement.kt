@@ -80,7 +80,7 @@ object PlaylistsManagement {
                     dateModified = cursor.getLong(4),
                 )
             else
-                FilePlaylist()
+                FilePlaylist.EMPTY_PLAYLIST
         cursor?.close()
         return playlist
     }
