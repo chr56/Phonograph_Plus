@@ -128,7 +128,7 @@ fun playlistToolbar(
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
                         fragmentActivity(context) {
-                            playlist.actionRenamePlaylist(it)
+                            (playlist as FilePlaylist).actionRenamePlaylist(it)
                             true
                         }
                     }
