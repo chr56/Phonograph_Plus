@@ -101,7 +101,7 @@ object PlaylistsManager {
         context: Context,
         songs: List<Song>,
         playlistId: Long,
-    ) = appendPlaylist(context, songs, PlaylistsManagement.getPlaylist(context, playlistId))
+    ) = appendPlaylist(context, songs, PlaylistsManagement.playlistId(context, playlistId))
 
     /**
      * @param context must be IOpenDirStorageAccess

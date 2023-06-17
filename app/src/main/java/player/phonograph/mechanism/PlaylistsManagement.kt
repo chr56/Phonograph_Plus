@@ -27,8 +27,18 @@ import android.util.Log
 object PlaylistsManagement {
     private const val TAG: String = "PlaylistsManagement"
 
-    fun getAllPlaylists(context: Context): List<FilePlaylist> =
+    fun allPlaylists(context: Context): List<FilePlaylist> =
         queryPlaylists(context, null, null).intoPlaylists().sortAll()
+
+    fun playlistId(context: Context, playlistId: Long): FilePlaylist =
+        queryPlaylists(
+            context, BaseColumns._ID + "=?", arrayOf(playlistId.toString())
+        ).intoFirstPlaylist()
+
+    fun playlistName(context: Context, playlistName: String): FilePlaylist =
+        queryPlaylists(
+            context, PlaylistsColumns.NAME + "=?", arrayOf(playlistName)
+        ).intoFirstPlaylist()
 
     /**
      * consume cursor (read & close) and convert into FilePlaylist list
@@ -52,16 +62,9 @@ object PlaylistsManagement {
             filePlaylists
         } ?: emptyList()
 
-    fun getPlaylist(context: Context, playlistId: Long): FilePlaylist =
-        queryPlaylists(
-            context, BaseColumns._ID + "=?", arrayOf(playlistId.toString())
-        ).intoFirstPlaylist()
-
-    fun getPlaylist(context: Context, playlistName: String): FilePlaylist =
-        queryPlaylists(
-            context, PlaylistsColumns.NAME + "=?", arrayOf(playlistName)
-        ).intoFirstPlaylist()
-
+    /**
+     * consume cursor (read & close) and convert into first FilePlaylist
+     */
     fun Cursor?.intoFirstPlaylist(): FilePlaylist {
         return this?.use {
             if (moveToFirst())

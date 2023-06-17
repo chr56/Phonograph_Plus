@@ -34,7 +34,7 @@ suspend fun appendToPlaylistViaSAF(
 ) = appendToPlaylistViaSAF(
     context,
     songs,
-    PlaylistsManagement.getPlaylist(context, playlistId),
+    PlaylistsManagement.playlistId(context, playlistId),
 )
 
 /**
