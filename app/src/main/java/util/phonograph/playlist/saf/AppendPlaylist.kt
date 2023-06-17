@@ -10,10 +10,11 @@ import lib.phonograph.misc.ActivityResultContractUtil.chooseFileViaSAF
 import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.storage.getAbsolutePath
 import player.phonograph.R
+import player.phonograph.mechanism.PlaylistsManagement
+import player.phonograph.mediastore.PlaylistLoader
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.util.coroutineToast
-import player.phonograph.mechanism.PlaylistsManagement
 import player.phonograph.util.reportError
 import util.phonograph.playlist.m3u.M3UGenerator
 import android.content.Context
@@ -34,7 +35,7 @@ suspend fun appendToPlaylistViaSAF(
 ) = appendToPlaylistViaSAF(
     context,
     songs,
-    PlaylistsManagement.playlistId(context, playlistId),
+    PlaylistLoader.playlistId(context, playlistId),
 )
 
 /**

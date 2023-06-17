@@ -13,7 +13,7 @@ import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.PlaylistDisplayAdapter
-import player.phonograph.mechanism.PlaylistsManagement
+import player.phonograph.mediastore.PlaylistLoader
 import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.playlist.FavoriteSongsPlaylist
 import player.phonograph.model.playlist.HistoryPlaylist
@@ -55,7 +55,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayo
             ).also {
                 if (!Setting.instance.useLegacyFavoritePlaylistImpl) it.add(FavoriteSongsPlaylist(context))
             }.also {
-                val allPlaylist = PlaylistsManagement.allPlaylists(context)
+                val allPlaylist = PlaylistLoader.allPlaylists(context)
                 val (pined, normal) = allPlaylist.partition {
                     FavoritesStore.instance.containsPlaylist(it.id, it.associatedFilePath)
                 }

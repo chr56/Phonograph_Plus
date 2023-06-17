@@ -16,6 +16,7 @@ import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mechanism.PlaylistsManagement
+import player.phonograph.mediastore.PlaylistLoader
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
@@ -101,7 +102,7 @@ object PlaylistsManager {
         context: Context,
         songs: List<Song>,
         playlistId: Long,
-    ) = appendPlaylist(context, songs, PlaylistsManagement.playlistId(context, playlistId))
+    ) = appendPlaylist(context, songs, PlaylistLoader.playlistId(context, playlistId))
 
     /**
      * @param context must be IOpenDirStorageAccess

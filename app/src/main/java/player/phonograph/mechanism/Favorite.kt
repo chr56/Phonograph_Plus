@@ -5,9 +5,8 @@ package player.phonograph.mechanism
 
 import player.phonograph.R
 import player.phonograph.mechanism.PlaylistsManagement.doesPlaylistContain
-import player.phonograph.mechanism.PlaylistsManagement.playlistId
-import player.phonograph.mechanism.PlaylistsManagement.playlistName
 import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.mediastore.PlaylistLoader
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.provider.FavoritesStore
@@ -84,11 +83,11 @@ object Favorite {
     }
 
     private fun getFavoritesPlaylist(context: Context): Playlist {
-        return playlistName(context, context.getString(R.string.favorites))
+        return PlaylistLoader.playlistName(context, context.getString(R.string.favorites))
     }
 
     private suspend fun getOrCreateFavoritesPlaylist(context: Context): Playlist {
-        return playlistId(
+        return PlaylistLoader.playlistId(
             context,
             createOrFindPlaylistViaMediastore(context, context.getString(R.string.favorites))
         ).also { notifyMediaStoreChanged() }
