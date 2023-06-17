@@ -43,7 +43,7 @@ class FilePlaylist : Playlist, EditablePlaylist {
         PlaylistSongLoader.getPlaylistSongList(context, id)
 
     override fun containsSong(context: Context, songId: Long): Boolean =
-        PlaylistsManagement.doesPlaylistContain(context, id, songId)
+        PlaylistSongLoader.doesPlaylistContain(context, id, songId)
 
     override val type: Int
         get() = PlaylistType.FILE

@@ -4,10 +4,11 @@
 package player.phonograph.mechanism
 
 import player.phonograph.R
-import player.phonograph.mechanism.PlaylistsManagement.doesPlaylistContain
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.mediastore.PlaylistLoader
+import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.provider.FavoritesStore
 import player.phonograph.settings.Setting
@@ -26,8 +27,13 @@ object Favorite {
             isFavoriteDatabaseImpl(song)
         }
 
-    private fun isFavoriteLegacyImpl(context: Context, song: Song): Boolean =
-        doesPlaylistContain(context, getFavoritesPlaylist(context).id, song.id)
+    private fun isFavoriteLegacyImpl(context: Context, song: Song): Boolean {
+        val favoritesPlaylist = getFavoritesPlaylist(context)
+        return if (favoritesPlaylist != null)
+            PlaylistSongLoader.doesPlaylistContain(context, favoritesPlaylist.id, song.id)
+        else
+            false
+    }
 
     private fun isFavoriteDatabaseImpl(song: Song): Boolean =
         FavoritesStore.instance.containsSong(song.id, song.data)
@@ -52,7 +58,9 @@ object Favorite {
      */
     private suspend fun toggleFavoriteLegacyImpl(context: Context, song: Song): Boolean {
         return if (isFavorite(context, song)) {
-            removeFromPlaylistViaMediastore(context, song, getFavoritesPlaylist(context).id)
+            val favoritesPlaylist = getFavoritesPlaylist(context)
+            if (favoritesPlaylist != null)
+                removeFromPlaylistViaMediastore(context, song, favoritesPlaylist.id)
             false
         } else {
             addToPlaylistViaMediastore(context, song, getOrCreateFavoritesPlaylist(context).id, false)
@@ -79,11 +87,11 @@ object Favorite {
         )
     )
     fun isFavoritePlaylist(context: Context, playlist: Playlist): Boolean {
-        return playlist.name != null && playlist.name == context.getString(R.string.favorites)
+        return playlist.name == context.getString(R.string.favorites)
     }
 
-    private fun getFavoritesPlaylist(context: Context): Playlist {
-        return PlaylistLoader.playlistName(context, context.getString(R.string.favorites))
+    private fun getFavoritesPlaylist(context: Context): FilePlaylist? {
+        return PlaylistLoader.playlistName(context, context.getString(R.string.favorites)).takeIf { it.id > 0 }
     }
 
     private suspend fun getOrCreateFavoritesPlaylist(context: Context): Playlist {

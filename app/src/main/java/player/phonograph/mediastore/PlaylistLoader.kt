@@ -132,6 +132,7 @@ object PlaylistLoader {
         MediaStoreCompat.Audio.Playlists.Members.getContentUri(if (SDK_INT >= Q) VOLUME_EXTERNAL else "external", id)
 
 
+
     private fun List<FilePlaylist>.sortAll(): List<FilePlaylist> {
         val revert = Setting.instance.playlistSortMode.revert
         return when (Setting.instance.playlistSortMode.sortRef) {
