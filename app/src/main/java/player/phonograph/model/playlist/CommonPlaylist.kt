@@ -5,9 +5,9 @@
 package player.phonograph.model.playlist
 
 import player.phonograph.R
+import player.phonograph.mechanism.PlaylistsManagement
 import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.model.Song
-import player.phonograph.mechanism.PlaylistsManagement
 import util.phonograph.playlist.PlaylistsManager
 import util.phonograph.playlist.mediastore.moveItemViaMediastore
 import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
@@ -25,9 +25,13 @@ class FilePlaylist : Playlist, EditablePlaylist {
 
     var associatedFilePath: String
 
+    var dateAdded: Long = 0
+    var dateModified: Long = 0
+
     constructor(id: Long, name: String?, path: String) : super(id, name) {
         associatedFilePath = path
     }
+
     constructor() : super() {
         associatedFilePath = "-"
     }
@@ -55,6 +59,7 @@ class FilePlaylist : Playlist, EditablePlaylist {
             PlaylistsManager.appendPlaylist(context, songs, this@FilePlaylist)
         }
     }
+
     override fun appendSong(context: Context, song: Song) = appendSongs(context, listOf(song))
 
     override fun moveSong(context: Context, song: Song, from: Int, to: Int) {
@@ -71,24 +76,42 @@ class FilePlaylist : Playlist, EditablePlaylist {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val otherPlaylist = other as FilePlaylist
-        return super.equals(other) && otherPlaylist.associatedFilePath == associatedFilePath
+        if (other !is FilePlaylist) return false
+        if (!super.equals(other)) return false
+
+        if (associatedFilePath != other.associatedFilePath) return false
+        if (dateAdded != other.dateAdded) return false
+        if (dateModified != other.dateModified) return false
+
+        return true
     }
-    override fun hashCode(): Int =
-        super.hashCode() * 31 + associatedFilePath.hashCode()
-    override fun toString(): String =
-        "Playlist{id=$id, name='$name', path='$associatedFilePath'}"
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + associatedFilePath.hashCode()
+        result = 31 * result + dateAdded.hashCode()
+        result = 31 * result + dateModified.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "FilePlaylist(associatedFilePath='$associatedFilePath', dateAdded=$dateAdded, dateModified=$dateModified)"
+    }
+
 
     override fun describeContents(): Int = 0
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         super.writeToParcel(dest, flags)
         dest.writeString(associatedFilePath)
+        dest.writeLong(dateAdded)
+        dest.writeLong(dateModified)
     }
 
     constructor(parcel: Parcel) : super(parcel) {
         associatedFilePath = parcel.readString() ?: ""
+        dateAdded = parcel.readLong()
+        dateModified = parcel.readLong()
     }
 
     companion object {
@@ -98,6 +121,7 @@ class FilePlaylist : Playlist, EditablePlaylist {
             override fun createFromParcel(source: Parcel): FilePlaylist {
                 return FilePlaylist(source)
             }
+
             override fun newArray(size: Int): Array<FilePlaylist?> {
                 return arrayOfNulls(size)
             }
