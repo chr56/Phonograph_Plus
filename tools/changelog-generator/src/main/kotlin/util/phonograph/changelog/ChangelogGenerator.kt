@@ -38,20 +38,20 @@ fun generateTGReleaseMarkDown(model: ReleaseNoteModel): String {
 
     val header = "**v${model.version} ${model.timestamp.date}**"
 
-    val zh = buildString {
-        appendLine("**${Language.Chinese.code.uppercase()}**")
-        appendLine(markdownNoteItem(model.note.language(Language.Chinese)))
-    }
-
     val en = buildString {
         appendLine("**${Language.English.code.uppercase()}**")
         appendLine(markdownNoteItem(model.note.language(Language.English)))
     }
 
+    val zh = buildString {
+        appendLine("**${Language.Chinese.code.uppercase()}**")
+        appendLine(markdownNoteItem(model.note.language(Language.Chinese)))
+    }
+
     return buildString {
-        append(header).append('\n')
-        append(zh).append('\n')
+        append(header).append('\n').append('\n')
         append(en).append('\n')
+        append(zh).append('\n')
     }
 }
 
