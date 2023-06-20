@@ -7,10 +7,26 @@
 #   $SECRETS_STORE_PASSWORD  : [secret] signing key store file password
 #   $SECRETS_KEY_PASSWORD    : [secret] signing key password
 #   $SECRETS_KEY_ALIAS       : [secret] signing key key alias
-#   $KEYSTORE_FILE           : recovered key store file
-#   $CONFIG_FILE             : generated `signing.properties` file
+# Optional Environment Variables:
+#   $KEYSTORE_FILE           : recovered key store file (default:`.././key.jdk`)
+#   $CONFIG_FILE             : generated `signing.properties` file (default:`.././signing.properties`)
 
 echo "Generate signing key and config..."
+
+if [ -z "$KEYSTORE_FILE" ]; then
+  export KEYSTORE_FILE=.././key.jdk
+  echo "KEYSTORE_FILE not specified! use default: $KEYSTORE_FILE"
+else
+  echo "KEYSTORE_FILE path: $KEYSTORE_FILE"
+fi
+
+if [ -z "$CONFIG_FILE" ]; then
+  export CONFIG_FILE=.././signing.properties
+  echo "CONFIG_FILE not specified! use default: $CONFIG_FILE"
+else
+  echo "CONFIG_FILE   path: $CONFIG_FILE"
+fi
+
 
 if [[ -n "$SECRETS_KEY" ]]
 then
