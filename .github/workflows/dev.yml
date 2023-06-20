@@ -67,17 +67,17 @@ jobs:
           if [[ -n "${{ secrets.KEY }}" ]]
           then
             # recover keystore from base64
-            printf "%s" "${{ secrets.KEY }}"  | base64 -d | tee $KEYSTORE_FILE > /dev/null
+            printf "%s" "${{ secrets.KEY }}"  | base64 -d | tee "$KEYSTORE_FILE" > /dev/null
             # write signing.properties
-            printf "storePassword=%s\n" "${{ secrets.STORE_PASSWORD }}" | tee -a $CONFIG_FILE > /dev/null
-            printf "storeFile=%s\n" "$KEYSTORE_FILE"                    | tee -a $CONFIG_FILE > /dev/null
-            printf "keyAlias=%s\n" "${{ secrets.KEY_ALIAS }}"           | tee -a $CONFIG_FILE > /dev/null
-            printf "keyPassword=%s\n" "${{ secrets.KEY_PASSWORD }}"     | tee -a $CONFIG_FILE > /dev/null
+            printf "storePassword=%s\n" "${{ secrets.STORE_PASSWORD }}" | tee -a "$CONFIG_FILE" > /dev/null
+            printf "storeFile=%s\n" "$KEYSTORE_FILE"                    | tee -a "$CONFIG_FILE" > /dev/null
+            printf "keyAlias=%s\n" "${{ secrets.KEY_ALIAS }}"           | tee -a "$CONFIG_FILE" > /dev/null
+            printf "keyPassword=%s\n" "${{ secrets.KEY_PASSWORD }}"     | tee -a "$CONFIG_FILE" > /dev/null
             # print information
             echo "keystore file ($KEYSTORE_FILE):"
             sha256sum $KEYSTORE_FILE
             #echo "config file($CONFIG_FILE):"
-            #cat $CONFIG_FILE
+            #cat "$CONFIG_FILE"
           else
             echo 'Signing key not found!'
           fi
