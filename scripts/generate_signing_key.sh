@@ -15,14 +15,14 @@ echo "Generate signing key and config..."
 
 if [ -z "$KEYSTORE_FILE" ]; then
   export KEYSTORE_FILE=.././key.jdk
-  echo "KEYSTORE_FILE not specified! use default: $KEYSTORE_FILE"
+  echo "WARNING: KEYSTORE_FILE not specified! use default: $KEYSTORE_FILE"
 else
   echo "KEYSTORE_FILE path: $KEYSTORE_FILE"
 fi
 
 if [ -z "$CONFIG_FILE" ]; then
   export CONFIG_FILE=.././signing.properties
-  echo "CONFIG_FILE not specified! use default: $CONFIG_FILE"
+  echo "WARNING: CONFIG_FILE not specified! use default: $CONFIG_FILE"
 else
   echo "CONFIG_FILE   path: $CONFIG_FILE"
 fi
@@ -30,6 +30,7 @@ fi
 
 if [[ -n "$SECRETS_KEY" ]]
 then
+  echo "recovering..."
   # recover keystore from base64
   printf "%s" "$SECRETS_KEY"  | base64 -d | tee "$KEYSTORE_FILE" > /dev/null
   # write signing.properties
@@ -40,8 +41,9 @@ then
   # print information
   echo "Keystore file ($KEYSTORE_FILE) sha256sum:"
   sha256sum "$KEYSTORE_FILE"
+  echo "Keystore file and signing config are recovered successfully!"
 else
-  echo 'Signing key not found!'
+  echo 'WARNING: Signing key not found!'
 fi
 
 echo "Generate signing key and config completed!"
