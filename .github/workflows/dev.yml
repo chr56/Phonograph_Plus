@@ -64,7 +64,7 @@ jobs:
           KEYSTORE_FILE: ${{ github.workspace }}/key.jdk
           CONFIG_FILE: ${{ github.workspace }}/signing.properties
         run: |
-          if [[ -n ${{ secrets.KEY }} ]]
+          if [[ -n "${{ secrets.KEY }}" ]]
           then
             # recover keystore from base64
             echo "${{ secrets.KEY }}"  | base64 -d > $KEYSTORE_FILE
@@ -80,7 +80,6 @@ jobs:
             #cat $CONFIG_FILE
           else
             echo 'Signing key not found!'
-            rm $CONFIG_FILE
           fi
 
 
