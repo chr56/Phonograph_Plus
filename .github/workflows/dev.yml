@@ -67,12 +67,12 @@ jobs:
           if [[ -n "${{ secrets.KEY }}" ]]
           then
             # recover keystore from base64
-            echo "${{ secrets.KEY }}"  | base64 -d > $KEYSTORE_FILE
+            printf "%s" "${{ secrets.KEY }}"  | base64 -d | tee $KEYSTORE_FILE > /dev/null
             # write signing.properties
-            echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> $CONFIG_FILE
-            echo "storeFile=$KEYSTORE_FILE"                    >> $CONFIG_FILE
-            echo "keyAlias=${{ secrets.KEY_ALIAS }}"           >> $CONFIG_FILE
-            echo "keyPassword=${{ secrets.KEY_PASSWORD }}"     >> $CONFIG_FILE
+            printf "storePassword=%s\n" "${{ secrets.STORE_PASSWORD }}" | tee -a $CONFIG_FILE > /dev/null
+            printf "storeFile=%s\n" "$KEYSTORE_FILE"                    | tee -a $CONFIG_FILE > /dev/null
+            printf "keyAlias=%s\n" "${{ secrets.KEY_ALIAS }}"           | tee -a $CONFIG_FILE > /dev/null
+            printf "keyPassword=%s\n" "${{ secrets.KEY_PASSWORD }}"     | tee -a $CONFIG_FILE > /dev/null
             # print information
             echo "keystore file ($KEYSTORE_FILE):"
             sha256sum $KEYSTORE_FILE
