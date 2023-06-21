@@ -9,14 +9,15 @@ import okhttp3.Request
 import okhttp3.Response
 import player.phonograph.BuildConfig
 import player.phonograph.UpdateConfig.requestUriBitBucket
+import player.phonograph.UpdateConfig.requestUriCodeberg
 import player.phonograph.UpdateConfig.requestUriFastGit
 import player.phonograph.UpdateConfig.requestUriGitHub
 import player.phonograph.UpdateConfig.requestUriJsdelivr
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Setting
 import player.phonograph.util.NetworkUtil.invokeRequest
-import player.phonograph.util.text.dateText
 import player.phonograph.util.debug
+import player.phonograph.util.text.dateText
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -59,6 +60,7 @@ private suspend fun fetchVersionCatalog(): VersionCatalog? {
         val requestGithub = Request.Builder().url(requestUriGitHub).get().build()
 
         // mirrors
+        val requestCodeberg = Request.Builder().url(requestUriCodeberg).get().build()
         val requestBitBucket = Request.Builder().url(requestUriBitBucket).get().build()
         val requestJsdelivr = Request.Builder().url(requestUriJsdelivr).get().build()
         val requestFastGit = Request.Builder().url(requestUriFastGit).get().build()
@@ -74,6 +76,9 @@ private suspend fun fetchVersionCatalog(): VersionCatalog? {
         }
         // check the fastest mirror
         val result = select<Response?> {
+            produce {
+                send(sendRequest(requestCodeberg))
+            }
             produce {
                 send(sendRequest(requestBitBucket))
             }
@@ -178,4 +183,4 @@ private val parser = Json {
     isLenient = true
 }
 
-private const val TAG = "UpdateUtil"
+private const val TAG = "Update"
