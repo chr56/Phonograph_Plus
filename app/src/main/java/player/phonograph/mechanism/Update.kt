@@ -67,21 +67,19 @@ private suspend fun fetchVersionCatalog(): VersionCatalog? {
         val requestFastGit = Request.Builder().url(requestUriFastGit).get().build()
 
         // check source first
-        sendRequest(requestGithub)?.let { response ->
-            debug {
-                Log.i(TAG, "Succeeded to check new version from ${response.request.url}!")
-            }
-            val result = processResponse(response)
-            result?.let {
+        val channelGithub = checkFromRequest(requestGithub)
+        channelGithub.receiveCatching().also { result ->
+            val versionCatalog = result.getOrNull()
+            if (versionCatalog != null) {
                 canAccessGitHub = true
-                return@withContext it
+                return@withContext versionCatalog
             }
         }
+        // check the fastest mirror
         val channelCodeberg = checkFromRequest(requestCodeberg)
         val channelBitBucket = checkFromRequest(requestBitBucket)
         val channelJsdelivr = checkFromRequest(requestJsdelivr)
         val channelFastGit = checkFromRequest(requestFastGit)
-        // check the fastest mirror
         val result: VersionCatalog? = select {
             channelCodeberg.onReceiveCatching { it.getOrNull() }
             channelBitBucket.onReceiveCatching { it.getOrNull() }
