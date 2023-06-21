@@ -4,7 +4,6 @@
 
 package player.phonograph.mechanism
 
-import okhttp3.HttpUrl
 import okhttp3.Request
 import okhttp3.Response
 import player.phonograph.BuildConfig
@@ -69,7 +68,9 @@ private suspend fun fetchVersionCatalog(): VersionCatalog? {
 
         // check source first
         sendRequest(requestGithub)?.let { response ->
-            logSucceed(response.request.url)
+            debug {
+                Log.i(TAG, "Succeeded to check new version from ${response.request.url}!")
+            }
             val result = processResponse(response)
             result?.let {
                 canAccessGitHub = true
@@ -103,10 +104,12 @@ private suspend fun checkFromRequest(request: Request): ReceiveChannel<VersionCa
             val versionCatalog = processResponse(response)
             val url = response.request.url
             if (versionCatalog != null) {
-                logSucceed(url)
                 send(versionCatalog)
+                debug {
+                    Log.i(TAG, "Succeeded to check new version from $url!")
+                }
             } else {
-                logFails(url)
+                Log.w(TAG, "Failed to check new version from $url!")
             }
         }
     }
@@ -116,7 +119,7 @@ private suspend fun sendRequest(source: Request): Response? {
     return try {
         invokeRequest(request = source)
     } catch (e: IOException) {
-        logFails(source.url)
+        Log.w(TAG, "Failed to connect ${source.url}!")
         null
     }
 }
@@ -168,31 +171,28 @@ private fun checkUpgradable(versionCatalog: VersionCatalog, force: Boolean): Boo
 
     val latestVersionCode = latestVersion.versionCode
     return when {
-        latestVersionCode > currentVersionCode -> {
+        latestVersionCode > currentVersionCode  -> {
             debug { Log.v(TAG, "updatable!") }
             true
         }
+
         latestVersionCode == currentVersionCode -> {
             debug { Log.v(TAG, "no update, latest version!") }
             false
         }
-        latestVersionCode < currentVersionCode -> {
+
+        latestVersionCode < currentVersionCode  -> {
             debug { Log.w(TAG, "no update, version is newer than latest?") }
             false
         }
-        else -> false
+
+        else                                    -> false
     }
 }
 
 
 var canAccessGitHub = false
     private set
-
-private fun logFails(url: HttpUrl) = Log.w(TAG, "Failed to check new version from $url!")
-
-private fun logSucceed(url: HttpUrl) = debug {
-    Log.i(TAG, "Succeeded to check new version from $url!")
-}
 
 private val parser = Json {
     ignoreUnknownKeys = true
