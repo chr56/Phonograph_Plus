@@ -97,7 +97,7 @@ private suspend fun fetchVersionCatalog(): VersionCatalog? {
 
 @ExperimentalCoroutinesApi
 private suspend fun checkFromRequest(request: Request): ReceiveChannel<VersionCatalog> = coroutineScope {
-    produce {
+    produce(capacity = 1) {
         val response = sendRequest(request)
         if (response != null) {
             val versionCatalog = processResponse(response)
