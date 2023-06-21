@@ -22,7 +22,9 @@ import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
@@ -74,26 +76,48 @@ private suspend fun fetchVersionCatalog(): VersionCatalog? {
                 return@withContext it
             }
         }
+        val channelCodeberg = checkFromRequest(requestCodeberg)
+        val channelBitBucket = checkFromRequest(requestBitBucket)
+        val channelJsdelivr = checkFromRequest(requestJsdelivr)
+        val channelFastGit = checkFromRequest(requestFastGit)
         // check the fastest mirror
-        val result = select<Response?> {
-            produce {
-                send(sendRequest(requestCodeberg))
-            }
-            produce {
-                send(sendRequest(requestBitBucket))
-            }
-            produce {
-                send(sendRequest(requestJsdelivr))
-            }
-            produce {
-                send(sendRequest(requestFastGit))
+        val result: VersionCatalog? = select {
+            channelCodeberg.onReceiveCatching { it.getOrNull() }
+            channelBitBucket.onReceiveCatching { it.getOrNull() }
+            channelJsdelivr.onReceiveCatching { it.getOrNull() }
+            channelFastGit.onReceiveCatching { it.getOrNull() }
+            onTimeout(18000) {
+                Log.i(TAG, "Timeout!")
+                null
             }
         }
-        return@withContext if (result != null) {
-            processResponse(result)
-        } else {
-            null
+        return@withContext result
+    }
+}
+
+@ExperimentalCoroutinesApi
+private suspend fun checkFromRequest(request: Request): ReceiveChannel<VersionCatalog> = coroutineScope {
+    produce {
+        val response = sendRequest(request)
+        if (response != null) {
+            val versionCatalog = processResponse(response)
+            val url = response.request.url
+            if (versionCatalog != null) {
+                logSucceed(url)
+                send(versionCatalog)
+            } else {
+                logFails(url)
+            }
         }
+    }
+}
+
+private suspend fun sendRequest(source: Request): Response? {
+    return try {
+        invokeRequest(request = source)
+    } catch (e: IOException) {
+        logFails(source.url)
+        null
     }
 }
 
@@ -108,7 +132,7 @@ private suspend fun processResponse(response: Response): VersionCatalog? {
                 parser.decodeFromString<VersionCatalog>(it.string())
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.d(TAG, "Failed to process response from ${response.request.url}", e)
             null
         }
     }
@@ -160,14 +184,6 @@ private fun checkUpgradable(versionCatalog: VersionCatalog, force: Boolean): Boo
     }
 }
 
-private suspend fun sendRequest(source: Request): Response? {
-    return try {
-        invokeRequest(request = source)
-    } catch (e: IOException) {
-        logFails(source.url)
-        null
-    }
-}
 
 var canAccessGitHub = false
     private set
