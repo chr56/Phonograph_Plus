@@ -8,11 +8,15 @@ import legacy.phonograph.MediaStoreCompat.Audio
 import player.phonograph.R
 import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.model.Song
+import player.phonograph.ui.dialogs.ClearPlaylistDialog
+import player.phonograph.util.warning
 import util.phonograph.playlist.PlaylistsManager
 import util.phonograph.playlist.mediastore.moveItemViaMediastore
 import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
 import androidx.annotation.DrawableRes
 import androidx.annotation.Keep
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import android.content.Context
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
@@ -71,8 +75,14 @@ class FilePlaylist : Playlist, EditablePlaylist {
     }
 
     override fun clear(context: Context) {
-        CoroutineScope(Dispatchers.Default).launch {
-            PlaylistsManager.deletePlaylistWithGuide(context, listOf(this@FilePlaylist))
+        val fragmentActivity = context as? FragmentActivity
+        if (fragmentActivity != null) {
+            fragmentActivity.lifecycleScope.launch(Dispatchers.Main) {
+                ClearPlaylistDialog.create(listOf(this@FilePlaylist))
+                    .show(fragmentActivity.supportFragmentManager, "CLEAR_PLAYLIST_DIALOG")
+            }
+        } else {
+            warning("FilePlaylist", context.getString(R.string.failed))
         }
     }
 
