@@ -3,7 +3,6 @@
  */
 package player.phonograph.mediastore
 
-import player.phonograph.mediastore.internal.SortedLongCursor
 import player.phonograph.provider.HistoryStore
 import player.phonograph.provider.SongPlayCountStore
 import android.content.Context
@@ -17,57 +16,48 @@ object TopAndRecentlyPlayedTracksLoader {
 
     fun getTopTracks(context: Context) = makeTopTracksCursorAndClearUpDatabase(context).intoSongs()
 
-    fun makeRecentTracksCursorAndClearUpDatabase(context: Context): Cursor? {
-        val cursor = makeRecentTracksCursorImpl(context)
+    private fun makeRecentTracksCursorAndClearUpDatabase(context: Context): Cursor? {
+
+        val songCursor = recentTracksSongCursor(context) ?: return null
 
         // clean up the databases with any ids not found
+        val exists = songIds(songCursor)
+        HistoryStore.getInstance(context).gc(exists)
 
-        cursor?.let {
-            val missingIds = cursor.missingIds
-            if (missingIds.isNotEmpty()) {
-                for (id in missingIds) {
-                    HistoryStore.getInstance(context).removeSongId(id)
-                }
-            }
-        }
-        return cursor
+        return songCursor
     }
 
-    fun makeTopTracksCursorAndClearUpDatabase(context: Context): Cursor? {
-        val retCursor = makeTopTracksCursorImpl(context)
+    private fun makeTopTracksCursorAndClearUpDatabase(context: Context): Cursor? {
+
+        val songCursor = topTracksSongCursor(context) ?: return null
 
         // clean up the databases with any ids not found
-        if (retCursor != null) {
-            val missingIds = retCursor.missingIds
-            if (missingIds.isNotEmpty()) {
-                for (id in missingIds) {
-                    SongPlayCountStore.getInstance(context).removeItem(id)
-                }
-            }
-        }
-        return retCursor
+        val exists = songIds(songCursor)
+        SongPlayCountStore.getInstance(context).gc(exists)
+
+        return songCursor
     }
 
-    private fun makeRecentTracksCursorImpl(context: Context): SortedLongCursor? {
+    private fun recentTracksSongCursor(context: Context): Cursor? {
         // first get the top results ids from the internal database
         return HistoryStore.getInstance(context).queryRecentIds().use { cursor ->
-            cursor.makeSortedCursor(
+            cursor.generateSongCursor(
                 context, cursor.getColumnIndex(HistoryStore.RecentStoreColumns.ID)
             )
         }
     }
 
-    private fun makeTopTracksCursorImpl(context: Context): SortedLongCursor? {
+    private fun topTracksSongCursor(context: Context): Cursor? {
         // first get the top results ids from the internal database
         return SongPlayCountStore.getInstance(context).getTopPlayedResults(NUMBER_OF_TOP_TRACKS)
             .use { cursor ->
-                cursor.makeSortedCursor(
+                cursor.generateSongCursor(
                     context, cursor.getColumnIndex(SongPlayCountStore.SongPlayCountColumns.ID)
                 )
             }
     }
 
-    private fun Cursor.makeSortedCursor(context: Context, idColumn: Int): SortedLongCursor? {
+    private fun Cursor.generateSongCursor(context: Context, idColumn: Int): Cursor? {
         moveToFirst()
 
         val selectionPlaceHolder = when {
@@ -76,16 +66,26 @@ object TopAndRecentlyPlayedTracksLoader {
             else       -> return null // empty cursor
         }
 
-        val ids = LongArray(count) {
-            getLong(idColumn).also { moveToNext() }
+        val ids = Array(count) {
+            getLong(idColumn).toString().also { moveToNext() }
         }
 
-        val songCursor = querySongs(
+        return querySongs(
             context,
             selection = "${BaseColumns._ID}  IN ( $selectionPlaceHolder )",
-            selectionValues = ids.map { it.toString() }.toTypedArray()
-        ) ?: return null
+            selectionValues = ids
+        )
+    }
 
-        return SortedLongCursor(songCursor, ids, BaseColumns._ID)
+    private fun songIds(songCursor: Cursor): List<Long> {
+        val exists = mutableListOf<Long>()
+        if (songCursor.moveToFirst()) {
+            val index = songCursor.getColumnIndex(BaseColumns._ID)
+            do {
+                val id = songCursor.getLong(index)
+                if (id > 0) exists.add(id)
+            } while (songCursor.moveToNext())
+        }
+        return exists
     }
 }

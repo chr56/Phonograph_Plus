@@ -15,23 +15,23 @@
 */
 package player.phonograph.provider
 
+import player.phonograph.provider.DatabaseConstants.HISTORY_DB
+import player.phonograph.provider.HistoryStore.RecentStoreColumns.Companion.ID
+import player.phonograph.provider.HistoryStore.RecentStoreColumns.Companion.NAME
+import player.phonograph.provider.HistoryStore.RecentStoreColumns.Companion.TIME_PLAYED
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import player.phonograph.provider.DatabaseConstants.HISTORY_DB
-import player.phonograph.provider.HistoryStore.RecentStoreColumns.Companion.ID
-import player.phonograph.provider.HistoryStore.RecentStoreColumns.Companion.NAME
-import player.phonograph.provider.HistoryStore.RecentStoreColumns.Companion.TIME_PLAYED
 
 class HistoryStore(context: Context) :
-    SQLiteOpenHelper(context, HISTORY_DB, null, VERSION) {
+        SQLiteOpenHelper(context, HISTORY_DB, null, VERSION) {
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             "CREATE TABLE IF NOT EXISTS $NAME" +
-                " ($ID LONG NOT NULL,$TIME_PLAYED LONG NOT NULL);"
+                    " ($ID LONG NOT NULL,$TIME_PLAYED LONG NOT NULL);"
         )
     }
 
@@ -107,6 +107,10 @@ class HistoryStore(context: Context) :
             NAME, arrayOf(ID), null, null, null, null,
             "$TIME_PLAYED DESC"
         )
+
+    fun gc(idsExists: List<Long>) {
+        gc(writableDatabase, NAME, ID, idsExists.map { it.toString() }.toTypedArray())
+    }
 
     interface RecentStoreColumns {
         companion object {

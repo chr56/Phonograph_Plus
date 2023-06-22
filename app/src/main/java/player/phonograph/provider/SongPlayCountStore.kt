@@ -347,6 +347,10 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
         database.delete(NAME, WHERE_ID_EQUALS, arrayOf(stringId))
     }
 
+    fun gc(idsExists: List<Long>) {
+        gc(writableDatabase, NAME, ID, idsExists.map { it.toString() }.toTypedArray())
+    }
+
     interface SongPlayCountColumns {
         companion object {
             const val NAME = "song_play_count"
