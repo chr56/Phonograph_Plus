@@ -19,3 +19,6 @@ fun currentDateTime(): CharSequence = DateFormat.format("yyMMdd_HHmmss", current
 fun date(stamp: Long) = Date(stamp * 1000)
 fun dateText(stamp: Long) = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).format(date(stamp))
 fun timeText(stamp: Long) = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(date(stamp))
+
+
+fun datetimeSufix(date: Date): CharSequence = SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.US).format(date)

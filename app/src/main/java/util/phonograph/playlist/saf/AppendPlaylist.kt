@@ -15,7 +15,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.reportError
-import util.phonograph.playlist.m3u.M3UGenerator
+import util.phonograph.playlist.m3u.M3UWriter
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -71,7 +71,7 @@ suspend fun appendToPlaylistViaSAF(
     // write
     try {
         openOutputStreamSafe(context, uri, "wa")?.use { outputStream ->
-            M3UGenerator.generate(outputStream, songs, false)
+            M3UWriter.write(outputStream, songs, false)
             coroutineToast(context, context.getString(R.string.success))
         }
     } catch (e: IOException) {

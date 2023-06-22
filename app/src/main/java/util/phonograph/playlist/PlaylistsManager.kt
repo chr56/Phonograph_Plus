@@ -26,7 +26,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.warning
-import util.phonograph.playlist.m3u.M3UGenerator
+import util.phonograph.playlist.m3u.M3UWriter
 import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore
 import util.phonograph.playlist.mediastore.createOrFindPlaylistViaMediastore
 import util.phonograph.playlist.mediastore.deletePlaylistsViaMediastore
@@ -194,11 +194,7 @@ object PlaylistsManager {
         val failureList = StringBuffer()
         for (playlist in filePlaylists) {
             try {
-                dir = M3UGenerator.writeFile(
-                    App.instance,
-                    File(Environment.DIRECTORY_DOWNLOADS),
-                    playlist
-                ).parent
+                dir = M3UWriter.write(context, File(Environment.DIRECTORY_DOWNLOADS), playlist).parent
                 successes++
             } catch (e: IOException) {
                 failures++

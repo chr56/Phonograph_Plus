@@ -14,7 +14,7 @@ import player.phonograph.util.coroutineToast
 import player.phonograph.util.reportError
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.warning
-import util.phonograph.playlist.m3u.M3UGenerator
+import util.phonograph.playlist.m3u.M3UWriter
 import androidx.documentfile.provider.DocumentFile
 import android.content.Context
 import android.os.Environment
@@ -53,7 +53,7 @@ suspend fun createPlaylistViaSAF(
     openOutputStreamSafe(context, uri, "rwt")?.use { stream ->
         try {
             if (songs.isNotEmpty()) {
-                M3UGenerator.generate(stream, songs, true)
+                M3UWriter.write(stream, songs, true)
             }
             coroutineToast(context, R.string.success)
             delay(250)
@@ -108,7 +108,7 @@ suspend fun createPlaylistsViaSAF(
                 openOutputStreamSafe(context, file.uri, "rwt")?.use { outputStream ->
                     val songs: List<Song> = playlist.getSongs(context)
                     try {
-                        M3UGenerator.generate(outputStream, songs, true)
+                        M3UWriter.write(outputStream, songs, true)
                     } catch (e: IOException) {
                         reportError(e, TAG, "")
                         coroutineToast(context, R.string.failed)
