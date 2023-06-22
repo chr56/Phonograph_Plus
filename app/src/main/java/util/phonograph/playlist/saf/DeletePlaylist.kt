@@ -19,7 +19,6 @@ import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
-import java.io.File
 
 
 /**
@@ -27,7 +26,7 @@ import java.io.File
  * @param context must be IOpenDirStorageAccess
  * @return list of [DocumentFile] to delete
  */
-suspend fun tryToDeletePlaylistsViaSAF(
+suspend fun searchPlaylistsForDeletionViaSAF(
     context: Context,
     filePlaylists: List<FilePlaylist>,
 ): List<DocumentFile> = withContext(Dispatchers.IO) {
@@ -44,8 +43,8 @@ suspend fun tryToDeletePlaylistsViaSAF(
         true
     )
     // launch
-    val commonRootFile = if (commonRoot.isNotEmpty()) File(commonRoot) else Environment.getExternalStorageDirectory()
-    val treeUri = chooseDirViaSAF(context, commonRootFile)
+    val treeUri =
+        chooseDirViaSAF(context, commonRoot.ifEmpty { Environment.getExternalStorageDirectory().absolutePath })
     val folder =
         if (treeUri.isTreeDocumentFileSafe()) DocumentFile.fromTreeUri(context, treeUri) else null
     // valid
@@ -70,7 +69,7 @@ suspend fun tryToDeletePlaylistsViaSAF(
 private fun analysis(
     context: Context,
     playlistPathsToDelete: List<String>,
-    searchedPlaylist: List<DocumentFile>
+    searchedPlaylist: List<DocumentFile>,
 ): List<DocumentFile> {
     return searchedPlaylist.filter {
         val name = it.getBasePath(context) ?: it.name ?: ""
@@ -82,7 +81,7 @@ private fun analysis(
 private fun searchPlaylist(
     context: Context,
     root: DocumentFile,
-    filePlaylists: List<FilePlaylist>
+    filePlaylists: List<FilePlaylist>,
 ): List<DocumentFile> {
     val fileNames = filePlaylists.map { it.associatedFilePath }
     return if (fileNames.isEmpty()) {
@@ -95,10 +94,9 @@ private fun searchPlaylist(
 private fun searchFiles(
     context: Context,
     root: DocumentFile,
-    filenames: List<String>
+    filenames: List<String>,
 ): List<DocumentFile> {
-    if (!root.isDirectory)
-        return ArrayList()
+    return if (!root.isDirectory) emptyList()
     else {
         val result = mutableListOf<DocumentFile>()
         for (sub in root.listFiles()) {
@@ -113,7 +111,7 @@ private fun searchFiles(
                 )
             }
         }
-        return result
+        result
     }
 }
 

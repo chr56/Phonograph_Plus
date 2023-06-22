@@ -6,13 +6,9 @@
 
 package util.phonograph.playlist
 
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.WhichButton
-import com.afollestad.materialdialogs.actions.getActionButton
 import lib.phonograph.misc.ICreateFileStorageAccess
 import lib.phonograph.misc.IOpenDirStorageAccess
 import lib.phonograph.misc.IOpenFileStorageAccess
-import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mediastore.PlaylistLoader
@@ -25,17 +21,15 @@ import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF
 import player.phonograph.settings.Setting
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
+import player.phonograph.util.text.currentDate
+import player.phonograph.util.text.withDatetimeSuffix
 import player.phonograph.util.warning
-import util.phonograph.playlist.m3u.M3UGenerator
+import util.phonograph.playlist.m3u.M3UWriter
 import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore
 import util.phonograph.playlist.mediastore.createOrFindPlaylistViaMediastore
-import util.phonograph.playlist.mediastore.deletePlaylistsViaMediastore
-import util.phonograph.playlist.saf.appendTimestampSuffix
 import util.phonograph.playlist.saf.appendToPlaylistViaSAF
 import util.phonograph.playlist.saf.createPlaylistViaSAF
 import util.phonograph.playlist.saf.createPlaylistsViaSAF
-import util.phonograph.playlist.saf.deletePlaylistsViaSAF
-import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.os.Environment
@@ -99,64 +93,6 @@ object PlaylistsManager {
         playlistId: Long,
     ) = appendPlaylist(context, songs, PlaylistLoader.playlistId(context, playlistId))
 
-    /**
-     * @param context must be IOpenDirStorageAccess
-     */
-    suspend fun deletePlaylistWithGuide(
-        context: Context,
-        filePlaylists: List<FilePlaylist>,
-    ) = withContext(Dispatchers.Default) {
-        // try to delete
-        val failList = deletePlaylistsViaMediastore(context, filePlaylists)
-
-        if (failList.isNotEmpty()) {
-
-            // generate error msg
-
-            val message = buildString {
-                appendLine(
-                    context.resources.getQuantityString(
-                        R.plurals.msg_deletion_result,
-                        filePlaylists.size, filePlaylists.size - failList.size, filePlaylists.size
-                    )
-                )
-                appendLine(
-                    "${context.getString(R.string.failed_to_delete)}: "
-                )
-                for (playlist in failList) {
-                    appendLine(playlist.name)
-                }
-            }
-
-            // report failure
-            withContext(Dispatchers.Main) {
-                MaterialDialog(context)
-                    .title(R.string.failed_to_delete)
-                    .message(text = message)
-                    .positiveButton(android.R.string.ok)
-                    .negativeButton(R.string.delete_with_saf) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            if (context is Activity && context is IOpenDirStorageAccess) {
-                                deletePlaylistsViaSAF(context, filePlaylists)
-                            } else {
-                                coroutineToast(context, R.string.failed)
-                            }
-                        }
-                    }
-                    .also {
-                        // color
-                        it.getActionButton(WhichButton.POSITIVE)
-                            .updateTextColor(ThemeColor.accentColor(context))
-                        it.getActionButton(WhichButton.NEGATIVE)
-                            .updateTextColor(ThemeColor.accentColor(context))
-                        it.getActionButton(WhichButton.NEUTRAL)
-                            .updateTextColor(ThemeColor.accentColor(context))
-                    }
-                    .show()
-            }
-        }
-    }
-
     private val shouldUseSAF: Boolean
         get() {
             return when (val behavior = Setting.instance.playlistFilesOperationBehaviour) {
@@ -176,7 +112,7 @@ object PlaylistsManager {
         filePlaylists: List<Playlist>,
     ) = withContext(Dispatchers.IO) {
         if (context is IOpenDirStorageAccess) {
-            createPlaylistsViaSAF(context, filePlaylists)
+            createPlaylistsViaSAF(context, filePlaylists, Environment.DIRECTORY_MUSIC)
         } else {
             legacySavePlaylists(context, filePlaylists) // legacy ways
         }
@@ -185,7 +121,7 @@ object PlaylistsManager {
     suspend fun duplicatePlaylistViaSaf(
         context: Context,
         playlist: Playlist,
-    ) = createPlaylist(context, appendTimestampSuffix(playlist.name), playlist.getSongs(context))
+    ) = createPlaylist(context, withDatetimeSuffix(playlist.name, currentDate()), playlist.getSongs(context))
 
     private suspend fun legacySavePlaylists(context: Context, filePlaylists: List<Playlist>) {
         var successes = 0
@@ -194,11 +130,7 @@ object PlaylistsManager {
         val failureList = StringBuffer()
         for (playlist in filePlaylists) {
             try {
-                dir = M3UGenerator.writeFile(
-                    App.instance,
-                    File(Environment.DIRECTORY_DOWNLOADS),
-                    playlist
-                ).parent
+                dir = M3UWriter.write(context, File(Environment.DIRECTORY_DOWNLOADS), playlist).parent
                 successes++
             } catch (e: IOException) {
                 failures++

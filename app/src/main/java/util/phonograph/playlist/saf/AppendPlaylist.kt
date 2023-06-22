@@ -10,40 +10,24 @@ import lib.phonograph.misc.ActivityResultContractUtil.chooseFileViaSAF
 import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.storage.getAbsolutePath
 import player.phonograph.R
-import player.phonograph.mediastore.PlaylistLoader
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.reportError
-import util.phonograph.playlist.m3u.M3UGenerator
+import util.phonograph.playlist.m3u.M3UWriter
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
-import java.io.File
 import java.io.IOException
 
-
 /**
  * @param context must be [IOpenFileStorageAccess]
  */
 suspend fun appendToPlaylistViaSAF(
     context: Context,
     songs: List<Song>,
-    playlistId: Long
-) = appendToPlaylistViaSAF(
-    context,
-    songs,
-    PlaylistLoader.playlistId(context, playlistId),
-)
-
-/**
- * @param context must be [IOpenFileStorageAccess]
- */
-suspend fun appendToPlaylistViaSAF(
-    context: Context,
-    songs: List<Song>,
-    filePlaylist: FilePlaylist
+    filePlaylist: FilePlaylist,
 ) = withContext(Dispatchers.IO) {
     // check
     if (songs.isEmpty()) return@withContext
@@ -52,9 +36,9 @@ suspend fun appendToPlaylistViaSAF(
     while (context.openFileStorageAccessTool.busy) yield()
     // config
     val playlistPath = filePlaylist.associatedFilePath
-    val mimeTypes = arrayOf("audio/x-mpegurl", CONTENT_TYPE, ENTRY_CONTENT_TYPE)
+    val mimeTypes = arrayOf(PLAYLIST_MIME_TYPE, CONTENT_TYPE, ENTRY_CONTENT_TYPE)
     // launch
-    val uri = chooseFileViaSAF(context, File(playlistPath), mimeTypes)
+    val uri = chooseFileViaSAF(context, playlistPath, mimeTypes)
     // check
     if (!checkUri(context, filePlaylist, uri)) {
         val returningPath = uri.getAbsolutePath(context)
@@ -63,15 +47,13 @@ suspend fun appendToPlaylistViaSAF(
             append(context.getString(R.string.file_incorrect)).append('\n')
             append("Playlist($playlistPath) -> File($returningPath) ")
         }
-        reportError(
-            IllegalStateException(message), TAG, message
-        )
+        reportError(IllegalStateException(message), TAG, context.getString(R.string.failed))
         return@withContext
     }
     // write
     try {
         openOutputStreamSafe(context, uri, "wa")?.use { outputStream ->
-            M3UGenerator.generate(outputStream, songs, false)
+            M3UWriter.write(outputStream, songs, false)
             coroutineToast(context, context.getString(R.string.success))
         }
     } catch (e: IOException) {

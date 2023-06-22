@@ -21,17 +21,17 @@ object ActivityResultContractUtil {
      *
      * __[context] must be [IOpenFileStorageAccess]__
      *
-     * @param file initial location from guessing
+     * @param path initial location from guessing
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun chooseFileViaSAF(
         context: Context,
-        file: File,
+        path: String,
         mimeTypes: Array<String> = arrayOf("*/*"),
     ): Uri {
         require(context is IOpenFileStorageAccess)
         return suspendCancellableCoroutine {
-            val initialUri = guessDocumentUri(context, file)
+            val initialUri = guessDocumentUri(context, File(path))
             context.openFileStorageAccessTool.launch(OpenDocumentContract.Config(mimeTypes, initialUri)) { uri ->
                 if (uri != null) {
                     it.resume(uri) {}
@@ -46,16 +46,16 @@ object ActivityResultContractUtil {
      *
      * __[context] must be [IOpenDirStorageAccess]__
      *
-     * @param file initial location from guessing
+     * @param path initial location from guessing
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun chooseDirViaSAF(
         context: Context,
-        file: File,
+        path: String,
     ): Uri {
         require(context is IOpenDirStorageAccess)
         return suspendCancellableCoroutine {
-            val initialUri = guessDocumentUri(context, file)
+            val initialUri = guessDocumentUri(context, File(path))
             context.openDirStorageAccessTool.launch(initialUri) { uri ->
                 if (uri != null) {
                     it.resume(uri) {}
