@@ -32,8 +32,8 @@ object TopAndRecentlyPlayedTracksLoader {
         val songCursor = topTracksSongCursor(context) ?: return null
 
         // clean up the databases with any ids not found
-        val exists = songIds(songCursor)
-        SongPlayCountStore.getInstance(context).gc(exists)
+        // val exists = songIds(songCursor)
+        // SongPlayCountStore.getInstance(context).gc(exists)
 
         return songCursor
     }
