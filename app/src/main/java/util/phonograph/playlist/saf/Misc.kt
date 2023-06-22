@@ -13,9 +13,6 @@ import android.content.Context
 import android.net.Uri
 import java.io.FileNotFoundException
 import java.io.OutputStream
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 @SuppressLint("Recycle")
 internal fun openOutputStreamSafe(context: Context, uri: Uri, mode: String): OutputStream? =
@@ -56,9 +53,6 @@ internal fun commonPathRoot(paths: Collection<String>): String {
     return result.fold("") { acc, s -> "$acc/$s" }
 }
 
-fun appendTimestampSuffix(string: String): String {
-    val suffix = SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.ENGLISH).format(Calendar.getInstance().time)
-    return string + suffix
-}
-
 private const val TAG = "Playlist"
+
+internal const val PLAYLIST_MIME_TYPE = "audio/x-mpegurl"

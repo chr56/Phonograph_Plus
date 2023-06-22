@@ -25,12 +25,13 @@ import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF
 import player.phonograph.settings.Setting
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
+import player.phonograph.util.text.currentDate
+import player.phonograph.util.text.withDatetimeSuffix
 import player.phonograph.util.warning
 import util.phonograph.playlist.m3u.M3UWriter
 import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore
 import util.phonograph.playlist.mediastore.createOrFindPlaylistViaMediastore
 import util.phonograph.playlist.mediastore.deletePlaylistsViaMediastore
-import util.phonograph.playlist.saf.appendTimestampSuffix
 import util.phonograph.playlist.saf.appendToPlaylistViaSAF
 import util.phonograph.playlist.saf.createPlaylistViaSAF
 import util.phonograph.playlist.saf.createPlaylistsViaSAF
@@ -176,7 +177,7 @@ object PlaylistsManager {
         filePlaylists: List<Playlist>,
     ) = withContext(Dispatchers.IO) {
         if (context is IOpenDirStorageAccess) {
-            createPlaylistsViaSAF(context, filePlaylists)
+            createPlaylistsViaSAF(context, filePlaylists, Environment.DIRECTORY_MUSIC)
         } else {
             legacySavePlaylists(context, filePlaylists) // legacy ways
         }
@@ -185,7 +186,7 @@ object PlaylistsManager {
     suspend fun duplicatePlaylistViaSaf(
         context: Context,
         playlist: Playlist,
-    ) = createPlaylist(context, appendTimestampSuffix(playlist.name), playlist.getSongs(context))
+    ) = createPlaylist(context, withDatetimeSuffix(playlist.name, currentDate()), playlist.getSongs(context))
 
     private suspend fun legacySavePlaylists(context: Context, filePlaylists: List<Playlist>) {
         var successes = 0

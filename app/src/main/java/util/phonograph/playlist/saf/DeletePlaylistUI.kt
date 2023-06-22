@@ -31,7 +31,7 @@ suspend fun deletePlaylistsViaSAF(
     filePlaylists: List<FilePlaylist>,
 ) {
     require(activity is IOpenDirStorageAccess)
-    val files = tryToDeletePlaylistsViaSAF(activity, filePlaylists)
+    val files = searchPlaylistsForDeletionViaSAF(activity, filePlaylists)
 
     val message = buildDeletionMessage(
         context = activity,
