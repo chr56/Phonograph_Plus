@@ -8,6 +8,7 @@ import com.github.appintro.AppIntro
 import com.github.appintro.AppIntroFragment
 import com.github.appintro.SlideBackgroundColorHolder
 import com.github.appintro.SlidePolicy
+import com.google.android.material.snackbar.Snackbar
 import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.IRequestPermission
 import lib.phonograph.misc.OpenDocumentContract
@@ -28,6 +29,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Bundle
@@ -200,7 +202,17 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
         }
 
         override val isPolicyRespected: Boolean
-            get() = true
+            get() {
+                val context = requireContext()
+                for (permission in permissions) {
+                    val result = context.checkSelfPermission(permission.permission)
+                    if (result == PackageManager.PERMISSION_DENIED) {
+                        Snackbar.make(binding.container, R.string.permissions_denied, Snackbar.LENGTH_SHORT).show()
+                        return false
+                    }
+                }
+                return true
+            }
 
         override fun onUserIllegallyRequestedNextPage() {
         }
