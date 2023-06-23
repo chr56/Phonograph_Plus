@@ -12,9 +12,11 @@ import android.provider.BaseColumns
 object TopAndRecentlyPlayedTracksLoader {
     private const val NUMBER_OF_TOP_TRACKS = 150
 
-    fun getRecentlyPlayedTracks(context: Context) = makeRecentTracksCursorAndClearUpDatabase(context).intoSongs()
+    fun getRecentlyPlayedTracks(context: Context) =
+        makeRecentTracksCursorAndClearUpDatabase(context).intoSongs()
 
-    fun getTopTracks(context: Context) = makeTopTracksCursorAndClearUpDatabase(context).intoSongs()
+    fun getTopTracks(context: Context) =
+        makeTopTracksCursorAndClearUpDatabase(context).intoSongs().drop(NUMBER_OF_TOP_TRACKS)
 
     private fun makeRecentTracksCursorAndClearUpDatabase(context: Context): Cursor? {
 
@@ -32,8 +34,8 @@ object TopAndRecentlyPlayedTracksLoader {
         val songCursor = topTracksSongCursor(context) ?: return null
 
         // clean up the databases with any ids not found
-        // val exists = songIds(songCursor)
-        // SongPlayCountStore.getInstance(context).gc(exists)
+        val exists = songIds(songCursor)
+        SongPlayCountStore.getInstance(context).gc(exists)
 
         return songCursor
     }
@@ -49,7 +51,7 @@ object TopAndRecentlyPlayedTracksLoader {
 
     private fun topTracksSongCursor(context: Context): Cursor? {
         // first get the top results ids from the internal database
-        return SongPlayCountStore.getInstance(context).getTopPlayedResults(NUMBER_OF_TOP_TRACKS)
+        return SongPlayCountStore.getInstance(context).getTopPlayedResults(0)
             .use { cursor ->
                 cursor.generateSongCursor(
                     context, cursor.getColumnIndex(SongPlayCountStore.SongPlayCountColumns.ID)
