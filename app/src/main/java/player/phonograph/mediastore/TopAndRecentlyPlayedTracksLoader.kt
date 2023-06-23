@@ -16,7 +16,7 @@ object TopAndRecentlyPlayedTracksLoader {
         makeRecentTracksCursorAndClearUpDatabase(context).intoSongs()
 
     fun getTopTracks(context: Context) =
-        makeTopTracksCursorAndClearUpDatabase(context).intoSongs().drop(NUMBER_OF_TOP_TRACKS)
+        makeTopTracksCursorAndClearUpDatabase(context).intoSongs().take(NUMBER_OF_TOP_TRACKS)
 
     private fun makeRecentTracksCursorAndClearUpDatabase(context: Context): Cursor? {
 
