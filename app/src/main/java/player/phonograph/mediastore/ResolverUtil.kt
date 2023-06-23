@@ -7,7 +7,6 @@ package player.phonograph.mediastore
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
-import androidx.core.database.getStringOrNull
 import android.annotation.SuppressLint
 import android.database.Cursor
 
@@ -58,8 +57,8 @@ fun readSong(cursor: Cursor): Song {
     val albumName = cursor.getString(9)
     val artistId = cursor.getLong(10)
     val artistName = cursor.getString(11)
-    val albumArtist = cursor.getStringOrNull(12)
-    val composer = cursor.getStringOrNull(13)
+    val albumArtist = cursor.getString(12)
+    val composer = cursor.getString(13)
     return Song(
         id = id,
         title = title,
