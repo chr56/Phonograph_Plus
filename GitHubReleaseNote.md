@@ -1,23 +1,20 @@
-## **v0.7.0-dev4 2023.06.17**
+## **v0.7.0-beta1 2023.06.23**
 
 **Commit log**:
 
 ### EN
-**NOTE**:  only show differences with the previous preview release
+**NOTE**   only show differences with the previous preview release 
+1. Modify: in Intro, do not allow to continue if no permission granted
+2. Improve: check upgrade
+3. Improve: m3u playlist management
+4. Fix: potential crash when entering "Recently Played" or "My Top Track"
 
-1. New: sort order `Album Artist` and `Composer` for songs
-2. New: sort order `Date added` and `Date Modified` for playlist
-3. Fix: freeze when pin or unpin a playlist
-4. Fix: useless error notifications when entering Settings
-5. Development: clean up codes (MediaStore related)
 
 ### ZH
-**注意**: 仅与上个预览版版本对比
-
-1. 新增 歌曲排序 `专辑艺术家` 和 `作曲家`
-2. 新增 播放列表排序 `添加日期` 和 `修改日期`
-3. 修复 置顶或取消置顶播放列表时卡死
-4. 修复 进入设置时出现无效错误通知
-5. 开发 清理代码(MediaStore相关)
+**注意**   仅与上个预览版版本对比
+1. 修改 在介绍页内，若不授予权限，则不允许继续。
+2. 改进 更新检查
+3. 改进 m3u播放列表管理
+4. 修复 进入"最近播放"或"最常听歌曲"时可能会崩溃
 
 
