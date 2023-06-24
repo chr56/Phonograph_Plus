@@ -4,11 +4,9 @@
 
 package util.phonograph.playlist.saf
 
-import lib.phonograph.storage.getBasePath
 import lib.phonograph.uri.isTreeDocumentFileSafe
-import player.phonograph.R
 import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.util.coroutineToast
+import player.phonograph.util.debug
 import player.phonograph.util.warning
 import androidx.documentfile.provider.DocumentFile
 import android.content.Context
@@ -35,44 +33,36 @@ suspend fun searchPlaylistsForDeletionViaSAF(
         warning(TAG, "Invalid Uri: $treeUri")
         return emptyList()
     }
-    val searchedPlaylist = searchPlaylist(context, folder, filePlaylists) // search playlist in folder
 
-    return if (searchedPlaylist.isNotEmpty()) {
-        analysis(context, playlistPaths, searchedPlaylist) //todo
-    } else {
-        coroutineToast(context, "${context.getString(R.string.failed)}\nCan not locate files.")
-        emptyList()
+    val searchedPlaylist = search(context, folder, filePlaylists) // search playlists in folder
+    debug {
+        Log.i(TAG, searchedPlaylist.fold("Playlists to delete") { acc, s -> "$acc, $s" })
     }
+
+    return searchedPlaylist
 }
 
 
-/**
- * @return list for deletion
- */
-private fun analysis(
-    context: Context,
-    playlistPathsToDelete: List<String>,
-    searchedPlaylist: List<DocumentFile>,
-): List<DocumentFile> {
-    return searchedPlaylist.filter {
-        val name = it.getBasePath(context) ?: it.name ?: ""
-        name.endsWith("m3u", ignoreCase = true) || name.endsWith("m3u8", ignoreCase = true)
-    }
-}
-
-
-private fun searchPlaylist(
+private fun search(
     context: Context,
     root: DocumentFile,
     filePlaylists: List<FilePlaylist>,
 ): List<DocumentFile> {
-    val fileNames = filePlaylists.map { it.associatedFilePath }
-    return if (fileNames.isEmpty()) {
+    val fileNames =
+        filePlaylists.map { filePlaylist ->
+            filePlaylist.associatedFilePath.takeLastWhile { it != '/' }
+        }
+    val searched = if (fileNames.isEmpty()) {
         Log.w(TAG, "No playlist display name?")
         emptyList()
     } else
         searchFiles(context, root, fileNames)
+    return searched.filter {
+        val path = it.uri.path ?: ""
+        path.endsWith("m3u", ignoreCase = true) || path.endsWith("m3u8", ignoreCase = true)
+    }
 }
+
 
 private fun searchFiles(
     context: Context,
