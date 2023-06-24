@@ -4,8 +4,6 @@
 
 package util.phonograph.playlist.saf
 
-import lib.phonograph.misc.ActivityResultContractUtil.chooseDirViaSAF
-import lib.phonograph.misc.IOpenDirStorageAccess
 import lib.phonograph.storage.getBasePath
 import lib.phonograph.uri.isTreeDocumentFileSafe
 import player.phonograph.R
@@ -14,11 +12,7 @@ import player.phonograph.util.coroutineToast
 import player.phonograph.util.warning
 import androidx.documentfile.provider.DocumentFile
 import android.content.Context
-import android.os.Environment
 import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 
 
 /**
@@ -29,35 +23,24 @@ import kotlinx.coroutines.yield
 suspend fun searchPlaylistsForDeletionViaSAF(
     context: Context,
     filePlaylists: List<FilePlaylist>,
-): List<DocumentFile> = withContext(Dispatchers.IO) {
+): List<DocumentFile> {
     // check
-    if (filePlaylists.isEmpty()) return@withContext emptyList()
-    require(context is IOpenDirStorageAccess)
-    while (context.openDirStorageAccessTool.busy) yield()
-    // common root
+    if (filePlaylists.isEmpty()) return emptyList()
+    // open with SAF to get tree uri
     val playlistPaths = filePlaylists.map { it.associatedFilePath }
-    val commonRoot = commonPathRoot(playlistPaths)
-    coroutineToast(
-        context,
-        context.getString(R.string.direction_open_folder_with_saf),
-        true
-    )
-    // launch
-    val treeUri =
-        chooseDirViaSAF(context, commonRoot.ifEmpty { Environment.getExternalStorageDirectory().absolutePath })
-    val folder =
-        if (treeUri.isTreeDocumentFileSafe()) DocumentFile.fromTreeUri(context, treeUri) else null
+    val treeUri = chooseCommonDirViaSAF(context, playlistPaths) ?: return emptyList()
+    val folder = if (treeUri.isTreeDocumentFileSafe()) DocumentFile.fromTreeUri(context, treeUri) else null
     // valid
     if (folder == null) {
         warning(TAG, "Invalid Uri: $treeUri")
-        return@withContext emptyList()
+        return emptyList()
     }
     val searchedPlaylist = searchPlaylist(context, folder, filePlaylists) // search playlist in folder
 
-    return@withContext if (searchedPlaylist.isNotEmpty()) {
+    return if (searchedPlaylist.isNotEmpty()) {
         analysis(context, playlistPaths, searchedPlaylist) //todo
     } else {
-        coroutineToast(context, R.string.failed)
+        coroutineToast(context, "${context.getString(R.string.failed)}\nCan not locate files.")
         emptyList()
     }
 }

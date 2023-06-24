@@ -4,13 +4,20 @@
 
 package util.phonograph.playlist.saf
 
+import lib.phonograph.misc.ActivityResultContractUtil
+import lib.phonograph.misc.IOpenDirStorageAccess
 import lib.phonograph.storage.getAbsolutePath
+import player.phonograph.R
 import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.util.coroutineToast
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import android.os.Environment
+import android.util.Log
+import kotlinx.coroutines.yield
 import java.io.FileNotFoundException
 import java.io.OutputStream
 
@@ -28,6 +35,34 @@ internal fun openOutputStreamSafe(context: Context, uri: Uri, mode: String): Out
 
 internal fun checkUri(context: Context, target: FilePlaylist, uri: Uri): Boolean =
     uri.getAbsolutePath(context) == target.associatedFilePath
+
+
+/**
+ * open SAF at the common directory of [paths]
+ * @param context must be [IOpenDirStorageAccess]
+ * @return DocumentUri
+ */
+internal suspend fun chooseCommonDirViaSAF(context: Context, paths: List<String>): Uri? {
+    // check
+    if (paths.isEmpty()) return null
+    require(context is IOpenDirStorageAccess)
+    while (context.openDirStorageAccessTool.busy) yield()
+    // common root
+    val commonRoot = commonPathRoot(paths)
+    coroutineToast(
+        context,
+        context.getString(R.string.direction_open_folder_with_saf),
+        true
+    )
+    // launch
+    val treeUri =
+        ActivityResultContractUtil.chooseDirViaSAF(
+            context,
+            commonRoot.ifEmpty { Environment.getExternalStorageDirectory().absolutePath }
+        )
+    Log.v(TAG,"treeUri: $treeUri")
+    return treeUri
+}
 
 /**
  * common path root of a list of paths
