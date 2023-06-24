@@ -28,6 +28,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.withResumed
 import androidx.recyclerview.widget.GridLayoutManager
 import android.os.Bundle
 import android.util.Log
@@ -273,7 +274,11 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
-            viewModel.loadDataset(requireContext())
+            lifecycleScope.launch {
+                lifecycle.withResumed {
+                    viewModel.loadDataset(requireContext())
+                }
+            }
         }
     }
 
