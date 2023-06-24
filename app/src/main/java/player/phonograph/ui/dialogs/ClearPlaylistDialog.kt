@@ -71,7 +71,11 @@ class ClearPlaylistDialog : DialogFragment() {
                 filesPlaylists.map { it.name }
             ),
             ItemGroup(
-                resources.getQuantityString(R.plurals.item_playlists_generated, smartPlaylists.size, smartPlaylists.size),
+                resources.getQuantityString(
+                    R.plurals.item_playlists_generated,
+                    smartPlaylists.size,
+                    smartPlaylists.size
+                ),
                 smartPlaylists.map { it.name }
             )
         )
@@ -205,12 +209,12 @@ class ClearPlaylistDialog : DialogFragment() {
             val message = buildDeletionMessage(
                 context = activity,
                 itemSize = files.size,
-                null,
+                "",
                 ItemGroup(
-                    activity.resources.getQuantityString(R.plurals.item_files, filePlaylists.size),
+                    activity.resources.getQuantityString(R.plurals.item_files, filePlaylists.size, filePlaylists.size),
                     files.mapNotNull { file ->
                         Log.v("FileDelete", "${file.name}@${file.uri}")
-                        file.getAbsolutePath(activity)
+                        file.getAbsolutePath(activity) ?: file.uri.path
                     }
                 )
             )
