@@ -1,20 +1,20 @@
-## **v0.7.0-beta1 2023.06.23**
+## **v0.7.0-beta2 2023.06.25**
 
 **Commit log**:
 
 ### EN
-**NOTE**   only show differences with the previous preview release 
-1. Modify: in Intro, do not allow to continue if no permission granted
-2. Improve: check upgrade
-3. Improve: m3u playlist management
-4. Fix: potential crash when entering "Recently Played" or "My Top Track"
+1. **NOTE**   only show differences with the previous preview release 
+2. Fix: incorrect "My Top Track"
+3. Fix: random crash if files changed
+4. Fix: the incorrect message on ClearPlaylistDialog
+5. Fix: can not delete playlist via SAF
 
 
 ### ZH
-**注意**   仅与上个预览版版本对比
-1. 修改 在介绍页内，若不授予权限，则不允许继续。
-2. 改进 更新检查
-3. 改进 m3u播放列表管理
-4. 修复 进入"最近播放"或"最常听歌曲"时可能会崩溃
+1. **注意**   仅与上个预览版版本对比
+2. 修复 "最常听歌曲"不正确
+3. 修复 文件改变时的随机崩溃
+4. 修复 删除播放列表对话框的信息不正确
+5. 修复 不能通过SAF删除播放列表
 
 

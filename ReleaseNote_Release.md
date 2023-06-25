@@ -12,6 +12,7 @@
 - Fix: palette color of player is incorrect or lacking of update
 - Fix: app language is trapped in or out the spelling of British English (for English users only) 
 - Fix: sort order of flat-folders could not be remembered
+- Fix: the incorrect message on ClearPlaylistDialog
 - Translation: update Japanese (by aorinngo)
 - Development: refactor Setting UI using Jetpack Compose
 - Improve: redesign Setting UI and make minor changes
@@ -40,6 +41,7 @@
 - 修复 播放器色调着色不正确或未更新
 - 修复 语言卡在英式拼写里面或外面 (针对英语用户)
 - 修复 无法记住扁平文件夹的排序方式
+- 修复 删除播放列表对话框的信息不正确
 - 翻译 更新日语 (by aorinngo)
 - 开发 设置界面使用 Jetpack Compose 重构
 - 改进 设置界面并进行微调
