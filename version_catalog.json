@@ -2,6 +2,38 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "0.7.0-beta2",
+      "versionCode": 570,
+      "date": 1687704500,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.7.0-beta2"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<b>注意 仅与上个预览版版本对比</b><ol><li>修复 \"最常听歌曲\"不正确</li><li>修复 文件改变时的随机崩溃</li><li>修复 删除播放列表对话框的信息不正确</li><li>修复 不能通过SAF删除播放列表</li></ol>",
+        "en": "<b>NOTE only show differences with the previous preview release<b><ol><li>Fix: incorrect \"My Top Track\"</li><li>Fix: random crash if files changed</li><li>Fix: the incorrect message on ClearPlaylistDialog</li><li>Fix: can not delete playlist via SAF</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
+      "versionName": "0.7.0-beta1",
+      "versionCode": 565,
+      "date": 1687496000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.7.0-beta1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<b>注意 仅与上个预览版版本对比</b><ol><li>修改 在介绍页内，若不授予权限，则不允许继续。</li><li>改进 更新检查</li><li>改进 m3u播放列表管理</li><li>修复 进入\"最近播放\"或\"最常听歌曲\"时可能会崩溃</li></ol>",
+        "en": "<b>NOTE only show differences with the previous preview release<b><ol><li>Modify: in Intro, do not allow to continue if no permission granted</li><li>Improve: check upgrade</li><li>Improve: m3u playlist management</li><li>Fix: potential crash when entering \"Recently Played\" or \"My Top Track\"</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "0.7.0-dev4",
       "versionCode": 555,
       "date": 1686980000,
