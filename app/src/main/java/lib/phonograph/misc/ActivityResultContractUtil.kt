@@ -7,6 +7,7 @@ package lib.phonograph.misc
 import lib.phonograph.uri.guessDocumentUri
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
@@ -34,7 +35,9 @@ object ActivityResultContractUtil {
             val initialUri = guessDocumentUri(context, File(path))
             context.openFileStorageAccessTool.launch(OpenDocumentContract.Config(mimeTypes, initialUri)) { uri ->
                 if (uri != null) {
-                    it.resume(uri) {}
+                    it.resume(uri, this::canceled)
+                } else {
+                    Log.i(TAG, "No file selected via SAF!")
                 }
             }
         }
@@ -58,7 +61,9 @@ object ActivityResultContractUtil {
             val initialUri = guessDocumentUri(context, File(path))
             context.openDirStorageAccessTool.launch(initialUri) { uri ->
                 if (uri != null) {
-                    it.resume(uri) {}
+                    it.resume(uri, this::canceled)
+                } else {
+                    Log.i(TAG, "No directory selected via SAF!")
                 }
             }
         }
@@ -79,10 +84,18 @@ object ActivityResultContractUtil {
         return suspendCancellableCoroutine {
             context.createFileStorageAccessTool.launch(fileName) { uri ->
                 if (uri != null) {
-                    it.resume(uri) {}
+                    it.resume(uri, this::canceled)
+                } else {
+                    Log.i(TAG, "No file created via SAF!")
                 }
             }
         }
     }
 
+    private fun canceled(e: Throwable) {
+        Log.i(TAG, "Canceled!")
+        Log.v(TAG, "${e.message}\n${e.stackTraceToString()}")
+    }
+
+    private const val TAG = "ActivityResultContract"
 }
