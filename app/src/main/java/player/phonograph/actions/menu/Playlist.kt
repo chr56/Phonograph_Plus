@@ -30,16 +30,13 @@ import player.phonograph.provider.FavoritesStore
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.PlaylistModel
 import player.phonograph.ui.compose.tag.BatchTagEditorActivity
+import player.phonograph.util.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.annotation.ColorInt
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 fun playlistToolbar(
@@ -242,8 +239,7 @@ fun playlistPopupMenu(menu: Menu, context: Context, playlist: Playlist) = contex
                     getString(if (!pined) R.string.action_pin else R.string.action_unpin)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick {
-                    val scope = (context as? LifecycleOwner)?.lifecycleScope ?: CoroutineScope(SupervisorJob())
-                    scope.launch(Dispatchers.IO) {
+                    context.lifecycleScopeOrNewOne().launch(Dispatchers.IO) {
                         val ins = FavoritesStore.instance
                         if (pined) ins.removePlaylist(playlist) else ins.addPlaylist(playlist)
                     }
