@@ -11,6 +11,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
+import lib.phonograph.misc.menuProvider
 import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.BuildConfig.DEBUG
@@ -18,18 +19,17 @@ import player.phonograph.R
 import player.phonograph.adapter.HomePagerAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.databinding.FragmentHomeBinding
-import lib.phonograph.misc.menuProvider
+import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.model.pages.PageConfig
 import player.phonograph.model.pages.Pages
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
+import player.phonograph.settings.SettingFlowStore
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.AbsPage
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.mechanism.setting.HomeTabConfig
-import player.phonograph.settings.SettingFlowStore
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
@@ -176,11 +176,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         }
     }
 
-    override fun handleBackPress(): Boolean {
-        return if (cabController.dismiss()) true else {
-            currentPage?.onBackPress() ?: false
-        }
-    }
+    override fun handleBackPress(): Boolean = currentPage?.onBackPress() ?: false
 
     override fun requestSelectPage(page: Int) {
         try {
