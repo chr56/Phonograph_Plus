@@ -36,19 +36,16 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
         cabController?.showContent(context, checkedList.size)
 
 
-        if (!onBackPressedDispatcherRegistered) {
+        val controller = cabController
+        if (!onBackPressedDispatcherRegistered && controller != null) {
             onBackPressedDispatcherRegistered = true
             val componentActivity = context as? ComponentActivity
             componentActivity?.onBackPressedDispatcher?.addCallback {
-                val controller = cabController
-                isEnabled = if (controller == null) {
-                    Log.v("MultiSelectAdapterCallback", "no controller!")
-                    false
-                } else {
-                    controller.dismiss()
-                    Log.v("MultiSelectAdapterCallback", "controller: ${controller.cab.status}")
-                    controller.isActive()
+                controller.dismiss()
+                debug {
+                    Log.v("MultiSelectAdapterCallback", "isInQuickSelectMode: $isInQuickSelectMode")
                 }
+                isEnabled = isInQuickSelectMode
             }
             debug {
                 Log.v("onBackPressedDispatcher", "onBackPressedDispatcher Callback registered")
