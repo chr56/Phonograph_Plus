@@ -21,14 +21,19 @@ import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
 import androidx.annotation.StringRes
 import androidx.core.content.FileProvider
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.content.Context
 import android.content.Intent
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
 import java.io.File
 
@@ -115,6 +120,12 @@ suspend fun coroutineToast(context: Context, text: String, longToast: Boolean = 
 
 suspend fun coroutineToast(context: Context, @StringRes res: Int) =
     coroutineToast(context, context.getString(res))
+
+/**
+ * try to get [Context]'s LifecycleScope or create a new one with [coroutineContext]
+ */
+fun Context.lifecycleScopeOrNewOne(coroutineContext: CoroutineContext = SupervisorJob()) =
+    (this as? LifecycleOwner)?.lifecycleScope ?: CoroutineScope(coroutineContext)
 
 //
 // Reflection

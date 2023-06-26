@@ -6,32 +6,31 @@ package player.phonograph.actions.menu
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import player.phonograph.R
 import player.phonograph.actions.actionAddToPlaylist
 import player.phonograph.actions.actionDelete
-import player.phonograph.actions.fragmentActivity
 import player.phonograph.actions.actionGotoDetail
 import player.phonograph.actions.actionShare
+import player.phonograph.actions.fragmentActivity
+import player.phonograph.mechanism.PathFilter
+import player.phonograph.mechanism.setting.FileConfig
+import player.phonograph.mediastore.SongLoader
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.linkedSong
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.compose.tag.TagEditorActivity
-import player.phonograph.mechanism.PathFilter
-import player.phonograph.mechanism.setting.FileConfig
-import player.phonograph.mediastore.SongLoader
+import player.phonograph.util.lifecycleScopeOrNewOne
 import android.app.Activity
 import android.content.Context
 import android.media.MediaScannerConnection
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 fun fileEntityPopupMenu(
@@ -130,8 +129,8 @@ private inline fun action(
         }
     )
 
-private fun scan(context: Context, dir: FileEntity.Folder) =
-    CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
+private fun scan(context: Context, dir: FileEntity.Folder) {
+    context.lifecycleScopeOrNewOne().launch(Dispatchers.IO) {
         val files = File(dir.location.absolutePath).listFiles() ?: return@launch
         val paths: Array<String> = Array(files.size) { files[it].path }
 
@@ -146,6 +145,7 @@ private fun scan(context: Context, dir: FileEntity.Folder) =
             )
         }
     }
+}
 
 private fun setStartDirectory(context: Context, dir: FileEntity.Folder): Boolean {
     val path = dir.location.absolutePath

@@ -15,15 +15,14 @@ import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
@@ -56,12 +55,10 @@ class GenreDetailActivity :
         return wrapSlidingMusicPanel(binding.root)
     }
 
-    private val loaderCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-
     private var isRecyclerViewPrepared: Boolean = false
 
     private fun loadDataSet(context: Context) {
-        loaderCoroutineScope.launch {
+        lifecycleScope.launch {
             val list: List<Song> = GenreLoader.genreSongs(context, genre.id)
 
             while (!isRecyclerViewPrepared) yield() // wait until ready
@@ -124,7 +121,6 @@ class GenreDetailActivity :
     override fun onDestroy() {
         binding.recyclerView.adapter = null
         super.onDestroy()
-        loaderCoroutineScope.cancel()
         _viewBinding = null
     }
 

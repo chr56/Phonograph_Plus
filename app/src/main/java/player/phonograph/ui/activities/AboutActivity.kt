@@ -7,18 +7,19 @@ import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.databinding.ActivityAboutBinding
-import player.phonograph.ui.dialogs.ChangelogDialog
-import player.phonograph.ui.dialogs.DebugDialog
+import player.phonograph.mechanism.Update
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Setting
+import player.phonograph.ui.dialogs.ChangelogDialog
+import player.phonograph.ui.dialogs.DebugDialog
 import player.phonograph.ui.dialogs.ReportIssueDialog
 import player.phonograph.ui.dialogs.UpgradeDialog
-import player.phonograph.util.theme.nightMode
-import player.phonograph.mechanism.Update
 import player.phonograph.util.reportError
+import player.phonograph.util.theme.nightMode
 import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.lifecycleScope
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -30,7 +31,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -172,7 +172,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
                 ChangelogDialog.create().show(supportFragmentManager, "CHANGELOG_DIALOG")
             }
             checkUpgrade -> {
-                CoroutineScope(Dispatchers.Unconfined).launch {
+                lifecycleScope.launch(Dispatchers.Unconfined) {
                     Update.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
                         if (upgradable) {
                             UpgradeDialog.create(versionCatalog).show(supportFragmentManager, "UPGRADE_DIALOG")

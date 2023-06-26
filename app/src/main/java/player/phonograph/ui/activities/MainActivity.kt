@@ -411,7 +411,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
             warning(TAG, "Upgrade check was blocked, because AppIntro not shown (auto check requires user opt-in)!")
             return
         }
-        CoroutineScope(SupervisorJob()).launch {
+        lifecycleScope.launch(SupervisorJob()) {
             Update.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
                 if (upgradable) {
                     val channel = when (BuildConfig.FLAVOR) {
@@ -433,7 +433,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 ChangelogDialog.create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
             }
 
-            CoroutineScope(Dispatchers.Default).launch {
+            lifecycleScope.launch(Dispatchers.IO) {
                 migrate(App.instance, previousVersion, currentVersion)
             }
         } catch (e: PackageManager.NameNotFoundException) {
