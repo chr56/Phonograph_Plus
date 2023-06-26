@@ -49,12 +49,15 @@ object PlaylistsManager {
         context: Context,
         name: String,
         songs: List<Song>,
-        path: String? = null,
-    ) = withContext(Dispatchers.Default) {
+    ) {
         if (shouldUseSAF && context is ICreateFileStorageAccess) {
-            createPlaylistViaSAF(context, playlistName = name, songs = songs)
+            CoroutineScope(Dispatchers.IO).launch { // independent scope to avoid scope is canceled
+                createPlaylistViaSAF(context, playlistName = name, songs = songs)
+            }
         } else {
-            createPlaylistLegacy(context, playlistName = name, songs = songs) // legacy ways
+            coroutineScope {
+                createPlaylistLegacy(context, playlistName = name, songs = songs) // legacy ways}
+            }
         }
     }
 
