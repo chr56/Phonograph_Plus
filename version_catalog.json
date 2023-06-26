@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "0.7.0-rc1",
+      "versionCode": 575,
+      "date": 1687779000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.7.0-rc1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>**注意**   仅与上个预览版版本对比</li><li>修复 有时无法正确对播放列表追加曲目</li><li>修复 多选后无法返回上一级</li></ol>",
+        "en": "<ol><li>**NOTE**   only show differences with the previous preview release </li><li>Fix: sometimes can not correctly append playlists</li><li>Fix: can not navigate back if multi-selection-bar once showed up</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "0.7.0-beta2",
       "versionCode": 570,
       "date": 1687704500,
