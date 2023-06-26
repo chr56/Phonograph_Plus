@@ -4,11 +4,13 @@
 package player.phonograph.adapter.base
 
 import lib.phonograph.cab.CabStatus
+import player.phonograph.util.debug
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import android.content.Context
+import android.util.Log
 
 /**
  * @author chr_56 & Karim Abou Zeid (kabouzeid)
@@ -38,8 +40,18 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
             onBackPressedDispatcherRegistered = true
             val componentActivity = context as? ComponentActivity
             componentActivity?.onBackPressedDispatcher?.addCallback {
-                val dismissed = cabController?.dismiss() ?: true
-                isEnabled = !dismissed
+                val controller = cabController
+                isEnabled = if (controller == null) {
+                    Log.v("MultiSelectAdapterCallback", "no controller!")
+                    false
+                } else {
+                    controller.dismiss()
+                    Log.v("MultiSelectAdapterCallback", "controller: ${controller.cab.status}")
+                    controller.isActive()
+                }
+            }
+            debug {
+                Log.v("onBackPressedDispatcher", "onBackPressedDispatcher Callback registered")
             }
         }
     }
