@@ -6,6 +6,15 @@
 <p>Translate Phonograph Plus into your language -> <a href="https://crowdin.com/project/phonograph-plus">crowdin</a></p>
 
 <!-- <<<CURRENT_PREVIEW>>> -->
+<h4><b>0.7.0-rc1</b> 2023.06.26</h4>
+<div>
+    <ol>
+        <b>NOTE</b> only show differences with the previous preview release
+        <li>Fix: sometimes can not correctly append playlists</li>
+        <li>Fix: can not navigate back if multi-selection-bar once showed up</li>
+    </ol>
+</div>
+<!-- <<</CURRENT_PREVIEW>>> -->
 <h4><b>0.7.0-beta2</b> 2023.06.25</h4>
 <div>
     <b>NOTE</b> only show differences with the previous preview release
@@ -16,7 +25,6 @@
         <li>Fix: can not delete playlist via SAF</li>
     </ol>
 </div>
-<!-- <<</CURRENT_PREVIEW>>> -->
 <h4><b>0.7.0-beta1</b> 2023.06.23</h4>
 <div>
     <ol>
@@ -35,7 +43,9 @@
         <li>Development: refactor Setting UI using Jetpack Compose</li>
         <li>Improve: redesign Setting UI and make minor changes</li>
         <li>Improve: avoid random crash caused by the file browser</li>
-        <li>Improve: Title and Buttons of some dialog (like Upgrade Dialog) are not fixed but scrollable with dialog content</li>
+        <li>Improve: Title and Buttons of some dialog (like Upgrade Dialog) are not fixed but scrollable with dialog
+            content
+        </li>
         <li>Improve: check upgrade</li>
         <li>Improve: m3u playlist management</li>
         <li>Modify: in Intro, do not allow to continue if no permission granted</li>
@@ -59,8 +69,10 @@
         <li>Improve: navigate to setting if no storage permission granted</li>
         <li>Improve: mute some unnecessary exception notifications</li>
         <li>Improve: support zipped old backup files format</li>
-        <li>Translation: update German (by conk), Hebrew (by Yaron Shahrabani (YaronSh)), Russian (by Макар Разин (Atrafon))</li>
-        <li>Development: enable `fullmode` of R8 obfuscator  </li>
+        <li>Translation: update German (by conk), Hebrew (by Yaron Shahrabani (YaronSh)), Russian (by Макар Разин
+            (Atrafon))
+        </li>
+        <li>Development: enable `fullmode` of R8 obfuscator</li>
         <li>Development: better plurals string</li>
     </ol>
 </div>
@@ -68,11 +80,17 @@
 <h4><b>0.6.2.1</b> 2023.04.23</h4>
 <div>
     <ol>
-        <li>Note: Feature "Show Album Cover on Lockscreen" would be removed in next versions! (Applications should not be responsible for this!)</li>
+        <li>Note: Feature "Show Album Cover on Lockscreen" would be removed in next versions! (Applications should not
+            be responsible for this!)
+        </li>
         <li>Fix: Progress bar on Notification would not be refreshed after rewinding to beginning</li>
-        <li>Modify: On Android R (11) and above, always ignore preference "Show Album Cover on Lockscreen", to fix incorrect aspect ratio of Notification Image (due to conflict)</li>
+        <li>Modify: On Android R (11) and above, always ignore preference "Show Album Cover on Lockscreen", to fix
+            incorrect aspect ratio of Notification Image (due to conflict)
+        </li>
         <li>Improve: Image quality on Media Notification [for Android T]</li>
-        <li>Development: On Android R (11) and above, set Notification Image via setting MediaSession Metadata Album Artwork</li>
+        <li>Development: On Android R (11) and above, set Notification Image via setting MediaSession Metadata Album
+            Artwork
+        </li>
         <li>Development: refactor Media Notification Image loader mechanises</li>
     </ol>
 </div>
@@ -81,8 +99,10 @@
 <h4><b>0.6.2</b> 2023.04.22</h4>
 <div>
     <ol>
-        <li>New: [Android S and above] support to read system Material You dynamic colors </li>
-        <li>New: [Android S and above] support to follow system Material You dynamic colors ("Monet") [experimental, only color support, <i>NO FULL</i> Material You support]</li>
+        <li>New: [Android S and above] support to read system Material You dynamic colors</li>
+        <li>New: [Android S and above] support to follow system Material You dynamic colors ("Monet") [experimental,
+            only color support, <i>NO FULL</i> Material You support]
+        </li>
         <li>New: Better Backup mechanises</li>
         <li>Improve: All backup files are zipped in one file</li>
         <li>Improve: Allow to choose what content to import or export</li>
@@ -91,14 +111,17 @@
         <li>Fix: color and style of some dialogs</li>
         <li>Fix: some text not capitalized (by Porkepix)</li>
         <li>Translation: update German (by cvzi &amp; conk), Italian (by Jacopo Norcini Pala (iagomago))</li>
-        <li>Development: upgrade AGP to 7.4.2, remove unused strings, cleanup codes</li>    </ol>
+        <li>Development: upgrade AGP to 7.4.2, remove unused strings, cleanup codes</li>
+    </ol>
 </div>
 
 <h4><b>0.6.1</b> 2023.03.17</h4>
 <div>
     <ol>
         <li>New: a brand-new App Introduction</li>
-        <li>Modify: request permissions in App Intro, ask auto-upgrade-check in App Intro, recover setting backup in App Intro</li>
+        <li>Modify: request permissions in App Intro, ask auto-upgrade-check in App Intro, recover setting backup in App
+            Intro
+        </li>
         <li>Translation: updated Italian (by gdonisi)</li>
     </ol>
 </div>
@@ -108,7 +131,7 @@
     <ol>
         <li>Improve: support mp4(m4a) format</li>
         <li>Fix: an incorrect name of backup file</li>
-        <li>Development: small miscellaneous changes for F-Droid </li>
+        <li>Development: small miscellaneous changes for F-Droid</li>
     </ol>
 </div>
 
@@ -117,11 +140,13 @@
     <ol>
         <li>Add: Flatten Folder Page</li>
         <li>Add: brand-new music tag editors (including Single Edit and Batch Edit)</li>
-        <li>Add: support backup of Path Filter, Playing Queue, Favorites Songs which can be migrated crossing different devices (as long as song locations unchanged)</li>
+        <li>Add: support backup of Path Filter, Playing Queue, Favorites Songs which can be migrated crossing different
+            devices (as long as song locations unchanged)
+        </li>
         <li>Remove: legacy music tag editors</li>
         <li>Improve: allow multi tag editing for the multi-selected and artist</li>
         <li>Improve: order of Tab pages</li>
-        <li>Improve: playlists save and delete </li>
+        <li>Improve: playlists save and delete</li>
         <li>Modify: the exported setting json format (WARNING: Incompatible with previous versions)</li>
         <li>Modify: force reboot app after clearing all settings</li>
         <li>Modify: forbid upgrading from old versions (versions before v0.2.4-RC1)</li>
