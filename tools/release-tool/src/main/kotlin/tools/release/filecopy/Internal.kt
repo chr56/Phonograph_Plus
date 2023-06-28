@@ -37,7 +37,7 @@ internal fun copyApk(
     overwrite: Boolean = true
 ) {
     val newName = apkName(apkInfo.appName, apkInfo.version, apkInfo.gitHash, apkInfo.releaseMode)
-    val destinationDir = File(productDir, apkInfo.variantName)
+    val destinationDir = File(productDir, apkInfo.variantName).also { it.mkdir() }
     copyApkImpl(apkArtifact, destinationDir, newName, overwrite)
 }
 

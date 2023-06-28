@@ -95,6 +95,6 @@ open class PublishArtifactsTask @Inject constructor(
     }
 
     companion object {
-        internal fun Project.productDir() = File(rootDir, "products")
+        internal fun Project.productDir() = File(rootDir, "products").also { it.mkdirs() }
     }
 }
