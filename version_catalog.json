@@ -1,6 +1,22 @@
 {
   "versions": [
     {
+      "channel": "stable",
+      "versionName": "0.7.0",
+      "versionCode": 600,
+      "date": 1687830000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.7.0"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<b>注意</b> 建议备份设置后再升级\n\n\n<ol><li>新增 手动加载歌词</li><li>新增 歌曲排序 `专辑艺术家` 和 `作曲家`</li><li>新增 支持播放列表置顶</li><li>新增 支持播放列表的排序（名称、路径、时间）</li><li>新增 搜索结果支持多选</li><li>新增 支持 Android T (13) 的系统级分应用语言设置</li><li>新增 在抽屉主菜单中增加更多选项</li><li>修复 新建的播放列表不会立即出现在列表中</li><li>修复 播放器色调着色不正确或未更新</li><li>修复 语言卡在英式拼写里面或外面 (针对英语用户)</li><li>修复 无法记住扁平文件夹的排序方式</li><li>修复 删除播放列表对话框的信息不正确</li><li>翻译 更新日语 (by aorinngo)</li><li>开发 设置界面使用 Jetpack Compose 重构</li><li>改进 设置界面并进行微调</li><li>改进 防止由于文件浏览器导致的崩溃</li><li>改进 部分对话框（如升级对话框）的标题和按钮无法固定，而随内容一起滚动</li><li>改进 更新检查</li><li>改进 m3u播放列表管理</li><li>修改 在首次开屏介绍页内，若不授予权限，则无法继续。</li><li>开发 使用 Jetpack Datastore Preference</li><li>开发 重构播放器界面，歌词加载等</li><li>开发 改进状态分发</li><li>开发 升级 JDK 到17</li><li>开发 更新 Gradle 至 8.1</li><li>开发 更新 AGP 至 8.0.2</li><li>开发 清理代码</li></ol>",
+        "en": "<b>NOTE</b> Please backup your Settings and upgrade then\n\n\n<ol><li>New: manually load lyrics</li><li>New: sort order `Album Artist` and `Composer` for songs</li><li>New: support pinning playlists</li><li>New: support sorting order of playlists (name, path, date)</li><li>New: support multi-selection in Search Result</li><li>New: support per-app language preference for Android T (13) and above</li><li>New: add more options in Main Drawer Menu</li><li>Fix: new created playlists would not be appeared in list util next entrance</li><li>Fix: palette color of player is incorrect or lacking of update</li><li>Fix: app language is trapped in or out the spelling of British English (for English users only) </li><li>Fix: sort order of flat-folders could not be remembered</li><li>Fix: the incorrect message on ClearPlaylistDialog</li><li>Translation: update Japanese (by aorinngo)</li><li>Development: refactor Setting UI using Jetpack Compose</li><li>Improve: redesign Setting UI and make minor changes</li><li>Improve: avoid random crash caused by the file browser</li><li>Improve: Title and Buttons of some dialog (like Upgrade Dialog) are not fixed but scrollable with dialog content</li><li>Improve: check upgrade</li><li>Improve: m3u playlist management</li><li>Modify: in Intro, do not allow to continue if no permission granted</li><li>Development: use Jetpack Datastore Preference</li><li>Development: refactor player ui, lyrics loading and more</li><li>Development: improve dispatching the changes of states</li><li>Development: upgrade JDK to 17</li><li>Development: upgrade Gradle to 8.1</li><li>Development: AGP to 8.0.2</li><li>Development: clean up codes</li></ol>"
+      }
+    },
+    {
       "channel": "preview",
       "versionName": "0.7.0-rc1",
       "versionCode": 575,
@@ -46,54 +62,6 @@
       "releaseNote": {
         "zh-cn": "<b>注意 仅与上个预览版版本对比</b><ol><li>修改 在介绍页内，若不授予权限，则不允许继续。</li><li>改进 更新检查</li><li>改进 m3u播放列表管理</li><li>修复 进入\"最近播放\"或\"最常听歌曲\"时可能会崩溃</li></ol>",
         "en": "<b>NOTE only show differences with the previous preview release<b><ol><li>Modify: in Intro, do not allow to continue if no permission granted</li><li>Improve: check upgrade</li><li>Improve: m3u playlist management</li><li>Fix: potential crash when entering \"Recently Played\" or \"My Top Track\"</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "0.7.0-dev4",
-      "versionCode": 555,
-      "date": 1686980000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.7.0-dev4"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<b>注意 仅与上个预览版版本对比</b><ol><li>新增 歌曲排序 `专辑艺术家` 和 `作曲家`</li><li>新增 播放列表排序 `添加日期` 和 `修改日期`</li><li>修复 置顶或取消置顶播放列表时卡死</li><li>修复 进入设置时出现无效错误通知</li><li>开发 清理代码(MediaStore相关)</li></ol>",
-        "en": "<b>NOTE only show differences with the previous preview release<b><ol><li>New: sort order `Album Artist` and `Composer` for songs</li><li>New: sort order `Date added` and `Date Modified` for playlist</li><li>Fix: freeze when pin or unpin a playlist</li><li>Fix: useless error notifications when entering Settings</li><li>Development: clean up codes (MediaStore related)</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "0.7.0-dev3",
-      "versionCode": 545,
-      "date": 1686556000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.7.0-dev3"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><b>注意 仅与上个预览版版本对比</b><li>改进 部分对话框（如升级对话框）的标题和按钮无法固定，而随内容一起滚动</li><li>修复 无法记住扁平文件夹的排序方式</li><li>修复 新建的播放列表不会立即出现在列表中</li><li>新增 支持播放列表的排序（基本排序支持）</li><li>新增 播放列表详情类支持简单歌曲搜索</li><li>新增 搜索结果支持多选</li><li>新增 支持播放列表置顶</li></ol>",
-        "en": "<ol><b>NOTE: only show differences with previous preview release </b><li>Improve: Title and Buttons of some dialog (like Upgrade Dialog) are not fixed but scrollable with dialog content</li><li>Fix: sort order of flat-folders could not be remembered </li><li>Fix: new created playlist would not be appeared in list util next entrance</li><li>New: support sorting order of playlist (but basic sorting)</li><li>New: support basic search song title in Playlist Detail</li><li>New: support multi-selection in Search Result</li><li>New: support pinning playlists </li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "0.7.0-dev2",
-      "versionCode": 535,
-      "date": 1685806700,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.7.0-dev2"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>新增 手动加载歌词</li><li>新增 在抽屉主菜单中增加更多选项</li><li>新增 支持 Android T (13) 的系统级分应用语言设置</li><li>修复 播放器色调着色不正确或未更新</li><li>修复 语言卡在英式拼写里面或外面 (针对英语用户)</li><li>翻译 更新日语 (by aorinngo)</li><li>开发 设置界面使用 Jetpack Compose 重构</li><li>改进 设置界面并进行微调</li><li>改进 防止由于文件浏览器导致的崩溃</li><li>开发 使用 Jetpack Datastore Preference</li><li>开发 重构播放器界面，歌词加载等</li><li>开发 改进状态分发</li><li>开发 升级JDK到17</li><li>开发 更新 Gradle 至 8.1, 更新 AGP 至 8.0.2, 启用 `nonTransitiveRClass`</li></ol>",
-        "en": "<ol><li>New: manually load lyrics</li><li>New: add more options in Main Drawer Menu</li><li>New: support per-app language preference for Android T (13) and above</li><li>Fix: palette color of player is incorrect or lacking of update</li><li>Fix: app language is trapped in or out the spelling of British English (for English users only) </li><li>Translation: update Japanese (by aorinngo)</li><li>Development: refactor Setting UI using Jetpack Compose</li><li>Improve: redesign Setting UI and make minor changes</li><li>Improve: avoid random crash caused by the file browser </li><li>Development: use Jetpack Datastore Preference</li><li>Development: refactor player ui, lyrics loading and more</li><li>Development: improve dispatching the changes of states</li><li>Development: upgrade JDK to 17</li><li>Development: upgrade Gradle to 8.1, AGP to 8.0.2, enable `nonTransitiveRClass`</li></ol>"
       }
     },
     {
