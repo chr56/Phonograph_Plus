@@ -1,12 +1,12 @@
 /*
  *  Copyright (c) 2022~2023 chr_56
  */
-package player.phonograph.repo.provider
+package player.phonograph.repo.database
 
-import player.phonograph.repo.provider.DatabaseConstants.HISTORY_DB
-import player.phonograph.repo.provider.HistoryStore.RecentStoreColumns.Companion.ID
-import player.phonograph.repo.provider.HistoryStore.RecentStoreColumns.Companion.NAME
-import player.phonograph.repo.provider.HistoryStore.RecentStoreColumns.Companion.TIME_PLAYED
+import player.phonograph.repo.database.DatabaseConstants.HISTORY_DB
+import player.phonograph.repo.database.HistoryStore.RecentStoreColumns.Companion.ID
+import player.phonograph.repo.database.HistoryStore.RecentStoreColumns.Companion.NAME
+import player.phonograph.repo.database.HistoryStore.RecentStoreColumns.Companion.TIME_PLAYED
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor

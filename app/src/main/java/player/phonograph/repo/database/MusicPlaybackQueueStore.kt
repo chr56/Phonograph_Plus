@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2022~2023 chr_56
  */
-package player.phonograph.repo.provider
+package player.phonograph.repo.database
 
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.internal.intoSongs

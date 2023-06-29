@@ -1,7 +1,7 @@
 package player.phonograph.service.util
 
 import player.phonograph.model.Song
-import player.phonograph.repo.provider.SongPlayCountStore
+import player.phonograph.repo.database.SongPlayCountStore
 import android.content.Context
 import java.util.Locale
 

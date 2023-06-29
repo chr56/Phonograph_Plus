@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.repo.provider
+package player.phonograph.repo.database
 
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.settings.Setting

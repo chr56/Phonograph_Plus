@@ -5,7 +5,7 @@ import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.repo.provider.PathFilterStore
+import player.phonograph.repo.database.PathFilterStore
 import player.phonograph.settings.Setting
 import player.phonograph.ui.components.viewcreater.ButtonPanel
 import player.phonograph.ui.components.viewcreater.ContentPanel

@@ -2,16 +2,16 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.repo.provider
+package player.phonograph.repo.database
 
 import player.phonograph.R
 import player.phonograph.notification.BackgroundNotification
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.repo.provider.SongPlayCountStore.SongPlayCountColumns.Companion.ID
-import player.phonograph.repo.provider.SongPlayCountStore.SongPlayCountColumns.Companion.LAST_UPDATED_WEEK_INDEX
-import player.phonograph.repo.provider.SongPlayCountStore.SongPlayCountColumns.Companion.NAME
-import player.phonograph.repo.provider.SongPlayCountStore.SongPlayCountColumns.Companion.PLAY_COUNT_SCORE
-import player.phonograph.repo.provider.SongPlayCountStore.SongPlayCountColumns.Companion.WEEK
+import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.ID
+import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.LAST_UPDATED_WEEK_INDEX
+import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.NAME
+import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.PLAY_COUNT_SCORE
+import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.WEEK
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor

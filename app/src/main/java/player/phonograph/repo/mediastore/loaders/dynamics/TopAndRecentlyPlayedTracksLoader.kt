@@ -4,10 +4,10 @@
 package player.phonograph.repo.mediastore.loaders.dynamics
 
 import player.phonograph.model.Song
+import player.phonograph.repo.database.HistoryStore
+import player.phonograph.repo.database.SongPlayCountStore
 import player.phonograph.repo.mediastore.internal.intoSongs
 import player.phonograph.repo.mediastore.internal.querySongs
-import player.phonograph.repo.provider.HistoryStore
-import player.phonograph.repo.provider.SongPlayCountStore
 import android.content.Context
 import android.database.Cursor
 import android.provider.BaseColumns
