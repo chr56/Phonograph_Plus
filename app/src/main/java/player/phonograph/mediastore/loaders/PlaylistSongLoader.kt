@@ -5,7 +5,7 @@
 package player.phonograph.mediastore.loaders
 
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
-import player.phonograph.mediastore.BASE_AUDIO_SELECTION
+import player.phonograph.mediastore.internal.BASE_AUDIO_SELECTION
 import player.phonograph.model.PlaylistSong
 import android.content.Context
 import android.database.Cursor

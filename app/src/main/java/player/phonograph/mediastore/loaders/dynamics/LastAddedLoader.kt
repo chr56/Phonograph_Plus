@@ -4,8 +4,8 @@
 
 package player.phonograph.mediastore.loaders.dynamics
 
-import player.phonograph.mediastore.intoSongs
-import player.phonograph.mediastore.querySongs
+import player.phonograph.mediastore.internal.intoSongs
+import player.phonograph.mediastore.internal.querySongs
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting
 import android.content.Context

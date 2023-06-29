@@ -15,7 +15,7 @@
 */
 package player.phonograph.provider
 
-import player.phonograph.mediastore.intoSongs
+import player.phonograph.mediastore.internal.intoSongs
 import player.phonograph.model.Song
 import player.phonograph.util.reportError
 import android.content.ContentValues

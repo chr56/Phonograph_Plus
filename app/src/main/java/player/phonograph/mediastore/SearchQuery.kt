@@ -4,6 +4,8 @@
 
 package player.phonograph.mediastore
 
+import player.phonograph.mediastore.internal.intoSongs
+import player.phonograph.mediastore.internal.querySongs
 import player.phonograph.model.Song
 import android.app.SearchManager
 import android.content.Context

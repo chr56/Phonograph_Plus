@@ -5,9 +5,9 @@
 package player.phonograph.mediastore.loaders
 
 import player.phonograph.App
-import player.phonograph.mediastore.BASE_AUDIO_SELECTION
-import player.phonograph.mediastore.BASE_SONG_PROJECTION
-import player.phonograph.mediastore.intoSongs
+import player.phonograph.mediastore.internal.BASE_AUDIO_SELECTION
+import player.phonograph.mediastore.internal.BASE_SONG_PROJECTION
+import player.phonograph.mediastore.internal.intoSongs
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortRef

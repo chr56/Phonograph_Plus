@@ -4,8 +4,8 @@
 
 package player.phonograph.mediastore.loaders
 
-import player.phonograph.mediastore.querySongFiles
-import player.phonograph.mediastore.readFileEntity
+import player.phonograph.mediastore.internal.querySongFiles
+import player.phonograph.mediastore.internal.readFileEntity
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.model.file.put

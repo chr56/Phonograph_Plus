@@ -5,9 +5,9 @@
 package player.phonograph.mediastore.loaders
 
 import legacy.phonograph.MediaStoreCompat
-import player.phonograph.mediastore.SQLWhereClause
-import player.phonograph.mediastore.withBasePlaylistFilter
-import player.phonograph.mediastore.withPathFilter
+import player.phonograph.mediastore.internal.SQLWhereClause
+import player.phonograph.mediastore.internal.withBasePlaylistFilter
+import player.phonograph.mediastore.internal.withPathFilter
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
