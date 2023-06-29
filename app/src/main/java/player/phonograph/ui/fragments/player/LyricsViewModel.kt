@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.fragments.player
 
-import player.phonograph.mediastore.LyricsLoader
+import player.phonograph.mechanism.lyrics.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LyricsInfo
