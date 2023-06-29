@@ -9,7 +9,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
 import player.phonograph.R
-import player.phonograph.mediastore.LastAddedLoader
+import player.phonograph.mediastore.loaders.dynamics.LastAddedLoader
 import player.phonograph.model.Song
 
 class LastAddedPlaylist : SmartPlaylist {
@@ -24,7 +24,7 @@ class LastAddedPlaylist : SmartPlaylist {
     override var iconRes: Int = R.drawable.ic_library_add_white_24dp
 
     override fun getSongs(context: Context): List<Song> =
-        LastAddedLoader.getLastAddedSongs(context)
+        LastAddedLoader.lastAddedSongs(context)
 
     override fun containsSong(context: Context, songId: Long): Boolean = false // todo
 

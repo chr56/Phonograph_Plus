@@ -9,7 +9,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
 import player.phonograph.R
-import player.phonograph.mediastore.TopAndRecentlyPlayedTracksLoader
+import player.phonograph.mediastore.loaders.dynamics.TopAndRecentlyPlayedTracksLoader
 import player.phonograph.model.Song
 import player.phonograph.provider.SongPlayCountStore
 
@@ -24,7 +24,7 @@ class MyTopTracksPlaylist : SmartPlaylist, ResettablePlaylist {
 
     override var iconRes: Int = R.drawable.ic_trending_up_white_24dp
 
-    override fun getSongs(context: Context): List<Song> = TopAndRecentlyPlayedTracksLoader.getTopTracks(context)
+    override fun getSongs(context: Context): List<Song> = TopAndRecentlyPlayedTracksLoader.topTracks(context)
 
     override fun containsSong(context: Context, songId: Long): Boolean = false // todo
 
