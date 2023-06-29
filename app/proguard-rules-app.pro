@@ -30,7 +30,7 @@
 -keepclasseswithmembernames class player.phonograph.ui.** extends androidx.lifecycle.ViewModel {public <methods>;}
 
 
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mediastore.QueryUtilKt {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.repo.mediastore.internal.QueryKt {public <methods>;}
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.MusicService {public <methods>;public <fields>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.notification.** {public <methods>;public <fields>;}
