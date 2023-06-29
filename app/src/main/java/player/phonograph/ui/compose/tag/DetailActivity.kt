@@ -4,16 +4,16 @@
 
 package player.phonograph.ui.compose.tag
 
+import lib.phonograph.misc.CreateFileStorageAccessTool
+import lib.phonograph.misc.ICreateFileStorageAccess
 import mt.pref.ThemeColor
 import mt.util.color.darkenColor
 import player.phonograph.R
-import player.phonograph.mediastore.SongLoader
-import lib.phonograph.misc.CreateFileStorageAccessTool
-import lib.phonograph.misc.ICreateFileStorageAccess
+import player.phonograph.mechanism.SongDetail
+import player.phonograph.mediastore.loaders.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
-import player.phonograph.mechanism.SongDetail
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color

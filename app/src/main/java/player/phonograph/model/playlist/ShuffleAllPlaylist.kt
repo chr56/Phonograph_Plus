@@ -5,7 +5,7 @@
 package player.phonograph.model.playlist
 
 import player.phonograph.R
-import player.phonograph.mediastore.SongLoader
+import player.phonograph.mediastore.loaders.SongLoader
 import player.phonograph.model.Song
 import androidx.annotation.Keep
 import android.content.Context

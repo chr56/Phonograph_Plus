@@ -6,7 +6,7 @@ package player.phonograph.ui.activities
 
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.mediastore.AlbumLoader
+import player.phonograph.mediastore.loaders.AlbumLoader
 import player.phonograph.model.Album
 import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification

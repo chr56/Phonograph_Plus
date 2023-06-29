@@ -6,8 +6,8 @@ package player.phonograph.provider
 
 import player.phonograph.App
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.mediastore.PlaylistLoader
-import player.phonograph.mediastore.SongLoader
+import player.phonograph.mediastore.loaders.PlaylistLoader
+import player.phonograph.mediastore.loaders.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist

@@ -14,7 +14,7 @@ import player.phonograph.actions.actionShare
 import player.phonograph.actions.fragmentActivity
 import player.phonograph.mechanism.PathFilter
 import player.phonograph.mechanism.setting.FileConfig
-import player.phonograph.mediastore.SongLoader
+import player.phonograph.mediastore.loaders.SongLoader
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity

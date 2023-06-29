@@ -5,7 +5,7 @@
 package player.phonograph.ui.dialogs
 
 import player.phonograph.R
-import player.phonograph.mediastore.PlaylistLoader
+import player.phonograph.mediastore.loaders.PlaylistLoader
 import player.phonograph.model.Song
 import util.phonograph.playlist.PlaylistsManager
 import androidx.appcompat.app.AlertDialog

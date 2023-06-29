@@ -26,11 +26,11 @@ import player.phonograph.appshortcuts.DynamicShortcutManager.Companion.reportSho
 import player.phonograph.appshortcuts.shortcuttype.LastAddedShortcutType
 import player.phonograph.appshortcuts.shortcuttype.ShuffleAllShortcutType
 import player.phonograph.appshortcuts.shortcuttype.TopTracksShortcutType
-import player.phonograph.mediastore.AlbumLoader
-import player.phonograph.mediastore.ArtistLoader
-import player.phonograph.mediastore.PlaylistSongLoader
-import player.phonograph.mediastore.SongLoader
-import player.phonograph.mediastore.SongLoader.searchByPath
+import player.phonograph.mediastore.loaders.AlbumLoader
+import player.phonograph.mediastore.loaders.ArtistLoader
+import player.phonograph.mediastore.loaders.PlaylistSongLoader
+import player.phonograph.mediastore.loaders.SongLoader
+import player.phonograph.mediastore.loaders.SongLoader.searchByPath
 import player.phonograph.mediastore.processQuery
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song

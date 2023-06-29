@@ -8,7 +8,7 @@ import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.GenreDisplayAdapter
-import player.phonograph.mediastore.GenreLoader
+import player.phonograph.mediastore.loaders.GenreLoader
 import player.phonograph.model.Genre
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef

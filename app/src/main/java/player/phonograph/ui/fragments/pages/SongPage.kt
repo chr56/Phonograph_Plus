@@ -13,7 +13,7 @@ import player.phonograph.R
 import player.phonograph.actions.actionPlay
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.SongDisplayAdapter
-import player.phonograph.mediastore.SongLoader
+import player.phonograph.mediastore.loaders.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef

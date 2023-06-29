@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.fragments.explorer
 
-import player.phonograph.mediastore.FileEntityLoader
+import player.phonograph.mediastore.loaders.FileEntityLoader
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import android.content.Context

@@ -28,7 +28,7 @@ import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.PlaylistSongDisplayAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.mediastore.PlaylistLoader
+import player.phonograph.mediastore.loaders.PlaylistLoader
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
 import player.phonograph.model.getReadableDurationString

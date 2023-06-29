@@ -4,7 +4,7 @@
 
 package player.phonograph.actions
 
-import player.phonograph.mediastore.GenreLoader
+import player.phonograph.mediastore.loaders.GenreLoader
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre

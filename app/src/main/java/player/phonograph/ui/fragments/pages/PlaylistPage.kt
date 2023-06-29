@@ -13,7 +13,7 @@ import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.PlaylistDisplayAdapter
-import player.phonograph.mediastore.PlaylistLoader
+import player.phonograph.mediastore.loaders.PlaylistLoader
 import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.playlist.FavoriteSongsPlaylist
 import player.phonograph.model.playlist.HistoryPlaylist

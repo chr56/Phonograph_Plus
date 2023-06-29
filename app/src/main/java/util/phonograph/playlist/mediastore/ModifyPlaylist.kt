@@ -7,7 +7,7 @@ package util.phonograph.playlist.mediastore
 import legacy.phonograph.MediaStoreCompat
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
 import player.phonograph.R
-import player.phonograph.mediastore.PlaylistLoader
+import player.phonograph.mediastore.loaders.PlaylistLoader
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.Song
 import player.phonograph.util.coroutineToast

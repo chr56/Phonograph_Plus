@@ -4,7 +4,7 @@
 
 package util.phonograph.playlist.m3u
 
-import player.phonograph.mediastore.SongLoader
+import player.phonograph.mediastore.loaders.SongLoader
 import player.phonograph.model.Song
 import android.content.Context
 import java.io.InputStream

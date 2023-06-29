@@ -1,9 +1,12 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.mediastore
+package player.phonograph.mediastore.loaders
 
+import player.phonograph.mediastore.intoSongs
+import player.phonograph.mediastore.querySongs
+import player.phonograph.mediastore.toAlbumList
 import player.phonograph.model.Album
 import player.phonograph.model.Song
 import android.content.Context

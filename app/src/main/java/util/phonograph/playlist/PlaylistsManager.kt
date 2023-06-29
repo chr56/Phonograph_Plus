@@ -11,7 +11,7 @@ import lib.phonograph.misc.IOpenDirStorageAccess
 import lib.phonograph.misc.IOpenFileStorageAccess
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.mediastore.PlaylistLoader
+import player.phonograph.mediastore.loaders.PlaylistLoader
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist

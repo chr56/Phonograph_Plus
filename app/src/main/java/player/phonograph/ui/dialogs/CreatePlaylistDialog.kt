@@ -10,7 +10,7 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
 import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
-import player.phonograph.mediastore.PlaylistLoader
+import player.phonograph.mediastore.loaders.PlaylistLoader
 import player.phonograph.model.Song
 import util.phonograph.playlist.PlaylistsManager
 import androidx.fragment.app.DialogFragment

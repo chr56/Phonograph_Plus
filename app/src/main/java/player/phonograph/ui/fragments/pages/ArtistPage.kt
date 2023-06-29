@@ -9,7 +9,7 @@ import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.adapter.display.ArtistDisplayAdapter
 import player.phonograph.adapter.display.DisplayAdapter
-import player.phonograph.mediastore.ArtistLoader
+import player.phonograph.mediastore.loaders.ArtistLoader
 import player.phonograph.model.Artist
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef

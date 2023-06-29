@@ -2,9 +2,12 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.mediastore
+package player.phonograph.mediastore.loaders
 
 import legacy.phonograph.MediaStoreCompat
+import player.phonograph.mediastore.SQLWhereClause
+import player.phonograph.mediastore.withBasePlaylistFilter
+import player.phonograph.mediastore.withPathFilter
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting

@@ -1,9 +1,11 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.mediastore
+package player.phonograph.mediastore.loaders
 
+import player.phonograph.mediastore.intoSongs
+import player.phonograph.mediastore.querySongs
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
 import android.content.Context
