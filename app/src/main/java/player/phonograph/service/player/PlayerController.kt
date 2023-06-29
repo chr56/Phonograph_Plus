@@ -15,7 +15,7 @@ import java.lang.ref.WeakReference
 import player.phonograph.App
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
-import player.phonograph.misc.LyricsUpdater
+import player.phonograph.mechanism.lyrics.LyricsUpdater
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.notification.ErrorNotification

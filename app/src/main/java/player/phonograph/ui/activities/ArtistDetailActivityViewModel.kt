@@ -13,10 +13,10 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
-import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
+import player.phonograph.repo.mediastore.loaders.ArtistLoader
 import player.phonograph.settings.Setting
 import player.phonograph.util.reportError
 import retrofit2.Call

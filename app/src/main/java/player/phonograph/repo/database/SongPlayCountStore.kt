@@ -1,21 +1,17 @@
 /*
-* Copyright (C) 2014 The CyanogenMod Project
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ *  Copyright (c) 2022~2023 chr_56
+ */
 
-package player.phonograph.provider
+package player.phonograph.repo.database
 
+import player.phonograph.R
+import player.phonograph.notification.BackgroundNotification
+import player.phonograph.notification.ErrorNotification
+import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.ID
+import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.LAST_UPDATED_WEEK_INDEX
+import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.NAME
+import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.PLAY_COUNT_SCORE
+import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.WEEK
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
@@ -23,20 +19,14 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import kotlin.math.abs
 import kotlin.math.min
-import player.phonograph.R
-import player.phonograph.notification.BackgroundNotification
-import player.phonograph.notification.ErrorNotification
-import player.phonograph.provider.SongPlayCountStore.SongPlayCountColumns.Companion.ID
-import player.phonograph.provider.SongPlayCountStore.SongPlayCountColumns.Companion.LAST_UPDATED_WEEK_INDEX
-import player.phonograph.provider.SongPlayCountStore.SongPlayCountColumns.Companion.NAME
-import player.phonograph.provider.SongPlayCountStore.SongPlayCountColumns.Companion.PLAY_COUNT_SCORE
-import player.phonograph.provider.SongPlayCountStore.SongPlayCountColumns.Companion.WEEK
 
 /**
  * This database tracks the number of play counts for an individual song.  This is used to drive
  * the top played tracks as well as the playlist images
  */
-class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseConstants.SONG_PLAY_COUNT_DB, null, VERSION) {
+class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context,
+    DatabaseConstants.SONG_PLAY_COUNT_DB, null, VERSION
+) {
 
     /** number of weeks since epoch time **/
     private val mCurrentWeekNumber: Int get() = (System.currentTimeMillis() / ONE_WEEK_IN_MS).toInt()

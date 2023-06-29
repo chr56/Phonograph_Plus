@@ -1,13 +1,16 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.mediastore
+package player.phonograph.repo.mediastore.loaders
 
 import player.phonograph.App
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortRef
+import player.phonograph.repo.mediastore.internal.BASE_AUDIO_SELECTION
+import player.phonograph.repo.mediastore.internal.BASE_SONG_PROJECTION
+import player.phonograph.repo.mediastore.internal.intoSongs
 import player.phonograph.settings.Setting
 import android.annotation.SuppressLint
 import android.content.Context

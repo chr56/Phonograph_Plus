@@ -5,9 +5,9 @@
 package player.phonograph.ui.activities
 
 import player.phonograph.R
-import player.phonograph.mediastore.AlbumLoader
-import player.phonograph.mediastore.ArtistLoader
-import player.phonograph.mediastore.SongLoader
+import player.phonograph.repo.mediastore.loaders.AlbumLoader
+import player.phonograph.repo.mediastore.loaders.ArtistLoader
+import player.phonograph.repo.mediastore.loaders.SongLoader
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context

@@ -6,10 +6,10 @@ package player.phonograph.ui.activities
 
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.model.Album
 import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
+import player.phonograph.repo.mediastore.loaders.AlbumLoader
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

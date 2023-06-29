@@ -29,12 +29,12 @@ import player.phonograph.mechanism.Update
 import player.phonograph.mechanism.migrate.migrate
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.StyleConfig
-import player.phonograph.mediastore.SongLoader.all
 import player.phonograph.model.infoString
 import player.phonograph.model.pages.Pages
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.UpgradeNotification
+import player.phonograph.repo.mediastore.loaders.SongLoader.all
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.service.queue.ShuffleMode
@@ -69,7 +69,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import kotlin.random.Random
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.distinctUntilChanged

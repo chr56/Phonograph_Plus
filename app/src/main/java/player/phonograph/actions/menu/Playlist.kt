@@ -26,7 +26,7 @@ import player.phonograph.model.playlist.PlaylistType
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.provider.FavoritesStore
+import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.PlaylistModel
 import player.phonograph.ui.compose.tag.BatchTagEditorActivity

@@ -6,13 +6,13 @@ package player.phonograph.mechanism.backup
 
 import okio.BufferedSink
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.mediastore.PlaylistLoader
-import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.provider.FavoritesStore
-import player.phonograph.provider.MusicPlaybackQueueStore
-import player.phonograph.provider.PathFilterStore
+import player.phonograph.repo.database.FavoritesStore
+import player.phonograph.repo.database.MusicPlaybackQueueStore
+import player.phonograph.repo.database.PathFilterStore
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import androidx.annotation.Keep

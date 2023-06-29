@@ -11,10 +11,10 @@ import lib.phonograph.misc.IOpenDirStorageAccess
 import lib.phonograph.misc.IOpenFileStorageAccess
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.mediastore.PlaylistLoader
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_AUTO
 import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY
 import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF

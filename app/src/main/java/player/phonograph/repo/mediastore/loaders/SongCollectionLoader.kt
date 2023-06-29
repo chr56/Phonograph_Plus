@@ -1,11 +1,13 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.mediastore
+package player.phonograph.repo.mediastore.loaders
 
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
+import player.phonograph.repo.mediastore.internal.intoSongs
+import player.phonograph.repo.mediastore.internal.querySongs
 import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.flow.asFlow

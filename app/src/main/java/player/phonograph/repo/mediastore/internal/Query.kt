@@ -1,16 +1,16 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.mediastore
+package player.phonograph.repo.mediastore.internal
 
 import legacy.phonograph.MediaStoreCompat
+import player.phonograph.settings.Setting
 import android.content.Context
 import android.database.Cursor
 import android.provider.BaseColumns
 import android.provider.MediaStore.Audio
 import android.provider.MediaStore.Audio.AudioColumns
-import player.phonograph.settings.Setting
 
 
 /**

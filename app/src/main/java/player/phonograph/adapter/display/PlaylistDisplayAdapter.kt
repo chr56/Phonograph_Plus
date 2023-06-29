@@ -11,7 +11,7 @@ import player.phonograph.mechanism.Favorite
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.sort.SortRef
-import player.phonograph.provider.FavoritesStore
+import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.settings.Setting
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity

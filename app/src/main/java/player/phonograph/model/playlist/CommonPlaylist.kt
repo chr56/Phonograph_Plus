@@ -6,8 +6,8 @@ package player.phonograph.model.playlist
 
 import legacy.phonograph.MediaStoreCompat.Audio
 import player.phonograph.R
-import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.model.Song
+import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
 import player.phonograph.ui.dialogs.ClearPlaylistDialog
 import player.phonograph.util.warning
 import util.phonograph.playlist.PlaylistsManager

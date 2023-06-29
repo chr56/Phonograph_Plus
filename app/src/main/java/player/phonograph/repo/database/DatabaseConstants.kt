@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2023 chr_56
  */
-package player.phonograph.provider
+package player.phonograph.repo.database
 
 object DatabaseConstants {
     // Database names

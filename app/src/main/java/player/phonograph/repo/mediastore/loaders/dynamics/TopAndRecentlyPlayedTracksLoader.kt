@@ -1,10 +1,13 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2023 chr_56
  */
-package player.phonograph.mediastore
+package player.phonograph.repo.mediastore.loaders.dynamics
 
-import player.phonograph.provider.HistoryStore
-import player.phonograph.provider.SongPlayCountStore
+import player.phonograph.model.Song
+import player.phonograph.repo.database.HistoryStore
+import player.phonograph.repo.database.SongPlayCountStore
+import player.phonograph.repo.mediastore.internal.intoSongs
+import player.phonograph.repo.mediastore.internal.querySongs
 import android.content.Context
 import android.database.Cursor
 import android.provider.BaseColumns
@@ -12,10 +15,10 @@ import android.provider.BaseColumns
 object TopAndRecentlyPlayedTracksLoader {
     private const val NUMBER_OF_TOP_TRACKS = 150
 
-    fun getRecentlyPlayedTracks(context: Context) =
+    fun recentlyPlayedTracks(context: Context): List<Song> =
         makeRecentTracksCursorAndClearUpDatabase(context).intoSongs()
 
-    fun getTopTracks(context: Context) =
+    fun topTracks(context: Context): List<Song> =
         makeTopTracksCursorAndClearUpDatabase(context).intoSongs().take(NUMBER_OF_TOP_TRACKS)
 
     private fun makeRecentTracksCursorAndClearUpDatabase(context: Context): Cursor? {
