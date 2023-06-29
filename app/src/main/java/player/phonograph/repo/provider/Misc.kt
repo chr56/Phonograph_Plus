@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.provider
+package player.phonograph.repo.provider
 
 import player.phonograph.util.debug
 import player.phonograph.util.reportError

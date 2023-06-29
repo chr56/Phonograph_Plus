@@ -1,17 +1,17 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.provider
+package player.phonograph.repo.provider
 
 import player.phonograph.App
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.mediastore.loaders.PlaylistLoader
-import player.phonograph.mediastore.loaders.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.provider.DatabaseConstants.FAVORITE_DB
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.repo.mediastore.loaders.SongLoader
+import player.phonograph.repo.provider.DatabaseConstants.FAVORITE_DB
 import player.phonograph.util.text.currentTimestamp
 import player.phonograph.util.warning
 import android.content.ContentValues

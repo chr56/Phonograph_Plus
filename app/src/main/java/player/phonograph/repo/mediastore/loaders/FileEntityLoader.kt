@@ -2,13 +2,13 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.mediastore.loaders
+package player.phonograph.repo.mediastore.loaders
 
-import player.phonograph.mediastore.internal.querySongFiles
-import player.phonograph.mediastore.internal.readFileEntity
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.model.file.put
+import player.phonograph.repo.mediastore.internal.querySongFiles
+import player.phonograph.repo.mediastore.internal.readFileEntity
 import player.phonograph.util.FileUtil
 import android.content.Context
 import android.provider.MediaStore

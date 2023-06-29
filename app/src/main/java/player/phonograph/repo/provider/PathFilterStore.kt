@@ -1,5 +1,12 @@
-package player.phonograph.provider
+/*
+ *  Copyright (c) 2022~2023 chr_56
+ */
 
+package player.phonograph.repo.provider
+
+import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.settings.Setting
+import player.phonograph.util.FileUtil.safeGetCanonicalPath
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -8,9 +15,6 @@ import android.os.Environment.DIRECTORY_ALARMS
 import android.os.Environment.DIRECTORY_NOTIFICATIONS
 import android.os.Environment.DIRECTORY_RINGTONES
 import android.os.Environment.getExternalStoragePublicDirectory
-import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.settings.Setting
-import player.phonograph.util.FileUtil.safeGetCanonicalPath
 import java.io.File
 
 class PathFilterStore(context: Context) :
@@ -18,10 +22,10 @@ class PathFilterStore(context: Context) :
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
-            "CREATE TABLE IF NOT EXISTS $TABLE_BLACKLIST (${PATH} TEXT NOT NULL);"
+            "CREATE TABLE IF NOT EXISTS $TABLE_BLACKLIST ($PATH TEXT NOT NULL);"
         )
         db.execSQL(
-            "CREATE TABLE IF NOT EXISTS $TABLE_WHITELIST (${PATH} TEXT NOT NULL);"
+            "CREATE TABLE IF NOT EXISTS $TABLE_WHITELIST ($PATH TEXT NOT NULL);"
         )
     }
 

@@ -9,7 +9,7 @@ import okio.BufferedSink
 import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.mechanism.SettingDataManager
-import player.phonograph.provider.DatabaseConstants
+import player.phonograph.repo.provider.DatabaseConstants
 import androidx.annotation.Keep
 import android.content.Context
 import android.content.res.Resources

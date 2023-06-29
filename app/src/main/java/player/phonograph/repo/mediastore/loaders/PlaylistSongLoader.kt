@@ -2,11 +2,11 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.mediastore.loaders
+package player.phonograph.repo.mediastore.loaders
 
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
-import player.phonograph.mediastore.internal.BASE_AUDIO_SELECTION
 import player.phonograph.model.PlaylistSong
+import player.phonograph.repo.mediastore.internal.BASE_AUDIO_SELECTION
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore.Audio.AudioColumns

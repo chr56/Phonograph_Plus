@@ -28,7 +28,6 @@ import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.PlaylistSongDisplayAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.mediastore.loaders.PlaylistLoader
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
 import player.phonograph.model.getReadableDurationString
@@ -36,6 +35,7 @@ import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.totalDuration
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor

@@ -4,9 +4,9 @@
 
 package player.phonograph.model.file
 
-import player.phonograph.mediastore.loaders.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortRef
+import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.settings.Setting
 import android.content.Context
 

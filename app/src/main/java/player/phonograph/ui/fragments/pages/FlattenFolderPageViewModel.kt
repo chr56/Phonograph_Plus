@@ -4,10 +4,10 @@
 
 package player.phonograph.ui.fragments.pages
 
-import player.phonograph.mediastore.loaders.SongCollectionLoader
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
 import player.phonograph.model.sort.SortRef
+import player.phonograph.repo.mediastore.loaders.SongCollectionLoader
 import player.phonograph.settings.Setting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

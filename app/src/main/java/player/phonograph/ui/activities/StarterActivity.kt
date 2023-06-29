@@ -26,12 +26,6 @@ import player.phonograph.appshortcuts.DynamicShortcutManager.Companion.reportSho
 import player.phonograph.appshortcuts.shortcuttype.LastAddedShortcutType
 import player.phonograph.appshortcuts.shortcuttype.ShuffleAllShortcutType
 import player.phonograph.appshortcuts.shortcuttype.TopTracksShortcutType
-import player.phonograph.mediastore.loaders.AlbumLoader
-import player.phonograph.mediastore.loaders.ArtistLoader
-import player.phonograph.mediastore.loaders.PlaylistSongLoader
-import player.phonograph.mediastore.loaders.SongLoader
-import player.phonograph.mediastore.loaders.SongLoader.searchByPath
-import player.phonograph.mediastore.processQuery
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.LastAddedPlaylist
@@ -39,6 +33,12 @@ import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.model.playlist.ShuffleAllPlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.notification.ErrorNotification
+import player.phonograph.repo.mediastore.loaders.AlbumLoader
+import player.phonograph.repo.mediastore.loaders.ArtistLoader
+import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
+import player.phonograph.repo.mediastore.loaders.SongLoader
+import player.phonograph.repo.mediastore.loaders.SongLoader.searchByPath
+import player.phonograph.repo.mediastore.processQuery
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.components.viewcreater.buildDialogView

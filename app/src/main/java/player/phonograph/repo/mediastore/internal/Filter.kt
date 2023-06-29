@@ -2,12 +2,12 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.mediastore.internal
+package player.phonograph.repo.mediastore.internal
 
+import player.phonograph.repo.provider.PathFilterStore
+import player.phonograph.settings.Setting
 import android.content.Context
 import android.provider.MediaStore
-import player.phonograph.provider.PathFilterStore
-import player.phonograph.settings.Setting
 
 class SQLWhereClause(val selection: String, val selectionValues: Array<String>)
 

@@ -1,13 +1,13 @@
 /*
  *  Copyright (c) 2022~2023 chr_56
  */
-package player.phonograph.mediastore.loaders.dynamics
+package player.phonograph.repo.mediastore.loaders.dynamics
 
-import player.phonograph.mediastore.internal.intoSongs
-import player.phonograph.mediastore.internal.querySongs
 import player.phonograph.model.Song
-import player.phonograph.provider.HistoryStore
-import player.phonograph.provider.SongPlayCountStore
+import player.phonograph.repo.mediastore.internal.intoSongs
+import player.phonograph.repo.mediastore.internal.querySongs
+import player.phonograph.repo.provider.HistoryStore
+import player.phonograph.repo.provider.SongPlayCountStore
 import android.content.Context
 import android.database.Cursor
 import android.provider.BaseColumns

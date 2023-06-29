@@ -10,8 +10,8 @@ import mt.pref.ThemeColor
 import mt.util.color.darkenColor
 import player.phonograph.R
 import player.phonograph.mechanism.SongDetail
-import player.phonograph.mediastore.loaders.SongLoader
 import player.phonograph.model.Song
+import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
 import androidx.activity.viewModels

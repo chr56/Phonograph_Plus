@@ -1,9 +1,9 @@
 package player.phonograph.service.util
 
-import android.content.Context
-import java.util.*
 import player.phonograph.model.Song
-import player.phonograph.provider.SongPlayCountStore
+import player.phonograph.repo.provider.SongPlayCountStore
+import android.content.Context
+import java.util.Locale
 
 /**
  * @author Abou Zeid (kabouzeid)

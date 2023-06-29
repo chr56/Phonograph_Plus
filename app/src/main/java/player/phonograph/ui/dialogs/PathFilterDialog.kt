@@ -1,6 +1,22 @@
 package player.phonograph.ui.dialogs
 
 import lib.phonograph.dialog.alertDialog
+import mt.pref.ThemeColor
+import mt.util.color.primaryTextColor
+import player.phonograph.R
+import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.repo.provider.PathFilterStore
+import player.phonograph.settings.Setting
+import player.phonograph.ui.components.viewcreater.ButtonPanel
+import player.phonograph.ui.components.viewcreater.ContentPanel
+import player.phonograph.ui.components.viewcreater.TitlePanel
+import player.phonograph.ui.components.viewcreater.buildDialogView
+import player.phonograph.ui.components.viewcreater.buttonPanel
+import player.phonograph.ui.components.viewcreater.contentPanel
+import player.phonograph.ui.components.viewcreater.titlePanel
+import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
@@ -10,16 +26,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.FrameLayout.LayoutParams
 import android.widget.TextView
-import androidx.fragment.app.DialogFragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import mt.pref.ThemeColor
-import mt.util.color.primaryTextColor
-import player.phonograph.R
-import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.provider.PathFilterStore
-import player.phonograph.settings.Setting
-import player.phonograph.ui.components.viewcreater.*
 import java.io.File
 
 /**

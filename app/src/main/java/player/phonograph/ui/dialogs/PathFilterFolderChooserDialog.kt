@@ -1,15 +1,14 @@
 package player.phonograph.ui.dialogs
 
-import android.view.View
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import mt.pref.ThemeColor
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.file.Location
-import player.phonograph.provider.PathFilterStore
+import player.phonograph.repo.provider.PathFilterStore
 import player.phonograph.settings.Setting
+import android.view.View
 import java.io.File
 
 class PathFilterFolderChooserDialog : FileChooserDialog() {

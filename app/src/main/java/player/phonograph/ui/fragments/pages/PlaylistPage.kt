@@ -13,7 +13,6 @@ import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.PlaylistDisplayAdapter
-import player.phonograph.mediastore.loaders.PlaylistLoader
 import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.playlist.FavoriteSongsPlaylist
 import player.phonograph.model.playlist.HistoryPlaylist
@@ -22,7 +21,8 @@ import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.provider.FavoritesStore
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.repo.provider.FavoritesStore
 import player.phonograph.settings.Setting
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.dialogs.CreatePlaylistDialog

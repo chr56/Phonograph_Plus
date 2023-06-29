@@ -2,11 +2,11 @@
  * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.mediastore.loaders.dynamics
+package player.phonograph.repo.mediastore.loaders.dynamics
 
-import player.phonograph.mediastore.internal.intoSongs
-import player.phonograph.mediastore.internal.querySongs
 import player.phonograph.model.Song
+import player.phonograph.repo.mediastore.internal.intoSongs
+import player.phonograph.repo.mediastore.internal.querySongs
 import player.phonograph.settings.Setting
 import android.content.Context
 import android.provider.MediaStore

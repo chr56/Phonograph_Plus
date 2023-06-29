@@ -13,10 +13,10 @@ import player.phonograph.R
 import player.phonograph.actions.actionPlay
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.SongDisplayAdapter
-import player.phonograph.mediastore.loaders.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
+import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig

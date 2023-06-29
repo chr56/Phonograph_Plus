@@ -14,11 +14,11 @@ import player.phonograph.actions.actionShare
 import player.phonograph.actions.fragmentActivity
 import player.phonograph.mechanism.PathFilter
 import player.phonograph.mechanism.setting.FileConfig
-import player.phonograph.mediastore.loaders.SongLoader
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.linkedSong
+import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.compose.tag.TagEditorActivity
 import player.phonograph.util.lifecycleScopeOrNewOne

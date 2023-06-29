@@ -7,7 +7,7 @@ package player.phonograph.model.playlist
 import player.phonograph.R
 import player.phonograph.mechanism.Favorite
 import player.phonograph.model.Song
-import player.phonograph.provider.FavoritesStore
+import player.phonograph.repo.provider.FavoritesStore
 import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel

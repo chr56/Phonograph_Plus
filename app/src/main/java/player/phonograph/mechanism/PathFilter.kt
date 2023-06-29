@@ -9,7 +9,7 @@ import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.Song
-import player.phonograph.provider.PathFilterStore
+import player.phonograph.repo.provider.PathFilterStore
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

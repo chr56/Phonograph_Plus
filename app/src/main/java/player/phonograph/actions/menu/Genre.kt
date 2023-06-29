@@ -11,8 +11,8 @@ import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.actionPlay
 import player.phonograph.actions.actionPlayNext
-import player.phonograph.mediastore.loaders.GenreLoader
 import player.phonograph.model.Genre
+import player.phonograph.repo.mediastore.loaders.GenreLoader
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.util.theme.getTintedDrawable
 import android.content.Context
