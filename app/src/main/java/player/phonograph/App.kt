@@ -99,8 +99,6 @@ class App : Application(), ImageLoaderFactory {
                 .commit()
         }
 
-        applyMonet(this)
-
         // Set up dynamic shortcuts
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             DynamicShortcutManager(this).initDynamicShortcuts()

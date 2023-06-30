@@ -6,6 +6,7 @@ package player.phonograph.ui.activities
 
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.settings.Setting
+import player.phonograph.util.theme.applyMonet
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
@@ -31,6 +32,7 @@ class LauncherActivity : AppCompatActivity() {
         } else {
             if (SDK_INT >= N_MR1) {
                 DynamicShortcutManager(this).updateDynamicShortcuts()
+                applyMonet(this)
             }
             gotoMainActivity()
         }
