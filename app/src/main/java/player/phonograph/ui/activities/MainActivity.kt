@@ -22,6 +22,7 @@ import player.phonograph.R
 import player.phonograph.UPGRADABLE
 import player.phonograph.VERSION_INFO
 import player.phonograph.actions.actionPlay
+import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
@@ -49,6 +50,7 @@ import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.util.debug
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.navigateToStorageSetting
+import player.phonograph.util.theme.applyMonet
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.warning
@@ -59,6 +61,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.whenStarted
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -120,7 +123,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 }
                 versionCheck()
                 lifecycleScope.launch(Dispatchers.Main) {
-                    lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED){
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                         SettingFlowStore(this@MainActivity).homeTabConfigJsonString.distinctUntilChanged().collect {
                             whenStarted {
                                 setupDrawerMenu(drawerBinding.navigationView.menu)
@@ -151,6 +154,9 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 "Metrics",
                 "${System.currentTimeMillis().mod(10000000)} MainActivity.onResume()"
             )
+        }
+        lifecycleScope.launch {
+            latelySetup()
         }
     }
 
@@ -205,6 +211,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                                 when (themeSetting) {
                                     R.style.Theme_Phonograph_Light ->
                                         StyleConfig.setGeneralTheme("dark")
+
                                     R.style.Theme_Phonograph_Dark, R.style.Theme_Phonograph_Black ->
                                         StyleConfig.setGeneralTheme("light")
                                 }
@@ -443,6 +450,21 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
     private fun showUpgradeDialog(versionCatalog: VersionCatalog?) {
         versionCatalog?.let {
             UpgradeDialog.create(versionCatalog).show(supportFragmentManager, "UpgradeDialog")
+        }
+    }
+
+
+    /**
+     * do some non-immediate work here
+     */
+    private fun latelySetup() {
+        // monet
+        applyMonet(this)
+        // Set up dynamic shortcuts
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            val dynamicShortcutManager = DynamicShortcutManager(this)
+            dynamicShortcutManager.initDynamicShortcuts()
+            dynamicShortcutManager.updateDynamicShortcuts()
         }
     }
 

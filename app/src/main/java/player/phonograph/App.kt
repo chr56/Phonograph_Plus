@@ -6,7 +6,6 @@ import lib.phonograph.localization.ContextLocaleDelegate
 import lib.phonograph.misc.Reboot
 import mt.pref.ThemeColor
 import mt.pref.internal.ThemeStore
-import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.coil.createPhonographImageLoader
 import player.phonograph.mechanism.event.setupEventReceiver
 import player.phonograph.notification.ErrorNotification
@@ -19,7 +18,6 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Process
 import android.util.Log
 import kotlin.system.exitProcess
@@ -97,11 +95,6 @@ class App : Application(), ImageLoaderFactory {
                 .primaryColorRes(mt.color.R.color.md_blue_A400)
                 .accentColorRes(mt.color.R.color.md_yellow_900)
                 .commit()
-        }
-
-        // Set up dynamic shortcuts
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            DynamicShortcutManager(this).initDynamicShortcuts()
         }
 
         // state listener
