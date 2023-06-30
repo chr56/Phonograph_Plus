@@ -60,6 +60,7 @@
 
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.settings.Setting {public void set**(...); public *** get**();}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.settings.PrerequisiteSetting {public <methods>;}
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.notification.**Impl {public <methods>;}
 
