@@ -39,6 +39,7 @@ import player.phonograph.repo.mediastore.loaders.SongLoader.all
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.service.queue.ShuffleMode
+import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.Setting
 import player.phonograph.settings.SettingFlowStore
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
@@ -413,7 +414,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
     private fun checkUpdate() {
         if (!Setting.instance.checkUpgradeAtStartup) return
-        if (!Setting.instance.introShown) {
+        if (!PrerequisiteSetting.instance(this).introShown) {
             warning(TAG, "Upgrade check was blocked, because AppIntro not shown (auto check requires user opt-in)!")
             return
         }

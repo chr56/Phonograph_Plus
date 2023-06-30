@@ -229,7 +229,6 @@ class Setting {
 
     // Changelog
     var previousVersion: Int by intPref(PREVIOUS_VERSION, -1)
-    var introShown: Boolean by booleanPref(INTRO_SHOWN, false)
     //endregion
 
     companion object {
@@ -429,8 +428,6 @@ class SettingFlowStore(context: Context) {
     // Changelog
     val previousVersion: Flow<Int>
         get() = from(intPreferencesKey(PREVIOUS_VERSION), -1)
-    val introShown: Flow<Boolean>
-        get() = from(booleanPreferencesKey(INTRO_SHOWN), false)
 
     //endregion
 
@@ -516,7 +513,6 @@ const val USE_LEGACY_DETAIL_DIALOG = "use_legacy_detail_dialog"
 
 // version
 const val PREVIOUS_VERSION = "last_changelog_version"
-const val INTRO_SHOWN = "intro_shown"
 
 // unused & deprecated
 const val FORCE_SQUARE_ALBUM_COVER = "force_square_album_art"

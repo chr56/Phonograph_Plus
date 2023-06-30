@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.activities
 
+import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.Setting
 import androidx.activity.ComponentActivity
 import android.content.Intent
@@ -23,7 +24,7 @@ class LauncherActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (!Setting.instance.introShown) {
+        if (!PrerequisiteSetting.instance(this).introShown) {
             gotoIntro()
         } else {
             gotoMainActivity()
