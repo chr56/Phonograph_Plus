@@ -6,19 +6,18 @@ import lib.phonograph.localization.ContextLocaleDelegate
 import lib.phonograph.misc.Reboot
 import mt.pref.ThemeColor
 import mt.pref.internal.ThemeStore
-import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.coil.createPhonographImageLoader
 import player.phonograph.mechanism.event.setupEventReceiver
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.CrashActivity
+import player.phonograph.util.debug
 import player.phonograph.util.theme.applyMonet
 import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Process
 import android.util.Log
 import kotlin.system.exitProcess
@@ -65,11 +64,12 @@ class App : Application(), ImageLoaderFactory {
 
     override fun onCreate() {
         if (Reboot.isRebootingProcess(this)) return
-
-        if (BuildConfig.DEBUG) Log.v(
-            "Metrics",
-            "${System.currentTimeMillis().mod(10000000)} App.onCreate()"
-        )
+        debug {
+            Log.v(
+                "Metrics",
+                "${System.currentTimeMillis().mod(10000000)} App.onCreate()"
+            )
+        }
         super.onCreate()
         instance = this
 
@@ -95,13 +95,6 @@ class App : Application(), ImageLoaderFactory {
                 .primaryColorRes(mt.color.R.color.md_blue_A400)
                 .accentColorRes(mt.color.R.color.md_yellow_900)
                 .commit()
-        }
-
-        applyMonet(this)
-
-        // Set up dynamic shortcuts
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            DynamicShortcutManager(this).initDynamicShortcuts()
         }
 
         // state listener

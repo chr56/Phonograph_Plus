@@ -17,13 +17,13 @@ import player.phonograph.settings.GAPLESS_PLAYBACK
 import player.phonograph.settings.SettingFlowStore
 import player.phonograph.util.debug
 import player.phonograph.util.permissions.NonGrantedPermission
-import player.phonograph.util.permissions.Permission
 import player.phonograph.util.permissions.checkStorageReadPermission
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.withResumed
 import android.content.ComponentName
 import android.content.ServiceConnection
 import android.media.AudioManager
@@ -42,13 +42,21 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
 
     private var serviceToken: ServiceToken? = null
 
-    private lateinit var permission: Permission
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-        permission = checkStorageReadPermission(this)
+        lifecycleScope.launch {
+            val permission = checkStorageReadPermission(this@AbsMusicServiceActivity)
+            if (permission is NonGrantedPermission) {
+                withResumed {
+                    notifyPermissionDeniedUser(listOf(permission)) {
+                        requestPermissionImpl(arrayOf(permission.permissionId)) { result ->
+                            if (result.entries.first().value) MediaStoreTracker.notifyAllListeners()
+                        }
+                    }
+                }
+            }
+        }
 
         debug {
             Log.v(
@@ -101,17 +109,6 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         observe {
             store.classicNotification.distinctUntilChanged()
                 .collect { MusicPlayerRemote.musicService?.updateSetting(CLASSIC_NOTIFICATION, it) }
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        if (permission is NonGrantedPermission) {
-            notifyPermissionDeniedUser(listOf(permission)) {
-                requestPermissionImpl(arrayOf(permission.permissionId)) { result ->
-                    if (result.entries.first().value) MediaStoreTracker.notifyAllListeners()
-                }
-            }
         }
     }
 
