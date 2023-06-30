@@ -19,6 +19,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.NavigationUtil.goToAlbum
+import player.phonograph.util.NavigationUtil.goToArtist
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ComponentActivity
 import androidx.core.util.Pair
@@ -182,10 +183,10 @@ class SearchResultAdapter(
                 }
 
                 ARTIST -> {
-                    goToAlbum(
-                        itemView.context, (item as Album).id,
+                    goToArtist(
+                        itemView.context, (item as Artist).id,
                         Pair.create(
-                            image, itemView.context.resources.getString(R.string.transition_album_art)
+                            image, itemView.context.resources.getString(R.string.transition_artist_image)
                         )
                     )
                 }
