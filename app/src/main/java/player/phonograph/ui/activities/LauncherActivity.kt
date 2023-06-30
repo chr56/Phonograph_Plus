@@ -4,16 +4,15 @@
 
 package player.phonograph.ui.activities
 
-import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.settings.Setting
+import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.N_MR1
 import android.os.Bundle
-import android.view.View
 
-class LauncherActivity : ToolbarActivity() {
+class LauncherActivity : AppCompatActivity() {
 
     private fun gotoMainActivity() {
         startActivity(Intent(this, MainActivity::class.java))
@@ -24,8 +23,6 @@ class LauncherActivity : ToolbarActivity() {
         startActivity(Intent(this, PhonographIntroActivity::class.java))
         finish()
     }
-
-    private lateinit var mainContent: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
