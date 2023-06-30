@@ -5,11 +5,11 @@
 package player.phonograph.ui.activities
 
 import player.phonograph.settings.Setting
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import android.content.Intent
 import android.os.Bundle
 
-class LauncherActivity : AppCompatActivity() {
+class LauncherActivity : ComponentActivity() {
 
     private fun gotoMainActivity() {
         startActivity(Intent(this, MainActivity::class.java))
