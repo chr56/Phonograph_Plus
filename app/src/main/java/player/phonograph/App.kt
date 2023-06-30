@@ -13,6 +13,7 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.CrashActivity
+import player.phonograph.util.debug
 import player.phonograph.util.theme.applyMonet
 import android.app.Application
 import android.content.Context
@@ -65,11 +66,12 @@ class App : Application(), ImageLoaderFactory {
 
     override fun onCreate() {
         if (Reboot.isRebootingProcess(this)) return
-
-        if (BuildConfig.DEBUG) Log.v(
-            "Metrics",
-            "${System.currentTimeMillis().mod(10000000)} App.onCreate()"
-        )
+        debug {
+            Log.v(
+                "Metrics",
+                "${System.currentTimeMillis().mod(10000000)} App.onCreate()"
+            )
+        }
         super.onCreate()
         instance = this
 
