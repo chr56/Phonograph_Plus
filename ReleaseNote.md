@@ -1,59 +1,15 @@
-## {{version:0.7.0}} {{versionCode:600}} {{date:1687830000}} {{channel:stable}}
+## {{version:0.7.1-dev1}} {{versionCode:601}} {{date:1688200000}} {{channel:preview}}
 
 ### {{note:en}}
-- New: manually load lyrics
-- New: sort order `Album Artist` and `Composer` for songs
-- New: support pinning playlists
-- New: support sorting order of playlists (name, path, date)
-- New: support multi-selection in Search Result
-- New: support per-app language preference for Android T (13) and above
-- New: add more options in Main Drawer Menu
-- Fix: new created playlists would not be appeared in list util next entrance
-- Fix: palette color of player is incorrect or lacking of update
-- Fix: app language is trapped in or out the spelling of British English (for English users only) 
-- Fix: sort order of flat-folders could not be remembered
-- Fix: the incorrect message on ClearPlaylistDialog
-- Translation: update Japanese (by aorinngo)
-- Development: refactor Setting UI using Jetpack Compose
-- Improve: redesign Setting UI and make minor changes
-- Improve: avoid random crash caused by the file browser
-- Improve: Title and Buttons of some dialog (like Upgrade Dialog) are not fixed but scrollable with dialog content
-- Improve: check upgrade
-- Improve: m3u playlist management
-- Modify: in Intro, do not allow to continue if no permission granted
-- Development: use Jetpack Datastore Preference
-- Development: refactor player ui, lyrics loading and more
-- Development: improve dispatching the changes of states
-- Development: upgrade JDK to 17
-- Development: upgrade Gradle to 8.1
-- Development: AGP to 8.0.2
+- Note: you may need to process AppIntro again
+- Fix: crash when clicking any artist in Search Result
+- Improve: app start-up performance
+- Modify: Monet color would not override your configured colors
 - Development: clean up codes
 
 ### {{note:zh}}
-- 新增 手动加载歌词
-- 新增 歌曲排序 `专辑艺术家` 和 `作曲家`
-- 新增 支持播放列表置顶
-- 新增 支持播放列表的排序（名称、路径、时间）
-- 新增 搜索结果支持多选
-- 新增 支持 Android T (13) 的系统级分应用语言设置
-- 新增 在抽屉主菜单中增加更多选项
-- 修复 新建的播放列表不会立即出现在列表中
-- 修复 播放器色调着色不正确或未更新
-- 修复 语言卡在英式拼写里面或外面 (针对英语用户)
-- 修复 无法记住扁平文件夹的排序方式
-- 修复 删除播放列表对话框的信息不正确
-- 翻译 更新日语 (by aorinngo)
-- 开发 设置界面使用 Jetpack Compose 重构
-- 改进 设置界面并进行微调
-- 改进 防止由于文件浏览器导致的崩溃
-- 改进 部分对话框（如升级对话框）的标题和按钮无法固定，而随内容一起滚动
-- 改进 更新检查
-- 改进 m3u播放列表管理
-- 修改 在首次开屏介绍页内，若不授予权限，则无法继续。
-- 开发 使用 Jetpack Datastore Preference
-- 开发 重构播放器界面，歌词加载等
-- 开发 改进状态分发
-- 开发 升级 JDK 到17
-- 开发 更新 Gradle 至 8.1
-- 开发 更新 AGP 至 8.0.2
+- 注意 可能需要再次进行一次介绍页流程
+- 修复 搜索结果中点击任意艺术家时崩溃
+- 改进 启动时性能
+- 修改 Monet颜色不会覆盖原先配置
 - 开发 清理代码
