@@ -13,12 +13,10 @@ import mt.util.color.darkenColor
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
-import player.phonograph.util.theme.applyMonet
-import player.phonograph.util.theme.nightMode
 import player.phonograph.mechanism.setting.StyleConfig
+import player.phonograph.util.theme.nightMode
 import androidx.appcompat.app.AppCompatDelegate
 import android.animation.ValueAnimator
-import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -160,7 +158,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     //
     private var colorChangeAnimator: ValueAnimator? = null
     protected fun animateThemeColorChange(
-        oldColor: Int, newColor: Int
+        oldColor: Int, newColor: Int,
     ) { // todo: make sure lifecycle
         colorChangeAnimator?.cancel()
         colorChangeAnimator = ValueAnimator
@@ -179,14 +177,5 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     protected fun cancelThemeColorChange() {
         colorChangeAnimator?.cancel()
         colorChangeAnimator = null
-    }
-
-    //
-    // Material You Dynamic COlor
-    //
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        // Theme
-        applyMonet(this)
     }
 }

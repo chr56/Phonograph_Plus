@@ -13,7 +13,6 @@ import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.CrashActivity
 import player.phonograph.util.debug
-import player.phonograph.util.theme.applyMonet
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -58,8 +57,6 @@ class App : Application(), ImageLoaderFactory {
         super.onConfigurationChanged(
             ContextLocaleDelegate.onConfigurationChanged(this, newConfig)
         )
-        // Theme
-        applyMonet(this)
     }
 
     override fun onCreate() {

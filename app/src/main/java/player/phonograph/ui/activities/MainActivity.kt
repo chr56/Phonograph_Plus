@@ -51,7 +51,6 @@ import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.util.debug
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.navigateToStorageSetting
-import player.phonograph.util.theme.applyMonet
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.warning
@@ -459,8 +458,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
      * do some non-immediate work here
      */
     private fun latelySetup() {
-        // monet
-        applyMonet(this)
         // Set up dynamic shortcuts
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             val dynamicShortcutManager = DynamicShortcutManager(this)

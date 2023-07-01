@@ -35,7 +35,6 @@ import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
 import player.phonograph.ui.dialogs.PathFilterDialog
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.reportError
-import player.phonograph.util.theme.applyMonet
 import player.phonograph.util.warning
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
@@ -494,7 +493,6 @@ private fun MonetSetting() {
         state = booleanState,
         onCheckedChange = { newValue ->
             if (newValue) {
-                applyMonet(context, true)
                 DynamicShortcutManager(context).updateDynamicShortcuts()
                 (context as? Activity)?.recreate()
             }
