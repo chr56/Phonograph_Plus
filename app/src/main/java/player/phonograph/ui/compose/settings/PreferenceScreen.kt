@@ -492,10 +492,8 @@ private fun MonetSetting() {
         summaryRes = R.string.pref_summary_enable_monet,
         state = booleanState,
         onCheckedChange = { newValue ->
-            if (newValue) {
-                DynamicShortcutManager(context).updateDynamicShortcuts()
-                (context as? Activity)?.recreate()
-            }
+            DynamicShortcutManager(context).updateDynamicShortcuts()
+            (context as? Activity)?.recreate()
         }
     )
 }
