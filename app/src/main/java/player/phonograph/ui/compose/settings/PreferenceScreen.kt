@@ -461,13 +461,15 @@ private fun ColorPrefImpl(
 
 @Composable
 private fun MonetSetting() {
-    class MonetSettingValueState : SettingValueState<Boolean> {
-        private val _state = mutableStateOf(Setting.instance.enableMonet)
+    class MonetSettingValueState(val context: Context) : SettingValueState<Boolean> {
+        private val _state = mutableStateOf(ThemeColor.enableMonet(context))
         override var value: Boolean
             get() = _state.value
             set(value) {
                 _state.value = value
-                Setting.instance.enableMonet = value
+                ThemeColor.edit(context) {
+                    enableMonet(value)
+                }
             }
 
         override fun reset() {
@@ -476,14 +478,15 @@ private fun MonetSetting() {
 
     }
 
+    val context = LocalContext.current
+
     val booleanState =
         if (LocalInspectionMode.current) {
             rememberBooleanSettingState(false)
         } else {
-            MonetSettingValueState()
+            MonetSettingValueState(context)
         }
 
-    val context = LocalContext.current
 
     BooleanPrefImpl(
         titleRes = R.string.pref_title_enable_monet,
