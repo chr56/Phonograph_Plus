@@ -196,7 +196,7 @@ dependencyResolutionManagement {
             )
 
             library("menuDsl",
-                    "io.github.chr56:android-menu-dsl:0.1.0")
+                    "io.github.chr56:android-menu-dsl:0.1.3")
             library("seekArc",
                     "com.github.chr56:SeekArc:1.0")
             library("slidingUpPanel",
