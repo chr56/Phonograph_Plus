@@ -29,51 +29,45 @@ jobs:
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v2.4.2
 
+      - name: Generate Sign Config
+        env:
+          SECRETS_KEY: ${{ secrets.KEY }}
+          SECRETS_STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          SECRETS_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          SECRETS_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEYSTORE_FILE: ${{ github.workspace }}/key.jdk
+          CONFIG_FILE: ${{ github.workspace }}/signing.properties
+        run: |
+          bash ${{ github.workspace }}/scripts/generate_signing_key.sh
+
       - name: Prepare Gradlew
         # just download gradle wrapper, start gradle daemon and prepare composing builds, make actual build logs clean
         run: |
           ./gradlew
 
       - name: Build with Gradle (Assemble PreviewRelease)
-        run: ./gradlew assemblePreviewRelease --parallel --stacktrace
-
-      - name: signing apk
-        uses: r0adkll/sign-android-release@v1.0.4
-        id: sign_app
-        env:
-          BUILD_TOOLS_VERSION: 33.0.0
-        with:
-          releaseDirectory: ./app/build/outputs/apk/preview/release
-          signingKeyBase64: ${{ secrets.KEY }}
-          keyStorePassword: ${{ secrets.STORE_PASSWORD }}
-          alias: ${{ secrets.KEY_ALIAS }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-
-      - name: Compress Mapping File & Renaming Mapping File
-        id: process_mapping
-        shell: bash
         run: |
-          cd ./app/build/outputs/mapping/previewRelease/
-          # compress
-          gzip -k ./mapping.txt
-          # renaming
-          NEW_NAME=mapping_${{ github.ref_name }}_$(git rev-parse --short HEAD)
-          echo "NEW_MAPPING_FILE_NAME=${NEW_NAME}" >> $GITHUB_OUTPUT
-          cp ./mapping.txt.gz ./${NEW_NAME}.txt.gz
-          cd -
+          ./gradlew assemblePreviewRelease --parallel --stacktrace
+
+      - name: Collect Files
+        run: |
+          # collect files
+          mkdir products
+          ./gradlew PublishPreviewRelease --stacktrace
+          tree -aF ./products
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           name: preview_release
-          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+          path: products/PreviewRelease/*.apk
           retention-days: 30
 
       - name: Upload mapping.txt
         uses: actions/upload-artifact@v3
         with:
           name: mapping
-          path: ./app/build/outputs/mapping/previewRelease/${{ steps.process_mapping.outputs.NEW_MAPPING_FILE_NAME }}.txt.gz
+          path: products/PreviewRelease/PhonographPlus*.txt.gz
 
       - name: Release New Version
         uses: softprops/action-gh-release@v1
@@ -82,8 +76,8 @@ jobs:
         with:
           name: "${{ github.ref_name }}"
           files: |
-            ${{steps.sign_app.outputs.signedReleaseFile}}
-            ${{ github.workspace }}/app/build/outputs/mapping/previewRelease/${{ steps.process_mapping.outputs.NEW_MAPPING_FILE_NAME }}.txt.gz
+            products/PreviewRelease/PhonographPlus_*.apk
+            products/PreviewRelease/PhonographPlus*.txt.gz
           prerelease: true
           draft: false
           tag_name: ${{ github.ref }}
@@ -93,10 +87,18 @@ jobs:
 
       - name: Upload to Channel
         if: startsWith(github.ref, 'refs/tags/preview_')
+        env:
+          REPO_ROOT: ${{ github.workspace }}
+          GIT_REF_NAME: ${{ github.ref_name }}
+          GIT_COMMIT_SHA: ${{ github.sha }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
         run: |
-          # upload APK
-          curl -v -X POST -H "Content-Type:multipart/form-data"  -F 'document=@${{ github.workspace }}/${{steps.sign_app.outputs.signedReleaseFile}}'  "https://api.telegram.org/bot${{ secrets.TG_BOT_TOKEN }}/sendDocument?chat_id=${{ secrets.TG_CHAT_ID }}&disable_notification=true&disable_web_page_preview=true&parse_mode=HTML&caption=%3Cb%3ENew%20Preview%20Version%3C%2Fb%3E%3A%20%3Ca%20href%3D%22https%3A%2F%2Fgithub.com%2Fchr56%2FPhonograph_Plus%2Freleases%2Ftag%2F${{ github.ref_name }}%22%3E%3Cb%3E${{ github.ref_name }}%3C%2Fb%3E%3C%2Fa%3E%20%0D%0APreview%20versions%20might%20have%20potential%20bugs.%20%0D%0APreview%20%E7%89%88%E6%9C%AC%E5%8F%AF%E8%83%BD%E5%AD%98%E5%9C%A8%E6%BD%9C%E5%9C%A8%E9%97%AE%E9%A2%98!%20%0D%0A(%3Cpre%3E${{ github.sha }}%3C%2Fpre%3E)%20"
-          # upload changelog
+          # generate changelog
           ./gradlew tools:changelog-generator:GenerateEncodedUrl
-          RELEASE_NOTE=$(cat ${{ github.workspace }}/GitHubReleaseNote.url.txt)
-          curl -v "https://api.telegram.org/bot${{ secrets.TG_BOT_TOKEN }}/sendMessage?chat_id=${{ secrets.TG_CHAT_ID }}&disable_notification=true&disable_web_page_preview=true&parse_mode=Markdown&text=$RELEASE_NOTE"
+          # upload 
+           bash ${{ github.workspace }}/scripts/upload_apk_with_changelog.sh
+
+      - name: Cleanup
+        run: |
+          rm -r -v ./products/PreviewRelease
