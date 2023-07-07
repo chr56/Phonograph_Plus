@@ -167,7 +167,7 @@ dependencyResolutionManagement {
 
 
             val versionMaterialTool = "material-tools"
-            version(versionMaterialTool, "0.1.0")
+            version(versionMaterialTool, "0.2.0")
             library("mt.colorRes",
                     "com.github.chr56.material-tools",
                     "mdColorRes").versionRef(versionMaterialTool)
