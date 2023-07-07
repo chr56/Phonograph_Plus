@@ -40,6 +40,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -453,7 +454,7 @@ private fun ColorPrefImpl(
     SettingsMenuLink(
         title = title(titleRes),
         subtitle = subtitle(summaryRes),
-        action = { ColorCircle(color = color, onClick = onClick) },
+        action = { ColorCircle(color = color, modifier = Modifier.fillMaxSize(0.55f), onClick = onClick) },
         onClick = onClick
     )
 }

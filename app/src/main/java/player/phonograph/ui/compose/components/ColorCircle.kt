@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 fun ColorCircle(color: Color, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Box(
         modifier = modifier
-            .fillMaxSize(0.55f)
+            .fillMaxSize()
             .aspectRatio(1f)
             .clickable(onClick = onClick)
             .clip(CircleShape)
