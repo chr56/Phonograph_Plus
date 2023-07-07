@@ -32,6 +32,7 @@ import player.phonograph.ui.compose.components.ColorCircle
 import player.phonograph.ui.dialogs.ClickModeSettingDialog
 import player.phonograph.ui.dialogs.HomeTabConfigDialog
 import player.phonograph.ui.dialogs.ImageSourceConfigDialog
+import player.phonograph.ui.dialogs.MonetColorPickerDialog
 import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
 import player.phonograph.ui.dialogs.PathFilterDialog
 import player.phonograph.util.NavigationUtil
@@ -463,7 +464,11 @@ private fun ColorPrefImpl(
             ColorPalette.MODE_PRIMARY_COLOR, ColorPalette.MODE_ACCENT_COLOR ->
                 ColorChooser.showColorChooserDialog(context, color.toArgb(), mode)
 
-            ColorPalette.MODE_MONET_PRIMARY_COLOR, ColorPalette.MODE_MONET_ACCENT_COLOR -> {}
+            ColorPalette.MODE_MONET_PRIMARY_COLOR                           ->
+                MonetColorPickerDialog.primaryColor().show((context as FragmentActivity).supportFragmentManager, null)
+
+            ColorPalette.MODE_MONET_ACCENT_COLOR                            ->
+                MonetColorPickerDialog.accentColor().show((context as FragmentActivity).supportFragmentManager, null)
         }
     }
 
