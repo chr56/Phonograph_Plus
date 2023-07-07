@@ -27,7 +27,7 @@ import player.phonograph.mechanism.setting.StyleConfig.THEME_BLACK
 import player.phonograph.mechanism.setting.StyleConfig.THEME_DARK
 import player.phonograph.mechanism.setting.StyleConfig.THEME_LIGHT
 import player.phonograph.settings.*
-import player.phonograph.ui.compose.components.ColorCircus
+import player.phonograph.ui.compose.components.ColorCircle
 import player.phonograph.ui.dialogs.ClickModeSettingDialog
 import player.phonograph.ui.dialogs.HomeTabConfigDialog
 import player.phonograph.ui.dialogs.ImageSourceConfigDialog
@@ -446,15 +446,15 @@ private fun ColorPrefImpl(
             else                            -> MaterialTheme.colors.error
         }
 
+    val onClick = {
+        ColorChooser.showColorChooserDialog(context, color.toArgb(), mode)
+    }
+
     SettingsMenuLink(
         title = title(titleRes),
         subtitle = subtitle(summaryRes),
-        action = { ColorCircus(color) },
-        onClick = {
-            ColorChooser.showColorChooserDialog(
-                context, color.toArgb(), mode
-            )
-        }
+        action = { ColorCircle(color, onClick) },
+        onClick = onClick
     )
 }
 
