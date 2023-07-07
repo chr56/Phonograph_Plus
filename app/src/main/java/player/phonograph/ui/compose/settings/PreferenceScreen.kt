@@ -453,7 +453,7 @@ private fun ColorPrefImpl(
     SettingsMenuLink(
         title = title(titleRes),
         subtitle = subtitle(summaryRes),
-        action = { ColorCircle(color, onClick) },
+        action = { ColorCircle(color = color, onClick = onClick) },
         onClick = onClick
     )
 }
