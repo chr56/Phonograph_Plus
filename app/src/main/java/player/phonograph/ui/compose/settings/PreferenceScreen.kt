@@ -418,18 +418,28 @@ private fun GeneralThemeSetting() {
 
 @Composable
 private fun PrimaryColorPref() {
+    val context = LocalContext.current
+    val mode = remember {
+        if (SDK_INT >= S && ThemeColor.enableMonet(context)) ColorPalette.MODE_MONET_PRIMARY_COLOR
+        else ColorPalette.MODE_PRIMARY_COLOR
+    }
     ColorPrefImpl(
         titleRes = R.string.primary_color,
         summaryRes = R.string.primary_color_desc,
-        mode = ColorPalette.MODE_PRIMARY_COLOR
+        mode = mode
     )
 }
 @Composable
 private fun AccentColorPref() {
+    val context = LocalContext.current
+    val mode = remember {
+        if (SDK_INT >= S && ThemeColor.enableMonet(context)) ColorPalette.MODE_MONET_ACCENT_COLOR
+        else ColorPalette.MODE_ACCENT_COLOR
+    }
     ColorPrefImpl(
         titleRes = R.string.accent_color,
         summaryRes = R.string.accent_color_desc,
-        mode = ColorPalette.MODE_ACCENT_COLOR
+        mode = mode
     )
 }
 
@@ -443,13 +453,18 @@ private fun ColorPrefImpl(
 
     val color =
         when (mode) {
-            ColorPalette.MODE_PRIMARY_COLOR -> MaterialTheme.colors.primary
-            ColorPalette.MODE_ACCENT_COLOR  -> MaterialTheme.colors.secondary
-            else                            -> MaterialTheme.colors.error
+            ColorPalette.MODE_PRIMARY_COLOR, ColorPalette.MODE_MONET_PRIMARY_COLOR -> MaterialTheme.colors.primary
+            ColorPalette.MODE_ACCENT_COLOR, ColorPalette.MODE_MONET_ACCENT_COLOR   -> MaterialTheme.colors.secondary
+            else                                                                   -> MaterialTheme.colors.error
         }
 
     val onClick = {
-        ColorChooser.showColorChooserDialog(context, color.toArgb(), mode)
+        when (mode) {
+            ColorPalette.MODE_PRIMARY_COLOR, ColorPalette.MODE_ACCENT_COLOR ->
+                ColorChooser.showColorChooserDialog(context, color.toArgb(), mode)
+
+            ColorPalette.MODE_MONET_PRIMARY_COLOR, ColorPalette.MODE_MONET_ACCENT_COLOR -> {}
+        }
     }
 
     SettingsMenuLink(
