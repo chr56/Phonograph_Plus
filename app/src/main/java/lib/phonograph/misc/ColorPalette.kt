@@ -51,7 +51,6 @@ object ColorPalette {
             context.getColor(android.R.color.system_accent2_700),
             context.getColor(android.R.color.system_accent2_800),
             context.getColor(android.R.color.system_accent2_900),
-            context.getColor(android.R.color.system_accent2_900),
         ),
         intArrayOf(
             context.getColor(android.R.color.system_accent3_100),
@@ -65,7 +64,7 @@ object ColorPalette {
             context.getColor(android.R.color.system_accent3_900),
         ),
         intArrayOf(
-            context.getColor(android.R.color.system_neutral1_0),
+            // context.getColor(android.R.color.system_neutral1_0),
             context.getColor(android.R.color.system_neutral1_100),
             context.getColor(android.R.color.system_neutral1_200),
             context.getColor(android.R.color.system_neutral1_300),
@@ -75,10 +74,10 @@ object ColorPalette {
             context.getColor(android.R.color.system_neutral1_700),
             context.getColor(android.R.color.system_neutral1_800),
             context.getColor(android.R.color.system_neutral1_900),
-            context.getColor(android.R.color.system_neutral1_1000),
+            // context.getColor(android.R.color.system_neutral1_1000),
         ),
         intArrayOf(
-            context.getColor(android.R.color.system_neutral2_0),
+            // context.getColor(android.R.color.system_neutral2_0),
             context.getColor(android.R.color.system_neutral2_100),
             context.getColor(android.R.color.system_neutral2_200),
             context.getColor(android.R.color.system_neutral2_300),
@@ -88,7 +87,7 @@ object ColorPalette {
             context.getColor(android.R.color.system_neutral2_700),
             context.getColor(android.R.color.system_neutral2_800),
             context.getColor(android.R.color.system_neutral2_900),
-            context.getColor(android.R.color.system_neutral2_1000),
+            // context.getColor(android.R.color.system_neutral2_1000),
         ),
     )
     //endregion
