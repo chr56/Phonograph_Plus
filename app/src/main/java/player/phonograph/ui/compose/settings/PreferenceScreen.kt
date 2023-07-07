@@ -15,6 +15,7 @@ import com.alorma.compose.settings.ui.SettingsSwitch
 import lib.phonograph.localization.LanguageSettingDialog
 import lib.phonograph.localization.LocalizationStore
 import lib.phonograph.misc.ColorChooser
+import lib.phonograph.misc.ColorPalette
 import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
@@ -420,7 +421,7 @@ private fun PrimaryColorPref() {
     ColorPrefImpl(
         titleRes = R.string.primary_color,
         summaryRes = R.string.primary_color_desc,
-        mode = ColorChooser.MODE_PRIMARY_COLOR
+        mode = ColorPalette.MODE_PRIMARY_COLOR
     )
 }
 @Composable
@@ -428,7 +429,7 @@ private fun AccentColorPref() {
     ColorPrefImpl(
         titleRes = R.string.accent_color,
         summaryRes = R.string.accent_color_desc,
-        mode = ColorChooser.MODE_ACCENT_COLOR
+        mode = ColorPalette.MODE_ACCENT_COLOR
     )
 }
 
@@ -442,8 +443,8 @@ private fun ColorPrefImpl(
 
     val color =
         when (mode) {
-            ColorChooser.MODE_PRIMARY_COLOR -> MaterialTheme.colors.primary
-            ColorChooser.MODE_ACCENT_COLOR  -> MaterialTheme.colors.secondary
+            ColorPalette.MODE_PRIMARY_COLOR -> MaterialTheme.colors.primary
+            ColorPalette.MODE_ACCENT_COLOR  -> MaterialTheme.colors.secondary
             else                            -> MaterialTheme.colors.error
         }
 

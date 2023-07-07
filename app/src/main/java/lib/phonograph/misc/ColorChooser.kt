@@ -62,8 +62,8 @@ object ColorChooser {
     private fun applyNewColor(context: Context, color: Int, mode: Int) {
         ThemeColor.editTheme(context).apply {
             when (mode) {
-                MODE_PRIMARY_COLOR -> primaryColor(color)
-                MODE_ACCENT_COLOR  -> accentColor(color)
+                ColorPalette.MODE_PRIMARY_COLOR -> primaryColor(color)
+                ColorPalette.MODE_ACCENT_COLOR  -> accentColor(color)
                 0                  -> return
             }
         }.commit()
@@ -72,7 +72,4 @@ object ColorChooser {
         }
         (context as? Activity)?.recreate()
     }
-
-    const val MODE_PRIMARY_COLOR: Int = 1
-    const val MODE_ACCENT_COLOR: Int = 2
 }

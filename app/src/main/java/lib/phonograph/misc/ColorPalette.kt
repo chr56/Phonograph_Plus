@@ -9,9 +9,16 @@ import androidx.annotation.RequiresApi
 import android.content.Context
 import android.os.Build.VERSION_CODES.S
 
-//region Dynamic Colors
 
 object ColorPalette {
+
+    const val MODE_PRIMARY_COLOR: Int = 1
+    const val MODE_ACCENT_COLOR: Int = 2
+
+    const val MODE_MONET_PRIMARY_COLOR: Int = 8
+    const val MODE_MONET_ACCENT_COLOR: Int = 16
+
+    //region Dynamic Colors
     @RequiresApi(S)
     fun dynamicColors(context: Context) = intArrayOf(
         context.getColor(android.R.color.system_accent1_400),
@@ -84,8 +91,8 @@ object ColorPalette {
             context.getColor(android.R.color.system_neutral2_1000),
         ),
     )
+    //endregion
 
-    // Color Preset
     val colors: IntArray
         get() = intArrayOf(
             MaterialColor.Red._A400.asColor,
@@ -388,5 +395,4 @@ object ColorPalette {
             )
 
         )
-//endregion
 }
