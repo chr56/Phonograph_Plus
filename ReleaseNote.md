@@ -1,4 +1,4 @@
-## {{version:0.7.1-dev1}} {{versionCode:601}} {{date:1688200000}} {{channel:preview}}
+## {{version:0.7.1-beta1}} {{versionCode:610}} {{date:1688796000}} {{channel:preview}}
 
 ### {{note:en}}
 - Note: you may need to process AppIntro again
@@ -6,6 +6,7 @@
 - Modify: Monet color would not override your configured colors
 - Fix: crash when clicking any artist in Search Result
 - Improve: app start-up performance
+- Translation: update Japanese (by aorinngoDo), Italian (by gdonisi)
 - Development: clean up codes
 
 ### {{note:zh}}
@@ -14,4 +15,5 @@
 - 修改 Monet颜色不会覆盖原先配置
 - 修复 搜索结果中点击任意艺术家时崩溃
 - 改进 启动时性能
+- 翻译 更新日语 (by aorinngo), 意大利语(by gdonisi)
 - 开发 清理代码
