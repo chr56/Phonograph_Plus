@@ -9,6 +9,7 @@ import com.vanpra.composematerialdialogs.customView
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import lib.phonograph.misc.ColorPalette
+import player.phonograph.R
 import player.phonograph.ui.compose.base.BridgeDialogFragment
 import player.phonograph.ui.compose.dialogs.MonetColorPickerDialogContent
 import player.phonograph.ui.compose.theme.PhonographTheme
@@ -47,7 +48,7 @@ class MonetColorPickerDialog : BridgeDialogFragment() {
                 }
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
-                title(res = player.phonograph.R.string.pref_header_colors)
+                title(res = R.string.dynamic_colors)
                 customView {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         MonetColorPickerDialogContent(mode = mode, onDismiss = ::dismiss)
