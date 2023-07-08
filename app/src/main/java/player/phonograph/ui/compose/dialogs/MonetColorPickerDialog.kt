@@ -12,6 +12,7 @@ import player.phonograph.util.lifecycleScopeOrNewOne
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import android.app.Activity
 import android.os.Build
 import kotlinx.coroutines.launch
 
@@ -32,6 +33,7 @@ fun MonetColorPickerDialogContent(
                 }
             }
             onDismiss()
+            (context as? Activity)?.recreate()
         }
     }
 }
