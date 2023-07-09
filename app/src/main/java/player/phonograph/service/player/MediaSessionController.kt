@@ -121,6 +121,8 @@ class MediaSessionController(
                 PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
                 PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
                 PlaybackStateCompat.ACTION_STOP or
+                PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
+                PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE or
                 PlaybackStateCompat.ACTION_SEEK_TO
     }
 }

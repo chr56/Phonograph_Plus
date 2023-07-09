@@ -51,6 +51,7 @@ import android.os.Binder
 import android.os.Handler
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 
 /**
@@ -184,6 +185,25 @@ class MusicService : Service() {
             seek(pos.toInt())
         }
 
+        override fun onSetShuffleMode(shuffleMode: Int) {
+            when (shuffleMode) {
+                PlaybackStateCompat.SHUFFLE_MODE_INVALID -> {}
+                PlaybackStateCompat.SHUFFLE_MODE_NONE    -> queueManager.modifyShuffleMode(ShuffleMode.NONE)
+                PlaybackStateCompat.SHUFFLE_MODE_ALL     -> queueManager.modifyShuffleMode(ShuffleMode.SHUFFLE)
+                PlaybackStateCompat.SHUFFLE_MODE_GROUP   -> queueManager.modifyShuffleMode(ShuffleMode.SHUFFLE)
+            }
+        }
+
+        override fun onSetRepeatMode(repeatMode: Int) {
+            when (repeatMode) {
+                PlaybackStateCompat.REPEAT_MODE_INVALID -> {}
+                PlaybackStateCompat.REPEAT_MODE_ALL     -> queueManager.modifyRepeatMode(RepeatMode.REPEAT_QUEUE)
+                PlaybackStateCompat.REPEAT_MODE_GROUP   -> queueManager.modifyRepeatMode(RepeatMode.REPEAT_QUEUE)
+                PlaybackStateCompat.REPEAT_MODE_NONE    -> queueManager.modifyRepeatMode(RepeatMode.NONE)
+                PlaybackStateCompat.REPEAT_MODE_ONE     -> queueManager.modifyRepeatMode(RepeatMode.REPEAT_SINGLE_SONG)
+            }
+        }
+
         override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
             return MediaButtonIntentReceiver.handleIntent(this@MusicService, mediaButtonEvent)
         }
@@ -199,6 +219,7 @@ class MusicService : Service() {
                     } else {
                         play()
                     }
+
                     ACTION_PAUSE                 -> pause()
                     ACTION_PLAY                  -> play()
                     ACTION_REWIND                -> back(true)
@@ -206,9 +227,11 @@ class MusicService : Service() {
                     ACTION_STOP_AND_QUIT_NOW     -> {
                         stopSelf()
                     }
+
                     ACTION_STOP_AND_QUIT_PENDING -> {
                         controller.quitAfterFinishCurrentSong = true
                     }
+
                     ACTION_CANCEL_PENDING_QUIT   -> {
                         controller.quitAfterFinishCurrentSong = false
                     }
@@ -311,6 +334,7 @@ class MusicService : Service() {
 
                 songPlayCountHelper.notifyPlayStateChanged(isPlaying)
             }
+
             META_CHANGED       -> {
                 // update playing notification
                 playNotificationManager.updateNotification()
@@ -335,6 +359,7 @@ class MusicService : Service() {
                 songPlayCountHelper.checkForBumpingPlayCount(this) // old
                 songPlayCountHelper.songMonitored = queueManager.currentSong // new
             }
+
             QUEUE_CHANGED      -> {
                 // update playing notification
                 mediaSessionController.updateMetaData(
@@ -374,12 +399,15 @@ class MusicService : Service() {
                     AppWidgetClassic.NAME -> {
                         AppWidgetClassic.instance.performUpdate(this@MusicService, ids)
                     }
+
                     AppWidgetSmall.NAME   -> {
                         AppWidgetSmall.instance.performUpdate(this@MusicService, ids)
                     }
+
                     AppWidgetBig.NAME     -> {
                         AppWidgetBig.instance.performUpdate(this@MusicService, ids)
                     }
+
                     AppWidgetCard.NAME    -> {
                         AppWidgetCard.instance.performUpdate(this@MusicService, ids)
                     }
