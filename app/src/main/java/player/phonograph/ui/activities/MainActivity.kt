@@ -218,7 +218,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                     Handler(Looper.getMainLooper()).postDelayed(
                         {
                             val songs = all(activity)
-                            songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
+                            if (songs.isNotEmpty())
+                                songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
                         }, 350
                     )
                 }

@@ -98,7 +98,7 @@ fun fileClick(
                 QUEUE_SWITCH_TO_BEGINNING -> songs.actionPlay(NONE, 0)
                 QUEUE_SWITCH_TO_POSITION  -> songs.actionPlay(NONE, actualPosition)
                 QUEUE_SHUFFLE             ->
-                    songs.actionPlay(SHUFFLE, Random.nextInt(songs.size))
+                   if (songs.isNotEmpty()) songs.actionPlay(SHUFFLE, Random.nextInt(songs.size))
             }
         }
         else -> {

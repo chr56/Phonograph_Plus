@@ -21,12 +21,18 @@ import kotlinx.coroutines.launch
 
 fun Playlist.actionPlay(context: Context): Boolean =
     getSongs(context).let { songs ->
-        songs.actionPlay(ShuffleMode.NONE, 0)
+        if (songs.isNotEmpty())
+            songs.actionPlay(ShuffleMode.NONE, 0)
+        else
+            false
     }
 
 fun Playlist.actionShuffleAndPlay(context: Context) =
     getSongs(context).let { songs ->
-        songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
+        if (songs.isNotEmpty())
+            songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
+        else
+            false
     }
 
 fun Playlist.actionPlayNext(context: Context): Boolean =

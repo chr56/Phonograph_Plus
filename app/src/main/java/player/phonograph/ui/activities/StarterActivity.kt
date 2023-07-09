@@ -245,7 +245,7 @@ class StarterActivity : AppCompatActivity() {
         }
         val songs = playlist?.getSongs(applicationContext)
 
-        if (songs != null) {
+        if (!songs.isNullOrEmpty()) {
             val queueManager = App.instance.queueManager
             queueManager.swapQueue(
                 songs,
