@@ -8,11 +8,9 @@ import coil.request.Disposable
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.App
-import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.service.MusicService
-import player.phonograph.service.util.MediaButtonIntentReceiver
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.theme.createTintedDrawable
@@ -32,9 +30,6 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.media.MediaMetadata.*
 import android.os.Build
-import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
@@ -148,7 +143,7 @@ class PlayingNotificationManger(private val service: MusicService) {
                     builder
                         .setStyle(
                             NotificationCompat.MediaStyle()
-                                .setMediaSession(mediaSession.sessionToken)
+                                .setMediaSession(service.mediaSession.sessionToken)
                                 .setShowActionsInCompactView(0, 1, 2)
                         )
 
@@ -334,101 +329,6 @@ class PlayingNotificationManger(private val service: MusicService) {
         }
     }
 
-    lateinit var mediaSession: MediaSessionCompat private set
-
-    fun setupMediaSession(callback: MediaSessionCompat.Callback) {
-        val mediaButtonReceiverComponentName = ComponentName(
-            service.applicationContext,
-            MediaButtonIntentReceiver::class.java
-        )
-        val mediaButtonReceiverPendingIntent =
-            PendingIntent.getBroadcast(
-                service.applicationContext,
-                0,
-                Intent(Intent.ACTION_MEDIA_BUTTON).apply {
-                    component = mediaButtonReceiverComponentName
-                },
-                PendingIntent.FLAG_IMMUTABLE
-            )
-        mediaSession =
-            MediaSessionCompat(
-                service,
-                BuildConfig.APPLICATION_ID,
-                mediaButtonReceiverComponentName,
-                mediaButtonReceiverPendingIntent
-            )
-        mediaSession.setCallback(callback)
-
-        // fixme remove deprecation
-        @Suppress("DEPRECATION")
-        mediaSession.setFlags(
-            MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
-                    or MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
-        )
-        mediaSession.setMediaButtonReceiver(mediaButtonReceiverPendingIntent)
-    }
-
-    private val sessionPlaybackStateBuilder by lazy {
-        PlaybackStateCompat.Builder()
-            .setActions(
-                PlaybackStateCompat.ACTION_PLAY
-                        or PlaybackStateCompat.ACTION_PAUSE
-                        or PlaybackStateCompat.ACTION_PLAY_PAUSE
-                        or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                        or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
-                        or PlaybackStateCompat.ACTION_STOP
-                        or PlaybackStateCompat.ACTION_SEEK_TO
-            )
-    }
-
-    fun updateMediaSessionPlaybackState() {
-        mediaSession.setPlaybackState(
-            sessionPlaybackStateBuilder
-                .setState(
-                    if (service.isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED,
-                    service.songProgressMillis.toLong(),
-                    1f
-                )
-                .build()
-        )
-    }
-
-    @SuppressLint("CheckResult")
-    fun updateMediaSessionMetaData() {
-        val queueManager = service.queueManager
-        val song = queueManager.currentSong
-        if (song.id == -1L) {
-            mediaSession.setMetadata(null)
-            return
-        }
-        val metaData =
-            MediaMetadataCompat.Builder().apply {
-                putString(METADATA_KEY_ARTIST, song.artistName)
-                putString(METADATA_KEY_ALBUM_ARTIST, song.artistName)
-                putString(METADATA_KEY_ALBUM, song.albumName)
-                putString(METADATA_KEY_TITLE, song.title)
-                putLong(METADATA_KEY_DURATION, song.duration)
-                putLong(METADATA_KEY_TRACK_NUMBER, (queueManager.currentSongPosition + 1).toLong())
-                putLong(METADATA_KEY_YEAR, song.year.toLong())
-                putBitmap(METADATA_KEY_ALBUM_ART, null)
-                putLong(
-                    METADATA_KEY_NUM_TRACKS,
-                    service.queueManager.playingQueue.size.toLong()
-                )
-            }
-
-        mediaSession.setMetadata(metaData.build())
-
-        if (Build.VERSION.SDK_INT >= VERSION_SET_COVER_USING_METADATA) {
-            request?.dispose()
-            request = service.coverLoader.load(song) { bitmap: Bitmap?, _ ->
-                if (bitmap != null) {
-                    metaData.putBitmap(METADATA_KEY_ALBUM_ART, bitmap)
-                    mediaSession.setMetadata(metaData.build())
-                }
-            }
-        }
-    }
 
     /*
      * Misc

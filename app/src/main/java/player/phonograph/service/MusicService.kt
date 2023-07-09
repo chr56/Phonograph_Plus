@@ -19,6 +19,7 @@ import player.phonograph.repo.database.HistoryStore
 import player.phonograph.service.notification.CoverLoader
 import player.phonograph.service.notification.PlayingNotificationManger
 import player.phonograph.service.player.MSG_NOW_PLAYING_CHANGED
+import player.phonograph.service.player.MediaSessionController
 import player.phonograph.service.player.PlayerController
 import player.phonograph.service.player.PlayerController.ControllerHandler.Companion.CLEAN_NEXT_PLAYER
 import player.phonograph.service.player.PlayerController.ControllerHandler.Companion.RE_PREPARE_NEXT_PLAYER
@@ -72,6 +73,13 @@ class MusicService : Service() {
         }
     private var _playNotificationManager: PlayingNotificationManger? = null
 
+    private val mediaSessionController: MediaSessionController
+        get() {
+            if (_mediaSessionController == null) _mediaSessionController = MediaSessionController(this)
+            return _mediaSessionController!!
+        }
+    private var _mediaSessionController: MediaSessionController? = null
+
     private lateinit var throttledTimer: ThrottledTimer
 
     private val mediaStoreObserverUtil = MediaStoreObserverUtil()
@@ -93,10 +101,10 @@ class MusicService : Service() {
 
         // notifications & media session
         coverLoader = CoverLoader(this)
-        // _playNotificationManager = PlayingNotificationManger(this)
-        playNotificationManager.setupMediaSession(initMediaSessionCallback())
+        mediaSessionController.setupMediaSession(initMediaSessionCallback())
         playNotificationManager.setUpNotification()
-        playNotificationManager.mediaSession.isActive = true
+
+        mediaSessionController.mediaSession.isActive = true
 
         // process updater
         throttledTimer = ThrottledTimer(controller.handler)
@@ -217,11 +225,11 @@ class MusicService : Service() {
 
     override fun onDestroy() {
         isDestroyed = true
-        playNotificationManager.mediaSession.isActive = false
+        mediaSessionController.mediaSession.isActive = false
         playNotificationManager.removeNotification()
         coverLoader.terminate()
         closeAudioEffectSession()
-        playNotificationManager.mediaSession.release()
+        mediaSessionController.mediaSession.release()
         unregisterReceiver(widgetIntentReceiver)
         mediaStoreObserverUtil.unregisterMediaStoreObserver(this)
         controller.stopAndDestroy()
@@ -264,7 +272,7 @@ class MusicService : Service() {
     }
 
     val audioSessionId: Int get() = controller.audioSessionId
-    val mediaSession get() = playNotificationManager.mediaSession
+    val mediaSession get() = mediaSessionController.mediaSession
 
     private fun notifyChange(what: String) {
         handleAndSendChangeInternal(what)
@@ -286,8 +294,15 @@ class MusicService : Service() {
             PLAY_STATE_CHANGED -> {
                 // update playing notification
                 playNotificationManager.updateNotification()
-                playNotificationManager.updateMediaSessionMetaData()
-                playNotificationManager.updateMediaSessionPlaybackState()
+                mediaSessionController.updateMetaData(
+                    queueManager.currentSong,
+                    (queueManager.currentSongPosition + 1).toLong(),
+                    queueManager.playingQueue.size.toLong(),
+                    false
+                )
+                mediaSessionController.updatePlaybackState(
+                    controller.isPlaying(), controller.getSongProgressMillis().toLong()
+                )
 
                 // save state
                 if (!isPlaying && songProgressMillis > 0) {
@@ -299,8 +314,15 @@ class MusicService : Service() {
             META_CHANGED       -> {
                 // update playing notification
                 playNotificationManager.updateNotification()
-                playNotificationManager.updateMediaSessionMetaData()
-                playNotificationManager.updateMediaSessionPlaybackState()
+                mediaSessionController.updateMetaData(
+                    queueManager.currentSong,
+                    (queueManager.currentSongPosition + 1).toLong(),
+                    queueManager.playingQueue.size.toLong(),
+                    true
+                )
+                mediaSessionController.updatePlaybackState(
+                    controller.isPlaying(), controller.getSongProgressMillis().toLong()
+                )
 
                 // save state
                 queueManager.post(MSG_SAVE_CFG)
@@ -315,7 +337,13 @@ class MusicService : Service() {
             }
             QUEUE_CHANGED      -> {
                 // update playing notification
-                playNotificationManager.updateMediaSessionMetaData() // because playing queue size might have changed
+                mediaSessionController.updateMetaData(
+                    queueManager.currentSong,
+                    (queueManager.currentSongPosition + 1).toLong(),
+                    queueManager.playingQueue.size.toLong(),
+                    true
+                )
+                // because playing queue size might have changed
 
                 // save state
                 queueManager.post(MSG_SAVE_QUEUE)
@@ -381,11 +409,13 @@ class MusicService : Service() {
                     }
                 }
             }
+
             COLORED_NOTIFICATION           -> playNotificationManager.updateNotification()
             CLASSIC_NOTIFICATION           -> {
                 playNotificationManager.setUpNotification()
                 playNotificationManager.updateNotification()
             }
+
             BROADCAST_CURRENT_PLAYER_STATE -> {
                 throttledTimer.broadcastCurrentPlayerState = (value as? Boolean) ?: false
             }
@@ -397,8 +427,15 @@ class MusicService : Service() {
     private inner class ThrottledTimer(private val mHandler: Handler) : Runnable {
         var broadcastCurrentPlayerState: Boolean = false
         fun notifySeek() {
-            playNotificationManager.updateMediaSessionMetaData()
-            playNotificationManager.updateMediaSessionPlaybackState()
+            mediaSessionController.updateMetaData(
+                queueManager.currentSong,
+                (queueManager.currentSongPosition + 1).toLong(),
+                queueManager.playingQueue.size.toLong(),
+                false
+            )
+            mediaSessionController.updatePlaybackState(
+                controller.isPlaying(), controller.getSongProgressMillis().toLong()
+            )
             mHandler.removeCallbacks(this)
             mHandler.postDelayed(this, THROTTLE)
         }
@@ -412,8 +449,15 @@ class MusicService : Service() {
     }
 
     internal fun requireRefreshMetadata() {
-        playNotificationManager.updateMediaSessionMetaData()
-        playNotificationManager.updateMediaSessionPlaybackState()
+        mediaSessionController.updateMetaData(
+            queueManager.currentSong,
+            (queueManager.currentSongPosition + 1).toLong(),
+            queueManager.playingQueue.size.toLong(),
+            true
+        )
+        mediaSessionController.updatePlaybackState(
+            controller.isPlaying(), controller.getSongProgressMillis().toLong()
+        )
     }
 
 
