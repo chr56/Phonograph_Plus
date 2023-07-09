@@ -38,6 +38,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.whenStarted
+import androidx.lifecycle.withStarted
 import androidx.viewpager2.widget.ViewPager2
 import android.content.Intent
 import android.graphics.drawable.Drawable
@@ -69,7 +70,9 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 store.fixedTabLayout.distinctUntilChanged().collect {
-                    whenStarted { reloadPages() }
+                    withStarted {
+                        binding.tabs.tabMode = if (it) TabLayout.MODE_FIXED else TabLayout.MODE_SCROLLABLE
+                    }
                 }
             }
         }
@@ -120,7 +123,6 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
         mainActivity.setSupportActionBar(binding.toolbar)
         with(binding.tabs) {
-            tabMode = if (Setting.instance.fixedTabLayout) TabLayout.MODE_FIXED else TabLayout.MODE_SCROLLABLE
             setTabTextColors(secondaryTextColor, primaryTextColor)
             setSelectedTabIndicatorColor(accentColor)
         }
@@ -237,15 +239,6 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
         setUpViewPager()
         binding.pager.currentItem = newPosition
-    }
-
-    private suspend fun reloadTabsLayout() = withContext(Dispatchers.Main) {
-        binding.tabs.tabMode =
-            if (Setting.instance.fixedTabLayout) {
-                TabLayout.MODE_FIXED
-            } else {
-                TabLayout.MODE_SCROLLABLE
-            }
     }
 
     val totalAppBarScrollingRange: Int get() = binding.appbar.totalScrollRange
