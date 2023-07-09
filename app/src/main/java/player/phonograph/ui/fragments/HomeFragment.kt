@@ -37,7 +37,6 @@ import androidx.core.graphics.BlendModeCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.whenStarted
 import androidx.lifecycle.withStarted
 import androidx.viewpager2.widget.ViewPager2
 import android.content.Intent
@@ -49,10 +48,8 @@ import android.view.Menu
 import android.view.MenuItem.SHOW_AS_ACTION_ALWAYS
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks {
 
@@ -63,15 +60,28 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 store.homeTabConfigJsonString.distinctUntilChanged().collect {
-                    whenStarted { reloadPages() }
+                    withStarted { reloadPages() }
                 }
             }
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                store.fixedTabLayout.distinctUntilChanged().collect {
+                store.rememberLastTab.distinctUntilChanged().collect { rememberLastTab ->
                     withStarted {
-                        binding.tabs.tabMode = if (it) TabLayout.MODE_FIXED else TabLayout.MODE_SCROLLABLE
+                        if (rememberLastTab) {
+                            val last = Setting.instance.lastPage
+                            binding.pager.currentItem = last
+                            mainActivity.switchPageChooserTo(last)
+                        }
+                    }
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                store.fixedTabLayout.distinctUntilChanged().collect { fixedTabLayout ->
+                    withStarted {
+                        binding.tabs.tabMode = if (fixedTabLayout) TabLayout.MODE_FIXED else TabLayout.MODE_SCROLLABLE
                     }
                 }
             }
@@ -153,11 +163,6 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
             orientation = ViewPager2.ORIENTATION_HORIZONTAL
             adapter = pagerAdapter
             offscreenPageLimit = if (pagerAdapter.itemCount > 1) pagerAdapter.itemCount - 1 else 1
-            if (Setting.instance.rememberLastTab) {
-                val last = Setting.instance.lastPage
-                currentItem = last
-                mainActivity.switchPageChooserTo(last)
-            }
             registerOnPageChangeCallback(pageChangeListener)
         }
 
@@ -222,7 +227,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     }
 
 
-    private suspend fun reloadPages() = withContext(Dispatchers.Main) {
+    private fun reloadPages() {
         var oldPosition = binding.pager.currentItem
         if (oldPosition < 0) oldPosition = 0
 
