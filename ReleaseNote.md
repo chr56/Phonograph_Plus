@@ -1,4 +1,4 @@
-## {{version:0.7.1-beta1}} {{versionCode:610}} {{date:1688796000}} {{channel:preview}}
+## {{version:0.7.1}} {{versionCode:610}} {{date:1688875000}} {{channel:stable}}
 
 ### {{note:en}}
 - Note: you may need to process AppIntro again
