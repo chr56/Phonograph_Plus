@@ -23,10 +23,8 @@ import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.mechanism.StatusBarLyric
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.NowPlayingScreenConfig
+import player.phonograph.mechanism.setting.StyleConfig
 import player.phonograph.mechanism.setting.StyleConfig.THEME_AUTO
-import player.phonograph.mechanism.setting.StyleConfig.THEME_BLACK
-import player.phonograph.mechanism.setting.StyleConfig.THEME_DARK
-import player.phonograph.mechanism.setting.StyleConfig.THEME_LIGHT
 import player.phonograph.settings.*
 import player.phonograph.ui.compose.components.ColorCircle
 import player.phonograph.ui.dialogs.ClickModeSettingDialog
@@ -85,10 +83,8 @@ import android.os.Build.VERSION_CODES.S
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @Composable
 fun PhonographPreferenceScreen() {
@@ -390,29 +386,26 @@ private fun LibraryCategoriesSetting() {
 @Composable
 private fun GeneralThemeSetting() {
     val context = LocalContext.current
-    ListPref(
-        titleRes = R.string.pref_title_general_theme,
-        options =
-        OptionGroupModel(
-            key = GENERAL_THEME,
-            optionsValue = listOf(
-                THEME_AUTO,
-                THEME_DARK,
-                THEME_BLACK,
-                THEME_LIGHT,
-            ),
-            optionsStringRes = listOf(
-                R.string.auto_theme_name,
-                R.string.dark_theme_name,
-                R.string.black_theme_name,
-                R.string.light_theme_name,
-            )
-        ),
-        onChange = { _, _ ->
-            delay(200)
-            withContext(Dispatchers.Main) {
-                (context as? Activity)?.recreate()
+
+    class GeneralThemeState(val context: Context) : SettingValueState<Int> {
+
+        override var value: Int
+            get() = StyleConfig.values.indexOf(StyleConfig.generalTheme(context))
+            set(value) {
+                StyleConfig.setGeneralTheme(StyleConfig.values[value])
             }
+
+        override fun reset() {
+            StyleConfig.setGeneralTheme(THEME_AUTO)
+        }
+    }
+
+    ListPrefImpl(
+        titleRes = R.string.pref_title_general_theme,
+        items = remember { StyleConfig.names(context) },
+        state = GeneralThemeState(context),
+        onItemSelected = { _, _ ->
+            (context as? Activity)?.recreate()
         }
     )
 }
