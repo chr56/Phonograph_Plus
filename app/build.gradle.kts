@@ -45,14 +45,13 @@ android {
         versionCode = 610
         versionName = "0.7.1"
 
-        buildConfigField(
-            type = "String",
-            name = "GIT_COMMIT_HASH",
-            value = "\"${getGitHash(false)}\""
-        )
+
         setProperty("archivesBaseName", "PhonographPlus_$versionName")
 
         proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
+
+
+        manifestPlaceholders["GIT_COMMIT_HASH"] = getGitHash(false)
     }
 
     signingConfigs {

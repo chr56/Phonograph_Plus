@@ -274,6 +274,9 @@
         <meta-data
             android:name="XStatusBarLyric"
             android:value="true" />
+        <meta-data
+            android:name="GitCommitHash"
+            android:value="${GIT_COMMIT_HASH}" />
 
 
     </application>

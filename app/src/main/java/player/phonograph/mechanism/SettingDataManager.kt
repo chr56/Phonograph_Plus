@@ -7,11 +7,11 @@ package player.phonograph.mechanism
 import mt.pref.ThemeColor
 import okio.BufferedSink
 import player.phonograph.App
-import player.phonograph.BuildConfig.GIT_COMMIT_HASH
 import player.phonograph.BuildConfig.VERSION_CODE
 import player.phonograph.R
 import player.phonograph.settings.dataStore
 import player.phonograph.util.FileUtil.saveToFile
+import player.phonograph.util.gitRevisionHash
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import androidx.datastore.preferences.core.Preferences
@@ -45,7 +45,7 @@ object SettingDataManager {
     suspend fun exportSettings(uri: Uri, context: Context): Boolean =
         try {
             val prefs = rawMainPreference(context)
-            val model = serializedPref(prefs)
+            val model = serializedPref(context, prefs)
             val content = parser.encodeToString(model)
             saveToFile(uri, content, context.contentResolver)
             true
@@ -57,7 +57,7 @@ object SettingDataManager {
     suspend fun exportSettings(sink: BufferedSink, context: Context): Boolean =
         try {
             val prefs = rawMainPreference(context)
-            val model = serializedPref(prefs)
+            val model = serializedPref(context, prefs)
             val content = parser.encodeToString(model)
             sink.writeString(content, Charsets.UTF_8)
             true
@@ -77,14 +77,14 @@ object SettingDataManager {
     fun importSetting(inputStream: InputStream, context: Context): Boolean =
         loadSettings(inputStream, context)
 
-    private fun serializedPref(prefs: Map<Preferences.Key<*>, Any?>): SettingExport {
+    private fun serializedPref(context: Context, prefs: Map<Preferences.Key<*>, Any?>): SettingExport {
         val content = JsonObject(
             prefs.mapKeys { it.key.name }.mapValues { serializedValue(it.value) }
         )
         return SettingExport(
             VERSION,
             VERSION_CODE,
-            GIT_COMMIT_HASH,
+            gitRevisionHash(context),
             content
         )
     }

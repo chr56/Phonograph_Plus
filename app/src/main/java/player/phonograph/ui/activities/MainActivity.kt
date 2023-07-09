@@ -49,6 +49,7 @@ import player.phonograph.ui.dialogs.ScanMediaFolderDialog
 import player.phonograph.ui.dialogs.UpgradeDialog
 import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.util.debug
+import player.phonograph.util.currentVersionCode
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.theme.getTintedDrawable
@@ -432,7 +433,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
     private fun versionCheck() {
         try {
-            val currentVersion = packageManager.getPackageInfo(packageName, 0).versionCode
+            val currentVersion = currentVersionCode(this)
             val previousVersion = Setting.instance.previousVersion
 
             if (currentVersion > previousVersion) {
