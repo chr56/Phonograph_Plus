@@ -448,13 +448,7 @@ class MusicService : Service() {
         }
     }
 
-    internal fun requireRefreshMetadata() {
-        mediaSessionController.updateMetaData(
-            queueManager.currentSong,
-            (queueManager.currentSongPosition + 1).toLong(),
-            queueManager.playingQueue.size.toLong(),
-            true
-        )
+    internal fun requireRefreshMediaSessionState() {
         mediaSessionController.updatePlaybackState(
             controller.isPlaying(), controller.getSongProgressMillis().toLong()
         )
