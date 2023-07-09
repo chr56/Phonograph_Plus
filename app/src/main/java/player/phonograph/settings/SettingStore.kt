@@ -227,8 +227,6 @@ class Setting {
 
     var useLegacyDetailDialog: Boolean by booleanPref(USE_LEGACY_DETAIL_DIALOG, false)
 
-    // Changelog
-    var previousVersion: Int by intPref(PREVIOUS_VERSION, -1)
     //endregion
 
     companion object {
@@ -425,10 +423,6 @@ class SettingFlowStore(context: Context) {
     val useLegacyDetailDialog: Flow<Boolean>
         get() = from(booleanPreferencesKey(USE_LEGACY_DETAIL_DIALOG), false)
 
-    // Changelog
-    val previousVersion: Flow<Int>
-        get() = from(intPreferencesKey(PREVIOUS_VERSION), -1)
-
     //endregion
 
     private val ds = context.dataStore
@@ -511,10 +505,8 @@ const val USE_LEGACY_LIST_FILES_IMPL = "use_legacy_list_files_impl"
 const val PLAYLIST_FILES_OPERATION_BEHAVIOUR = "playlist_files_operation_behaviour"
 const val USE_LEGACY_DETAIL_DIALOG = "use_legacy_detail_dialog"
 
-// version
-const val PREVIOUS_VERSION = "last_changelog_version"
-
 // unused & deprecated
+const val PREVIOUS_VERSION = "last_changelog_version"
 const val FORCE_SQUARE_ALBUM_COVER = "force_square_album_art"
 const val IGNORE_UPGRADE_VERSION_CODE = "ignore_upgrade_version_code"
 const val IGNORE_MEDIA_STORE_ARTWORK = "ignore_media_store_artwork"

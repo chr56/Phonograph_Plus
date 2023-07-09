@@ -434,7 +434,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
     private fun versionCheck() {
         try {
             val currentVersion = currentVersionCode(this)
-            val previousVersion = Setting.instance.previousVersion
+            val previousVersion = PrerequisiteSetting.instance(this).previousVersion
 
             if (currentVersion > previousVersion) {
                 ChangelogDialog.create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
