@@ -38,17 +38,14 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
-import java.io.Closeable
 import androidx.core.app.NotificationCompat as XNotificationCompat
 import android.app.Notification as OSNotification
 
-class PlayingNotificationManger(private val service: MusicService) : Closeable {
+class PlayingNotificationManger(private val service: MusicService) {
 
     private var notificationManager: NotificationManager =
         service.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     private var notificationBuilder: XNotificationCompat.Builder
-
-    private var coverLoader: CoverLoader = CoverLoader(service)
 
     init {
         notificationBuilder = XNotificationCompat.Builder(service, NOTIFICATION_CHANNEL_ID)
@@ -61,10 +58,6 @@ class PlayingNotificationManger(private val service: MusicService) : Closeable {
             .setCategory(XNotificationCompat.CATEGORY_TRANSPORT)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) createNotificationChannel()
-    }
-
-    override fun close() {
-        coverLoader.terminate()
     }
 
     private lateinit var impl: Impl
@@ -146,7 +139,7 @@ class PlayingNotificationManger(private val service: MusicService) : Closeable {
                 .setContentText(song.artistName)
                 .setSubText(song.albumName)
                 .setOngoing(isPlaying)
-                .setLargeIcon(coverLoader.defaultCover)
+                .setLargeIcon(service.coverLoader.defaultCover)
                 .clearActions()
                 .addAction(previousAction)
                 .addAction(playPauseAction)
@@ -165,7 +158,7 @@ class PlayingNotificationManger(private val service: MusicService) : Closeable {
 
             if (Build.VERSION.SDK_INT < VERSION_SET_COVER_USING_METADATA) {
                 request?.dispose()
-                request = coverLoader.load(song) { bitmap: Bitmap?, paletteColor: Int ->
+                request = service.coverLoader.load(song) { bitmap: Bitmap?, paletteColor: Int ->
                     if (bitmap != null) {
                         notificationBuilder
                             .setLargeIcon(bitmap)
@@ -230,7 +223,7 @@ class PlayingNotificationManger(private val service: MusicService) : Closeable {
 
             // then try to load cover image
             request?.dispose()
-            request = coverLoader.load(song) { bitmap: Bitmap?, backgroundColor: Int ->
+            request = service.coverLoader.load(song) { bitmap: Bitmap?, backgroundColor: Int ->
                 if (bitmap != null) {
                     notificationLayout.setImageViewBitmap(R.id.image, bitmap)
                     notificationLayoutBig.setImageViewBitmap(R.id.image, bitmap)
@@ -428,7 +421,7 @@ class PlayingNotificationManger(private val service: MusicService) : Closeable {
 
         if (Build.VERSION.SDK_INT >= VERSION_SET_COVER_USING_METADATA) {
             request?.dispose()
-            request = coverLoader.load(song) { bitmap: Bitmap?, _ ->
+            request = service.coverLoader.load(song) { bitmap: Bitmap?, _ ->
                 if (bitmap != null) {
                     metaData.putBitmap(METADATA_KEY_ALBUM_ART, bitmap)
                     mediaSession.setMetadata(metaData.build())
@@ -478,6 +471,6 @@ class PlayingNotificationManger(private val service: MusicService) : Closeable {
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "playing_notification"
         private const val NOTIFICATION_ID = 1
-        private const val VERSION_SET_COVER_USING_METADATA = Build.VERSION_CODES.R
+        const val VERSION_SET_COVER_USING_METADATA = Build.VERSION_CODES.R
     }
 }

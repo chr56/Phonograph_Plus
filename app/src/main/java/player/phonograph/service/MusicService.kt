@@ -16,6 +16,7 @@ import player.phonograph.appwidgets.AppWidgetSmall
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.repo.database.HistoryStore
+import player.phonograph.service.notification.CoverLoader
 import player.phonograph.service.notification.PlayingNotificationManger
 import player.phonograph.service.player.MSG_NOW_PLAYING_CHANGED
 import player.phonograph.service.player.PlayerController
@@ -75,6 +76,8 @@ class MusicService : Service() {
 
     private val mediaStoreObserverUtil = MediaStoreObserverUtil()
 
+    lateinit var coverLoader: CoverLoader
+
     override fun onCreate() {
         super.onCreate()
 
@@ -89,6 +92,7 @@ class MusicService : Service() {
         controller.addObserver(playerStateObserver)
 
         // notifications & media session
+        coverLoader = CoverLoader(this)
         // _playNotificationManager = PlayingNotificationManger(this)
         playNotificationManager.setupMediaSession(initMediaSessionCallback())
         playNotificationManager.setUpNotification()
@@ -215,7 +219,7 @@ class MusicService : Service() {
         isDestroyed = true
         playNotificationManager.mediaSession.isActive = false
         playNotificationManager.removeNotification()
-        playNotificationManager.close()
+        coverLoader.terminate()
         closeAudioEffectSession()
         playNotificationManager.mediaSession.release()
         unregisterReceiver(widgetIntentReceiver)
