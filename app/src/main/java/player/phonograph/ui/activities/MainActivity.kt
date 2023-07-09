@@ -115,8 +115,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 val showUpgradeDialog = intent.getBooleanExtra(UPGRADABLE, false)
                 if (showUpgradeDialog) {
                     showUpgradeDialog(intent.getParcelableExtra(VERSION_INFO) as? VersionCatalog)
-                } else {
-                    checkUpdate()
                 }
                 versionCheck()
                 lifecycleScope.launch(Dispatchers.Main) {
@@ -400,7 +398,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
     }
 
     private fun checkUpdate() {
-        if (!Setting.instance.checkUpgradeAtStartup) return
         if (!PrerequisiteSetting.instance(this).introShown) {
             warning(TAG, "Upgrade check was blocked, because AppIntro not shown (auto check requires user opt-in)!")
             return
@@ -443,6 +440,13 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
             val dynamicShortcutManager = DynamicShortcutManager(this)
             dynamicShortcutManager.initDynamicShortcuts()
             dynamicShortcutManager.updateDynamicShortcuts()
+        }
+        // check upgrade
+        val store = SettingFlowStore(this)
+        lifecycleScope.launch {
+            store.checkUpgradeAtStartup.collect { value ->
+                if (value) checkUpdate()
+            }
         }
     }
 
