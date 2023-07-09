@@ -53,6 +53,9 @@ android {
         setProperty("archivesBaseName", "PhonographPlus_$versionName")
 
         proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
+
+
+        manifestPlaceholders["GIT_COMMIT_HASH"] = getGitHash(false)
     }
 
     signingConfigs {
