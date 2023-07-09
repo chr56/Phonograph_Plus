@@ -14,31 +14,25 @@
 
 package player.phonograph.util.text
 
+import player.phonograph.util.currentVersionCode
+import player.phonograph.util.currentVersionName
+import player.phonograph.util.gitRevisionHash
+import androidx.annotation.IntRange
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
 import android.os.Build
-import androidx.annotation.IntRange
-import player.phonograph.BuildConfig
 import java.util.*
 
 @SuppressLint("ObsoleteSdkInt")
 fun getDeviceInfo(context: Context): String {
 
     // App
-    val pm: PackageManager = context.packageManager
-    val packageInfo: PackageInfo? = pm.getPackageInfo(context.packageName, PackageManager.GET_ACTIVITIES)
 
-    var packageName: String = "null"
-    var versionName: String = "null"
-    var versionCode: String = "null"
-    packageInfo?.let {
-        versionName = packageInfo.versionName
-        packageName = packageInfo.packageName
-        versionCode = packageInfo.versionCode.toString()
-    }
-    val gitCommitHash: String = BuildConfig.GIT_COMMIT_HASH.substring(0, 20)
+    val packageName: String = context.packageName
+    val versionName: String = currentVersionName(context)
+    val versionCode: String = currentVersionCode(context).toString()
+
+    val gitCommitHash: String = gitRevisionHash(context).substring(0, 20)
     val appLanguage: String = Locale.getDefault().language
 
     // os

@@ -4,7 +4,6 @@ import de.psdev.licensesdialog.LicensesDialog
 import lib.phonograph.activity.ToolbarActivity
 import lib.phonograph.misc.NoticesProcessor
 import mt.tint.setActivityToolbarColorAuto
-import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.databinding.ActivityAboutBinding
 import player.phonograph.mechanism.Update
@@ -14,15 +13,15 @@ import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.DebugDialog
 import player.phonograph.ui.dialogs.ReportIssueDialog
 import player.phonograph.ui.dialogs.UpgradeDialog
+import player.phonograph.util.currentVersionName
+import player.phonograph.util.gitRevisionHash
 import player.phonograph.util.reportError
 import player.phonograph.util.theme.nightMode
 import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
@@ -119,22 +118,13 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
 
     @Keep
     private fun setUpAppVersion() {
-        appVersion.text = getCurrentVersionName(this)
+        appVersion.text = currentVersionName(this)
         try {
-            appVersionHash.text = BuildConfig.GIT_COMMIT_HASH.substring(0, 8)
+            appVersionHash.text = gitRevisionHash(this).substring(0, 8)
             appVersionHash.visibility = View.VISIBLE
         } catch (e: Exception) {
             appVersionHash.visibility = View.INVISIBLE
         }
-    }
-
-    private fun getCurrentVersionName(context: Context): String {
-        try {
-            return context.packageManager.getPackageInfo(context.packageName, 0).versionName
-        } catch (e: PackageManager.NameNotFoundException) {
-            e.printStackTrace()
-        }
-        return "Unknown"
     }
 
     private fun setUpOnClickListeners() {
