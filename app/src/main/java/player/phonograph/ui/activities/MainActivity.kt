@@ -199,19 +199,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 onClick {
                     Handler(Looper.getMainLooper()).postDelayed(
                         {
-                            val themeSetting = StyleConfig.generalTheme(this@MainActivity)
-                            if (themeSetting == R.style.Theme_Phonograph_Auto) {
-                                Toast.makeText(
-                                    activity, R.string.auto_mode_on, Toast.LENGTH_SHORT
-                                ).show()
+                            val result = StyleConfig.toggleTheme(this@MainActivity)
+                            if (!result) {
+                                Toast.makeText(activity, R.string.auto_mode_on, Toast.LENGTH_SHORT).show()
                             } else {
-                                when (themeSetting) {
-                                    R.style.Theme_Phonograph_Light ->
-                                        StyleConfig.setGeneralTheme("dark")
-
-                                    R.style.Theme_Phonograph_Dark, R.style.Theme_Phonograph_Black ->
-                                        StyleConfig.setGeneralTheme("light")
-                                }
                                 recreate()
                             }
                         }, 200

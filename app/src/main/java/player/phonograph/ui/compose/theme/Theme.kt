@@ -14,6 +14,7 @@ import player.phonograph.mechanism.setting.StyleConfig.THEME_DARK
 import player.phonograph.mechanism.setting.StyleConfig.THEME_LIGHT
 import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.textColorOn
+import player.phonograph.util.theme.systemDarkmode
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
@@ -34,7 +35,7 @@ import android.content.Context
 fun PhonographTheme(content: @Composable () -> Unit) {
 
     val previewMode = LocalInspectionMode.current
-    val colors = when (Setting.instance.themeString) {
+    val colors = when (StyleConfig.generalTheme(LocalContext.current)) {
         THEME_AUTO  -> colorAuto(previewMode, LocalContext.current)
         THEME_DARK  -> colorsDark(previewMode)
         THEME_BLACK -> colorsBlack(previewMode)
@@ -52,7 +53,7 @@ fun PhonographTheme(content: @Composable () -> Unit) {
 
 
 private fun colorAuto(previewMode: Boolean, context: Context) =
-    if (StyleConfig.systemDarkmode(context.resources)) {
+    if (systemDarkmode(context.resources)) {
         colorsDark(previewMode)
     } else {
         colorsLight(previewMode)
