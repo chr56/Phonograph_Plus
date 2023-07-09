@@ -47,10 +47,6 @@ val Context.dataStore: DataStore<Preferences>
 class Setting {
     //region Preferences
 
-    // Theme and Color
-    var themeString: String by stringPref(GENERAL_THEME, StyleConfig.THEME_AUTO)
-    var enableMonet: Boolean by booleanPref(ENABLE_MONET, false)
-
     // Appearance
     var homeTabConfigJsonString: String by stringPref(HOME_TAB_CONFIG, "")
     var coloredNotification: Boolean by booleanPref(COLORED_NOTIFICATION, true)
@@ -252,12 +248,6 @@ class SettingFlowStore(context: Context) {
 
     //region Preferences
 
-    // Theme and Color
-    val themeString: Flow<String>
-        get() = from(stringPreferencesKey(GENERAL_THEME), StyleConfig.THEME_AUTO)
-    val enableMonet: Flow<Boolean>
-        get() = from(booleanPreferencesKey(ENABLE_MONET), false)
-
     // Appearance
     val homeTabConfigJsonString: Flow<String>
         get() = from(stringPreferencesKey(HOME_TAB_CONFIG), "")
@@ -434,8 +424,6 @@ class SettingFlowStore(context: Context) {
 //region Keys
 
 // Appearance
-const val GENERAL_THEME = "general_theme"
-const val ENABLE_MONET = "enable_monet"
 const val HOME_TAB_CONFIG = "home_tab_config"
 const val COLORED_NOTIFICATION = "colored_notification"
 const val CLASSIC_NOTIFICATION = "classic_notification"
