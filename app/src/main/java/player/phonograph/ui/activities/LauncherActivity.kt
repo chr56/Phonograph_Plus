@@ -4,7 +4,10 @@
 
 package player.phonograph.ui.activities
 
+import player.phonograph.App
+import player.phonograph.mechanism.migrate.migrate
 import player.phonograph.settings.PrerequisiteSetting
+import player.phonograph.util.currentVersionCode
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -26,7 +29,14 @@ class LauncherActivity : Activity() {
         if (!PrerequisiteSetting.instance(this).introShown) {
             gotoIntro()
         } else {
+            checkMigrate()
             gotoMainActivity()
         }
+    }
+
+    private fun checkMigrate() {
+        val currentVersion = currentVersionCode(this)
+        val previousVersion = PrerequisiteSetting.instance(this).previousVersion
+        migrate(App.instance, previousVersion, currentVersion)
     }
 }

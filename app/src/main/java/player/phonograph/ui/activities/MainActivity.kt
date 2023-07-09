@@ -15,7 +15,6 @@ import mt.tint.viewtint.setItemIconColors
 import mt.tint.viewtint.setItemTextColors
 import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
-import player.phonograph.App
 import player.phonograph.BuildConfig
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
@@ -27,13 +26,11 @@ import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.mechanism.Update
-import player.phonograph.mechanism.migrate.migrate
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.StyleConfig
 import player.phonograph.model.infoString
 import player.phonograph.model.pages.Pages
 import player.phonograph.model.version.VersionCatalog
-import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.repo.mediastore.loaders.SongLoader.all
 import player.phonograph.service.MusicPlayerRemote
@@ -48,8 +45,8 @@ import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.ScanMediaFolderDialog
 import player.phonograph.ui.dialogs.UpgradeDialog
 import player.phonograph.ui.fragments.HomeFragment
-import player.phonograph.util.debug
 import player.phonograph.util.currentVersionCode
+import player.phonograph.util.debug
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.theme.getTintedDrawable
@@ -61,7 +58,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.whenStarted
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -432,19 +428,11 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
     }
 
     private fun versionCheck() {
-        try {
-            val currentVersion = currentVersionCode(this)
-            val previousVersion = PrerequisiteSetting.instance(this).previousVersion
+        val currentVersion = currentVersionCode(this)
+        val previousVersion = PrerequisiteSetting.instance(this).previousVersion
 
-            if (currentVersion > previousVersion) {
-                ChangelogDialog.create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
-            }
-
-            lifecycleScope.launch(Dispatchers.IO) {
-                migrate(App.instance, previousVersion, currentVersion)
-            }
-        } catch (e: PackageManager.NameNotFoundException) {
-            ErrorNotification.postErrorNotification(e, "Package Name Can't Be Found!")
+        if (currentVersion > previousVersion) {
+            ChangelogDialog.create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
         }
     }
 
