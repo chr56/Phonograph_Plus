@@ -385,20 +385,21 @@ private fun LibraryCategoriesSetting() {
 
 @Composable
 private fun GeneralThemeSetting() {
-    val context = LocalContext.current
 
     class GeneralThemeState(val context: Context) : SettingValueState<Int> {
 
         override var value: Int
             get() = StyleConfig.values.indexOf(StyleConfig.generalTheme(context))
             set(value) {
-                StyleConfig.setGeneralTheme(StyleConfig.values[value])
+                StyleConfig.setGeneralTheme(context, StyleConfig.values[value])
             }
 
         override fun reset() {
-            StyleConfig.setGeneralTheme(THEME_AUTO)
+            StyleConfig.setGeneralTheme(context, THEME_AUTO)
         }
     }
+
+    val context = LocalContext.current
 
     ListPrefImpl(
         titleRes = R.string.pref_title_general_theme,

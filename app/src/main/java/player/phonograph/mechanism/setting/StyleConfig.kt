@@ -4,7 +4,6 @@
 
 package player.phonograph.mechanism.setting
 
-import player.phonograph.App
 import player.phonograph.R
 import androidx.annotation.StringDef
 import androidx.annotation.StyleRes
@@ -21,8 +20,8 @@ object StyleConfig {
     fun generalTheme(context: Context): String =
         sharedPreferences(context).getString(KEY_THEME, THEME_AUTO) ?: THEME_AUTO
 
-    fun setGeneralTheme(@GeneralTheme theme: String) {
-        sharedPreferences(App.instance).edit().putString(KEY_THEME, theme).apply()
+    fun setGeneralTheme(context: Context, @GeneralTheme theme: String) {
+        sharedPreferences(context).edit().putString(KEY_THEME, theme).apply()
     }
 
     @StyleRes
@@ -44,8 +43,8 @@ object StyleConfig {
         val themeSetting = generalThemeStyle(context)
         return if (themeSetting != R.style.Theme_Phonograph_Auto) {
             when (themeSetting) {
-                R.style.Theme_Phonograph_Light                                -> setGeneralTheme(THEME_DARK)
-                R.style.Theme_Phonograph_Dark, R.style.Theme_Phonograph_Black -> setGeneralTheme(THEME_LIGHT)
+                R.style.Theme_Phonograph_Light                                -> setGeneralTheme(context, THEME_DARK)
+                R.style.Theme_Phonograph_Dark, R.style.Theme_Phonograph_Black -> setGeneralTheme(context, THEME_LIGHT)
             }
             true
         } else {
