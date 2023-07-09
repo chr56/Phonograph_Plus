@@ -9,6 +9,7 @@ import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.model.pages.Pages
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.settings.PrerequisiteSetting
+import player.phonograph.util.debug
 import player.phonograph.util.reportError
 import androidx.preference.PreferenceManager
 import android.content.Context
@@ -25,18 +26,24 @@ fun migrate(context: Context, from: Int, to: Int) {
         )
     }
 
-    Log.i(TAG, "Start Migrate: $from -> $to")
+    if (from != to) {
+        Log.i(TAG, "Start Migration: $from -> $to")
 
-    MigrateOperator(context, from, to).apply {
-        migrate(SortOrderMigration())
-        migrate(QueuePreferenceMigration())
-        migrate(PagesMigration())
-        migrate(LockScreenCoverMigration())
+        MigrateOperator(context, from, to).apply {
+            migrate(SortOrderMigration())
+            migrate(QueuePreferenceMigration())
+            migrate(PagesMigration())
+            migrate(LockScreenCoverMigration())
+        }
+
+        Log.i(TAG, "End Migration")
+
+        PrerequisiteSetting.instance(context).previousVersion = to
+    } else {
+        debug {
+            Log.i(TAG, "No Need to Migrate")
+        }
     }
-
-    Log.i(TAG, "End Migrate")
-
-    PrerequisiteSetting.instance(context).previousVersion = to
 }
 
 /**
@@ -44,7 +51,7 @@ fun migrate(context: Context, from: Int, to: Int) {
  */
 private abstract class Migration(
     val introduced: Int,
-    val deprecated: Int = Int.MAX_VALUE
+    val deprecated: Int = Int.MAX_VALUE,
 ) {
 
     /**
@@ -71,7 +78,7 @@ private abstract class Migration(
 private class MigrateOperator(
     private val context: Context,
     private val from: Int,
-    private val to: Int
+    private val to: Int,
 ) {
     fun migrate(migration: Migration) =
         migration.tryMigrate(context, from, to)
