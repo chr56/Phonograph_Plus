@@ -1,35 +1,19 @@
 {
   "versions": [
     {
-      "channel": "preview",
-      "versionName": "0.7.1-beta1",
+      "channel": "stable",
+      "versionName": "0.7.1",
       "versionCode": 610,
-      "date": 1688796000,
+      "date": 1688875000,
       "link": [
         {
           "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.7.1-beta1"
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.7.1"
         }
       ],
       "releaseNote": {
         "zh-cn": "<ol><li>注意 可能需要再次进行一次介绍页流程</li><li>新增 支持选择其他 Monet 色彩</li><li>修改 Monet颜色不会覆盖原先配置</li><li>修复 搜索结果中点击任意艺术家时崩溃</li><li>改进 启动时性能</li><li>翻译 更新日语 (by aorinngo), 意大利语(by gdonisi)</li><li>开发 清理代码</li></ol>",
         "en": "<ol><li>Note: you may need to process AppIntro again</li><li>New: support choosing different monet colors</li><li>Modify: Monet color would not override your configured colors</li><li>Fix: crash when clicking any artist in Search Result</li><li>Improve: app start-up performance</li><li>Translation: update Japanese (by aorinngoDo), Italian (by gdonisi)</li><li>Development: clean up codes</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "0.7.1-dev1",
-      "versionCode": 601,
-      "date": 1688200000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.7.1-dev1"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<b>注意 可能需要再次进行一次介绍页流程</b><ol><li>修复 搜索结果中点击任意艺术家时崩溃</li><li>改进 启动时性能</li><li>修改 Monet颜色不会覆盖原先配置</li><li>开发 清理代码</li></ol>",
-        "en": "<b>Note: you may need to process AppIntro again</b><ol><li>Fix: crash when clicking any artist in Search Result</li><li>Improve: app start-up performance</li><li>Modify: Monet color would not override your configured colors</li><li>Development: clean up codes</li></ol>"
       }
     },
     {
@@ -65,22 +49,6 @@
       }
     },
     {
-      "channel": "stable",
-      "versionName": "0.6.2.1",
-      "versionCode": 521,
-      "date": 1682260000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.6.2.1"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>注意 \"锁屏上显示专辑封面\"功能即将移除(此功能理应由系统负责)</li><li>修复 倒退到起始处后，通知进度条不刷新</li><li>修改 对于Android R (11)及以上，一律忽略设置 \"锁屏上显示专辑封面\"，并修复媒体通知的图片的长宽比异常（功能冲突）</li><li>改进 媒体通知的图像质量[仅限Android T]</li><li>开发 对于Android R (11)及以上，使用 MediaSession Metadata 来设置通知图片</li><li>开发 重构媒体通知的图片加载机制</li></ol>",
-        "en": "<ol><li>Note: Feature \"Show Album Cover on Lockscreen\" would be removed in next versions! (Applications should not be responsible for this!)</li><li>Fix: Progress bar on Notification would not be refreshed after rewinding to beginning</li><li>Modify: On Android R (11) and above, always ignore preference \"Show Album Cover on Lockscreen\", to fix incorrect aspect ratio of Notification Image (due to conflict)</li><li>Improve: Image quality on Media Notification [for Android T]</li><li>Development: On Android R (11) and above, set Notification Image via setting MediaSession Metadata Album Artwork</li><li>Development: refactor Media Notification Image loader mechanises</li></ol>"
-      }
-    },
-    {
       "channel": "lts",
       "versionName": "0.3.5.4-LTS",
       "versionCode": 317,
@@ -94,6 +62,22 @@
       "releaseNote": {
         "zh-cn": "<ol><li>修复 在播放队列中, 移动相同歌曲时崩溃</li><li>修复 排序方式“时长”无效</li><li>翻译 更新 俄语(by PhotonGilbert and ElinaAndreeva), 土耳其语(by Erdem Özdemir), 意大利语(by gdonisi and ndrea Enzo Lattmann), 德语(worldtest), 波兰语(Robert Biś), 日语(by aorinngo)</li></ol>",
         "en": "<ol><li>Fix: crash when moving same songs in Playing Queue</li><li>Fix: sort mode Duration is invalid</li><li>Translation: update Russian(by PhotonGilbert and ElinaAndreeva), Turkish(by Erdem Özdemir), Italian(by gdonisi and ndrea Enzo Lattmann), German(worldtest), Polish(Robert Biś), Japanese(by aorinngo)</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
+      "versionName": "0.7.1-beta1",
+      "versionCode": 610,
+      "date": 1688796000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.7.1-beta1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>注意 可能需要再次进行一次介绍页流程</li><li>新增 支持选择其他 Monet 色彩</li><li>修改 Monet颜色不会覆盖原先配置</li><li>修复 搜索结果中点击任意艺术家时崩溃</li><li>改进 启动时性能</li><li>翻译 更新日语 (by aorinngo), 意大利语(by gdonisi)</li><li>开发 清理代码</li></ol>",
+        "en": "<ol><li>Note: you may need to process AppIntro again</li><li>New: support choosing different monet colors</li><li>Modify: Monet color would not override your configured colors</li><li>Fix: crash when clicking any artist in Search Result</li><li>Improve: app start-up performance</li><li>Translation: update Japanese (by aorinngoDo), Italian (by gdonisi)</li><li>Development: clean up codes</li></ol>"
       }
     }
   ]
