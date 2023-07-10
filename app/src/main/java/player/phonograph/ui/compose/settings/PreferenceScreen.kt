@@ -39,7 +39,6 @@ import player.phonograph.util.warning
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -816,23 +815,19 @@ private fun header(res: Int) = @Composable {
 }
 
 private fun title(res: Int) = @Composable {
-    BoxWithConstraints {
-        Text(
-            text = stringResource(id = res),
-            modifier = Modifier.widthIn(max = maxWidth * 4 / 5)
-        )
-    }
+    Text(
+        text = stringResource(id = res),
+        modifier = Modifier.fillMaxWidth()
+    )
 }
 
 private fun subtitle(res: Int): (@Composable () -> Unit)? =
     if (res != 0) {
         @Composable {
-            BoxWithConstraints {
-                Text(
-                    text = stringResource(id = res),
-                    modifier = Modifier.widthIn(max = maxWidth * 4 / 5)
-                )
-            }
+            Text(
+                text = stringResource(id = res),
+                modifier = Modifier
+            )
         }
     } else {
         null
@@ -841,12 +836,10 @@ private fun subtitle(res: Int): (@Composable () -> Unit)? =
 private fun subtitle(text: MutableState<String?>): (@Composable () -> Unit)? =
     if (text.value != null) {
         @Composable {
-            BoxWithConstraints {
-                Text(
-                    text = text.value ?: "",
-                    modifier = Modifier.widthIn(max = maxWidth * 4 / 5)
-                )
-            }
+            Text(
+                text = text.value ?: "",
+                modifier = Modifier
+            )
         }
     } else {
         null
