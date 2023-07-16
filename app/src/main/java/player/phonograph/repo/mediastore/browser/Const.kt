@@ -1,0 +1,21 @@
+/*
+ *  Copyright (c) 2022~2023 chr_56
+ */
+
+package player.phonograph.repo.mediastore.browser
+
+const val MEDIA_BROWSER_ROOT = "ROOT"
+const val MEDIA_BROWSER_ROOT_EMPTY = "__"
+
+const val MEDIA_BROWSER_SEPARATOR = "//"
+const val MEDIA_BROWSER_CATEGORY_SEPARATOR = "@"
+
+const val MEDIA_BROWSER_SONGS = "SONGS//"
+const val MEDIA_BROWSER_SONGS_QUEUE = "SONGS@QUEUE//"
+const val MEDIA_BROWSER_SONGS_FAVORITES = "SONGS@FAVORITES//"
+const val MEDIA_BROWSER_SONGS_TOP_TRACKS = "SONGS@TOP_TRACKS//"
+const val MEDIA_BROWSER_SONGS_LAST_ADDED = "SONGS@LAST_ADDED//"
+const val MEDIA_BROWSER_SONGS_HISTORY = "SONGS@HISTORY//"
+
+const val MEDIA_BROWSER_ALBUMS = "ALBUMS//"
+const val MEDIA_BROWSER_ARTISTS = "ARTISTS//"
