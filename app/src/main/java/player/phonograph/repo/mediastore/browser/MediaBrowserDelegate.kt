@@ -11,18 +11,19 @@ import player.phonograph.repo.mediastore.loaders.SongLoader
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot
 import android.content.Context
 import android.os.Bundle
+import android.os.Process
 import android.support.v4.media.MediaBrowserCompat
 import android.util.Log
-
-
 
 object MediaBrowserDelegate {
     private const val TAG = "MediaBrowser"
 
-    fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot {
-        // todo: validate package
-        return BrowserRoot(MEDIA_BROWSER_ROOT, null)
-    }
+    fun onGetRoot(context: Context, clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? =
+        if (validate(context, clientPackageName, clientUid)) {
+            BrowserRoot(MEDIA_BROWSER_ROOT, null)
+        } else {
+            null
+        }
 
     fun listChildren(path: String, context: Context): List<MediaBrowserCompat.MediaItem> {
         return when (path) {
@@ -63,5 +64,32 @@ object MediaBrowserDelegate {
         }
 
         return songs
+    }
+
+
+    // todo: validate package names & signatures
+    private fun validate(context: Context, clientPackageName: String, clientUid: Int): Boolean {
+        return if (clientUid == Process.SYSTEM_UID) {
+            true
+        } else if (checkPackageName(clientPackageName)) {
+            if (checkSignatures(context, clientPackageName)) {
+                true
+            } else {
+                Log.e(TAG, "Invalidate Signature of $clientPackageName")
+                false
+            }
+        } else {
+            Log.e(TAG, "Unknown: $clientPackageName")
+            false
+        }
+    }
+
+    private fun checkPackageName(clientPackageName: String): Boolean {
+        return true
+    }
+
+    private fun checkSignatures(context: Context, clientPackageName: String): Boolean {
+        // fetchPackageSignatures(context, clientPackageName)
+        return true
     }
 }
