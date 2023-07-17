@@ -18,7 +18,9 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PackageInfoFlags
+import android.content.pm.Signature
 import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.P
 import android.os.Build.VERSION_CODES.TIRAMISU
 
 private const val NA = "Unknown"
@@ -53,4 +55,15 @@ fun currentVersionCode(context: Context): Int {
     val packageInfo = getPackageInfo(context, 0) ?: return -1
     @Suppress("DEPRECATION")
     return packageInfo.versionCode
+}
+
+fun fetchPackageSignatures(context: Context): Array<Signature>? {
+    if (SDK_INT > P) {
+        val packageInfo = getPackageInfo(context, PackageManager.GET_SIGNING_CERTIFICATES) ?: return null
+        return packageInfo.signingInfo.apkContentsSigners
+    } else {
+        val packageInfo = getPackageInfo(context, @Suppress("DEPRECATION") PackageManager.GET_SIGNATURES) ?: return null
+        @Suppress("DEPRECATION")
+        return packageInfo.signatures
+    }
 }
