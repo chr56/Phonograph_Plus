@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.repo.mediastore.browser
+package player.phonograph.repo.browser
 
 const val MEDIA_BROWSER_ROOT = "ROOT"
 const val MEDIA_BROWSER_ROOT_EMPTY = "__"

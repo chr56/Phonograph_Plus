@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.repo.mediastore.browser
+package player.phonograph.repo.browser
 
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
