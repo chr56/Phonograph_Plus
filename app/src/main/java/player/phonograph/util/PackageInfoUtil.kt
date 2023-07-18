@@ -18,20 +18,22 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PackageInfoFlags
+import android.content.pm.Signature
 import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.P
 import android.os.Build.VERSION_CODES.TIRAMISU
 
 private const val NA = "Unknown"
 
 
-private fun getPackageInfo(context: Context, flags: Int): PackageInfo? {
+private fun getPackageInfo(context: Context, packageName: String, flags: Int): PackageInfo? {
     return try {
         val packageManager = context.packageManager
         if (SDK_INT > TIRAMISU) {
-            packageManager.getPackageInfo(context.packageName, PackageInfoFlags.of(flags.toLong()))
+            packageManager.getPackageInfo(packageName, PackageInfoFlags.of(flags.toLong()))
         } else {
             @Suppress("DEPRECATION")
-            packageManager.getPackageInfo(context.packageName, flags)
+            packageManager.getPackageInfo(packageName, flags)
         }
     } catch (e: PackageManager.NameNotFoundException) {
         e.printStackTrace()
@@ -40,17 +42,29 @@ private fun getPackageInfo(context: Context, flags: Int): PackageInfo? {
 }
 
 fun gitRevisionHash(context: Context): String {
-    val packageInfo = getPackageInfo(context, PackageManager.GET_META_DATA) ?: return NA
+    val packageInfo = getPackageInfo(context, context.packageName, PackageManager.GET_META_DATA) ?: return NA
     return packageInfo.applicationInfo.metaData.getString("GitCommitHash") ?: NA
 }
 
 fun currentVersionName(context: Context): String {
-    val packageInfo = getPackageInfo(context, 0) ?: return NA
+    val packageInfo = getPackageInfo(context, context.packageName, 0) ?: return NA
     return packageInfo.versionName
 }
 
 fun currentVersionCode(context: Context): Int {
-    val packageInfo = getPackageInfo(context, 0) ?: return -1
+    val packageInfo = getPackageInfo(context, context.packageName, 0) ?: return -1
     @Suppress("DEPRECATION")
     return packageInfo.versionCode
+}
+
+fun fetchPackageSignatures(context: Context, packageName: String): Array<Signature>? {
+    if (SDK_INT > P) {
+        val packageInfo = getPackageInfo(context, packageName, PackageManager.GET_SIGNING_CERTIFICATES) ?: return null
+        return packageInfo.signingInfo.apkContentsSigners
+    } else {
+        @Suppress("DEPRECATION")
+        val packageInfo = getPackageInfo(context, packageName, PackageManager.GET_SIGNATURES) ?: return null
+        @Suppress("DEPRECATION")
+        return packageInfo.signatures
+    }
 }
