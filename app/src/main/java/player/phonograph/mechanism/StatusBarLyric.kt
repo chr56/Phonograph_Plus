@@ -4,42 +4,52 @@
 
 package player.phonograph.mechanism
 
+import cn.lyric.getter.api.tools.EventTools
 import player.phonograph.App
 import player.phonograph.PACKAGE_NAME
 import player.phonograph.R
+import player.phonograph.service.MusicService
 import player.phonograph.settings.Setting
 import androidx.appcompat.content.res.AppCompatResources
-import android.content.Intent
+import androidx.core.graphics.drawable.toBitmap
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.Base64
-import android.util.Log
 import java.io.ByteArrayOutputStream
 import StatusBarLyric.API.StatusBarLyric as StatusBarLyricAPI
 
 object StatusBarLyric {
     // Actually, ServiceName is (music) service name, so we have no suffix (.plus.BUILD_TYPE)
-    private const val musicServiceName = PACKAGE_NAME
-    private const val useSystemMusicActive = false
-    private val icon: Drawable? = AppCompatResources.getDrawable(App.instance, R.drawable.ic_notification)
+    private const val musicServicePackageName = PACKAGE_NAME
+    private val musicServiceName = MusicService::class.java.canonicalName!!
+    private val icon: Drawable? get() = AppCompatResources.getDrawable(App.instance, R.drawable.ic_notification)
+    private val iconBase64: String? = icon?.toBase64()
 
     fun updateLyric(lyric: String) {
         if (Setting.instance.broadcastSynchronizedLyrics) {
-            if (lyricsService.hasEnable()) {
+            if (Setting.instance.useLegacyStatusBarLyricsApi) {
                 lyricsService.updateLyric(lyric)
             } else {
-                legacyUpdateLyrics(lyric)
+                EventTools.sendLyric(
+                    context = App.instance,
+                    lyric = lyric,
+                    customIcon = iconBase64 != null,
+                    base64Icon = iconBase64!!,
+                    useOwnMusicController = true,
+                    serviceName = musicServiceName,
+                    packageName = musicServicePackageName
+                )
             }
         }
     }
 
     fun stopLyric() {
         if (Setting.instance.broadcastSynchronizedLyrics) {
-            if (lyricsService.hasEnable()) {
+            if (Setting.instance.useLegacyStatusBarLyricsApi) {
                 lyricsService.stopLyric()
             } else {
-                legacyStopLyrics()
+                EventTools.stopLyric(App.instance)
             }
         }
     }
@@ -47,31 +57,15 @@ object StatusBarLyric {
      *  StatusBar Lyrics API
      */
     private val lyricsService: StatusBarLyricAPI by lazy {
-        StatusBarLyricAPI(App.instance, icon, musicServiceName, useSystemMusicActive)
+        StatusBarLyricAPI(App.instance, icon, musicServicePackageName, false)
     }
 
-    private fun legacyUpdateLyrics(lyric: String) {
-        Log.d(TAG, "use fallback api: $lyric")
-        if (lyric.isNotEmpty()) {
-            App.instance.sendBroadcast(
-                Intent().setAction("Lyric_Server")
-                    .putExtra("Lyric_Type", "app")
-                    .putExtra("Lyric_Data", lyric)
-                    .putExtra("Lyric_PackName", musicServiceName)
-                    .putExtra("Lyric_UseSystemMusicActive", useSystemMusicActive)
-                    .putExtra("Lyric_Icon", (icon as BitmapDrawable?)?.toBase64())
-            )
-        }
-    }
-
-    private fun legacyStopLyrics() {
-        App.instance.sendBroadcast(
-            Intent().setAction("Lyric_Server").putExtra("Lyric_Type", "app_stop")
-        )
-    }
-
-    private fun BitmapDrawable.toBase64(): String {
+    private fun Drawable.toBase64(): String {
         val bytes = ByteArrayOutputStream().use { out ->
+            val bitmap = when (this) {
+                is BitmapDrawable -> bitmap
+                else          -> this.toBitmap()
+            }
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
             out.toByteArray()
         }

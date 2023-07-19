@@ -410,4 +410,6 @@
     <string name="action_grant_storage_permission">授予存儲權限</string>
     <string name="action_pin">置頂</string>
     <string name="action_unpin">取消置頂</string>
+    <string name="pref_title_use_legacy_status_bar_lyrics_api">使用舊版 狀態欄歌詞 API</string>
+    <string name="pref_summary_use_legacy_status_bar_lyrics_api">關閉後則使用 LyricGetter API 而不是 (舊版) StatusBarLyrics API。若沒有升級 Xposed模塊 狀態欄歌詞 至6.x及更高版本，請務必開啟此選項。 </string>
 </resources>

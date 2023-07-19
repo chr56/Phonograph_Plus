@@ -97,6 +97,7 @@ class Setting {
     var audioDucking: Boolean by booleanPref(AUDIO_DUCKING, true)
     var enableLyrics: Boolean by booleanPref(ENABLE_LYRICS, true)
     var broadcastSynchronizedLyrics: Boolean by booleanPref(BROADCAST_SYNCHRONIZED_LYRICS, true)
+    var useLegacyStatusBarLyricsApi: Boolean by booleanPref(USE_LEGACY_STATUS_BAR_LYRICS_API, false)
     var broadcastCurrentPlayerState: Boolean by booleanPref(BROADCAST_CURRENT_PLAYER_STATE, true)
 
     // Behavior-Lyrics
@@ -312,6 +313,8 @@ class SettingFlowStore(context: Context) {
         get() = from(booleanPreferencesKey(ENABLE_LYRICS), true)
     val broadcastSynchronizedLyrics: Flow<Boolean>
         get() = from(booleanPreferencesKey(BROADCAST_SYNCHRONIZED_LYRICS), true)
+    val useLegacyStatusBarLyricsApi: Flow<Boolean>
+        get() = from(booleanPreferencesKey(USE_LEGACY_STATUS_BAR_LYRICS_API), false)
     val broadcastCurrentPlayerState: Flow<Boolean>
         get() = from(booleanPreferencesKey(BROADCAST_CURRENT_PLAYER_STATE), true)
 
@@ -449,6 +452,7 @@ const val AUDIO_DUCKING = "audio_ducking"
 const val GAPLESS_PLAYBACK = "gapless_playback"
 const val ENABLE_LYRICS = "enable_lyrics"
 const val BROADCAST_SYNCHRONIZED_LYRICS = "synchronized_lyrics_send"
+const val USE_LEGACY_STATUS_BAR_LYRICS_API = "use_legacy_status_bar_lyrics_api"
 const val BROADCAST_CURRENT_PLAYER_STATE = "broadcast_current_player_state"
 
 // Behavior-Lyrics
