@@ -11,6 +11,7 @@ import player.phonograph.R
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Setting
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.toBitmap
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -22,8 +23,8 @@ object StatusBarLyric {
     // Actually, ServiceName is (music) service name, so we have no suffix (.plus.BUILD_TYPE)
     private const val musicServicePackageName = PACKAGE_NAME
     private val musicServiceName = MusicService::class.java.canonicalName!!
-    private val icon: Drawable? = AppCompatResources.getDrawable(App.instance, R.drawable.ic_notification)
-    private val iconBase64: String? = (icon as BitmapDrawable?)?.toBase64()
+    private val icon: Drawable? get() = AppCompatResources.getDrawable(App.instance, R.drawable.ic_notification)
+    private val iconBase64: String? = icon?.toBase64()
 
     fun updateLyric(lyric: String) {
         if (Setting.instance.broadcastSynchronizedLyrics) {
@@ -59,8 +60,12 @@ object StatusBarLyric {
         StatusBarLyricAPI(App.instance, icon, musicServicePackageName, false)
     }
 
-    private fun BitmapDrawable.toBase64(): String {
+    private fun Drawable.toBase64(): String {
         val bytes = ByteArrayOutputStream().use { out ->
+            val bitmap = when (this) {
+                is BitmapDrawable -> bitmap
+                else          -> this.toBitmap()
+            }
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
             out.toByteArray()
         }
