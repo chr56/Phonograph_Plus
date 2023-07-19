@@ -26,21 +26,13 @@ object StatusBarLyric {
 
     fun updateLyric(lyric: String) {
         if (Setting.instance.broadcastSynchronizedLyrics) {
-            if (lyricsService.hasEnable()) {
-                lyricsService.updateLyric(lyric)
-            } else {
-                legacyUpdateLyrics(lyric)
-            }
+            lyricsService.updateLyric(lyric)
         }
     }
 
     fun stopLyric() {
         if (Setting.instance.broadcastSynchronizedLyrics) {
-            if (lyricsService.hasEnable()) {
-                lyricsService.stopLyric()
-            } else {
-                legacyStopLyrics()
-            }
+            lyricsService.stopLyric()
         }
     }
     /**
@@ -48,26 +40,6 @@ object StatusBarLyric {
      */
     private val lyricsService: StatusBarLyricAPI by lazy {
         StatusBarLyricAPI(App.instance, icon, musicServiceName, useSystemMusicActive)
-    }
-
-    private fun legacyUpdateLyrics(lyric: String) {
-        Log.d(TAG, "use fallback api: $lyric")
-        if (lyric.isNotEmpty()) {
-            App.instance.sendBroadcast(
-                Intent().setAction("Lyric_Server")
-                    .putExtra("Lyric_Type", "app")
-                    .putExtra("Lyric_Data", lyric)
-                    .putExtra("Lyric_PackName", musicServiceName)
-                    .putExtra("Lyric_UseSystemMusicActive", useSystemMusicActive)
-                    .putExtra("Lyric_Icon", (icon as BitmapDrawable?)?.toBase64())
-            )
-        }
-    }
-
-    private fun legacyStopLyrics() {
-        App.instance.sendBroadcast(
-            Intent().setAction("Lyric_Server").putExtra("Lyric_Type", "app_stop")
-        )
     }
 
     private fun BitmapDrawable.toBase64(): String {
