@@ -1,6 +1,22 @@
 {
   "versions": [
     {
+      "channel": "preview",
+      "versionName": "0.7.2-dev1",
+      "versionCode": 611,
+      "date": 1689770000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.7.2-dev1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>翻译 更新(巴西)葡萄牙语 (by EddieMattos)</li><li>翻译 更新芬兰语 (by Jiri Grönroos (spammemoreplease))</li><li>改进 启动时性能</li><li>开发 改进版本迁移</li><li>开发 支持从 MediaSession 回调修改循环模式和随机模式（对蓝牙设备等有用）</li><li>开发 现在将 Git Commit 哈希存储在 Manifest 的 Metadata 中</li></ol>",
+        "en": "<ol><li>Translation: update Portuguese (Brazilian) by EddieMattos</li><li>Translation: update Finnish by Jiri Grönroos (spammemoreplease)</li><li>Improve: app start-up performance</li><li>Development: improve version migration</li><li>Development: support changing repeat mode and shuffle mode from MediaSession callback (helpful for Bluetooth devices and so on)</li><li>Development: store Git commit hash in Manifest Metadata now</li></ol>"
+      }
+    },
+    {
       "channel": "stable",
       "versionName": "0.7.1",
       "versionCode": 610,
@@ -62,22 +78,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>修复 在播放队列中, 移动相同歌曲时崩溃</li><li>修复 排序方式“时长”无效</li><li>翻译 更新 俄语(by PhotonGilbert and ElinaAndreeva), 土耳其语(by Erdem Özdemir), 意大利语(by gdonisi and ndrea Enzo Lattmann), 德语(worldtest), 波兰语(Robert Biś), 日语(by aorinngo)</li></ol>",
         "en": "<ol><li>Fix: crash when moving same songs in Playing Queue</li><li>Fix: sort mode Duration is invalid</li><li>Translation: update Russian(by PhotonGilbert and ElinaAndreeva), Turkish(by Erdem Özdemir), Italian(by gdonisi and ndrea Enzo Lattmann), German(worldtest), Polish(Robert Biś), Japanese(by aorinngo)</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "0.7.1-beta1",
-      "versionCode": 610,
-      "date": 1688796000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.7.1-beta1"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>注意 可能需要再次进行一次介绍页流程</li><li>新增 支持选择其他 Monet 色彩</li><li>修改 Monet颜色不会覆盖原先配置</li><li>修复 搜索结果中点击任意艺术家时崩溃</li><li>改进 启动时性能</li><li>翻译 更新日语 (by aorinngo), 意大利语(by gdonisi)</li><li>开发 清理代码</li></ol>",
-        "en": "<ol><li>Note: you may need to process AppIntro again</li><li>New: support choosing different monet colors</li><li>Modify: Monet color would not override your configured colors</li><li>Fix: crash when clicking any artist in Search Result</li><li>Improve: app start-up performance</li><li>Translation: update Japanese (by aorinngoDo), Italian (by gdonisi)</li><li>Development: clean up codes</li></ol>"
       }
     }
   ]
