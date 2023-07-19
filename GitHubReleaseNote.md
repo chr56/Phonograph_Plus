@@ -1,25 +1,22 @@
-## **v0.7.1 2023.07.09**
-
-**Note** you may need to process AppIntro again
-**注意** 可能需要再次进行一次介绍页流程
+## **v0.7.2-dev1 2023.07.19**
 
 **Commit log**:
 
 ### EN
-1. New: support choosing different monet colors
-2. Modify: Monet color would not override your configured colors
-3. Fix: crash when clicking any artist in Search Result
-4. Improve: app start-up performance
-5. Translation: update Japanese (by aorinngoDo), Italian (by gdonisi)
-6. Development: clean up codes
+1. Translation: update Portuguese (Brazilian) by EddieMattos
+2. Translation: update Finnish by Jiri Grönroos (spammemoreplease)
+3. Improve: app start-up performance
+4. Development: improve version migration
+5. Development: support changing repeat mode and shuffle mode from MediaSession callback (helpful for Bluetooth devices and so on)
+6. Development: store Git commit hash in Manifest Metadata now
 
 
 ### ZH
-1. 新增 支持选择其他 Monet 色彩
-2. 修改 Monet颜色不会覆盖原先配置
-3. 修复 搜索结果中点击任意艺术家时崩溃
-4. 改进 启动时性能
-5. 翻译 更新日语 (by aorinngo), 意大利语(by gdonisi)
-6. 开发 清理代码
+1. 翻译 更新(巴西)葡萄牙语 (by EddieMattos)
+2. 翻译 更新芬兰语 (by Jiri Grönroos (spammemoreplease))
+3. 改进 启动时性能
+4. 开发 改进版本迁移
+5. 开发 支持从 MediaSession 回调修改循环模式和随机模式（对蓝牙设备等有用）
+6. 开发 现在将 Git Commit 哈希存储在 Manifest 的 Metadata 中
 
 
