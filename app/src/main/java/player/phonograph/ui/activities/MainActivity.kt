@@ -37,7 +37,6 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.PrerequisiteSetting
-import player.phonograph.settings.Setting
 import player.phonograph.settings.SettingFlowStore
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.compose.settings.SettingsActivity
@@ -116,7 +115,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 if (showUpgradeDialog) {
                     showUpgradeDialog(intent.getParcelableExtra(VERSION_INFO) as? VersionCatalog)
                 }
-                versionCheck()
                 lifecycleScope.launch(Dispatchers.Main) {
                     lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                         SettingFlowStore(this@MainActivity).homeTabConfigJsonString.distinctUntilChanged().collect {
@@ -416,11 +414,11 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         }
     }
 
-    private fun versionCheck() {
+    private fun checkChangelog() {
         val currentVersion = currentVersionCode(this)
-        val previousVersion = PrerequisiteSetting.instance(this).previousVersion
+        val lastChangelogVersion = PrerequisiteSetting.instance(this).lastChangelogVersion
 
-        if (currentVersion > previousVersion) {
+        if (currentVersion > lastChangelogVersion) {
             ChangelogDialog.create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
         }
     }
@@ -442,6 +440,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
             dynamicShortcutManager.initDynamicShortcuts()
             dynamicShortcutManager.updateDynamicShortcuts()
         }
+        // check changelog
+        checkChangelog()
         // check upgrade
         val store = SettingFlowStore(this)
         lifecycleScope.launch {

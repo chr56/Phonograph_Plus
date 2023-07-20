@@ -28,9 +28,16 @@ class PrerequisiteSetting(context: Context) {
             sharedPreferences.edit().putInt(PREVIOUS_VERSION, value).apply()
         }
 
+    var lastChangelogVersion: Int
+        get() = sharedPreferences.getInt(LAST_CHANGELOG_VERSION, -1)
+        set(value) {
+            sharedPreferences.edit().putInt(LAST_CHANGELOG_VERSION, value).apply()
+        }
+
     companion object {
         const val INTRO_SHOWN = "intro_shown"
-        const val PREVIOUS_VERSION = "last_changelog_version"
+        const val PREVIOUS_VERSION = "previous_version"
+        const val LAST_CHANGELOG_VERSION = "last_changelog_version"
         //region Singleton
         private var singleton: PrerequisiteSetting? = null
         fun instance(context: Context): PrerequisiteSetting {

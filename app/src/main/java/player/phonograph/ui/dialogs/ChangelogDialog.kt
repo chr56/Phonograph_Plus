@@ -3,12 +3,15 @@ package player.phonograph.ui.dialogs
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
+import com.afollestad.materialdialogs.callbacks.onDismiss
 import com.afollestad.materialdialogs.customview.customView
 import lib.phonograph.localization.LocalizationStore
 import mt.pref.ThemeColor
 import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.notification.ErrorNotification
+import player.phonograph.settings.PrerequisiteSetting
+import player.phonograph.util.currentVersionCode
 import player.phonograph.util.text.changelogCSS
 import player.phonograph.util.text.changelogHTML
 import player.phonograph.util.theme.nightMode
@@ -48,6 +51,10 @@ class ChangelogDialog : DialogFragment() {
             .title(R.string.changelog)
             .customView(view = customView, noVerticalPadding = false)
             .positiveButton(android.R.string.ok) { it.dismiss() }
+            .onDismiss {
+                val context = requireContext()
+                PrerequisiteSetting.instance(context).lastChangelogVersion = currentVersionCode(context)
+            }
             .apply {
                 getActionButton(WhichButton.POSITIVE).updateTextColor(
                     ThemeColor.accentColor(requireActivity())
