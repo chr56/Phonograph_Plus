@@ -315,7 +315,7 @@ fun PhonographPreferenceScreen() {
                 key = USE_LEGACY_STATUS_BAR_LYRICS_API,
                 titleRes = R.string.pref_title_use_legacy_status_bar_lyrics_api,
                 summaryRes = R.string.pref_summary_use_legacy_status_bar_lyrics_api,
-                defaultValue = true,
+                defaultValue = false,
             )
             BooleanPref(
                 key = USE_LEGACY_DETAIL_DIALOG,
