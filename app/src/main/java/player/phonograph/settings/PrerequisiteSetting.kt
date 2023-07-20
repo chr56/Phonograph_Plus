@@ -30,7 +30,8 @@ class PrerequisiteSetting(context: Context) {
 
     companion object {
         const val INTRO_SHOWN = "intro_shown"
-        const val PREVIOUS_VERSION = "last_changelog_version"
+        const val PREVIOUS_VERSION = "previous_version"
+        const val LAST_CHANGELOG_VERSION = "last_changelog_version"
         //region Singleton
         private var singleton: PrerequisiteSetting? = null
         fun instance(context: Context): PrerequisiteSetting {
