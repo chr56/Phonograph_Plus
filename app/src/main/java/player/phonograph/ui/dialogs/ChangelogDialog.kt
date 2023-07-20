@@ -3,7 +3,6 @@ package player.phonograph.ui.dialogs
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
-import com.afollestad.materialdialogs.callbacks.onDismiss
 import com.afollestad.materialdialogs.customview.customView
 import lib.phonograph.localization.LocalizationStore
 import mt.pref.ThemeColor
@@ -50,8 +49,8 @@ class ChangelogDialog : DialogFragment() {
         val dialog: MaterialDialog = MaterialDialog(requireActivity())
             .title(R.string.changelog)
             .customView(view = customView, noVerticalPadding = false)
-            .positiveButton(android.R.string.ok) { it.dismiss() }
-            .onDismiss {
+            .positiveButton(android.R.string.ok) {
+                it.dismiss()
                 val context = requireContext()
                 PrerequisiteSetting.instance(context).lastChangelogVersion = currentVersionCode(context)
             }
