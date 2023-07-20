@@ -115,7 +115,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 if (showUpgradeDialog) {
                     showUpgradeDialog(intent.getParcelableExtra(VERSION_INFO) as? VersionCatalog)
                 }
-                checkChangelog()
                 lifecycleScope.launch(Dispatchers.Main) {
                     lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                         SettingFlowStore(this@MainActivity).homeTabConfigJsonString.distinctUntilChanged().collect {
@@ -441,6 +440,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
             dynamicShortcutManager.initDynamicShortcuts()
             dynamicShortcutManager.updateDynamicShortcuts()
         }
+        // check changelog
+        checkChangelog()
         // check upgrade
         val store = SettingFlowStore(this)
         lifecycleScope.launch {
