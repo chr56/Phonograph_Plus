@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "0.7.2-dev2",
+      "versionCode": 612,
+      "date": 1689824800,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.7.2-dev2"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 更新日志不显示</li><li>新增 为新版状态栏歌词支持 LyricGetter API</li><li>修改 默认使用 LyricGetter API (可在 设置-兼容性 中更改回旧版API)</li></ol>",
+        "en": "<ol><li>Fix: changelog not showed</li><li>New: support LyricGetter API for latest StatusBar Lyrics</li><li>Modify: use LyricGetter API by default (You can switch to legacy API in Setting-Compatibility)</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "0.7.2-dev1",
       "versionCode": 611,
       "date": 1689770000,
