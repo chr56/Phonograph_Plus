@@ -59,7 +59,7 @@ All listed features are compared with the original Phonograph.
 - Co-work-with/Support [StatusBar Lyric
   Xposed Module (api)](https://github.com/Block-Network/StatusBarLyric)
 
-- Export internal databases for the need of backup.
+- Export internal databases and settings for the need of backup.
 
 - Increase history played tracks and top played tracks entries capacity (
   100->150).
@@ -69,6 +69,16 @@ All listed features are compared with the original Phonograph.
 - Brand-new File tab.
 
 - Allow deleting songs file along with its external lyrics file.
+
+- Brand new Tag Editor
+
+- Brand new App Intro
+
+- Better Notification Image Quality for Android T and above
+
+- Better Playlist support
+
+- ~Poor~ support of Monet
 
 - and more small features/fixes.
 
