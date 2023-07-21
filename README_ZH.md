@@ -3,6 +3,8 @@
 [![Crowdin](https://badges.crowdin.net/phonograph-plus/localized.svg)](https://crowdin.com/project/phonograph-plus)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/chr56/Phonograph_Plus/blob/release/LICENSE.txt)
 [<img src="https://github.com/chr56/Phonograph_Plus/actions/workflows/dev.yml/badge.svg" alt="Dev CI Status">](https://github.com/chr56/Phonograph_Plus/actions/workflows/dev.yml)
+![DownloadsStatistics](https://img.shields.io/github/downloads/chr56/Phonograph_Plus/total)
+
 
 **Phonograph 第三方维护版**
 
@@ -13,6 +15,13 @@
 [ENGLISH](./README.md)
 
 原项目：[Phonograph](https://github.com/kabouzeid/Phonograph)
+
+## **下载**
+
+[<img src="https://img.shields.io/github/v/release/chr56/phonograph_plus?label=Github%20Release" alt="Github%20Release">](https://github.com/chr56/Phonograph_Plus/releases/latest)
+[<img src="https://img.shields.io/github/v/release/chr56/phonograph_plus?label=Github%20Release%20(Latest)&include_prereleases" alt="Github%20Release%20(Latest)">](https://github.com/chr56/Phonograph_Plus/releases/)
+[<img src="https://img.shields.io/github/v/release/chr56/phonograph_plus?label=F-droid" alt="F-droid">](https://f-droid.org/packages/player.phonograph.plus/)
+
 
 ## **新增特性**
 
