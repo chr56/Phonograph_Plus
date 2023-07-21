@@ -5,14 +5,15 @@
 [<img src="https://github.com/chr56/Phonograph_Plus/actions/workflows/dev.yml/badge.svg" alt="Dev CI Status">](https://github.com/chr56/Phonograph_Plus/actions/workflows/dev.yml)
 ![DownloadsStatistics](https://img.shields.io/github/downloads/chr56/Phonograph_Plus/total)
 
+- [ENGLISH](./README.md)
+- [简体中文](./README_ZH.md)
+
+<br/>
+
 **An independent fork of Phonograph under maintenance and development**
 
 Phonograph is a material designed local music player for Android. And Phonograph Plus is an _independent_ fork
 of [Phonograph](https://github.com/kabouzeid/Phonograph), and is currently under my maintenance and development.
-
-<br/>
-
-[简体中文](./README_ZH.md)
 
 ## **Downloads**
 

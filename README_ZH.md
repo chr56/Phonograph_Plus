@@ -5,14 +5,15 @@
 [<img src="https://github.com/chr56/Phonograph_Plus/actions/workflows/dev.yml/badge.svg" alt="Dev CI Status">](https://github.com/chr56/Phonograph_Plus/actions/workflows/dev.yml)
 ![DownloadsStatistics](https://img.shields.io/github/downloads/chr56/Phonograph_Plus/total)
 
+- [ENGLISH](./README.md)
+- [简体中文](./README_ZH.md)
+
+<br/>
 
 **Phonograph 第三方维护版**
 
 正在维护和开发的 [Phonograph](https://github.com/kabouzeid/Phonograph) 独立分支
 
-<br/>
-
-[ENGLISH](./README.md)
 
 
 ## **下载**
