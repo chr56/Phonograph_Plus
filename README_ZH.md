@@ -97,7 +97,7 @@
 
 ## **构建指南与开发指南**
 
-[Build_Instructions.md](./Build_Instructions.md)
+[Build_Instructions.md](docs/Build_Instructions.md)
 
 ## **开发计划**
 

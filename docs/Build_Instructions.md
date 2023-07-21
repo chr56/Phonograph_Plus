@@ -16,9 +16,9 @@ Currently(2023.5.20), this project's toolchain & dependencies are:
 
 Gradle Version Catalogs is used in this project.
 
-see [setting.kt](./settings.gradle.kts) for all the libraries.
+see [setting.kt](../settings.gradle.kts) for all the libraries.
 
-see [build.gradle.kts](./build.gradle.kts) for all gradle plugins.
+see [build.gradle.kts](../build.gradle.kts) for all gradle plugins.
 
 ## **Requirement**
 

@@ -102,7 +102,7 @@ For reference only, actual app might be different
 
 ## **Build Instructions & Developer Guide**
 
-See [Build_Instructions.md](./Build_Instructions.md)
+See [Build_Instructions.md](docs/Build_Instructions.md)
 
 ## **Development Plan (or Road Map?)** & **TO-DO list**
 
