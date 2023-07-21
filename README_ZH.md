@@ -8,13 +8,12 @@
 
 **Phonograph 第三方维护版**
 
-**正在维护和开发的 Phonograph 分支**
+正在维护和开发的 [Phonograph](https://github.com/kabouzeid/Phonograph) 独立分支
 
 <br/>
 
 [ENGLISH](./README.md)
 
-原项目：[Phonograph](https://github.com/kabouzeid/Phonograph)
 
 ## **下载**
 
