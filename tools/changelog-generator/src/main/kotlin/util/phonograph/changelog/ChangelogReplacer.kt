@@ -145,58 +145,33 @@ class ChangelogHTML(
     }
 }
 
-internal fun String.insertLatestChangelog(item: String): String =
-    this.replace(ANCHOR_LATEST, "$ANCHOR_LATEST\n\n$item")
-
-private fun splitChangelog(fullChangelog: String): List<String> {
-    val pre = fullChangelog.split(ANCHOR_PREVIEW_START, ignoreCase = true, limit = 2)
-    require(pre.size == 2) { ERR_SPLIT }
-    val rest = pre[1].split(ANCHOR_PREVIEW_END, ignoreCase = true, limit = 2)
-    require(rest.size == 2) { ERR_SPLIT }
-    return listOf(pre[0], rest[0], rest[1])
-}
-
-private const val ERR_SPLIT = "Failed to split changelog"
-
-internal fun String.updatePreviewChangelog(item: String): String {
-    val segments = splitChangelog(this)
-    return buildString {
-        append(segments[0])
-        append(ANCHOR_PREVIEW_START).append('\n')
-        append(item).append('\n')
-        append(ANCHOR_PREVIEW_END)
-        append(segments[2])
+fun updateStableChangelog(changelogFile: File, lang: Language, releaseNote: Map<Language, String>) {
+    updateChangelog(changelogFile) { changelogHTML ->
+        val newItem = releaseNote[lang]
+        require(newItem != null) { "changelog $lang is empty!" }
+        changelogHTML.clearPreviewChangelog()
+        changelogHTML.insertLatestChangelog(newItem.lines())
     }
 }
 
-internal fun String.clearPreviewChangelog(): String = updatePreviewChangelog("<!--  -->")
+fun updatePreviewChangelog(changelogFile: File, lang: Language, releaseNote: Map<Language, String>) {
+    updateChangelog(changelogFile) { changelogHTML ->
+        val newItem = releaseNote[lang]
+        require(newItem != null) { "changelog $lang is empty!" }
+        changelogHTML.insertPreviewChangelog(newItem.lines())
+    }
+}
 
-
-private inline fun updateFile(file: File, block: (String) -> String) {
+private inline fun updateChangelog(file: File, block: (ChangelogHTML) -> Unit) {
     require(file.exists() && file.isFile)
     val fullChangelog = file.readText()
-    val newText = block(fullChangelog)
+    val html = ChangelogHTML.parse(fullChangelog)
+    block(html)
     file.outputStream().use { fileOutputStream ->
         fileOutputStream.writer().use {
-            it.write(newText)
+            it.write(html.output())
             it.flush()
         }
-    }
-}
-
-fun updateStableChangelog(changelog: File, lang: Language, releaseNote: Map<Language, String>) {
-    updateFile(changelog) {
-        val newItem = releaseNote[lang]
-        require(newItem != null) { "changelog $lang is empty!" }
-        it.clearPreviewChangelog().insertLatestChangelog(newItem)
-    }
-}
-
-fun updatePreviewChangelog(changelog: File, lang: Language, releaseNote: Map<Language, String>) {
-    updateFile(changelog) {
-        val newItem = releaseNote[lang]
-        require(newItem != null) { "changelog $lang is empty!" }
-        it.updatePreviewChangelog(newItem)
     }
 }
 
