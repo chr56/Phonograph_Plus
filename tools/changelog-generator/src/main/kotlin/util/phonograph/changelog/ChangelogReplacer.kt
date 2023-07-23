@@ -7,13 +7,17 @@ package util.phonograph.changelog
 import java.io.File
 
 private const val TAG_LATEST = "<<<LATEST/>>>"
-private const val TAG_PREVIEW_START = "<<<CURRENT_PREVIEW>>>"
-private const val TAG_PREVIEW_END = "<<</CURRENT_PREVIEW>>>"
+private const val TAG_PREVIEW_START = "<<<PREVIEW>>>"
+private const val TAG_PREVIEW_END = "<<</PREVIEW>>>"
+private const val TAG_CURRENT_PREVIEW_START = "<<<CURRENT_PREVIEW>>>"
+private const val TAG_CURRENT_PREVIEW_END = "<<</CURRENT_PREVIEW>>>"
 
 
 private const val ANCHOR_LATEST = "<!-- $TAG_LATEST -->"
 private const val ANCHOR_PREVIEW_START = "<!-- $TAG_PREVIEW_START -->"
 private const val ANCHOR_PREVIEW_END = "<!-- $TAG_PREVIEW_END -->"
+private const val ANCHOR_CURRENT_PREVIEW_START = "<!-- $TAG_CURRENT_PREVIEW_START -->"
+private const val ANCHOR_CURRENT_PREVIEW_END = "<!-- $TAG_CURRENT_PREVIEW_END -->"
 
 
 private const val FILE_CHANGELOG_DEFAULT = "changelog.html"
@@ -25,11 +29,13 @@ internal fun String.insertLatestChangelog(item: String): String =
 
 private fun splitChangelog(fullChangelog: String): List<String> {
     val pre = fullChangelog.split(ANCHOR_PREVIEW_START, ignoreCase = true, limit = 2)
-    require(pre.size == 2) { "Failed to split changelog" }
+    require(pre.size == 2) { ERR_SPLIT }
     val rest = pre[1].split(ANCHOR_PREVIEW_END, ignoreCase = true, limit = 2)
-    require(rest.size == 2) { "Failed to split changelog" }
+    require(rest.size == 2) { ERR_SPLIT }
     return listOf(pre[0], rest[0], rest[1])
 }
+
+private const val ERR_SPLIT = "Failed to split changelog"
 
 internal fun String.updatePreviewChangelog(item: String): String {
     val segments = splitChangelog(this)
