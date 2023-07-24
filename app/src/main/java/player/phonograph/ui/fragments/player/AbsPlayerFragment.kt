@@ -1,5 +1,7 @@
 package player.phonograph.ui.fragments.player
 
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.input.input
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
@@ -42,6 +44,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.animation.AnimatorSet
 import android.graphics.Color
 import android.os.Bundle
+import android.text.InputType
 import android.view.MenuItem
 import android.view.View
 import kotlinx.coroutines.CoroutineScope
@@ -207,6 +210,33 @@ abstract class AbsPlayerFragment :
                 }
             }
             menuItem {
+                title = getString(R.string.action_speed)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    val musicService = MusicPlayerRemote.musicService ?: return@onClick false
+                    MaterialDialog(context)
+                        .title(R.string.action_speed)
+                        .input(
+                            prefill = musicService.speed.toString(),
+                            inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL,
+                            allowEmpty = true
+                        ) { _, value ->
+                            if (value.isEmpty()) {
+                                musicService.speed = 1.0f
+                            } else {
+                                musicService.speed = try {
+                                    value.toString().toFloat()
+                                } catch (e: NumberFormatException) {
+                                    warning("PlayerFragment", "speed `$value` is invalid!")
+                                    musicService.speed
+                                }
+                            }
+                        }
+                        .show()
+                    true
+                }
+            }
+            menuItem {
                 title = getString(R.string.change_now_playing_screen)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick {
@@ -321,7 +351,7 @@ abstract class AbsPlayerFragment :
         observe(CurrentQueueState.currentSong) {
             viewModel.updateCurrentSong(MusicPlayerRemote.currentSong, context)
             lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
-            whenStarted{ impl.updateCurrentSong(it) }
+            whenStarted { impl.updateCurrentSong(it) }
         }
         observe(CurrentQueueState.shuffleMode) {
             updateAdapter()
