@@ -13,7 +13,8 @@ import android.util.Log
 /**
  * @author chr_56, Andrew Neal, Karim Abou Zeid (kabouzeid)
  */
-class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) : Playback, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
+class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) :
+        Playback, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
     private var currentMediaPlayer = MediaPlayer().also {
         it.setWakeMode(
@@ -32,10 +33,14 @@ class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) : 
      * Sets the callbacks
      * @param callbacks The callbacks to use
      */
-    override fun setCallbacks(callbacks: Playback.PlaybackCallbacks?) { this.callbacks = callbacks }
+    override fun setCallbacks(callbacks: Playback.PlaybackCallbacks?) {
+        this.callbacks = callbacks
+    }
 
     constructor(context: Context, gaplessPlayback: Boolean, callbacks: Playback.PlaybackCallbacks) :
-        this(context, gaplessPlayback) { this.callbacks = callbacks }
+            this(context, gaplessPlayback) {
+        this.callbacks = callbacks
+    }
 
     /**
      * @param path The path of the file, or the http/rtsp URL of the stream
@@ -202,7 +207,8 @@ class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) : 
      * @return The duration in milliseconds
      */
     override fun duration(): Int =
-        if (!isInitialized) { -1 } else {
+        if (!isInitialized) -1
+        else {
             try {
                 currentMediaPlayer.duration
             } catch (e: IllegalStateException) {
@@ -215,13 +221,16 @@ class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) : 
      *
      * @return The current position in milliseconds
      */
-    override fun position(): Int = if (!isInitialized) { -1 } else {
-        try {
-            currentMediaPlayer.currentPosition
-        } catch (e: IllegalStateException) {
+    override fun position(): Int =
+        if (!isInitialized) {
             -1
+        } else {
+            try {
+                currentMediaPlayer.currentPosition
+            } catch (e: IllegalStateException) {
+                -1
+            }
         }
-    }
 
     /**
      * Gets the current playback position.
