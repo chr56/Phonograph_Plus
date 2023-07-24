@@ -1,20 +1,9 @@
 package player.phonograph.service.player
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.media.AudioManager
-import android.net.Uri
-import android.os.*
-import android.os.PowerManager.WakeLock
-import android.util.ArrayMap
-import android.util.Log
-import android.widget.Toast
-import java.lang.ref.WeakReference
 import player.phonograph.App
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
+import player.phonograph.mechanism.StatusBarLyric
 import player.phonograph.mechanism.lyrics.LyricsUpdater
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
@@ -23,13 +12,24 @@ import player.phonograph.service.MusicService
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Setting
-import player.phonograph.mechanism.StatusBarLyric
+import android.content.BroadcastReceiver
 import android.content.ContentUris
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.media.AudioManager
+import android.net.Uri
+import android.os.*
+import android.os.PowerManager.WakeLock
 import android.provider.MediaStore
+import android.util.ArrayMap
+import android.util.Log
+import android.widget.Toast
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.lang.ref.WeakReference
 
 // todo cleanup queueManager.setQueueCursor
 /**
