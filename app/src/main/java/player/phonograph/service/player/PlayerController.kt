@@ -54,7 +54,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         audioPlayer = AudioPlayer(service, Setting.instance.gaplessPlayback, this)
 
         wakeLock =
-            (App.instance.getSystemService(Context.POWER_SERVICE) as PowerManager)
+            (service.getSystemService(Context.POWER_SERVICE) as PowerManager)
                 .newWakeLock(
                     PowerManager.PARTIAL_WAKE_LOCK,
                     javaClass.name
@@ -141,6 +141,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
             )
         }
     }
+
     private fun notifyNowPlayingChanged() {
         observers.executeForEach {
             onReceivingMessage(MSG_NOW_PLAYING_CHANGED)
@@ -190,6 +191,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     fun playAt(position: Int) = handler.request {
         it.playAtImp(position)
     }
+
     private fun playAtImp(position: Int) {
         if (prepareSongsImp(position)) {
             playImp()
@@ -211,9 +213,10 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     fun setPosition(position: Int) = handler.request {
         it.setPositionImp(position)
     }
+
     private fun setPositionImp(position: Int) {
         if (playerState == PlayerState.PAUSED) {
-            queueManager.modifyPosition(position,false)
+            queueManager.modifyPosition(position, false)
             prepareSongsImp(position)
         }
     }
@@ -224,6 +227,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     fun play() = handler.request {
         it.playImp()
     }
+
     private fun playImp() {
         if (queueManager.playingQueue.isNotEmpty()) {
             if (audioFocusManager.requestAudioFocus()) {
@@ -270,6 +274,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     fun pause() = handler.request {
         it.pauseImp()
     }
+
     private fun pauseImp(force: Boolean = false) {
         if (audioPlayer.isPlaying() || force) {
             audioPlayer.pause()
@@ -282,6 +287,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     fun togglePlayPause() = handler.request {
         it.togglePlayPauseImp()
     }
+
     private fun togglePlayPauseImp() {
         if (audioPlayer.isPlaying()) {
             pauseImp()
@@ -306,6 +312,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     fun rewindToBeginning() = handler.request {
         it.rewindToBeginningImp()
     }
+
     private fun rewindToBeginningImp() {
         seekTo(0)
         service.requireRefreshMediaSessionState()
@@ -317,6 +324,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     fun jumpBackward(force: Boolean) = handler.request {
         it.jumpBackwardImp(force)
     }
+
     private fun jumpBackwardImp(force: Boolean) {
         if (force) {
             playAtImp(queueManager.previousListPosition)
@@ -331,6 +339,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     fun back(force: Boolean) = handler.request {
         it.backImp(force)
     }
+
     private fun backImp(force: Boolean) {
         if (audioPlayer.position() > 5000) {
             rewindToBeginningImp()
@@ -345,6 +354,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     fun jumpForward(force: Boolean) = handler.request {
         it.jumpForwardImp(force)
     }
+
     private fun jumpForwardImp(force: Boolean) {
         if (force) {
             playAtImp(queueManager.nextListPosition)
@@ -367,6 +377,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     fun seekTo(position: Long): Int = synchronized(audioPlayer) {
         seekToImp(position)
     }
+
     private fun seekToImp(position: Long): Int {
         return audioPlayer.seek(position.toInt())
     }
@@ -374,6 +385,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     fun stop() = handler.request {
         it.stopImp()
     }
+
     private fun stopImp() {
         audioPlayer.stop()
         broadcastStopLyric()
@@ -462,12 +474,14 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
             becomingNoisyReceiverRegistered = true
         }
     }
+
     private fun unregisterBecomingNoisyReceiver(context: Context) {
         if (becomingNoisyReceiverRegistered) {
             context.unregisterReceiver(becomingNoisyReceiver)
             becomingNoisyReceiverRegistered = false
         }
     }
+
     private val becomingNoisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
@@ -479,6 +493,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     fun saveCurrentMills() = handler.request {
         saveCurrentMillsImp()
     }
+
     private fun saveCurrentMillsImp() {
         QueuePreferenceManager(service).currentMillisecond = audioPlayer.position()
     }
@@ -537,7 +552,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                         }
                     }
                 }
-                DUCK -> {
+                DUCK                    -> {
                     controllerRef.get()?.let {
                         if (Setting.instance.audioDucking) {
                             currentDuckVolume -= .05f
@@ -552,7 +567,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                         it.audioPlayer.setVolume(currentDuckVolume)
                     }
                 }
-                UNDUCK -> {
+                UNDUCK                  -> {
                     controllerRef.get()?.let {
                         if (Setting.instance.audioDucking) {
                             currentDuckVolume += .03f
@@ -567,12 +582,12 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                         it.audioPlayer.setVolume(currentDuckVolume)
                     }
                 }
-                RE_PREPARE_NEXT_PLAYER -> controllerRef.get()?.let {
+                RE_PREPARE_NEXT_PLAYER  -> controllerRef.get()?.let {
                     synchronized(it.audioPlayer) {
                         it.prepareNextPlayer(it.queueManager.nextSong)
                     }
                 }
-                CLEAN_NEXT_PLAYER -> controllerRef.get()?.let {
+                CLEAN_NEXT_PLAYER       -> controllerRef.get()?.let {
                     synchronized(it.audioPlayer) {
                         it.prepareNextPlayer(null)
                     }
@@ -622,7 +637,9 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     fun getSongProgressMillis(): Int = audioPlayer.position()
     fun getSongDurationMillis(): Int = audioPlayer.duration()
 
-    fun switchGaplessPlayback(gaplessPlayback: Boolean) { audioPlayer.gaplessPlayback = gaplessPlayback }
+    fun switchGaplessPlayback(gaplessPlayback: Boolean) {
+        audioPlayer.gaplessPlayback = gaplessPlayback
+    }
 
     private fun broadcastStopLyric() = StatusBarLyric.stopLyric()
     fun replaceLyrics(lyrics: LrcLyrics?) {
@@ -637,13 +654,6 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         if (DEBUG || force) Log.i("PlayerController", "※$msg @$where")
     }
 
-    /*  debug */
-    fun dumpPlayingQueue(where: String) {
-        val msg = "${queueManager.playingQueue.foldIndexed("PlayingQueue:") { index, acc, s ->
-            "$acc\n ${if (index == queueManager.currentSongPosition) "#" else " "}$index:${s.title}"
-        }}\n--CurrentPosition: ${queueManager.currentSongPosition}--"
-        log(where, msg)
-    }
 }
 
 /**
