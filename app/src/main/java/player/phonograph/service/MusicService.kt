@@ -283,6 +283,11 @@ class MusicService : Service() {
     fun playNextSong(force: Boolean) = controller.jumpForward(force)
     val songProgressMillis: Int get() = controller.getSongProgressMillis()
     val songDurationMillis: Int get() = controller.getSongDurationMillis()
+    var speed: Float
+        get() = controller.playerSpeed()
+        set(value) {
+            controller.setPlayerSpeed(value)
+        }
 
     fun seek(millis: Int): Int = synchronized(this) {
         return try {

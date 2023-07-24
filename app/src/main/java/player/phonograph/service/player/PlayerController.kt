@@ -637,6 +637,16 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     fun getSongProgressMillis(): Int = audioPlayer.position()
     fun getSongDurationMillis(): Int = audioPlayer.duration()
 
+    fun playerSpeed() = audioPlayer.speed
+
+    fun setPlayerSpeed(speed: Float) = handler.request {
+        setPlayerSpeedImpl(speed)
+    }
+
+    private fun setPlayerSpeedImpl(speed: Float) {
+        audioPlayer.speed = speed
+    }
+
     fun switchGaplessPlayback(gaplessPlayback: Boolean) {
         audioPlayer.gaplessPlayback = gaplessPlayback
     }
