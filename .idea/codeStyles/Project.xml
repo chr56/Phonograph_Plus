@@ -25,6 +25,7 @@
       <option name="NAME_COUNT_TO_USE_STAR_IMPORT" value="12" />
       <option name="NAME_COUNT_TO_USE_STAR_IMPORT_FOR_MEMBERS" value="12" />
       <option name="CONTINUATION_INDENT_IN_SUPERTYPE_LISTS" value="true" />
+      <option name="BLANK_LINES_AROUND_BLOCK_WHEN_BRANCHES" value="0" />
       <option name="ALLOW_TRAILING_COMMA" value="true" />
       <option name="BLANK_LINES_BEFORE_DECLARATION_WITH_COMMENT_OR_ANNOTATION_ON_SEPARATE_LINE" value="0" />
       <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
