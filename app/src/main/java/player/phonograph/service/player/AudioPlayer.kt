@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
+import android.media.PlaybackParams
+import android.media.PlaybackParams.AUDIO_FALLBACK_MODE_MUTE
 import android.media.audiofx.AudioEffect
 import android.net.Uri
 import android.os.Build
@@ -163,6 +165,7 @@ class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) :
     override fun start(): Boolean =
         try {
             currentMediaPlayer.start()
+            applySpeed(currentMediaPlayer, _speed)
             true
         } catch (e: IllegalStateException) {
             false
@@ -253,6 +256,25 @@ class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) :
         } catch (e: IllegalStateException) {
             false
         }
+
+    private var _speed: Float = 1.0f
+
+    var speed: Float
+        get() = _speed
+        set(value) {
+            _speed = value
+            // applySpeed(currentMediaPlayer, _speed)
+        }
+
+    private fun applySpeed(player: MediaPlayer, targetSpeed: Float) {
+        player.playbackParams = PlaybackParams().apply {
+            allowDefaults()
+            audioFallbackMode = AUDIO_FALLBACK_MODE_MUTE
+            speed = targetSpeed
+            val outRanged = targetSpeed !in (0.5f..2.0f)
+            pitch = if (outRanged) targetSpeed else 1.0f
+        }
+    }
 
     override val audioSessionId: Int get() = currentMediaPlayer.audioSessionId
 
