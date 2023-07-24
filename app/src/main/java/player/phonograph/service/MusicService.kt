@@ -204,6 +204,10 @@ class MusicService : Service() {
             }
         }
 
+        override fun onSetPlaybackSpeed(speed: Float) {
+            controller.setPlayerSpeed(speed)
+        }
+
         override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
             return MediaButtonIntentReceiver.handleIntent(this@MusicService, mediaButtonEvent)
         }
