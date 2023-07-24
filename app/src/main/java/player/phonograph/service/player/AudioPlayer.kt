@@ -263,7 +263,8 @@ class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) :
         get() = _speed
         set(value) {
             _speed = value
-            // applySpeed(currentMediaPlayer, _speed)
+            pause()
+            start()
         }
 
     private fun applySpeed(player: MediaPlayer, targetSpeed: Float) {
