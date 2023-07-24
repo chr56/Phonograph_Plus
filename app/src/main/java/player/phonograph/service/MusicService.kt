@@ -204,6 +204,10 @@ class MusicService : Service() {
             }
         }
 
+        override fun onSetPlaybackSpeed(speed: Float) {
+            controller.setPlayerSpeed(speed)
+        }
+
         override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
             return MediaButtonIntentReceiver.handleIntent(this@MusicService, mediaButtonEvent)
         }
@@ -283,6 +287,11 @@ class MusicService : Service() {
     fun playNextSong(force: Boolean) = controller.jumpForward(force)
     val songProgressMillis: Int get() = controller.getSongProgressMillis()
     val songDurationMillis: Int get() = controller.getSongDurationMillis()
+    var speed: Float
+        get() = controller.playerSpeed()
+        set(value) {
+            controller.setPlayerSpeed(value)
+        }
 
     fun seek(millis: Int): Int = synchronized(this) {
         return try {

@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
+import android.media.PlaybackParams
+import android.media.PlaybackParams.AUDIO_FALLBACK_MODE_MUTE
 import android.media.audiofx.AudioEffect
 import android.net.Uri
 import android.os.Build
@@ -13,7 +15,8 @@ import android.util.Log
 /**
  * @author chr_56, Andrew Neal, Karim Abou Zeid (kabouzeid)
  */
-class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) : Playback, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
+class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) :
+        Playback, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
     private var currentMediaPlayer = MediaPlayer().also {
         it.setWakeMode(
@@ -32,10 +35,14 @@ class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) : 
      * Sets the callbacks
      * @param callbacks The callbacks to use
      */
-    override fun setCallbacks(callbacks: Playback.PlaybackCallbacks?) { this.callbacks = callbacks }
+    override fun setCallbacks(callbacks: Playback.PlaybackCallbacks?) {
+        this.callbacks = callbacks
+    }
 
     constructor(context: Context, gaplessPlayback: Boolean, callbacks: Playback.PlaybackCallbacks) :
-        this(context, gaplessPlayback) { this.callbacks = callbacks }
+            this(context, gaplessPlayback) {
+        this.callbacks = callbacks
+    }
 
     /**
      * @param path The path of the file, or the http/rtsp URL of the stream
@@ -158,6 +165,7 @@ class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) : 
     override fun start(): Boolean =
         try {
             currentMediaPlayer.start()
+            applySpeed(currentMediaPlayer, _speed)
             true
         } catch (e: IllegalStateException) {
             false
@@ -202,7 +210,8 @@ class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) : 
      * @return The duration in milliseconds
      */
     override fun duration(): Int =
-        if (!isInitialized) { -1 } else {
+        if (!isInitialized) -1
+        else {
             try {
                 currentMediaPlayer.duration
             } catch (e: IllegalStateException) {
@@ -215,13 +224,16 @@ class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) : 
      *
      * @return The current position in milliseconds
      */
-    override fun position(): Int = if (!isInitialized) { -1 } else {
-        try {
-            currentMediaPlayer.currentPosition
-        } catch (e: IllegalStateException) {
+    override fun position(): Int =
+        if (!isInitialized) {
             -1
+        } else {
+            try {
+                currentMediaPlayer.currentPosition
+            } catch (e: IllegalStateException) {
+                -1
+            }
         }
-    }
 
     /**
      * Gets the current playback position.
@@ -244,6 +256,26 @@ class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) : 
         } catch (e: IllegalStateException) {
             false
         }
+
+    private var _speed: Float = 1.0f
+
+    var speed: Float
+        get() = _speed
+        set(value) {
+            _speed = value
+            pause()
+            start()
+        }
+
+    private fun applySpeed(player: MediaPlayer, targetSpeed: Float) {
+        player.playbackParams = PlaybackParams().apply {
+            allowDefaults()
+            audioFallbackMode = AUDIO_FALLBACK_MODE_MUTE
+            speed = targetSpeed
+            val outRanged = targetSpeed !in (0.5f..2.0f)
+            pitch = if (outRanged) ((targetSpeed - 1.0f) * 0.333f + 1.0f) else 1.0f
+        }
+    }
 
     override val audioSessionId: Int get() = currentMediaPlayer.audioSessionId
 
