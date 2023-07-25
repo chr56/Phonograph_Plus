@@ -33,7 +33,7 @@ class SearchActivityViewModel : ViewModel() {
 
     private fun search(context: Context, query: String) {
         if (query.isNotBlank()) {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
 
                 val dataset: MutableList<Any> = mutableListOf()
 
