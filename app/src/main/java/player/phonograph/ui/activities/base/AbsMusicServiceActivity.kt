@@ -85,7 +85,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         }
         volumeControlStream = AudioManager.STREAM_MUSIC
         lifecycle.addObserver(LifeCycleObserver())
-        lifecycleScope.launch { observeSetting() }
+        observeSetting()
     }
     private fun observeSetting() {
         fun observe(block: suspend CoroutineScope.() -> Unit) {
