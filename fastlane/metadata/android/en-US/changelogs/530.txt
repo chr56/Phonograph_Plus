@@ -1,8 +1,0 @@
-<b>0.6.3(530) 2023.04.30</b>
-- Remove: Feature Show Album Cover on Lockscreen and related setting
-- Improve: crop non-square image unless in Song Detail
-- Improve: navigate to setting if no storage permission granted
-- Improve: mute some unnecessary exception notifications
-- Improve: support zipped old backup files format
-- Translation: update German (by conk), Hebrew (by Yaron Shahrabani (YaronSh)), Russian (by Макар Разин (Atrafon))
-...(Visit project homepage to see full changelogs)
