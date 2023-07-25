@@ -420,4 +420,7 @@
     <string name="action_grant_storage_permission">Conceder Permissão de Acesso ao Armazenamento Externo</string>
     <string name="action_pin">Fixar</string>
     <string name="action_unpin">Desafixar</string>
+    <string name="pref_title_use_legacy_status_bar_lyrics_api">Usar a API StatusBar Lyrics antiga</string>
+    <string name="pref_summary_use_legacy_status_bar_lyrics_api">Se estiver desabilitado, a API LyricGetter será usada ao invés da StatusBarLyricAPI. Isso é usado pelo Módulo do Xposed StatusBar Lyrics versão 6.x e posterior; Habilite de você estiver usando versões mais antigas do StatusBar Lyrics.</string>
+    <string name="action_speed">Velocidade</string>
 </resources>
