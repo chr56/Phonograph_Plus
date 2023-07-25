@@ -1,8 +1,0 @@
-<b>0.7.1(610) 2023.07.09</b>
-Note: you may need to process AppIntro again
-- New: support choosing different monet colors
-- Modify: Monet color would not override your configured colors
-- Fix: crash when clicking any artist in Search Result
-- Improve: app start-up performance
-- Translation: update Japanese (by aorinngoDo), Italian (by gdonisi)
-- Development: clean up codes

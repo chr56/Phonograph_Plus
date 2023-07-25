@@ -1,5 +1,0 @@
-0.6.1(510) 2023.03.17
-
-- New: a brand-new App Introduction
-- Modify: request permissions in App Intro, ask auto-upgrade-check in App Intro, recover setting backup in App Intro
-- Translation: updated Italian (by gdonisi)

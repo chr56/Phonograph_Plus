@@ -1,5 +1,0 @@
-0.6.0.1(501) 2023.03.13
-
-- Improve: support mp4(m4a) format
-- Fix: an incorrect name of backup file
-- Development: small miscellaneous changes for F-Droid 
