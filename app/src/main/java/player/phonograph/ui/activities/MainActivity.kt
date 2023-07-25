@@ -148,7 +148,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 "${System.currentTimeMillis().mod(10000000)} MainActivity.onResume()"
             )
         }
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.Default) {
             latelySetup()
         }
     }
