@@ -44,7 +44,6 @@ class QueueManager(val context: Application) {
             when (msg.what) {
                 MSG_SAVE_QUEUE        -> saveQueue()
                 MSG_SAVE_CFG          -> saveCfg()
-                MSG_STATE_RESTORE_ALL -> restoreAllState()
             }
         }
     }
@@ -123,7 +122,6 @@ class QueueManager(val context: Application) {
 
     private fun saveQueue() = queueHolder.saveQueue(context)
     private fun saveCfg() = queueHolder.saveCfg(context)
-    private fun restoreAllState() = queueHolder.saveAll(context)
 
 
     fun swapQueue(newQueue: List<Song>, newPosition: Int, async: Boolean = true) = async(async) {
