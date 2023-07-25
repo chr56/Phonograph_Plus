@@ -58,7 +58,7 @@ class GenreDetailActivity :
     private var isRecyclerViewPrepared: Boolean = false
 
     private fun loadDataSet(context: Context) {
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             val list: List<Song> = GenreLoader.genreSongs(context, genre.id)
 
             while (!isRecyclerViewPrepared) yield() // wait until ready
