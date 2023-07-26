@@ -4,6 +4,7 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
+import mt.color.MaterialColor
 import mt.util.color.darkenColor
 import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
@@ -24,6 +25,7 @@ import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.ui.backgroundColorTransitionAnimator
 import player.phonograph.util.ui.convertDpToPixel
 import player.phonograph.util.ui.isLandscape
+import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.ui.textColorTransitionAnimator
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.Toolbar
@@ -131,6 +133,9 @@ class CardPlayerFragment :
 
     override fun implementRecyclerView() {
         val animator: GeneralItemAnimator = RefactoredDefaultItemAnimator()
+        viewBinding.playerRecyclerView.setUpFastScrollRecyclerViewColor(
+            requireContext(), MaterialColor.Grey._500.asColor
+        )
         viewBinding.playerRecyclerView.layoutManager = layoutManager
         viewBinding.playerRecyclerView.adapter = wrappedAdapter
         viewBinding.playerRecyclerView.itemAnimator = animator

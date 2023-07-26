@@ -20,8 +20,7 @@
 
     </FrameLayout>
 
-    <com.sothree.slidinguppanel.SlidingUpPanelLayout
-        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
         android:id="@+id/player_sliding_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -85,8 +84,8 @@
                     android:id="@+id/draggable_area"
                     android:layout_width="72dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/player_panel_content"
                     android:layout_alignTop="@+id/player_panel_content"
+                    android:layout_alignBottom="@+id/player_panel_content"
                     android:layout_marginTop="128dp" />
 
                 <LinearLayout
@@ -116,11 +115,13 @@
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                         android:textColor="?android:textColorSecondary" />
 
-                    <androidx.recyclerview.widget.RecyclerView
+                    <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
                         android:id="@+id/player_recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:requiresFadingEdge="vertical" />
+                        android:clipToPadding="false"
+                        android:requiresFadingEdge="vertical"
+                        android:scrollbars="none" />
 
                 </LinearLayout>
 
