@@ -77,7 +77,7 @@ class MediaSessionController(
     fun updatePlaybackState(isPlaying: Boolean, songProgressMillis: Long) {
         mediaSession.setPlaybackState(
             sessionPlaybackStateBuilder
-                .setState(if (isPlaying) STATE_PLAYING else STATE_PAUSED, songProgressMillis, 1f)
+                .setState(if (isPlaying) STATE_PLAYING else STATE_PAUSED, songProgressMillis, musicService.speed)
                 .build()
         )
     }
