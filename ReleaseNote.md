@@ -1,9 +1,12 @@
-## {{version:0.7.2.1}} {{versionCode:621}} {{date:1690270000}} {{channel:stable}}
+## {{version:0.8-dev1}} {{versionCode:622}} {{date:1690346000}} {{channel:preview}}
 
 ### {{note:en}}
-- Translation: update Japanese (by aorinngoDo)
-- Improve: app start-up performance
+- New: playback speed control
+- New: add scrollbar for Playing Queue
+- Translation: update Portuguese (Brazilian) by EddieMattos
+
 
 ### {{note:zh}}
-- 翻译 更新日语 (by aorinngoDo)
-- 改进 启动时性能
+- 新增 倍数播放支持
+- 新增 为播放队列添加滚动条
+- 翻译 更新(巴西)葡萄牙语 (by EddieMattos)
