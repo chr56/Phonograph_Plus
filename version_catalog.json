@@ -1,6 +1,22 @@
 {
   "versions": [
     {
+      "channel": "preview",
+      "versionName": "0.8-dev1",
+      "versionCode": 622,
+      "date": 1690346000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.8-dev1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>新增 倍数播放支持</li><li>新增 为播放队列添加滚动条</li><li>翻译 更新(巴西)葡萄牙语 (by EddieMattos)</li></ol>",
+        "en": "<ol><li>New: playback speed control</li><li>New: add scrollbar for Playing Queue</li><li>Translation: update Portuguese (Brazilian) by EddieMattos</li></ol>"
+      }
+    },
+    {
       "channel": "stable",
       "versionName": "0.7.2.1",
       "versionCode": 621,
