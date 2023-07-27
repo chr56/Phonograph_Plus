@@ -44,8 +44,6 @@ abstract class AbsSlidingMusicPanelActivity :
 
     private var slidingUpPanelLayout: SlidingUpPanelLayout? = null
 
-    private val argbEvaluator = ArgbEvaluator()
-
     val viewModel: PanelViewModel by viewModels(factoryProducer = {
         PanelViewModel.Factory(this, primaryColor, getColor(R.color.defaultFooterColor)) //todo
     })
@@ -65,7 +63,15 @@ abstract class AbsSlidingMusicPanelActivity :
                 }
             }
         }
-
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.highlightColor.collect { color ->
+                    if (panelState == PanelState.EXPANDED) {
+                        animateThemeColorChange(viewModel.previewHighlightColor.value, color)
+                    }
+                }
+            }
+        }
     }
 
     private fun setupPlayerFragment(nowPlayingScreen: Int) {
@@ -134,6 +140,7 @@ abstract class AbsSlidingMusicPanelActivity :
         } // don't call hideBottomBar(true) here as it causes a bug with the SlidingUpPanelLayout
     }
 
+    private val argbEvaluator = ArgbEvaluator()
     override fun onPanelSlide(panel: View, @FloatRange(from = 0.0, to = 1.0) slideOffset: Float) {
         setMiniPlayerAlphaProgress(slideOffset)
         cancelThemeColorChange()
@@ -230,15 +237,6 @@ abstract class AbsSlidingMusicPanelActivity :
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 playerFragment.paletteColorState.collect { color -> viewModel.updateHighlightColor(color) }
-            }
-        }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.highlightColor.collect { color ->
-                    if (panelState == PanelState.EXPANDED) {
-                        animateThemeColorChange(viewModel.previewHighlightColor.value, color)
-                    }
-                }
             }
         }
     }
