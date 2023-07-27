@@ -125,6 +125,8 @@ abstract class AbsSlidingMusicPanelActivity :
             ).commit()
             executePendingTransactions()
         }
+        playerFragment = supportFragmentManager.findFragmentById(R.id.player_fragment_container) as AbsPlayerFragment
+        miniPlayerFragment = supportFragmentManager.findFragmentById(R.id.mini_player_fragment) as MiniPlayerFragment
     }
 
     fun setAntiDragView(antiDragView: View?) {
