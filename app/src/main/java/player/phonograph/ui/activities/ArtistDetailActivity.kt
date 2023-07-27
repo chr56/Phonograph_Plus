@@ -183,7 +183,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
         viewBinding.songCountText.setTextColor(secondaryTextColor)
         viewBinding.albumCountText.setTextColor(secondaryTextColor)
         cabController.cabColor = color
-        activityColor = color
+        viewModel.updateActivityColor(color)
     }
 
     private fun setUpToolbar() {
@@ -202,7 +202,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
             menu = menu,
             context = this,
             artist = model.artist.value ?: Artist(),
-            iconColor = primaryTextColor(activityColor),
+            iconColor = primaryTextColor(viewModel.activityColor.value),
             loadBiographyCallback = { model.showBiography(this, it) }
         )
         attach(menu) {
@@ -217,7 +217,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
                 }
             }
         }
-        tintMenuActionIcons(viewBinding.toolbar, menu, primaryTextColor(activityColor))
+        tintMenuActionIcons(viewBinding.toolbar, menu, primaryTextColor(viewModel.activityColor.value))
     }
 
     override fun onBackPressed() {

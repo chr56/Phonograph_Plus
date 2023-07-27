@@ -12,6 +12,7 @@ import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.MiniPlayerFragment
 import player.phonograph.ui.fragments.player.card.CardPlayerFragment
 import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment
+import androidx.activity.viewModels
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.lifecycle.Lifecycle
@@ -45,15 +46,15 @@ abstract class AbsSlidingMusicPanelActivity :
 
     private val argbEvaluator = ArgbEvaluator()
 
-    private var playerColor: Int = 0
-    protected var activityColor: Int = 0 // original color of this activity
+    val viewModel: PanelViewModel by viewModels(factoryProducer = {
+        PanelViewModel.Factory(this, primaryColor, getColor(R.color.defaultFooterColor)) //todo
+    })
 
     protected abstract fun createContentView(): View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(createContentView())
-        activityColor = primaryColor
 
         // add fragment
         val flow = SettingFlowStore(this).nowPlayingScreenIndex
@@ -86,9 +87,6 @@ abstract class AbsSlidingMusicPanelActivity :
             supportFragmentManager.findFragmentById(R.id.mini_player_fragment) as MiniPlayerFragment
         miniPlayerFragment.requireView().setOnClickListener { expandPanel() }
 
-        playerColor =
-            if (playerFragment.paletteColorState.value != 0) playerFragment.paletteColorState.value
-            else getColor(R.color.defaultFooterColor)
 
         // set panel
         slidingUpPanelLayout =
@@ -140,7 +138,11 @@ abstract class AbsSlidingMusicPanelActivity :
         setMiniPlayerAlphaProgress(slideOffset)
         cancelThemeColorChange()
         val color: Int =
-            argbEvaluator.evaluate(slideOffset, activityColor, playerFragment.paletteColorState.value) as Int
+            argbEvaluator.evaluate(
+                slideOffset,
+                viewModel.activityColor.value,
+                playerFragment.paletteColorState.value
+            ) as Int
         super.setStatusbarColor(color)
         setNavigationBarColor(color)
     }
@@ -227,11 +229,15 @@ abstract class AbsSlidingMusicPanelActivity :
     private fun setupPaletteColorObserver() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                playerFragment.paletteColorState.collect { color ->
+                playerFragment.paletteColorState.collect { color -> viewModel.updateHighlightColor(color) }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.highlightColor.collect { color ->
                     if (panelState == PanelState.EXPANDED) {
-                        animateThemeColorChange(playerColor, color)
+                        animateThemeColorChange(viewModel.previewHighlightColor.value, color)
                     }
-                    playerColor = color
                 }
             }
         }
