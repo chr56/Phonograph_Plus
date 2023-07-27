@@ -45,7 +45,9 @@ abstract class AbsSlidingMusicPanelActivity :
     private var slidingUpPanelLayout: SlidingUpPanelLayout? = null
 
     val viewModel: PanelViewModel by viewModels(factoryProducer = {
-        PanelViewModel.Factory(this, primaryColor, getColor(R.color.defaultFooterColor)) //todo
+        val paletteColor = playerFragment?.paletteColorState?.value ?: 0
+        val highlightColor = if (paletteColor > 0) paletteColor else getColor(R.color.defaultFooterColor)
+        PanelViewModel.Factory(this, primaryColor, highlightColor)
     })
 
     protected abstract fun createContentView(): View
