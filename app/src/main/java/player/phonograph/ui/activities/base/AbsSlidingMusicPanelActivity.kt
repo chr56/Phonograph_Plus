@@ -19,6 +19,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.whenStarted
+import androidx.lifecycle.withStarted
 import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -66,7 +67,7 @@ abstract class AbsSlidingMusicPanelActivity :
                 flow.distinctUntilChanged().collect {
                     // Log.w("NowPlayingScreen", "nowPlayingScreen $it")
                     if (nowPlayingScreenId >= 0) {
-                        whenStarted {
+                        withStarted {
                             switchNowPlayingScreen(NowPlayingScreenConfig.nowPlayingScreen)
                         }
                     }
