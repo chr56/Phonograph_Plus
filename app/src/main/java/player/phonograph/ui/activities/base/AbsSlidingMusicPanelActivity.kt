@@ -39,8 +39,8 @@ abstract class AbsSlidingMusicPanelActivity :
         AbsMusicServiceActivity(),
         SlidingUpPanelLayout.PanelSlideListener {
 
-    private lateinit var playerFragment: AbsPlayerFragment
-    private lateinit var miniPlayerFragment: MiniPlayerFragment
+    private var playerFragment: AbsPlayerFragment? = null
+    private var miniPlayerFragment: MiniPlayerFragment? = null
 
     private var slidingUpPanelLayout: SlidingUpPanelLayout? = null
 
@@ -91,7 +91,7 @@ abstract class AbsSlidingMusicPanelActivity :
             supportFragmentManager.findFragmentById(R.id.player_fragment_container) as AbsPlayerFragment
         miniPlayerFragment =
             supportFragmentManager.findFragmentById(R.id.mini_player_fragment) as MiniPlayerFragment
-        miniPlayerFragment.requireView().setOnClickListener { expandPanel() }
+        miniPlayerFragment?.requireView()?.setOnClickListener { expandPanel() }
 
 
         // set panel
@@ -107,7 +107,7 @@ abstract class AbsSlidingMusicPanelActivity :
                             }
 
                             PanelState.COLLAPSED -> onPanelCollapsed(layout)
-                            else                 -> playerFragment.onHide()
+                            else                 -> playerFragment?.onHide()
                         }
                     }
                 })
@@ -148,7 +148,7 @@ abstract class AbsSlidingMusicPanelActivity :
             argbEvaluator.evaluate(
                 slideOffset,
                 viewModel.activityColor.value,
-                playerFragment.paletteColorState.value
+                viewModel.highlightColor.value
             ) as Int
         super.setStatusbarColor(color)
         setNavigationBarColor(color)
@@ -165,24 +165,26 @@ abstract class AbsSlidingMusicPanelActivity :
 
     open fun onPanelCollapsed(panel: View?) {
         // restore values
-        playerFragment.setMenuVisibility(false)
-        playerFragment.userVisibleHint = false
-        playerFragment.onHide()
+        playerFragment?.setMenuVisibility(false)
+        playerFragment?.userVisibleHint = false
+        playerFragment?.onHide()
     }
 
     open fun onPanelExpanded(panel: View?) {
         // setting fragments values
-        playerFragment.setMenuVisibility(true)
-        playerFragment.userVisibleHint = true
-        playerFragment.onShow()
+        playerFragment?.setMenuVisibility(true)
+        playerFragment?.userVisibleHint = true
+        playerFragment?.onShow()
     }
 
     private fun setMiniPlayerAlphaProgress(@FloatRange(from = 0.0, to = 1.0) progress: Float) {
-        if (miniPlayerFragment.view == null) return
+        if (miniPlayerFragment?.view == null) return
         val alpha = 1 - progress
-        miniPlayerFragment.requireView().alpha = alpha
-        // necessary to make the views below clickable
-        miniPlayerFragment.requireView().visibility = if (alpha == 0f) View.GONE else View.VISIBLE
+        miniPlayerFragment?.requireView()?.also {
+            it.alpha = alpha
+            // necessary to make the views below clickable
+            it.visibility = if (alpha == 0f) View.GONE else View.VISIBLE
+        }
     }
 
     val panelState: PanelState?
@@ -225,7 +227,7 @@ abstract class AbsSlidingMusicPanelActivity :
     }
 
     open fun handleBackPress(): Boolean {
-        if (slidingUpPanelLayout!!.panelHeight != 0 && playerFragment.onBackPressed()) return true
+        if (slidingUpPanelLayout!!.panelHeight != 0 && playerFragment?.onBackPressed() != false) return true
         if (panelState == PanelState.EXPANDED) {
             collapsePanel()
             return true
@@ -236,7 +238,7 @@ abstract class AbsSlidingMusicPanelActivity :
     private fun setupPaletteColorObserver() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                playerFragment.paletteColorState.collect { color -> viewModel.updateHighlightColor(color) }
+                playerFragment?.paletteColorState?.collect { color -> viewModel.updateHighlightColor(color) }
             }
         }
     }
@@ -249,7 +251,7 @@ abstract class AbsSlidingMusicPanelActivity :
     fun setTaskDescriptionColor(@ColorInt color: Int) {
         when (panelState) {
             PanelState.EXPANDED -> {
-                setTaskDescriptionColorEXt(playerFragment.paletteColorState.value)
+                setTaskDescriptionColorEXt(viewModel.highlightColor.value)
             }
 
             else                -> {
