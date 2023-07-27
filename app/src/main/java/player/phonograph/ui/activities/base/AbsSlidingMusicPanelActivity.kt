@@ -4,7 +4,6 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import mt.tint.setNavigationBarColor
 import player.phonograph.R
-import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.model.NowPlayingScreen
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
@@ -18,8 +17,6 @@ import androidx.annotation.FloatRange
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.whenStarted
-import androidx.lifecycle.withStarted
 import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -50,40 +47,48 @@ abstract class AbsSlidingMusicPanelActivity :
 
     private var playerColor: Int = 0
     protected var activityColor: Int = 0 // original color of this activity
-    private var nowPlayingScreenId = -1
 
     protected abstract fun createContentView(): View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(createContentView())
+        activityColor = primaryColor
 
         // add fragment
-        switchNowPlayingScreen(NowPlayingScreenConfig.nowPlayingScreen)
-
         val flow = SettingFlowStore(this).nowPlayingScreenIndex
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                flow.distinctUntilChanged().collect {
-                    // Log.w("NowPlayingScreen", "nowPlayingScreen $it")
-                    if (nowPlayingScreenId >= 0) {
-                        withStarted {
-                            switchNowPlayingScreen(NowPlayingScreenConfig.nowPlayingScreen)
-                        }
-                    }
-                    nowPlayingScreenId = it
+                flow.distinctUntilChanged().collect { id ->
+                    setupPlayerFragment(id)
                 }
             }
         }
 
-        playerFragment = supportFragmentManager.findFragmentById(R.id.player_fragment_container) as AbsPlayerFragment
-        miniPlayerFragment = supportFragmentManager.findFragmentById(R.id.mini_player_fragment) as MiniPlayerFragment
+    }
+
+    private fun setupPlayerFragment(nowPlayingScreen: Int) {
+        supportFragmentManager.apply {
+            beginTransaction().replace(
+                R.id.player_fragment_container,
+                when (nowPlayingScreen) {
+                    NowPlayingScreen.FLAT.id -> FlatPlayerFragment()
+                    NowPlayingScreen.CARD.id -> CardPlayerFragment()
+                    else                     -> FlatPlayerFragment()
+                },
+                NOW_PLAYING_FRAGMENT
+            ).commit()
+            executePendingTransactions()
+        }
+        playerFragment =
+            supportFragmentManager.findFragmentById(R.id.player_fragment_container) as AbsPlayerFragment
+        miniPlayerFragment =
+            supportFragmentManager.findFragmentById(R.id.mini_player_fragment) as MiniPlayerFragment
         miniPlayerFragment.requireView().setOnClickListener { expandPanel() }
 
         playerColor =
             if (playerFragment.paletteColorState.value != 0) playerFragment.paletteColorState.value
             else getColor(R.color.defaultFooterColor)
-        activityColor = primaryColor
 
         // set panel
         slidingUpPanelLayout =
@@ -96,6 +101,7 @@ abstract class AbsSlidingMusicPanelActivity :
                                 onPanelSlide(layout, 1f)
                                 onPanelExpanded(layout)
                             }
+
                             PanelState.COLLAPSED -> onPanelCollapsed(layout)
                             else                 -> playerFragment.onHide()
                         }
@@ -112,22 +118,6 @@ abstract class AbsSlidingMusicPanelActivity :
                 }
             }
         }
-    }
-
-    private fun switchNowPlayingScreen(nowPlayingScreen: NowPlayingScreen) {
-        supportFragmentManager.apply {
-            beginTransaction().replace(
-                R.id.player_fragment_container,
-                when (nowPlayingScreen) {
-                    NowPlayingScreen.FLAT -> FlatPlayerFragment()
-                    NowPlayingScreen.CARD -> CardPlayerFragment()
-                },
-                NOW_PLAYING_FRAGMENT
-            ).commit()
-            executePendingTransactions()
-        }
-        playerFragment = supportFragmentManager.findFragmentById(R.id.player_fragment_container) as AbsPlayerFragment
-        miniPlayerFragment = supportFragmentManager.findFragmentById(R.id.mini_player_fragment) as MiniPlayerFragment
     }
 
     fun setAntiDragView(antiDragView: View?) {
@@ -257,6 +247,7 @@ abstract class AbsSlidingMusicPanelActivity :
             PanelState.EXPANDED -> {
                 setTaskDescriptionColorEXt(playerFragment.paletteColorState.value)
             }
+
             else                -> {
                 setTaskDescriptionColorEXt(color)
             }
