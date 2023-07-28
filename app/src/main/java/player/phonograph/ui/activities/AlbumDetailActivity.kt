@@ -161,7 +161,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         viewBinding.albumYearText.compoundDrawablePadding = 16
 
         cabController.cabColor = color
-        activityColor = color
+        viewModel.updateActivityColor(color)
     }
 
     private val album: Album get() = model.album
@@ -201,7 +201,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
     }
 
     private fun setupMenu(menu: Menu) {
-        albumDetailToolbar(menu, this, album, primaryTextColor(activityColor)) {
+        albumDetailToolbar(menu, this, album, primaryTextColor(viewModel.activityColor.value)) {
             // load wiki
             if (isWikiPreLoaded) {
                 showWikiDialog()
@@ -212,7 +212,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
             }
             true
         }
-        tintMenuActionIcons(viewBinding.toolbar, menu, primaryTextColor(activityColor))
+        tintMenuActionIcons(viewBinding.toolbar, menu, primaryTextColor(viewModel.activityColor.value))
     }
 
     private var isWikiPreLoaded = false
