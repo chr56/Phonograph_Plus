@@ -4,6 +4,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import mt.tint.setNavigationBarColor
 import player.phonograph.R
+import player.phonograph.databinding.SlidingMusicPanelLayoutBinding
 import player.phonograph.model.NowPlayingScreen
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
@@ -19,10 +20,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import android.animation.ArgbEvaluator
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -43,6 +42,8 @@ abstract class AbsSlidingMusicPanelActivity :
     private var miniPlayerFragment: MiniPlayerFragment? = null
 
     private var slidingUpPanelLayout: SlidingUpPanelLayout? = null
+
+    lateinit var panelBinding: SlidingMusicPanelLayoutBinding
 
     val viewModel: PanelViewModel by viewModels(factoryProducer = {
         val paletteColor = playerFragment?.paletteColorState?.value ?: 0
@@ -211,17 +212,9 @@ abstract class AbsSlidingMusicPanelActivity :
     }
 
     protected fun wrapSlidingMusicPanel(view: View?): View {
-        @SuppressLint("InflateParams")
-        val slidingMusicPanelLayout = layoutInflater.inflate(
-            R.layout.sliding_music_panel_layout,
-            null
-        )
-        val contentContainer = slidingMusicPanelLayout.findViewById<ViewGroup>(
-            R.id.content_container
-        )
-        contentContainer.addView(view)
-        //        getLayoutInflater().inflate(resId, contentContainer);
-        return slidingMusicPanelLayout
+        panelBinding = SlidingMusicPanelLayoutBinding.inflate(layoutInflater, null, false)
+        panelBinding.contentContainer.also { it.addView(view) }
+        return panelBinding.slidingLayout
     }
 
     override fun onBackPressed() {
