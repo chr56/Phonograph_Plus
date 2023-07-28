@@ -91,6 +91,9 @@ abstract class AbsSlidingMusicPanelActivity :
             })
             layout.addPanelSlideListener(this)
         }
+        miniPlayerFragment =
+            supportFragmentManager.findFragmentById(R.id.mini_player_fragment) as MiniPlayerFragment
+        miniPlayerFragment?.requireView()?.setOnClickListener { expandPanel() }
 
         // add fragment
         val flow = SettingFlowStore(this).nowPlayingScreenIndex
@@ -101,6 +104,8 @@ abstract class AbsSlidingMusicPanelActivity :
                 }
             }
         }
+
+        // states
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.highlightColor.collect { color ->
@@ -110,6 +115,18 @@ abstract class AbsSlidingMusicPanelActivity :
                 }
             }
         }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                CurrentQueueState.queue.collect { queue ->
+                    hideBottomBar(queue.get()?.isEmpty() ?: false)
+                }
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cancelThemeColorChange() // just in case
     }
 
     private fun setupPlayerFragment(nowPlayingScreen: Int) {
@@ -125,49 +142,24 @@ abstract class AbsSlidingMusicPanelActivity :
             ).commit()
             executePendingTransactions()
         }
+
         playerFragment =
             supportFragmentManager.findFragmentById(R.id.player_fragment_container) as AbsPlayerFragment
-        miniPlayerFragment =
-            supportFragmentManager.findFragmentById(R.id.mini_player_fragment) as MiniPlayerFragment
-        miniPlayerFragment?.requireView()?.setOnClickListener { expandPanel() }
 
-        setupPaletteColorObserver()
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                CurrentQueueState.queue.collect { queue ->
-                    hideBottomBar(queue.get()?.isEmpty() ?: false)
-                }
+                playerFragment?.paletteColorState?.collect { color -> viewModel.updateHighlightColor(color) }
             }
         }
     }
 
-    fun setAntiDragView(antiDragView: View?) {
-        slidingUpPanelLayout?.setAntiDragView(antiDragView)
-    }
-
-    override fun onServiceConnected() {
-        super.onServiceConnected()
-        if (MusicPlayerRemote.playingQueue.isNotEmpty()) {
-            slidingUpPanelLayout!!.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    slidingUpPanelLayout!!.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    hideBottomBar(false)
-                }
-            })
-        } // don't call hideBottomBar(true) here as it causes a bug with the SlidingUpPanelLayout
-    }
-
     private val argbEvaluator = ArgbEvaluator()
     override fun onPanelSlide(panel: View, @FloatRange(from = 0.0, to = 1.0) slideOffset: Float) {
-        setMiniPlayerAlphaProgress(slideOffset)
+        setMiniPlayerFadingProgress(slideOffset)
         cancelThemeColorChange()
         val color: Int =
-            argbEvaluator.evaluate(
-                slideOffset,
-                viewModel.activityColor.value,
-                viewModel.highlightColor.value
-            ) as Int
-        super.setStatusbarColor(color)
+            argbEvaluator.evaluate(slideOffset, viewModel.activityColor.value, viewModel.highlightColor.value) as Int
+        setStatusbarColor(color)
         setNavigationBarColor(color)
     }
 
@@ -194,16 +186,6 @@ abstract class AbsSlidingMusicPanelActivity :
         playerFragment?.onShow()
     }
 
-    private fun setMiniPlayerAlphaProgress(@FloatRange(from = 0.0, to = 1.0) progress: Float) {
-        if (miniPlayerFragment?.view == null) return
-        val alpha = 1 - progress
-        miniPlayerFragment?.requireView()?.also {
-            it.alpha = alpha
-            // necessary to make the views below clickable
-            it.visibility = if (alpha == 0f) View.GONE else View.VISIBLE
-        }
-    }
-
     val panelState: PanelState?
         get() = slidingUpPanelLayout?.panelState
 
@@ -220,8 +202,7 @@ abstract class AbsSlidingMusicPanelActivity :
             slidingUpPanelLayout?.panelHeight = 0
             collapsePanel()
         } else {
-            slidingUpPanelLayout?.panelHeight =
-                resources.getDimensionPixelSize(R.dimen.mini_player_height)
+            slidingUpPanelLayout?.panelHeight = resources.getDimensionPixelSize(R.dimen.mini_player_height)
         }
     }
 
@@ -238,29 +219,36 @@ abstract class AbsSlidingMusicPanelActivity :
         return false
     }
 
-    private fun setupPaletteColorObserver() {
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                playerFragment?.paletteColorState?.collect { color -> viewModel.updateHighlightColor(color) }
-            }
+    override fun onServiceConnected() {
+        super.onServiceConnected()
+        if (MusicPlayerRemote.playingQueue.isNotEmpty()) {
+            slidingUpPanelLayout!!.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    slidingUpPanelLayout!!.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    hideBottomBar(false)
+                }
+            })
+        } // don't call hideBottomBar(true) here as it causes a bug with the SlidingUpPanelLayout
+    }
+
+    private fun setMiniPlayerFadingProgress(@FloatRange(from = 0.0, to = 1.0) progress: Float) {
+        val view = miniPlayerFragment?.view ?: return
+        val alpha = 1 - progress
+        view.also {
+            it.alpha = alpha
+            // necessary to make the views below clickable
+            it.visibility = if (alpha == 0f) View.GONE else View.VISIBLE
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        cancelThemeColorChange() // just in case
-    }
-
-    fun setTaskDescriptionColor(@ColorInt color: Int) {
+    fun setTaskDescriptionColor(@ColorInt color: Int) =
         when (panelState) {
-            PanelState.EXPANDED -> {
-                setTaskDescriptionColorEXt(viewModel.highlightColor.value)
-            }
-
-            else                -> {
-                setTaskDescriptionColorEXt(color)
-            }
+            PanelState.EXPANDED -> setTaskDescriptionColorEXt(viewModel.highlightColor.value)
+            else                -> setTaskDescriptionColorEXt(color)
         }
+
+    fun setAntiDragView(antiDragView: View?) {
+        slidingUpPanelLayout?.setAntiDragView(antiDragView)
     }
 
     override val snackBarContainer: View get() = findViewById(R.id.content_container)
