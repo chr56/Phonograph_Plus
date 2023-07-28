@@ -28,11 +28,12 @@ import kotlinx.coroutines.launch
 import mt.tint.setTaskDescriptionColor as setTaskDescriptionColorEXt
 
 /**
+ *
+ *
+ * Do not use [setContentView]. Instead, wrap your layout with
+ * [wrapSlidingMusicPanel] first and then return it in [createContentView]
+ *
  * @author Karim Abou Zeid (kabouzeid)
- *
- *
- * Do not use [.setContentView]. Instead wrap your layout with
- * [.wrapSlidingMusicPanel] first and then return it in [.createContentView]
  */
 abstract class AbsSlidingMusicPanelActivity :
         AbsMusicServiceActivity(),
@@ -43,7 +44,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
     private var slidingUpPanelLayout: SlidingUpPanelLayout? = null
 
-    lateinit var panelBinding: SlidingMusicPanelLayoutBinding
+    private var panelBinding: SlidingMusicPanelLayoutBinding? = null
 
     val viewModel: PanelViewModel by viewModels(factoryProducer = {
         val paletteColor = playerFragment?.paletteColorState?.value ?: 0
@@ -51,6 +52,9 @@ abstract class AbsSlidingMusicPanelActivity :
         PanelViewModel.Factory(this, primaryColor, highlightColor)
     })
 
+    /**
+     * See [wrapSlidingMusicPanel]
+     */
     protected abstract fun createContentView(): View
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,24 +102,23 @@ abstract class AbsSlidingMusicPanelActivity :
 
 
         // set panel
-        slidingUpPanelLayout =
-            findViewById<SlidingUpPanelLayout?>(R.id.sliding_layout).also { layout ->
-                layout.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        layout.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        when (panelState) {
-                            PanelState.EXPANDED  -> {
-                                onPanelSlide(layout, 1f)
-                                onPanelExpanded(layout)
-                            }
-
-                            PanelState.COLLAPSED -> onPanelCollapsed(layout)
-                            else                 -> playerFragment?.onHide()
+        slidingUpPanelLayout = panelBinding?.slidingLayout
+        slidingUpPanelLayout?.also { layout ->
+            layout.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    layout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    when (panelState) {
+                        PanelState.EXPANDED  -> {
+                            onPanelSlide(layout, 1f)
+                            onPanelExpanded(layout)
                         }
+                        PanelState.COLLAPSED -> onPanelCollapsed(layout)
+                        else                 -> playerFragment?.onHide()
                     }
-                })
-                layout.addPanelSlideListener(this)
-            }
+                }
+            })
+            layout.addPanelSlideListener(this)
+        }
 
         setupPaletteColorObserver()
         lifecycleScope.launch {
@@ -211,10 +214,17 @@ abstract class AbsSlidingMusicPanelActivity :
         }
     }
 
+    /**
+     * create the actual view (wrapped with panel layout)
+     * @param view the "main" view to be wrapped
+     * @return actual view that should be the "root" view for [setContentView]
+     */
     protected fun wrapSlidingMusicPanel(view: View?): View {
-        panelBinding = SlidingMusicPanelLayoutBinding.inflate(layoutInflater, null, false)
-        panelBinding.contentContainer.also { it.addView(view) }
-        return panelBinding.slidingLayout
+        return SlidingMusicPanelLayoutBinding.inflate(layoutInflater, null, false).let { binding ->
+            panelBinding = binding
+            binding.contentContainer.also { it.addView(view) }
+            binding.slidingLayout // root
+        }
     }
 
     override fun onBackPressed() {
