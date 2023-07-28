@@ -42,9 +42,8 @@ abstract class AbsSlidingMusicPanelActivity :
     private var playerFragment: AbsPlayerFragment? = null
     private var miniPlayerFragment: MiniPlayerFragment? = null
 
-    private var slidingUpPanelLayout: SlidingUpPanelLayout? = null
-
     private var panelBinding: SlidingMusicPanelLayoutBinding? = null
+    private val slidingUpPanelLayout: SlidingUpPanelLayout? get() = panelBinding?.slidingLayout
 
     val viewModel: PanelViewModel by viewModels(factoryProducer = {
         val paletteColor = playerFragment?.paletteColorState?.value ?: 0
@@ -57,9 +56,41 @@ abstract class AbsSlidingMusicPanelActivity :
      */
     protected abstract fun createContentView(): View
 
+    /**
+     * create the actual view (wrapped with panel layout)
+     * @param view the "main" view to be wrapped
+     * @return actual view that should be the "root" view for [setContentView]
+     */
+    protected fun wrapSlidingMusicPanel(view: View?): View {
+        return SlidingMusicPanelLayoutBinding.inflate(layoutInflater, null, false).let { binding ->
+            panelBinding = binding
+            binding.contentContainer.also { it.addView(view) }
+            binding.slidingLayout // root
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // setup panel
         setContentView(createContentView())
+        panelBinding?.slidingLayout?.also { layout ->
+            layout.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    layout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    when (panelState) {
+                        PanelState.EXPANDED  -> {
+                            onPanelSlide(layout, 1f)
+                            onPanelExpanded(layout)
+                        }
+
+                        PanelState.COLLAPSED -> onPanelCollapsed(layout)
+                        else                 -> playerFragment?.onHide()
+                    }
+                }
+            })
+            layout.addPanelSlideListener(this)
+        }
 
         // add fragment
         val flow = SettingFlowStore(this).nowPlayingScreenIndex
@@ -99,26 +130,6 @@ abstract class AbsSlidingMusicPanelActivity :
         miniPlayerFragment =
             supportFragmentManager.findFragmentById(R.id.mini_player_fragment) as MiniPlayerFragment
         miniPlayerFragment?.requireView()?.setOnClickListener { expandPanel() }
-
-
-        // set panel
-        slidingUpPanelLayout = panelBinding?.slidingLayout
-        slidingUpPanelLayout?.also { layout ->
-            layout.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    layout.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    when (panelState) {
-                        PanelState.EXPANDED  -> {
-                            onPanelSlide(layout, 1f)
-                            onPanelExpanded(layout)
-                        }
-                        PanelState.COLLAPSED -> onPanelCollapsed(layout)
-                        else                 -> playerFragment?.onHide()
-                    }
-                }
-            })
-            layout.addPanelSlideListener(this)
-        }
 
         setupPaletteColorObserver()
         lifecycleScope.launch {
@@ -211,19 +222,6 @@ abstract class AbsSlidingMusicPanelActivity :
         } else {
             slidingUpPanelLayout?.panelHeight =
                 resources.getDimensionPixelSize(R.dimen.mini_player_height)
-        }
-    }
-
-    /**
-     * create the actual view (wrapped with panel layout)
-     * @param view the "main" view to be wrapped
-     * @return actual view that should be the "root" view for [setContentView]
-     */
-    protected fun wrapSlidingMusicPanel(view: View?): View {
-        return SlidingMusicPanelLayoutBinding.inflate(layoutInflater, null, false).let { binding ->
-            panelBinding = binding
-            binding.contentContainer.also { it.addView(view) }
-            binding.slidingLayout // root
         }
     }
 
