@@ -17,16 +17,18 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.SeekBar
 import kotlin.math.roundToInt
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class SpeedControlDialog : DialogFragment() {
 
     private var _binding: DialogSpeedControlBinding? = null
     private val binding: DialogSpeedControlBinding get() = _binding!!
 
-    private var targetSpeed: Float = -1f
+    private val speedData: MutableStateFlow<Float> = MutableStateFlow(-1f)
     private fun applySpeed() {
         val service = MusicPlayerRemote.musicService ?: return
         val currentSpeed = service.speed
+        val targetSpeed = speedData.value ?: 1.0f
         if (targetSpeed > 0f && targetSpeed != currentSpeed)
             service.speed = targetSpeed
     }
@@ -43,12 +45,6 @@ class SpeedControlDialog : DialogFragment() {
         _binding = DialogSpeedControlBinding.inflate(layoutInflater)
 
         val currentSpeed = service.speed
-        binding.speed.setText(currentSpeed.toString())
-        binding.speed.doAfterTextChanged { editable ->
-            val text = editable?.toString() ?: return@doAfterTextChanged
-            val value = text.toFloatOrNull()
-            if (value != null) targetSpeed = value
-        }
 
         binding.speedSeeker.max = length()
         binding.speedSeeker.progress = calculateProcess(currentSpeed)
@@ -64,6 +60,15 @@ class SpeedControlDialog : DialogFragment() {
             }
         )
 
+        binding.speed.setText(currentSpeed.toString())
+        binding.speed.doAfterTextChanged { editable ->
+            val text = editable?.toString() ?: return@doAfterTextChanged
+            val newValue = text.toFloatOrNull()
+            if (newValue != null) {
+                speedData.value = newValue
+            }
+        }
+
         return AlertDialog.Builder(requireContext())
             .setTitle(R.string.action_speed)
             .setView(binding.root)
@@ -71,7 +76,7 @@ class SpeedControlDialog : DialogFragment() {
                 applySpeed()
             }
             .setNegativeButton(R.string.reset_action) { _, _: Int ->
-                targetSpeed = 1.0f
+                speedData.value = 1.0f
                 applySpeed()
             }
             .create()
