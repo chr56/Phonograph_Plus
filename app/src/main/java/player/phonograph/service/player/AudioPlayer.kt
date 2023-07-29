@@ -164,8 +164,8 @@ class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) :
      */
     override fun start(): Boolean =
         try {
-            currentMediaPlayer.start()
-            applySpeed(currentMediaPlayer, _speed)
+            // currentMediaPlayer.start()
+            playWithSpeed(currentMediaPlayer, _speed)
             true
         } catch (e: IllegalStateException) {
             false
@@ -263,11 +263,10 @@ class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) :
         get() = _speed
         set(value) {
             _speed = value
-            pause()
-            start()
+            if (isPlaying()) playWithSpeed(currentMediaPlayer, _speed)
         }
 
-    private fun applySpeed(player: MediaPlayer, targetSpeed: Float) {
+    private fun playWithSpeed(player: MediaPlayer, targetSpeed: Float) {
         player.playbackParams = PlaybackParams().apply {
             allowDefaults()
             audioFallbackMode = AUDIO_FALLBACK_MODE_MUTE
