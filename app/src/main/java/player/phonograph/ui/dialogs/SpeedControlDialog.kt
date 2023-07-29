@@ -11,6 +11,7 @@ import player.phonograph.service.MusicService
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
@@ -18,6 +19,7 @@ import android.util.Log
 import android.widget.SeekBar
 import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 
 class SpeedControlDialog : DialogFragment() {
 
@@ -46,28 +48,37 @@ class SpeedControlDialog : DialogFragment() {
 
         val currentSpeed = service.speed
 
+        speedData.value = currentSpeed
+
         binding.speedSeeker.max = length()
-        binding.speedSeeker.progress = calculateProcess(currentSpeed)
         binding.speedSeeker.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
+                var currentProcess = -1
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    binding.speed.setText(calculateSpeed(progress).toString())
+                    currentProcess = progress
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    speedData.value = calculateSpeed(currentProcess)
+                }
             }
         )
 
-        binding.speed.setText(currentSpeed.toString())
         binding.speed.doAfterTextChanged { editable ->
             val text = editable?.toString() ?: return@doAfterTextChanged
-            val newValue = text.toFloatOrNull()
-            if (newValue != null) {
-                speedData.value = newValue
+            val newValue = text.toFloatOrNull() ?: return@doAfterTextChanged
+            if (newValue != speedData.value) speedData.value = newValue
+        }
+
+        lifecycleScope.launch {
+            speedData.collect { speed ->
+                binding.speedSeeker.progress = calculateProcess(speed)
+                binding.speed.setText(speed.toString())
             }
         }
+
 
         return AlertDialog.Builder(requireContext())
             .setTitle(R.string.action_speed)
