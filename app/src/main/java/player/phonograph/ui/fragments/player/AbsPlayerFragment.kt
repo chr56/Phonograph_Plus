@@ -23,6 +23,7 @@ import player.phonograph.ui.dialogs.LyricsDialog
 import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
 import player.phonograph.ui.dialogs.QueueSnapshotsDialog
 import player.phonograph.ui.dialogs.SleepTimerDialog
+import player.phonograph.ui.dialogs.SpeedControlDialog
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
 import player.phonograph.util.NavigationUtil
@@ -213,27 +214,7 @@ abstract class AbsPlayerFragment :
                 title = getString(R.string.action_speed)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick {
-                    val musicService = MusicPlayerRemote.musicService ?: return@onClick false
-                    MaterialDialog(context)
-                        .title(R.string.action_speed)
-                        .input(
-                            prefill = musicService.speed.toString(),
-                            inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL,
-                            allowEmpty = true
-                        ) { _, value ->
-                            if (value.isEmpty()) {
-                                musicService.speed = 1.0f
-                            } else {
-                                musicService.speed = try {
-                                    value.toString().toFloat()
-                                } catch (e: NumberFormatException) {
-                                    warning("PlayerFragment", "speed `$value` is invalid!")
-                                    musicService.speed
-                                }
-                            }
-                        }
-                        .neutralButton(R.string.reset_action) { musicService.speed = 1.0f }
-                        .show()
+                    SpeedControlDialog().show(childFragmentManager,"SPEED_CONTROL_DIALOG")
                     true
                 }
             }
