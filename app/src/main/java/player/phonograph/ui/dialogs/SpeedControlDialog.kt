@@ -30,7 +30,7 @@ class SpeedControlDialog : DialogFragment() {
     private fun applySpeed() {
         val service = MusicPlayerRemote.musicService ?: return
         val currentSpeed = service.speed
-        val targetSpeed = speedData.value ?: 1.0f
+        val targetSpeed = speedData.value
         if (targetSpeed > 0f && targetSpeed != currentSpeed)
             service.speed = targetSpeed
     }
@@ -46,47 +46,9 @@ class SpeedControlDialog : DialogFragment() {
 
         _binding = DialogSpeedControlBinding.inflate(layoutInflater)
 
-        val currentSpeed = service.speed
+        setup()
 
-        speedData.value = currentSpeed
-
-        binding.speedSeeker.max = length()
-        binding.speedSeeker.setOnSeekBarChangeListener(
-            object : SeekBar.OnSeekBarChangeListener {
-                var currentProcess = -1
-                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    currentProcess = progress
-                }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    speedData.value = calculateSpeed(currentProcess)
-                }
-            }
-        )
-
-        binding.speed.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                val editable = binding.speed.text
-                if (editable != null) {
-                    val newValue = editable.toString().toFloatOrNull()
-                    if (newValue != null) speedData.value = newValue
-                    true
-                } else {
-                    false
-                }
-            } else {
-                false
-            }
-        }
-
-        lifecycleScope.launch {
-            speedData.collect { speed ->
-                binding.speedSeeker.progress = calculateProcess(speed)
-                binding.speed.setText(String.format("%.2f", speed))
-            }
-        }
+        observe(service)
 
 
         return AlertDialog.Builder(requireContext())
@@ -105,6 +67,52 @@ class SpeedControlDialog : DialogFragment() {
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         _binding = null
+    }
+
+    private fun setup() {
+
+        binding.speedSeeker.max = length()
+        binding.speedSeeker.setOnSeekBarChangeListener(
+            object : SeekBar.OnSeekBarChangeListener {
+                var currentProcess = -1
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    currentProcess = progress
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    if (currentProcess > -1) speedData.value = calculateSpeed(currentProcess)
+                }
+            }
+        )
+
+        binding.speed.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val text = binding.speed.text?.toString()
+                if (text != null) {
+                    val newValue = text.toFloatOrNull()
+                    if (newValue != null) speedData.value = newValue
+                    true
+                } else {
+                    false
+                }
+            } else {
+                false
+            }
+        }
+    }
+
+    private fun observe(service: MusicService) {
+
+        speedData.value = service.speed // init
+
+        lifecycleScope.launch {
+            speedData.collect { speed ->
+                binding.speedSeeker.progress = calculateProcess(speed)
+                binding.speed.setText(String.format("%.2f", speed))
+            }
+        }
     }
 
     private fun length() = ((MAX - MIN) * RATIO).roundToInt()
