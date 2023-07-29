@@ -110,13 +110,13 @@ class SpeedControlDialog : DialogFragment() {
     private fun length() = ((MAX - MIN) * RATIO).roundToInt()
 
     private fun calculateSpeed(process: Int): Float =
-        MIN + (process.toFloat() / length()) * (MAX - MIN)
+        MIN + (process.toFloat() / RATIO)
 
     private fun calculateProcess(speed: Float): Int =
         when {
             speed > MAX -> length()
             speed < MIN -> 0
-            else        -> (length() * ((speed - MIN) / (MAX - MIN))).roundToInt()
+            else        -> (RATIO * (speed - MIN)).roundToInt()
         }
 
 
