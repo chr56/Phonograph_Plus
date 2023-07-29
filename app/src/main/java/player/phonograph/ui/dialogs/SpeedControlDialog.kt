@@ -9,13 +9,13 @@ import player.phonograph.databinding.DialogSpeedControlBinding
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicService
 import androidx.appcompat.app.AlertDialog
-import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
+import android.view.inputmethod.EditorInfo
 import android.widget.SeekBar
 import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,10 +66,19 @@ class SpeedControlDialog : DialogFragment() {
             }
         )
 
-        binding.speed.doAfterTextChanged { editable ->
-            val text = editable?.toString() ?: return@doAfterTextChanged
-            val newValue = text.toFloatOrNull() ?: return@doAfterTextChanged
-            if (newValue != speedData.value) speedData.value = newValue
+        binding.speed.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val editable = binding.speed.text
+                if (editable != null) {
+                    val newValue = editable.toString().toFloatOrNull()
+                    if (newValue != null) speedData.value = newValue
+                    true
+                } else {
+                    false
+                }
+            } else {
+                false
+            }
         }
 
         lifecycleScope.launch {
