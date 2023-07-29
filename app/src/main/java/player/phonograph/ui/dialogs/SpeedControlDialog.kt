@@ -50,12 +50,12 @@ class SpeedControlDialog : DialogFragment() {
             if (value != null) targetSpeed = value
         }
 
-        binding.speedSeeker.max = 2 * RATIO
-        binding.speedSeeker.progress = (currentSpeed * RATIO).roundToInt()
+        binding.speedSeeker.max = length()
+        binding.speedSeeker.progress = calculateProcess(currentSpeed)
         binding.speedSeeker.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    binding.speed.setText((progress.toFloat() / RATIO).toString())
+                    binding.speed.setText(calculateSpeed(progress).toString())
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -82,9 +82,24 @@ class SpeedControlDialog : DialogFragment() {
         _binding = null
     }
 
+    private fun length() = ((MAX - MIN) * RATIO).roundToInt()
+
+    private fun calculateSpeed(process: Int): Float =
+        MIN + (process.toFloat() / length()) * (MAX - MIN)
+
+    private fun calculateProcess(speed: Float): Int =
+        when {
+            speed > MAX -> length()
+            speed < MIN -> 0
+            else        -> (length() * ((speed - MIN) / (MAX - MIN))).roundToInt()
+        }
+
+
     companion object {
         private const val TAG = "SpeedControlDialog"
 
+        private const val MAX = 2.0f
+        private const val MIN = 0.5f
         private const val RATIO = 1000
     }
 
