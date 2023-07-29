@@ -232,6 +232,7 @@ abstract class AbsPlayerFragment :
                                 }
                             }
                         }
+                        .neutralButton(R.string.reset_action) { musicService.speed = 1.0f }
                         .show()
                     true
                 }
