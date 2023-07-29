@@ -84,7 +84,7 @@ class SpeedControlDialog : DialogFragment() {
         lifecycleScope.launch {
             speedData.collect { speed ->
                 binding.speedSeeker.progress = calculateProcess(speed)
-                binding.speed.setText(speed.toString())
+                binding.speed.setText(String.format("%.2f", speed))
             }
         }
 
