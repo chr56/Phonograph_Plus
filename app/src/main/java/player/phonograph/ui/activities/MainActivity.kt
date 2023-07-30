@@ -135,6 +135,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
             }
         }
 
+        lifecycleScope.launch(Dispatchers.Default) {
+            latelySetup()
+        }
+
         if (DEBUG) {
             Log.v("Metrics", "${System.currentTimeMillis().mod(10000000)} MainActivity.onCreate()")
         }
@@ -147,9 +151,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 "Metrics",
                 "${System.currentTimeMillis().mod(10000000)} MainActivity.onResume()"
             )
-        }
-        lifecycleScope.launch(Dispatchers.Default) {
-            latelySetup()
         }
     }
 
