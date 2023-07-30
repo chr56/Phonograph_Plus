@@ -1,12 +1,18 @@
-## {{version:0.8-dev1}} {{versionCode:622}} {{date:1690346000}} {{channel:preview}}
+## {{version:0.8-dev2}} {{versionCode:623}} {{date:1690689000}} {{channel:preview}}
 
 ### {{note:en}}
-- New: playback speed control
-- New: add scrollbar for Playing Queue
-- Translation: update Portuguese (Brazilian) by EddieMattos
+- Fix: crash after changing now playing screen style
+- Fix: process on the notification not matched if speed modified
+- Improve: the dialog of playback speed control
+- Translation: update German (by txp_uli)
+- Translation: update Italian (by gdonisi)
+- Development: clean up codes
 
 
 ### {{note:zh}}
-- 新增 倍数播放支持
-- 新增 为播放队列添加滚动条
-- 翻译 更新(巴西)葡萄牙语 (by EddieMattos)
+- 修复 改变正在播放界面样式后崩溃
+- 修复 若速度更改后，通知播放进度不匹配
+- 改进 速度控制对话框
+- 翻译 更新德语(by txp_uli)
+- 翻译 更新意大利语(by gdonisi)
+- 开发 清理代码
