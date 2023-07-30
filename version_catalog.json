@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "0.8-dev2",
+      "versionCode": 623,
+      "date": 1690689000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.8-dev2"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 改变正在播放界面样式后崩溃</li><li>修复 若速度更改后，通知播放进度不匹配</li><li>改进 速度控制对话框</li><li>翻译 更新德语(by txp_uli)</li><li>翻译 更新意大利语(by gdonisi)</li><li>开发 清理代码</li></ol>",
+        "en": "<ol><li>Fix: crash after changing now playing screen style</li><li>Fix: process on the notification not matched if speed modified</li><li>Improve: the dialog of playback speed control</li><li>Translation: update German (by txp_uli)</li><li>Translation: update Italian (by gdonisi)</li><li>Development: clean up codes</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "0.8-dev1",
       "versionCode": 622,
       "date": 1690346000,
