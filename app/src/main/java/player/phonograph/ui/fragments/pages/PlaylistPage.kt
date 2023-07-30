@@ -95,10 +95,6 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
     }
 
 
-    override fun updateDataset(dataSet: List<Playlist>) {
-        adapter.dataset = dataSet
-    }
-
     override val availableSortRefs: Array<SortRef>
         get() = arrayOf(
             SortRef.DISPLAY_NAME,

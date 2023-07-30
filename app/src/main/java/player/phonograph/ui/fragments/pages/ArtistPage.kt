@@ -50,11 +50,6 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>>() {
         }
     }
 
-
-    override fun updateDataset(dataSet: List<Artist>) {
-        adapter.dataset = dataSet
-    }
-
     override val availableSortRefs: Array<SortRef>
         get() = arrayOf(
             SortRef.ARTIST_NAME,

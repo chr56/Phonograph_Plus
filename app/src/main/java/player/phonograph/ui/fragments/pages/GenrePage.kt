@@ -43,12 +43,6 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
         }
     }
 
-
-    override fun updateDataset(dataSet: List<Genre>) {
-        adapter.dataset = dataSet
-    }
-
-
     override val availableSortRefs: Array<SortRef>
         get() = arrayOf(
             SortRef.DISPLAY_NAME,

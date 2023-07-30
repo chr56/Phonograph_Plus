@@ -56,11 +56,6 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
 
     protected abstract val viewModel: AbsDisplayPageViewModel<IT>
 
-    /**
-     * update dataset
-     */
-    protected abstract fun updateDataset(dataSet: List<IT>)
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -108,7 +103,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.dataSet.collect {
                     checkEmpty()
-                    updateDataset(it.toList())
+                    adapter.dataset = it.toList()
                     updateHeaderText()
                 }
             }

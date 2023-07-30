@@ -49,12 +49,6 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
         }
     }
 
-
-    override fun updateDataset(dataSet: List<Album>) {
-        adapter.dataset = dataSet
-    }
-
-
     override val availableSortRefs: Array<SortRef>
         get() = arrayOf(
             SortRef.ALBUM_NAME,
