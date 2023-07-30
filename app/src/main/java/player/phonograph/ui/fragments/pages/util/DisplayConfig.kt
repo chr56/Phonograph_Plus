@@ -13,8 +13,9 @@ import player.phonograph.settings.dataStore
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.AlbumPage
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.ArtistPage
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.GenrePage
-import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.SongPage
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.PlaylistPage
+import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.SongPage
+import player.phonograph.util.debug
 import player.phonograph.util.ui.isLandscape
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -23,6 +24,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import android.content.Context
 import android.content.res.Resources
+import android.util.Log
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 import kotlinx.coroutines.flow.first
@@ -70,6 +72,18 @@ class DisplayConfig internal constructor(private val page: DisplayConfigTarget) 
                 PlaylistPage  -> pref.playlistSortMode = value
                 else          -> {}
             }
+        }
+
+    /**
+     * @return true if success
+     */
+    fun updateSortMode(mode: SortMode): Boolean =
+        if (mode != sortMode) {
+            debug { Log.d("DisplayConfig", "SortMode $sortMode -> $mode ($page)") }
+            sortMode = mode
+            true
+        } else {
+            false
         }
 
     var gridSize: Int
