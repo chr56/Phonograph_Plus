@@ -43,10 +43,11 @@ import kotlinx.coroutines.launch
 
 
 /**
+ * Page Fragment for displaying [IT] items.
  * @param IT the model type that this fragment displays
- * @param A relevant Adapter
+ * @param A used Adapter
  */
-sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>> : AbsPage() {
+sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage() {
 
     private var _viewBinding: FragmentDisplayPageBinding? = null
     private val binding get() = _viewBinding!!
