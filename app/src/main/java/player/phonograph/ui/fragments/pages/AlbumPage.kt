@@ -42,10 +42,6 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
         val layoutRes =
             if (displayConfig.gridSize > displayConfig.maxGridSizeForList) R.layout.item_grid
             else R.layout.item_list
-        Log.d(
-            TAG,
-            "layoutRes: ${if (layoutRes == R.layout.item_grid) "GRID" else if (layoutRes == R.layout.item_list) "LIST" else "UNKNOWN"}"
-        )
 
         return AlbumDisplayAdapter(
             hostFragment.mainActivity,
