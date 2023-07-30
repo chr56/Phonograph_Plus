@@ -228,8 +228,10 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
                 if (gridSizeSelected > displayConfig.maxGridSizeForList) R.layout.item_grid else R.layout.item_list
 
             if (adapter.layoutRes != itemLayoutRes) {
-                viewModel.loadDataset(requireContext())
-                initRecyclerView() // again
+                adapter.layoutRes = itemLayoutRes
+                layoutManager.removeAllViews()
+                binding.recyclerView.recycledViewPool.clear()
+                adapter.notifyDataSetChanged()
             }
             layoutManager.spanCount = gridSizeSelected
         }
