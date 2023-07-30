@@ -78,19 +78,12 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
         )
     }
 
-    override fun saveSortOrderImpl(
-        displayConfig: DisplayConfig,
-        popup: ListOptionsPopup,
-    ) {
-
+    override fun saveSortOrderImpl(displayConfig: DisplayConfig, popup: ListOptionsPopup) {
         val selected = SortMode(popup.sortRef, popup.revert)
-        if (displayConfig.sortMode != selected) {
-            displayConfig.sortMode = selected
+        if (displayConfig.updateSortMode(selected)) {
             viewModel.loadDataset(requireContext())
-            Log.d(TAG, "Write cfg: sortMode $selected")
         }
     }
-
 
     companion object {
         const val TAG = "AlbumPage"

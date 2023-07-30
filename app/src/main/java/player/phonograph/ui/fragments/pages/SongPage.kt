@@ -76,7 +76,6 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
     ) {
 
         val currentSortMode = displayConfig.sortMode
-        if (BuildConfig.DEBUG) Log.d(GenrePage.TAG, "Read cfg: sortMode $currentSortMode")
 
         popup.allowRevert = true
         popup.revert = currentSortMode.revert
@@ -101,10 +100,8 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
         popup: ListOptionsPopup,
     ) {
         val selected = SortMode(popup.sortRef, popup.revert)
-        if (displayConfig.sortMode != selected) {
-            displayConfig.sortMode = selected
+        if (displayConfig.updateSortMode(selected)) {
             viewModel.loadDataset(requireContext())
-            Log.d(AlbumPage.TAG, "Write cfg: sortMode $selected")
         }
     }
 

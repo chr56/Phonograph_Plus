@@ -69,15 +69,10 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
         popup.sortRefAvailable = arrayOf(SortRef.DISPLAY_NAME, SortRef.SONG_COUNT)
     }
 
-    override fun saveSortOrderImpl(
-        displayConfig: DisplayConfig,
-        popup: ListOptionsPopup,
-    ) {
+    override fun saveSortOrderImpl(displayConfig: DisplayConfig, popup: ListOptionsPopup) {
         val selected = SortMode(popup.sortRef, popup.revert)
-        if (displayConfig.sortMode != selected) {
-            displayConfig.sortMode = selected
+        if (displayConfig.updateSortMode(selected)) {
             viewModel.loadDataset(requireContext())
-            Log.d(TAG, "Write cfg: sortMode $selected")
         }
     }
 
