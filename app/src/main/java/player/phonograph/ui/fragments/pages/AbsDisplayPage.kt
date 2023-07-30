@@ -10,15 +10,17 @@ import com.google.android.material.appbar.AppBarLayout
 import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.App
-import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Displayable
+import player.phonograph.model.sort.SortMode
+import player.phonograph.model.sort.SortRef
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
+import player.phonograph.util.debug
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.ui.isLandscape
@@ -30,6 +32,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withResumed
 import androidx.recyclerview.widget.GridLayoutManager
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -42,25 +45,16 @@ import kotlinx.coroutines.launch
 
 
 /**
+ * Page Fragment for displaying [IT] items.
  * @param IT the model type that this fragment displays
- * @param A relevant Adapter
- * @param LM relevant LayoutManager
+ * @param A used Adapter
  */
-sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLayoutManager> : AbsPage() {
+sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage() {
 
     private var _viewBinding: FragmentDisplayPageBinding? = null
     private val binding get() = _viewBinding!!
 
     protected abstract val viewModel: AbsDisplayPageViewModel<IT>
-
-    /**
-     * update dataset
-     */
-    protected abstract fun updateDataset(dataSet: List<IT>)
-    /**
-     * Notify every [Displayable] items changes, do not reload dataset
-     */
-    protected abstract fun refreshDataSet()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -109,7 +103,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.dataSet.collect {
                     checkEmpty()
-                    updateDataset(it.toList())
+                    adapter.dataset = it.toList()
                     updateHeaderText()
                 }
             }
@@ -129,14 +123,13 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
 
 
     protected lateinit var adapter: A
-    protected lateinit var layoutManager: LM
+    protected lateinit var layoutManager: GridLayoutManager
 
-    protected abstract fun initLayoutManager(): LM
     protected abstract fun initAdapter(): A
 
     private fun initRecyclerView() {
 
-        layoutManager = initLayoutManager()
+        layoutManager = GridLayoutManager(hostFragment.requireContext(), DisplayConfig(displayConfigTarget).gridSize)
         adapter = initAdapter()
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(
@@ -147,6 +140,24 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
             it.adapter = adapter
             it.layoutManager = layoutManager
         }
+    }
+
+
+    /**
+     * Invalid all view holders & show again
+     */
+    @SuppressLint("NotifyDataSetChanged")
+    private fun refreshAllViewHolder() {
+        // remove all existed ViewHolders
+        val recyclerView = binding.recyclerView
+        // val recycler = recyclerView.Recycler()
+        // layoutManager.removeAndRecycleAllViews(recycler)
+        // recycler.clear()
+        // recyclerView.recycledViewPool.clear()
+        recyclerView.adapter = null
+        // replace all
+        recyclerView.adapter = adapter
+        layoutManager.requestLayout()
     }
 
     internal abstract val displayConfigTarget: DisplayConfigTarget
@@ -196,24 +207,30 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         popup.gridSize = displayConfig.gridSize
 
         // color footer
-        when (this) {
-            is GenrePage, is PlaylistPage -> {} // they are never colored
-            else                          -> {
-                popup.colorFooterVisibility = true
-                popup.colorFooterEnability = displayConfig.gridSize > displayConfig.maxGridSizeForList
-                popup.colorFooter = displayConfig.colorFooter
-            }
+        if (allowColoredFooter()) {
+            popup.colorFooterVisibility = true
+            popup.colorFooterEnability = displayConfig.gridSize > displayConfig.maxGridSizeForList
+            popup.colorFooter = displayConfig.colorFooter
         }
 
         // sort order
-        setupSortOrderImpl(displayConfig, popup)
+        if (availableSortRefs.isNotEmpty()) {
+            val currentSortMode = displayConfig.sortMode
+
+            popup.sortRef = currentSortMode.sortRef
+            popup.sortRefAvailable = availableSortRefs
+
+            popup.allowRevert = allowRevertSort
+            popup.revert = currentSortMode.revert
+        }
     }
 
-    protected abstract fun setupSortOrderImpl(
-        displayConfig: DisplayConfig,
-        popup: ListOptionsPopup,
-    )
+    protected open fun allowColoredFooter(): Boolean = true
 
+    protected open val allowRevertSort: Boolean get() = true
+    protected open val availableSortRefs: Array<SortRef> get() = arrayOf()
+
+    @SuppressLint("NotifyDataSetChanged")
     protected fun dismissPopup(popup: ListOptionsPopup) {
 
         val displayConfig = DisplayConfig(displayConfigTarget)
@@ -229,34 +246,27 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
 
             if (adapter.layoutRes != itemLayoutRes) {
                 adapter.layoutRes = itemLayoutRes
-                layoutManager.removeAllViews()
-                binding.recyclerView.recycledViewPool.clear()
-                adapter.notifyDataSetChanged()
+                refreshAllViewHolder()
             }
             layoutManager.spanCount = gridSizeSelected
         }
 
         // color footer
-        when (this) {
-            is GenrePage, is PlaylistPage -> {} // they are never colored
-            else                          -> {
-                val coloredFootersSelected = popup.colorFooter
-                if (displayConfig.colorFooter != coloredFootersSelected) {
-                    displayConfig.colorFooter = coloredFootersSelected
-                    adapter.usePalette = coloredFootersSelected
-                    refreshDataSet()
-                }
+        if (allowColoredFooter()) {
+            val coloredFootersSelected = popup.colorFooter
+            if (displayConfig.colorFooter != coloredFootersSelected) {
+                displayConfig.colorFooter = coloredFootersSelected
+                adapter.usePalette = coloredFootersSelected
+                adapter.notifyDataSetChanged()
             }
         }
 
         // sort order
-        saveSortOrderImpl(displayConfig, popup)
+        val selected = SortMode(popup.sortRef, popup.revert)
+        if (displayConfig.updateSortMode(selected)) {
+            viewModel.loadDataset(requireContext())
+        }
     }
-
-    protected abstract fun saveSortOrderImpl(
-        displayConfig: DisplayConfig,
-        popup: ListOptionsPopup,
-    )
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -288,6 +298,6 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
 
     override fun onResume() {
         super.onResume()
-        if (BuildConfig.DEBUG) Log.v("Metrics", "${System.currentTimeMillis().mod(10000000)} AbsDisplayPage.onResume()")
+        debug { Log.v("Metrics", "${System.currentTimeMillis().mod(10000000)} AbsDisplayPage.onResume()") }
     }
 }

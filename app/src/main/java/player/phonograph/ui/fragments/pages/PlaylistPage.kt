@@ -9,7 +9,6 @@ import mt.pref.primaryColor
 import mt.util.color.lightenColor
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
-import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.PlaylistDisplayAdapter
@@ -19,28 +18,22 @@ import player.phonograph.model.playlist.HistoryPlaylist
 import player.phonograph.model.playlist.LastAddedPlaylist
 import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.settings.Setting
-import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.dialogs.CreatePlaylistDialog
-import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.recyclerview.widget.GridLayoutManager
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.IntentFilter
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import kotlinx.coroutines.CoroutineScope
 
-class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayoutManager>() {
+class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
 
     override val viewModel: AbsDisplayPageViewModel<Playlist> get() = _viewModel
 
@@ -75,7 +68,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // PlaylistsModifiedReceiver
-        playlistsModifiedReceiver = PlaylistsModifiedReceiver(this::refreshDataSet)
+        playlistsModifiedReceiver = PlaylistsModifiedReceiver(adapter::notifyDataSetChanged)
         LocalBroadcastManager.getInstance(App.instance).registerReceiver(
             playlistsModifiedReceiver,
             IntentFilter().also { it.addAction(BROADCAST_PLAYLISTS_CHANGED) }
@@ -92,11 +85,6 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayo
 
     override val displayConfigTarget: DisplayConfigTarget get() = DisplayConfigTarget.PlaylistPage
 
-    override fun initLayoutManager(): GridLayoutManager {
-        return GridLayoutManager(hostFragment.requireContext(), 1)
-            .also { it.spanCount = DisplayConfig(displayConfigTarget).gridSize }
-    }
-
     override fun initAdapter(): DisplayAdapter<Playlist> {
         return PlaylistDisplayAdapter(
             hostFragment.mainActivity,
@@ -107,35 +95,13 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayo
     }
 
 
-    override fun updateDataset(dataSet: List<Playlist>) {
-        adapter.dataset = dataSet
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    override fun refreshDataSet() {
-        adapter.notifyDataSetChanged()
-    }
-
-    override fun setupSortOrderImpl(displayConfig: DisplayConfig, popup: ListOptionsPopup) {
-        val currentSortMode = displayConfig.sortMode
-        if (DEBUG) Log.d(TAG, "Read cfg: sortMode $currentSortMode")
-
-        popup.maxGridSize = 0
-        popup.allowRevert = true
-        popup.revert = currentSortMode.revert
-
-        popup.sortRef = currentSortMode.sortRef
-        popup.sortRefAvailable = arrayOf(SortRef.DISPLAY_NAME, SortRef.PATH, SortRef.ADDED_DATE, SortRef.MODIFIED_DATE)
-    }
-
-    override fun saveSortOrderImpl(displayConfig: DisplayConfig, popup: ListOptionsPopup) {
-        val selected = SortMode(popup.sortRef, popup.revert)
-        if (displayConfig.sortMode != selected) {
-            displayConfig.sortMode = selected
-            viewModel.loadDataset(requireContext())
-            Log.d(TAG, "Write cfg: sortMode $selected")
-        }
-    }
+    override val availableSortRefs: Array<SortRef>
+        get() = arrayOf(
+            SortRef.DISPLAY_NAME,
+            SortRef.PATH,
+            SortRef.ADDED_DATE,
+            SortRef.MODIFIED_DATE,
+        )
 
     private fun setUpFloatingActionButton() {
         val primaryColor = addNewItemButton.context.primaryColor()
@@ -155,6 +121,8 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayo
             CreatePlaylistDialog.create(null).show(childFragmentManager, "CREATE_NEW_PLAYLIST")
         }
     }
+
+    override fun allowColoredFooter(): Boolean = false
 
     companion object {
         const val TAG = "PlaylistPage"
