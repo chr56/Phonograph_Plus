@@ -30,6 +30,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withResumed
 import androidx.recyclerview.widget.GridLayoutManager
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -147,6 +148,24 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>> : AbsPage()
         }
     }
 
+
+    /**
+     * Invalid all view holders & show again
+     */
+    @SuppressLint("NotifyDataSetChanged")
+    private fun refreshAllViewHolder() {
+        // remove all existed ViewHolders
+        val recyclerView = binding.recyclerView
+        // val recycler = recyclerView.Recycler()
+        // layoutManager.removeAndRecycleAllViews(recycler)
+        // recycler.clear()
+        // recyclerView.recycledViewPool.clear()
+        recyclerView.adapter = null
+        // replace all
+        recyclerView.adapter = adapter
+        layoutManager.requestLayout()
+    }
+
     internal abstract val displayConfigTarget: DisplayConfigTarget
 
     private fun initAppBar() {
@@ -227,9 +246,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>> : AbsPage()
 
             if (adapter.layoutRes != itemLayoutRes) {
                 adapter.layoutRes = itemLayoutRes
-                layoutManager.removeAllViews()
-                binding.recyclerView.recycledViewPool.clear()
-                adapter.notifyDataSetChanged()
+                refreshAllViewHolder()
             }
             layoutManager.spanCount = gridSizeSelected
         }
