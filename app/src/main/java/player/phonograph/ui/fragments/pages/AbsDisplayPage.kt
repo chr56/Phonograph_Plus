@@ -15,6 +15,7 @@ import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Displayable
+import player.phonograph.model.sort.SortMode
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
@@ -259,13 +260,11 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         }
 
         // sort order
-        saveSortOrderImpl(displayConfig, popup)
+        val selected = SortMode(popup.sortRef, popup.revert)
+        if (displayConfig.updateSortMode(selected)) {
+            viewModel.loadDataset(requireContext())
+        }
     }
-
-    protected abstract fun saveSortOrderImpl(
-        displayConfig: DisplayConfig,
-        popup: ListOptionsPopup,
-    )
 
     override fun onDestroyView() {
         super.onDestroyView()

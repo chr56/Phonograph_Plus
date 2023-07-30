@@ -19,7 +19,6 @@ import player.phonograph.model.playlist.HistoryPlaylist
 import player.phonograph.model.playlist.LastAddedPlaylist
 import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
@@ -114,13 +113,6 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
 
         popup.sortRef = currentSortMode.sortRef
         popup.sortRefAvailable = arrayOf(SortRef.DISPLAY_NAME, SortRef.PATH, SortRef.ADDED_DATE, SortRef.MODIFIED_DATE)
-    }
-
-    override fun saveSortOrderImpl(displayConfig: DisplayConfig, popup: ListOptionsPopup) {
-        val selected = SortMode(popup.sortRef, popup.revert)
-        if (displayConfig.updateSortMode(selected)) {
-            viewModel.loadDataset(requireContext())
-        }
     }
 
     private fun setUpFloatingActionButton() {

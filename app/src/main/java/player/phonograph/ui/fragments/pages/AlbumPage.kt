@@ -9,7 +9,6 @@ import player.phonograph.R
 import player.phonograph.adapter.display.AlbumDisplayAdapter
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.model.Album
-import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
 import player.phonograph.ui.components.popup.ListOptionsPopup
@@ -76,13 +75,6 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
             SortRef.YEAR,
             SortRef.SONG_COUNT,
         )
-    }
-
-    override fun saveSortOrderImpl(displayConfig: DisplayConfig, popup: ListOptionsPopup) {
-        val selected = SortMode(popup.sortRef, popup.revert)
-        if (displayConfig.updateSortMode(selected)) {
-            viewModel.loadDataset(requireContext())
-        }
     }
 
     companion object {

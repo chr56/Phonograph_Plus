@@ -8,13 +8,11 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_extension.add
 import mt.util.color.primaryTextColor
 import player.phonograph.App
-import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.actions.actionPlay
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.model.Song
-import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.service.queue.ShuffleMode
@@ -26,7 +24,6 @@ import player.phonograph.util.theme.nightMode
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import android.content.Context
-import android.util.Log
 import android.view.Menu.NONE
 import android.view.MenuItem
 import kotlin.random.Random
@@ -93,16 +90,6 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
                 SortRef.MODIFIED_DATE,
                 SortRef.DURATION,
             )
-    }
-
-    override fun saveSortOrderImpl(
-        displayConfig: DisplayConfig,
-        popup: ListOptionsPopup,
-    ) {
-        val selected = SortMode(popup.sortRef, popup.revert)
-        if (displayConfig.updateSortMode(selected)) {
-            viewModel.loadDataset(requireContext())
-        }
     }
 
     override fun configAppBar(panelToolbar: Toolbar) {

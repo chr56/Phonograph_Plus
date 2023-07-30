@@ -9,7 +9,6 @@ import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.GenreDisplayAdapter
 import player.phonograph.model.Genre
-import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.loaders.GenreLoader
 import player.phonograph.ui.components.popup.ListOptionsPopup
@@ -67,13 +66,6 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
 
         popup.sortRef = currentSortMode.sortRef
         popup.sortRefAvailable = arrayOf(SortRef.DISPLAY_NAME, SortRef.SONG_COUNT)
-    }
-
-    override fun saveSortOrderImpl(displayConfig: DisplayConfig, popup: ListOptionsPopup) {
-        val selected = SortMode(popup.sortRef, popup.revert)
-        if (displayConfig.updateSortMode(selected)) {
-            viewModel.loadDataset(requireContext())
-        }
     }
 
     override fun allowColoredFooter(): Boolean = false
