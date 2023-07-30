@@ -44,9 +44,8 @@ import kotlinx.coroutines.launch
 /**
  * @param IT the model type that this fragment displays
  * @param A relevant Adapter
- * @param LM relevant LayoutManager
  */
-sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLayoutManager> : AbsPage() {
+sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>> : AbsPage() {
 
     private var _viewBinding: FragmentDisplayPageBinding? = null
     private val binding get() = _viewBinding!!
@@ -129,14 +128,13 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
 
 
     protected lateinit var adapter: A
-    protected lateinit var layoutManager: LM
+    protected lateinit var layoutManager: GridLayoutManager
 
-    protected abstract fun initLayoutManager(): LM
     protected abstract fun initAdapter(): A
 
     private fun initRecyclerView() {
 
-        layoutManager = initLayoutManager()
+        layoutManager = GridLayoutManager(hostFragment.requireContext(), DisplayConfig(displayConfigTarget).gridSize)
         adapter = initAdapter()
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(

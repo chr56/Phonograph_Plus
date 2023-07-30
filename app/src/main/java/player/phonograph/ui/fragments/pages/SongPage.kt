@@ -25,7 +25,6 @@ import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.GridLayoutManager
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
@@ -34,7 +33,7 @@ import android.view.MenuItem
 import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
 
-class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>() {
+class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
 
     override val viewModel: AbsDisplayPageViewModel<Song> get() = _viewModel
 
@@ -49,11 +48,6 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
     }
 
     override val displayConfigTarget get() = DisplayConfigTarget.SongPage
-
-    override fun initLayoutManager(): GridLayoutManager {
-        return GridLayoutManager(hostFragment.requireContext(), 1)
-            .also { it.spanCount = DisplayConfig(displayConfigTarget).gridSize }
-    }
 
     override fun initAdapter(): DisplayAdapter<Song> {
         val displayConfig = DisplayConfig(displayConfigTarget)

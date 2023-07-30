@@ -30,7 +30,6 @@ import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.recyclerview.widget.GridLayoutManager
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.IntentFilter
@@ -40,7 +39,7 @@ import android.util.Log
 import android.view.View
 import kotlinx.coroutines.CoroutineScope
 
-class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayoutManager>() {
+class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
 
     override val viewModel: AbsDisplayPageViewModel<Playlist> get() = _viewModel
 
@@ -91,11 +90,6 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>, GridLayo
     //endregion
 
     override val displayConfigTarget: DisplayConfigTarget get() = DisplayConfigTarget.PlaylistPage
-
-    override fun initLayoutManager(): GridLayoutManager {
-        return GridLayoutManager(hostFragment.requireContext(), 1)
-            .also { it.spanCount = DisplayConfig(displayConfigTarget).gridSize }
-    }
 
     override fun initAdapter(): DisplayAdapter<Playlist> {
         return PlaylistDisplayAdapter(

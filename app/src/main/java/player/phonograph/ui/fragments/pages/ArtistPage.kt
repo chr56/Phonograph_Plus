@@ -17,13 +17,12 @@ import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.GridLayoutManager
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 
-class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutManager>() {
+class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>>() {
 
     override val viewModel: AbsDisplayPageViewModel<Artist> get() = _viewModel
 
@@ -38,11 +37,6 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutMana
     }
 
     override val displayConfigTarget get() = DisplayConfigTarget.ArtistPage
-
-    override fun initLayoutManager(): GridLayoutManager {
-        return GridLayoutManager(hostFragment.requireContext(), 1)
-            .also { it.spanCount = DisplayConfig(displayConfigTarget).gridSize }
-    }
 
     override fun initAdapter(): DisplayAdapter<Artist> {
         val displayConfig = DisplayConfig(displayConfigTarget)
