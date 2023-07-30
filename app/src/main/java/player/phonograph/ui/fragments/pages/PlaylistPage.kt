@@ -144,6 +144,8 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
         }
     }
 
+    override fun allowColoredFooter(): Boolean = false
+
     companion object {
         const val TAG = "PlaylistPage"
     }

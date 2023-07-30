@@ -81,6 +81,8 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
         }
     }
 
+    override fun allowColoredFooter(): Boolean = false
+
     companion object {
         const val TAG = "GenrePage"
     }

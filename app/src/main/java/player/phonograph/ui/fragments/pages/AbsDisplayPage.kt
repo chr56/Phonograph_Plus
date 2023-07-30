@@ -210,18 +210,17 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         popup.gridSize = displayConfig.gridSize
 
         // color footer
-        when (this) {
-            is GenrePage, is PlaylistPage -> {} // they are never colored
-            else                          -> {
-                popup.colorFooterVisibility = true
-                popup.colorFooterEnability = displayConfig.gridSize > displayConfig.maxGridSizeForList
-                popup.colorFooter = displayConfig.colorFooter
-            }
+        if (allowColoredFooter()) {
+            popup.colorFooterVisibility = true
+            popup.colorFooterEnability = displayConfig.gridSize > displayConfig.maxGridSizeForList
+            popup.colorFooter = displayConfig.colorFooter
         }
 
         // sort order
         setupSortOrderImpl(displayConfig, popup)
     }
+
+    protected open fun allowColoredFooter(): Boolean = true
 
     protected abstract fun setupSortOrderImpl(
         displayConfig: DisplayConfig,
@@ -250,15 +249,12 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         }
 
         // color footer
-        when (this) {
-            is GenrePage, is PlaylistPage -> {} // they are never colored
-            else                          -> {
-                val coloredFootersSelected = popup.colorFooter
-                if (displayConfig.colorFooter != coloredFootersSelected) {
-                    displayConfig.colorFooter = coloredFootersSelected
-                    adapter.usePalette = coloredFootersSelected
-                    adapter.notifyDataSetChanged()
-                }
+        if (allowColoredFooter()) {
+            val coloredFootersSelected = popup.colorFooter
+            if (displayConfig.colorFooter != coloredFootersSelected) {
+                displayConfig.colorFooter = coloredFootersSelected
+                adapter.usePalette = coloredFootersSelected
+                adapter.notifyDataSetChanged()
             }
         }
 
