@@ -5,19 +5,16 @@
 package player.phonograph.ui.fragments.pages
 
 import player.phonograph.App
-import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.adapter.display.ArtistDisplayAdapter
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.model.Artist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.loaders.ArtistLoader
-import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import androidx.fragment.app.viewModels
 import android.content.Context
-import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 
 class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>>() {
@@ -58,20 +55,12 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>>() {
         adapter.dataset = dataSet
     }
 
-    override fun setupSortOrderImpl(
-        displayConfig: DisplayConfig,
-        popup: ListOptionsPopup,
-    ) {
-
-        val currentSortMode = displayConfig.sortMode
-        if (BuildConfig.DEBUG) Log.d(GenrePage.TAG, "Read cfg: sortMode $currentSortMode")
-
-        popup.allowRevert = true
-        popup.revert = currentSortMode.revert
-
-        popup.sortRef = currentSortMode.sortRef
-        popup.sortRefAvailable = arrayOf(SortRef.ARTIST_NAME, SortRef.ALBUM_COUNT, SortRef.SONG_COUNT)
-    }
+    override val availableSortRefs: Array<SortRef>
+        get() = arrayOf(
+            SortRef.ARTIST_NAME,
+            SortRef.ALBUM_COUNT,
+            SortRef.SONG_COUNT,
+        )
 
     companion object {
         const val TAG = "ArtistPage"

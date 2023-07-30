@@ -9,7 +9,6 @@ import mt.pref.primaryColor
 import mt.util.color.lightenColor
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
-import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.PlaylistDisplayAdapter
@@ -23,9 +22,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.settings.Setting
-import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.dialogs.CreatePlaylistDialog
-import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -33,7 +30,6 @@ import android.content.Context
 import android.content.IntentFilter
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import kotlinx.coroutines.CoroutineScope
 
@@ -103,17 +99,13 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
         adapter.dataset = dataSet
     }
 
-    override fun setupSortOrderImpl(displayConfig: DisplayConfig, popup: ListOptionsPopup) {
-        val currentSortMode = displayConfig.sortMode
-        if (DEBUG) Log.d(TAG, "Read cfg: sortMode $currentSortMode")
-
-        popup.maxGridSize = 0
-        popup.allowRevert = true
-        popup.revert = currentSortMode.revert
-
-        popup.sortRef = currentSortMode.sortRef
-        popup.sortRefAvailable = arrayOf(SortRef.DISPLAY_NAME, SortRef.PATH, SortRef.ADDED_DATE, SortRef.MODIFIED_DATE)
-    }
+    override val availableSortRefs: Array<SortRef>
+        get() = arrayOf(
+            SortRef.DISPLAY_NAME,
+            SortRef.PATH,
+            SortRef.ADDED_DATE,
+            SortRef.MODIFIED_DATE,
+        )
 
     private fun setUpFloatingActionButton() {
         val primaryColor = addNewItemButton.context.primaryColor()

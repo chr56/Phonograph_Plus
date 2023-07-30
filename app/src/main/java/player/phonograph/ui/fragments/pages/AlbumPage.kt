@@ -4,19 +4,16 @@
 
 package player.phonograph.ui.fragments.pages
 
-import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.adapter.display.AlbumDisplayAdapter
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.model.Album
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
-import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import androidx.fragment.app.viewModels
 import android.content.Context
-import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 
 class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
@@ -58,24 +55,13 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
     }
 
 
-    override fun setupSortOrderImpl(
-        displayConfig: DisplayConfig,
-        popup: ListOptionsPopup,
-    ) {
-        val currentSortMode = displayConfig.sortMode
-        if (BuildConfig.DEBUG) Log.d(GenrePage.TAG, "Read cfg: sortMode $currentSortMode")
-
-        popup.allowRevert = true
-        popup.revert = currentSortMode.revert
-
-        popup.sortRef = currentSortMode.sortRef
-        popup.sortRefAvailable = arrayOf(
+    override val availableSortRefs: Array<SortRef>
+        get() = arrayOf(
             SortRef.ALBUM_NAME,
             SortRef.ARTIST_NAME,
             SortRef.YEAR,
             SortRef.SONG_COUNT,
         )
-    }
 
     companion object {
         const val TAG = "AlbumPage"

@@ -4,19 +4,15 @@
 
 package player.phonograph.ui.fragments.pages
 
-import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.GenreDisplayAdapter
 import player.phonograph.model.Genre
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.loaders.GenreLoader
-import player.phonograph.ui.components.popup.ListOptionsPopup
-import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import androidx.fragment.app.viewModels
 import android.content.Context
-import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 
 class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
@@ -53,20 +49,11 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
     }
 
 
-    override fun setupSortOrderImpl(
-        displayConfig: DisplayConfig,
-        popup: ListOptionsPopup,
-    ) {
-
-        val currentSortMode = displayConfig.sortMode
-        if (DEBUG) Log.d(TAG, "Read cfg: sortMode $currentSortMode")
-
-        popup.allowRevert = true
-        popup.revert = currentSortMode.revert
-
-        popup.sortRef = currentSortMode.sortRef
-        popup.sortRefAvailable = arrayOf(SortRef.DISPLAY_NAME, SortRef.SONG_COUNT)
-    }
+    override val availableSortRefs: Array<SortRef>
+        get() = arrayOf(
+            SortRef.DISPLAY_NAME,
+            SortRef.SONG_COUNT,
+        )
 
     override fun allowColoredFooter(): Boolean = false
 

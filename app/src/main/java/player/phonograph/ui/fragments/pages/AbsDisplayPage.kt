@@ -16,6 +16,7 @@ import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Displayable
 import player.phonograph.model.sort.SortMode
+import player.phonograph.model.sort.SortRef
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
@@ -218,15 +219,21 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         }
 
         // sort order
-        setupSortOrderImpl(displayConfig, popup)
+        if (availableSortRefs.isNotEmpty()) {
+            val currentSortMode = displayConfig.sortMode
+
+            popup.sortRef = currentSortMode.sortRef
+            popup.sortRefAvailable = availableSortRefs
+
+            popup.allowRevert = allowRevertSort
+            popup.revert = currentSortMode.revert
+        }
     }
 
     protected open fun allowColoredFooter(): Boolean = true
 
-    protected abstract fun setupSortOrderImpl(
-        displayConfig: DisplayConfig,
-        popup: ListOptionsPopup,
-    )
+    protected open val allowRevertSort: Boolean get() = true
+    protected open val availableSortRefs: Array<SortRef> get() = arrayOf()
 
     @SuppressLint("NotifyDataSetChanged")
     protected fun dismissPopup(popup: ListOptionsPopup) {

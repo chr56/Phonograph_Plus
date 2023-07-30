@@ -16,7 +16,6 @@ import player.phonograph.model.Song
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import player.phonograph.util.theme.getTintedDrawable
@@ -67,30 +66,18 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
         adapter.dataset = dataSet
     }
 
-    override fun setupSortOrderImpl(
-        displayConfig: DisplayConfig,
-        popup: ListOptionsPopup,
-    ) {
-
-        val currentSortMode = displayConfig.sortMode
-
-        popup.allowRevert = true
-        popup.revert = currentSortMode.revert
-
-        popup.sortRef = currentSortMode.sortRef
-        popup.sortRefAvailable =
-            arrayOf(
-                SortRef.SONG_NAME,
-                SortRef.ALBUM_NAME,
-                SortRef.ARTIST_NAME,
-                SortRef.ALBUM_ARTIST_NAME,
-                SortRef.COMPOSER,
-                SortRef.YEAR,
-                SortRef.ADDED_DATE,
-                SortRef.MODIFIED_DATE,
-                SortRef.DURATION,
-            )
-    }
+    override val availableSortRefs: Array<SortRef>
+        get() = arrayOf(
+            SortRef.SONG_NAME,
+            SortRef.ALBUM_NAME,
+            SortRef.ARTIST_NAME,
+            SortRef.ALBUM_ARTIST_NAME,
+            SortRef.COMPOSER,
+            SortRef.YEAR,
+            SortRef.ADDED_DATE,
+            SortRef.MODIFIED_DATE,
+            SortRef.DURATION,
+        )
 
     override fun configAppBar(panelToolbar: Toolbar) {
         val context = hostFragment.mainActivity
