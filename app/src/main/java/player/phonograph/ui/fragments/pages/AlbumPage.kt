@@ -16,7 +16,6 @@ import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import androidx.fragment.app.viewModels
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
@@ -61,11 +60,6 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
 
     override fun updateDataset(dataSet: List<Album>) {
         adapter.dataset = dataSet
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    override fun refreshDataSet() {
-        adapter.notifyDataSetChanged()
     }
 
 

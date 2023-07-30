@@ -16,7 +16,6 @@ import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import androidx.fragment.app.viewModels
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
@@ -52,11 +51,6 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
 
     override fun updateDataset(dataSet: List<Genre>) {
         adapter.dataset = dataSet
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    override fun refreshDataSet() {
-        adapter.notifyDataSetChanged()
     }
 
 

@@ -25,7 +25,6 @@ import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.view.Menu.NONE
@@ -73,11 +72,6 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
 
     override fun updateDataset(dataSet: List<Song>) {
         adapter.dataset = dataSet
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    override fun refreshDataSet() {
-        adapter.notifyDataSetChanged()
     }
 
     override fun setupSortOrderImpl(

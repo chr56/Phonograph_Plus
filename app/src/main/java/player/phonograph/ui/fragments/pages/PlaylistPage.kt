@@ -30,7 +30,6 @@ import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.IntentFilter
 import android.content.res.ColorStateList
@@ -74,7 +73,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // PlaylistsModifiedReceiver
-        playlistsModifiedReceiver = PlaylistsModifiedReceiver(this::refreshDataSet)
+        playlistsModifiedReceiver = PlaylistsModifiedReceiver(adapter::notifyDataSetChanged)
         LocalBroadcastManager.getInstance(App.instance).registerReceiver(
             playlistsModifiedReceiver,
             IntentFilter().also { it.addAction(BROADCAST_PLAYLISTS_CHANGED) }
@@ -103,11 +102,6 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
 
     override fun updateDataset(dataSet: List<Playlist>) {
         adapter.dataset = dataSet
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    override fun refreshDataSet() {
-        adapter.notifyDataSetChanged()
     }
 
     override fun setupSortOrderImpl(displayConfig: DisplayConfig, popup: ListOptionsPopup) {

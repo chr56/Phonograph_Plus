@@ -17,7 +17,6 @@ import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import androidx.fragment.app.viewModels
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
@@ -62,11 +61,6 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>>() {
 
     override fun updateDataset(dataSet: List<Artist>) {
         adapter.dataset = dataSet
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    override fun refreshDataSet() {
-        adapter.notifyDataSetChanged()
     }
 
     override fun setupSortOrderImpl(

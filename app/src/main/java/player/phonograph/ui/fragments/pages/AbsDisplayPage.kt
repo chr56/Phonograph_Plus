@@ -57,10 +57,6 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>> : AbsPage()
      * update dataset
      */
     protected abstract fun updateDataset(dataSet: List<IT>)
-    /**
-     * Notify every [Displayable] items changes, do not reload dataset
-     */
-    protected abstract fun refreshDataSet()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -231,6 +227,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>> : AbsPage()
         popup: ListOptionsPopup,
     )
 
+    @SuppressLint("NotifyDataSetChanged")
     protected fun dismissPopup(popup: ListOptionsPopup) {
 
         val displayConfig = DisplayConfig(displayConfigTarget)
@@ -259,7 +256,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>> : AbsPage()
                 if (displayConfig.colorFooter != coloredFootersSelected) {
                     displayConfig.colorFooter = coloredFootersSelected
                     adapter.usePalette = coloredFootersSelected
-                    refreshDataSet()
+                    adapter.notifyDataSetChanged()
                 }
             }
         }
