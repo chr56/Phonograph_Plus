@@ -4,48 +4,35 @@ import player.phonograph.service.player.PlayerController.Companion.PAUSE_FOR_LOS
 import player.phonograph.service.player.PlayerController.Companion.PAUSE_FOR_TRANSIENT_LOSS_OF_FOCUS
 import player.phonograph.service.player.PlayerController.ControllerHandler.Companion.DUCK
 import player.phonograph.service.player.PlayerController.ControllerHandler.Companion.UNDUCK
-import androidx.annotation.RequiresApi
+import androidx.media.AudioAttributesCompat
+import androidx.media.AudioFocusRequestCompat
+import androidx.media.AudioManagerCompat
 import android.content.Context.AUDIO_SERVICE
-import android.media.AudioAttributes
-import android.media.AudioFocusRequest
 import android.media.AudioManager
-import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.O
 import kotlin.LazyThreadSafetyMode.NONE
 
 /**
  * @author chr_56 & Abou Zeid (kabouzeid) (original author)
  */
-@Suppress("DEPRECATION")
 class AudioFocusManager(private val controller: PlayerController) : AudioManager.OnAudioFocusChangeListener {
 
     private val audioManager: AudioManager = controller.service.getSystemService(AUDIO_SERVICE) as AudioManager
 
     fun requestAudioFocus(): Boolean {
-        val result = if (SDK_INT >= O) {
-            audioManager.requestAudioFocus(audioFocusRequest)
-        } else {
-            audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
-        }
-        return result == AudioManager.AUDIOFOCUS_GAIN
+        return AudioManagerCompat.requestAudioFocus(audioManager, audioFocusRequest) == AudioManager.AUDIOFOCUS_GAIN
     }
 
     fun abandonAudioFocus() {
-        if (SDK_INT >= O) {
-            audioManager.abandonAudioFocusRequest(audioFocusRequest)
-        } else {
-            audioManager.abandonAudioFocus(this)
-        }
+        AudioManagerCompat.abandonAudioFocusRequest(audioManager, audioFocusRequest)
     }
 
-    @delegate:RequiresApi(O)
-    private val audioFocusRequest: AudioFocusRequest by lazy(NONE) {
-        AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-            .setOnAudioFocusChangeListener(this)
+    private val audioFocusRequest: AudioFocusRequestCompat by lazy(NONE) {
+        AudioFocusRequestCompat.Builder(AudioManagerCompat.AUDIOFOCUS_GAIN)
+            .setOnAudioFocusChangeListener(this, controller.handler)
             .setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                AudioAttributesCompat.Builder()
+                    .setContentType(AudioAttributesCompat.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributesCompat.USAGE_MEDIA)
                     .build()
             )
             .build()
