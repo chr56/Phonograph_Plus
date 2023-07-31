@@ -1,22 +1,18 @@
-## **v0.8-dev2 2023.07.30**
+## **v0.8-dev3 2023.07.31**
 
 **Commit log**:
 
 ### EN
-1. Fix: crash after changing now playing screen style
-2. Fix: process on the notification not matched if speed modified
-3. Improve: the dialog of playback speed control
-4. Translation: update German (by txp_uli)
-5. Translation: update Italian (by gdonisi)
-6. Development: clean up codes
+1. Fix: no item displayed after changing between grid and list
+2. New: automatically resume playing after interruptions
+3. Modify: disallow canceling media notification when paused(to avoid getting killed)
+4. Development: clean up codes
 
 
 ### ZH
-1. 修复 改变正在播放界面样式后崩溃
-2. 修复 若速度更改后，通知播放进度不匹配
-3. 改进 速度控制对话框
-4. 翻译 更新德语(by txp_uli)
-5. 翻译 更新意大利语(by gdonisi)
-6. 开发 清理代码
+1. 修复 布局在网格与列表间改变后不显示任何内容
+2. 新增 打断后自动恢复播放
+3. 修改 暂停时禁止取消媒体通知（以防被杀）
+4. 开发 清理代码
 
 
