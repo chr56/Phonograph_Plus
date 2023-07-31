@@ -413,4 +413,6 @@
     <string name="pref_title_use_legacy_status_bar_lyrics_api">使用舊版 狀態欄歌詞 API</string>
     <string name="pref_summary_use_legacy_status_bar_lyrics_api">關閉後則使用 LyricGetter API 而不是 (舊版) StatusBarLyrics API。若沒有升級 Xposed模塊 狀態欄歌詞 至6.x及更高版本，請務必開啟此選項。 </string>
     <string name="action_speed">速度</string>
+    <string name="pref_title_resume_after_audio_focus_gain">自動恢復播放</string>
+    <string name="pref_summary_resume_after_audio_focus_gain">在播放被突然打斷（如來電或鬧鈴）後恢復播放</string>
 </resources>

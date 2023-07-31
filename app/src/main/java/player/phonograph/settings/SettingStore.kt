@@ -95,6 +95,7 @@ class Setting {
     var rememberShuffle: Boolean by booleanPref(REMEMBER_SHUFFLE, true)
     var gaplessPlayback: Boolean by booleanPref(GAPLESS_PLAYBACK, false)
     var audioDucking: Boolean by booleanPref(AUDIO_DUCKING, true)
+    var resumeAfterAudioFocusGain: Boolean by booleanPref(RESUME_AFTER_AUDIO_FOCUS_GAIN, false)
     var enableLyrics: Boolean by booleanPref(ENABLE_LYRICS, true)
     var broadcastSynchronizedLyrics: Boolean by booleanPref(BROADCAST_SYNCHRONIZED_LYRICS, true)
     var useLegacyStatusBarLyricsApi: Boolean by booleanPref(USE_LEGACY_STATUS_BAR_LYRICS_API, false)
@@ -309,6 +310,8 @@ class SettingFlowStore(context: Context) {
         get() = from(booleanPreferencesKey(GAPLESS_PLAYBACK), false)
     val audioDucking: Flow<Boolean>
         get() = from(booleanPreferencesKey(AUDIO_DUCKING), true)
+    val resumeAfterAudioFocusGain: Flow<Boolean>
+        get() = from(booleanPreferencesKey(RESUME_AFTER_AUDIO_FOCUS_GAIN), true)
     val enableLyrics: Flow<Boolean>
         get() = from(booleanPreferencesKey(ENABLE_LYRICS), true)
     val broadcastSynchronizedLyrics: Flow<Boolean>
@@ -449,6 +452,7 @@ const val SONG_ITEM_CLICK_EXTRA_FLAG = "song_item_click_extra_mode"
 const val KEEP_PLAYING_QUEUE_INTACT = "keep_playing_queue_intact"
 const val REMEMBER_SHUFFLE = "remember_shuffle"
 const val AUDIO_DUCKING = "audio_ducking"
+const val RESUME_AFTER_AUDIO_FOCUS_GAIN = "resume_after_audio_focus_gain"
 const val GAPLESS_PLAYBACK = "gapless_playback"
 const val ENABLE_LYRICS = "enable_lyrics"
 const val BROADCAST_SYNCHRONIZED_LYRICS = "synchronized_lyrics_send"
