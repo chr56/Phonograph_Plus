@@ -1,5 +1,6 @@
 package player.phonograph.service.player
 
+import player.phonograph.service.player.PlayerController.Companion.PAUSE_FOR_LOSS_OF_FOCUS
 import player.phonograph.service.player.PlayerController.Companion.PAUSE_FOR_TRANSIENT_LOSS_OF_FOCUS
 import player.phonograph.service.player.PlayerController.ControllerHandler.Companion.DUCK
 import player.phonograph.service.player.PlayerController.ControllerHandler.Companion.UNDUCK
@@ -57,9 +58,11 @@ class AudioFocusManager(private val controller: PlayerController) {
         AudioManager.OnAudioFocusChangeListener { focusChange ->
             when (focusChange) {
                 AudioManager.AUDIOFOCUS_GAIN                    -> {
-                    if (!controller.isPlaying() && controller.pauseReason == PAUSE_FOR_TRANSIENT_LOSS_OF_FOCUS) {
-                        // restore playing
-                        controller.play()
+                    if (!controller.isPlaying()) {
+                        when (controller.pauseReason) {
+                            PAUSE_FOR_TRANSIENT_LOSS_OF_FOCUS -> controller.play()
+                            PAUSE_FOR_LOSS_OF_FOCUS           -> {}
+                        }
                     }
                     controller.handler.removeMessages(DUCK)
                     controller.handler.sendEmptyMessage(UNDUCK)
@@ -68,6 +71,7 @@ class AudioFocusManager(private val controller: PlayerController) {
                 AudioManager.AUDIOFOCUS_LOSS                    -> {
                     // Lost focus for an unbounded amount of time: stop playback and release media playback
                     controller.pause()
+                    controller.pauseReason = PAUSE_FOR_LOSS_OF_FOCUS
                 }
 
                 AudioManager.AUDIOFOCUS_LOSS_TRANSIENT          -> {
