@@ -1,0 +1,6 @@
+<b>0.7.2.2(622) 2023.07.31</b>
+- Fix: crash after changing now playing screen style
+- Fix: no item displayed after changing between grid and list
+- Translation: update German (by txp_uli)
+- Translation: update Italian (by gdonisi)
+- Translation: update Portuguese (Brazilian) (by EddieMattos)
