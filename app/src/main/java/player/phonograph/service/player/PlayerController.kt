@@ -262,7 +262,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                 ).show()
             }
         } else {
-            pauseImp(true)
+            pauseImp(force = true)
         }
     }
 
@@ -270,17 +270,18 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
 
     /**
      * Pause
+     * @param releaseResource false if not release taken resource
      */
-    fun pause() = handler.request {
-        it.pauseImp()
+    fun pause(releaseResource: Boolean) = handler.request {
+        it.pauseImp(force = false, releaseResource = releaseResource)
     }
 
-    private fun pauseImp(force: Boolean = false) {
+    private fun pauseImp(force: Boolean = false, releaseResource: Boolean = true) {
         if (audioPlayer.isPlaying() || force) {
             audioPlayer.pause()
             broadcastStopLyric()
             playerState = PlayerState.PAUSED
-            releaseTakenResources()
+            if (releaseResource) releaseTakenResources()
         }
     }
 
@@ -290,7 +291,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
 
     private fun togglePlayPauseImp() {
         if (audioPlayer.isPlaying()) {
-            pauseImp()
+            pauseImp(force = false)
             pauseReason = PAUSE_BY_MANUAL_ACTION
         } else {
             playImp()
@@ -362,7 +363,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
             if (!queueManager.isLastTrack()) {
                 playAtImp(queueManager.nextSongPosition)
             } else {
-                pauseImp(true)
+                pauseImp(force = true)
                 observers.executeForEach {
                     onReceivingMessage(MSG_NO_MORE_SONGS)
                 }
@@ -407,6 +408,8 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
             }
         }
 
+    internal val resumeAfterAudioFocusGain: Boolean get() = Setting.instance.resumeAfterAudioFocusGain
+
     override fun onTrackWentToNext() {
         handler.request {
             // check sleep timer
@@ -428,7 +431,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         }
         if (queueManager.isQueueEnded()) {
             handler.request {
-                pauseImp(true)
+                pauseImp(force = true)
             }
             broadcastStopLyric()
             observers.executeForEach {
@@ -456,6 +459,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         const val PAUSE_FOR_QUEUE_ENDED = 4
         const val PAUSE_FOR_AUDIO_BECOMING_NOISY = 8
         const val PAUSE_FOR_TRANSIENT_LOSS_OF_FOCUS = 16
+        const val PAUSE_FOR_LOSS_OF_FOCUS = 32
         const val PAUSE_ERROR = -2
 
         private fun getTrackUri(songId: Long): Uri =
@@ -485,7 +489,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     private val becomingNoisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
-                pause()
+                pause(releaseResource = true)
             }
         }
     }
@@ -552,6 +556,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                         }
                     }
                 }
+
                 DUCK                    -> {
                     controllerRef.get()?.let {
                         if (Setting.instance.audioDucking) {
@@ -567,6 +572,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                         it.audioPlayer.setVolume(currentDuckVolume)
                     }
                 }
+
                 UNDUCK                  -> {
                     controllerRef.get()?.let {
                         if (Setting.instance.audioDucking) {
@@ -582,11 +588,13 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                         it.audioPlayer.setVolume(currentDuckVolume)
                     }
                 }
+
                 RE_PREPARE_NEXT_PLAYER  -> controllerRef.get()?.let {
                     synchronized(it.audioPlayer) {
                         it.prepareNextPlayer(it.queueManager.nextSong)
                     }
                 }
+
                 CLEAN_NEXT_PLAYER       -> controllerRef.get()?.let {
                     synchronized(it.audioPlayer) {
                         it.prepareNextPlayer(null)

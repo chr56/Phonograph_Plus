@@ -231,6 +231,12 @@ fun PhonographPreferenceScreen() {
                 defaultValue = true,
             )
             BooleanPref(
+                key = RESUME_AFTER_AUDIO_FOCUS_GAIN,
+                summaryRes = R.string.pref_summary_resume_after_audio_focus_gain,
+                titleRes = R.string.pref_title_resume_after_audio_focus_gain,
+                defaultValue = false,
+            )
+            BooleanPref(
                 key = GAPLESS_PLAYBACK,
                 summaryRes = R.string.pref_summary_gapless_playback,
                 titleRes = R.string.pref_title_gapless_playback,

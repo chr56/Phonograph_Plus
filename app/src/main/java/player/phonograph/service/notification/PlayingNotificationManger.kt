@@ -11,6 +11,7 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.service.MusicService
+import player.phonograph.service.player.PlayerState
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.theme.createTintedDrawable
@@ -82,20 +83,26 @@ class PlayingNotificationManger(private val service: MusicService) {
     }
 
     private fun postNotification(notification: OSNotification) {
-        when {
-            service.isDestroyed -> {
+        when(service.isDestroyed) {
+            true  -> {
                 // service stopped
                 removeNotification()
             }
-            !service.isDestroyed && !service.isPlaying -> {
-                // pause
-                notificationManager.notify(NOTIFICATION_ID, notification)
-                service.stopForeground(STOP_FOREGROUND_DETACH)
-            }
-            !service.isDestroyed && service.isPlaying -> {
-                // playing
-                notificationManager.notify(NOTIFICATION_ID, notification)
-                service.startForeground(NOTIFICATION_ID, notification)
+
+            false -> {
+                when (service.playerState) {
+                    PlayerState.PLAYING, PlayerState.PAUSED    -> {
+                        // playing
+                        notificationManager.notify(NOTIFICATION_ID, notification)
+                        service.startForeground(NOTIFICATION_ID, notification)
+                    }
+
+                    PlayerState.STOPPED, PlayerState.PREPARING -> {
+                        // pause
+                        notificationManager.notify(NOTIFICATION_ID, notification)
+                        service.stopForeground(STOP_FOREGROUND_DETACH)
+                    }
+                }
             }
         }
     }
