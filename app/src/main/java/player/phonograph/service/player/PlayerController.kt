@@ -456,6 +456,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         const val PAUSE_FOR_QUEUE_ENDED = 4
         const val PAUSE_FOR_AUDIO_BECOMING_NOISY = 8
         const val PAUSE_FOR_TRANSIENT_LOSS_OF_FOCUS = 16
+        const val PAUSE_FOR_LOSS_OF_FOCUS = 32
         const val PAUSE_ERROR = -2
 
         private fun getTrackUri(songId: Long): Uri =
