@@ -5,6 +5,7 @@ import player.phonograph.service.player.PlayerController.ControllerHandler.Compa
 import player.phonograph.service.player.PlayerController.ControllerHandler.Companion.UNDUCK
 import androidx.annotation.RequiresApi
 import android.content.Context.AUDIO_SERVICE
+import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.os.Build.VERSION.SDK_INT
@@ -42,6 +43,12 @@ class AudioFocusManager(private val controller: PlayerController) {
     private val audioFocusRequest: AudioFocusRequest by lazy(NONE) {
         AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
             .setOnAudioFocusChangeListener(audioFocusListener)
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .build()
+            )
             .build()
     }
 
