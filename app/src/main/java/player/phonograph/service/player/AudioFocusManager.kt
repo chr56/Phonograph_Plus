@@ -44,7 +44,10 @@ class AudioFocusManager(private val controller: PlayerController) : AudioManager
                 if (!controller.isPlaying()) {
                     when (controller.pauseReason) {
                         PAUSE_FOR_TRANSIENT_LOSS_OF_FOCUS -> controller.play()
-                        PAUSE_FOR_LOSS_OF_FOCUS           -> {}
+                        PAUSE_FOR_LOSS_OF_FOCUS           ->
+                            if (controller.resumeAfterAudioFocusGain) {
+                                controller.play()
+                            }
                     }
                 }
                 controller.handler.removeMessages(DUCK)

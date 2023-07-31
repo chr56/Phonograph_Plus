@@ -408,6 +408,8 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
             }
         }
 
+    internal val resumeAfterAudioFocusGain: Boolean get() = Setting.instance.resumeAfterAudioFocusGain
+
     override fun onTrackWentToNext() {
         handler.request {
             // check sleep timer
