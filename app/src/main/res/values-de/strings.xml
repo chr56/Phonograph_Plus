@@ -423,4 +423,6 @@
     <string name="pref_title_use_legacy_status_bar_lyrics_api">Herkömmliche StatusBar Lyrics API verwenden</string>
     <string name="pref_summary_use_legacy_status_bar_lyrics_api">Wenn dies deaktiviert ist, wird die LyricGetter API anstelle der StatusBar Lyric API genutzt. Dies wird für das Xposed-Modul StatusBar Lyrics ab Version 6.x verwendet; aktiviere es, wenn Du ältere Versionen von StatusBar Lyrics verwenden.</string>
     <string name="action_speed">Geschwindigkeit</string>
+    <string name="pref_title_resume_after_audio_focus_gain">Wiedergabe nach Unterbrechungen automatisch fortsetzen</string>
+    <string name="pref_summary_resume_after_audio_focus_gain">Wiedergabe nach Unterbrechungen immer fortsetzen (bspw. Anruf oder Alarm).</string>
 </resources>
