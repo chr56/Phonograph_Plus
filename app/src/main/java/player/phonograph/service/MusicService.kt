@@ -245,6 +245,8 @@ class MusicService : Service() {
         return START_NOT_STICKY
     }
 
+    val playerState get() = controller.playerState
+
     val isPlaying: Boolean get() = controller.isPlaying()
 
     var isDestroyed = false
