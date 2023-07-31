@@ -280,7 +280,7 @@ class MusicService : Service() {
     }
 
     fun playSongAt(position: Int) = controller.playAt(position)
-    fun pause() = controller.pause()
+    fun pause() = controller.pause(releaseResource = true)
     fun play() = controller.play()
     fun playPreviousSong(force: Boolean) = controller.jumpBackward(force)
     fun back(force: Boolean) = controller.back(force)

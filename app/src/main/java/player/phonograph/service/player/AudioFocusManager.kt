@@ -70,7 +70,7 @@ class AudioFocusManager(private val controller: PlayerController) {
 
                 AudioManager.AUDIOFOCUS_LOSS                    -> {
                     // Lost focus for an unbounded amount of time: stop playback and release media playback
-                    controller.pause()
+                    controller.pause(releaseResource = true)
                     controller.pauseReason = PAUSE_FOR_LOSS_OF_FOCUS
                 }
 
@@ -79,7 +79,7 @@ class AudioFocusManager(private val controller: PlayerController) {
                     // playback. We don't release the media playback because playback
                     // is likely to resume
                     if (controller.isPlaying()) {
-                        controller.pause()
+                        controller.pause(releaseResource = false)
                         controller.pauseReason = PAUSE_FOR_TRANSIENT_LOSS_OF_FOCUS
                     }
                 }
