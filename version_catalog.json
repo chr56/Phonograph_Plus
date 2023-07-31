@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "0.8-dev3",
+      "versionCode": 625,
+      "date": 1690790000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.8-dev3"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 布局在网格与列表间改变后不显示任何内容</li><li>新增 打断后自动恢复播放</li><li>修改 暂停时禁止取消媒体通知（以防被杀）</li><li>开发 清理代码</li></ol>",
+        "en": "<ol><li>Fix: no item displayed after changing between grid and list</li><li>New: automatically resume playing after interruptions</li><li>Modify: disallow canceling media notification when paused(to avoid getting killed)</li><li>Development: clean up codes</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "0.8-dev2",
       "versionCode": 623,
       "date": 1690689000,
@@ -62,22 +78,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>翻译 更新(巴西)葡萄牙语 (by EddieMattos)</li><li>翻译 更新芬兰语 (by Jiri Grönroos (spammemoreplease))</li><li>改进 启动时性能</li><li>新增 为新版状态栏歌词支持 LyricGetter API</li><li>修改 默认使用 LyricGetter API (可在 设置-兼容性 中更改回旧版API)</li><li>开发 改进版本迁移</li><li>开发 支持从 MediaSession 回调修改循环模式和随机模式（对蓝牙设备等有用）</li><li>开发 现在将 Git Commit 哈希存储在 Manifest metadata 中</li></ol>",
         "en": "<ol><li>Translation: update Portuguese (Brazilian) by EddieMattos</li><li>Translation: update Finnish by Jiri Grönroos (spammemoreplease)</li><li>Improve: app start-up performance</li><li>New: support LyricGetter API for latest StatusBar Lyrics</li><li>Modify: use LyricGetter API by default (You can switch to legacy API in Setting-Compatibility)</li><li>Development: improve version migration</li><li>Development: support changing repeat mode and shuffle mode from MediaSession callback (helpful for Bluetooth devices and so on)</li><li>Development: store Git commit hash in Manifest metadata now</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "0.7.2-dev2",
-      "versionCode": 612,
-      "date": 1689824800,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.7.2-dev2"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 更新日志不显示</li><li>新增 为新版状态栏歌词支持 LyricGetter API</li><li>修改 默认使用 LyricGetter API (可在 设置-兼容性 中更改回旧版API)</li></ol>",
-        "en": "<ol><li>Fix: changelog not showed</li><li>New: support LyricGetter API for latest StatusBar Lyrics</li><li>Modify: use LyricGetter API by default (You can switch to legacy API in Setting-Compatibility)</li></ol>"
       }
     },
     {
