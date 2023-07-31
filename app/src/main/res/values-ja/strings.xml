@@ -411,4 +411,7 @@
     <string name="action_unpin">ピン留め解除</string>
     <string name="pref_title_use_legacy_status_bar_lyrics_api">旧来のStatusBar Lyrics APIを利用</string>
     <string name="pref_summary_use_legacy_status_bar_lyrics_api">無効になっている場合は、StatusBarLyricAPI の代わりに LyricGetter API が使用されます。 これは、Xposedモジュール \"StatusBar Lyrics\" バージョン6.x以上で使用されます。古いバージョンのStatusBar Lyricsを使用している場合は有効にしてください。</string>
+    <string name="action_speed">速度</string>
+    <string name="pref_title_resume_after_audio_focus_gain">中断後自動的に再生を再開する</string>
+    <string name="pref_summary_resume_after_audio_focus_gain">(電話やアラームなどによる)中断後に常に再生を再開します。</string>
 </resources>
