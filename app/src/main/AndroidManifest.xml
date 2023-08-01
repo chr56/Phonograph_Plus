@@ -283,7 +283,9 @@
         <meta-data
             android:name="GitCommitHash"
             android:value="${GIT_COMMIT_HASH}" />
-
+        <meta-data
+            android:name="androidx.car.app.TintableAttributionIcon"
+            android:resource="@drawable/ic_icon" />
 
     </application>
 
