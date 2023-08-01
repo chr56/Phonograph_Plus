@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.activities
 
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
 import player.phonograph.repo.mediastore.loaders.ArtistLoader
@@ -37,6 +38,8 @@ class SearchActivityViewModel : ViewModel() {
                 val songs = SongLoader.searchByTitle(context, query)
                 val artists = ArtistLoader.searchByName(context, query)
                 val albums = AlbumLoader.searchByName(context, query)
+                val songsInQueue =
+                    App.instance.queueManager.playingQueue.filter { it.title.contains(query, true) }
 
                 if (songs.isNotEmpty()) {
                     dataset.add(context.resources.getString(R.string.songs))
@@ -49,6 +52,10 @@ class SearchActivityViewModel : ViewModel() {
                 if (albums.isNotEmpty()) {
                     dataset.add(context.resources.getString(R.string.albums))
                     dataset.addAll(albums)
+                }
+                if (songsInQueue.isNotEmpty()) {
+                    dataset.add(context.getString(R.string.label_playing_queue))
+                    dataset.addAll(songsInQueue)
                 }
 
                 _results.value = dataset
