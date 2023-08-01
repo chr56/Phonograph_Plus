@@ -167,7 +167,7 @@
             android:name=".service.MusicService"
             android:enabled="true"
             android:foregroundServiceType="mediaPlayback"
-            android:icon="@drawable/ic_icon"
+            android:icon="@mipmap/ic_launcher_foreground"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService"/>
@@ -285,7 +285,7 @@
             android:value="${GIT_COMMIT_HASH}" />
         <meta-data
             android:name="androidx.car.app.TintableAttributionIcon"
-            android:resource="@drawable/ic_icon" />
+            android:resource="@mipmap/ic_launcher_foreground" />
         <meta-data android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc"/>
 
