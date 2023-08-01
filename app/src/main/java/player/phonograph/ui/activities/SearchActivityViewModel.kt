@@ -4,15 +4,16 @@
 
 package player.phonograph.ui.activities
 
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
 import player.phonograph.repo.mediastore.loaders.ArtistLoader
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -26,8 +27,6 @@ class SearchActivityViewModel : ViewModel() {
         search(context, query)
     }
 
-
-
     private val _results: MutableStateFlow<List<Any>> = MutableStateFlow(emptyList())
     val results get() = _results.asStateFlow()
 
@@ -37,24 +36,32 @@ class SearchActivityViewModel : ViewModel() {
 
                 val dataset: MutableList<Any> = mutableListOf()
 
-                val songs = async(Dispatchers.IO) { SongLoader.searchByTitle(context, query) }
-                val artists = async(Dispatchers.IO) { ArtistLoader.searchByName(context, query) }
-                val albums = async(Dispatchers.IO) { AlbumLoader.searchByName(context, query) }
+                val songs = SongLoader.searchByTitle(context, query)
+                val artists = ArtistLoader.searchByName(context, query)
+                val albums = AlbumLoader.searchByName(context, query)
+                val playlists = PlaylistLoader.searchByName(context, query)
+                val songsInQueue =
+                    App.instance.queueManager.playingQueue.filter { it.title.contains(query, true) }
 
-                val songList = songs.await()
-                if (songList.isNotEmpty()) {
+                if (songs.isNotEmpty()) {
                     dataset.add(context.resources.getString(R.string.songs))
-                    dataset.addAll(songList)
+                    dataset.addAll(songs)
                 }
-                val artistList = artists.await()
-                if (songList.isNotEmpty()) {
+                if (artists.isNotEmpty()) {
                     dataset.add(context.resources.getString(R.string.artists))
-                    dataset.addAll(artistList)
+                    dataset.addAll(artists)
                 }
-                val albumList = albums.await()
-                if (songList.isNotEmpty()) {
+                if (albums.isNotEmpty()) {
                     dataset.add(context.resources.getString(R.string.albums))
-                    dataset.addAll(albumList)
+                    dataset.addAll(albums)
+                }
+                if (playlists.isNotEmpty()) {
+                    dataset.add(context.getString(R.string.playlists))
+                    dataset.addAll(playlists)
+                }
+                if (songsInQueue.isNotEmpty()) {
+                    dataset.add(context.getString(R.string.label_playing_queue))
+                    dataset.addAll(songsInQueue)
                 }
 
                 _results.value = dataset
