@@ -124,6 +124,7 @@ class MediaSessionController(
                 PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
                 PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE or
                 PlaybackStateCompat.ACTION_SET_PLAYBACK_SPEED or
+                PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID or
                 PlaybackStateCompat.ACTION_SEEK_TO
     }
 }

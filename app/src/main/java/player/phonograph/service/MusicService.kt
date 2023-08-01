@@ -15,6 +15,7 @@ import player.phonograph.appwidgets.AppWidgetClassic
 import player.phonograph.appwidgets.AppWidgetSmall
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
+import player.phonograph.repo.browser.MediaBrowserDelegate
 import player.phonograph.repo.database.HistoryStore
 import player.phonograph.service.notification.CoverLoader
 import player.phonograph.service.notification.PlayingNotificationManger
@@ -39,7 +40,7 @@ import player.phonograph.settings.BROADCAST_CURRENT_PLAYER_STATE
 import player.phonograph.settings.CLASSIC_NOTIFICATION
 import player.phonograph.settings.COLORED_NOTIFICATION
 import player.phonograph.settings.GAPLESS_PLAYBACK
-import android.app.Service
+import androidx.media.MediaBrowserServiceCompat
 import android.appwidget.AppWidgetManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -48,8 +49,10 @@ import android.content.IntentFilter
 import android.content.res.Configuration
 import android.media.audiofx.AudioEffect
 import android.os.Binder
+import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
+import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
@@ -57,7 +60,7 @@ import android.util.Log
 /**
  * @author Karim Abou Zeid (kabouzeid), Andrew Neal
  */
-class MusicService : Service() {
+class MusicService : MediaBrowserServiceCompat() {
 
     private val songPlayCountHelper = SongPlayCountHelper()
 
@@ -104,6 +107,7 @@ class MusicService : Service() {
         coverLoader = CoverLoader(this)
         mediaSessionController.setupMediaSession(initMediaSessionCallback())
         playNotificationManager.setUpNotification()
+        sessionToken = mediaSessionController.mediaSession.sessionToken // MediaBrowserService
 
         mediaSessionController.mediaSession.isActive = true
 
@@ -210,6 +214,13 @@ class MusicService : Service() {
 
         override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
             return MediaButtonIntentReceiver.handleIntent(this@MusicService, mediaButtonEvent)
+        }
+
+        override fun onPlayFromMediaId(mediaId: String, extras: Bundle?) {
+            val musicService = this@MusicService
+            val songs = MediaBrowserDelegate.playFromMediaId(musicService, mediaId, extras)
+            musicService.queueManager.swapQueue(songs, 0)
+            musicService.playSongAt(0)
         }
     }
 
@@ -493,6 +504,18 @@ class MusicService : Service() {
         )
     }
 
+    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
+        log("onGetRoot() clientPackageName: $clientPackageName, clientUid: $clientUid", false)
+        log("onGetRoot() rootHints: ${rootHints?.toString()}", false)
+        return MediaBrowserDelegate.onGetRoot(this, clientPackageName, clientUid, rootHints)
+    }
+
+    override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
+        log("onLoadChildren(): parentId $parentId",false)
+        val mediaItems = MediaBrowserDelegate.listChildren(parentId, this)
+        result.sendResult(ArrayList(mediaItems))
+    }
+
 
     override fun attachBaseContext(base: Context?) {
         // Localization
@@ -530,7 +553,16 @@ class MusicService : Service() {
 
     }
 
-    override fun onBind(intent: Intent): IBinder = musicBind
+    override fun onBind(intent: Intent): IBinder {
+        return if (SERVICE_INTERFACE == intent.action) {
+            log("onBind(): bind to $SERVICE_INTERFACE", true)
+            super.onBind(intent) ?: musicBind
+        } else {
+            log("onBind(): bind to common MusicBinder", true)
+            musicBind
+        }
+    }
+
     private val musicBind: IBinder = MusicBinder()
 
     inner class MusicBinder : Binder() {
