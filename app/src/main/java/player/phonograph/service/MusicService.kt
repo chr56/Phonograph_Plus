@@ -219,15 +219,20 @@ class MusicService : MediaBrowserServiceCompat() {
         override fun onPlayFromMediaId(mediaId: String, extras: Bundle?) {
             val musicService = this@MusicService
             val songs = MediaBrowserDelegate.playFromMediaId(musicService, mediaId, extras)
-            musicService.queueManager.swapQueue(songs, 0)
-            musicService.playSongAt(0)
+            playNewQueue(songs)
         }
 
         override fun onPlayFromSearch(query: String?, extras: Bundle?) {
             val musicService = this@MusicService
             val songs = MediaBrowserDelegate.playFromSearch(musicService, query, extras)
-            musicService.queueManager.swapQueue(songs, 0)
-            musicService.playSongAt(0)
+            playNewQueue(songs)
+        }
+
+        private fun playNewQueue(songs: List<Song>) {
+            if (songs.isNotEmpty()) {
+                queueManager.swapQueue(songs, 0, false)
+                playSongAt(0)
+            }
         }
     }
 
