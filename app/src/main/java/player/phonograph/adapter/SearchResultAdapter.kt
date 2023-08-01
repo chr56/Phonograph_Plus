@@ -18,9 +18,12 @@ import player.phonograph.model.Artist
 import player.phonograph.model.Displayable
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.NavigationUtil.goToAlbum
 import player.phonograph.util.NavigationUtil.goToArtist
+import player.phonograph.util.NavigationUtil.goToPlaylist
+import player.phonograph.util.theme.getTintedDrawable
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ComponentActivity
 import androidx.core.util.Pair
@@ -52,36 +55,43 @@ class SearchResultAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
-            SONG   -> SongViewHolder.inflate(context, parent)
-            ALBUM  -> AlbumViewHolder.inflate(context, parent)
-            ARTIST -> ArtistViewHolder.inflate(context, parent)
-            HEADER -> HeaderViewHolder.inflate(context, parent)
-            else   -> throw IllegalStateException("Unknown view type: $viewType")
+            SONG     -> SongViewHolder.inflate(context, parent)
+            ALBUM    -> AlbumViewHolder.inflate(context, parent)
+            ARTIST   -> ArtistViewHolder.inflate(context, parent)
+            PLAYLIST -> PlaylistViewHolder.inflate(context, parent)
+            HEADER   -> HeaderViewHolder.inflate(context, parent)
+            else     -> throw IllegalStateException("Unknown view type: $viewType")
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = dataSet[position]
         when (getItemViewType(position)) {
-            HEADER -> {
+            HEADER   -> {
                 holder as HeaderViewHolder
                 holder.bind(item as String)
             }
 
-            SONG   -> {
+            SONG     -> {
                 holder as SongViewHolder
                 holder.bind(item as Song)
                 holder.setupMultiselect(this::isInQuickSelectMode, this::isChecked, this::toggleChecked)
             }
 
-            ALBUM  -> {
+            ALBUM    -> {
                 holder as AlbumViewHolder
                 holder.bind(item as Album)
                 holder.setupMultiselect(this::isInQuickSelectMode, this::isChecked, this::toggleChecked)
             }
 
-            ARTIST -> {
+            ARTIST   -> {
                 holder as ArtistViewHolder
                 holder.bind(item as Artist)
+                holder.setupMultiselect(this::isInQuickSelectMode, this::isChecked, this::toggleChecked)
+            }
+
+            PLAYLIST -> {
+                holder as PlaylistViewHolder
+                holder.bind(item as Playlist)
                 holder.setupMultiselect(this::isInQuickSelectMode, this::isChecked, this::toggleChecked)
             }
         }
@@ -99,10 +109,11 @@ class SearchResultAdapter(
 
     override fun getItemViewType(position: Int): Int =
         when (dataSet[position]) {
-            is Album  -> ALBUM
-            is Artist -> ARTIST
-            is Song   -> SONG
-            else      -> HEADER
+            is Album    -> ALBUM
+            is Artist   -> ARTIST
+            is Song     -> SONG
+            is Playlist -> PLAYLIST
+            else        -> HEADER
         }
 
     abstract class AbsItemViewHolder<T : Displayable> protected constructor(itemView: View) :
@@ -247,6 +258,26 @@ class SearchResultAdapter(
         }
     }
 
+    class PlaylistViewHolder private constructor(itemView: View) : AbsItemViewHolder<Playlist>(itemView) {
+
+
+        override fun bind(item: Playlist) {
+            val context = itemView.context
+            this.item = item
+            title?.text = item.name
+            image?.setImageDrawable(context.getTintedDrawable(item.iconRes, context.getColor(R.color.grey_highlight)))
+        }
+
+        override fun onClick() {
+            goToPlaylist(itemView.context, item)
+        }
+
+        companion object {
+            fun inflate(context: Context, parent: ViewGroup): PlaylistViewHolder =
+                PlaylistViewHolder(LayoutInflater.from(context).inflate(R.layout.item_list_single_row, parent, false))
+        }
+    }
+
     class HeaderViewHolder private constructor(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
 
         fun bind(text: String) {
@@ -264,5 +295,6 @@ class SearchResultAdapter(
         private const val ALBUM = 1
         private const val ARTIST = 2
         private const val SONG = 3
+        private const val PLAYLIST = 4
     }
 }
