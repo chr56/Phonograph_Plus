@@ -166,7 +166,13 @@
         <service
             android:name=".service.MusicService"
             android:enabled="true"
-            android:foregroundServiceType="mediaPlayback" />
+            android:foregroundServiceType="mediaPlayback"
+            android:icon="@drawable/ic_icon"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService"/>
+            </intent-filter>
+        </service>
 
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
@@ -277,7 +283,11 @@
         <meta-data
             android:name="GitCommitHash"
             android:value="${GIT_COMMIT_HASH}" />
-
+        <meta-data
+            android:name="androidx.car.app.TintableAttributionIcon"
+            android:resource="@drawable/ic_icon" />
+        <meta-data android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc"/>
 
     </application>
 

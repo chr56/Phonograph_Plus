@@ -12,8 +12,11 @@ import player.phonograph.repo.mediastore.loaders.ArtistLoader
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.repo.mediastore.loaders.dynamics.LastAddedLoader
 import player.phonograph.repo.mediastore.loaders.dynamics.TopAndRecentlyPlayedTracksLoader
+import androidx.annotation.DrawableRes
+import android.content.ContentResolver
 import android.content.Context
 import android.content.res.Resources
+import android.net.Uri
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
 import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
@@ -25,34 +28,42 @@ object MediaItemProvider {
         listOf(
             mediaItem(FLAG_BROWSABLE or FLAG_PLAYABLE) {
                 setTitle(res.getString(R.string.label_playing_queue))
+                setIconUri(iconRes(res, R.drawable.ic_queue_music_white_24dp))
                 setMediaId(MEDIA_BROWSER_SONGS_QUEUE)
             },
             mediaItem(FLAG_BROWSABLE) {
                 setTitle(res.getString(R.string.songs))
+                setIconUri(iconRes(res, R.drawable.ic_music_note_white_24dp))
                 setMediaId(MEDIA_BROWSER_SONGS)
             },
             mediaItem(FLAG_BROWSABLE) {
                 setTitle(res.getString(R.string.albums))
+                setIconUri(iconRes(res, R.drawable.ic_album_white_24dp))
                 setMediaId(MEDIA_BROWSER_ALBUMS)
             },
             mediaItem(FLAG_BROWSABLE) {
                 setTitle(res.getString(R.string.artists))
+                setIconUri(iconRes(res, R.drawable.ic_person_white_24dp))
                 setMediaId(MEDIA_BROWSER_ARTISTS)
             },
             mediaItem(FLAG_BROWSABLE or FLAG_PLAYABLE) {
                 setTitle(res.getString(R.string.favorites))
+                setIconUri(iconRes(res, R.drawable.ic_favorite_white_24dp))
                 setMediaId(MEDIA_BROWSER_SONGS_FAVORITES)
             },
             mediaItem(FLAG_BROWSABLE or FLAG_PLAYABLE) {
                 setTitle(res.getString(R.string.my_top_tracks))
+                setIconUri(iconRes(res, R.drawable.ic_trending_up_white_24dp))
                 setMediaId(MEDIA_BROWSER_SONGS_TOP_TRACKS)
             },
             mediaItem(FLAG_BROWSABLE or FLAG_PLAYABLE) {
                 setTitle(res.getString(R.string.last_added))
+                setIconUri(iconRes(res, R.drawable.ic_library_add_white_24dp))
                 setMediaId(MEDIA_BROWSER_SONGS_LAST_ADDED)
             },
             mediaItem(FLAG_BROWSABLE or FLAG_PLAYABLE) {
                 setTitle(res.getString(R.string.history))
+                setIconUri(iconRes(res, R.drawable.ic_access_time_white_24dp))
                 setMediaId(MEDIA_BROWSER_SONGS_HISTORY)
             },
         )
@@ -94,4 +105,11 @@ object MediaItemProvider {
     private fun mediaItem(flag: Int, block: MediaDescriptionCompat.Builder.() -> Unit): MediaItem {
         return MediaItem(MediaDescriptionCompat.Builder().apply(block).build(), flag)
     }
+
+    private fun iconRes(res: Resources, @DrawableRes resourceId: Int): Uri =
+        Uri.Builder().scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+            .authority(res.getResourcePackageName(resourceId))
+            .appendPath(res.getResourceTypeName(resourceId))
+            .appendPath(res.getResourceEntryName(resourceId))
+            .build()
 }
