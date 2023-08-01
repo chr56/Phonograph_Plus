@@ -230,8 +230,13 @@ class MusicService : MediaBrowserServiceCompat() {
 
         private fun playNewQueue(songs: List<Song>) {
             if (songs.isNotEmpty()) {
-                queueManager.swapQueue(songs, 0, false)
-                playSongAt(0)
+                if (songs.size == 1) {
+                    queueManager.addSong(songs.first(), queueManager.currentSongPosition, false)
+                    playSongAt(queueManager.currentSongPosition)
+                } else {
+                    queueManager.swapQueue(songs, 0, false)
+                    playSongAt(0)
+                }
             }
         }
     }
