@@ -39,6 +39,11 @@ object PlaylistLoader {
             context, "${MediaStoreCompat.Audio.PlaylistsColumns.DATA} = ?", arrayOf(path)
         ).intoFirstPlaylist().takeIf { it.id > 0 }
 
+    fun searchByName(context: Context, name: String): List<FilePlaylist> =
+        queryPlaylists(
+            context, "${MediaStoreCompat.Audio.PlaylistsColumns.NAME} LIKE ?", arrayOf(name)
+        ).intoPlaylists()
+
 
     /**
      * consume cursor (read & close) and convert into FilePlaylist list
