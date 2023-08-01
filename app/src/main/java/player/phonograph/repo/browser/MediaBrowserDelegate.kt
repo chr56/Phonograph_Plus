@@ -21,7 +21,16 @@ object MediaBrowserDelegate {
 
     fun onGetRoot(context: Context, clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? =
         if (validate(context, clientPackageName, clientUid)) {
-            BrowserRoot(MEDIA_BROWSER_ROOT, null)
+            val root = if (rootHints == null) {
+                MEDIA_BROWSER_ROOT
+            } else {
+                when {
+                    rootHints.getBoolean(BrowserRoot.EXTRA_RECENT)    -> MEDIA_BROWSER_SONGS_LAST_ADDED
+                    rootHints.getBoolean(BrowserRoot.EXTRA_SUGGESTED) -> MEDIA_BROWSER_SONGS_TOP_TRACKS
+                    else                                              -> MEDIA_BROWSER_ROOT
+                }
+            }
+            BrowserRoot(root, null)
         } else {
             null
         }
