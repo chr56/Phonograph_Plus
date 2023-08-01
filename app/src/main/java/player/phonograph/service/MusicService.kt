@@ -222,6 +222,13 @@ class MusicService : MediaBrowserServiceCompat() {
             musicService.queueManager.swapQueue(songs, 0)
             musicService.playSongAt(0)
         }
+
+        override fun onPlayFromSearch(query: String?, extras: Bundle?) {
+            val musicService = this@MusicService
+            val songs = MediaBrowserDelegate.playFromSearch(musicService, query, extras)
+            musicService.queueManager.swapQueue(songs, 0)
+            musicService.playSongAt(0)
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -511,7 +518,7 @@ class MusicService : MediaBrowserServiceCompat() {
     }
 
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        log("onLoadChildren(): parentId $parentId",false)
+        log("onLoadChildren(): parentId $parentId", false)
         val mediaItems = MediaBrowserDelegate.listChildren(parentId, this)
         result.sendResult(ArrayList(mediaItems))
     }

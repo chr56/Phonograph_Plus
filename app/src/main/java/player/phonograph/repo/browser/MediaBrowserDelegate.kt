@@ -8,6 +8,7 @@ import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
 import player.phonograph.repo.mediastore.loaders.ArtistLoader
 import player.phonograph.repo.mediastore.loaders.SongLoader
+import player.phonograph.repo.mediastore.processQuery
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot
 import android.content.Context
 import android.os.Bundle
@@ -66,6 +67,17 @@ object MediaBrowserDelegate {
         return songs
     }
 
+    fun playFromSearch(context: Context, query: String?, extras: Bundle?): List<Song> {
+        return if (query.isNullOrEmpty()) {
+            SongLoader.all(context)
+        } else {
+            if (extras != null) {
+                processQuery(context, extras)
+            } else {
+                SongLoader.searchByTitle(context, query)
+            }
+        }
+    }
 
     // todo: validate package names & signatures
     private fun validate(context: Context, clientPackageName: String, clientUid: Int): Boolean {
