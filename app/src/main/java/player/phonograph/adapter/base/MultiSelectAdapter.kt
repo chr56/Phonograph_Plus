@@ -9,6 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 
@@ -58,20 +59,18 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
     /** must return a real item **/
     protected abstract fun getItem(datasetPosition: Int): I
 
-    abstract fun updateItemCheckStatusForAll()
-    abstract fun updateItemCheckStatus(datasetPosition: Int)
-
     protected fun toggleChecked(datasetPosition: Int): Boolean {
         if (cabController != null) {
             val item = getItem(datasetPosition) ?: return false
             if (!checkedList.remove(item)) checkedList.add(item)
-            updateItemCheckStatus(datasetPosition)
+            notifyItemChanged(datasetPosition)
             updateCab()
             return true
         }
         return false
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     protected fun checkAll() {
         if (cabController != null) {
             checkedList.clear()
@@ -81,14 +80,15 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
                     checkedList.add(item)
                 }
             }
-            updateItemCheckStatusForAll()
+            notifyDataSetChanged()
             updateCab()
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun clearChecked() {
         checkedList.clear()
-        updateItemCheckStatusForAll()
+        notifyDataSetChanged()
     }
 
     protected fun isChecked(identifier: I): Boolean = checkedList.contains(identifier)

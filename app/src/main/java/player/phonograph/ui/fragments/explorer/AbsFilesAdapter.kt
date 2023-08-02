@@ -39,6 +39,4 @@ abstract class AbsFilesAdapter<VH : AbsFilesAdapter.ViewHolder>(
         abstract fun bind(item: FileEntity, position: Int)
     }
 
-    override fun updateItemCheckStatusForAll() = notifyDataSetChanged()
-    override fun updateItemCheckStatus(datasetPosition: Int) = notifyItemChanged(datasetPosition)
 }

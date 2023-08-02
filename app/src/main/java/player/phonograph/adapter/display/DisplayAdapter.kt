@@ -103,9 +103,6 @@ open class DisplayAdapter<I : Displayable>(
 
     override fun getItemCount(): Int = dataset.size
 
-    override fun updateItemCheckStatusForAll() = notifyDataSetChanged()
-    override fun updateItemCheckStatus(datasetPosition: Int) = notifyItemChanged(datasetPosition)
-
     override fun getSectionName(position: Int): String =
         if (showSectionName) getSectionNameImp(position) else ""
 

@@ -170,7 +170,4 @@ open class AlbumAdapter(
             menu?.visibility = GONE
         }
     }
-
-    override fun updateItemCheckStatusForAll() = notifyDataSetChanged()
-    override fun updateItemCheckStatus(datasetPosition: Int) = notifyItemChanged(datasetPosition)
-}
+    }

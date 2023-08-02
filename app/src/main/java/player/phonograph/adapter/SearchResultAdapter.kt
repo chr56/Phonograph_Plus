@@ -49,10 +49,6 @@ class SearchResultAdapter(
 
     override fun getItem(datasetPosition: Int): Any = dataSet[datasetPosition]
 
-    @SuppressLint("NotifyDataSetChanged")
-    override fun updateItemCheckStatusForAll() = notifyDataSetChanged()
-    override fun updateItemCheckStatus(datasetPosition: Int) = notifyItemChanged(datasetPosition)
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
             SONG     -> SongViewHolder.inflate(context, parent)
