@@ -26,6 +26,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.util.Pair
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -72,6 +73,8 @@ open class AlbumAdapter(
         setHasStableIds(true)
     }
 
+    override fun getItemId(position: Int): Long = dataSet[position].id
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(activity).inflate(itemLayoutRes, parent, false)
         return createViewHolder(view, viewType)
@@ -79,51 +82,9 @@ open class AlbumAdapter(
 
     protected open fun createViewHolder(view: View, viewType: Int): ViewHolder = ViewHolder(view)
 
-    private fun getAlbumTitle(album: Album): String = album.title
-
-    protected open fun getAlbumText(album: Album): String =
-        buildInfoString(
-            album.artistName, songCountString(activity, album.songs.size)
-        )
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val album = dataSet[position]
-        holder.bind(album, controller)
-        loadAlbumCover(album, holder)
-    }
-
-    protected open fun setColors(color: Int, holder: ViewHolder) {
-        holder.paletteColorContainer?.let { container ->
-            container.setBackgroundColor(color)
-            holder.title?.setTextColor(
-                activity.primaryTextColor(color)
-            )
-
-            holder.text?.setTextColor(
-                activity.secondaryTextColor(color)
-            )
-        }
-    }
-
-    protected open fun loadAlbumCover(album: Album, holder: ViewHolder) {
-        if (holder.image == null) return
-        val context = holder.itemView.context
-        loadImage(context) {
-            data(album.safeGetFirstSong())
-            size(ViewSizeResolver(holder.image!!))
-            target(
-                PaletteTargetBuilder(context)
-                    .onStart {
-                        holder.image!!.setImageResource(R.drawable.default_album_art)
-                        setColors(context.getColor(R.color.defaultFooterColor), holder)
-                    }
-                    .onResourceReady { result, palette ->
-                        holder.image!!.setImageDrawable(result)
-                        if (usePalette) setColors(palette, holder)
-                    }
-                    .build()
-            )
-        }
+        holder.bind(album, position, usePalette, dataSet, controller)
     }
 
     override fun getItemCount(): Int = dataSet.size
@@ -132,8 +93,7 @@ open class AlbumAdapter(
 
     override fun getItems(): Iterable<Album> = dataSet
 
-
-    private val multiSelectMenuHandler: ((Toolbar) -> Boolean)?
+    private val multiSelectMenuHandler: (Toolbar) -> Boolean
         get() = {
             multiItemsToolbar(it.menu, activity, controller)
         }
@@ -151,35 +111,68 @@ open class AlbumAdapter(
         return sectionName
     }
 
-    inner class ViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
+    open class ViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
 
         init {
-            setImageTransitionName(activity.getString(R.string.transition_album_art))
+            setImageTransitionName(itemView.context.getString(R.string.transition_album_art))
             menu?.visibility = GONE
         }
 
-        fun bind(item: Album, controller: MultiSelectionController<Album>) {
-            itemView.isActivated = controller.isSelected(item)
-            shortSeparator?.visibility = if (bindingAdapterPosition == itemCount - 1) GONE else VISIBLE
-            title?.text = getAlbumTitle(item)
-            text?.text = getAlbumText(item)
+        fun bind(
+            item: Album,
+            position: Int,
+            usePalette: Boolean,
+            all: Collection<Album>,
+            controller: MultiSelectionController<Album>,
+        ) {
+            val context = itemView.context
 
+            itemView.isActivated = controller.isSelected(item)
+            shortSeparator?.visibility = if (position == all.size - 1) GONE else VISIBLE
+            title?.text = item.title
+            text?.text = buildInfoString(item.artistName, songCountString(context, item.songs.size))
+
+            loadImage(context) {
+                data(item.safeGetFirstSong())
+                size(ViewSizeResolver(image!!))
+                target(
+                    PaletteTargetBuilder(context)
+                        .onStart {
+                            image!!.setImageResource(R.drawable.default_album_art)
+                            setColors(context, context.getColor(R.color.defaultFooterColor))
+                        }
+                        .onResourceReady { result, palette ->
+                            image!!.setImageDrawable(result)
+                            if (usePalette) setColors(context, palette)
+                        }
+                        .build()
+                )
+            }
 
             itemView.setOnClickListener {
                 if (controller.isInQuickSelectMode) {
-                    controller.toggle(bindingAdapterPosition)
+                    controller.toggle(position)
                 } else {
                     NavigationUtil.goToAlbum(
-                        activity,
-                        dataSet[bindingAdapterPosition].id,
-                        Pair.create(image, activity.resources.getString(R.string.transition_album_art))
+                        context,
+                        item.id,
+                        Pair.create(image, context.resources.getString(R.string.transition_album_art))
                     )
                 }
             }
             itemView.setOnLongClickListener {
-                controller.toggle(bindingAdapterPosition)
+                controller.toggle(position)
             }
             itemView.isActivated = controller.isSelected(item)
         }
+
+        protected open fun setColors(context: Context, color: Int) {
+            paletteColorContainer?.let { container ->
+                container.setBackgroundColor(color)
+                title?.setTextColor(context.primaryTextColor(color))
+                text?.setTextColor(context.secondaryTextColor(color))
+            }
+        }
+
     }
 }
