@@ -25,6 +25,7 @@ import androidx.annotation.ColorInt
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
+import java.util.Random
 
 fun multiItemsToolbar(
     menu: Menu,
@@ -52,7 +53,7 @@ fun multiItemsToolbar(
             menuItem(title = getString(R.string.action_shuffle_all)) {
                 icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-                onClick { convertToSongs(selections, context).actionPlay(SHUFFLE, selections.size) }
+                onClick { convertToSongs(selections, context).actionPlay(SHUFFLE, Random().nextInt(selections.size)) }
             }
             menuItem(getString(R.string.action_add_to_playing_queue)) {
                 icon = getTintedDrawable(R.drawable.ic_library_add_white_24dp, iconColor)
