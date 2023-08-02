@@ -8,7 +8,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.util.text.currentDate
-import player.phonograph.util.text.datetimeSuffix
+import player.phonograph.util.text.dateTimeSuffix
 import android.content.Context
 import kotlin.text.Charsets.UTF_8
 import java.io.BufferedWriter
@@ -24,7 +24,7 @@ object M3UWriter {
         val filename: String =
             if (playlist is SmartPlaylist) {
                 // Since AbsCustomPlaylists are dynamic, we add a timestamp after their names.
-                playlist.name + datetimeSuffix(currentDate())
+                playlist.name + dateTimeSuffix(currentDate())
             } else {
                 playlist.name
             }

@@ -12,7 +12,8 @@ import player.phonograph.mechanism.SettingDataManager
 import player.phonograph.notification.ErrorNotification.KEY_IS_A_CRASH
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
 import player.phonograph.ui.compose.settings.SettingsActivity
-import player.phonograph.util.text.currentDateTime
+import player.phonograph.util.text.currentDate
+import player.phonograph.util.text.dateTimeSuffixCompat
 import player.phonograph.util.text.getDeviceInfo
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
@@ -136,7 +137,7 @@ class CrashActivity : ToolbarActivity() {
         // save crash report
         externalCacheDir?.let { cacheDir ->
             lifecycleScope.launch(Dispatchers.IO + SupervisorJob()) {
-                val file = File(cacheDir, "Error_Report_${currentDateTime()}.txt")
+                val file = File(cacheDir, "Error_Report_${dateTimeSuffixCompat(currentDate())}.txt")
                 file.writer().use { writer ->
                     writer.write(displayText)
                     writer.flush()

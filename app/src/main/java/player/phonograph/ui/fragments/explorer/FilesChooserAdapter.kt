@@ -11,7 +11,7 @@ import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.MultiSelectionController
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity
-import player.phonograph.util.text.fullDateText
+import player.phonograph.util.text.dateTimeText
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.appcompat.widget.Toolbar
@@ -40,7 +40,7 @@ class FilesChooserAdapter(
                 title.text = item.name
                 text.text = when (item) {
                     is FileEntity.File   -> Formatter.formatFileSize(context, item.size)
-                    is FileEntity.Folder -> fullDateText(item.dateModified / 1000)
+                    is FileEntity.Folder -> dateTimeText(item.dateModified / 1000)
                 }
                 shortSeparator.visibility = if (position == dataSet.size - 1) View.GONE else View.VISIBLE
                 image.setImageDrawable(

@@ -3,7 +3,7 @@ package player.phonograph.adapter
 import player.phonograph.R
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
-import player.phonograph.util.text.parseTimeStamp
+import player.phonograph.util.text.lyricsTimestamp
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
 import android.content.Context
@@ -42,7 +42,7 @@ class LyricsAdapter(
                 actual.append(it).appendLine()
             }
 
-            time.text = parseTimeStamp(timeStamps[bindingAdapterPosition])
+            time.text = lyricsTimestamp(timeStamps[bindingAdapterPosition])
             time.setTextColor(context.getColor(R.color.dividerColor))
             if (timeStamps[bindingAdapterPosition] < 0 || !Setting.instance.displaySynchronizedLyricsTimeAxis)
                 time.visibility = View.GONE
