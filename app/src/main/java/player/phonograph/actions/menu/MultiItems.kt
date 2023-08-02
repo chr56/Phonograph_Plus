@@ -30,7 +30,7 @@ import java.util.Random
 fun multiItemsToolbar(
     menu: Menu,
     context: Context,
-    selections: List<Any>,
+    selections: Collection<Any>,
     @ColorInt iconColor: Int,
     selectAllCallback: (() -> Boolean)?,
 ): Boolean =
