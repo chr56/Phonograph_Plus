@@ -267,26 +267,39 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
     private var scrollingOffset: Int = 0
     override fun onUpdateProgressViews(progress: Int, total: Int) {
-        if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            scrollingTo(progress)
-        }
-    }
-
-    private fun scrollingTo(timeStamp: Int) {
-        val activated = viewModel.lyricsInfo.value.activatedLyrics
-        val lrc = activated as? LrcLyrics
-        if (lrc != null) {
-            val line = lrc.getPosition(timeStamp)
-            if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED) && line >= 0) {
-                try {
-                    linearLayoutManager.smoothScrollToPosition(binding.recyclerViewLyrics, null, line)
-                    //linearLayoutManager.scrollToPositionWithOffset(line, scrollingOffset)
-                } catch (e: Exception) {
-                    reportError(e, "LyricsScroll", "Failed to scroll to $line")
-                }
+        val lrcLyrics = viewModel.lyricsInfo.value.activatedLyrics as? LrcLyrics ?: return
+        val position = lrcLyrics.getPosition(progress)
+        if (position >= 0) {
+            if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                scrollingTo(position)
+                updateHighlight(position)
             }
         }
     }
+
+    private fun scrollingTo(position: Int) {
+        try {
+            linearLayoutManager.smoothScrollToPosition(binding.recyclerViewLyrics, null, position)
+            //linearLayoutManager.scrollToPositionWithOffset(position, scrollingOffset)
+        } catch (e: Exception) {
+            reportError(e, "LyricsScroll", "Failed to scroll to $position")
+        }
+    }
+
+    private var lastHighlightPosition = -1
+    private fun updateHighlight(position: Int) {
+        if (lastHighlightPosition > 0) {
+            // cancel last
+            val lastViewHolder =
+                binding.recyclerViewLyrics.findViewHolderForAdapterPosition(lastHighlightPosition) as? LyricsAdapter.ViewHolder
+            lastViewHolder?.highlight(false)
+        }
+        val viewHolder =
+            binding.recyclerViewLyrics.findViewHolderForAdapterPosition(position) as? LyricsAdapter.ViewHolder
+        viewHolder?.highlight(true)
+        lastHighlightPosition = position
+    }
+
     //endregion
 
 

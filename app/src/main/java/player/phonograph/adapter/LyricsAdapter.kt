@@ -7,6 +7,7 @@ import player.phonograph.util.text.parseTimeStamp
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,6 +56,10 @@ class LyricsAdapter(
             }
         }
 
+        fun highlight(highlight: Boolean) {
+            line.typeface = if (highlight) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
+            time.typeface = if (highlight) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
+        }
 
         companion object {
             fun inflate(context: Context, parent: ViewGroup) =
