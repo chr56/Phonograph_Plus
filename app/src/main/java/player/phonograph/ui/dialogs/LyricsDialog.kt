@@ -94,8 +94,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
     override fun onDestroy() {
         super.onDestroy()
-        _progressViewUpdateHelper?.destroy()
-        _progressViewUpdateHelper = null
+        progressViewUpdateHelper.destroy()
     }
     //endregion
 
@@ -107,13 +106,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
                     updateTitle(info)
                     updateChips(info)
                     updateRecycleView(info)
-                    updateFollowing(info, viewModel.requireLyricsFollowing.value)
                 }
-            }
-        }
-        lifecycleScope.launch {
-            viewModel.requireLyricsFollowing.collect { newValue ->
-                updateFollowing(viewModel.lyricsInfo.value, newValue)
             }
         }
     }
@@ -220,6 +213,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
                 layoutManager = this@LyricsDialog.linearLayoutManager
                 adapter = this@LyricsDialog.lyricsAdapter
             }
+        progressViewUpdateHelper.start()
     }
 
     private fun updateRecycleView(info: LyricsInfo) {
@@ -231,8 +225,8 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
     //region Scroll
 
-    private var _progressViewUpdateHelper: MusicProgressViewUpdateHelper? = null
-    private val progressViewUpdateHelper: MusicProgressViewUpdateHelper get() = _progressViewUpdateHelper!!
+    private var progressViewUpdateHelper: MusicProgressViewUpdateHelper =
+        MusicProgressViewUpdateHelper(this@LyricsDialog, 500, 1000)
 
     private fun setupFollowing(info: LyricsInfo) {
         binding.lyricsFollowing.apply {
@@ -251,36 +245,24 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         }
     }
 
-    private fun updateFollowing(info: LyricsInfo, newValue: Boolean) {
-        if (info.activatedLyrics is LrcLyrics) {
-            // dispose ProgressViewUpdateHelper
-            _progressViewUpdateHelper?.destroy()
-            _progressViewUpdateHelper = null
-            _progressViewUpdateHelper = MusicProgressViewUpdateHelper(this@LyricsDialog, 500, 1000)
-
-            progressViewUpdateHelper.run {
-                if (newValue) start() else stop()
-            }
-        }
-    }
-
-
     private var scrollingOffset: Int = 0
     override fun onUpdateProgressViews(progress: Int, total: Int) {
         val lrcLyrics = viewModel.lyricsInfo.value.activatedLyrics as? LrcLyrics ?: return
         val position = lrcLyrics.getPosition(progress)
-        if (position >= 0) {
-            if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+        if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+            if (viewModel.requireLyricsFollowing.value) {
                 scrollingTo(position)
-                updateHighlight(position)
             }
+            updateHighlight(position)
         }
     }
 
     private fun scrollingTo(position: Int) {
         try {
-            linearLayoutManager.smoothScrollToPosition(binding.recyclerViewLyrics, null, position)
-            //linearLayoutManager.scrollToPositionWithOffset(position, scrollingOffset)
+            if (position >= 0) {
+                linearLayoutManager.smoothScrollToPosition(binding.recyclerViewLyrics, null, position)
+                //linearLayoutManager.scrollToPositionWithOffset(position, scrollingOffset)
+            }
         } catch (e: Exception) {
             reportError(e, "LyricsScroll", "Failed to scroll to $position")
         }
@@ -288,16 +270,18 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
     private var lastHighlightPosition = -1
     private fun updateHighlight(position: Int) {
-        if (lastHighlightPosition > 0) {
+        if (lastHighlightPosition >= 0) {
             // cancel last
             val lastViewHolder =
                 binding.recyclerViewLyrics.findViewHolderForAdapterPosition(lastHighlightPosition) as? LyricsAdapter.ViewHolder
             lastViewHolder?.highlight(false)
         }
-        val viewHolder =
-            binding.recyclerViewLyrics.findViewHolderForAdapterPosition(position) as? LyricsAdapter.ViewHolder
-        viewHolder?.highlight(true)
-        lastHighlightPosition = position
+        if (position >= 0) {
+            val viewHolder =
+                binding.recyclerViewLyrics.findViewHolderForAdapterPosition(position) as? LyricsAdapter.ViewHolder
+            viewHolder?.highlight(true)
+            lastHighlightPosition = position
+        }
     }
 
     //endregion
