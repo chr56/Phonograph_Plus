@@ -21,6 +21,7 @@ import player.phonograph.model.lyrics.DEFAULT_TITLE
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.ui.fragments.player.LyricsViewModel
+import player.phonograph.util.debug
 import player.phonograph.util.reportError
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
@@ -29,16 +30,20 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import kotlin.math.abs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -73,15 +78,13 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         progressUpdater.start()
 
         // corner
-        requireDialog().window!!.setBackgroundDrawable(
-            GradientDrawable().apply {
-                this.cornerRadius = 0f
-                setColor(
-                    requireContext().theme.obtainStyledAttributes(intArrayOf(androidx.appcompat.R.attr.colorBackgroundFloating))
-                        .getColor(0, 0)
-                )
-            }
-        )
+        requireDialog().window!!.setBackgroundDrawable(GradientDrawable().apply {
+            this.cornerRadius = 0f
+            setColor(
+                requireContext().theme.obtainStyledAttributes(intArrayOf(androidx.appcompat.R.attr.colorBackgroundFloating))
+                    .getColor(0, 0)
+            )
+        })
         binding.ok.setOnClickListener { requireDialog().dismiss() }
         binding.viewStub.setOnClickListener { requireDialog().dismiss() }
         setupFollowing(lyricsInfo)
@@ -132,14 +135,12 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
             binding.types.addView(chip)
             if (requireCheck) chipSelected = chip
         }
-        binding.types.addView(
-            createChip(
-                getString(R.string.action_load),
-                -1,
-                false,
-                requireContext().getTintedDrawable(R.drawable.ic_add_white_24dp, Color.BLACK)
-            ) { _, _ -> manualLoadLyrics() }
-        )
+        binding.types.addView(createChip(
+            getString(R.string.action_load),
+            -1,
+            false,
+            requireContext().getTintedDrawable(R.drawable.ic_add_white_24dp, Color.BLACK)
+        ) { _, _ -> manualLoadLyrics() })
         // binding.types.isSelectionRequired = true
     }
 
@@ -150,18 +151,16 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         checked: Boolean = false,
         icon: Drawable? = null,
         callback: (Chip, Int) -> Unit,
-    ) =
-        Chip(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice)
-            .apply {
-                text = label
-                isChecked = checked
-                setTextColor(correctChipTextColor(checked))
-                chipBackgroundColor = correctChipBackgroundColor(checked)
-                setOnClickListener {
-                    callback(it as Chip, index)
-                }
-                if (icon != null) chipIcon = icon
-            }
+    ) = Chip(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice).apply {
+        text = label
+        isChecked = checked
+        setTextColor(correctChipTextColor(checked))
+        chipBackgroundColor = correctChipBackgroundColor(checked)
+        setOnClickListener {
+            callback(it as Chip, index)
+        }
+        if (icon != null) chipIcon = icon
+    }
 
     private fun onChipClicked(chip: Chip, index: Int) {
         val lyricsInfo = viewModel.lyricsInfo.value
@@ -207,17 +206,13 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
     private fun setupRecycleView(lyricsInfo: LyricsInfo) {
         val lyrics = lyricsInfo.activatedLyrics ?: lyricsInfo.first()
         linearLayoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
-        lyricsAdapter =
-            LyricsAdapter(
-                requireContext(),
-                lyrics.getLyricsTimeArray(),
-                lyrics.getLyricsLineArray()
-            ) { dialog?.dismiss() }
-        binding.recyclerViewLyrics
-            .apply {
-                layoutManager = this@LyricsDialog.linearLayoutManager
-                adapter = this@LyricsDialog.lyricsAdapter
-            }
+        lyricsAdapter = LyricsAdapter(
+            requireContext(), lyrics.getLyricsTimeArray(), lyrics.getLyricsLineArray()
+        ) { dialog?.dismiss() }
+        binding.recyclerViewLyrics.apply {
+            layoutManager = this@LyricsDialog.linearLayoutManager
+            adapter = this@LyricsDialog.lyricsAdapter
+        }
     }
 
     private fun updateRecycleView(info: LyricsInfo) {
@@ -249,7 +244,6 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         }
     }
 
-    private var scrollingOffset: Int = 0
     override fun onUpdateProgressViews(progress: Int, total: Int) {
         val lrcLyrics = viewModel.lyricsInfo.value.activatedLyrics as? LrcLyrics ?: return
         val position = lrcLyrics.getPosition(progress)
@@ -261,11 +255,41 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         }
     }
 
+    private val scroller by lazy(LazyThreadSafetyMode.PUBLICATION) { LyricsSmoothScroller(requireContext()) }
+
+    class LyricsSmoothScroller(context: Context) : LinearSmoothScroller(context) {
+
+        private val densityDpi = context.resources.displayMetrics.densityDpi
+        private val minDeviation = densityDpi / 10
+        private val offset = densityDpi / 5
+
+        override fun onTargetFound(targetView: View, state: RecyclerView.State, action: Action) {
+            val dyStart = calculateDyToMakeVisible(targetView, SNAP_TO_START)
+            val dyEnd = calculateDyToMakeVisible(targetView, SNAP_TO_END)
+            // val dy = when {
+            //     dyStart < 0 && dyEnd < 0 -> (dyEnd + dyStart) / 2 // scroll up
+            //     dyStart > 0 && dyEnd > 0 -> (dyEnd + dyStart) / 2 // scroll down
+            //     else                     -> { // slight adjust
+            //         val offset = (dyStart + dyEnd) / 2
+            //         if (abs(offset) < min) 0 else offset
+            //     }
+            // }
+            var dy = (dyEnd + dyStart) / 2
+            if (abs(dy) < minDeviation) dy = 0  // omit slight deviation
+            dy -= offset // slightly upper
+            debug { Log.v("SmoothScroller", "dy:$dy dyStart:$dyStart dyEnd:$dyEnd") }
+            val time = calculateTimeForDeceleration(dy)
+            if (time > 0) {
+                action.update(0, -dy, time, mDecelerateInterpolator)
+            }
+        }
+    }
+
     private fun scrollingTo(position: Int) {
         try {
             if (position >= 0) {
-                linearLayoutManager.smoothScrollToPosition(binding.recyclerViewLyrics, null, position)
-                //linearLayoutManager.scrollToPositionWithOffset(position, scrollingOffset)
+                scroller.targetPosition = position
+                linearLayoutManager.startSmoothScroll(scroller)
             }
         } catch (e: Exception) {
             reportError(e, "LyricsScroll", "Failed to scroll to $position")
@@ -298,17 +322,15 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
     private val textColor by lazy { App.instance.primaryTextColor(App.instance.nightMode) }
 
 
-    private fun correctChipBackgroundColor(checked: Boolean) =
-        ColorStateList.valueOf(
-            if (checked) lightenColor(primaryColor)
-            else resources.getColor(R.color.defaultFooterColor, requireContext().theme)
-        )
+    private fun correctChipBackgroundColor(checked: Boolean) = ColorStateList.valueOf(
+        if (checked) lightenColor(primaryColor)
+        else resources.getColor(R.color.defaultFooterColor, requireContext().theme)
+    )
 
-    private fun correctChipTextColor(checked: Boolean) =
-        ColorStateList.valueOf(
-            if (checked) requireContext().secondaryTextColor(primaryColor)
-            else textColor
-        )
+    private fun correctChipTextColor(checked: Boolean) = ColorStateList.valueOf(
+        if (checked) requireContext().secondaryTextColor(primaryColor)
+        else textColor
+    )
 
     private val backgroundCsl: ColorStateList by lazy {
         ColorStateList(
@@ -316,8 +338,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
                 intArrayOf(android.R.attr.state_selected),
                 intArrayOf(android.R.attr.state_checked),
                 intArrayOf(),
-            ),
-            intArrayOf(
+            ), intArrayOf(
                 lightenColor(primaryColor),
                 lightenColor(primaryColor),
                 resources.getColor(R.color.defaultFooterColor, requireContext().theme)
@@ -329,8 +350,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
             arrayOf(
                 intArrayOf(android.R.attr.state_checked),
                 intArrayOf(),
-            ),
-            intArrayOf(requireContext().primaryTextColor(primaryColor), textColor)
+            ), intArrayOf(requireContext().primaryTextColor(primaryColor), textColor)
         )
     }
     //endregion
