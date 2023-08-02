@@ -43,8 +43,6 @@ abstract class AbsFilesAdapter<VH : AbsFilesAdapter.ViewHolder>(
 
     override fun getItem(datasetPosition: Int): FileEntity = dataSet[datasetPosition]
 
-    override fun getItems(): Iterable<FileEntity> = dataSet
-
     override fun getItemCount(): Int = dataSet.size
 
     override fun onBindViewHolder(holder: VH, position: Int) {

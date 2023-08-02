@@ -91,8 +91,6 @@ open class AlbumAdapter(
 
     override fun getItem(datasetPosition: Int): Album = dataSet[datasetPosition]
 
-    override fun getItems(): Iterable<Album> = dataSet
-
     private val multiSelectMenuHandler: (Toolbar) -> Boolean
         get() = {
             multiItemsToolbar(it.menu, activity, controller)

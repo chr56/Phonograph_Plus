@@ -13,7 +13,7 @@ import android.util.Log
 
 
 interface MultiSelectionAdapterContract<I> {
-    fun getItems(): Iterable<I>
+    fun getItemCount(): Int
     fun getItem(datasetPosition: Int): I
     fun notifyItemChanged(datasetPosition: Int)
     fun notifyDataSetChanged()
@@ -48,7 +48,8 @@ class MultiSelectionController<I>(
 
     fun selectAll() {
         selected.clearAll()
-        for (item in linkedAdapter.getItems()) {
+        for (i in 0 until linkedAdapter.getItemCount() ) {
+            val item = linkedAdapter.getItem(i)
             if (item != null) {
                 selected.add(item)
             }

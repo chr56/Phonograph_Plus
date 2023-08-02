@@ -66,8 +66,6 @@ class SearchResultAdapter(
 
     override fun getItem(datasetPosition: Int): Any = dataSet[datasetPosition]
 
-    override fun getItems(): Iterable<Any> = dataSet
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
             SONG     -> SongViewHolder.inflate(parent.context, parent)

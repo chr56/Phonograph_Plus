@@ -70,7 +70,6 @@ open class DisplayAdapter<I : Displayable>(
 
     override fun getItemId(position: Int): Long = dataset[position].getItemID()
     override fun getItem(datasetPosition: Int): I = dataset[datasetPosition]
-    override fun getItems(): Iterable<I> = dataset
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder =
         DisplayViewHolder(
