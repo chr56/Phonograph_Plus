@@ -23,3 +23,16 @@ fun timeText(stamp: Long) = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).fo
 
 fun datetimeSuffix(date: Date): CharSequence = SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.US).format(date)
 fun withDatetimeSuffix(string: String, date: Date): String = string + datetimeSuffix(date)
+
+/**
+ * convert a timestamp to a readable String
+ *
+ * @param t timeStamp in milliseconds to parse
+ * @return `%d:%02d.%03d` partner time string
+ */
+fun parseTimeStamp(t: Int): String {
+    val ms = (t % 1000).toLong()
+    val s = (t % (1000 * 60) / 1000).toLong()
+    val m = (t - s * 1000 - ms) / (1000 * 60)
+    return String.format("%d:%02d.%03d", m, s, ms)
+}
