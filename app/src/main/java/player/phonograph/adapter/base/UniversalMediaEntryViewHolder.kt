@@ -30,6 +30,7 @@ open class UniversalMediaEntryViewHolder(itemView: View) :
         text = itemView.findViewById(R.id.text)
         menu = itemView.findViewById(R.id.menu)
         separator = itemView.findViewById(R.id.separator)
+        shortSeparator = itemView.findViewById(R.id.short_separator)
         dragView = itemView.findViewById(R.id.drag_view)
         paletteColorContainer = itemView.findViewById(R.id.palette_color_container)
     }

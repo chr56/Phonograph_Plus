@@ -9,7 +9,7 @@ import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.adapter.base.MediaEntryViewHolder
+import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
 import player.phonograph.adapter.display.initMenu
 import player.phonograph.databinding.FragmentFlatPlayerBinding
 import player.phonograph.model.Song
@@ -197,10 +197,10 @@ class FlatPlayerFragment :
     }
 
     private class PortraitImpl(fragment: FlatPlayerFragment) : BaseImpl(fragment) {
-        var currentSongViewHolder: MediaEntryViewHolder? = null
+        var currentSongViewHolder: UniversalMediaEntryViewHolder? = null
         override fun init() {
             super.init()
-            currentSongViewHolder = MediaEntryViewHolder(
+            currentSongViewHolder = UniversalMediaEntryViewHolder(
                 fragment.requireView().findViewById(R.id.current_song)
             )
             currentSongViewHolder!!.separator!!.visibility = View.VISIBLE
