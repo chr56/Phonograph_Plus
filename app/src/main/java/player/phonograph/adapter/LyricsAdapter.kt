@@ -54,6 +54,8 @@ class LyricsAdapter(
                 dismiss?.invoke()
                 true
             }
+            line.typeface = Typeface.DEFAULT
+            time.typeface = Typeface.DEFAULT
         }
 
         fun highlight(highlight: Boolean) {
