@@ -10,7 +10,7 @@ import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.click.listClick
 import player.phonograph.actions.menu.multiItemsToolbar
-import player.phonograph.adapter.base.MultiSelectionAdapterContract
+import player.phonograph.adapter.base.IMultiSelectableAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.MultiSelectionController
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
@@ -35,7 +35,7 @@ open class DisplayAdapter<I : Displayable>(
     cfg: (DisplayAdapter<I>.() -> Unit)?,
 ) : RecyclerView.Adapter<DisplayAdapter<I>.DisplayViewHolder>(),
     FastScrollRecyclerView.SectionedAdapter,
-    MultiSelectionAdapterContract<I> {
+    IMultiSelectableAdapter<I> {
 
     var dataset: List<I> = dataSet
         @SuppressLint("NotifyDataSetChanged")

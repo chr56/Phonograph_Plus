@@ -11,23 +11,31 @@ import androidx.activity.addCallback
 import androidx.appcompat.widget.Toolbar
 import android.util.Log
 
-
-interface MultiSelectionAdapterContract<I> {
+/**
+ * indicate a multi-selectable adapter
+ * @param I selectable item type
+ */
+interface IMultiSelectableAdapter<I> {
     fun getItemCount(): Int
     fun getItem(datasetPosition: Int): I
     fun notifyItemChanged(datasetPosition: Int)
     fun notifyDataSetChanged()
 }
 
-@Suppress("MemberVisibilityCanBePrivate")
+/**
+ * @param linkedAdapter adapter applied
+ * @param cabController [MultiSelectionCabController] that is interacted with
+ * @param linkedActivity produce an activity that [updateCab] requires
+ * @param multiSelectMenuHandler creates menu
+ * @param I selectable item type
+ */
 class MultiSelectionController<I>(
-    val linkedAdapter: MultiSelectionAdapterContract<I>,
+    private val linkedAdapter: IMultiSelectableAdapter<I>,
     val cabController: MultiSelectionCabController?,
     val linkedActivity: () -> ComponentActivity?,
     multiSelectMenuHandler: ((Toolbar) -> Boolean)?,
 ) {
     val selected: MultiSelectionBin<I> = MultiSelectionBin(mutableListOf())
-
 
     init {
         cabController?.onDismiss = ::unselectedAll
@@ -89,6 +97,10 @@ class MultiSelectionController<I>(
 
 }
 
+/**
+ * contains selected items
+ * @param I selectable item type
+ */
 class MultiSelectionBin<I>(
     private val checkedList: MutableList<I>,
 ) : Collection<I> by checkedList {

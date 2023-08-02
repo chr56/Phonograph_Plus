@@ -6,7 +6,7 @@ import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.menu.multiItemsToolbar
-import player.phonograph.adapter.base.MultiSelectionAdapterContract
+import player.phonograph.adapter.base.IMultiSelectableAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.MultiSelectionController
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
@@ -44,7 +44,7 @@ open class AlbumAdapter(
     cabController: MultiSelectionCabController? = null,
 ) : RecyclerView.Adapter<AlbumAdapter.ViewHolder>(),
     SectionedAdapter,
-    MultiSelectionAdapterContract<Album> {
+    IMultiSelectableAdapter<Album> {
 
 
     var dataSet: List<Album> = dataSet

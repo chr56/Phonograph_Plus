@@ -8,7 +8,7 @@ import coil.size.ViewSizeResolver
 import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.actions.menu.multiItemsToolbar
-import player.phonograph.adapter.base.MultiSelectionAdapterContract
+import player.phonograph.adapter.base.IMultiSelectableAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.MultiSelectionController
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
@@ -41,7 +41,7 @@ class SearchResultAdapter(
     val activity: ComponentActivity,
     cabController: MultiSelectionCabController?,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
-    MultiSelectionAdapterContract<Any> {
+    IMultiSelectableAdapter<Any> {
 
     var dataSet: List<Any> = emptyList()
         @SuppressLint("NotifyDataSetChanged")

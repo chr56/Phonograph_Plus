@@ -5,7 +5,7 @@
 package player.phonograph.ui.fragments.explorer
 
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
-import player.phonograph.adapter.base.MultiSelectionAdapterContract
+import player.phonograph.adapter.base.IMultiSelectableAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.MultiSelectionController
 import player.phonograph.databinding.ItemListBinding
@@ -21,7 +21,7 @@ abstract class AbsFilesAdapter<VH : AbsFilesAdapter.ViewHolder>(
     cabController: MultiSelectionCabController?,
 ) : RecyclerView.Adapter<VH>(),
     SectionedAdapter,
-    MultiSelectionAdapterContract<FileEntity> {
+    IMultiSelectableAdapter<FileEntity> {
 
     var dataSet: MutableList<FileEntity> = dataset
         @SuppressLint("NotifyDataSetChanged")
