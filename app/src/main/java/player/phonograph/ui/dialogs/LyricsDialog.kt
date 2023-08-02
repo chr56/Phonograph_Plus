@@ -105,6 +105,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
                     updateTitle(info)
                     updateChips(info)
                     updateRecycleView(info)
+                    lastHighlightPosition = -1
                 }
             }
         }
