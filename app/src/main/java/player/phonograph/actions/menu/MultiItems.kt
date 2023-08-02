@@ -11,10 +11,11 @@ import player.phonograph.actions.actionAddToPlaylist
 import player.phonograph.actions.actionDelete
 import player.phonograph.actions.actionDeletePlaylists
 import player.phonograph.actions.actionEnqueue
-import player.phonograph.actions.actionPlayNext
 import player.phonograph.actions.actionPlay
+import player.phonograph.actions.actionPlayNext
 import player.phonograph.actions.actionSavePlaylists
 import player.phonograph.actions.convertToSongs
+import player.phonograph.adapter.base.MultiSelectionController
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
@@ -26,6 +27,18 @@ import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
 import java.util.Random
+
+fun multiItemsToolbar(
+    menu: Menu,
+    context: Context,
+    controller: MultiSelectionController<out Any>,
+): Boolean = multiItemsToolbar(
+    menu, context, controller.selected, controller.cabController?.textColor ?: 0
+) {
+    controller.selectAll()
+    true
+}
+
 
 fun multiItemsToolbar(
     menu: Menu,
@@ -79,7 +92,7 @@ fun multiItemsToolbar(
                     if (songs.size > 1)
                         BatchTagEditorActivity.launch(context, ArrayList(songs))
                     else
-                        TagEditorActivity.launch(context,songs.first().id)
+                        TagEditorActivity.launch(context, songs.first().id)
                     true
                 }
             }

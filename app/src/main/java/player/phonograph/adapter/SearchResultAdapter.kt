@@ -60,15 +60,7 @@ class SearchResultAdapter(
 
     private val multiSelectMenuHandler: (Toolbar) -> Boolean
         get() = {
-            multiItemsToolbar(
-                it.menu,
-                activity,
-                controller.selected,
-                controller.cabController?.textColor ?: 0
-            ) {
-                controller.selectAll()
-                true
-            }
+            multiItemsToolbar(it.menu, activity, controller)
         }
 
 
