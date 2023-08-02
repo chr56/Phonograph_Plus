@@ -109,6 +109,11 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
                 }
             }
         }
+        lifecycleScope.launch {
+            viewModel.requireLyricsFollowing.collect {
+                binding.lyricsFollowing.isChecked = it
+            }
+        }
     }
 
 
