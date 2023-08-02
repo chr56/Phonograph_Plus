@@ -69,6 +69,8 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         updateChips(lyricsInfo)
         updateTitle(lyricsInfo)
         setupRecycleView(lyricsInfo)
+        progressUpdater = MusicProgressViewUpdateHelper(this@LyricsDialog, 500, 1000)
+        progressUpdater.start()
 
         // corner
         requireDialog().window!!.setBackgroundDrawable(
@@ -89,13 +91,10 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        progressUpdater.destroy()
         _viewBinding = null
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        progressViewUpdateHelper.destroy()
-    }
     //endregion
 
 
@@ -213,7 +212,6 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
                 layoutManager = this@LyricsDialog.linearLayoutManager
                 adapter = this@LyricsDialog.lyricsAdapter
             }
-        progressViewUpdateHelper.start()
     }
 
     private fun updateRecycleView(info: LyricsInfo) {
@@ -225,7 +223,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
     //region Scroll
 
-    private var progressViewUpdateHelper: MusicProgressViewUpdateHelper =
+    private var progressUpdater: MusicProgressViewUpdateHelper =
         MusicProgressViewUpdateHelper(this@LyricsDialog, 500, 1000)
 
     private fun setupFollowing(info: LyricsInfo) {
