@@ -122,6 +122,15 @@ fun multiItemsToolbar(
                 }
             }
 
+            menuItem(getString(R.string.unselect_all_title)) {
+                icon = getTintedDrawable(R.drawable.ic_close_white_24dp, iconColor)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                onClick {
+                    controller.unselectedAll()
+                    true
+                }
+            }
+
         }
         true
     }

@@ -69,10 +69,10 @@ class MultiSelectionController<I>(
     fun unselectedAll() {
         selected.clearAll()
         linkedAdapter.notifyDataSetChanged()
+        updateCab()
     }
 
     fun isSelected(item: I): Boolean = selected.contains(item)
-
 
     private var onBackPressedDispatcherRegistered = false
     private fun updateCab() {
