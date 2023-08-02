@@ -21,7 +21,6 @@ import player.phonograph.model.lyrics.DEFAULT_TITLE
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.ui.fragments.player.LyricsViewModel
-import player.phonograph.util.debug
 import player.phonograph.util.reportError
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
@@ -38,7 +37,6 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -74,6 +72,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         updateChips(lyricsInfo)
         updateTitle(lyricsInfo)
         setupRecycleView(lyricsInfo)
+        scroller = LyricsSmoothScroller(view.context)
         progressUpdater = MusicProgressViewUpdateHelper(this@LyricsDialog, 500, 1000)
         progressUpdater.start()
 
@@ -224,8 +223,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
     //region Scroll
 
-    private var progressUpdater: MusicProgressViewUpdateHelper =
-        MusicProgressViewUpdateHelper(this@LyricsDialog, 500, 1000)
+    private lateinit var progressUpdater: MusicProgressViewUpdateHelper
 
     private fun setupFollowing(info: LyricsInfo) {
         binding.lyricsFollowing.apply {
@@ -255,7 +253,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         }
     }
 
-    private val scroller by lazy(LazyThreadSafetyMode.PUBLICATION) { LyricsSmoothScroller(requireContext()) }
+    private lateinit var scroller: LyricsSmoothScroller
 
     class LyricsSmoothScroller(context: Context) : LinearSmoothScroller(context) {
 
@@ -266,18 +264,10 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         override fun onTargetFound(targetView: View, state: RecyclerView.State, action: Action) {
             val dyStart = calculateDyToMakeVisible(targetView, SNAP_TO_START)
             val dyEnd = calculateDyToMakeVisible(targetView, SNAP_TO_END)
-            // val dy = when {
-            //     dyStart < 0 && dyEnd < 0 -> (dyEnd + dyStart) / 2 // scroll up
-            //     dyStart > 0 && dyEnd > 0 -> (dyEnd + dyStart) / 2 // scroll down
-            //     else                     -> { // slight adjust
-            //         val offset = (dyStart + dyEnd) / 2
-            //         if (abs(offset) < min) 0 else offset
-            //     }
-            // }
             var dy = (dyEnd + dyStart) / 2
             if (abs(dy) < minDeviation) dy = 0  // omit slight deviation
             dy -= offset // slightly upper
-            debug { Log.v("SmoothScroller", "dy:$dy dyStart:$dyStart dyEnd:$dyEnd") }
+            // debug { Log.v("SmoothScroller", "dy:$dy dyStart:$dyStart dyEnd:$dyEnd") }
             val time = calculateTimeForDeceleration(dy)
             if (time > 0) {
                 action.update(0, -dy, time, mDecelerateInterpolator)
