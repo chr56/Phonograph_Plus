@@ -8,8 +8,9 @@ import coil.size.ViewSizeResolver
 import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.actions.menu.multiItemsToolbar
-import player.phonograph.adapter.base.MultiSelectAdapter
+import player.phonograph.adapter.base.MultiSelectionAdapterContract
 import player.phonograph.adapter.base.MultiSelectionCabController
+import player.phonograph.adapter.base.MultiSelectionController
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
 import player.phonograph.adapter.display.initMenu
 import player.phonograph.coil.loadImage
@@ -24,8 +25,8 @@ import player.phonograph.util.NavigationUtil.goToAlbum
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.NavigationUtil.goToPlaylist
 import player.phonograph.util.theme.getTintedDrawable
+import androidx.activity.ComponentActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ComponentActivity
 import androidx.core.util.Pair
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
@@ -37,8 +38,10 @@ import android.widget.PopupMenu
 
 
 class SearchResultAdapter(
-    activity: ComponentActivity, cabController: MultiSelectionCabController?,
-) : MultiSelectAdapter<RecyclerView.ViewHolder, Any>(activity, cabController) {
+    val activity: ComponentActivity,
+    cabController: MultiSelectionCabController?,
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
+    MultiSelectionAdapterContract<Any> {
 
     var dataSet: List<Any> = emptyList()
         @SuppressLint("NotifyDataSetChanged")
@@ -47,15 +50,39 @@ class SearchResultAdapter(
             notifyDataSetChanged()
         }
 
+    private val controller: MultiSelectionController<Any> =
+        MultiSelectionController(
+            this,
+            cabController,
+            { activity },
+            multiSelectMenuHandler
+        )
+
+    private val multiSelectMenuHandler: (Toolbar) -> Boolean
+        get() = {
+            multiItemsToolbar(
+                it.menu,
+                activity,
+                controller.selected,
+                controller.cabController?.textColor ?: 0
+            ) {
+                controller.selectAll()
+                true
+            }
+        }
+
+
     override fun getItem(datasetPosition: Int): Any = dataSet[datasetPosition]
+
+    override fun getItems(): Iterable<Any> = dataSet
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
-            SONG     -> SongViewHolder.inflate(context, parent)
-            ALBUM    -> AlbumViewHolder.inflate(context, parent)
-            ARTIST   -> ArtistViewHolder.inflate(context, parent)
-            PLAYLIST -> PlaylistViewHolder.inflate(context, parent)
-            HEADER   -> HeaderViewHolder.inflate(context, parent)
+            SONG     -> SongViewHolder.inflate(parent.context, parent)
+            ALBUM    -> AlbumViewHolder.inflate(parent.context, parent)
+            ARTIST   -> ArtistViewHolder.inflate(parent.context, parent)
+            PLAYLIST -> PlaylistViewHolder.inflate(parent.context, parent)
+            HEADER   -> HeaderViewHolder.inflate(parent.context, parent)
             else     -> throw IllegalStateException("Unknown view type: $viewType")
         }
 
@@ -70,36 +97,28 @@ class SearchResultAdapter(
             SONG     -> {
                 holder as SongViewHolder
                 holder.bind(item as Song)
-                holder.setupMultiselect(this::isInQuickSelectMode, this::isChecked, this::toggleChecked)
+                holder.setupMultiselect(controller::isInQuickSelectMode, controller::isSelected, controller::toggle)
             }
 
             ALBUM    -> {
                 holder as AlbumViewHolder
                 holder.bind(item as Album)
-                holder.setupMultiselect(this::isInQuickSelectMode, this::isChecked, this::toggleChecked)
+                holder.setupMultiselect(controller::isInQuickSelectMode, controller::isSelected, controller::toggle)
             }
 
             ARTIST   -> {
                 holder as ArtistViewHolder
                 holder.bind(item as Artist)
-                holder.setupMultiselect(this::isInQuickSelectMode, this::isChecked, this::toggleChecked)
+                holder.setupMultiselect(controller::isInQuickSelectMode, controller::isSelected, controller::toggle)
             }
 
             PLAYLIST -> {
                 holder as PlaylistViewHolder
                 holder.bind(item as Playlist)
-                holder.setupMultiselect(this::isInQuickSelectMode, this::isChecked, this::toggleChecked)
+                holder.setupMultiselect(controller::isInQuickSelectMode, controller::isSelected, controller::toggle)
             }
         }
     }
-
-    override val multiSelectMenuHandler: (Toolbar) -> Boolean
-        get() = {
-            multiItemsToolbar(it.menu, context, checkedList, cabTextColorColor) {
-                checkAll()
-                true
-            }
-        }
 
     override fun getItemCount(): Int = dataSet.size
 
