@@ -26,6 +26,7 @@ class SongCollectionDisplayAdapter(
     var onClick: (bindingAdapterPosition: Int) -> Unit = {}
 
     override fun setImage(holder: DisplayViewHolder, position: Int) {
+        val context = holder.itemView.context
         holder.image?.setImageDrawable(
             context.getTintedDrawable(
                 R.drawable.ic_folder_white_24dp, resolveColor(
@@ -38,8 +39,8 @@ class SongCollectionDisplayAdapter(
     }
 
     override fun onClickItem(bindingAdapterPosition: Int, view: View, imageView: ImageView?) {
-        when (isInQuickSelectMode) {
-            true  -> toggleChecked(bindingAdapterPosition)
+        when (controller.isInQuickSelectMode) {
+            true  -> controller.toggle(bindingAdapterPosition)
             false -> {
                 onClick(bindingAdapterPosition)
             }

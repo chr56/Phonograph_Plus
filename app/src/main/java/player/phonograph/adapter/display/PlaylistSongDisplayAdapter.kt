@@ -40,6 +40,7 @@ class PlaylistSongDisplayAdapter(
     override fun getSectionNameImp(position: Int): String = (position + 1).toString()
 
     override fun setImage(holder: DisplayViewHolder, position: Int) {
+        val context = holder.itemView.context
         loadImage(context) {
             data(dataset[position])
             size(ViewSizeResolver(holder.image!!))

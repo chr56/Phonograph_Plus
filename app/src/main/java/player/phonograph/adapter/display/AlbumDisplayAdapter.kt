@@ -28,6 +28,7 @@ class AlbumDisplayAdapter(
 ) : DisplayAdapter<Album>(activity, cabController, dataSet, layoutRes, cfg) {
 
     override fun setImage(holder: DisplayViewHolder, position: Int) {
+        val context = holder.itemView.context
         holder.image?.let { view ->
             loadImage(activity) {
                 data(dataset[position].safeGetFirstSong())

@@ -28,6 +28,7 @@ open class SongDisplayAdapter(
 ) : DisplayAdapter<Song>(activity, cabController, dataSet, layoutRes, cfg) {
 
     override fun setImage(holder: DisplayViewHolder, position: Int) {
+        val context = holder.itemView.context
         holder.image?.let { view ->
             loadImage(context) {
                 data(dataset[position])
