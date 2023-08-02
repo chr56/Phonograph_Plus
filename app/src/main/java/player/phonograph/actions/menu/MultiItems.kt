@@ -22,32 +22,21 @@ import player.phonograph.service.queue.ShuffleMode.SHUFFLE
 import player.phonograph.ui.compose.tag.BatchTagEditorActivity
 import player.phonograph.ui.compose.tag.TagEditorActivity
 import player.phonograph.util.theme.getTintedDrawable
-import androidx.annotation.ColorInt
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
 import java.util.Random
+import androidx.appcompat.R as AndroidxR
 
 fun multiItemsToolbar(
     menu: Menu,
     context: Context,
     controller: MultiSelectionController<out Any>,
-): Boolean = multiItemsToolbar(
-    menu, context, controller.selected, controller.cabController?.textColor ?: 0
-) {
-    controller.selectAll()
-    true
-}
-
-
-fun multiItemsToolbar(
-    menu: Menu,
-    context: Context,
-    selections: Collection<Any>,
-    @ColorInt iconColor: Int,
-    selectAllCallback: (() -> Boolean)?,
 ): Boolean =
     with(context) {
+        val selections = controller.selected
+        val iconColor = controller.cabController?.textColor ?: context.getColor(AndroidxR.color.material_grey_850)
+
         attach(menu) {
             menuItem(getString(R.string.action_play)) {
                 icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
@@ -124,15 +113,15 @@ fun multiItemsToolbar(
                 }
             }
 
-            selectAllCallback?.let { callback ->
-                menuItem(getString(R.string.select_all_title)) {
-                    icon = getTintedDrawable(R.drawable.ic_select_all_white_24dp, iconColor)
-                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-                    onClick {
-                        callback()
-                    }
+            menuItem(getString(R.string.select_all_title)) {
+                icon = getTintedDrawable(R.drawable.ic_select_all_white_24dp, iconColor)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                onClick {
+                    controller.selectAll()
+                    true
                 }
             }
+
         }
         true
     }
