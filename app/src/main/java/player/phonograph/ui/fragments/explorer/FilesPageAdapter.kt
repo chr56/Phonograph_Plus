@@ -10,6 +10,7 @@ import player.phonograph.R
 import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.actions.menu.fileEntityPopupMenu
 import player.phonograph.adapter.base.MultiSelectionCabController
+import player.phonograph.adapter.base.MultiSelectionController
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity
@@ -34,14 +35,16 @@ class FilesPageAdapter(
 ) : AbsFilesAdapter<FilesPageAdapter.ViewHolder>(activity, dataset, cabController) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ItemListBinding.inflate(LayoutInflater.from(context), parent, false))
+        return ViewHolder(ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     inner class ViewHolder(binding: ItemListBinding) : AbsFilesAdapter.ViewHolder(binding) {
         override fun bind(
             item: FileEntity,
             position: Int,
+            controller: MultiSelectionController<FileEntity>,
         ) {
+            val context = binding.root.context
             with(binding) {
                 title.text = item.name
                 text.text = when (item) {
@@ -63,19 +66,20 @@ class FilesPageAdapter(
             }
 
             itemView.setOnClickListener {
-                if (isInQuickSelectMode) {
-                    toggleChecked(bindingAdapterPosition)
+                if (controller.isInQuickSelectMode) {
+                   controller.toggle(bindingAdapterPosition)
                 } else {
                     callback(dataSet as List<FileEntity>, position)
                 }
             }
             itemView.setOnLongClickListener {
-                toggleChecked(bindingAdapterPosition)
+                controller.toggle(bindingAdapterPosition)
             }
-            itemView.isActivated = isChecked(item)
+            itemView.isActivated = controller.isSelected(item)
         }
 
         private fun setImage(image: ImageView, item: FileEntity) {
+            val context = image.context
             if (item is FileEntity.File) {
                 if (loadCover) {
                     loadImage(image.context) {
@@ -113,10 +117,7 @@ class FilesPageAdapter(
 
     override val multiSelectMenuHandler: ((Toolbar) -> Boolean)
         get() = {
-            multiItemsToolbar(it.menu, context, checkedList, cabTextColorColor) {
-                checkAll()
-                true
-            }
+            multiItemsToolbar(it.menu, activity, controller)
         }
 
     var loadCover: Boolean = Setting.instance.showFileImages
