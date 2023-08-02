@@ -210,7 +210,11 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         val lyrics = lyricsInfo.activatedLyrics ?: lyricsInfo.first()
         linearLayoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
         lyricsAdapter =
-            LyricsAdapter(requireActivity(), lyrics.getLyricsTimeArray(), lyrics.getLyricsLineArray(), dialog)
+            LyricsAdapter(
+                requireContext(),
+                lyrics.getLyricsTimeArray(),
+                lyrics.getLyricsLineArray()
+            ) { dialog?.dismiss() }
         binding.recyclerViewLyrics
             .apply {
                 layoutManager = this@LyricsDialog.linearLayoutManager
