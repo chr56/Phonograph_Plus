@@ -15,9 +15,8 @@ import player.phonograph.model.getYearString
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
 import player.phonograph.util.text.makeSectionName
+import player.phonograph.util.text.shortDateText
 import androidx.appcompat.app.AppCompatActivity
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 open class SongDisplayAdapter(
     activity: AppCompatActivity,
@@ -60,13 +59,10 @@ open class SongDisplayAdapter(
                 SortRef.COMPOSER          -> makeSectionName(song.composer)
                 SortRef.YEAR              -> getYearString(song.year)
                 SortRef.DURATION          -> getReadableDurationString(song.duration)
-                SortRef.MODIFIED_DATE     -> shortDate(song.dateModified)
-                SortRef.ADDED_DATE        -> shortDate(song.dateAdded)
+                SortRef.MODIFIED_DATE     -> shortDateText(song.dateModified)
+                SortRef.ADDED_DATE        -> shortDateText(song.dateAdded)
                 else                      -> ""
             }
         return sectionName
     }
-
-    private fun shortDate(timestamp: Long): String =
-        SimpleDateFormat("yy.MM.dd", Locale.getDefault()).format(timestamp * 1000)
 }

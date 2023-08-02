@@ -11,6 +11,7 @@ import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.MultiSelectionController
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity
+import player.phonograph.util.text.fullDateText
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.appcompat.widget.Toolbar
@@ -20,9 +21,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 class FilesChooserAdapter(
     activity: ComponentActivity,
@@ -42,7 +40,7 @@ class FilesChooserAdapter(
                 title.text = item.name
                 text.text = when (item) {
                     is FileEntity.File   -> Formatter.formatFileSize(context, item.size)
-                    is FileEntity.Folder -> toDate(item.dateModified)
+                    is FileEntity.Folder -> fullDateText(item.dateModified / 1000)
                 }
                 shortSeparator.visibility = if (position == dataSet.size - 1) View.GONE else View.VISIBLE
                 image.setImageDrawable(
@@ -61,15 +59,6 @@ class FilesChooserAdapter(
                 }
             }
         }
-    }
-
-    private val formatter = SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault())
-    private fun toDate(timeInMill: Long): String {
-        return formatter.format(
-            Calendar.getInstance().also {
-                it.timeInMillis = timeInMill
-            }.time
-        )
     }
 
     override val multiSelectMenuHandler: ((Toolbar) -> Boolean)? get() = null
