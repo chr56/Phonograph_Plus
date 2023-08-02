@@ -47,6 +47,7 @@ class HorizontalAlbumAdapter(
 
     override fun loadAlbumCover(album: Album, holder: ViewHolder) {
         if (holder.image == null) return
+        val context = holder.itemView.context
         loadImage(context) {
             data(album.safeGetFirstSong())
             size(ViewSizeResolver(holder.image!!))
