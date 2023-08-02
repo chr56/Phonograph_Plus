@@ -246,10 +246,10 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         val lrcLyrics = viewModel.lyricsInfo.value.activatedLyrics as? LrcLyrics ?: return
         val position = lrcLyrics.getPosition(progress)
         if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+            updateHighlight(position)
             if (viewModel.requireLyricsFollowing.value) {
                 scrollingTo(position)
             }
-            updateHighlight(position)
         }
     }
 
