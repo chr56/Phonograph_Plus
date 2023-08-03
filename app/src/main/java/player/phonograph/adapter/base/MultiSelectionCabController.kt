@@ -42,17 +42,16 @@ class MultiSelectionCabController private constructor(val cab: ToolbarCab) {
         }
     }
 
-    fun showContent(checkedListSize: Int): Boolean {
-        return run {
-            if (checkedListSize < 1) {
-                cab.hide()
-            } else {
-                // prepare()
-                if (hasMenu) cab.menuHandler = menuHandler
-                updateCountText(checkedListSize)
-                cab.show()
-            }
-            true
+    /**
+     * @param size selected size
+     */
+    fun updateCab(size: Int) {
+        updateCountText(size)
+        if (size > 0) {
+            if (hasMenu) cab.menuHandler = menuHandler
+            cab.show()
+        } else {
+            cab.hide()
         }
     }
 

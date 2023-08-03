@@ -71,7 +71,7 @@ class MultiSelectionController<I>(
     private var onBackPressedDispatcherRegistered = false
     private fun updateCab() {
 
-        cabController?.showContent(_selected.size)//todo: context
+        cabController?.updateCab(_selected.size)
 
         if (!onBackPressedDispatcherRegistered && cabController != null) {
             onBackPressedDispatcherRegistered = true
