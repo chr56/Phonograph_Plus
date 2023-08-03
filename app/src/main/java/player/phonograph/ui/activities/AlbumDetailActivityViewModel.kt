@@ -24,6 +24,7 @@ import android.text.Spanned
 import android.text.SpannedString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
@@ -56,7 +57,7 @@ class AlbumDetailActivityViewModel : ViewModel() {
         }
     }
 
-    val paletteColor: MutableLiveData<Int> = MutableLiveData(0)
+    val paletteColor: MutableStateFlow<Int> = MutableStateFlow(0)
 
     private val lastFMRestClient: LastFMRestClient by lazy { LastFMRestClient(App.instance) }
     var wikiText: Spanned? = null

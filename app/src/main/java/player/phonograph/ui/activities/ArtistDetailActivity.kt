@@ -19,6 +19,7 @@ import player.phonograph.adapter.legacy.HorizontalAlbumAdapter
 import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.misc.IPaletteColorProvider
 import player.phonograph.model.Artist
 import player.phonograph.model.albumCountString
 import player.phonograph.model.getReadableDurationString
@@ -39,9 +40,10 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
+class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvider {
 
     private lateinit var viewBinding: ActivityArtistDetailBinding
     private lateinit var model: ArtistDetailActivityViewModel
@@ -178,6 +180,8 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
         viewBinding.albumCountText.setTextColor(secondaryTextColor)
         viewModel.updateActivityColor(color)
     }
+
+    override val paletteColor: StateFlow<Int> get() = model.paletteColor
 
     private fun setUpToolbar() {
         setSupportActionBar(viewBinding.toolbar)

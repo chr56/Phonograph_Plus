@@ -10,6 +10,7 @@ import lib.phonograph.cab.createToolbarCab
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.actions.menu.multiItemsToolbar
+import player.phonograph.misc.IPaletteColorProvider
 import player.phonograph.util.debug
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.shiftBackgroundColorForLightText
@@ -115,7 +116,8 @@ class MultiSelectionController<I>(
     }
 
     private fun ToolbarCab.prepare() {
-        backgroundColor = shiftBackgroundColorForLightText(ThemeColor.primaryColor(activity)) //todo
+        val cabColor = (activity as? IPaletteColorProvider)?.paletteColor?.value ?: ThemeColor.primaryColor(activity)
+        backgroundColor = shiftBackgroundColorForLightText(cabColor)
         titleText = toolbar.resources.getString(R.string.x_selected, 0)
         titleTextColor = Color.WHITE
         navigationIcon = activity.getTintedDrawable(R.drawable.ic_close_white_24dp, Color.WHITE)!!
