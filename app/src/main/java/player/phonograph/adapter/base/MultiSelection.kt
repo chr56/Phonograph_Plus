@@ -31,15 +31,10 @@ interface IMultiSelectableAdapter<I> {
 class MultiSelectionController<I>(
     private val linkedAdapter: IMultiSelectableAdapter<I>,
     val cabController: MultiSelectionCabController?,
-    multiSelectMenuHandler: ((Toolbar) -> Boolean)?,
+    private val multiSelectMenuHandler: ((Toolbar) -> Boolean)?,
 ) {
     private val _selected: MutableList<I> = mutableListOf()
     val selected: List<I> get() = _selected.toList()
-
-    init {
-        cabController?.onDismiss = ::unselectedAll
-        cabController?.menuHandler = multiSelectMenuHandler
-    }
 
     fun toggle(datasetPosition: Int): Boolean {
         val item = linkedAdapter.getItem(datasetPosition) ?: return false
@@ -55,7 +50,7 @@ class MultiSelectionController<I>(
 
     fun selectAll() {
         _selected.clear()
-        for (i in 0 until linkedAdapter.getItemCount() ) {
+        for (i in 0 until linkedAdapter.getItemCount()) {
             val item = linkedAdapter.getItem(i)
             if (item != null) {
                 _selected.add(item)
@@ -92,6 +87,9 @@ class MultiSelectionController<I>(
                 Log.v("onBackPressedDispatcher", "onBackPressedDispatcher Callback registered")
             }
         }
+
+        cabController?.onDismiss = ::unselectedAll
+        cabController?.menuHandler = multiSelectMenuHandler
     }
 
 }
