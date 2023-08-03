@@ -107,7 +107,7 @@ open class DisplayAdapter<I : Displayable>(
         if (showSectionName) getSectionNameImp(position) else ""
 
     // for inheriting
-    protected fun setPaletteColors(color: Int, holder: DisplayViewHolder) {
+    protected open fun setPaletteColors(color: Int, holder: DisplayViewHolder) {
         holder.paletteColorContainer?.let { paletteColorContainer ->
             paletteColorContainer.setBackgroundColor(color)
             holder.title?.setTextColor(
