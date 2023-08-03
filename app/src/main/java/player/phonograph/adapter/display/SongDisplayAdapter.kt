@@ -6,7 +6,6 @@ package player.phonograph.adapter.display
 
 import coil.size.ViewSizeResolver
 import player.phonograph.R
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
@@ -14,17 +13,16 @@ import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
-import player.phonograph.util.text.makeSectionName
 import player.phonograph.util.text.dateTextShortText
+import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
 
 open class SongDisplayAdapter(
     activity: AppCompatActivity,
-    cabController: MultiSelectionCabController?,
     dataSet: List<Song>,
     layoutRes: Int,
     cfg: (DisplayAdapter<Song>.() -> Unit)?,
-) : DisplayAdapter<Song>(activity, cabController, dataSet, layoutRes, cfg) {
+) : DisplayAdapter<Song>(activity, dataSet, layoutRes, cfg) {
 
     override fun setImage(holder: DisplayViewHolder, position: Int) {
         val context = holder.itemView.context

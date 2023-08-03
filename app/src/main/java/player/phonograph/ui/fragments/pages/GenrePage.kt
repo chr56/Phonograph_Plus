@@ -35,7 +35,6 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
     override fun initAdapter(): DisplayAdapter<Genre> {
         return GenreDisplayAdapter(
             hostFragment.mainActivity,
-            hostFragment.cabController,
             ArrayList(), // empty until Genre loaded
             R.layout.item_list_no_image
         ) {

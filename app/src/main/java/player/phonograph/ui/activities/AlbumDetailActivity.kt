@@ -15,7 +15,6 @@ import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.menu.albumDetailToolbar
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.AlbumSongDisplayAdapter
 import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.coil.loadImage
@@ -70,9 +69,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         autoSetTaskDescriptionColor = false
         super.onCreate(savedInstanceState)
 
-        // multiselect cab
-        cabController = MultiSelectionCabController.create(this)
-
         // activity
         setSupportActionBar(viewBinding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -86,8 +82,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         lifecycle.addObserver(MediaStoreListener())
     }
 
-    lateinit var cabController: MultiSelectionCabController
-
     override fun createContentView(): View = wrapSlidingMusicPanel(viewBinding.root)
 
     private fun setUpViews() {
@@ -97,7 +91,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
             }
         )
         // setUpSongsAdapter
-        adapter = AlbumSongDisplayAdapter(this, cabController, album.songs, R.layout.item_list) {
+        adapter = AlbumSongDisplayAdapter(this, album.songs, R.layout.item_list) {
             useImageText = true
             usePalette = false
         }
@@ -156,7 +150,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         viewBinding.albumYearText.setCompoundDrawablesWithIntrinsicBounds(albumYearIcon, null, null, null)
         viewBinding.albumYearText.compoundDrawablePadding = 16
 
-        cabController.cabColor = color
         viewModel.updateActivityColor(color)
     }
 

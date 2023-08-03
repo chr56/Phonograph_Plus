@@ -4,15 +4,6 @@
 
 package player.phonograph.adapter.display
 
-import android.annotation.SuppressLint
-import android.view.LayoutInflater
-import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.PopupMenu
-import androidx.appcompat.app.AppCompatActivity
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemState
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder
@@ -23,13 +14,22 @@ import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.ui.hitTest
+import androidx.appcompat.app.AppCompatActivity
+import android.annotation.SuppressLint
+import android.view.LayoutInflater
+import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.PopupMenu
 
 class PlayingQueueAdapter(
     activity: AppCompatActivity,
     dataSet: List<Song>,
     current: Int,
     cfg: (DisplayAdapter<Song>.() -> Unit)?,
-) : DisplayAdapter<Song>(activity, null, dataSet, R.layout.item_list, cfg), DraggableItemAdapter<PlayingQueueAdapter.ViewHolder> {
+) : DisplayAdapter<Song>(activity, dataSet, R.layout.item_list, cfg), DraggableItemAdapter<PlayingQueueAdapter.ViewHolder> {
 
     var current: Int = current
         @SuppressLint("NotifyDataSetChanged") // number 0 is moving, meaning all items' number is changing

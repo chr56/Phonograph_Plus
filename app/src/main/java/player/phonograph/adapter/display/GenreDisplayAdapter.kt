@@ -4,23 +4,21 @@
 
 package player.phonograph.adapter.display
 
-import androidx.appcompat.app.AppCompatActivity
-import player.phonograph.adapter.base.MultiSelectionCabController
-import player.phonograph.model.sort.SortRef
 import player.phonograph.model.Genre
+import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
 import player.phonograph.util.text.makeSectionName
+import androidx.appcompat.app.AppCompatActivity
 
 class GenreDisplayAdapter(
     activity: AppCompatActivity,
-    cabController: MultiSelectionCabController?,
     dataSet: List<Genre>,
     layoutRes: Int,
     cfg: (DisplayAdapter<Genre>.() -> Unit)?
 ) : DisplayAdapter<Genre>(
-    activity, cabController,
-    dataSet,
-    layoutRes, cfg
+    activity, dataSet,
+    layoutRes,
+    cfg
 ) {
 
     override fun getSectionNameImp(position: Int): String {

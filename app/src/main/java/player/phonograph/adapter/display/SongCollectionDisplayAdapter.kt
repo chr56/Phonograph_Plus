@@ -7,7 +7,6 @@ package player.phonograph.adapter.display
 import mt.util.color.primaryTextColor
 import mt.util.color.resolveColor
 import player.phonograph.R
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.model.SongCollection
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
@@ -17,11 +16,10 @@ import android.widget.ImageView
 
 class SongCollectionDisplayAdapter(
     activity: AppCompatActivity,
-    cabController: MultiSelectionCabController?,
     dataSet: List<SongCollection>,
     layoutRes: Int,
     cfg: (DisplayAdapter<SongCollection>.() -> Unit)?
-) : DisplayAdapter<SongCollection>(activity, cabController, dataSet, layoutRes, cfg) {
+) : DisplayAdapter<SongCollection>(activity, dataSet, layoutRes, cfg) {
 
     var onClick: (bindingAdapterPosition: Int) -> Unit = {}
 

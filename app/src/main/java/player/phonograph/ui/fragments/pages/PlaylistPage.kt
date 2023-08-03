@@ -88,7 +88,6 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
     override fun initAdapter(): DisplayAdapter<Playlist> {
         return PlaylistDisplayAdapter(
             hostFragment.mainActivity,
-            hostFragment.cabController,
         ) {
             showSectionName = true
         }

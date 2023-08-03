@@ -6,7 +6,6 @@ package player.phonograph.adapter.display
 
 import coil.size.ViewSizeResolver
 import player.phonograph.R
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Artist
@@ -22,11 +21,10 @@ import android.view.ViewGroup
 
 class ArtistDisplayAdapter(
     activity: AppCompatActivity,
-    cabController: MultiSelectionCabController?,
     dataSet: List<Artist>,
     layoutRes: Int,
     cfg: (DisplayAdapter<Artist>.() -> Unit)?,
-) : DisplayAdapter<Artist>(activity, cabController, dataSet, layoutRes, cfg) {
+) : DisplayAdapter<Artist>(activity, dataSet, layoutRes, cfg) {
 
     override fun setImage(holder: DisplayViewHolder, position: Int) {
         val context = holder.itemView.context

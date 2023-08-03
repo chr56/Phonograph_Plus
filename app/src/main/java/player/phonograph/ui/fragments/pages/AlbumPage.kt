@@ -41,7 +41,6 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
 
         return AlbumDisplayAdapter(
             hostFragment.mainActivity,
-            hostFragment.cabController,
             ArrayList(), // empty until Albums loaded
             layoutRes
         ) {

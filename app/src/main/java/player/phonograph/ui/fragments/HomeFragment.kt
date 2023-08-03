@@ -9,14 +9,12 @@ import com.github.chr56.android.menu_dsl.menuItem
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.misc.menuProvider
 import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.adapter.HomePagerAdapter
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.model.pages.PageConfig
@@ -141,10 +139,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
             viewLifecycleOwner,
             Lifecycle.State.RESUMED
         )
-        cabController = MultiSelectionCabController.create(mainActivity)
     }
-
-    lateinit var cabController: MultiSelectionCabController
 
     private fun readConfig(): PageConfig = HomeTabConfig.homeTabConfig
 

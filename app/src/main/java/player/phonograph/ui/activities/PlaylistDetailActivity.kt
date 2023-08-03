@@ -22,7 +22,6 @@ import mt.util.color.secondaryDisabledTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.menu.playlistToolbar
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.PlaylistSongDisplayAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
@@ -151,15 +150,9 @@ class PlaylistDetailActivity :
         }
     }
 
-    private lateinit var cabController: MultiSelectionCabController
-
     override fun createContentView(): View = wrapSlidingMusicPanel(binding.root)
 
     private fun setUpToolbar() {
-
-        // multiselect cab
-        cabController = MultiSelectionCabController.create(this)
-
         binding.toolbar.setBackgroundColor(primaryColor)
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -182,7 +175,7 @@ class PlaylistDetailActivity :
             }
         )
         // adapter
-        adapter = PlaylistSongDisplayAdapter(this, cabController, ArrayList(), null)
+        adapter = PlaylistSongDisplayAdapter(this, ArrayList(), null)
     }
 
     private fun updateRecyclerView(editMode: Boolean) {

@@ -23,19 +23,19 @@ import player.phonograph.ui.compose.tag.BatchTagEditorActivity
 import player.phonograph.ui.compose.tag.TagEditorActivity
 import player.phonograph.util.theme.getTintedDrawable
 import android.content.Context
+import android.graphics.Color
 import android.view.Menu
 import android.view.MenuItem
 import java.util.Random
-import androidx.appcompat.R as AndroidxR
 
 fun multiItemsToolbar(
     menu: Menu,
     context: Context,
-    controller: MultiSelectionController<out Any>,
+    controller: MultiSelectionController<*>,
 ): Boolean =
     with(context) {
         val selections = controller.selected
-        val iconColor = controller.cabController?.textColor ?: context.getColor(AndroidxR.color.material_grey_850)
+        val iconColor = Color.WHITE //todo
 
         attach(menu) {
             menuItem(getString(R.string.action_play)) {

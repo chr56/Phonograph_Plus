@@ -53,7 +53,6 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
 
         return SongDisplayAdapter(
             hostFragment.mainActivity,
-            hostFragment.cabController,
             ArrayList(), // empty until songs loaded
             layoutRes
         ) {

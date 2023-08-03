@@ -7,15 +7,13 @@ package player.phonograph.ui.fragments.explorer
 import mt.util.color.primaryTextColor
 import mt.util.color.resolveColor
 import player.phonograph.R
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.MultiSelectionController
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity
 import player.phonograph.util.text.dateTimeText
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
-import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ComponentActivity
+import androidx.activity.ComponentActivity
 import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.View
@@ -26,8 +24,7 @@ class FilesChooserAdapter(
     activity: ComponentActivity,
     dataset: MutableList<FileEntity>,
     private val callback: (FileEntity) -> Unit,
-    cabController: MultiSelectionCabController?,
-) : AbsFilesAdapter<AbsFilesAdapter.ViewHolder>(activity, dataset, cabController) {
+) : AbsFilesAdapter<AbsFilesAdapter.ViewHolder>(activity, dataset) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -61,5 +58,5 @@ class FilesChooserAdapter(
         }
     }
 
-    override val multiSelectMenuHandler: ((Toolbar) -> Boolean)? get() = null
+    override val allowMultiSelection: Boolean get() = false
 }

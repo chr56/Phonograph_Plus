@@ -4,12 +4,20 @@
 
 package player.phonograph.adapter.base
 
+import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.ToolbarCab.Companion.STATUS_ACTIVE
+import lib.phonograph.cab.createToolbarCab
+import mt.pref.ThemeColor
+import player.phonograph.R
+import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.util.debug
+import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.shiftBackgroundColorForLightText
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
-import androidx.appcompat.widget.Toolbar
+import android.graphics.Color
 import android.util.Log
+import android.view.View
 
 /**
  * indicate a multi-selectable adapter
@@ -24,14 +32,13 @@ interface IMultiSelectableAdapter<I> {
 
 /**
  * @param linkedAdapter adapter applied
- * @param cabController [MultiSelectionCabController] that is interacted with
- * @param multiSelectMenuHandler creates menu
+ * @param activity Activity hosts [ToolbarCab], must have ViewStub with [R.id.cab_stub]
  * @param I selectable item type
  */
 class MultiSelectionController<I>(
     private val linkedAdapter: IMultiSelectableAdapter<I>,
-    val cabController: MultiSelectionCabController?,
-    private val multiSelectMenuHandler: ((Toolbar) -> Boolean)?,
+    private val activity: ComponentActivity,
+    private val enable: Boolean,
 ) {
     private val _selected: MutableList<I> = mutableListOf()
     val selected: List<I> get() = _selected.toList()
@@ -45,8 +52,7 @@ class MultiSelectionController<I>(
     }
 
     val isInQuickSelectMode: Boolean
-        get() = cabController?.cab != null && cabController.cab.status == STATUS_ACTIVE
-
+        get() = enable && cab != null && cab?.status == STATUS_ACTIVE
 
     fun selectAll() {
         _selected.clear()
@@ -71,13 +77,14 @@ class MultiSelectionController<I>(
     private var onBackPressedDispatcherRegistered = false
     private fun updateCab() {
 
-        cabController?.updateCab(_selected.size)
+        updateCab(_selected.size)
 
-        if (!onBackPressedDispatcherRegistered && cabController != null) {
+        if (!onBackPressedDispatcherRegistered && cab != null) {
             onBackPressedDispatcherRegistered = true
-            val activity = cabController.cab.activity as? ComponentActivity
+            val activity = cab?.activity as? ComponentActivity
             activity?.onBackPressedDispatcher?.addCallback {
-                cabController.dismiss()
+                cab?.hide()
+                unselectedAll()
                 debug {
                     Log.v("MultiSelectAdapterCallback", "isInQuickSelectMode: $isInQuickSelectMode")
                 }
@@ -87,9 +94,66 @@ class MultiSelectionController<I>(
                 Log.v("onBackPressedDispatcher", "onBackPressedDispatcher Callback registered")
             }
         }
+    }
 
-        cabController?.onDismiss = ::unselectedAll
-        cabController?.menuHandler = multiSelectMenuHandler
+    private var _cab: ToolbarCab? = null
+    val cab: ToolbarCab?
+        get() {
+            if (!enable) return null
+            if (_cab == null) {
+                _cab = createCab()
+            }
+            return _cab
+        }
+
+    private fun createCab(): ToolbarCab? {
+        return try {
+            createToolbarCab(activity, R.id.cab_stub, R.id.multi_selection_cab).apply { prepare() }
+        } catch (e: IllegalStateException) {
+            null
+        }
+    }
+
+    private fun ToolbarCab.prepare() {
+        backgroundColor = shiftBackgroundColorForLightText(ThemeColor.primaryColor(activity)) //todo
+        titleText = toolbar.resources.getString(R.string.x_selected, 0)
+        titleTextColor = Color.WHITE
+        navigationIcon = activity.getTintedDrawable(R.drawable.ic_close_white_24dp, Color.WHITE)!!
+
+        setupMenu()
+        closeClickListener = View.OnClickListener {
+            hide()
+            unselectedAll()
+        }
+    }
+
+    private fun setupMenu() {
+        cab?.menuHandler = {
+            multiItemsToolbar(it.menu, activity, this)
+        }
+    }
+    /**
+     * @param size selected size
+     */
+    fun updateCab(size: Int) {
+        updateCountText(size)
+        cab?.let { cab ->
+            if (size > 0) {
+                setupMenu()
+                cab.show()
+            } else {
+                cab.hide()
+            }
+        }
+    }
+
+    /**
+     * @param size selected size
+     */
+    private fun updateCountText(size: Int) {
+        cab?.let { cab ->
+            cab.titleText = cab.toolbar.resources.getString(R.string.x_selected, size)
+        }
     }
 
 }

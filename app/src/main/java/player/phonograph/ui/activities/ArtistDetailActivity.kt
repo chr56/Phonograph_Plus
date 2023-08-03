@@ -14,7 +14,6 @@ import mt.util.color.secondaryTextColor
 import mt.util.color.toolbarTitleColor
 import player.phonograph.R
 import player.phonograph.actions.menu.artistDetailToolbar
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.adapter.legacy.HorizontalAlbumAdapter
 import player.phonograph.coil.CustomArtistImageStore
@@ -57,8 +56,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
             albumAdapter.usePalette = usePalette
         }
 
-    private lateinit var cabController: MultiSelectionCabController
-
     override fun onCreate(savedInstanceState: Bundle?) {
         model = ArtistDetailActivityViewModel(intent.extras!!.getLong(EXTRA_ARTIST_ID))
         viewBinding = ActivityArtistDetailBinding.inflate(layoutInflater)
@@ -85,7 +82,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
         }
 
         songAdapter =
-            SongDisplayAdapter(this, cabController, emptyList(), R.layout.item_list, null)
+            SongDisplayAdapter(this, emptyList(), R.layout.item_list, null)
         with(viewBinding.songsRecycleView) {
             adapter = songAdapter
             layoutManager =
@@ -93,7 +90,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
         }
 
         albumAdapter =
-            HorizontalAlbumAdapter(this, emptyList(), usePalette, cabController)
+            HorizontalAlbumAdapter(this, emptyList(), usePalette)
         with(viewBinding.albumRecycleView) {
             adapter = albumAdapter
             layoutManager =
@@ -179,7 +176,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
         viewBinding.durationText.setTextColor(secondaryTextColor)
         viewBinding.songCountText.setTextColor(secondaryTextColor)
         viewBinding.albumCountText.setTextColor(secondaryTextColor)
-        cabController.cabColor = color
         viewModel.updateActivityColor(color)
     }
 
@@ -189,8 +185,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
         setActivityToolbarColorAuto(viewBinding.toolbar)
-        // MultiSelectionCab
-        cabController = MultiSelectionCabController.create(this)
     }
 
     private fun setupMenu(menu: Menu) {

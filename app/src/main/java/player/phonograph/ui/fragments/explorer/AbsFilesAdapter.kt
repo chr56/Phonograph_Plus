@@ -6,19 +6,16 @@ package player.phonograph.ui.fragments.explorer
 
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import player.phonograph.adapter.base.IMultiSelectableAdapter
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.MultiSelectionController
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity
-import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ComponentActivity
+import androidx.activity.ComponentActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
 
 abstract class AbsFilesAdapter<VH : AbsFilesAdapter.ViewHolder>(
     val activity: ComponentActivity,
     dataset: MutableList<FileEntity>,
-    cabController: MultiSelectionCabController?,
 ) : RecyclerView.Adapter<VH>(),
     SectionedAdapter,
     IMultiSelectableAdapter<FileEntity> {
@@ -34,11 +31,11 @@ abstract class AbsFilesAdapter<VH : AbsFilesAdapter.ViewHolder>(
     protected val controller: MultiSelectionController<FileEntity> =
         MultiSelectionController(
             this,
-            cabController,
-            multiSelectMenuHandler
+            activity,
+            allowMultiSelection
         )
 
-    abstract val multiSelectMenuHandler: ((Toolbar) -> Boolean)?
+    abstract val allowMultiSelection: Boolean
 
     override fun getItem(datasetPosition: Int): FileEntity = dataSet[datasetPosition]
 

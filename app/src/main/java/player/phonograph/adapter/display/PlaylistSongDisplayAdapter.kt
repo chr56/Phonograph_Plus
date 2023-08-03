@@ -14,7 +14,6 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHold
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.tag.TagEditorActivity
@@ -31,10 +30,9 @@ import android.widget.PopupMenu
 
 class PlaylistSongDisplayAdapter(
     activity: AppCompatActivity,
-    cabController: MultiSelectionCabController?,
     dataSet: List<Song>,
     cfg: (DisplayAdapter<Song>.() -> Unit)?,
-) : DisplayAdapter<Song>(activity, cabController, dataSet, R.layout.item_list, cfg),
+) : DisplayAdapter<Song>(activity, dataSet, R.layout.item_list, cfg),
     DraggableItemAdapter<PlaylistSongDisplayAdapter.ViewHolder> {
 
     override fun getSectionNameImp(position: Int): String = (position + 1).toString()

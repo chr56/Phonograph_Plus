@@ -42,7 +42,6 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>>() {
 
         return ArtistDisplayAdapter(
             hostFragment.mainActivity,
-            hostFragment.cabController,
             ArrayList(), // empty until Artist loaded
             layoutRes
         ) {

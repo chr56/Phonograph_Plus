@@ -7,7 +7,6 @@ import mt.tint.viewtint.tintCollapseIcon
 import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.adapter.SearchResultAdapter
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.databinding.ActivitySearchBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
@@ -34,7 +33,6 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
 
     private lateinit var adapter: SearchResultAdapter
     private var searchView: SearchView? = null
-    private lateinit var cabController: MultiSelectionCabController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewBinding = ActivitySearchBinding.inflate(layoutInflater)
@@ -65,7 +63,7 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
     }
 
     private fun setUpRecyclerView() {
-        adapter = SearchResultAdapter(this, cabController)
+        adapter = SearchResultAdapter(this)
         with(binding) {
             recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
             recyclerView.adapter = adapter
@@ -88,7 +86,6 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
         setActivityToolbarColor(binding.toolbar, primaryColor)
-        cabController = MultiSelectionCabController.create(this)
     }
 
     private fun setupMenu(menu: Menu) {

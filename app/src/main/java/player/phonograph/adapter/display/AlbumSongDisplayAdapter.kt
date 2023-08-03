@@ -4,21 +4,19 @@
 
 package player.phonograph.adapter.display
 
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
 import androidx.appcompat.app.AppCompatActivity
 
 class AlbumSongDisplayAdapter(
     activity: AppCompatActivity,
-    cabController: MultiSelectionCabController?,
     dataSet: List<Song>,
     layoutRes: Int,
     cfg: (DisplayAdapter<Song>.() -> Unit)?,
 ) : SongDisplayAdapter(
-    activity, cabController,
-    dataSet,
-    layoutRes, cfg
+    activity, dataSet,
+    layoutRes,
+    cfg
 ) {
     override fun getDescription(item: Song): CharSequence {
         val song = (item as? Song) ?: Song.EMPTY_SONG

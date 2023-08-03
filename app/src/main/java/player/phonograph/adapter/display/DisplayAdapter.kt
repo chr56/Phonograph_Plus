@@ -9,16 +9,13 @@ import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.click.listClick
-import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.adapter.base.IMultiSelectableAdapter
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.MultiSelectionController
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
 import player.phonograph.model.Displayable
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -29,7 +26,6 @@ import android.widget.PopupMenu
 
 open class DisplayAdapter<I : Displayable>(
     protected val activity: AppCompatActivity,
-    cabController: MultiSelectionCabController?,
     dataSet: List<I>,
     @LayoutRes var layoutRes: Int,
     cfg: (DisplayAdapter<I>.() -> Unit)?,
@@ -58,14 +54,9 @@ open class DisplayAdapter<I : Displayable>(
     protected val controller: MultiSelectionController<I> =
         MultiSelectionController(
             this,
-            cabController,
-            multiSelectMenuHandler
+            activity,
+            true
         )
-
-    private val multiSelectMenuHandler: (Toolbar) -> Boolean
-        get() = {
-            multiItemsToolbar(it.menu, activity, controller)
-        }
 
     override fun getItemId(position: Int): Long = dataset[position].getItemID()
     override fun getItem(datasetPosition: Int): I = dataset[datasetPosition]

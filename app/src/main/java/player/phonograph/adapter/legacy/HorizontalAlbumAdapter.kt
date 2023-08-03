@@ -1,7 +1,6 @@
 package player.phonograph.adapter.legacy
 
 import player.phonograph.R
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.model.Album
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -16,8 +15,7 @@ class HorizontalAlbumAdapter(
     activity: AppCompatActivity,
     dataSet: List<Album>,
     usePalette: Boolean,
-    cabController: MultiSelectionCabController,
-) : AlbumAdapter(activity, dataSet, R.layout.item_grid_card_horizontal, usePalette, cabController) {
+) : AlbumAdapter(activity, dataSet, R.layout.item_grid_card_horizontal, usePalette) {
 
     override fun createViewHolder(view: View, viewType: Int): ViewHolder {
         (view.layoutParams as MarginLayoutParams).applyMarginToLayoutParams(activity, viewType)

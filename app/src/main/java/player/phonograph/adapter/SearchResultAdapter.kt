@@ -7,9 +7,7 @@ package player.phonograph.adapter
 import coil.size.ViewSizeResolver
 import mt.util.color.resolveColor
 import player.phonograph.R
-import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.adapter.base.IMultiSelectableAdapter
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.MultiSelectionController
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
 import player.phonograph.adapter.display.initMenu
@@ -26,7 +24,6 @@ import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.NavigationUtil.goToPlaylist
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.activity.ComponentActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.util.Pair
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
@@ -39,7 +36,6 @@ import android.widget.PopupMenu
 
 class SearchResultAdapter(
     val activity: ComponentActivity,
-    cabController: MultiSelectionCabController?,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
     IMultiSelectableAdapter<Any> {
 
@@ -53,15 +49,9 @@ class SearchResultAdapter(
     private val controller: MultiSelectionController<Any> =
         MultiSelectionController(
             this,
-            cabController,
-            multiSelectMenuHandler
+            activity,
+            true
         )
-
-    private val multiSelectMenuHandler: (Toolbar) -> Boolean
-        get() = {
-            multiItemsToolbar(it.menu, activity, controller)
-        }
-
 
     override fun getItem(datasetPosition: Int): Any = dataSet[datasetPosition]
 

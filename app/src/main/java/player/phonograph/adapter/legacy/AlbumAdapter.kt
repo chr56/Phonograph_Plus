@@ -5,9 +5,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.S
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
-import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.adapter.base.IMultiSelectableAdapter
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.MultiSelectionController
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
 import player.phonograph.coil.loadImage
@@ -22,7 +20,6 @@ import player.phonograph.util.NavigationUtil
 import player.phonograph.util.text.makeSectionName
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.util.Pair
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
@@ -41,7 +38,6 @@ open class AlbumAdapter(
     dataSet: List<Album>,
     @LayoutRes protected val itemLayoutRes: Int,
     usePalette: Boolean = false,
-    cabController: MultiSelectionCabController? = null,
 ) : RecyclerView.Adapter<AlbumAdapter.ViewHolder>(),
     SectionedAdapter,
     IMultiSelectableAdapter<Album> {
@@ -64,8 +60,8 @@ open class AlbumAdapter(
     private val controller: MultiSelectionController<Album> =
         MultiSelectionController(
             this,
-            cabController,
-            multiSelectMenuHandler
+            activity,
+            true
         )
 
     init {
@@ -89,11 +85,6 @@ open class AlbumAdapter(
     override fun getItemCount(): Int = dataSet.size
 
     override fun getItem(datasetPosition: Int): Album = dataSet[datasetPosition]
-
-    private val multiSelectMenuHandler: (Toolbar) -> Boolean
-        get() = {
-            multiItemsToolbar(it.menu, activity, controller)
-        }
 
     override fun getSectionName(position: Int): String {
         val album = dataSet[position]

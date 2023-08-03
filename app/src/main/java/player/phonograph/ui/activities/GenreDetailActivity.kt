@@ -4,7 +4,6 @@ import lib.phonograph.misc.menuProvider
 import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.R
 import player.phonograph.actions.menu.genreDetailToolbar
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.databinding.ActivityGenreDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
@@ -69,7 +68,7 @@ class GenreDetailActivity :
 
     private fun setUpRecyclerView() {
         adapter =
-            SongDisplayAdapter(this, cabController, ArrayList(), R.layout.item_list) {
+            SongDisplayAdapter(this, ArrayList(), R.layout.item_list) {
                 showSectionName = false
             }
         binding.recyclerView.apply {
@@ -93,11 +92,7 @@ class GenreDetailActivity :
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
         setActivityToolbarColorAuto(binding.toolbar)
-
-        cabController = MultiSelectionCabController.create(this)
     }
-
-    lateinit var cabController: MultiSelectionCabController
 
     private fun setupMenu(menu: Menu) {
         genreDetailToolbar(menu, this, genre)
