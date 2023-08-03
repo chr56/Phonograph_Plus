@@ -14,7 +14,7 @@ import player.phonograph.util.coroutineToast
 import player.phonograph.util.reportError
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.text.currentDate
-import player.phonograph.util.text.withDatetimeSuffix
+import player.phonograph.util.text.dateTimeSuffix
 import player.phonograph.util.warning
 import util.phonograph.playlist.m3u.M3UWriter
 import androidx.documentfile.provider.DocumentFile
@@ -74,7 +74,7 @@ suspend fun createPlaylistsViaSAF(
     val dir = DocumentFile.fromTreeUri(context, treeUri)
     if (dir != null && dir.isDirectory) {
         for (playlist in playlists) {
-            val file = dir.createFile(PLAYLIST_MIME_TYPE, withDatetimeSuffix(playlist.name, currentDate()))
+            val file = dir.createFile(PLAYLIST_MIME_TYPE, playlist.name + dateTimeSuffix(currentDate()))
             if (file != null) {
                 openOutputStreamSafe(context, file.uri, "rwt")?.use { outputStream ->
                     val songs: List<Song> = playlist.getSongs(context)

@@ -4,8 +4,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.google.android.material.appbar.AppBarLayout
-import lib.phonograph.cab.ToolbarCab
-import lib.phonograph.cab.createToolbarCab
 import lib.phonograph.misc.menuProvider
 import mt.pref.ThemeColor.primaryColor
 import mt.tint.requireLightStatusbar
@@ -17,13 +15,12 @@ import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.menu.albumDetailToolbar
-import player.phonograph.adapter.base.MultiSelectionCabController
-import player.phonograph.adapter.display.AlbumSongDisplayAdapter
-import player.phonograph.adapter.display.SongDisplayAdapter
+import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityAlbumDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.misc.IPaletteColorProvider
 import player.phonograph.model.Album
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
@@ -35,6 +32,7 @@ import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
@@ -44,11 +42,14 @@ import android.os.Bundle
 import android.text.Spanned
 import android.view.Menu
 import android.view.View
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 /**
  * Be careful when changing things in this Activity!
  */
-class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
+class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvider {
 
     companion object {
         const val TAG_EDITOR_REQUEST = 2001
@@ -72,10 +73,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         autoSetTaskDescriptionColor = false
         super.onCreate(savedInstanceState)
 
-        // multiselect cab
-        cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
-        cabController = MultiSelectionCabController(cab)
-
         // activity
         setSupportActionBar(viewBinding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -89,9 +86,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         lifecycle.addObserver(MediaStoreListener())
     }
 
-    lateinit var cab: ToolbarCab
-    lateinit var cabController: MultiSelectionCabController
-
     override fun createContentView(): View = wrapSlidingMusicPanel(viewBinding.root)
 
     private fun setUpViews() {
@@ -101,7 +95,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
             }
         )
         // setUpSongsAdapter
-        adapter = AlbumSongDisplayAdapter(this, cabController, album.songs, R.layout.item_list) {
+        adapter = AlbumSongDisplayAdapter(this, album.songs, R.layout.item_list) {
             useImageText = true
             usePalette = false
         }
@@ -119,8 +113,10 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
             goToArtist(this, album.artistId)
         }
         // paletteColor
-        model.paletteColor.observe(this) {
-            updateColors(it)
+        lifecycleScope.launch {
+            model.paletteColor.collect {
+                updateColors(it)
+            }
         }
     }
 
@@ -160,9 +156,11 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         viewBinding.albumYearText.setCompoundDrawablesWithIntrinsicBounds(albumYearIcon, null, null, null)
         viewBinding.albumYearText.compoundDrawablePadding = 16
 
-        cabController.cabColor = color
         viewModel.updateActivityColor(color)
     }
+
+    override val paletteColor: StateFlow<Int>
+        get() = model.paletteColor
 
     private val album: Album get() = model.album
 
@@ -178,11 +176,11 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
                 .into(PaletteTargetBuilder(defaultColor)
                     .onResourceReady { result, palette ->
                         viewBinding.image.setImageDrawable(result)
-                        model.paletteColor.postValue(palette)
+                        model.paletteColor.update { palette }
                     }
                     .onFail {
                         viewBinding.image.setImageResource(R.drawable.default_album_art)
-                        model.paletteColor.postValue(defaultColor)
+                        model.paletteColor.update { defaultColor }
                     }
                     .build())
                 .enqueue()

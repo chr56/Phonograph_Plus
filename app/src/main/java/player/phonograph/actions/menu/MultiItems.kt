@@ -11,18 +11,19 @@ import player.phonograph.actions.actionAddToPlaylist
 import player.phonograph.actions.actionDelete
 import player.phonograph.actions.actionDeletePlaylists
 import player.phonograph.actions.actionEnqueue
-import player.phonograph.actions.actionPlayNext
 import player.phonograph.actions.actionPlay
+import player.phonograph.actions.actionPlayNext
 import player.phonograph.actions.actionSavePlaylists
 import player.phonograph.actions.convertToSongs
+import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
 import player.phonograph.ui.compose.tag.BatchTagEditorActivity
 import player.phonograph.ui.compose.tag.TagEditorActivity
 import player.phonograph.util.theme.getTintedDrawable
-import androidx.annotation.ColorInt
 import android.content.Context
+import android.graphics.Color
 import android.view.Menu
 import android.view.MenuItem
 import java.util.Random
@@ -30,11 +31,12 @@ import java.util.Random
 fun multiItemsToolbar(
     menu: Menu,
     context: Context,
-    selections: List<Any>,
-    @ColorInt iconColor: Int,
-    selectAllCallback: (() -> Boolean)?,
+    controller: MultiSelectionController<*>,
 ): Boolean =
     with(context) {
+        val selections = controller.selected
+        val iconColor = Color.WHITE //todo
+
         attach(menu) {
             menuItem(getString(R.string.action_play)) {
                 icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
@@ -79,7 +81,7 @@ fun multiItemsToolbar(
                     if (songs.size > 1)
                         BatchTagEditorActivity.launch(context, ArrayList(songs))
                     else
-                        TagEditorActivity.launch(context,songs.first().id)
+                        TagEditorActivity.launch(context, songs.first().id)
                     true
                 }
             }
@@ -111,15 +113,24 @@ fun multiItemsToolbar(
                 }
             }
 
-            selectAllCallback?.let { callback ->
-                menuItem(getString(R.string.select_all_title)) {
-                    icon = getTintedDrawable(R.drawable.ic_select_all_white_24dp, iconColor)
-                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-                    onClick {
-                        callback()
-                    }
+            menuItem(getString(R.string.select_all_title)) {
+                icon = getTintedDrawable(R.drawable.ic_select_all_white_24dp, iconColor)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                onClick {
+                    controller.selectAll()
+                    true
                 }
             }
+
+            menuItem(getString(R.string.unselect_all_title)) {
+                icon = getTintedDrawable(R.drawable.ic_close_white_24dp, iconColor)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                onClick {
+                    controller.unselectedAll()
+                    true
+                }
+            }
+
         }
         true
     }

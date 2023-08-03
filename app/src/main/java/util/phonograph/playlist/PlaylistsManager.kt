@@ -22,7 +22,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.text.currentDate
-import player.phonograph.util.text.withDatetimeSuffix
+import player.phonograph.util.text.dateTimeSuffix
 import player.phonograph.util.warning
 import util.phonograph.playlist.m3u.M3UWriter
 import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore
@@ -124,7 +124,7 @@ object PlaylistsManager {
     suspend fun duplicatePlaylistViaSaf(
         context: Context,
         playlist: Playlist,
-    ) = createPlaylist(context, withDatetimeSuffix(playlist.name, currentDate()), playlist.getSongs(context))
+    ) = createPlaylist(context, playlist.name + dateTimeSuffix(currentDate()), playlist.getSongs(context))
 
     private suspend fun legacySavePlaylists(context: Context, filePlaylists: List<Playlist>) {
         var successes = 0

@@ -1,14 +1,14 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.adapter.display
+package player.phonograph.ui.fragments.pages.adapter
 
 import mt.util.color.primaryTextColor
 import mt.util.color.resolveColor
 import player.phonograph.R
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.model.SongCollection
+import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.appcompat.app.AppCompatActivity
@@ -17,15 +17,15 @@ import android.widget.ImageView
 
 class SongCollectionDisplayAdapter(
     activity: AppCompatActivity,
-    cabController: MultiSelectionCabController?,
     dataSet: List<SongCollection>,
     layoutRes: Int,
     cfg: (DisplayAdapter<SongCollection>.() -> Unit)?
-) : DisplayAdapter<SongCollection>(activity, cabController, dataSet, layoutRes, cfg) {
+) : DisplayAdapter<SongCollection>(activity, dataSet, layoutRes, cfg) {
 
     var onClick: (bindingAdapterPosition: Int) -> Unit = {}
 
     override fun setImage(holder: DisplayViewHolder, position: Int) {
+        val context = holder.itemView.context
         holder.image?.setImageDrawable(
             context.getTintedDrawable(
                 R.drawable.ic_folder_white_24dp, resolveColor(
@@ -38,8 +38,8 @@ class SongCollectionDisplayAdapter(
     }
 
     override fun onClickItem(bindingAdapterPosition: Int, view: View, imageView: ImageView?) {
-        when (isInQuickSelectMode) {
-            true  -> toggleChecked(bindingAdapterPosition)
+        when (controller.isInQuickSelectMode) {
+            true  -> controller.toggle(bindingAdapterPosition)
             false -> {
                 onClick(bindingAdapterPosition)
             }

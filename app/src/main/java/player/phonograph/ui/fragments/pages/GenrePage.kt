@@ -5,8 +5,8 @@
 package player.phonograph.ui.fragments.pages
 
 import player.phonograph.R
-import player.phonograph.adapter.display.DisplayAdapter
-import player.phonograph.adapter.display.GenreDisplayAdapter
+import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.fragments.pages.adapter.GenreDisplayAdapter
 import player.phonograph.model.Genre
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.loaders.GenreLoader
@@ -35,7 +35,6 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
     override fun initAdapter(): DisplayAdapter<Genre> {
         return GenreDisplayAdapter(
             hostFragment.mainActivity,
-            hostFragment.cabController,
             ArrayList(), // empty until Genre loaded
             R.layout.item_list_no_image
         ) {

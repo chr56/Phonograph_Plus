@@ -65,7 +65,7 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewMo
 
                 is FileEntity.File   -> {}
             }
-        }, null)
+        })
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(
             activity,

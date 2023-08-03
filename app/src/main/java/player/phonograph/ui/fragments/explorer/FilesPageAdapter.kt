@@ -7,17 +7,15 @@ package player.phonograph.ui.fragments.explorer
 import coil.size.ViewSizeResolver
 import mt.util.color.resolveColor
 import player.phonograph.R
-import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.actions.menu.fileEntityPopupMenu
-import player.phonograph.adapter.base.MultiSelectionCabController
+import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.linkedSong
 import player.phonograph.settings.Setting
 import player.phonograph.util.theme.getTintedDrawable
-import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ComponentActivity
+import androidx.activity.ComponentActivity
 import android.graphics.PorterDuff
 import android.text.format.Formatter
 import android.view.LayoutInflater
@@ -30,18 +28,19 @@ class FilesPageAdapter(
     activity: ComponentActivity,
     dataset: MutableList<FileEntity>,
     private val callback: (List<FileEntity>, Int) -> Unit,
-    cabController: MultiSelectionCabController?,
-) : AbsFilesAdapter<FilesPageAdapter.ViewHolder>(activity, dataset, cabController) {
+) : AbsFilesAdapter<FilesPageAdapter.ViewHolder>(activity, dataset) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ItemListBinding.inflate(LayoutInflater.from(context), parent, false))
+        return ViewHolder(ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     inner class ViewHolder(binding: ItemListBinding) : AbsFilesAdapter.ViewHolder(binding) {
         override fun bind(
             item: FileEntity,
             position: Int,
+            controller: MultiSelectionController<FileEntity>,
         ) {
+            val context = binding.root.context
             with(binding) {
                 title.text = item.name
                 text.text = when (item) {
@@ -63,19 +62,20 @@ class FilesPageAdapter(
             }
 
             itemView.setOnClickListener {
-                if (isInQuickSelectMode) {
-                    toggleChecked(bindingAdapterPosition)
+                if (controller.isInQuickSelectMode) {
+                    controller.toggle(bindingAdapterPosition)
                 } else {
                     callback(dataSet as List<FileEntity>, position)
                 }
             }
             itemView.setOnLongClickListener {
-                toggleChecked(bindingAdapterPosition)
+                controller.toggle(bindingAdapterPosition)
             }
-            itemView.isActivated = isChecked(item)
+            itemView.isActivated = controller.isSelected(item)
         }
 
         private fun setImage(image: ImageView, item: FileEntity) {
+            val context = image.context
             if (item is FileEntity.File) {
                 if (loadCover) {
                     loadImage(image.context) {
@@ -111,13 +111,7 @@ class FilesPageAdapter(
         }
     }
 
-    override val multiSelectMenuHandler: ((Toolbar) -> Boolean)
-        get() = {
-            multiItemsToolbar(it.menu, context, checkedList, cabTextColorColor) {
-                checkAll()
-                true
-            }
-        }
+    override val allowMultiSelection: Boolean get() = true
 
     var loadCover: Boolean = Setting.instance.showFileImages
 

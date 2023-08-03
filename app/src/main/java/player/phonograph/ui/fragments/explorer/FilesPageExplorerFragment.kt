@@ -75,7 +75,7 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel>()
 
         // recycle view
         layoutManager = LinearLayoutManager(activity)
-        adapter = FilesPageAdapter(activity, model.currentFiles.value.toMutableList(), { fileEntities, position ->
+        adapter = FilesPageAdapter(activity, model.currentFiles.value.toMutableList()) { fileEntities, position ->
             when (val item = fileEntities[position]) {
                 is FileEntity.Folder -> {
                     model.changeLocation(requireContext(), item.location)
@@ -93,7 +93,7 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel>()
                     )
                 }
             }
-        }, homeFragment?.cabController)//todo
+        }//todo
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(
             activity,

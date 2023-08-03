@@ -1,36 +1,37 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.adapter.display
+package player.phonograph.ui.fragments.pages.adapter
 
 import coil.size.ViewSizeResolver
 import player.phonograph.R
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
-import player.phonograph.model.Album
-import player.phonograph.model.getYearString
+import player.phonograph.model.Artist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
+import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-class AlbumDisplayAdapter(
+class ArtistDisplayAdapter(
     activity: AppCompatActivity,
-    cabController: MultiSelectionCabController?,
-    dataSet: List<Album>,
+    dataSet: List<Artist>,
     layoutRes: Int,
-    cfg: (DisplayAdapter<Album>.() -> Unit)?,
-) : DisplayAdapter<Album>(activity, cabController, dataSet, layoutRes, cfg) {
+    cfg: (DisplayAdapter<Artist>.() -> Unit)?,
+) : DisplayAdapter<Artist>(activity, dataSet, layoutRes, cfg) {
 
     override fun setImage(holder: DisplayViewHolder, position: Int) {
+        val context = holder.itemView.context
         holder.image?.let { view ->
             loadImage(activity) {
-                data(dataset[position].safeGetFirstSong())
+                data(dataset[position])
                 size(ViewSizeResolver(view))
                 target(
                     PaletteTargetBuilder(context)
@@ -49,29 +50,33 @@ class AlbumDisplayAdapter(
     }
 
     override fun getSectionNameImp(position: Int): String {
-        val album = dataset[position]
+        val artist = dataset[position]
         val sectionName: String =
-            when (Setting.instance.albumSortMode.sortRef) {
-                SortRef.ALBUM_NAME -> makeSectionName(album.title)
-                SortRef.ARTIST_NAME -> makeSectionName(album.artistName)
-                SortRef.YEAR -> getYearString(album.year)
-                SortRef.SONG_COUNT -> album.songCount.toString()
-                else -> ""
+            when (Setting.instance.artistSortMode.sortRef) {
+                SortRef.ARTIST_NAME -> makeSectionName(artist.name)
+                SortRef.ALBUM_COUNT -> artist.albumCount.toString()
+                SortRef.SONG_COUNT -> artist.songCount.toString()
+                else -> {
+                    ""
+                }
             }
-        return sectionName
+        return makeSectionName(sectionName)
     }
 
-    override fun getRelativeOrdinalText(item: Album): String = item.songCount.toString()
+    override fun getRelativeOrdinalText(item: Artist): String = item.songCount.toString()
+
+    override val defaultIcon: Drawable?
+        get() = AppCompatResources.getDrawable(activity, R.drawable.default_artist_image)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
-        return AlbumViewHolder(
+        return ArtistViewHolder(
             LayoutInflater.from(activity).inflate(layoutRes, parent, false)
         )
     }
 
-    inner class AlbumViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+    inner class ArtistViewHolder(itemView: View) : DisplayViewHolder(itemView) {
         init {
-            setImageTransitionName(itemView.context.getString(R.string.transition_album_art))
+            setImageTransitionName(itemView.context.getString(R.string.transition_artist_image))
         }
     }
 }

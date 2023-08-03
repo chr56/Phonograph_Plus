@@ -8,8 +8,6 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemA
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.interfaces.OnFastScrollStateChangeListener
-import lib.phonograph.cab.ToolbarCab
-import lib.phonograph.cab.createToolbarCab
 import lib.phonograph.misc.CreateFileStorageAccessTool
 import lib.phonograph.misc.ICreateFileStorageAccess
 import lib.phonograph.misc.IOpenDirStorageAccess
@@ -24,8 +22,6 @@ import mt.util.color.secondaryDisabledTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.menu.playlistToolbar
-import player.phonograph.adapter.base.MultiSelectionCabController
-import player.phonograph.adapter.display.PlaylistSongDisplayAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
@@ -153,17 +149,9 @@ class PlaylistDetailActivity :
         }
     }
 
-    private lateinit var cab: ToolbarCab
-    private lateinit var cabController: MultiSelectionCabController
-
     override fun createContentView(): View = wrapSlidingMusicPanel(binding.root)
 
     private fun setUpToolbar() {
-
-        // multiselect cab
-        cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
-        cabController = MultiSelectionCabController(cab)
-
         binding.toolbar.setBackgroundColor(primaryColor)
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -186,7 +174,7 @@ class PlaylistDetailActivity :
             }
         )
         // adapter
-        adapter = PlaylistSongDisplayAdapter(this, cabController, ArrayList(), null)
+        adapter = PlaylistSongDisplayAdapter(this, ArrayList(), null)
     }
 
     private fun updateRecyclerView(editMode: Boolean) {

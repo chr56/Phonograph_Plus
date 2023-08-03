@@ -4,7 +4,6 @@
 
 package player.phonograph.util.text
 
-import android.text.format.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -14,25 +13,25 @@ import java.util.TimeZone
 fun currentDate(): Date = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault()).time
 fun currentTimestamp(): Long = currentDate().time
 
-fun currentDateTime(): CharSequence = DateFormat.format("yyMMdd_HHmmss", currentDate())
+private fun lazyFormatter(pattern: String, locale: Locale = Locale.getDefault()) =
+    lazy(LazyThreadSafetyMode.NONE) { SimpleDateFormat(pattern, locale) }
 
-fun date(stamp: Long) = Date(stamp * 1000)
-fun dateText(stamp: Long) = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).format(date(stamp))
-fun timeText(stamp: Long) = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(date(stamp))
+private val formatterDate by lazyFormatter("yyyy.MM.dd")
+private val formatterTime by lazyFormatter("HH:mm:ss")
 
+private val formatterDateShort by lazyFormatter("yy.MM.dd")
+private val formatterDateTime by lazyFormatter("yyyy.MM.dd HH:mm")
 
-fun datetimeSuffix(date: Date): CharSequence = SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.US).format(date)
-fun withDatetimeSuffix(string: String, date: Date): String = string + datetimeSuffix(date)
+private val formatterFileSuffix by lazyFormatter("_yy-MM-dd_HH-mm", Locale.US)
+private val formatterFileSuffixCompat by lazyFormatter("yyMMdd_HHmmss", Locale.US)
 
-/**
- * convert a timestamp to a readable String
- *
- * @param t timeStamp in milliseconds to parse
- * @return `%d:%02d.%03d` partner time string
- */
-fun parseTimeStamp(t: Int): String {
-    val ms = (t % 1000).toLong()
-    val s = (t % (1000 * 60) / 1000).toLong()
-    val m = (t - s * 1000 - ms) / (1000 * 60)
-    return String.format("%d:%02d.%03d", m, s, ms)
-}
+private val formatterLyrics by lazyFormatter("mm:ss.SSS")
+
+fun dateText(timestampInSec: Long): String = formatterDate.format(timestampInSec * 1000)
+fun timeText(timestampInSec: Long): String = formatterTime.format(timestampInSec * 1000)
+fun dateTimeText(timestampInSec: Long): String = formatterDateTime.format(timestampInSec * 1000)
+fun dateTextShortText(timestampInSec: Long): String = formatterDateShort.format(timestampInSec * 1000)
+fun dateTimeSuffix(date: Date): String = formatterFileSuffix.format(date)
+fun dateTimeSuffixCompat(date: Date): CharSequence = formatterFileSuffixCompat.format(date)
+
+fun lyricsTimestamp(timeStamp: Int): String = formatterLyrics.format(timeStamp)

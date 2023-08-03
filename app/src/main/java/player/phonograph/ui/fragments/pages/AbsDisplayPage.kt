@@ -11,7 +11,7 @@ import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.adapter.display.DisplayAdapter
+import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Displayable

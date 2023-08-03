@@ -2,8 +2,6 @@ package player.phonograph.ui.activities
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
-import lib.phonograph.cab.ToolbarCab
-import lib.phonograph.cab.createToolbarCab
 import lib.phonograph.misc.menuProvider
 import mt.tint.requireLightStatusbar
 import mt.tint.setActivityToolbarColor
@@ -16,12 +14,11 @@ import mt.util.color.secondaryTextColor
 import mt.util.color.toolbarTitleColor
 import player.phonograph.R
 import player.phonograph.actions.menu.artistDetailToolbar
-import player.phonograph.adapter.base.MultiSelectionCabController
-import player.phonograph.adapter.display.SongDisplayAdapter
-import player.phonograph.adapter.legacy.HorizontalAlbumAdapter
+import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.misc.IPaletteColorProvider
 import player.phonograph.model.Artist
 import player.phonograph.model.albumCountString
 import player.phonograph.model.getReadableDurationString
@@ -42,14 +39,15 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
+class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvider {
 
     private lateinit var viewBinding: ActivityArtistDetailBinding
     private lateinit var model: ArtistDetailActivityViewModel
 
-    private lateinit var albumAdapter: HorizontalAlbumAdapter
+    private lateinit var albumAdapter: HorizontalAlbumDisplayAdapter
     private lateinit var songAdapter: SongDisplayAdapter
 
     private var usePalette = Setting.instance.albumArtistColoredFooters
@@ -58,9 +56,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
             Setting.instance.albumArtistColoredFooters = usePalette
             albumAdapter.usePalette = usePalette
         }
-
-    private lateinit var cab: ToolbarCab
-    private lateinit var cabController: MultiSelectionCabController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         model = ArtistDetailActivityViewModel(intent.extras!!.getLong(EXTRA_ARTIST_ID))
@@ -88,7 +83,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
         }
 
         songAdapter =
-            SongDisplayAdapter(this, cabController, emptyList(), R.layout.item_list, null)
+            SongDisplayAdapter(this, emptyList(), R.layout.item_list, null)
         with(viewBinding.songsRecycleView) {
             adapter = songAdapter
             layoutManager =
@@ -96,7 +91,9 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
         }
 
         albumAdapter =
-            HorizontalAlbumAdapter(this, emptyList(), usePalette, cabController)
+            HorizontalAlbumDisplayAdapter(this, emptyList()) {
+                usePalette = this@ArtistDetailActivity.usePalette
+            }
         with(viewBinding.albumRecycleView) {
             adapter = albumAdapter
             layoutManager =
@@ -123,7 +120,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 model.albums.collect {
-                    albumAdapter.dataSet = it ?: emptyList()
+                    albumAdapter.dataset = it ?: emptyList()
                 }
             }
         }
@@ -182,9 +179,10 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
         viewBinding.durationText.setTextColor(secondaryTextColor)
         viewBinding.songCountText.setTextColor(secondaryTextColor)
         viewBinding.albumCountText.setTextColor(secondaryTextColor)
-        cabController.cabColor = color
         viewModel.updateActivityColor(color)
     }
+
+    override val paletteColor: StateFlow<Int> get() = model.paletteColor
 
     private fun setUpToolbar() {
         setSupportActionBar(viewBinding.toolbar)
@@ -192,9 +190,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
         setActivityToolbarColorAuto(viewBinding.toolbar)
-        // MultiSelectionCab
-        cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
-        cabController = MultiSelectionCabController(cab)
     }
 
     private fun setupMenu(menu: Menu) {

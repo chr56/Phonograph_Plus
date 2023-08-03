@@ -1,18 +1,9 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.adapter.display
+package player.phonograph.ui.fragments.player
 
-import android.annotation.SuppressLint
-import android.view.LayoutInflater
-import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.PopupMenu
-import androidx.appcompat.app.AppCompatActivity
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemState
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder
@@ -22,14 +13,25 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.initMenu
 import player.phonograph.util.ui.hitTest
+import androidx.appcompat.app.AppCompatActivity
+import android.annotation.SuppressLint
+import android.view.LayoutInflater
+import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.PopupMenu
 
 class PlayingQueueAdapter(
     activity: AppCompatActivity,
     dataSet: List<Song>,
     current: Int,
     cfg: (DisplayAdapter<Song>.() -> Unit)?,
-) : DisplayAdapter<Song>(activity, null, dataSet, R.layout.item_list, cfg), DraggableItemAdapter<PlayingQueueAdapter.ViewHolder> {
+) : DisplayAdapter<Song>(activity, dataSet, R.layout.item_list, cfg), DraggableItemAdapter<PlayingQueueAdapter.ViewHolder> {
 
     var current: Int = current
         @SuppressLint("NotifyDataSetChanged") // number 0 is moving, meaning all items' number is changing
@@ -39,7 +41,7 @@ class PlayingQueueAdapter(
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
-        return ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_list, parent, false))
     }
 
     override fun getItemViewType(position: Int): Int =

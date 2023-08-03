@@ -9,15 +9,11 @@ import com.github.chr56.android.menu_dsl.menuItem
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import lib.phonograph.cab.ToolbarCab
-import lib.phonograph.cab.createToolbarCab
 import lib.phonograph.misc.menuProvider
 import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
-import player.phonograph.adapter.HomePagerAdapter
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.model.pages.PageConfig
@@ -34,14 +30,17 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withStarted
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.ArrayMap
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
@@ -50,9 +49,9 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 
 class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks {
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -142,13 +141,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
             viewLifecycleOwner,
             Lifecycle.State.RESUMED
         )
-
-        cab = createToolbarCab(mainActivity, R.id.cab_stub, R.id.multi_selection_cab)
-        cabController = MultiSelectionCabController(cab)
     }
-
-    lateinit var cab: ToolbarCab
-    lateinit var cabController: MultiSelectionCabController
 
     private fun readConfig(): PageConfig = HomeTabConfig.homeTabConfig
 
@@ -275,5 +268,15 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
     companion object {
         fun newInstance(): HomeFragment = HomeFragment()
+    }
+
+    private class HomePagerAdapter(fragment: Fragment, var cfg: PageConfig) : FragmentStateAdapter(fragment) {
+        val map: MutableMap<Int, WeakReference<AbsPage>> = ArrayMap(cfg.getSize())
+
+        override fun getItemCount(): Int = cfg.getSize()
+
+        override fun createFragment(position: Int): Fragment =
+            cfg.getAsPage(position)
+                .also { fragment -> map[position] = WeakReference(fragment) } // registry
     }
 }

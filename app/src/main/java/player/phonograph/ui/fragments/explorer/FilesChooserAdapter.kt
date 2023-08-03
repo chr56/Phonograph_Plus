@@ -4,41 +4,40 @@
 
 package player.phonograph.ui.fragments.explorer
 
-import android.text.format.Formatter
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.View.GONE
-import android.view.ViewGroup
-import androidx.core.app.ComponentActivity
 import mt.util.color.primaryTextColor
 import mt.util.color.resolveColor
 import player.phonograph.R
-import player.phonograph.adapter.base.MultiSelectionCabController
+import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity
+import player.phonograph.util.text.dateTimeText
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
-import java.text.SimpleDateFormat
-import java.util.*
+import androidx.activity.ComponentActivity
+import android.text.format.Formatter
+import android.view.LayoutInflater
+import android.view.View
+import android.view.View.GONE
+import android.view.ViewGroup
 
 class FilesChooserAdapter(
     activity: ComponentActivity,
     dataset: MutableList<FileEntity>,
     private val callback: (FileEntity) -> Unit,
-    cabController: MultiSelectionCabController?,
-) : AbsFilesAdapter<AbsFilesAdapter.ViewHolder>(activity, dataset, cabController) {
+) : AbsFilesAdapter<AbsFilesAdapter.ViewHolder>(activity, dataset) {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ItemListBinding.inflate(LayoutInflater.from(context), parent, false))
+        return ViewHolder(ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     inner class ViewHolder(binding: ItemListBinding) : AbsFilesAdapter.ViewHolder(binding) {
-        override fun bind(item: FileEntity, position: Int) {
+        override fun bind(item: FileEntity, position: Int, controller: MultiSelectionController<FileEntity>) {
+            val context = binding.root.context
             with(binding) {
                 title.text = item.name
                 text.text = when (item) {
-                    is FileEntity.File -> Formatter.formatFileSize(context, item.size)
-                    is FileEntity.Folder -> toDate(item.dateModified)
+                    is FileEntity.File   -> Formatter.formatFileSize(context, item.size)
+                    is FileEntity.Folder -> dateTimeText(item.dateModified / 1000)
                 }
                 shortSeparator.visibility = if (position == dataSet.size - 1) View.GONE else View.VISIBLE
                 image.setImageDrawable(
@@ -59,12 +58,5 @@ class FilesChooserAdapter(
         }
     }
 
-    private val formatter = SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault())
-    private fun toDate(timeInMill: Long): String {
-        return formatter.format(
-            Calendar.getInstance().also {
-                it.timeInMillis = timeInMill
-            }.time
-        )
-    }
+    override val allowMultiSelection: Boolean get() = false
 }

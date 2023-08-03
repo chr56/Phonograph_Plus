@@ -1,23 +1,20 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.adapter.display
+package player.phonograph.ui.adapter
 
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.click.listClick
-import player.phonograph.actions.menu.multiItemsToolbar
-import player.phonograph.adapter.base.MultiSelectAdapter
-import player.phonograph.adapter.base.MultiSelectionCabController
-import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
 import player.phonograph.model.Displayable
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.RecyclerView
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,14 +23,15 @@ import android.widget.PopupMenu
 
 open class DisplayAdapter<I : Displayable>(
     protected val activity: AppCompatActivity,
-    cabController: MultiSelectionCabController?,
     dataSet: List<I>,
     @LayoutRes var layoutRes: Int,
     cfg: (DisplayAdapter<I>.() -> Unit)?,
-) :
-    MultiSelectAdapter<DisplayAdapter<I>.DisplayViewHolder, I>(activity, cabController), FastScrollRecyclerView.SectionedAdapter {
+) : RecyclerView.Adapter<DisplayAdapter<I>.DisplayViewHolder>(),
+    FastScrollRecyclerView.SectionedAdapter,
+    IMultiSelectableAdapter<I> {
 
     var dataset: List<I> = dataSet
+        @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -50,13 +48,12 @@ open class DisplayAdapter<I : Displayable>(
 
     var showSectionName: Boolean = true
 
-    override val multiSelectMenuHandler: ((Toolbar) -> Boolean)?
-        get() = {
-            multiItemsToolbar(it.menu, context, checkedList, cabTextColorColor) {
-                checkAll()
-                true
-            }
-        }
+    protected val controller: MultiSelectionController<I> =
+        MultiSelectionController(
+            this,
+            activity,
+            true
+        )
 
     override fun getItemId(position: Int): Long = dataset[position].getItemID()
     override fun getItem(datasetPosition: Int): I = dataset[datasetPosition]
@@ -72,7 +69,7 @@ open class DisplayAdapter<I : Displayable>(
     override fun onBindViewHolder(holder: DisplayViewHolder, position: Int) {
         val item: I = dataset[position]
         holder.shortSeparator?.visibility = View.VISIBLE
-        holder.itemView.isActivated = isChecked(item)
+        holder.itemView.isActivated = controller.isSelected(item)
         holder.title?.text = item.getDisplayTitle(context = activity)
         holder.text?.text = getDescription(item)
         if (useImageText) {
@@ -103,14 +100,11 @@ open class DisplayAdapter<I : Displayable>(
 
     override fun getItemCount(): Int = dataset.size
 
-    override fun updateItemCheckStatusForAll() = notifyDataSetChanged()
-    override fun updateItemCheckStatus(datasetPosition: Int) = notifyItemChanged(datasetPosition)
-
     override fun getSectionName(position: Int): String =
         if (showSectionName) getSectionNameImp(position) else ""
 
     // for inheriting
-    protected fun setPaletteColors(color: Int, holder: DisplayViewHolder) {
+    protected open fun setPaletteColors(color: Int, holder: DisplayViewHolder) {
         holder.paletteColorContainer?.let { paletteColorContainer ->
             paletteColorContainer.setBackgroundColor(color)
             holder.title?.setTextColor(
@@ -129,14 +123,14 @@ open class DisplayAdapter<I : Displayable>(
     protected open fun onMenuClick(bindingAdapterPosition: Int, menuButtonView: View) {
         if (dataset.isNotEmpty()) {
             PopupMenu(activity, menuButtonView).apply {
-                dataset[bindingAdapterPosition].initMenu(activity,this.menu)
+                dataset[bindingAdapterPosition].initMenu(activity, this.menu)
             }.show()
         }
     }
 
     protected open fun onClickItem(bindingAdapterPosition: Int, view: View, imageView: ImageView?) {
-        when (isInQuickSelectMode) {
-            true -> toggleChecked(bindingAdapterPosition)
+        when (controller.isInQuickSelectMode) {
+            true  -> controller.toggle(bindingAdapterPosition)
             false -> {
                 listClick(dataset, bindingAdapterPosition, activity, imageView)
             }
@@ -144,7 +138,7 @@ open class DisplayAdapter<I : Displayable>(
     }
 
     protected open fun onLongClickItem(bindingAdapterPosition: Int, view: View): Boolean {
-        return toggleChecked(bindingAdapterPosition)
+        return controller.toggle(bindingAdapterPosition)
     }
 
     open inner class DisplayViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
