@@ -4,7 +4,7 @@
 
 package player.phonograph.adapter.base
 
-import lib.phonograph.cab.CabStatus
+import lib.phonograph.cab.ToolbarCab.Companion.STATUS_ACTIVE
 import player.phonograph.util.debug
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
@@ -51,7 +51,7 @@ class MultiSelectionController<I>(
     }
 
     val isInQuickSelectMode: Boolean
-        get() = cabController?.cab != null && cabController.cab.status == CabStatus.STATUS_ACTIVE
+        get() = cabController?.cab != null && cabController.cab.status == STATUS_ACTIVE
 
 
     fun selectAll() {

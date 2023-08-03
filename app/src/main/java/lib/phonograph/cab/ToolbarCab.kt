@@ -6,20 +6,21 @@
 
 package lib.phonograph.cab
 
+import player.phonograph.R
+import player.phonograph.util.theme.getTintedDrawable
+import androidx.annotation.ColorInt
+import androidx.annotation.IdRes
+import androidx.annotation.IntDef
+import androidx.annotation.StyleRes
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.core.view.iterator
 import android.app.Activity
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.Menu
 import android.view.View
 import android.view.ViewStub
-import androidx.annotation.ColorInt
-import androidx.annotation.IdRes
-import androidx.annotation.StyleRes
-import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
-import androidx.core.view.iterator
-import player.phonograph.R
-import player.phonograph.util.theme.getTintedDrawable
 
 fun createToolbarCab(
     activity: Activity,
@@ -34,7 +35,7 @@ fun createToolbarCab(
                 stub.layoutResource = R.layout.stub_toolbar
                 stub.inflate() as Toolbar
             }
-            else -> {
+            else        -> {
                 throw IllegalStateException(
                     "Unable to attach to ${activity.resources.getResourceName(stubId)}, it's not a ViewStub"
                 )
@@ -51,7 +52,8 @@ class ToolbarCab internal constructor(
     applyCfg: CabCfg,
 ) {
 
-    var status: CabStatus = CabStatus.STATUS_INACTIVE // default
+    @CabStatus
+    var status: Int = STATUS_INACTIVE // default
         private set
 
     init {
@@ -81,7 +83,8 @@ class ToolbarCab internal constructor(
         if (menuHandler != null) {
             menuHandler!!.invoke(this)
             // tint
-            overflowIcon = activity.getTintedDrawable(androidx.appcompat.R.drawable.abc_ic_menu_overflow_material, titleTextColor)
+            overflowIcon =
+                activity.getTintedDrawable(androidx.appcompat.R.drawable.abc_ic_menu_overflow_material, titleTextColor)
             for (item in menu) {
                 item.icon = item.icon?.apply { setTint(titleTextColor) }
             }
@@ -158,20 +161,24 @@ class ToolbarCab internal constructor(
     fun show() = toolbar.run {
         visibility = View.VISIBLE
         bringToFront()
-        status = CabStatus.STATUS_ACTIVE
+        status = STATUS_ACTIVE
     }
 
     @Synchronized
     fun hide() = toolbar.run {
         visibility = View.INVISIBLE
-        status = CabStatus.STATUS_INACTIVE
+        status = STATUS_INACTIVE
     }
 
     val menu: Menu? get() = toolbar.menu
-}
 
-@Suppress("ClassName")
-sealed class CabStatus {
-    object STATUS_INACTIVE : CabStatus()
-    object STATUS_ACTIVE : CabStatus()
+    companion object {
+
+        const val STATUS_INACTIVE = 0
+        const val STATUS_ACTIVE = 1
+
+        @IntDef(STATUS_INACTIVE, STATUS_ACTIVE)
+        @Retention(AnnotationRetention.SOURCE)
+        annotation class CabStatus
+    }
 }

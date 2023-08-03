@@ -4,18 +4,16 @@
 
 package player.phonograph.adapter.base
 
-import android.content.Context
-import android.graphics.Color
-import android.view.MenuItem
-import android.view.View
-import androidx.annotation.MenuRes
-import androidx.appcompat.widget.Toolbar
-import lib.phonograph.cab.CabStatus
 import lib.phonograph.cab.ToolbarCab
+import lib.phonograph.cab.ToolbarCab.Companion.STATUS_ACTIVE
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.shiftBackgroundColorForLightText
+import androidx.appcompat.widget.Toolbar
+import android.content.Context
+import android.graphics.Color
+import android.view.View
 
 class MultiSelectionCabController(val cab: ToolbarCab) {
 
@@ -57,7 +55,7 @@ class MultiSelectionCabController(val cab: ToolbarCab) {
 
     var onDismiss: () -> Unit = {}
     fun dismiss(): Boolean {
-        if (cab.status == CabStatus.STATUS_ACTIVE) {
+        if (cab.status == STATUS_ACTIVE) {
             cab.hide()
             onDismiss()
             return true
@@ -65,6 +63,6 @@ class MultiSelectionCabController(val cab: ToolbarCab) {
         return false
     }
 
-    fun isActive(): Boolean = cab.status == CabStatus.STATUS_ACTIVE
+    fun isActive(): Boolean = cab.status == STATUS_ACTIVE
 
 }
