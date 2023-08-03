@@ -2,8 +2,6 @@ package player.phonograph.ui.activities
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
-import lib.phonograph.cab.ToolbarCab
-import lib.phonograph.cab.createToolbarCab
 import lib.phonograph.misc.menuProvider
 import mt.tint.requireLightStatusbar
 import mt.tint.setActivityToolbarColor
@@ -59,7 +57,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
             albumAdapter.usePalette = usePalette
         }
 
-    private lateinit var cab: ToolbarCab
     private lateinit var cabController: MultiSelectionCabController
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -193,8 +190,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity() {
         addMenuProvider(menuProvider(this::setupMenu))
         setActivityToolbarColorAuto(viewBinding.toolbar)
         // MultiSelectionCab
-        cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
-        cabController = MultiSelectionCabController(cab)
+        cabController = MultiSelectionCabController.create(this)
     }
 
     private fun setupMenu(menu: Menu) {

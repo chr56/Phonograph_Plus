@@ -8,8 +8,6 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemA
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.interfaces.OnFastScrollStateChangeListener
-import lib.phonograph.cab.ToolbarCab
-import lib.phonograph.cab.createToolbarCab
 import lib.phonograph.misc.CreateFileStorageAccessTool
 import lib.phonograph.misc.ICreateFileStorageAccess
 import lib.phonograph.misc.IOpenDirStorageAccess
@@ -153,7 +151,6 @@ class PlaylistDetailActivity :
         }
     }
 
-    private lateinit var cab: ToolbarCab
     private lateinit var cabController: MultiSelectionCabController
 
     override fun createContentView(): View = wrapSlidingMusicPanel(binding.root)
@@ -161,8 +158,7 @@ class PlaylistDetailActivity :
     private fun setUpToolbar() {
 
         // multiselect cab
-        cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
-        cabController = MultiSelectionCabController(cab)
+        cabController = MultiSelectionCabController.create(this)
 
         binding.toolbar.setBackgroundColor(primaryColor)
         setSupportActionBar(binding.toolbar)

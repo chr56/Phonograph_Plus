@@ -10,7 +10,6 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import lib.phonograph.cab.ToolbarCab
-import lib.phonograph.cab.createToolbarCab
 import lib.phonograph.misc.menuProvider
 import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
@@ -142,12 +141,9 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
             viewLifecycleOwner,
             Lifecycle.State.RESUMED
         )
-
-        cab = createToolbarCab(mainActivity, R.id.cab_stub, R.id.multi_selection_cab)
-        cabController = MultiSelectionCabController(cab)
+        cabController = MultiSelectionCabController.create(mainActivity)
     }
 
-    lateinit var cab: ToolbarCab
     lateinit var cabController: MultiSelectionCabController
 
     private fun readConfig(): PageConfig = HomeTabConfig.homeTabConfig

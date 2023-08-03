@@ -1,7 +1,5 @@
 package player.phonograph.ui.activities
 
-import lib.phonograph.cab.ToolbarCab
-import lib.phonograph.cab.createToolbarCab
 import lib.phonograph.misc.menuProvider
 import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.R
@@ -96,11 +94,9 @@ class GenreDetailActivity :
         addMenuProvider(menuProvider(this::setupMenu))
         setActivityToolbarColorAuto(binding.toolbar)
 
-        cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
-        cabController = MultiSelectionCabController(cab)
+        cabController = MultiSelectionCabController.create(this)
     }
 
-    lateinit var cab: ToolbarCab
     lateinit var cabController: MultiSelectionCabController
 
     private fun setupMenu(menu: Menu) {

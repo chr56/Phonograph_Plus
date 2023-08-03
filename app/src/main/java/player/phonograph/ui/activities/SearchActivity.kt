@@ -1,6 +1,5 @@
 package player.phonograph.ui.activities
 
-import lib.phonograph.cab.createToolbarCab
 import lib.phonograph.misc.menuProvider
 import mt.tint.setActivityToolbarColor
 import mt.tint.viewtint.setSearchViewContentColor
@@ -89,8 +88,7 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
         setActivityToolbarColor(binding.toolbar, primaryColor)
-        val cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
-        cabController = MultiSelectionCabController(cab)
+        cabController = MultiSelectionCabController.create(this)
     }
 
     private fun setupMenu(menu: Menu) {

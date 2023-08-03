@@ -4,8 +4,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.google.android.material.appbar.AppBarLayout
-import lib.phonograph.cab.ToolbarCab
-import lib.phonograph.cab.createToolbarCab
 import lib.phonograph.misc.menuProvider
 import mt.pref.ThemeColor.primaryColor
 import mt.tint.requireLightStatusbar
@@ -73,8 +71,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         super.onCreate(savedInstanceState)
 
         // multiselect cab
-        cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
-        cabController = MultiSelectionCabController(cab)
+        cabController = MultiSelectionCabController.create(this)
 
         // activity
         setSupportActionBar(viewBinding.toolbar)
@@ -89,7 +86,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         lifecycle.addObserver(MediaStoreListener())
     }
 
-    lateinit var cab: ToolbarCab
     lateinit var cabController: MultiSelectionCabController
 
     override fun createContentView(): View = wrapSlidingMusicPanel(viewBinding.root)
