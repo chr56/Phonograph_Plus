@@ -1,10 +1,10 @@
 package player.phonograph.adapter.base
 
+import player.phonograph.R
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import player.phonograph.R
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
