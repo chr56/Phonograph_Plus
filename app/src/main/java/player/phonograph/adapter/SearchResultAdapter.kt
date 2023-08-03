@@ -54,7 +54,6 @@ class SearchResultAdapter(
         MultiSelectionController(
             this,
             cabController,
-            { activity },
             multiSelectMenuHandler
         )
 

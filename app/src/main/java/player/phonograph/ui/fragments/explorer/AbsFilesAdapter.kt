@@ -35,7 +35,6 @@ abstract class AbsFilesAdapter<VH : AbsFilesAdapter.ViewHolder>(
         MultiSelectionController(
             this,
             cabController,
-            { activity as? androidx.activity.ComponentActivity },
             multiSelectMenuHandler
         )
 

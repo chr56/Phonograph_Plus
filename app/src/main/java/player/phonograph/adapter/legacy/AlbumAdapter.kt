@@ -65,7 +65,6 @@ open class AlbumAdapter(
         MultiSelectionController(
             this,
             cabController,
-            { activity },
             multiSelectMenuHandler
         )
 

@@ -59,7 +59,6 @@ open class DisplayAdapter<I : Displayable>(
         MultiSelectionController(
             this,
             cabController,
-            { activity },
             multiSelectMenuHandler
         )
 

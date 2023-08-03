@@ -25,14 +25,12 @@ interface IMultiSelectableAdapter<I> {
 /**
  * @param linkedAdapter adapter applied
  * @param cabController [MultiSelectionCabController] that is interacted with
- * @param linkedActivity produce an activity that [updateCab] requires
  * @param multiSelectMenuHandler creates menu
  * @param I selectable item type
  */
 class MultiSelectionController<I>(
     private val linkedAdapter: IMultiSelectableAdapter<I>,
     val cabController: MultiSelectionCabController?,
-    val linkedActivity: () -> ComponentActivity?,
     multiSelectMenuHandler: ((Toolbar) -> Boolean)?,
 ) {
     val selected: MultiSelectionBin<I> = MultiSelectionBin(mutableListOf())
