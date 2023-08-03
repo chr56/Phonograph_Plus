@@ -33,7 +33,8 @@ class MultiSelectionController<I>(
     val cabController: MultiSelectionCabController?,
     multiSelectMenuHandler: ((Toolbar) -> Boolean)?,
 ) {
-    val selected: MultiSelectionBin<I> = MultiSelectionBin(mutableListOf())
+    private val _selected: MutableList<I> = mutableListOf()
+    val selected: List<I> get() = _selected.toList()
 
     init {
         cabController?.onDismiss = ::unselectedAll
@@ -42,7 +43,7 @@ class MultiSelectionController<I>(
 
     fun toggle(datasetPosition: Int): Boolean {
         val item = linkedAdapter.getItem(datasetPosition) ?: return false
-        selected.toggle(item)
+        if (!_selected.remove(item)) _selected.add(item)
         linkedAdapter.notifyItemChanged(datasetPosition)
         updateCab()
         return true
@@ -53,11 +54,11 @@ class MultiSelectionController<I>(
 
 
     fun selectAll() {
-        selected.clearAll()
+        _selected.clear()
         for (i in 0 until linkedAdapter.getItemCount() ) {
             val item = linkedAdapter.getItem(i)
             if (item != null) {
-                selected.add(item)
+                _selected.add(item)
             }
         }
         linkedAdapter.notifyDataSetChanged()
@@ -65,17 +66,17 @@ class MultiSelectionController<I>(
     }
 
     fun unselectedAll() {
-        selected.clearAll()
+        _selected.clear()
         linkedAdapter.notifyDataSetChanged()
         updateCab()
     }
 
-    fun isSelected(item: I): Boolean = selected.contains(item)
+    fun isSelected(item: I): Boolean = _selected.contains(item)
 
     private var onBackPressedDispatcherRegistered = false
     private fun updateCab() {
 
-        cabController?.showContent(selected.size)//todo: context
+        cabController?.showContent(_selected.size)//todo: context
 
         if (!onBackPressedDispatcherRegistered && cabController != null) {
             onBackPressedDispatcherRegistered = true
@@ -92,24 +93,5 @@ class MultiSelectionController<I>(
             }
         }
     }
-
-}
-
-/**
- * contains selected items
- * @param I selectable item type
- */
-class MultiSelectionBin<I>(
-    private val checkedList: MutableList<I>,
-) : Collection<I> by checkedList {
-
-    fun toggle(item: I): Boolean =
-        if (!checkedList.remove(item)) checkedList.add(item) else true
-
-    fun clearAll() = checkedList.clear()
-
-    fun add(item: I) = checkedList.add(item)
-
-    fun remove(item: I) = checkedList.remove(item)
 
 }
