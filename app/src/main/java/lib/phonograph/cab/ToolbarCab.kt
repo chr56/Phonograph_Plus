@@ -132,7 +132,7 @@ class ToolbarCab internal constructor(
         }
 
     var navigationIcon: Drawable =
-        ContextCompat.getDrawable(activity, R.drawable.ic_close_white_24dp)!!.apply {
+        ContextCompat.getDrawable(toolbar.context, R.drawable.ic_close_white_24dp)!!.apply {
             setTint(titleTextColor)
         }
         set(value) {

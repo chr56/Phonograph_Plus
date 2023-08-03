@@ -11,7 +11,6 @@ import player.phonograph.R
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.shiftBackgroundColorForLightText
 import androidx.appcompat.widget.Toolbar
-import android.content.Context
 import android.graphics.Color
 import android.view.View
 
@@ -35,7 +34,7 @@ class MultiSelectionCabController(val cab: ToolbarCab) {
                 cab.hide()
             } else {
                 cab.backgroundColor = cabColor
-                cab.titleText = cab.activity.getString(R.string.x_selected, checkedListSize)
+                cab.titleText = cab.toolbar.resources.getString(R.string.x_selected, checkedListSize)
                 cab.titleTextColor = textColor
                 cab.navigationIcon = cab.activity.getTintedDrawable(R.drawable.ic_close_white_24dp, Color.WHITE)!!
 
