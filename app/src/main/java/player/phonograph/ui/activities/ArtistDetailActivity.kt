@@ -14,8 +14,8 @@ import mt.util.color.secondaryTextColor
 import mt.util.color.toolbarTitleColor
 import player.phonograph.R
 import player.phonograph.actions.menu.artistDetailToolbar
+import player.phonograph.adapter.display.HorizontalAlbumDisplayAdapter
 import player.phonograph.adapter.display.SongDisplayAdapter
-import player.phonograph.adapter.legacy.HorizontalAlbumAdapter
 import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
@@ -48,7 +48,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
     private lateinit var viewBinding: ActivityArtistDetailBinding
     private lateinit var model: ArtistDetailActivityViewModel
 
-    private lateinit var albumAdapter: HorizontalAlbumAdapter
+    private lateinit var albumAdapter: HorizontalAlbumDisplayAdapter
     private lateinit var songAdapter: SongDisplayAdapter
 
     private var usePalette = Setting.instance.albumArtistColoredFooters
@@ -92,7 +92,9 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         }
 
         albumAdapter =
-            HorizontalAlbumAdapter(this, emptyList(), usePalette)
+            HorizontalAlbumDisplayAdapter(this, emptyList()) {
+                usePalette = this@ArtistDetailActivity.usePalette
+            }
         with(viewBinding.albumRecycleView) {
             adapter = albumAdapter
             layoutManager =
@@ -119,7 +121,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 model.albums.collect {
-                    albumAdapter.dataSet = it ?: emptyList()
+                    albumAdapter.dataset = it ?: emptyList()
                 }
             }
         }
