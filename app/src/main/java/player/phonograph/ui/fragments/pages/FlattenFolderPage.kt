@@ -11,8 +11,8 @@ import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.adapter.display.SongCollectionDisplayAdapter
-import player.phonograph.adapter.display.SongDisplayAdapter
+import player.phonograph.ui.fragments.pages.adapter.SongCollectionDisplayAdapter
+import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef

@@ -1,4 +1,4 @@
-package player.phonograph.adapter.base
+package player.phonograph.ui.adapter
 
 import player.phonograph.R
 import androidx.recyclerview.widget.RecyclerView

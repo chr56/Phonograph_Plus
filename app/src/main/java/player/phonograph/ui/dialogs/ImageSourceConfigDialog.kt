@@ -10,14 +10,19 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import mt.pref.ThemeColor
 import player.phonograph.R
-import player.phonograph.adapter.sortable.ImageSourceConfigAdapter
+import player.phonograph.ui.adapter.SortableListAdapter
 import player.phonograph.model.config.ImageSourceConfig
 import player.phonograph.mechanism.setting.CoilImageSourceConfig
+import player.phonograph.model.ImageSource
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.app.Dialog
 import android.os.Bundle
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 
 class ImageSourceConfigDialog : DialogFragment() {
 
@@ -58,5 +63,38 @@ class ImageSourceConfigDialog : DialogFragment() {
 
         return dialog
     }
+    class ImageSourceConfigAdapter(private val sourceConfig: ImageSourceConfig) :
+            SortableListAdapter<ImageSource>() {
 
+
+        override fun fetchDataset(): SortableList<ImageSource> {
+            return SortableList(
+                sourceConfig.sources.map {
+                    SortableList.Item(it.imageSource, it.enabled)
+                }
+            )
+        }
+
+        override fun onCreateContentView(parent: ViewGroup, viewType: Int): View {
+            return TextView(parent.context).apply {
+                textSize = 16f
+                gravity = Gravity.CENTER_VERTICAL
+                textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+            }
+        }
+
+        override fun onBindContentView(contentView: View, position: Int) {
+            require(contentView is TextView) { "Receive ${contentView.javaClass.name}" }
+            contentView.text = dataset[position].content.displayString(contentView.context)
+        }
+
+        val currentConfig: ImageSourceConfig
+            get() = ImageSourceConfig.from(
+                dataset.allItems.map { ImageSourceConfig.Item(it.content.key, it.visible) }
+            )
+
+        companion object {
+            private const val TAG = "ImageSourceConfigAdapter"
+        }
+    }
 }

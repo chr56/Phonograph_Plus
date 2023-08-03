@@ -5,8 +5,8 @@
 package player.phonograph.ui.fragments.explorer
 
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
-import player.phonograph.adapter.base.IMultiSelectableAdapter
-import player.phonograph.adapter.base.MultiSelectionController
+import player.phonograph.ui.adapter.IMultiSelectableAdapter
+import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity
 import androidx.activity.ComponentActivity

@@ -6,8 +6,8 @@ package player.phonograph.ui.fragments.pages
 
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.adapter.display.ArtistDisplayAdapter
-import player.phonograph.adapter.display.DisplayAdapter
+import player.phonograph.ui.fragments.pages.adapter.ArtistDisplayAdapter
+import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.model.Artist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.loaders.ArtistLoader

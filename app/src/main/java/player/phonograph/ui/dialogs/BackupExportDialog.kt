@@ -11,7 +11,6 @@ import com.afollestad.materialdialogs.customview.customView
 import lib.phonograph.misc.ICreateFileStorageAccess
 import mt.pref.ThemeColor
 import player.phonograph.R
-import player.phonograph.adapter.sortable.BackupChooserAdapter
 import player.phonograph.mechanism.backup.ALL_BACKUP_CONFIG
 import player.phonograph.mechanism.backup.Backup
 import player.phonograph.mechanism.backup.ENABLE_BACKUP_CONFIG

@@ -10,8 +10,8 @@ import mt.util.color.primaryTextColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.actions.actionPlay
-import player.phonograph.adapter.display.DisplayAdapter
-import player.phonograph.adapter.display.SongDisplayAdapter
+import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.loaders.SongLoader

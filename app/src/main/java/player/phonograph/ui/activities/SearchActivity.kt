@@ -6,7 +6,6 @@ import mt.tint.viewtint.setSearchViewContentColor
 import mt.tint.viewtint.tintCollapseIcon
 import mt.util.color.primaryTextColor
 import player.phonograph.R
-import player.phonograph.adapter.SearchResultAdapter
 import player.phonograph.databinding.ActivitySearchBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity

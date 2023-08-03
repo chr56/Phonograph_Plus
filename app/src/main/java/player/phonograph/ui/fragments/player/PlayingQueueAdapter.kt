@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.adapter.display
+package player.phonograph.ui.fragments.player
 
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemState
@@ -13,6 +13,8 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.initMenu
 import player.phonograph.util.ui.hitTest
 import androidx.appcompat.app.AppCompatActivity
 import android.annotation.SuppressLint

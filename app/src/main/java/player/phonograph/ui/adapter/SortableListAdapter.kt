@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.adapter.sortable
+package player.phonograph.ui.adapter
 
 import player.phonograph.R
 import util.phonograph.misc.SwipeAndDragHelper

@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.adapter.display
+package player.phonograph.ui.activities
 
 import coil.size.ViewSizeResolver
 import com.github.chr56.android.menu_dsl.attach
@@ -16,6 +16,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableI
 import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.model.Song
+import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.compose.tag.TagEditorActivity
 import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.ui.dialogs.SongDetailDialog

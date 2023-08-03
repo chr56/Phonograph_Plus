@@ -2,15 +2,15 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.adapter
+package player.phonograph.ui.activities
 
 import coil.size.ViewSizeResolver
 import mt.util.color.resolveColor
 import player.phonograph.R
-import player.phonograph.adapter.base.IMultiSelectableAdapter
-import player.phonograph.adapter.base.MultiSelectionController
-import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
-import player.phonograph.adapter.display.initMenu
+import player.phonograph.ui.adapter.IMultiSelectableAdapter
+import player.phonograph.ui.adapter.MultiSelectionController
+import player.phonograph.ui.adapter.UniversalMediaEntryViewHolder
+import player.phonograph.ui.adapter.initMenu
 import player.phonograph.coil.loadImage
 import player.phonograph.model.Album
 import player.phonograph.model.Artist

@@ -14,8 +14,7 @@ import mt.util.color.secondaryTextColor
 import mt.util.color.toolbarTitleColor
 import player.phonograph.R
 import player.phonograph.actions.menu.artistDetailToolbar
-import player.phonograph.adapter.display.HorizontalAlbumDisplayAdapter
-import player.phonograph.adapter.display.SongDisplayAdapter
+import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker

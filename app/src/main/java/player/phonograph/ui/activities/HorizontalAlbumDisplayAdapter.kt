@@ -2,10 +2,12 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.adapter.display
+package player.phonograph.ui.activities
 
 import player.phonograph.R
 import player.phonograph.model.Album
+import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import android.content.res.Resources

@@ -1,13 +1,14 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.adapter.display
+package player.phonograph.ui.fragments.pages.adapter
 
 import mt.util.color.primaryTextColor
 import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.model.SongCollection
+import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.appcompat.app.AppCompatActivity

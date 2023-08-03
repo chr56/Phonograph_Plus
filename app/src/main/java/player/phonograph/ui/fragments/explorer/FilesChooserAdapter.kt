@@ -7,7 +7,7 @@ package player.phonograph.ui.fragments.explorer
 import mt.util.color.primaryTextColor
 import mt.util.color.resolveColor
 import player.phonograph.R
-import player.phonograph.adapter.base.MultiSelectionController
+import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity
 import player.phonograph.util.text.dateTimeText

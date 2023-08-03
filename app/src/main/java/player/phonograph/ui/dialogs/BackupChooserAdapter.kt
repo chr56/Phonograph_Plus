@@ -2,8 +2,9 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.adapter.sortable
+package player.phonograph.ui.dialogs
 
+import player.phonograph.ui.adapter.SortableListAdapter
 import player.phonograph.mechanism.backup.ALL_BACKUP_CONFIG
 import player.phonograph.mechanism.backup.BackupItem
 import android.view.Gravity

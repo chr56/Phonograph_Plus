@@ -15,8 +15,7 @@ import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.menu.albumDetailToolbar
-import player.phonograph.adapter.display.AlbumSongDisplayAdapter
-import player.phonograph.adapter.display.SongDisplayAdapter
+import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityAlbumDetailBinding

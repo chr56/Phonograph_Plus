@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.adapter.base
+package player.phonograph.ui.adapter
 
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.ToolbarCab.Companion.STATUS_ACTIVE

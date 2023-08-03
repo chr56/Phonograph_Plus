@@ -4,7 +4,7 @@ import lib.phonograph.misc.menuProvider
 import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.R
 import player.phonograph.actions.menu.genreDetailToolbar
-import player.phonograph.adapter.display.SongDisplayAdapter
+import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.databinding.ActivityGenreDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Genre

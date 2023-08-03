@@ -8,7 +8,7 @@ import coil.size.ViewSizeResolver
 import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.actions.menu.fileEntityPopupMenu
-import player.phonograph.adapter.base.MultiSelectionController
+import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity

@@ -1,17 +1,14 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.adapter.display
+package player.phonograph.ui.adapter
 
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.click.listClick
-import player.phonograph.adapter.base.IMultiSelectableAdapter
-import player.phonograph.adapter.base.MultiSelectionController
-import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
 import player.phonograph.model.Displayable
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity

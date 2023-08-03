@@ -40,12 +40,14 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.queue.CurrentQueueState$Observer {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.util.** {public <methods>;}
 
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.player.AlbumCoverPagerAdapter {public <methods>;public <fields>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.adapter.HomePagerAdapter {public <methods>;public <fields>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.adapter.sortable.PageTabConfigAdapter {public <methods>;public <fields>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.adapter.display.** {public <methods>;public <fields>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.adapter.base.** {public <methods>;public <fields>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.adapter.SearchResultAdapter {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.adapter.DisplayAdapter {public <methods>; protected <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.adapter.SortableListAdapter {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.adapter.MultiSelectionController {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.activities.SearchResultAdapter {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.dialogs.HomeTabConfigDialog$PageTabConfigAdapter {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.dialogs.ImageSourceConfigDialog$ImageSourceConfigAdapter {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.HomeFragment$HomePagerAdapter {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.player.AlbumCoverPagerAdapter {public <methods>;}
 
 -keepnames,allowoptimization,allowshrinking class player.phonograph.dialogs.**
 

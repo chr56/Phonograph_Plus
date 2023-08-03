@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.adapter.display
+package player.phonograph.ui.fragments.pages.adapter
 
 import player.phonograph.model.Genre
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
+import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
 

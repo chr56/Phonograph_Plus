@@ -22,7 +22,6 @@ import mt.util.color.secondaryDisabledTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.menu.playlistToolbar
-import player.phonograph.adapter.display.PlaylistSongDisplayAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song

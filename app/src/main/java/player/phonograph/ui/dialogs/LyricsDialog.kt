@@ -14,14 +14,16 @@ import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.adapter.LyricsAdapter
 import player.phonograph.databinding.DialogLyricsBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelper
 import player.phonograph.model.lyrics.DEFAULT_TITLE
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.lyrics.LyricsInfo
+import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.player.LyricsViewModel
 import player.phonograph.util.reportError
+import player.phonograph.util.text.lyricsTimestamp
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.warning
@@ -31,9 +33,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -41,11 +45,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import android.widget.TextView
 import kotlin.math.abs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.regex.Pattern
 
 /**
  * Large Dialog to show Lyrics.
@@ -344,5 +350,70 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         )
     }
     //endregion
+
+}
+
+private class LyricsAdapter(
+    private val context: Context,
+    stamps: IntArray,
+    lines: Array<String>,
+    private val dismiss: (() -> Unit)?,
+) : RecyclerView.Adapter<LyricsAdapter.ViewHolder>() {
+
+    private var lyrics = lines
+    private var timeStamps = stamps
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun update(stamps: IntArray, lines: Array<String>) {
+        lyrics = lines
+        timeStamps = stamps
+        notifyDataSetChanged()
+    }
+
+    class ViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val line: TextView = itemView.findViewById(R.id.dialog_lyrics_line)
+        val time: TextView = itemView.findViewById(R.id.dialog_lyrics_times)
+
+        fun bind(context: Context, lyrics: Array<String>, timeStamps: IntArray, dismiss: (() -> Unit)?) {
+            // parse line feed
+            val actual = StringBuffer()
+            lyrics[bindingAdapterPosition].split(Pattern.compile("\\\\[nNrR]")).forEach {
+                actual.append(it).appendLine()
+            }
+
+            time.text = lyricsTimestamp(timeStamps[bindingAdapterPosition])
+            time.setTextColor(context.getColor(R.color.dividerColor))
+            if (timeStamps[bindingAdapterPosition] < 0 || !Setting.instance.displaySynchronizedLyricsTimeAxis)
+                time.visibility = View.GONE
+
+            line.text = actual.trim().toString()
+
+            line.setOnLongClickListener {
+                MusicPlayerRemote.seekTo(timeStamps[bindingAdapterPosition])
+                dismiss?.invoke()
+                true
+            }
+            line.typeface = Typeface.DEFAULT
+            time.typeface = Typeface.DEFAULT
+        }
+
+        fun highlight(highlight: Boolean) {
+            line.typeface = if (highlight) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
+            time.typeface = if (highlight) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
+        }
+
+        companion object {
+            fun inflate(context: Context, parent: ViewGroup) =
+                ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_lyrics, parent, false))
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder.inflate(context, parent)
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(context, lyrics, timeStamps, dismiss)
+    }
+
+    override fun getItemCount(): Int = lyrics.size
 
 }

@@ -9,8 +9,8 @@ import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
-import player.phonograph.adapter.display.initMenu
+import player.phonograph.ui.adapter.UniversalMediaEntryViewHolder
+import player.phonograph.ui.adapter.initMenu
 import player.phonograph.databinding.FragmentFlatPlayerBinding
 import player.phonograph.model.Song
 import player.phonograph.model.infoString

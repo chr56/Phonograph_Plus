@@ -1,7 +1,5 @@
 package player.phonograph.ui.fragments.player
 
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.input.input
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
@@ -11,7 +9,6 @@ import lib.phonograph.misc.OpenDocumentContract
 import mt.tint.viewtint.setMenuColor
 import mt.util.color.toolbarIconColor
 import player.phonograph.R
-import player.phonograph.adapter.display.PlayingQueueAdapter
 import player.phonograph.mechanism.Favorite.toggleFavorite
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
@@ -45,7 +42,6 @@ import androidx.recyclerview.widget.RecyclerView
 import android.animation.AnimatorSet
 import android.graphics.Color
 import android.os.Bundle
-import android.text.InputType
 import android.view.MenuItem
 import android.view.View
 import kotlinx.coroutines.CoroutineScope

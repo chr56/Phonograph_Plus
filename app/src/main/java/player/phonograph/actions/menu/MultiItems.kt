@@ -15,7 +15,7 @@ import player.phonograph.actions.actionPlay
 import player.phonograph.actions.actionPlayNext
 import player.phonograph.actions.actionSavePlaylists
 import player.phonograph.actions.convertToSongs
-import player.phonograph.adapter.base.MultiSelectionController
+import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE

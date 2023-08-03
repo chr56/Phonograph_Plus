@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.adapter.display
+package player.phonograph.ui.fragments.pages.adapter
 
 import mt.util.color.resolveColor
 import player.phonograph.R
@@ -12,6 +12,7 @@ import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.settings.Setting
+import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources

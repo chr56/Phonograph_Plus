@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 @file:JvmName("DisplayableItemRegistry")
 
-package player.phonograph.adapter.display
+package player.phonograph.ui.adapter
 
 import player.phonograph.actions.menu.playlistPopupMenu
 import player.phonograph.actions.menu.songPopupMenu
