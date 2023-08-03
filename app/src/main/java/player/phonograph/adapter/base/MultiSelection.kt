@@ -76,13 +76,13 @@ class MultiSelectionController<I>(
 
     private var onBackPressedDispatcherRegistered = false
     private fun updateCab() {
-        val activity = linkedActivity() ?: return
 
-        cabController?.showContent(activity, selected.size)//todo: context
+        cabController?.showContent(selected.size)//todo: context
 
         if (!onBackPressedDispatcherRegistered && cabController != null) {
             onBackPressedDispatcherRegistered = true
-            activity.onBackPressedDispatcher.addCallback {
+            val activity = cabController.cab.activity as? ComponentActivity
+            activity?.onBackPressedDispatcher?.addCallback {
                 cabController.dismiss()
                 debug {
                     Log.v("MultiSelectAdapterCallback", "isInQuickSelectMode: $isInQuickSelectMode")

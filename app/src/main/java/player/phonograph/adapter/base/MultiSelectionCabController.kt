@@ -29,15 +29,15 @@ class MultiSelectionCabController(val cab: ToolbarCab) {
             cab.titleTextColor = value
         }
 
-    fun showContent(context: Context, checkedListSize: Int): Boolean {
+    fun showContent(checkedListSize: Int): Boolean {
         return run {
             if (checkedListSize < 1) {
                 cab.hide()
             } else {
                 cab.backgroundColor = cabColor
-                cab.titleText = context.getString(R.string.x_selected, checkedListSize)
+                cab.titleText = cab.activity.getString(R.string.x_selected, checkedListSize)
                 cab.titleTextColor = textColor
-                cab.navigationIcon = context.getTintedDrawable(R.drawable.ic_close_white_24dp, Color.WHITE)!!
+                cab.navigationIcon = cab.activity.getTintedDrawable(R.drawable.ic_close_white_24dp, Color.WHITE)!!
 
                 if (hasMenu) cab.menuHandler = menuHandler
                 cab.closeClickListener = View.OnClickListener {
