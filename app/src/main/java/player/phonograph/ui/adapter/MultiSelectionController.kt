@@ -16,6 +16,7 @@ import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.shiftBackgroundColorForLightText
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
+import androidx.annotation.ColorInt
 import android.graphics.Color
 import android.util.Log
 import android.view.View
@@ -110,6 +111,13 @@ class MultiSelectionController<I>(
         }
     }
 
+    @ColorInt
+    var textColor: Int = Color.WHITE
+        set(value) {
+            field = value
+            cab?.titleTextColor = value
+        }
+
     private var _cab: ToolbarCab? = null
     val cab: ToolbarCab?
         get() {
@@ -132,7 +140,7 @@ class MultiSelectionController<I>(
         val cabColor = (activity as? IPaletteColorProvider)?.paletteColor?.value ?: ThemeColor.primaryColor(activity)
         backgroundColor = shiftBackgroundColorForLightText(cabColor)
         titleText = toolbar.resources.getString(R.string.x_selected, 0)
-        titleTextColor = Color.WHITE
+        titleTextColor = textColor
         navigationIcon = activity.getTintedDrawable(R.drawable.ic_close_white_24dp, Color.WHITE)!!
 
         setupMenu()
