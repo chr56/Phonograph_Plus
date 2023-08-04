@@ -47,8 +47,8 @@ abstract class DisplayAdapter<I : Displayable>(
     var showSectionName: Boolean = true
 
 
-    protected val controller: MultiSelectionController<I> =
-        MultiSelectionController(this, activity, allowMultiSelection)
+    protected val controller: MultiSelectionController<I>
+            by lazy { MultiSelectionController(this, activity, allowMultiSelection) }
 
     protected open val allowMultiSelection: Boolean get() = true
 
