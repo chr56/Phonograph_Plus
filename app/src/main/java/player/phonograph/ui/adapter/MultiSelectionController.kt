@@ -52,8 +52,30 @@ class MultiSelectionController<I>(
         if (!_selected.remove(item)) _selected.add(item)
         linkedAdapter.notifyItemChanged(datasetPosition)
         updateCab()
+        lastSelectedPosition = datasetPosition
         return true
     }
+
+    private var lastSelectedPosition = -1
+    fun rangeTo(datasetPosition: Int): Boolean {
+        if (lastSelectedPosition > 0 && datasetPosition != lastSelectedPosition) {
+            val range =
+                if (datasetPosition < lastSelectedPosition) IntRange(datasetPosition, lastSelectedPosition)
+                else IntRange(lastSelectedPosition, datasetPosition)
+            for (i in range) {
+                val item = linkedAdapter.getItem(i)
+                if (item != null) {
+                    _selected.add(item)
+                }
+            }
+            linkedAdapter.notifyDataSetChanged()
+            updateCab()
+            return true
+        } else {
+            return false
+        }
+    }
+
 
     val isInQuickSelectMode: Boolean
         get() = enable && cab != null && cab?.status == STATUS_ACTIVE
