@@ -170,9 +170,9 @@ class MultiSelectionController<I>(
         }
     }
 
-    private fun setupMenu() {
-        cab?.menuHandler = {
-            multiItemsToolbar<I>(it.menu, activity, this)
+    private fun ToolbarCab.setupMenu() {
+        menuHandler = {
+            multiItemsToolbar(it.menu, activity, this@MultiSelectionController)
         }
     }
     /**
@@ -182,7 +182,7 @@ class MultiSelectionController<I>(
         updateCountText(size)
         cab?.let { cab ->
             if (size > 0) {
-                setupMenu()
+                cab.setupMenu()
                 cab.show()
             } else {
                 cab.hide()
