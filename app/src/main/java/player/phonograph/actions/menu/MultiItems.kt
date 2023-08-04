@@ -15,10 +15,10 @@ import player.phonograph.actions.actionPlay
 import player.phonograph.actions.actionPlayNext
 import player.phonograph.actions.actionSavePlaylists
 import player.phonograph.actions.convertToSongs
-import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
+import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.compose.tag.BatchTagEditorActivity
 import player.phonograph.ui.compose.tag.TagEditorActivity
 import player.phonograph.util.theme.getTintedDrawable
@@ -118,6 +118,14 @@ fun multiItemsToolbar(
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
                     controller.selectAll()
+                    true
+                }
+            }
+
+            menuItem(getString(R.string.invert_selection)) {
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    controller.invertSelected()
                     true
                 }
             }

@@ -70,6 +70,7 @@
     <string name="add_playlist_title">添加到播放列表</string>
     <string name="select_all_title">全选</string>
     <string name="unselect_all_title">取消所选</string>
+    <string name="invert_selection">反选</string>
     <string name="action_shuffle_all">随机播放所有歌曲</string>
     <string name="action_shuffle_album">随机播放此专辑</string>
     <string name="action_shuffle_artist">随机播放此艺术家</string>

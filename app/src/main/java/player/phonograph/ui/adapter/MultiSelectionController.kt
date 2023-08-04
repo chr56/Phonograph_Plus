@@ -73,6 +73,19 @@ class MultiSelectionController<I>(
         updateCab()
     }
 
+    fun invertSelected() {
+        val previousSelected = _selected.toMutableList() //copy
+        _selected.clear()
+        for (i in 0 until linkedAdapter.getItemCount()) {
+            val item = linkedAdapter.getItem(i)
+            if (item != null && item !in previousSelected) {
+                _selected.add(item)
+            }
+        }
+        linkedAdapter.notifyDataSetChanged()
+        updateCab()
+    }
+
     fun isSelected(item: I): Boolean = _selected.contains(item)
 
     private var onBackPressedDispatcherRegistered = false
