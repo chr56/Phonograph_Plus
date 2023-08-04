@@ -184,6 +184,7 @@ class PlaylistSongDisplayAdapter(
     override fun onItemDragStarted(position: Int) {}
 
     override fun onItemDragFinished(fromPosition: Int, toPosition: Int, result: Boolean) {
+        @Suppress("KotlinConstantConditions")
         when {
             fromPosition < toPosition -> notifyItemRangeChanged(fromPosition, toPosition)
             fromPosition > toPosition -> notifyItemRangeChanged(toPosition, fromPosition)
