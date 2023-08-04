@@ -38,20 +38,10 @@ class PlaylistSongDisplayAdapter(
 
     override fun getSectionNameImp(position: Int): String = (position + 1).toString()
 
-    override fun setImage(holder: DisplayViewHolder, position: Int) {
-        val context = holder.itemView.context
-        loadImage(context) {
-            data(dataset[position])
-            size(ViewSizeResolver(holder.image!!))
-            target(
-                onStart = { holder.image!!.setImageResource(R.drawable.default_album_art) },
-                onSuccess = { holder.image!!.setImageDrawable(it) }
-            )
-        }
-    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
-        return ViewHolder(LayoutInflater.from(activity).inflate(layoutRes, parent, false))
+        return ViewHolder(inflatedView(layoutRes, parent))
     }
 
     override fun onBindViewHolder(holder: DisplayViewHolder, position: Int) {
@@ -219,6 +209,18 @@ class PlaylistSongDisplayAdapter(
     inner class ViewHolder(itemView: View) :
             DisplayViewHolder(itemView),
             DraggableItemViewHolder {
+
+        override fun setImage(holder: DisplayViewHolder, position: Int) {
+            val context = holder.itemView.context
+            loadImage(context) {
+                data(dataset[position])
+                size(ViewSizeResolver(holder.image!!))
+                target(
+                    onStart = { holder.image!!.setImageResource(R.drawable.default_album_art) },
+                    onSuccess = { holder.image!!.setImageDrawable(it) }
+                )
+            }
+        }
 
         @DraggableItemStateFlags
         private var mDragStateFlags = 0

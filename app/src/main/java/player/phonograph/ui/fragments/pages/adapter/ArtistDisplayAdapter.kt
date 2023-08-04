@@ -9,6 +9,7 @@ import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Artist
+import player.phonograph.model.Displayable
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
@@ -16,7 +17,6 @@ import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import android.graphics.drawable.Drawable
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
@@ -27,56 +27,55 @@ class ArtistDisplayAdapter(
     cfg: (DisplayAdapter<Artist>.() -> Unit)?,
 ) : DisplayAdapter<Artist>(activity, dataSet, layoutRes, cfg) {
 
-    override fun setImage(holder: DisplayViewHolder, position: Int) {
-        val context = holder.itemView.context
-        holder.image?.let { view ->
-            loadImage(activity) {
-                data(dataset[position])
-                size(ViewSizeResolver(view))
-                target(
-                    PaletteTargetBuilder(context)
-                        .onStart {
-                            view.setImageResource(R.drawable.default_album_art)
-                            setPaletteColors(context.getColor(R.color.defaultFooterColor), holder)
-                        }
-                        .onResourceReady { result, palette ->
-                            view.setImageDrawable(result)
-                            if (usePalette) setPaletteColors(palette, holder)
-                        }
-                        .build()
-                )
-            }
-        }
-    }
-
     override fun getSectionNameImp(position: Int): String {
         val artist = dataset[position]
         val sectionName: String =
             when (Setting.instance.artistSortMode.sortRef) {
                 SortRef.ARTIST_NAME -> makeSectionName(artist.name)
                 SortRef.ALBUM_COUNT -> artist.albumCount.toString()
-                SortRef.SONG_COUNT -> artist.songCount.toString()
-                else -> {
-                    ""
-                }
+                SortRef.SONG_COUNT  -> artist.songCount.toString()
+                else                -> ""
             }
         return makeSectionName(sectionName)
     }
 
-    override fun getRelativeOrdinalText(item: Artist): String = item.songCount.toString()
-
-    override val defaultIcon: Drawable?
-        get() = AppCompatResources.getDrawable(activity, R.drawable.default_artist_image)
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
-        return ArtistViewHolder(
-            LayoutInflater.from(activity).inflate(layoutRes, parent, false)
-        )
+        return ArtistViewHolder(inflatedView(layoutRes, parent))
     }
 
     inner class ArtistViewHolder(itemView: View) : DisplayViewHolder(itemView) {
         init {
             setImageTransitionName(itemView.context.getString(R.string.transition_artist_image))
         }
+
+        override fun <I : Displayable> getRelativeOrdinalText(item: I): String {
+            return (item as Artist).songCount.toString()
+        }
+
+        override val defaultIcon: Drawable?
+            get() = AppCompatResources.getDrawable(activity, R.drawable.default_artist_image)
+
+        override fun setImage(holder: DisplayViewHolder, position: Int) {
+            val context = holder.itemView.context
+            holder.image?.let { view ->
+                loadImage(activity) {
+                    data(dataset[position])
+                    size(ViewSizeResolver(view))
+                    target(
+                        PaletteTargetBuilder(context)
+                            .onStart {
+                                view.setImageResource(R.drawable.default_album_art)
+                                setPaletteColors(context.getColor(R.color.defaultFooterColor), holder)
+                            }
+                            .onResourceReady { result, palette ->
+                                view.setImageDrawable(result)
+                                if (usePalette) setPaletteColors(palette, holder)
+                            }
+                            .build()
+                    )
+                }
+            }
+        }
+
     }
 }

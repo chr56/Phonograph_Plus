@@ -38,30 +38,11 @@ class PlaylistDisplayAdapter(
         }
     }
 
-    override fun setImage(holder: DisplayViewHolder, position: Int) {
-        holder.image?.also {
-            val playlist = dataset[position]
-            it.setImageResource(getIconRes(playlist))
-        }
-    }
-
-    private fun getIconRes(playlist: Playlist): Int = when {
-        playlist is SmartPlaylist                          -> playlist.iconRes
-        FavoritesStore.instance.containsPlaylist(playlist) -> R.drawable.ic_pin_white_24dp
-        Favorite.isFavoritePlaylist(activity, playlist)    -> R.drawable.ic_favorite_white_24dp
-        else                                               -> R.drawable.ic_queue_music_white_24dp
-    }
-
-
-    override val defaultIcon: Drawable?
-        get() = AppCompatResources.getDrawable(activity, R.drawable.ic_queue_music_white_24dp)
-
-
     override fun getItemViewType(position: Int): Int =
         if (dataset[position] is SmartPlaylist) SMART_PLAYLIST else DEFAULT_PLAYLIST
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
-        val view = LayoutInflater.from(activity).inflate(layoutRes, parent, false)
+        val view = inflatedView(layoutRes, parent)
         return if (viewType == SMART_PLAYLIST) SmartPlaylistViewHolder(view) else CommonPlaylistViewHolder(view)
     }
 
@@ -76,6 +57,24 @@ class PlaylistDisplayAdapter(
                 )
             }
         }
+
+        override val defaultIcon: Drawable?
+            get() = AppCompatResources.getDrawable(activity, R.drawable.ic_queue_music_white_24dp)
+
+        override fun setImage(holder: DisplayViewHolder, position: Int) {
+            holder.image?.also {
+                val playlist = dataset[position]
+                it.setImageResource(getIconRes(playlist))
+            }
+        }
+
+        private fun getIconRes(playlist: Playlist): Int = when {
+            playlist is SmartPlaylist                          -> playlist.iconRes
+            FavoritesStore.instance.containsPlaylist(playlist) -> R.drawable.ic_pin_white_24dp
+            Favorite.isFavoritePlaylist(activity, playlist)    -> R.drawable.ic_favorite_white_24dp
+            else                                               -> R.drawable.ic_queue_music_white_24dp
+        }
+
     }
 
     inner class SmartPlaylistViewHolder(itemView: View) : CommonPlaylistViewHolder(itemView) {
@@ -84,10 +83,8 @@ class PlaylistDisplayAdapter(
                 shortSeparator!!.visibility = View.GONE
             }
             itemView.setBackgroundColor(resolveColor(activity, androidx.cardview.R.attr.cardBackgroundColor))
-            // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             itemView.elevation =
                 activity.resources.getDimensionPixelSize(R.dimen.card_elevation).toFloat()
-            // }
         }
     }
 

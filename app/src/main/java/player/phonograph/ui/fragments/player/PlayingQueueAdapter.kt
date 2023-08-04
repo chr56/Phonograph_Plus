@@ -18,7 +18,6 @@ import player.phonograph.ui.adapter.initMenu
 import player.phonograph.util.ui.hitTest
 import androidx.appcompat.app.AppCompatActivity
 import android.annotation.SuppressLint
-import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -42,7 +41,7 @@ class PlayingQueueAdapter(
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_list, parent, false))
+        return ViewHolder(inflatedView(R.layout.item_list, parent))
     }
 
     override fun getItemViewType(position: Int): Int =
@@ -60,7 +59,6 @@ class PlayingQueueAdapter(
         (holder as ViewHolder).bind(position)
     }
 
-    override fun setImage(holder: DisplayViewHolder, position: Int) {}
 
     override fun onMenuClick(bindingAdapterPosition: Int, menuButtonView: View) {
         if (dataset.isNotEmpty()) {
@@ -79,6 +77,8 @@ class PlayingQueueAdapter(
 
 
     inner class ViewHolder(itemView: View) : DisplayViewHolder(itemView), DraggableItemViewHolder {
+
+        override fun setImage(holder: DisplayViewHolder, position: Int) {}
 
         fun bind(position: Int) {
             val song = dataset[position]

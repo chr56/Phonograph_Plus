@@ -13,32 +13,38 @@ import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 
 class SongCollectionDisplayAdapter(
     activity: AppCompatActivity,
     dataSet: List<SongCollection>,
     layoutRes: Int,
-    cfg: (DisplayAdapter<SongCollection>.() -> Unit)?
+    cfg: (DisplayAdapter<SongCollection>.() -> Unit)?,
 ) : DisplayAdapter<SongCollection>(activity, dataSet, layoutRes, cfg) {
 
     var onClick: (bindingAdapterPosition: Int) -> Unit = {}
 
-    override fun setImage(holder: DisplayViewHolder, position: Int) {
-        val context = holder.itemView.context
-        holder.image?.setImageDrawable(
-            context.getTintedDrawable(
-                R.drawable.ic_folder_white_24dp, resolveColor(
-                    context,
-                    R.attr.iconColor,
-                    context.primaryTextColor(context.nightMode)
-                )
-            )
-        )
-    }
-
     override fun onClick(position: Int, imageView: ImageView?): Boolean {
         onClick(position)
         return true
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder =
+        SongCollectionDisplayViewHolder(inflatedView(layoutRes, parent))
+
+    inner class SongCollectionDisplayViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+        override fun setImage(holder: DisplayViewHolder, position: Int) {
+            val context = holder.itemView.context
+            holder.image?.setImageDrawable(
+                context.getTintedDrawable(
+                    R.drawable.ic_folder_white_24dp, resolveColor(
+                        context,
+                        R.attr.iconColor,
+                        context.primaryTextColor(context.nightMode)
+                    )
+                )
+            )
+        }
     }
 }

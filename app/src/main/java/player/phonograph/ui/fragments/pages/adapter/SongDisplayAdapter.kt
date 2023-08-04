@@ -17,6 +17,9 @@ import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.util.text.dateTextShortText
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 
 open class SongDisplayAdapter(
     activity: AppCompatActivity,
@@ -25,27 +28,6 @@ open class SongDisplayAdapter(
     cfg: (DisplayAdapter<Song>.() -> Unit)?,
 ) : DisplayAdapter<Song>(activity, dataSet, layoutRes, cfg) {
 
-    override fun setImage(holder: DisplayViewHolder, position: Int) {
-        val context = holder.itemView.context
-        holder.image?.let { view ->
-            loadImage(context) {
-                data(dataset[position])
-                size(ViewSizeResolver(view))
-                target(
-                    PaletteTargetBuilder(context)
-                        .onStart {
-                            view.setImageResource(R.drawable.default_album_art)
-                            setPaletteColors(context.getColor(R.color.defaultFooterColor), holder)
-                        }
-                        .onResourceReady { result, palette ->
-                            view.setImageDrawable(result)
-                            if (usePalette) setPaletteColors(palette, holder)
-                        }
-                        .build()
-                )
-            }
-        }
-    }
 
     override fun getSectionNameImp(position: Int): String {
         val song = dataset[position]
@@ -63,5 +45,32 @@ open class SongDisplayAdapter(
                 else                      -> ""
             }
         return sectionName
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder =
+        SongDisplayViewHolder(inflatedView(layoutRes, parent))
+
+    inner class SongDisplayViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+        override fun setImage(holder: DisplayViewHolder, position: Int) {
+            val context = holder.itemView.context
+            holder.image?.let { view ->
+                loadImage(context) {
+                    data(dataset[position])
+                    size(ViewSizeResolver(view))
+                    target(
+                        PaletteTargetBuilder(context)
+                            .onStart {
+                                view.setImageResource(R.drawable.default_album_art)
+                                setPaletteColors(context.getColor(R.color.defaultFooterColor), holder)
+                            }
+                            .onResourceReady { result, palette ->
+                                view.setImageDrawable(result)
+                                if (usePalette) setPaletteColors(palette, holder)
+                            }
+                            .build()
+                    )
+                }
+            }
+        }
     }
 }

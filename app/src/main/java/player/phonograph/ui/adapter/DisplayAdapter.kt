@@ -61,52 +61,20 @@ open class DisplayAdapter<I : Displayable>(
     override fun getItemId(position: Int): Long = dataset[position].getItemID()
     override fun getItem(datasetPosition: Int): I = dataset[datasetPosition]
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder =
-        DisplayViewHolder(
-            LayoutInflater.from(activity).inflate(layoutRes, parent, false)
-        )
+    protected fun inflatedView(layoutRes: Int, parent: ViewGroup): View =
+        LayoutInflater.from(activity).inflate(layoutRes, parent, false)
 
-    protected open val defaultIcon =
-        AppCompatResources.getDrawable(activity, R.drawable.default_album_art)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder =
+        DisplayViewHolder(inflatedView(layoutRes, parent))
 
     override fun onBindViewHolder(holder: DisplayViewHolder, position: Int) {
         val item: I = dataset[position]
-        holder.shortSeparator?.visibility = View.VISIBLE
-        holder.itemView.isActivated = controller.isSelected(item)
-        holder.title?.text = item.getDisplayTitle(context = activity)
-        holder.text?.text = getDescription(item)
-        if (useImageText) {
-            setImageText(holder, getRelativeOrdinalText(item))
-        } else {
-            setImage(holder, position)
-        }
-        controller.registerClicking(holder.itemView, position) {
-            onClick(position, holder.image)
-        }
+        holder.bind(item, position, controller, useImageText)
     }
 
     protected open fun onClick(position: Int, imageView: ImageView?): Boolean {
         return listClick(dataset, position, activity, imageView)
     }
-
-    protected open fun getDescription(item: I): CharSequence? =
-        item.getDescription(context = activity)
-
-    protected open fun setImage(holder: DisplayViewHolder, position: Int) {
-        holder.image?.also {
-            it.visibility = View.VISIBLE
-            it.setImageDrawable(defaultIcon)
-        }
-    }
-
-    protected open fun setImageText(holder: DisplayViewHolder, text: String) {
-        holder.imageText?.also {
-            it.visibility = View.VISIBLE
-            it.text = text
-        }
-    }
-
-    protected open fun getRelativeOrdinalText(item: I): String = "-"
 
     override fun getItemCount(): Int = dataset.size
 
@@ -140,15 +108,49 @@ open class DisplayAdapter<I : Displayable>(
 
     open inner class DisplayViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
 
-        init {
-            // Menu Click
-            menu?.setOnClickListener {
-                onMenuClick(bindingAdapterPosition, it)
+        fun <I : Displayable> bind(
+            item: I,
+            position: Int,
+            controller: MultiSelectionController<I>,
+            useImageText: Boolean,
+        ) {
+            shortSeparator?.visibility = View.VISIBLE
+            itemView.isActivated = controller.isSelected(item)
+            title?.text = item.getDisplayTitle(context = itemView.context)
+            text?.text = getDescription(item)
+            if (useImageText) {
+                setImageText(this, getRelativeOrdinalText(item))
+            } else {
+                setImage(this, position)
             }
-            // Setup MenuItem
-            dataset.getOrNull(0)?.let {
-                menu?.visibility = if (it.hasMenu()) View.VISIBLE else View.GONE
+            controller.registerClicking(itemView, position) {
+                onClick(position, image)
+            }
+            menu?.visibility = if (item.hasMenu()) View.VISIBLE else View.GONE
+            menu?.setOnClickListener {
+                onMenuClick(position, it)
             }
         }
+
+        protected open fun <I : Displayable> getRelativeOrdinalText(item: I): String = "-"
+        protected open fun <I : Displayable> getDescription(item: I): CharSequence? =
+            item.getDescription(context = itemView.context)
+
+        protected open fun setImage(holder: DisplayViewHolder, position: Int) {
+            holder.image?.also {
+                it.visibility = View.VISIBLE
+                it.setImageDrawable(defaultIcon)
+            }
+        }
+
+        protected open fun setImageText(holder: DisplayViewHolder, text: String) {
+            holder.imageText?.also {
+                it.visibility = View.VISIBLE
+                it.text = text
+            }
+        }
+
+        protected open val defaultIcon =
+            AppCompatResources.getDrawable(itemView.context, R.drawable.default_album_art)
     }
 }
