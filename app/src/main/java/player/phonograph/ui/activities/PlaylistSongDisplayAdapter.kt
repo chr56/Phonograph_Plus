@@ -14,15 +14,16 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHold
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
+import player.phonograph.actions.actionGotoDetail
 import player.phonograph.coil.loadImage
 import player.phonograph.model.Displayable
 import player.phonograph.model.Song
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.compose.tag.TagEditorActivity
 import player.phonograph.ui.dialogs.DeleteSongsDialog
-import player.phonograph.ui.dialogs.SongDetailDialog
 import player.phonograph.util.ui.hitTest
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import android.content.Context
 import android.view.Menu
 import android.view.View
@@ -151,10 +152,7 @@ class PlaylistSongDisplayAdapter(
             menuItem {
                 titleRes(R.string.action_details)
                 onClick {
-                    SongDetailDialog.create(song).show(
-                        activity.supportFragmentManager,
-                        "SONG_DETAILS"
-                    )
+                    song.actionGotoDetail(activity)
                     true
                 }
             }
