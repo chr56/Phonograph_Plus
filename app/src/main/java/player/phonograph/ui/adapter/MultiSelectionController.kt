@@ -8,12 +8,14 @@ import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.ToolbarCab.Companion.STATUS_ACTIVE
 import lib.phonograph.cab.createToolbarCab
 import mt.pref.ThemeColor
+import mt.util.color.darkenColor
+import mt.util.color.isColorLight
+import mt.util.color.lightenColor
 import player.phonograph.R
 import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.misc.IPaletteColorProvider
 import player.phonograph.util.debug
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.shiftBackgroundColorForLightText
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.annotation.ColorInt
@@ -111,12 +113,29 @@ class MultiSelectionController<I>(
         }
     }
 
-    @ColorInt
-    var textColor: Int = Color.WHITE
-        set(value) {
-            field = value
-            cab?.titleTextColor = value
+
+    @get:ColorInt
+    val cabColor: Int
+        get() {
+            var color =
+                (activity as? IPaletteColorProvider)?.paletteColor?.value ?: ThemeColor.primaryColor(activity)
+            if (isColorLight(color)) {
+                // light to dark
+                for (it in 0 until 3) {
+                    color = darkenColor(color)
+                }
+            } else {
+                // dark to light
+                for (it in 0 until 3) {
+                    color = lightenColor(color)
+                }
+            }
+            return color
         }
+
+    @get:ColorInt
+    val textColor: Int
+        get() = if (isColorLight(cabColor)) Color.BLACK else Color.WHITE
 
     private var _cab: ToolbarCab? = null
     val cab: ToolbarCab?
@@ -137,11 +156,12 @@ class MultiSelectionController<I>(
     }
 
     private fun ToolbarCab.prepare() {
-        val cabColor = (activity as? IPaletteColorProvider)?.paletteColor?.value ?: ThemeColor.primaryColor(activity)
-        backgroundColor = shiftBackgroundColorForLightText(cabColor)
         titleText = toolbar.resources.getString(R.string.x_selected, 0)
+
         titleTextColor = textColor
-        navigationIcon = activity.getTintedDrawable(R.drawable.ic_close_white_24dp, Color.WHITE)!!
+        backgroundColor = cabColor
+
+        navigationIcon = activity.getTintedDrawable(R.drawable.ic_close_white_24dp, textColor)!!
 
         setupMenu()
         closeClickListener = View.OnClickListener {
