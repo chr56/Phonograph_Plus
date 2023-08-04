@@ -6,16 +6,19 @@ package player.phonograph.ui.adapter
 
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.ToolbarCab.Companion.STATUS_ACTIVE
-import lib.phonograph.cab.createToolbarCab
+import lib.phonograph.cab.initToolbarCab
 import mt.pref.ThemeColor
+import mt.util.color.darkenColor
+import mt.util.color.isColorLight
+import mt.util.color.lightenColor
 import player.phonograph.R
 import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.misc.IPaletteColorProvider
 import player.phonograph.util.debug
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.shiftBackgroundColorForLightText
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
+import androidx.annotation.ColorInt
 import android.graphics.Color
 import android.util.Log
 import android.view.View
@@ -49,8 +52,30 @@ class MultiSelectionController<I>(
         if (!_selected.remove(item)) _selected.add(item)
         linkedAdapter.notifyItemChanged(datasetPosition)
         updateCab()
+        lastSelectedPosition = datasetPosition
         return true
     }
+
+    private var lastSelectedPosition = -1
+    fun rangeTo(datasetPosition: Int): Boolean {
+        if (lastSelectedPosition > 0 && datasetPosition != lastSelectedPosition) {
+            val range =
+                if (datasetPosition < lastSelectedPosition) IntRange(datasetPosition, lastSelectedPosition)
+                else IntRange(lastSelectedPosition, datasetPosition)
+            for (i in range) {
+                val item = linkedAdapter.getItem(i)
+                if (item != null) {
+                    _selected.add(item)
+                }
+            }
+            linkedAdapter.notifyDataSetChanged()
+            updateCab()
+            return true
+        } else {
+            return false
+        }
+    }
+
 
     val isInQuickSelectMode: Boolean
         get() = enable && cab != null && cab?.status == STATUS_ACTIVE
@@ -73,6 +98,19 @@ class MultiSelectionController<I>(
         updateCab()
     }
 
+    fun invertSelected() {
+        val previousSelected = _selected.toMutableList() //copy
+        _selected.clear()
+        for (i in 0 until linkedAdapter.getItemCount()) {
+            val item = linkedAdapter.getItem(i)
+            if (item != null && item !in previousSelected) {
+                _selected.add(item)
+            }
+        }
+        linkedAdapter.notifyDataSetChanged()
+        updateCab()
+    }
+
     fun isSelected(item: I): Boolean = _selected.contains(item)
 
     private var onBackPressedDispatcherRegistered = false
@@ -82,7 +120,7 @@ class MultiSelectionController<I>(
 
         if (!onBackPressedDispatcherRegistered && cab != null) {
             onBackPressedDispatcherRegistered = true
-            val activity = cab?.activity as? ComponentActivity
+            val activity = activity as? ComponentActivity
             activity?.onBackPressedDispatcher?.addCallback {
                 cab?.hide()
                 unselectedAll()
@@ -97,30 +135,58 @@ class MultiSelectionController<I>(
         }
     }
 
+
+    @get:ColorInt
+    val cabColor: Int
+        get() {
+            var color =
+                (activity as? IPaletteColorProvider)?.paletteColor?.value ?: ThemeColor.primaryColor(activity)
+            if (isColorLight(color)) {
+                // light to dark
+                for (it in 0 until 3) {
+                    color = darkenColor(color)
+                }
+            } else {
+                // dark to light
+                for (it in 0 until 3) {
+                    color = lightenColor(color)
+                }
+            }
+            return color
+        }
+
+    @get:ColorInt
+    val textColor: Int
+        get() = if (isColorLight(cabColor)) Color.BLACK else Color.WHITE
+
     private var _cab: ToolbarCab? = null
     val cab: ToolbarCab?
         get() {
-            if (!enable) return null
-            if (_cab == null) {
-                _cab = createCab()
+            return if (!enable) null
+            else {
+                val targetId = R.id.cab_stub
+                val inflatedId = R.id.multi_selection_cab
+                if (_cab != null) {
+                    _cab
+                } else {
+                    _cab = try {
+                        initToolbarCab(activity, targetId, inflatedId).apply { prepare() }
+                    } catch (e: IllegalStateException) {
+                        Log.e("Cab", "Failed to create cab", e)
+                        null
+                    }
+                    _cab
+                }
             }
-            return _cab
         }
-
-    private fun createCab(): ToolbarCab? {
-        return try {
-            createToolbarCab(activity, R.id.cab_stub, R.id.multi_selection_cab).apply { prepare() }
-        } catch (e: IllegalStateException) {
-            null
-        }
-    }
 
     private fun ToolbarCab.prepare() {
-        val cabColor = (activity as? IPaletteColorProvider)?.paletteColor?.value ?: ThemeColor.primaryColor(activity)
-        backgroundColor = shiftBackgroundColorForLightText(cabColor)
         titleText = toolbar.resources.getString(R.string.x_selected, 0)
-        titleTextColor = Color.WHITE
-        navigationIcon = activity.getTintedDrawable(R.drawable.ic_close_white_24dp, Color.WHITE)!!
+
+        titleTextColor = textColor
+        backgroundColor = cabColor
+
+        navigationIcon = activity.getTintedDrawable(R.drawable.ic_close_white_24dp, textColor)!!
 
         setupMenu()
         closeClickListener = View.OnClickListener {
@@ -129,9 +195,9 @@ class MultiSelectionController<I>(
         }
     }
 
-    private fun setupMenu() {
-        cab?.menuHandler = {
-            multiItemsToolbar(it.menu, activity, this)
+    private fun ToolbarCab.setupMenu() {
+        menuHandler = {
+            multiItemsToolbar(it.menu, activity, this@MultiSelectionController)
         }
     }
     /**
@@ -141,7 +207,7 @@ class MultiSelectionController<I>(
         updateCountText(size)
         cab?.let { cab ->
             if (size > 0) {
-                setupMenu()
+                cab.setupMenu()
                 cab.show()
             } else {
                 cab.hide()
@@ -155,6 +221,31 @@ class MultiSelectionController<I>(
     private fun updateCountText(size: Int) {
         cab?.let { cab ->
             cab.titleText = cab.toolbar.resources.getString(R.string.x_selected, size)
+        }
+    }
+
+    fun registerClicking(itemView: View, bindingAdapterPosition: Int, normalClick: () -> Boolean) {
+        registerOnClickListener(itemView, bindingAdapterPosition, normalClick)
+        registerOnLongClickListener(itemView, bindingAdapterPosition)
+    }
+
+    fun registerOnClickListener(itemView: View, bindingAdapterPosition: Int, normalClick: () -> Boolean) {
+        itemView.setOnClickListener {
+            if (this.isInQuickSelectMode) {
+                this.toggle(bindingAdapterPosition)
+            } else {
+                normalClick()
+            }
+        }
+    }
+
+    fun registerOnLongClickListener(itemView: View, bindingAdapterPosition: Int) {
+        itemView.setOnLongClickListener {
+            when (this.isInQuickSelectMode) {
+                false -> this.toggle(bindingAdapterPosition)
+                true  -> this.rangeTo(bindingAdapterPosition)
+            }
+            true
         }
     }
 

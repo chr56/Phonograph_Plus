@@ -13,36 +13,41 @@ import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 
 class SongCollectionDisplayAdapter(
     activity: AppCompatActivity,
     dataSet: List<SongCollection>,
     layoutRes: Int,
-    cfg: (DisplayAdapter<SongCollection>.() -> Unit)?
-) : DisplayAdapter<SongCollection>(activity, dataSet, layoutRes, cfg) {
+    val onClick: (bindingAdapterPosition: Int) -> Unit,
+) : DisplayAdapter<SongCollection>(activity, dataSet, layoutRes) {
 
-    var onClick: (bindingAdapterPosition: Int) -> Unit = {}
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<SongCollection> =
+        SongCollectionViewHolder(inflatedView(layoutRes, parent), onClick)
 
-    override fun setImage(holder: DisplayViewHolder, position: Int) {
-        val context = holder.itemView.context
-        holder.image?.setImageDrawable(
-            context.getTintedDrawable(
-                R.drawable.ic_folder_white_24dp, resolveColor(
-                    context,
-                    R.attr.iconColor,
-                    context.primaryTextColor(context.nightMode)
+    class SongCollectionViewHolder(
+        itemView: View,
+        private val onClick: (bindingAdapterPosition: Int) -> Unit,
+    ) : DisplayViewHolder<SongCollection>(itemView) {
+
+        override fun onClick(position: Int, dataset: List<SongCollection>, imageView: ImageView?): Boolean {
+            onClick(position)
+            return true
+        }
+
+        override fun setImage(position: Int, dataset: List<SongCollection>, usePalette: Boolean) {
+            super.setImage(position, dataset, usePalette)
+            val context = itemView.context
+            image?.setImageDrawable(
+                context.getTintedDrawable(
+                    R.drawable.ic_folder_white_24dp, resolveColor(
+                        context,
+                        R.attr.iconColor,
+                        context.primaryTextColor(context.nightMode)
+                    )
                 )
             )
-        )
-    }
-
-    override fun onClickItem(bindingAdapterPosition: Int, view: View, imageView: ImageView?) {
-        when (controller.isInQuickSelectMode) {
-            true  -> controller.toggle(bindingAdapterPosition)
-            false -> {
-                onClick(bindingAdapterPosition)
-            }
         }
     }
 }

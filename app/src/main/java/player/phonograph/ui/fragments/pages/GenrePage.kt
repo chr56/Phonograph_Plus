@@ -5,11 +5,11 @@
 package player.phonograph.ui.fragments.pages
 
 import player.phonograph.R
-import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.fragments.pages.adapter.GenreDisplayAdapter
 import player.phonograph.model.Genre
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.loaders.GenreLoader
+import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.fragments.pages.adapter.GenreDisplayAdapter
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import androidx.fragment.app.viewModels
 import android.content.Context
@@ -37,7 +37,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
             hostFragment.mainActivity,
             ArrayList(), // empty until Genre loaded
             R.layout.item_list_no_image
-        ) {
+        ).apply {
             showSectionName = true
         }
     }

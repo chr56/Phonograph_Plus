@@ -10,23 +10,26 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
+import android.view.View
+import android.view.ViewGroup
 
 class GenreDisplayAdapter(
     activity: AppCompatActivity,
     dataSet: List<Genre>,
     layoutRes: Int,
-    cfg: (DisplayAdapter<Genre>.() -> Unit)?
-) : DisplayAdapter<Genre>(
-    activity, dataSet,
-    layoutRes,
-    cfg
-) {
+) : DisplayAdapter<Genre>(activity, dataSet, layoutRes) {
 
     override fun getSectionNameImp(position: Int): String {
         return when (Setting.instance.genreSortMode.sortRef) {
             SortRef.DISPLAY_NAME -> makeSectionName(dataset[position].name)
-            SortRef.SONG_COUNT -> dataset[position].songCount.toString()
-            else -> ""
+            SortRef.SONG_COUNT   -> dataset[position].songCount.toString()
+            else                 -> ""
         }
     }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Genre> =
+        GenreViewHolder(inflatedView(layoutRes, parent))
+
+    class GenreViewHolder(itemView: View) : DisplayViewHolder<Genre>(itemView)
+
 }

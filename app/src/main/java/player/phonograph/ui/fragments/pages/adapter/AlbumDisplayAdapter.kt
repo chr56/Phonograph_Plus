@@ -15,7 +15,6 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
@@ -23,30 +22,7 @@ open class AlbumDisplayAdapter(
     activity: AppCompatActivity,
     dataSet: List<Album>,
     layoutRes: Int,
-    cfg: (DisplayAdapter<Album>.() -> Unit)?,
-) : DisplayAdapter<Album>(activity, dataSet, layoutRes, cfg) {
-
-    override fun setImage(holder: DisplayViewHolder, position: Int) {
-        val context = holder.itemView.context
-        holder.image?.let { view ->
-            loadImage(activity) {
-                data(dataset[position].safeGetFirstSong())
-                size(ViewSizeResolver(view))
-                target(
-                    PaletteTargetBuilder(context)
-                        .onStart {
-                            view.setImageResource(R.drawable.default_album_art)
-                            setPaletteColors(context.getColor(R.color.defaultFooterColor), holder)
-                        }
-                        .onResourceReady { result, palette ->
-                            view.setImageDrawable(result)
-                            if (usePalette) setPaletteColors(palette, holder)
-                        }
-                        .build()
-                )
-            }
-        }
-    }
+) : DisplayAdapter<Album>(activity, dataSet, layoutRes) {
 
     override fun getSectionNameImp(position: Int): String {
         val album = dataset[position]
@@ -61,17 +37,37 @@ open class AlbumDisplayAdapter(
         return sectionName
     }
 
-    override fun getRelativeOrdinalText(item: Album): String = item.songCount.toString()
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
-        return AlbumViewHolder(
-            LayoutInflater.from(activity).inflate(layoutRes, parent, false)
-        )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Album> {
+        return AlbumViewHolder(inflatedView(layoutRes, parent))
     }
 
-    inner class AlbumViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+    inner class AlbumViewHolder(itemView: View) : DisplayViewHolder<Album>(itemView) {
         init {
             setImageTransitionName(itemView.context.getString(R.string.transition_album_art))
+        }
+
+        override fun getRelativeOrdinalText(item: Album): String = item.songCount.toString()
+
+        override fun setImage(position: Int, dataset: List<Album>, usePalette: Boolean) {
+            val context = itemView.context
+            image?.let { view ->
+                loadImage(context) {
+                    data(dataset[position].safeGetFirstSong())
+                    size(ViewSizeResolver(view))
+                    target(
+                        PaletteTargetBuilder(context)
+                            .onStart {
+                                view.setImageResource(R.drawable.default_album_art)
+                                setPaletteColors(context.getColor(R.color.defaultFooterColor))
+                            }
+                            .onResourceReady { result, palette ->
+                                view.setImageDrawable(result)
+                                if (usePalette) setPaletteColors(palette)
+                            }
+                            .build()
+                    )
+                }
+            }
         }
     }
 }

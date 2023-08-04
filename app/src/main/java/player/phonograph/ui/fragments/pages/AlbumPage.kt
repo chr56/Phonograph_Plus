@@ -5,11 +5,11 @@
 package player.phonograph.ui.fragments.pages
 
 import player.phonograph.R
-import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
-import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.model.Album
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
+import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import androidx.fragment.app.viewModels
@@ -43,7 +43,7 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
             hostFragment.mainActivity,
             ArrayList(), // empty until Albums loaded
             layoutRes
-        ) {
+        ).apply {
             usePalette = displayConfig.colorFooter
         }
     }

@@ -7,10 +7,6 @@ package player.phonograph.ui.activities
 import coil.size.ViewSizeResolver
 import mt.util.color.resolveColor
 import player.phonograph.R
-import player.phonograph.ui.adapter.IMultiSelectableAdapter
-import player.phonograph.ui.adapter.MultiSelectionController
-import player.phonograph.ui.adapter.UniversalMediaEntryViewHolder
-import player.phonograph.ui.adapter.initMenu
 import player.phonograph.coil.loadImage
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -19,6 +15,10 @@ import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.ui.adapter.IMultiSelectableAdapter
+import player.phonograph.ui.adapter.MultiSelectionController
+import player.phonograph.ui.adapter.UniversalMediaEntryViewHolder
+import player.phonograph.ui.adapter.initMenu
 import player.phonograph.util.NavigationUtil.goToAlbum
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.NavigationUtil.goToPlaylist
@@ -76,27 +76,28 @@ class SearchResultAdapter(
             SONG     -> {
                 holder as SongViewHolder
                 holder.bind(item as Song)
-                holder.setupMultiselect(controller::isInQuickSelectMode, controller::isSelected, controller::toggle)
+                controller.registerClicking(holder.itemView, position, holder::onClick)
             }
 
             ALBUM    -> {
                 holder as AlbumViewHolder
                 holder.bind(item as Album)
-                holder.setupMultiselect(controller::isInQuickSelectMode, controller::isSelected, controller::toggle)
+                controller.registerClicking(holder.itemView, position, holder::onClick)
             }
 
             ARTIST   -> {
                 holder as ArtistViewHolder
                 holder.bind(item as Artist)
-                holder.setupMultiselect(controller::isInQuickSelectMode, controller::isSelected, controller::toggle)
+                controller.registerClicking(holder.itemView, position, holder::onClick)
             }
 
             PLAYLIST -> {
                 holder as PlaylistViewHolder
                 holder.bind(item as Playlist)
-                holder.setupMultiselect(controller::isInQuickSelectMode, controller::isSelected, controller::toggle)
+                controller.registerClicking(holder.itemView, position, holder::onClick)
             }
         }
+        holder.itemView.isActivated = controller.isSelected(item)
     }
 
     override fun getItemCount(): Int = dataSet.size
@@ -122,7 +123,7 @@ class SearchResultAdapter(
 
         protected lateinit var item: T
 
-        abstract fun onClick()
+        abstract fun onClick(): Boolean
         abstract fun bind(item: T)
 
         fun setupMultiselect(
@@ -170,8 +171,8 @@ class SearchResultAdapter(
             }
         }
 
-        override fun onClick() {
-            MusicPlayerRemote.playNow(item)
+        override fun onClick(): Boolean {
+            return MusicPlayerRemote.playNow(item)
         }
 
         companion object {
@@ -201,13 +202,14 @@ class SearchResultAdapter(
             }
         }
 
-        override fun onClick() {
+        override fun onClick(): Boolean {
             goToAlbum(
                 itemView.context, item.id,
                 Pair.create(
                     image, itemView.context.resources.getString(R.string.transition_album_art)
                 )
             )
+            return true
         }
 
         companion object {
@@ -237,13 +239,14 @@ class SearchResultAdapter(
             }
         }
 
-        override fun onClick() {
+        override fun onClick(): Boolean {
             goToArtist(
                 itemView.context, item.id,
                 Pair.create(
                     image, itemView.context.resources.getString(R.string.transition_artist_image)
                 )
             )
+            return true
         }
 
         companion object {
@@ -262,8 +265,9 @@ class SearchResultAdapter(
             image?.setImageDrawable(context.getTintedDrawable(item.iconRes, context.getColor(R.color.grey_highlight)))
         }
 
-        override fun onClick() {
+        override fun onClick(): Boolean {
             goToPlaylist(itemView.context, item)
+            return true
         }
 
         companion object {

@@ -17,35 +17,15 @@ import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.util.text.dateTextShortText
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
+import android.view.View
+import android.view.ViewGroup
 
 open class SongDisplayAdapter(
     activity: AppCompatActivity,
     dataSet: List<Song>,
     layoutRes: Int,
-    cfg: (DisplayAdapter<Song>.() -> Unit)?,
-) : DisplayAdapter<Song>(activity, dataSet, layoutRes, cfg) {
+) : DisplayAdapter<Song>(activity, dataSet, layoutRes) {
 
-    override fun setImage(holder: DisplayViewHolder, position: Int) {
-        val context = holder.itemView.context
-        holder.image?.let { view ->
-            loadImage(context) {
-                data(dataset[position])
-                size(ViewSizeResolver(view))
-                target(
-                    PaletteTargetBuilder(context)
-                        .onStart {
-                            view.setImageResource(R.drawable.default_album_art)
-                            setPaletteColors(context.getColor(R.color.defaultFooterColor), holder)
-                        }
-                        .onResourceReady { result, palette ->
-                            view.setImageDrawable(result)
-                            if (usePalette) setPaletteColors(palette, holder)
-                        }
-                        .build()
-                )
-            }
-        }
-    }
 
     override fun getSectionNameImp(position: Int): String {
         val song = dataset[position]
@@ -63,5 +43,33 @@ open class SongDisplayAdapter(
                 else                      -> ""
             }
         return sectionName
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Song> =
+        SongViewHolder(inflatedView(layoutRes, parent))
+
+    inner class SongViewHolder(itemView: View) : DisplayViewHolder<Song>(itemView) {
+        override fun setImage(position: Int, dataset: List<Song>, usePalette: Boolean) {
+            super.setImage(position, dataset, usePalette)
+            val context = itemView.context
+            image?.let { view ->
+                loadImage(context) {
+                    data(dataset[position])
+                    size(ViewSizeResolver(view))
+                    target(
+                        PaletteTargetBuilder(context)
+                            .onStart {
+                                view.setImageResource(R.drawable.default_album_art)
+                                setPaletteColors(context.getColor(R.color.defaultFooterColor))
+                            }
+                            .onResourceReady { result, palette ->
+                                view.setImageDrawable(result)
+                                if (usePalette) setPaletteColors(palette)
+                            }
+                            .build()
+                    )
+                }
+            }
+        }
     }
 }

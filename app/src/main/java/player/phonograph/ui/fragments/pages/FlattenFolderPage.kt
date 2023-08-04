@@ -190,14 +190,14 @@ class FlattenFolderPage : AbsPage() {
             hostFragment.mainActivity,
             emptyList(),
             R.layout.item_list,
-        ) {}
-        songCollectionDisplayAdapter.onClick = ::onFolderClick
+            ::onFolderClick
+        )
 
         songAdapter = SongDisplayAdapter(
             hostFragment.mainActivity,
             emptyList(),
             R.layout.item_list,
-        ) {}
+        )
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(
             hostFragment.mainActivity,

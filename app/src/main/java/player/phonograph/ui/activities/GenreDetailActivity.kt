@@ -68,7 +68,7 @@ class GenreDetailActivity :
 
     private fun setUpRecyclerView() {
         adapter =
-            SongDisplayAdapter(this, ArrayList(), R.layout.item_list) {
+            SongDisplayAdapter(this, ArrayList(), R.layout.item_list).apply {
                 showSectionName = false
             }
         binding.recyclerView.apply {

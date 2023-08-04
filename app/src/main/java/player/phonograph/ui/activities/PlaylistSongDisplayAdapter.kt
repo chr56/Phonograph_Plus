@@ -14,16 +14,15 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHold
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
+import player.phonograph.actions.actionGotoDetail
 import player.phonograph.coil.loadImage
 import player.phonograph.model.Song
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.compose.tag.TagEditorActivity
 import player.phonograph.ui.dialogs.DeleteSongsDialog
-import player.phonograph.ui.dialogs.SongDetailDialog
 import player.phonograph.util.ui.hitTest
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Context
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
@@ -32,29 +31,18 @@ import android.widget.PopupMenu
 class PlaylistSongDisplayAdapter(
     activity: AppCompatActivity,
     dataSet: List<Song>,
-    cfg: (DisplayAdapter<Song>.() -> Unit)?,
-) : DisplayAdapter<Song>(activity, dataSet, R.layout.item_list, cfg),
-    DraggableItemAdapter<PlaylistSongDisplayAdapter.ViewHolder> {
+) : DisplayAdapter<Song>(activity, dataSet, R.layout.item_list),
+    DraggableItemAdapter<PlaylistSongDisplayAdapter.PlaylistSongViewHolder> {
 
     override fun getSectionNameImp(position: Int): String = (position + 1).toString()
 
-    override fun setImage(holder: DisplayViewHolder, position: Int) {
-        val context = holder.itemView.context
-        loadImage(context) {
-            data(dataset[position])
-            size(ViewSizeResolver(holder.image!!))
-            target(
-                onStart = { holder.image!!.setImageResource(R.drawable.default_album_art) },
-                onSuccess = { holder.image!!.setImageDrawable(it) }
-            )
-        }
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Song> {
+        return PlaylistSongViewHolder(inflatedView(layoutRes, parent))
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
-        return ViewHolder(LayoutInflater.from(activity).inflate(layoutRes, parent, false))
-    }
-
-    override fun onBindViewHolder(holder: DisplayViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DisplayViewHolder<Song>, position: Int) {
         if (editMode) holder.dragView?.visibility = View.VISIBLE
         super.onBindViewHolder(holder, position)
     }
@@ -64,11 +52,11 @@ class PlaylistSongDisplayAdapter(
     var onMove: (fromPosition: Int, toPosition: Int) -> Boolean = { _, _ -> true }
     var onDelete: (position: Int) -> Unit = {}
 
-    override fun onCheckCanStartDrag(holder: ViewHolder, position: Int, x: Int, y: Int): Boolean =
+    override fun onCheckCanStartDrag(holder: PlaylistSongViewHolder, position: Int, x: Int, y: Int): Boolean =
         position >= 0 &&
                 (hitTest(holder.dragView!!, x, y) || hitTest(holder.image!!, x, y))
 
-    override fun onGetItemDraggableRange(holder: ViewHolder, position: Int): ItemDraggableRange =
+    override fun onGetItemDraggableRange(holder: PlaylistSongViewHolder, position: Int): ItemDraggableRange =
         ItemDraggableRange(0, dataset.size - 1)
 
     override fun onMoveItem(fromPosition: Int, toPosition: Int) {
@@ -84,16 +72,6 @@ class PlaylistSongDisplayAdapter(
         }
     }
 
-    override fun onMenuClick(bindingAdapterPosition: Int, menuButtonView: View) {
-        if (editMode) {
-            PopupMenu(activity, menuButtonView).apply {
-                injectPlaylistEditor(menu, activity, bindingAdapterPosition)
-            }.show()
-        } else {
-            super.onMenuClick(bindingAdapterPosition, menuButtonView)
-        }
-    }
-
     private fun injectPlaylistEditor(menu: Menu, context: Context, bindingAdapterPosition: Int) =
         context.attach(menu) {
             val song = dataset[bindingAdapterPosition]
@@ -102,7 +80,10 @@ class PlaylistSongDisplayAdapter(
                 onClick {
                     onDelete(bindingAdapterPosition)
                     (dataset as MutableList).removeAt(bindingAdapterPosition)
-                    notifyItemRangeChanged(bindingAdapterPosition, dataset.size - 1) // so we can reorder the items behind removed one
+                    notifyItemRangeChanged(
+                        bindingAdapterPosition,
+                        dataset.size - 1
+                    ) // so we can reorder the items behind removed one
                     true
                 }
             }
@@ -155,7 +136,10 @@ class PlaylistSongDisplayAdapter(
                     if (onMove(bindingAdapterPosition, dataset.size - 1)) {
                         (dataset as MutableList).removeAt(bindingAdapterPosition)
                         (dataset as MutableList).add(song)
-                        notifyItemRangeChanged(bindingAdapterPosition - 1, dataset.size - 1) // so we can reorder the items affected
+                        notifyItemRangeChanged(
+                            bindingAdapterPosition - 1,
+                            dataset.size - 1
+                        ) // so we can reorder the items affected
                     }
                     true
                 }
@@ -166,10 +150,7 @@ class PlaylistSongDisplayAdapter(
             menuItem {
                 titleRes(R.string.action_details)
                 onClick {
-                    SongDetailDialog.create(song).show(
-                        activity.supportFragmentManager,
-                        "SONG_DETAILS"
-                    )
+                    song.actionGotoDetail(activity)
                     true
                 }
             }
@@ -201,6 +182,7 @@ class PlaylistSongDisplayAdapter(
     override fun onItemDragStarted(position: Int) {}
 
     override fun onItemDragFinished(fromPosition: Int, toPosition: Int, result: Boolean) {
+        @Suppress("KotlinConstantConditions")
         when {
             fromPosition < toPosition -> notifyItemRangeChanged(fromPosition, toPosition)
             fromPosition > toPosition -> notifyItemRangeChanged(toPosition, fromPosition)
@@ -216,10 +198,32 @@ class PlaylistSongDisplayAdapter(
         }
     }
 
-    inner class ViewHolder(itemView: View) :
-            DisplayViewHolder(itemView),
+    inner class PlaylistSongViewHolder(itemView: View) :
+            DisplayViewHolder<Song>(itemView),
             DraggableItemViewHolder {
 
+        override fun setImage(position: Int, dataset: List<Song>, usePalette: Boolean) {
+            val context = itemView.context
+            loadImage(context) {
+                data(dataset[position])
+                size(ViewSizeResolver(image!!))
+                target(
+                    onStart = { image!!.setImageResource(R.drawable.default_album_art) },
+                    onSuccess = { image!!.setImageDrawable(it) }
+                )
+            }
+        }
+
+
+        override fun onMenuClick(dataset: List<Song>, bindingAdapterPosition: Int, menuButtonView: View) {
+            if (editMode) {
+                PopupMenu(itemView.context, menuButtonView).apply {
+                    injectPlaylistEditor(menu, itemView.context, bindingAdapterPosition)
+                }.show()
+            } else {
+                super.onMenuClick(dataset, bindingAdapterPosition, menuButtonView)
+            }
+        }
         @DraggableItemStateFlags
         private var mDragStateFlags = 0
 

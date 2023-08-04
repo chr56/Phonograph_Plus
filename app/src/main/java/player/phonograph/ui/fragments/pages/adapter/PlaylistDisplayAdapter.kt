@@ -18,18 +18,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
 class PlaylistDisplayAdapter(
     activity: AppCompatActivity,
-    cfg: (DisplayAdapter<Playlist>.() -> Unit)?,
-) : DisplayAdapter<Playlist>(
-    activity, ArrayList(),
-    R.layout.item_list_single_row,
-    cfg
-) {
+) : DisplayAdapter<Playlist>(activity, ArrayList(), R.layout.item_list_single_row) {
 
     override fun getSectionNameImp(position: Int): String {
         return when (Setting.instance.genreSortMode.sortRef) {
@@ -38,44 +32,44 @@ class PlaylistDisplayAdapter(
         }
     }
 
-    override fun setImage(holder: DisplayViewHolder, position: Int) {
-        holder.image?.also {
-            val playlist = dataset[position]
-            it.setImageResource(getIconRes(playlist))
-        }
-    }
-
-    private fun getIconRes(playlist: Playlist): Int = when {
-        playlist is SmartPlaylist                          -> playlist.iconRes
-        FavoritesStore.instance.containsPlaylist(playlist) -> R.drawable.ic_pin_white_24dp
-        Favorite.isFavoritePlaylist(activity, playlist)    -> R.drawable.ic_favorite_white_24dp
-        else                                               -> R.drawable.ic_queue_music_white_24dp
-    }
-
-
-    override val defaultIcon: Drawable?
-        get() = AppCompatResources.getDrawable(activity, R.drawable.ic_queue_music_white_24dp)
-
-
     override fun getItemViewType(position: Int): Int =
         if (dataset[position] is SmartPlaylist) SMART_PLAYLIST else DEFAULT_PLAYLIST
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
-        val view = LayoutInflater.from(activity).inflate(layoutRes, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Playlist> {
+        val view = inflatedView(layoutRes, parent)
         return if (viewType == SMART_PLAYLIST) SmartPlaylistViewHolder(view) else CommonPlaylistViewHolder(view)
     }
 
-    open inner class CommonPlaylistViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+    open class CommonPlaylistViewHolder(itemView: View) : DisplayViewHolder<Playlist>(itemView) {
         init {
             image?.also { image ->
                 val iconPadding =
-                    activity.resources.getDimensionPixelSize(R.dimen.list_item_image_icon_padding)
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.list_item_image_icon_padding)
                 image.setPadding(iconPadding, iconPadding, iconPadding, iconPadding)
                 image.setColorFilter(
-                    resolveColor(activity, R.attr.iconColor), PorterDuff.Mode.SRC_IN
+                    resolveColor(itemView.context, R.attr.iconColor), PorterDuff.Mode.SRC_IN
                 )
             }
         }
+
+        override val defaultIcon: Drawable?
+            get() = AppCompatResources.getDrawable(itemView.context, R.drawable.ic_queue_music_white_24dp)
+
+        override fun setImage(position: Int, dataset: List<Playlist>, usePalette: Boolean) {
+            super.setImage(position, dataset, usePalette)
+            image?.also {
+                val playlist = dataset[position]
+                it.setImageResource(getIconRes(playlist))
+            }
+        }
+
+        private fun getIconRes(playlist: Playlist): Int = when {
+            playlist is SmartPlaylist                               -> playlist.iconRes
+            FavoritesStore.instance.containsPlaylist(playlist)      -> R.drawable.ic_pin_white_24dp
+            Favorite.isFavoritePlaylist(itemView.context, playlist) -> R.drawable.ic_favorite_white_24dp
+            else                                                    -> R.drawable.ic_queue_music_white_24dp
+        }
+
     }
 
     inner class SmartPlaylistViewHolder(itemView: View) : CommonPlaylistViewHolder(itemView) {
@@ -84,10 +78,8 @@ class PlaylistDisplayAdapter(
                 shortSeparator!!.visibility = View.GONE
             }
             itemView.setBackgroundColor(resolveColor(activity, androidx.cardview.R.attr.cardBackgroundColor))
-            // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             itemView.elevation =
                 activity.resources.getDimensionPixelSize(R.dimen.card_elevation).toFloat()
-            // }
         }
     }
 

@@ -10,12 +10,12 @@ import mt.util.color.primaryTextColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.actions.actionPlay
-import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.service.queue.ShuffleMode
+import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import player.phonograph.util.theme.getTintedDrawable
@@ -55,7 +55,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
             hostFragment.mainActivity,
             ArrayList(), // empty until songs loaded
             layoutRes
-        ) {
+        ).apply {
             usePalette = displayConfig.colorFooter
         }
     }
