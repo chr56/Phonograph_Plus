@@ -37,12 +37,8 @@ class SongCollectionDisplayAdapter(
         )
     }
 
-    override fun onClickItem(bindingAdapterPosition: Int, view: View, imageView: ImageView?) {
-        when (controller.isInQuickSelectMode) {
-            true  -> controller.toggle(bindingAdapterPosition)
-            false -> {
-                onClick(bindingAdapterPosition)
-            }
-        }
+    override fun onClick(position: Int, imageView: ImageView?): Boolean {
+        onClick(position)
+        return true
     }
 }

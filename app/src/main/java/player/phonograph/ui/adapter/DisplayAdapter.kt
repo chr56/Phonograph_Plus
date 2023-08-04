@@ -48,12 +48,15 @@ open class DisplayAdapter<I : Displayable>(
 
     var showSectionName: Boolean = true
 
+
     protected val controller: MultiSelectionController<I> =
         MultiSelectionController(
             this,
             activity,
-            true
+            allowMultiSelection
         )
+
+    protected open val allowMultiSelection: Boolean get() = true
 
     override fun getItemId(position: Int): Long = dataset[position].getItemID()
     override fun getItem(datasetPosition: Int): I = dataset[datasetPosition]
@@ -77,6 +80,13 @@ open class DisplayAdapter<I : Displayable>(
         } else {
             setImage(holder, position)
         }
+        controller.registerClicking(holder.itemView, position) {
+            onClick(position, holder.image)
+        }
+    }
+
+    protected open fun onClick(position: Int, imageView: ImageView?): Boolean {
+        return listClick(dataset, position, activity, imageView)
     }
 
     protected open fun getDescription(item: I): CharSequence? =
@@ -128,30 +138,9 @@ open class DisplayAdapter<I : Displayable>(
         }
     }
 
-    protected open fun onClickItem(bindingAdapterPosition: Int, view: View, imageView: ImageView?) {
-        when (controller.isInQuickSelectMode) {
-            true  -> controller.toggle(bindingAdapterPosition)
-            false -> {
-                listClick(dataset, bindingAdapterPosition, activity, imageView)
-            }
-        }
-    }
-
-    protected open fun onLongClickItem(bindingAdapterPosition: Int, view: View): Boolean {
-        return controller.toggle(bindingAdapterPosition)
-    }
-
     open inner class DisplayViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
 
         init {
-            // Item Click
-            itemView.setOnClickListener {
-                this@DisplayAdapter.onClickItem(bindingAdapterPosition, it, image)
-            }
-            // Item Long Click
-            itemView.setOnLongClickListener {
-                this@DisplayAdapter.onLongClickItem(bindingAdapterPosition, it)
-            }
             // Menu Click
             menu?.setOnClickListener {
                 onMenuClick(bindingAdapterPosition, it)

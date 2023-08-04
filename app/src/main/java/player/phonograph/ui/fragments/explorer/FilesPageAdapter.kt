@@ -60,16 +60,9 @@ class FilesPageAdapter(
                     }.show()
                 }
             }
-
-            itemView.setOnClickListener {
-                if (controller.isInQuickSelectMode) {
-                    controller.toggle(bindingAdapterPosition)
-                } else {
-                    callback(dataSet as List<FileEntity>, position)
-                }
-            }
-            itemView.setOnLongClickListener {
-                controller.toggle(bindingAdapterPosition)
+            controller.registerClicking(itemView, bindingAdapterPosition) {
+                callback(dataSet as List<FileEntity>, position)
+                true
             }
             itemView.isActivated = controller.isSelected(item)
         }

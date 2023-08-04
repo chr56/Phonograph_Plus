@@ -31,7 +31,8 @@ class PlayingQueueAdapter(
     dataSet: List<Song>,
     current: Int,
     cfg: (DisplayAdapter<Song>.() -> Unit)?,
-) : DisplayAdapter<Song>(activity, dataSet, R.layout.item_list, cfg), DraggableItemAdapter<PlayingQueueAdapter.ViewHolder> {
+) : DisplayAdapter<Song>(activity, dataSet, R.layout.item_list, cfg),
+    DraggableItemAdapter<PlayingQueueAdapter.ViewHolder> {
 
     var current: Int = current
         @SuppressLint("NotifyDataSetChanged") // number 0 is moving, meaning all items' number is changing
@@ -48,7 +49,7 @@ class PlayingQueueAdapter(
         when {
             position < current -> HISTORY
             position > current -> UP_NEXT
-            else -> CURRENT
+            else               -> CURRENT
         }
 
     override fun onBindViewHolder(
@@ -69,11 +70,13 @@ class PlayingQueueAdapter(
         }
     }
 
-    override fun onClickItem(bindingAdapterPosition: Int, view: View, imageView: ImageView?) {
-        MusicPlayerRemote.playSongAt(bindingAdapterPosition)
+    override fun onClick(position: Int, imageView: ImageView?): Boolean {
+        MusicPlayerRemote.playSongAt(position)
+        return true
     }
 
-    override fun onLongClickItem(bindingAdapterPosition: Int, view: View): Boolean = true
+    override val allowMultiSelection: Boolean get() = false
+
 
     inner class ViewHolder(itemView: View) : DisplayViewHolder(itemView), DraggableItemViewHolder {
 
@@ -141,7 +144,7 @@ class PlayingQueueAdapter(
             when {
                 fromPosition < toPosition -> notifyItemRangeChanged(fromPosition, toPosition)
                 fromPosition > toPosition -> notifyItemRangeChanged(toPosition, fromPosition)
-                else -> notifyItemChanged(fromPosition)
+                else                      -> notifyItemChanged(fromPosition)
             }
         }
     }
