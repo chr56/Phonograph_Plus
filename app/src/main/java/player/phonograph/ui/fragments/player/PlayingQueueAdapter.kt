@@ -10,7 +10,6 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHold
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
-import player.phonograph.model.Displayable
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
@@ -33,7 +32,7 @@ class PlayingQueueAdapter(
     dataSet: List<Song>,
     current: Int,
 ) : DisplayAdapter<Song>(activity, dataSet, R.layout.item_list),
-    DraggableItemAdapter<PlayingQueueAdapter.ViewHolder> {
+    DraggableItemAdapter<PlayingQueueAdapter.PlayingQueueViewHolder> {
 
     var current: Int = current
         @SuppressLint("NotifyDataSetChanged") // number 0 is moving, meaning all items' number is changing
@@ -42,8 +41,8 @@ class PlayingQueueAdapter(
             notifyDataSetChanged()
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
-        return ViewHolder(inflatedView(R.layout.item_list, parent))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Song> {
+        return PlayingQueueViewHolder(inflatedView(R.layout.item_list, parent))
     }
 
     override fun getItemViewType(position: Int): Int =
@@ -55,20 +54,16 @@ class PlayingQueueAdapter(
 
     override val allowMultiSelection: Boolean get() = false
 
-    inner class ViewHolder(itemView: View) : DisplayViewHolder(itemView), DraggableItemViewHolder {
+    inner class PlayingQueueViewHolder(itemView: View) : DisplayViewHolder<Song>(itemView), DraggableItemViewHolder {
 
-        override fun <I : Displayable> setImage(position: Int, dataset: List<I>, usePalette: Boolean) {}
+        override fun setImage(position: Int, dataset: List<Song>, usePalette: Boolean) {}
 
-        override fun <I : Displayable> onClick(position: Int, dataset: List<I>, imageView: ImageView?): Boolean {
+        override fun onClick(position: Int, dataset: List<Song>, imageView: ImageView?): Boolean {
             MusicPlayerRemote.playSongAt(position)
             return true
         }
 
-        override fun <I : Displayable> onMenuClick(
-            dataset: List<I>,
-            bindingAdapterPosition: Int,
-            menuButtonView: View,
-        ) {
+        override fun onMenuClick(dataset: List<Song>, bindingAdapterPosition: Int, menuButtonView: View) {
             if (dataset.isNotEmpty()) {
                 PopupMenu(itemView.context, menuButtonView).apply {
                     dataset[bindingAdapterPosition]
@@ -77,16 +72,16 @@ class PlayingQueueAdapter(
             }
         }
 
-        override fun <I : Displayable> bind(
-            item: I,
+        override fun bind(
+            item: Song,
             position: Int,
-            dataset: List<I>,
-            controller: MultiSelectionController<I>,
+            dataset: List<Song>,
+            controller: MultiSelectionController<Song>,
             useImageText: Boolean,
-            usePalette: Boolean,
+            usePalette: Boolean
         ) {
 
-            val song = dataset[position] as Song
+            val song = dataset[position]
 
             itemView.isActivated = false
             title?.text = song.title
@@ -102,7 +97,7 @@ class PlayingQueueAdapter(
             controller.registerClicking(itemView, position) {
                 onClick(position, dataset, image)
             }
-            menu?.visibility = if (item.hasMenu()) View.VISIBLE else View.GONE
+            menu?.visibility = if (item.hasMenu()) VISIBLE else GONE
             menu?.setOnClickListener {
                 onMenuClick(dataset, position, it)
             }
@@ -131,10 +126,10 @@ class PlayingQueueAdapter(
             }
     }
 
-    override fun onCheckCanStartDrag(holder: ViewHolder, position: Int, x: Int, y: Int): Boolean =
+    override fun onCheckCanStartDrag(holder: PlayingQueueViewHolder, position: Int, x: Int, y: Int): Boolean =
         hitTest(holder.imageText as View, x, y)
 
-    override fun onGetItemDraggableRange(holder: ViewHolder, position: Int): ItemDraggableRange? = null
+    override fun onGetItemDraggableRange(holder: PlayingQueueViewHolder, position: Int): ItemDraggableRange? = null
 
     override fun onMoveItem(fromPosition: Int, toPosition: Int) {
         MusicPlayerRemote.moveSong(fromPosition, toPosition)

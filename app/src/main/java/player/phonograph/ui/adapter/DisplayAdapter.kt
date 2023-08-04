@@ -25,7 +25,7 @@ abstract class DisplayAdapter<I : Displayable>(
     protected val activity: FragmentActivity,
     dataSet: List<I>,
     @LayoutRes var layoutRes: Int,
-) : RecyclerView.Adapter<DisplayAdapter.DisplayViewHolder>(),
+) : RecyclerView.Adapter<DisplayAdapter.DisplayViewHolder<I>>(),
     FastScrollRecyclerView.SectionedAdapter,
     IMultiSelectableAdapter<I> {
 
@@ -59,7 +59,7 @@ abstract class DisplayAdapter<I : Displayable>(
     protected fun inflatedView(layoutRes: Int, parent: ViewGroup): View =
         LayoutInflater.from(activity).inflate(layoutRes, parent, false)
 
-    override fun onBindViewHolder(holder: DisplayViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DisplayViewHolder<I>, position: Int) {
         val item: I = dataset[position]
         holder.bind(item, position, dataset, controller, useImageText, usePalette)
     }
@@ -73,9 +73,9 @@ abstract class DisplayAdapter<I : Displayable>(
     open fun getSectionNameImp(position: Int): String =
         dataset[position].defaultSortOrderReference()?.substring(0..1) ?: ""
 
-    open class DisplayViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
+    open class DisplayViewHolder<I : Displayable>(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
 
-        open fun <I : Displayable> bind(
+        open fun bind(
             item: I,
             position: Int,
             dataset: List<I>,
@@ -101,11 +101,11 @@ abstract class DisplayAdapter<I : Displayable>(
             }
         }
 
-        protected open fun <I : Displayable> onClick(position: Int, dataset: List<I>, imageView: ImageView?): Boolean {
+        protected open fun onClick(position: Int, dataset: List<I>, imageView: ImageView?): Boolean {
             return listClick(dataset, position, itemView.context, imageView)
         }
 
-        protected open fun <I : Displayable> onMenuClick(
+        protected open fun onMenuClick(
             dataset: List<I>,
             bindingAdapterPosition: Int,
             menuButtonView: View,
@@ -117,11 +117,11 @@ abstract class DisplayAdapter<I : Displayable>(
             }
         }
 
-        protected open fun <I : Displayable> getRelativeOrdinalText(item: I): String = "-"
-        protected open fun <I : Displayable> getDescription(item: I): CharSequence? =
+        protected open fun getRelativeOrdinalText(item: I): String = "-"
+        protected open fun getDescription(item: I): CharSequence? =
             item.getDescription(context = itemView.context)
 
-        protected open fun <I : Displayable> setImage(
+        protected open fun setImage(
             position: Int,
             dataset: List<I>,
             usePalette: Boolean,

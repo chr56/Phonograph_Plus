@@ -7,7 +7,6 @@ package player.phonograph.ui.fragments.pages.adapter
 import mt.util.color.primaryTextColor
 import mt.util.color.resolveColor
 import player.phonograph.R
-import player.phonograph.model.Displayable
 import player.phonograph.model.SongCollection
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.util.theme.getTintedDrawable
@@ -24,20 +23,20 @@ class SongCollectionDisplayAdapter(
     val onClick: (bindingAdapterPosition: Int) -> Unit,
 ) : DisplayAdapter<SongCollection>(activity, dataSet, layoutRes) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder =
-        SongCollectionDisplayViewHolder(inflatedView(layoutRes, parent), onClick)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<SongCollection> =
+        SongCollectionViewHolder(inflatedView(layoutRes, parent), onClick)
 
-    class SongCollectionDisplayViewHolder(
+    class SongCollectionViewHolder(
         itemView: View,
         private val onClick: (bindingAdapterPosition: Int) -> Unit,
-    ) : DisplayViewHolder(itemView) {
+    ) : DisplayViewHolder<SongCollection>(itemView) {
 
-        override fun <I : Displayable> onClick(position: Int, dataset: List<I>, imageView: ImageView?): Boolean {
+        override fun onClick(position: Int, dataset: List<SongCollection>, imageView: ImageView?): Boolean {
             onClick(position)
             return true
         }
 
-        override fun <I : Displayable> setImage(position: Int, dataset: List<I>, usePalette: Boolean) {
+        override fun setImage(position: Int, dataset: List<SongCollection>, usePalette: Boolean) {
             super.setImage(position, dataset, usePalette)
             val context = itemView.context
             image?.setImageDrawable(

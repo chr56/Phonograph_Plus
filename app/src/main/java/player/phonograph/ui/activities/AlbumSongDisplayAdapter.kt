@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.activities
 
-import player.phonograph.model.Displayable
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
@@ -20,18 +19,17 @@ class AlbumSongDisplayAdapter(
 
     override fun getSectionNameImp(position: Int): String = getTrackNumber(dataset[position])
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
-        return AlbumSongDisplayViewHolder(inflatedView(layoutRes, parent))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Song> {
+        return AlbumSongViewHolder(inflatedView(layoutRes, parent))
     }
 
-    open class AlbumSongDisplayViewHolder(itemView: View) : DisplayViewHolder(itemView) {
-        override fun <I : Displayable> getRelativeOrdinalText(item: I): String {
-            return getTrackNumber(item as Song)
+    open class AlbumSongViewHolder(itemView: View) : DisplayViewHolder<Song>(itemView) {
+        override fun getRelativeOrdinalText(item: Song): String {
+            return getTrackNumber(item)
         }
 
-        override fun <I : Displayable> getDescription(item: I): CharSequence? {
-            val song = item as Song
-            return "${getReadableDurationString(song.duration)} · ${song.artistName}"
+        override fun getDescription(item: Song): CharSequence? {
+            return "${getReadableDurationString(item.duration)} · ${item.artistName}"
         }
     }
 

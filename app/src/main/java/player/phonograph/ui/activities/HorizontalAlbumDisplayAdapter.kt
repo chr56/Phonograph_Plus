@@ -20,7 +20,7 @@ class HorizontalAlbumDisplayAdapter(
 ) : AlbumDisplayAdapter(activity, dataSet, R.layout.item_grid_card_horizontal) {
 
 
-    override fun onBindViewHolder(holder: DisplayViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DisplayViewHolder<Album>, position: Int) {
         super.onBindViewHolder(holder, position)
         with(holder.itemView) {
             (layoutParams as MarginLayoutParams).applyMarginToLayoutParams(resources, position)
@@ -43,11 +43,11 @@ class HorizontalAlbumDisplayAdapter(
         else          -> TYPE_MIDDLE
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
-        return HorizontalAlbumDisplayViewHolder(inflatedView(layoutRes, parent))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Album> {
+        return HorizontalAlbumViewHolder(inflatedView(layoutRes, parent))
     }
 
-    class HorizontalAlbumDisplayViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+    class HorizontalAlbumViewHolder(itemView: View) : DisplayViewHolder<Album>(itemView) {
         override fun setPaletteColors(color: Int) {
             super.setPaletteColors(color)
             (itemView as CardView).setCardBackgroundColor(color)

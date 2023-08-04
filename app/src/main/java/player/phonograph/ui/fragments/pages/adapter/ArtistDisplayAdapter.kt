@@ -9,7 +9,6 @@ import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Artist
-import player.phonograph.model.Displayable
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
@@ -38,27 +37,21 @@ class ArtistDisplayAdapter(
         return makeSectionName(sectionName)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Artist> {
         return ArtistViewHolder(inflatedView(layoutRes, parent))
     }
 
-    class ArtistViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+    class ArtistViewHolder(itemView: View) : DisplayViewHolder<Artist>(itemView) {
         init {
             setImageTransitionName(itemView.context.getString(R.string.transition_artist_image))
         }
 
-        override fun <I : Displayable> getRelativeOrdinalText(item: I): String {
-            return (item as Artist).songCount.toString()
-        }
+        override fun getRelativeOrdinalText(item: Artist): String = item.songCount.toString()
 
         override val defaultIcon: Drawable?
             get() = AppCompatResources.getDrawable(itemView.context, R.drawable.default_artist_image)
 
-        override fun <I : Displayable> setImage(
-            position: Int,
-            dataset: List<I>,
-            usePalette: Boolean,
-        ) {
+        override fun setImage(position: Int, dataset: List<Artist>, usePalette: Boolean) {
             super.setImage(position, dataset, usePalette)
             val context = itemView.context
             image?.let { view ->

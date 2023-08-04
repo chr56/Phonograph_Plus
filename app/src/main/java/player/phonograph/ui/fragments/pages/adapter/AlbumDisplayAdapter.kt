@@ -9,7 +9,6 @@ import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Album
-import player.phonograph.model.Displayable
 import player.phonograph.model.getYearString
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
@@ -38,26 +37,22 @@ open class AlbumDisplayAdapter(
         return sectionName
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Album> {
         return AlbumViewHolder(inflatedView(layoutRes, parent))
     }
 
-    inner class AlbumViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+    inner class AlbumViewHolder(itemView: View) : DisplayViewHolder<Album>(itemView) {
         init {
             setImageTransitionName(itemView.context.getString(R.string.transition_album_art))
         }
 
-        override fun <I : Displayable> getRelativeOrdinalText(item: I): String = (item as Album).songCount.toString()
+        override fun getRelativeOrdinalText(item: Album): String = item.songCount.toString()
 
-        override fun <I : Displayable> setImage(
-            position: Int,
-            dataset: List<I>,
-            usePalette: Boolean
-        ) {
+        override fun setImage(position: Int, dataset: List<Album>, usePalette: Boolean) {
             val context = itemView.context
             image?.let { view ->
                 loadImage(context) {
-                    data((dataset[position] as Album).safeGetFirstSong())
+                    data(dataset[position].safeGetFirstSong())
                     size(ViewSizeResolver(view))
                     target(
                         PaletteTargetBuilder(context)

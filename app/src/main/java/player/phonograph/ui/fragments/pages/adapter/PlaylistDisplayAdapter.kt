@@ -7,7 +7,6 @@ package player.phonograph.ui.fragments.pages.adapter
 import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.mechanism.Favorite
-import player.phonograph.model.Displayable
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.sort.SortRef
@@ -36,12 +35,12 @@ class PlaylistDisplayAdapter(
     override fun getItemViewType(position: Int): Int =
         if (dataset[position] is SmartPlaylist) SMART_PLAYLIST else DEFAULT_PLAYLIST
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Playlist> {
         val view = inflatedView(layoutRes, parent)
         return if (viewType == SMART_PLAYLIST) SmartPlaylistViewHolder(view) else CommonPlaylistViewHolder(view)
     }
 
-    open class CommonPlaylistViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+    open class CommonPlaylistViewHolder(itemView: View) : DisplayViewHolder<Playlist>(itemView) {
         init {
             image?.also { image ->
                 val iconPadding =
@@ -56,10 +55,10 @@ class PlaylistDisplayAdapter(
         override val defaultIcon: Drawable?
             get() = AppCompatResources.getDrawable(itemView.context, R.drawable.ic_queue_music_white_24dp)
 
-        override fun <I : Displayable> setImage(position: Int, dataset: List<I>, usePalette: Boolean) {
+        override fun setImage(position: Int, dataset: List<Playlist>, usePalette: Boolean) {
             super.setImage(position, dataset, usePalette)
             image?.also {
-                val playlist = dataset[position] as Playlist
+                val playlist = dataset[position]
                 it.setImageResource(getIconRes(playlist))
             }
         }
