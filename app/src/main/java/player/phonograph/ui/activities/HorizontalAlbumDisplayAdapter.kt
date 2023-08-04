@@ -11,6 +11,8 @@ import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import android.content.res.Resources
+import android.view.View
+import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 
 class HorizontalAlbumDisplayAdapter(
@@ -19,10 +21,6 @@ class HorizontalAlbumDisplayAdapter(
     cfg: (DisplayAdapter<Album>.() -> Unit)?,
 ) : AlbumDisplayAdapter(activity, dataSet, R.layout.item_grid_card_horizontal, cfg) {
 
-    override fun setPaletteColors(color: Int, holder: DisplayViewHolder) {
-        super.setPaletteColors(color, holder)
-        (holder.itemView as CardView).setCardBackgroundColor(color)
-    }
 
     override fun onBindViewHolder(holder: DisplayViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
@@ -45,6 +43,17 @@ class HorizontalAlbumDisplayAdapter(
         0             -> TYPE_FIRST
         itemCount - 1 -> TYPE_LAST
         else          -> TYPE_MIDDLE
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
+        return HorizontalAlbumDisplayViewHolder(inflatedView(layoutRes, parent))
+    }
+
+    inner class HorizontalAlbumDisplayViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+        override fun setPaletteColors(color: Int) {
+            super.setPaletteColors(color)
+            (itemView as CardView).setCardBackgroundColor(color)
+        }
     }
 
     companion object {

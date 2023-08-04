@@ -65,11 +65,11 @@ class ArtistDisplayAdapter(
                         PaletteTargetBuilder(context)
                             .onStart {
                                 view.setImageResource(R.drawable.default_album_art)
-                                setPaletteColors(context.getColor(R.color.defaultFooterColor), holder)
+                                setPaletteColors(context.getColor(R.color.defaultFooterColor))
                             }
                             .onResourceReady { result, palette ->
                                 view.setImageDrawable(result)
-                                if (usePalette) setPaletteColors(palette, holder)
+                                if (usePalette) setPaletteColors(palette)
                             }
                             .build()
                     )

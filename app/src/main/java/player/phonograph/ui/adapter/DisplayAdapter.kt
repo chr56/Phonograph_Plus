@@ -50,11 +50,7 @@ abstract class DisplayAdapter<I : Displayable>(
 
 
     protected val controller: MultiSelectionController<I> =
-        MultiSelectionController(
-            this,
-            activity,
-            allowMultiSelection
-        )
+        MultiSelectionController(this, activity, allowMultiSelection)
 
     protected open val allowMultiSelection: Boolean get() = true
 
@@ -69,31 +65,19 @@ abstract class DisplayAdapter<I : Displayable>(
         holder.bind(item, position, controller, useImageText)
     }
 
-    protected open fun onClick(position: Int, imageView: ImageView?): Boolean {
-        return listClick(dataset, position, activity, imageView)
-    }
-
     override fun getItemCount(): Int = dataset.size
 
     override fun getSectionName(position: Int): String =
         if (showSectionName) getSectionNameImp(position) else ""
 
     // for inheriting
-    protected open fun setPaletteColors(color: Int, holder: DisplayViewHolder) {
-        holder.paletteColorContainer?.let { paletteColorContainer ->
-            paletteColorContainer.setBackgroundColor(color)
-            holder.title?.setTextColor(
-                activity.primaryTextColor(color)
-            )
-            holder.text?.setTextColor(
-                activity.secondaryTextColor(color)
-            )
-        }
-    }
-
-    // for inheriting
     open fun getSectionNameImp(position: Int): String =
         dataset[position].defaultSortOrderReference()?.substring(0..1) ?: ""
+
+
+    protected open fun onClick(position: Int, imageView: ImageView?): Boolean {
+        return listClick(dataset, position, activity, imageView)
+    }
 
     protected open fun onMenuClick(bindingAdapterPosition: Int, menuButtonView: View) {
         if (dataset.isNotEmpty()) {
@@ -149,5 +133,14 @@ abstract class DisplayAdapter<I : Displayable>(
 
         protected open val defaultIcon =
             AppCompatResources.getDrawable(itemView.context, R.drawable.default_album_art)
+
+        protected open fun setPaletteColors(color: Int) {
+            paletteColorContainer?.let { paletteColorContainer ->
+                val context = itemView.context
+                paletteColorContainer.setBackgroundColor(color)
+                title?.setTextColor(context.primaryTextColor(color))
+                text?.setTextColor(context.secondaryTextColor(color))
+            }
+        }
     }
 }
