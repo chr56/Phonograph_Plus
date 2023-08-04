@@ -6,7 +6,7 @@ package player.phonograph.ui.adapter
 
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.ToolbarCab.Companion.STATUS_ACTIVE
-import lib.phonograph.cab.createToolbarCab
+import lib.phonograph.cab.initToolbarCab
 import mt.pref.ThemeColor
 import mt.util.color.darkenColor
 import mt.util.color.isColorLight
@@ -140,20 +140,23 @@ class MultiSelectionController<I>(
     private var _cab: ToolbarCab? = null
     val cab: ToolbarCab?
         get() {
-            if (!enable) return null
-            if (_cab == null) {
-                _cab = createCab()
+            return if (!enable) null
+            else {
+                val targetId = R.id.cab_stub
+                val inflatedId = R.id.multi_selection_cab
+                if (_cab != null) {
+                    _cab
+                } else {
+                    _cab = try {
+                        initToolbarCab(activity, targetId, inflatedId).apply { prepare() }
+                    } catch (e: IllegalStateException) {
+                        Log.e("Cab", "Failed to create cab", e)
+                        null
+                    }
+                    _cab
+                }
             }
-            return _cab
         }
-
-    private fun createCab(): ToolbarCab? {
-        return try {
-            createToolbarCab(activity, R.id.cab_stub, R.id.multi_selection_cab).apply { prepare() }
-        } catch (e: IllegalStateException) {
-            null
-        }
-    }
 
     private fun ToolbarCab.prepare() {
         titleText = toolbar.resources.getString(R.string.x_selected, 0)

@@ -22,28 +22,34 @@ import android.view.Menu
 import android.view.View
 import android.view.ViewStub
 
-fun createToolbarCab(
+fun initToolbarCab(
     activity: Activity,
     @IdRes stubId: Int,
     @IdRes inflatedId: Int,
     cfg: CabCfg = {},
 ): ToolbarCab {
-    val toolbar: Toolbar =
-        when (val stub = activity.findViewById<View>(stubId)) {
-            is ViewStub -> {
-                stub.inflatedId = inflatedId
-                stub.layoutResource = R.layout.stub_toolbar
-                stub.inflate() as Toolbar
-            }
-            else        -> {
-                throw IllegalStateException(
-                    "Unable to attach to ${activity.resources.getResourceName(stubId)}, it's not a ViewStub"
-                )
-            }
+    val inflated: View? = activity.findViewById(inflatedId)
+    val stub: View? = activity.findViewById(stubId)
+
+    val toolbar: Toolbar = if (inflated != null) {
+        // already inflated
+        inflated as Toolbar
+    } else if (stub != null && stub is ViewStub) {
+        // not inflated
+        run {
+            stub.inflatedId = inflatedId
+            stub.layoutResource = R.layout.stub_toolbar
+            stub.inflate() as Toolbar
         }
-    toolbar.visibility = View.GONE
+    } else {
+        throw IllegalStateException(
+            "Failed to create cab: ${activity.resources.getResourceName(stubId)} is not exist or not a ViewStub"
+        )
+    }
     return ToolbarCab(activity, toolbar, cfg)
 }
+
+
 typealias CabCfg = ToolbarCab.() -> Unit
 
 class ToolbarCab internal constructor(
