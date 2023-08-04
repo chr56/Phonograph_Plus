@@ -174,7 +174,7 @@ class PlaylistDetailActivity :
             }
         )
         // adapter
-        adapter = PlaylistSongDisplayAdapter(this, ArrayList(), null)
+        adapter = PlaylistSongDisplayAdapter(this, ArrayList())
     }
 
     private fun updateRecyclerView(editMode: Boolean) {

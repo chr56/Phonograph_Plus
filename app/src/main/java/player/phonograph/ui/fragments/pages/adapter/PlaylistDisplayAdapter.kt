@@ -24,12 +24,7 @@ import android.view.ViewGroup
 
 class PlaylistDisplayAdapter(
     activity: AppCompatActivity,
-    cfg: (DisplayAdapter<Playlist>.() -> Unit)?,
-) : DisplayAdapter<Playlist>(
-    activity, ArrayList(),
-    R.layout.item_list_single_row,
-    cfg
-) {
+) : DisplayAdapter<Playlist>(activity, ArrayList(), R.layout.item_list_single_row) {
 
     override fun getSectionNameImp(position: Int): String {
         return when (Setting.instance.genreSortMode.sortRef) {

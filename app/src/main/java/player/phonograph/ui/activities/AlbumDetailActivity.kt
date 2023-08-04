@@ -15,7 +15,6 @@ import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.menu.albumDetailToolbar
-import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityAlbumDetailBinding
@@ -28,6 +27,7 @@ import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
+import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
@@ -95,10 +95,11 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
             }
         )
         // setUpSongsAdapter
-        adapter = AlbumSongDisplayAdapter(this, album.songs, R.layout.item_list) {
-            useImageText = true
-            usePalette = false
-        }
+        adapter =
+            AlbumSongDisplayAdapter(this, album.songs, R.layout.item_list).apply {
+                useImageText = true
+                usePalette = false
+            }
         viewBinding.recyclerView.layoutManager = LinearLayoutManager(this)
         viewBinding.recyclerView.adapter = adapter
         adapter.registerAdapterDataObserver(object : AdapterDataObserver() {

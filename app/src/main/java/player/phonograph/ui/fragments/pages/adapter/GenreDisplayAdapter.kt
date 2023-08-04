@@ -17,12 +17,7 @@ class GenreDisplayAdapter(
     activity: AppCompatActivity,
     dataSet: List<Genre>,
     layoutRes: Int,
-    cfg: (DisplayAdapter<Genre>.() -> Unit)?,
-) : DisplayAdapter<Genre>(
-    activity, dataSet,
-    layoutRes,
-    cfg
-) {
+) : DisplayAdapter<Genre>(activity, dataSet, layoutRes) {
 
     override fun getSectionNameImp(position: Int): String {
         return when (Setting.instance.genreSortMode.sortRef) {

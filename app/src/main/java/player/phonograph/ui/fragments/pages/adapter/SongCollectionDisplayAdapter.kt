@@ -22,7 +22,7 @@ class SongCollectionDisplayAdapter(
     dataSet: List<SongCollection>,
     layoutRes: Int,
     val onClick: (bindingAdapterPosition: Int) -> Unit,
-) : DisplayAdapter<SongCollection>(activity, dataSet, layoutRes, null) {
+) : DisplayAdapter<SongCollection>(activity, dataSet, layoutRes) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder =
         SongCollectionDisplayViewHolder(inflatedView(layoutRes, parent), onClick)

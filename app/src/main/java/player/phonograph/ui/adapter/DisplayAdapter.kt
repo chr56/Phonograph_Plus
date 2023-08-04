@@ -25,7 +25,6 @@ abstract class DisplayAdapter<I : Displayable>(
     protected val activity: AppCompatActivity,
     dataSet: List<I>,
     @LayoutRes var layoutRes: Int,
-    cfg: (DisplayAdapter<I>.() -> Unit)?,
 ) : RecyclerView.Adapter<DisplayAdapter.DisplayViewHolder>(),
     FastScrollRecyclerView.SectionedAdapter,
     IMultiSelectableAdapter<I> {
@@ -39,7 +38,6 @@ abstract class DisplayAdapter<I : Displayable>(
 
     init {
         setHasStableIds(true)
-        cfg?.invoke(this)
     }
 
     var usePalette: Boolean = false

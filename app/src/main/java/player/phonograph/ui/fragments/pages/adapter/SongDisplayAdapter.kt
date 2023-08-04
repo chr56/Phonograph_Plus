@@ -18,7 +18,6 @@ import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.util.text.dateTextShortText
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
@@ -26,8 +25,7 @@ open class SongDisplayAdapter(
     activity: AppCompatActivity,
     dataSet: List<Song>,
     layoutRes: Int,
-    cfg: (DisplayAdapter<Song>.() -> Unit)?,
-) : DisplayAdapter<Song>(activity, dataSet, layoutRes, cfg) {
+) : DisplayAdapter<Song>(activity, dataSet, layoutRes) {
 
 
     override fun getSectionNameImp(position: Int): String {

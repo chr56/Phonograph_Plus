@@ -24,8 +24,7 @@ class ArtistDisplayAdapter(
     activity: AppCompatActivity,
     dataSet: List<Artist>,
     layoutRes: Int,
-    cfg: (DisplayAdapter<Artist>.() -> Unit)?,
-) : DisplayAdapter<Artist>(activity, dataSet, layoutRes, cfg) {
+) : DisplayAdapter<Artist>(activity, dataSet, layoutRes) {
 
     override fun getSectionNameImp(position: Int): String {
         val artist = dataset[position]

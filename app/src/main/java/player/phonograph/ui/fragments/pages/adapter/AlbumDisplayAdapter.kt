@@ -23,8 +23,7 @@ open class AlbumDisplayAdapter(
     activity: AppCompatActivity,
     dataSet: List<Album>,
     layoutRes: Int,
-    cfg: (DisplayAdapter<Album>.() -> Unit)?,
-) : DisplayAdapter<Album>(activity, dataSet, layoutRes, cfg) {
+) : DisplayAdapter<Album>(activity, dataSet, layoutRes) {
 
     override fun getSectionNameImp(position: Int): String {
         val album = dataset[position]

@@ -86,7 +86,7 @@ abstract class AbsPlayerFragment :
             requireActivity() as AppCompatActivity,
             MusicPlayerRemote.playingQueue,
             MusicPlayerRemote.position
-        ) {}
+        )
         _recyclerViewDragDropManager = RecyclerViewDragDropManager()
         _wrappedAdapter = recyclerViewDragDropManager.createWrappedAdapter(playingQueueAdapter)
         implementRecyclerView()

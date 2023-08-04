@@ -32,8 +32,7 @@ import android.widget.PopupMenu
 class PlaylistSongDisplayAdapter(
     activity: AppCompatActivity,
     dataSet: List<Song>,
-    cfg: (DisplayAdapter<Song>.() -> Unit)?,
-) : DisplayAdapter<Song>(activity, dataSet, R.layout.item_list, cfg),
+) : DisplayAdapter<Song>(activity, dataSet, R.layout.item_list),
     DraggableItemAdapter<PlaylistSongDisplayAdapter.ViewHolder> {
 
     override fun getSectionNameImp(position: Int): String = (position + 1).toString()

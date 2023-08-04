@@ -14,7 +14,6 @@ import mt.util.color.secondaryTextColor
 import mt.util.color.toolbarTitleColor
 import player.phonograph.R
 import player.phonograph.actions.menu.artistDetailToolbar
-import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
@@ -26,6 +25,7 @@ import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
+import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -83,7 +83,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         }
 
         songAdapter =
-            SongDisplayAdapter(this, emptyList(), R.layout.item_list, null)
+            SongDisplayAdapter(this, emptyList(), R.layout.item_list)
         with(viewBinding.songsRecycleView) {
             adapter = songAdapter
             layoutManager =
@@ -91,7 +91,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         }
 
         albumAdapter =
-            HorizontalAlbumDisplayAdapter(this, emptyList()) {
+            HorizontalAlbumDisplayAdapter(this, emptyList()).apply {
                 usePalette = this@ArtistDetailActivity.usePalette
             }
         with(viewBinding.albumRecycleView) {

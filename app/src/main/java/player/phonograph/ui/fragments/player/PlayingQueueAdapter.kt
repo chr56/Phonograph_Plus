@@ -30,8 +30,7 @@ class PlayingQueueAdapter(
     activity: AppCompatActivity,
     dataSet: List<Song>,
     current: Int,
-    cfg: (DisplayAdapter<Song>.() -> Unit)?,
-) : DisplayAdapter<Song>(activity, dataSet, R.layout.item_list, cfg),
+) : DisplayAdapter<Song>(activity, dataSet, R.layout.item_list),
     DraggableItemAdapter<PlayingQueueAdapter.ViewHolder> {
 
     var current: Int = current
