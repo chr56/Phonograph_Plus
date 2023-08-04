@@ -21,7 +21,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 
-open class DisplayAdapter<I : Displayable>(
+abstract class DisplayAdapter<I : Displayable>(
     protected val activity: AppCompatActivity,
     dataSet: List<I>,
     @LayoutRes var layoutRes: Int,
@@ -63,9 +63,6 @@ open class DisplayAdapter<I : Displayable>(
 
     protected fun inflatedView(layoutRes: Int, parent: ViewGroup): View =
         LayoutInflater.from(activity).inflate(layoutRes, parent, false)
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder =
-        DisplayViewHolder(inflatedView(layoutRes, parent))
 
     override fun onBindViewHolder(holder: DisplayViewHolder, position: Int) {
         val item: I = dataset[position]
