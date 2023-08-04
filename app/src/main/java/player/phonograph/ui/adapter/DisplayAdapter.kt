@@ -37,6 +37,7 @@ abstract class DisplayAdapter<I : Displayable>(
         }
 
     init {
+        @Suppress("LeakingThis")
         setHasStableIds(true)
     }
 
