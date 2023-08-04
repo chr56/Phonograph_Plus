@@ -62,7 +62,7 @@ abstract class DisplayAdapter<I : Displayable>(
 
     override fun onBindViewHolder(holder: DisplayViewHolder, position: Int) {
         val item: I = dataset[position]
-        holder.bind(item, position, controller, useImageText)
+        holder.bind(item, position, dataset, controller, useImageText)
     }
 
     override fun getItemCount(): Int = dataset.size
@@ -74,24 +74,12 @@ abstract class DisplayAdapter<I : Displayable>(
     open fun getSectionNameImp(position: Int): String =
         dataset[position].defaultSortOrderReference()?.substring(0..1) ?: ""
 
-
-    protected open fun onClick(position: Int, imageView: ImageView?): Boolean {
-        return listClick(dataset, position, activity, imageView)
-    }
-
-    protected open fun onMenuClick(bindingAdapterPosition: Int, menuButtonView: View) {
-        if (dataset.isNotEmpty()) {
-            PopupMenu(activity, menuButtonView).apply {
-                dataset[bindingAdapterPosition].initMenu(activity, this.menu)
-            }.show()
-        }
-    }
-
     open inner class DisplayViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
 
         fun <I : Displayable> bind(
             item: I,
             position: Int,
+            dataset: List<I>,
             controller: MultiSelectionController<I>,
             useImageText: Boolean,
         ) {
@@ -105,11 +93,27 @@ abstract class DisplayAdapter<I : Displayable>(
                 setImage(this, position)
             }
             controller.registerClicking(itemView, position) {
-                onClick(position, image)
+                onClick(position, dataset, image)
             }
             menu?.visibility = if (item.hasMenu()) View.VISIBLE else View.GONE
             menu?.setOnClickListener {
-                onMenuClick(position, it)
+                onMenuClick(dataset, position, it)
+            }
+        }
+
+        protected open fun <I : Displayable> onClick(position: Int, dataset: List<I>, imageView: ImageView?): Boolean {
+            return listClick(dataset, position, itemView.context, imageView)
+        }
+
+        protected open fun <I : Displayable> onMenuClick(
+            dataset: List<I>,
+            bindingAdapterPosition: Int,
+            menuButtonView: View,
+        ) {
+            if (dataset.isNotEmpty()) {
+                PopupMenu(itemView.context, menuButtonView).apply {
+                    dataset[bindingAdapterPosition].initMenu(itemView.context, this.menu)
+                }.show()
             }
         }
 

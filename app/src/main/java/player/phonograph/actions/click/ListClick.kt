@@ -15,6 +15,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.util.NavigationUtil
 import androidx.core.util.Pair
 import android.app.Activity
+import android.content.Context
 import android.widget.ImageView
 
 /**
@@ -28,7 +29,7 @@ import android.widget.ImageView
 fun <T : Displayable> listClick(
     list: List<T>,
     position: Int,
-    activity: Activity?,
+    activity: Context?,
     imageView: ImageView?,
 ): Boolean {
     if (list.isEmpty()) return false

@@ -15,6 +15,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
 import player.phonograph.coil.loadImage
+import player.phonograph.model.Displayable
 import player.phonograph.model.Song
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.compose.tag.TagEditorActivity
@@ -23,7 +24,6 @@ import player.phonograph.ui.dialogs.SongDetailDialog
 import player.phonograph.util.ui.hitTest
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Context
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
@@ -74,16 +74,6 @@ class PlaylistSongDisplayAdapter(
         }
     }
 
-    override fun onMenuClick(bindingAdapterPosition: Int, menuButtonView: View) {
-        if (editMode) {
-            PopupMenu(activity, menuButtonView).apply {
-                injectPlaylistEditor(menu, activity, bindingAdapterPosition)
-            }.show()
-        } else {
-            super.onMenuClick(bindingAdapterPosition, menuButtonView)
-        }
-    }
-
     private fun injectPlaylistEditor(menu: Menu, context: Context, bindingAdapterPosition: Int) =
         context.attach(menu) {
             val song = dataset[bindingAdapterPosition]
@@ -92,7 +82,10 @@ class PlaylistSongDisplayAdapter(
                 onClick {
                     onDelete(bindingAdapterPosition)
                     (dataset as MutableList).removeAt(bindingAdapterPosition)
-                    notifyItemRangeChanged(bindingAdapterPosition, dataset.size - 1) // so we can reorder the items behind removed one
+                    notifyItemRangeChanged(
+                        bindingAdapterPosition,
+                        dataset.size - 1
+                    ) // so we can reorder the items behind removed one
                     true
                 }
             }
@@ -145,7 +138,10 @@ class PlaylistSongDisplayAdapter(
                     if (onMove(bindingAdapterPosition, dataset.size - 1)) {
                         (dataset as MutableList).removeAt(bindingAdapterPosition)
                         (dataset as MutableList).add(song)
-                        notifyItemRangeChanged(bindingAdapterPosition - 1, dataset.size - 1) // so we can reorder the items affected
+                        notifyItemRangeChanged(
+                            bindingAdapterPosition - 1,
+                            dataset.size - 1
+                        ) // so we can reorder the items affected
                     }
                     true
                 }
@@ -222,6 +218,19 @@ class PlaylistSongDisplayAdapter(
             }
         }
 
+        override fun <I : Displayable> onMenuClick(
+            dataSet: List<I>,
+            bindingAdapterPosition: Int,
+            menuButtonView: View,
+        ) {
+            if (editMode) {
+                PopupMenu(itemView.context, menuButtonView).apply {
+                    injectPlaylistEditor(menu, itemView.context, bindingAdapterPosition)
+                }.show()
+            } else {
+                super.onMenuClick(dataSet, bindingAdapterPosition, menuButtonView)
+            }
+        }
         @DraggableItemStateFlags
         private var mDragStateFlags = 0
 

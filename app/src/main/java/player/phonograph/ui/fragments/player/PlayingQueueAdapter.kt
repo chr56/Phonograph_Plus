@@ -10,6 +10,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHold
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
+import player.phonograph.model.Displayable
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
@@ -60,25 +61,30 @@ class PlayingQueueAdapter(
     }
 
 
-    override fun onMenuClick(bindingAdapterPosition: Int, menuButtonView: View) {
-        if (dataset.isNotEmpty()) {
-            PopupMenu(activity, menuButtonView).apply {
-                dataset[bindingAdapterPosition].initMenu(activity, this.menu, index = bindingAdapterPosition)
-            }.show()
-        }
-    }
-
-    override fun onClick(position: Int, imageView: ImageView?): Boolean {
-        MusicPlayerRemote.playSongAt(position)
-        return true
-    }
-
     override val allowMultiSelection: Boolean get() = false
 
 
     inner class ViewHolder(itemView: View) : DisplayViewHolder(itemView), DraggableItemViewHolder {
 
         override fun setImage(holder: DisplayViewHolder, position: Int) {}
+
+        override fun <I : Displayable> onClick(position: Int, dataset: List<I>, imageView: ImageView?): Boolean {
+            MusicPlayerRemote.playSongAt(position)
+            return true
+        }
+
+        override fun <I : Displayable> onMenuClick(
+            dataSet: List<I>,
+            bindingAdapterPosition: Int,
+            menuButtonView: View,
+        ) {
+            if (dataset.isNotEmpty()) {
+                PopupMenu(itemView.context, menuButtonView).apply {
+                    dataset[bindingAdapterPosition]
+                        .initMenu(itemView.context, this.menu, index = bindingAdapterPosition)
+                }.show()
+            }
+        }
 
         fun bind(position: Int) {
             val song = dataset[position]
