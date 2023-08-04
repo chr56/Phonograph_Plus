@@ -11,8 +11,8 @@ import player.phonograph.R
 import player.phonograph.actions.click.listClick
 import player.phonograph.model.Displayable
 import androidx.annotation.LayoutRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -22,7 +22,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 
 abstract class DisplayAdapter<I : Displayable>(
-    protected val activity: AppCompatActivity,
+    protected val activity: FragmentActivity,
     dataSet: List<I>,
     @LayoutRes var layoutRes: Int,
 ) : RecyclerView.Adapter<DisplayAdapter.DisplayViewHolder>(),
