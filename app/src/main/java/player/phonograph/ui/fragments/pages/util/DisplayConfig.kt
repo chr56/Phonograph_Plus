@@ -2,6 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
+
 package player.phonograph.ui.fragments.pages.util
 
 import player.phonograph.App
@@ -39,6 +40,7 @@ internal sealed class DisplayConfigTarget {
 }
 
 
+@Suppress("REDUNDANT_ELSE_IN_WHEN")
 class DisplayConfig internal constructor(private val page: DisplayConfigTarget) {
     private val isLandscape: Boolean
         get() = isLandscape(App.instance.resources)
@@ -216,7 +218,7 @@ internal class DisplaySetting(context: Context) {
     var songColoredFooters by BooleanPref(SONG_COLORED_FOOTERS, true)
     var artistColoredFooters by BooleanPref(ARTIST_COLORED_FOOTERS, true)
 
-    @Suppress("FunctionName")
+    @Suppress("FunctionName", "SameParameterValue")
     private fun BooleanPref(key: String, defaultValue: Boolean) =
         Delegate(booleanPreferencesKey(key), defaultValue, store)
 

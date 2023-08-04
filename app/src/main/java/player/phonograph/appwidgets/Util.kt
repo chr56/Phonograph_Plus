@@ -24,6 +24,7 @@ object Util {
         return rounded
     }
 
+    @Suppress("NAME_SHADOWING")
     private fun composeRoundedRectPath(rect: RectF, tl: Float, tr: Float, bl: Float, br: Float): Path {
         val path = Path()
         val tl = if (tl < 0) 0F else tl

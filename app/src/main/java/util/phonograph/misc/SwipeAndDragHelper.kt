@@ -17,7 +17,7 @@ class SwipeAndDragHelper(private val contract: ActionCompletionContract) : ItemT
     }
 
     override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-        contract.onViewMoved(viewHolder.adapterPosition, target.adapterPosition)
+        contract.onViewMoved(viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
         return true
     }
 

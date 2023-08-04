@@ -2,7 +2,7 @@
  * Copyright (c) 2023 chr_56
  */
 
-@file:Suppress("PropertyName", "ObjectPropertyName")
+@file:Suppress("PropertyName", "ObjectPropertyName", "DEPRECATION")
 
 package legacy.phonograph
 

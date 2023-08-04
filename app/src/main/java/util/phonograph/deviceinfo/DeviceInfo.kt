@@ -1,11 +1,12 @@
 package util.phonograph.deviceinfo
 
-import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.IntRange
-import java.util.Arrays
 import player.phonograph.App
 import player.phonograph.BuildConfig
+import player.phonograph.util.currentVersionCode
+import player.phonograph.util.currentVersionName
+import androidx.annotation.IntRange
+import android.os.Build
+import java.util.Arrays
 
 class DeviceInfo {
 
@@ -16,10 +17,8 @@ class DeviceInfo {
     private val packageName = BuildConfig.APPLICATION_ID
 
     init {
-        App.instance.packageManager.getPackageInfo(App.instance.packageName, 0)?.let {
-            versionCode = it.versionCode
-            versionName = it.versionName
-        }
+        versionName = currentVersionName(App.instance)
+        versionCode = currentVersionCode(App.instance)
     }
 
     @IntRange(from = 0)
@@ -32,20 +31,14 @@ class DeviceInfo {
     private val product = Build.PRODUCT
     private val hardware = Build.HARDWARE
 
-    @SuppressLint("NewApi")
-    private val abis =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) Build.SUPPORTED_ABIS else arrayOf(
-            Build.CPU_ABI,
-            Build.CPU_ABI2
-        )
+    @Suppress("PrivatePropertyName")
+    private val ABIS = Build.SUPPORTED_ABIS
 
-    @SuppressLint("NewApi")
-    private val abis32Bits =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) Build.SUPPORTED_32_BIT_ABIS else null
+    @Suppress("PrivatePropertyName")
+    private val ABIS32 = Build.SUPPORTED_32_BIT_ABIS
 
-    @SuppressLint("NewApi")
-    private val abis64Bits =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) Build.SUPPORTED_64_BIT_ABIS else null
+    @Suppress("PrivatePropertyName")
+    private val ABIS64 = Build.SUPPORTED_64_BIT_ABIS
 
     fun toMarkdown(): String {
         return """
@@ -65,9 +58,9 @@ class DeviceInfo {
                <tr><td>Device model</td><td>$model</td></tr>
                <tr><td>Device product name</td><td>$product</td></tr>
                <tr><td>Device hardware name</td><td>$hardware</td></tr>
-               <tr><td>ABIs</td><td>${Arrays.toString(abis)}</td></tr>
-               <tr><td>ABIs (32bit)</td><td>${Arrays.toString(abis32Bits)}</td></tr>
-               <tr><td>ABIs (64bit)</td><td>${Arrays.toString(abis64Bits)}</td></tr>
+               <tr><td>ABIs</td><td>${Arrays.toString(ABIS)}</td></tr>
+               <tr><td>ABIs (32bit)</td><td>${Arrays.toString(ABIS32)}</td></tr>
+               <tr><td>ABIs (64bit)</td><td>${Arrays.toString(ABIS64)}</td></tr>
                </table>
                
         """.trimIndent()
@@ -88,9 +81,9 @@ class DeviceInfo {
             Device model: $model
             Device product name: $product
             Device hardware name: $hardware
-            ABIs: ${Arrays.toString(abis)}
-            ABIs (32bit): ${Arrays.toString(abis32Bits)}
-            ABIs (64bit): ${Arrays.toString(abis64Bits)}
+            ABIs: ${Arrays.toString(ABIS)}
+            ABIs (32bit): ${Arrays.toString(ABIS32)}
+            ABIs (64bit): ${Arrays.toString(ABIS64)}
         """.trimIndent()
     }
 }
