@@ -74,7 +74,7 @@ abstract class DisplayAdapter<I : Displayable>(
 
     open class DisplayViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
 
-        fun <I : Displayable> bind(
+        open fun <I : Displayable> bind(
             item: I,
             position: Int,
             dataset: List<I>,

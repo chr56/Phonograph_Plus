@@ -15,6 +15,8 @@ import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.MultiSelectionController
+import player.phonograph.ui.adapter.hasMenu
 import player.phonograph.ui.adapter.initMenu
 import player.phonograph.util.ui.hitTest
 import androidx.appcompat.app.AppCompatActivity
@@ -51,17 +53,7 @@ class PlayingQueueAdapter(
             else               -> CURRENT
         }
 
-    override fun onBindViewHolder(
-        holder: DisplayViewHolder,
-        position: Int,
-        payloads: MutableList<Any>,
-    ) {
-        (holder as ViewHolder).bind(position)
-    }
-
-
     override val allowMultiSelection: Boolean get() = false
-
 
     inner class ViewHolder(itemView: View) : DisplayViewHolder(itemView), DraggableItemViewHolder {
 
@@ -73,7 +65,7 @@ class PlayingQueueAdapter(
         }
 
         override fun <I : Displayable> onMenuClick(
-            dataSet: List<I>,
+            dataset: List<I>,
             bindingAdapterPosition: Int,
             menuButtonView: View,
         ) {
@@ -85,8 +77,16 @@ class PlayingQueueAdapter(
             }
         }
 
-        fun bind(position: Int) {
-            val song = dataset[position]
+        override fun <I : Displayable> bind(
+            item: I,
+            position: Int,
+            dataset: List<I>,
+            controller: MultiSelectionController<I>,
+            useImageText: Boolean,
+            usePalette: Boolean,
+        ) {
+
+            val song = dataset[position] as Song
 
             itemView.isActivated = false
             title?.text = song.title
@@ -96,10 +96,15 @@ class PlayingQueueAdapter(
             imageText?.text = (position - current).toString()
 
             shortSeparator?.visibility = if (bindingAdapterPosition == itemCount - 1) GONE else VISIBLE
-            if (itemViewType == HISTORY || itemViewType == CURRENT) {
-                setAlpha(0.5f)
-            } else {
-                setAlpha(1f)
+            setAlpha(
+                if (itemViewType == HISTORY || itemViewType == CURRENT) 0.5f else 1f
+            )
+            controller.registerClicking(itemView, position) {
+                onClick(position, dataset, image)
+            }
+            menu?.visibility = if (item.hasMenu()) View.VISIBLE else View.GONE
+            menu?.setOnClickListener {
+                onMenuClick(dataset, position, it)
             }
         }
 
