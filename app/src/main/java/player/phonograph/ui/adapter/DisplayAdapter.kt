@@ -88,7 +88,7 @@ abstract class DisplayAdapter<I : Displayable>(
             title?.text = item.getDisplayTitle(context = itemView.context)
             text?.text = getDescription(item)
             if (useImageText) {
-                setImageText(this, getRelativeOrdinalText(item))
+                setImageText(getRelativeOrdinalText(item))
             } else {
                 setImage(position, dataset, usePalette)
             }
@@ -132,8 +132,8 @@ abstract class DisplayAdapter<I : Displayable>(
             }
         }
 
-        protected open fun setImageText(holder: DisplayViewHolder, text: String) {
-            holder.imageText?.also {
+        protected open fun setImageText(text: String) {
+            imageText?.also {
                 it.visibility = View.VISIBLE
                 it.text = text
             }
