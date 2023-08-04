@@ -241,7 +241,10 @@ class MultiSelectionController<I>(
 
     fun registerOnLongClickListener(itemView: View, bindingAdapterPosition: Int) {
         itemView.setOnLongClickListener {
-            if (!this.isInQuickSelectMode) this.toggle(bindingAdapterPosition)
+            when (this.isInQuickSelectMode) {
+                false -> this.toggle(bindingAdapterPosition)
+                true  -> this.rangeTo(bindingAdapterPosition)
+            }
             true
         }
     }
