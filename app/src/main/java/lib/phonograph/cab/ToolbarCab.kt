@@ -26,7 +26,6 @@ fun initToolbarCab(
     activity: Activity,
     @IdRes stubId: Int,
     @IdRes inflatedId: Int,
-    cfg: CabCfg = {},
 ): ToolbarCab {
     val inflated: View? = activity.findViewById(inflatedId)
     val stub: View? = activity.findViewById(stubId)
@@ -46,17 +45,10 @@ fun initToolbarCab(
             "Failed to create cab: ${activity.resources.getResourceName(stubId)} is not exist or not a ViewStub"
         )
     }
-    return ToolbarCab(activity, toolbar, cfg)
+    return ToolbarCab(toolbar)
 }
 
-
-typealias CabCfg = ToolbarCab.() -> Unit
-
-class ToolbarCab internal constructor(
-    val activity: Activity,
-    val toolbar: Toolbar,
-    applyCfg: CabCfg,
-) {
+class ToolbarCab internal constructor(val toolbar: Toolbar) {
 
     @CabStatus
     var status: Int = STATUS_INACTIVE // default
@@ -81,7 +73,6 @@ class ToolbarCab internal constructor(
             popupTheme = popThemeRes
             setUpMenu()
         }
-        applyCfg.invoke(this)
     }
 
     private fun setUpMenu() = toolbar.run {
@@ -89,8 +80,8 @@ class ToolbarCab internal constructor(
         if (menuHandler != null) {
             menuHandler!!.invoke(this)
             // tint
-            overflowIcon =
-                toolbar.context.getTintedDrawable(androidx.appcompat.R.drawable.abc_ic_menu_overflow_material, titleTextColor)
+            val iconRes = androidx.appcompat.R.drawable.abc_ic_menu_overflow_material
+            overflowIcon = toolbar.context.getTintedDrawable(iconRes, titleTextColor)
             for (item in menu) {
                 item.icon = item.icon?.apply { setTint(titleTextColor) }
             }

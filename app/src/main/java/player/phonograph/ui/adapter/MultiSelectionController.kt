@@ -98,7 +98,7 @@ class MultiSelectionController<I>(
 
         if (!onBackPressedDispatcherRegistered && cab != null) {
             onBackPressedDispatcherRegistered = true
-            val activity = cab?.activity as? ComponentActivity
+            val activity = activity as? ComponentActivity
             activity?.onBackPressedDispatcher?.addCallback {
                 cab?.hide()
                 unselectedAll()
