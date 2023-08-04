@@ -28,13 +28,12 @@ import android.view.Menu
 import android.view.MenuItem
 import java.util.Random
 
-fun multiItemsToolbar(
+fun <I> multiItemsToolbar(
     menu: Menu,
     context: Context,
-    controller: MultiSelectionController<*>,
+    controller: MultiSelectionController<I>,
 ): Boolean =
     with(context) {
-        val selections = controller.selected
         val iconColor = Color.WHITE //todo
 
         attach(menu) {
@@ -42,26 +41,28 @@ fun multiItemsToolbar(
                 icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    convertToSongs(selections, context).actionPlay(NONE, 0)
+                    convertToSongs(controller.selected, context).actionPlay(NONE, 0)
                 }
             }
             menuItem(getString(R.string.action_play_next)) {
                 icon = getTintedDrawable(R.drawable.ic_redo_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    convertToSongs(selections, context).actionPlayNext()
+                    convertToSongs(controller.selected, context).actionPlayNext()
                 }
             }
             menuItem(title = getString(R.string.action_shuffle_all)) {
                 icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-                onClick { convertToSongs(selections, context).actionPlay(SHUFFLE, Random().nextInt(selections.size)) }
+                onClick {
+                    convertToSongs(controller.selected, context).actionPlay(SHUFFLE, Random().nextInt(controller.selected.size))
+                }
             }
             menuItem(getString(R.string.action_add_to_playing_queue)) {
                 icon = getTintedDrawable(R.drawable.ic_library_add_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    convertToSongs(selections, context).actionEnqueue()
+                    convertToSongs(controller.selected, context).actionEnqueue()
                     true
                 }
             }
@@ -69,7 +70,7 @@ fun multiItemsToolbar(
                 icon = getTintedDrawable(R.drawable.ic_playlist_add_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    convertToSongs(selections, context).actionAddToPlaylist(context)
+                    convertToSongs(controller.selected, context).actionAddToPlaylist(context)
                 }
             }
 
@@ -77,7 +78,7 @@ fun multiItemsToolbar(
                 icon = getTintedDrawable(R.drawable.ic_library_music_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    val songs = convertToSongs(selections, context)
+                    val songs = convertToSongs(controller.selected, context)
                     if (songs.size > 1)
                         BatchTagEditorActivity.launch(context, ArrayList(songs))
                     else
@@ -86,7 +87,7 @@ fun multiItemsToolbar(
                 }
             }
 
-            val playlists: List<Playlist> = selections.filterIsInstance<Playlist>()
+            val playlists: List<Playlist> = controller.selected.filterIsInstance<Playlist>()
 
             menuItem(getString(R.string.action_delete_from_device)) {
                 icon = getTintedDrawable(R.drawable.ic_delete_white_24dp, iconColor)
@@ -94,7 +95,7 @@ fun multiItemsToolbar(
                 onClick {
                     // check playlist to avoid accidentally deleting song but playlist
                     if (playlists.isEmpty()) {
-                        convertToSongs(selections, context).actionDelete(context)
+                        convertToSongs(controller.selected, context).actionDelete(context)
                     } else {
                         // todo
                         playlists.actionDeletePlaylists(context)
@@ -131,8 +132,7 @@ fun multiItemsToolbar(
             }
 
             menuItem(getString(R.string.unselect_all_title)) {
-                icon = getTintedDrawable(R.drawable.ic_close_white_24dp, iconColor)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick {
                     controller.unselectedAll()
                     true

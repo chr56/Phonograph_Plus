@@ -144,7 +144,7 @@ class MultiSelectionController<I>(
 
     private fun setupMenu() {
         cab?.menuHandler = {
-            multiItemsToolbar(it.menu, activity, this)
+            multiItemsToolbar<I>(it.menu, activity, this)
         }
     }
     /**
