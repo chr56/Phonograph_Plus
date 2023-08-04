@@ -21,15 +21,16 @@ class SongCollectionDisplayAdapter(
     activity: AppCompatActivity,
     dataSet: List<SongCollection>,
     layoutRes: Int,
-    cfg: (DisplayAdapter<SongCollection>.() -> Unit)?,
-) : DisplayAdapter<SongCollection>(activity, dataSet, layoutRes, cfg) {
-
-    var onClick: (bindingAdapterPosition: Int) -> Unit = {}
+    val onClick: (bindingAdapterPosition: Int) -> Unit,
+) : DisplayAdapter<SongCollection>(activity, dataSet, layoutRes, null) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder =
-        SongCollectionDisplayViewHolder(inflatedView(layoutRes, parent))
+        SongCollectionDisplayViewHolder(inflatedView(layoutRes, parent), onClick)
 
-    inner class SongCollectionDisplayViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+    class SongCollectionDisplayViewHolder(
+        itemView: View,
+        private val onClick: (bindingAdapterPosition: Int) -> Unit,
+    ) : DisplayViewHolder(itemView) {
 
         override fun <I : Displayable> onClick(position: Int, dataset: List<I>, imageView: ImageView?): Boolean {
             onClick(position)
