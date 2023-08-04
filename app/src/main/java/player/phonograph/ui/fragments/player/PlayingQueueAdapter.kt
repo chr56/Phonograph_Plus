@@ -66,7 +66,7 @@ class PlayingQueueAdapter(
 
     inner class ViewHolder(itemView: View) : DisplayViewHolder(itemView), DraggableItemViewHolder {
 
-        override fun setImage(holder: DisplayViewHolder, position: Int) {}
+        override fun <I : Displayable> setImage(position: Int, dataset: List<I>, usePalette: Boolean) {}
 
         override fun <I : Displayable> onClick(position: Int, dataset: List<I>, imageView: ImageView?): Boolean {
             MusicPlayerRemote.playSongAt(position)

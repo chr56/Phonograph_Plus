@@ -50,11 +50,15 @@ open class AlbumDisplayAdapter(
 
         override fun <I : Displayable> getRelativeOrdinalText(item: I): String = (item as Album).songCount.toString()
 
-        override fun setImage(holder: DisplayViewHolder, position: Int) {
-            val context = holder.itemView.context
-            holder.image?.let { view ->
-                loadImage(activity) {
-                    data(dataset[position].safeGetFirstSong())
+        override fun <I : Displayable> setImage(
+            position: Int,
+            dataset: List<I>,
+            usePalette: Boolean
+        ) {
+            val context = itemView.context
+            image?.let { view ->
+                loadImage(context) {
+                    data((dataset[position] as Album).safeGetFirstSong())
                     size(ViewSizeResolver(view))
                     target(
                         PaletteTargetBuilder(context)

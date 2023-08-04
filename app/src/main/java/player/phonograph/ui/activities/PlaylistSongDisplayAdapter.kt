@@ -206,14 +206,14 @@ class PlaylistSongDisplayAdapter(
             DisplayViewHolder(itemView),
             DraggableItemViewHolder {
 
-        override fun setImage(holder: DisplayViewHolder, position: Int) {
-            val context = holder.itemView.context
+        override fun <I : Displayable> setImage(position: Int, dataset: List<I>, usePalette: Boolean) {
+            val context = itemView.context
             loadImage(context) {
                 data(dataset[position])
-                size(ViewSizeResolver(holder.image!!))
+                size(ViewSizeResolver(image!!))
                 target(
-                    onStart = { holder.image!!.setImageResource(R.drawable.default_album_art) },
-                    onSuccess = { holder.image!!.setImageDrawable(it) }
+                    onStart = { image!!.setImageResource(R.drawable.default_album_art) },
+                    onSuccess = { image!!.setImageDrawable(it) }
                 )
             }
         }

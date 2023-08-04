@@ -7,6 +7,7 @@ package player.phonograph.ui.fragments.pages.adapter
 import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.mechanism.Favorite
+import player.phonograph.model.Displayable
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.sort.SortRef
@@ -18,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
@@ -46,33 +46,34 @@ class PlaylistDisplayAdapter(
         return if (viewType == SMART_PLAYLIST) SmartPlaylistViewHolder(view) else CommonPlaylistViewHolder(view)
     }
 
-    open inner class CommonPlaylistViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+    open class CommonPlaylistViewHolder(itemView: View) : DisplayViewHolder(itemView) {
         init {
             image?.also { image ->
                 val iconPadding =
-                    activity.resources.getDimensionPixelSize(R.dimen.list_item_image_icon_padding)
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.list_item_image_icon_padding)
                 image.setPadding(iconPadding, iconPadding, iconPadding, iconPadding)
                 image.setColorFilter(
-                    resolveColor(activity, R.attr.iconColor), PorterDuff.Mode.SRC_IN
+                    resolveColor(itemView.context, R.attr.iconColor), PorterDuff.Mode.SRC_IN
                 )
             }
         }
 
         override val defaultIcon: Drawable?
-            get() = AppCompatResources.getDrawable(activity, R.drawable.ic_queue_music_white_24dp)
+            get() = AppCompatResources.getDrawable(itemView.context, R.drawable.ic_queue_music_white_24dp)
 
-        override fun setImage(holder: DisplayViewHolder, position: Int) {
-            holder.image?.also {
-                val playlist = dataset[position]
+        override fun <I : Displayable> setImage(position: Int, dataset: List<I>, usePalette: Boolean) {
+            super.setImage(position, dataset, usePalette)
+            image?.also {
+                val playlist = dataset[position] as Playlist
                 it.setImageResource(getIconRes(playlist))
             }
         }
 
         private fun getIconRes(playlist: Playlist): Int = when {
-            playlist is SmartPlaylist                          -> playlist.iconRes
-            FavoritesStore.instance.containsPlaylist(playlist) -> R.drawable.ic_pin_white_24dp
-            Favorite.isFavoritePlaylist(activity, playlist)    -> R.drawable.ic_favorite_white_24dp
-            else                                               -> R.drawable.ic_queue_music_white_24dp
+            playlist is SmartPlaylist                               -> playlist.iconRes
+            FavoritesStore.instance.containsPlaylist(playlist)      -> R.drawable.ic_pin_white_24dp
+            Favorite.isFavoritePlaylist(itemView.context, playlist) -> R.drawable.ic_favorite_white_24dp
+            else                                                    -> R.drawable.ic_queue_music_white_24dp
         }
 
     }

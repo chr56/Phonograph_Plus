@@ -26,7 +26,7 @@ abstract class DisplayAdapter<I : Displayable>(
     dataSet: List<I>,
     @LayoutRes var layoutRes: Int,
     cfg: (DisplayAdapter<I>.() -> Unit)?,
-) : RecyclerView.Adapter<DisplayAdapter<I>.DisplayViewHolder>(),
+) : RecyclerView.Adapter<DisplayAdapter.DisplayViewHolder>(),
     FastScrollRecyclerView.SectionedAdapter,
     IMultiSelectableAdapter<I> {
 
@@ -62,7 +62,7 @@ abstract class DisplayAdapter<I : Displayable>(
 
     override fun onBindViewHolder(holder: DisplayViewHolder, position: Int) {
         val item: I = dataset[position]
-        holder.bind(item, position, dataset, controller, useImageText)
+        holder.bind(item, position, dataset, controller, useImageText, usePalette)
     }
 
     override fun getItemCount(): Int = dataset.size
@@ -74,7 +74,7 @@ abstract class DisplayAdapter<I : Displayable>(
     open fun getSectionNameImp(position: Int): String =
         dataset[position].defaultSortOrderReference()?.substring(0..1) ?: ""
 
-    open inner class DisplayViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
+    open class DisplayViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
 
         fun <I : Displayable> bind(
             item: I,
@@ -82,6 +82,7 @@ abstract class DisplayAdapter<I : Displayable>(
             dataset: List<I>,
             controller: MultiSelectionController<I>,
             useImageText: Boolean,
+            usePalette: Boolean,
         ) {
             shortSeparator?.visibility = View.VISIBLE
             itemView.isActivated = controller.isSelected(item)
@@ -90,7 +91,7 @@ abstract class DisplayAdapter<I : Displayable>(
             if (useImageText) {
                 setImageText(this, getRelativeOrdinalText(item))
             } else {
-                setImage(this, position)
+                setImage(position, dataset, usePalette)
             }
             controller.registerClicking(itemView, position) {
                 onClick(position, dataset, image)
@@ -121,8 +122,12 @@ abstract class DisplayAdapter<I : Displayable>(
         protected open fun <I : Displayable> getDescription(item: I): CharSequence? =
             item.getDescription(context = itemView.context)
 
-        protected open fun setImage(holder: DisplayViewHolder, position: Int) {
-            holder.image?.also {
+        protected open fun <I : Displayable> setImage(
+            position: Int,
+            dataset: List<I>,
+            usePalette: Boolean,
+        ) {
+            image?.also {
                 it.visibility = View.VISIBLE
                 it.setImageDrawable(defaultIcon)
             }

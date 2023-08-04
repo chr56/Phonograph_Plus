@@ -24,24 +24,13 @@ class AlbumSongDisplayAdapter(
     cfg
 ) {
 
-    override fun getSectionNameImp(position: Int): String {
-        return getTrackNumber(dataset[position])
-    }
-
-    private fun getTrackNumber(item: Song): String {
-        val num = toFixedTrackNumber(item.trackNumber)
-        return if (num > 0) num.toString() else "-"
-    }
-
-    // iTunes uses for example 1002 for track 2 CD1 or 3011 for track 11 CD3.
-    // this method converts those values to normal track numbers
-    private fun toFixedTrackNumber(trackNumberToFix: Int): Int = trackNumberToFix % 1000
+    override fun getSectionNameImp(position: Int): String = getTrackNumber(dataset[position])
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
         return AlbumSongDisplayViewHolder(inflatedView(layoutRes, parent))
     }
 
-    open inner class AlbumSongDisplayViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+    open class AlbumSongDisplayViewHolder(itemView: View) : DisplayViewHolder(itemView) {
         override fun <I : Displayable> getRelativeOrdinalText(item: I): String {
             return getTrackNumber(item as Song)
         }
@@ -50,5 +39,17 @@ class AlbumSongDisplayAdapter(
             val song = item as Song
             return "${getReadableDurationString(song.duration)} · ${song.artistName}"
         }
+    }
+
+    companion object {
+        private fun getTrackNumber(item: Song): String {
+            val num = toFixedTrackNumber(item.trackNumber)
+            return if (num > 0) num.toString() else "-"
+        }
+
+        // iTunes uses for example 1002 for track 2 CD1 or 3011 for track 11 CD3.
+        // this method converts those values to normal track numbers
+        private fun toFixedTrackNumber(trackNumberToFix: Int): Int = trackNumberToFix % 1000
+
     }
 }

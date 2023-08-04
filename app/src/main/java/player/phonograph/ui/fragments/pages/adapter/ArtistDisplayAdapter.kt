@@ -43,7 +43,7 @@ class ArtistDisplayAdapter(
         return ArtistViewHolder(inflatedView(layoutRes, parent))
     }
 
-    inner class ArtistViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+    class ArtistViewHolder(itemView: View) : DisplayViewHolder(itemView) {
         init {
             setImageTransitionName(itemView.context.getString(R.string.transition_artist_image))
         }
@@ -53,12 +53,17 @@ class ArtistDisplayAdapter(
         }
 
         override val defaultIcon: Drawable?
-            get() = AppCompatResources.getDrawable(activity, R.drawable.default_artist_image)
+            get() = AppCompatResources.getDrawable(itemView.context, R.drawable.default_artist_image)
 
-        override fun setImage(holder: DisplayViewHolder, position: Int) {
-            val context = holder.itemView.context
-            holder.image?.let { view ->
-                loadImage(activity) {
+        override fun <I : Displayable> setImage(
+            position: Int,
+            dataset: List<I>,
+            usePalette: Boolean,
+        ) {
+            super.setImage(position, dataset, usePalette)
+            val context = itemView.context
+            image?.let { view ->
+                loadImage(itemView.context) {
                     data(dataset[position])
                     size(ViewSizeResolver(view))
                     target(

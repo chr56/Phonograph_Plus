@@ -8,6 +8,7 @@ import coil.size.ViewSizeResolver
 import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
+import player.phonograph.model.Displayable
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
@@ -51,9 +52,10 @@ open class SongDisplayAdapter(
         SongDisplayViewHolder(inflatedView(layoutRes, parent))
 
     inner class SongDisplayViewHolder(itemView: View) : DisplayViewHolder(itemView) {
-        override fun setImage(holder: DisplayViewHolder, position: Int) {
-            val context = holder.itemView.context
-            holder.image?.let { view ->
+        override fun <I : Displayable> setImage(position: Int, dataset: List<I>, usePalette: Boolean) {
+            super.setImage(position, dataset, usePalette)
+            val context = itemView.context
+            image?.let { view ->
                 loadImage(context) {
                     data(dataset[position])
                     size(ViewSizeResolver(view))

@@ -35,6 +35,6 @@ class GenreDisplayAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder =
         GenreDisplayViewHolder(inflatedView(layoutRes, parent))
 
-    inner class GenreDisplayViewHolder(itemView: View) : DisplayViewHolder(itemView)
+    class GenreDisplayViewHolder(itemView: View) : DisplayViewHolder(itemView)
 
 }

@@ -49,7 +49,7 @@ class HorizontalAlbumDisplayAdapter(
         return HorizontalAlbumDisplayViewHolder(inflatedView(layoutRes, parent))
     }
 
-    inner class HorizontalAlbumDisplayViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+    class HorizontalAlbumDisplayViewHolder(itemView: View) : DisplayViewHolder(itemView) {
         override fun setPaletteColors(color: Int) {
             super.setPaletteColors(color)
             (itemView as CardView).setCardBackgroundColor(color)
