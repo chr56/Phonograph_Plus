@@ -202,4 +202,26 @@ class MultiSelectionController<I>(
         }
     }
 
+    fun registerClicking(itemView: View, bindingAdapterPosition: Int, normalClick: () -> Boolean) {
+        registerOnClickListener(itemView, bindingAdapterPosition, normalClick)
+        registerOnLongClickListener(itemView, bindingAdapterPosition)
+    }
+
+    fun registerOnClickListener(itemView: View, bindingAdapterPosition: Int, normalClick: () -> Boolean) {
+        itemView.setOnClickListener {
+            if (this.isInQuickSelectMode) {
+                this.toggle(bindingAdapterPosition)
+            } else {
+                normalClick()
+            }
+        }
+    }
+
+    fun registerOnLongClickListener(itemView: View, bindingAdapterPosition: Int) {
+        itemView.setOnLongClickListener {
+            if (!this.isInQuickSelectMode) this.toggle(bindingAdapterPosition)
+            true
+        }
+    }
+
 }
