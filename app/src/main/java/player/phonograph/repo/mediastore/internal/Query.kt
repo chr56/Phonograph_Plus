@@ -22,12 +22,14 @@ fun querySongs(
     selection: String = "",
     selectionValues: Array<String> = emptyArray(),
     sortOrder: String? = Setting.instance.songSortMode.SQLQuerySortOrder,
+    withoutPathFilter: Boolean = false,
 ): Cursor? = queryAudio(
     context,
     BASE_SONG_PROJECTION,
     selection,
     selectionValues,
-    sortOrder
+    sortOrder,
+    withoutPathFilter
 )
 
 /**
@@ -44,7 +46,8 @@ fun querySongFiles(
     BASE_FILE_PROJECTION,
     selection,
     selectionValues,
-    sortOrder
+    sortOrder,
+    false
 )
 
 /**
@@ -56,10 +59,11 @@ fun queryAudio(
     selection: String = "",
     selectionValues: Array<String> = emptyArray(),
     sortOrder: String? = Setting.instance.songSortMode.SQLQuerySortOrder,
+    withoutPathFilter: Boolean,
 ): Cursor? {
 
     val actual =
-        withPathFilter(context) {
+        withPathFilter(context, escape = withoutPathFilter) {
             SQLWhereClause(
                 selection = withBaseAudioFilter { selection },
                 selectionValues = selectionValues
