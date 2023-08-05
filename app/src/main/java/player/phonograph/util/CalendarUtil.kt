@@ -102,7 +102,7 @@ object CalendarUtil {
      * @param month The month (1 - 12).
      * @return The days in that month/year.
      */
-    private fun getDaysInMonth(year: Int, month: Int): Int {
+    private fun getDaysInMonth(@Suppress("UNUSED_PARAMETER") year: Int, month: Int): Int {
         val monthCal: Calendar = GregorianCalendar(calendar[Calendar.YEAR], month, 1)
         return monthCal.getActualMaximum(Calendar.DAY_OF_MONTH)
     }

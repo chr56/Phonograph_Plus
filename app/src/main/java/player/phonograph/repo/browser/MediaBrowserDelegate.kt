@@ -58,7 +58,7 @@ object MediaBrowserDelegate {
         }
     }
 
-    fun playFromMediaId(context: Context, mediaId: String, extras: Bundle?): List<Song> {
+    fun playFromMediaId(context: Context, mediaId: String, @Suppress("UNUSED_PARAMETER") extras: Bundle?): List<Song> {
         return when (mediaId) {
             MEDIA_BROWSER_SONGS_FAVORITES  -> FavoritesStore.instance.getAllSongs(context)
             MEDIA_BROWSER_SONGS_TOP_TRACKS -> TopAndRecentlyPlayedTracksLoader.topTracks(context)
@@ -116,10 +116,12 @@ object MediaBrowserDelegate {
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun checkPackageName(clientPackageName: String): Boolean {
         return true
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun checkSignatures(context: Context, clientPackageName: String): Boolean {
         // fetchPackageSignatures(context, clientPackageName)
         return true

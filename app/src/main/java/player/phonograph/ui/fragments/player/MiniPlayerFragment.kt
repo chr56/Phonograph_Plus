@@ -79,7 +79,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         binding.miniPlayerPlayPauseButton.setOnClickListener(PlayPauseButtonOnClickHandler())
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                PlayerController.currentState.collect { newState ->
+                PlayerController.currentState.collect {
                     updatePlayPauseDrawableState(
                         lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
                     )
@@ -104,7 +104,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         updatePlayPauseDrawableState(false)
     }
 
-    fun updateProgressViews(progress: Int, total: Int) {
+    private fun updateProgressViews(progress: Int, total: Int) {
         binding.progressIndicator.max = total
         binding.progressIndicator.progress = progress
         binding.progressIndicator.show()
@@ -137,7 +137,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         }
     }
 
-    protected fun updatePlayPauseDrawableState(animate: Boolean) {
+    private fun updatePlayPauseDrawableState(animate: Boolean) {
         if (MusicPlayerRemote.isPlaying) {
             miniPlayerPlayPauseDrawable!!.setPause(animate)
         } else {

@@ -106,7 +106,7 @@ inline fun withLooper(crossinline block: () -> Unit) {
 // Coroutine
 //
 
-fun createDefaultExceptionHandler(TAG: String, defaultMessageHeader: String = "Error!"): CoroutineExceptionHandler =
+fun createDefaultExceptionHandler(@Suppress("UNUSED_PARAMETER") TAG: String, defaultMessageHeader: String = "Error!"): CoroutineExceptionHandler =
     CoroutineExceptionHandler { _, exception ->
         ErrorNotification.postErrorNotification(
             exception,
