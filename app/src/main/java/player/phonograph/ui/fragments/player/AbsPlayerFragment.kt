@@ -39,6 +39,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.whenStarted
 import androidx.lifecycle.withCreated
 import androidx.lifecycle.withResumed
+import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.animation.AnimatorSet
@@ -330,7 +331,7 @@ abstract class AbsPlayerFragment :
         observe(CurrentQueueState.currentSong) {
             viewModel.updateCurrentSong(MusicPlayerRemote.currentSong, context)
             lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
-            whenStarted { impl.updateCurrentSong(it) }
+            withStarted { impl.updateCurrentSong(it) }
         }
         observe(CurrentQueueState.shuffleMode) {
             updateAdapter()
