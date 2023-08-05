@@ -13,8 +13,11 @@ class SQLWhereClause(val selection: String, val selectionValues: Array<String>)
 
 /**
  *  amend path with path filter SQL to SQLWhereClause
+ *  @param escape true if disable path filter
  */
-fun withPathFilter(context: Context, block: () -> SQLWhereClause): SQLWhereClause {
+fun withPathFilter(context: Context, escape: Boolean = false, block: () -> SQLWhereClause): SQLWhereClause {
+    if (escape) return block()
+
     val includeMode = !Setting.instance.pathFilterExcludeMode
 
     val paths =
