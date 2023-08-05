@@ -9,14 +9,14 @@ import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.ui.adapter.UniversalMediaEntryViewHolder
-import player.phonograph.ui.adapter.initMenu
 import player.phonograph.databinding.FragmentFlatPlayerBinding
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
+import player.phonograph.ui.adapter.UniversalMediaEntryViewHolder
+import player.phonograph.ui.adapter.initMenu
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.util.theme.isWindowBackgroundDarkSafe
 import player.phonograph.util.theme.nightMode
@@ -28,9 +28,12 @@ import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.ui.textColorTransitionAnimator
 import androidx.annotation.ColorInt
+import androidx.annotation.MainThread
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.whenStarted
+import androidx.lifecycle.withCreated
+import androidx.lifecycle.withStarted
 import android.animation.AnimatorSet
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -40,8 +43,6 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.PopupMenu
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class FlatPlayerFragment :
         AbsPlayerFragment(),
@@ -105,14 +106,13 @@ class FlatPlayerFragment :
     }
 
 
+    @MainThread
     override suspend fun updateAdapter() {
         super.updateAdapter()
-        lifecycle.whenStarted {
-            withContext(Dispatchers.Main) {
-                viewBinding.playerQueueSubHeader.text = viewModel.upNextAndQueueTime(resources)
-                if (viewBinding.playerSlidingLayout == null || viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED) {
-                    resetToCurrentPosition()
-                }
+        lifecycle.withCreated {
+            viewBinding.playerQueueSubHeader.text = viewModel.upNextAndQueueTime(resources)
+            if (viewBinding.playerSlidingLayout == null || viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED) {
+                resetToCurrentPosition()
             }
         }
     }

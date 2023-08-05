@@ -27,6 +27,7 @@ import player.phonograph.util.NavigationUtil
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.warning
 import androidx.annotation.ColorInt
+import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.animation.doOnEnd
@@ -37,6 +38,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.whenResumed
 import androidx.lifecycle.whenStarted
+import androidx.lifecycle.withCreated
+import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.animation.AnimatorSet
@@ -278,19 +281,18 @@ abstract class AbsPlayerFragment :
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
-            lifecycleScope.launch { updateAdapter() }
+            lifecycleScope.launch(Dispatchers.Main) { updateAdapter() }
             viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
         }
     }
 
     abstract fun onBackPressed(): Boolean
 
+    @MainThread
     protected open suspend fun updateAdapter() {
-        lifecycle.whenStarted {
-            withContext(Dispatchers.Main) {
-                playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
-                playingQueueAdapter.current = MusicPlayerRemote.position
-            }
+        lifecycle.withCreated {
+            playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
+            playingQueueAdapter.current = MusicPlayerRemote.position
         }
     }
 
