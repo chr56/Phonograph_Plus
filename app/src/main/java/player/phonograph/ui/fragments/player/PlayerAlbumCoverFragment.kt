@@ -18,7 +18,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.whenResumed
-import androidx.lifecycle.whenStarted
+import androidx.lifecycle.withCreated
 import androidx.lifecycle.withResumed
 import androidx.lifecycle.withStarted
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -178,7 +178,7 @@ class PlayerAlbumCoverFragment :
     }
 
     private suspend fun updateAdapter() {
-        lifecycle.whenStarted {
+        lifecycle.withCreated {
             val queue = MusicPlayerRemote.playingQueue
             val position = CurrentQueueState.position.value
             albumCoverPagerAdapter = AlbumCoverPagerAdapter(this@PlayerAlbumCoverFragment, queue)
