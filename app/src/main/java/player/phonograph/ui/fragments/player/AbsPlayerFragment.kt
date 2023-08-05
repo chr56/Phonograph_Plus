@@ -373,9 +373,11 @@ abstract class AbsPlayerFragment :
             }
         }
         observe(viewModel.paletteColor) { newColor ->
-            playbackControlsFragment.modifyColor(newColor)
-            withResumed {
-                requestAnimateColorChanging(newColor)
+            withContext(Dispatchers.Main) {
+                withResumed {
+                    playbackControlsFragment.modifyColor(newColor)
+                    requestAnimateColorChanging(newColor)
+                }
             }
         }
     }
