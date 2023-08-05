@@ -339,17 +339,15 @@ abstract class AbsPlayerFragment :
         observe(viewModel.favoriteState) {
             if (it.first == viewModel.currentSong.value) {
                 val isFavorite = it.second
-                lifecycle.whenStarted {
-                    withContext(Dispatchers.Main) {
-                        val res =
-                            if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
-                        val color = toolbarIconColor(requireContext(), Color.TRANSPARENT)
-                        favoriteMenuItem?.apply {
-                            icon = requireContext().getTintedDrawable(res, color)
-                            title =
-                                if (isFavorite) getString(R.string.action_remove_from_favorites)
-                                else getString(R.string.action_add_to_favorites)
-                        }
+                lifecycle.withStarted {
+                    val res =
+                        if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
+                    val color = toolbarIconColor(requireContext(), Color.TRANSPARENT)
+                    favoriteMenuItem?.apply {
+                        icon = requireContext().getTintedDrawable(res, color)
+                        title =
+                            if (isFavorite) getString(R.string.action_remove_from_favorites)
+                            else getString(R.string.action_add_to_favorites)
                     }
                 }
             }
