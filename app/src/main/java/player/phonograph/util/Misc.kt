@@ -26,7 +26,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.TIRAMISU
+import android.os.Bundle
 import android.os.Looper
+import android.os.Parcelable
 import android.util.Log
 import android.widget.Toast
 import kotlin.coroutines.CoroutineContext
@@ -160,3 +164,36 @@ fun shareFileIntent(context: Context, song: Song): Intent {
         Intent()
     }
 }
+
+//
+// Parcelable
+//
+
+@Suppress("DEPRECATION")
+inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? =
+    when {
+        SDK_INT >= TIRAMISU -> getParcelable(key, T::class.java)
+        else                -> getParcelable(key) as? T
+    }
+
+@Suppress("DEPRECATION")
+inline fun <reified T : Parcelable> Bundle.parcelableArrayList(key: String): ArrayList<T>? =
+    when {
+        SDK_INT >= TIRAMISU -> getParcelableArrayList(key, T::class.java)
+        else                -> getParcelableArrayList(key)
+    }
+
+
+@Suppress("DEPRECATION")
+inline fun <reified T : Parcelable> Intent.parcelableExtra(key: String): T? =
+    when {
+        SDK_INT >= TIRAMISU -> getParcelableExtra(key, T::class.java)
+        else                -> getParcelableExtra(key) as? T
+    }
+
+@Suppress("DEPRECATION")
+inline fun <reified T : Parcelable> Intent.parcelableArrayListExtra(key: String): ArrayList<T>? =
+    when {
+        SDK_INT >= TIRAMISU -> getParcelableArrayListExtra(key, T::class.java)
+        else                -> getParcelableArrayListExtra(key)
+    }
