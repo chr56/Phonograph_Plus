@@ -36,7 +36,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.whenStarted
 import androidx.lifecycle.withCreated
 import androidx.lifecycle.withResumed
 import androidx.lifecycle.withStarted
@@ -242,14 +241,12 @@ abstract class AbsPlayerFragment :
 
     abstract fun getImplToolbar(): Toolbar
 
-    private fun showToolbar(toolbar: View?) {
-        if (toolbar == null) return
+    private fun showToolbar(toolbar: View) {
         toolbar.visibility = View.VISIBLE
         toolbar.animate().alpha(1f).duration = VISIBILITY_ANIM_DURATION
     }
 
-    private fun hideToolbar(toolbar: View?) {
-        if (toolbar == null) return
+    private fun hideToolbar(toolbar: View) {
         toolbar.animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION)
             .withEndAction { toolbar.visibility = View.GONE }
     }
@@ -353,8 +350,8 @@ abstract class AbsPlayerFragment :
             }
         }
         observe(viewModel.showToolbar) {
-            whenStarted {
-                val container = getToolBarContainer() ?: return@whenStarted
+            val container = getToolBarContainer() ?: return@observe
+            withStarted {
                 if (it) {
                     showToolbar(container)
                 } else {
