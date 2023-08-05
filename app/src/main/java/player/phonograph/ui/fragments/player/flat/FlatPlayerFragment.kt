@@ -31,7 +31,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
-import androidx.lifecycle.whenStarted
 import androidx.lifecycle.withCreated
 import androidx.lifecycle.withStarted
 import android.animation.AnimatorSet
@@ -43,6 +42,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.PopupMenu
+import kotlin.math.max
 
 class FlatPlayerFragment :
         AbsPlayerFragment(),
@@ -83,7 +83,7 @@ class FlatPlayerFragment :
 
     private fun observeState() {
         observe(CurrentQueueState.position) {
-            whenStarted {
+            withStarted {
                 viewBinding.playerQueueSubHeader.text = viewModel.upNextAndQueueTime(resources)
                 if (viewBinding.playerSlidingLayout == null ||
                     viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED
@@ -158,7 +158,7 @@ class FlatPlayerFragment :
         }
     }
 
-    private fun onPanelCollapsed(panel: View?) {
+    private fun onPanelCollapsed(@Suppress("UNUSED_PARAMETER") panel: View?) {
         resetToCurrentPosition()
     }
 
@@ -261,10 +261,7 @@ class FlatPlayerFragment :
                     albumCoverContainer.height - (minPanelHeight - availablePanelHeight)
                 // albumCoverContainer.forceSquare(false)
             }
-            fragment.viewBinding.playerSlidingLayout!!.panelHeight = Math.max(
-                minPanelHeight,
-                availablePanelHeight
-            )
+            fragment.viewBinding.playerSlidingLayout!!.panelHeight = max(minPanelHeight, availablePanelHeight)
             (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(
                 fragment.viewBinding.playerSlidingLayout!!.findViewById(
                     R.id.player_panel
