@@ -11,6 +11,7 @@ import android.util.SparseArray
 import androidx.core.util.forEach
 import androidx.core.util.isEmpty
 import player.phonograph.notification.ErrorNotification
+import player.phonograph.util.sparseArray
 import java.util.*
 import java.util.regex.Pattern
 
@@ -235,7 +236,7 @@ class LrcLyrics : AbsLyrics, Parcelable {
     }
     constructor(parcel: Parcel) {
         parcel.readInt().let { if (it != LRC) throw IllegalStateException("incorrect parcel received") }
-        this.lyrics = parcel.readSparseArray(String::class.java.classLoader) ?: SparseArray()
+        this.lyrics = parcel.sparseArray(null) ?: SparseArray()
         this.title = parcel.readString() ?: DEFAULT_TITLE
         this.offset = parcel.readLong()
         this.totalTime = parcel.readLong()

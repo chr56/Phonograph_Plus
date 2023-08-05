@@ -38,7 +38,7 @@ fun hideKeyboard(activity: Activity?) {
     }
 }
 
-fun createSelectorDrawable(context: Context?, @ColorInt color: Int): Drawable {
+fun createSelectorDrawable(@Suppress("UNUSED_PARAMETER") context: Context, @ColorInt color: Int): Drawable {
     val baseSelector = StateListDrawable()
     baseSelector.addState(intArrayOf(android.R.attr.state_activated), ColorDrawable(color))
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

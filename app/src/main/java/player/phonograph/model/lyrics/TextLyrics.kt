@@ -4,6 +4,7 @@
 
 package player.phonograph.model.lyrics
 
+import player.phonograph.util.array
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.Log
@@ -68,7 +69,7 @@ class TextLyrics : AbsLyrics, Parcelable {
     // Parcelable
     constructor(parcel: Parcel) {
         parcel.readInt().let { if (it != TXT) throw IllegalStateException("incorrect parcel received") }
-        lines = parcel.readArray(String::class.java.classLoader).castToStringMutableList()
+        lines = parcel.array<String>(null)?.toMutableList()!!
         title = parcel.readString() ?: DEFAULT_TITLE
         source = LyricsSource(parcel.readInt())
     }

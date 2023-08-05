@@ -46,6 +46,7 @@ import player.phonograph.ui.dialogs.UpgradeDialog
 import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.debug
+import player.phonograph.util.parcelableExtra
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.theme.getTintedDrawable
@@ -55,7 +56,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.whenStarted
+import androidx.lifecycle.withStarted
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -113,12 +114,12 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
             {
                 val showUpgradeDialog = intent.getBooleanExtra(UPGRADABLE, false)
                 if (showUpgradeDialog) {
-                    showUpgradeDialog(intent.getParcelableExtra(VERSION_INFO) as? VersionCatalog)
+                    showUpgradeDialog(intent.parcelableExtra(VERSION_INFO) as? VersionCatalog)
                 }
                 lifecycleScope.launch(Dispatchers.Main) {
                     lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                         SettingFlowStore(this@MainActivity).homeTabConfigJsonString.distinctUntilChanged().collect {
-                            whenStarted {
+                            withStarted {
                                 setupDrawerMenu(drawerBinding.navigationView.menu)
                             }
                         }

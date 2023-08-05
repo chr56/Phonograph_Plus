@@ -9,23 +9,23 @@ import mt.util.color.primaryTextColor
 import mt.util.color.secondaryDisabledTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
-import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.misc.SimpleOnSeekbarChangeListener
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.player.PlayerController
 import player.phonograph.service.player.currentState
+import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
+import androidx.annotation.MainThread
 import androidx.core.graphics.BlendModeColorFilterCompat.createBlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.whenResumed
 import android.content.Context
 import android.graphics.PorterDuff.Mode.SRC_IN
 import android.os.Bundle
@@ -35,9 +35,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
 
@@ -110,7 +108,7 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                PlayerController.currentState.collect { newState ->
+                PlayerController.currentState.collect {
                     updatePlayPauseDrawableState(
                         lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
                     )
@@ -166,15 +164,12 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
     }
 
     fun modifyColor(backgroundColor: Int) {
-        lifecycleScope.launch {
-            whenResumed {
-                calculateColor(requireContext(), backgroundColor)
-                updateAll()
-            }
-        }
+        calculateColor(requireContext(), backgroundColor)
+        updateAll()
     }
 
-    private suspend fun updateAll() = withContext(Dispatchers.Main) {
+    @MainThread
+    private fun updateAll() {
         updateRepeatState(MusicPlayerRemote.repeatMode)
         updateShuffleState(MusicPlayerRemote.shuffleMode)
         updatePrevNextColor()
@@ -208,10 +203,12 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
             repeatButton.setImageResource(R.drawable.ic_repeat_white_24dp)
             repeatButton.setColorFilter(lastDisabledPlaybackControlsColor, SRC_IN)
         }
+
         RepeatMode.REPEAT_QUEUE       -> {
             repeatButton.setImageResource(R.drawable.ic_repeat_white_24dp)
             repeatButton.setColorFilter(lastPlaybackControlsColor, SRC_IN)
         }
+
         RepeatMode.REPEAT_SINGLE_SONG -> {
             repeatButton.setImageResource(R.drawable.ic_repeat_one_white_24dp)
             repeatButton.setColorFilter(lastPlaybackControlsColor, SRC_IN)

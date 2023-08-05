@@ -24,7 +24,7 @@ object SongCollectionLoader {
     }
 
     private suspend fun convertSongsToSongCollections(
-        context: Context,
+        @Suppress("UNUSED_PARAMETER") context: Context,
         allSongs: List<Song>
     ): List<SongCollection> {
 

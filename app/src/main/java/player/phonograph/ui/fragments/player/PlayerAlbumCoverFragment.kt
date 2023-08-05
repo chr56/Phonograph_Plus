@@ -1,9 +1,6 @@
 package player.phonograph.ui.fragments.player
 
 import lib.phonograph.misc.SimpleAnimatorListener
-import player.phonograph.R
-import player.phonograph.coil.loadImage
-import player.phonograph.coil.target.PaletteBitmap
 import player.phonograph.databinding.FragmentAlbumCoverBinding
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
@@ -12,22 +9,21 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
+import player.phonograph.util.parcelable
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
-import androidx.collection.LruCache
+import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.whenResumed
-import androidx.lifecycle.whenStarted
+import androidx.lifecycle.withCreated
+import androidx.lifecycle.withResumed
+import androidx.lifecycle.withStarted
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import android.animation.Animator
 import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
@@ -87,12 +83,13 @@ class PlayerAlbumCoverFragment :
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 playerViewModel.lyrics.collect {
-                    if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) &&
-                        Setting.instance.synchronizedLyricsShow
-                    ) {
-                        resetLyricsLayout()
-                    } else {
-                        hideLyricsLayout()
+                    val lyricsShow = Setting.instance.synchronizedLyricsShow
+                    withContext(Dispatchers.Main) {
+                        if (lyricsShow) {
+                            resetLyricsLayout()
+                        } else {
+                            hideLyricsLayout()
+                        }
                     }
                 }
             }
@@ -110,34 +107,32 @@ class PlayerAlbumCoverFragment :
 
     private var lastFavoriteState: Pair<Song, Boolean> = Song.EMPTY_SONG to false
 
+    @MainThread
     private suspend fun resetLyricsLayout() {
-        lifecycle.whenResumed {
-            withContext(Dispatchers.Main) {
-                binding.playerLyricsLine1.text = null
-                binding.playerLyricsLine2.text = null
-                binding.playerLyrics.apply {
-                    visibility = View.VISIBLE
-                    animate().alpha(1f).duration = VISIBILITY_ANIM_DURATION
-                }
+        lifecycle.withStarted {
+            binding.playerLyricsLine1.text = null
+            binding.playerLyricsLine2.text = null
+            binding.playerLyrics.apply {
+                visibility = View.VISIBLE
+                animate().alpha(1f).duration = VISIBILITY_ANIM_DURATION
             }
         }
     }
 
+    @MainThread
     private suspend fun hideLyricsLayout() {
-        lifecycle.whenResumed {
-            withContext(Dispatchers.Main) {
-                binding.playerLyrics
-                    .animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION)
-                    .withEndAction {
-                        lifecycleScope.launch {
-                            lifecycle.whenResumed {
-                                binding.playerLyrics.visibility = View.GONE
-                                binding.playerLyricsLine1.text = null
-                                binding.playerLyricsLine2.text = null
-                            }
+        lifecycle.withStarted {
+            binding.playerLyrics
+                .animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION)
+                .withEndAction {
+                    lifecycleScope.launch {
+                        lifecycle.withResumed {
+                            binding.playerLyrics.visibility = View.GONE
+                            binding.playerLyricsLine1.text = null
+                            binding.playerLyricsLine2.text = null
                         }
                     }
-            }
+                }
         }
     }
 
@@ -182,7 +177,7 @@ class PlayerAlbumCoverFragment :
     }
 
     private suspend fun updateAdapter() {
-        lifecycle.whenStarted {
+        lifecycle.withCreated {
             val queue = MusicPlayerRemote.playingQueue
             val position = CurrentQueueState.position.value
             albumCoverPagerAdapter = AlbumCoverPagerAdapter(this@PlayerAlbumCoverFragment, queue)
@@ -201,7 +196,7 @@ class PlayerAlbumCoverFragment :
     private fun refreshPaletteColor(position: Int) {
         val adapter = albumCoverPagerAdapter
         lifecycleScope.launch(Dispatchers.Default) {
-            if (adapter!=null) {
+            if (adapter != null) {
                 val song = adapter.dataSet.getOrNull(position) ?: return@launch
                 playerViewModel.refreshPaletteColor(requireContext(), song)
             }
@@ -216,16 +211,17 @@ class PlayerAlbumCoverFragment :
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun updateProgressViews(progress: Int, total: Int) {
-        lifecycleScope.launch(Dispatchers.Unconfined) {
+        lifecycleScope.launch {
             updateLyrics(progress)
         }
     }
 
     private suspend fun updateLyrics(progress: Int) {
-        lifecycle.whenResumed {
-            val lyrics = playerViewModel.lyrics.value
-            if (lyrics != null) {
+        val lyrics = playerViewModel.lyrics.value
+        if (lyrics != null) {
+            lifecycle.withResumed {
                 binding.playerLyrics.apply {
                     visibility = View.VISIBLE
                     alpha = 1f
@@ -236,9 +232,9 @@ class PlayerAlbumCoverFragment :
                 if (oldLine != line || oldLine.isEmpty()) {
                     updateLyricsImpl(oldLine, line)
                 }
-            } else {
-                hideLyricsLayout()
             }
+        } else {
+            hideLyricsLayout()
         }
     }
 
@@ -344,7 +340,7 @@ class AlbumCoverPagerAdapter(
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            song = requireArguments().getParcelable(SONG_ARG)!!
+            song = requireArguments().parcelable(SONG_ARG)!!
         }
 
         override fun onCreateView(
@@ -372,7 +368,7 @@ class AlbumCoverPagerAdapter(
             _binding = null
         }
 
-        private fun forceSquareAlbumCover(forceSquareAlbumCover: Boolean) {
+        private fun forceSquareAlbumCover(@Suppress("SameParameterValue") forceSquareAlbumCover: Boolean) {
             binding.playerImage.scaleType =
                 if (forceSquareAlbumCover) ImageView.ScaleType.FIT_CENTER else ImageView.ScaleType.CENTER_CROP
         }

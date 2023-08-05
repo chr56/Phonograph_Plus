@@ -16,6 +16,7 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.util.coroutineToast
+import player.phonograph.util.parcelableArrayList
 import player.phonograph.util.permissions.hasStorageWritePermission
 import player.phonograph.util.reportError
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
@@ -43,10 +44,11 @@ import kotlinx.coroutines.withContext
 
 class ClearPlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val playlists: List<Playlist> = requireArguments().getParcelableArrayList(KEY)!!
+        val playlists: List<Playlist> = requireArguments().parcelableArrayList(KEY)!!
 
         // classify
         val grouped = playlists.groupBy {
+            @Suppress("REDUNDANT_ELSE_IN_WHEN")
             when (it) {
                 is SmartPlaylist -> SMART_PLAYLIST
                 is FilePlaylist  -> FILE_PLAYLIST
@@ -99,6 +101,7 @@ class ClearPlaylistDialog : DialogFragment() {
             }.also {
                 // grant permission button for R
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !hasPermission) {
+                    @Suppress("DEPRECATION")
                     it.neutralButton(R.string.grant_permission) {
                         startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
                             data = Uri.parse("package:${requireContext().packageName}")

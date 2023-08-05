@@ -29,6 +29,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.getFileSizeString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.notification.ErrorNotification
+import player.phonograph.util.parcelable
 import androidx.fragment.app.DialogFragment
 import android.app.Activity
 import android.app.Dialog
@@ -49,7 +50,7 @@ import java.io.IOException
 class SongDetailDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val context: Activity? = activity
-        val song: Song = requireArguments().getParcelable("song")!!
+        val song: Song = requireArguments().parcelable("song")!!
         val dialog = MaterialDialog(context as Context)
             .title(R.string.label_details)
             .positiveButton(android.R.string.ok)

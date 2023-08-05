@@ -27,6 +27,7 @@ import player.phonograph.util.NavigationUtil
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.warning
 import androidx.annotation.ColorInt
+import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.animation.doOnEnd
@@ -35,8 +36,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.whenResumed
-import androidx.lifecycle.whenStarted
+import androidx.lifecycle.withCreated
+import androidx.lifecycle.withResumed
+import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.animation.AnimatorSet
@@ -210,7 +212,7 @@ abstract class AbsPlayerFragment :
                 title = getString(R.string.action_speed)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick {
-                    SpeedControlDialog().show(childFragmentManager,"SPEED_CONTROL_DIALOG")
+                    SpeedControlDialog().show(childFragmentManager, "SPEED_CONTROL_DIALOG")
                     true
                 }
             }
@@ -239,14 +241,12 @@ abstract class AbsPlayerFragment :
 
     abstract fun getImplToolbar(): Toolbar
 
-    private fun showToolbar(toolbar: View?) {
-        if (toolbar == null) return
+    private fun showToolbar(toolbar: View) {
         toolbar.visibility = View.VISIBLE
         toolbar.animate().alpha(1f).duration = VISIBILITY_ANIM_DURATION
     }
 
-    private fun hideToolbar(toolbar: View?) {
-        if (toolbar == null) return
+    private fun hideToolbar(toolbar: View) {
         toolbar.animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION)
             .withEndAction { toolbar.visibility = View.GONE }
     }
@@ -278,19 +278,18 @@ abstract class AbsPlayerFragment :
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
-            lifecycleScope.launch { updateAdapter() }
+            lifecycleScope.launch(Dispatchers.Main) { updateAdapter() }
             viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
         }
     }
 
     abstract fun onBackPressed(): Boolean
 
+    @MainThread
     protected open suspend fun updateAdapter() {
-        lifecycle.whenStarted {
-            withContext(Dispatchers.Main) {
-                playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
-                playingQueueAdapter.current = MusicPlayerRemote.position
-            }
+        lifecycle.withCreated {
+            playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
+            playingQueueAdapter.current = MusicPlayerRemote.position
         }
     }
 
@@ -303,16 +302,16 @@ abstract class AbsPlayerFragment :
 
     protected var lastPaletteColor = 0
     protected var currentAnimatorSet: AnimatorSet? = null
-    protected suspend fun requestAnimateColorChanging(newColor: Int) {
-        whenResumed {
-            currentAnimatorSet?.end()
-            currentAnimatorSet?.cancel()
-            currentAnimatorSet = generatePaletteColorAnimators(lastPaletteColor, newColor).also {
-                it.doOnEnd {
-                    lastPaletteColor = newColor
-                }
-                it.start()
+
+    @MainThread
+    protected fun requestAnimateColorChanging(newColor: Int) {
+        currentAnimatorSet?.end()
+        currentAnimatorSet?.cancel()
+        currentAnimatorSet = generatePaletteColorAnimators(lastPaletteColor, newColor).also {
+            it.doOnEnd {
+                lastPaletteColor = newColor
             }
+            it.start()
         }
     }
 
@@ -329,7 +328,7 @@ abstract class AbsPlayerFragment :
         observe(CurrentQueueState.currentSong) {
             viewModel.updateCurrentSong(MusicPlayerRemote.currentSong, context)
             lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
-            whenStarted { impl.updateCurrentSong(it) }
+            withStarted { impl.updateCurrentSong(it) }
         }
         observe(CurrentQueueState.shuffleMode) {
             updateAdapter()
@@ -337,24 +336,22 @@ abstract class AbsPlayerFragment :
         observe(viewModel.favoriteState) {
             if (it.first == viewModel.currentSong.value) {
                 val isFavorite = it.second
-                lifecycle.whenStarted {
-                    withContext(Dispatchers.Main) {
-                        val res =
-                            if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
-                        val color = toolbarIconColor(requireContext(), Color.TRANSPARENT)
-                        favoriteMenuItem?.apply {
-                            icon = requireContext().getTintedDrawable(res, color)
-                            title =
-                                if (isFavorite) getString(R.string.action_remove_from_favorites)
-                                else getString(R.string.action_add_to_favorites)
-                        }
+                lifecycle.withStarted {
+                    val res =
+                        if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
+                    val color = toolbarIconColor(requireContext(), Color.TRANSPARENT)
+                    favoriteMenuItem?.apply {
+                        icon = requireContext().getTintedDrawable(res, color)
+                        title =
+                            if (isFavorite) getString(R.string.action_remove_from_favorites)
+                            else getString(R.string.action_add_to_favorites)
                     }
                 }
             }
         }
         observe(viewModel.showToolbar) {
-            whenStarted {
-                val container = getToolBarContainer() ?: return@whenStarted
+            val container = getToolBarContainer() ?: return@observe
+            withStarted {
                 if (it) {
                     showToolbar(container)
                 } else {
@@ -376,9 +373,11 @@ abstract class AbsPlayerFragment :
             }
         }
         observe(viewModel.paletteColor) { newColor ->
-            whenResumed {
-                playbackControlsFragment.modifyColor(newColor)
-                requestAnimateColorChanging(newColor)
+            withContext(Dispatchers.Main) {
+                withResumed {
+                    playbackControlsFragment.modifyColor(newColor)
+                    requestAnimateColorChanging(newColor)
+                }
             }
         }
     }

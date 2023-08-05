@@ -12,6 +12,7 @@ import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.util.parcelableArrayList
 import util.phonograph.playlist.PlaylistsManager
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
@@ -24,7 +25,7 @@ import kotlinx.coroutines.launch
 
 class CreatePlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val songs: List<Song> = requireArguments().getParcelableArrayList(SONGS)!!
+        val songs = requireArguments().parcelableArrayList<Song>(SONGS)!!
         return MaterialDialog(requireActivity())
             .title(R.string.new_playlist_title)
             .positiveButton(R.string.create_action)

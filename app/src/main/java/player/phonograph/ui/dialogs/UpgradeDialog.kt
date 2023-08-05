@@ -20,6 +20,7 @@ import player.phonograph.ui.components.viewcreater.buildDialogView
 import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
 import player.phonograph.ui.components.viewcreater.titlePanel
+import player.phonograph.util.parcelable
 import player.phonograph.util.text.dateText
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
@@ -48,7 +49,7 @@ class UpgradeDialog : DialogFragment() {
     private lateinit var versionCatalog: VersionCatalog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        versionCatalog = requireArguments().getParcelable(VERSION_CATALOG)
+        versionCatalog = requireArguments().parcelable(VERSION_CATALOG)
             ?: throw IllegalStateException("VersionCatalog non-exist")
     }
 

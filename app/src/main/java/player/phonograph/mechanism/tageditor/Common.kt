@@ -152,6 +152,7 @@ private fun deleteArtWork(songFile: File) {
     }
 }
 
+@Suppress("UNUSED_PARAMETER")
 private fun applyTagEditImpl(context: Context, songFile: File, requests: Map<FieldKey, String?>) {
     safeEditTag(songFile.path) {
         val file = AudioFileIO.read(songFile)

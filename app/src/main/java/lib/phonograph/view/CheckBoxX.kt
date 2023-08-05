@@ -26,7 +26,7 @@ class CheckBoxX : AppCompatCheckBox {
         init(context, attrs)
     }
 
-    private fun init(context: Context, attrs: AttributeSet?) {
+    private fun init(context: Context, @Suppress("UNUSED_PARAMETER") attrs: AttributeSet?) {
         this.setTint(accentColor(context), context.nightMode)
     }
 }
