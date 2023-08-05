@@ -36,10 +36,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.whenResumed
 import androidx.lifecycle.whenStarted
 import androidx.lifecycle.withCreated
-import androidx.lifecycle.withStarted
+import androidx.lifecycle.withResumed
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.animation.AnimatorSet
@@ -213,7 +212,7 @@ abstract class AbsPlayerFragment :
                 title = getString(R.string.action_speed)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick {
-                    SpeedControlDialog().show(childFragmentManager,"SPEED_CONTROL_DIALOG")
+                    SpeedControlDialog().show(childFragmentManager, "SPEED_CONTROL_DIALOG")
                     true
                 }
             }
@@ -305,16 +304,16 @@ abstract class AbsPlayerFragment :
 
     protected var lastPaletteColor = 0
     protected var currentAnimatorSet: AnimatorSet? = null
-    protected suspend fun requestAnimateColorChanging(newColor: Int) {
-        whenResumed {
-            currentAnimatorSet?.end()
-            currentAnimatorSet?.cancel()
-            currentAnimatorSet = generatePaletteColorAnimators(lastPaletteColor, newColor).also {
-                it.doOnEnd {
-                    lastPaletteColor = newColor
-                }
-                it.start()
+
+    @MainThread
+    protected fun requestAnimateColorChanging(newColor: Int) {
+        currentAnimatorSet?.end()
+        currentAnimatorSet?.cancel()
+        currentAnimatorSet = generatePaletteColorAnimators(lastPaletteColor, newColor).also {
+            it.doOnEnd {
+                lastPaletteColor = newColor
             }
+            it.start()
         }
     }
 
@@ -378,8 +377,8 @@ abstract class AbsPlayerFragment :
             }
         }
         observe(viewModel.paletteColor) { newColor ->
-            whenResumed {
-                playbackControlsFragment.modifyColor(newColor)
+            playbackControlsFragment.modifyColor(newColor)
+            withResumed {
                 requestAnimateColorChanging(newColor)
             }
         }
