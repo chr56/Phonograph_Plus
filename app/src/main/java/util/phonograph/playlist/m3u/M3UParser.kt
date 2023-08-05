@@ -18,7 +18,7 @@ object M3UParser {
         val songs: MutableList<Song> = ArrayList(15)
         for (file in songFiles) {
             songs.add(
-                SongLoader.searchByPath(context, file).firstOrNull() ?: Song.EMPTY_SONG
+                SongLoader.searchByPath(context, file, true).firstOrNull() ?: Song.EMPTY_SONG
             )
         }
         return if (songs.isNotEmpty()) songs else ArrayList(1)

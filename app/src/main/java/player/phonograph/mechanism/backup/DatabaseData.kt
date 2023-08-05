@@ -239,7 +239,7 @@ object DatabaseDataManger {
         }
 
         fun getMatchingSong(context: Context): Song? =
-            SongLoader.searchByPath(context, path).firstOrNull()
+            SongLoader.searchByPath(context, path, withoutPathFilter = true).firstOrNull()
     }
     @Keep
     @Serializable

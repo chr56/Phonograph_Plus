@@ -33,8 +33,11 @@ object SongLoader {
             context, "${MediaStore.Audio.AudioColumns.DATA} =? ", arrayOf(path)
         ).intoFirstSong()
 
+    /**
+     * @param withoutPathFilter true if disable path filter
+     */
     @JvmStatic
-    fun searchByPath(context: Context, path: String, withoutPathFilter: Boolean = false): List<Song> =
+    fun searchByPath(context: Context, path: String, withoutPathFilter: Boolean): List<Song> =
         querySongs(
             context,
             "${MediaStore.Audio.AudioColumns.DATA} LIKE ? ",
@@ -44,7 +47,7 @@ object SongLoader {
 
     @JvmStatic
     fun searchByLocation(context: Context, currentLocation: Location): List<Song> =
-        searchByPath(context, "%${currentLocation.absolutePath}%")
+        searchByPath(context, "%${currentLocation.absolutePath}%", withoutPathFilter = false)
 
     @JvmStatic
     fun searchByTitle(context: Context, title: String): List<Song> {
