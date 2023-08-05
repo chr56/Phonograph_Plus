@@ -211,6 +211,7 @@ class PlayerAlbumCoverFragment :
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun updateProgressViews(progress: Int, total: Int) {
         lifecycleScope.launch {
             updateLyrics(progress)
@@ -367,7 +368,7 @@ class AlbumCoverPagerAdapter(
             _binding = null
         }
 
-        private fun forceSquareAlbumCover(forceSquareAlbumCover: Boolean) {
+        private fun forceSquareAlbumCover(@Suppress("SameParameterValue") forceSquareAlbumCover: Boolean) {
             binding.playerImage.scaleType =
                 if (forceSquareAlbumCover) ImageView.ScaleType.FIT_CENTER else ImageView.ScaleType.CENTER_CROP
         }
