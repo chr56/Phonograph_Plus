@@ -1,4 +1,4 @@
-@file:Suppress("PackageDirectoryMismatch", "unused")
+@file:Suppress("PackageDirectoryMismatch", "unused", "UNUSED_PARAMETER")
 package cn.lyric.getter.api.tools
 
 import android.content.Context
