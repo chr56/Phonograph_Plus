@@ -5,7 +5,7 @@ on:
       - 'dev'
       - 'main'
     tags-ignore:
-      - 'v0*'
+      - 'v*'
       - 'preview_*'
       - 'test*'
     paths-ignore:
