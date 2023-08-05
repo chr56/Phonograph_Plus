@@ -94,7 +94,7 @@ object PlaylistLoader {
         selectionValues: Array<String>?,
     ): Cursor? {
         val actual =
-            withPathFilter(context) {
+            withPathFilter(context, escape = false) {
                 SQLWhereClause(
                     selection = withBasePlaylistFilter { selection },
                     selectionValues = selectionValues ?: emptyArray()

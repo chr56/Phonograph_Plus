@@ -84,6 +84,7 @@ fun fileEntityPopupMenu(
                     }
                 }
             }
+
             is FileEntity.Folder -> {
                 menuItem(title = getString(R.string.action_scan)) {
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
@@ -125,7 +126,7 @@ private inline fun action(
     block(
         when (fileItem) {
             is FileEntity.File   -> listOf(fileItem.linkedSong(context))
-            is FileEntity.Folder -> SongLoader.searchByLocation(context, fileItem.location)
+            is FileEntity.Folder -> SongLoader.searchByPath(context, fileItem.location.sqlPattern, false)
         }
     )
 

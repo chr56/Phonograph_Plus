@@ -101,4 +101,6 @@ class Location private constructor(val basePath: String, val storageVolume: Stor
 
         return true
     }
+
+    val sqlPattern get() = "%${absolutePath}%"
 }

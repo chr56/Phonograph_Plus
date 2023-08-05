@@ -170,7 +170,7 @@ class StarterActivity : AppCompatActivity() {
                 }
 
             if (file != null) {
-                songs = searchByPath(this, file.absolutePath)
+                songs = searchByPath(this, file.absolutePath, withoutPathFilter = true)
             }
         }
 
