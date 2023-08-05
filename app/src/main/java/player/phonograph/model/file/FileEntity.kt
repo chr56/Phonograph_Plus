@@ -26,12 +26,13 @@ sealed class FileEntity(
         } else {
             when (Setting.instance.fileSortMode.sortRef) {
                 SortRef.MODIFIED_DATE -> dateModified.compareTo(other.dateModified)
-                SortRef.ADDED_DATE -> dateAdded.compareTo(other.dateAdded)
-                SortRef.SIZE -> {
+                SortRef.ADDED_DATE    -> dateAdded.compareTo(other.dateAdded)
+                SortRef.SIZE          -> {
                     if (this is File && other is File) size.compareTo(other.size)
                     else name.compareTo(other.name)
                 }
-                else -> name.compareTo(other.name)
+
+                else                  -> name.compareTo(other.name)
             }.let {
                 if (Setting.instance.fileSortMode.revert) -it else it
             }
@@ -73,5 +74,5 @@ sealed class FileEntity(
 }
 
 fun FileEntity.File.linkedSong(context: Context): Song =
-    if (id <= 0) SongLoader.searchByLocation(context, location).firstOrNull() ?: Song.EMPTY_SONG
+    if (id <= 0) SongLoader.searchByPath(context, location.sqlPattern, true).firstOrNull() ?: Song.EMPTY_SONG
     else SongLoader.id(context, id)

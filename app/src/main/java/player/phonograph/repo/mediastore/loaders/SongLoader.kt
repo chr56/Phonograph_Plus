@@ -46,10 +46,6 @@ object SongLoader {
         ).intoSongs()
 
     @JvmStatic
-    fun searchByLocation(context: Context, currentLocation: Location): List<Song> =
-        searchByPath(context, "%${currentLocation.absolutePath}%", withoutPathFilter = false)
-
-    @JvmStatic
     fun searchByTitle(context: Context, title: String): List<Song> {
         val cursor = querySongs(
             context, "${MediaStore.Audio.AudioColumns.TITLE} LIKE ?", arrayOf("%$title%")
