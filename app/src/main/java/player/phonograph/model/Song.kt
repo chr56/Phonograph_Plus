@@ -70,24 +70,24 @@ open class Song : Parcelable, Displayable {
         this.composer = composer
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o !is Song) return false
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Song) return false
 
-        if (id != o.id) return false
-        if (title != o.title) return false
-        if (trackNumber != o.trackNumber) return false
-        if (year != o.year) return false
-        if (duration != o.duration) return false
-        if (data != o.data) return false
-        if (dateAdded != o.dateAdded) return false
-        if (dateModified != o.dateModified) return false
-        if (albumId != o.albumId) return false
-        if (albumName != o.albumName) return false
-        if (artistId != o.artistId) return false
-        if (artistName != o.artistName) return false
-        if (albumArtistName != o.albumArtistName) return false
-        if (composer != o.composer) return false
+        if (id != other.id) return false
+        if (title != other.title) return false
+        if (trackNumber != other.trackNumber) return false
+        if (year != other.year) return false
+        if (duration != other.duration) return false
+        if (data != other.data) return false
+        if (dateAdded != other.dateAdded) return false
+        if (dateModified != other.dateModified) return false
+        if (albumId != other.albumId) return false
+        if (albumName != other.albumName) return false
+        if (artistId != other.artistId) return false
+        if (artistName != other.artistName) return false
+        if (albumArtistName != other.albumArtistName) return false
+        if (composer != other.composer) return false
 
         return true
     }
