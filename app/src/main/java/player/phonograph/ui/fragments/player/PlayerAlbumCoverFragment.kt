@@ -17,7 +17,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.whenResumed
 import androidx.lifecycle.withCreated
 import androidx.lifecycle.withResumed
 import androidx.lifecycle.withStarted
@@ -197,7 +196,7 @@ class PlayerAlbumCoverFragment :
     private fun refreshPaletteColor(position: Int) {
         val adapter = albumCoverPagerAdapter
         lifecycleScope.launch(Dispatchers.Default) {
-            if (adapter!=null) {
+            if (adapter != null) {
                 val song = adapter.dataSet.getOrNull(position) ?: return@launch
                 playerViewModel.refreshPaletteColor(requireContext(), song)
             }
@@ -213,15 +212,15 @@ class PlayerAlbumCoverFragment :
     }
 
     private fun updateProgressViews(progress: Int, total: Int) {
-        lifecycleScope.launch(Dispatchers.Unconfined) {
+        lifecycleScope.launch {
             updateLyrics(progress)
         }
     }
 
     private suspend fun updateLyrics(progress: Int) {
-        lifecycle.whenResumed {
-            val lyrics = playerViewModel.lyrics.value
-            if (lyrics != null) {
+        val lyrics = playerViewModel.lyrics.value
+        if (lyrics != null) {
+            lifecycle.withResumed {
                 binding.playerLyrics.apply {
                     visibility = View.VISIBLE
                     alpha = 1f
@@ -232,9 +231,9 @@ class PlayerAlbumCoverFragment :
                 if (oldLine != line || oldLine.isEmpty()) {
                     updateLyricsImpl(oldLine, line)
                 }
-            } else {
-                hideLyricsLayout()
             }
+        } else {
+            hideLyricsLayout()
         }
     }
 
