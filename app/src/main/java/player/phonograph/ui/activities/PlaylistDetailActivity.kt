@@ -33,6 +33,7 @@ import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.totalDuration
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
+import player.phonograph.util.parcelable
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import util.phonograph.playlist.mediastore.moveItemViaMediastore
@@ -84,7 +85,7 @@ class PlaylistDetailActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val playlist = intent.extras?.getParcelable<Playlist>(EXTRA_PLAYLIST)
+        val playlist = intent.extras?.parcelable<Playlist>(EXTRA_PLAYLIST)
         if (playlist == null) {
             finish()
         } else {

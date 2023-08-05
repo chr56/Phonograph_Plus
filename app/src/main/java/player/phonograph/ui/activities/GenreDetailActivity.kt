@@ -4,13 +4,14 @@ import lib.phonograph.misc.menuProvider
 import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.R
 import player.phonograph.actions.menu.genreDetailToolbar
-import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.databinding.ActivityGenreDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.GenreLoader
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
+import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
+import player.phonograph.util.parcelable
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,7 +35,7 @@ class GenreDetailActivity :
     private lateinit var adapter: SongDisplayAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        genre = intent.extras?.getParcelable(EXTRA_GENRE) ?: throw Exception(
+        genre = intent.extras?.parcelable(EXTRA_GENRE) ?: throw Exception(
             "No genre in the intent!"
         )
         loadDataSet(this)

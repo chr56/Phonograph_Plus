@@ -13,6 +13,7 @@ import player.phonograph.ui.components.viewcreater.buildDialogView
 import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
 import player.phonograph.ui.components.viewcreater.titlePanel
+import player.phonograph.util.parcelableArrayList
 import player.phonograph.util.permissions.hasStorageWritePermission
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.text.ItemGroup
@@ -56,7 +57,7 @@ class DeleteSongsDialog : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        songs = requireArguments().getParcelableArrayList("songs")!!
+        songs = requireArguments().parcelableArrayList("songs")!!
         hasPermission = hasStorageWritePermission(requireContext())
         model = DeleteSongsModel(songs, hasPermission)
     }

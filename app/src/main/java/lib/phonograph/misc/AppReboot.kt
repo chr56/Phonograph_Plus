@@ -8,6 +8,8 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Bundle
 import android.os.Process
 
@@ -25,7 +27,7 @@ object Reboot {
     fun reboot(
         context: Context,
         pid: Int = Process.myPid(),
-        restartIntent: Intent = restartIntent(context)
+        restartIntent: Intent = restartIntent(context),
     ) {
         context.startActivity(
             Intent(context, RebootActivity::class.java)
@@ -49,8 +51,13 @@ object Reboot {
             Process.killProcess(pidToKill)
 
             // Start new one
-            val intent = intent.getParcelableExtra<Intent>(RESTART_INTENT)
-            startActivity(intent)
+            startActivity(
+                @Suppress("DEPRECATION")
+                when {
+                    SDK_INT >= TIRAMISU -> intent.getParcelableExtra(RESTART_INTENT, Intent::class.java)
+                    else                -> intent.getParcelableExtra(RESTART_INTENT) as? Intent
+                }
+            )
 
 
             // finish self

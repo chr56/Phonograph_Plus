@@ -12,6 +12,10 @@
 // Modified for Phonograph by Karim Abou Zeid (kabouzeid).
 package player.phonograph.service.util
 
+import player.phonograph.BuildConfig
+import player.phonograph.service.MusicService
+import player.phonograph.util.parcelableExtra
+import androidx.core.content.ContextCompat
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -23,9 +27,6 @@ import android.os.PowerManager
 import android.os.PowerManager.WakeLock
 import android.util.Log
 import android.view.KeyEvent
-import androidx.core.content.ContextCompat
-import player.phonograph.BuildConfig
-import player.phonograph.service.MusicService
 
 /**
  * Used to control headset playback.
@@ -80,7 +81,7 @@ class MediaButtonIntentReceiver : BroadcastReceiver() {
 
         fun handleIntent(context: Context, intent: Intent): Boolean {
             if (Intent.ACTION_MEDIA_BUTTON == intent.action) {
-                val event = intent.getParcelableExtra<KeyEvent>(Intent.EXTRA_KEY_EVENT) ?: return false
+                val event = intent.parcelableExtra<KeyEvent>(Intent.EXTRA_KEY_EVENT) ?: return false
                 val keycode = event.keyCode
                 val action = event.action
                 val eventTime = if (event.eventTime != 0L) event.eventTime else System.currentTimeMillis()

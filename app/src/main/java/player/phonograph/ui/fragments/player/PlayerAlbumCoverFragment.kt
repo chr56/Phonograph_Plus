@@ -12,6 +12,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
+import player.phonograph.util.parcelable
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
 import androidx.collection.LruCache
 import androidx.fragment.app.Fragment
@@ -344,7 +345,7 @@ class AlbumCoverPagerAdapter(
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            song = requireArguments().getParcelable(SONG_ARG)!!
+            song = requireArguments().parcelable(SONG_ARG)!!
         }
 
         override fun onCreateView(

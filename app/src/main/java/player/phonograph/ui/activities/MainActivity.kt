@@ -46,6 +46,7 @@ import player.phonograph.ui.dialogs.UpgradeDialog
 import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.debug
+import player.phonograph.util.parcelableExtra
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.theme.getTintedDrawable
@@ -113,7 +114,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
             {
                 val showUpgradeDialog = intent.getBooleanExtra(UPGRADABLE, false)
                 if (showUpgradeDialog) {
-                    showUpgradeDialog(intent.getParcelableExtra(VERSION_INFO) as? VersionCatalog)
+                    showUpgradeDialog(intent.parcelableExtra(VERSION_INFO) as? VersionCatalog)
                 }
                 lifecycleScope.launch(Dispatchers.Main) {
                     lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {

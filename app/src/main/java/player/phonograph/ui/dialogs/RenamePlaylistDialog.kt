@@ -11,6 +11,7 @@ import com.afollestad.materialdialogs.input.input
 import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
 import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.util.parcelable
 import util.phonograph.playlist.mediastore.renamePlaylistViaMediastore
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 
 class RenamePlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val playlist = requireArguments().getParcelable<FilePlaylist>(PLAYLIST) ?: throw Exception()
+        val playlist = requireArguments().parcelable<FilePlaylist>(PLAYLIST) ?: throw Exception()
         val dialog = MaterialDialog(requireActivity())
             .title(R.string.rename_playlist_title)
             .positiveButton(R.string.rename_action)

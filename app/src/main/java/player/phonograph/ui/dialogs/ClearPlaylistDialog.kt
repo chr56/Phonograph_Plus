@@ -16,6 +16,7 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.util.coroutineToast
+import player.phonograph.util.parcelableArrayList
 import player.phonograph.util.permissions.hasStorageWritePermission
 import player.phonograph.util.reportError
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
@@ -43,7 +44,7 @@ import kotlinx.coroutines.withContext
 
 class ClearPlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val playlists: List<Playlist> = requireArguments().getParcelableArrayList(KEY)!!
+        val playlists: List<Playlist> = requireArguments().parcelableArrayList(KEY)!!
 
         // classify
         val grouped = playlists.groupBy {
