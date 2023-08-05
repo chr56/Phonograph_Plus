@@ -75,11 +75,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface.OnDismissListener
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.audiofx.AudioEffect
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.N
 import android.os.Build.VERSION_CODES.N_MR1
 import android.os.Build.VERSION_CODES.S
+import android.os.Build.VERSION_CODES.TIRAMISU
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -570,8 +572,20 @@ private fun EqualizerSetting() {
     val hasEqualizer = remember { mutableStateOf(false) }
     if (!LocalInspectionMode.current) {
         LaunchedEffect("hasEqualizer") {
-            hasEqualizer.value = activity?.packageManager
-                ?.resolveActivity(Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL), 0) != null
+            val packageManager = activity?.packageManager
+            val intent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
+                putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+            }
+            val resolveInfo = if (packageManager != null) {
+                if (SDK_INT > TIRAMISU) {
+                    packageManager.resolveActivity(intent, PackageManager.ResolveInfoFlags.of(0))
+                } else {
+                    @Suppress("DEPRECATION")
+                    packageManager.resolveActivity(intent, 0)
+                }
+            } else null
+
+            hasEqualizer.value = resolveInfo != null
         }
     }
 
