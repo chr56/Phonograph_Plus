@@ -48,6 +48,7 @@ class ClearPlaylistDialog : DialogFragment() {
 
         // classify
         val grouped = playlists.groupBy {
+            @Suppress("REDUNDANT_ELSE_IN_WHEN")
             when (it) {
                 is SmartPlaylist -> SMART_PLAYLIST
                 is FilePlaylist  -> FILE_PLAYLIST
@@ -100,6 +101,7 @@ class ClearPlaylistDialog : DialogFragment() {
             }.also {
                 // grant permission button for R
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !hasPermission) {
+                    @Suppress("DEPRECATION")
                     it.neutralButton(R.string.grant_permission) {
                         startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
                             data = Uri.parse("package:${requireContext().packageName}")

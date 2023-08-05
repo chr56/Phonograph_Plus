@@ -2,6 +2,8 @@
  * Copyright (c) 2022~2023 chr_56
  */
 
+@file:Suppress("DEPRECATION")
+
 package player.phonograph.ui.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog

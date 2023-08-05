@@ -30,6 +30,7 @@ class HomeTabConfigDialog : DialogFragment() {
     private lateinit var adapter: PageTabConfigAdapter
     private lateinit var recyclerView: RecyclerView
 
+    @Suppress("DEPRECATION")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = requireActivity().layoutInflater.inflate(R.layout.recycler_view_wrapped, null)
 
