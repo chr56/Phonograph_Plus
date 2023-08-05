@@ -56,7 +56,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.whenStarted
+import androidx.lifecycle.withStarted
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -119,7 +119,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 lifecycleScope.launch(Dispatchers.Main) {
                     lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                         SettingFlowStore(this@MainActivity).homeTabConfigJsonString.distinctUntilChanged().collect {
-                            whenStarted {
+                            withStarted {
                                 setupDrawerMenu(drawerBinding.navigationView.menu)
                             }
                         }
