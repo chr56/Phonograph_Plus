@@ -11,12 +11,12 @@ import mt.util.color.secondaryTextColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.FragmentCardPlayerBinding
+import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
-import player.phonograph.ui.adapter.UniversalMediaEntryViewHolder
 import player.phonograph.ui.adapter.initMenu
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.util.theme.nightMode
@@ -241,40 +241,36 @@ class CardPlayerFragment :
     }
 
     private class PortraitImpl(fragment: CardPlayerFragment) : BaseImpl(fragment) {
-        var currentSongViewHolder: UniversalMediaEntryViewHolder? = null
+        lateinit var currentSongBinding: ItemListBinding
         override fun init() {
             super.init()
-            currentSongViewHolder = UniversalMediaEntryViewHolder(
-                fragment.requireView().findViewById(R.id.current_song)
-            )
-            with(currentSongViewHolder!!) {
-                title?.isSingleLine = false
-                title?.maxLines = 2
-                text?.ellipsize = TextUtils.TruncateAt.MARQUEE
-                text?.isSelected = true
-            }
-            currentSongViewHolder!!.separator!!.visibility = View.VISIBLE
-            currentSongViewHolder!!.shortSeparator!!.visibility = View.GONE
-            currentSongViewHolder!!.image!!.scaleType = ImageView.ScaleType.CENTER
-            currentSongViewHolder!!.image!!.setColorFilter(
-                resolveColor(
-                    fragment.requireContext(),
-                    R.attr.iconColor,
-                    fragment.requireContext().secondaryTextColor(App.instance.nightMode)
-                ),
-                PorterDuff.Mode.SRC_IN
-            )
-            currentSongViewHolder!!.image!!.setImageResource(R.drawable.ic_volume_up_white_24dp)
-            currentSongViewHolder!!.itemView.setOnClickListener {
-                // toggle the panel
-                if (fragment.viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
-                    fragment.viewBinding.playerSlidingLayout.panelState = PanelState.EXPANDED
-                } else if (fragment.viewBinding.playerSlidingLayout.panelState == PanelState.EXPANDED) {
-                    fragment.viewBinding.playerSlidingLayout.panelState = PanelState.COLLAPSED
+            currentSongBinding = ItemListBinding.bind(fragment.requireView().findViewById(R.id.current_song))
+            with(currentSongBinding) {
+                title.isSingleLine = false
+                title.maxLines = 2
+                text.ellipsize = TextUtils.TruncateAt.MARQUEE
+                text.isSelected = true
+                separator.visibility = View.VISIBLE
+                shortSeparator.visibility = View.GONE
+                image.scaleType = ImageView.ScaleType.CENTER
+                image.setColorFilter(
+                    resolveColor(
+                        fragment.requireContext(),
+                        R.attr.iconColor,
+                        fragment.requireContext().secondaryTextColor(App.instance.nightMode)
+                    ),
+                    PorterDuff.Mode.SRC_IN
+                )
+                image.setImageResource(R.drawable.ic_volume_up_white_24dp)
+                root.setOnClickListener {
+                    // toggle the panel
+                    if (fragment.viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
+                        fragment.viewBinding.playerSlidingLayout.panelState = PanelState.EXPANDED
+                    } else if (fragment.viewBinding.playerSlidingLayout.panelState == PanelState.EXPANDED) {
+                        fragment.viewBinding.playerSlidingLayout.panelState = PanelState.COLLAPSED
+                    }
                 }
-            }
-            currentSongViewHolder?.menu?.let { menuView ->
-                menuView.setOnClickListener {
+                menu.setOnClickListener {
                     PopupMenu(fragment.requireContext(), it).apply {
                         MusicPlayerRemote.currentSong
                             .initMenu(
@@ -285,7 +281,6 @@ class CardPlayerFragment :
                     }.show()
                 }
             }
-            super.init()
         }
 
         override fun setUpPanelAndAlbumCoverHeight() {
@@ -315,8 +310,8 @@ class CardPlayerFragment :
         }
 
         override fun updateCurrentSong(song: Song) {
-            currentSongViewHolder!!.title!!.text = song.title
-            currentSongViewHolder!!.text!!.text = song.infoString()
+            currentSongBinding.title.text = song.title
+            currentSongBinding.text.text = song.infoString()
         }
 
         override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
