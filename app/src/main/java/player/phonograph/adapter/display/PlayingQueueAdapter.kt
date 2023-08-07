@@ -4,15 +4,6 @@
 
 package player.phonograph.adapter.display
 
-import android.annotation.SuppressLint
-import android.view.LayoutInflater
-import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.PopupMenu
-import androidx.appcompat.app.AppCompatActivity
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemState
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder
@@ -23,6 +14,16 @@ import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.ui.hitTest
+import androidx.appcompat.app.AppCompatActivity
+import android.annotation.SuppressLint
+import android.text.TextUtils
+import android.view.LayoutInflater
+import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.PopupMenu
 
 class PlayingQueueAdapter(
     activity: AppCompatActivity,
@@ -46,7 +47,7 @@ class PlayingQueueAdapter(
         when {
             position < current -> HISTORY
             position > current -> UP_NEXT
-            else -> CURRENT
+            else               -> CURRENT
         }
 
     override fun onBindViewHolder(
@@ -81,6 +82,8 @@ class PlayingQueueAdapter(
             itemView.isActivated = false
             title?.text = song.title
             text?.text = song.infoString()
+            title?.ellipsize = TextUtils.TruncateAt.MIDDLE
+            text?.ellipsize = TextUtils.TruncateAt.MIDDLE
             image?.visibility = GONE
             imageText?.visibility = VISIBLE
             imageText?.text = (position - current).toString()
@@ -139,7 +142,7 @@ class PlayingQueueAdapter(
             when {
                 fromPosition < toPosition -> notifyItemRangeChanged(fromPosition, toPosition)
                 fromPosition > toPosition -> notifyItemRangeChanged(toPosition, fromPosition)
-                else -> notifyItemChanged(fromPosition)
+                else                      -> notifyItemChanged(fromPosition)
             }
         }
     }
