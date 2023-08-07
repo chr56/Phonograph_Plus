@@ -20,6 +20,7 @@ import player.phonograph.ui.adapter.initMenu
 import player.phonograph.util.ui.hitTest
 import androidx.appcompat.app.AppCompatActivity
 import android.annotation.SuppressLint
+import android.text.TextUtils
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -86,6 +87,8 @@ class PlayingQueueAdapter(
             itemView.isActivated = false
             title?.text = song.title
             text?.text = song.infoString()
+            title?.ellipsize = TextUtils.TruncateAt.MIDDLE
+            text?.ellipsize = TextUtils.TruncateAt.MIDDLE
             image?.visibility = GONE
             imageText?.visibility = VISIBLE
             imageText?.text = (position - current).toString()
