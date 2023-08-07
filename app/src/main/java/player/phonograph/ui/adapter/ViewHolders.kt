@@ -10,6 +10,7 @@ import player.phonograph.databinding.ItemListBinding
 import player.phonograph.databinding.ItemListNoImageBinding
 import player.phonograph.databinding.ItemListSingleRowBinding
 import player.phonograph.ui.views.IconImageView
+import androidx.annotation.IntDef
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import android.content.Context
@@ -32,6 +33,27 @@ protected constructor(val binding: VB) : RecyclerView.ViewHolder(binding.root) {
     protected open val dragView: View? get() = null
     protected open val paletteColorContainer: View? get() = null
 }
+
+@IntDef(
+    ViewHolderType.TYPE_CUSTOM,
+    ViewHolderType.TYPE_LIST_VIEW_HOLDER,
+    ViewHolderType.TYPE_SINGLE_ROW_LIST_VIEW_HOLDER,
+    ViewHolderType.TYPE_NO_IMAGE_LIST_VIEW_HOLDER,
+    ViewHolderType.TYPE_GRID_VIEW_HOLDER,
+    ViewHolderType.TYPE_GRID_CARD_HORIZONTAL_VIEW_HOLDER,
+)
+@Retention(AnnotationRetention.SOURCE)
+annotation class ViewHolderType {
+    companion object {
+        const val TYPE_CUSTOM = 0
+        const val TYPE_LIST_VIEW_HOLDER = 2
+        const val TYPE_SINGLE_ROW_LIST_VIEW_HOLDER = 4
+        const val TYPE_NO_IMAGE_LIST_VIEW_HOLDER = 8
+        const val TYPE_GRID_VIEW_HOLDER = 16
+        const val TYPE_GRID_CARD_HORIZONTAL_VIEW_HOLDER = 32
+    }
+}
+
 
 class ListViewHolder(context: Context) : BindingViewHolder<ItemListBinding>(
     ItemListBinding.inflate(LayoutInflater.from(context))
