@@ -36,6 +36,7 @@ import androidx.lifecycle.withStarted
 import android.animation.AnimatorSet
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -203,6 +204,12 @@ class FlatPlayerFragment :
             currentSongViewHolder = UniversalMediaEntryViewHolder(
                 fragment.requireView().findViewById(R.id.current_song)
             )
+            with(currentSongViewHolder!!) {
+                title?.isSingleLine = false
+                title?.maxLines = 2
+                text?.ellipsize = TextUtils.TruncateAt.MARQUEE
+                text?.isSelected = true
+            }
             currentSongViewHolder!!.separator!!.visibility = View.VISIBLE
             currentSongViewHolder!!.shortSeparator!!.visibility = View.GONE
             currentSongViewHolder!!.image!!.scaleType = ImageView.ScaleType.CENTER
