@@ -1,15 +1,9 @@
-## {{version:0.7.2.2}} {{versionCode:622}} {{date:1690800000}} {{channel:lts}}
+## {{version:0.7.2.3}} {{versionCode:623}} {{date:1691486000}} {{channel:lts}}
 
 ### {{note:en}}
-- Fix: crash after changing now playing screen style
-- Fix: no item displayed after changing between grid and list
-- Translation: update German (by txp_uli)
-- Translation: update Italian (by gdonisi)
-- Translation: update Portuguese (Brazilian) (by EddieMattos)
+- Fix: crashes when playing a blocked file from the external (e.g. file explorer)
+- Improve: long texts display in Playing Queue
 
 ### {{note:zh}}
-- 修复 改变正在播放界面样式后崩溃
-- 修复 布局在网格与列表间改变后不显示任何内容
-- 翻译 更新德语(by txp_uli)
-- 翻译 更新意大利语(by gdonisi)
-- 翻译 更新(巴西)葡萄牙语 (by EddieMattos)
+- 修复 从外部（如文件浏览器）播放被屏蔽的文件时崩溃
+- 改进 当前播放队列中的长文本显示

@@ -1,0 +1,3 @@
+<b>0.7.2.3(623) 2023.08.08</b>
+- Fix: crashes when playing a blocked file from the external (e.g. file explorer)
+- Improve: long texts display in Playing Queue
