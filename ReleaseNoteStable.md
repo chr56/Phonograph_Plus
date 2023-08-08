@@ -14,6 +14,7 @@
 - Modify: disallow canceling media notification when paused(to avoid getting killed)
 - Improve: lyrics following in lyrics dialog
 - Improve: highlight the current line for synchronized lyrics in lyrics dialog
+- Improve: long texts display in Playing Queue
 - Translation: update Germany (by txp_uli)
 - Translation: update Italian (by gdonisi)
 - Translation: update Portuguese (Brazilian) (by EddieMattos)
@@ -35,9 +36,10 @@
 - 修改 暂停时禁止取消媒体通知（以防被杀）
 - 改进 歌词对话框中的歌词滚动
 - 改进 歌词对话框中对同步歌词高亮当前歌词
+- 改进 当前播放队列中的长文本显示
 - 翻译 更新德语(by txp_uli)
 - 翻译 更新意大利语(by gdonisi)
-- 翻译 更新(巴西)葡萄牙语 (by EddieMattos)
-- 翻译 更新日语 (by aorinngoDo)
+- 翻译 更新(巴西)葡萄牙语(by EddieMattos)
+- 翻译 更新日语(by aorinngoDo)
 - 开发 实现 MediaBrowserService
 - 开发 重构 adapters, 清理代码
