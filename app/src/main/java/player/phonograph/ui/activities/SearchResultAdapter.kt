@@ -11,7 +11,6 @@ import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
-import player.phonograph.model.Displayable
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.model.playlist.Playlist
@@ -101,8 +100,7 @@ class SearchResultAdapter(
 
             QUEUE    -> {
                 holder as PlayingQueueSongViewHolder
-                item as PlayingQueueSong
-                holder.bind(item.song, item.position)
+                holder.bind(item as PlayingQueueSong)
                 controller.registerClicking(holder.itemView, position, holder::onClick)
             }
         }
@@ -121,7 +119,7 @@ class SearchResultAdapter(
             else                -> HEADER
         }
 
-    abstract class AbsItemViewHolder<T : Displayable> protected constructor(itemView: View) :
+    abstract class AbsItemViewHolder<T : Any> protected constructor(itemView: View) :
             UniversalMediaEntryViewHolder(itemView) {
         init {
             val context = itemView.context
@@ -136,27 +134,9 @@ class SearchResultAdapter(
         abstract fun onClick(): Boolean
         abstract fun bind(item: T)
 
-        fun setupMultiselect(
-            isInQuickSelectMode: () -> Boolean,
-            isChecked: (T) -> Boolean,
-            toggleChecked: (Int) -> Boolean,
-        ) {
-            itemView.setOnClickListener {
-                if (isInQuickSelectMode()) {
-                    toggleChecked(bindingAdapterPosition)
-                } else {
-                    onClick()
-                }
-            }
-            itemView.setOnLongClickListener {
-                if (!isInQuickSelectMode()) toggleChecked(bindingAdapterPosition)
-                true
-            }
-            itemView.isActivated = isChecked(item)
-        }
     }
 
-    open class SongViewHolder protected constructor(itemView: View) : AbsItemViewHolder<Song>(itemView) {
+    class SongViewHolder private constructor(itemView: View) : AbsItemViewHolder<Song>(itemView) {
 
         override fun bind(item: Song) {
             val context = itemView.context
@@ -175,7 +155,7 @@ class SearchResultAdapter(
             loadImage(context, item)
         }
 
-        open fun loadImage(context: Context, item: Song) {
+        fun loadImage(context: Context, item: Song) {
             loadImage(context) {
                 size(ViewSizeResolver(image!!))
                 data(item)
@@ -197,26 +177,32 @@ class SearchResultAdapter(
 
     }
 
-    class PlayingQueueSongViewHolder private constructor(itemView: View) : SongViewHolder(itemView) {
+    class PlayingQueueSongViewHolder private constructor(itemView: View) : AbsItemViewHolder<PlayingQueueSong>(itemView) {
 
-        private var _position: Int = -1
+        override fun bind(item: PlayingQueueSong) {
+            val context = itemView.context
+            this.item = item
 
-        fun bind(item: Song, position: Int) {
-            _position = position
-            bind(item)
+            menu?.visibility = View.VISIBLE
+            menu?.setOnClickListener {
+                PopupMenu(context, menu).apply {
+                    item.song.initMenu(context, this.menu, showPlay = true, index = item.position)
+                }.show()
+            }
+
+            title?.text = item.song.title
+            text?.text = item.song.infoString()
+
             image?.visibility = View.INVISIBLE
             imageText?.visibility = View.VISIBLE
-        }
-
-        override fun loadImage(context: Context, item: Song) {
-            if (_position > -1)
-                imageText?.text = _position.toString()
+            if (item.position > -1)
+                imageText?.text = item.position.toString()
         }
 
         override fun onClick(): Boolean {
-            return if (_position > -1) {
+            return if (item.position > -1) {
                 val queueManager = (itemView.context.applicationContext as App).queueManager
-                queueManager.modifyPosition(_position)
+                queueManager.modifyPosition(item.position)
                 true
             } else {
                 false
@@ -224,7 +210,7 @@ class SearchResultAdapter(
         }
 
         companion object {
-            fun inflate(context: Context, parent: ViewGroup): SongViewHolder =
+            fun inflate(context: Context, parent: ViewGroup): PlayingQueueSongViewHolder =
                 PlayingQueueSongViewHolder(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
         }
     }
