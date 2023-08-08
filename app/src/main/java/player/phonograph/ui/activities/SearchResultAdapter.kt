@@ -122,12 +122,11 @@ class SearchResultAdapter(
 
     abstract class AbsItemViewHolder<T : Any> protected constructor(itemView: View) :
             UniversalMediaEntryViewHolder(itemView) {
+
         init {
             val context = itemView.context
             itemView.setBackgroundColor(resolveColor(context, androidx.cardview.R.attr.cardBackgroundColor))
             itemView.elevation = context.resources.getDimensionPixelSize(R.dimen.card_elevation).toFloat()
-            shortSeparator?.visibility = View.GONE
-            menu?.visibility = View.GONE
         }
 
         protected lateinit var item: T
@@ -157,6 +156,8 @@ class SearchResultAdapter(
             text?.text = item.infoString()
 
             loadImage(context, item)
+
+            shortSeparator?.visibility = View.GONE
         }
 
         fun loadImage(context: Context, item: Song) {
@@ -198,6 +199,9 @@ class SearchResultAdapter(
             imageText?.visibility = View.VISIBLE
             if (item.position > -1)
                 imageText?.text = item.position.toString()
+
+
+            shortSeparator?.visibility = View.GONE
         }
 
         override fun onClick(): Boolean {
@@ -232,6 +236,9 @@ class SearchResultAdapter(
                     onSuccess = { image!!.setImageDrawable(it) }
                 )
             }
+
+            shortSeparator?.visibility = View.GONE
+            menu?.visibility = View.GONE
         }
 
         override fun onClick(): Boolean {
@@ -266,6 +273,9 @@ class SearchResultAdapter(
                     onSuccess = { image!!.setImageDrawable(it) }
                 )
             }
+
+            shortSeparator?.visibility = View.GONE
+            menu?.visibility = View.GONE
         }
 
         override fun onClick(): Boolean {
@@ -290,6 +300,9 @@ class SearchResultAdapter(
             this.item = item
             title?.text = item.name
             image?.setImageDrawable(context.getTintedDrawable(item.iconRes, context.getColor(R.color.grey_highlight)))
+
+            shortSeparator?.visibility = View.GONE
+            menu?.visibility = View.GONE
         }
 
         override fun onClick(): Boolean {
