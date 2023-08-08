@@ -6,11 +6,11 @@ package player.phonograph.ui.activities
 
 import coil.size.ViewSizeResolver
 import mt.util.color.resolveColor
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
-import player.phonograph.model.Displayable
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.model.playlist.Playlist
@@ -32,6 +32,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import android.widget.TextView
 
 
 class SearchResultAdapter(
@@ -57,11 +58,12 @@ class SearchResultAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
-            SONG     -> SongViewHolder.inflate(parent.context, parent)
-            ALBUM    -> AlbumViewHolder.inflate(parent.context, parent)
-            ARTIST   -> ArtistViewHolder.inflate(parent.context, parent)
-            PLAYLIST -> PlaylistViewHolder.inflate(parent.context, parent)
-            HEADER   -> HeaderViewHolder.inflate(parent.context, parent)
+            SONG     -> SongViewHolder(parent.context, parent)
+            ALBUM    -> AlbumViewHolder(parent.context, parent)
+            ARTIST   -> ArtistViewHolder(parent.context, parent)
+            PLAYLIST -> PlaylistViewHolder(parent.context, parent)
+            QUEUE    -> PlayingQueueSongViewHolder(parent.context, parent)
+            HEADER   -> HeaderViewHolder(parent.context, parent)
             else     -> throw IllegalStateException("Unknown view type: $viewType")
         }
 
@@ -96,6 +98,12 @@ class SearchResultAdapter(
                 holder.bind(item as Playlist)
                 controller.registerClicking(holder.itemView, position, holder::onClick)
             }
+
+            QUEUE    -> {
+                holder as PlayingQueueSongViewHolder
+                holder.bind(item as PlayingQueueSong)
+                controller.registerClicking(holder.itemView, position, holder::onClick)
+            }
         }
         holder.itemView.isActivated = controller.isSelected(item)
     }
@@ -104,21 +112,21 @@ class SearchResultAdapter(
 
     override fun getItemViewType(position: Int): Int =
         when (dataSet[position]) {
-            is Album    -> ALBUM
-            is Artist   -> ARTIST
-            is Song     -> SONG
-            is Playlist -> PLAYLIST
-            else        -> HEADER
+            is Album            -> ALBUM
+            is Artist           -> ARTIST
+            is Song             -> SONG
+            is Playlist         -> PLAYLIST
+            is PlayingQueueSong -> QUEUE
+            else                -> HEADER
         }
 
-    abstract class AbsItemViewHolder<T : Displayable> protected constructor(itemView: View) :
+    abstract class AbsItemViewHolder<T : Any> protected constructor(itemView: View) :
             UniversalMediaEntryViewHolder(itemView) {
+
         init {
             val context = itemView.context
             itemView.setBackgroundColor(resolveColor(context, androidx.cardview.R.attr.cardBackgroundColor))
             itemView.elevation = context.resources.getDimensionPixelSize(R.dimen.card_elevation).toFloat()
-            shortSeparator?.visibility = View.GONE
-            menu?.visibility = View.GONE
         }
 
         protected lateinit var item: T
@@ -126,27 +134,12 @@ class SearchResultAdapter(
         abstract fun onClick(): Boolean
         abstract fun bind(item: T)
 
-        fun setupMultiselect(
-            isInQuickSelectMode: () -> Boolean,
-            isChecked: (T) -> Boolean,
-            toggleChecked: (Int) -> Boolean,
-        ) {
-            itemView.setOnClickListener {
-                if (isInQuickSelectMode()) {
-                    toggleChecked(bindingAdapterPosition)
-                } else {
-                    onClick()
-                }
-            }
-            itemView.setOnLongClickListener {
-                if (!isInQuickSelectMode()) toggleChecked(bindingAdapterPosition)
-                true
-            }
-            itemView.isActivated = isChecked(item)
-        }
     }
 
     class SongViewHolder private constructor(itemView: View) : AbsItemViewHolder<Song>(itemView) {
+
+        constructor(context: Context, parent: ViewGroup) :
+                this(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
 
         override fun bind(item: Song) {
             val context = itemView.context
@@ -161,6 +154,13 @@ class SearchResultAdapter(
 
             title?.text = item.title
             text?.text = item.infoString()
+
+            loadImage(context, item)
+
+            shortSeparator?.visibility = View.GONE
+        }
+
+        fun loadImage(context: Context, item: Song) {
             loadImage(context) {
                 size(ViewSizeResolver(image!!))
                 data(item)
@@ -174,15 +174,51 @@ class SearchResultAdapter(
         override fun onClick(): Boolean {
             return MusicPlayerRemote.playNow(item)
         }
+    }
 
-        companion object {
-            fun inflate(context: Context, parent: ViewGroup): SongViewHolder =
-                SongViewHolder(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
+    class PlayingQueueSongViewHolder private constructor(itemView: View) : AbsItemViewHolder<PlayingQueueSong>(itemView) {
+
+        constructor(context: Context, parent: ViewGroup) :
+                this(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
+
+        override fun bind(item: PlayingQueueSong) {
+            val context = itemView.context
+            this.item = item
+
+            menu?.visibility = View.VISIBLE
+            menu?.setOnClickListener {
+                PopupMenu(context, menu).apply {
+                    item.song.initMenu(context, this.menu, showPlay = true, index = item.position)
+                }.show()
+            }
+
+            title?.text = item.song.title
+            text?.text = item.song.infoString()
+
+            image?.visibility = View.INVISIBLE
+            imageText?.visibility = View.VISIBLE
+            if (item.position > -1)
+                imageText?.text = item.position.toString()
+
+
+            shortSeparator?.visibility = View.GONE
         }
 
+        override fun onClick(): Boolean {
+            return if (item.position > -1) {
+                val queueManager = (itemView.context.applicationContext as App).queueManager
+                queueManager.modifyPosition(item.position)
+                true
+            } else {
+                false
+            }
+        }
     }
 
     class AlbumViewHolder private constructor(itemView: View) : AbsItemViewHolder<Album>(itemView) {
+
+        constructor(context: Context, parent: ViewGroup) :
+                this(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
 
         init {
             setImageTransitionName(itemView.context.getString(R.string.transition_album_art))
@@ -200,6 +236,9 @@ class SearchResultAdapter(
                     onSuccess = { image!!.setImageDrawable(it) }
                 )
             }
+
+            shortSeparator?.visibility = View.GONE
+            menu?.visibility = View.GONE
         }
 
         override fun onClick(): Boolean {
@@ -211,15 +250,12 @@ class SearchResultAdapter(
             )
             return true
         }
-
-        companion object {
-            fun inflate(context: Context, parent: ViewGroup): AlbumViewHolder =
-                AlbumViewHolder(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
-        }
-
     }
 
     class ArtistViewHolder private constructor(itemView: View) : AbsItemViewHolder<Artist>(itemView) {
+
+        constructor(context: Context, parent: ViewGroup) :
+                this(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
 
         init {
             setImageTransitionName(itemView.context.getString(R.string.transition_artist_image))
@@ -237,6 +273,9 @@ class SearchResultAdapter(
                     onSuccess = { image!!.setImageDrawable(it) }
                 )
             }
+
+            shortSeparator?.visibility = View.GONE
+            menu?.visibility = View.GONE
         }
 
         override fun onClick(): Boolean {
@@ -248,14 +287,12 @@ class SearchResultAdapter(
             )
             return true
         }
-
-        companion object {
-            fun inflate(context: Context, parent: ViewGroup): ArtistViewHolder =
-                ArtistViewHolder(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
-        }
     }
 
     class PlaylistViewHolder private constructor(itemView: View) : AbsItemViewHolder<Playlist>(itemView) {
+
+        constructor(context: Context, parent: ViewGroup) :
+                this(LayoutInflater.from(context).inflate(R.layout.item_list_single_row, parent, false))
 
 
         override fun bind(item: Playlist) {
@@ -263,30 +300,28 @@ class SearchResultAdapter(
             this.item = item
             title?.text = item.name
             image?.setImageDrawable(context.getTintedDrawable(item.iconRes, context.getColor(R.color.grey_highlight)))
+
+            shortSeparator?.visibility = View.GONE
+            menu?.visibility = View.GONE
         }
 
         override fun onClick(): Boolean {
             goToPlaylist(itemView.context, item)
             return true
         }
-
-        companion object {
-            fun inflate(context: Context, parent: ViewGroup): PlaylistViewHolder =
-                PlaylistViewHolder(LayoutInflater.from(context).inflate(R.layout.item_list_single_row, parent, false))
-        }
     }
 
-    class HeaderViewHolder private constructor(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
+    class HeaderViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        constructor(context: Context, parent: ViewGroup) :
+                this(LayoutInflater.from(context).inflate(R.layout.sub_header, parent, false))
 
         fun bind(text: String) {
-            title?.text = text
-        }
-
-        companion object {
-            fun inflate(context: Context, parent: ViewGroup): HeaderViewHolder =
-                HeaderViewHolder(LayoutInflater.from(context).inflate(R.layout.sub_header, parent, false))
+            itemView.findViewById<TextView>(R.id.title)?.text = text
         }
     }
+
+    data class PlayingQueueSong(val song: Song, val position: Int)
 
     companion object {
         private const val HEADER = 0
@@ -294,5 +329,6 @@ class SearchResultAdapter(
         private const val ARTIST = 2
         private const val SONG = 3
         private const val PLAYLIST = 4
+        private const val QUEUE = 5
     }
 }
