@@ -32,6 +32,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import android.widget.TextView
 
 
 class SearchResultAdapter(
@@ -57,12 +58,12 @@ class SearchResultAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
-            SONG     -> SongViewHolder.inflate(parent.context, parent)
-            ALBUM    -> AlbumViewHolder.inflate(parent.context, parent)
-            ARTIST   -> ArtistViewHolder.inflate(parent.context, parent)
-            PLAYLIST -> PlaylistViewHolder.inflate(parent.context, parent)
-            QUEUE    -> PlayingQueueSongViewHolder.inflate(parent.context, parent)
-            HEADER   -> HeaderViewHolder.inflate(parent.context, parent)
+            SONG     -> SongViewHolder(parent.context, parent)
+            ALBUM    -> AlbumViewHolder(parent.context, parent)
+            ARTIST   -> ArtistViewHolder(parent.context, parent)
+            PLAYLIST -> PlaylistViewHolder(parent.context, parent)
+            QUEUE    -> PlayingQueueSongViewHolder(parent.context, parent)
+            HEADER   -> HeaderViewHolder(parent.context, parent)
             else     -> throw IllegalStateException("Unknown view type: $viewType")
         }
 
@@ -138,6 +139,9 @@ class SearchResultAdapter(
 
     class SongViewHolder private constructor(itemView: View) : AbsItemViewHolder<Song>(itemView) {
 
+        constructor(context: Context, parent: ViewGroup) :
+                this(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
+
         override fun bind(item: Song) {
             val context = itemView.context
             this.item = item
@@ -169,15 +173,12 @@ class SearchResultAdapter(
         override fun onClick(): Boolean {
             return MusicPlayerRemote.playNow(item)
         }
-
-        companion object {
-            fun inflate(context: Context, parent: ViewGroup): SongViewHolder =
-                SongViewHolder(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
-        }
-
     }
 
     class PlayingQueueSongViewHolder private constructor(itemView: View) : AbsItemViewHolder<PlayingQueueSong>(itemView) {
+
+        constructor(context: Context, parent: ViewGroup) :
+                this(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
 
         override fun bind(item: PlayingQueueSong) {
             val context = itemView.context
@@ -208,14 +209,12 @@ class SearchResultAdapter(
                 false
             }
         }
-
-        companion object {
-            fun inflate(context: Context, parent: ViewGroup): PlayingQueueSongViewHolder =
-                PlayingQueueSongViewHolder(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
-        }
     }
 
     class AlbumViewHolder private constructor(itemView: View) : AbsItemViewHolder<Album>(itemView) {
+
+        constructor(context: Context, parent: ViewGroup) :
+                this(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
 
         init {
             setImageTransitionName(itemView.context.getString(R.string.transition_album_art))
@@ -244,15 +243,12 @@ class SearchResultAdapter(
             )
             return true
         }
-
-        companion object {
-            fun inflate(context: Context, parent: ViewGroup): AlbumViewHolder =
-                AlbumViewHolder(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
-        }
-
     }
 
     class ArtistViewHolder private constructor(itemView: View) : AbsItemViewHolder<Artist>(itemView) {
+
+        constructor(context: Context, parent: ViewGroup) :
+                this(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
 
         init {
             setImageTransitionName(itemView.context.getString(R.string.transition_artist_image))
@@ -281,14 +277,12 @@ class SearchResultAdapter(
             )
             return true
         }
-
-        companion object {
-            fun inflate(context: Context, parent: ViewGroup): ArtistViewHolder =
-                ArtistViewHolder(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
-        }
     }
 
     class PlaylistViewHolder private constructor(itemView: View) : AbsItemViewHolder<Playlist>(itemView) {
+
+        constructor(context: Context, parent: ViewGroup) :
+                this(LayoutInflater.from(context).inflate(R.layout.item_list_single_row, parent, false))
 
 
         override fun bind(item: Playlist) {
@@ -302,22 +296,15 @@ class SearchResultAdapter(
             goToPlaylist(itemView.context, item)
             return true
         }
-
-        companion object {
-            fun inflate(context: Context, parent: ViewGroup): PlaylistViewHolder =
-                PlaylistViewHolder(LayoutInflater.from(context).inflate(R.layout.item_list_single_row, parent, false))
-        }
     }
 
-    class HeaderViewHolder private constructor(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
+    class HeaderViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        constructor(context: Context, parent: ViewGroup) :
+                this(LayoutInflater.from(context).inflate(R.layout.sub_header, parent, false))
 
         fun bind(text: String) {
-            title?.text = text
-        }
-
-        companion object {
-            fun inflate(context: Context, parent: ViewGroup): HeaderViewHolder =
-                HeaderViewHolder(LayoutInflater.from(context).inflate(R.layout.sub_header, parent, false))
+            itemView.findViewById<TextView>(R.id.title)?.text = text
         }
     }
 
