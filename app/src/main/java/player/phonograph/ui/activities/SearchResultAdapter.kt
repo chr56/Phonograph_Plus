@@ -6,6 +6,7 @@ package player.phonograph.ui.activities
 
 import coil.size.ViewSizeResolver
 import mt.util.color.resolveColor
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.model.Album
@@ -146,7 +147,7 @@ class SearchResultAdapter(
         }
     }
 
-    class SongViewHolder private constructor(itemView: View) : AbsItemViewHolder<Song>(itemView) {
+    open class SongViewHolder protected constructor(itemView: View) : AbsItemViewHolder<Song>(itemView) {
 
         override fun bind(item: Song) {
             val context = itemView.context
@@ -161,6 +162,11 @@ class SearchResultAdapter(
 
             title?.text = item.title
             text?.text = item.infoString()
+
+            loadImage(context, item)
+        }
+
+        open fun loadImage(context: Context, item: Song) {
             loadImage(context) {
                 size(ViewSizeResolver(image!!))
                 data(item)
@@ -180,6 +186,38 @@ class SearchResultAdapter(
                 SongViewHolder(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
         }
 
+    }
+
+    class PlayingQueueSongViewHolder private constructor(itemView: View) : SongViewHolder(itemView) {
+
+        private var _position: Int = -1
+
+        fun bind(item: Song, position: Int) {
+            _position = position
+            bind(item)
+            image?.visibility = View.INVISIBLE
+            imageText?.visibility = View.VISIBLE
+        }
+
+        override fun loadImage(context: Context, item: Song) {
+            if (_position > -1)
+                imageText?.text = _position.toString()
+        }
+
+        override fun onClick(): Boolean {
+            return if (_position > -1) {
+                val queueManager = (itemView.context.applicationContext as App).queueManager
+                queueManager.modifyPosition(_position)
+                true
+            } else {
+                false
+            }
+        }
+
+        companion object {
+            fun inflate(context: Context, parent: ViewGroup): SongViewHolder =
+                PlayingQueueSongViewHolder(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
+        }
     }
 
     class AlbumViewHolder private constructor(itemView: View) : AbsItemViewHolder<Album>(itemView) {
