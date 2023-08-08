@@ -41,7 +41,13 @@ class SearchActivityViewModel : ViewModel() {
                 val albums = AlbumLoader.searchByName(context, query)
                 val playlists = PlaylistLoader.searchByName(context, query)
                 val songsInQueue =
-                    App.instance.queueManager.playingQueue.filter { it.title.contains(query, true) }
+                    App.instance.queueManager.playingQueue.mapIndexedNotNull { index, song ->
+                        if (song.title.contains(query, true)) {
+                            SearchResultAdapter.PlayingQueueSong(song,index)
+                        } else {
+                            null
+                        }
+                    }
 
                 if (songs.isNotEmpty()) {
                     dataset.add(context.resources.getString(R.string.songs))

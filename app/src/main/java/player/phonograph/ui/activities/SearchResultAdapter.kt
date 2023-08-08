@@ -62,6 +62,7 @@ class SearchResultAdapter(
             ALBUM    -> AlbumViewHolder.inflate(parent.context, parent)
             ARTIST   -> ArtistViewHolder.inflate(parent.context, parent)
             PLAYLIST -> PlaylistViewHolder.inflate(parent.context, parent)
+            QUEUE    -> PlayingQueueSongViewHolder.inflate(parent.context, parent)
             HEADER   -> HeaderViewHolder.inflate(parent.context, parent)
             else     -> throw IllegalStateException("Unknown view type: $viewType")
         }
@@ -97,6 +98,13 @@ class SearchResultAdapter(
                 holder.bind(item as Playlist)
                 controller.registerClicking(holder.itemView, position, holder::onClick)
             }
+
+            QUEUE    -> {
+                holder as PlayingQueueSongViewHolder
+                item as PlayingQueueSong
+                holder.bind(item.song, item.position)
+                controller.registerClicking(holder.itemView, position, holder::onClick)
+            }
         }
         holder.itemView.isActivated = controller.isSelected(item)
     }
@@ -105,11 +113,12 @@ class SearchResultAdapter(
 
     override fun getItemViewType(position: Int): Int =
         when (dataSet[position]) {
-            is Album    -> ALBUM
-            is Artist   -> ARTIST
-            is Song     -> SONG
-            is Playlist -> PLAYLIST
-            else        -> HEADER
+            is Album            -> ALBUM
+            is Artist           -> ARTIST
+            is Song             -> SONG
+            is Playlist         -> PLAYLIST
+            is PlayingQueueSong -> QUEUE
+            else                -> HEADER
         }
 
     abstract class AbsItemViewHolder<T : Displayable> protected constructor(itemView: View) :
@@ -326,11 +335,14 @@ class SearchResultAdapter(
         }
     }
 
+    data class PlayingQueueSong(val song: Song, val position: Int)
+
     companion object {
         private const val HEADER = 0
         private const val ALBUM = 1
         private const val ARTIST = 2
         private const val SONG = 3
         private const val PLAYLIST = 4
+        private const val QUEUE = 5
     }
 }
