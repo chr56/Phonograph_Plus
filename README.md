@@ -70,15 +70,23 @@ All listed features are compared with the original Phonograph.
 
 - Allow deleting songs file along with its external lyrics file.
 
-- Brand new Tag Editor
+- Brand-new Tag Editor
 
-- Brand new App Intro
+- Brand-new App Intro
 
 - Better Notification Image Quality for Android T and above
 
 - Better Playlist support
 
 - ~Poor~ support of Monet
+
+- Playback speed control
+
+- Resume playing after interruptions
+
+- Enhance multi-selecting
+
+- Basic support for Android Auto
 
 - and more small features/fixes.
 

@@ -79,6 +79,14 @@
 
 - ~简陋的~ Monet 支持
 
+- 倍数播放支持
+
+- 打断后自动恢复播放
+
+- 增强多选
+
+- Android Auto 支持(仅基本功能)
+
 - 以及更多细小特性
 
 浏览[更新日志](https://phonographplus.github.io/changelogs/changeslogs/changelog-ZH-CN.html)以了解明细!
