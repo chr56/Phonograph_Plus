@@ -1,0 +1,9 @@
+<b>1.0.0(1000) 2023.08.10</b>
+- New: playback speed control
+- New: automatically resume playing after interruptions
+- New: add scrollbar for Playing Queue
+- New: basic support for Android Auto (as well as Assistant and so on)
+- New: support invert selection and range (adjacent) selection
+- New: support searching playlists and playing queue
+- Fix: crash after changing now playing screen style
+...(Visit project homepage to see full changelogs)

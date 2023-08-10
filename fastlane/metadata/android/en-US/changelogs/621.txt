@@ -1,3 +1,0 @@
-<b>0.7.2.1(621) 2023.07.25</b>
-- Translation: update Japanese (by aorinngoDo)
-- Improve: app start-up performance
