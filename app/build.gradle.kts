@@ -42,8 +42,8 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         applicationId = "player.phonograph.plus"
-        versionCode = 665
-        versionName = "1.0-beta1"
+        versionCode = 1000
+        versionName = "1.0.0"
 
 
         setProperty("archivesBaseName", "PhonographPlus_$versionName")
