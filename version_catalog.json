@@ -1,6 +1,21 @@
 {
   "versions": [
-
+    {
+      "channel": "stable",
+      "versionName": "1.0.0",
+      "versionCode": 1000,
+      "date": 1691638000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.0.0"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>新增 倍数播放支持</li><li>新增 打断后自动恢复播放</li><li>新增 为播放队列添加滚动条</li><li>新增 基础支持 Android Auto 等</li><li>新增 支持反选和区间选择</li><li>新增 支持搜索播放列表和当前播放队列</li><li>修复 改变正在播放界面样式后崩溃</li><li>修复 布局在网格与列表间改变后不显示任何内容</li><li>修复 从外部（如文件浏览器）播放被屏蔽的文件时崩溃</li><li>修复 无法对所选进行随机播放</li><li>修改 暂停时禁止取消媒体通知（以防被杀）</li><li>改进 歌词对话框中的歌词滚动</li><li>改进 歌词对话框中对同步歌词高亮当前歌词</li><li>改进 当前播放队列中的长文本显示</li><li>翻译 更新德语(by txp_uli)</li><li>翻译 更新意大利语(by gdonisi)</li><li>翻译 更新(巴西)葡萄牙语(by EddieMattos)</li><li>翻译 更新日语(by aorinngoDo)</li><li>开发 实现 MediaBrowserService</li><li>开发 重构 adapter, 清理代码</li></ol>",
+        "en": "<ol><li>New: playback speed control</li><li>New: automatically resume playing after interruptions</li><li>New: add scrollbar for Playing Queue</li><li>New: basic support for Android Auto (as well as Assistant and so on)</li><li>New: support invert selection and range (adjacent) selection</li><li>New: support searching playlists and playing queue</li><li>Fix: crash after changing now playing screen style</li><li>Fix: no item displayed after changing between grid and list</li><li>Fix: crashes when playing a blocked file from the external (e.g. file explorer)</li><li>Fix: shuffle not working for the selected</li><li>Modify: disallow canceling media notification when paused(to avoid getting killed)</li><li>Improve: lyrics following in lyrics dialog</li><li>Improve: highlight the current line for synchronized lyrics in lyrics dialog</li><li>Improve: long texts display in Playing Queue</li><li>Translation: update Germany (by txp_uli)</li><li>Translation: update Italian (by gdonisi)</li><li>Translation: update Portuguese (Brazilian) (by EddieMattos)</li><li>Translation: update Japanese (by aorinngoDo)</li><li>Development: implement MediaBrowserService</li><li>Development: refactor adapters, clean up codes</li></ol>"
+      }
+    },
     {
       "channel": "lts",
       "versionName": "0.7.2.3",
@@ -15,86 +30,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>修复 从外部（如文件浏览器）播放被屏蔽的文件时崩溃</li><li>改进 当前播放队列中的长文本显示</li></ol>",
         "en": "<ol><li>Fix: crashes when playing a blocked file from the external (e.g. file explorer)</li><li>Improve: long texts display in Playing Queue</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.0-beta1",
-      "versionCode": 665,
-      "date": 1691470000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.0-beta1"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>改进 当前播放队列中的长文本显示</li><li>改进 当前播放队列的搜索结果</li></ol>",
-        "en": "<ol><li>Improve: long texts display in Playing Queue</li><li>Improve: search result of Playing Queue</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.0-dev4",
-      "versionCode": 655,
-      "date": 1691238000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.0-dev4"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 从外部（如文件浏览器）播放被屏蔽的文件时崩溃</li><li>修复 无法对所选进行随机播放</li><li>新增 基础支持 Android Auto 等</li><li>新增 支持反选和区间选择 </li><li>新增 支持搜索播放列表和当前播放队列</li><li>改进 歌词对话框中的歌词滚动</li><li>改进 歌词对话框中对同步歌词高亮当前歌词</li><li>翻译 更新德语(by txp_uli)</li><li>翻译 更新日语 (by aorinngoDo)</li><li>开发 实现 MediaBrowserService</li><li>开发 重构 adapters, 清理代码</li></ol>",
-        "en": "<ol><li>Fix: crashes when playing a blocked file from the external (e.g. file explorer)</li><li>Fix: shuffle not working for the selected</li><li>New: basic support for Android Auto (as well as Assistant and so on)</li><li>New: support invert selection and range (adjacent) selection</li><li>New: support searching playlists and playing queue</li><li>Improve: lyrics following in lyrics dialog</li><li>Improve: highlight the current line for synchronized lyrics in lyrics dialog</li><li>Translation: update Germany (by txp_uli)</li><li>Translation: update Japanese (by aorinngoDo)</li><li>Development: implement MediaBrowserService</li><li>Development: refactor adapters, clean up codes</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "0.8-dev3",
-      "versionCode": 625,
-      "date": 1690790000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.8-dev3"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 布局在网格与列表间改变后不显示任何内容</li><li>新增 打断后自动恢复播放</li><li>修改 暂停时禁止取消媒体通知（以防被杀）</li><li>开发 清理代码</li></ol>",
-        "en": "<ol><li>Fix: no item displayed after changing between grid and list</li><li>New: automatically resume playing after interruptions</li><li>Modify: disallow canceling media notification when paused(to avoid getting killed)</li><li>Development: clean up codes</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "0.8-dev2",
-      "versionCode": 623,
-      "date": 1690689000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.8-dev2"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 改变正在播放界面样式后崩溃</li><li>修复 若速度更改后，通知播放进度不匹配</li><li>改进 速度控制对话框</li><li>翻译 更新德语(by txp_uli)</li><li>翻译 更新意大利语(by gdonisi)</li><li>开发 清理代码</li></ol>",
-        "en": "<ol><li>Fix: crash after changing now playing screen style</li><li>Fix: process on the notification not matched if speed modified</li><li>Improve: the dialog of playback speed control</li><li>Translation: update German (by txp_uli)</li><li>Translation: update Italian (by gdonisi)</li><li>Development: clean up codes</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "0.8-dev1",
-      "versionCode": 622,
-      "date": 1690346000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.8-dev1"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>新增 倍数播放支持</li><li>新增 为播放队列添加滚动条</li><li>翻译 更新(巴西)葡萄牙语 (by EddieMattos)</li></ol>",
-        "en": "<ol><li>New: playback speed control</li><li>New: add scrollbar for Playing Queue</li><li>Translation: update Portuguese (Brazilian) by EddieMattos</li></ol>"
       }
     },
     {
