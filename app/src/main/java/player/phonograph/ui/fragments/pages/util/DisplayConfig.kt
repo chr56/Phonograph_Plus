@@ -18,6 +18,7 @@ import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.PlaylistPag
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.SongPage
 import player.phonograph.util.debug
 import player.phonograph.util.ui.isLandscape
+import androidx.annotation.LayoutRes
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -51,6 +52,36 @@ class DisplayConfig internal constructor(private val page: DisplayConfigTarget) 
     val maxGridSizeForList: Int
         get() = if (isLandscape) App.instance.resources.getInteger(R.integer.default_list_columns_land) else
             App.instance.resources.getInteger(R.integer.default_list_columns)
+
+    @LayoutRes
+    fun layoutRes(size: Int): Int =
+        if (gridMode(size)) R.layout.item_grid else when (page) {
+            is PlaylistPage -> R.layout.item_list_single_row
+            is GenrePage    -> R.layout.item_list_no_image
+            else            -> R.layout.item_list
+        }
+
+    fun gridMode(size: Int): Boolean = size > maxGridSizeForList2
+
+    val maxGridSize2: Int
+        get() {
+            val res = App.instance.resources
+            return when (page) {
+                is PlaylistPage -> 1 //always
+                else            ->
+                    if (isLandscape) res.getInteger(R.integer.max_columns_land) else res.getInteger(R.integer.max_columns)
+            }
+        }
+
+    val maxGridSizeForList2: Int
+        get() {
+            val res = App.instance.resources
+            return when (page) {
+                is GenrePage, is PlaylistPage -> Int.MAX_VALUE //always
+                else                          ->
+                    if (isLandscape) res.getInteger(R.integer.default_list_columns_land) else res.getInteger(R.integer.default_list_columns)
+            }
+        }
 
     var sortMode: SortMode
         get() {
@@ -126,18 +157,22 @@ class DisplayConfig internal constructor(private val page: DisplayConfigTarget) 
                     if (isLandscape) pref.songGridSizeLand = value
                     else pref.songGridSize = value
                 }
+
                 is AlbumPage    -> {
                     if (isLandscape) pref.albumGridSizeLand = value
                     else pref.albumGridSize = value
                 }
+
                 is ArtistPage   -> {
                     if (isLandscape) pref.artistGridSizeLand = value
                     else pref.artistGridSize = value
                 }
+
                 is GenrePage    -> {
                     if (isLandscape) pref.genreGridSizeLand = value
                     else pref.genreGridSize = value
                 }
+
                 is PlaylistPage -> {}
                 else            -> {}
             }
@@ -149,12 +184,15 @@ class DisplayConfig internal constructor(private val page: DisplayConfigTarget) 
                 is SongPage   -> {
                     pref.songColoredFooters
                 }
+
                 is AlbumPage  -> {
                     pref.albumColoredFooters
                 }
+
                 is ArtistPage -> {
                     pref.artistColoredFooters
                 }
+
                 else          -> false
             }
         }
@@ -165,12 +203,15 @@ class DisplayConfig internal constructor(private val page: DisplayConfigTarget) 
                 is SongPage   -> {
                     pref.songColoredFooters = value
                 }
+
                 is AlbumPage  -> {
                     pref.albumColoredFooters = value
                 }
+
                 is ArtistPage -> {
                     pref.artistColoredFooters = value
                 }
+
                 else          -> {}
             }
         }
