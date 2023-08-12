@@ -4,7 +4,12 @@
 
 package player.phonograph.util
 
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.RegisterReceiverFlags
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Bundle
@@ -69,3 +74,10 @@ inline fun <reified T> Parcel.sparseArray(classLoader: ClassLoader?): SparseArra
         SDK_INT >= TIRAMISU -> readSparseArray(classLoader, T::class.java)
         else                -> readSparseArray(classLoader)
     }
+
+fun Context.registerReceiverCompat(
+    receiver: BroadcastReceiver?,
+    filter: IntentFilter,
+    @RegisterReceiverFlags flags: Int = ContextCompat.RECEIVER_NOT_EXPORTED,
+) = ContextCompat.registerReceiver(this, receiver, filter, flags)
+
