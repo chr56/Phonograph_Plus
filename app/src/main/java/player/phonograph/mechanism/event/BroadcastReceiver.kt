@@ -5,11 +5,12 @@
 package player.phonograph.mechanism.event
 
 import player.phonograph.MusicServiceMsgConst.MEDIA_STORE_CHANGED
+import player.phonograph.util.registerReceiverCompat
+import androidx.core.content.ContextCompat
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
 
 lateinit var eventReceiver: EventReceiver
     private set
@@ -27,18 +28,11 @@ private var initialed = false
 fun setupEventReceiver(context: Context) {
     if (!initialed) {
         eventReceiver = EventReceiver()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.applicationContext.registerReceiver(
-                eventReceiver,
-                IntentFilter(MEDIA_STORE_CHANGED),
-                Context.RECEIVER_NOT_EXPORTED
-            )
-        } else {
-            context.applicationContext.registerReceiver(
-                eventReceiver,
-                IntentFilter(MEDIA_STORE_CHANGED)
-            )
-        }
+        context.applicationContext.registerReceiverCompat(
+            eventReceiver,
+            IntentFilter(MEDIA_STORE_CHANGED),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
         initialed = true
     }
 }
