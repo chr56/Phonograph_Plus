@@ -274,6 +274,7 @@ class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) :
             val outRanged = targetSpeed !in (0.5f..2.0f)
             pitch = if (outRanged) ((targetSpeed - 1.0f) * 0.333f + 1.0f) else 1.0f
         }
+        player.start()
     }
 
     override val audioSessionId: Int get() = currentMediaPlayer.audioSessionId
