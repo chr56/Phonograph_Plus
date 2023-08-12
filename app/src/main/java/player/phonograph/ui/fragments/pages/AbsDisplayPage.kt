@@ -203,13 +203,13 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         // grid size
         if (isLandscape(resources)) popup.viewBinding.titleGridSize.text =
             resources.getText(R.string.action_grid_size_land)
-        popup.maxGridSize = displayConfig.maxGridSize
+        popup.maxGridSize = displayConfig.maxGridSize2
         popup.gridSize = displayConfig.gridSize
 
         // color footer
         if (allowColoredFooter()) {
             popup.colorFooterVisibility = true
-            popup.colorFooterEnability = displayConfig.gridSize > displayConfig.maxGridSizeForList
+            popup.colorFooterEnability = displayConfig.gridMode(displayConfig.gridSize)
             popup.colorFooter = displayConfig.colorFooter
         }
 
@@ -241,8 +241,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         if (gridSizeSelected > 0 && gridSizeSelected != displayConfig.gridSize) {
 
             displayConfig.gridSize = gridSizeSelected
-            val itemLayoutRes =
-                if (gridSizeSelected > displayConfig.maxGridSizeForList) R.layout.item_grid else R.layout.item_list
+            val itemLayoutRes = displayConfig.layoutRes(gridSizeSelected)
 
             if (adapter.layoutRes != itemLayoutRes) {
                 adapter.layoutRes = itemLayoutRes

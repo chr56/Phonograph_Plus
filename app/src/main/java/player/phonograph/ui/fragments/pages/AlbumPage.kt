@@ -35,9 +35,7 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
     override fun initAdapter(): DisplayAdapter<Album> {
         val displayConfig = DisplayConfig(displayConfigTarget)
 
-        val layoutRes =
-            if (displayConfig.gridSize > displayConfig.maxGridSizeForList) R.layout.item_grid
-            else R.layout.item_list
+        val layoutRes = displayConfig.layoutRes(displayConfig.gridSize)
 
         return AlbumDisplayAdapter(
             hostFragment.mainActivity,
