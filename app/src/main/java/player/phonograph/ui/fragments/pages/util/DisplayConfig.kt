@@ -43,15 +43,9 @@ internal sealed class DisplayConfigTarget {
 
 @Suppress("REDUNDANT_ELSE_IN_WHEN")
 class DisplayConfig internal constructor(private val page: DisplayConfigTarget) {
+
     private val isLandscape: Boolean
         get() = isLandscape(App.instance.resources)
-
-    val maxGridSize: Int
-        get() = if (isLandscape) App.instance.resources.getInteger(R.integer.max_columns_land) else
-            App.instance.resources.getInteger(R.integer.max_columns)
-    val maxGridSizeForList: Int
-        get() = if (isLandscape) App.instance.resources.getInteger(R.integer.default_list_columns_land) else
-            App.instance.resources.getInteger(R.integer.default_list_columns)
 
     @LayoutRes
     fun layoutRes(size: Int): Int =
@@ -61,9 +55,9 @@ class DisplayConfig internal constructor(private val page: DisplayConfigTarget) 
             else            -> R.layout.item_list
         }
 
-    fun gridMode(size: Int): Boolean = size > maxGridSizeForList2
+    fun gridMode(size: Int): Boolean = size > maxGridSizeForList
 
-    val maxGridSize2: Int
+    val maxGridSize: Int
         get() {
             val res = App.instance.resources
             return when (page) {
@@ -73,7 +67,7 @@ class DisplayConfig internal constructor(private val page: DisplayConfigTarget) 
             }
         }
 
-    val maxGridSizeForList2: Int
+    private val maxGridSizeForList: Int
         get() {
             val res = App.instance.resources
             return when (page) {

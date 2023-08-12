@@ -203,7 +203,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         // grid size
         if (isLandscape(resources)) popup.viewBinding.titleGridSize.text =
             resources.getText(R.string.action_grid_size_land)
-        popup.maxGridSize = displayConfig.maxGridSize2
+        popup.maxGridSize = displayConfig.maxGridSize
         popup.gridSize = displayConfig.gridSize
 
         // color footer
