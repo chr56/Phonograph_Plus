@@ -12,6 +12,8 @@ import player.phonograph.service.MusicService
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Setting
+import player.phonograph.util.registerReceiverCompat
+import androidx.core.content.ContextCompat
 import android.content.BroadcastReceiver
 import android.content.ContentUris
 import android.content.Context
@@ -469,11 +471,10 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     private var becomingNoisyReceiverRegistered = false
     private fun checkAndRegisterBecomingNoisyReceiver(context: Context) {
         if (!becomingNoisyReceiverRegistered) {
-            context.registerReceiver(
+            context.registerReceiverCompat(
                 becomingNoisyReceiver,
-                IntentFilter(
-                    AudioManager.ACTION_AUDIO_BECOMING_NOISY
-                )
+                IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY),
+                ContextCompat.RECEIVER_EXPORTED
             )
             becomingNoisyReceiverRegistered = true
         }
