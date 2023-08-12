@@ -40,6 +40,8 @@ import player.phonograph.settings.BROADCAST_CURRENT_PLAYER_STATE
 import player.phonograph.settings.CLASSIC_NOTIFICATION
 import player.phonograph.settings.COLORED_NOTIFICATION
 import player.phonograph.settings.GAPLESS_PLAYBACK
+import player.phonograph.util.registerReceiverCompat
+import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import android.appwidget.AppWidgetManager
 import android.content.BroadcastReceiver
@@ -120,7 +122,11 @@ class MusicService : MediaBrowserServiceCompat() {
             controller.handler, // todo use other handler
             this@MusicService::handleAndSendChangeInternal
         )
-        registerReceiver(widgetIntentReceiver, IntentFilter(APP_WIDGET_UPDATE))
+        registerReceiverCompat(
+            widgetIntentReceiver,
+            IntentFilter(APP_WIDGET_UPDATE),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"))
     }
 
