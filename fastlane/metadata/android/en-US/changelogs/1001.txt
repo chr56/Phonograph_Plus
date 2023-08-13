@@ -1,0 +1,3 @@
+<b>1.0.1(1001) 2023.08.13</b>
+- Fix: incorrect layout after changing grid size in Playlist page and Genre page
+- Fix: playback controls not working via some bluetooth devices
