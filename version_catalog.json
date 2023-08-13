@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "stable",
+      "versionName": "1.0.1",
+      "versionCode": 1001,
+      "date": 1691900000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.0.1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 播放列表页与流派页在更改网格列数后布局不正常</li><li>修复 无法通过部分蓝牙设备控制播放</li></ol>",
+        "en": "<ol><li>Fix: incorrect layout after changing grid size in Playlist page and Genre page</li><li>Fix: playback controls not working via some bluetooth devices</li></ol>"
+      }
+    },
+    {
+      "channel": "stable",
       "versionName": "1.0.0",
       "versionCode": 1000,
       "date": 1691638000,
