@@ -6,8 +6,19 @@ package player.phonograph.ui.activities
 
 import player.phonograph.R
 import player.phonograph.databinding.FragmentMainActivityRecyclerViewBinding
-import androidx.activity.ComponentActivity
+import player.phonograph.model.Album
+import player.phonograph.model.Artist
+import player.phonograph.model.Displayable
+import player.phonograph.model.Song
+import player.phonograph.model.playlist.Playlist
+import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
+import player.phonograph.ui.fragments.pages.adapter.ArtistDisplayAdapter
+import player.phonograph.ui.fragments.pages.adapter.PlaylistDisplayAdapter
+import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
+import player.phonograph.ui.fragments.player.PlayingQueueAdapter
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -49,14 +60,16 @@ class SearchResultPageAdapter(
      * Fragment to display result with recycler view
      * **NOTE**: must create from [SearchActivity] (as host activity)
      */
-    abstract class ResultFragment : Fragment() {
+    abstract class ResultFragment<T : Displayable> : Fragment() {
 
         private var _viewBinding: FragmentMainActivityRecyclerViewBinding? = null
         private val binding get() = _viewBinding!!
 
         val viewModel: SearchActivityViewModel by viewModels(ownerProducer = { requireActivity() })
 
-        private lateinit var adapter: SearchResultAdapter
+        protected lateinit var adapter: DisplayAdapter<T>
+
+        protected abstract fun createAdapter(activity: AppCompatActivity): DisplayAdapter<T>
 
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
             _viewBinding = FragmentMainActivityRecyclerViewBinding.inflate(inflater, container, false)
@@ -66,7 +79,7 @@ class SearchResultPageAdapter(
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
             val activity = requireActivity()
-            adapter = adapter(activity)
+            adapter = createAdapter(activity as AppCompatActivity)
             with(binding) {
                 recyclerView.layoutManager = LinearLayoutManager(activity)
                 recyclerView.adapter = adapter
@@ -76,18 +89,18 @@ class SearchResultPageAdapter(
                     false
                 }
             }
-            observeData(flow())
+            observeData(targetFlow())
         }
 
-        protected open fun adapter(activity: ComponentActivity): SearchResultAdapter = SearchResultAdapter(activity)
+        protected abstract fun targetFlow(): StateFlow<List<T>>
 
-        protected abstract fun flow(): StateFlow<List<Any>>
+        protected abstract fun updateDataset(newData: List<T>)
 
-        private fun observeData(flow: StateFlow<List<Any>>) {
+        private fun observeData(flow: StateFlow<List<T>>) {
             lifecycleScope.launch {
                 flow.collect { data ->
                     binding.empty.visibility = if (data.isEmpty()) View.VISIBLE else View.GONE
-                    adapter.dataSet = data
+                    updateDataset(data)
                 }
             }
         }
@@ -99,24 +112,61 @@ class SearchResultPageAdapter(
     }
 
 
-    class SongResultFragment : ResultFragment() {
-        override fun flow(): StateFlow<List<Any>> = viewModel.songs
+    class SongResultFragment : ResultFragment<Song>() {
+
+        override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Song> =
+            SongDisplayAdapter(activity, emptyList(), R.layout.item_list)
+
+        override fun targetFlow(): StateFlow<List<Song>> = viewModel.songs
+
+        override fun updateDataset(newData: List<Song>) {
+            adapter.dataset = newData
+        }
     }
 
-    class AlbumResultFragment : ResultFragment() {
-        override fun flow(): StateFlow<List<Any>> = viewModel.albums
+    class AlbumResultFragment : ResultFragment<Album>() {
+        override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Album> =
+            AlbumDisplayAdapter(activity, emptyList(), R.layout.item_list)
+
+        override fun targetFlow(): StateFlow<List<Album>> = viewModel.albums
+
+        override fun updateDataset(newData: List<Album>) {
+            adapter.dataset = newData
+        }
     }
 
-    class ArtistResultFragment : ResultFragment() {
-        override fun flow(): StateFlow<List<Any>> = viewModel.artists
+    class ArtistResultFragment : ResultFragment<Artist>() {
+        override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Artist> =
+            ArtistDisplayAdapter(activity, emptyList(), R.layout.item_list)
+
+        override fun targetFlow(): StateFlow<List<Artist>> = viewModel.artists
+
+        override fun updateDataset(newData: List<Artist>) {
+            adapter.dataset = newData
+        }
     }
 
-    class PlaylistResultFragment : ResultFragment() {
-        override fun flow(): StateFlow<List<Any>> = viewModel.playlists
+    class PlaylistResultFragment : ResultFragment<Playlist>() {
+        override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Playlist> {
+            return PlaylistDisplayAdapter(activity)
+        }
+
+        override fun targetFlow(): StateFlow<List<Playlist>> = viewModel.playlists
+
+        override fun updateDataset(newData: List<Playlist>) {
+            adapter.dataset = newData
+        }
     }
 
-    class QueueResultFragment : ResultFragment() {
-        override fun flow(): StateFlow<List<Any>> = viewModel.songsInQueue
+    class QueueResultFragment : ResultFragment<Song>() {
+        override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Song> {
+            return PlayingQueueAdapter(activity, emptyList(), 0)
+        }
+
+        override fun targetFlow(): StateFlow<List<Song>> = viewModel.songsInQueue
+        override fun updateDataset(newData: List<Song>) {
+            adapter.dataset = newData
+        }
     }
 
 }

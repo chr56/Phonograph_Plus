@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 package player.phonograph.ui.activities
@@ -38,8 +38,7 @@ class SearchActivityViewModel : ViewModel() {
     val albums get() = _albums.asStateFlow()
     private var _playlists: MutableStateFlow<List<Playlist>> = MutableStateFlow(emptyList())
     val playlists get() = _playlists.asStateFlow()
-    private var _songsInQueue: MutableStateFlow<List<SearchResultAdapter.PlayingQueueSong>> =
-        MutableStateFlow(emptyList())
+    private var _songsInQueue: MutableStateFlow<List<Song>> = MutableStateFlow(emptyList())
     val songsInQueue get() = _songsInQueue.asStateFlow()
 
     private fun search(context: Context, query: String) {
@@ -50,13 +49,9 @@ class SearchActivityViewModel : ViewModel() {
                 _artists.value = ArtistLoader.searchByName(context, query)
                 _albums.value = AlbumLoader.searchByName(context, query)
                 _playlists.value = PlaylistLoader.searchByName(context, query)
-                _songsInQueue.value =
-                    App.instance.queueManager.playingQueue.mapIndexedNotNull { index, song ->
-                        if (song.title.contains(query, true)) {
-                            SearchResultAdapter.PlayingQueueSong(song, index)
-                        } else {
-                            null
-                        }
+                _songsInQueue.value = App.instance.queueManager.playingQueue
+                    .filter { song ->
+                        song.title.contains(query, true)
                     }
 
             }
@@ -72,4 +67,5 @@ class SearchActivityViewModel : ViewModel() {
     fun refresh(context: Context) {
         search(context, query.value)
     }
+
 }
