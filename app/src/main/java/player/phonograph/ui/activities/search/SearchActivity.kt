@@ -1,5 +1,11 @@
-package player.phonograph.ui.activities
+/*
+ *  Copyright (c) 2022~2023 chr_56
+ */
 
+package player.phonograph.ui.activities.search
+
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import lib.phonograph.misc.menuProvider
 import mt.tint.setActivityToolbarColor
 import mt.tint.viewtint.setSearchViewContentColor
@@ -15,12 +21,10 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import kotlinx.coroutines.launch
 
 class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener {
@@ -30,7 +34,10 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
 
     private val viewModel: SearchActivityViewModel by viewModels()
 
-    private lateinit var adapter: SearchResultAdapter
+
+    private lateinit var searchResultPageAdapter: SearchResultPageAdapter
+    private lateinit var mediator: TabLayoutMediator
+
     private var searchView: SearchView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +47,7 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
         setContentView(binding.root)
 
         setUpToolBar()
-        setUpRecyclerView()
+        setUpPager()
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -49,35 +56,30 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
                 }
             }
         }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.results.collect { results ->
-                    binding.empty.visibility = if (results.isEmpty()) View.GONE else View.VISIBLE
-                    adapter.dataSet = results
-                }
-            }
-        }
 
         lifecycle.addObserver(MediaStoreListener())
     }
 
-    private fun setUpRecyclerView() {
-        adapter = SearchResultAdapter(this)
+    private fun setUpPager() {
+        searchResultPageAdapter = SearchResultPageAdapter(this)
         with(binding) {
-            recyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
-            recyclerView.adapter = adapter
-            // noinspection ClickableViewAccessibility
-            recyclerView.setOnTouchListener { _, _ ->
-                hideSoftKeyboard()
-                false
+            with(pager) {
+                adapter = searchResultPageAdapter
+                orientation = ViewPager2.ORIENTATION_HORIZONTAL
+                offscreenPageLimit = 1
+                setOnClickListener {
+                    hideSoftKeyboard()
+                }
+            }
+            with(tabs) {
+                tabMode = TabLayout.MODE_SCROLLABLE
+                setBackgroundColor(primaryColor)
             }
         }
-        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onChanged() {
-                super.onChanged()
-                binding.empty.visibility = if (adapter.itemCount < 1) View.VISIBLE else View.GONE
-            }
-        })
+        mediator = TabLayoutMediator(binding.tabs, binding.pager) { tab: TabLayout.Tab, i: Int ->
+            tab.text = getText(SearchResultPageAdapter.TabType.values()[i].nameRes)
+        }
+        mediator.attach()
     }
 
     private fun setUpToolBar() {

@@ -141,7 +141,7 @@
             android:name=".ui.compose.tag.BatchTagEditorActivity"
             android:label="@string/action_tag_editor"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".ui.activities.SearchActivity" />
+        <activity android:name=".ui.activities.search.SearchActivity" />
         <activity
             android:name=".ui.compose.settings.SettingsActivity"
             android:exported="true"
