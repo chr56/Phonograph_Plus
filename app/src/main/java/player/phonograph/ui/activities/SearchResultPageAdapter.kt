@@ -16,6 +16,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class SearchResultPageAdapter(
@@ -25,10 +26,17 @@ class SearchResultPageAdapter(
     override fun getItemCount(): Int = TabType.values().size
 
     override fun createFragment(position: Int): Fragment {
-        return ResultFragment(TabType.values()[position])
+        return when (TabType.values()[position]) {
+            TabType.SONG     -> SongResultFragment()
+            TabType.ALBUM    -> AlbumResultFragment()
+            TabType.ARTIST   -> ArtistResultFragment()
+            TabType.PLAYLIST -> PlaylistResultFragment()
+            TabType.QUEUE    -> QueueResultFragment()
+        }
     }
 
-    class ResultFragment(val type: TabType) : Fragment() {
+
+    abstract class ResultFragment : Fragment() {
 
         private var _viewBinding: FragmentMainActivityRecyclerViewBinding? = null
         private val binding get() = _viewBinding!!
@@ -64,14 +72,7 @@ class SearchResultPageAdapter(
             }
         }
 
-        private fun flow() =
-            when (type) {
-                TabType.SONG     -> viewModel.songs
-                TabType.ALBUM    -> viewModel.albums
-                TabType.ARTIST   -> viewModel.artists
-                TabType.PLAYLIST -> viewModel.playlists
-                TabType.QUEUE    -> viewModel.songsInQueue
-            }
+        protected abstract fun flow(): StateFlow<List<Any>>
 
         override fun onDestroyView() {
             super.onDestroyView()
@@ -79,6 +80,26 @@ class SearchResultPageAdapter(
         }
     }
 
+
+    class SongResultFragment : ResultFragment() {
+        override fun flow(): StateFlow<List<Any>> = viewModel.songs
+    }
+
+    class AlbumResultFragment : ResultFragment() {
+        override fun flow(): StateFlow<List<Any>> = viewModel.albums
+    }
+
+    class ArtistResultFragment : ResultFragment() {
+        override fun flow(): StateFlow<List<Any>> = viewModel.artists
+    }
+
+    class PlaylistResultFragment : ResultFragment() {
+        override fun flow(): StateFlow<List<Any>> = viewModel.playlists
+    }
+
+    class QueueResultFragment : ResultFragment() {
+        override fun flow(): StateFlow<List<Any>> = viewModel.songsInQueue
+    }
 
     enum class TabType(@StringRes val nameRes: Int) {
         SONG(R.string.song),
