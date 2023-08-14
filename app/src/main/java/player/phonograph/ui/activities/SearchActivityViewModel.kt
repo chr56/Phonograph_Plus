@@ -5,7 +5,6 @@
 package player.phonograph.ui.activities
 
 import player.phonograph.App
-import player.phonograph.R
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
@@ -31,9 +30,6 @@ class SearchActivityViewModel : ViewModel() {
         search(context, query)
     }
 
-    private val _results: MutableStateFlow<List<Any>> = MutableStateFlow(emptyList())
-    val results get() = _results.asStateFlow()
-
     private var _songs: MutableStateFlow<List<Song>> = MutableStateFlow(emptyList())
     val songs get() = _songs.asStateFlow()
     private var _artists: MutableStateFlow<List<Artist>> = MutableStateFlow(emptyList())
@@ -50,8 +46,6 @@ class SearchActivityViewModel : ViewModel() {
         if (query.isNotBlank()) {
             viewModelScope.launch(Dispatchers.IO) {
 
-                val dataset: MutableList<Any> = mutableListOf()
-
                 _songs.value = SongLoader.searchByTitle(context, query)
                 _artists.value = ArtistLoader.searchByName(context, query)
                 _albums.value = AlbumLoader.searchByName(context, query)
@@ -65,31 +59,13 @@ class SearchActivityViewModel : ViewModel() {
                         }
                     }
 
-                if (songs.value.isNotEmpty()) {
-                    dataset.add(context.resources.getString(R.string.songs))
-                    dataset.addAll(songs.value)
-                }
-                if (artists.value.isNotEmpty()) {
-                    dataset.add(context.resources.getString(R.string.artists))
-                    dataset.addAll(artists.value)
-                }
-                if (albums.value.isNotEmpty()) {
-                    dataset.add(context.resources.getString(R.string.albums))
-                    dataset.addAll(albums.value)
-                }
-                if (playlists.value.isNotEmpty()) {
-                    dataset.add(context.getString(R.string.playlists))
-                    dataset.addAll(playlists.value)
-                }
-                if (songsInQueue.value.isNotEmpty()) {
-                    dataset.add(context.getString(R.string.label_playing_queue))
-                    dataset.addAll(songsInQueue.value)
-                }
-
-                _results.value = dataset
             }
         } else {
-            _results.value = emptyList()
+            _songs.value = emptyList()
+            _artists.value = emptyList()
+            _albums.value = emptyList()
+            _playlists.value = emptyList()
+            _songsInQueue.value = emptyList()
         }
     }
 
