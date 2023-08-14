@@ -6,6 +6,10 @@ package player.phonograph.ui.activities
 
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.model.Album
+import player.phonograph.model.Artist
+import player.phonograph.model.Song
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
 import player.phonograph.repo.mediastore.loaders.ArtistLoader
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
@@ -30,44 +34,56 @@ class SearchActivityViewModel : ViewModel() {
     private val _results: MutableStateFlow<List<Any>> = MutableStateFlow(emptyList())
     val results get() = _results.asStateFlow()
 
+    private var _songs: MutableStateFlow<List<Song>> = MutableStateFlow(emptyList())
+    val songs get() = _songs.asStateFlow()
+    private var _artists: MutableStateFlow<List<Artist>> = MutableStateFlow(emptyList())
+    val artists get() = _artists.asStateFlow()
+    private var _albums: MutableStateFlow<List<Album>> = MutableStateFlow(emptyList())
+    val albums get() = _albums.asStateFlow()
+    private var _playlists: MutableStateFlow<List<Playlist>> = MutableStateFlow(emptyList())
+    val playlists get() = _playlists.asStateFlow()
+    private var _songsInQueue: MutableStateFlow<List<SearchResultAdapter.PlayingQueueSong>> =
+        MutableStateFlow(emptyList())
+    val songsInQueue get() = _songsInQueue.asStateFlow()
+
     private fun search(context: Context, query: String) {
         if (query.isNotBlank()) {
             viewModelScope.launch(Dispatchers.IO) {
 
                 val dataset: MutableList<Any> = mutableListOf()
 
-                val songs = SongLoader.searchByTitle(context, query)
-                val artists = ArtistLoader.searchByName(context, query)
-                val albums = AlbumLoader.searchByName(context, query)
-                val playlists = PlaylistLoader.searchByName(context, query)
-                val songsInQueue =
+                _songs.value = SongLoader.searchByTitle(context, query)
+                _artists.value = ArtistLoader.searchByName(context, query)
+                _albums.value = AlbumLoader.searchByName(context, query)
+                _playlists.value = PlaylistLoader.searchByName(context, query)
+                _songsInQueue.value =
                     App.instance.queueManager.playingQueue.mapIndexedNotNull { index, song ->
                         if (song.title.contains(query, true)) {
-                            SearchResultAdapter.PlayingQueueSong(song,index)
+                            SearchResultAdapter.PlayingQueueSong(song, index)
                         } else {
                             null
                         }
                     }
 
-                if (songs.isNotEmpty()) {
+                if (songs.value.isNotEmpty()) {
                     dataset.add(context.resources.getString(R.string.songs))
-                    dataset.addAll(songs)
+                    dataset.addAll(songs.value)
                 }
-                if (artists.isNotEmpty()) {
+                if (artists.value.isNotEmpty()) {
                     dataset.add(context.resources.getString(R.string.artists))
-                    dataset.addAll(artists)
+                    dataset.addAll(artists.value)
                 }
-                if (albums.isNotEmpty()) {
+                if (albums.value.isNotEmpty()) {
                     dataset.add(context.resources.getString(R.string.albums))
-                    dataset.addAll(albums)
+                    dataset.addAll(albums.value)
                 }
-                if (playlists.isNotEmpty()) {
+                if (playlists.value.isNotEmpty()) {
                     dataset.add(context.getString(R.string.playlists))
-                    dataset.addAll(playlists)
+                    dataset.addAll(playlists.value)
                 }
-                if (songsInQueue.isNotEmpty()) {
+                if (songsInQueue.value.isNotEmpty()) {
                     dataset.add(context.getString(R.string.label_playing_queue))
-                    dataset.addAll(songsInQueue)
+                    dataset.addAll(songsInQueue.value)
                 }
 
                 _results.value = dataset
