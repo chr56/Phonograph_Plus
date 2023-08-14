@@ -6,6 +6,7 @@ package player.phonograph.ui.activities
 
 import player.phonograph.R
 import player.phonograph.databinding.FragmentMainActivityRecyclerViewBinding
+import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -23,6 +24,14 @@ class SearchResultPageAdapter(
     searchActivity: SearchActivity,
 ) : FragmentStateAdapter(searchActivity) {
 
+    enum class TabType(@StringRes val nameRes: Int) {
+        SONG(R.string.song),
+        ALBUM(R.string.album),
+        ARTIST(R.string.artist),
+        PLAYLIST(R.string.playlists),
+        QUEUE(R.string.label_playing_queue);
+    }
+
     override fun getItemCount(): Int = TabType.values().size
 
     override fun createFragment(position: Int): Fragment {
@@ -36,6 +45,10 @@ class SearchResultPageAdapter(
     }
 
 
+    /**
+     * Fragment to display result with recycler view
+     * **NOTE**: must create from [SearchActivity] (as host activity)
+     */
     abstract class ResultFragment : Fragment() {
 
         private var _viewBinding: FragmentMainActivityRecyclerViewBinding? = null
@@ -53,7 +66,7 @@ class SearchResultPageAdapter(
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
             val activity = requireActivity()
-            adapter = SearchResultAdapter(activity)
+            adapter = adapter(activity)
             with(binding) {
                 recyclerView.layoutManager = LinearLayoutManager(activity)
                 recyclerView.adapter = adapter
@@ -63,7 +76,14 @@ class SearchResultPageAdapter(
                     false
                 }
             }
-            val flow = flow()
+            observeData(flow())
+        }
+
+        protected open fun adapter(activity: ComponentActivity): SearchResultAdapter = SearchResultAdapter(activity)
+
+        protected abstract fun flow(): StateFlow<List<Any>>
+
+        private fun observeData(flow: StateFlow<List<Any>>) {
             lifecycleScope.launch {
                 flow.collect { data ->
                     binding.empty.visibility = if (data.isEmpty()) View.VISIBLE else View.GONE
@@ -71,8 +91,6 @@ class SearchResultPageAdapter(
                 }
             }
         }
-
-        protected abstract fun flow(): StateFlow<List<Any>>
 
         override fun onDestroyView() {
             super.onDestroyView()
@@ -99,14 +117,6 @@ class SearchResultPageAdapter(
 
     class QueueResultFragment : ResultFragment() {
         override fun flow(): StateFlow<List<Any>> = viewModel.songsInQueue
-    }
-
-    enum class TabType(@StringRes val nameRes: Int) {
-        SONG(R.string.song),
-        ALBUM(R.string.album),
-        ARTIST(R.string.artist),
-        PLAYLIST(R.string.playlists),
-        QUEUE(R.string.label_playing_queue);
     }
 
 }
