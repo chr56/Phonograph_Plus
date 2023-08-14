@@ -41,7 +41,7 @@ object PlaylistLoader {
 
     fun searchByName(context: Context, name: String): List<FilePlaylist> =
         queryPlaylists(
-            context, "${MediaStoreCompat.Audio.PlaylistsColumns.NAME} LIKE ?", arrayOf(name)
+            context, "${MediaStoreCompat.Audio.PlaylistsColumns.NAME} LIKE ?", arrayOf("%$name%")
         ).intoPlaylists()
 
 
