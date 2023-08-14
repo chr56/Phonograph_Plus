@@ -7,6 +7,7 @@ package player.phonograph.ui.activities.search
 import player.phonograph.App
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
+import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
@@ -38,7 +39,7 @@ class SearchActivityViewModel : ViewModel() {
     val albums get() = _albums.asStateFlow()
     private var _playlists: MutableStateFlow<List<Playlist>> = MutableStateFlow(emptyList())
     val playlists get() = _playlists.asStateFlow()
-    private var _songsInQueue: MutableStateFlow<List<Song>> = MutableStateFlow(emptyList())
+    private var _songsInQueue: MutableStateFlow<List<QueueSong>> = MutableStateFlow(emptyList())
     val songsInQueue get() = _songsInQueue.asStateFlow()
 
     private fun search(context: Context, query: String) {
@@ -50,8 +51,12 @@ class SearchActivityViewModel : ViewModel() {
                 _albums.value = AlbumLoader.searchByName(context, query)
                 _playlists.value = PlaylistLoader.searchByName(context, query)
                 _songsInQueue.value = App.instance.queueManager.playingQueue
-                    .filter { song ->
-                        song.title.contains(query, true)
+                    .mapIndexedNotNull { index, song ->
+                        if (song.title.contains(query, true)) {
+                            QueueSong(song, index)
+                        } else {
+                            null
+                        }
                     }
 
             }

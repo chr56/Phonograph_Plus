@@ -9,16 +9,18 @@ import player.phonograph.databinding.FragmentMainActivityRecyclerViewBinding
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Displayable
+import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.ArtistDisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.PlaylistDisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
-import player.phonograph.ui.fragments.player.PlayingQueueAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +28,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -131,14 +134,44 @@ class PlaylistSearchResultPageFragment : SearchResultPageFragment<Playlist>() {
     }
 }
 
-class QueueSearchResultPageFragment : SearchResultPageFragment<Song>() {
-    override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Song> {
-        return PlayingQueueAdapter(activity, emptyList(), 0)
-    }
+class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
 
-    override fun targetFlow(): StateFlow<List<Song>> = viewModel.songsInQueue
+    override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<QueueSong> =
+        QueueSongAdapter(activity, emptyList())
 
-    override fun updateDataset(newData: List<Song>) {
+    override fun targetFlow(): StateFlow<List<QueueSong>> = viewModel.songsInQueue
+
+    override fun updateDataset(newData: List<QueueSong>) {
         adapter.dataset = newData
     }
+
+    class QueueSongAdapter(
+        activity: FragmentActivity, dataSet: List<QueueSong>,
+    ) : DisplayAdapter<QueueSong>(activity, dataSet, R.layout.item_list) {
+
+        init {
+            useImageText = true
+        }
+
+        override fun getSectionNameImp(position: Int): String {
+            return dataset[position].index.toString()
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<QueueSong> =
+            QueueSongViewHolder(inflatedView(layoutRes, parent))
+
+        inner class QueueSongViewHolder(itemView: View) : DisplayViewHolder<QueueSong>(itemView) {
+
+            override fun getRelativeOrdinalText(item: QueueSong): String {
+                return item.index.toString()
+            }
+
+            override fun onClick(position: Int, dataset: List<QueueSong>, imageView: ImageView?): Boolean {
+                MusicPlayerRemote.playSongAt(dataset[position].index)
+                return true
+            }
+
+        }
+    }
+
 }
