@@ -22,7 +22,7 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
 import player.phonograph.settings.SettingFlowStore
 import player.phonograph.ui.activities.MainActivity
-import player.phonograph.ui.activities.SearchActivity
+import player.phonograph.ui.activities.search.SearchActivity
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.AbsPage
 import player.phonograph.util.theme.getTintedDrawable

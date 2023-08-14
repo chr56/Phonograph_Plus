@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.ui.activities
+package player.phonograph.ui.activities.search
 
 import player.phonograph.App
 import player.phonograph.model.Album

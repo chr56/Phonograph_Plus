@@ -1,4 +1,8 @@
-package player.phonograph.ui.activities
+/*
+ *  Copyright (c) 2022~2023 chr_56
+ */
+
+package player.phonograph.ui.activities.search
 
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
