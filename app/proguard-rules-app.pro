@@ -43,7 +43,7 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.adapter.DisplayAdapter {public <methods>; protected <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.adapter.SortableListAdapter {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.adapter.MultiSelectionController {public <methods>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.activities.SearchResultAdapter {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.activities.search.SearchResultPageFragment {abstract <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.dialogs.HomeTabConfigDialog$PageTabConfigAdapter {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.dialogs.ImageSourceConfigDialog$ImageSourceConfigAdapter {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.HomeFragment$HomePagerAdapter {public <methods>;}
