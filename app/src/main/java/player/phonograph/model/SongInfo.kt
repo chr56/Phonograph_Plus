@@ -6,6 +6,7 @@ package player.phonograph.model
 
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
+import player.phonograph.mechanism.tageditor.TagFormat
 import androidx.annotation.StringRes
 
 /**
@@ -38,6 +39,7 @@ class SongInfoModel(
     // other
     //
     var comment: TagField,
+    var tagFormat: TagFormat = TagFormat.Unknown,
     var otherTags: MutableMap<String, String>? = null,
 ) {
 
@@ -74,7 +76,8 @@ class SongInfoModel(
                 TagField(FieldKey.GENRE, null),
                 TagField(FieldKey.TRACK, null),
                 TagField(FieldKey.COMMENT, null),
-                null
+                TagFormat.Unknown,
+                null,
             )
     }
 

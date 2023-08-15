@@ -17,6 +17,7 @@ import player.phonograph.App
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.retriever.PARAMETERS_RAW
 import player.phonograph.coil.target.PaletteTargetBuilder
+import player.phonograph.mechanism.tageditor.TagFormat
 import player.phonograph.model.LongFilePropertyField
 import player.phonograph.model.Song
 import player.phonograph.model.SongInfoModel
@@ -68,6 +69,7 @@ object SongDetail {
             val comment = readTagField(audioFile, FieldKey.COMMENT)
             // tags of custom field
             val otherTags = readCustomTags(audioFile)
+            val tagFormat = TagFormat.of(audioFile.tag)
             return SongInfoModel(
                 fileName = StringFilePropertyField(fileName),
                 filePath = StringFilePropertyField(filePath),
@@ -86,7 +88,8 @@ object SongDetail {
                 genre = genre,
                 track = track,
                 comment = comment,
-                otherTags
+                tagFormat = tagFormat,
+                otherTags,
             )
         } catch (e: Exception) {
             Log.e("TagRead", "error while reading the song file", e)
