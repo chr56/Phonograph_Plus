@@ -17,6 +17,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.res.Resources
 import android.net.Uri
+import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
 import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
@@ -82,8 +83,18 @@ object MediaItemProvider {
         return AlbumLoader.all(context).map { it.toMediaItem() }
     }
 
+    fun browseAlbum(context: Context, id: Long): List<MediaItem> {
+        return mutableListOf(albumShuffleItem(context.resources, id)) +
+                AlbumLoader.id(context, id).songs.map { it.toMediaItem() }
+    }
+
     fun browseArtists(context: Context): List<MediaItem> {
         return ArtistLoader.all(context).map { it.toMediaItem() }
+    }
+
+    fun browseArtist(context: Context, id: Long): List<MediaItem> {
+        return mutableListOf(artistShuffleItem(context.resources, id)) +
+                ArtistLoader.id(context, id).songs.map { it.toMediaItem() }
     }
 
     fun browseFavorite(context: Context): List<MediaItem> {

@@ -4,9 +4,11 @@
 
 package player.phonograph.repo.browser
 
+import player.phonograph.R
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
+import android.content.res.Resources
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
 import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
@@ -41,4 +43,27 @@ fun Artist.toMediaItem(): MediaItem =
             .setMediaId("$MEDIA_BROWSER_ARTISTS$MEDIA_BROWSER_SEPARATOR$id")
             .build(),
         FLAG_BROWSABLE or FLAG_PLAYABLE
+    )
+
+fun albumShuffleItem(resources: Resources, id: Long): MediaItem =
+    generalItem(
+        resources.getString(R.string.action_shuffle_all),
+        "$MEDIA_BROWSER_ALBUMS$MEDIA_BROWSER_SEPARATOR$id"
+    )
+
+
+fun artistShuffleItem(resources: Resources, id: Long): MediaItem =
+    generalItem(
+        resources.getString(R.string.action_shuffle_all),
+        "$MEDIA_BROWSER_ARTISTS$MEDIA_BROWSER_SEPARATOR$id"
+    )
+
+
+private fun generalItem(title: String, path: String): MediaItem =
+    MediaItem(
+        MediaDescriptionCompat.Builder()
+            .setTitle(title)
+            .setMediaId(path)
+            .build(),
+        FLAG_PLAYABLE
     )
