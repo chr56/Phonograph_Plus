@@ -72,7 +72,7 @@ object MediaItemProvider {
 
     fun browseQueue(): List<MediaItem> {
         val queue = App.instance.queueManager.playingQueue
-        return  QueueSong.fromQueue(queue).map { it.toMediaItem() }
+        return QueueSong.fromQueue(queue).map { it.toMediaItem() }
     }
 
     fun browseSongs(context: Context): List<MediaItem> {
@@ -98,19 +98,23 @@ object MediaItemProvider {
     }
 
     fun browseFavorite(context: Context): List<MediaItem> {
-        return FavoritesStore.instance.getAllSongs(context).map { it.toMediaItem() }
+        return listOf(selectAllItem(context.resources, MEDIA_BROWSER_SONGS_FAVORITES)) +
+                FavoritesStore.instance.getAllSongs(context).map { it.toMediaItem() }
     }
 
     fun browseMyTopTrack(context: Context): List<MediaItem> {
-        return TopAndRecentlyPlayedTracksLoader.topTracks(context).map { it.toMediaItem() }
+        return listOf(selectAllItem(context.resources, MEDIA_BROWSER_SONGS_FAVORITES)) +
+                TopAndRecentlyPlayedTracksLoader.topTracks(context).map { it.toMediaItem() }
     }
 
     fun browseLastAdded(context: Context): List<MediaItem> {
-        return LastAddedLoader.lastAddedSongs(context).map { it.toMediaItem() }
+        return listOf(selectAllItem(context.resources, MEDIA_BROWSER_SONGS_FAVORITES)) +
+                LastAddedLoader.lastAddedSongs(context).map { it.toMediaItem() }
     }
 
     fun browseHistory(context: Context): List<MediaItem> {
-        return TopAndRecentlyPlayedTracksLoader.recentlyPlayedTracks(context).map { it.toMediaItem() }
+        return listOf(selectAllItem(context.resources, MEDIA_BROWSER_SONGS_FAVORITES)) +
+                TopAndRecentlyPlayedTracksLoader.recentlyPlayedTracks(context).map { it.toMediaItem() }
     }
 
     private fun albumAllItem(resources: Resources, id: Long): MediaItem =
