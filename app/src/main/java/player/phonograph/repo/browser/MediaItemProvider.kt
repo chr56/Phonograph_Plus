@@ -17,7 +17,6 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.res.Resources
 import android.net.Uri
-import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
 import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
@@ -126,6 +125,7 @@ object MediaItemProvider {
     private fun selectAllItem(resources: Resources, path: String): MediaItem =
         mediaItem(FLAG_PLAYABLE) {
             setTitle(resources.getString(R.string.action_shuffle_all))
+            setIconUri(iconRes(resources, R.drawable.ic_shuffle_white_24dp))
             setMediaId(path)
         }
 
