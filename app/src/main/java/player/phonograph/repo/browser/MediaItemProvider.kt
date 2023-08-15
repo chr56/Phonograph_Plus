@@ -26,11 +26,6 @@ object MediaItemProvider {
 
     fun browseRoot(res: Resources): List<MediaItem> =
         listOf(
-            mediaItem(FLAG_BROWSABLE or FLAG_PLAYABLE) {
-                setTitle(res.getString(R.string.label_playing_queue))
-                setIconUri(iconRes(res, R.drawable.ic_queue_music_white_24dp))
-                setMediaId(MEDIA_BROWSER_SONGS_QUEUE)
-            },
             mediaItem(FLAG_BROWSABLE) {
                 setTitle(res.getString(R.string.songs))
                 setIconUri(iconRes(res, R.drawable.ic_music_note_white_24dp))
@@ -46,22 +41,27 @@ object MediaItemProvider {
                 setIconUri(iconRes(res, R.drawable.ic_person_white_24dp))
                 setMediaId(MEDIA_BROWSER_ARTISTS)
             },
-            mediaItem(FLAG_BROWSABLE or FLAG_PLAYABLE) {
+            mediaItem(FLAG_BROWSABLE) {
+                setTitle(res.getString(R.string.label_playing_queue))
+                setIconUri(iconRes(res, R.drawable.ic_queue_music_white_24dp))
+                setMediaId(MEDIA_BROWSER_SONGS_QUEUE)
+            },
+            mediaItem(FLAG_BROWSABLE) {
                 setTitle(res.getString(R.string.favorites))
                 setIconUri(iconRes(res, R.drawable.ic_favorite_white_24dp))
                 setMediaId(MEDIA_BROWSER_SONGS_FAVORITES)
             },
-            mediaItem(FLAG_BROWSABLE or FLAG_PLAYABLE) {
+            mediaItem(FLAG_BROWSABLE) {
                 setTitle(res.getString(R.string.my_top_tracks))
                 setIconUri(iconRes(res, R.drawable.ic_trending_up_white_24dp))
                 setMediaId(MEDIA_BROWSER_SONGS_TOP_TRACKS)
             },
-            mediaItem(FLAG_BROWSABLE or FLAG_PLAYABLE) {
+            mediaItem(FLAG_BROWSABLE) {
                 setTitle(res.getString(R.string.last_added))
                 setIconUri(iconRes(res, R.drawable.ic_library_add_white_24dp))
                 setMediaId(MEDIA_BROWSER_SONGS_LAST_ADDED)
             },
-            mediaItem(FLAG_BROWSABLE or FLAG_PLAYABLE) {
+            mediaItem(FLAG_BROWSABLE) {
                 setTitle(res.getString(R.string.history))
                 setIconUri(iconRes(res, R.drawable.ic_access_time_white_24dp))
                 setMediaId(MEDIA_BROWSER_SONGS_HISTORY)
