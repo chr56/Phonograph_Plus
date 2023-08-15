@@ -84,7 +84,7 @@ object MediaItemProvider {
     }
 
     fun browseAlbum(context: Context, id: Long): List<MediaItem> {
-        return mutableListOf(albumShuffleItem(context.resources, id)) +
+        return mutableListOf(albumAllItem(context.resources, id)) +
                 AlbumLoader.id(context, id).songs.map { it.toMediaItem() }
     }
 
@@ -93,7 +93,7 @@ object MediaItemProvider {
     }
 
     fun browseArtist(context: Context, id: Long): List<MediaItem> {
-        return mutableListOf(artistShuffleItem(context.resources, id)) +
+        return mutableListOf(artistAllItem(context.resources, id)) +
                 ArtistLoader.id(context, id).songs.map { it.toMediaItem() }
     }
 
@@ -112,6 +112,22 @@ object MediaItemProvider {
     fun browseHistory(context: Context): List<MediaItem> {
         return TopAndRecentlyPlayedTracksLoader.recentlyPlayedTracks(context).map { it.toMediaItem() }
     }
+
+    private fun albumAllItem(resources: Resources, id: Long): MediaItem =
+        selectAllItem(
+            resources, "$MEDIA_BROWSER_ALBUMS$MEDIA_BROWSER_SEPARATOR$id"
+        )
+
+    private fun artistAllItem(resources: Resources, id: Long): MediaItem =
+        selectAllItem(
+            resources, "$MEDIA_BROWSER_ARTISTS$MEDIA_BROWSER_SEPARATOR$id"
+        )
+
+    private fun selectAllItem(resources: Resources, path: String): MediaItem =
+        mediaItem(FLAG_PLAYABLE) {
+            setTitle(resources.getString(R.string.action_shuffle_all))
+            setMediaId(path)
+        }
 
     private fun mediaItem(flag: Int, block: MediaDescriptionCompat.Builder.() -> Unit): MediaItem {
         return MediaItem(MediaDescriptionCompat.Builder().apply(block).build(), flag)
