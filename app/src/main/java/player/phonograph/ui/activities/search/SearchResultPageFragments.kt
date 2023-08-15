@@ -5,7 +5,7 @@
 package player.phonograph.ui.activities.search
 
 import player.phonograph.R
-import player.phonograph.databinding.FragmentMainActivityRecyclerViewBinding
+import player.phonograph.databinding.RecyclerViewWrappedProperBinding
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Displayable
@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
  */
 abstract class SearchResultPageFragment<T : Displayable> : Fragment() {
 
-    private var _viewBinding: FragmentMainActivityRecyclerViewBinding? = null
+    private var _viewBinding: RecyclerViewWrappedProperBinding? = null
     private val binding get() = _viewBinding!!
 
     val viewModel: SearchActivityViewModel by viewModels(ownerProducer = { requireActivity() })
@@ -49,7 +49,7 @@ abstract class SearchResultPageFragment<T : Displayable> : Fragment() {
     protected abstract fun createAdapter(activity: AppCompatActivity): DisplayAdapter<T>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _viewBinding = FragmentMainActivityRecyclerViewBinding.inflate(inflater, container, false)
+        _viewBinding = RecyclerViewWrappedProperBinding.inflate(inflater, container, false)
         return binding.root
     }
 
