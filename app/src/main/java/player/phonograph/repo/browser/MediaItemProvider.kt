@@ -6,6 +6,7 @@ package player.phonograph.repo.browser
 
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.model.QueueSong
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
 import player.phonograph.repo.mediastore.loaders.ArtistLoader
@@ -26,11 +27,6 @@ object MediaItemProvider {
 
     fun browseRoot(res: Resources): List<MediaItem> =
         listOf(
-            mediaItem(FLAG_BROWSABLE or FLAG_PLAYABLE) {
-                setTitle(res.getString(R.string.label_playing_queue))
-                setIconUri(iconRes(res, R.drawable.ic_queue_music_white_24dp))
-                setMediaId(MEDIA_BROWSER_SONGS_QUEUE)
-            },
             mediaItem(FLAG_BROWSABLE) {
                 setTitle(res.getString(R.string.songs))
                 setIconUri(iconRes(res, R.drawable.ic_music_note_white_24dp))
@@ -46,22 +42,27 @@ object MediaItemProvider {
                 setIconUri(iconRes(res, R.drawable.ic_person_white_24dp))
                 setMediaId(MEDIA_BROWSER_ARTISTS)
             },
-            mediaItem(FLAG_BROWSABLE or FLAG_PLAYABLE) {
+            mediaItem(FLAG_BROWSABLE) {
+                setTitle(res.getString(R.string.label_playing_queue))
+                setIconUri(iconRes(res, R.drawable.ic_queue_music_white_24dp))
+                setMediaId(MEDIA_BROWSER_SONGS_QUEUE)
+            },
+            mediaItem(FLAG_BROWSABLE) {
                 setTitle(res.getString(R.string.favorites))
                 setIconUri(iconRes(res, R.drawable.ic_favorite_white_24dp))
                 setMediaId(MEDIA_BROWSER_SONGS_FAVORITES)
             },
-            mediaItem(FLAG_BROWSABLE or FLAG_PLAYABLE) {
+            mediaItem(FLAG_BROWSABLE) {
                 setTitle(res.getString(R.string.my_top_tracks))
                 setIconUri(iconRes(res, R.drawable.ic_trending_up_white_24dp))
                 setMediaId(MEDIA_BROWSER_SONGS_TOP_TRACKS)
             },
-            mediaItem(FLAG_BROWSABLE or FLAG_PLAYABLE) {
+            mediaItem(FLAG_BROWSABLE) {
                 setTitle(res.getString(R.string.last_added))
                 setIconUri(iconRes(res, R.drawable.ic_library_add_white_24dp))
                 setMediaId(MEDIA_BROWSER_SONGS_LAST_ADDED)
             },
-            mediaItem(FLAG_BROWSABLE or FLAG_PLAYABLE) {
+            mediaItem(FLAG_BROWSABLE) {
                 setTitle(res.getString(R.string.history))
                 setIconUri(iconRes(res, R.drawable.ic_access_time_white_24dp))
                 setMediaId(MEDIA_BROWSER_SONGS_HISTORY)
@@ -71,7 +72,7 @@ object MediaItemProvider {
 
     fun browseQueue(): List<MediaItem> {
         val queue = App.instance.queueManager.playingQueue
-        return queue.map { it.toMediaItem() }
+        return QueueSong.fromQueue(queue).map { it.toMediaItem() }
     }
 
     fun browseSongs(context: Context): List<MediaItem> {
@@ -82,25 +83,56 @@ object MediaItemProvider {
         return AlbumLoader.all(context).map { it.toMediaItem() }
     }
 
+    fun browseAlbum(context: Context, id: Long): List<MediaItem> {
+        return mutableListOf(albumAllItem(context.resources, id)) +
+                AlbumLoader.id(context, id).songs.map { it.toMediaItem() }
+    }
+
     fun browseArtists(context: Context): List<MediaItem> {
         return ArtistLoader.all(context).map { it.toMediaItem() }
     }
 
+    fun browseArtist(context: Context, id: Long): List<MediaItem> {
+        return mutableListOf(artistAllItem(context.resources, id)) +
+                ArtistLoader.id(context, id).songs.map { it.toMediaItem() }
+    }
+
     fun browseFavorite(context: Context): List<MediaItem> {
-        return FavoritesStore.instance.getAllSongs(context).map { it.toMediaItem() }
+        return listOf(selectAllItem(context.resources, MEDIA_BROWSER_SONGS_FAVORITES)) +
+                FavoritesStore.instance.getAllSongs(context).map { it.toMediaItem() }
     }
 
     fun browseMyTopTrack(context: Context): List<MediaItem> {
-        return TopAndRecentlyPlayedTracksLoader.topTracks(context).map { it.toMediaItem() }
+        return listOf(selectAllItem(context.resources, MEDIA_BROWSER_SONGS_FAVORITES)) +
+                TopAndRecentlyPlayedTracksLoader.topTracks(context).map { it.toMediaItem() }
     }
 
     fun browseLastAdded(context: Context): List<MediaItem> {
-        return LastAddedLoader.lastAddedSongs(context).map { it.toMediaItem() }
+        return listOf(selectAllItem(context.resources, MEDIA_BROWSER_SONGS_FAVORITES)) +
+                LastAddedLoader.lastAddedSongs(context).map { it.toMediaItem() }
     }
 
     fun browseHistory(context: Context): List<MediaItem> {
-        return TopAndRecentlyPlayedTracksLoader.recentlyPlayedTracks(context).map { it.toMediaItem() }
+        return listOf(selectAllItem(context.resources, MEDIA_BROWSER_SONGS_FAVORITES)) +
+                TopAndRecentlyPlayedTracksLoader.recentlyPlayedTracks(context).map { it.toMediaItem() }
     }
+
+    private fun albumAllItem(resources: Resources, id: Long): MediaItem =
+        selectAllItem(
+            resources, "$MEDIA_BROWSER_ALBUMS$MEDIA_BROWSER_SEPARATOR$id"
+        )
+
+    private fun artistAllItem(resources: Resources, id: Long): MediaItem =
+        selectAllItem(
+            resources, "$MEDIA_BROWSER_ARTISTS$MEDIA_BROWSER_SEPARATOR$id"
+        )
+
+    private fun selectAllItem(resources: Resources, path: String): MediaItem =
+        mediaItem(FLAG_PLAYABLE) {
+            setTitle(resources.getString(R.string.action_play_all))
+            setIconUri(iconRes(resources, R.drawable.ic_play_arrow_white_24dp))
+            setMediaId(path)
+        }
 
     private fun mediaItem(flag: Int, block: MediaDescriptionCompat.Builder.() -> Unit): MediaItem {
         return MediaItem(MediaDescriptionCompat.Builder().apply(block).build(), flag)

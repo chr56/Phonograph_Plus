@@ -71,6 +71,7 @@
     <string name="select_all_title">Select all</string>
     <string name="unselect_all_title">Unselect all</string>
     <string name="invert_selection">Invert the selection</string>
+    <string name="action_play_all">Play all</string>
     <string name="action_shuffle_all">Shuffle all</string>
     <string name="action_shuffle_album">Shuffle album</string>
     <string name="action_shuffle_artist">Shuffle artist</string>
