@@ -129,8 +129,8 @@ object MediaItemProvider {
 
     private fun selectAllItem(resources: Resources, path: String): MediaItem =
         mediaItem(FLAG_PLAYABLE) {
-            setTitle(resources.getString(R.string.action_shuffle_all))
-            setIconUri(iconRes(resources, R.drawable.ic_shuffle_white_24dp))
+            setTitle(resources.getString(R.string.action_play_all))
+            setIconUri(iconRes(resources, R.drawable.ic_play_arrow_white_24dp))
             setMediaId(path)
         }
 
