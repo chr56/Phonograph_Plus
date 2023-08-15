@@ -14,6 +14,7 @@ import org.jaudiotagger.tag.id3.ID3v23Frames
 import org.jaudiotagger.tag.id3.ID3v23Tag
 import org.jaudiotagger.tag.id3.ID3v24Frames
 import org.jaudiotagger.tag.id3.ID3v24Tag
+import org.jaudiotagger.tag.id3.framebody.FrameBodyTXXX
 import player.phonograph.util.reportError
 
 
@@ -76,8 +77,10 @@ fun readID3v2Tags(tag: AbstractID3v2Tag): Map<String, String> {
 
 private fun parseID3v2Frame(frame: AbstractID3v2Frame): String {
     return try {
-        val frameBody = frame.body
-        frameBody.userFriendlyValue
+        when (val frameBody = frame.body) {
+            is FrameBodyTXXX -> "${frameBody.description}:\n\t${frameBody.userFriendlyValue}"
+            else             -> frameBody.userFriendlyValue
+        }
     } catch (e: Exception) {
         reportError(e, "readID3v2Tags", ERR_PARSE_FIELD)
         ERR_PARSE_FIELD
