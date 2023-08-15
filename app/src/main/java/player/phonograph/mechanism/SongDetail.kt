@@ -12,7 +12,15 @@ import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
 import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.datatype.DataTypes
+import org.jaudiotagger.tag.id3.AbstractID3v2Frame
+import org.jaudiotagger.tag.id3.AbstractID3v2Tag
 import org.jaudiotagger.tag.id3.AbstractTagFrame
+import org.jaudiotagger.tag.id3.ID3v22Frames
+import org.jaudiotagger.tag.id3.ID3v22Tag
+import org.jaudiotagger.tag.id3.ID3v23Frames
+import org.jaudiotagger.tag.id3.ID3v23Tag
+import org.jaudiotagger.tag.id3.ID3v24Frames
+import org.jaudiotagger.tag.id3.ID3v24Tag
 import player.phonograph.App
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.retriever.PARAMETERS_RAW
@@ -105,6 +113,39 @@ object SongDetail {
     private fun readTagField(audioFile: AudioFile, id: FieldKey): TagField =
         TagField(id, audioFile.tag.getFirst(id))
 
+    private fun readAllTags(audioFile: AudioFile): Map<String, String> {
+        val items: Map<String, String> =
+            when (val tag = audioFile.tag) {
+                is AbstractID3v2Tag -> {
+                    tag.frameMap
+                        .mapValues { (key, frame) ->
+                            val id3v2Frame = frame as AbstractID3v2Frame
+                            if (id3v2Frame.isBinary) {
+                                "<Binary Data>"
+                            } else if (id3v2Frame.isEmpty) {
+                                "<Empty>"
+                            } else {
+                                val frameBody = id3v2Frame.body
+                                id3v2Frame.isBinary
+                                frameBody.userFriendlyValue
+                            }
+                        }
+                        .mapKeys { (key, frame) ->
+                            val description = when (tag) {
+                                is ID3v24Tag -> ID3v24Frames.getInstanceOf().idToValueMap.getOrDefault(key, null)
+                                is ID3v23Tag -> ID3v23Frames.getInstanceOf().idToValueMap.getOrDefault(key, null)
+                                is ID3v22Tag -> ID3v22Frames.getInstanceOf().idToValueMap.getOrDefault(key, null)
+                                else         -> null
+                            }
+                            "[$key]$description"
+                        }
+                }
+
+                else                -> emptyMap()
+            }
+        return items
+    }
+
     private fun readCustomTags(audioFile: AudioFile): MutableMap<String, String>? {
         val customInfoField = audioFile.tag.getFields("TXXX")
         val otherTags = if (customInfoField != null && customInfoField.size > 0) {
@@ -133,7 +174,7 @@ object SongDetail {
     fun loadArtwork(
         context: Context,
         container: MutableStateFlow<BitmapPaletteWrapper?>,
-        data: Any
+        data: Any,
     ) {
         loadImage(context) {
             data(data)
@@ -156,7 +197,7 @@ object SongDetail {
         coroutineScope: CoroutineScope,
         activity: Context,
         wrapper: BitmapPaletteWrapper,
-        fileName: String
+        fileName: String,
     ) {
         if (activity is ICreateFileStorageAccess) {
             val accessTool = activity.createFileStorageAccessTool
@@ -177,7 +218,7 @@ object SongDetail {
         coroutineScope: CoroutineScope,
         context: Context,
         uri: Uri,
-        wrapper: BitmapPaletteWrapper
+        wrapper: BitmapPaletteWrapper,
     ) {
         val stream = context.contentResolver.openOutputStream(uri, "wt")
             ?: throw IOException("can't open uri $uri")
@@ -187,7 +228,7 @@ object SongDetail {
     private fun writeArtwork(
         coroutineScope: CoroutineScope,
         outputStream: OutputStream,
-        wrapper: BitmapPaletteWrapper
+        wrapper: BitmapPaletteWrapper,
     ) {
         // write
         coroutineScope.launch(Dispatchers.IO) {
