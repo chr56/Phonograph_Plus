@@ -124,21 +124,34 @@ object SongDetail {
 
     fun readID3v2Tags(tag: AbstractID3v2Tag): Map<String, String> {
         return tag.frameMap
-            .mapValues { (key, frame) ->
-                frame as org.jaudiotagger.tag.TagField
-                if (frame.isBinary) {
-                    "<Binary Data>"
-                } else if (frame.isEmpty) {
-                    "<Empty>"
-                } else {
-                    try {
-                        val id3v2Frame = frame as AbstractID3v2Frame
-                        val frameBody = id3v2Frame.body
-                        frameBody.userFriendlyValue
-                    } catch (e: Exception) {
-                        reportError(e, "readID3v2Tags", ERR_PARSE_FIELD)
-                        ERR_PARSE_FIELD
+            .mapValues { (key, data) ->
+                when (data) {
+                    is org.jaudiotagger.tag.TagField -> {
+                        parseTagField(data) {
+                            if (data is AbstractID3v2Frame) {
+                                parseID3v2Frame(data)
+                            } else {
+                                data.rawContent.toString()
+                            }
+                        }
                     }
+
+                    is List<*>                       -> {
+                        data.map { item ->
+                            if (item is org.jaudiotagger.tag.TagField)
+                                parseTagField(item) {
+                                    if (it is AbstractID3v2Frame) {
+                                        parseID3v2Frame(it)
+                                    } else {
+                                        it.rawContent.toString()
+                                    }
+                                }
+                            else
+                                item.toString()
+                        }.joinToString(separator = "\n") { it }
+                    }
+
+                    else                             -> data.toString()
                 }
             }
             .mapKeys { (key, frame) ->
@@ -156,6 +169,28 @@ object SongDetail {
                 }
             }
     }
+
+    private fun parseID3v2Frame(frame: AbstractID3v2Frame): String {
+        return try {
+            val frameBody = frame.body
+            frameBody.userFriendlyValue
+        } catch (e: Exception) {
+            reportError(e, "readID3v2Tags", ERR_PARSE_FIELD)
+            ERR_PARSE_FIELD
+        }
+    }
+
+    private inline fun parseTagField(
+        frame: org.jaudiotagger.tag.TagField,
+        block: (frame: org.jaudiotagger.tag.TagField) -> String,
+    ): String =
+        if (frame.isBinary) {
+            "<Binary Data>"
+        } else if (frame.isEmpty) {
+            "<Empty>"
+        } else {
+            block(frame)
+        }
 
     fun loadArtwork(
         context: Context,
