@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="disable">devre dışı bırak</string>
     <string name="action_set_as_ringtone">Zil sesi olarak ayarla</string>
     <string name="action_share">Paylaş</string>
     <string name="action_settings">Ayarlar</string>
