@@ -68,6 +68,7 @@ internal fun InfoTable(stateHolder: InfoTableState) {
         Item(R.string.label_file_format, info.fileFormat.value())
         Item(R.string.label_bit_rate, info.bitRate.value())
         Item(R.string.label_sampling_rate, info.samplingRate.value())
+        Item("TagFormat", info.tagFormat.id)
         //
         // Common Tag
         //
@@ -86,9 +87,9 @@ internal fun InfoTable(stateHolder: InfoTableState) {
         //
         // Other Tag (if available)
         //
+        Spacer(modifier = Modifier.height(8.dp))
+        Title(stringResource(R.string.other_information))
         if (info.otherTags != null) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Title(stringResource(R.string.other_information))
             info.otherTags?.let { tags ->
                 for (tag in tags) {
                     Item(tag.key, tag.value)
@@ -154,7 +155,7 @@ internal fun EditableItem(
     value: String?,
     onTextChanged: (String) -> Unit,
     trailingIcon: @Composable (() -> Unit)? = null,
-    allowReset: Boolean = true
+    allowReset: Boolean = true,
 ) = VerticalTextFieldItem(
     title = title,
     value = value,
