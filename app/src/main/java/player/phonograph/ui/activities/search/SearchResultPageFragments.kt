@@ -22,7 +22,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -75,9 +77,11 @@ abstract class SearchResultPageFragment<T : Displayable> : Fragment() {
 
     private fun observeData(flow: StateFlow<List<T>>) {
         lifecycleScope.launch {
-            flow.collect { data ->
-                binding.empty.visibility = if (data.isEmpty()) View.VISIBLE else View.GONE
-                updateDataset(data)
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                flow.collect { data ->
+                    binding.empty.visibility = if (data.isEmpty()) View.VISIBLE else View.GONE
+                    updateDataset(data)
+                }
             }
         }
     }

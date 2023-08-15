@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -42,14 +43,33 @@ class SearchActivityViewModel : ViewModel() {
     private var _songsInQueue: MutableStateFlow<List<QueueSong>> = MutableStateFlow(emptyList())
     val songsInQueue get() = _songsInQueue.asStateFlow()
 
+
+    private var jobSongs: Job? = null
+    private var jobArtists: Job? = null
+    private var jobAlbums: Job? = null
+    private var jobPlaylists: Job? = null
+    private var jobSongsInQueue: Job? = null
+
     private fun search(context: Context, query: String) {
         if (query.isNotBlank()) {
-            viewModelScope.launch(Dispatchers.IO) {
-
+            jobSongs?.cancel()
+            jobSongs = viewModelScope.launch(Dispatchers.IO) {
                 _songs.value = SongLoader.searchByTitle(context, query)
+            }
+            jobArtists?.cancel()
+            jobArtists = viewModelScope.launch(Dispatchers.IO) {
                 _artists.value = ArtistLoader.searchByName(context, query)
+            }
+            jobAlbums?.cancel()
+            jobAlbums = viewModelScope.launch(Dispatchers.IO) {
                 _albums.value = AlbumLoader.searchByName(context, query)
+            }
+            jobPlaylists?.cancel()
+            jobPlaylists = viewModelScope.launch(Dispatchers.IO) {
                 _playlists.value = PlaylistLoader.searchByName(context, query)
+            }
+            jobSongsInQueue?.cancel()
+            jobSongsInQueue = viewModelScope.launch(Dispatchers.IO) {
                 _songsInQueue.value = App.instance.queueManager.playingQueue
                     .mapIndexedNotNull { index, song ->
                         if (song.title.contains(query, true)) {
@@ -58,7 +78,6 @@ class SearchActivityViewModel : ViewModel() {
                             null
                         }
                     }
-
             }
         } else {
             _songs.value = emptyList()
