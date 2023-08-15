@@ -40,7 +40,7 @@ class SongInfoModel(
     //
     var comment: TagField,
     var tagFormat: TagFormat = TagFormat.Unknown,
-    var otherTags: MutableMap<String, String>? = null,
+    var allTags: Map<String, String>? = null,
 ) {
 
     override fun equals(other: Any?): Boolean {

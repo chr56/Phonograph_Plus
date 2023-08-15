@@ -76,8 +76,8 @@ object SongDetail {
             val track = readTagField(audioFile, FieldKey.TRACK)
             val comment = readTagField(audioFile, FieldKey.COMMENT)
             // tags of custom field
-            val otherTags = readCustomTags(audioFile)
             val tagFormat = TagFormat.of(audioFile.tag)
+            val allTags = readAllTags(audioFile)
             return SongInfoModel(
                 fileName = StringFilePropertyField(fileName),
                 filePath = StringFilePropertyField(filePath),
@@ -97,7 +97,7 @@ object SongDetail {
                 track = track,
                 comment = comment,
                 tagFormat = tagFormat,
-                otherTags,
+                allTags,
             )
         } catch (e: Exception) {
             Log.e("TagRead", "error while reading the song file", e)
@@ -144,31 +144,6 @@ object SongDetail {
                 else                -> emptyMap()
             }
         return items
-    }
-
-    private fun readCustomTags(audioFile: AudioFile): MutableMap<String, String>? {
-        val customInfoField = audioFile.tag.getFields("TXXX")
-        val otherTags = if (customInfoField != null && customInfoField.size > 0) {
-            if (customInfoField.size >= 32) {
-                Toast.makeText(
-                    App.instance,
-                    "Other tags in this song is too many, only show the first 32 entries",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-
-            val limit = if (customInfoField.size <= 32) customInfoField.size else 31
-            val customTags: MutableMap<String, String> = HashMap()
-            for (index in 0 until limit) {
-                val field = customInfoField[index] as AbstractTagFrame
-                customTags.put(
-                    field.body.getObjectValue(DataTypes.OBJ_DESCRIPTION) as String,
-                    field.body.getObjectValue(DataTypes.OBJ_TEXT) as String
-                )
-            }
-            customTags
-        } else null
-        return otherTags
     }
 
     fun loadArtwork(

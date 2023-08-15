@@ -87,13 +87,11 @@ internal fun InfoTable(stateHolder: InfoTableState) {
         //
         // Other Tag (if available)
         //
-        Spacer(modifier = Modifier.height(8.dp))
-        Title(stringResource(R.string.other_information))
-        if (info.otherTags != null) {
-            info.otherTags?.let { tags ->
-                for (tag in tags) {
-                    Item(tag.key, tag.value)
-                }
+        info.allTags?.let { tags ->
+            Spacer(modifier = Modifier.height(8.dp))
+            Title(stringResource(R.string.other_information))
+            for ((key, value) in tags) {
+                Item(key, value)
             }
         }
         // Lyrics
