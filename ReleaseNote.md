@@ -1,9 +1,13 @@
-## {{version:1.0.1}} {{versionCode:1001}} {{date:1691900000}} {{channel:stable}}
+## {{version:1.1-dev1}} {{versionCode:1002}} {{date:1692076800}} {{channel:preview}}
 
 ### {{note:en}}
-- Fix: incorrect layout after changing grid size in Playlist page and Genre page
-- Fix: playback controls not working via some bluetooth devices
+- New: Search Result now are well cataloged
+- Fix: Playlist search may not work expectedly
+- Improve: (Android Auto) allow browse all catalogs
+- Improve: (Android Auto) in playing queue, change playing position when clicking item 
 
 ### {{note:zh}}
-- 修复 播放列表页与流派页在更改网格列数后布局不正常
-- 修复 无法通过部分蓝牙设备控制播放
+- 新增 分类搜索结果
+- 修复 播放列表搜索有时无效
+- 改进(Android Auto) 允许浏览所有分类
+- 改进(Android Auto) 在播放队列中，点击项目时改变播放位置
