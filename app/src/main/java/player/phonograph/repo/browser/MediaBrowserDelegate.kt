@@ -51,9 +51,26 @@ object MediaBrowserDelegate {
             MEDIA_BROWSER_SONGS_LAST_ADDED -> MediaItemProvider.browseLastAdded(context)
             MEDIA_BROWSER_SONGS_HISTORY    -> MediaItemProvider.browseHistory(context)
             else                           -> {
-                // Unknown
-                Log.w(TAG, "Unknown path: $path")
-                emptyList()
+
+                val fragments = path.split(MEDIA_BROWSER_SEPARATOR, limit = 2)
+
+                if (fragments.size != 2) {
+                    Log.e(TAG, "Failed to parse: $path")
+                    return emptyList()
+                }
+
+                val type = fragments[0]
+                val id = fragments[1].toLongOrNull() ?: return emptyList()
+
+                when (type) {
+                    MEDIA_BROWSER_ALBUMS  -> MediaItemProvider.browseAlbum(context, id)
+                    MEDIA_BROWSER_ARTISTS -> MediaItemProvider.browseArtist(context, id)
+                    else                  -> {
+                        // Unknown
+                        Log.w(TAG, "Unknown path: $path")
+                        emptyList()
+                    }
+                }
             }
         }
     }

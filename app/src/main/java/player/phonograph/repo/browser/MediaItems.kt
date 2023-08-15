@@ -33,7 +33,7 @@ fun Album.toMediaItem(): MediaItem =
             .setDescription(artistName)
             .setMediaId("$MEDIA_BROWSER_ALBUMS$MEDIA_BROWSER_SEPARATOR$id")
             .build(),
-        FLAG_BROWSABLE or FLAG_PLAYABLE
+        FLAG_BROWSABLE
     )
 
 fun Artist.toMediaItem(): MediaItem =
@@ -42,7 +42,7 @@ fun Artist.toMediaItem(): MediaItem =
             .setTitle(name)
             .setMediaId("$MEDIA_BROWSER_ARTISTS$MEDIA_BROWSER_SEPARATOR$id")
             .build(),
-        FLAG_BROWSABLE or FLAG_PLAYABLE
+        FLAG_BROWSABLE
     )
 
 fun albumShuffleItem(resources: Resources, id: Long): MediaItem =
