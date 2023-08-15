@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.mechanism.tageditor
+package player.phonograph.mechanism.tageditor.edit
 
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO

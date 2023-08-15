@@ -13,7 +13,7 @@ import mt.pref.ThemeColor.primaryColor
 import mt.util.color.darkenColor
 import player.phonograph.R
 import player.phonograph.mechanism.SongDetail
-import player.phonograph.mechanism.tageditor.selectNewArtwork
+import player.phonograph.mechanism.tageditor.edit.selectNewArtwork
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.ui.compose.base.ComposeToolbarActivity

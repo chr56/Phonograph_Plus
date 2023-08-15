@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.mechanism.tageditor
+package player.phonograph.mechanism.tageditor.edit
 
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.App
@@ -20,10 +20,11 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import java.io.File
 
+
 fun applyEdit(
     scope: CoroutineScope,
     context: Context,
-    songFiles: List<File>,
+    songFile: File,
     allEditRequest: Map<FieldKey, String?>,
     needDeleteCover: Boolean,
     needReplaceCover: Boolean,
@@ -38,32 +39,29 @@ fun applyEdit(
         )
         // process
         withContext(Dispatchers.IO) {
-            for (songFile in songFiles) {
-                applyEditImpl(
-                    context,
-                    songFile,
-                    allEditRequest,
-                    needDeleteCover,
-                    needReplaceCover,
-                    newCoverUri
-                )
-            }
+            applyEditImpl(
+                context,
+                songFile,
+                allEditRequest,
+                needDeleteCover,
+                needReplaceCover,
+                newCoverUri
+            )
         }
         // notify user
         BackgroundNotification.remove(TAG_EDITOR_NOTIFICATION_CODE)
         // refresh media store
-        val paths = songFiles.map { it.path }.toTypedArray()
         val listener =
             if (context is Activity)
                 UpdateToastMediaScannerCompletionListener(
                     context,
-                    paths
+                    arrayOf(songFile.path)
                 ) else null
         yield()
         MediaScannerConnection.scanFile(
-            App.instance, paths, null, listener
+            App.instance, arrayOf(songFile.path), null, listener
         )
     }
 }
 
-private const val TAG_EDITOR_NOTIFICATION_CODE = 824_3348_6
+private const val TAG_EDITOR_NOTIFICATION_CODE = 824_3348_7
