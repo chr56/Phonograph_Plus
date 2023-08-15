@@ -6,6 +6,7 @@ package player.phonograph.repo.browser
 
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
+import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
@@ -19,6 +20,17 @@ fun Song.toMediaItem(): MediaItem =
             .setSubtitle(albumName)
             .setDescription(artistName)
             .setMediaId("$MEDIA_BROWSER_SONGS$MEDIA_BROWSER_SEPARATOR$id")
+            .build(),
+        FLAG_PLAYABLE
+    )
+
+fun QueueSong.toMediaItem(): MediaItem =
+    MediaItem(
+        MediaDescriptionCompat.Builder()
+            .setTitle(song.title)
+            .setSubtitle(song.albumName)
+            .setDescription(song.artistName)
+            .setMediaId("$MEDIA_BROWSER_SONGS_QUEUE$MEDIA_BROWSER_SEPARATOR$index")
             .build(),
         FLAG_PLAYABLE
     )
