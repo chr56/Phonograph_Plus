@@ -4,7 +4,6 @@
 
 package player.phonograph.repo.browser
 
-import player.phonograph.App
 import player.phonograph.model.Song
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
@@ -13,6 +12,7 @@ import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.repo.mediastore.loaders.dynamics.LastAddedLoader
 import player.phonograph.repo.mediastore.loaders.dynamics.TopAndRecentlyPlayedTracksLoader
 import player.phonograph.repo.mediastore.processQuery
+import player.phonograph.service.MusicPlayerRemote
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot
 import android.content.Context
 import android.os.Bundle
@@ -81,7 +81,6 @@ object MediaBrowserDelegate {
             MEDIA_BROWSER_SONGS_TOP_TRACKS -> TopAndRecentlyPlayedTracksLoader.topTracks(context)
             MEDIA_BROWSER_SONGS_LAST_ADDED -> LastAddedLoader.lastAddedSongs(context)
             MEDIA_BROWSER_SONGS_HISTORY    -> TopAndRecentlyPlayedTracksLoader.recentlyPlayedTracks(context)
-            MEDIA_BROWSER_SONGS_QUEUE      -> App.instance.queueManager.playingQueue
 
             else                           -> {
                 val fragments = mediaId.split(MEDIA_BROWSER_SEPARATOR, limit = 2)
@@ -95,10 +94,16 @@ object MediaBrowserDelegate {
                 val id = fragments[1].toLongOrNull() ?: return emptyList()
 
                 when (type) {
-                    MEDIA_BROWSER_SONGS   -> listOf(SongLoader.id(context, id))
-                    MEDIA_BROWSER_ALBUMS  -> AlbumLoader.id(context, id).songs
-                    MEDIA_BROWSER_ARTISTS -> ArtistLoader.id(context, id).songs
-                    else                  -> emptyList()
+                    MEDIA_BROWSER_SONGS       -> listOf(SongLoader.id(context, id))
+                    MEDIA_BROWSER_ALBUMS      -> AlbumLoader.id(context, id).songs
+                    MEDIA_BROWSER_ARTISTS     -> ArtistLoader.id(context, id).songs
+
+                    MEDIA_BROWSER_SONGS_QUEUE -> {
+                        MusicPlayerRemote.playSongAt(id.toInt())
+                        emptyList()
+                    }
+
+                    else                      -> emptyList()
                 }
             }
         }

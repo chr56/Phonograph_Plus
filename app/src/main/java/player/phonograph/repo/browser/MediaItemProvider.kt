@@ -6,6 +6,7 @@ package player.phonograph.repo.browser
 
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.model.QueueSong
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
 import player.phonograph.repo.mediastore.loaders.ArtistLoader
@@ -71,7 +72,7 @@ object MediaItemProvider {
 
     fun browseQueue(): List<MediaItem> {
         val queue = App.instance.queueManager.playingQueue
-        return queue.map { it.toMediaItem() }
+        return  QueueSong.fromQueue(queue).map { it.toMediaItem() }
     }
 
     fun browseSongs(context: Context): List<MediaItem> {
