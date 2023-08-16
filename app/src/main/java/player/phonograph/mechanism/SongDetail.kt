@@ -6,22 +6,10 @@
 
 package player.phonograph.mechanism
 
-import lib.phonograph.misc.ICreateFileStorageAccess
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
 import org.jaudiotagger.tag.FieldKey
-import org.jaudiotagger.tag.id3.AbstractID3v2Frame
-import org.jaudiotagger.tag.id3.AbstractID3v2Tag
-import org.jaudiotagger.tag.id3.ID3v22Frames
-import org.jaudiotagger.tag.id3.ID3v22Tag
-import org.jaudiotagger.tag.id3.ID3v23Frames
-import org.jaudiotagger.tag.id3.ID3v23Tag
-import org.jaudiotagger.tag.id3.ID3v24Frames
-import org.jaudiotagger.tag.id3.ID3v24Tag
-import player.phonograph.coil.loadImage
-import player.phonograph.coil.retriever.PARAMETERS_RAW
-import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.mechanism.tageditor.TagFormat
 import player.phonograph.mechanism.tageditor.readAllTags
 import player.phonograph.model.LongFilePropertyField
@@ -30,20 +18,7 @@ import player.phonograph.model.SongInfoModel
 import player.phonograph.model.StringFilePropertyField
 import player.phonograph.model.TagField
 import player.phonograph.util.reportError
-import player.phonograph.util.warning
-import androidx.core.graphics.drawable.toBitmap
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import android.net.Uri
-import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import java.io.File
-import java.io.IOException
-import java.io.OutputStream
 
 object SongDetail {
 
@@ -98,7 +73,7 @@ object SongDetail {
                 allTags,
             )
         } catch (e: Exception) {
-            Log.e("TagRead", "error while reading the song file", e)
+            reportError(e, "TagRead", "error while reading the song file")
             return SongInfoModel.EMPTY().also {
                 it.fileName = StringFilePropertyField(fileName)
                 it.filePath = StringFilePropertyField(filePath)
@@ -111,72 +86,4 @@ object SongDetail {
     private fun readTagField(audioFile: AudioFile, id: FieldKey): TagField =
         TagField(id, audioFile.tag.getFirst(id))
 
-    fun loadArtwork(
-        context: Context,
-        container: MutableStateFlow<BitmapPaletteWrapper?>,
-        data: Any,
-    ) {
-        loadImage(context) {
-            data(data)
-            parameters(PARAMETERS_RAW)
-            target(
-                PaletteTargetBuilder(context)
-                    .onResourceReady { result: Drawable, paletteColor: Int ->
-                        val success =
-                            container.tryEmit(
-                                BitmapPaletteWrapper(result.toBitmap(), paletteColor)
-                            )
-                        if (!success) warning("LoadArtwork", "Failed to load artwork!")
-                    }
-                    .build()
-            )
-        }
-    }
-
-    fun saveArtwork(
-        coroutineScope: CoroutineScope,
-        activity: Context,
-        wrapper: BitmapPaletteWrapper,
-        fileName: String,
-    ) {
-        if (activity is ICreateFileStorageAccess) {
-            val accessTool = activity.createFileStorageAccessTool
-            accessTool.launch("$fileName.jpg") { uri ->
-                if (uri != null) {
-                    saveArtworkImpl(coroutineScope, activity, uri, wrapper)
-                } else {
-                    warning("SaveArtWorkImpl", "Failed to create File")
-                }
-            }
-        } else {
-            throw IllegalStateException("${activity.javaClass} can not create file!")
-        }
-    }
-
-
-    private fun saveArtworkImpl(
-        coroutineScope: CoroutineScope,
-        context: Context,
-        uri: Uri,
-        wrapper: BitmapPaletteWrapper,
-    ) {
-        val stream = context.contentResolver.openOutputStream(uri, "wt")
-            ?: throw IOException("can't open uri $uri")
-        writeArtwork(coroutineScope, stream, wrapper)
-    }
-
-    private fun writeArtwork(
-        coroutineScope: CoroutineScope,
-        outputStream: OutputStream,
-        wrapper: BitmapPaletteWrapper,
-    ) {
-        // write
-        coroutineScope.launch(Dispatchers.IO) {
-            outputStream.buffered(4096).use { outputStream ->
-                wrapper.bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-            }
-        }
-    }
-
-    class BitmapPaletteWrapper(var bitmap: Bitmap, var paletteColor: Int)
 }

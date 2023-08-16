@@ -6,8 +6,10 @@ package player.phonograph.ui.compose.tag
 
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import mt.pref.ThemeColor
+import player.phonograph.model.BitmapPaletteWrapper
+import player.phonograph.mechanism.tageditor.loadArtwork
+import player.phonograph.mechanism.tageditor.saveArtwork
 import player.phonograph.model.Song
-import player.phonograph.mechanism.SongDetail
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +20,7 @@ import kotlinx.coroutines.launch
 
 abstract class TagBrowserScreenViewModel(
     val song: Song,
-    val defaultColor: Color
+    val defaultColor: Color,
 ) : ViewModel() {
 
     abstract val infoTableState: InfoTableState
@@ -42,19 +44,19 @@ abstract class TagBrowserScreenViewModel(
             }
         }
         // execute
-        SongDetail.loadArtwork(context, artwork, what)
+        loadArtwork(context, artwork, what)
     }
 
     fun saveArtwork(activity: Context) {
         val wrapper = artwork.value ?: return
         val fileName = fileName(fullPath = song.data)
-        SongDetail.saveArtwork(viewModelScope, activity, wrapper, fileName)
+        saveArtwork(viewModelScope, activity, wrapper, fileName)
     }
 
     val coverImageDetailDialogState = MaterialDialogState(false)
 }
 
-typealias ArtworkStateFlow = MutableStateFlow<SongDetail.BitmapPaletteWrapper?>
+typealias ArtworkStateFlow = MutableStateFlow<BitmapPaletteWrapper?>
 
 private fun fileName(fullPath: String) =
     fullPath.substringAfterLast('/').substringBeforeLast('.')
