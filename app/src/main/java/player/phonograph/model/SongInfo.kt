@@ -24,25 +24,36 @@ class SongInfoModel(
     var fileSize: LongFilePropertyField,
     var trackLength: LongFilePropertyField,
     //
-    // title
+    // tags
     //
-    var title: TagField,
-    var artist: TagField,
-    var album: TagField,
-    var albumArtist: TagField,
-    var composer: TagField,
-    var lyricist: TagField,
-    var year: TagField,
-    var genre: TagField,
-    var diskNum: TagField,
-    var track: TagField,
-    //
-    // other
-    //
-    var comment: TagField,
+    var tagFields: Map<FieldKey, TagField>,
     var tagFormat: TagFormat = TagFormat.Unknown,
     var allTags: Map<String, String>? = null,
 ) {
+
+
+    /**
+     * retrieve corresponding [TagField] for a music tag
+     */
+    fun tagValue(key: FieldKey): TagField =
+        tagFields[key] ?: throw IllegalStateException("unknown field: ${key.name}")
+
+    companion object {
+        @Suppress("FunctionName")
+        fun EMPTY(): SongInfoModel =
+            SongInfoModel(
+                StringFilePropertyField(null),
+                StringFilePropertyField(null),
+                StringFilePropertyField(null),
+                StringFilePropertyField(null),
+                StringFilePropertyField(null),
+                LongFilePropertyField(-1),
+                LongFilePropertyField(-1),
+                emptyMap(),
+                TagFormat.Unknown,
+                null,
+            )
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -56,51 +67,6 @@ class SongInfoModel(
 
     override fun hashCode(): Int = fileName.hashCode() * 31 + filePath.hashCode()
 
-    companion object {
-        @Suppress("FunctionName")
-        fun EMPTY(): SongInfoModel =
-            SongInfoModel(
-                StringFilePropertyField(null),
-                StringFilePropertyField(null),
-                StringFilePropertyField(null),
-                StringFilePropertyField(null),
-                StringFilePropertyField(null),
-                LongFilePropertyField(-1),
-                LongFilePropertyField(-1),
-                TagField(FieldKey.TITLE, null),
-                TagField(FieldKey.ARTIST, null),
-                TagField(FieldKey.ALBUM, null),
-                TagField(FieldKey.ALBUM_ARTIST, null),
-                TagField(FieldKey.COMPOSER, null),
-                TagField(FieldKey.LYRICIST, null),
-                TagField(FieldKey.YEAR, null),
-                TagField(FieldKey.GENRE, null),
-                TagField(FieldKey.DISC_NO, null),
-                TagField(FieldKey.TRACK, null),
-                TagField(FieldKey.COMMENT, null),
-                TagFormat.Unknown,
-                null,
-            )
-    }
-
-    /**
-     * retrieve corresponding [TagField] for a music tag
-     */
-    fun tagValue(field: FieldKey): TagField =
-        when (field) {
-            FieldKey.TITLE        -> title
-            FieldKey.ARTIST       -> artist
-            FieldKey.ALBUM        -> album
-            FieldKey.ALBUM_ARTIST -> albumArtist
-            FieldKey.COMPOSER     -> composer
-            FieldKey.LYRICIST     -> lyricist
-            FieldKey.YEAR         -> year
-            FieldKey.GENRE        -> genre
-            FieldKey.DISC_NO      -> diskNum
-            FieldKey.TRACK        -> track
-            FieldKey.COMMENT      -> comment
-            else                  -> throw IllegalStateException("unknown field: ${field.name}")
-        }
 }
 
 

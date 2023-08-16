@@ -32,18 +32,21 @@ fun loadSongInfo(songFile: File): SongInfoModel {
         val bitRate = "${audioHeader.bitRate} kb/s"
         val samplingRate = "${audioHeader.sampleRate} Hz"
         // tags of the song
-        val title = readTagField(audioFile, FieldKey.TITLE)
-        val artist = readTagField(audioFile, FieldKey.ARTIST)
-        val album = readTagField(audioFile, FieldKey.ALBUM)
-        val albumArtist = readTagField(audioFile, FieldKey.ALBUM_ARTIST)
-        val composer = readTagField(audioFile, FieldKey.COMPOSER)
-        val lyricist = readTagField(audioFile, FieldKey.LYRICIST)
-        val year = readTagField(audioFile, FieldKey.YEAR)
-        val genre = readTagField(audioFile, FieldKey.GENRE)
-        val diskNum = readTagField(audioFile, FieldKey.DISC_NO)
-        val track = readTagField(audioFile, FieldKey.TRACK)
-        val comment = readTagField(audioFile, FieldKey.COMMENT)
-        // tags of custom field
+        val keys =
+            arrayOf(
+                FieldKey.TITLE,
+                FieldKey.ARTIST,
+                FieldKey.ALBUM,
+                FieldKey.ALBUM_ARTIST,
+                FieldKey.COMPOSER,
+                FieldKey.LYRICIST,
+                FieldKey.YEAR,
+                FieldKey.GENRE,
+                FieldKey.DISC_NO,
+                FieldKey.TRACK,
+                FieldKey.COMMENT,
+            )
+        val tagFields = readTagFields(audioFile, keys)
         val tagFormat = TagFormat.of(audioFile.tag)
         val allTags = readAllTags(audioFile)
         return SongInfoModel(
@@ -54,17 +57,7 @@ fun loadSongInfo(songFile: File): SongInfoModel {
             samplingRate = StringFilePropertyField(samplingRate),
             fileSize = LongFilePropertyField(fileSize),
             trackLength = LongFilePropertyField(trackLength),
-            title = title,
-            artist = artist,
-            album = album,
-            albumArtist = albumArtist,
-            composer = composer,
-            lyricist = lyricist,
-            year = year,
-            genre = genre,
-            diskNum = diskNum,
-            track = track,
-            comment = comment,
+            tagFields = tagFields,
             tagFormat = tagFormat,
             allTags,
         )
@@ -74,10 +67,16 @@ fun loadSongInfo(songFile: File): SongInfoModel {
             it.fileName = StringFilePropertyField(fileName)
             it.filePath = StringFilePropertyField(filePath)
             it.fileSize = LongFilePropertyField(fileSize)
-            it.title = TagField(FieldKey.KEY, "error while reading the song file")
+            it.tagFields = mapOf(FieldKey.TITLE to TagField(FieldKey.TITLE, "error while reading the song file"))
         }
     }
 }
 
 private fun readTagField(audioFile: AudioFile, id: FieldKey): TagField =
     TagField(id, audioFile.tag.getFirst(id))
+
+
+private fun readTagFields(audioFile: AudioFile, keys: Array<FieldKey>): Map<FieldKey, TagField> =
+    keys.associateWith { key ->
+        TagField(key, audioFile.tag.getFirst(key))
+    }
