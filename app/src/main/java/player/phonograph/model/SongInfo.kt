@@ -34,6 +34,7 @@ class SongInfoModel(
     var lyricist: TagField,
     var year: TagField,
     var genre: TagField,
+    var diskNum: TagField,
     var track: TagField,
     //
     // other
@@ -74,6 +75,7 @@ class SongInfoModel(
                 TagField(FieldKey.LYRICIST, null),
                 TagField(FieldKey.YEAR, null),
                 TagField(FieldKey.GENRE, null),
+                TagField(FieldKey.DISC_NO, null),
                 TagField(FieldKey.TRACK, null),
                 TagField(FieldKey.COMMENT, null),
                 TagFormat.Unknown,
@@ -94,6 +96,7 @@ class SongInfoModel(
             FieldKey.LYRICIST     -> lyricist
             FieldKey.YEAR         -> year
             FieldKey.GENRE        -> genre
+            FieldKey.DISC_NO      -> diskNum
             FieldKey.TRACK        -> track
             FieldKey.COMMENT      -> comment
             else                  -> throw IllegalStateException("unknown field: ${field.name}")

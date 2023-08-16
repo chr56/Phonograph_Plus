@@ -40,6 +40,7 @@ fun loadSongInfo(songFile: File): SongInfoModel {
         val lyricist = readTagField(audioFile, FieldKey.LYRICIST)
         val year = readTagField(audioFile, FieldKey.YEAR)
         val genre = readTagField(audioFile, FieldKey.GENRE)
+        val diskNum = readTagField(audioFile, FieldKey.DISC_NO)
         val track = readTagField(audioFile, FieldKey.TRACK)
         val comment = readTagField(audioFile, FieldKey.COMMENT)
         // tags of custom field
@@ -61,6 +62,7 @@ fun loadSongInfo(songFile: File): SongInfoModel {
             lyricist = lyricist,
             year = year,
             genre = genre,
+            diskNum = diskNum,
             track = track,
             comment = comment,
             tagFormat = tagFormat,
