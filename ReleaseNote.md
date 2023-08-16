@@ -1,13 +1,15 @@
-## {{version:1.1-dev1}} {{versionCode:1002}} {{date:1692076800}} {{channel:preview}}
+## {{version:1.1-dev2}} {{versionCode:1003}} {{date:1692180000}} {{channel:preview}}
 
 ### {{note:en}}
-- New: Search Result now are well cataloged
-- Fix: Playlist search may not work expectedly
-- Improve: (Android Auto) allow browse all catalogs
-- Improve: (Android Auto) in playing queue, change playing position when clicking item 
+- Translation: update Russian (by Evgeniy Khramov (thejenja))
+- Translation: update Turkish (by TolDYuThad)
+- Modify: no longer show other tags in Song Detail/TagEditor
+- New: support more tags (like disk number) in Song Detail/TagEditor
+- New: show raw tag information in Song Detail/TagEditor
 
 ### {{note:zh}}
-- 新增 分类搜索结果
-- 修复 播放列表搜索有时无效
-- 改进(Android Auto) 允许浏览所有分类
-- 改进(Android Auto) 在播放队列中，点击项目时改变播放位置
+- 翻译 更新俄语 (Evgeniy Khramov (thejenja))
+- 翻译 更新土耳其语 (TolDYuThad)
+- 修改 在歌曲详情/标签编辑器中, 不再显示其他标签
+- 新功能 在歌曲详情/标签编辑器中, 支持更多标签（如盘号）
+- 新功能 在歌曲详情/标签编辑器中, 显示原始标签信息
