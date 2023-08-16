@@ -115,6 +115,7 @@ fun songTagNameRes(field: FieldKey): Int =
         FieldKey.LYRICIST     -> R.string.lyricist
         FieldKey.YEAR         -> R.string.year
         FieldKey.GENRE        -> R.string.genre
+        FieldKey.DISC_NO      -> R.string.disk_number
         FieldKey.TRACK        -> R.string.track
         FieldKey.COMMENT      -> R.string.comment
         else                  -> -1

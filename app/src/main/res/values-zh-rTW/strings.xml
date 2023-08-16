@@ -420,4 +420,5 @@
     <string name="pref_summary_resume_after_audio_focus_gain">在播放被突然打斷（如來電或鬧鈴）後恢復播放</string>
     <string name="tag_format">標籤格式</string>
     <string name="raw_tags">原始標籤</string>
+    <string name="disk_number">牒號</string>
 </resources>

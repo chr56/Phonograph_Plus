@@ -433,4 +433,5 @@
     <string name="pref_summary_resume_after_audio_focus_gain">Always resume playing after interruptions (like phone-call or alarm).</string>
     <string name="tag_format">Tag format</string>
     <string name="raw_tags">Raw tags</string>
+    <string name="disk_number">Disk Number</string>
 </resources>
