@@ -26,7 +26,7 @@ import player.phonograph.util.reportError
 
 
 fun readAllTags(audioFile: AudioFile): Map<String, String> {
-    val items: Map<String, String> =
+    val items: Map<String, String> = try {
         when (val tag = audioFile.tag) {
             is AbstractID3v2Tag -> ID3v2Readers.ID3v2Reader.read(tag)
             is AiffTag          -> ID3v2Readers.AiffTagReader.read(tag)
@@ -38,6 +38,10 @@ fun readAllTags(audioFile: AudioFile): Map<String, String> {
             is AbstractTag      -> SimpleKeyValueReader.read(tag)
             else                -> emptyMap()
         }
+    } catch (e: Exception) {
+        reportError(e, "TagReader", "Failed to read all tags for ${audioFile.file.absolutePath}")
+        emptyMap()
+    }
     return items
 }
 
