@@ -7,7 +7,7 @@ package player.phonograph.ui.compose.tag
 import player.phonograph.R
 import player.phonograph.model.TagField
 import player.phonograph.model.getFileSizeString
-import player.phonograph.model.songTagNameRes
+import player.phonograph.model.res
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextFieldItem
 import player.phonograph.ui.compose.components.VerticalTextItem
@@ -90,7 +90,7 @@ internal fun Tag(
     editRequest: EditRequest? = null,
     hideIfEmpty: Boolean = false,
 ) {
-    val tagNameRes = remember { songTagNameRes(field.key) }
+    val tagNameRes = remember { field.key.res() }
     val tagName = stringResource(id = tagNameRes)
     val tagValue = remember { field.value() }
 

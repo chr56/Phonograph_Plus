@@ -63,8 +63,8 @@ class SongInfoModel(
  * retrieve corresponding a tag name string resource id for a music tag
  */
 @StringRes
-fun songTagNameRes(field: FieldKey): Int =
-    when (field) {
+fun FieldKey.res(): Int =
+    when (this) {
         FieldKey.TITLE        -> R.string.title
         FieldKey.ARTIST       -> R.string.artist
         FieldKey.ALBUM        -> R.string.album
@@ -105,7 +105,5 @@ class LongFilePropertyField(private val _value: Long) : FilePropertyField<Long>(
 
 class TagField(val key: FieldKey, private val _value: String?) : Field<String> {
     override fun value(): String = _value ?: ""
-    fun copy(newValue: String?): TagField = TagField(key, newValue)
-    fun songTagName(): Int = songTagNameRes(key)
 }
 

@@ -15,7 +15,7 @@ import org.jaudiotagger.tag.FieldKey.GENRE
 import org.jaudiotagger.tag.FieldKey.LYRICIST
 import org.jaudiotagger.tag.FieldKey.YEAR
 import player.phonograph.R
-import player.phonograph.model.songTagNameRes
+import player.phonograph.model.res
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextFieldItem
 import player.phonograph.ui.compose.components.VerticalTextItem
@@ -126,7 +126,7 @@ private fun MultipleTag(
 ) {
     val prefills = stateHolder.info.collectAsState().value.reduceTags(key)
 
-    val tagNameRes = remember { songTagNameRes(key) }
+    val tagNameRes = remember { key.res() }
     val tagName = stringResource(id = tagNameRes)
 
     val currentValue = remember { MutableStateFlow("") }
