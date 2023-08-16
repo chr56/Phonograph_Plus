@@ -63,12 +63,18 @@ fun loadSongInfo(songFile: File): SongInfoModel {
         )
     } catch (e: Exception) {
         reportError(e, "TagRead", "error while reading the song file")
-        return SongInfoModel.EMPTY().also {
-            it.fileName = StringFilePropertyField(fileName)
-            it.filePath = StringFilePropertyField(filePath)
-            it.fileSize = LongFilePropertyField(fileSize)
-            it.tagFields = mapOf(FieldKey.TITLE to TagField(FieldKey.TITLE, "error while reading the song file"))
-        }
+        return SongInfoModel(
+            fileName = StringFilePropertyField(fileName),
+            filePath = StringFilePropertyField(filePath),
+            fileFormat = StringFilePropertyField(null),
+            bitRate = StringFilePropertyField(null),
+            samplingRate = StringFilePropertyField(null),
+            fileSize = LongFilePropertyField(fileSize),
+            trackLength = LongFilePropertyField(-1),
+            tagFields = mapOf(FieldKey.TITLE to TagField(FieldKey.TITLE, "error while reading the song file")),
+            tagFormat = TagFormat.Unknown,
+            null,
+        )
     }
 }
 

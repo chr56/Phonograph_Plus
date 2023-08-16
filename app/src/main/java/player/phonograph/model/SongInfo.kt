@@ -16,19 +16,19 @@ class SongInfoModel(
     //
     // file
     //
-    var fileName: StringFilePropertyField,
-    var filePath: StringFilePropertyField,
-    var fileFormat: StringFilePropertyField,
-    var bitRate: StringFilePropertyField,
-    var samplingRate: StringFilePropertyField,
-    var fileSize: LongFilePropertyField,
-    var trackLength: LongFilePropertyField,
+    val fileName: StringFilePropertyField,
+    val filePath: StringFilePropertyField,
+    val fileFormat: StringFilePropertyField,
+    val bitRate: StringFilePropertyField,
+    val samplingRate: StringFilePropertyField,
+    val fileSize: LongFilePropertyField,
+    val trackLength: LongFilePropertyField,
     //
     // tags
     //
-    var tagFields: Map<FieldKey, TagField>,
-    var tagFormat: TagFormat = TagFormat.Unknown,
-    var allTags: Map<String, String>? = null,
+    val tagFields: Map<FieldKey, TagField>,
+    val tagFormat: TagFormat = TagFormat.Unknown,
+    val allTags: Map<String, String>? = null,
 ) {
 
 
