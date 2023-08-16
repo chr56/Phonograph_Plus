@@ -5,6 +5,7 @@
 package player.phonograph.mechanism.tag
 
 import org.jaudiotagger.audio.AudioFile
+import org.jaudiotagger.audio.generic.AbstractTag
 import org.jaudiotagger.tag.TagField
 import org.jaudiotagger.tag.TagTextField
 import org.jaudiotagger.tag.aiff.AiffTag
@@ -32,6 +33,7 @@ fun readAllTags(audioFile: AudioFile): Map<String, String> {
             is WavTag           -> readWaveTag(tag)
             is ID3v11Tag        -> readID3v11Tags(tag)
             is ID3v1Tag         -> readID3v1Tags(tag)
+            is AbstractTag      -> readAbstractTag(tag)
             else                -> emptyMap()
         }
     return items
@@ -130,6 +132,20 @@ private fun parseID3v2Frame(frame: AbstractID3v2Frame): String {
     } catch (e: Exception) {
         reportError(e, "readID3v2Tags", ERR_PARSE_FIELD)
         ERR_PARSE_FIELD
+    }
+}
+
+fun readAbstractTag(tag: AbstractTag): Map<String, String> {
+    val mappedFields: Map<String, List<TagField>> = tag.mappedFields
+    return mappedFields.mapValues { entry ->
+        entry.value.map { tagField ->
+            parseTagField(tagField) {
+                when (it) {
+                    is TagTextField -> it.content
+                    else            -> it.rawContent.toString()
+                }
+            }
+        }.joinToString(separator = "\n") { it }
     }
 }
 
