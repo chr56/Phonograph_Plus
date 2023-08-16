@@ -8,6 +8,7 @@ import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
 import org.jaudiotagger.tag.FieldKey
+import player.phonograph.model.FilePropertyField
 import player.phonograph.model.LongFilePropertyField
 import player.phonograph.model.Song
 import player.phonograph.model.SongInfoModel
@@ -25,12 +26,8 @@ fun loadSongInfo(songFile: File): SongInfoModel {
     val fileSize = songFile.length()
     try {
         val audioFile: AudioFile = AudioFileIO.read(songFile)
-        // files of the song
-        val audioHeader: AudioHeader = audioFile.audioHeader
-        val fileFormat = audioHeader.format
-        val trackLength = (audioHeader.trackLength * 1000).toLong()
-        val bitRate = "${audioHeader.bitRate} kb/s"
-        val samplingRate = "${audioHeader.sampleRate} Hz"
+        // audio property of the song
+        val audioPropertyFields = readAudioPropertyFields(audioFile.audioHeader)
         // tags of the song
         val keys =
             arrayOf(
@@ -52,11 +49,8 @@ fun loadSongInfo(songFile: File): SongInfoModel {
         return SongInfoModel(
             fileName = StringFilePropertyField(fileName),
             filePath = StringFilePropertyField(filePath),
-            fileFormat = StringFilePropertyField(fileFormat),
-            bitRate = StringFilePropertyField(bitRate),
-            samplingRate = StringFilePropertyField(samplingRate),
             fileSize = LongFilePropertyField(fileSize),
-            trackLength = LongFilePropertyField(trackLength),
+            audioPropertyFields = audioPropertyFields,
             tagFields = tagFields,
             tagFormat = tagFormat,
             allTags,
@@ -66,11 +60,8 @@ fun loadSongInfo(songFile: File): SongInfoModel {
         return SongInfoModel(
             fileName = StringFilePropertyField(fileName),
             filePath = StringFilePropertyField(filePath),
-            fileFormat = StringFilePropertyField(null),
-            bitRate = StringFilePropertyField(null),
-            samplingRate = StringFilePropertyField(null),
             fileSize = LongFilePropertyField(fileSize),
-            trackLength = LongFilePropertyField(-1),
+            audioPropertyFields = emptyMap(),
             tagFields = mapOf(FieldKey.TITLE to TagField(FieldKey.TITLE, "error while reading the song file")),
             tagFormat = TagFormat.Unknown,
             null,
@@ -78,6 +69,19 @@ fun loadSongInfo(songFile: File): SongInfoModel {
     }
 }
 
+
+private fun readAudioPropertyFields(audioHeader: AudioHeader): Map<FilePropertyField.Key, FilePropertyField<out Any>> {
+    val fileFormat = audioHeader.format
+    val trackLength = (audioHeader.trackLength * 1000).toLong()
+    val bitRate = "${audioHeader.bitRate} kb/s"
+    val samplingRate = "${audioHeader.sampleRate} Hz"
+    return mapOf(
+        FilePropertyField.Key.TRACK_LENGTH to StringFilePropertyField(fileFormat),
+        FilePropertyField.Key.FILE_FORMAT to StringFilePropertyField(bitRate),
+        FilePropertyField.Key.BIT_RATE to StringFilePropertyField(samplingRate),
+        FilePropertyField.Key.SAMPLING_RATE to LongFilePropertyField(trackLength),
+    )
+}
 
 private fun readTagFields(audioFile: AudioFile, keys: Array<FieldKey>): Map<FieldKey, TagField> =
     keys.associateWith { key ->

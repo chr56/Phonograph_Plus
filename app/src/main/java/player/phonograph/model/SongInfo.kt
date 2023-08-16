@@ -8,24 +8,16 @@ import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.mechanism.tag.TagFormat
 import androidx.annotation.StringRes
+import android.content.res.Resources
 
 /**
  * class describing a song file
  */
 class SongInfoModel(
-    //
-    // file
-    //
     val fileName: StringFilePropertyField,
     val filePath: StringFilePropertyField,
-    val fileFormat: StringFilePropertyField,
-    val bitRate: StringFilePropertyField,
-    val samplingRate: StringFilePropertyField,
     val fileSize: LongFilePropertyField,
-    val trackLength: LongFilePropertyField,
-    //
-    // tags
-    //
+    val audioPropertyFields: Map<FilePropertyField.Key, FilePropertyField<out Any>>,
     val tagFields: Map<FieldKey, TagField>,
     val tagFormat: TagFormat = TagFormat.Unknown,
     val allTags: Map<String, String>? = null,
@@ -44,11 +36,8 @@ class SongInfoModel(
             SongInfoModel(
                 StringFilePropertyField(null),
                 StringFilePropertyField(null),
-                StringFilePropertyField(null),
-                StringFilePropertyField(null),
-                StringFilePropertyField(null),
                 LongFilePropertyField(-1),
-                LongFilePropertyField(-1),
+                emptyMap(),
                 emptyMap(),
                 TagFormat.Unknown,
                 null,
@@ -94,15 +83,23 @@ sealed interface Field<T> {
     fun value(): T
 }
 
-// class FilePropertyField<T>(protected val _value: T) : Field<T> {
-//     override fun value(): T = _value
-// }
+abstract class FilePropertyField<T> : Field<T> {
+    enum class Key(@StringRes val res: Int) {
+        TRACK_LENGTH(R.string.label_track_length),
+        FILE_FORMAT(R.string.label_file_format),
+        BIT_RATE(R.string.label_bit_rate),
+        SAMPLING_RATE(R.string.label_sampling_rate),
+        ;
 
-class StringFilePropertyField(private val _value: String?) : Field<String> {
+        fun label(resources: Resources): String = resources.getString(res)
+    }
+}
+
+class StringFilePropertyField(private val _value: String?) : FilePropertyField<String>() {
     override fun value(): String = _value ?: ""
 }
 
-class LongFilePropertyField(private val _value: Long) : Field<Long> {
+class LongFilePropertyField(private val _value: Long) : FilePropertyField<Long>() {
     override fun value(): Long = _value
 }
 

@@ -7,7 +7,6 @@ package player.phonograph.ui.compose.tag
 import player.phonograph.R
 import player.phonograph.model.TagField
 import player.phonograph.model.getFileSizeString
-import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.songTagNameRes
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextFieldItem
@@ -53,10 +52,11 @@ internal fun InfoTable(stateHolder: InfoTableState) {
         Item(R.string.label_file_name, info.fileName.value())
         Item(R.string.label_file_path, info.filePath.value())
         Item(R.string.label_file_size, getFileSizeString(info.fileSize.value()))
-        Item(R.string.label_track_length, getReadableDurationString(info.trackLength.value()))
-        Item(R.string.label_file_format, info.fileFormat.value())
-        Item(R.string.label_bit_rate, info.bitRate.value())
-        Item(R.string.label_sampling_rate, info.samplingRate.value())
+
+        for ((key, field) in info.audioPropertyFields) {
+            Item(stringResource(key.res), value = field.value().toString())
+        }
+
         //
         // Common Tag
         //
