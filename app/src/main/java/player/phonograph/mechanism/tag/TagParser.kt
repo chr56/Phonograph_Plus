@@ -6,8 +6,11 @@ package player.phonograph.mechanism.tag
 
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.tag.TagField
+import org.jaudiotagger.tag.TagTextField
 import org.jaudiotagger.tag.id3.AbstractID3v2Frame
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag
+import org.jaudiotagger.tag.id3.ID3v11Tag
+import org.jaudiotagger.tag.id3.ID3v1Tag
 import org.jaudiotagger.tag.id3.ID3v22Frames
 import org.jaudiotagger.tag.id3.ID3v22Tag
 import org.jaudiotagger.tag.id3.ID3v23Frames
@@ -22,9 +25,29 @@ fun readAllTags(audioFile: AudioFile): Map<String, String> {
     val items: Map<String, String> =
         when (val tag = audioFile.tag) {
             is AbstractID3v2Tag -> readID3v2Tags(tag)
+            is ID3v11Tag        -> readID3v11Tags(tag)
+            is ID3v1Tag         -> readID3v1Tags(tag)
             else                -> emptyMap()
         }
     return items
+}
+
+fun readID3v1Tags(tag: ID3v1Tag): Map<String, String> {
+    return listOf(
+        (tag.title as TagTextField),
+        (tag.artist as TagTextField),
+        (tag.album as TagTextField),
+        (tag.genre as TagTextField),
+        (tag.year as TagTextField),
+        (tag.comment as TagTextField)
+    ).associate {
+        (it.id ?: "") to (it.content ?: "")
+    }
+}
+
+fun readID3v11Tags(tag: ID3v11Tag): Map<String, String> {
+    val track = tag.track as TagTextField
+    return readID3v1Tags(tag) + mapOf(Pair(track.id, track.content))
 }
 
 fun readID3v2Tags(tag: AbstractID3v2Tag): Map<String, String> {
