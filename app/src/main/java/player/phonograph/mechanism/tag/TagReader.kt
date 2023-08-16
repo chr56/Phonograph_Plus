@@ -78,9 +78,6 @@ fun loadSongInfo(songFile: File): SongInfoModel {
     }
 }
 
-private fun readTagField(audioFile: AudioFile, id: FieldKey): TagField =
-    TagField(id, audioFile.tag.getFirst(id))
-
 
 private fun readTagFields(audioFile: AudioFile, keys: Array<FieldKey>): Map<FieldKey, TagField> =
     keys.associateWith { key ->
