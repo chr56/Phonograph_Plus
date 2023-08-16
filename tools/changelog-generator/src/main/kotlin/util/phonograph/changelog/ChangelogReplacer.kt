@@ -93,7 +93,7 @@ class ChangelogHTML(
             lines.removeAt(indexCurrentPreviewStart)
         }
         if (indexCurrentPreviewEnd >= 0) {
-            lines.removeAt(indexCurrentPreviewEnd)
+            lines.removeAt(indexCurrentPreviewEnd - 1)
         }
 
         updateIndexes()
