@@ -74,7 +74,10 @@ fun FieldKey.res(): Int =
         FieldKey.YEAR         -> R.string.year
         FieldKey.GENRE        -> R.string.genre
         FieldKey.DISC_NO      -> R.string.disk_number
+        FieldKey.DISC_TOTAL   -> R.string.disk_number
         FieldKey.TRACK        -> R.string.track
+        FieldKey.TRACK_TOTAL  -> R.string.track_total
+        FieldKey.RATING      -> R.string.rating
         FieldKey.COMMENT      -> R.string.comment
         else                  -> -1
     }
@@ -90,7 +93,10 @@ val availableCommonFieldKey =
         FieldKey.YEAR,
         FieldKey.GENRE,
         FieldKey.DISC_NO,
+        FieldKey.DISC_TOTAL,
         FieldKey.TRACK,
+        FieldKey.TRACK_TOTAL,
+        FieldKey.RATING,
         FieldKey.COMMENT,
     )
 
