@@ -6,7 +6,7 @@ package player.phonograph.model
 
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
-import player.phonograph.mechanism.tageditor.TagFormat
+import player.phonograph.mechanism.tag.TagFormat
 import androidx.annotation.StringRes
 
 /**

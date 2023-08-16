@@ -2,8 +2,10 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.mechanism.tageditor.edit
+package player.phonograph.mechanism.tag.edit
 
+import lib.phonograph.misc.IOpenFileStorageAccess
+import lib.phonograph.misc.OpenDocumentContract
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.exceptions.CannotReadException
@@ -16,8 +18,6 @@ import org.jaudiotagger.tag.Tag
 import org.jaudiotagger.tag.TagException
 import org.jaudiotagger.tag.images.Artwork
 import org.jaudiotagger.tag.images.ArtworkFactory
-import lib.phonograph.misc.IOpenFileStorageAccess
-import lib.phonograph.misc.OpenDocumentContract
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import androidx.compose.runtime.MutableState

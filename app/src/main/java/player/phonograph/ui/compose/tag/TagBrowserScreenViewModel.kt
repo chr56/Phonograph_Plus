@@ -6,9 +6,9 @@ package player.phonograph.ui.compose.tag
 
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import mt.pref.ThemeColor
+import player.phonograph.mechanism.tag.loadArtwork
+import player.phonograph.mechanism.tag.saveArtwork
 import player.phonograph.model.BitmapPaletteWrapper
-import player.phonograph.mechanism.tageditor.loadArtwork
-import player.phonograph.mechanism.tageditor.saveArtwork
 import player.phonograph.model.Song
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel

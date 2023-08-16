@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.mechanism.tageditor
+package player.phonograph.mechanism.tag
 
 import org.jaudiotagger.audio.real.RealTag
 import org.jaudiotagger.tag.Tag
