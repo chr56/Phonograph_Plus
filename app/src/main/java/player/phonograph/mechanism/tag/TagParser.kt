@@ -9,6 +9,7 @@ import org.jaudiotagger.audio.generic.AbstractTag
 import org.jaudiotagger.tag.TagField
 import org.jaudiotagger.tag.TagTextField
 import org.jaudiotagger.tag.aiff.AiffTag
+import org.jaudiotagger.tag.flac.FlacTag
 import org.jaudiotagger.tag.id3.AbstractID3v2Frame
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag
 import org.jaudiotagger.tag.id3.ID3v11Tag
@@ -33,6 +34,7 @@ fun readAllTags(audioFile: AudioFile): Map<String, String> {
             is WavTag           -> readWaveTag(tag)
             is ID3v11Tag        -> readID3v11Tags(tag)
             is ID3v1Tag         -> readID3v1Tags(tag)
+            is FlacTag          -> readFlacTag(tag)
             is AbstractTag      -> readAbstractTag(tag)
             else                -> emptyMap()
         }
@@ -133,6 +135,10 @@ private fun parseID3v2Frame(frame: AbstractID3v2Frame): String {
         reportError(e, "readID3v2Tags", ERR_PARSE_FIELD)
         ERR_PARSE_FIELD
     }
+}
+
+fun readFlacTag(tag: FlacTag): Map<String, String> {
+    return readAbstractTag(tag.vorbisCommentTag)
 }
 
 fun readAbstractTag(tag: AbstractTag): Map<String, String> {
