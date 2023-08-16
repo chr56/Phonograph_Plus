@@ -79,6 +79,21 @@ fun FieldKey.res(): Int =
         else                  -> -1
     }
 
+val availableCommonFieldKey =
+    arrayOf(
+        FieldKey.TITLE,
+        FieldKey.ARTIST,
+        FieldKey.ALBUM,
+        FieldKey.ALBUM_ARTIST,
+        FieldKey.COMPOSER,
+        FieldKey.LYRICIST,
+        FieldKey.YEAR,
+        FieldKey.GENRE,
+        FieldKey.DISC_NO,
+        FieldKey.TRACK,
+        FieldKey.COMMENT,
+    )
+
 sealed interface Field<T> {
     fun value(): T
 }

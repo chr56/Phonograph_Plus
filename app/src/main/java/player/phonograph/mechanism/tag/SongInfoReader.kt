@@ -14,6 +14,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.SongInfoModel
 import player.phonograph.model.StringFilePropertyField
 import player.phonograph.model.TagField
+import player.phonograph.model.availableCommonFieldKey
 import player.phonograph.util.reportError
 import java.io.File
 
@@ -71,21 +72,7 @@ private fun readAudioPropertyFields(audioHeader: AudioHeader): Map<FilePropertyF
 
 
 private fun readTagFields(audioFile: AudioFile): Map<FieldKey, TagField> =
-    readTagFieldsImpl(
-        audioFile, arrayOf(
-            FieldKey.TITLE,
-            FieldKey.ARTIST,
-            FieldKey.ALBUM,
-            FieldKey.ALBUM_ARTIST,
-            FieldKey.COMPOSER,
-            FieldKey.LYRICIST,
-            FieldKey.YEAR,
-            FieldKey.GENRE,
-            FieldKey.DISC_NO,
-            FieldKey.TRACK,
-            FieldKey.COMMENT,
-        )
-    )
+    readTagFieldsImpl(audioFile, availableCommonFieldKey)
 
 private fun readTagFieldsImpl(audioFile: AudioFile, keys: Array<FieldKey>): Map<FieldKey, TagField> =
     keys.associateWith { key ->
