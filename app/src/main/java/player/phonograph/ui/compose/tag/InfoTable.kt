@@ -68,7 +68,7 @@ internal fun InfoTable(stateHolder: InfoTableState) {
         Item(R.string.label_file_format, info.fileFormat.value())
         Item(R.string.label_bit_rate, info.bitRate.value())
         Item(R.string.label_sampling_rate, info.samplingRate.value())
-        Item("TagFormat", info.tagFormat.id)
+        Item(R.string.tag_format, info.tagFormat.id)
         //
         // Common Tag
         //
@@ -89,7 +89,7 @@ internal fun InfoTable(stateHolder: InfoTableState) {
         //
         info.allTags?.let { tags ->
             Spacer(modifier = Modifier.height(8.dp))
-            Title(stringResource(R.string.other_information))
+            Title(stringResource(R.string.raw_tags))
             for ((key, value) in tags) {
                 Item(key, value)
             }

@@ -418,4 +418,6 @@
     <string name="action_speed">速度</string>
     <string name="pref_title_resume_after_audio_focus_gain">自动恢复播放</string>
     <string name="pref_summary_resume_after_audio_focus_gain">在播放被突然打断（如来电或闹铃）后恢复播放</string>
+    <string name="tag_format">标签格式</string>
+    <string name="raw_tags">原始标签</string>
 </resources>
