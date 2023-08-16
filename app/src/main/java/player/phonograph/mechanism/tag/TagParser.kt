@@ -10,17 +10,7 @@ import org.jaudiotagger.tag.TagField
 import org.jaudiotagger.tag.TagTextField
 import org.jaudiotagger.tag.aiff.AiffTag
 import org.jaudiotagger.tag.flac.FlacTag
-import org.jaudiotagger.tag.id3.AbstractID3v2Frame
-import org.jaudiotagger.tag.id3.AbstractID3v2Tag
-import org.jaudiotagger.tag.id3.ID3v11Tag
-import org.jaudiotagger.tag.id3.ID3v1Tag
-import org.jaudiotagger.tag.id3.ID3v22Frames
-import org.jaudiotagger.tag.id3.ID3v22Tag
-import org.jaudiotagger.tag.id3.ID3v23Frames
-import org.jaudiotagger.tag.id3.ID3v23Tag
-import org.jaudiotagger.tag.id3.ID3v24Frames
-import org.jaudiotagger.tag.id3.ID3v24Tag
-import org.jaudiotagger.tag.id3.Id3SupportingTag
+import org.jaudiotagger.tag.id3.*
 import org.jaudiotagger.tag.id3.framebody.FrameBodyTXXX
 import org.jaudiotagger.tag.mp4.Mp4FieldKey
 import org.jaudiotagger.tag.mp4.Mp4Tag
@@ -89,6 +79,12 @@ fun readId3SupportingTag(tag: Id3SupportingTag): Map<String, String> = readID3v2
 fun readID3v2Tags(tag: AbstractID3v2Tag): Map<String, String> {
     return tag.frameMap
         .mapKeys { (key, frame) ->
+            val name = when (tag) {
+                is ID3v24Tag -> ID3v24FieldKey.values().firstOrNull { key == it.frameId }?.name
+                is ID3v23Tag -> ID3v23FieldKey.values().firstOrNull { key == it.frameId }?.name
+                is ID3v22Tag -> ID3v22FieldKey.values().firstOrNull { key == it.frameId }?.name
+                else         -> null
+            }
             val frames = when (tag) {
                 is ID3v24Tag -> ID3v24Frames.getInstanceOf()
                 is ID3v23Tag -> ID3v23Frames.getInstanceOf()
@@ -97,7 +93,9 @@ fun readID3v2Tags(tag: AbstractID3v2Tag): Map<String, String> {
             }
             if (frames != null) {
                 val description = frames.idToValueMap.getOrDefault(key, ERR_PARSE_KEY)
-                "[$key]$description"
+                "[$key]$name($description)"
+            } else if (name != null) {
+                "[$key]$name"
             } else {
                 key
             }
