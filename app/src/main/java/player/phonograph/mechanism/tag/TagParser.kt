@@ -96,7 +96,7 @@ object ID3v2Readers {
                     }
                     if (frames != null) {
                         val description = frames.idToValueMap.getOrDefault(key, ERR_PARSE_KEY)
-                        "[$key]$name($description)"
+                        "[$key]${name.orEmpty()}($description)"
                     } else if (name != null) {
                         "[$key]$name"
                     } else {
