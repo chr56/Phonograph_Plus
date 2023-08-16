@@ -22,6 +22,14 @@ import org.jaudiotagger.tag.id3.ID3v24Frames
 import org.jaudiotagger.tag.id3.ID3v24Tag
 import org.jaudiotagger.tag.id3.Id3SupportingTag
 import org.jaudiotagger.tag.id3.framebody.FrameBodyTXXX
+import org.jaudiotagger.tag.mp4.Mp4FieldKey
+import org.jaudiotagger.tag.mp4.Mp4Tag
+import org.jaudiotagger.tag.mp4.Mp4TagField
+import org.jaudiotagger.tag.mp4.field.Mp4TagBinaryField
+import org.jaudiotagger.tag.mp4.field.Mp4TagCoverField
+import org.jaudiotagger.tag.mp4.field.Mp4TagRawBinaryField
+import org.jaudiotagger.tag.mp4.field.Mp4TagReverseDnsField
+import org.jaudiotagger.tag.mp4.field.Mp4TagTextField
 import org.jaudiotagger.tag.wav.WavTag
 import player.phonograph.util.reportError
 
@@ -35,6 +43,7 @@ fun readAllTags(audioFile: AudioFile): Map<String, String> {
             is ID3v11Tag        -> readID3v11Tags(tag)
             is ID3v1Tag         -> readID3v1Tags(tag)
             is FlacTag          -> readFlacTag(tag)
+            is Mp4Tag           -> readMp4Tag(tag)
             is AbstractTag      -> readAbstractTag(tag)
             else                -> emptyMap()
         }
@@ -152,6 +161,29 @@ fun readAbstractTag(tag: AbstractTag): Map<String, String> {
                 }
             }
         }.joinToString(separator = "\n") { it }
+    }
+}
+
+fun readMp4Tag(tag: Mp4Tag): Map<String, String> {
+    val fields = tag.all.filterIsInstance<Mp4TagField>()
+    val keys = Mp4FieldKey.values()
+    return fields.associate { field ->
+        val key = run {
+            val fieldKey = keys.firstOrNull { field.id == it.fieldName }
+            if (fieldKey != null) {
+                "[${fieldKey.fieldName}]${fieldKey.name} ${fieldKey.identifier.orEmpty()}"
+            } else {
+                "${field.id}(${field.fieldType.let { "${it.name}<${it.fileClassId}>" }})"
+            }
+        }
+        when (field) {
+            is Mp4TagCoverField      -> key to field.toString()
+            is Mp4TagBinaryField     -> key to BINARY
+            is Mp4TagReverseDnsField -> field.descriptor to field.content
+            is Mp4TagTextField       -> key to field.content
+            is Mp4TagRawBinaryField  -> key to BINARY
+            else                     -> key to ERR_PARSE_FIELD
+        }
     }
 }
 
