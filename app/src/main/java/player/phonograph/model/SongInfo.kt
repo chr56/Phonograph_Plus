@@ -8,41 +8,41 @@ import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.mechanism.tag.TagFormat
 import androidx.annotation.StringRes
+import android.content.res.Resources
 
 /**
  * class describing a song file
  */
 class SongInfoModel(
-    //
-    // file
-    //
-    var fileName: StringFilePropertyField,
-    var filePath: StringFilePropertyField,
-    var fileFormat: StringFilePropertyField,
-    var bitRate: StringFilePropertyField,
-    var samplingRate: StringFilePropertyField,
-    var fileSize: LongFilePropertyField,
-    var trackLength: LongFilePropertyField,
-    //
-    // title
-    //
-    var title: TagField,
-    var artist: TagField,
-    var album: TagField,
-    var albumArtist: TagField,
-    var composer: TagField,
-    var lyricist: TagField,
-    var year: TagField,
-    var genre: TagField,
-    var diskNum: TagField,
-    var track: TagField,
-    //
-    // other
-    //
-    var comment: TagField,
-    var tagFormat: TagFormat = TagFormat.Unknown,
-    var allTags: Map<String, String>? = null,
+    val fileName: StringFilePropertyField,
+    val filePath: StringFilePropertyField,
+    val fileSize: LongFilePropertyField,
+    val audioPropertyFields: Map<FilePropertyField.Key, FilePropertyField<out Any>>,
+    val tagFields: Map<FieldKey, TagField>,
+    val tagFormat: TagFormat = TagFormat.Unknown,
+    val allTags: Map<String, String>? = null,
 ) {
+
+
+    /**
+     * retrieve corresponding [TagField] for a music tag
+     */
+    fun tagValue(key: FieldKey): TagField =
+        tagFields[key] ?: throw IllegalStateException("unknown field: ${key.name}")
+
+    companion object {
+        @Suppress("FunctionName")
+        fun EMPTY(): SongInfoModel =
+            SongInfoModel(
+                StringFilePropertyField(null),
+                StringFilePropertyField(null),
+                LongFilePropertyField(-1),
+                emptyMap(),
+                emptyMap(),
+                TagFormat.Unknown,
+                null,
+            )
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -56,51 +56,6 @@ class SongInfoModel(
 
     override fun hashCode(): Int = fileName.hashCode() * 31 + filePath.hashCode()
 
-    companion object {
-        @Suppress("FunctionName")
-        fun EMPTY(): SongInfoModel =
-            SongInfoModel(
-                StringFilePropertyField(null),
-                StringFilePropertyField(null),
-                StringFilePropertyField(null),
-                StringFilePropertyField(null),
-                StringFilePropertyField(null),
-                LongFilePropertyField(-1),
-                LongFilePropertyField(-1),
-                TagField(FieldKey.TITLE, null),
-                TagField(FieldKey.ARTIST, null),
-                TagField(FieldKey.ALBUM, null),
-                TagField(FieldKey.ALBUM_ARTIST, null),
-                TagField(FieldKey.COMPOSER, null),
-                TagField(FieldKey.LYRICIST, null),
-                TagField(FieldKey.YEAR, null),
-                TagField(FieldKey.GENRE, null),
-                TagField(FieldKey.DISC_NO, null),
-                TagField(FieldKey.TRACK, null),
-                TagField(FieldKey.COMMENT, null),
-                TagFormat.Unknown,
-                null,
-            )
-    }
-
-    /**
-     * retrieve corresponding [TagField] for a music tag
-     */
-    fun tagValue(field: FieldKey): TagField =
-        when (field) {
-            FieldKey.TITLE        -> title
-            FieldKey.ARTIST       -> artist
-            FieldKey.ALBUM        -> album
-            FieldKey.ALBUM_ARTIST -> albumArtist
-            FieldKey.COMPOSER     -> composer
-            FieldKey.LYRICIST     -> lyricist
-            FieldKey.YEAR         -> year
-            FieldKey.GENRE        -> genre
-            FieldKey.DISC_NO      -> diskNum
-            FieldKey.TRACK        -> track
-            FieldKey.COMMENT      -> comment
-            else                  -> throw IllegalStateException("unknown field: ${field.name}")
-        }
 }
 
 
@@ -108,8 +63,8 @@ class SongInfoModel(
  * retrieve corresponding a tag name string resource id for a music tag
  */
 @StringRes
-fun songTagNameRes(field: FieldKey): Int =
-    when (field) {
+fun FieldKey.res(): Int =
+    when (this) {
         FieldKey.TITLE        -> R.string.title
         FieldKey.ARTIST       -> R.string.artist
         FieldKey.ALBUM        -> R.string.album
@@ -119,30 +74,57 @@ fun songTagNameRes(field: FieldKey): Int =
         FieldKey.YEAR         -> R.string.year
         FieldKey.GENRE        -> R.string.genre
         FieldKey.DISC_NO      -> R.string.disk_number
+        FieldKey.DISC_TOTAL   -> R.string.disk_number
         FieldKey.TRACK        -> R.string.track
+        FieldKey.TRACK_TOTAL  -> R.string.track_total
+        FieldKey.RATING      -> R.string.rating
         FieldKey.COMMENT      -> R.string.comment
         else                  -> -1
     }
+
+val availableCommonFieldKey =
+    arrayOf(
+        FieldKey.TITLE,
+        FieldKey.ARTIST,
+        FieldKey.ALBUM,
+        FieldKey.ALBUM_ARTIST,
+        FieldKey.COMPOSER,
+        FieldKey.LYRICIST,
+        FieldKey.YEAR,
+        FieldKey.GENRE,
+        FieldKey.DISC_NO,
+        FieldKey.DISC_TOTAL,
+        FieldKey.TRACK,
+        FieldKey.TRACK_TOTAL,
+        FieldKey.RATING,
+        FieldKey.COMMENT,
+    )
 
 sealed interface Field<T> {
     fun value(): T
 }
 
-// class FilePropertyField<T>(protected val _value: T) : Field<T> {
-//     override fun value(): T = _value
-// }
+abstract class FilePropertyField<T> : Field<T> {
+    enum class Key(@StringRes val res: Int) {
+        TRACK_LENGTH(R.string.label_track_length),
+        FILE_FORMAT(R.string.label_file_format),
+        BIT_RATE(R.string.label_bit_rate),
+        SAMPLING_RATE(R.string.label_sampling_rate),
+        ;
 
-class StringFilePropertyField(private val _value: String?) : Field<String> {
+        fun label(resources: Resources): String = resources.getString(res)
+    }
+}
+
+class StringFilePropertyField(private val _value: String?) : FilePropertyField<String>() {
     override fun value(): String = _value ?: ""
 }
 
-class LongFilePropertyField(private val _value: Long) : Field<Long> {
+class LongFilePropertyField(private val _value: Long) : FilePropertyField<Long>() {
     override fun value(): Long = _value
 }
 
 class TagField(val key: FieldKey, private val _value: String?) : Field<String> {
     override fun value(): String = _value ?: ""
-    fun copy(newValue: String?): TagField = TagField(key, newValue)
-    fun songTagName(): Int = songTagNameRes(key)
 }
 

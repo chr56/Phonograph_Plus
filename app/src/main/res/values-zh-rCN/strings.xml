@@ -40,6 +40,7 @@
     <string name="album_artist">专辑艺术家</string>
     <string name="year">年份</string>
     <string name="track">音轨号</string>
+    <string name="track_total">音轨总数</string>
     <string name="lyrics">歌词</string>
     <string name="saving_changes">正在保存更改</string>
     <string name="label_details">详情</string>
@@ -421,4 +422,6 @@
     <string name="tag_format">标签格式</string>
     <string name="raw_tags">原始标签</string>
     <string name="disk_number">牒号</string>
+    <string name="disk_number_total">牒号总数</string>
+    <string name="rating">评分</string>
 </resources>

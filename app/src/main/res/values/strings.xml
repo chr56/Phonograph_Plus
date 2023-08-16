@@ -40,6 +40,7 @@
     <string name="album_artist">Album artist</string>
     <string name="year">Year</string>
     <string name="track">Track Number</string>
+    <string name="track_total">Total Track Number</string>
     <string name="lyrics">Lyrics</string>
     <string name="saving_changes">Saving changes</string>
     <string name="label_details">Details</string>
@@ -434,4 +435,6 @@
     <string name="tag_format">Tag format</string>
     <string name="raw_tags">Raw Tags</string>
     <string name="disk_number">Disk Number</string>
+    <string name="disk_number_total">Total Disk Number</string>
+    <string name="rating">Rating</string>
 </resources>

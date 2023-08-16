@@ -40,6 +40,7 @@
     <string name="album_artist">專輯演出者</string>
     <string name="year">年代</string>
     <string name="track">軌道編號</string>
+    <string name="track_total">軌道總數</string>
     <string name="lyrics">歌詞</string>
     <string name="saving_changes">正在儲存變更…</string>
     <string name="label_details">詳細資訊</string>
@@ -421,4 +422,6 @@
     <string name="tag_format">標籤格式</string>
     <string name="raw_tags">原始標籤</string>
     <string name="disk_number">牒號</string>
+    <string name="disk_number_total">牒號總數</string>
+    <string name="rating">評分</string>
 </resources>

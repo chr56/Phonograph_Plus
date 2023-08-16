@@ -4,23 +4,10 @@
 
 package player.phonograph.ui.compose.tag
 
-import org.jaudiotagger.tag.FieldKey
-import org.jaudiotagger.tag.FieldKey.ALBUM
-import org.jaudiotagger.tag.FieldKey.ALBUM_ARTIST
-import org.jaudiotagger.tag.FieldKey.ARTIST
-import org.jaudiotagger.tag.FieldKey.COMMENT
-import org.jaudiotagger.tag.FieldKey.COMPOSER
-import org.jaudiotagger.tag.FieldKey.DISC_NO
-import org.jaudiotagger.tag.FieldKey.GENRE
-import org.jaudiotagger.tag.FieldKey.LYRICIST
-import org.jaudiotagger.tag.FieldKey.TITLE
-import org.jaudiotagger.tag.FieldKey.TRACK
-import org.jaudiotagger.tag.FieldKey.YEAR
 import player.phonograph.R
-import player.phonograph.model.SongInfoModel
+import player.phonograph.model.TagField
 import player.phonograph.model.getFileSizeString
-import player.phonograph.model.getReadableDurationString
-import player.phonograph.model.songTagNameRes
+import player.phonograph.model.res
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextFieldItem
 import player.phonograph.ui.compose.components.VerticalTextItem
@@ -65,26 +52,19 @@ internal fun InfoTable(stateHolder: InfoTableState) {
         Item(R.string.label_file_name, info.fileName.value())
         Item(R.string.label_file_path, info.filePath.value())
         Item(R.string.label_file_size, getFileSizeString(info.fileSize.value()))
-        Item(R.string.label_track_length, getReadableDurationString(info.trackLength.value()))
-        Item(R.string.label_file_format, info.fileFormat.value())
-        Item(R.string.label_bit_rate, info.bitRate.value())
-        Item(R.string.label_sampling_rate, info.samplingRate.value())
+
+        for ((key, field) in info.audioPropertyFields) {
+            Item(stringResource(key.res), value = field.value().toString())
+        }
+
         //
         // Common Tag
         //
         Spacer(modifier = Modifier.height(16.dp))
         Title(stringResource(R.string.music_tags), color = titleColor)
-        Tag(info, TITLE, editable, editRequest)
-        Tag(info, ARTIST, editable, editRequest)
-        Tag(info, ALBUM, editable, editRequest)
-        Tag(info, ALBUM_ARTIST, editable, editRequest, hideIfEmpty = true)
-        Tag(info, COMPOSER, editable, editRequest, hideIfEmpty = true)
-        Tag(info, LYRICIST, editable, editRequest, hideIfEmpty = true)
-        Tag(info, YEAR, editable, editRequest)
-        Tag(info, GENRE, editable, editRequest)
-        Tag(info, DISC_NO, editable, editRequest, hideIfEmpty = true)
-        Tag(info, TRACK, editable, editRequest, hideIfEmpty = true)
-        Tag(info, COMMENT, editable, editRequest, hideIfEmpty = true)
+        for ((_, field) in info.tagFields) {
+            Tag(field, editable, editRequest, hideIfEmpty = true)
+        }
         //
         // Other Tag (if available)
         //
@@ -105,15 +85,14 @@ internal fun InfoTable(stateHolder: InfoTableState) {
 
 @Composable
 internal fun Tag(
-    info: SongInfoModel,
-    key: FieldKey,
+    field: TagField,
     editable: Boolean = false,
     editRequest: EditRequest? = null,
     hideIfEmpty: Boolean = false,
 ) {
-    val tagNameRes = remember { songTagNameRes(key) }
+    val tagNameRes = remember { field.key.res() }
     val tagName = stringResource(id = tagNameRes)
-    val tagValue = remember { info.tagValue(key).value() }
+    val tagValue = remember { field.value() }
 
     var editMode: Boolean by remember { mutableStateOf(false) }
     val modifier = if (editable) Modifier.clickable { editMode = true } else Modifier
@@ -126,7 +105,7 @@ internal fun Tag(
             EditableItem(
                 title = tagName,
                 value = tagValue,
-                onTextChanged = { newValue -> editRequest?.invoke(key, newValue) }
+                onTextChanged = { newValue -> editRequest?.invoke(field.key, newValue) }
             )
         } else {
             //

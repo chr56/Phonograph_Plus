@@ -6,7 +6,7 @@ package player.phonograph.ui.compose.tag
 
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
-import player.phonograph.model.songTagNameRes
+import player.phonograph.model.res
 import player.phonograph.ui.compose.components.Title
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -62,7 +62,7 @@ private fun DiffScreen(diff: TagDiff) {
 @Composable
 private fun TagDiff(tag: Triple<FieldKey, String?, String?>) {
     Column(Modifier.padding(vertical = 16.dp)) {
-        Title(stringResource(id = songTagNameRes(tag.first)), horizontalPadding = 0.dp)
+        Title(stringResource(id = tag.first.res()), horizontalPadding = 0.dp)
         DiffText(tag.second)
         Icon(Icons.Outlined.ArrowDropDown, contentDescription = null)
         DiffText(tag.third)
