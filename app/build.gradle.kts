@@ -51,7 +51,7 @@ android {
         proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
 
 
-        manifestPlaceholders["GIT_COMMIT_HASH"] = getGitHash(false)
+        manifestPlaceholders["GIT_COMMIT_HASH"] = "-"
     }
 
     signingConfigs {
@@ -73,6 +73,9 @@ android {
             // shrink
             isMinifyEnabled = true
             isShrinkResources = true
+
+            // git tracker
+            manifestPlaceholders["GIT_COMMIT_HASH"] = getGitHash(false)
         }
         getByName("debug") {
             // signing as well
@@ -106,6 +109,9 @@ android {
 
             resValue("string", "app_name", "$appName Checkout")
             applicationIdSuffix = ".checkout"
+
+
+            manifestPlaceholders["GIT_COMMIT_HASH"] = getGitHash(false)
         }
     }
     androidComponents {
