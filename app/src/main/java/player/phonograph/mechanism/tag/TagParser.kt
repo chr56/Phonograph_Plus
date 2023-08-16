@@ -7,6 +7,7 @@ package player.phonograph.mechanism.tag
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.tag.TagField
 import org.jaudiotagger.tag.TagTextField
+import org.jaudiotagger.tag.aiff.AiffTag
 import org.jaudiotagger.tag.id3.AbstractID3v2Frame
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag
 import org.jaudiotagger.tag.id3.ID3v11Tag
@@ -17,7 +18,9 @@ import org.jaudiotagger.tag.id3.ID3v23Frames
 import org.jaudiotagger.tag.id3.ID3v23Tag
 import org.jaudiotagger.tag.id3.ID3v24Frames
 import org.jaudiotagger.tag.id3.ID3v24Tag
+import org.jaudiotagger.tag.id3.Id3SupportingTag
 import org.jaudiotagger.tag.id3.framebody.FrameBodyTXXX
+import org.jaudiotagger.tag.wav.WavTag
 import player.phonograph.util.reportError
 
 
@@ -25,6 +28,8 @@ fun readAllTags(audioFile: AudioFile): Map<String, String> {
     val items: Map<String, String> =
         when (val tag = audioFile.tag) {
             is AbstractID3v2Tag -> readID3v2Tags(tag)
+            is AiffTag          -> readAiffTag(tag)
+            is WavTag           -> readWaveTag(tag)
             is ID3v11Tag        -> readID3v11Tags(tag)
             is ID3v1Tag         -> readID3v1Tags(tag)
             else                -> emptyMap()
@@ -49,6 +54,24 @@ fun readID3v11Tags(tag: ID3v11Tag): Map<String, String> {
     val track = tag.track as TagTextField
     return readID3v1Tags(tag) + mapOf(Pair(track.id, track.content))
 }
+
+fun readAiffTag(tag: AiffTag): Map<String, String> {
+    return if (tag.isExistingId3Tag) {
+        readId3SupportingTag(tag)
+    } else {
+        emptyMap()
+    }
+}
+
+fun readWaveTag(tag: WavTag): Map<String, String> {
+    return if (tag.isExistingId3Tag) {
+        readId3SupportingTag(tag)
+    } else {
+        emptyMap()
+    }
+}
+
+fun readId3SupportingTag(tag: Id3SupportingTag): Map<String, String> = readID3v2Tags(tag.iD3Tag)
 
 fun readID3v2Tags(tag: AbstractID3v2Tag): Map<String, String> {
     return tag.frameMap
