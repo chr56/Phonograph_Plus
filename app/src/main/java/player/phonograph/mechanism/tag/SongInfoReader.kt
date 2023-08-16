@@ -8,6 +8,7 @@ import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
 import org.jaudiotagger.tag.FieldKey
+import org.jaudiotagger.tag.KeyNotFoundException
 import player.phonograph.model.FilePropertyField
 import player.phonograph.model.LongFilePropertyField
 import player.phonograph.model.Song
@@ -76,5 +77,10 @@ private fun readTagFields(audioFile: AudioFile): Map<FieldKey, TagField> =
 
 private fun readTagFieldsImpl(audioFile: AudioFile, keys: Array<FieldKey>): Map<FieldKey, TagField> =
     keys.associateWith { key ->
-        TagField(key, audioFile.tag.getFirst(key))
+        val value = try {
+            audioFile.tag.getFirst(key)
+        } catch (e: KeyNotFoundException) {
+            null
+        }
+        TagField(key, value)
     }
