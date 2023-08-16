@@ -10,6 +10,7 @@ import org.jaudiotagger.tag.FieldKey.ALBUM_ARTIST
 import org.jaudiotagger.tag.FieldKey.ARTIST
 import org.jaudiotagger.tag.FieldKey.COMMENT
 import org.jaudiotagger.tag.FieldKey.COMPOSER
+import org.jaudiotagger.tag.FieldKey.DISC_NO
 import org.jaudiotagger.tag.FieldKey.GENRE
 import org.jaudiotagger.tag.FieldKey.LYRICIST
 import org.jaudiotagger.tag.FieldKey.TITLE
@@ -81,6 +82,7 @@ internal fun InfoTable(stateHolder: InfoTableState) {
         Tag(info, LYRICIST, editable, editRequest, hideIfEmpty = true)
         Tag(info, YEAR, editable, editRequest)
         Tag(info, GENRE, editable, editRequest)
+        Tag(info, DISC_NO, editable, editRequest, hideIfEmpty = true)
         Tag(info, TRACK, editable, editRequest, hideIfEmpty = true)
         Tag(info, COMMENT, editable, editRequest, hideIfEmpty = true)
         //
