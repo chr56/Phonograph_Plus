@@ -26,26 +26,12 @@ fun loadSongInfo(songFile: File): SongInfoModel {
     val fileSize = songFile.length()
     try {
         val audioFile: AudioFile = AudioFileIO.read(songFile)
-        // audio property of the song
+
         val audioPropertyFields = readAudioPropertyFields(audioFile.audioHeader)
-        // tags of the song
-        val keys =
-            arrayOf(
-                FieldKey.TITLE,
-                FieldKey.ARTIST,
-                FieldKey.ALBUM,
-                FieldKey.ALBUM_ARTIST,
-                FieldKey.COMPOSER,
-                FieldKey.LYRICIST,
-                FieldKey.YEAR,
-                FieldKey.GENRE,
-                FieldKey.DISC_NO,
-                FieldKey.TRACK,
-                FieldKey.COMMENT,
-            )
-        val tagFields = readTagFields(audioFile, keys)
+        val tagFields = readTagFields(audioFile)
         val tagFormat = TagFormat.of(audioFile.tag)
         val allTags = readAllTags(audioFile)
+
         return SongInfoModel(
             fileName = StringFilePropertyField(fileName),
             filePath = StringFilePropertyField(filePath),
@@ -83,7 +69,25 @@ private fun readAudioPropertyFields(audioHeader: AudioHeader): Map<FilePropertyF
     )
 }
 
-private fun readTagFields(audioFile: AudioFile, keys: Array<FieldKey>): Map<FieldKey, TagField> =
+
+private fun readTagFields(audioFile: AudioFile): Map<FieldKey, TagField> =
+    readTagFieldsImpl(
+        audioFile, arrayOf(
+            FieldKey.TITLE,
+            FieldKey.ARTIST,
+            FieldKey.ALBUM,
+            FieldKey.ALBUM_ARTIST,
+            FieldKey.COMPOSER,
+            FieldKey.LYRICIST,
+            FieldKey.YEAR,
+            FieldKey.GENRE,
+            FieldKey.DISC_NO,
+            FieldKey.TRACK,
+            FieldKey.COMMENT,
+        )
+    )
+
+private fun readTagFieldsImpl(audioFile: AudioFile, keys: Array<FieldKey>): Map<FieldKey, TagField> =
     keys.associateWith { key ->
         TagField(key, audioFile.tag.getFirst(key))
     }
