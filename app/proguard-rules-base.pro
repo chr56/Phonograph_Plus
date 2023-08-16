@@ -224,6 +224,7 @@
 ###############
 # jaudiotagger
 ################
+-keepclasseswithmembers enum org.jaudiotagger.* { public java.lang.String name(); }
 -keepclasseswithmembers class org.jaudiotagger.tag.id3.framebody.Framebody** {<init>(...);}
 -keepclasseswithmembers class org.jaudiotagger.tag.** extends org.jaudiotagger.tag.id3.AbstractTagItem {<init>(...);}
 -keepclasseswithmembers class org.jaudiotagger.tag.datatype.** extends org.jaudiotagger.tag.datatype.AbstractDataType {<init>(...);}
