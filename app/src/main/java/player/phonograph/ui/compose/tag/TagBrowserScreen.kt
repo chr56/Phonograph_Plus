@@ -6,7 +6,7 @@ package player.phonograph.ui.compose.tag
 
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.mechanism.tageditor.edit.applyEdit
+import player.phonograph.mechanism.tag.edit.applyEdit
 import player.phonograph.ui.compose.ColorTools
 import player.phonograph.ui.compose.components.CoverImage
 import player.phonograph.util.permissions.navigateToStorageSetting

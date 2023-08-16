@@ -86,13 +86,12 @@ internal fun InfoTable(stateHolder: InfoTableState) {
         //
         // Other Tag (if available)
         //
-        if (info.otherTags != null) {
+        info.allTags?.let { tags ->
             Spacer(modifier = Modifier.height(8.dp))
-            Title(stringResource(R.string.other_information))
-            info.otherTags?.let { tags ->
-                for (tag in tags) {
-                    Item(tag.key, tag.value)
-                }
+            Title(stringResource(R.string.raw_tags), color = titleColor)
+            Item(R.string.tag_format, info.tagFormat.id)
+            for ((key, value) in tags) {
+                Item(key, value)
             }
         }
         // Lyrics
@@ -154,7 +153,7 @@ internal fun EditableItem(
     value: String?,
     onTextChanged: (String) -> Unit,
     trailingIcon: @Composable (() -> Unit)? = null,
-    allowReset: Boolean = true
+    allowReset: Boolean = true,
 ) = VerticalTextFieldItem(
     title = title,
     value = value,

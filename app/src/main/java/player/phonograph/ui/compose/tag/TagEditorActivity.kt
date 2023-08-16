@@ -12,8 +12,8 @@ import lib.phonograph.misc.OpenFileStorageAccessTool
 import mt.pref.ThemeColor.primaryColor
 import mt.util.color.darkenColor
 import player.phonograph.R
-import player.phonograph.mechanism.SongDetail
-import player.phonograph.mechanism.tageditor.edit.selectNewArtwork
+import player.phonograph.mechanism.tag.edit.selectNewArtwork
+import player.phonograph.mechanism.tag.loadSongInfo
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
@@ -123,7 +123,7 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
         @Synchronized get() {
             if (_infoTableViewModel == null) {
                 _infoTableViewModel =
-                    EditableInfoTableState(SongDetail.readSong(song), defaultColor)
+                    EditableInfoTableState(loadSongInfo(song), defaultColor)
             }
             return _infoTableViewModel!!
         }

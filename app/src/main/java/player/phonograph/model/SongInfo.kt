@@ -6,6 +6,7 @@ package player.phonograph.model
 
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
+import player.phonograph.mechanism.tag.TagFormat
 import androidx.annotation.StringRes
 
 /**
@@ -38,7 +39,8 @@ class SongInfoModel(
     // other
     //
     var comment: TagField,
-    var otherTags: MutableMap<String, String>? = null,
+    var tagFormat: TagFormat = TagFormat.Unknown,
+    var allTags: Map<String, String>? = null,
 ) {
 
     override fun equals(other: Any?): Boolean {
@@ -74,7 +76,8 @@ class SongInfoModel(
                 TagField(FieldKey.GENRE, null),
                 TagField(FieldKey.TRACK, null),
                 TagField(FieldKey.COMMENT, null),
-                null
+                TagFormat.Unknown,
+                null,
             )
     }
 

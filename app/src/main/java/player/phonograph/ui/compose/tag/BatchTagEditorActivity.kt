@@ -11,8 +11,8 @@ import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenFileStorageAccessTool
 import mt.pref.ThemeColor.primaryColor
 import player.phonograph.R
-import player.phonograph.mechanism.SongDetail
-import player.phonograph.mechanism.tageditor.edit.applyEdit
+import player.phonograph.mechanism.tag.edit.applyEdit
+import player.phonograph.mechanism.tag.loadSongInfo
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
@@ -157,7 +157,7 @@ class BatchTagEditScreenViewModel(
         @Synchronized get() {
             if (_batchTagEditTableState == null) {
                 _batchTagEditTableState =
-                    BatchTagEditTableState(songs.map { SongDetail.readSong(it) }, defaultColor)
+                    BatchTagEditTableState(songs.map { loadSongInfo(it) }, defaultColor)
             }
             return _batchTagEditTableState!!
         }

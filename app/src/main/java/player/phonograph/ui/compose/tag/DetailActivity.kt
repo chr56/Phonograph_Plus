@@ -9,7 +9,7 @@ import lib.phonograph.misc.ICreateFileStorageAccess
 import mt.pref.ThemeColor
 import mt.util.color.darkenColor
 import player.phonograph.R
-import player.phonograph.mechanism.SongDetail
+import player.phonograph.mechanism.tag.loadSongInfo
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
@@ -84,7 +84,7 @@ class DetailScreenViewModel(song: Song, defaultColor: Color) :
         @Synchronized get() {
             if (_infoTableState == null) {
                 _infoTableState =
-                    InfoTableState(SongDetail.readSong(song), defaultColor)
+                    InfoTableState(loadSongInfo(song), defaultColor)
             }
             return _infoTableState!!
         }
