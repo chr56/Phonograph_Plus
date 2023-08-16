@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "1.1-dev2",
+      "versionCode": 1003,
+      "date": 1692180000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.1-dev2"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>翻译 更新俄语 (Evgeniy Khramov (thejenja))</li><li>翻译 更新土耳其语 (TolDYuThad)</li><li>修改 在歌曲详情/标签编辑器中, 不再显示其他标签</li><li>新功能 在歌曲详情/标签编辑器中, 支持更多标签（如盘号）</li><li>新功能 在歌曲详情/标签编辑器中, 显示原始标签信息</li></ol>",
+        "en": "<ol><li>Translation: update Russian (by Evgeniy Khramov (thejenja))</li><li>Translation: update Turkish (by TolDYuThad)</li><li>Modify: no longer show other tags in Song Detail/TagEditor</li><li>New: support more tags (like disk number) in Song Detail/TagEditor</li><li>New: show raw tag information in Song Detail/TagEditor</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.1-dev1",
       "versionCode": 1002,
       "date": 1692076800,
