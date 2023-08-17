@@ -170,9 +170,14 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
 
 internal fun TagEditorScreenViewModel.generateDiff(): TagDiff {
     val current = audioDetailState.info.value
-    val tagDiff = audioDetailState.allEditRequests.map { (key, new) ->
-        val old = current.tagFields[key]?.value() ?: ""
-        Triple(key, old, new)
+    val tagDiff = audioDetailState.pendingEditRequests.map { action ->
+        val old = current.tagFields[action.key]?.value() ?: ""
+        val new = when (action) {
+            is EditAction.Delete -> null
+            is EditAction.Insert -> action.value
+            is EditAction.Update -> action.newValue
+        }
+        Triple(action.key, old, new)
     }
     val artworkDiff =
         if (needReplaceCover) {

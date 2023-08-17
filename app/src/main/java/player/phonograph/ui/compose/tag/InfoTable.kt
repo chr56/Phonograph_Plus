@@ -33,14 +33,11 @@ import androidx.compose.ui.unit.dp
  * Text infomation
  */
 @Composable
-internal fun InfoTable(stateHolder: AudioDetailState) {
+internal fun InfoTable(audioDetailState: AudioDetailState) {
 
+    val stateHolder = remember { audioDetailState }
     val titleColor = stateHolder.titleColor.collectAsState().value
     val info = stateHolder.info.collectAsState().value
-
-    val editRequest: EditRequest = remember {
-        { key, newValue -> stateHolder.editTag(key, newValue) }
-    }
 
     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
         //
@@ -62,7 +59,7 @@ internal fun InfoTable(stateHolder: AudioDetailState) {
         Spacer(modifier = Modifier.height(16.dp))
         Title(stringResource(R.string.music_tags), color = titleColor)
         for ((_, field) in info.tagFields) {
-            Tag(field, stateHolder.editable, editRequest, hideIfEmpty = true)
+            Tag(field, stateHolder, hideIfEmpty = true)
         }
         //
         // Other Tag (if available)
@@ -85,8 +82,7 @@ internal fun InfoTable(stateHolder: AudioDetailState) {
 @Composable
 internal fun Tag(
     field: TagField,
-    editable: Boolean = false,
-    editRequest: EditRequest? = null,
+    stateHolder: AudioDetailState,
     hideIfEmpty: Boolean = false,
 ) {
     val tagNameRes = remember { field.key.res() }
@@ -94,7 +90,7 @@ internal fun Tag(
     val tagValue = remember { field.value() }
 
     var editMode: Boolean by remember { mutableStateOf(false) }
-    val modifier = if (editable) Modifier.clickable { editMode = true } else Modifier
+    val modifier = if (stateHolder.editable) Modifier.clickable { editMode = true } else Modifier
 
     Box(modifier = modifier.fillMaxWidth()) {
         if (editMode) {
@@ -104,13 +100,25 @@ internal fun Tag(
             EditableItem(
                 title = tagName,
                 value = tagValue,
-                onTextChanged = { newValue -> editRequest?.invoke(field.key, newValue) }
+                onTextChanged = { newValue ->
+                    @Suppress("UnnecessaryVariable") val oldValue = tagValue
+                    val action: EditAction? = if (oldValue.isEmpty()) {
+                        EditAction.Insert(field.key, newValue)
+                    } else if (newValue.isEmpty()) {
+                        EditAction.Delete(field.key)
+                    } else if (oldValue != newValue) {
+                        EditAction.Update(field.key, newValue)
+                    } else {
+                        null
+                    }
+                    if (action != null) stateHolder.editTag(action)
+                }
             )
         } else {
             //
             // Common & Readonly
             //
-            if (hideIfEmpty && !editable) {
+            if (hideIfEmpty && !stateHolder.editable) {
                 if (tagValue.isNotEmpty()) Item(tagName, tagValue)
             } else {
                 Item(tagName, tagValue)

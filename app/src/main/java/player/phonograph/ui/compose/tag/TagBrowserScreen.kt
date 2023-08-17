@@ -97,7 +97,7 @@ private fun saveImpl(
         coroutineScope,
         context,
         songFile,
-        model.audioDetailState.allEditRequests,
+        model.audioDetailState.pendingEditRequests,
         model.needDeleteCover,
         model.needReplaceCover,
         model.newCover

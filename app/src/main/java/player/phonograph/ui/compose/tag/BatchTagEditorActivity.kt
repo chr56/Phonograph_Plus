@@ -90,7 +90,7 @@ class BatchTagEditorActivity :
     }
 
     private fun back() {
-        if (model.infoTableState.allEditRequests.isEmpty()) {
+        if (!model.infoTableState.hasEdited) {
             finish()
         } else {
             model.exitWithoutSavingDialogState.show()
@@ -175,8 +175,13 @@ class BatchTagEditScreenViewModel(
 
 
 internal fun BatchTagEditScreenViewModel.generateDiff(): TagDiff {
-    val tagDiff = infoTableState.allEditRequests.map { (key, new) ->
-        Triple(key, "(${key.name})", new)
+    val tagDiff = infoTableState.pendingEditRequests.map { action ->
+        val new = when (action) {
+            is EditAction.Delete -> null
+            is EditAction.Insert -> action.value
+            is EditAction.Update -> action.newValue
+        }
+        Triple(action.key, ("(${action.key.name})"), new)
     }
     val artworkDiff =
         if (infoTableState.needReplaceCover) {
@@ -194,7 +199,7 @@ private fun saveImpl(model: BatchTagEditScreenViewModel, context: Context) =
         CoroutineScope(Dispatchers.Unconfined),
         context,
         model.songs.map { File(it.data) },
-        model.infoTableState.allEditRequests,
+        model.infoTableState.pendingEditRequests,
         model.infoTableState.needDeleteCover,
         model.infoTableState.needReplaceCover,
         model.infoTableState.newCover,
