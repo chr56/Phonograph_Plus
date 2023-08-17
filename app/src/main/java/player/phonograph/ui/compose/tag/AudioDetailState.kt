@@ -26,6 +26,8 @@ class AudioDetailState(info: SongInfoModel, defaultColor: Color, val editable: B
     private val _allEditRequest: MutableMap<FieldKey, String?> = EnumMap(FieldKey::class.java)
     val allEditRequests: Map<FieldKey, String?> get() = _allEditRequest
 
+    val hasEdited: Boolean get() = _allEditRequest.isNotEmpty()
+
     fun editTag(key: FieldKey, newValue: String?): Boolean {
         return if (editable) {
             val tagFields = info.value.tagFields

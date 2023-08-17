@@ -93,7 +93,7 @@ class TagEditorActivity :
     }
 
     private fun back() {
-        if (model.audioDetailState.allEditRequests.isEmpty()) {
+        if (!model.audioDetailState.hasEdited) {
             finish()
         } else {
             model.exitWithoutSavingDialogState.show()
