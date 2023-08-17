@@ -7,6 +7,7 @@ package player.phonograph.ui.compose.tag
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.TagNotFoundException
+import android.util.Log
 
 sealed interface EditAction {
 
@@ -92,6 +93,47 @@ sealed interface EditAction {
 
     companion object {
         private const val TAG = "EditAction"
+
+        /**
+         * remove duplicated
+         */
+        fun merge(original: List<EditAction>): MutableList<EditAction> {
+            val result = original.toMutableList()
+            var completed = false
+            outer@ while (!completed) {
+                Log.d(TAG, "Loop!")
+                var index = 0
+                inner@ while (index + 1 <= result.lastIndex) {
+                    Log.d(TAG, "::index $index")
+                    val u = result[index]
+                    val b = result[index + 1]
+                    if (u.key == b.key) {
+                        // override check
+                        if (b is Delete) {// delete
+                            result.removeAt(index)
+                            continue@outer
+                        } else {  // alter
+                            if (u is Insert) {
+                                val key = result.removeAt(index).key
+                                val value = when (b) {
+                                    is Insert -> b.value
+                                    is Update -> b.newValue
+                                    else      -> throw Exception()
+                                }
+                                result.add(index, Insert(key, value))
+                                continue@outer
+                            } else {
+                                result.removeAt(index)
+                                continue@outer
+                            }
+                        }
+                    }
+                    index++
+                }
+                if (index + 1 >= result.lastIndex) completed = true
+            }
+            return result
+        }
     }
 
 }
