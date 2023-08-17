@@ -83,6 +83,7 @@ sealed interface EditAction {
          */
         fun merge(original: List<EditAction>): MutableList<EditAction> {
             val result = original.toMutableList()
+            result.sortBy { it.key }
             var completed = false
             outer@ while (!completed) {
                 var index = 0
