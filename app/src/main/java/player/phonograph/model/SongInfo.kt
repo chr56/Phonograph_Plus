@@ -23,13 +23,6 @@ class SongInfoModel(
     val allTags: Map<String, String>? = null,
 ) {
 
-
-    /**
-     * retrieve corresponding [TagField] for a music tag
-     */
-    fun tagValue(key: FieldKey): TagField =
-        tagFields[key] ?: throw IllegalStateException("unknown field: ${key.name}")
-
     companion object {
         @Suppress("FunctionName")
         fun EMPTY(): SongInfoModel =

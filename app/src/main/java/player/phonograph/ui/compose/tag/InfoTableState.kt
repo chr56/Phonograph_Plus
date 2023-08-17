@@ -18,20 +18,25 @@ open class InfoTableState(info: SongInfoModel, defaultColor: Color) {
 
     private val _titleColor: MutableStateFlow<Color> = MutableStateFlow(defaultColor)
     val titleColor get() = _titleColor as StateFlow<Color>
-    fun updateTitleColor(color: Color) {_titleColor.update { color }}
+    fun updateTitleColor(color: Color) {
+        _titleColor.update { color }
+    }
 }
 
 class EditableInfoTableState(
     info: SongInfoModel,
-    color: Color
+    color: Color,
 ) : InfoTableState(info, color) {
 
     private val _allEditRequest: MutableMap<FieldKey, String?> = EnumMap(FieldKey::class.java)
     val allEditRequests: Map<FieldKey, String?> get() = _allEditRequest
 
     fun editRequest(key: FieldKey, newValue: String?) {
-        if (info.value.tagValue(key).value() != newValue) // keep only difference
+        val tagFields = info.value.tagFields
+        val field = tagFields[key]
+        if (field != null && field.value() != newValue) { // keep only difference
             _allEditRequest[key] = newValue
+        }
     }
 
 }

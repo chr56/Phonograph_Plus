@@ -171,7 +171,7 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
 internal fun TagEditorScreenViewModel.generateDiff(): TagDiff {
     val current = infoTableState.info.value
     val tagDiff = infoTableState.allEditRequests.map { (key, new) ->
-        val old = current.tagValue(key).value()
+        val old = current.tagFields[key]?.value() ?: ""
         Triple(key, old, new)
     }
     val artworkDiff =

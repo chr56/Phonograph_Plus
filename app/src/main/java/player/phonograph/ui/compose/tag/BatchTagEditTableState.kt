@@ -71,4 +71,4 @@ class BatchTagEditTableState(info: List<SongInfoModel>, defaultColor: Color) {
 }
 
 internal fun List<SongInfoModel>.reduceTags(key: FieldKey) =
-    map { it.tagValue(key).value() }.filterNot { it.isEmpty() }.toSet()
+    mapNotNull { it.tagFields[key]?.value() }.filterNot { it.isEmpty() }.toSet()
