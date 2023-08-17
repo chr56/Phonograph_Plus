@@ -12,7 +12,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import java.util.EnumMap
 
-open class InfoTableState(info: SongInfoModel, defaultColor: Color) {
+class AudioDetailState(info: SongInfoModel, defaultColor: Color, val editable: Boolean) {
+
     private val _info: MutableStateFlow<SongInfoModel> = MutableStateFlow(info)
     val info get() = _info as StateFlow<SongInfoModel>
 
@@ -21,24 +22,24 @@ open class InfoTableState(info: SongInfoModel, defaultColor: Color) {
     fun updateTitleColor(color: Color) {
         _titleColor.update { color }
     }
-}
-
-class EditableInfoTableState(
-    info: SongInfoModel,
-    color: Color,
-) : InfoTableState(info, color) {
 
     private val _allEditRequest: MutableMap<FieldKey, String?> = EnumMap(FieldKey::class.java)
     val allEditRequests: Map<FieldKey, String?> get() = _allEditRequest
 
-    fun editRequest(key: FieldKey, newValue: String?) {
-        val tagFields = info.value.tagFields
-        val field = tagFields[key]
-        if (field != null && field.value() != newValue) { // keep only difference
-            _allEditRequest[key] = newValue
+    fun editTag(key: FieldKey, newValue: String?): Boolean {
+        return if (editable) {
+            val tagFields = info.value.tagFields
+            val field = tagFields[key]
+            if (field != null && field.value() != newValue) { // keep only difference
+                _allEditRequest[key] = newValue
+                true
+            } else {
+                false
+            }
+        } else {
+            false // not editable
         }
     }
-
 }
 
-typealias EditRequest = (FieldKey, String?) -> Unit
+typealias EditRequest = (FieldKey, String?) -> Boolean

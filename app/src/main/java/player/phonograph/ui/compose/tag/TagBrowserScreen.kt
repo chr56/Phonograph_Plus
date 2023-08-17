@@ -55,7 +55,7 @@ internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel, context: Con
                 }
             )
         }
-        InfoTable(viewModel.infoTableState)
+        InfoTable(viewModel.audioDetailState)
     }
     CoverImageDetailDialog(
         state = viewModel.coverImageDetailDialogState,
@@ -97,7 +97,7 @@ private fun saveImpl(
         coroutineScope,
         context,
         songFile,
-        model.infoTableState.allEditRequests,
+        model.audioDetailState.allEditRequests,
         model.needDeleteCover,
         model.needReplaceCover,
         model.newCover

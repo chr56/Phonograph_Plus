@@ -33,14 +33,13 @@ import androidx.compose.ui.unit.dp
  * Text infomation
  */
 @Composable
-internal fun InfoTable(stateHolder: InfoTableState) {
+internal fun InfoTable(stateHolder: AudioDetailState) {
 
     val titleColor = stateHolder.titleColor.collectAsState().value
     val info = stateHolder.info.collectAsState().value
 
-    val editable = stateHolder is EditableInfoTableState
     val editRequest: EditRequest = remember {
-        { key, newValue -> (stateHolder as? EditableInfoTableState)?.editRequest(key, newValue) }
+        { key, newValue -> stateHolder.editTag(key, newValue) }
     }
 
     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
@@ -63,7 +62,7 @@ internal fun InfoTable(stateHolder: InfoTableState) {
         Spacer(modifier = Modifier.height(16.dp))
         Title(stringResource(R.string.music_tags), color = titleColor)
         for ((_, field) in info.tagFields) {
-            Tag(field, editable, editRequest, hideIfEmpty = true)
+            Tag(field, stateHolder.editable, editRequest, hideIfEmpty = true)
         }
         //
         // Other Tag (if available)

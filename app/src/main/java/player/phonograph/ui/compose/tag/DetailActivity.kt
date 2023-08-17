@@ -79,14 +79,14 @@ class DetailActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
 
 class DetailScreenViewModel(song: Song, defaultColor: Color) :
         TagBrowserScreenViewModel(song, defaultColor) {
-    private var _infoTableState: InfoTableState? = null
-    override val infoTableState: InfoTableState
-        @Synchronized get() {
-            if (_infoTableState == null) {
-                _infoTableState =
-                    InfoTableState(loadSongInfo(song), defaultColor)
+    private var _audioDetailState: AudioDetailState? = null
+    override val audioDetailState: AudioDetailState
+        get() {
+            if (_audioDetailState == null) {
+                _audioDetailState =
+                    AudioDetailState(loadSongInfo(song), defaultColor, false)
             }
-            return _infoTableState!!
+            return _audioDetailState!!
         }
 
     class Factory(private val song: Song, private val color: Color) : ViewModelProvider.Factory {

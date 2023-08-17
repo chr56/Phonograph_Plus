@@ -93,7 +93,7 @@ class TagEditorActivity :
     }
 
     private fun back() {
-        if (model.infoTableState.allEditRequests.isEmpty()) {
+        if (model.audioDetailState.allEditRequests.isEmpty()) {
             finish()
         } else {
             model.exitWithoutSavingDialogState.show()
@@ -118,14 +118,14 @@ class TagEditorActivity :
 
 class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
         TagBrowserScreenViewModel(song, defaultColor) {
-    private var _infoTableViewModel: EditableInfoTableState? = null
-    override val infoTableState: EditableInfoTableState
-        @Synchronized get() {
-            if (_infoTableViewModel == null) {
-                _infoTableViewModel =
-                    EditableInfoTableState(loadSongInfo(song), defaultColor)
+    private var _audioDetailState: AudioDetailState? = null
+    override val audioDetailState: AudioDetailState
+        get() {
+            if (_audioDetailState == null) {
+                _audioDetailState =
+                    AudioDetailState(loadSongInfo(song), defaultColor, true)
             }
-            return _infoTableViewModel!!
+            return _audioDetailState!!
         }
 
     val saveConfirmationDialogState = MaterialDialogState(false)
@@ -169,8 +169,8 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
 }
 
 internal fun TagEditorScreenViewModel.generateDiff(): TagDiff {
-    val current = infoTableState.info.value
-    val tagDiff = infoTableState.allEditRequests.map { (key, new) ->
+    val current = audioDetailState.info.value
+    val tagDiff = audioDetailState.allEditRequests.map { (key, new) ->
         val old = current.tagFields[key]?.value() ?: ""
         Triple(key, old, new)
     }
