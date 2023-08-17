@@ -102,9 +102,7 @@ internal fun Tag(
                 value = tagValue,
                 onTextChanged = { newValue ->
                     @Suppress("UnnecessaryVariable") val oldValue = tagValue
-                    val action: EditAction? = if (oldValue.isEmpty()) {
-                        EditAction.Insert(field.key, newValue)
-                    } else if (newValue.isEmpty()) {
+                    val action: EditAction? = if (newValue.isEmpty()) {
                         EditAction.Delete(field.key)
                     } else if (oldValue != newValue) {
                         EditAction.Update(field.key, newValue)

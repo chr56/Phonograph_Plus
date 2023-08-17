@@ -178,7 +178,6 @@ internal fun BatchTagEditScreenViewModel.generateDiff(): TagDiff {
     val tagDiff = infoTableState.pendingEditRequests.map { action ->
         val new = when (action) {
             is EditAction.Delete -> null
-            is EditAction.Insert -> action.value
             is EditAction.Update -> action.newValue
         }
         Triple(action.key, ("(${action.key.name})"), new)

@@ -88,7 +88,6 @@ private fun writeTag(tagsHeader: Tag, action: EditAction) {
     try {
         when (action) {
             is EditAction.Delete -> tagsHeader.deleteField(action.key)
-            is EditAction.Insert -> tagsHeader.setField(action.key, action.value)
             is EditAction.Update -> tagsHeader.setField(action.key, action.newValue)
         }
     } catch (e: KeyNotFoundException) {

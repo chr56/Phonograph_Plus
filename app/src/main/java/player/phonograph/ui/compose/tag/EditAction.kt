@@ -50,22 +50,6 @@ sealed interface EditAction {
         }
     }
 
-    data class Insert(override val key: FieldKey, val value: String) : EditAction {
-        override val description: String get() = "Insert $key as $value"
-        override fun valid(audioFile: AudioFile): ValidResult {
-            val tag = audioFile.tag ?: return ValidResult.NoSuchKey
-            val target = try {
-                tag.getFirst(key)
-            } catch (e: TagNotFoundException) {
-                null
-            }
-            return when (target) {
-                null -> ValidResult.Valid
-                else -> ValidResult.AlreadyExisted
-            }
-        }
-    }
-
 
     sealed class ValidResult {
         abstract val message: String
@@ -101,32 +85,13 @@ sealed interface EditAction {
             val result = original.toMutableList()
             var completed = false
             outer@ while (!completed) {
-                Log.d(TAG, "Loop!")
                 var index = 0
                 inner@ while (index + 1 <= result.lastIndex) {
-                    Log.d(TAG, "::index $index")
                     val u = result[index]
                     val b = result[index + 1]
-                    if (u.key == b.key) {
-                        // override check
-                        if (b is Delete) {// delete
-                            result.removeAt(index)
-                            continue@outer
-                        } else {  // alter
-                            if (u is Insert) {
-                                val key = result.removeAt(index).key
-                                val value = when (b) {
-                                    is Insert -> b.value
-                                    is Update -> b.newValue
-                                    else      -> throw Exception()
-                                }
-                                result.add(index, Insert(key, value))
-                                continue@outer
-                            } else {
-                                result.removeAt(index)
-                                continue@outer
-                            }
-                        }
+                    if (u.key == b.key) { // override check
+                        result.removeAt(index)
+                        continue@outer
                     }
                     index++
                 }

@@ -175,7 +175,6 @@ internal fun TagEditorScreenViewModel.generateDiff(): TagDiff {
         val old = current.tagFields[action.key]?.value() ?: ""
         val new = when (action) {
             is EditAction.Delete -> null
-            is EditAction.Insert -> action.value
             is EditAction.Update -> action.newValue
         }
         Triple(action.key, old, new)
