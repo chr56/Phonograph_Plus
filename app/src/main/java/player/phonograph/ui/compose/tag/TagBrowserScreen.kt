@@ -71,6 +71,7 @@ internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel, context: Con
             val songFile = File(viewModel.song.data)
             val coroutineScope = CoroutineScope(Dispatchers.Unconfined)
             if (songFile.canWrite()) {
+                viewModel.mergeActions()
                 saveImpl(viewModel, songFile, coroutineScope, context ?: App.instance)
             } else {
                 coroutineScope.launch(Dispatchers.Main) {

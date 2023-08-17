@@ -169,6 +169,7 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
 }
 
 internal fun TagEditorScreenViewModel.generateDiff(): TagDiff {
+    mergeActions()
     val current = audioDetailState.info.value
     val tagDiff = audioDetailState.pendingEditRequests.map { action ->
         val old = current.tagFields[action.key]?.value() ?: ""

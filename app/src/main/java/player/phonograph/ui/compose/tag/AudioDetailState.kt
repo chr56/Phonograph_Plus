@@ -21,7 +21,7 @@ class AudioDetailState(info: SongInfoModel, defaultColor: Color, val editable: B
         _titleColor.update { color }
     }
 
-    private val _pendingEditRequests: MutableList<EditAction> = mutableListOf()
+    private var _pendingEditRequests: MutableList<EditAction> = mutableListOf()
     val pendingEditRequests: List<EditAction> get() = _pendingEditRequests.toList()
 
     val hasEdited: Boolean get() = pendingEditRequests.isNotEmpty()
@@ -33,5 +33,9 @@ class AudioDetailState(info: SongInfoModel, defaultColor: Color, val editable: B
         } else {
             false
         }
+    }
+
+    fun mergeActions() {
+        _pendingEditRequests = EditAction.merge(_pendingEditRequests)
     }
 }
