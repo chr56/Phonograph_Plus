@@ -54,7 +54,7 @@ object MusicDatabase {
 @Database(
     entities = [Song::class, Album::class, Artist::class, SongAndArtistLinkage::class],
     version = 1,
-    exportSchema = false
+    exportSchema = true,
 )
 abstract class SongDataBase : RoomDatabase() {
     abstract fun SongDao(): SongDao
