@@ -7,6 +7,7 @@
 package player.phonograph.repo.room
 
 import player.phonograph.App
+import player.phonograph.notification.DatabaseUpdateNotification
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.util.debug
 import player.phonograph.util.text.splitMultiTag
@@ -112,7 +113,7 @@ object Refresher2 {
         Log.i(TAG, "Start importing")
 
         scope.launch {
-            // DatabaseUpdateNotification.sendNotification(context.getString(R.string.updating_database))
+            DatabaseUpdateNotification.send(context)
             val songs: List<Song> = SongLoader.since(context, sinceTimestamp).map(SongConverter::fromSongModel)
             val songDataBase = MusicDatabase.songsDataBase
 
@@ -127,7 +128,7 @@ object Refresher2 {
             }
 
             Log.i(TAG, "End importing")
-            // DatabaseUpdateNotification.cancelNotification()
+            DatabaseUpdateNotification.cancel(context)
             callbacks?.let { it() }
         }
     }
