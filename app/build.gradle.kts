@@ -48,6 +48,12 @@ android {
         proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
 
 
+
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
+            // arg("room.incremental", "true")
+        }
+
         manifestPlaceholders["GIT_COMMIT_HASH"] = "-"
     }
 
