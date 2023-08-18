@@ -33,7 +33,7 @@ import player.phonograph.model.pages.Pages
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.repo.loader.Songs
-import player.phonograph.repo.room.Refresher
+import player.phonograph.repo.room.Scanner
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.service.queue.ShuffleMode
@@ -282,7 +282,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 onClick {
                     val items = listOf(
                         context.getString(R.string.refresh_database) to {
-                            Refresher.refreshDatabase(context)
+                            Scanner.refreshDatabase(context)
                         },
                         context.getString(R.string.action_grant_storage_permission) to {
                             navigateToStorageSetting(context)
