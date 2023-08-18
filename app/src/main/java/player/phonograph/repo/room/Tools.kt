@@ -93,13 +93,13 @@ object SongRegistry {
                     artistDao.override(artist)
                     artistSongsDao.override(SongAndArtistLinkage(song.id, artist.artistId))
 
-                    Log.v(TAG, "::artist was registered: ${song.title}<->$name")
+                    debug { Log.v(TAG, "::artist was registered: ${song.title}<->$name") }
                 }
             } else {
-                Log.v(TAG, "no artist in Song ${song.title}")
+                debug { Log.v(TAG, "no artist in Song ${song.title}") }
             }
         } else {
-            Log.v(TAG, "no artist in Song ${song.title}")
+            debug { Log.v(TAG, "no artist in Song ${song.title}") }
         }
     }
 }
@@ -107,7 +107,32 @@ object SongRegistry {
 private const val TAG = "RoomDatabase"
 private val scope = CoroutineScope(Dispatchers.IO)
 
-object Refresher2 {
+object Refresher {
+
+    fun refreshDatabase(context: Context) {
+        Log.i(TAG, "Start refreshing")
+        var latestSongTimestamp = -1L
+        var databaseUpdateTimestamp = -1L
+
+        // check latest music files
+        val latestSong = SongLoader.latest(context)
+        if (latestSong != null && latestSong.dateModified > 0) latestSongTimestamp = latestSong.dateModified
+        // check database timestamps
+        databaseUpdateTimestamp = MusicDatabase.Metadata.lastUpdateTimestamp
+
+        debug {
+            Log.i(TAG, "latestSongTimestamp    :$latestSongTimestamp")
+            Log.i(TAG, "databaseUpdateTimestamp:$databaseUpdateTimestamp")
+        }
+
+        // compare
+        if (latestSongTimestamp > databaseUpdateTimestamp || databaseUpdateTimestamp == -1L) {
+            importFromMediaStore(
+                context, MusicDatabase.Metadata.lastUpdateTimestamp, null
+            )
+            MusicDatabase.Metadata.lastUpdateTimestamp = currentTimestamp() / 1000
+        }
+    }
 
     fun importFromMediaStore(context: Context, sinceTimestamp: Long, callbacks: (() -> Unit)?) {
         Log.i(TAG, "Start importing")
@@ -120,7 +145,9 @@ object Refresher2 {
             for (song in songs) {
                 // song
                 songDataBase.SongDao().override(song)
-                Log.d(TAG, "Override Song: ${song.title}")
+                debug {
+                    Log.d(TAG, "Override Song: ${song.title}")
+                }
                 // album
                 songDataBase.AlbumDao().override(SongMarker.getAlbum(song))
                 // artist
