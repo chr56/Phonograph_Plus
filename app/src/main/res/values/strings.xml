@@ -399,6 +399,12 @@
     <string name="exit_without_saving">Exit without saving</string>
     <string name="save">Save</string>
     <string name="no_changes">No changes</string>
+    <string name="refresh_database">Refresh music database</string>
+    <string name="database_update_notification_name">Database Update</string>
+    <string name="database_update_notification_description">Notifications of database operations.</string>
+    <string name="updating_database">Updating database…</string>
+    <string name="scan_media_notification_name">Scan Media</string>
+    <string name="scan_media_notification_description">Notifications of media scanning.</string>
     <string name="image_source_media_store" translatable="false">Android MediaStore</string>
     <string name="image_source_media_metadata_retriever" translatable="false">Android Media Metadata Retriever</string>
     <string name="image_source_jaudio_tagger" translatable="false">JAudioTagger</string>

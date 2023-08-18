@@ -389,6 +389,12 @@
     <string name="exit_without_saving">退出不保存</string>
     <string name="save">保存</string>
     <string name="no_changes">沒有變化</string>
+    <string name="refresh_database">重新整理音樂資料庫</string>
+    <string name="database_update_notification_name">資料庫更新</string>
+    <string name="database_update_notification_description">資料庫操作通知</string>
+    <string name="scan_media_notification_name">媒體檔案掃描</string>
+    <string name="scan_media_notification_description">掃描媒體檔案通知</string>
+    <string name="updating_database">正在更新資料庫…</string>
     <string name="image_source_external_file">外部文件</string>
     <string name="image_source_config">圖片來源配置</string>
     <string name="action_backup">備份</string>
