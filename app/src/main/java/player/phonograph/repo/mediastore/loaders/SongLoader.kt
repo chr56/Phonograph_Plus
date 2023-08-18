@@ -5,7 +5,6 @@
 package player.phonograph.repo.mediastore.loaders
 
 import player.phonograph.model.Song
-import player.phonograph.model.file.Location
 import player.phonograph.repo.mediastore.internal.intoFirstSong
 import player.phonograph.repo.mediastore.internal.intoSongs
 import player.phonograph.repo.mediastore.internal.querySongs
@@ -51,5 +50,18 @@ object SongLoader {
             context, "${MediaStore.Audio.AudioColumns.TITLE} LIKE ?", arrayOf("%$title%")
         )
         return cursor.intoSongs()
+    }
+
+    @JvmStatic
+    fun since(context: Context, timestamp: Long): List<Song> {
+        val cursor = querySongs(
+            context, "${MediaStore.MediaColumns.DATE_MODIFIED}  > ?", arrayOf(timestamp.toString()),
+        )
+        return cursor.intoSongs()
+    }
+
+    @JvmStatic
+    fun latest(context: Context): Song? {
+        return all(context).maxByOrNull { it.dateModified }
     }
 }
