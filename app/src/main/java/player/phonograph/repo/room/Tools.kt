@@ -35,6 +35,8 @@ object SongConverter {
             albumName = song.albumName,
             artistId = song.artistId,
             artistName = song.artistName,
+            albumArtistName = song.albumArtistName,
+            composer = song.composer,
             year = song.year,
             duration = song.duration,
             trackNumber = song.trackNumber
@@ -56,8 +58,8 @@ object SongConverter {
             albumName = song.albumName,
             artistId = song.artistId,
             artistName = song.artistName,
-            "",
-            ""
+            albumArtistName = song.albumArtistName,
+            composer = song.composer,
         )
     }
 }

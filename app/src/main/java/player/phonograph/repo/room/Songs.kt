@@ -26,6 +26,7 @@ data class Song(
     var dateModified: Long = 0,
 
     var title: String? = null,
+
     @ColumnInfo(name = "album_id")
     var albumId: Long = 0,
     @ColumnInfo(name = "album_name")
@@ -34,11 +35,14 @@ data class Song(
     var artistId: Long = 0,
     @ColumnInfo(name = "artist_name")
     var artistName: String? = null,
+    @ColumnInfo(name = "album_artist_name")
+    var albumArtistName: String?,
+    var composer: String?,
 
     var year: Int = 0,
     var duration: Long = 0,
     @ColumnInfo(name = "track_number")
-    var trackNumber: Int = 0
+    var trackNumber: Int = 0,
 )
 
 @Dao
