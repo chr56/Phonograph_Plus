@@ -39,6 +39,7 @@
     <string name="album_artist">アルバムアーティスト</string>
     <string name="year">年</string>
     <string name="track">トラック番号</string>
+    <string name="track_total">合計トラック数</string>
     <string name="lyrics">歌詞</string>
     <string name="saving_changes">変更を保存しています</string>
     <string name="label_details">詳細情報</string>
@@ -68,6 +69,9 @@
     <string name="save_playlists_title">ファイルを保存</string>
     <string name="add_playlist_title">プレイリストに追加</string>
     <string name="select_all_title">すべて選択</string>
+    <string name="unselect_all_title">すべての選択解除</string>
+    <string name="invert_selection">選択を反転</string>
+    <string name="action_play_all">すべて再生</string>
     <string name="action_shuffle_all">全曲シャッフル</string>
     <string name="action_shuffle_album">アルバムをシャッフル</string>
     <string name="action_shuffle_artist">アーティストをシャッフル</string>
@@ -414,4 +418,9 @@
     <string name="action_speed">速度</string>
     <string name="pref_title_resume_after_audio_focus_gain">中断後自動的に再生を再開する</string>
     <string name="pref_summary_resume_after_audio_focus_gain">(電話やアラームなどによる)中断後に常に再生を再開します。</string>
+    <string name="tag_format">タグのフォーマット</string>
+    <string name="raw_tags">未加工タグ</string>
+    <string name="disk_number">ディスク番号</string>
+    <string name="disk_number_total">合計ディスク数</string>
+    <string name="rating">評価</string>
 </resources>
