@@ -199,6 +199,7 @@ dependencies {
     implementation(libs.okhttp3)
     implementation(libs.retrofit2)
     implementation(libs.coil)
+    implementation(libs.koin)
 
     implementation(libs.kotlinx.serialization.json)
 
