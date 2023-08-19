@@ -2,7 +2,6 @@ package util.phonograph.lastfm.rest.model
 
 import androidx.annotation.Keep
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.EncodeDefault
 
 @Keep
 @Serializable
@@ -18,4 +17,8 @@ class Album(
 
 @Keep
 @Serializable
-class Wiki(var content: String = "")
+class Wiki(
+    var published: String?,
+    var summary: String?,
+    var content: String?,
+)
