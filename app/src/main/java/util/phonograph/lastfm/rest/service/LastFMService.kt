@@ -8,11 +8,19 @@ import retrofit2.http.Header
 import retrofit2.http.Query
 import util.phonograph.lastfm.rest.model.LastFmAlbum
 import util.phonograph.lastfm.rest.model.LastFmArtist
+import util.phonograph.lastfm.rest.model.LastFmTrack
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 interface LastFMService {
+
+    @GET("$BASE_QUERY_PARAMETERS&method=track.getinfo")
+    fun getTrackInfo(
+        @Query("track") name: String?,
+        @Query("artist") artistName: String?,
+        @Query("lang") language: String?,
+    ): Call<LastFmTrack?>
 
     @GET("$BASE_QUERY_PARAMETERS&method=album.getinfo")
     fun getAlbumInfo(
