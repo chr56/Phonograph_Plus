@@ -66,10 +66,10 @@ private fun readAudioPropertyFields(audioHeader: AudioHeader): Map<FilePropertyF
     val bitRate = "${audioHeader.bitRate} kb/s"
     val samplingRate = "${audioHeader.sampleRate} Hz"
     return mapOf(
-        FilePropertyField.Key.TRACK_LENGTH to StringFilePropertyField(fileFormat),
-        FilePropertyField.Key.FILE_FORMAT to StringFilePropertyField(bitRate),
-        FilePropertyField.Key.BIT_RATE to StringFilePropertyField(samplingRate),
-        FilePropertyField.Key.SAMPLING_RATE to LongFilePropertyField(trackLength),
+        FilePropertyField.Key.FILE_FORMAT to StringFilePropertyField(fileFormat),
+        FilePropertyField.Key.BIT_RATE to StringFilePropertyField(bitRate),
+        FilePropertyField.Key.SAMPLING_RATE to StringFilePropertyField(samplingRate),
+        FilePropertyField.Key.TRACK_LENGTH to LongFilePropertyField(trackLength),
     )
 }
 
