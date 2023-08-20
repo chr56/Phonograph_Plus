@@ -8,6 +8,7 @@ import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.model.TagData
 import player.phonograph.model.res
+import player.phonograph.model.text
 import player.phonograph.ui.compose.components.Title
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
@@ -82,9 +83,11 @@ private fun AddMoreButton(model: TagInfoTableViewModel) {
             FieldKey.values().filterNot { it in model.viewState.value.tagFields.keys }
 
         DropdownMenu(expanded = showed, onDismissRequest = { showed = false }) {
+            val context = LocalContext.current
             for (fieldKey in fieldKeys) {
+                val text = fieldKey.text(context.resources)
                 val res = fieldKey.res()
-                val name = if (res > 0) "${stringResource(id = res)} (${fieldKey.name})" else fieldKey.name
+                val name = if (res > 0) "$text (${fieldKey.name})" else fieldKey.name
                 Text(
                     name,
                     modifier = Modifier
@@ -121,10 +124,8 @@ private fun CommonTag(
 ) {
     val context = LocalContext.current
 
-    val tagName = run {
-        val tagNameRes = key.res()
-        if (tagNameRes > 0) stringResource(id = tagNameRes) else key.name
-    }
+    val tagName = key.text(context.resources)
+
     val tagValue = field.text(context.resources)
 
     Box(modifier = Modifier.fillMaxWidth()) {

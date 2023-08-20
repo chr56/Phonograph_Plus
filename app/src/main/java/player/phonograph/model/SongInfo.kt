@@ -76,6 +76,11 @@ fun FieldKey.res(): Int =
         else                  -> -1
     }
 
+fun FieldKey.text(resources: Resources): String {
+    val stringRes = res()
+    return if (stringRes > 0) resources.getString(stringRes) else name
+}
+
 val availableCommonFieldKey =
     arrayOf(
         FieldKey.TITLE,

@@ -15,7 +15,7 @@ import org.jaudiotagger.tag.FieldKey.GENRE
 import org.jaudiotagger.tag.FieldKey.LYRICIST
 import org.jaudiotagger.tag.FieldKey.YEAR
 import player.phonograph.R
-import player.phonograph.model.res
+import player.phonograph.model.text
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextFieldItem
 import player.phonograph.ui.compose.components.VerticalTextItem
@@ -48,6 +48,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import android.content.Context
@@ -126,10 +127,10 @@ private fun MultipleTag(
 ) {
     val prefills = stateHolder.info.collectAsState().value.reduceTags(key)
 
-    val tagNameRes = remember { key.res() }
-    val tagName = stringResource(id = tagNameRes)
+    val context = LocalContext.current
+    val tagName = key.text(context.resources)
 
-    val currentValue = remember { MutableStateFlow("") }
+    val currentValue = remember(key) { MutableStateFlow("") }
 
     var showDropdownMenu by remember { mutableStateOf(false) }
 
