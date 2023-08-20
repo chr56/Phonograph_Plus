@@ -5,7 +5,6 @@
 package player.phonograph.ui.compose.tag
 
 import player.phonograph.model.SongInfoModel
-import player.phonograph.model.TagData.TextData
 import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,13 +22,7 @@ class AudioDetailState(info: SongInfoModel, defaultColor: Color, val editable: B
     }
 
     val tagInfoTableViewModel: TagInfoTableViewModel = TagInfoTableViewModel(
-        run {//todo
-            val songInfoModel = _info.value
-            val tagFields =
-                songInfoModel.tagFields.filter { it.value.content is TextData }.mapValues { it.value.content }
-            val allFields = songInfoModel.allTags ?: emptyMap()
-            TagInfoTableState(editable, songInfoModel.tagFormat, tagFields, allFields)
-        }
+        TagInfoTableState.from(_info.value, editable)
     )
 
     val pendingEditRequests: List<EditAction> get() = tagInfoTableViewModel.pendingEditRequests
