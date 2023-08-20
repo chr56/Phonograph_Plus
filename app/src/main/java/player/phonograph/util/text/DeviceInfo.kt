@@ -32,7 +32,7 @@ fun getDeviceInfo(context: Context): String {
     val versionName: String = currentVersionName(context)
     val versionCode: String = currentVersionCode(context).toString()
 
-    val gitCommitHash: String = gitRevisionHash(context).substring(0, 20)
+    val gitCommitHash: String = gitRevisionHash(context)
     val appLanguage: String = Locale.getDefault().language
 
     // os
