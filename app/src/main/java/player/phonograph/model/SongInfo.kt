@@ -5,7 +5,6 @@
 package player.phonograph.model
 
 import org.jaudiotagger.tag.FieldKey
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mechanism.tag.TagFormat
 import androidx.annotation.StringRes
@@ -124,35 +123,33 @@ class LongFilePropertyField(private val _value: Long) : FilePropertyField<Long>(
 }
 
 class TagField(val key: FieldKey, val content: TagData) : Field<String> {
-    override fun value(): String = content.text(App.instance.resources)//todo
+    override fun value(): String = content.text()
 }
 
 
 sealed interface TagData {
-    /**
-     * localized or original text to display
-     */
-    fun text(resources: Resources): String
+
+    fun text(): String
 
     data class TextData(val content: String) : TagData {
-        override fun text(resources: Resources): String = content
+        override fun text(): String = content
     }
 
     data class MultipleData(val contents: Collection<*>) : TagData {
-        override fun text(resources: Resources): String {
+        override fun text(): String {
             return contents.joinToString(separator = "\n") { it.toString() }
         }
     }
 
     object EmptyData : TagData {
-        override fun text(resources: Resources): String = "<Empty>"
+        override fun text(): String = "<Empty>"
     }
 
     object BinaryData : TagData {
-        override fun text(resources: Resources): String = "<Binary>"
+        override fun text(): String = "<Binary>"
     }
 
     class ErrData(val message: CharSequence) : TagData {
-        override fun text(resources: Resources): String = "<Error: $message>"
+        override fun text(): String = "<Error: $message>"
     }
 }

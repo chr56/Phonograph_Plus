@@ -126,7 +126,7 @@ private fun CommonTag(
 
     val tagName = key.text(context.resources)
 
-    val tagValue = field.text(context.resources)
+    val tagValue = field.text()
 
     Box(modifier = Modifier.fillMaxWidth()) {
         if (editable) {
@@ -143,7 +143,7 @@ private fun AllTagTable(model: TagInfoTableViewModel) {
     val tagFields = state.allTags
     val context = LocalContext.current
     for ((key, field) in tagFields) {
-        Item(key, field.text(context.resources))
+        Item(key, field.text())
     }
 }
 
