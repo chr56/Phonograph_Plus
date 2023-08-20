@@ -6,6 +6,8 @@ package player.phonograph.ui.compose.tag
 
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.mechanism.tag.TagFormat
+import player.phonograph.model.TagData
+import player.phonograph.model.TagData.TextData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -54,7 +56,7 @@ class TagInfoTableViewModel(state: TagInfoTableState) : ViewModel() {
     }
 
     private fun appendNewTagToView(fieldKey: FieldKey): TagInfoTableState {
-        val tmp = _viewState.value.tagFields + (fieldKey to TextTag(""))
+        val tmp = _viewState.value.tagFields + (fieldKey to TextData(""))
         return _viewState.value.copy(tagFields = tmp)
     }
 

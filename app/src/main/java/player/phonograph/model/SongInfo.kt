@@ -5,6 +5,7 @@
 package player.phonograph.model
 
 import org.jaudiotagger.tag.FieldKey
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mechanism.tag.TagFormat
 import androidx.annotation.StringRes
@@ -20,7 +21,7 @@ class SongInfoModel(
     val audioPropertyFields: Map<FilePropertyField.Key, FilePropertyField<out Any>>,
     val tagFields: Map<FieldKey, TagField>,
     val tagFormat: TagFormat = TagFormat.Unknown,
-    val allTags: Map<String, String>? = null,
+    val allTags: Map<String, TagData>? = null,
 ) {
 
     companion object {
@@ -70,7 +71,7 @@ fun FieldKey.res(): Int =
         FieldKey.DISC_TOTAL   -> R.string.disk_number
         FieldKey.TRACK        -> R.string.track
         FieldKey.TRACK_TOTAL  -> R.string.track_total
-        FieldKey.RATING      -> R.string.rating
+        FieldKey.RATING       -> R.string.rating
         FieldKey.COMMENT      -> R.string.comment
         else                  -> -1
     }
@@ -117,7 +118,30 @@ class LongFilePropertyField(private val _value: Long) : FilePropertyField<Long>(
     override fun value(): Long = _value
 }
 
-class TagField(val key: FieldKey, private val _value: String?) : Field<String> {
-    override fun value(): String = _value ?: ""
+class TagField(val key: FieldKey, val content: TagData) : Field<String> {
+    override fun value(): String = content.text(App.instance.resources)//todo
 }
 
+
+sealed interface TagData {
+    /**
+     * localized or original text to display
+     */
+    fun text(resources: Resources): String
+
+    data class TextData(val content: String) : TagData {
+        override fun text(resources: Resources): String = content
+    }
+
+    object EmptyData : TagData {
+        override fun text(resources: Resources): String = "<Empty>"
+    }
+
+    object BinaryData : TagData {
+        override fun text(resources: Resources): String = "<Binary>"
+    }
+
+    object ErrData:TagData {
+        override fun text(resources: Resources): String = "<Error>"
+    }
+}

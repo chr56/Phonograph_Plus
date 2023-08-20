@@ -9,12 +9,14 @@ import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
 import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.KeyNotFoundException
+import player.phonograph.model.TagData.EmptyData
 import player.phonograph.model.FilePropertyField
 import player.phonograph.model.LongFilePropertyField
 import player.phonograph.model.Song
 import player.phonograph.model.SongInfoModel
 import player.phonograph.model.StringFilePropertyField
 import player.phonograph.model.TagField
+import player.phonograph.model.TagData.TextData
 import player.phonograph.model.availableCommonFieldKey
 import player.phonograph.util.reportError
 import java.io.File
@@ -50,7 +52,7 @@ fun loadSongInfo(songFile: File): SongInfoModel {
             filePath = StringFilePropertyField(filePath),
             fileSize = LongFilePropertyField(fileSize),
             audioPropertyFields = emptyMap(),
-            tagFields = mapOf(FieldKey.TITLE to TagField(FieldKey.TITLE, "error while reading the song file")),
+            tagFields = mapOf(FieldKey.TITLE to TagField(FieldKey.TITLE, TextData("ERR"))),
             tagFormat = TagFormat.Unknown,
             null,
         )
@@ -78,9 +80,11 @@ private fun readTagFields(audioFile: AudioFile): Map<FieldKey, TagField> =
 private fun readTagFieldsImpl(audioFile: AudioFile, keys: Array<FieldKey>): Map<FieldKey, TagField> =
     keys.associateWith { key ->
         val value = try {
-            audioFile.tag.getFirst(key)
+            TextData(
+                audioFile.tag.getFirst(key)
+            )
         } catch (e: KeyNotFoundException) {
-            null
+            EmptyData
         }
         TagField(key, value)
     }
