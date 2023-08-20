@@ -133,6 +133,12 @@ sealed interface TagData {
         override fun text(resources: Resources): String = content
     }
 
+    data class MultipleData(val contents: Collection<*>) : TagData {
+        override fun text(resources: Resources): String {
+            return contents.joinToString(separator = "\n") { it.toString() }
+        }
+    }
+
     object EmptyData : TagData {
         override fun text(resources: Resources): String = "<Empty>"
     }
@@ -141,7 +147,7 @@ sealed interface TagData {
         override fun text(resources: Resources): String = "<Binary>"
     }
 
-    object ErrData:TagData {
+    object ErrData : TagData {
         override fun text(resources: Resources): String = "<Error>"
     }
 }
