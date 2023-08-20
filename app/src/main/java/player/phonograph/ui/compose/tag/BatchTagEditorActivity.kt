@@ -18,6 +18,7 @@ import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.parcelable
+import player.phonograph.util.parcelableArrayList
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
@@ -99,7 +100,7 @@ class BatchTagEditorActivity :
 
     companion object {
         private fun parseIntent(context: Context, intent: Intent): List<Song> {
-            val songs: ArrayList<Song>? = intent.extras?.parcelable(SONGS)
+            val songs: ArrayList<Song>? = intent.extras?.parcelableArrayList(SONGS)
             val ids: LongArray? = intent.extras?.getLongArray(SONG_IDS)
             return songs ?: (ids?.map { SongLoader.id(context, it) }
                 ?: emptyList())
