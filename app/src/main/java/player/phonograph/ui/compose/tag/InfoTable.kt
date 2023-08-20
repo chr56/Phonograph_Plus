@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 internal fun InfoTable(audioDetailState: AudioDetailState) {
 
-    val stateHolder = remember { audioDetailState }
+    val stateHolder = remember(audioDetailState.info) { audioDetailState }
     val titleColor = stateHolder.titleColor.collectAsState().value
     val info = stateHolder.info.collectAsState().value
 

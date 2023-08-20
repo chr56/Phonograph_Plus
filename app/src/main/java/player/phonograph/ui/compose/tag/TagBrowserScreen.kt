@@ -21,6 +21,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import android.app.Activity
 import android.content.Context
 import android.widget.Toast
@@ -30,7 +31,9 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 @Composable
-internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel, context: Context?) {
+internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel) {
+    val context = LocalContext.current
+
     val wrapper by viewModel.artwork.collectAsState()
     val paletteColor =
         ColorTools.makeSureContrastWith(MaterialTheme.colors.surface) {
@@ -60,9 +63,9 @@ internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel, context: Con
     CoverImageDetailDialog(
         state = viewModel.coverImageDetailDialogState,
         artworkExist = wrapper != null,
-        onSave = { viewModel.saveArtwork(context!!) },
+        onSave = { viewModel.saveArtwork(context) },
         onDelete = { (viewModel as? TagEditorScreenViewModel)?.deleteArtwork() },
-        onUpdate = { (viewModel as? TagEditorScreenViewModel)?.replaceArtwork(context!!) },
+        onUpdate = { (viewModel as? TagEditorScreenViewModel)?.replaceArtwork(context) },
         editMode = viewModel is TagEditorScreenViewModel
     )
     // edit mode
@@ -72,14 +75,14 @@ internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel, context: Con
             val coroutineScope = CoroutineScope(Dispatchers.Unconfined)
             if (songFile.canWrite()) {
                 viewModel.mergeActions()
-                saveImpl(viewModel, songFile, coroutineScope, context ?: App.instance)
+                saveImpl(viewModel, songFile, coroutineScope, context)
             } else {
                 coroutineScope.launch(Dispatchers.Main) {
                     Toast.makeText(
                         App.instance, R.string.permission_manage_external_storage_denied, Toast.LENGTH_SHORT
                     ).show()
                 }
-                navigateToStorageSetting(context ?: App.instance)
+                navigateToStorageSetting(context)
             }
         }
         ExitWithoutSavingDialog(viewModel.exitWithoutSavingDialogState) {

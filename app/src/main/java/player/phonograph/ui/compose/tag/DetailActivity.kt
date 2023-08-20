@@ -55,7 +55,7 @@ class DetailActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
     @Composable
     override fun SetUpContent() {
         PhonographTheme {
-            TagBrowserScreen(model, this)
+            TagBrowserScreen(model)
         }
     }
 

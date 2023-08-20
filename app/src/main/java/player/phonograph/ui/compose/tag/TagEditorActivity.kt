@@ -72,7 +72,7 @@ class TagEditorActivity :
     @Composable
     override fun SetUpContent() {
         PhonographTheme {
-            TagBrowserScreen(model, this)
+            TagBrowserScreen(model)
         }
     }
 
