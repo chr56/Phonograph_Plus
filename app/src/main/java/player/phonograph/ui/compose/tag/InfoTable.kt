@@ -54,74 +54,10 @@ internal fun InfoTable(audioDetailState: AudioDetailState) {
         }
 
         //
-        // Common Tag
+        // Music Tag
         //
+        TagInfoTable(model = audioDetailState.tagInfoTableViewModel, titleColor = titleColor)
         Spacer(modifier = Modifier.height(16.dp))
-        Title(stringResource(R.string.music_tags), color = titleColor)
-        for ((_, field) in info.tagFields) {
-            Tag(field, stateHolder, hideIfEmpty = true)
-        }
-        //
-        // Other Tag (if available)
-        //
-        info.allTags?.let { tags ->
-            Spacer(modifier = Modifier.height(8.dp))
-            Title(stringResource(R.string.raw_tags), color = titleColor)
-            Item(R.string.tag_format, info.tagFormat.id)
-            for ((key, value) in tags) {
-                Item(key, value)
-            }
-        }
-        // Lyrics
-        // Spacer(modifier = Modifier.height(16.dp))
-        // Title(stringResource(R.string.lyrics), color = color)
-        Spacer(modifier = Modifier.height(16.dp))
-    }
-}
-
-@Composable
-internal fun Tag(
-    field: TagField,
-    stateHolder: AudioDetailState,
-    hideIfEmpty: Boolean = false,
-) {
-    val tagNameRes = remember { field.key.res() }
-    val tagName = stringResource(id = tagNameRes)
-    val tagValue = remember { field.value() }
-
-    var editMode: Boolean by remember { mutableStateOf(false) }
-    val modifier = if (stateHolder.editable) Modifier.clickable { editMode = true } else Modifier
-
-    Box(modifier = modifier.fillMaxWidth()) {
-        if (editMode) {
-            //
-            // EditMode
-            //
-            EditableItem(
-                title = tagName,
-                value = tagValue,
-                onTextChanged = { newValue ->
-                    @Suppress("UnnecessaryVariable") val oldValue = tagValue
-                    val action: EditAction? = if (newValue.isEmpty()) {
-                        EditAction.Delete(field.key)
-                    } else if (oldValue != newValue) {
-                        EditAction.Update(field.key, newValue)
-                    } else {
-                        null
-                    }
-                    if (action != null) stateHolder.editTag(action)
-                }
-            )
-        } else {
-            //
-            // Common & Readonly
-            //
-            if (hideIfEmpty && !stateHolder.editable) {
-                if (tagValue.isNotEmpty()) Item(tagName, tagValue)
-            } else {
-                Item(tagName, tagValue)
-            }
-        }
     }
 }
 
@@ -132,21 +68,3 @@ private fun Item(@StringRes tagStringRes: Int, value: String) =
 
 @Composable
 internal fun Item(tag: String, value: String) = VerticalTextItem(title = tag, value = value)
-
-@Composable
-internal fun EditableItem(
-    title: String,
-    value: String?,
-    onTextChanged: (String) -> Unit,
-    trailingIcon: @Composable (() -> Unit)? = null,
-    allowReset: Boolean = true,
-) = VerticalTextFieldItem(
-    title = title,
-    value = value,
-    hint = title,
-    onTextChanged = onTextChanged,
-    extraTrailingIcon = trailingIcon,
-    allowReset = allowReset
-)
-
-private const val NA = "-"

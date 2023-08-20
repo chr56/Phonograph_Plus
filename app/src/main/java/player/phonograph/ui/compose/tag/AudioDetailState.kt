@@ -21,21 +21,19 @@ class AudioDetailState(info: SongInfoModel, defaultColor: Color, val editable: B
         _titleColor.update { color }
     }
 
-    private var _pendingEditRequests: MutableList<EditAction> = mutableListOf()
-    val pendingEditRequests: List<EditAction> get() = _pendingEditRequests.toList()
+    val tagInfoTableViewModel: TagInfoTableViewModel = TagInfoTableViewModel(
+        run {//todo
+            val songInfoModel = _info.value
+            val tagFields =
+                songInfoModel.tagFields.filter { it.value.value().isNotEmpty() }.mapValues { TextTag(it.value.value()) }
+            val allFields =
+                songInfoModel.allTags?.mapValues { TextTag(it.value) } ?: emptyMap()
+            TagInfoTableState(editable, songInfoModel.tagFormat, tagFields, allFields)
+        }
+    )
 
+    val pendingEditRequests: List<EditAction> get() = tagInfoTableViewModel.pendingEditRequests
     val hasEdited: Boolean get() = pendingEditRequests.isNotEmpty()
 
-    fun editTag(action: EditAction): Boolean {
-        return if (editable) {
-            _pendingEditRequests.add(action)
-            true
-        } else {
-            false
-        }
-    }
-
-    fun mergeActions() {
-        _pendingEditRequests = EditAction.merge(_pendingEditRequests)
-    }
+    fun mergeActions() = tagInfoTableViewModel.mergeActions()
 }
