@@ -168,8 +168,8 @@ private fun EditableItem(
                 .align(Alignment.Start),
         )
         // content
-        var currentValue by remember { mutableStateOf(original) }
-        var hasEdited by remember { mutableStateOf(false) }
+        var currentValue by remember(key) { mutableStateOf(original) }
+        var hasEdited by remember(key) { mutableStateOf(false) }
 
         fun updateValue(newValue: String) {
             currentValue = newValue
