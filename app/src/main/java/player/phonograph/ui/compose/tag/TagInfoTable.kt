@@ -173,9 +173,16 @@ private fun EditableItem(
         var currentValue by remember(key) { mutableStateOf(original) }
         var hasEdited by remember(key) { mutableStateOf(false) }
 
+
+        var indicatorColor by remember(key, original) {
+            mutableStateOf(Color(0xFF707070))
+        }
+
+
         fun updateValue(newValue: String) {
             currentValue = newValue
             hasEdited = newValue != original
+            indicatorColor = if (hasEdited) Color(0xFFF59C01) else Color(0xFF707070)
         }
 
         fun submit() {
@@ -183,6 +190,7 @@ private fun EditableItem(
                 TagInfoTableEvent.UpdateTag(key, currentValue)
             )
             hasEdited = false
+            indicatorColor = Color(0xFF00C72C)
         }
 
         TextField(
@@ -195,7 +203,7 @@ private fun EditableItem(
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = MaterialTheme.colors.background,
                 textColor = MaterialTheme.colors.onSurface,
-                focusedIndicatorColor = MaterialTheme.colors.onSurface.copy(alpha = TextFieldDefaults.IconOpacity),
+                focusedIndicatorColor = indicatorColor.copy(alpha = TextFieldDefaults.IconOpacity),
                 unfocusedIndicatorColor = Color.Transparent,
             ),
             textStyle = TextStyle(
