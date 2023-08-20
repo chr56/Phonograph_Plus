@@ -54,7 +54,7 @@ fun loadSongInfo(songFile: File): SongInfoModel {
             audioPropertyFields = emptyMap(),
             tagFields = mapOf(FieldKey.TITLE to TagField(FieldKey.TITLE, TextData("ERR"))),
             tagFormat = TagFormat.Unknown,
-            null,
+            allTags = emptyMap(),
         )
     }
 }

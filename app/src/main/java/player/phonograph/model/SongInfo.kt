@@ -19,8 +19,8 @@ class SongInfoModel(
     val fileSize: LongFilePropertyField,
     val audioPropertyFields: Map<FilePropertyField.Key, FilePropertyField<out Any>>,
     val tagFields: Map<FieldKey, TagField>,
-    val tagFormat: TagFormat = TagFormat.Unknown,
-    val allTags: Map<String, TagData>? = null,
+    val tagFormat: TagFormat,
+    val allTags: Map<String, TagData>
 ) {
 
     companion object {
@@ -33,7 +33,7 @@ class SongInfoModel(
                 emptyMap(),
                 emptyMap(),
                 TagFormat.Unknown,
-                null,
+                emptyMap(),
             )
     }
 
