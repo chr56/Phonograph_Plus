@@ -147,7 +147,7 @@ sealed interface TagData {
         override fun text(resources: Resources): String = "<Binary>"
     }
 
-    object ErrData : TagData {
-        override fun text(resources: Resources): String = "<Error>"
+    class ErrData(val message: CharSequence) : TagData {
+        override fun text(resources: Resources): String = "<Error: $message>"
     }
 }
