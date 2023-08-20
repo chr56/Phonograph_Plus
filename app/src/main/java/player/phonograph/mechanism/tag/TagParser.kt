@@ -24,6 +24,8 @@ import org.jaudiotagger.tag.mp4.field.Mp4TagTextField
 import org.jaudiotagger.tag.wav.WavTag
 import player.phonograph.model.TagData
 import player.phonograph.model.TagData.BinaryData
+import player.phonograph.model.TagData.EmptyData
+import player.phonograph.model.TagData.MultipleData
 import player.phonograph.model.TagData.ErrData
 import player.phonograph.model.TagData.TextData
 import player.phonograph.util.reportError
@@ -116,9 +118,9 @@ object ID3v2Readers {
                         is TagField -> {
                             preprocessTagField(data) {
                                 if (data is AbstractID3v2Frame) {
-                                    parseID3v2Frame(data)
+                                    TextData(parseID3v2Frame(data))
                                 } else {
-                                    data.rawContent.toString()
+                                    TextData(data.rawContent.toString())
                                 }
                             }
                         }
@@ -128,19 +130,19 @@ object ID3v2Readers {
                                 if (item is TagField)
                                     preprocessTagField(item) {
                                         if (it is AbstractID3v2Frame) {
-                                            parseID3v2Frame(it)
+                                            TextData(parseID3v2Frame(it))
                                         } else {
-                                            it.rawContent.toString()
+                                            TextData(it.rawContent.toString())
                                         }
                                     }
                                 else
-                                    item.toString()
-                            }.joinToString(separator = "\n") { it }
+                                    TextData(item.toString())
+                            }.let { MultipleData(it) }
                         }
 
-                        else        -> data.toString()
+                        else        -> TextData(data.toString())
                     }
-                }.mapValues { TextData(it.value) }
+                }
         }
 
         private fun parseID3v2Frame(frame: AbstractID3v2Frame): String {
@@ -191,11 +193,11 @@ object SimpleKeyValueReader : TagReader<AbstractTag> {
             entry.value.map { tagField ->
                 preprocessTagField(tagField) {
                     when (it) {
-                        is TagTextField -> it.content
-                        else            -> it.rawContent.toString()
+                        is TagTextField -> TextData(it.content)
+                        else            -> TextData(it.rawContent.toString())
                     }
                 }
-            }.joinToString(separator = "\n") { it }.let { TextData(it) }
+            }.let { MultipleData(it) }
         }
     }
 }
@@ -227,16 +229,13 @@ object Mp4TagReader : TagReader<Mp4Tag> {
 
 private inline fun <T : TagField> preprocessTagField(
     frame: T,
-    block: (frame: T) -> String,
-): String =
+    block: (frame: T) -> TagData,
+): TagData =
     when {
-        frame.isBinary -> BINARY
-        frame.isEmpty  -> EMPTY
+        frame.isBinary -> BinaryData
+        frame.isEmpty  -> EmptyData
         else           -> block(frame)
     }
-
-private const val BINARY = "<Binary Data>"
-private const val EMPTY = "<Empty>"
 
 private const val ERR_PARSE_FIELD = "<Err: failed to read field>"
 private const val ERR_PARSE_KEY = "<Err: failed to process key>"
