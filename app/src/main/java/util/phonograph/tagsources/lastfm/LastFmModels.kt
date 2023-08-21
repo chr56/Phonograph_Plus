@@ -10,15 +10,15 @@ import kotlinx.serialization.Serializable
 
 @Keep
 @Serializable
-class LastFmAlbum(var album: Album)
+class LastFmAlbumResponse(var album: LastFmAlbum)
 
 @Keep
 @Serializable
-class LastFmArtist(var artist: Artist)
+class LastFmArtistResponse(var artist: LastFmArtist)
 
 @Keep
 @Serializable
-class LastFmTrack(var track: Track)
+class LastFmTrackResponse(var track: LastFmTrack)
 
 @Keep
 @Serializable
@@ -30,35 +30,7 @@ class LastFmImage(
 
 @Keep
 @Serializable
-class Album(
-    var url: String,
-    var image: List<LastFmImage> = ArrayList(),
-    var wiki: Wiki? = null,
-)
-@Keep
-@Serializable
-class Artist(
-    var url: String,
-    var image: List<LastFmImage> = ArrayList(),
-    var bio: Bio? = null,
-)
-
-@Keep
-@Serializable
-class Track(
-    var name: String,
-    var mbid: String,
-    var url: String,
-    var listeners: Long,
-    var playcount: Long,
-    var artist: Artist,
-    var album: Album,
-    var wiki: Wiki,
-)
-
-@Keep
-@Serializable
-class Wiki(
+class LastFmWikiData(
     var published: String?,
     var summary: String?,
     var content: String?,
@@ -66,4 +38,28 @@ class Wiki(
 
 @Keep
 @Serializable
-class Bio(var content: String = "")
+class LastFmAlbum(
+    var url: String,
+    var image: List<LastFmImage> = ArrayList(),
+    var wiki: LastFmWikiData? = null,
+)
+@Keep
+@Serializable
+class LastFmArtist(
+    var url: String,
+    var image: List<LastFmImage> = ArrayList(),
+    var bio: LastFmWikiData? = null,
+)
+
+@Keep
+@Serializable
+class LastFmTrack(
+    var name: String,
+    var mbid: String,
+    var url: String,
+    var listeners: Long,
+    var playcount: Long,
+    var artist: LastFmArtist,
+    var album: LastFmAlbum,
+    var wiki: LastFmWikiData,
+)

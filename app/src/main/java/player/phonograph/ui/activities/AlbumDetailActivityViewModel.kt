@@ -14,7 +14,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import util.phonograph.tagsources.lastfm.LastFMRestClient
-import util.phonograph.tagsources.lastfm.LastFmAlbum
+import util.phonograph.tagsources.lastfm.LastFmAlbumResponse
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -69,8 +69,8 @@ class AlbumDetailActivityViewModel : ViewModel() {
     ) {
         lastFMRestClient.apiService
             .getAlbumInfo(album.title, album.artistName, lang)
-            .enqueue(object : Callback<LastFmAlbum?> {
-                override fun onResponse(call: Call<LastFmAlbum?>, response: Response<LastFmAlbum?>) {
+            .enqueue(object : Callback<LastFmAlbumResponse?> {
+                override fun onResponse(call: Call<LastFmAlbumResponse?>, response: Response<LastFmAlbumResponse?>) {
                     response.body()?.let { lastFmAlbum ->
                         // clear
                         lastFMUrl = null
@@ -94,7 +94,7 @@ class AlbumDetailActivityViewModel : ViewModel() {
                     resultCallback?.invoke(wikiText, lastFMUrl)
                 }
 
-                override fun onFailure(call: Call<LastFmAlbum?>, t: Throwable) {
+                override fun onFailure(call: Call<LastFmAlbumResponse?>, t: Throwable) {
                     ErrorNotification.postErrorNotification(t, "Load ${album.title} Fail")
                 }
             })

@@ -23,7 +23,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import util.phonograph.tagsources.lastfm.LastFMRestClient
-import util.phonograph.tagsources.lastfm.LastFmArtist
+import util.phonograph.tagsources.lastfm.LastFmArtistResponse
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -95,11 +95,11 @@ class ArtistDetailActivityViewModel(var artistId: Long) : ViewModel() {
         biography = null
         lastFMRestClient.apiService
             .getArtistInfo(artist.name, lang, null)
-            .enqueue(object : Callback<LastFmArtist?> {
+            .enqueue(object : Callback<LastFmArtistResponse?> {
 
                 override fun onResponse(
-                    call: Call<LastFmArtist?>,
-                    response: Response<LastFmArtist?>
+                    call: Call<LastFmArtistResponse?>,
+                    response: Response<LastFmArtistResponse?>
                 ) {
                     response.body()?.let { lastFmArtist ->
                         lastFmUrl = lastFmArtist.artist.url
@@ -132,7 +132,7 @@ class ArtistDetailActivityViewModel(var artistId: Long) : ViewModel() {
                     }
                 }
 
-                override fun onFailure(call: Call<LastFmArtist?>, t: Throwable) {
+                override fun onFailure(call: Call<LastFmArtistResponse?>, t: Throwable) {
                     biography = null
                     reportError(t, "LoadBiography", "Load ${artist.name} Fail")
                 }
