@@ -22,8 +22,8 @@ import player.phonograph.util.reportError
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import util.phonograph.lastfm.rest.LastFMRestClient
-import util.phonograph.lastfm.rest.model.LastFmArtist
+import util.phonograph.tagsources.lastfm.LastFMRestClient
+import util.phonograph.tagsources.lastfm.LastFmArtist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context

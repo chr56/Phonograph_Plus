@@ -1,14 +1,15 @@
+/*
+ *  Copyright (c) 2022~2023 chr_56
+ */
+
 @file:Suppress("SpellCheckingInspection")
 
-package util.phonograph.lastfm.rest.service
+package util.phonograph.tagsources.lastfm
 
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
-import util.phonograph.lastfm.rest.model.LastFmAlbum
-import util.phonograph.lastfm.rest.model.LastFmArtist
-import util.phonograph.lastfm.rest.model.LastFmTrack
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

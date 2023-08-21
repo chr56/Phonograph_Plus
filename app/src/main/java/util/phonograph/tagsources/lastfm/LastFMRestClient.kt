@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2023 chr_56, Karim Abou Zeid (kabouzeid)
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package util.phonograph.lastfm.rest
+package util.phonograph.tagsources.lastfm
 
 import lib.phonograph.serialization.KtSerializationRetrofitConverterFactory
 import okhttp3.Cache
@@ -14,7 +14,6 @@ import okhttp3.internal.format
 import okhttp3.internal.userAgent
 import player.phonograph.BuildConfig
 import retrofit2.Retrofit
-import util.phonograph.lastfm.rest.service.LastFMService
 import android.content.Context
 import java.io.File
 
