@@ -40,6 +40,7 @@
     <string name="album_artist">Albumin artisti</string>
     <string name="year">Vuosi</string>
     <string name="track">Kappaleen numero</string>
+    <string name="track_total">Kappaleiden määrä yhteensä</string>
     <string name="lyrics">Sanoitukset</string>
     <string name="saving_changes">Tallennetaan muutokset</string>
     <string name="label_details">Yksityiskohdat</string>
@@ -69,6 +70,8 @@
     <string name="save_playlists_title">Tallenna tiedostoina</string>
     <string name="add_playlist_title">Lisää soittolistaan</string>
     <string name="select_all_title">Valitse kaikki</string>
+    <string name="invert_selection">Käänteinen valinta</string>
+    <string name="action_play_all">Toista kaikki</string>
     <string name="action_shuffle_all">Sekoita kaikki</string>
     <string name="action_shuffle_album">Sekoita albumit</string>
     <string name="action_shuffle_artist">Sekoita artistit</string>
