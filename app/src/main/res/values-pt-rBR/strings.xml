@@ -40,6 +40,7 @@
     <string name="album_artist">Artista do álbum</string>
     <string name="year">Ano</string>
     <string name="track">Número da Faixa</string>
+    <string name="track_total">Número Total de Faixas</string>
     <string name="lyrics">Letra</string>
     <string name="saving_changes">Salvando alterações</string>
     <string name="label_details">Detalhes</string>
@@ -69,6 +70,9 @@
     <string name="save_playlists_title">Salvar como arquivos</string>
     <string name="add_playlist_title">Adicionar à lista de reprodução</string>
     <string name="select_all_title">Selecionar tudo</string>
+    <string name="unselect_all_title">Desmarcar tudo</string>
+    <string name="invert_selection">Inverter a seleção</string>
+    <string name="action_play_all">Reproduzir todas</string>
     <string name="action_shuffle_all">Misturar todas</string>
     <string name="action_shuffle_album">Misturar álbum</string>
     <string name="action_shuffle_artist">Misturar artista</string>
@@ -420,7 +424,14 @@
     <string name="action_grant_storage_permission">Conceder Permissão de Acesso ao Armazenamento Externo</string>
     <string name="action_pin">Fixar</string>
     <string name="action_unpin">Desafixar</string>
-    <string name="pref_title_use_legacy_status_bar_lyrics_api">Usar a API StatusBar Lyrics antiga</string>
+    <string name="pref_title_use_legacy_status_bar_lyrics_api">Usar a API de letras na Barra de Status antiga</string>
     <string name="pref_summary_use_legacy_status_bar_lyrics_api">Se estiver desabilitado, a API LyricGetter será usada ao invés da StatusBarLyricAPI. Isso é usado pelo Módulo do Xposed StatusBar Lyrics versão 6.x e posterior; Habilite de você estiver usando versões mais antigas do StatusBar Lyrics.</string>
     <string name="action_speed">Velocidade</string>
+    <string name="pref_title_resume_after_audio_focus_gain">Retomar a reprodução automaticamente após interrupções</string>
+    <string name="pref_summary_resume_after_audio_focus_gain">Sempre retomar a reprodução após interrupções (como telefonemas ou alarme).</string>
+    <string name="tag_format">Formato de etiqueta</string>
+    <string name="raw_tags">Etiquetas sem formatação</string>
+    <string name="disk_number">Número do Disco</string>
+    <string name="disk_number_total">Número Total de Discos</string>
+    <string name="rating">Classificação</string>
 </resources>
