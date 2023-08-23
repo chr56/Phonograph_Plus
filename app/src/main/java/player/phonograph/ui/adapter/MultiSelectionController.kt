@@ -193,6 +193,7 @@ class MultiSelectionController<I>(
             hide()
             unselectedAll()
         }
+        hide()
     }
 
     private fun ToolbarCab.setupMenu() {
