@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
-import java.util.EnumMap
 
 class BatchTagEditTableState(info: List<SongInfoModel>, defaultColor: Color) {
     private val _info: MutableStateFlow<List<SongInfoModel>> = MutableStateFlow(info)
@@ -30,17 +29,26 @@ class BatchTagEditTableState(info: List<SongInfoModel>, defaultColor: Color) {
         _titleColor.update { color }
     }
 
-    private val _allEditRequest: MutableMap<FieldKey, String?> = EnumMap(FieldKey::class.java)
-    val allEditRequests: Map<FieldKey, String?> get() = _allEditRequest
+    private val _pendingEditRequests: MutableList<EditAction> = mutableListOf()
+    val pendingEditRequests: List<EditAction> get() = _pendingEditRequests.toList()
+
+    val hasEdited: Boolean get() = pendingEditRequests.isNotEmpty()
 
     fun changeField(key: FieldKey, newValue: String) {
-        _allEditRequest[key] = newValue
+        _pendingEditRequests.add(
+            EditAction.Update(key, newValue)
+        )
     }
+
     fun removeField(key: FieldKey) {
-        _allEditRequest[key] = null
+        _pendingEditRequests.add(
+            EditAction.Delete(key)
+        )
     }
+
     fun undoChanges(key: FieldKey) {
-        _allEditRequest.remove(key)
+        val actions = _pendingEditRequests.filter { it.key == key }
+        _pendingEditRequests.removeAll(actions)
     }
 
     val coverImageDetailDialogState = MaterialDialogState(false)
@@ -71,4 +79,4 @@ class BatchTagEditTableState(info: List<SongInfoModel>, defaultColor: Color) {
 }
 
 internal fun List<SongInfoModel>.reduceTags(key: FieldKey) =
-    map { it.tagValue(key).value() }.filterNot { it.isEmpty() }.toSet()
+    mapNotNull { it.tagFields[key]?.value() }.filterNot { it.isEmpty() }.toSet()

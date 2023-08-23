@@ -22,11 +22,17 @@ import org.jaudiotagger.tag.mp4.field.Mp4TagRawBinaryField
 import org.jaudiotagger.tag.mp4.field.Mp4TagReverseDnsField
 import org.jaudiotagger.tag.mp4.field.Mp4TagTextField
 import org.jaudiotagger.tag.wav.WavTag
+import player.phonograph.model.TagData
+import player.phonograph.model.TagData.BinaryData
+import player.phonograph.model.TagData.EmptyData
+import player.phonograph.model.TagData.ErrData
+import player.phonograph.model.TagData.MultipleData
+import player.phonograph.model.TagData.TextData
 import player.phonograph.util.reportError
 
 
-fun readAllTags(audioFile: AudioFile): Map<String, String> {
-    val items: Map<String, String> = try {
+fun readAllTags(audioFile: AudioFile): Map<String, TagData> {
+    val items: Map<String, TagData> = try {
         when (val tag = audioFile.tag) {
             is AbstractID3v2Tag -> ID3v2Readers.ID3v2Reader.read(tag)
             is AiffTag          -> ID3v2Readers.AiffTagReader.read(tag)
@@ -46,12 +52,12 @@ fun readAllTags(audioFile: AudioFile): Map<String, String> {
 }
 
 sealed interface TagReader<T : Tag> {
-    fun read(tag: T): Map<String, String>
+    fun read(tag: T): Map<String, TagData>
 }
 
 object ID3v1TagReaders {
 
-    private fun readID3v1Tag(tag: ID3v1Tag): Map<String, String> {
+    private fun readID3v1Tag(tag: ID3v1Tag): Map<String, TagData> {
         return listOf(
             (tag.title as TagTextField),
             (tag.artist as TagTextField),
@@ -60,21 +66,21 @@ object ID3v1TagReaders {
             (tag.year as TagTextField),
             (tag.comment as TagTextField)
         ).associate {
-            (it.id ?: "") to (it.content ?: "")
+            (it.id ?: "") to TextData(it.content ?: "")
         }
     }
 
-    private fun readID3v11Tag(tag: ID3v11Tag): Map<String, String> {
+    private fun readID3v11Tag(tag: ID3v11Tag): Map<String, TagData> {
         val track = tag.track as TagTextField
-        return readID3v1Tag(tag) + mapOf(Pair(track.id, track.content))
+        return readID3v1Tag(tag) + mapOf(Pair(track.id, TextData(track.content)))
     }
 
     object ID3v1TagReader : TagReader<ID3v1Tag> {
-        override fun read(tag: ID3v1Tag): Map<String, String> = readID3v1Tag(tag)
+        override fun read(tag: ID3v1Tag): Map<String, TagData> = readID3v1Tag(tag)
     }
 
     object ID3v11TagReader : TagReader<ID3v11Tag> {
-        override fun read(tag: ID3v11Tag): Map<String, String> = readID3v11Tag(tag)
+        override fun read(tag: ID3v11Tag): Map<String, TagData> = readID3v11Tag(tag)
     }
 
 }
@@ -83,7 +89,7 @@ object ID3v2Readers {
 
     object ID3v2Reader : TagReader<AbstractID3v2Tag> {
 
-        override fun read(tag: AbstractID3v2Tag): Map<String, String> {
+        override fun read(tag: AbstractID3v2Tag): Map<String, TagData> {
             return tag.frameMap
                 .mapKeys { (key, frame) ->
                     val name = when (tag) {
@@ -99,7 +105,7 @@ object ID3v2Readers {
                         else         -> null
                     }
                     if (frames != null) {
-                        val description = frames.idToValueMap.getOrDefault(key, ERR_PARSE_KEY)
+                        val description = frames.idToValueMap.getOrDefault(key, "<Err: failed to process key>")
                         "[$key]${name.orEmpty()}($description)"
                     } else if (name != null) {
                         "[$key]$name"
@@ -114,7 +120,7 @@ object ID3v2Readers {
                                 if (data is AbstractID3v2Frame) {
                                     parseID3v2Frame(data)
                                 } else {
-                                    data.rawContent.toString()
+                                    TextData(data.rawContent.toString())
                                 }
                             }
                         }
@@ -126,36 +132,37 @@ object ID3v2Readers {
                                         if (it is AbstractID3v2Frame) {
                                             parseID3v2Frame(it)
                                         } else {
-                                            it.rawContent.toString()
+                                            TextData(it.rawContent.toString())
                                         }
                                     }
                                 else
-                                    item.toString()
-                            }.joinToString(separator = "\n") { it }
+                                    TextData(item.toString())
+                            }.let { MultipleData(it) }
                         }
 
-                        else        -> data.toString()
+                        else        -> TextData(data.toString())
                     }
                 }
         }
 
-        private fun parseID3v2Frame(frame: AbstractID3v2Frame): String {
+        private fun parseID3v2Frame(frame: AbstractID3v2Frame): TagData {
             return try {
-                when (val frameBody = frame.body) {
+                val text = when (val frameBody = frame.body) {
                     is FrameBodyTXXX -> "${frameBody.description}:\n\t${frameBody.userFriendlyValue}"
                     else             -> frameBody.userFriendlyValue
                 }
+                TextData(text)
             } catch (e: Exception) {
-                reportError(e, "readID3v2Tags", ERR_PARSE_FIELD)
-                ERR_PARSE_FIELD
+                reportError(e, "readID3v2Tags", "Failed to read $frame")
+                ErrData("Failed to read $frame")
             }
         }
     }
 
-    private fun readId3SupportingTag(tag: Id3SupportingTag): Map<String, String> = ID3v2Reader.read(tag.iD3Tag)
+    private fun readId3SupportingTag(tag: Id3SupportingTag): Map<String, TagData> = ID3v2Reader.read(tag.iD3Tag)
 
     object AiffTagReader : TagReader<AiffTag> {
-        override fun read(tag: AiffTag): Map<String, String> =
+        override fun read(tag: AiffTag): Map<String, TagData> =
             if (tag.isExistingId3Tag) {
                 readId3SupportingTag(tag)
             } else {
@@ -164,7 +171,7 @@ object ID3v2Readers {
     }
 
     object WavTagReader : TagReader<WavTag> {
-        override fun read(tag: WavTag): Map<String, String> =
+        override fun read(tag: WavTag): Map<String, TagData> =
             if (tag.isExistingId3Tag) {
                 readId3SupportingTag(tag)
             } else {
@@ -176,28 +183,28 @@ object ID3v2Readers {
 
 
 object FlacTagReader : TagReader<FlacTag> {
-    override fun read(tag: FlacTag): Map<String, String> = SimpleKeyValueReader.read(tag.vorbisCommentTag)
+    override fun read(tag: FlacTag): Map<String, TagData> = SimpleKeyValueReader.read(tag.vorbisCommentTag)
 }
 
 
 object SimpleKeyValueReader : TagReader<AbstractTag> {
-    override fun read(tag: AbstractTag): Map<String, String> {
+    override fun read(tag: AbstractTag): Map<String, TagData> {
         val mappedFields: Map<String, List<TagField>> = tag.mappedFields
         return mappedFields.mapValues { entry ->
             entry.value.map { tagField ->
                 preprocessTagField(tagField) {
                     when (it) {
-                        is TagTextField -> it.content
-                        else            -> it.rawContent.toString()
+                        is TagTextField -> TextData(it.content)
+                        else            -> TextData(it.rawContent.toString())
                     }
                 }
-            }.joinToString(separator = "\n") { it }
+            }.let { MultipleData(it) }
         }
     }
 }
 
 object Mp4TagReader : TagReader<Mp4Tag> {
-    override fun read(tag: Mp4Tag): Map<String, String> {
+    override fun read(tag: Mp4Tag): Map<String, TagData> {
         val fields = tag.all.filterIsInstance<Mp4TagField>()
         val keys = Mp4FieldKey.values()
         return fields.associate { field ->
@@ -210,12 +217,12 @@ object Mp4TagReader : TagReader<Mp4Tag> {
                 }
             }
             when (field) {
-                is Mp4TagCoverField      -> key to field.toString()
-                is Mp4TagBinaryField     -> key to BINARY
-                is Mp4TagReverseDnsField -> field.descriptor to field.content
-                is Mp4TagTextField       -> key to field.content
-                is Mp4TagRawBinaryField  -> key to BINARY
-                else                     -> key to ERR_PARSE_FIELD
+                is Mp4TagCoverField      -> key to TextData(field.toString())
+                is Mp4TagBinaryField     -> key to BinaryData
+                is Mp4TagReverseDnsField -> field.descriptor to TextData(field.content)
+                is Mp4TagTextField       -> key to TextData(field.content)
+                is Mp4TagRawBinaryField  -> key to BinaryData
+                else                     -> key to ErrData("Unknown: $field")
             }
         }
     }
@@ -223,16 +230,10 @@ object Mp4TagReader : TagReader<Mp4Tag> {
 
 private inline fun <T : TagField> preprocessTagField(
     frame: T,
-    block: (frame: T) -> String,
-): String =
+    block: (frame: T) -> TagData,
+): TagData =
     when {
-        frame.isBinary -> BINARY
-        frame.isEmpty  -> EMPTY
+        frame.isBinary -> BinaryData
+        frame.isEmpty  -> EmptyData
         else           -> block(frame)
     }
-
-private const val BINARY = "<Binary Data>"
-private const val EMPTY = "<Empty>"
-
-private const val ERR_PARSE_FIELD = "<Err: failed to read field>"
-private const val ERR_PARSE_KEY = "<Err: failed to process key>"

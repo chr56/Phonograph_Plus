@@ -4,11 +4,11 @@
 
 package player.phonograph.mechanism.tag.edit
 
-import org.jaudiotagger.tag.FieldKey
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.notification.BackgroundNotification
+import player.phonograph.ui.compose.tag.EditAction
 import android.app.Activity
 import android.content.Context
 import android.media.MediaScannerConnection
@@ -25,10 +25,10 @@ fun applyEdit(
     scope: CoroutineScope,
     context: Context,
     songFile: File,
-    allEditRequest: Map<FieldKey, String?>,
+    editRequests: List<EditAction>,
     needDeleteCover: Boolean,
     needReplaceCover: Boolean,
-    newCoverUri: Uri?
+    newCoverUri: Uri?,
 ) {
     scope.launch(Dispatchers.Default) {
         // notify user first
@@ -42,7 +42,7 @@ fun applyEdit(
             applyEditImpl(
                 context,
                 songFile,
-                allEditRequest,
+                editRequests,
                 needDeleteCover,
                 needReplaceCover,
                 newCoverUri

@@ -19,16 +19,9 @@ class SongInfoModel(
     val fileSize: LongFilePropertyField,
     val audioPropertyFields: Map<FilePropertyField.Key, FilePropertyField<out Any>>,
     val tagFields: Map<FieldKey, TagField>,
-    val tagFormat: TagFormat = TagFormat.Unknown,
-    val allTags: Map<String, String>? = null,
+    val tagFormat: TagFormat,
+    val allTags: Map<String, TagData>
 ) {
-
-
-    /**
-     * retrieve corresponding [TagField] for a music tag
-     */
-    fun tagValue(key: FieldKey): TagField =
-        tagFields[key] ?: throw IllegalStateException("unknown field: ${key.name}")
 
     companion object {
         @Suppress("FunctionName")
@@ -40,7 +33,7 @@ class SongInfoModel(
                 emptyMap(),
                 emptyMap(),
                 TagFormat.Unknown,
-                null,
+                emptyMap(),
             )
     }
 
@@ -77,10 +70,15 @@ fun FieldKey.res(): Int =
         FieldKey.DISC_TOTAL   -> R.string.disk_number
         FieldKey.TRACK        -> R.string.track
         FieldKey.TRACK_TOTAL  -> R.string.track_total
-        FieldKey.RATING      -> R.string.rating
+        FieldKey.RATING       -> R.string.rating
         FieldKey.COMMENT      -> R.string.comment
         else                  -> -1
     }
+
+fun FieldKey.text(resources: Resources): String {
+    val stringRes = res()
+    return if (stringRes > 0) resources.getString(stringRes) else name
+}
 
 val availableCommonFieldKey =
     arrayOf(
@@ -124,7 +122,34 @@ class LongFilePropertyField(private val _value: Long) : FilePropertyField<Long>(
     override fun value(): Long = _value
 }
 
-class TagField(val key: FieldKey, private val _value: String?) : Field<String> {
-    override fun value(): String = _value ?: ""
+class TagField(val key: FieldKey, val content: TagData) : Field<String> {
+    override fun value(): String = content.text()
 }
 
+
+sealed interface TagData {
+
+    fun text(): String
+
+    data class TextData(val content: String) : TagData {
+        override fun text(): String = content
+    }
+
+    data class MultipleData(val contents: Collection<*>) : TagData {
+        override fun text(): String {
+            return contents.joinToString(separator = "\n") { it.toString() }
+        }
+    }
+
+    object EmptyData : TagData {
+        override fun text(): String = "<Empty>"
+    }
+
+    object BinaryData : TagData {
+        override fun text(): String = "<Binary>"
+    }
+
+    class ErrData(val message: CharSequence) : TagData {
+        override fun text(): String = "<Error: $message>"
+    }
+}

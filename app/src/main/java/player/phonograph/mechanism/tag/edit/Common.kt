@@ -12,12 +12,12 @@ import org.jaudiotagger.audio.exceptions.CannotReadException
 import org.jaudiotagger.audio.exceptions.CannotWriteException
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException
-import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.KeyNotFoundException
 import org.jaudiotagger.tag.Tag
 import org.jaudiotagger.tag.TagException
 import org.jaudiotagger.tag.images.Artwork
 import org.jaudiotagger.tag.images.ArtworkFactory
+import player.phonograph.ui.compose.tag.EditAction
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import androidx.compose.runtime.MutableState
@@ -33,14 +33,14 @@ import java.io.IOException
 internal fun applyEditImpl(
     context: Context,
     songFile: File,
-    allEditRequest: Map<FieldKey, String?>,
+    editActions: List<EditAction>,
     needDeleteCover: Boolean,
     needReplaceCover: Boolean,
-    newCoverUri: Uri?
+    newCoverUri: Uri?,
 ) {
     require(songFile.canWrite()) { "can not write ${songFile.absoluteFile}" } // must writable
-    if (allEditRequest.isNotEmpty()) {
-        applyTagEditImpl(context, songFile, allEditRequest)
+    if (editActions.isNotEmpty()) {
+        applyTagEditImpl(context, songFile, editActions)
     }
     if (needReplaceCover) {
         replaceArtwork(context, songFile, newCoverUri!!)
@@ -69,24 +69,31 @@ fun selectNewArtwork(activity: Context): MutableState<Uri?> {
     return state
 }
 
-private fun writeTags(file: AudioFile, requests: Map<FieldKey, String?>) {
+private fun writeTags(file: AudioFile, requests: List<EditAction>) {
     val tagsHeader = file.tagOrCreateAndSetDefault
-    for ((tagKey, value) in requests) {
-        writeTag(tagsHeader, tagKey, value)
+    for (action in requests) {
+        val validResult = action.valid(file)
+        if (validResult == EditAction.ValidResult.Valid) {
+            writeTag(tagsHeader, action)
+        } else {
+            warning(
+                LOGTAG,
+                "Failed to execute step action(${action.description}) due to [${validResult.message}], ignored the step!"
+            )
+        }
     }
 }
 
-private fun writeTag(tagsHeader: Tag, tagKey: FieldKey, value: String?) {
+private fun writeTag(tagsHeader: Tag, action: EditAction) {
     try {
-        if (value.isNullOrEmpty()) {
-            tagsHeader.deleteField(tagKey)
-        } else {
-            tagsHeader.setField(tagKey, value)
+        when (action) {
+            is EditAction.Delete -> tagsHeader.deleteField(action.key)
+            is EditAction.Update -> tagsHeader.setField(action.key, action.newValue)
         }
     } catch (e: KeyNotFoundException) {
-        e.report("Unknown FieldKey: $tagKey")
+        e.report("Unknown FieldKey: ${action.key}")
     } catch (e: TagException) {
-        e.report("Failed to save tag: $tagKey --> $$value")
+        e.report("Failed to execute step: ${action.description}")
     }
 }
 
@@ -153,7 +160,7 @@ private fun deleteArtWork(songFile: File) {
 }
 
 @Suppress("UNUSED_PARAMETER")
-private fun applyTagEditImpl(context: Context, songFile: File, requests: Map<FieldKey, String?>) {
+private fun applyTagEditImpl(context: Context, songFile: File, requests: List<EditAction>) {
     safeEditTag(songFile.path) {
         val file = AudioFileIO.read(songFile)
         writeTags(file, requests)

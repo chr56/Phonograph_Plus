@@ -23,7 +23,7 @@ abstract class TagBrowserScreenViewModel(
     val defaultColor: Color,
 ) : ViewModel() {
 
-    abstract val infoTableState: InfoTableState
+    abstract val audioDetailState: AudioDetailState
 
     var artwork: ArtworkStateFlow = MutableStateFlow(null)
 
@@ -34,7 +34,7 @@ abstract class TagBrowserScreenViewModel(
             // observe
             artwork.collect { newArtworkState ->
                 val paletteColor = newArtworkState?.paletteColor
-                infoTableState.updateTitleColor(
+                audioDetailState.updateTitleColor(
                     if (paletteColor != null) {
                         Color(paletteColor)
                     } else {
@@ -54,6 +54,8 @@ abstract class TagBrowserScreenViewModel(
     }
 
     val coverImageDetailDialogState = MaterialDialogState(false)
+
+    fun mergeActions() = audioDetailState.mergeActions()
 }
 
 typealias ArtworkStateFlow = MutableStateFlow<BitmapPaletteWrapper?>

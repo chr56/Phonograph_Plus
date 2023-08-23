@@ -72,7 +72,7 @@ class TagEditorActivity :
     @Composable
     override fun SetUpContent() {
         PhonographTheme {
-            TagBrowserScreen(model, this)
+            TagBrowserScreen(model)
         }
     }
 
@@ -93,7 +93,7 @@ class TagEditorActivity :
     }
 
     private fun back() {
-        if (model.infoTableState.allEditRequests.isEmpty()) {
+        if (!model.audioDetailState.hasEdited) {
             finish()
         } else {
             model.exitWithoutSavingDialogState.show()
@@ -118,14 +118,14 @@ class TagEditorActivity :
 
 class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
         TagBrowserScreenViewModel(song, defaultColor) {
-    private var _infoTableViewModel: EditableInfoTableState? = null
-    override val infoTableState: EditableInfoTableState
-        @Synchronized get() {
-            if (_infoTableViewModel == null) {
-                _infoTableViewModel =
-                    EditableInfoTableState(loadSongInfo(song), defaultColor)
+    private var _audioDetailState: AudioDetailState? = null
+    override val audioDetailState: AudioDetailState
+        get() {
+            if (_audioDetailState == null) {
+                _audioDetailState =
+                    AudioDetailState(loadSongInfo(song), defaultColor, true)
             }
-            return _infoTableViewModel!!
+            return _audioDetailState!!
         }
 
     val saveConfirmationDialogState = MaterialDialogState(false)
@@ -169,10 +169,15 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
 }
 
 internal fun TagEditorScreenViewModel.generateDiff(): TagDiff {
-    val current = infoTableState.info.value
-    val tagDiff = infoTableState.allEditRequests.map { (key, new) ->
-        val old = current.tagValue(key).value()
-        Triple(key, old, new)
+    mergeActions()
+    val current = audioDetailState.info.value
+    val tagDiff = audioDetailState.pendingEditRequests.map { action ->
+        val old = current.tagFields[action.key]?.value() ?: ""
+        val new = when (action) {
+            is EditAction.Delete -> null
+            is EditAction.Update -> action.newValue
+        }
+        Triple(action.key, old, new)
     }
     val artworkDiff =
         if (needReplaceCover) {

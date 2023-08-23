@@ -18,6 +18,7 @@ import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.parcelable
+import player.phonograph.util.parcelableArrayList
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
@@ -90,7 +91,7 @@ class BatchTagEditorActivity :
     }
 
     private fun back() {
-        if (model.infoTableState.allEditRequests.isEmpty()) {
+        if (!model.infoTableState.hasEdited) {
             finish()
         } else {
             model.exitWithoutSavingDialogState.show()
@@ -99,7 +100,7 @@ class BatchTagEditorActivity :
 
     companion object {
         private fun parseIntent(context: Context, intent: Intent): List<Song> {
-            val songs: ArrayList<Song>? = intent.extras?.parcelable(SONGS)
+            val songs: ArrayList<Song>? = intent.extras?.parcelableArrayList(SONGS)
             val ids: LongArray? = intent.extras?.getLongArray(SONG_IDS)
             return songs ?: (ids?.map { SongLoader.id(context, it) }
                 ?: emptyList())
@@ -175,8 +176,12 @@ class BatchTagEditScreenViewModel(
 
 
 internal fun BatchTagEditScreenViewModel.generateDiff(): TagDiff {
-    val tagDiff = infoTableState.allEditRequests.map { (key, new) ->
-        Triple(key, "(${key.name})", new)
+    val tagDiff = infoTableState.pendingEditRequests.map { action ->
+        val new = when (action) {
+            is EditAction.Delete -> null
+            is EditAction.Update -> action.newValue
+        }
+        Triple(action.key, ("(${action.key.name})"), new)
     }
     val artworkDiff =
         if (infoTableState.needReplaceCover) {
@@ -194,7 +199,7 @@ private fun saveImpl(model: BatchTagEditScreenViewModel, context: Context) =
         CoroutineScope(Dispatchers.Unconfined),
         context,
         model.songs.map { File(it.data) },
-        model.infoTableState.allEditRequests,
+        model.infoTableState.pendingEditRequests,
         model.infoTableState.needDeleteCover,
         model.infoTableState.needReplaceCover,
         model.infoTableState.newCover,
