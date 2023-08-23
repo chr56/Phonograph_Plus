@@ -75,7 +75,7 @@ private fun CommonTagTable(model: TagInfoTableViewModel) {
 
 @Composable
 private fun AddMoreButton(model: TagInfoTableViewModel) {
-    Box(Modifier.fillMaxWidth(0.7f)) {
+    Box(Modifier.fillMaxWidth()) {
         var showed by remember {
             mutableStateOf(false)
         }
@@ -101,16 +101,33 @@ private fun AddMoreButton(model: TagInfoTableViewModel) {
             }
         }
         TextButton(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .padding(0.dp, 16.dp),
             onClick = {
                 showed = true
             }
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_add_white_24dp),
-                contentDescription = stringResource(id = R.string.add_action),
-                tint = MaterialTheme.colors.onSurface
+            Row(
+                Modifier.fillMaxWidth()
             )
+            {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_add_white_24dp),
+                    contentDescription = stringResource(id = R.string.add_action),
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .align(Alignment.CenterVertically),
+                    tint = MaterialTheme.colors.onSurface
+                )
+                Text(
+                    text = stringResource(id = R.string.add_action),
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .fillMaxWidth(),
+                    color = MaterialTheme.colors.onSurface
+                )
+            }
         }
     }
 }
