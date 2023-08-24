@@ -153,3 +153,11 @@ sealed interface TagData {
         override fun text(): String = "<Error: $message>"
     }
 }
+
+
+data class RawTag(
+    val id: String,
+    val name: String,
+    val value: TagData,
+    val description: String?,
+)
