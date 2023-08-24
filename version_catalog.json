@@ -1,6 +1,22 @@
 {
   "versions": [
     {
+      "channel": "stable",
+      "versionName": "1.0.2",
+      "versionCode": 1002,
+      "date": 1692860000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.0.2"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 播放列表搜索有时无效</li><li>修复 单击时显示“选择 0 个项目”</li><li>修复 切换主播放器样式时崩溃 </li><li>修复 艺术家详情中的横向专辑没有图像</li><li>修复 艺术家详情中的横向专辑的描述重复</li><li>翻译 更新俄语 (Evgeniy Khramov (thejenja))</li><li>翻译 更新土耳其语 (TolDYuThad)</li></ol>",
+        "en": "<ol><li>Fix: playlist search may not work expectedly</li><li>Fix: selecting 0 item when clicking an item in list</li><li>Fix: crash when switching main player styles </li><li>Fix: no images for horizontal albums in Artist Detail</li><li>Fix: duplicated descriptions for horizontal albums in Artist Detail</li><li>Translation: update Russian (by Evgeniy Khramov (thejenja))</li><li>Translation: update Turkish (by TolDYuThad)</li></ol>"
+      }
+    },
+    {
       "channel": "preview",
       "versionName": "1.1-dev2",
       "versionCode": 1003,
