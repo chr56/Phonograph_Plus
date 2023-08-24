@@ -98,7 +98,7 @@ abstract class AbsSlidingMusicPanelActivity :
         // add fragment
         val flow = SettingFlowStore(this).nowPlayingScreenIndex
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 flow.distinctUntilChanged().collect { id ->
                     setupPlayerFragment(id)
                 }
