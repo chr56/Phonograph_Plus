@@ -14,6 +14,7 @@ import player.phonograph.model.LongFilePropertyField
 import player.phonograph.model.Song
 import player.phonograph.model.SongInfoModel
 import player.phonograph.model.StringFilePropertyField
+import player.phonograph.model.TagData.BinaryData
 import player.phonograph.model.TagData.EmptyData
 import player.phonograph.model.TagData.TextData
 import player.phonograph.model.TagField
@@ -80,9 +81,19 @@ private fun readTagFields(audioFile: AudioFile): Map<FieldKey, TagField> =
 private fun readTagFieldsImpl(audioFile: AudioFile, keys: Set<FieldKey>): Map<FieldKey, TagField> =
     keys.associateWith { key ->
         val value = try {
-            val text =
-                audioFile.tag.getFirst(key)
-            if (text.isNotEmpty()) TextData(text) else EmptyData
+            val field = audioFile.tag.getFirstField(key)
+            if (field != null) {
+                if (field.isBinary) {
+                    BinaryData
+                } else if (field.isEmpty) {
+                    EmptyData
+                } else {
+                    val text = audioFile.tag.getFirst(key)
+                    TextData(text)
+                }
+            } else {
+                EmptyData
+            }
         } catch (e: KeyNotFoundException) {
             EmptyData
         }
