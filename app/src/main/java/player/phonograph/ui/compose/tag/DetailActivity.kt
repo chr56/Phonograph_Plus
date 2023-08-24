@@ -95,16 +95,6 @@ class DetailScreenViewModel(song: Song, defaultColor: Color) :
         }
     }
 
-    private var _audioDetailState: AudioDetailState? = null
-    override val audioDetailState: AudioDetailState
-        get() {
-            if (_audioDetailState == null) {
-                _audioDetailState =
-                    AudioDetailState(loadSongInfo(song), defaultColor, false)
-            }
-            return _audioDetailState!!
-        }
-
     class Factory(private val song: Song, private val color: Color) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

@@ -27,9 +27,6 @@ abstract class TagBrowserScreenViewModel(
     abstract val audioDetail: StateFlow<AudioDetailState?>
     abstract fun loadAudioDetail(context: Context)
 
-
-    abstract val audioDetailState: AudioDetailState
-
     var artwork: ArtworkStateFlow = MutableStateFlow(null)
 
     protected fun loadArtwork(context: Context, what: Any) {

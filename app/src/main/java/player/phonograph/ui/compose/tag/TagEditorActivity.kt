@@ -135,16 +135,6 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
     }
 
 
-    private var _audioDetailState: AudioDetailState? = null
-    override val audioDetailState: AudioDetailState
-        get() {
-            if (_audioDetailState == null) {
-                _audioDetailState =
-                    AudioDetailState(loadSongInfo(song), defaultColor, true)
-            }
-            return _audioDetailState!!
-        }
-
     val saveConfirmationDialogState = MaterialDialogState(false)
     val exitWithoutSavingDialogState = MaterialDialogState(false)
     fun requestExit(activity: Activity) {
