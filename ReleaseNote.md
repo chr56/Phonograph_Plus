@@ -1,15 +1,23 @@
-## {{version:1.1-dev2}} {{versionCode:1003}} {{date:1692180000}} {{channel:preview}}
+## {{version:1.1-dev3}} {{versionCode:1004}} {{date:1692870000}} {{channel:preview}}
 
 ### {{note:en}}
-- Translation: update Russian (by Evgeniy Khramov (thejenja))
-- Translation: update Turkish (by TolDYuThad)
-- Modify: no longer show other tags in Song Detail/TagEditor
-- New: support more tags (like disk number) in Song Detail/TagEditor
-- New: show raw tag information in Song Detail/TagEditor
+- New: support add or editing more tags in Tag Editor
+- Improve: display of raw tags
+- Fix: selecting 0 item when clicking an item in list
+- Fix: crash when switching main player styles
+- Fix: no images for horizontal albums in Artist Detail
+- Fix: duplicated descriptions for horizontal albums in Artist Detail
+- Translation: update Portuguese, Brazilian (by EddieMattos)
+- Translation: update Finish (Jiri Grönroos (spammemoreplease))
+- Translation: update Japanese (aorinngoDo)
 
 ### {{note:zh}}
-- 翻译 更新俄语 (Evgeniy Khramov (thejenja))
-- 翻译 更新土耳其语 (TolDYuThad)
-- 修改 在歌曲详情/标签编辑器中, 不再显示其他标签
-- 新功能 在歌曲详情/标签编辑器中, 支持更多标签（如盘号）
-- 新功能 在歌曲详情/标签编辑器中, 显示原始标签信息
+- 新增 音乐标签编辑器支持增改更多标签
+- 改进 原始标签的显示
+- 修复 单击时显示“选择 0 个项目”
+- 修复 切换主播放器样式时崩溃
+- 修复 艺术家详情中的横向专辑没有图像
+- 修复 艺术家详情中的横向专辑的描述重复
+- 翻译 更新巴西葡萄牙语(EddieMattos)
+- 翻译 更新芬兰语(Jiri Grönroos (spammemoreplease))
+- 翻译 更新日语(aorinngoDo)
