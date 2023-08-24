@@ -20,7 +20,7 @@ class SongInfoModel(
     val audioPropertyFields: Map<FilePropertyField.Key, FilePropertyField<out Any>>,
     val tagFields: Map<FieldKey, TagField>,
     val tagFormat: TagFormat,
-    val allTags: Map<String, TagData>
+    val allTags: Map<String, RawTag>,
 ) {
 
     companion object {
@@ -80,8 +80,8 @@ fun FieldKey.text(resources: Resources): String {
     return if (stringRes > 0) resources.getString(stringRes) else name
 }
 
-val availableCommonFieldKey =
-    arrayOf(
+val allFieldKey =
+    setOf(
         FieldKey.TITLE,
         FieldKey.ARTIST,
         FieldKey.ALBUM,
@@ -96,7 +96,7 @@ val availableCommonFieldKey =
         FieldKey.TRACK_TOTAL,
         FieldKey.RATING,
         FieldKey.COMMENT,
-    )
+    ) + FieldKey.values()
 
 sealed interface Field<T> {
     fun value(): T
@@ -135,9 +135,9 @@ sealed interface TagData {
         override fun text(): String = content
     }
 
-    data class MultipleData(val contents: Collection<*>) : TagData {
+    data class MultipleData(val contents: Collection<TagData>) : TagData {
         override fun text(): String {
-            return contents.joinToString(separator = "\n") { it.toString() }
+            return contents.map(TagData::text).joinToString(separator = "\n") { it }
         }
     }
 
@@ -153,3 +153,11 @@ sealed interface TagData {
         override fun text(): String = "<Error: $message>"
     }
 }
+
+
+data class RawTag(
+    val id: String,
+    val name: String,
+    val value: TagData,
+    val description: String?,
+)

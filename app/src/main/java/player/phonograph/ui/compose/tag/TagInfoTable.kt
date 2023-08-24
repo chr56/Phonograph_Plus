@@ -6,11 +6,11 @@ package player.phonograph.ui.compose.tag
 
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
+import player.phonograph.model.RawTag
 import player.phonograph.model.TagData
-import player.phonograph.model.res
+import player.phonograph.model.allFieldKey
 import player.phonograph.model.text
 import player.phonograph.ui.compose.components.Title
-import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -44,7 +46,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -53,11 +57,11 @@ fun TagInfoTable(model: TagInfoTableViewModel, titleColor: Color) {
     val state: TagInfoTableState by model.viewState.collectAsState()
     Column(modifier = Modifier.fillMaxWidth()) {
         Title(stringResource(R.string.music_tags), color = titleColor)
-        Item(R.string.tag_format, state.tagFormat.id)
+        Item(stringResource(R.string.tag_format), state.tagFormat.id)
         Spacer(modifier = Modifier.height(8.dp))
         CommonTagTable(model)
         Spacer(modifier = Modifier.height(16.dp))
-        Title(stringResource(id = R.string.raw_tags))
+        Title(stringResource(R.string.raw_tags))
         AllTagTable(model)
     }
 }
@@ -80,24 +84,34 @@ private fun AddMoreButton(model: TagInfoTableViewModel) {
             mutableStateOf(false)
         }
         val fieldKeys =
-            FieldKey.values().filterNot { it in model.viewState.value.tagFields.keys }
+            allFieldKey.filterNot { it in model.viewState.value.tagFields.keys }
 
         DropdownMenu(expanded = showed, onDismissRequest = { showed = false }) {
             val context = LocalContext.current
             for (fieldKey in fieldKeys) {
-                val text = fieldKey.text(context.resources)
-                val res = fieldKey.res()
-                val name = if (res > 0) "$text (${fieldKey.name})" else fieldKey.name
-                Text(
-                    name,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            showed = false
-                            model.process(TagInfoTableEvent.AddNewTag(fieldKey))
-                        }
-                        .padding(8.dp, 16.dp),
-                )
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        showed = false
+                        model.process(TagInfoTableEvent.AddNewTag(fieldKey))
+                    }
+                    .padding(8.dp, 16.dp)
+                ) {
+                    Text(
+                        text = fieldKey.text(context.resources),
+                        // modifier = Modifier.align(Alignment.Start),
+                    )
+                    Text(
+                        text = fieldKey.name,
+                        // modifier = Modifier.align(Alignment.End),
+                        fontFamily = FontFamily.Monospace,
+                        style = TextStyle(
+                            color = MaterialTheme.colors.onSurface.copy(alpha = 0.77f),
+                            fontSize = 8.sp,
+                        )
+                    )
+                }
+
             }
         }
         TextButton(
@@ -158,9 +172,8 @@ private fun CommonTag(
 private fun AllTagTable(model: TagInfoTableViewModel) {
     val state: TagInfoTableState by model.viewState.collectAsState()
     val tagFields = state.allTags
-    val context = LocalContext.current
-    for ((key, field) in tagFields) {
-        Item(key, field.text())
+    for ((key, rawTag) in tagFields) {
+        RawTag(key, rawTag)
     }
 }
 
@@ -263,5 +276,66 @@ private fun EditableItem(
 
 
 @Composable
-private fun Item(@StringRes tagStringRes: Int, value: String) =
-    Item(stringResource(tagStringRes), value)
+private fun RawTag(key: String, rawTag: RawTag) {
+    val (
+        id: String,
+        name: String,
+        value: TagData,
+        description: String?,
+    ) = rawTag
+
+    Column(
+        modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+        // name and id
+        Row(
+            modifier = Modifier
+                .align(Alignment.Start)
+                .fillMaxWidth()
+                .wrapContentHeight()
+        ) {
+            Text(
+                text = name,
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                ),
+                textAlign = TextAlign.Left,
+                modifier = Modifier.weight(8f),
+            )
+            Text(
+                text = id,
+                style = TextStyle(
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 12.sp,
+                ),
+                textAlign = TextAlign.Right,
+                modifier = Modifier.weight(2f),
+            )
+        }
+        // description
+        if (description != null) {
+            Text(
+                text = description,
+                style = TextStyle(
+                    fontWeight = FontWeight.Light,
+                    fontSize = 9.sp,
+                ),
+                modifier = Modifier.align(Alignment.Start),
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        // content
+        SelectionContainer {
+            Text(
+                text = value.text(),
+                style = TextStyle(
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.92f),
+                    fontSize = 14.sp,
+                ),
+                modifier = Modifier.align(Alignment.Start)
+            )
+        }
+    }
+}

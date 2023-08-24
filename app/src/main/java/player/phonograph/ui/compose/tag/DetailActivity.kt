@@ -23,6 +23,9 @@ import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class DetailActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
@@ -40,7 +43,7 @@ class DetailActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
         song = parseIntent(this, intent)
         super.onCreate(savedInstanceState)
         setupObservers()
-        model.loadArtwork(this)
+        model.loadAudioDetail(this)
     }
 
     private fun setupObservers() {
@@ -79,15 +82,18 @@ class DetailActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
 
 class DetailScreenViewModel(song: Song, defaultColor: Color) :
         TagBrowserScreenViewModel(song, defaultColor) {
-    private var _audioDetailState: AudioDetailState? = null
-    override val audioDetailState: AudioDetailState
-        get() {
-            if (_audioDetailState == null) {
-                _audioDetailState =
-                    AudioDetailState(loadSongInfo(song), defaultColor, false)
-            }
-            return _audioDetailState!!
+
+    private var _audioDetail: MutableStateFlow<AudioDetailState?> = MutableStateFlow(null)
+    override val audioDetail: StateFlow<AudioDetailState?> get() = _audioDetail.asStateFlow()
+
+    override fun loadAudioDetail(context: Context) {
+        viewModelScope.launch {
+            _audioDetail.emit(
+                AudioDetailState(loadSongInfo(song), defaultColor, false)
+            )
+            loadArtwork(context, song)
         }
+    }
 
     class Factory(private val song: Song, private val color: Color) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")

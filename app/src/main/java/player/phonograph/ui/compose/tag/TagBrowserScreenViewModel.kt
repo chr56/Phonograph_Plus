@@ -16,6 +16,7 @@ import androidx.lifecycle.viewModelScope
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 abstract class TagBrowserScreenViewModel(
@@ -23,18 +24,17 @@ abstract class TagBrowserScreenViewModel(
     val defaultColor: Color,
 ) : ViewModel() {
 
-    abstract val audioDetailState: AudioDetailState
+    abstract val audioDetail: StateFlow<AudioDetailState?>
+    abstract fun loadAudioDetail(context: Context)
 
     var artwork: ArtworkStateFlow = MutableStateFlow(null)
 
-    fun loadArtwork(context: Context) = loadArtworkImpl(context, song)
-
-    protected fun loadArtworkImpl(context: Context, what: Any) {
+    protected fun loadArtwork(context: Context, what: Any) {
         viewModelScope.launch(Dispatchers.Unconfined) {
             // observe
             artwork.collect { newArtworkState ->
                 val paletteColor = newArtworkState?.paletteColor
-                audioDetailState.updateTitleColor(
+                audioDetail.value?.updateTitleColor(
                     if (paletteColor != null) {
                         Color(paletteColor)
                     } else {
@@ -55,7 +55,6 @@ abstract class TagBrowserScreenViewModel(
 
     val coverImageDetailDialogState = MaterialDialogState(false)
 
-    fun mergeActions() = audioDetailState.mergeActions()
 }
 
 typealias ArtworkStateFlow = MutableStateFlow<BitmapPaletteWrapper?>

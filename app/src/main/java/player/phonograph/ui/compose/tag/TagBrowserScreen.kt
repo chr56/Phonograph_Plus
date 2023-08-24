@@ -11,17 +11,22 @@ import player.phonograph.ui.compose.ColorTools
 import player.phonograph.ui.compose.components.CoverImage
 import player.phonograph.util.permissions.navigateToStorageSetting
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import android.app.Activity
 import android.content.Context
 import android.widget.Toast
@@ -44,6 +49,9 @@ internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel) {
             }
         }
 
+
+    val audioDetailState by viewModel.audioDetail.collectAsState()
+
     Column(
         modifier = Modifier
             .verticalScroll(state = rememberScrollState())
@@ -58,7 +66,19 @@ internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel) {
                 }
             )
         }
-        InfoTable(viewModel.audioDetailState)
+        if (audioDetailState != null) {
+            InfoTable(audioDetailState!!)
+        } else {
+            Box {
+                Text(
+                    stringResource(id = R.string.loading),
+                    modifier = Modifier
+                        .fillMaxSize(0.8f)
+                        .align(Alignment.Center),
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
     }
     CoverImageDetailDialog(
         state = viewModel.coverImageDetailDialogState,
@@ -74,7 +94,7 @@ internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel) {
             val songFile = File(viewModel.song.data)
             val coroutineScope = CoroutineScope(Dispatchers.Unconfined)
             if (songFile.canWrite()) {
-                viewModel.mergeActions()
+                viewModel.audioDetail.value?.mergeActions()
                 saveImpl(viewModel, songFile, coroutineScope, context)
             } else {
                 coroutineScope.launch(Dispatchers.Main) {
@@ -101,7 +121,7 @@ private fun saveImpl(
         coroutineScope,
         context,
         songFile,
-        model.audioDetailState.pendingEditRequests,
+        model.audioDetail.value!!.pendingEditRequests,
         model.needDeleteCover,
         model.needReplaceCover,
         model.newCover

@@ -6,6 +6,7 @@ package player.phonograph.ui.compose.tag
 
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.mechanism.tag.TagFormat
+import player.phonograph.model.RawTag
 import player.phonograph.model.SongInfoModel
 import player.phonograph.model.TagData
 import player.phonograph.model.TagData.TextData
@@ -72,14 +73,13 @@ data class TagInfoTableState(
     val editable: Boolean,
     val tagFormat: TagFormat,
     val tagFields: Map<FieldKey, TagData>,
-    val allTags: Map<String, TagData>,
+    val allTags: Map<String, RawTag>,
 ) {
     companion object {
         fun from(songInfoModel: SongInfoModel, editable: Boolean): TagInfoTableState {
             val tagFields =
                 songInfoModel.tagFields.filter { it.value.content is TextData }.mapValues { it.value.content }
-            val allFields = songInfoModel.allTags ?: emptyMap()
-            return TagInfoTableState(editable, songInfoModel.tagFormat, tagFields, allFields)
+            return TagInfoTableState(editable, songInfoModel.tagFormat, tagFields, songInfoModel.allTags)
         }
     }
 }

@@ -33,6 +33,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 
@@ -56,7 +59,7 @@ class TagEditorActivity :
         openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
         super.onCreate(savedInstanceState)
         setupObservers()
-        model.loadArtwork(this)
+        model.loadAudioDetail(this)
     }
 
 
@@ -93,7 +96,7 @@ class TagEditorActivity :
     }
 
     private fun back() {
-        if (!model.audioDetailState.hasEdited) {
+        if (model.audioDetail.value?.hasEdited != true) {
             finish()
         } else {
             model.exitWithoutSavingDialogState.show()
@@ -118,15 +121,19 @@ class TagEditorActivity :
 
 class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
         TagBrowserScreenViewModel(song, defaultColor) {
-    private var _audioDetailState: AudioDetailState? = null
-    override val audioDetailState: AudioDetailState
-        get() {
-            if (_audioDetailState == null) {
-                _audioDetailState =
-                    AudioDetailState(loadSongInfo(song), defaultColor, true)
-            }
-            return _audioDetailState!!
+
+    private var _audioDetail: MutableStateFlow<AudioDetailState?> = MutableStateFlow(null)
+    override val audioDetail: StateFlow<AudioDetailState?> get() = _audioDetail.asStateFlow()
+
+    override fun loadAudioDetail(context: Context) {
+        viewModelScope.launch {
+            _audioDetail.emit(
+                AudioDetailState(loadSongInfo(song), defaultColor, true)
+            )
+            loadArtwork(context, song)
         }
+    }
+
 
     val saveConfirmationDialogState = MaterialDialogState(false)
     val exitWithoutSavingDialogState = MaterialDialogState(false)
@@ -156,7 +163,7 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
             needReplaceCover = true
             needDeleteCover = false
             newCover = uri
-            loadArtworkImpl(context, uri)
+            loadArtwork(context, uri)
         }
     }
 
@@ -169,9 +176,11 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
 }
 
 internal fun TagEditorScreenViewModel.generateDiff(): TagDiff {
-    mergeActions()
-    val current = audioDetailState.info.value
-    val tagDiff = audioDetailState.pendingEditRequests.map { action ->
+    val audioDetail = audioDetail.value
+    require(audioDetail != null)
+    audioDetail.mergeActions()
+    val current = audioDetail.info.value
+    val tagDiff = audioDetail.pendingEditRequests.map { action ->
         val old = current.tagFields[action.key]?.value() ?: ""
         val new = when (action) {
             is EditAction.Delete -> null
