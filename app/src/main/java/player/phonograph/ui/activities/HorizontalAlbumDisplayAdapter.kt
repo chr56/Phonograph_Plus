@@ -6,6 +6,9 @@ package player.phonograph.ui.activities
 
 import player.phonograph.R
 import player.phonograph.model.Album
+import player.phonograph.model.buildInfoString
+import player.phonograph.model.getYearString
+import player.phonograph.model.songCountString
 import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -48,6 +51,11 @@ class HorizontalAlbumDisplayAdapter(
     }
 
     class HorizontalAlbumViewHolder(itemView: View) : DisplayViewHolder<Album>(itemView) {
+
+        override fun getDescription(item: Album): CharSequence {
+            return buildInfoString(getYearString(item.year), songCountString(itemView.context, item.songCount))
+        }
+
         override fun setPaletteColors(color: Int) {
             super.setPaletteColors(color)
             (itemView as CardView).setCardBackgroundColor(color)
