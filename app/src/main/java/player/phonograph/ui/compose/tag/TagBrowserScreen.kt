@@ -94,7 +94,7 @@ internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel) {
             val songFile = File(viewModel.song.data)
             val coroutineScope = CoroutineScope(Dispatchers.Unconfined)
             if (songFile.canWrite()) {
-                viewModel.mergeActions()
+                viewModel.audioDetail.value?.mergeActions()
                 saveImpl(viewModel, songFile, coroutineScope, context)
             } else {
                 coroutineScope.launch(Dispatchers.Main) {

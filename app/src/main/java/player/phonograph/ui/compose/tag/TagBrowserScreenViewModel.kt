@@ -55,7 +55,6 @@ abstract class TagBrowserScreenViewModel(
 
     val coverImageDetailDialogState = MaterialDialogState(false)
 
-    fun mergeActions() = audioDetail.value?.mergeActions() ?: Unit
 }
 
 typealias ArtworkStateFlow = MutableStateFlow<BitmapPaletteWrapper?>
