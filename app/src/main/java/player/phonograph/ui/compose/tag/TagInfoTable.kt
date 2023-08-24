@@ -12,7 +12,6 @@ import player.phonograph.model.allFieldKey
 import player.phonograph.model.res
 import player.phonograph.model.text
 import player.phonograph.ui.compose.components.Title
-import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -163,9 +162,8 @@ private fun CommonTag(
 private fun AllTagTable(model: TagInfoTableViewModel) {
     val state: TagInfoTableState by model.viewState.collectAsState()
     val tagFields = state.allTags
-    val context = LocalContext.current
-    for ((key, field) in tagFields) {
-        Item(key, field.text())
+    for ((key, rawTag) in tagFields) {
+        RawTag(key, rawTag)
     }
 }
 

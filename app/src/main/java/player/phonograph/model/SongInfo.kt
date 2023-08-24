@@ -20,7 +20,7 @@ class SongInfoModel(
     val audioPropertyFields: Map<FilePropertyField.Key, FilePropertyField<out Any>>,
     val tagFields: Map<FieldKey, TagField>,
     val tagFormat: TagFormat,
-    val allTags: Map<String, TagData>,
+    val allTags: Map<String, RawTag>,
 ) {
 
     companion object {
