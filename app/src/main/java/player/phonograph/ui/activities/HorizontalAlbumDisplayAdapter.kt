@@ -4,7 +4,10 @@
 
 package player.phonograph.ui.activities
 
+import coil.size.ViewSizeResolver
 import player.phonograph.R
+import player.phonograph.coil.loadImage
+import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Album
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getYearString
@@ -59,6 +62,28 @@ class HorizontalAlbumDisplayAdapter(
         override fun setPaletteColors(color: Int) {
             super.setPaletteColors(color)
             (itemView as CardView).setCardBackgroundColor(color)
+        }
+
+        override fun setImage(position: Int, dataset: List<Album>, usePalette: Boolean) {
+            val context = itemView.context
+            image?.let { view ->
+                loadImage(context) {
+                    data(dataset[position].safeGetFirstSong())
+                    size(ViewSizeResolver(view))
+                    target(
+                        PaletteTargetBuilder(context)
+                            .onStart {
+                                view.setImageResource(R.drawable.default_album_art)
+                                setPaletteColors(context.getColor(R.color.defaultFooterColor))
+                            }
+                            .onResourceReady { result, palette ->
+                                view.setImageDrawable(result)
+                                if (usePalette) setPaletteColors(palette)
+                            }
+                            .build()
+                    )
+                }
+            }
         }
     }
 
