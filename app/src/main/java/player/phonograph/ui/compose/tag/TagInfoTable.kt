@@ -9,7 +9,6 @@ import player.phonograph.R
 import player.phonograph.model.RawTag
 import player.phonograph.model.TagData
 import player.phonograph.model.allFieldKey
-import player.phonograph.model.res
 import player.phonograph.model.text
 import player.phonograph.ui.compose.components.Title
 import androidx.compose.foundation.clickable
@@ -47,6 +46,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -89,19 +89,29 @@ private fun AddMoreButton(model: TagInfoTableViewModel) {
         DropdownMenu(expanded = showed, onDismissRequest = { showed = false }) {
             val context = LocalContext.current
             for (fieldKey in fieldKeys) {
-                val text = fieldKey.text(context.resources)
-                val res = fieldKey.res()
-                val name = if (res > 0) "$text (${fieldKey.name})" else fieldKey.name
-                Text(
-                    name,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            showed = false
-                            model.process(TagInfoTableEvent.AddNewTag(fieldKey))
-                        }
-                        .padding(8.dp, 16.dp),
-                )
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        showed = false
+                        model.process(TagInfoTableEvent.AddNewTag(fieldKey))
+                    }
+                    .padding(8.dp, 16.dp)
+                ) {
+                    Text(
+                        text = fieldKey.text(context.resources),
+                        // modifier = Modifier.align(Alignment.Start),
+                    )
+                    Text(
+                        text = fieldKey.name,
+                        // modifier = Modifier.align(Alignment.End),
+                        fontFamily = FontFamily.Monospace,
+                        style = TextStyle(
+                            color = MaterialTheme.colors.onSurface.copy(alpha = 0.77f),
+                            fontSize = 8.sp,
+                        )
+                    )
+                }
+
             }
         }
         TextButton(
