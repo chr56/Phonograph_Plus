@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -44,6 +45,9 @@ internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel) {
             }
         }
 
+
+    val audioDetailState by viewModel.audioDetail.collectAsState()
+
     Column(
         modifier = Modifier
             .verticalScroll(state = rememberScrollState())
@@ -58,7 +62,13 @@ internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel) {
                 }
             )
         }
-        InfoTable(viewModel.audioDetailState)
+        if (audioDetailState != null) {
+            InfoTable(audioDetailState!!)
+        } else {
+            Text(
+                text = "Loading", modifier = Modifier.fillMaxSize(0.8f)
+            )
+        }
     }
     CoverImageDetailDialog(
         state = viewModel.coverImageDetailDialogState,
@@ -101,7 +111,7 @@ private fun saveImpl(
         coroutineScope,
         context,
         songFile,
-        model.audioDetailState.pendingEditRequests,
+        model.audioDetail.value!!.pendingEditRequests,
         model.needDeleteCover,
         model.needReplaceCover,
         model.newCover

@@ -60,7 +60,6 @@ class TagEditorActivity :
         super.onCreate(savedInstanceState)
         setupObservers()
         model.loadAudioDetail(this)
-        model.loadArtwork(this)
     }
 
 
@@ -97,7 +96,7 @@ class TagEditorActivity :
     }
 
     private fun back() {
-        if (!model.audioDetailState.hasEdited) {
+        if (model.audioDetail.value?.hasEdited != true) {
             finish()
         } else {
             model.exitWithoutSavingDialogState.show()
@@ -131,6 +130,7 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
             _audioDetail.emit(
                 AudioDetailState(loadSongInfo(song), defaultColor, true)
             )
+            loadArtwork(context, song)
         }
     }
 
@@ -173,7 +173,7 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
             needReplaceCover = true
             needDeleteCover = false
             newCover = uri
-            loadArtworkImpl(context, uri)
+            loadArtwork(context, uri)
         }
     }
 
@@ -187,8 +187,10 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
 
 internal fun TagEditorScreenViewModel.generateDiff(): TagDiff {
     mergeActions()
-    val current = audioDetailState.info.value
-    val tagDiff = audioDetailState.pendingEditRequests.map { action ->
+    val audioDetail = audioDetail.value
+    require(audioDetail != null)
+    val current = audioDetail.info.value
+    val tagDiff = audioDetail.pendingEditRequests.map { action ->
         val old = current.tagFields[action.key]?.value() ?: ""
         val new = when (action) {
             is EditAction.Delete -> null

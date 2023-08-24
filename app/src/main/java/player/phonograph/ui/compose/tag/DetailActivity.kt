@@ -44,7 +44,6 @@ class DetailActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
         super.onCreate(savedInstanceState)
         setupObservers()
         model.loadAudioDetail(this)
-        model.loadArtwork(this)
     }
 
     private fun setupObservers() {
@@ -92,6 +91,7 @@ class DetailScreenViewModel(song: Song, defaultColor: Color) :
             _audioDetail.emit(
                 AudioDetailState(loadSongInfo(song), defaultColor, false)
             )
+            loadArtwork(context, song)
         }
     }
 
