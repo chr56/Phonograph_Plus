@@ -7,6 +7,7 @@ package player.phonograph.ui.compose.tag
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.model.TagData
+import player.phonograph.model.allFieldKey
 import player.phonograph.model.res
 import player.phonograph.model.text
 import player.phonograph.ui.compose.components.Title
@@ -80,7 +81,7 @@ private fun AddMoreButton(model: TagInfoTableViewModel) {
             mutableStateOf(false)
         }
         val fieldKeys =
-            FieldKey.values().filterNot { it in model.viewState.value.tagFields.keys }
+            allFieldKey.filterNot { it in model.viewState.value.tagFields.keys }
 
         DropdownMenu(expanded = showed, onDismissRequest = { showed = false }) {
             val context = LocalContext.current

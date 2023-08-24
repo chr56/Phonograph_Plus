@@ -17,7 +17,7 @@ import player.phonograph.model.StringFilePropertyField
 import player.phonograph.model.TagData.EmptyData
 import player.phonograph.model.TagData.TextData
 import player.phonograph.model.TagField
-import player.phonograph.model.availableCommonFieldKey
+import player.phonograph.model.allFieldKey
 import player.phonograph.util.reportError
 import java.io.File
 
@@ -75,9 +75,9 @@ private fun readAudioPropertyFields(audioHeader: AudioHeader): Map<FilePropertyF
 
 
 private fun readTagFields(audioFile: AudioFile): Map<FieldKey, TagField> =
-    readTagFieldsImpl(audioFile, availableCommonFieldKey)
+    readTagFieldsImpl(audioFile, allFieldKey)
 
-private fun readTagFieldsImpl(audioFile: AudioFile, keys: Array<FieldKey>): Map<FieldKey, TagField> =
+private fun readTagFieldsImpl(audioFile: AudioFile, keys: Set<FieldKey>): Map<FieldKey, TagField> =
     keys.associateWith { key ->
         val value = try {
             val text =
