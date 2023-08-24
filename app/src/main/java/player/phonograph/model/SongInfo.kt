@@ -135,9 +135,9 @@ sealed interface TagData {
         override fun text(): String = content
     }
 
-    data class MultipleData(val contents: Collection<*>) : TagData {
+    data class MultipleData(val contents: Collection<TagData>) : TagData {
         override fun text(): String {
-            return contents.joinToString(separator = "\n") { it.toString() }
+            return contents.map(TagData::text).joinToString(separator = "\n") { it }
         }
     }
 
