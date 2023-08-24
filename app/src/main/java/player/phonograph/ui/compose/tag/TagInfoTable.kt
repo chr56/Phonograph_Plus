@@ -54,11 +54,11 @@ fun TagInfoTable(model: TagInfoTableViewModel, titleColor: Color) {
     val state: TagInfoTableState by model.viewState.collectAsState()
     Column(modifier = Modifier.fillMaxWidth()) {
         Title(stringResource(R.string.music_tags), color = titleColor)
-        Item(R.string.tag_format, state.tagFormat.id)
+        Item(stringResource(R.string.tag_format), state.tagFormat.id)
         Spacer(modifier = Modifier.height(8.dp))
         CommonTagTable(model)
         Spacer(modifier = Modifier.height(16.dp))
-        Title(stringResource(id = R.string.raw_tags))
+        Title(stringResource(R.string.raw_tags))
         AllTagTable(model)
     }
 }
@@ -262,7 +262,3 @@ private fun EditableItem(
 
 }
 
-
-@Composable
-private fun Item(@StringRes tagStringRes: Int, value: String) =
-    Item(stringResource(tagStringRes), value)
