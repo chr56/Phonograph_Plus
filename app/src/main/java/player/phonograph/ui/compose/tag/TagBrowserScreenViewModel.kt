@@ -16,12 +16,17 @@ import androidx.lifecycle.viewModelScope
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 abstract class TagBrowserScreenViewModel(
     val song: Song,
     val defaultColor: Color,
 ) : ViewModel() {
+
+    abstract val audioDetail: StateFlow<AudioDetailState?>
+    abstract fun loadAudioDetail(context: Context)
+
 
     abstract val audioDetailState: AudioDetailState
 

@@ -33,6 +33,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 
@@ -56,6 +59,7 @@ class TagEditorActivity :
         openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
         super.onCreate(savedInstanceState)
         setupObservers()
+        model.loadAudioDetail(this)
         model.loadArtwork(this)
     }
 
@@ -118,6 +122,19 @@ class TagEditorActivity :
 
 class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
         TagBrowserScreenViewModel(song, defaultColor) {
+
+    private var _audioDetail: MutableStateFlow<AudioDetailState?> = MutableStateFlow(null)
+    override val audioDetail: StateFlow<AudioDetailState?> get() = _audioDetail.asStateFlow()
+
+    override fun loadAudioDetail(context: Context) {
+        viewModelScope.launch {
+            _audioDetail.emit(
+                AudioDetailState(loadSongInfo(song), defaultColor, true)
+            )
+        }
+    }
+
+
     private var _audioDetailState: AudioDetailState? = null
     override val audioDetailState: AudioDetailState
         get() {
