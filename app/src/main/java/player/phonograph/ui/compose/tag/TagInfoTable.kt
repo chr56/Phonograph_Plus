@@ -6,6 +6,7 @@ package player.phonograph.ui.compose.tag
 
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
+import player.phonograph.model.RawTag
 import player.phonograph.model.TagData
 import player.phonograph.model.allFieldKey
 import player.phonograph.model.res
@@ -21,6 +22,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -46,6 +49,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -262,3 +266,68 @@ private fun EditableItem(
 
 }
 
+
+@Composable
+private fun RawTag(key: String, rawTag: RawTag) {
+    val (
+        id: String,
+        name: String,
+        value: TagData,
+        description: String?,
+    ) = rawTag
+
+    Column(
+        modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+        // name and id
+        Row(
+            modifier = Modifier
+                .align(Alignment.Start)
+                .fillMaxWidth()
+                .wrapContentHeight()
+        ) {
+            Text(
+                text = name,
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                ),
+                textAlign = TextAlign.Left,
+                modifier = Modifier.weight(8f),
+            )
+            Text(
+                text = id,
+                style = TextStyle(
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 12.sp,
+                ),
+                textAlign = TextAlign.Right,
+                modifier = Modifier.weight(2f),
+            )
+        }
+        // description
+        if (description != null) {
+            Text(
+                text = description,
+                style = TextStyle(
+                    fontWeight = FontWeight.Light,
+                    fontSize = 9.sp,
+                ),
+                modifier = Modifier.align(Alignment.Start),
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        // content
+        SelectionContainer {
+            Text(
+                text = value.text(),
+                style = TextStyle(
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.92f),
+                    fontSize = 14.sp,
+                ),
+                modifier = Modifier.align(Alignment.Start)
+            )
+        }
+    }
+}
