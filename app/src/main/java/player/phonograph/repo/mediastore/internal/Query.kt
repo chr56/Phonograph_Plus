@@ -6,6 +6,7 @@ package player.phonograph.repo.mediastore.internal
 
 import legacy.phonograph.MediaStoreCompat
 import player.phonograph.settings.Setting
+import player.phonograph.util.reportError
 import android.content.Context
 import android.database.Cursor
 import android.provider.BaseColumns
@@ -79,6 +80,9 @@ fun queryAudio(
             sortOrder
         )
     } catch (e: SecurityException) {
+        null
+    } catch (e: IllegalArgumentException) {
+        reportError(e, "MediaStore", "Failed to query audio via MediaStore")
         null
     }
 }
