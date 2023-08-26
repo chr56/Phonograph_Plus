@@ -30,7 +30,6 @@ import player.phonograph.util.ui.textColorTransitionAnimator
 import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.withCreated
 import androidx.lifecycle.withStarted
 import android.animation.AnimatorSet
@@ -41,6 +40,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.PopupMenu
 import kotlin.math.max
@@ -243,31 +243,27 @@ class FlatPlayerFragment :
         }
 
         override fun setUpPanelAndAlbumCoverHeight() {
-            val albumCoverContainer: FragmentContainerView = fragment.requireView().findViewById(
-                R.id.player_album_cover_fragment
-            )
-            val availablePanelHeight =
-                fragment.viewBinding.playerSlidingLayout!!.height - fragment.requireView()
-                    .findViewById<View>(R.id.player_content).height
-            val minPanelHeight = convertDpToPixel(
-                (8 + 72 + 24).toFloat(),
-                fragment.resources
-            )
-                .toInt() + fragment.resources.getDimensionPixelSize(
-                R.dimen.progress_container_height
-            ) + fragment.resources.getDimensionPixelSize(
-                R.dimen.media_controller_container_height
-            )
+
+            val albumCoverContainer = fragment.viewBinding.playerAlbumCoverFragment
+
+            val minPanelHeight =
+                convertDpToPixel((8 + 72 + 24).toFloat(), fragment.resources).toInt() +
+                        fragment.resources.getDimensionPixelSize(R.dimen.progress_container_height) +
+                        fragment.resources.getDimensionPixelSize(R.dimen.media_controller_container_height)
+
+            val playerContainer: FrameLayout? = fragment.viewBinding.playerContent
+            val slidingLayout: SlidingUpPanelLayout? = fragment.viewBinding.playerSlidingLayout
+
+            val availablePanelHeight = slidingLayout!!.height - playerContainer!!.height
+
             if (availablePanelHeight < minPanelHeight) {
-                albumCoverContainer.layoutParams.height =
-                    albumCoverContainer.height - (minPanelHeight - availablePanelHeight)
-                // albumCoverContainer.forceSquare(false)
+                // shrink AlbumCover
+                val albumCoverHeight = albumCoverContainer.height - (minPanelHeight - availablePanelHeight)
+                albumCoverContainer.layoutParams.height = albumCoverHeight
             }
             fragment.viewBinding.playerSlidingLayout!!.panelHeight = max(minPanelHeight, availablePanelHeight)
-            (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(
-                fragment.viewBinding.playerSlidingLayout!!.findViewById(
-                    R.id.player_panel
-                )
+            (fragment.activity as AbsSlidingMusicPanelActivity).setAntiDragView(
+                fragment.viewBinding.playerSlidingLayout!!.findViewById(R.id.player_panel)
             )
         }
 
