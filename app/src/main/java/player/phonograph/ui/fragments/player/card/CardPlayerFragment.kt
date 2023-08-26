@@ -290,10 +290,10 @@ class CardPlayerFragment :
             val minPanelHeight = convertDpToPixel((72 + 24).toFloat(), fragment.resources).toInt()
 
             val slidingLayout = fragment.viewBinding.playerSlidingLayout
-            val playerContent = fragment.viewBinding.playerContent
+            val coverContainer = fragment.viewBinding.coverContainer
 
             val availablePanelHeight =
-                slidingLayout.height - playerContent!!.height - convertDpToPixel(8f, fragment.resources).toInt()
+                slidingLayout.height - coverContainer.height - convertDpToPixel(8f, fragment.resources).toInt()
 
             if (availablePanelHeight < minPanelHeight) {
                 // shrink AlbumCover

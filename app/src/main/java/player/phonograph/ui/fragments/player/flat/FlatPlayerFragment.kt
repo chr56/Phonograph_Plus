@@ -251,10 +251,10 @@ class FlatPlayerFragment :
                         fragment.resources.getDimensionPixelSize(R.dimen.progress_container_height) +
                         fragment.resources.getDimensionPixelSize(R.dimen.media_controller_container_height)
 
-            val playerContainer: FrameLayout? = fragment.viewBinding.playerContent
+            val playerContainer: View = fragment.viewBinding.coverContainer
             val slidingLayout: SlidingUpPanelLayout? = fragment.viewBinding.playerSlidingLayout
 
-            val availablePanelHeight = slidingLayout!!.height - playerContainer!!.height
+            val availablePanelHeight = slidingLayout!!.height - playerContainer.height
 
             if (availablePanelHeight < minPanelHeight) {
                 // shrink AlbumCover
