@@ -284,28 +284,25 @@ class CardPlayerFragment :
         }
 
         override fun setUpPanelAndAlbumCoverHeight() {
-            val albumCoverContainer: FragmentContainerView = fragment.requireView().findViewById(
-                R.id.player_album_cover_fragment
-            )
+
+            val albumCoverContainer: FragmentContainerView = fragment.viewBinding.playerAlbumCoverFragment
+
+            val minPanelHeight = convertDpToPixel((72 + 24).toFloat(), fragment.resources).toInt()
+
+            val slidingLayout = fragment.viewBinding.playerSlidingLayout
+            val playerContent = fragment.viewBinding.playerContent
+
             val availablePanelHeight =
-                fragment.viewBinding.playerSlidingLayout.height - fragment.requireView()
-                    .findViewById<View>(
-                        R.id.player_content
-                    ).height + convertDpToPixel(
-                    8f,
-                    fragment.resources
-                )
-                    .toInt()
-            val minPanelHeight =
-                convertDpToPixel((72 + 24).toFloat(), fragment.resources).toInt()
+                slidingLayout.height - playerContent!!.height - convertDpToPixel(8f, fragment.resources).toInt()
+
             if (availablePanelHeight < minPanelHeight) {
-                albumCoverContainer.layoutParams.height =
-                    albumCoverContainer.height - (minPanelHeight - availablePanelHeight)
-                // albumCoverContainer.forceSquare(false)
+                // shrink AlbumCover
+                val albumCoverHeight = albumCoverContainer.height - (minPanelHeight - availablePanelHeight)
+                albumCoverContainer.layoutParams.height = albumCoverHeight
             }
-            fragment.viewBinding.playerSlidingLayout.panelHeight = max(minPanelHeight, availablePanelHeight)
+            slidingLayout.panelHeight = max(minPanelHeight, availablePanelHeight)
             (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(
-                fragment.viewBinding.playerSlidingLayout.findViewById(R.id.player_panel)
+                slidingLayout.findViewById(R.id.player_panel)
             )
         }
 
