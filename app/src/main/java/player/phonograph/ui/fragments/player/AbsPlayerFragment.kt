@@ -8,6 +8,7 @@ import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenDocumentContract
 import mt.tint.viewtint.setMenuColor
 import mt.util.color.toolbarIconColor
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mechanism.Favorite.toggleFavorite
 import player.phonograph.mechanism.event.MediaStoreTracker
@@ -52,6 +53,7 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 
 abstract class AbsPlayerFragment :
         AbsMusicServiceFragment()/* , PaletteColorHolder */ {
@@ -180,11 +182,15 @@ abstract class AbsPlayerFragment :
                 title = getString(R.string.action_choose_lyrics)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick {
-                    val accessor = requireActivity() as? IOpenFileStorageAccess
+                    val activity = requireActivity()
+                    val accessor = activity as? IOpenFileStorageAccess
                     if (accessor != null) {
-                        accessor.openFileStorageAccessTool.launch(
-                            OpenDocumentContract.Config(arrayOf("*/*"))
-                        ) { uri -> lyricsViewModel.insert(requireContext(), uri) }
+                        accessor.openFileStorageAccessTool.launch(OpenDocumentContract.Config(arrayOf("*/*"))) { uri ->
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                while (!activity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) yield()
+                                lyricsViewModel.insert(activity, uri)
+                            }
+                        }
                     } else {
                         warning("Lyrics", "Can not open file from $activity")
                     }

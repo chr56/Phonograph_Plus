@@ -52,6 +52,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import java.util.regex.Pattern
 
 /**
@@ -195,11 +196,15 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
     //region Manual Load
     private fun manualLoadLyrics() {
-        val accessor = requireActivity() as? IOpenFileStorageAccess
+        val activity = requireActivity()
+        val accessor = activity as? IOpenFileStorageAccess
         if (accessor != null) {
-            accessor.openFileStorageAccessTool.launch(
-                OpenDocumentContract.Config(arrayOf("*/*"))
-            ) { uri -> viewModel.insert(requireContext(), uri) }
+            accessor.openFileStorageAccessTool.launch(OpenDocumentContract.Config(arrayOf("*/*"))) { uri ->
+                lifecycleScope.launch(Dispatchers.IO) {
+                    while (!activity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) yield()
+                    viewModel.insert(activity, uri)
+                }
+            }
         } else {
             warning("Lyrics", "Can not open file from $activity")
         }

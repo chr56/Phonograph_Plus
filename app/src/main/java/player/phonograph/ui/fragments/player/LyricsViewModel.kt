@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.net.Uri
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -48,16 +47,14 @@ class LyricsViewModel : ViewModel() {
         }
     }
 
-    fun insert(context: Context, uri: Uri?) {
+    suspend fun insert(context: Context, uri: Uri?) {
         if (uri != null) {
-            viewModelScope.launch(Dispatchers.IO) {
-                val lyrics = LyricsLoader.parseFromUri(context, uri)
-                if (lyrics != null) {
-                    val info = _lyricsInfo.value.createAmended(lyrics).replaceActivated(lyrics)!!
-                    _lyricsInfo.emit(info)
-                } else {
-                    coroutineToast(context, "${uri.getBasePath(context)} is not a validated lyrics")
-                }
+            val lyrics = LyricsLoader.parseFromUri(context, uri)
+            if (lyrics != null) {
+                val info = _lyricsInfo.value.createAmended(lyrics).replaceActivated(lyrics)!!
+                _lyricsInfo.emit(info)
+            } else {
+                coroutineToast(context, "${uri.getBasePath(context)} is not a validated lyrics")
             }
         }
     }
