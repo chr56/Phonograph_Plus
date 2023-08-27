@@ -111,7 +111,12 @@ abstract class AbsSlidingMusicPanelActivity :
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.highlightColor.collect { color ->
                     if (panelState == PanelState.EXPANDED) {
-                        animateThemeColorChange(viewModel.previewHighlightColor.value, color)
+                        animateThemeColorChange(viewModel.previewHighlightColor.value, color) { animation ->
+                            setNavigationBarColor(animation.animatedValue as Int)
+                            setStatusbarColor(
+                                if (viewModel.transparentStatusbar) Color.TRANSPARENT else animation.animatedValue as Int
+                            )
+                        }
                     }
                 }
             }
@@ -162,7 +167,7 @@ abstract class AbsSlidingMusicPanelActivity :
             argbEvaluator.evaluate(
                 slideOffset,
                 viewModel.activityColor.value,
-               if (viewModel.transparentStatusbar) Color.TRANSPARENT else viewModel.highlightColor.value
+                if (viewModel.transparentStatusbar) Color.TRANSPARENT else viewModel.highlightColor.value
             ) as Int
         setStatusbarColor(color)
         setNavigationBarColor(color)

@@ -157,8 +157,15 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     // Animation
     //
     private var colorChangeAnimator: ValueAnimator? = null
+    protected fun animateThemeColorChange(oldColor: Int, newColor: Int) {
+        animateThemeColorChange(oldColor, newColor) { animation: ValueAnimator ->
+            setStatusbarColor(animation.animatedValue as Int)
+            setNavigationBarColor(animation.animatedValue as Int)
+        }
+    }
+
     protected fun animateThemeColorChange(
-        oldColor: Int, newColor: Int,
+        oldColor: Int, newColor: Int, action: (ValueAnimator) -> Unit,
     ) { // todo: make sure lifecycle
         colorChangeAnimator?.cancel()
         colorChangeAnimator = ValueAnimator
@@ -166,10 +173,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
             .setDuration(600L)
         colorChangeAnimator?.also { animator ->
             animator.interpolator = PathInterpolator(0.4f, 0f, 1f, 1f)
-            animator.addUpdateListener { animation: ValueAnimator ->
-                setStatusbarColor(animation.animatedValue as Int)
-                setNavigationBarColor(animation.animatedValue as Int)
-            }
+            animator.addUpdateListener(action)
             animator.start()
         }
     }
