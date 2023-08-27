@@ -4,10 +4,12 @@
 
 package player.phonograph.ui.fragments.player
 
+import lib.phonograph.storage.getBasePath
 import player.phonograph.mechanism.lyrics.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LyricsInfo
+import player.phonograph.util.coroutineToast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -53,6 +55,8 @@ class LyricsViewModel : ViewModel() {
                 if (lyrics != null) {
                     val info = _lyricsInfo.value.createAmended(lyrics).replaceActivated(lyrics)!!
                     _lyricsInfo.emit(info)
+                } else {
+                    coroutineToast(context, "${uri.getBasePath(context)} is not a validated lyrics")
                 }
             }
         }
