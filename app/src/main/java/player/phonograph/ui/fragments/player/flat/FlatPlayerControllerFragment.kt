@@ -47,7 +47,7 @@ class FlatPlayerControllerFragment : AbsPlayerControllerFragment<FragmentFlatPla
     }
 
     override fun updatePlayPauseColor() {
-        binding.viewBinding.playerPlayPauseButton.setColorFilter(lastPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
+        binding.viewBinding.playerPlayPauseButton.setColorFilter(controlsColor, PorterDuff.Mode.SRC_IN)
     }
 
     private var hidden = false
