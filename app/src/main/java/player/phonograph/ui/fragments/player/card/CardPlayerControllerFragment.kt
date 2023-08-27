@@ -4,88 +4,44 @@
 
 package player.phonograph.ui.fragments.player.card
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import mt.tint.viewtint.tint
+import mt.util.color.secondaryTextColor
+import player.phonograph.databinding.FragmentCardPlayerPlaybackControlsBinding
+import player.phonograph.ui.fragments.player.AbsPlayerControllerFragment
+import player.phonograph.ui.fragments.player.PlayPauseButtonOnClickHandler
+import player.phonograph.ui.views.PlayPauseDrawable
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.DecelerateInterpolator
-import androidx.core.graphics.BlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import mt.tint.viewtint.tint
-import mt.util.color.secondaryTextColor
-import player.phonograph.databinding.FragmentCardPlayerPlaybackControlsBinding
-import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.ui.fragments.player.AbsPlayerControllerFragment
-import player.phonograph.ui.fragments.player.PlayPauseButtonOnClickHandler
-import player.phonograph.ui.views.PlayPauseDrawable
 
-class CardPlayerControllerFragment : AbsPlayerControllerFragment() {
+class CardPlayerControllerFragment : AbsPlayerControllerFragment<FragmentCardPlayerPlaybackControlsBinding>() {
 
-    private var viewBinding: FragmentCardPlayerPlaybackControlsBinding? = null
-    private val v: FragmentCardPlayerPlaybackControlsBinding get() = viewBinding!!
-
-    private var _playerPlayPauseFab: FloatingActionButton? = null
-    val playerPlayPauseFab: FloatingActionButton get() = _playerPlayPauseFab!!
     var progressSliderHeight: Int = -1
         private set
 
-    override fun bindView(inflater: LayoutInflater): View {
-        viewBinding = FragmentCardPlayerPlaybackControlsBinding.inflate(inflater)
-        _playerPlayPauseFab = v.playerPlayPauseFab
-        prevButton = v.playerPrevButton
-        nextButton = v.playerNextButton
-        repeatButton = v.playerRepeatButton
-        shuffleButton = v.playerShuffleButton
-        progressSlider = v.playerProgressSlider
-        songCurrentProgress = v.playerSongCurrentProgress
-        songTotalTime = v.playerSongTotalTime
-        return v.root
-    }
+    override val binding: CardPlayerControllerBinding = CardPlayerControllerBinding()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        progressSliderHeight = v.playerProgressSlider.height
+        progressSliderHeight = binding.viewBinding.playerProgressSlider.height
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun unbindView() {
-        viewBinding = null
-        _playerPlayPauseFab = null
+
+    override fun onDestroyView() {
+        super.onDestroyView()
         progressSliderHeight = -1
     }
 
-    override fun setUpPlayPauseButton() {
-        val fabColor = Color.WHITE
-        v.playerPlayPauseFab.tint(fabColor, true)
-
-        playPauseDrawable = PlayPauseDrawable(requireActivity())
-        playPauseDrawable.colorFilter =
-            BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                requireContext().secondaryTextColor(fabColor), BlendModeCompat.SRC_IN
-            )
-
-        v.playerPlayPauseFab.setImageDrawable(playPauseDrawable) // Note: set the drawable AFTER TintHelper.setTintAuto() was called
-
-        v.playerPlayPauseFab.setOnClickListener(PlayPauseButtonOnClickHandler())
-        v.playerPlayPauseFab.post {
-            // viewBinding might be null, such as when resizing windows
-            viewBinding?.let { binding ->
-                binding.playerPlayPauseFab.pivotX = binding.playerPlayPauseFab.width.toFloat() / 2
-                binding.playerPlayPauseFab.pivotY = binding.playerPlayPauseFab.height.toFloat() / 2
-            }
-        }
-    }
-
-    override fun updatePlayPauseDrawableState(animate: Boolean) {
-        if (MusicPlayerRemote.isPlaying) {
-            playPauseDrawable.setPause(animate)
-        } else {
-            playPauseDrawable.setPlay(animate)
-        }
-    }
+    val playerPlayPauseFab get() = binding.playerPlayPauseFab
 
     override fun show() {
-        if (isResumed) v.playerPlayPauseFab.animate()
+        if (isResumed) binding.viewBinding.playerPlayPauseFab.animate()
             .scaleX(1f)
             .scaleY(1f)
             .rotation(360f)
@@ -94,10 +50,59 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment() {
     }
 
     override fun hide() {
-        if (isResumed) v.playerPlayPauseFab.apply {
+        if (isResumed) binding.viewBinding.playerPlayPauseFab.apply {
             scaleX = 0f
             scaleY = 0f
             rotation = 0f
         }
+    }
+
+
+    class CardPlayerControllerBinding : PlayerControllerBinding<FragmentCardPlayerPlaybackControlsBinding>() {
+        private var _playerPlayPauseFab: FloatingActionButton? = null
+        val playerPlayPauseFab: FloatingActionButton get() = _playerPlayPauseFab!!
+
+        override fun bind(viewBinding: FragmentCardPlayerPlaybackControlsBinding) {
+            _prevButton = viewBinding.playerPrevButton
+            _nextButton = viewBinding.playerNextButton
+            _repeatButton = viewBinding.playerRepeatButton
+            _shuffleButton = viewBinding.playerShuffleButton
+            _progressSlider = viewBinding.playerProgressSlider
+            _songCurrentProgress = viewBinding.playerSongCurrentProgress
+            _songTotalTime = viewBinding.playerSongTotalTime
+
+            _playerPlayPauseFab = viewBinding.playerPlayPauseFab
+        }
+
+        override fun inflate(inflater: LayoutInflater): View {
+            _viewBinding = FragmentCardPlayerPlaybackControlsBinding.inflate(inflater)
+            bind(viewBinding)
+            return viewBinding.root
+        }
+
+        override fun unbind() {
+            _playerPlayPauseFab = null
+            super.unbind()
+        }
+
+        override fun setUpPlayPauseButton(context: Context) {
+            playPauseDrawable = PlayPauseDrawable(context)
+
+            val fabColor = Color.WHITE
+            viewBinding.playerPlayPauseFab.tint(fabColor, true)
+
+            playPauseDrawable.colorFilter =
+                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                    context.secondaryTextColor(fabColor), BlendModeCompat.SRC_IN
+                )
+
+            viewBinding.playerPlayPauseFab.setImageDrawable(playPauseDrawable) // Note: set the drawable AFTER TintHelper.setTintAuto() was called
+            viewBinding.playerPlayPauseFab.setOnClickListener(PlayPauseButtonOnClickHandler())
+            viewBinding.playerPlayPauseFab.pivotX = viewBinding.playerPlayPauseFab.width.toFloat() / 2
+            viewBinding.playerPlayPauseFab.pivotY = viewBinding.playerPlayPauseFab.height.toFloat() / 2
+        }
+
+        override fun updatePlayPauseColor(controlsColor: Int) {}
+
     }
 }
