@@ -20,6 +20,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import android.animation.ArgbEvaluator
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
@@ -158,7 +159,11 @@ abstract class AbsSlidingMusicPanelActivity :
         setMiniPlayerFadingProgress(slideOffset)
         cancelThemeColorChange()
         val color: Int =
-            argbEvaluator.evaluate(slideOffset, viewModel.activityColor.value, viewModel.highlightColor.value) as Int
+            argbEvaluator.evaluate(
+                slideOffset,
+                viewModel.activityColor.value,
+               if (viewModel.transparentStatusbar) Color.TRANSPARENT else viewModel.highlightColor.value
+            ) as Int
         setStatusbarColor(color)
         setNavigationBarColor(color)
     }
