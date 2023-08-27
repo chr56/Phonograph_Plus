@@ -4,6 +4,12 @@
 
 package player.phonograph.ui.fragments.player.flat
 
+import player.phonograph.databinding.FragmentFlatPlayerPlaybackControlsBinding
+import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.ui.fragments.player.AbsPlayerControllerFragment
+import player.phonograph.ui.fragments.player.PlayPauseButtonOnClickHandler
+import player.phonograph.ui.views.PlayPauseDrawable
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
@@ -11,43 +17,22 @@ import android.animation.TimeInterpolator
 import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import player.phonograph.databinding.FragmentFlatPlayerPlaybackControlsBinding
-import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.ui.fragments.player.AbsPlayerControllerFragment
-import player.phonograph.ui.fragments.player.PlayPauseButtonOnClickHandler
-import player.phonograph.ui.views.PlayPauseDrawable
 import java.util.*
 
-class FlatPlayerControllerFragment : AbsPlayerControllerFragment() {
+class FlatPlayerControllerFragment : AbsPlayerControllerFragment<FragmentFlatPlayerPlaybackControlsBinding>() {
 
-    private var viewBinding: FragmentFlatPlayerPlaybackControlsBinding? = null
-    private val v: FragmentFlatPlayerPlaybackControlsBinding get() = viewBinding!!
+    override val binding: PlayerControllerBinding<FragmentFlatPlayerPlaybackControlsBinding> =
+        FlatPlayerControllerBinding()
 
-    override fun bindView(inflater: LayoutInflater): View {
-        viewBinding = FragmentFlatPlayerPlaybackControlsBinding.inflate(inflater)
-        prevButton = v.playerPrevButton
-        nextButton = v.playerNextButton
-        repeatButton = v.playerRepeatButton
-        shuffleButton = v.playerShuffleButton
-        progressSlider = v.playerProgressSlider
-        songCurrentProgress = v.playerSongCurrentProgress
-        songTotalTime = v.playerSongTotalTime
-        return v.root
-    }
-
-    override fun unbindView() {
-        viewBinding = null
-    }
 
     override fun setUpPlayPauseButton() {
         playPauseDrawable = PlayPauseDrawable(requireActivity())
-        v.playerPlayPauseButton.setImageDrawable(playPauseDrawable)
+        binding.viewBinding.playerPlayPauseButton.setImageDrawable(playPauseDrawable)
         updatePlayPauseColor()
-        v.playerPlayPauseButton.setOnClickListener(PlayPauseButtonOnClickHandler())
-        v.playerPlayPauseButton.post {
+        binding.viewBinding.playerPlayPauseButton.setOnClickListener(PlayPauseButtonOnClickHandler())
+        binding.viewBinding.playerPlayPauseButton.post {
             // viewBinding might be null, such as when resizing windows
-            viewBinding?.let { binding ->
+            binding.viewBinding?.let { binding ->
                 binding.playerPlayPauseButton.pivotX = binding.playerPlayPauseButton.width.toFloat() / 2
                 binding.playerPlayPauseButton.pivotY = binding.playerPlayPauseButton.height.toFloat() / 2
             }
@@ -63,7 +48,7 @@ class FlatPlayerControllerFragment : AbsPlayerControllerFragment() {
     }
 
     override fun updatePlayPauseColor() {
-        v.playerPlayPauseButton.setColorFilter(lastPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
+        binding.viewBinding.playerPlayPauseButton.setColorFilter(lastPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
     }
 
     private var hidden = false
@@ -75,11 +60,11 @@ class FlatPlayerControllerFragment : AbsPlayerControllerFragment() {
                 val interpolator: TimeInterpolator = FastOutSlowInInterpolator()
                 val duration = 300
                 val animators = LinkedList<Animator>()
-                addAnimation(animators, v.playerPlayPauseButton, interpolator, duration, 0)
-                addAnimation(animators, v.playerNextButton, interpolator, duration, 100)
-                addAnimation(animators, v.playerPrevButton, interpolator, duration, 100)
-                addAnimation(animators, v.playerRepeatButton, interpolator, duration, 200)
-                addAnimation(animators, v.playerShuffleButton, interpolator, duration, 200)
+                addAnimation(animators, binding.viewBinding.playerPlayPauseButton, interpolator, duration, 0)
+                addAnimation(animators, binding.viewBinding.playerNextButton, interpolator, duration, 100)
+                addAnimation(animators, binding.viewBinding.playerPrevButton, interpolator, duration, 100)
+                addAnimation(animators, binding.viewBinding.playerRepeatButton, interpolator, duration, 200)
+                addAnimation(animators, binding.viewBinding.playerShuffleButton, interpolator, duration, 200)
                 musicControllerAnimationSet = AnimatorSet()
                 musicControllerAnimationSet!!.playTogether(animators)
             } else {
@@ -91,13 +76,13 @@ class FlatPlayerControllerFragment : AbsPlayerControllerFragment() {
     }
 
     override fun hide() {
-            musicControllerAnimationSet?.cancel()
-            if (isResumed) {
-            prepareForAnimation(v.playerPlayPauseButton)
-            prepareForAnimation(v.playerNextButton)
-            prepareForAnimation(v.playerPrevButton)
-            prepareForAnimation(v.playerRepeatButton)
-            prepareForAnimation(v.playerShuffleButton)
+        musicControllerAnimationSet?.cancel()
+        if (isResumed) {
+            prepareForAnimation(binding.viewBinding.playerPlayPauseButton)
+            prepareForAnimation(binding.viewBinding.playerNextButton)
+            prepareForAnimation(binding.viewBinding.playerPrevButton)
+            prepareForAnimation(binding.viewBinding.playerRepeatButton)
+            prepareForAnimation(binding.viewBinding.playerShuffleButton)
         }
         hidden = true
     }

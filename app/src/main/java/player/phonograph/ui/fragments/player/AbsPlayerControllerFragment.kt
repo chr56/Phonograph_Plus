@@ -38,19 +38,11 @@ import android.widget.SeekBar
 import android.widget.TextView
 import kotlinx.coroutines.launch
 
-abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
+abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFragment() {
 
     protected lateinit var playPauseDrawable: PlayPauseDrawable
 
-    protected lateinit var prevButton: ImageButton
-    protected lateinit var nextButton: ImageButton
-
-    protected lateinit var repeatButton: ImageButton
-    protected lateinit var shuffleButton: ImageButton
-
-    protected lateinit var progressSlider: SeekBar
-    protected lateinit var songTotalTime: TextView
-    protected lateinit var songCurrentProgress: TextView
+    abstract val binding: PlayerControllerBinding<V>
 
     protected var lastPlaybackControlsColor = 0
     private var lastDisabledPlaybackControlsColor = 0
@@ -63,19 +55,17 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
         lifecycle.addObserver(progressViewUpdateHelperDelegate)
     }
 
-    protected abstract fun bindView(inflater: LayoutInflater): View
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        return bindView(inflater)
+        return binding.inflate(inflater)
     }
 
-    protected abstract fun unbindView()
     override fun onDestroyView() {
         super.onDestroyView()
-        unbindView()
+        binding.unbind()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -122,24 +112,24 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
 
     private fun setUpPrevNext() {
         updatePrevNextColor()
-        nextButton.setOnClickListener { MusicPlayerRemote.playNextSong() }
-        prevButton.setOnClickListener { MusicPlayerRemote.back() }
+        binding.nextButton.setOnClickListener { MusicPlayerRemote.playNextSong() }
+        binding.prevButton.setOnClickListener { MusicPlayerRemote.back() }
     }
 
     private fun setUpShuffleButton() {
-        shuffleButton.setOnClickListener { MusicPlayerRemote.toggleShuffleMode() }
+        binding.shuffleButton.setOnClickListener { MusicPlayerRemote.toggleShuffleMode() }
     }
 
     private fun setUpRepeatButton() {
-        repeatButton.setOnClickListener { MusicPlayerRemote.cycleRepeatMode() }
+        binding.repeatButton.setOnClickListener { MusicPlayerRemote.cycleRepeatMode() }
     }
 
     private fun setUpProgressSlider() {
         val color = requireContext().primaryTextColor(true)
         val colorFilter = createBlendModeColorFilterCompat(color, BlendModeCompat.SRC_IN)
-        progressSlider.thumb.mutate().colorFilter = colorFilter
-        progressSlider.progressDrawable.mutate().colorFilter = colorFilter
-        progressSlider.setOnSeekBarChangeListener(object : SimpleOnSeekbarChangeListener() {
+        binding.progressSlider.thumb.mutate().colorFilter = colorFilter
+        binding.progressSlider.progressDrawable.mutate().colorFilter = colorFilter
+        binding.progressSlider.setOnSeekBarChangeListener(object : SimpleOnSeekbarChangeListener() {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
                     MusicPlayerRemote.seekTo(progress)
@@ -182,41 +172,41 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
     protected abstract fun updatePlayPauseDrawableState(animate: Boolean)
     protected open fun updatePlayPauseColor() {}
     private fun updatePrevNextColor() {
-        nextButton.setColorFilter(lastPlaybackControlsColor, SRC_IN)
-        prevButton.setColorFilter(lastPlaybackControlsColor, SRC_IN)
+        binding.nextButton.setColorFilter(lastPlaybackControlsColor, SRC_IN)
+        binding.prevButton.setColorFilter(lastPlaybackControlsColor, SRC_IN)
     }
 
     private fun updateProgressTextColor() {
         val color = requireContext().primaryTextColor(true)
-        songTotalTime.setTextColor(color)
-        songCurrentProgress.setTextColor(color)
+        binding.songTotalTime.setTextColor(color)
+        binding.songCurrentProgress.setTextColor(color)
     }
 
     private fun updateProgressViews(progress: Int, total: Int) {
-        progressSlider.max = total
-        progressSlider.progress = progress
-        songTotalTime.text = getReadableDurationString(total.toLong())
-        songCurrentProgress.text = getReadableDurationString(progress.toLong())
+        binding.progressSlider.max = total
+        binding.progressSlider.progress = progress
+        binding.songTotalTime.text = getReadableDurationString(total.toLong())
+        binding.songCurrentProgress.text = getReadableDurationString(progress.toLong())
     }
 
     private fun updateRepeatState(repeatMode: RepeatMode) = when (repeatMode) {
         RepeatMode.NONE               -> {
-            repeatButton.setImageResource(R.drawable.ic_repeat_white_24dp)
-            repeatButton.setColorFilter(lastDisabledPlaybackControlsColor, SRC_IN)
+            binding.repeatButton.setImageResource(R.drawable.ic_repeat_white_24dp)
+            binding.repeatButton.setColorFilter(lastDisabledPlaybackControlsColor, SRC_IN)
         }
 
         RepeatMode.REPEAT_QUEUE       -> {
-            repeatButton.setImageResource(R.drawable.ic_repeat_white_24dp)
-            repeatButton.setColorFilter(lastPlaybackControlsColor, SRC_IN)
+            binding.repeatButton.setImageResource(R.drawable.ic_repeat_white_24dp)
+            binding.repeatButton.setColorFilter(lastPlaybackControlsColor, SRC_IN)
         }
 
         RepeatMode.REPEAT_SINGLE_SONG -> {
-            repeatButton.setImageResource(R.drawable.ic_repeat_one_white_24dp)
-            repeatButton.setColorFilter(lastPlaybackControlsColor, SRC_IN)
+            binding.repeatButton.setImageResource(R.drawable.ic_repeat_one_white_24dp)
+            binding.repeatButton.setColorFilter(lastPlaybackControlsColor, SRC_IN)
         }
     }
 
-    private fun updateShuffleState(shuffleMode: ShuffleMode) = shuffleButton.setColorFilter(
+    private fun updateShuffleState(shuffleMode: ShuffleMode) = binding.shuffleButton.setColorFilter(
         when (shuffleMode) {
             ShuffleMode.SHUFFLE -> lastPlaybackControlsColor
             ShuffleMode.NONE    -> lastDisabledPlaybackControlsColor

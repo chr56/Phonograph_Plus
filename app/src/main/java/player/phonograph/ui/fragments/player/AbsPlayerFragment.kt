@@ -58,7 +58,7 @@ import kotlinx.coroutines.yield
 abstract class AbsPlayerFragment :
         AbsMusicServiceFragment()/* , PaletteColorHolder */ {
 
-    protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment
+    protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment<*>
     protected val viewModel: PlayerFragmentViewModel by viewModels()
     protected val lyricsViewModel: LyricsViewModel by viewModels()
 
