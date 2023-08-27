@@ -19,6 +19,7 @@ import player.phonograph.misc.MusicProgressViewUpdateHelper
 import player.phonograph.model.lyrics.DEFAULT_TITLE
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.lyrics.LyricsInfo
+import player.phonograph.model.lyrics.TextLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.player.LyricsViewModel
@@ -209,7 +210,8 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
     private lateinit var lyricsAdapter: LyricsAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
     private fun setupRecycleView(lyricsInfo: LyricsInfo) {
-        val lyrics = lyricsInfo.activatedLyrics ?: lyricsInfo.first()
+        val lyrics =
+            lyricsInfo.activatedLyrics ?: lyricsInfo.getOrElse(0) { TextLyrics.from("NOT FOUND!?") }
         linearLayoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
         lyricsAdapter = LyricsAdapter(
             requireContext(), lyrics.getLyricsTimeArray(), lyrics.getLyricsLineArray()
