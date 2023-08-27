@@ -128,4 +128,23 @@ class FlatPlayerControllerFragment : AbsPlayerControllerFragment() {
             view.scaleY = 0f
         }
     }
+
+    class FlatPlayerControllerBinding : PlayerControllerBinding<FragmentFlatPlayerPlaybackControlsBinding>() {
+
+        override fun bind(viewBinding: FragmentFlatPlayerPlaybackControlsBinding) {
+            _prevButton = viewBinding.playerPrevButton
+            _nextButton = viewBinding.playerNextButton
+            _repeatButton = viewBinding.playerRepeatButton
+            _shuffleButton = viewBinding.playerShuffleButton
+            _progressSlider = viewBinding.playerProgressSlider
+            _songCurrentProgress = viewBinding.playerSongCurrentProgress
+            _songTotalTime = viewBinding.playerSongTotalTime
+        }
+
+        override fun inflate(inflater: LayoutInflater): View {
+            _viewBinding = FragmentFlatPlayerPlaybackControlsBinding.inflate(inflater)
+            bind(viewBinding)
+            return viewBinding.root
+        }
+    }
 }

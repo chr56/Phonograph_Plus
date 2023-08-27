@@ -26,6 +26,7 @@ import androidx.core.graphics.BlendModeCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.viewbinding.ViewBinding
 import android.content.Context
 import android.graphics.PorterDuff.Mode.SRC_IN
 import android.os.Bundle
@@ -225,4 +226,45 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
 
     abstract fun show()
     abstract fun hide()
+
+
+    @Suppress("PropertyName")
+    abstract class PlayerControllerBinding<V : ViewBinding> {
+        protected var _viewBinding: V? = null
+        val viewBinding: V get() = _viewBinding!!
+
+        val isAttached get() = _viewBinding != null
+
+
+        protected var _prevButton: ImageButton? = null
+        val prevButton: ImageButton get() = _prevButton!!
+        protected var _nextButton: ImageButton? = null
+        val nextButton: ImageButton get() = _nextButton!!
+
+        protected var _repeatButton: ImageButton? = null
+        val repeatButton: ImageButton get() = _repeatButton!!
+        protected var _shuffleButton: ImageButton? = null
+        val shuffleButton: ImageButton get() = _shuffleButton!!
+
+        protected var _progressSlider: SeekBar? = null
+        val progressSlider: SeekBar get() = _progressSlider!!
+        protected var _songTotalTime: TextView? = null
+        val songTotalTime: TextView get() = _songTotalTime!!
+        protected var _songCurrentProgress: TextView? = null
+        val songCurrentProgress: TextView get() = _songCurrentProgress!!
+
+
+        abstract fun bind(viewBinding: V)
+        abstract fun inflate(inflater: LayoutInflater): View
+        open fun unbind() {
+            _prevButton = null
+            _nextButton = null
+            _repeatButton = null
+            _shuffleButton = null
+            _progressSlider = null
+            _songTotalTime = null
+            _songCurrentProgress = null
+            _viewBinding = null
+        }
+    }
 }

@@ -100,4 +100,33 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment() {
             rotation = 0f
         }
     }
+
+
+    class CardPlayerControllerBinding : PlayerControllerBinding<FragmentCardPlayerPlaybackControlsBinding>() {
+        private var _playerPlayPauseFab: FloatingActionButton? = null
+        val playerPlayPauseFab: FloatingActionButton get() = _playerPlayPauseFab!!
+
+        override fun bind(viewBinding: FragmentCardPlayerPlaybackControlsBinding) {
+            _prevButton = viewBinding.playerPrevButton
+            _nextButton = viewBinding.playerNextButton
+            _repeatButton = viewBinding.playerRepeatButton
+            _shuffleButton = viewBinding.playerShuffleButton
+            _progressSlider = viewBinding.playerProgressSlider
+            _songCurrentProgress = viewBinding.playerSongCurrentProgress
+            _songTotalTime = viewBinding.playerSongTotalTime
+
+            _playerPlayPauseFab = viewBinding.playerPlayPauseFab
+        }
+
+        override fun inflate(inflater: LayoutInflater): View {
+            _viewBinding = FragmentCardPlayerPlaybackControlsBinding.inflate(inflater)
+            bind(viewBinding)
+            return viewBinding.root
+        }
+
+        override fun unbind() {
+            _playerPlayPauseFab = null
+            super.unbind()
+        }
+    }
 }
