@@ -74,13 +74,14 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         binding.setUpRepeatButton { MusicPlayerRemote.cycleRepeatMode() }
 
         calculateColor(context, context.getColor(R.color.defaultFooterColor))
+        lightColor = context.primaryTextColor(true)
 
         binding.setUpPlayPauseButton(context)
         binding.updatePlayPauseColor(controlsColor)
         binding.updatePrevNextColor(controlsColor)
 
-        binding.setUpProgressSlider(primaryTextColor)
-        binding.updateProgressTextColor(primaryTextColor)
+        binding.setUpProgressSlider(lightColor)
+        binding.updateProgressTextColor(lightColor)
 
         observeState()
     }
@@ -111,12 +112,11 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         }
     }
 
-    private var primaryTextColor = 0
+    private var lightColor = 0
     private var controlsColor = 0
     private var disabledControlsColor = 0
     private fun calculateColor(context: Context, backgroundColor: Int) {
         val darkmode = !isColorLight(backgroundColor)
-        primaryTextColor = context.primaryTextColor(darkmode)
         controlsColor = context.secondaryTextColor(darkmode)
         disabledControlsColor = context.secondaryDisabledTextColor(darkmode)
     }
@@ -129,10 +129,9 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
     @MainThread
     private fun refreshAll() {
         binding.updatePlayPauseColor(controlsColor)
+        binding.updatePrevNextColor(controlsColor)
         binding.updateRepeatState(MusicPlayerRemote.repeatMode, controlsColor, disabledControlsColor)
         binding.updateShuffleState(MusicPlayerRemote.shuffleMode, controlsColor, disabledControlsColor)
-        binding.updatePrevNextColor(controlsColor)
-        binding.updateProgressTextColor(primaryTextColor)
     }
 
     private fun updateProgressViews(progress: Int, total: Int) = binding.updateProgressViews(progress, total)
