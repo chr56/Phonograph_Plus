@@ -5,15 +5,16 @@
 package player.phonograph.ui.fragments.player.flat
 
 import player.phonograph.databinding.FragmentFlatPlayerPlaybackControlsBinding
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.player.AbsPlayerControllerFragment
 import player.phonograph.ui.fragments.player.PlayPauseButtonOnClickHandler
 import player.phonograph.ui.views.PlayPauseDrawable
+import androidx.annotation.ColorInt
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.TimeInterpolator
+import android.content.Context
 import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
@@ -22,33 +23,6 @@ import java.util.*
 class FlatPlayerControllerFragment : AbsPlayerControllerFragment<FragmentFlatPlayerPlaybackControlsBinding>() {
 
     override val binding: FlatPlayerControllerBinding = FlatPlayerControllerBinding()
-
-
-    override fun setUpPlayPauseButton() {
-        playPauseDrawable = PlayPauseDrawable(requireActivity())
-        binding.viewBinding.playerPlayPauseButton.setImageDrawable(playPauseDrawable)
-        updatePlayPauseColor()
-        binding.viewBinding.playerPlayPauseButton.setOnClickListener(PlayPauseButtonOnClickHandler())
-        binding.viewBinding.playerPlayPauseButton.post {
-            // viewBinding might be null, such as when resizing windows
-            binding.viewBinding?.let { binding ->
-                binding.playerPlayPauseButton.pivotX = binding.playerPlayPauseButton.width.toFloat() / 2
-                binding.playerPlayPauseButton.pivotY = binding.playerPlayPauseButton.height.toFloat() / 2
-            }
-        }
-    }
-
-    override fun updatePlayPauseDrawableState(animate: Boolean) {
-        if (MusicPlayerRemote.isPlaying) {
-            playPauseDrawable.setPause(animate)
-        } else {
-            playPauseDrawable.setPlay(animate)
-        }
-    }
-
-    override fun updatePlayPauseColor() {
-        binding.viewBinding.playerPlayPauseButton.setColorFilter(controlsColor, PorterDuff.Mode.SRC_IN)
-    }
 
     private var hidden = false
     private var musicControllerAnimationSet: AnimatorSet? = null
@@ -129,6 +103,18 @@ class FlatPlayerControllerFragment : AbsPlayerControllerFragment<FragmentFlatPla
             _viewBinding = FragmentFlatPlayerPlaybackControlsBinding.inflate(inflater)
             bind(viewBinding)
             return viewBinding.root
+        }
+
+        override fun setUpPlayPauseButton(context: Context) {
+            playPauseDrawable = PlayPauseDrawable(context)
+            viewBinding.playerPlayPauseButton.setOnClickListener(PlayPauseButtonOnClickHandler())
+            viewBinding.playerPlayPauseButton.setImageDrawable(playPauseDrawable)
+            viewBinding.playerPlayPauseButton.pivotX = viewBinding.playerPlayPauseButton.width.toFloat() / 2
+            viewBinding.playerPlayPauseButton.pivotY = viewBinding.playerPlayPauseButton.height.toFloat() / 2
+        }
+
+        override fun updatePlayPauseColor(@ColorInt color: Int) {
+            viewBinding.playerPlayPauseButton.setColorFilter(color, PorterDuff.Mode.SRC_IN)
         }
     }
 }

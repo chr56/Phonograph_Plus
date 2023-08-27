@@ -41,8 +41,6 @@ import kotlinx.coroutines.launch
 
 abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFragment() {
 
-    protected lateinit var playPauseDrawable: PlayPauseDrawable
-
     abstract val binding: PlayerControllerBinding<V>
 
     private val progressViewUpdateHelperDelegate =
@@ -69,13 +67,14 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setUpPlayPauseButton()
-
-        binding.updatePrevNextColor(controlsColor)
         binding.setUpPrevButton { MusicPlayerRemote.back() }
         binding.setUpNextButton { MusicPlayerRemote.playNextSong() }
         binding.setUpShuffleButton { MusicPlayerRemote.toggleShuffleMode() }
         binding.setUpRepeatButton { MusicPlayerRemote.cycleRepeatMode() }
+
+        binding.setUpPlayPauseButton(view.context)
+        binding.updatePlayPauseColor(controlsColor)
+        binding.updatePrevNextColor(controlsColor)
 
         binding.setUpProgressSlider(primaryTextColor)
         binding.updateProgressTextColor(primaryTextColor)
@@ -101,7 +100,7 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 PlayerController.currentState.collect {
-                    updatePlayPauseDrawableState(
+                    binding.updatePlayPauseDrawableState(
                         lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
                     )
                 }
@@ -109,8 +108,8 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         }
     }
 
-    protected var primaryTextColor = 0
-    protected var controlsColor = 0
+    private var primaryTextColor = 0
+    private var controlsColor = 0
     private var disabledControlsColor = 0
     private fun calculateColor(context: Context, backgroundColor: Int) {
         val darkmode = !isColorLight(backgroundColor)
@@ -126,16 +125,12 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
 
     @MainThread
     private fun refreshAll() {
-        updatePlayPauseColor()
+        binding.updatePlayPauseColor(controlsColor)
         binding.updateRepeatState(MusicPlayerRemote.repeatMode, controlsColor, disabledControlsColor)
         binding.updateShuffleState(MusicPlayerRemote.shuffleMode, controlsColor, disabledControlsColor)
         binding.updatePrevNextColor(controlsColor)
         binding.updateProgressTextColor(primaryTextColor)
     }
-
-    abstract fun setUpPlayPauseButton()
-    protected abstract fun updatePlayPauseDrawableState(animate: Boolean)
-    protected open fun updatePlayPauseColor() {}
 
     private fun updateProgressViews(progress: Int, total: Int) = binding.updateProgressViews(progress, total)
 
@@ -238,6 +233,18 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
 
 
         //region Behaviour
+        lateinit var playPauseDrawable: PlayPauseDrawable
+        abstract fun setUpPlayPauseButton(context: Context)
+        abstract fun updatePlayPauseColor(controlsColor: Int)
+
+        fun updatePlayPauseDrawableState(animate: Boolean) {
+            if (MusicPlayerRemote.isPlaying) {
+                playPauseDrawable.setPause(animate)
+            } else {
+                playPauseDrawable.setPlay(animate)
+            }
+        }
+
         fun setUpPrevButton(onClickListener: View.OnClickListener) {
             prevButton.setOnClickListener(onClickListener)
         }
