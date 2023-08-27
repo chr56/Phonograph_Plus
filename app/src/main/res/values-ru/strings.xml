@@ -40,6 +40,7 @@
     <string name="album_artist">Альбом исполнителя</string>
     <string name="year">Год</string>
     <string name="track">Номер дорожки</string>
+    <string name="track_total">Общий номер трека</string>
     <string name="lyrics">Текст песни</string>
     <string name="saving_changes">Сохранение изменений</string>
     <string name="label_details">Подробнее</string>
@@ -71,6 +72,7 @@
     <string name="select_all_title">Выбрать все</string>
     <string name="unselect_all_title">Отменить выбор</string>
     <string name="invert_selection">Инвертировать выделение</string>
+    <string name="action_play_all">Играть все</string>
     <string name="action_shuffle_all">Перемешать всё</string>
     <string name="action_shuffle_album">Перемешать альбом</string>
     <string name="action_shuffle_artist">Перемешать исполнителя</string>
@@ -369,10 +371,10 @@
         <item quantity="other">%1$d жанры</item>
     </plurals>
     <plurals name="msg_header_delete_items">
-        <item quantity="one">%1$d Этот элемент будет удален:</item>
-        <item quantity="few">%1$d Эти элементы будут удалены:</item>
-        <item quantity="many">%1$d Эти элементы будут удалены:</item>
-        <item quantity="other">%1$d Эти элементы будут удалены:</item>
+        <item quantity="one">%1$d элемент будет удален:</item>
+        <item quantity="few">%1$d элементов будут удалены:</item>
+        <item quantity="many">%1$d элементов будут удалены:</item>
+        <item quantity="other">%1$d элементы будут удалены:</item>
     </plurals>
     <plurals name="msg_header_remove_items">
         <!-- %1$s: where -->
@@ -447,4 +449,9 @@
     <string name="action_speed">Скорость</string>
     <string name="pref_title_resume_after_audio_focus_gain">Автоматически возобновлять воспроизведение после перерывов</string>
     <string name="pref_summary_resume_after_audio_focus_gain">Всегда возобновлять воспроизведение после перерыва (например, звонок или будильник).</string>
+    <string name="tag_format">Формат тега</string>
+    <string name="raw_tags">Сырые теги</string>
+    <string name="disk_number">Номер диска</string>
+    <string name="disk_number_total">Номер диска</string>
+    <string name="rating">Оценка</string>
 </resources>
