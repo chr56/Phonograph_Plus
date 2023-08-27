@@ -37,6 +37,9 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFragment() {
@@ -73,6 +76,7 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         binding.setUpShuffleButton { MusicPlayerRemote.toggleShuffleMode() }
         binding.setUpRepeatButton { MusicPlayerRemote.cycleRepeatMode() }
 
+        _backgroundColor.value = context.getColor(R.color.defaultFooterColor)
         calculateColor(context, context.getColor(R.color.defaultFooterColor))
         lightColor = context.primaryTextColor(true)
 
@@ -110,7 +114,21 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
                 }
             }
         }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                backgroundColor.collect { newColor ->
+                    calculateColor(requireContext(), newColor)
+                    binding.updatePlayPauseColor(controlsColor)
+                    binding.updatePrevNextColor(controlsColor)
+                    binding.updateRepeatState(MusicPlayerRemote.repeatMode, controlsColor, disabledControlsColor)
+                    binding.updateShuffleState(MusicPlayerRemote.shuffleMode, controlsColor, disabledControlsColor)
+                }
+            }
+        }
     }
+
+    private val _backgroundColor: MutableStateFlow<Int> = MutableStateFlow(0)
+    protected val backgroundColor get() = _backgroundColor.asStateFlow()
 
     private var lightColor = 0
     private var controlsColor = 0
@@ -121,22 +139,11 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         disabledControlsColor = context.secondaryDisabledTextColor(darkmode)
     }
 
-    fun modifyColor(backgroundColor: Int) {
-        calculateColor(requireContext(), backgroundColor)
-        refreshAll()
-    }
-
-    @MainThread
-    private fun refreshAll() {
-        binding.updatePlayPauseColor(controlsColor)
-        binding.updatePrevNextColor(controlsColor)
-        binding.updateRepeatState(MusicPlayerRemote.repeatMode, controlsColor, disabledControlsColor)
-        binding.updateShuffleState(MusicPlayerRemote.shuffleMode, controlsColor, disabledControlsColor)
-    }
-
     private fun updateProgressViews(progress: Int, total: Int) = binding.updateProgressViews(progress, total)
 
-    //endregion
+    fun modifyColor(backgroundColor: Int) {
+        _backgroundColor.update { backgroundColor }
+    }
 
     abstract fun show()
     abstract fun hide()
