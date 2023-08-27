@@ -5,6 +5,7 @@
 package player.phonograph.ui.activities.base
 
 import player.phonograph.R
+import player.phonograph.coil.retriever.PARAMETERS_RAW
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.MiniPlayerFragment
 import androidx.lifecycle.ViewModel
@@ -13,6 +14,7 @@ import androidx.lifecycle.viewModelScope
 import android.content.Context
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
@@ -42,6 +44,13 @@ class PanelViewModel(
             _previousHighlightColor.emit(oldColor)
             _highlightColor.emit(newColor)
         }
+    }
+
+    private var _transparentStatusbar: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val transparentStatusbar get() = _transparentStatusbar.value
+
+    fun enableTransparentStatusbar(enable: Boolean) {
+        _transparentStatusbar.update { enable }
     }
 
     val playerFragment: WeakReference<AbsPlayerFragment?> = WeakReference(null)
