@@ -8,7 +8,6 @@ import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenDocumentContract
 import mt.tint.viewtint.setMenuColor
 import mt.util.color.toolbarIconColor
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mechanism.Favorite.toggleFavorite
 import player.phonograph.mechanism.event.MediaStoreTracker
@@ -379,11 +378,9 @@ abstract class AbsPlayerFragment :
             }
         }
         observe(viewModel.paletteColor) { newColor ->
-            withContext(Dispatchers.Main) {
-                withResumed {
-                    playbackControlsFragment.modifyColor(newColor)
-                    requestAnimateColorChanging(newColor)
-                }
+            playbackControlsFragment.modifyColor(newColor)
+            withResumed {
+                requestAnimateColorChanging(newColor)
             }
         }
     }
