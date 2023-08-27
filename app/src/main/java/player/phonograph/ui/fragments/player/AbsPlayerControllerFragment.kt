@@ -65,6 +65,7 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val context = view.context
         super.onViewCreated(view, savedInstanceState)
 
         binding.setUpPrevButton { MusicPlayerRemote.back() }
@@ -72,7 +73,9 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         binding.setUpShuffleButton { MusicPlayerRemote.toggleShuffleMode() }
         binding.setUpRepeatButton { MusicPlayerRemote.cycleRepeatMode() }
 
-        binding.setUpPlayPauseButton(view.context)
+        calculateColor(context, context.getColor(R.color.defaultFooterColor))
+
+        binding.setUpPlayPauseButton(context)
         binding.updatePlayPauseColor(controlsColor)
         binding.updatePrevNextColor(controlsColor)
 
