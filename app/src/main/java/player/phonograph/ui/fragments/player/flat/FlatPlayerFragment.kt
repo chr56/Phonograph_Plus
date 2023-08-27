@@ -40,7 +40,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.PopupMenu
 import kotlin.math.max
@@ -75,8 +74,10 @@ class FlatPlayerFragment :
         }
         view.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                impl.setUpPanelAndAlbumCoverHeight()
+                if (!isDetached && isAdded) {
+                    view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    impl.setUpPanelAndAlbumCoverHeight()
+                }
             }
         })
         observeState()

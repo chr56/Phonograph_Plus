@@ -80,8 +80,10 @@ class CardPlayerFragment :
         }
         view.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                impl.setUpPanelAndAlbumCoverHeight()
+                if (!isDetached && isAdded) {
+                    view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    impl.setUpPanelAndAlbumCoverHeight()
+                }
             }
         })
 
