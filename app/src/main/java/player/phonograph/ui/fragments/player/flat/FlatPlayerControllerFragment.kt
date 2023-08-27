@@ -21,8 +21,7 @@ import java.util.*
 
 class FlatPlayerControllerFragment : AbsPlayerControllerFragment<FragmentFlatPlayerPlaybackControlsBinding>() {
 
-    override val binding: PlayerControllerBinding<FragmentFlatPlayerPlaybackControlsBinding> =
-        FlatPlayerControllerBinding()
+    override val binding: FlatPlayerControllerBinding = FlatPlayerControllerBinding()
 
 
     override fun setUpPlayPauseButton() {

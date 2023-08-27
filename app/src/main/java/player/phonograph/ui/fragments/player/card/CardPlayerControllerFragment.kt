@@ -25,8 +25,7 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment<FragmentCardPla
     var progressSliderHeight: Int = -1
         private set
 
-    override val binding: PlayerControllerBinding<FragmentCardPlayerPlaybackControlsBinding> =
-        CardPlayerControllerBinding()
+    override val binding: CardPlayerControllerBinding = CardPlayerControllerBinding()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         progressSliderHeight = binding.viewBinding.playerProgressSlider.height
@@ -69,7 +68,7 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment<FragmentCardPla
         }
     }
 
-    val playerPlayPauseFab get() = (binding as CardPlayerControllerBinding).playerPlayPauseFab
+    val playerPlayPauseFab get() = binding.playerPlayPauseFab
 
     override fun show() {
         if (isResumed) binding.viewBinding.playerPlayPauseFab.animate()
