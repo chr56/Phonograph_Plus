@@ -113,8 +113,8 @@ class FlatPlayerControllerFragment : AbsPlayerControllerFragment<FragmentFlatPla
             viewBinding.playerPlayPauseButton.pivotY = viewBinding.playerPlayPauseButton.height.toFloat() / 2
         }
 
-        override fun updatePlayPauseColor(@ColorInt color: Int) {
-            viewBinding.playerPlayPauseButton.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+        override fun updatePlayPauseColor(@ColorInt controlsColor: Int) {
+            viewBinding.playerPlayPauseButton.setColorFilter(controlsColor, PorterDuff.Mode.SRC_IN)
         }
     }
 }
