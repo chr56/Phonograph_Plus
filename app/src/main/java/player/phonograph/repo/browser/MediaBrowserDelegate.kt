@@ -9,10 +9,10 @@ import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
 import player.phonograph.repo.mediastore.loaders.ArtistLoader
 import player.phonograph.repo.mediastore.loaders.SongLoader
-import player.phonograph.repo.mediastore.loaders.dynamics.LastAddedLoader
 import player.phonograph.repo.mediastore.loaders.dynamics.TopAndRecentlyPlayedTracksLoader
 import player.phonograph.repo.mediastore.processQuery
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.settings.Setting
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot
 import android.content.Context
 import android.os.Bundle
@@ -79,7 +79,7 @@ object MediaBrowserDelegate {
         return when (mediaId) {
             MEDIA_BROWSER_SONGS_FAVORITES  -> FavoritesStore.get().getAllSongs(context)
             MEDIA_BROWSER_SONGS_TOP_TRACKS -> TopAndRecentlyPlayedTracksLoader.topTracks(context)
-            MEDIA_BROWSER_SONGS_LAST_ADDED -> LastAddedLoader.lastAddedSongs(context)
+            MEDIA_BROWSER_SONGS_LAST_ADDED -> SongLoader.since(context, Setting.instance.lastAddedCutoff)
             MEDIA_BROWSER_SONGS_HISTORY    -> TopAndRecentlyPlayedTracksLoader.recentlyPlayedTracks(context)
 
             else                           -> {

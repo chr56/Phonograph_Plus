@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 package player.phonograph.model.playlist
 
 import player.phonograph.R
 import player.phonograph.model.Song
-import player.phonograph.repo.mediastore.loaders.dynamics.LastAddedLoader
+import player.phonograph.repo.mediastore.loaders.SongLoader
+import player.phonograph.settings.Setting
 import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
@@ -24,13 +25,15 @@ class LastAddedPlaylist : SmartPlaylist {
     override var iconRes: Int = R.drawable.ic_library_add_white_24dp
 
     override fun getSongs(context: Context): List<Song> =
-        LastAddedLoader.lastAddedSongs(context)
+        SongLoader.since(context, Setting.instance.lastAddedCutoff)
 
-    override fun containsSong(context: Context, songId: Long): Boolean = false // todo
+    override fun containsSong(context: Context, songId: Long): Boolean =
+        getSongs(context).find { it.id == songId } != null
 
     override fun toString(): String = "LastAddedPlaylist"
 
     constructor(parcel: Parcel) : super(parcel)
+
     companion object {
         @Keep
         @JvmField
@@ -38,6 +41,7 @@ class LastAddedPlaylist : SmartPlaylist {
             override fun createFromParcel(source: Parcel): LastAddedPlaylist {
                 return LastAddedPlaylist(source)
             }
+
             override fun newArray(size: Int): Array<LastAddedPlaylist?> {
                 return arrayOfNulls(size)
             }
