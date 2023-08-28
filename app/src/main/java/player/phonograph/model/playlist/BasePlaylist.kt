@@ -14,6 +14,7 @@ import player.phonograph.repo.mediastore.playlists.FavoriteSongsPlaylistImpl
 import player.phonograph.repo.mediastore.playlists.HistoryPlaylistImpl
 import player.phonograph.repo.mediastore.playlists.LastAddedPlaylistImpl
 import player.phonograph.repo.mediastore.playlists.MyTopTracksPlaylistImpl
+import player.phonograph.repo.mediastore.playlists.ShuffleAllPlaylistImpl
 import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
@@ -86,7 +87,7 @@ sealed class Playlist : Parcelable, Displayable {
                     PlaylistType.LAST_ADDED -> { LastAddedPlaylistImpl(source) }
                     PlaylistType.HISTORY -> { HistoryPlaylistImpl(source) }
                     PlaylistType.MY_TOP_TRACK -> { MyTopTracksPlaylistImpl(source) }
-                    PlaylistType.RANDOM -> { ShuffleAllPlaylist(source) }
+                    PlaylistType.RANDOM -> { ShuffleAllPlaylistImpl(source) }
                     else -> { throw IllegalStateException("Unknown type of playlist") }
                 }
             }

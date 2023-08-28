@@ -29,7 +29,6 @@ import player.phonograph.appshortcuts.shortcuttype.ShuffleAllShortcutType
 import player.phonograph.appshortcuts.shortcuttype.TopTracksShortcutType
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
-import player.phonograph.model.playlist.ShuffleAllPlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
@@ -227,7 +226,7 @@ class StarterActivity : AppCompatActivity() {
             SHORTCUT_TYPE_SHUFFLE_ALL -> {
                 reportShortcutUsed(this, ShuffleAllShortcutType.id)
                 shuffleMode = ShuffleMode.SHUFFLE
-                ShuffleAllPlaylist(applicationContext)
+                SmartPlaylistsLoader.shuffleAllPlaylist
 
             }
 
