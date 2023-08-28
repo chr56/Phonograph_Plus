@@ -6,8 +6,8 @@ package player.phonograph.repo.database
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.settings.Setting
 import player.phonograph.util.FileUtil.safeGetCanonicalPath
+import player.phonograph.util.debug
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -16,18 +16,22 @@ import android.os.Environment.DIRECTORY_ALARMS
 import android.os.Environment.DIRECTORY_NOTIFICATIONS
 import android.os.Environment.DIRECTORY_RINGTONES
 import android.os.Environment.getExternalStoragePublicDirectory
+import android.util.Log
 import java.io.File
 
 class PathFilterStore(context: Context) :
         SQLiteOpenHelper(context, DatabaseConstants.PATH_FILTER, null, VERSION) {
 
     init {
-        if (!Setting.instance.initializedBlacklist) {
+        val databaseFile = context.getDatabasePath(DatabaseConstants.PATH_FILTER)
+        if (!databaseFile.exists()) {
+            debug {
+                Log.v(DatabaseConstants.PATH_FILTER, "PathFilter database doesn't not existed, initializing...")
+            }
             // blacklisted by default
             addPathImpl(getExternalStoragePublicDirectory(DIRECTORY_ALARMS), TABLE_BLACKLIST)
             addPathImpl(getExternalStoragePublicDirectory(DIRECTORY_NOTIFICATIONS), TABLE_BLACKLIST)
             addPathImpl(getExternalStoragePublicDirectory(DIRECTORY_RINGTONES), TABLE_BLACKLIST)
-            Setting.instance.initializedBlacklist = true
         }
     }
 
