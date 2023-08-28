@@ -4,15 +4,25 @@
 
 package player.phonograph.mechanism.event
 
+import org.koin.core.context.GlobalContext
+import player.phonograph.MusicServiceMsgConst
 import player.phonograph.model.listener.MediaStoreChangedListener
+import player.phonograph.util.registerReceiverCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import java.lang.ref.WeakReference
 
 
-object MediaStoreTracker {
-    private const val TAG = "MediaStoreTracker"
+class MediaStoreTracker(context: Context) {
 
+    init {
+        EventReceiver.setupEventReceiver(context)
+    }
 
     private val listeners: MutableList<WeakReference<MediaStoreChangedListener>> = mutableListOf()
 
@@ -44,15 +54,45 @@ object MediaStoreTracker {
     }
 
     abstract class LifecycleListener : DefaultLifecycleObserver, MediaStoreChangedListener {
+        private val mediaStoreTracker: MediaStoreTracker by GlobalContext.get().inject()
         override fun onCreate(owner: LifecycleOwner) {
             super.onDestroy(owner)
-            register(this)
+            mediaStoreTracker.register(this)
         }
 
         override fun onDestroy(owner: LifecycleOwner) {
             super.onDestroy(owner)
-            unregister(this)
+            mediaStoreTracker.unregister(this)
         }
+    }
+
+    class EventReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when (intent.action) {
+                MusicServiceMsgConst.MEDIA_STORE_CHANGED -> instance.dispatch()
+            }
+        }
+
+        companion object {
+            internal lateinit var eventReceiver: EventReceiver private set
+            private var initialed = false
+            fun setupEventReceiver(context: Context) {
+                if (!initialed) {
+                    eventReceiver = EventReceiver()
+                    context.applicationContext.registerReceiverCompat(
+                        eventReceiver,
+                        IntentFilter(MusicServiceMsgConst.MEDIA_STORE_CHANGED),
+                        ContextCompat.RECEIVER_NOT_EXPORTED
+                    )
+                    initialed = true
+                }
+            }
+        }
+    }
+
+    companion object {
+        private const val TAG = "MediaStoreTracker"
+        val instance: MediaStoreTracker by GlobalContext.get().inject()
     }
 }
 

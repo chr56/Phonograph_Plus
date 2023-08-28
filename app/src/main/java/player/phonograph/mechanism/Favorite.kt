@@ -101,5 +101,5 @@ object Favorite {
         ).also { notifyMediaStoreChanged() }
     }
 
-    private fun notifyMediaStoreChanged() = MediaStoreTracker.notifyAllListeners()
+    private fun notifyMediaStoreChanged() = MediaStoreTracker.instance.notifyAllListeners()
 }

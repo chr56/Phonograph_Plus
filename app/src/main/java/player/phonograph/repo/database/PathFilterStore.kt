@@ -208,6 +208,6 @@ class PathFilterStore(context: Context) :
         }
 
 
-        private fun notifyMediaStoreChanged() = MediaStoreTracker.notifyAllListeners()
+        private fun notifyMediaStoreChanged() = MediaStoreTracker.instance.notifyAllListeners()
     }
 }

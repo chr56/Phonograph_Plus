@@ -54,7 +54,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
                 withResumed {
                     notifyPermissionDeniedUser(listOf(permission)) {
                         requestPermissionImpl(arrayOf(permission.permissionId)) { result ->
-                            if (result.entries.first().value) MediaStoreTracker.notifyAllListeners()
+                            if (result.entries.first().value) MediaStoreTracker.instance.notifyAllListeners()
                         }
                     }
                 }

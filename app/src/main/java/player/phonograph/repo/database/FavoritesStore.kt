@@ -50,7 +50,7 @@ class FavoritesStore private constructor(context: Context) :
     private fun clearTable(tableName: String) {
         val database = writableDatabase
         database.delete(tableName, null, null)
-        MediaStoreTracker.notifyAllListeners()
+        MediaStoreTracker.instance.notifyAllListeners()
     }
 
     fun getAllSongs(context: Context): List<Song> = getAllSongsImpl(context)
@@ -145,7 +145,7 @@ class FavoritesStore private constructor(context: Context) :
             false
         } finally {
             database.endTransaction()
-            MediaStoreTracker.notifyAllListeners()
+            MediaStoreTracker.instance.notifyAllListeners()
         }
     }
 
@@ -187,7 +187,7 @@ class FavoritesStore private constructor(context: Context) :
             false
         } finally {
             database.endTransaction()
-            MediaStoreTracker.notifyAllListeners()
+            MediaStoreTracker.instance.notifyAllListeners()
         }
     }
 
@@ -213,7 +213,7 @@ class FavoritesStore private constructor(context: Context) :
             false
         } finally {
             database.endTransaction()
-            MediaStoreTracker.notifyAllListeners()
+            MediaStoreTracker.instance.notifyAllListeners()
         }
     }
 

@@ -141,7 +141,7 @@ object DatabaseDataManger {
                 currentQueueQueue ?: originalQueue ?: emptyList(),
                 originalQueue ?: currentQueueQueue ?: emptyList(),
             )
-            MediaStoreTracker.notifyAllListeners()
+            MediaStoreTracker.instance.notifyAllListeners()
             true
         } else {
             warning(TAG, "PlayingQueues: Nothing to import")
@@ -205,7 +205,7 @@ object DatabaseDataManger {
         }
 
         // todo: report the imported
-        MediaStoreTracker.notifyAllListeners()
+        MediaStoreTracker.instance.notifyAllListeners()
 
         return r1 || r2
     }

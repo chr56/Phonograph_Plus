@@ -66,7 +66,7 @@ class PathFilterDialog : DialogFragment() {
                 val inv = !Setting.instance.pathFilterExcludeMode
                 Setting.instance.pathFilterExcludeMode = inv
                 loadPaths()
-                MediaStoreTracker.notifyAllListeners()
+                MediaStoreTracker.instance.notifyAllListeners()
             }
             space(1)
             button(2, getString(android.R.string.ok), accentColor) {

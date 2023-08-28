@@ -13,7 +13,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.coil.createPhonographImageLoader
-import player.phonograph.mechanism.event.setupEventReceiver
+import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
 import player.phonograph.service.queue.QueueManager
@@ -93,9 +93,6 @@ class App : Application(), ImageLoaderFactory {
 
             modules(module)
         }
-
-        // state listener
-        setupEventReceiver(this)
     }
 
     override fun onTerminate() {
