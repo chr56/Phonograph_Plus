@@ -6,6 +6,7 @@ package player.phonograph.ui.activities.base
 
 import lib.phonograph.activity.ToolbarActivity
 import org.koin.android.ext.android.inject
+import org.koin.core.context.GlobalContext
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
@@ -54,7 +55,9 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
                 withResumed {
                     notifyPermissionDeniedUser(listOf(permission)) {
                         requestPermissionImpl(arrayOf(permission.permissionId)) { result ->
-                            if (result.entries.first().value) MediaStoreTracker.instance.notifyAllListeners()
+                            if (result.entries.first().value) {
+                                GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
+                            }
                         }
                     }
                 }

@@ -4,6 +4,7 @@
 
 package player.phonograph.repo.database
 
+import org.koin.core.context.GlobalContext
 import player.phonograph.App
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
@@ -50,7 +51,7 @@ class FavoritesStore private constructor(context: Context) :
     private fun clearTable(tableName: String) {
         val database = writableDatabase
         database.delete(tableName, null, null)
-        MediaStoreTracker.instance.notifyAllListeners()
+        mediaStoreTracker.notifyAllListeners()
     }
 
     fun getAllSongs(context: Context): List<Song> = getAllSongsImpl(context)
@@ -145,7 +146,7 @@ class FavoritesStore private constructor(context: Context) :
             false
         } finally {
             database.endTransaction()
-            MediaStoreTracker.instance.notifyAllListeners()
+            mediaStoreTracker.notifyAllListeners()
         }
     }
 
@@ -187,7 +188,7 @@ class FavoritesStore private constructor(context: Context) :
             false
         } finally {
             database.endTransaction()
-            MediaStoreTracker.instance.notifyAllListeners()
+            mediaStoreTracker.notifyAllListeners()
         }
     }
 
@@ -213,9 +214,11 @@ class FavoritesStore private constructor(context: Context) :
             false
         } finally {
             database.endTransaction()
-            MediaStoreTracker.instance.notifyAllListeners()
+            mediaStoreTracker.notifyAllListeners()
         }
     }
+
+    private val mediaStoreTracker: MediaStoreTracker by GlobalContext.get().inject()
 
     companion object {
         private const val VERSION = 2

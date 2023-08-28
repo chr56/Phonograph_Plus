@@ -5,6 +5,7 @@
 package player.phonograph.mechanism.backup
 
 import okio.BufferedSink
+import org.koin.core.context.GlobalContext
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
@@ -141,7 +142,7 @@ object DatabaseDataManger {
                 currentQueueQueue ?: originalQueue ?: emptyList(),
                 originalQueue ?: currentQueueQueue ?: emptyList(),
             )
-            MediaStoreTracker.instance.notifyAllListeners()
+            GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
             true
         } else {
             warning(TAG, "PlayingQueues: Nothing to import")
@@ -205,7 +206,7 @@ object DatabaseDataManger {
         }
 
         // todo: report the imported
-        MediaStoreTracker.instance.notifyAllListeners()
+        GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
 
         return r1 || r2
     }

@@ -4,6 +4,7 @@
 
 package player.phonograph.repo.database
 
+import org.koin.core.context.GlobalContext
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.settings.Setting
 import player.phonograph.util.FileUtil.safeGetCanonicalPath
@@ -116,7 +117,7 @@ class PathFilterStore(context: Context) :
     }
 
     fun removeWhitelistPath(paths: List<String>) {
-        paths.forEach { removePathImpl(it, TABLE_WHITELIST)}
+        paths.forEach { removePathImpl(it, TABLE_WHITELIST) }
         notifyMediaStoreChanged()
     }
 
@@ -208,6 +209,6 @@ class PathFilterStore(context: Context) :
         }
 
 
-        private fun notifyMediaStoreChanged() = MediaStoreTracker.instance.notifyAllListeners()
+        private fun notifyMediaStoreChanged() = GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
     }
 }

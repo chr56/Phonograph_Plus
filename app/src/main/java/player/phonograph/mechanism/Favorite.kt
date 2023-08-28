@@ -3,6 +3,7 @@
  */
 package player.phonograph.mechanism
 
+import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
@@ -101,5 +102,5 @@ object Favorite {
         ).also { notifyMediaStoreChanged() }
     }
 
-    private fun notifyMediaStoreChanged() = MediaStoreTracker.instance.notifyAllListeners()
+    private fun notifyMediaStoreChanged() = GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
 }

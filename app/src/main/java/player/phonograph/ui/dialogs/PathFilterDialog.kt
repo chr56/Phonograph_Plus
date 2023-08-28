@@ -3,6 +3,7 @@ package player.phonograph.ui.dialogs
 import lib.phonograph.dialog.alertDialog
 import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
+import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.repo.database.PathFilterStore
@@ -66,7 +67,7 @@ class PathFilterDialog : DialogFragment() {
                 val inv = !Setting.instance.pathFilterExcludeMode
                 Setting.instance.pathFilterExcludeMode = inv
                 loadPaths()
-                MediaStoreTracker.instance.notifyAllListeners()
+                GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
             }
             space(1)
             button(2, getString(android.R.string.ok), accentColor) {

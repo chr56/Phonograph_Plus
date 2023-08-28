@@ -69,7 +69,7 @@ class MediaStoreTracker(context: Context) {
     class EventReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
-                MusicServiceMsgConst.MEDIA_STORE_CHANGED -> instance.dispatch()
+                MusicServiceMsgConst.MEDIA_STORE_CHANGED -> GlobalContext.get().get<MediaStoreTracker>().dispatch()
             }
         }
 
@@ -92,7 +92,6 @@ class MediaStoreTracker(context: Context) {
 
     companion object {
         private const val TAG = "MediaStoreTracker"
-        val instance: MediaStoreTracker by GlobalContext.get().inject()
     }
 }
 
