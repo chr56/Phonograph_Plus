@@ -99,7 +99,7 @@ suspend fun addToPlaylistViaMediastore(
                 context,
                 context.resources.getString(
                     R.string.inserted_x_songs_into_playlist_x, numInserted,
-                    PlaylistLoader.playlistId(context, playlistId).name
+                    PlaylistLoader.id(context, playlistId).name
                 ),
             )
         }

@@ -19,15 +19,13 @@ import android.os.Build.VERSION_CODES.Q
 import android.provider.BaseColumns
 import android.provider.MediaStore.VOLUME_EXTERNAL
 
-object PlaylistLoader {
+object PlaylistLoader : Loader<FilePlaylist> {
 
-    fun allPlaylists(context: Context): List<FilePlaylist> =
+    override fun all(context: Context): List<FilePlaylist> =
         queryPlaylists(context, null, null).intoPlaylists().sortAll()
 
-    fun playlistId(context: Context, playlistId: Long): FilePlaylist =
-        queryPlaylists(
-            context, BaseColumns._ID + "=?", arrayOf(playlistId.toString())
-        ).intoFirstPlaylist()
+    override fun id(context: Context, id: Long): FilePlaylist =
+        queryPlaylists(context, BaseColumns._ID + "=?", arrayOf(id.toString())).intoFirstPlaylist()
 
     fun playlistName(context: Context, playlistName: String): FilePlaylist =
         queryPlaylists(

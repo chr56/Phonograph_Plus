@@ -95,7 +95,7 @@ object Favorite {
     }
 
     private suspend fun getOrCreateFavoritesPlaylist(context: Context): Playlist {
-        return PlaylistLoader.playlistId(
+        return PlaylistLoader.id(
             context,
             createOrFindPlaylistViaMediastore(context, context.getString(R.string.favorites))
         ).also { notifyMediaStoreChanged() }
