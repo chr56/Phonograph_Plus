@@ -1,3 +1,7 @@
+/*
+ *  Copyright (c) 2022~2023 chr_56
+ */
+
 package player.phonograph.ui.dialogs
 
 import lib.phonograph.dialog.alertDialog
@@ -33,6 +37,8 @@ import java.io.File
  * @author Karim Abou Zeid (kabouzeid)
  */
 class PathFilterDialog : DialogFragment() {
+
+    private val pathFilterStore: PathFilterStore by GlobalContext.get().inject()
 
     private val mode get() = Setting.instance.pathFilterExcludeMode
 
@@ -110,7 +116,7 @@ class PathFilterDialog : DialogFragment() {
 
     private fun loadPaths(): List<String> {
         titlePanel.titleView.text = title(mode)
-        val paths = with(PathFilterStore.getInstance(requireContext())) {
+        val paths = with(pathFilterStore) {
             if (mode) blacklistPaths else whitelistPaths
         }
         adapter = PathAdapter(requireContext(), paths) { index: Int, _ -> deletePath(index, mode) }
@@ -120,14 +126,14 @@ class PathFilterDialog : DialogFragment() {
 
     private fun deletePath(index: Int, mode: Boolean) {
         val context = requireContext()
-        val path = with(PathFilterStore.getInstance(context)) {
+        val path = with(pathFilterStore) {
             if (mode) blacklistPaths else whitelistPaths
         }[index]
         alertDialog(context) {
             title(R.string.delete_action)
             message("${title(mode)}\n${path}")
             positiveButton(android.R.string.ok) {
-                with(PathFilterStore.getInstance(context)) {
+                with(pathFilterStore) {
                     if (mode) removeBlacklistPath(File(path)) else removeWhitelistPath(File(path))
                 }
                 loadPaths()
@@ -145,7 +151,7 @@ class PathFilterDialog : DialogFragment() {
                 if (mode) R.string.excluded_paths else R.string.included_paths
             )
             positiveButton(R.string.clear_action) {
-                with(PathFilterStore.getInstance(requireContext())) {
+                with(pathFilterStore) {
                     if (mode) clearBlacklist() else clearWhitelist()
                 }
                 loadPaths()

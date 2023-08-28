@@ -202,14 +202,7 @@ class PathFilterStore(context: Context) :
         const val TABLE_WHITELIST = "whitelist"
         const val PATH = "path"
 
-        private var sInstance: PathFilterStore? = null
-
-        @Synchronized
-        fun getInstance(context: Context): PathFilterStore {
-            return sInstance ?: PathFilterStore(context.applicationContext).also { blacklistStore ->
-                sInstance = blacklistStore
-            }
-        }
+        fun get() = GlobalContext.get().get<PathFilterStore>()
 
         private fun notifyMediaStoreChanged() = GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
     }

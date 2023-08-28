@@ -22,9 +22,9 @@ fun withPathFilter(context: Context, escape: Boolean = false, block: () -> SQLWh
 
     val paths =
         if (includeMode)
-            PathFilterStore.getInstance(context).whitelistPaths.map { "$it%" }
+            PathFilterStore.get().whitelistPaths.map { "$it%" }
         else
-            PathFilterStore.getInstance(context).blacklistPaths.map { "$it%" }
+            PathFilterStore.get().blacklistPaths.map { "$it%" }
 
     val target = block()
 

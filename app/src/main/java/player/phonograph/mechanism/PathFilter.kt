@@ -6,7 +6,6 @@ package player.phonograph.mechanism
 
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.repo.database.PathFilterStore
@@ -57,7 +56,9 @@ object PathFilter {
                                     .title(R.string.add_blacklist)
                                     .message(text = pathText)
                                     .positiveButton(android.R.string.ok) {
-                                        CoroutineScope(Dispatchers.IO).launch(Dispatchers.IO) { PathFilterStore.getInstance(App.instance).addBlacklistPath(File(pathText as String)) }
+                                        CoroutineScope(Dispatchers.IO).launch(Dispatchers.IO) {
+                                            PathFilterStore.get().addBlacklistPath(File(pathText as String))
+                                        }
                                         parentDialog.dismiss()
                                     }
                                     .negativeButton(android.R.string.cancel)

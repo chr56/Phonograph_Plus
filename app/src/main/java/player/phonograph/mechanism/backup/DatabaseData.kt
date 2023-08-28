@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 package player.phonograph.mechanism.backup
@@ -32,6 +32,8 @@ import java.io.InputStream
 
 object DatabaseDataManger {
 
+    private val pathFilterStore: PathFilterStore by GlobalContext.get().inject(mode = LazyThreadSafetyMode.PUBLICATION)
+
     const val VERSION = "version"
     const val VERSION_CODE = 0
 
@@ -43,7 +45,7 @@ object DatabaseDataManger {
     }
 
     private fun exportPathFilter(context: Context): JsonObject? {
-        val db = PathFilterStore.getInstance(context)
+        val db = pathFilterStore
         val wl = db.whitelistPaths.map { JsonPrimitive(it) }
         val bl = db.blacklistPaths.map { JsonPrimitive(it) }
         return if (wl.isNotEmpty() || bl.isNotEmpty()) {
@@ -72,7 +74,7 @@ object DatabaseDataManger {
         val bl = json[BLACK_LIST] as? JsonArray
 
 
-        val db = PathFilterStore.getInstance(context)
+        val db = pathFilterStore
 
         return if (!(wl == null && bl == null)) {
 
