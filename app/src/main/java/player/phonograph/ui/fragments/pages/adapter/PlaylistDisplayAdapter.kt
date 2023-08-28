@@ -66,7 +66,7 @@ class PlaylistDisplayAdapter(
         @Suppress("DEPRECATION")
         private fun getIconRes(playlist: Playlist): Int = when {
             playlist is SmartPlaylist                               -> playlist.iconRes
-            FavoritesStore.instance.containsPlaylist(playlist)      -> R.drawable.ic_pin_white_24dp
+            FavoritesStore.get().containsPlaylist(playlist)         -> R.drawable.ic_pin_white_24dp
             Favorite.isFavoritePlaylist(itemView.context, playlist) -> R.drawable.ic_favorite_white_24dp
             else                                                    -> R.drawable.ic_queue_music_white_24dp
         }

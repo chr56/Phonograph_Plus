@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 package player.phonograph.model.playlist
@@ -26,10 +26,10 @@ class FavoriteSongsPlaylist : SmartPlaylist, EditablePlaylist {
     override var iconRes: Int = R.drawable.ic_favorite_border_white_24dp
 
     override fun getSongs(context: Context): List<Song> =
-        FavoritesStore.instance.getAllSongs(context)
+        FavoritesStore.get().getAllSongs(context)
 
     override fun containsSong(context: Context, songId: Long): Boolean =
-        FavoritesStore.instance.containsSong(songId, "")
+        FavoritesStore.get().containsSong(songId, "")
 
     override fun removeSong(context: Context, song: Song) {
         Favorite.toggleFavorite(context, song)
@@ -46,7 +46,7 @@ class FavoriteSongsPlaylist : SmartPlaylist, EditablePlaylist {
     }
 
     override fun clear(context: Context) {
-        FavoritesStore.instance.clearAllSongs()
+        FavoritesStore.get().clearAllSongs()
     }
 
     override fun toString(): String = "FavoritePlaylist"

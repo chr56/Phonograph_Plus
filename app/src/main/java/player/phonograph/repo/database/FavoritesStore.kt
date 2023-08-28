@@ -5,7 +5,6 @@
 package player.phonograph.repo.database
 
 import org.koin.core.context.GlobalContext
-import player.phonograph.App
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
@@ -21,7 +20,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class FavoritesStore private constructor(context: Context) :
+class FavoritesStore constructor(context: Context) :
         SQLiteOpenHelper(context, FAVORITE_DB, null, VERSION) {
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -248,13 +247,6 @@ class FavoritesStore private constructor(context: Context) :
                     " $COLUMNS_TIMESTAMP LONG);"
 
 
-        private var mInstance: FavoritesStore? = null
-        val instance: FavoritesStore
-            get() {
-                if (mInstance == null) {
-                    mInstance = FavoritesStore(App.instance)
-                }
-                return mInstance!!
-            }
+        fun get() = GlobalContext.get().get<FavoritesStore>()
     }
 }

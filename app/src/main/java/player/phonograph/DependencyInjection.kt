@@ -6,6 +6,7 @@ package player.phonograph
 
 import org.koin.dsl.module
 import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.database.HistoryStore
 import player.phonograph.repo.database.PathFilterStore
 import player.phonograph.repo.database.SongPlayCountStore
@@ -20,4 +21,5 @@ val moduleLoaders = module {
     single { PathFilterStore(get()) }
     single { HistoryStore(get()) }
     single { SongPlayCountStore(get()) }
+    single { FavoritesStore(get()) }
 }

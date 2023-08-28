@@ -77,7 +77,7 @@ object MediaBrowserDelegate {
 
     fun playFromMediaId(context: Context, mediaId: String, @Suppress("UNUSED_PARAMETER") extras: Bundle?): List<Song> {
         return when (mediaId) {
-            MEDIA_BROWSER_SONGS_FAVORITES  -> FavoritesStore.instance.getAllSongs(context)
+            MEDIA_BROWSER_SONGS_FAVORITES  -> FavoritesStore.get().getAllSongs(context)
             MEDIA_BROWSER_SONGS_TOP_TRACKS -> TopAndRecentlyPlayedTracksLoader.topTracks(context)
             MEDIA_BROWSER_SONGS_LAST_ADDED -> LastAddedLoader.lastAddedSongs(context)
             MEDIA_BROWSER_SONGS_HISTORY    -> TopAndRecentlyPlayedTracksLoader.recentlyPlayedTracks(context)

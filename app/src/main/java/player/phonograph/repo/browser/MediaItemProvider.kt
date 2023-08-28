@@ -101,7 +101,7 @@ object MediaItemProvider {
 
     fun browseFavorite(context: Context): List<MediaItem> {
         return listOf(selectAllItem(context.resources, MEDIA_BROWSER_SONGS_FAVORITES)) +
-                FavoritesStore.instance.getAllSongs(context).map { it.toMediaItem() }
+                FavoritesStore.get().getAllSongs(context).map { it.toMediaItem() }
     }
 
     fun browseMyTopTrack(context: Context): List<MediaItem> {

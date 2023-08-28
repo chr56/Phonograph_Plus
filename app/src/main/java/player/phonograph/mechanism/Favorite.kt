@@ -21,6 +21,8 @@ import kotlinx.coroutines.runBlocking
 
 object Favorite {
 
+    private val favoritesStore by GlobalContext.get().inject<FavoritesStore>()
+
     fun isFavorite(context: Context, song: Song): Boolean =
         if (Setting.instance.useLegacyFavoritePlaylistImpl) {
             isFavoriteLegacyImpl(context, song)
@@ -37,7 +39,7 @@ object Favorite {
     }
 
     private fun isFavoriteDatabaseImpl(song: Song): Boolean =
-        FavoritesStore.instance.containsSong(song.id, song.data)
+        favoritesStore.containsSong(song.id, song.data)
 
     /**
      * @return new state
@@ -74,9 +76,9 @@ object Favorite {
      */
     private fun toggleFavoriteDatabaseImpl(context: Context, song: Song): Boolean {
         return if (isFavorite(context, song)) {
-            !FavoritesStore.instance.removeSong(song)
+            !favoritesStore.removeSong(song)
         } else {
-            FavoritesStore.instance.addSong(song)
+            favoritesStore.addSong(song)
         }
     }
 

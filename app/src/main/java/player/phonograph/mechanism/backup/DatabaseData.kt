@@ -33,6 +33,7 @@ import java.io.InputStream
 object DatabaseDataManger {
 
     private val pathFilterStore: PathFilterStore by GlobalContext.get().inject(mode = LazyThreadSafetyMode.PUBLICATION)
+    private val favoritesStore by GlobalContext.get().inject<FavoritesStore>()
 
     const val VERSION = "version"
     const val VERSION_CODE = 0
@@ -161,7 +162,7 @@ object DatabaseDataManger {
     }
 
     private fun exportFavorites(context: Context): JsonObject? {
-        val db = FavoritesStore.instance
+        val db = favoritesStore
         val songs = db.getAllSongs(context).map(DatabaseDataManger::persistentSong)
         val playlists = db.getAllPlaylists(context).map(DatabaseDataManger::persistentPlaylist)
         return if (songs.isNotEmpty()) {
@@ -188,7 +189,7 @@ object DatabaseDataManger {
         val s = json[FAVORITE_SONG] as? JsonArray
         val p = json[PINED_PLAYLIST] as? JsonArray
 
-        val db = FavoritesStore.instance
+        val db = favoritesStore
 
         val songs = recoverSongs(context, s)
         val playlists = recoverPlaylists(context, p)

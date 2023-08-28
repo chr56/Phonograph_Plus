@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 package player.phonograph.ui.fragments.pages
@@ -7,6 +7,7 @@ package player.phonograph.ui.fragments.pages
 import mt.pref.accentColor
 import mt.pref.primaryColor
 import mt.util.color.lightenColor
+import org.koin.core.context.GlobalContext
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
@@ -40,6 +41,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
     private val _viewModel: PlaylistPageViewModel by viewModels()
 
     class PlaylistPageViewModel : AbsDisplayPageViewModel<Playlist>() {
+        private val favoritesStore by GlobalContext.get().inject<FavoritesStore>()
         override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Playlist> {
             return mutableListOf<Playlist>(
                 LastAddedPlaylist(context),
@@ -50,7 +52,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
             }.also {
                 val allPlaylist = PlaylistLoader.all(context)
                 val (pined, normal) = allPlaylist.partition {
-                    FavoritesStore.instance.containsPlaylist(it.id, it.associatedFilePath)
+                    favoritesStore.containsPlaylist(it.id, it.associatedFilePath)
                 }
                 it.addAll(pined)
                 it.addAll(normal)
