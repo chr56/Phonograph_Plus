@@ -10,7 +10,7 @@
     <string name="action_add_to_favorites">Добавить в избранное</string>
     <string name="action_remove_from_favorites">Удалить из избранного</string>
     <string name="action_search">Поиск</string>
-    <string name="action_play_next">Воспроизвести далее</string>
+    <string name="action_play_next">Играть следующим</string>
     <string name="action_play">Воспроизвести</string>
     <string name="action_play_pause">Воспроизведение/Пауза</string>
     <string name="action_previous">Предыдущий</string>
@@ -18,7 +18,7 @@
     <string name="action_add_to_playing_queue">Добавить в очередь воспроизведения</string>
     <string name="action_remove_from_playing_queue">Удалить из очереди воспроизведения</string>
     <string name="action_add_to_playlist">Добавить в плейлист…</string>
-    <string name="action_tag_editor">Редактор тэгов</string>
+    <string name="action_tag_editor">Редактор тегов</string>
     <string name="action_delete_from_device">Удалить с устройства</string>
     <string name="action_details">Подробнее</string>
     <string name="action_scan">Сканировать</string>
