@@ -1,3 +1,7 @@
+/*
+ *  Copyright (c) 2022~2023 chr_56
+ */
+
 package player.phonograph.service
 
 import lib.phonograph.localization.ContextLocaleDelegate
@@ -398,7 +402,7 @@ class MusicService : MediaBrowserServiceCompat() {
                 controller.saveCurrentMills()
 
                 // add to history
-                HistoryStore.getInstance(this).addSongId(queueManager.currentSong.id)
+                get<HistoryStore>().addSongId(queueManager.currentSong.id)
 
                 // check for bumping
                 songPlayCountHelper.checkForBumpingPlayCount(this) // old

@@ -3,6 +3,7 @@
  */
 package player.phonograph.repo.mediastore.loaders.dynamics
 
+import org.koin.core.context.GlobalContext
 import player.phonograph.model.Song
 import player.phonograph.repo.database.HistoryStore
 import player.phonograph.repo.database.SongPlayCountStore
@@ -14,6 +15,8 @@ import android.provider.BaseColumns
 
 object TopAndRecentlyPlayedTracksLoader {
     private const val NUMBER_OF_TOP_TRACKS = 150
+
+    private val historyStore: HistoryStore by GlobalContext.get().inject()
 
     fun recentlyPlayedTracks(context: Context): List<Song> =
         makeRecentTracksCursorAndClearUpDatabase(context).intoSongs()
@@ -27,7 +30,7 @@ object TopAndRecentlyPlayedTracksLoader {
 
         // clean up the databases with any ids not found
         val exists = songIds(songCursor)
-        HistoryStore.getInstance(context).gc(exists)
+        historyStore.gc(exists)
 
         return songCursor
     }
@@ -45,7 +48,7 @@ object TopAndRecentlyPlayedTracksLoader {
 
     private fun recentTracksSongCursor(context: Context): Cursor? {
         // first get the top results ids from the internal database
-        return HistoryStore.getInstance(context).queryRecentIds().use { cursor ->
+        return historyStore.queryRecentIds().use { cursor ->
             cursor.generateSongCursor(
                 context, cursor.getColumnIndex(HistoryStore.RecentStoreColumns.ID)
             )

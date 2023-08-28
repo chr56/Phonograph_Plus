@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 package player.phonograph.model.playlist
@@ -30,7 +30,7 @@ class HistoryPlaylist : SmartPlaylist, ResettablePlaylist {
     override fun containsSong(context: Context, songId: Long): Boolean = false // todo
 
     override fun clear(context: Context) {
-        HistoryStore.getInstance(context).clear()
+        HistoryStore.get().clear()
     }
 
     override fun toString(): String = "HistoryPlaylist"

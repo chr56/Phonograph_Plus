@@ -3,6 +3,7 @@
  */
 package player.phonograph.repo.database
 
+import org.koin.core.context.GlobalContext
 import player.phonograph.repo.database.DatabaseConstants.HISTORY_DB
 import player.phonograph.repo.database.HistoryStore.RecentStoreColumns.Companion.ID
 import player.phonograph.repo.database.HistoryStore.RecentStoreColumns.Companion.NAME
@@ -111,14 +112,7 @@ class HistoryStore(context: Context) :
 
     companion object {
 
-        private var sInstance: HistoryStore? = null
-        @Synchronized
-        fun getInstance(context: Context): HistoryStore {
-            if (sInstance == null) {
-                sInstance = HistoryStore(context.applicationContext)
-            }
-            return sInstance!!
-        }
+        fun get() = GlobalContext.get().get<HistoryStore>()
 
         private const val MAX_ITEMS_IN_DB = 150
         private const val VERSION = 1
