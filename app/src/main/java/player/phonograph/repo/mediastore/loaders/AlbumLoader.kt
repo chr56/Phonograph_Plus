@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56 & Karim Abou Zeid (kabouzeid)
  */
 
 package player.phonograph.repo.mediastore.loaders
@@ -12,19 +12,16 @@ import player.phonograph.repo.mediastore.toAlbumList
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns
 
-/**
- * @author Karim Abou Zeid (kabouzeid)
- */
-object AlbumLoader {
+object AlbumLoader : Loader<Album> {
 
-    fun all(context: Context): List<Album> {
+    override fun all(context: Context): List<Album> {
         val songs = querySongs(context, sortOrder = null).intoSongs()
         return if (songs.isEmpty()) return emptyList() else songs.toAlbumList()
     }
 
-    fun id(context: Context, albumId: Long): Album {
-        val songs = querySongs(context, "${AudioColumns.ALBUM_ID}=?", arrayOf(albumId.toString()), null).intoSongs()
-        return Album(albumId, albumTitle(songs), songs.toMutableList().sortedBy { it.trackNumber })
+    override fun id(context: Context, id: Long): Album {
+        val songs = querySongs(context, "${AudioColumns.ALBUM_ID}=?", arrayOf(id.toString()), null).intoSongs()
+        return Album(id, albumTitle(songs), songs.toMutableList().sortedBy { it.trackNumber })
     }
 
     fun searchByName(context: Context, query: String): List<Album> {
@@ -37,6 +34,5 @@ object AlbumLoader {
         return list[0].albumName
     }
 
-    fun List<Album>.allSongs(): List<Song> =
-        this.flatMap { it.songs }
+    fun List<Album>.allSongs(): List<Song> = this.flatMap { it.songs }
 }
