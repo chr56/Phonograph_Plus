@@ -12,7 +12,6 @@ import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
 import player.phonograph.misc.PlaylistsModifiedReceiver
-import player.phonograph.model.playlist.LastAddedPlaylist
 import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortRef
@@ -43,7 +42,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
         private val favoritesStore by GlobalContext.get().inject<FavoritesStore>()
         override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Playlist> {
             return mutableListOf<Playlist>(
-                LastAddedPlaylist(context),
+                SmartPlaylistsLoader.lastAddedPlaylist,
                 SmartPlaylistsLoader.historyPlaylist,
                 MyTopTracksPlaylist(context),
             ).also {

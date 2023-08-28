@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 package player.phonograph.ui.activities
@@ -29,7 +29,6 @@ import player.phonograph.appshortcuts.shortcuttype.ShuffleAllShortcutType
 import player.phonograph.appshortcuts.shortcuttype.TopTracksShortcutType
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
-import player.phonograph.model.playlist.LastAddedPlaylist
 import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.model.playlist.ShuffleAllPlaylist
 import player.phonograph.model.playlist.SmartPlaylist
@@ -39,6 +38,7 @@ import player.phonograph.repo.mediastore.loaders.ArtistLoader
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.repo.mediastore.loaders.SongLoader.searchByPath
+import player.phonograph.repo.mediastore.playlists.SmartPlaylistsLoader
 import player.phonograph.repo.mediastore.processQuery
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
@@ -240,7 +240,7 @@ class StarterActivity : AppCompatActivity() {
 
             SHORTCUT_TYPE_LAST_ADDED  -> {
                 reportShortcutUsed(this, LastAddedShortcutType.id)
-                LastAddedPlaylist(applicationContext)
+                SmartPlaylistsLoader.lastAddedPlaylist
             }
 
             else                      -> null
