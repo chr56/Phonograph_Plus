@@ -12,3 +12,7 @@ val moduleStatus = module {
     single { QueueManager(get()) }
     single { MediaStoreTracker(get()) }
 }
+
+val moduleLoaders = module {
+
+}

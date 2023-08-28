@@ -1,3 +1,7 @@
+/*
+ *  Copyright (c) 2022~2023 chr_56
+ */
+
 package player.phonograph
 
 import coil.ImageLoader
@@ -13,7 +17,6 @@ import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.coil.createPhonographImageLoader
-import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
 import player.phonograph.service.queue.QueueManager
@@ -91,7 +94,7 @@ class App : Application(), ImageLoaderFactory {
             androidLogger(if (DEBUG) Level.DEBUG else Level.WARNING)
             androidContext(this@App)
 
-            modules(moduleStatus)
+            modules(moduleStatus, moduleLoaders)
         }
     }
 
