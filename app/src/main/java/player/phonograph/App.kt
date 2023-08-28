@@ -6,6 +6,11 @@ import lib.phonograph.localization.ContextLocaleDelegate
 import lib.phonograph.misc.Reboot
 import mt.pref.ThemeColor
 import mt.pref.internal.ThemeStore
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
+import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.coil.createPhonographImageLoader
 import player.phonograph.mechanism.event.setupEventReceiver
 import player.phonograph.notification.ErrorNotification
@@ -89,6 +94,11 @@ class App : Application(), ImageLoaderFactory {
                 .primaryColorRes(mt.color.R.color.md_blue_A400)
                 .accentColorRes(mt.color.R.color.md_yellow_900)
                 .commit()
+        }
+
+        startKoin {
+            androidLogger(if (DEBUG) Level.DEBUG else Level.WARNING)
+            androidContext(this@App)
         }
 
         // state listener
