@@ -8,8 +8,9 @@ import player.phonograph.model.Song
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
 import player.phonograph.repo.mediastore.loaders.ArtistLoader
+import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.mediastore.loaders.SongLoader
-import player.phonograph.repo.mediastore.loaders.TopAndRecentlyPlayedTracksLoader
+import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.repo.mediastore.processQuery
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
@@ -78,9 +79,9 @@ object MediaBrowserDelegate {
     fun playFromMediaId(context: Context, mediaId: String, @Suppress("UNUSED_PARAMETER") extras: Bundle?): List<Song> {
         return when (mediaId) {
             MEDIA_BROWSER_SONGS_FAVORITES  -> FavoritesStore.get().getAllSongs(context)
-            MEDIA_BROWSER_SONGS_TOP_TRACKS -> TopAndRecentlyPlayedTracksLoader.get().topTracks(context)
+            MEDIA_BROWSER_SONGS_TOP_TRACKS -> TopTracksLoader.get().tracks(context)
             MEDIA_BROWSER_SONGS_LAST_ADDED -> SongLoader.since(context, Setting.instance.lastAddedCutoff)
-            MEDIA_BROWSER_SONGS_HISTORY    -> TopAndRecentlyPlayedTracksLoader.get().recentlyPlayedTracks(context)
+            MEDIA_BROWSER_SONGS_HISTORY    -> RecentlyPlayedTracksLoader.get().tracks(context)
 
             else                           -> {
                 val fragments = mediaId.split(MEDIA_BROWSER_SEPARATOR, limit = 2)

@@ -15,7 +15,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 class HistoryStore(context: Context) :
-        SQLiteOpenHelper(context, HISTORY_DB, null, VERSION) {
+        SQLiteOpenHelper(context, HISTORY_DB, null, VERSION), ShallowDatabase {
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
@@ -97,7 +97,7 @@ class HistoryStore(context: Context) :
             "$TIME_PLAYED DESC"
         )
 
-    fun gc(idsExists: List<Long>) {
+    override fun gc(idsExists: List<Long>) {
         gc(writableDatabase, NAME, ID, idsExists.map { it.toString() }.toTypedArray())
     }
 

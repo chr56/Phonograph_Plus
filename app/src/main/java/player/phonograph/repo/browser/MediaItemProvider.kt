@@ -10,8 +10,9 @@ import player.phonograph.model.QueueSong
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
 import player.phonograph.repo.mediastore.loaders.ArtistLoader
+import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.mediastore.loaders.SongLoader
-import player.phonograph.repo.mediastore.loaders.TopAndRecentlyPlayedTracksLoader
+import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.Setting
 import androidx.annotation.DrawableRes
@@ -106,7 +107,7 @@ object MediaItemProvider {
 
     fun browseMyTopTrack(context: Context): List<MediaItem> {
         return listOf(selectAllItem(context.resources, MEDIA_BROWSER_SONGS_FAVORITES)) +
-                TopAndRecentlyPlayedTracksLoader.get().topTracks(context).map { it.toMediaItem() }
+                TopTracksLoader.get().tracks(context).map { it.toMediaItem() }
     }
 
     fun browseLastAdded(context: Context): List<MediaItem> {
@@ -116,7 +117,7 @@ object MediaItemProvider {
 
     fun browseHistory(context: Context): List<MediaItem> {
         return listOf(selectAllItem(context.resources, MEDIA_BROWSER_SONGS_FAVORITES)) +
-                TopAndRecentlyPlayedTracksLoader.get().recentlyPlayedTracks(context).map { it.toMediaItem() }
+                RecentlyPlayedTracksLoader.get().tracks(context).map { it.toMediaItem() }
     }
 
     private fun albumAllItem(resources: Resources, id: Long): MediaItem =

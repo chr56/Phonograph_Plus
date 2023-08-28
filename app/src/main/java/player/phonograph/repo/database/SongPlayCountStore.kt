@@ -24,9 +24,8 @@ import kotlin.math.min
  * This database tracks the number of play counts for an individual song.  This is used to drive
  * the top played tracks as well as the playlist images
  */
-class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context,
-    DatabaseConstants.SONG_PLAY_COUNT_DB, null, VERSION
-) {
+class SongPlayCountStore(context: Context) :
+        SQLiteOpenHelper(context, DatabaseConstants.SONG_PLAY_COUNT_DB, null, VERSION), ShallowDatabase {
 
     /** number of weeks since epoch time **/
     private val mCurrentWeekNumber: Int get() = (System.currentTimeMillis() / ONE_WEEK_IN_MS).toInt()
@@ -337,7 +336,7 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context,
         database.delete(NAME, WHERE_ID_EQUALS, arrayOf(stringId))
     }
 
-    fun gc(idsExists: List<Long>) {
+    override fun gc(idsExists: List<Long>) {
         gc(writableDatabase, NAME, ID, idsExists.map { it.toString() }.toTypedArray())
     }
 
