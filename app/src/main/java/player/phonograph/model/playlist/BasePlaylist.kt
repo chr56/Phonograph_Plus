@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56 & Karim Abou Zeid (kabouzeid)
  */
 
 package player.phonograph.model.playlist
@@ -10,19 +10,10 @@ import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
-import player.phonograph.repo.mediastore.playlists.FavoriteSongsPlaylistImpl
-import player.phonograph.repo.mediastore.playlists.HistoryPlaylistImpl
-import player.phonograph.repo.mediastore.playlists.LastAddedPlaylistImpl
-import player.phonograph.repo.mediastore.playlists.MyTopTracksPlaylistImpl
-import player.phonograph.repo.mediastore.playlists.ShuffleAllPlaylistImpl
 import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
-
-/**
- * @author Karim Abou Zeid (kabouzeid)
- */
 
 sealed class Playlist : Parcelable, Displayable {
 
@@ -57,6 +48,14 @@ sealed class Playlist : Parcelable, Displayable {
     override fun hashCode(): Int = 31 * id.toInt() + name.hashCode()
     override fun toString(): String = "Playlist{id=$id, name='$name'}"
 
+    fun infoString(context: Context): String {
+        val songs = getSongs(context)
+        val duration = songs.totalDuration()
+        return buildInfoString(
+            songCountString(context, songs.size),
+            getReadableDurationString(duration)
+        )
+    }
 
     override fun getItemID(): Long = id
     override fun getDisplayTitle(context: Context): CharSequence = name
@@ -81,50 +80,20 @@ sealed class Playlist : Parcelable, Displayable {
         val CREATOR: Parcelable.Creator<Playlist?> = object : Parcelable.Creator<Playlist?> {
             override fun createFromParcel(source: Parcel): Playlist {
                 return when (source.readInt()) {
-                    PlaylistType.FILE -> { FilePlaylist(source) }
-                    PlaylistType.ABS_SMART -> { throw IllegalStateException("Instantiating abstract type of playlist") }
-                    PlaylistType.FAVORITE -> { FavoriteSongsPlaylistImpl(source) }
-                    PlaylistType.LAST_ADDED -> { LastAddedPlaylistImpl(source) }
-                    PlaylistType.HISTORY -> { HistoryPlaylistImpl(source) }
-                    PlaylistType.MY_TOP_TRACK -> { MyTopTracksPlaylistImpl(source) }
-                    PlaylistType.RANDOM -> { ShuffleAllPlaylistImpl(source) }
-                    else -> { throw IllegalStateException("Unknown type of playlist") }
+                    PlaylistType.FILE         -> FilePlaylist(source)
+                    PlaylistType.ABS_SMART    -> throw IllegalStateException("Instantiating abstract type of playlist")
+                    PlaylistType.FAVORITE     -> SmartPlaylist.favoriteSongsPlaylist
+                    PlaylistType.LAST_ADDED   -> SmartPlaylist.lastAddedPlaylist
+                    PlaylistType.HISTORY      -> SmartPlaylist.historyPlaylist
+                    PlaylistType.MY_TOP_TRACK -> SmartPlaylist.myTopTracksPlaylist
+                    PlaylistType.RANDOM       -> SmartPlaylist.shuffleAllPlaylist
+                    else                      -> throw IllegalStateException("Unknown type of playlist")
                 }
             }
+
             override fun newArray(size: Int): Array<Playlist?> {
                 return arrayOfNulls(size)
             }
         }
     }
-}
-
-interface EditablePlaylist : ResettablePlaylist {
-    fun removeSong(context: Context, song: Song)
-    fun removeSongs(context: Context, songs: List<Song>) {
-        for (song in songs) { removeSong(context, song) }
-    }
-    fun appendSong(context: Context, song: Song)
-    fun appendSongs(context: Context, songs: List<Song>) {
-        for (song in songs) { appendSong(context, song) }
-    }
-    fun moveSong(context: Context, song: Song, from: Int, to: Int)
-//    fun insert(context: Context, song: Song, pos: Int)
-//    and more todo
-}
-
-interface ResettablePlaylist {
-    fun clear(context: Context)
-}
-
-interface GeneratedPlaylist {
-    fun refresh(context: Context) {}
-}
-
-fun Playlist.infoString(context: Context): String {
-    val songs = getSongs(context)
-    val duration = songs.totalDuration()
-    return buildInfoString(
-        songCountString(context, songs.size),
-        getReadableDurationString(duration)
-    )
 }

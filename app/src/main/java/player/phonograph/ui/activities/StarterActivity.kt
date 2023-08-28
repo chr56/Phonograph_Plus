@@ -36,7 +36,6 @@ import player.phonograph.repo.mediastore.loaders.ArtistLoader
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.repo.mediastore.loaders.SongLoader.searchByPath
-import player.phonograph.repo.mediastore.playlists.SmartPlaylistsLoader
 import player.phonograph.repo.mediastore.processQuery
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
@@ -226,18 +225,18 @@ class StarterActivity : AppCompatActivity() {
             SHORTCUT_TYPE_SHUFFLE_ALL -> {
                 reportShortcutUsed(this, ShuffleAllShortcutType.id)
                 shuffleMode = ShuffleMode.SHUFFLE
-                SmartPlaylistsLoader.shuffleAllPlaylist
+                SmartPlaylist.shuffleAllPlaylist
 
             }
 
             SHORTCUT_TYPE_TOP_TRACKS  -> {
                 reportShortcutUsed(this, TopTracksShortcutType.id)
-                SmartPlaylistsLoader.myTopTracksPlaylist
+                SmartPlaylist.myTopTracksPlaylist
             }
 
             SHORTCUT_TYPE_LAST_ADDED  -> {
                 reportShortcutUsed(this, LastAddedShortcutType.id)
-                SmartPlaylistsLoader.lastAddedPlaylist
+                SmartPlaylist.lastAddedPlaylist
             }
 
             else                      -> null

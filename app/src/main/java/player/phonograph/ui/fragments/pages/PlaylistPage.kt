@@ -13,10 +13,10 @@ import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
 import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
-import player.phonograph.repo.mediastore.playlists.SmartPlaylistsLoader
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.dialogs.CreatePlaylistDialog
@@ -41,11 +41,11 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
         private val favoritesStore by GlobalContext.get().inject<FavoritesStore>()
         override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Playlist> {
             return mutableListOf<Playlist>(
-                SmartPlaylistsLoader.lastAddedPlaylist,
-                SmartPlaylistsLoader.historyPlaylist,
-                SmartPlaylistsLoader.myTopTracksPlaylist,
+                SmartPlaylist.lastAddedPlaylist,
+                SmartPlaylist.historyPlaylist,
+                SmartPlaylist.myTopTracksPlaylist,
             ).also {
-                if (!Setting.instance.useLegacyFavoritePlaylistImpl) it.add(SmartPlaylistsLoader.favoriteSongsPlaylist)
+                if (!Setting.instance.useLegacyFavoritePlaylistImpl) it.add(SmartPlaylist.favoriteSongsPlaylist)
             }.also {
                 val allPlaylist = PlaylistLoader.all(context)
                 val (pined, normal) = allPlaylist.partition {
