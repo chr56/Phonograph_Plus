@@ -21,6 +21,16 @@ import java.io.File
 class PathFilterStore(context: Context) :
         SQLiteOpenHelper(context, DatabaseConstants.PATH_FILTER, null, VERSION) {
 
+    init {
+        if (!Setting.instance.initializedBlacklist) {
+            // blacklisted by default
+            addPathImpl(getExternalStoragePublicDirectory(DIRECTORY_ALARMS), TABLE_BLACKLIST)
+            addPathImpl(getExternalStoragePublicDirectory(DIRECTORY_NOTIFICATIONS), TABLE_BLACKLIST)
+            addPathImpl(getExternalStoragePublicDirectory(DIRECTORY_RINGTONES), TABLE_BLACKLIST)
+            Setting.instance.initializedBlacklist = true
+        }
+    }
+
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             "CREATE TABLE IF NOT EXISTS $TABLE_BLACKLIST ($PATH TEXT NOT NULL);"
@@ -198,16 +208,8 @@ class PathFilterStore(context: Context) :
         fun getInstance(context: Context): PathFilterStore {
             return sInstance ?: PathFilterStore(context.applicationContext).also { blacklistStore ->
                 sInstance = blacklistStore
-                if (!Setting.instance.initializedBlacklist) {
-                    // blacklisted by default
-                    blacklistStore.addPathImpl(getExternalStoragePublicDirectory(DIRECTORY_ALARMS), TABLE_BLACKLIST)
-                    blacklistStore.addPathImpl(getExternalStoragePublicDirectory(DIRECTORY_NOTIFICATIONS), TABLE_BLACKLIST)
-                    blacklistStore.addPathImpl(getExternalStoragePublicDirectory(DIRECTORY_RINGTONES), TABLE_BLACKLIST)
-                    Setting.instance.initializedBlacklist = true
-                }
             }
         }
-
 
         private fun notifyMediaStoreChanged() = GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
     }
