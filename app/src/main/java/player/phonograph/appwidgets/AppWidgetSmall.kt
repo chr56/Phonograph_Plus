@@ -14,12 +14,13 @@ import coil.Coil
 import coil.request.Disposable
 import coil.request.ImageRequest
 import mt.util.color.secondaryTextColor
-import player.phonograph.App
+import org.koin.android.ext.android.get
 import player.phonograph.R
 import player.phonograph.appwidgets.Util.createRoundedBitmap
 import player.phonograph.appwidgets.base.BaseAppWidget
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.service.MusicService
+import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.ui.BitmapUtil
 import player.phonograph.util.theme.createTintedDrawable
@@ -49,7 +50,8 @@ class AppWidgetSmall : BaseAppWidget() {
     override fun performUpdate(service: MusicService, appWidgetIds: IntArray?) {
         val appWidgetView = RemoteViews(service.packageName, R.layout.app_widget_small)
         val isPlaying = service.isPlaying
-        val song = App.instance.queueManager.currentSong
+        val queueManager = service.get<QueueManager>()
+        val song = queueManager.currentSong
 
         // Set the titles and artwork
         if (TextUtils.isEmpty(song.title) && TextUtils.isEmpty(song.artistName)) {

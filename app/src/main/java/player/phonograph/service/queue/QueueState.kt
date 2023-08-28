@@ -4,7 +4,7 @@
 
 package player.phonograph.service.queue
 
-import player.phonograph.App
+import org.koin.core.context.GlobalContext
 import player.phonograph.model.Song
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -60,13 +60,15 @@ object CurrentQueueState {
 
     private object Observer : QueueObserver {
         override fun onQueueChanged(newPlayingQueue: List<Song>, newOriginalQueue: List<Song>) {
+            val queueManager: QueueManager = GlobalContext.get().get()
             refreshQueue(newPlayingQueue)
-            refreshCurrentSong(App.instance.queueManager.currentSong)
+            refreshCurrentSong(queueManager.currentSong)
         }
 
         override fun onCurrentPositionChanged(newPosition: Int) {
+            val queueManager: QueueManager = GlobalContext.get().get()
             refreshPosition(newPosition)
-            refreshCurrentSong(App.instance.queueManager.currentSong)
+            refreshCurrentSong(queueManager.currentSong)
         }
 
         override fun onShuffleModeChanged(newMode: ShuffleMode) {

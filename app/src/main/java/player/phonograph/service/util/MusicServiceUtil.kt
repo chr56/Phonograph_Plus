@@ -4,10 +4,12 @@
 
 package player.phonograph.service.util
 
+
+import org.koin.android.ext.android.get
 import player.phonograph.ACTUAL_PACKAGE_NAME
-import player.phonograph.App
 import player.phonograph.model.Song
 import player.phonograph.service.MusicService
+import player.phonograph.service.queue.QueueManager
 import android.content.Intent
 
 object MusicServiceUtil {
@@ -17,7 +19,8 @@ object MusicServiceUtil {
             Intent(
                 what.replace(ACTUAL_PACKAGE_NAME, ANDROID_MUSIC_PACKAGE_NAME)
             ).apply {
-                val song: Song = App.instance.queueManager.currentSong
+                val queueManager: QueueManager = service.get()
+                val song: Song = queueManager.currentSong
                 putExtra("id", song.id)
                 putExtra("artist", song.artistName)
                 putExtra("album", song.albumName)

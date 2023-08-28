@@ -4,7 +4,7 @@
 
 package player.phonograph.repo.browser
 
-import player.phonograph.App
+import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.model.QueueSong
 import player.phonograph.repo.database.FavoritesStore
@@ -13,6 +13,7 @@ import player.phonograph.repo.mediastore.loaders.ArtistLoader
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.repo.mediastore.loaders.dynamics.LastAddedLoader
 import player.phonograph.repo.mediastore.loaders.dynamics.TopAndRecentlyPlayedTracksLoader
+import player.phonograph.service.queue.QueueManager
 import androidx.annotation.DrawableRes
 import android.content.ContentResolver
 import android.content.Context
@@ -71,7 +72,8 @@ object MediaItemProvider {
 
 
     fun browseQueue(): List<MediaItem> {
-        val queue = App.instance.queueManager.playingQueue
+        val queueManager: QueueManager = GlobalContext.get().get()
+        val queue = queueManager.playingQueue
         return QueueSong.fromQueue(queue).map { it.toMediaItem() }
     }
 

@@ -5,11 +5,12 @@
 package player.phonograph.ui.activities.base
 
 import lib.phonograph.activity.ToolbarActivity
-import player.phonograph.App
+import org.koin.android.ext.android.inject
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
 import player.phonograph.service.queue.CurrentQueueState
+import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.BROADCAST_CURRENT_PLAYER_STATE
 import player.phonograph.settings.CLASSIC_NOTIFICATION
 import player.phonograph.settings.COLORED_NOTIFICATION
@@ -39,6 +40,8 @@ import java.lang.System.currentTimeMillis
  * @author Karim Abou Zeid (kabouzeid)
  */
 abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventListener {
+
+    protected val queueManager: QueueManager by inject()
 
     private var serviceToken: ServiceToken? = null
 
@@ -144,14 +147,14 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         override fun onCreate(owner: LifecycleOwner) {
             if (!registered) {
                 registered = true
-                CurrentQueueState.init(App.instance.queueManager)
-                CurrentQueueState.register(App.instance.queueManager)
+                CurrentQueueState.init(queueManager)
+                CurrentQueueState.register(queueManager)
             }
         }
 
         override fun onDestroy(owner: LifecycleOwner) {
             if (shouldUnregister) {
-                CurrentQueueState.unregister(App.instance.queueManager)
+                CurrentQueueState.unregister(queueManager)
                 registered = false
             }
         }
