@@ -12,7 +12,6 @@ import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
 import player.phonograph.misc.PlaylistsModifiedReceiver
-import player.phonograph.model.playlist.HistoryPlaylist
 import player.phonograph.model.playlist.LastAddedPlaylist
 import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.model.playlist.Playlist
@@ -45,7 +44,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
         override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Playlist> {
             return mutableListOf<Playlist>(
                 LastAddedPlaylist(context),
-                HistoryPlaylist(context),
+                SmartPlaylistsLoader.historyPlaylist,
                 MyTopTracksPlaylist(context),
             ).also {
                 if (!Setting.instance.useLegacyFavoritePlaylistImpl) it.add(SmartPlaylistsLoader.favoriteSongsPlaylist)

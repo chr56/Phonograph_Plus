@@ -11,6 +11,7 @@ import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
 import player.phonograph.repo.mediastore.playlists.FavoriteSongsPlaylistImpl
+import player.phonograph.repo.mediastore.playlists.HistoryPlaylistImpl
 import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
@@ -81,7 +82,7 @@ sealed class Playlist : Parcelable, Displayable {
                     PlaylistType.ABS_SMART -> { throw IllegalStateException("Instantiating abstract type of playlist") }
                     PlaylistType.FAVORITE -> { FavoriteSongsPlaylistImpl(source) }
                     PlaylistType.LAST_ADDED -> { LastAddedPlaylist(source) }
-                    PlaylistType.HISTORY -> { HistoryPlaylist(source) }
+                    PlaylistType.HISTORY -> { HistoryPlaylistImpl(source) }
                     PlaylistType.MY_TOP_TRACK -> { MyTopTracksPlaylist(source) }
                     PlaylistType.RANDOM -> { ShuffleAllPlaylist(source) }
                     else -> { throw IllegalStateException("Unknown type of playlist") }
