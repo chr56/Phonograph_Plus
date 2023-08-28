@@ -9,6 +9,7 @@ import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.playlist.FavoriteSongsPlaylist
 import player.phonograph.model.playlist.HistoryPlaylist
 import player.phonograph.model.playlist.LastAddedPlaylist
+import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.database.HistoryStore
 import player.phonograph.repo.database.MusicPlaybackQueueStore
@@ -19,6 +20,7 @@ import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.repo.mediastore.playlists.FavoriteSongsPlaylistImpl
 import player.phonograph.repo.mediastore.playlists.HistoryPlaylistImpl
 import player.phonograph.repo.mediastore.playlists.LastAddedPlaylistImpl
+import player.phonograph.repo.mediastore.playlists.MyTopTracksPlaylistImpl
 import player.phonograph.service.queue.QueueManager
 import android.content.Context
 
@@ -40,4 +42,5 @@ val moduleLoaders = module {
     factory<FavoriteSongsPlaylist> { FavoriteSongsPlaylistImpl(get<Context>()) }
     factory<HistoryPlaylist> { HistoryPlaylistImpl(get<Context>()) }
     factory<LastAddedPlaylist> { LastAddedPlaylistImpl(get<Context>()) }
+    factory<MyTopTracksPlaylist> { MyTopTracksPlaylistImpl(get<Context>()) }
 }

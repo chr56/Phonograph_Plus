@@ -29,7 +29,6 @@ import player.phonograph.appshortcuts.shortcuttype.ShuffleAllShortcutType
 import player.phonograph.appshortcuts.shortcuttype.TopTracksShortcutType
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
-import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.model.playlist.ShuffleAllPlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.notification.ErrorNotification
@@ -234,8 +233,7 @@ class StarterActivity : AppCompatActivity() {
 
             SHORTCUT_TYPE_TOP_TRACKS  -> {
                 reportShortcutUsed(this, TopTracksShortcutType.id)
-                MyTopTracksPlaylist(applicationContext)
-
+                SmartPlaylistsLoader.myTopTracksPlaylist
             }
 
             SHORTCUT_TYPE_LAST_ADDED  -> {

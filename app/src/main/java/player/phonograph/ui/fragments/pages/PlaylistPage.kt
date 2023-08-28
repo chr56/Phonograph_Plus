@@ -12,7 +12,6 @@ import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
 import player.phonograph.misc.PlaylistsModifiedReceiver
-import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.database.FavoritesStore
@@ -44,7 +43,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
             return mutableListOf<Playlist>(
                 SmartPlaylistsLoader.lastAddedPlaylist,
                 SmartPlaylistsLoader.historyPlaylist,
-                MyTopTracksPlaylist(context),
+                SmartPlaylistsLoader.myTopTracksPlaylist,
             ).also {
                 if (!Setting.instance.useLegacyFavoritePlaylistImpl) it.add(SmartPlaylistsLoader.favoriteSongsPlaylist)
             }.also {
