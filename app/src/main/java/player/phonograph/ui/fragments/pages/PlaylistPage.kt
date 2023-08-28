@@ -12,7 +12,6 @@ import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
 import player.phonograph.misc.PlaylistsModifiedReceiver
-import player.phonograph.model.playlist.FavoriteSongsPlaylist
 import player.phonograph.model.playlist.HistoryPlaylist
 import player.phonograph.model.playlist.LastAddedPlaylist
 import player.phonograph.model.playlist.MyTopTracksPlaylist
@@ -20,6 +19,7 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.repo.mediastore.playlists.SmartPlaylistsLoader
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.dialogs.CreatePlaylistDialog
@@ -48,7 +48,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
                 HistoryPlaylist(context),
                 MyTopTracksPlaylist(context),
             ).also {
-                if (!Setting.instance.useLegacyFavoritePlaylistImpl) it.add(FavoriteSongsPlaylist(context))
+                if (!Setting.instance.useLegacyFavoritePlaylistImpl) it.add(SmartPlaylistsLoader.favoriteSongsPlaylist)
             }.also {
                 val allPlaylist = PlaylistLoader.all(context)
                 val (pined, normal) = allPlaylist.partition {

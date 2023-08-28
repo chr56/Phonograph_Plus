@@ -1,14 +1,20 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 package player.phonograph.model.playlist
 
+import player.phonograph.model.Displayable
+import player.phonograph.model.Song
+import player.phonograph.model.buildInfoString
+import player.phonograph.model.getReadableDurationString
+import player.phonograph.model.songCountString
+import player.phonograph.model.totalDuration
+import player.phonograph.repo.mediastore.playlists.FavoriteSongsPlaylistImpl
+import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.annotation.Keep
-import player.phonograph.model.*
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -73,7 +79,7 @@ sealed class Playlist : Parcelable, Displayable {
                 return when (source.readInt()) {
                     PlaylistType.FILE -> { FilePlaylist(source) }
                     PlaylistType.ABS_SMART -> { throw IllegalStateException("Instantiating abstract type of playlist") }
-                    PlaylistType.FAVORITE -> { FavoriteSongsPlaylist(source) }
+                    PlaylistType.FAVORITE -> { FavoriteSongsPlaylistImpl(source) }
                     PlaylistType.LAST_ADDED -> { LastAddedPlaylist(source) }
                     PlaylistType.HISTORY -> { HistoryPlaylist(source) }
                     PlaylistType.MY_TOP_TRACK -> { MyTopTracksPlaylist(source) }
