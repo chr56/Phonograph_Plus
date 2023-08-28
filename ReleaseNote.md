@@ -1,23 +1,15 @@
-## {{version:1.1-dev3}} {{versionCode:1004}} {{date:1692870000}} {{channel:preview}}
+## {{version:1.1-beta1}} {{versionCode:1005}} {{date:1693195000}} {{channel:preview}}
 
 ### {{note:en}}
-- New: support add or editing more tags in Tag Editor
-- Improve: display of raw tags
-- Fix: selecting 0 item when clicking an item in list
-- Fix: crash when switching main player styles
-- Fix: no images for horizontal albums in Artist Detail
-- Fix: duplicated descriptions for horizontal albums in Artist Detail
-- Translation: update Portuguese, Brazilian (by EddieMattos)
-- Translation: update Finish (Jiri Grönroos (spammemoreplease))
-- Translation: update Japanese (aorinngoDo)
+- Fix: crash when resizing window
+- Fix: statusbar transparent issue in Card player style
+- Fix: possible crash after devices rebooted
+- Translation: update Russian (by Роман Калинин (n0viceaf))
+- Development: upgrade dependencies
 
 ### {{note:zh}}
-- 新增 音乐标签编辑器支持增改更多标签
-- 改进 原始标签的显示
-- 修复 单击时显示“选择 0 个项目”
-- 修复 切换主播放器样式时崩溃
-- 修复 艺术家详情中的横向专辑没有图像
-- 修复 艺术家详情中的横向专辑的描述重复
-- 翻译 更新巴西葡萄牙语(EddieMattos)
-- 翻译 更新芬兰语(Jiri Grönroos (spammemoreplease))
-- 翻译 更新日语(aorinngoDo)
+- 修复 调整窗口大小时崩溃
+- 修复 播放器Card样式中状态栏不透明与遮挡问题
+- 修复 设备重启后崩溃
+- 翻译 更新俄语(Роман Калинин (n0viceaf))
+- 开发 更新依赖
