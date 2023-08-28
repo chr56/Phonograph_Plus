@@ -162,23 +162,9 @@ class MusicPlaybackQueueStore(context: Context?) : SQLiteOpenHelper(
 
     companion object {
 
-        private var sInstance: MusicPlaybackQueueStore? = null
-
         const val PLAYING_QUEUE_TABLE_NAME = "playing_queue"
         const val ORIGINAL_PLAYING_QUEUE_TABLE_NAME = "original_playing_queue"
         private const val VERSION = 6
 
-        /**
-         * @param context The [Context] to use
-         * @return A new instance of this class.
-         */
-        @JvmStatic
-        @Synchronized
-        fun getInstance(context: Context): MusicPlaybackQueueStore {
-            if (sInstance == null) {
-                sInstance = MusicPlaybackQueueStore(context.applicationContext)
-            }
-            return sInstance!!
-        }
     }
 }

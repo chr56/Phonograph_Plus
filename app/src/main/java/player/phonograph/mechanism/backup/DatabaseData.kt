@@ -34,6 +34,7 @@ object DatabaseDataManger {
 
     private val pathFilterStore: PathFilterStore by GlobalContext.get().inject(mode = LazyThreadSafetyMode.PUBLICATION)
     private val favoritesStore by GlobalContext.get().inject<FavoritesStore>()
+    private val playbackQueueStore by GlobalContext.get().inject<MusicPlaybackQueueStore>()
 
     const val VERSION = "version"
     const val VERSION_CODE = 0
@@ -104,7 +105,7 @@ object DatabaseDataManger {
     }
 
     private fun exportPlayingQueues(context: Context): JsonObject? {
-        val db = MusicPlaybackQueueStore.getInstance(context)
+        val db = playbackQueueStore
         val oq = db.savedOriginalPlayingQueue.map(DatabaseDataManger::persistentSong)
         val pq = db.savedPlayingQueue.map(DatabaseDataManger::persistentSong)
         return if (oq.isNotEmpty() || pq.isNotEmpty()) {
@@ -132,7 +133,7 @@ object DatabaseDataManger {
         val pq = json[PLAYING_QUEUE] as? JsonArray
 
 
-        val db = MusicPlaybackQueueStore.getInstance(context)
+        val db = playbackQueueStore
 
         val originalQueue = recoverSongs(context, oq)
         val currentQueueQueue = recoverSongs(context, pq)

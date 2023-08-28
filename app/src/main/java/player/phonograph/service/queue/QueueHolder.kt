@@ -1,9 +1,10 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 package player.phonograph.service.queue
 
+import org.koin.core.context.GlobalContext
 import player.phonograph.model.Song
 import player.phonograph.repo.database.MusicPlaybackQueueStore
 import player.phonograph.service.util.QueuePreferenceManager
@@ -74,9 +75,11 @@ class QueueHolder private constructor(
                 RepeatMode.NONE               -> {
                     if (result < 0) 0 else result
                 }
+
                 RepeatMode.REPEAT_QUEUE       -> {
                     if (result <= 0) playingQueue.size - 1 else result
                 }
+
                 RepeatMode.REPEAT_SINGLE_SONG -> {
                     currentSongPosition
                 }
@@ -103,9 +106,11 @@ class QueueHolder private constructor(
                         result
                     }
                 }
+
                 RepeatMode.REPEAT_QUEUE       -> {
                     if (result >= playingQueue.size) 0 else result
                 }
+
                 RepeatMode.REPEAT_SINGLE_SONG -> {
                     currentSongPosition
                 }
@@ -172,8 +177,7 @@ class QueueHolder private constructor(
     }
 
     fun saveQueue(context: Context) = synchronized(persistenceLock) {
-        MusicPlaybackQueueStore.getInstance(context)
-            .saveQueues(playingQueue, originalPlayingQueue)
+        GlobalContext.get().get<MusicPlaybackQueueStore>().saveQueues(playingQueue, originalPlayingQueue)
     }
 
     fun saveCfg(context: Context) = synchronized(persistenceLock) {
@@ -200,10 +204,9 @@ class QueueHolder private constructor(
         fun fromPersistence(context: Context): QueueHolder {
             synchronized(persistenceLock) {
 
-                val restoredQueue: List<Song> =
-                    MusicPlaybackQueueStore.getInstance(context).savedPlayingQueue
-                val restoredOriginalQueue: List<Song> =
-                    MusicPlaybackQueueStore.getInstance(context).savedOriginalPlayingQueue
+                val queueStore = GlobalContext.get().get<MusicPlaybackQueueStore>()
+                val restoredQueue: List<Song> = queueStore.savedPlayingQueue
+                val restoredOriginalQueue: List<Song> = queueStore.savedOriginalPlayingQueue
 
                 val preferenceManager = QueuePreferenceManager(context)
 
