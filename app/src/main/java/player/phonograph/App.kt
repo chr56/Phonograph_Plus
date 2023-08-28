@@ -91,7 +91,7 @@ class App : Application(), ImageLoaderFactory {
             androidLogger(if (DEBUG) Level.DEBUG else Level.WARNING)
             androidContext(this@App)
 
-            modules(module)
+            modules(moduleStatus)
         }
     }
 
