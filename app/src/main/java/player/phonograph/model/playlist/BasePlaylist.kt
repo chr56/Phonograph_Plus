@@ -10,6 +10,7 @@ import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
+import player.phonograph.repo.mediastore.playlist.FilePlaylistImpl
 import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
@@ -80,7 +81,7 @@ sealed class Playlist : Parcelable, Displayable {
         val CREATOR: Parcelable.Creator<Playlist?> = object : Parcelable.Creator<Playlist?> {
             override fun createFromParcel(source: Parcel): Playlist {
                 return when (source.readInt()) {
-                    PlaylistType.FILE         -> FilePlaylist(source)
+                    PlaylistType.FILE         -> FilePlaylistImpl(source)
                     PlaylistType.ABS_SMART    -> throw IllegalStateException("Instantiating abstract type of playlist")
                     PlaylistType.FAVORITE     -> SmartPlaylist.favoriteSongsPlaylist
                     PlaylistType.LAST_ADDED   -> SmartPlaylist.lastAddedPlaylist
