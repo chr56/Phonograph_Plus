@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56 & Karim Abou Zeid (kabouzeid)
  */
 
 package player.phonograph.repo.mediastore.loaders
@@ -11,31 +11,20 @@ import player.phonograph.repo.mediastore.internal.querySongs
 import android.content.Context
 import android.provider.MediaStore
 
-/**
- * @author Karim Abou Zeid (kabouzeid)
- */
-object SongLoader {
+object SongLoader : Loader<Song> {
 
-    @JvmStatic
-    fun all(context: Context): List<Song> = querySongs(context).intoSongs()
+    override fun all(context: Context): List<Song> =
+        querySongs(context).intoSongs()
 
+    override fun id(context: Context, id: Long): Song =
+        querySongs(context, "${MediaStore.Audio.AudioColumns._ID} =? ", arrayOf(id.toString())).intoFirstSong()
 
-    @JvmStatic
-    fun id(context: Context, queryId: Long): Song =
-        querySongs(
-            context, "${MediaStore.Audio.AudioColumns._ID} =? ", arrayOf(queryId.toString())
-        ).intoFirstSong()
-
-    @JvmStatic
     fun path(context: Context, path: String): Song =
-        querySongs(
-            context, "${MediaStore.Audio.AudioColumns.DATA} =? ", arrayOf(path)
-        ).intoFirstSong()
+        querySongs(context, "${MediaStore.Audio.AudioColumns.DATA} =? ", arrayOf(path)).intoFirstSong()
 
     /**
      * @param withoutPathFilter true if disable path filter
      */
-    @JvmStatic
     fun searchByPath(context: Context, path: String, withoutPathFilter: Boolean): List<Song> =
         querySongs(
             context,
@@ -44,23 +33,18 @@ object SongLoader {
             withoutPathFilter = withoutPathFilter
         ).intoSongs()
 
-    @JvmStatic
     fun searchByTitle(context: Context, title: String): List<Song> {
-        val cursor = querySongs(
-            context, "${MediaStore.Audio.AudioColumns.TITLE} LIKE ?", arrayOf("%$title%")
-        )
+        val cursor =
+            querySongs(context, "${MediaStore.Audio.AudioColumns.TITLE} LIKE ?", arrayOf("%$title%"))
         return cursor.intoSongs()
     }
 
-    @JvmStatic
     fun since(context: Context, timestamp: Long): List<Song> {
-        val cursor = querySongs(
-            context, "${MediaStore.MediaColumns.DATE_MODIFIED}  > ?", arrayOf(timestamp.toString()),
-        )
+        val cursor =
+            querySongs(context, "${MediaStore.MediaColumns.DATE_MODIFIED}  > ?", arrayOf(timestamp.toString()))
         return cursor.intoSongs()
     }
 
-    @JvmStatic
     fun latest(context: Context): Song? {
         return all(context).maxByOrNull { it.dateModified }
     }

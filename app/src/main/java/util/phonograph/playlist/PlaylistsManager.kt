@@ -94,7 +94,7 @@ object PlaylistsManager {
         context: Context,
         songs: List<Song>,
         playlistId: Long,
-    ) = appendPlaylist(context, songs, PlaylistLoader.playlistId(context, playlistId))
+    ) = appendPlaylist(context, songs, PlaylistLoader.id(context, playlistId))
 
     private val shouldUseSAF: Boolean
         get() {

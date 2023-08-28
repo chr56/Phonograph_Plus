@@ -48,7 +48,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
             ).also {
                 if (!Setting.instance.useLegacyFavoritePlaylistImpl) it.add(FavoriteSongsPlaylist(context))
             }.also {
-                val allPlaylist = PlaylistLoader.allPlaylists(context)
+                val allPlaylist = PlaylistLoader.all(context)
                 val (pined, normal) = allPlaylist.partition {
                     FavoritesStore.instance.containsPlaylist(it.id, it.associatedFilePath)
                 }

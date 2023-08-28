@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 class AddToPlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val songs = requireArguments().parcelableArrayList<Song>(SONG)!!
-        val playlists = PlaylistLoader.allPlaylists(requireActivity())
+        val playlists = PlaylistLoader.all(requireActivity())
 
         val playlistNames =
             arrayOf(resources.getString(R.string.action_new_playlist)) + playlists.map { it.name }.toTypedArray()
