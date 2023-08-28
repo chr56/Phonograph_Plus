@@ -99,6 +99,8 @@ class App : Application(), ImageLoaderFactory {
         startKoin {
             androidLogger(if (DEBUG) Level.DEBUG else Level.WARNING)
             androidContext(this@App)
+
+            modules(module)
         }
 
         // state listener
