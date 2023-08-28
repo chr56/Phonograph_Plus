@@ -405,7 +405,7 @@ class MusicService : MediaBrowserServiceCompat() {
                 get<HistoryStore>().addSongId(queueManager.currentSong.id)
 
                 // check for bumping
-                songPlayCountHelper.checkForBumpingPlayCount(this) // old
+                songPlayCountHelper.checkForBumpingPlayCount(get()) // old
                 songPlayCountHelper.songMonitored = queueManager.currentSong // new
             }
 

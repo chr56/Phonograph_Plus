@@ -17,6 +17,7 @@ object TopAndRecentlyPlayedTracksLoader {
     private const val NUMBER_OF_TOP_TRACKS = 150
 
     private val historyStore: HistoryStore by GlobalContext.get().inject()
+    private val songPlayCountStore: SongPlayCountStore by GlobalContext.get().inject()
 
     fun recentlyPlayedTracks(context: Context): List<Song> =
         makeRecentTracksCursorAndClearUpDatabase(context).intoSongs()
@@ -41,7 +42,7 @@ object TopAndRecentlyPlayedTracksLoader {
 
         // clean up the databases with any ids not found
         val exists = songIds(songCursor)
-        SongPlayCountStore.getInstance(context).gc(exists)
+        songPlayCountStore.gc(exists)
 
         return songCursor
     }
@@ -57,7 +58,7 @@ object TopAndRecentlyPlayedTracksLoader {
 
     private fun topTracksSongCursor(context: Context): Cursor? {
         // first get the top results ids from the internal database
-        return SongPlayCountStore.getInstance(context).getTopPlayedResults(0)
+        return songPlayCountStore.getTopPlayedResults(0)
             .use { cursor ->
                 cursor.generateSongCursor(
                     context, cursor.getColumnIndex(SongPlayCountStore.SongPlayCountColumns.ID)

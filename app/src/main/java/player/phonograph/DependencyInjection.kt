@@ -8,6 +8,7 @@ import org.koin.dsl.module
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.repo.database.HistoryStore
 import player.phonograph.repo.database.PathFilterStore
+import player.phonograph.repo.database.SongPlayCountStore
 import player.phonograph.service.queue.QueueManager
 
 val moduleStatus = module {
@@ -18,4 +19,5 @@ val moduleStatus = module {
 val moduleLoaders = module {
     single { PathFilterStore(get()) }
     single { HistoryStore(get()) }
+    single { SongPlayCountStore(get()) }
 }

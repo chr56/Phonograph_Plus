@@ -1,9 +1,10 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 package player.phonograph.model.playlist
 
+import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.repo.database.SongPlayCountStore
@@ -29,14 +30,16 @@ class MyTopTracksPlaylist : SmartPlaylist, ResettablePlaylist {
     override fun containsSong(context: Context, songId: Long): Boolean = false // todo
 
     override fun clear(context: Context) {
-        SongPlayCountStore.getInstance(context).clear()
+        songPlayCountStore.clear()
     }
 
     override fun refresh(context: Context) {
-        SongPlayCountStore.getInstance(context).reCalculateScore(context)
+        songPlayCountStore.reCalculateScore(context)
     }
 
     override fun toString(): String = "MyTopTracksPlaylist"
+
+    private val songPlayCountStore: SongPlayCountStore by GlobalContext.get().inject()
 
     constructor(parcel: Parcel) : super(parcel)
     companion object {

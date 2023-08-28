@@ -352,19 +352,6 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context,
     }
 
     companion object {
-        private var sInstance: SongPlayCountStore? = null
-
-        /**
-         * @param context The [Context] to use
-         * @return A new instance of this class.
-         */
-        @Synchronized
-        fun getInstance(context: Context): SongPlayCountStore {
-            if (sInstance == null) {
-                sInstance = SongPlayCountStore(context.applicationContext)
-            }
-            return sInstance!!
-        }
 
         /**
          * Calculates the score of the song given the play counts

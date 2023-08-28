@@ -1,8 +1,11 @@
+/*
+ *  Copyright (c) 2022~2023 chr_56
+ */
+
 package player.phonograph.service.util
 
 import player.phonograph.model.Song
 import player.phonograph.repo.database.SongPlayCountStore
-import android.content.Context
 import java.util.Locale
 
 /**
@@ -31,9 +34,9 @@ class SongPlayCountHelper {
         }
     }
 
-    fun checkForBumpingPlayCount(context: Context) {
+    fun checkForBumpingPlayCount(songPlayCountStore: SongPlayCountStore) {
         if (shouldBumpPlayCount()) {
-            SongPlayCountStore.getInstance(context).bumpPlayCount(songMonitored.id)
+            songPlayCountStore.bumpPlayCount(songMonitored.id)
         }
     }
 
