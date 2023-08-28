@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2022~2023 chr_56
  */
-package player.phonograph.repo.mediastore.loaders.dynamics
+package player.phonograph.repo.mediastore.loaders
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.model.Song
@@ -13,11 +13,10 @@ import android.content.Context
 import android.database.Cursor
 import android.provider.BaseColumns
 
-object TopAndRecentlyPlayedTracksLoader {
-    private const val NUMBER_OF_TOP_TRACKS = 150
-
-    private val historyStore: HistoryStore by GlobalContext.get().inject()
-    private val songPlayCountStore: SongPlayCountStore by GlobalContext.get().inject()
+class TopAndRecentlyPlayedTracksLoader(
+    private val historyStore: HistoryStore,
+    private val songPlayCountStore: SongPlayCountStore,
+) {
 
     fun recentlyPlayedTracks(context: Context): List<Song> =
         makeRecentTracksCursorAndClearUpDatabase(context).intoSongs()
@@ -96,5 +95,11 @@ object TopAndRecentlyPlayedTracksLoader {
             } while (songCursor.moveToNext())
         }
         return exists
+    }
+
+    companion object {
+        private const val NUMBER_OF_TOP_TRACKS = 150
+
+        fun get() = GlobalContext.get().get<TopAndRecentlyPlayedTracksLoader>()
     }
 }

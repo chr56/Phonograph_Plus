@@ -7,7 +7,7 @@ package player.phonograph.model.playlist
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.repo.database.HistoryStore
-import player.phonograph.repo.mediastore.loaders.dynamics.TopAndRecentlyPlayedTracksLoader
+import player.phonograph.repo.mediastore.loaders.TopAndRecentlyPlayedTracksLoader
 import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
@@ -25,7 +25,7 @@ class HistoryPlaylist : SmartPlaylist, ResettablePlaylist {
     override var iconRes: Int = R.drawable.ic_access_time_white_24dp
 
     override fun getSongs(context: Context): List<Song> =
-        TopAndRecentlyPlayedTracksLoader.recentlyPlayedTracks(context)
+        TopAndRecentlyPlayedTracksLoader.get().recentlyPlayedTracks(context)
 
     override fun containsSong(context: Context, songId: Long): Boolean = false // todo
 

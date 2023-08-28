@@ -8,7 +8,7 @@ import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.repo.database.SongPlayCountStore
-import player.phonograph.repo.mediastore.loaders.dynamics.TopAndRecentlyPlayedTracksLoader
+import player.phonograph.repo.mediastore.loaders.TopAndRecentlyPlayedTracksLoader
 import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
@@ -25,7 +25,7 @@ class MyTopTracksPlaylist : SmartPlaylist, ResettablePlaylist {
 
     override var iconRes: Int = R.drawable.ic_trending_up_white_24dp
 
-    override fun getSongs(context: Context): List<Song> = TopAndRecentlyPlayedTracksLoader.topTracks(context)
+    override fun getSongs(context: Context): List<Song> = TopAndRecentlyPlayedTracksLoader.get().topTracks(context)
 
     override fun containsSong(context: Context, songId: Long): Boolean = false // todo
 

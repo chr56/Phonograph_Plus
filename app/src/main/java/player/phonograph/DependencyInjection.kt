@@ -11,6 +11,7 @@ import player.phonograph.repo.database.HistoryStore
 import player.phonograph.repo.database.MusicPlaybackQueueStore
 import player.phonograph.repo.database.PathFilterStore
 import player.phonograph.repo.database.SongPlayCountStore
+import player.phonograph.repo.mediastore.loaders.TopAndRecentlyPlayedTracksLoader
 import player.phonograph.service.queue.QueueManager
 
 val moduleStatus = module {
@@ -24,4 +25,6 @@ val moduleLoaders = module {
     single { SongPlayCountStore(get()) }
     single { FavoritesStore(get()) }
     single { MusicPlaybackQueueStore(get()) }
+
+    factory { TopAndRecentlyPlayedTracksLoader(get(), get()) }
 }
