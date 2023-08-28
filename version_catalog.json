@@ -1,6 +1,22 @@
 {
   "versions": [
     {
+      "channel": "preview",
+      "versionName": "1.1-beta1",
+      "versionCode": 1005,
+      "date": 1693195000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.1-beta1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 调整窗口大小时崩溃</li><li>修复 播放器Card样式中状态栏不透明与遮挡问题</li><li>修复 设备重启后崩溃</li><li>翻译 更新俄语(Роман Калинин (n0viceaf))</li><li>开发 更新依赖</li></ol>",
+        "en": "<ol><li>Fix: crash when resizing window</li><li>Fix: statusbar transparent issue in Card player style</li><li>Fix: possible crash after devices rebooted</li><li>Translation: update Russian (by Роман Калинин (n0viceaf))</li><li>Development: upgrade dependencies</li></ol>"
+      }
+    },
+    {
       "channel": "stable",
       "versionName": "1.0.2",
       "versionCode": 1002,
