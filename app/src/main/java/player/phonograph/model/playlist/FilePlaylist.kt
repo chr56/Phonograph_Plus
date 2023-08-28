@@ -5,12 +5,9 @@
 package player.phonograph.model.playlist
 
 import player.phonograph.R
-import player.phonograph.repo.mediastore.playlist.FilePlaylistImpl
 import androidx.annotation.DrawableRes
-import androidx.annotation.Keep
 import android.net.Uri
 import android.os.Parcel
-import android.os.Parcelable
 
 abstract class FilePlaylist : Playlist, EditablePlaylist {
 
@@ -74,18 +71,4 @@ abstract class FilePlaylist : Playlist, EditablePlaylist {
         dateModified = parcel.readLong()
     }
 
-    companion object {
-        @Keep
-        @JvmField
-        val CREATOR: Parcelable.Creator<FilePlaylist?> = object : Parcelable.Creator<FilePlaylist?> {
-            override fun createFromParcel(source: Parcel): FilePlaylist {
-                return FilePlaylistImpl(source)
-            }
-
-            override fun newArray(size: Int): Array<FilePlaylist?> {
-                return arrayOfNulls(size)
-            }
-        }
-
-    }
 }

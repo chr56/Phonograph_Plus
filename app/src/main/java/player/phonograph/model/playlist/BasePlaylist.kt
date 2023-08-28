@@ -4,13 +4,14 @@
 
 package player.phonograph.model.playlist
 
+import org.koin.core.context.GlobalContext
+import org.koin.core.parameter.ParametersHolder
 import player.phonograph.model.Displayable
 import player.phonograph.model.Song
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
-import player.phonograph.repo.mediastore.playlist.FilePlaylistImpl
 import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
@@ -81,7 +82,7 @@ sealed class Playlist : Parcelable, Displayable {
         val CREATOR: Parcelable.Creator<Playlist?> = object : Parcelable.Creator<Playlist?> {
             override fun createFromParcel(source: Parcel): Playlist {
                 return when (source.readInt()) {
-                    PlaylistType.FILE         -> FilePlaylistImpl(source)
+                    PlaylistType.FILE         -> GlobalContext.get().get { ParametersHolder(mutableListOf(source)) }
                     PlaylistType.ABS_SMART    -> throw IllegalStateException("Instantiating abstract type of playlist")
                     PlaylistType.FAVORITE     -> SmartPlaylist.favoriteSongsPlaylist
                     PlaylistType.LAST_ADDED   -> SmartPlaylist.lastAddedPlaylist

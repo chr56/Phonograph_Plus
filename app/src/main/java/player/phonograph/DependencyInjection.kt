@@ -7,6 +7,7 @@ package player.phonograph
 import org.koin.dsl.module
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.playlist.FavoriteSongsPlaylist
+import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.HistoryPlaylist
 import player.phonograph.model.playlist.LastAddedPlaylist
 import player.phonograph.model.playlist.MyTopTracksPlaylist
@@ -19,12 +20,14 @@ import player.phonograph.repo.database.SongPlayCountStore
 import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.repo.mediastore.playlist.FavoriteSongsPlaylistImpl
+import player.phonograph.repo.mediastore.playlist.FilePlaylistImpl
 import player.phonograph.repo.mediastore.playlist.HistoryPlaylistImpl
 import player.phonograph.repo.mediastore.playlist.LastAddedPlaylistImpl
 import player.phonograph.repo.mediastore.playlist.MyTopTracksPlaylistImpl
 import player.phonograph.repo.mediastore.playlist.ShuffleAllPlaylistImpl
 import player.phonograph.service.queue.QueueManager
 import android.content.Context
+import android.os.Parcel
 
 val moduleStatus = module {
     single { QueueManager(get()) }
@@ -46,4 +49,9 @@ val moduleLoaders = module {
     factory<LastAddedPlaylist> { LastAddedPlaylistImpl(get<Context>()) }
     factory<MyTopTracksPlaylist> { MyTopTracksPlaylistImpl(get<Context>()) }
     factory<ShuffleAllPlaylist> { ShuffleAllPlaylistImpl(get<Context>()) }
+
+    // factory<FilePlaylist> { (id: Long, name: String?, path: String, dateAdded: Long, dateModified: Long) ->
+    //     FilePlaylistImpl(id, name, path, dateAdded, dateModified)
+    // }
+    factory<FilePlaylist> { (parcel: Parcel) -> FilePlaylistImpl(parcel) }
 }
