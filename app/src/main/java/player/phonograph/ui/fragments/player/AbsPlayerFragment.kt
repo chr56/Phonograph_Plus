@@ -331,9 +331,11 @@ abstract class AbsPlayerFragment :
             playingQueueAdapter.current = position
         }
         observe(CurrentQueueState.currentSong) {
-            viewModel.updateCurrentSong(MusicPlayerRemote.currentSong, context)
-            lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
+            viewModel.updateCurrentSong(it, context)
             withStarted { impl.updateCurrentSong(it) }
+        }
+        observe(viewModel.currentSong) {
+            lyricsViewModel.loadLyrics(it)
         }
         observe(CurrentQueueState.shuffleMode) {
             updateAdapter()
