@@ -151,12 +151,10 @@ See [Build_Instructions.md](docs/Build_Instructions.md)
 
 - [x] Refactor Setting UI
 
-- [ ] Refactor Search
+- [x] Refactor Search
 
 - [ ] Use AndroidX Room to build
   Media database, to parse multi-artists songs and ‘;’, '&', '/', '\', ',' in tags, and improve search result
-
-- [ ] ...
 
 ### **2023~2024(?)**
 
@@ -164,11 +162,11 @@ See [Build_Instructions.md](docs/Build_Instructions.md)
 
 - [x] Improve data backup/migrate
 
+- [x] Refactor Pages
+
 - [ ] Improve App Intro (WIP🚧)
 
 - [ ] Refactor Main Player
-
-- [ ] Refactor Pages
 
 - [ ] Enhance Playlist Detail: support search, Better way to
   modify , handle intent of open (playlist) file
