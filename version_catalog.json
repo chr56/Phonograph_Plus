@@ -1,19 +1,35 @@
 {
   "versions": [
     {
-      "channel": "preview",
-      "versionName": "1.1-beta1",
-      "versionCode": 1005,
-      "date": 1693195000,
+      "channel": "stable",
+      "versionName": "1.1.0",
+      "versionCode": 1010,
+      "date": 1693296000,
       "link": [
         {
           "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.1-beta1"
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.1.0"
         }
       ],
       "releaseNote": {
-        "zh-cn": "<ol><li>修复 调整窗口大小时崩溃</li><li>修复 播放器Card样式中状态栏不透明与遮挡问题</li><li>修复 设备重启后崩溃</li><li>翻译 更新俄语(Роман Калинин (n0viceaf))</li><li>开发 更新依赖</li></ol>",
-        "en": "<ol><li>Fix: crash when resizing window</li><li>Fix: statusbar transparent issue in Card player style</li><li>Fix: possible crash after devices rebooted</li><li>Translation: update Russian (by Роман Калинин (n0viceaf))</li><li>Development: upgrade dependencies</li></ol>"
+        "zh-cn": "<ol><li>新增 分类搜索结果</li><li>新增 在歌曲详情/标签编辑器中, 支持读写更多标签</li><li>新增 在歌曲详情/标签编辑器中, 显示原始标签信息</li><li>修改 在歌曲详情/标签编辑器中, 不显示其他标签</li><li>改进 (Android Auto) 允许浏览所有分类</li><li>改进 (Android Auto) 在播放队列中，点击项目时改变播放位置</li><li>修复 调整窗口大小时崩溃</li><li>修复 播放器卡片样式中状态栏不透明与遮挡问题</li><li>修复 设备重启后崩溃</li><li>修复 手动加载歌词时崩溃</li><li>翻译 更新俄语(Роман Калинин (n0viceaf))</li><li>翻译 更新巴西葡萄牙语(EddieMattos)</li><li>翻译 更新芬兰语(Jiri Grönroos (spammemoreplease))</li><li>翻译 更新日语(aorinngoDo)</li><li>修改 禁止从v0.2.5之前的版本升级至当前版本</li><li>修改 警告从v0.6.0之前的版本升级至当前版本</li><li>开发 更新依赖, 清理代码</li></ol>",
+        "en": "<ol><li>New: Search Result now are well cataloged</li><li>New: support viewing adding or editing more tags in Song Detail or in TagEditor</li><li>New: show raw tag information in Song Detail/TagEditor</li><li>Modify: do not show other tags in Song Detail/TagEditor</li><li>Improve: (Android Auto) allow browse all catalogs</li><li>Improve: (Android Auto) in playing queue, change playing position when clicking item</li><li>Fix: crash when resizing window</li><li>Fix: statusbar transparent issue in Card player style</li><li>Fix: possible crash after devices rebooted</li><li>Fix: crash when load lyrics manually</li><li>Translation: update Russian (by Роман Калинин (n0viceaf))</li><li>Translation: update Portuguese, Brazilian (by EddieMattos)</li><li>Translation: update Finish (by Jiri Grönroos (spammemoreplease))</li><li>Translation: update Japanese (by aorinngoDo)</li><li>Modify: forbid upgrading from v0.2.5 and older</li><li>Modify: warn when upgrading from v0.6.0 and older</li><li>Development: upgrade dependencies, clean up codes</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
+      "versionName": "1.1.0",
+      "versionCode": 1010,
+      "date": 1693296000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.1.0"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "见稳定版",
+        "en": "See Stable channel"
       }
     },
     {
@@ -33,38 +49,6 @@
       }
     },
     {
-      "channel": "preview",
-      "versionName": "1.1-dev2",
-      "versionCode": 1003,
-      "date": 1692180000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.1-dev2"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>翻译 更新俄语 (Evgeniy Khramov (thejenja))</li><li>翻译 更新土耳其语 (TolDYuThad)</li><li>修改 在歌曲详情/标签编辑器中, 不再显示其他标签</li><li>新功能 在歌曲详情/标签编辑器中, 支持更多标签（如盘号）</li><li>新功能 在歌曲详情/标签编辑器中, 显示原始标签信息</li></ol>",
-        "en": "<ol><li>Translation: update Russian (by Evgeniy Khramov (thejenja))</li><li>Translation: update Turkish (by TolDYuThad)</li><li>Modify: no longer show other tags in Song Detail/TagEditor</li><li>New: support more tags (like disk number) in Song Detail/TagEditor</li><li>New: show raw tag information in Song Detail/TagEditor</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.1-dev1",
-      "versionCode": 1002,
-      "date": 1692076800,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.1-dev1"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>新增 分类搜索结果</li><li>修复 播放列表搜索有时无效</li><li>改进(Android Auto) 允许浏览所有分类</li><li>改进(Android Auto) 在播放队列中，点击项目时改变播放位置</li></ol>",
-        "en": "<ol><li>New: Search Result now are well cataloged</li><li>Fix: Playlist search may not work expectedly</li><li>Improve: (Android Auto) allow browse all catalogs</li><li>Improve: (Android Auto) in playing queue, change playing position when clicking item </li></ol>"
-      }
-    },
-    {
       "channel": "stable",
       "versionName": "1.0.1",
       "versionCode": 1001,
@@ -78,22 +62,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>修复 播放列表页与流派页在更改网格列数后布局不正常</li><li>修复 无法通过部分蓝牙设备控制播放</li></ol>",
         "en": "<ol><li>Fix: incorrect layout after changing grid size in Playlist page and Genre page</li><li>Fix: playback controls not working via some bluetooth devices</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "1.0.0",
-      "versionCode": 1000,
-      "date": 1691638000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.0.0"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>新增 倍数播放支持</li><li>新增 打断后自动恢复播放</li><li>新增 为播放队列添加滚动条</li><li>新增 基础支持 Android Auto 等</li><li>新增 支持反选和区间选择</li><li>新增 支持搜索播放列表和当前播放队列</li><li>修复 改变正在播放界面样式后崩溃</li><li>修复 布局在网格与列表间改变后不显示任何内容</li><li>修复 从外部（如文件浏览器）播放被屏蔽的文件时崩溃</li><li>修复 无法对所选进行随机播放</li><li>修改 暂停时禁止取消媒体通知（以防被杀）</li><li>改进 歌词对话框中的歌词滚动</li><li>改进 歌词对话框中对同步歌词高亮当前歌词</li><li>改进 当前播放队列中的长文本显示</li><li>翻译 更新德语(by txp_uli)</li><li>翻译 更新意大利语(by gdonisi)</li><li>翻译 更新(巴西)葡萄牙语(by EddieMattos)</li><li>翻译 更新日语(by aorinngoDo)</li><li>开发 实现 MediaBrowserService</li><li>开发 重构 adapter, 清理代码</li></ol>",
-        "en": "<ol><li>New: playback speed control</li><li>New: automatically resume playing after interruptions</li><li>New: add scrollbar for Playing Queue</li><li>New: basic support for Android Auto (as well as Assistant and so on)</li><li>New: support invert selection and range (adjacent) selection</li><li>New: support searching playlists and playing queue</li><li>Fix: crash after changing now playing screen style</li><li>Fix: no item displayed after changing between grid and list</li><li>Fix: crashes when playing a blocked file from the external (e.g. file explorer)</li><li>Fix: shuffle not working for the selected</li><li>Modify: disallow canceling media notification when paused(to avoid getting killed)</li><li>Improve: lyrics following in lyrics dialog</li><li>Improve: highlight the current line for synchronized lyrics in lyrics dialog</li><li>Improve: long texts display in Playing Queue</li><li>Translation: update Germany (by txp_uli)</li><li>Translation: update Italian (by gdonisi)</li><li>Translation: update Portuguese (Brazilian) (by EddieMattos)</li><li>Translation: update Japanese (by aorinngoDo)</li><li>Development: implement MediaBrowserService</li><li>Development: refactor adapters, clean up codes</li></ol>"
       }
     },
     {
