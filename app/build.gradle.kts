@@ -144,7 +144,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = depsLibs.versions.composeCompiler.get()
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
 
     kotlinOptions {
@@ -158,60 +158,60 @@ android {
 }
 
 /**
- * Now, this project is using [VersionCatalog] (declaring in `setting.gradle.kts`)
+ * Now, this project is using [VersionCatalog] (./gradle/libs.versions.toml)
  */
 dependencies {
 
-    implementation(depsLibs.androidx.core)
-    implementation(depsLibs.androidx.appcompat)
-    implementation(depsLibs.androidx.activity)
-    implementation(depsLibs.androidx.fragment)
-    implementation(depsLibs.androidx.lifecycle.runtime)
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.fragment)
+    implementation(libs.androidx.lifecycle.runtime)
 
-    implementation(depsLibs.androidx.annotation)
-    implementation(depsLibs.androidx.preference)
+    implementation(libs.androidx.annotation)
+    implementation(libs.androidx.preference)
 
-    implementation(depsLibs.androidx.recyclerview)
+    implementation(libs.androidx.recyclerview)
 
-    implementation(depsLibs.androidx.constraintlayout)
-    implementation(depsLibs.androidx.percentlayout)
-    implementation(depsLibs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.percentlayout)
+    implementation(libs.androidx.swiperefreshlayout)
 
-    implementation(depsLibs.androidx.media)
-    implementation(depsLibs.androidx.cardview)
-    implementation(depsLibs.androidx.palette)
-    implementation(depsLibs.bundles.androidx.datastore)
+    implementation(libs.androidx.media)
+    implementation(libs.androidx.cardview)
+    implementation(libs.androidx.palette)
+    implementation(libs.bundles.androidx.datastore)
 
-    implementation(depsLibs.google.material)
+    implementation(libs.google.material)
 
-    implementation(depsLibs.bundles.compose)
-    debugImplementation(depsLibs.compose.ui.tooling)
+    implementation(libs.bundles.compose)
+    debugImplementation(libs.compose.ui.tooling)
 
-    implementation(depsLibs.bundles.materialTools)
+    implementation(libs.bundles.materialTools)
 
-    implementation(depsLibs.menuDsl)
-    implementation(depsLibs.seekArc)
-    implementation(depsLibs.slidingUpPanel)
+    implementation(libs.menuDsl)
+    implementation(libs.seekArc)
+    implementation(libs.slidingUpPanel)
 
-    implementation(depsLibs.bundles.materialDialogs)
-    implementation(depsLibs.composeMaterialDialogs)
+    implementation(libs.bundles.materialDialogs)
+    implementation(libs.composeMaterialDialogs)
 
-    implementation(depsLibs.okhttp3)
-    implementation(depsLibs.retrofit2)
-    implementation(depsLibs.coil)
+    implementation(libs.okhttp3)
+    implementation(libs.retrofit2)
+    implementation(libs.coil)
 
-    implementation(depsLibs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.serialization.json)
 
-    implementation(depsLibs.licensesdialog)
-    implementation(depsLibs.jaudiotagger)
-    implementation(depsLibs.observablescrollview)
-    implementation(depsLibs.appIntro)
-    implementation(depsLibs.advrecyclerview)
-    implementation(depsLibs.recyclerviewFastscroll)
-    implementation(depsLibs.composeReorderable)
-    implementation(depsLibs.bundles.composeSettings) {
-        val uiTooling = depsLibs.compose.ui.tooling.get().module
+    implementation(libs.licensesdialog)
+    implementation(libs.jaudiotagger)
+    implementation(libs.observablescrollview)
+    implementation(libs.appIntro)
+    implementation(libs.advrecyclerview)
+    implementation(libs.recyclerviewFastscroll)
+    implementation(libs.composeReorderable)
+    implementation(libs.bundles.composeSettings) {
+        val uiTooling = libs.compose.ui.tooling.get().module
         exclude(group = uiTooling.group, module = uiTooling.name)
     }
-    implementation(depsLibs.statusBarLyricsApi)
+    implementation(libs.statusBarLyricsApi)
 }
