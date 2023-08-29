@@ -15,6 +15,7 @@ import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.net.Uri
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -51,6 +52,7 @@ class LyricsViewModel : ViewModel() {
         if (uri != null) {
             val lyrics = LyricsLoader.parseFromUri(context, uri)
             if (lyrics != null) {
+                delay(600)
                 val info = _lyricsInfo.value.createAmended(lyrics).replaceActivated(lyrics)!!
                 _lyricsInfo.emit(info)
             } else {
