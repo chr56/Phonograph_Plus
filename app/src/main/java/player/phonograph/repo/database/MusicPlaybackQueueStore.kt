@@ -37,79 +37,14 @@ class MusicPlaybackQueueStore(context: Context?) : SQLiteOpenHelper(
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         if (oldVersion == 5 && newVersion == 6) {
-            migrate5to6(db)
-        } else if (oldVersion == 4 && newVersion == 6) {
-            migrate4to5(db)
-            migrate5to6(db)
+            alterTable5to6(db, PLAYING_QUEUE_TABLE_NAME)
+            alterTable5to6(db, ORIGINAL_PLAYING_QUEUE_TABLE_NAME)
         } else {
             // not necessary yet
             db.execSQL("DROP TABLE IF EXISTS $PLAYING_QUEUE_TABLE_NAME")
             db.execSQL("DROP TABLE IF EXISTS $ORIGINAL_PLAYING_QUEUE_TABLE_NAME")
             onCreate(db)
         }
-    }
-
-    private fun migrate4to5(db: SQLiteDatabase) {
-        alterTable4to5(db, PLAYING_QUEUE_TABLE_NAME)
-        alterTable4to5(db, ORIGINAL_PLAYING_QUEUE_TABLE_NAME)
-    }
-
-    private fun alterTable4to5(db: SQLiteDatabase, tableName: String) {
-        db.beginTransaction()
-        try {
-            val temp = tableName + "_new"
-            // Thread.sleep(2_000)
-            db.execSQL("DROP TABLE IF EXISTS $temp")
-            db.execSQL(
-                "CREATE TABLE $temp" +
-                        "(" +
-                        "${BaseColumns._ID} LONG NOT NULL," +
-                        "${AudioColumns.TITLE} TEXT NOT NULL," +
-                        "${AudioColumns.TRACK} INT NOT NULL," +
-                        "${AudioColumns.YEAR} INT NOT NULL," +
-                        "${AudioColumns.DURATION} LONG NOT NULL," +
-                        "${AudioColumns.DATA} TEXT NOT NULL," +
-                        "${AudioColumns.DATE_ADDED} LONG NOT NULL DEFAULT 0," +
-                        "${AudioColumns.DATE_MODIFIED} LONG NOT NULL," +
-                        "${AudioColumns.ALBUM_ID} LONG NOT NULL," +
-                        "${AudioColumns.ALBUM} TEXT NOT NULL," +
-                        "${AudioColumns.ARTIST_ID} LONG NOT NULL," +
-                        "${AudioColumns.ARTIST} TEXT NOT NULL" +
-                        ");"
-            )
-            db.execSQL(
-                "INSERT INTO $temp(${BaseColumns._ID},${AudioColumns.TITLE},${AudioColumns.TRACK},${AudioColumns.YEAR},${AudioColumns.DURATION},${AudioColumns.DATA},${AudioColumns.DATE_MODIFIED},${AudioColumns.ALBUM_ID},${AudioColumns.ALBUM},${AudioColumns.ARTIST_ID},${AudioColumns.ARTIST}) " +
-                        "SELECT ${BaseColumns._ID},${AudioColumns.TITLE},${AudioColumns.TRACK},${AudioColumns.YEAR},${AudioColumns.DURATION},${AudioColumns.DATA},${AudioColumns.DATE_MODIFIED},${AudioColumns.ALBUM_ID},${AudioColumns.ALBUM},${AudioColumns.ARTIST_ID},${AudioColumns.ARTIST}" +
-                        " FROM $tableName"
-            )
-            db.execSQL("DROP TABLE IF EXISTS $tableName ")
-            db.execSQL("ALTER TABLE $temp RENAME TO $tableName")
-            db.setTransactionSuccessful()
-        } catch (e: Exception) {
-            reportError(
-                e,
-                "MusicPlaybackQueueStore",
-                "Fail to transaction playback database, playing queue now corrupted!"
-            )
-
-            try {
-                // fallback
-                db.execSQL("ALTER TABLE $tableName ADD ${AudioColumns.DATE_ADDED} LONG NOT NULL DEFAULT 0")
-            } catch (e: Exception) {
-            } finally {
-                db.setTransactionSuccessful()
-            }
-
-            throw e
-        } finally {
-            db.endTransaction()
-        }
-    }
-
-
-    private fun migrate5to6(db: SQLiteDatabase) {
-        alterTable5to6(db, PLAYING_QUEUE_TABLE_NAME)
-        alterTable5to6(db, ORIGINAL_PLAYING_QUEUE_TABLE_NAME)
     }
 
     private fun alterTable5to6(db: SQLiteDatabase, tableName: String) {
