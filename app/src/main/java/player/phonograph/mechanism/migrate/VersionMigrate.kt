@@ -4,7 +4,6 @@
 
 package player.phonograph.mechanism.migrate
 
-import player.phonograph.mechanism.migrate.DeprecatedPreference.SortOrder
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.model.pages.Pages
 import player.phonograph.service.util.QueuePreferenceManager
@@ -35,7 +34,6 @@ fun migrate(context: Context, from: Int, to: Int) {
         Log.i(TAG, "Start Migration: $from -> $to")
 
         MigrateOperator(context, from, to).apply {
-            migrate(SortOrderMigration())
             migrate(QueuePreferenceMigration())
             migrate(PagesMigration())
             migrate(LockScreenCoverMigration())
@@ -87,19 +85,6 @@ private class MigrateOperator(
 ) {
     fun migrate(migration: Migration) =
         migration.tryMigrate(context, from, to)
-}
-
-private class SortOrderMigration : Migration(introduced = 210, deprecated = 532) {
-    override fun doMigrate(context: Context) {
-        removePreference(context, keyName = SortOrder.ARTIST_SORT_ORDER)
-        removePreference(context, keyName = SortOrder.ARTIST_SONG_SORT_ORDER)
-        removePreference(context, keyName = SortOrder.ARTIST_ALBUM_SORT_ORDER)
-        removePreference(context, keyName = SortOrder.ALBUM_SORT_ORDER)
-        removePreference(context, keyName = SortOrder.ALBUM_SONG_SORT_ORDER)
-        removePreference(context, keyName = SortOrder.SONG_SORT_ORDER)
-        removePreference(context, keyName = SortOrder.GENRE_SORT_ORDER)
-    }
-
 }
 
 private class QueuePreferenceMigration : Migration(introduced = 460, deprecated = 532) {
