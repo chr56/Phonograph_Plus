@@ -17,7 +17,7 @@ body:
     attributes:
       label: Version
       description: "Which version are you using?"
-      placeholder: "0.x.x"
+      placeholder: "1.x.x"
     validations:
       required: true
 
@@ -25,7 +25,7 @@ body:
     id: step-to-reproduce
     attributes:
       label: Steps to reproduce the bug
-      description: Steps to reproduce the bugs or unexpected behaviors.
+      description: (Optional) Steps to reproduce the bugs or unexpected behaviors, or when this happened.
     validations:
       required: false
 
@@ -38,7 +38,7 @@ body:
       required: false
 
   - type: textarea
-    id: envirment
+    id: environment
     attributes:
       label: Environment
       description: What is your environment (such as OS version, ROM)? (Optional)

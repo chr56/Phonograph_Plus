@@ -1,7 +1,7 @@
 name: Crash Report
 description: Report serious bugs, like app crashes
 title: "[Crash Report]: "
-labels: ["Bug"]
+labels: [ "Bug", "Crash" ]
 
 body:
   - type: textarea
@@ -11,18 +11,27 @@ body:
       description: Crash log
       value: |
         ```
-        [REPLACE ME: if crash report isavailable, copy your logs to here.]
-        [REPLACE ME: do NOT these three backquotes (`)]
-        [PEPLACE ME: put your report inside these backquotes (`)]
+        [REPLACE ME: if crash report is available, copy your logs to here.]
+        [REPLACE ME: do NOT remove these three backquotes (`)]
+        [REPLACE ME: put your report inside these backquotes (`)]
         ```
     validations:
       required: true
+
+  - type: input
+    id: app-version
+    attributes:
+      label: Version
+      description: "Which version are you using?"
+      placeholder: "1.x.x"
+    validations:
+      required: false
 
   - type: textarea
     id: step-to-reproduce
     attributes:
       label: Steps to reproduce the bug
-      description: Steps to reproduce the bugs or unexpected behaviors.
+      description: (Optional) Steps to reproduce the bugs or unexpected behaviors, or when this happened.
     validations:
       required: false
 
@@ -39,14 +48,5 @@ body:
     attributes:
       label: Other helpful information
       description: (Optional)
-    validations:
-      required: false
-
-  - type: input
-    id: app-version
-    attributes:
-      label: Version
-      description: "Which version are you using?"
-      placeholder: "0.x.x"
     validations:
       required: false
