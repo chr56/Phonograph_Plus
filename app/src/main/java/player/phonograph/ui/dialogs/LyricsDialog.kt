@@ -30,6 +30,7 @@ import player.phonograph.util.theme.nightMode
 import player.phonograph.util.warning
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -48,11 +49,11 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.TextView
 import kotlin.math.abs
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 import java.util.regex.Pattern
 
 /**
@@ -65,7 +66,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
     private var _viewBinding: DialogLyricsBinding? = null
     val binding: DialogLyricsBinding get() = _viewBinding!!
 
-    private val viewModel: LyricsViewModel by viewModels({ requireParentFragment() })
+    private val viewModel: LyricsViewModel by viewModels({ requireActivity() })
 
     //region Fragment LifeCycle
 
@@ -200,9 +201,9 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         val accessor = activity as? IOpenFileStorageAccess
         if (accessor != null) {
             accessor.openFileStorageAccessTool.launch(OpenDocumentContract.Config(arrayOf("*/*"))) { uri ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    while (!activity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) yield()
-                    viewModel.insert(activity, uri)
+                CoroutineScope(Dispatchers.IO).launch {
+                    val lyricsViewModel = ViewModelProvider(activity)[LyricsViewModel::class.java]
+                    lyricsViewModel.insert(activity, uri)
                 }
             }
         } else {

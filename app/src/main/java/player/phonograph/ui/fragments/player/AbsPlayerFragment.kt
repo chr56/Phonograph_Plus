@@ -33,6 +33,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.animation.doOnEnd
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -52,14 +53,13 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 
 abstract class AbsPlayerFragment :
         AbsMusicServiceFragment()/* , PaletteColorHolder */ {
 
     protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment<*>
     protected val viewModel: PlayerFragmentViewModel by viewModels()
-    protected val lyricsViewModel: LyricsViewModel by viewModels()
+    protected val lyricsViewModel: LyricsViewModel by viewModels({ requireActivity() })
 
     // recycle view
     protected lateinit var layoutManager: LinearLayoutManager
@@ -185,8 +185,8 @@ abstract class AbsPlayerFragment :
                     val accessor = activity as? IOpenFileStorageAccess
                     if (accessor != null) {
                         accessor.openFileStorageAccessTool.launch(OpenDocumentContract.Config(arrayOf("*/*"))) { uri ->
-                            lifecycleScope.launch(Dispatchers.IO) {
-                                while (!activity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) yield()
+                            CoroutineScope(Dispatchers.IO).launch {
+                                val lyricsViewModel = ViewModelProvider(activity)[LyricsViewModel::class.java]
                                 lyricsViewModel.insert(activity, uri)
                             }
                         }
