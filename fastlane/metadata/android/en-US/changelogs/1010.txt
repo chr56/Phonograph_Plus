@@ -1,0 +1,9 @@
+<b>1.1.0(1010) 2023.08.29</b>
+- New: Search Result now are well cataloged
+- New: support viewing adding or editing more tags in Song Detail or in TagEditor
+- New: show raw tag information in Song Detail/TagEditor
+- Modify: do not show other tags in Song Detail/TagEditor
+- Improve: (Android Auto) allow browse all catalogs
+- Improve: (Android Auto) in playing queue, change playing position when clicking item
+- Fix: crash when resizing window
+...(Visit project homepage to see full changelogs)
