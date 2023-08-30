@@ -1,0 +1,16 @@
+[versions]
+kotlin = "1.8.10"
+agp = "8.0.2"
+versionChecker = "0.44.0"
+
+[plugins]
+
+androidGradlePlugin = { id = "com.android.application", version.ref = "agp" }
+#androidGradlePluginLibrary = { id = "com.android.library", version.ref = "agp" }
+
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+
+versionChecker = { id = "com.github.ben-manes.versions", version.ref = "versionChecker" }
