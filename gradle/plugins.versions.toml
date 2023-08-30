@@ -14,3 +14,7 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 
 versionChecker = { id = "com.github.ben-manes.versions", version.ref = "versionChecker" }
+
+
+[libraries]
+androidGradlePluginAPI = { module = "com.android.tools.build:gradle-api", version.ref = "agp" }
