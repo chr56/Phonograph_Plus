@@ -6,10 +6,10 @@ import tools.release.registerPublishTask
 import java.util.Properties
 
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.serialization")
-    id("org.jetbrains.kotlin.plugin.parcelize")
+    alias(plugins.plugins.androidGradlePlugin)
+    alias(plugins.plugins.kotlin.android)
+    alias(plugins.plugins.kotlin.serialization)
+    alias(plugins.plugins.kotlin.parcelize)
     id("tools.release")
 }
 

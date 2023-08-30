@@ -7,8 +7,8 @@ repositories {
 }
 
 plugins {
-    kotlin("jvm")
-    id("org.jetbrains.kotlin.plugin.serialization")
+    alias(plugins.plugins.kotlin.jvm)
+    alias(plugins.plugins.kotlin.serialization)
 }
 
 sourceSets {
