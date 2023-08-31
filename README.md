@@ -33,22 +33,29 @@ All listed features are compared with the original Phonograph.
 
 - Change language in application manually.
 
-- Brand-new Detail page with more information like tags
+- Better Notification Image Quality for Android T and above.
 
-- Show Time Axis in "Lyrics" Dialog and allow seeking basing lyric's time axis and
-  support lyrics following.
-
-- User-defined click behavior for songs
+- User-defined click behavior for songs.
 
 - Support history of playing queue.
+
+- Brand-new Detail page with more information like tags.
+
+- Brand-new Tag Editor supporting more tags.
+
+- Show Time Axis in "Lyrics" Dialog and allow seeking basing lyric's time axis and support lyrics following.
+
+- Playback speed control.
+
+- Basic support for Android Auto.
+
+- Support more sort orders.
 
 - Fix Android 11 Scope Storage. (Partial)
 
 - Improve menu experience.
 
-- Improve “Library” pages user experience.
-
-- Support more sort orders.
+- Improve "Library" pages user experience.
 
 - Allow collecting app crash report.
 
@@ -56,37 +63,27 @@ All listed features are compared with the original Phonograph.
 
 - Add song menu shortcut to add new items to excluded-list (blacklist).
 
-- Co-work-with/Support [StatusBar Lyric
-  Xposed Module (api)](https://github.com/Block-Network/StatusBarLyric)
+- Co-work-with/Support [StatusBar Lyric Xposed Module (api)](https://github.com/Block-Network/StatusBarLyric)
+
+- Increase history played tracks and top played tracks entries capacity (100->150).
 
 - Export internal databases and settings for the need of backup.
 
-- Increase history played tracks and top played tracks entries capacity (
-  100->150).
+- Allow deleting songs file along with its external lyrics file.
 
 - Allow tabs fixed.
 
 - Brand-new File tab.
 
-- Allow deleting songs file along with its external lyrics file.
+- Brand-new App Intro.
 
-- Brand-new Tag Editor
+- Better Playlist support.
 
-- Brand-new App Intro
+- <del>Poor</del> support of Monet.
 
-- Better Notification Image Quality for Android T and above
+- Resume playing after interruptions.
 
-- Better Playlist support
-
-- ~Poor~ support of Monet
-
-- Playback speed control
-
-- Resume playing after interruptions
-
-- Enhance multi-selecting
-
-- Basic support for Android Auto
+- Enhance multi-selecting.
 
 - and more small features/fixes.
 
@@ -104,19 +101,19 @@ We have removed Swedish and Norwegian Nynorsk translations due to missing too ma
 For reference only, actual app might be different
 
 |                                           Card Player                                           |                                           Flat Player                                           |                                           Drawer                                            |
-| :---------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------: |
+|:-----------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------:|
 | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/CardPlayer.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/FlatPlayer.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/Drawer.jpg?raw=true) |
 
 |                                           Drawer                                            |                                             Songs                                             |                                             Files                                             |
-| :-----------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------: |
+|:-------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------:|
 | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/Drawer.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/SongPage.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/FilePage.jpg?raw=true) |
 
 |                                             Artists                                             |                                             Albums                                             |                                             Playlists                                             |
-| :---------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------: |
+|:-----------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------:|
 | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/ArtistPage.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/AlbumPage.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/PlaylistPage.jpg?raw=true) |
 
 |                                           Setting                                            |                                           Song Detail                                           |                                           Tag Editor                                           |
-| :------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------: |
+|:--------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|
 | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/Setting.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/SongDetail.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/TagEditor.jpg?raw=true) |
 
 ## **Build Instructions & Developer Guide**
