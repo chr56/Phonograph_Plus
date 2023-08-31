@@ -5,6 +5,8 @@
 package player.phonograph
 
 import org.koin.dsl.module
+import player.phonograph.mechanism.FavoriteDatabaseImpl
+import player.phonograph.mechanism.FavoritePlaylistImpl
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.playlist.FavoriteSongsPlaylist
 import player.phonograph.model.playlist.FilePlaylist
@@ -26,6 +28,7 @@ import player.phonograph.repo.mediastore.playlist.LastAddedPlaylistImpl
 import player.phonograph.repo.mediastore.playlist.MyTopTracksPlaylistImpl
 import player.phonograph.repo.mediastore.playlist.ShuffleAllPlaylistImpl
 import player.phonograph.service.queue.QueueManager
+import player.phonograph.settings.Setting
 import android.content.Context
 import android.os.Parcel
 
@@ -40,6 +43,10 @@ val moduleLoaders = module {
     single { SongPlayCountStore(get()) }
     single { FavoritesStore(get()) }
     single { MusicPlaybackQueueStore(get()) }
+
+    factory {
+        if (Setting.instance.useLegacyFavoritePlaylistImpl) FavoritePlaylistImpl() else FavoriteDatabaseImpl()
+    }
 
     factory { TopTracksLoader(get()) }
     factory { RecentlyPlayedTracksLoader(get()) }

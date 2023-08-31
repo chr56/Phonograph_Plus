@@ -4,19 +4,17 @@
 
 package player.phonograph.ui.fragments.player
 
+import org.koin.core.context.GlobalContext
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteBitmap
-import player.phonograph.mechanism.FavoriteDatabaseImpl
-import player.phonograph.mechanism.FavoritePlaylistImpl
 import player.phonograph.mechanism.IFavorite
 import player.phonograph.model.Song
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.settings.Setting
 import androidx.collection.LruCache
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -53,13 +51,7 @@ class PlayerFragmentViewModel : ViewModel() {
         }
     }
 
-    val favorite: IFavorite by lazy {
-        if (Setting.instance.useLegacyFavoritePlaylistImpl) {
-            FavoritePlaylistImpl()
-        } else {
-            FavoriteDatabaseImpl()
-        }
-    }
+    val favorite: IFavorite by GlobalContext.get().inject()
 
     private val _lyrics: MutableStateFlow<LrcLyrics?> = MutableStateFlow(null)
     val lyrics get() = _lyrics.asStateFlow()

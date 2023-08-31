@@ -5,14 +5,11 @@
 package player.phonograph.repo.mediastore.playlist
 
 import org.koin.core.context.GlobalContext
-import player.phonograph.mechanism.FavoriteDatabaseImpl
-import player.phonograph.mechanism.FavoritePlaylistImpl
 import player.phonograph.mechanism.IFavorite
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FavoriteSongsPlaylist
 import player.phonograph.repo.mediastore.loaders.SongLoader
-import player.phonograph.settings.Setting
 import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
@@ -20,13 +17,7 @@ import android.os.Parcelable
 
 class FavoriteSongsPlaylistImpl : FavoriteSongsPlaylist {
 
-    val favorite: IFavorite by lazy {
-        if (Setting.instance.useLegacyFavoritePlaylistImpl) {
-            FavoritePlaylistImpl()
-        } else {
-            FavoriteDatabaseImpl()
-        }
-    }
+    val favorite: IFavorite by GlobalContext.get().inject()
 
     constructor(context: Context) : super(context)
 
