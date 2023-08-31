@@ -8,12 +8,12 @@ import coil.size.ViewSizeResolver
 import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.actions.menu.fileEntityPopupMenu
-import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity
-import player.phonograph.model.file.linkedSong
+import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.settings.Setting
+import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.activity.ComponentActivity
 import android.graphics.PorterDuff
@@ -72,7 +72,7 @@ class FilesPageAdapter(
             if (item is FileEntity.File) {
                 if (loadCover) {
                     loadImage(image.context) {
-                        data(item.linkedSong(context))
+                        data(SongLoader.searchByFileEntity(context, item))
                         size(ViewSizeResolver(image))
                         target(
                             onStart = {
