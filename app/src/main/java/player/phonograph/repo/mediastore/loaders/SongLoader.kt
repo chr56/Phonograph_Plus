@@ -5,6 +5,7 @@
 package player.phonograph.repo.mediastore.loaders
 
 import player.phonograph.model.Song
+import player.phonograph.model.file.FileEntity
 import player.phonograph.repo.mediastore.internal.intoFirstSong
 import player.phonograph.repo.mediastore.internal.intoSongs
 import player.phonograph.repo.mediastore.internal.querySongs
@@ -39,6 +40,11 @@ object SongLoader : Loader<Song> {
         val cursor =
             querySongs(context, "${MediaStore.Audio.AudioColumns.TITLE} LIKE ?", arrayOf("%$title%"))
         return cursor.intoSongs()
+    }
+
+    fun searchByFileEntity(context: Context, file: FileEntity.File): Song {
+        return if (file.id > 0) id(context, file.id)
+        else searchByPath(context, file.location.sqlPattern, true).firstOrNull() ?: Song.EMPTY_SONG
     }
 
     fun since(context: Context, timestamp: Long, useModifiedDate: Boolean = false): List<Song> {

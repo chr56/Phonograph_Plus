@@ -6,7 +6,6 @@ package player.phonograph.repo.mediastore.loaders
 
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
-import player.phonograph.model.file.put
 import player.phonograph.repo.mediastore.internal.querySongFiles
 import player.phonograph.repo.mediastore.internal.readFileEntity
 import player.phonograph.util.FileUtil
@@ -42,6 +41,23 @@ object FileEntityLoader {
                 } while (cursor.moveToNext())
                 list.toSortedSet()
             } else emptySet()
+        }
+    }
+
+    private fun MutableList<FileEntity>.put(item: FileEntity) {
+        when (item) {
+            is FileEntity.File -> {
+                this.add(item)
+            }
+            is FileEntity.Folder -> {
+                // count songs for folder
+                val i = this.indexOf(item)
+                if (i < 0) {
+                    this.add(item.apply { songCount = 1 })
+                } else {
+                    (this[i] as FileEntity.Folder).songCount ++
+                }
+            }
         }
     }
 

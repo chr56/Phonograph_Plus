@@ -4,11 +4,14 @@
 
 package player.phonograph.model
 
-import player.phonograph.util.FileUtil.stripStorageVolume
+import lib.phonograph.storage.root
+import player.phonograph.App
 import androidx.annotation.Keep
+import androidx.core.content.getSystemService
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
+import android.os.storage.StorageManager
 
 class SongCollection(
     val name: String,
@@ -63,6 +66,16 @@ class SongCollection(
             override fun newArray(size: Int): Array<SongCollection?> {
                 return arrayOfNulls(size)
             }
+        }
+
+        private fun stripStorageVolume(str: String): String {
+            return str.removePrefix(internalStorageRootPath).removePrefix("/storage")
+        }
+
+        private val internalStorageRootPath: String by lazy {
+            val storageManager = App.instance.getSystemService<StorageManager>()!!
+            val storageVolume = storageManager.primaryStorageVolume
+            storageVolume.root()?.absolutePath ?: ""
         }
     }
 
