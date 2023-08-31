@@ -2,17 +2,19 @@
  * Copyright (c) 2022 chr_56
  */
 
+@file:Suppress("RegExpRedundantEscape")
+
 package player.phonograph.model.lyrics
 
+import player.phonograph.util.sparseArray
+import player.phonograph.util.warning
+import androidx.core.util.forEach
+import androidx.core.util.isEmpty
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.Log
 import android.util.SparseArray
-import androidx.core.util.forEach
-import androidx.core.util.isEmpty
-import player.phonograph.notification.ErrorNotification
-import player.phonograph.util.sparseArray
-import java.util.*
+import java.util.Locale
 import java.util.regex.Pattern
 
 class LrcLyrics : AbsLyrics, Parcelable {
@@ -27,8 +29,15 @@ class LrcLyrics : AbsLyrics, Parcelable {
         this.totalTime = -1
         this.source = source
     }
-    private constructor(lyrics: SparseArray<String>, title: String?, offset: Long = 0, totalTime: Long = -1, source: LyricsSource) :
-        this(lyrics, source) {
+
+    private constructor(
+        lyrics: SparseArray<String>,
+        title: String?,
+        offset: Long = 0,
+        totalTime: Long = -1,
+        source: LyricsSource,
+    ) :
+            this(lyrics, source) {
         this.title = title ?: DEFAULT_TITLE
         this.offset = offset
         this.totalTime = totalTime
@@ -54,6 +63,7 @@ class LrcLyrics : AbsLyrics, Parcelable {
             lyrics.valueAt(it)
         }
     }
+
     override fun getLyricsTimeArray(): IntArray {
         return IntArray(lyrics.size()) {
             lyrics.keyAt(it)
@@ -92,27 +102,23 @@ class LrcLyrics : AbsLyrics, Parcelable {
         var index = -1
         if (totalTime != -1L) { // -1 means " no length info in lyrics"
             if (timeStamp >= totalTime) {
-                ErrorNotification.postErrorNotification(IllegalStateException("TimeStamp is over the total lyrics length: lyrics might be mismatched"), "Incorrect lyrics, please check up.")
+                warning(
+                    "LrcLyrics",
+                    "TimeStamp is over the total lyrics length: lyrics might be mismatched, please check up."
+                )
                 return index
             }
         }
 
         val ms = timeStamp + offset + TIME_OFFSET_MS
         index = binSearch(ms, 0, lyrics.size())
-//        for (i in 0 until lyrics.size()) {
-//            if (ms >= lyrics.keyAt(i)) {
-//                index = i
-//            } else {
-//                break
-//            }
-//        }
         return index
     }
 
     private tailrec fun binSearch(time: Long, down: Int, up: Int): Int {
         val mid = (down + up) / 2
         when {
-            time < lyrics.keyAt(mid) -> {
+            time < lyrics.keyAt(mid)           -> {
                 return if (mid <= 0) {
                     // first line
                     -1
@@ -121,8 +127,9 @@ class LrcLyrics : AbsLyrics, Parcelable {
                     binSearch(time, down, mid)
                 }
             }
+
             time == lyrics.keyAt(mid).toLong() -> return mid
-            time > lyrics.keyAt(mid) -> {
+            time > lyrics.keyAt(mid)           -> {
                 if (mid < lyrics.size() - 1) {
                     // not last line
                     return if (time < lyrics.keyAt(mid + 1)) mid
@@ -132,7 +139,8 @@ class LrcLyrics : AbsLyrics, Parcelable {
                     return lyrics.size() - 1
                 }
             }
-            else -> return -1 // what!?
+
+            else                               -> return -1 // what!?
         }
     }
 
@@ -165,7 +173,7 @@ class LrcLyrics : AbsLyrics, Parcelable {
                         when (attr) {
                             "offset" -> offset = value.toLong()
                             "length" -> totalTime = value.toLong()
-                            "ti" -> title = value
+                            "ti"     -> title = value
                             // todo [lyric parse] more attr
                         }
                     } catch (ex: Exception) {
@@ -234,6 +242,7 @@ class LrcLyrics : AbsLyrics, Parcelable {
         parcel.writeLong(totalTime)
         parcel.writeInt(source.type)
     }
+
     constructor(parcel: Parcel) {
         parcel.readInt().let { if (it != LRC) throw IllegalStateException("incorrect parcel received") }
         this.lyrics = parcel.sparseArray(null) ?: SparseArray()
@@ -242,6 +251,7 @@ class LrcLyrics : AbsLyrics, Parcelable {
         this.totalTime = parcel.readLong()
         this.source = LyricsSource(parcel.readInt())
     }
+
     override fun describeContents(): Int = 0
 }
 
