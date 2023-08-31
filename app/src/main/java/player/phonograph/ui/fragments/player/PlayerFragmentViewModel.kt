@@ -8,13 +8,15 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteBitmap
-import player.phonograph.mechanism.Favorite.isFavorite
+import player.phonograph.mechanism.FavoriteDatabaseImpl
+import player.phonograph.mechanism.FavoritePlaylistImpl
+import player.phonograph.mechanism.IFavorite
 import player.phonograph.model.Song
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
-import androidx.annotation.ColorInt
+import player.phonograph.settings.Setting
 import androidx.collection.LruCache
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -47,7 +49,15 @@ class PlayerFragmentViewModel : ViewModel() {
         loadFavoriteStateJob?.cancel()
         loadFavoriteStateJob = viewModelScope.launch {
             if (song == Song.EMPTY_SONG) return@launch
-            _favoriteState.emit(song to isFavorite(context ?: App.instance, song))
+            _favoriteState.emit(song to favorite.isFavorite(context ?: App.instance, song))
+        }
+    }
+
+    val favorite: IFavorite by lazy {
+        if (Setting.instance.useLegacyFavoritePlaylistImpl) {
+            FavoritePlaylistImpl()
+        } else {
+            FavoriteDatabaseImpl()
         }
     }
 

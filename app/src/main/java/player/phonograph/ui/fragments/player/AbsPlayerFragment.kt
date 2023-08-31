@@ -9,12 +9,14 @@ import lib.phonograph.misc.OpenDocumentContract
 import mt.tint.viewtint.setMenuColor
 import mt.util.color.toolbarIconColor
 import player.phonograph.R
-import player.phonograph.mechanism.Favorite.toggleFavorite
+import player.phonograph.mechanism.FavoriteDatabaseImpl
+import player.phonograph.mechanism.FavoritePlaylistImpl
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
+import player.phonograph.settings.Setting
 import player.phonograph.ui.dialogs.CreatePlaylistDialog
 import player.phonograph.ui.dialogs.LyricsDialog
 import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
@@ -153,7 +155,12 @@ abstract class AbsPlayerFragment :
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 itemId = R.id.action_toggle_favorite
                 onClick {
-                    toggleFavorite(requireContext(), viewModel.currentSong.value)
+                    val favorite = if (Setting.instance.useLegacyFavoritePlaylistImpl) {
+                        FavoritePlaylistImpl()
+                    } else {
+                        FavoriteDatabaseImpl()
+                    }
+                    favorite.toggleFavorite(context, viewModel.currentSong.value)
                     true
                 }
             }.apply {

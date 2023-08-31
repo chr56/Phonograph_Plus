@@ -4,10 +4,15 @@
 
 package player.phonograph.repo.mediastore.playlist
 
-import player.phonograph.mechanism.Favorite
+import org.koin.core.context.GlobalContext
+import player.phonograph.mechanism.FavoriteDatabaseImpl
+import player.phonograph.mechanism.FavoritePlaylistImpl
+import player.phonograph.mechanism.IFavorite
+import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FavoriteSongsPlaylist
-import player.phonograph.repo.database.FavoritesStore
+import player.phonograph.repo.mediastore.loaders.SongLoader
+import player.phonograph.settings.Setting
 import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
@@ -15,36 +20,44 @@ import android.os.Parcelable
 
 class FavoriteSongsPlaylistImpl : FavoriteSongsPlaylist {
 
+    val favorite: IFavorite by lazy {
+        if (Setting.instance.useLegacyFavoritePlaylistImpl) {
+            FavoritePlaylistImpl()
+        } else {
+            FavoriteDatabaseImpl()
+        }
+    }
 
     constructor(context: Context) : super(context)
 
 
     override fun getSongs(context: Context): List<Song> =
-        FavoritesStore.get().getAllSongs(context)
+        favorite.allSongs(context)
 
     override fun containsSong(context: Context, songId: Long): Boolean =
-        FavoritesStore.get().containsSong(songId, "")
+        favorite.isFavorite(context, SongLoader.id(context, songId))
 
     override fun removeSong(context: Context, song: Song) {
-        Favorite.toggleFavorite(context, song)
+        favorite.toggleFavorite(context, song)
     }
 
     override fun moveSong(context: Context, song: Song, from: Int, to: Int) {} // meaningless
 
     override fun appendSong(context: Context, song: Song) {
-        Favorite.toggleFavorite(context, song)
+        favorite.toggleFavorite(context, song)
+        notifyMediaStoreChanged()
     }
 
     override fun appendSongs(context: Context, songs: List<Song>) {
-        for (song in songs) Favorite.toggleFavorite(context, song)
+        for (song in songs) favorite.toggleFavorite(context, song)
+        notifyMediaStoreChanged()
     }
 
-    override fun clear(context: Context) {
-        FavoritesStore.get().clearAllSongs()
-    }
+    override fun clear(context: Context) = favorite.clearAll(context)
 
 
     constructor(parcel: Parcel) : super(parcel)
+
     companion object {
         @Keep
         @JvmField
@@ -58,5 +71,6 @@ class FavoriteSongsPlaylistImpl : FavoriteSongsPlaylist {
                     return arrayOfNulls(size)
                 }
             }
+        private fun notifyMediaStoreChanged() = GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
     }
 }
