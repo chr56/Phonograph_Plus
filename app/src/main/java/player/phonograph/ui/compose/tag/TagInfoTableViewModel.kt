@@ -5,11 +5,11 @@
 package player.phonograph.ui.compose.tag
 
 import org.jaudiotagger.tag.FieldKey
-import player.phonograph.mechanism.tag.TagFormat
 import player.phonograph.model.RawTag
 import player.phonograph.model.SongInfoModel
 import player.phonograph.model.TagData
 import player.phonograph.model.TagData.TextData
+import player.phonograph.model.TagFormat
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

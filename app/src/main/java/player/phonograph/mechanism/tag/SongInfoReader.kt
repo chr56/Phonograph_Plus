@@ -18,6 +18,7 @@ import player.phonograph.model.TagData.BinaryData
 import player.phonograph.model.TagData.EmptyData
 import player.phonograph.model.TagData.TextData
 import player.phonograph.model.TagField
+import player.phonograph.model.TagFormat
 import player.phonograph.model.allFieldKey
 import player.phonograph.util.reportError
 import java.io.File
