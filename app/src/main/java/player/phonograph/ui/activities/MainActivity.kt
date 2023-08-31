@@ -175,7 +175,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
             for ((page, tab) in HomeTabConfig.homeTabConfig.withIndex()) {
                 menuItem {
                     groupId = mainGroup
-                    icon = Pages.getTintedIcon(tab, textColorPrimary, activity)
+                    icon = context.getTintedDrawable(Pages.getTintedIconRes(tab), textColorPrimary)
                     title = Pages.getDisplayName(tab, activity)
                     itemId = 1000 + page
                     onClick {
