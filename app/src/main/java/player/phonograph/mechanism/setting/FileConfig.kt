@@ -5,9 +5,9 @@
 package player.phonograph.mechanism.setting
 
 import player.phonograph.App
+import player.phonograph.model.file.defaultStartDirectory
 import player.phonograph.settings.dataStore
 import player.phonograph.util.FileUtil
-import player.phonograph.util.FileUtil.defaultStartDirectory
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.first
