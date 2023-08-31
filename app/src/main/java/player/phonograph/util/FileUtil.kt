@@ -4,14 +4,10 @@
 
 package player.phonograph.util
 
-import lib.phonograph.storage.root
-import player.phonograph.App
 import player.phonograph.notification.ErrorNotification
-import androidx.core.content.getSystemService
 import android.content.ContentResolver
 import android.net.Uri
 import android.os.Build
-import android.os.storage.StorageManager
 import android.util.Log
 import android.webkit.MimeTypeMap
 import kotlin.math.log10
@@ -138,16 +134,6 @@ object FileUtil {
     fun stripExtension(str: String): String {
         val pos = str.lastIndexOf('.')
         return if (pos == -1) str else str.substring(0, pos)
-    }
-
-    fun stripStorageVolume(str: String): String {
-        return str.removePrefix(internalStorageRootPath ?: "").removePrefix("/storage")
-    }
-
-    private val internalStorageRootPath: String? by lazy {
-        val storageManager = App.instance.getSystemService<StorageManager>()!!
-        val storageVolume = storageManager.primaryStorageVolume
-        storageVolume.root()?.absolutePath
     }
 
     @JvmStatic
