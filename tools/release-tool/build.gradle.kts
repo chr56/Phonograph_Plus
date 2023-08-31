@@ -8,7 +8,7 @@ repositories {
 }
 
 plugins {
-    kotlin("jvm") version "1.8.10"
+    alias(libs.plugins.kotlin.jvm)
     id("java-gradle-plugin")
 }
 
@@ -30,9 +30,8 @@ tasks.withType<KotlinCompilationTask<KotlinJvmCompilerOptions>>().configureEach 
 }
 
 dependencies {
-    val agpVersion = "7.4.2"
     compileOnly(gradleApi())
-    compileOnly("com.android.tools.build:gradle-api:$agpVersion")
+    compileOnly(libs.androidGradlePluginAPI)
 }
 
 gradlePlugin {

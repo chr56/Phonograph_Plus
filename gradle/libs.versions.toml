@@ -1,0 +1,129 @@
+[versions]
+activity = "1.7.2"
+datastore = { strictly = "1.0.0" }
+compose = "1.4.3"
+composeCompiler = "1.4.3"
+composeSetting = "0.27.0"
+materialDialogs = "3.3.0"
+materialTools = "0.2.0"
+
+[libraries]
+
+androidx-core = "androidx.core:core-ktx:1.9.0"
+androidx-appcompat = "androidx.appcompat:appcompat:1.6.1"
+androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
+androidx-fragment = "androidx.fragment:fragment-ktx:1.6.1"
+androidx-lifecycle_runtime = "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
+
+androidx-annotation = "androidx.annotation:annotation:1.5.0"
+androidx-preference = "androidx.preference:preference-ktx:1.2.0"
+
+androidx-recyclerview = "androidx.recyclerview:recyclerview:1.2.1"
+
+androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
+androidx-percentlayout = "androidx.percentlayout:percentlayout:1.0.0"
+androidx-swiperefreshlayout = "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
+androidx-media = "androidx.media:media:1.6.0"
+androidx-cardview = "androidx.cardview:cardview:1.0.0"
+androidx-palette = "androidx.palette:palette-ktx:1.0.0"
+
+#
+# Datastore
+#
+androidx-datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+androidx-datastore-preferences-core = { group = "androidx.datastore", name = "datastore-preferences-core", version.ref = "datastore" }
+androidx-datastore-core = { group = "androidx.datastore", name = "datastore-core", version.ref = "datastore" }
+
+
+google-material = "com.google.android.material:material:1.8.0"
+
+#
+# Jetpack Compose
+#
+
+compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "compose" }
+compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
+compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
+compose-material = { group = "androidx.compose.material", name = "material", version.ref = "compose" }
+
+compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
+
+#
+# popular
+#
+
+okhttp3 = "com.squareup.okhttp3:okhttp:4.10.0"
+retrofit2 = "com.squareup.retrofit2:retrofit:2.9.0"
+kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0"
+coil = "io.coil-kt:coil:2.2.2"
+
+#
+# other
+#
+
+materialDialogs-core = { group = "com.afollestad.material-dialogs", name = "core", version.ref = "materialDialogs" }
+materialDialogs-input = { group = "com.afollestad.material-dialogs", name = "input", version.ref = "materialDialogs" }
+materialDialogs-color = { group = "com.afollestad.material-dialogs", name = "color", version.ref = "materialDialogs" }
+
+composeMaterialDialogs = "io.github.vanpra.compose-material-dialogs:core:0.9.0"
+
+
+mt-colorRes = { group = "com.github.chr56.material-tools", name = "mdColorRes", version.ref = "materialTools" }
+mt-util = { group = "com.github.chr56.material-tools", name = "mdUtil", version.ref = "materialTools" }
+mt-pref = { group = "com.github.chr56.material-tools", name = "mdPref", version.ref = "materialTools" }
+mt-tint = { group = "com.github.chr56.material-tools", name = "mdTint", version.ref = "materialTools" }
+
+
+composeSettingsUi = { group = "com.github.alorma", name = "compose-settings-ui", version.ref = "composeSetting" }
+composeSettingsDatastore = { group = "com.github.alorma", name = "compose-settings-storage-datastore", version.ref = "composeSetting" }
+
+
+menuDsl = "io.github.chr56:android-menu-dsl:0.1.3"
+seekArc = "com.github.chr56:SeekArc:1.0"
+slidingUpPanel = "com.github.kabouzeid:AndroidSlidingUpPanel:6"
+recyclerviewFastscroll = "com.simplecityapps:recyclerview-fastscroll:2.0.1"
+licensesdialog = "de.psdev.licensesdialog:licensesdialog:2.1.0"
+jaudiotagger = "com.github.chr56:jaudiotagger:0.0.2"
+observablescrollview = "com.github.chr56:Android-ObservableScrollView-Retro:0.0.1"
+appIntro = "com.github.AppIntro:AppIntro:6.2.0"
+advrecyclerview = "com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:1.0.0"
+composeReorderable = "org.burnoutcrew.composereorderable:reorderable:0.9.6"
+statusBarLyricsApi = "com.github.577fkj:StatusBarApiExample:v2.0"
+
+[bundles]
+
+compose = [
+    "compose-runtime",
+    "compose-foundation",
+    "compose-ui",
+    "compose-material",
+    "compose-activity",
+]
+
+androidx-datastore = [
+    "androidx-datastore-preferences",
+    "androidx-datastore-preferences-core",
+    "androidx-datastore",
+    "androidx-datastore-core",
+]
+
+composeSettings = [
+    "composeSettingsUi",
+    "composeSettingsDatastore",
+]
+
+materialDialogs = [
+    "materialDialogs-core",
+    "materialDialogs-input",
+    "materialDialogs-color",
+]
+
+materialTools = [
+    "mt-colorRes",
+    "mt-util",
+    "mt-pref",
+    "mt-tint",
+]
