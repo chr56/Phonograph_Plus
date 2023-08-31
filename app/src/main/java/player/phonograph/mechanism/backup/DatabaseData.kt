@@ -1,10 +1,11 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 package player.phonograph.mechanism.backup
 
 import okio.BufferedSink
+import org.koin.core.context.GlobalContext
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
@@ -31,6 +32,10 @@ import java.io.InputStream
 
 object DatabaseDataManger {
 
+    private val pathFilterStore: PathFilterStore by GlobalContext.get().inject(mode = LazyThreadSafetyMode.PUBLICATION)
+    private val favoritesStore by GlobalContext.get().inject<FavoritesStore>()
+    private val playbackQueueStore by GlobalContext.get().inject<MusicPlaybackQueueStore>()
+
     const val VERSION = "version"
     const val VERSION_CODE = 0
 
@@ -42,7 +47,7 @@ object DatabaseDataManger {
     }
 
     private fun exportPathFilter(context: Context): JsonObject? {
-        val db = PathFilterStore.getInstance(context)
+        val db = pathFilterStore
         val wl = db.whitelistPaths.map { JsonPrimitive(it) }
         val bl = db.blacklistPaths.map { JsonPrimitive(it) }
         return if (wl.isNotEmpty() || bl.isNotEmpty()) {
@@ -71,7 +76,7 @@ object DatabaseDataManger {
         val bl = json[BLACK_LIST] as? JsonArray
 
 
-        val db = PathFilterStore.getInstance(context)
+        val db = pathFilterStore
 
         return if (!(wl == null && bl == null)) {
 
@@ -100,7 +105,7 @@ object DatabaseDataManger {
     }
 
     private fun exportPlayingQueues(context: Context): JsonObject? {
-        val db = MusicPlaybackQueueStore.getInstance(context)
+        val db = playbackQueueStore
         val oq = db.savedOriginalPlayingQueue.map(DatabaseDataManger::persistentSong)
         val pq = db.savedPlayingQueue.map(DatabaseDataManger::persistentSong)
         return if (oq.isNotEmpty() || pq.isNotEmpty()) {
@@ -128,7 +133,7 @@ object DatabaseDataManger {
         val pq = json[PLAYING_QUEUE] as? JsonArray
 
 
-        val db = MusicPlaybackQueueStore.getInstance(context)
+        val db = playbackQueueStore
 
         val originalQueue = recoverSongs(context, oq)
         val currentQueueQueue = recoverSongs(context, pq)
@@ -141,7 +146,7 @@ object DatabaseDataManger {
                 currentQueueQueue ?: originalQueue ?: emptyList(),
                 originalQueue ?: currentQueueQueue ?: emptyList(),
             )
-            MediaStoreTracker.notifyAllListeners()
+            GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
             true
         } else {
             warning(TAG, "PlayingQueues: Nothing to import")
@@ -158,7 +163,7 @@ object DatabaseDataManger {
     }
 
     private fun exportFavorites(context: Context): JsonObject? {
-        val db = FavoritesStore.instance
+        val db = favoritesStore
         val songs = db.getAllSongs(context).map(DatabaseDataManger::persistentSong)
         val playlists = db.getAllPlaylists(context).map(DatabaseDataManger::persistentPlaylist)
         return if (songs.isNotEmpty()) {
@@ -185,7 +190,7 @@ object DatabaseDataManger {
         val s = json[FAVORITE_SONG] as? JsonArray
         val p = json[PINED_PLAYLIST] as? JsonArray
 
-        val db = FavoritesStore.instance
+        val db = favoritesStore
 
         val songs = recoverSongs(context, s)
         val playlists = recoverPlaylists(context, p)
@@ -205,7 +210,7 @@ object DatabaseDataManger {
         }
 
         // todo: report the imported
-        MediaStoreTracker.notifyAllListeners()
+        GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
 
         return r1 || r2
     }

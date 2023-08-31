@@ -1,15 +1,18 @@
 /*
- *  Copyright (c) 2022~2023 chr_56 & Karim Abou Zeid (kabouzeid)
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 package player.phonograph.repo.mediastore.loaders
 
 import player.phonograph.model.Song
+import player.phonograph.model.file.FileEntity
 import player.phonograph.repo.mediastore.internal.intoFirstSong
 import player.phonograph.repo.mediastore.internal.intoSongs
 import player.phonograph.repo.mediastore.internal.querySongs
 import android.content.Context
 import android.provider.MediaStore
+import android.provider.MediaStore.MediaColumns.DATE_ADDED
+import android.provider.MediaStore.MediaColumns.DATE_MODIFIED
 
 object SongLoader : Loader<Song> {
 
@@ -39,9 +42,20 @@ object SongLoader : Loader<Song> {
         return cursor.intoSongs()
     }
 
-    fun since(context: Context, timestamp: Long): List<Song> {
+    fun searchByFileEntity(context: Context, file: FileEntity.File): Song {
+        return if (file.id > 0) id(context, file.id)
+        else searchByPath(context, file.location.sqlPattern, true).firstOrNull() ?: Song.EMPTY_SONG
+    }
+
+    fun since(context: Context, timestamp: Long, useModifiedDate: Boolean = false): List<Song> {
+        val dateRef = if (useModifiedDate) DATE_MODIFIED else DATE_ADDED
         val cursor =
-            querySongs(context, "${MediaStore.MediaColumns.DATE_MODIFIED}  > ?", arrayOf(timestamp.toString()))
+            querySongs(
+                context = context,
+                selection = "$dateRef > ?",
+                selectionValues = arrayOf(timestamp.toString()),
+                sortOrder = "$dateRef DESC"
+            )
         return cursor.intoSongs()
     }
 

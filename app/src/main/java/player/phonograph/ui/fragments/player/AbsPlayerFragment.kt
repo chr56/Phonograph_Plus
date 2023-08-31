@@ -8,8 +8,9 @@ import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenDocumentContract
 import mt.tint.viewtint.setMenuColor
 import mt.util.color.toolbarIconColor
+import org.koin.core.context.GlobalContext
 import player.phonograph.R
-import player.phonograph.mechanism.Favorite.toggleFavorite
+import player.phonograph.mechanism.IFavorite
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
@@ -153,7 +154,8 @@ abstract class AbsPlayerFragment :
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 itemId = R.id.action_toggle_favorite
                 onClick {
-                    toggleFavorite(requireContext(), viewModel.currentSong.value)
+                    val favorite = GlobalContext.get().get<IFavorite>()
+                    favorite.toggleFavorite(context, viewModel.currentSong.value)
                     true
                 }
             }.apply {

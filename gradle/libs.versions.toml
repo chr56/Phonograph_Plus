@@ -59,6 +59,7 @@ okhttp3 = "com.squareup.okhttp3:okhttp:4.10.0"
 retrofit2 = "com.squareup.retrofit2:retrofit:2.9.0"
 kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0"
 coil = "io.coil-kt:coil:2.2.2"
+koin = "io.insert-koin:koin-android:3.4.3"
 
 #
 # other

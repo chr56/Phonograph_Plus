@@ -8,8 +8,9 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.customView
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
-import player.phonograph.App
+import org.koin.android.ext.android.inject
 import player.phonograph.R
+import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.compose.base.BridgeDialogFragment
 import player.phonograph.ui.compose.dialogs.QueueSnapshotsDialogContent
 import player.phonograph.ui.compose.theme.PhonographTheme
@@ -17,6 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 
 class QueueSnapshotsDialog : BridgeDialogFragment() {
+
+    private val queueManager: QueueManager by inject()
+
     @Composable
     override fun Content() {
         val dialogState = rememberMaterialDialogState(true)
@@ -33,7 +37,7 @@ class QueueSnapshotsDialog : BridgeDialogFragment() {
                 customView {
                     QueueSnapshotsDialogContent(
                         requireContext(),
-                        App.instance.queueManager,
+                        queueManager,
                         ::dismiss
                     )
                 }

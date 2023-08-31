@@ -17,7 +17,6 @@ import player.phonograph.mechanism.setting.FileConfig
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
-import player.phonograph.model.file.linkedSong
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.compose.tag.TagEditorActivity
@@ -68,13 +67,13 @@ fun fileEntityPopupMenu(
                 menuItem(title = getString(R.string.action_details)) { // id = R.id.action_details
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
-                        fragmentActivity(context) { file.linkedSong(context).actionGotoDetail(it) }
+                        fragmentActivity(context) { SongLoader.searchByFileEntity(context, file).actionGotoDetail(it) }
                         true
                     }
                 }
                 menuItem(title = getString(R.string.action_share)) { // id = R.id.action_share
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                    onClick { file.linkedSong(context).actionShare(context) }
+                    onClick { SongLoader.searchByFileEntity(context, file).actionShare(context) }
                 }
                 menuItem(title = getString(R.string.action_tag_editor)) { //id = R.id.action_tag_editor
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
@@ -125,7 +124,7 @@ private inline fun action(
 ): Boolean =
     block(
         when (fileItem) {
-            is FileEntity.File   -> listOf(fileItem.linkedSong(context))
+            is FileEntity.File   -> listOf(SongLoader.searchByFileEntity(context, fileItem))
             is FileEntity.Folder -> SongLoader.searchByPath(context, fileItem.location.sqlPattern, false)
         }
     )

@@ -17,10 +17,11 @@ import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.target.Target
 import mt.util.color.primaryTextColor
-import player.phonograph.App
+import org.koin.android.ext.android.get
 import player.phonograph.R
 import player.phonograph.appwidgets.base.BaseAppWidget
 import player.phonograph.service.MusicService
+import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.ui.BitmapUtil
 import player.phonograph.util.ui.getScreenSize
@@ -52,7 +53,8 @@ class AppWidgetBig : BaseAppWidget() {
     override fun performUpdate(service: MusicService, appWidgetIds: IntArray?) {
         val appWidgetView = RemoteViews(service.packageName, R.layout.app_widget_big)
         val isPlaying = service.isPlaying
-        val song = App.instance.queueManager.currentSong
+        val queueManager = service.get<QueueManager>()
+        val song = queueManager.currentSong
 
         // Set the titles and artwork
         if (TextUtils.isEmpty(song.title) && TextUtils.isEmpty(song.artistName)) {

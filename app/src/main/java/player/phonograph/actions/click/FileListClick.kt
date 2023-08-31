@@ -26,7 +26,7 @@ import player.phonograph.actions.click.mode.SongClickMode.resetBaseMode
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
-import player.phonograph.model.file.linkedSong
+import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
@@ -73,7 +73,7 @@ fun fileClick(
         SONG_SINGLE_PLAY,
              -> {
             val fileEntity = list[position] as? FileEntity.File ?: return false
-            val song = fileEntity.linkedSong(context)
+            val song = SongLoader.searchByFileEntity(context, fileEntity)
             when (base) {
                 SONG_PLAY_NEXT    -> song.actionPlayNext()
                 SONG_PLAY_NOW     -> song.actionPlayNow()
@@ -81,6 +81,7 @@ fun fileClick(
                 SONG_SINGLE_PLAY  -> listOf(song).actionPlay(null, 0)
             }
         }
+
         QUEUE_PLAY_NOW,
         QUEUE_PLAY_NEXT,
         QUEUE_APPEND_QUEUE,
@@ -98,9 +99,10 @@ fun fileClick(
                 QUEUE_SWITCH_TO_BEGINNING -> songs.actionPlay(NONE, 0)
                 QUEUE_SWITCH_TO_POSITION  -> songs.actionPlay(NONE, actualPosition)
                 QUEUE_SHUFFLE             ->
-                   if (songs.isNotEmpty()) songs.actionPlay(SHUFFLE, Random.nextInt(songs.size))
+                    if (songs.isNotEmpty()) songs.actionPlay(SHUFFLE, Random.nextInt(songs.size))
             }
         }
+
         else -> {
             resetBaseMode()
             return false
@@ -117,7 +119,7 @@ private fun filter(list: List<FileEntity>, position: Int, context: Context): Pla
     val actualFileList = ArrayList<Song>(position)
     for ((index, item) in list.withIndex()) {
         if (item is FileEntity.File) {
-            actualFileList.add(item.linkedSong(context))
+            actualFileList.add(SongLoader.searchByFileEntity(context, item))
         } else {
             if (index < position) actualPosition--
         }

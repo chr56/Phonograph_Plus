@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 package player.phonograph.actions.menu
@@ -234,13 +234,13 @@ fun playlistPopupMenu(menu: Menu, context: Context, playlist: Playlist) = contex
                 }
             }
             menuItem {
-                val pined = FavoritesStore.instance.containsPlaylist(playlist)
+                val pined = FavoritesStore.get().containsPlaylist(playlist)
                 title =
                     getString(if (!pined) R.string.action_pin else R.string.action_unpin)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick {
                     context.lifecycleScopeOrNewOne().launch(Dispatchers.IO) {
-                        val ins = FavoritesStore.instance
+                        val ins = FavoritesStore.get()
                         if (pined) ins.removePlaylist(playlist) else ins.addPlaylist(playlist)
                     }
                     true

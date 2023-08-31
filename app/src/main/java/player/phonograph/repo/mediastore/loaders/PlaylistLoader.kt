@@ -10,6 +10,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.internal.SQLWhereClause
 import player.phonograph.repo.mediastore.internal.withBasePlaylistFilter
 import player.phonograph.repo.mediastore.internal.withPathFilter
+import player.phonograph.repo.mediastore.playlist.FilePlaylistImpl
 import player.phonograph.settings.Setting
 import android.content.Context
 import android.database.Cursor
@@ -52,7 +53,7 @@ object PlaylistLoader : Loader<FilePlaylist> {
             if (moveToFirst()) {
                 do {
                     filePlaylists.add(
-                        FilePlaylist(
+                        FilePlaylistImpl(
                             id = getLong(0),
                             name = getString(1),
                             path = getString(2),
@@ -71,7 +72,7 @@ object PlaylistLoader : Loader<FilePlaylist> {
     fun Cursor?.intoFirstPlaylist(): FilePlaylist {
         return this?.use {
             if (moveToFirst())
-                FilePlaylist(
+                FilePlaylistImpl(
                     id = getLong(0),
                     name = getString(1),
                     path = getString(2),
@@ -79,8 +80,8 @@ object PlaylistLoader : Loader<FilePlaylist> {
                     dateModified = getLong(4),
                 )
             else
-                FilePlaylist.EMPTY_PLAYLIST
-        } ?: FilePlaylist.EMPTY_PLAYLIST
+                FilePlaylistImpl.EMPTY_PLAYLIST
+        } ?: FilePlaylistImpl.EMPTY_PLAYLIST
     }
 
     /**

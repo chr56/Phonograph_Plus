@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 package player.phonograph.settings
@@ -7,7 +7,6 @@ package player.phonograph.settings
 import player.phonograph.App
 import player.phonograph.actions.click.mode.SongClickMode.FLAG_MASK_PLAY_QUEUE_IF_EMPTY
 import player.phonograph.actions.click.mode.SongClickMode.SONG_PLAY_NOW
-import player.phonograph.mechanism.setting.StyleConfig
 import player.phonograph.model.sort.FileSortMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
@@ -209,7 +208,6 @@ class Setting {
 
     // Misc
     var ignoreUpgradeDate: Long by longPref(IGNORE_UPGRADE_DATE, 0)
-    var initializedBlacklist: Boolean by booleanPref(INITIALIZED_BLACKLIST, false)
     var pathFilterExcludeMode: Boolean by booleanPref(PATH_FILTER_EXCLUDE_MODE, true)
 
     // Compatibility
@@ -404,8 +402,6 @@ class SettingFlowStore(context: Context) {
     // Misc
     val ignoreUpgradeDate: Flow<Long>
         get() = from(longPreferencesKey(IGNORE_UPGRADE_DATE), 0)
-    val initializedBlacklist: Flow<Boolean>
-        get() = from(booleanPreferencesKey(INITIALIZED_BLACKLIST), false)
     val pathFilterExcludeMode: Flow<Boolean>
         get() = from(booleanPreferencesKey(PATH_FILTER_EXCLUDE_MODE), true)
 
@@ -492,7 +488,6 @@ const val SLEEP_TIMER_FINISH_SONG = "sleep_timer_finish_music"
 
 // Misc
 const val IGNORE_UPGRADE_DATE = "ignore_upgrade_date"
-const val INITIALIZED_BLACKLIST = "initialized_blacklist"
 const val PATH_FILTER_EXCLUDE_MODE = "path_filter_exclude_mode"
 
 // compatibility

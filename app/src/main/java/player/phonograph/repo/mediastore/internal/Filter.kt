@@ -4,12 +4,15 @@
 
 package player.phonograph.repo.mediastore.internal
 
+import org.koin.core.context.GlobalContext
 import player.phonograph.repo.database.PathFilterStore
 import player.phonograph.settings.Setting
 import android.content.Context
 import android.provider.MediaStore
 
 class SQLWhereClause(val selection: String, val selectionValues: Array<String>)
+
+private val pathFilterStore: PathFilterStore by GlobalContext.get().inject()
 
 /**
  *  amend path with path filter SQL to SQLWhereClause
@@ -22,9 +25,9 @@ fun withPathFilter(context: Context, escape: Boolean = false, block: () -> SQLWh
 
     val paths =
         if (includeMode)
-            PathFilterStore.getInstance(context).whitelistPaths.map { "$it%" }
+            pathFilterStore.whitelistPaths.map { "$it%" }
         else
-            PathFilterStore.getInstance(context).blacklistPaths.map { "$it%" }
+            pathFilterStore.blacklistPaths.map { "$it%" }
 
     val target = block()
 

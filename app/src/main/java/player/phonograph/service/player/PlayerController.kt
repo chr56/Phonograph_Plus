@@ -1,6 +1,5 @@
 package player.phonograph.service.player
 
-import player.phonograph.App
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.mechanism.StatusBarLyric
@@ -39,7 +38,7 @@ import java.lang.ref.WeakReference
  */
 class PlayerController(internal val service: MusicService) : Playback.PlaybackCallbacks {
 
-    private val queueManager = App.instance.queueManager
+    private val queueManager = service.queueManager
 
     private val audioPlayer: AudioPlayer
 

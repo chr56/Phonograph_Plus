@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 package player.phonograph.ui.fragments.pages
@@ -7,15 +7,13 @@ package player.phonograph.ui.fragments.pages
 import mt.pref.accentColor
 import mt.pref.primaryColor
 import mt.util.color.lightenColor
+import org.koin.core.context.GlobalContext
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
 import player.phonograph.misc.PlaylistsModifiedReceiver
-import player.phonograph.model.playlist.FavoriteSongsPlaylist
-import player.phonograph.model.playlist.HistoryPlaylist
-import player.phonograph.model.playlist.LastAddedPlaylist
-import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
@@ -40,17 +38,18 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
     private val _viewModel: PlaylistPageViewModel by viewModels()
 
     class PlaylistPageViewModel : AbsDisplayPageViewModel<Playlist>() {
+        private val favoritesStore by GlobalContext.get().inject<FavoritesStore>()
         override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Playlist> {
             return mutableListOf<Playlist>(
-                LastAddedPlaylist(context),
-                HistoryPlaylist(context),
-                MyTopTracksPlaylist(context),
+                SmartPlaylist.lastAddedPlaylist,
+                SmartPlaylist.historyPlaylist,
+                SmartPlaylist.myTopTracksPlaylist,
             ).also {
-                if (!Setting.instance.useLegacyFavoritePlaylistImpl) it.add(FavoriteSongsPlaylist(context))
+                if (!Setting.instance.useLegacyFavoritePlaylistImpl) it.add(SmartPlaylist.favoriteSongsPlaylist)
             }.also {
                 val allPlaylist = PlaylistLoader.all(context)
                 val (pined, normal) = allPlaylist.partition {
-                    FavoritesStore.instance.containsPlaylist(it.id, it.associatedFilePath)
+                    favoritesStore.containsPlaylist(it.id, it.associatedFilePath)
                 }
                 it.addAll(pined)
                 it.addAll(normal)

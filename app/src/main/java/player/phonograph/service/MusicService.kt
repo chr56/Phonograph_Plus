@@ -1,8 +1,12 @@
+/*
+ *  Copyright (c) 2022~2023 chr_56
+ */
+
 package player.phonograph.service
 
 import lib.phonograph.localization.ContextLocaleDelegate
+import org.koin.android.ext.android.get
 import player.phonograph.ACTUAL_PACKAGE_NAME
-import player.phonograph.App
 import player.phonograph.BuildConfig
 import player.phonograph.MusicServiceMsgConst.META_CHANGED
 import player.phonograph.MusicServiceMsgConst.PLAY_STATE_CHANGED
@@ -66,7 +70,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
     private val songPlayCountHelper = SongPlayCountHelper()
 
-    val queueManager: QueueManager get() = App.instance.queueManager
+    val queueManager: QueueManager = get()
     private val queueChangeObserver: QueueObserver = initQueueChangeObserver()
 
     private lateinit var controller: PlayerController
@@ -398,10 +402,10 @@ class MusicService : MediaBrowserServiceCompat() {
                 controller.saveCurrentMills()
 
                 // add to history
-                HistoryStore.getInstance(this).addSongId(queueManager.currentSong.id)
+                get<HistoryStore>().addSongId(queueManager.currentSong.id)
 
                 // check for bumping
-                songPlayCountHelper.checkForBumpingPlayCount(this) // old
+                songPlayCountHelper.checkForBumpingPlayCount(get()) // old
                 songPlayCountHelper.songMonitored = queueManager.currentSong // new
             }
 

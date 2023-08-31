@@ -122,6 +122,12 @@
       "url": "https://github.com/alorma/Compose-Settings",
       "copyright": "Copyright (c) 2021 Bernat Borrás Paronella",
       "license": "MIT License"
+    },
+    {
+      "name": "Koin",
+      "url": "https://insert-koin.io/",
+      "copyright": "Copyright © 2017-2023 Koin Contributors",
+      "license": "Apache Software License 2.0"
     }
   ]
 }

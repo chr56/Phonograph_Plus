@@ -3,6 +3,7 @@
  */
 package player.phonograph.repo.database
 
+import org.koin.core.context.GlobalContext
 import player.phonograph.repo.database.DatabaseConstants.HISTORY_DB
 import player.phonograph.repo.database.HistoryStore.RecentStoreColumns.Companion.ID
 import player.phonograph.repo.database.HistoryStore.RecentStoreColumns.Companion.NAME
@@ -14,7 +15,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 class HistoryStore(context: Context) :
-        SQLiteOpenHelper(context, HISTORY_DB, null, VERSION) {
+        SQLiteOpenHelper(context, HISTORY_DB, null, VERSION), ShallowDatabase {
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
@@ -96,7 +97,7 @@ class HistoryStore(context: Context) :
             "$TIME_PLAYED DESC"
         )
 
-    fun gc(idsExists: List<Long>) {
+    override fun gc(idsExists: List<Long>) {
         gc(writableDatabase, NAME, ID, idsExists.map { it.toString() }.toTypedArray())
     }
 
@@ -111,14 +112,7 @@ class HistoryStore(context: Context) :
 
     companion object {
 
-        private var sInstance: HistoryStore? = null
-        @Synchronized
-        fun getInstance(context: Context): HistoryStore {
-            if (sInstance == null) {
-                sInstance = HistoryStore(context.applicationContext)
-            }
-            return sInstance!!
-        }
+        fun get() = GlobalContext.get().get<HistoryStore>()
 
         private const val MAX_ITEMS_IN_DB = 150
         private const val VERSION = 1

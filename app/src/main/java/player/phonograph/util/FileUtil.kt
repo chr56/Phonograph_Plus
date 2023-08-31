@@ -2,33 +2,26 @@
  * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-@file:Suppress("DEPRECATION")
-
 package player.phonograph.util
 
-import lib.phonograph.storage.root
-import android.os.Environment
-import android.util.Log
-import android.webkit.MimeTypeMap
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.isActive
-import player.phonograph.App
 import player.phonograph.notification.ErrorNotification
-import androidx.core.content.getSystemService
 import android.content.ContentResolver
 import android.net.Uri
 import android.os.Build
-import android.os.storage.StorageManager
-import java.io.File
-import java.io.FileFilter
-import java.io.IOException
-import java.text.DecimalFormat
-import java.util.*
+import android.util.Log
+import android.webkit.MimeTypeMap
 import kotlin.math.log10
 import kotlin.math.pow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.isActive
+import java.io.File
+import java.io.FileFilter
 import java.io.FileOutputStream
+import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
+import java.text.DecimalFormat
+import java.util.LinkedList
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -143,16 +136,6 @@ object FileUtil {
         return if (pos == -1) str else str.substring(0, pos)
     }
 
-    fun stripStorageVolume(str: String): String {
-        return str.removePrefix(internalStorageRootPath ?: "").removePrefix("/storage")
-    }
-
-    private val internalStorageRootPath: String? by lazy {
-        val storageManager = App.instance.getSystemService<StorageManager>()!!
-        val storageVolume = storageManager.primaryStorageVolume
-        storageVolume.root()?.absolutePath
-    }
-
     @JvmStatic
     fun safeGetCanonicalPath(file: File): String {
         return try {
@@ -184,25 +167,6 @@ object FileUtil {
         ) + " " + units[digitGroups]
     }
 
-
-    // root
-    val defaultStartDirectory: File
-        get() {
-            val musicDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_MUSIC
-            )
-
-            return if (musicDir != null && musicDir.exists() && musicDir.isDirectory) {
-                musicDir
-            } else {
-                val externalStorage = Environment.getExternalStorageDirectory()
-                if (externalStorage.exists() && externalStorage.isDirectory) {
-                    externalStorage
-                } else {
-                    App.instance.getExternalFilesDir(Environment.DIRECTORY_MUSIC) ?: File("/") // root
-                }
-            }
-        }
 
     class DirectoryInfo(val file: File, val fileFilter: FileFilter)
     object FileScanner {

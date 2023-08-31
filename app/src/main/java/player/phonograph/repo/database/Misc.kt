@@ -9,6 +9,11 @@ import player.phonograph.util.reportError
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 
+
+interface ShallowDatabase {
+    fun gc(idsExists: List<Long>)
+}
+
 /**
  * clean unavailable entries for table([tableName]) in [database]
  * @param locked entries that should not be deleted

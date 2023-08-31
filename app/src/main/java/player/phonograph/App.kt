@@ -1,3 +1,7 @@
+/*
+ *  Copyright (c) 2022~2023 chr_56
+ */
+
 package player.phonograph
 
 import coil.ImageLoader
@@ -6,8 +10,13 @@ import lib.phonograph.localization.ContextLocaleDelegate
 import lib.phonograph.misc.Reboot
 import mt.pref.ThemeColor
 import mt.pref.internal.ThemeStore
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.GlobalContext
+import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
+import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.coil.createPhonographImageLoader
-import player.phonograph.mechanism.event.setupEventReceiver
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
 import player.phonograph.service.queue.QueueManager
@@ -31,16 +40,6 @@ class App : Application(), ImageLoaderFactory {
         lateinit var instance: App
             private set
     }
-
-    private var _queueManager: QueueManager? = null
-    val queueManager: QueueManager
-        get() {
-            if (_queueManager == null) {
-                // QueueManager
-                _queueManager = QueueManager(this)
-            }
-            return _queueManager!!
-        }
 
     override fun attachBaseContext(base: Context?) {
         // Localization
@@ -91,12 +90,16 @@ class App : Application(), ImageLoaderFactory {
                 .commit()
         }
 
-        // state listener
-        setupEventReceiver(this)
+        startKoin {
+            androidLogger(if (DEBUG) Level.DEBUG else Level.WARNING)
+            androidContext(this@App)
+
+            modules(moduleStatus, moduleLoaders)
+        }
     }
 
     override fun onTerminate() {
-        queueManager.release()
+        GlobalContext.get().get<QueueManager>().release()
         super.onTerminate()
     }
 

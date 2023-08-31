@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 package player.phonograph.ui.activities
 
 import legacy.phonograph.MediaStoreCompat
 import mt.pref.ThemeColor
-import player.phonograph.App
+import org.koin.android.ext.android.get
+import org.koin.core.context.GlobalContext
 import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.actions.click.mode.SongClickMode
@@ -28,9 +29,6 @@ import player.phonograph.appshortcuts.shortcuttype.ShuffleAllShortcutType
 import player.phonograph.appshortcuts.shortcuttype.TopTracksShortcutType
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
-import player.phonograph.model.playlist.LastAddedPlaylist
-import player.phonograph.model.playlist.MyTopTracksPlaylist
-import player.phonograph.model.playlist.ShuffleAllPlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
@@ -40,6 +38,7 @@ import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.repo.mediastore.loaders.SongLoader.searchByPath
 import player.phonograph.repo.mediastore.processQuery
 import player.phonograph.service.MusicService
+import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.components.viewcreater.buildDialogView
 import player.phonograph.ui.components.viewcreater.buttonPanel
@@ -226,19 +225,18 @@ class StarterActivity : AppCompatActivity() {
             SHORTCUT_TYPE_SHUFFLE_ALL -> {
                 reportShortcutUsed(this, ShuffleAllShortcutType.id)
                 shuffleMode = ShuffleMode.SHUFFLE
-                ShuffleAllPlaylist(applicationContext)
+                SmartPlaylist.shuffleAllPlaylist
 
             }
 
             SHORTCUT_TYPE_TOP_TRACKS  -> {
                 reportShortcutUsed(this, TopTracksShortcutType.id)
-                MyTopTracksPlaylist(applicationContext)
-
+                SmartPlaylist.myTopTracksPlaylist
             }
 
             SHORTCUT_TYPE_LAST_ADDED  -> {
                 reportShortcutUsed(this, LastAddedShortcutType.id)
-                LastAddedPlaylist(applicationContext)
+                SmartPlaylist.lastAddedPlaylist
             }
 
             else                      -> null
@@ -246,7 +244,7 @@ class StarterActivity : AppCompatActivity() {
         val songs = playlist?.getSongs(applicationContext)
 
         if (!songs.isNullOrEmpty()) {
-            val queueManager = App.instance.queueManager
+            val queueManager: QueueManager = get()
             queueManager.swapQueue(
                 songs,
                 if (shuffleMode == ShuffleMode.SHUFFLE) Random.nextInt(songs.size) else 0,
@@ -301,7 +299,7 @@ class StarterActivity : AppCompatActivity() {
             val song = list[targetPosition]
 
             val ok = { _: View ->
-                val queueManager = App.instance.queueManager
+                val queueManager: QueueManager = (context as? AppCompatActivity)?.get() ?: GlobalContext.get().get()
                 val currentPosition = queueManager.currentSongPosition
                 when (selected) {
                     SONG_PLAY_NEXT            -> queueManager.addSong(song, currentPosition + 1)

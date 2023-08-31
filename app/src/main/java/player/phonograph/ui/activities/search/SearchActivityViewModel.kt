@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.activities.search
 
-import player.phonograph.App
+import org.koin.core.context.GlobalContext
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.QueueSong
@@ -14,6 +14,7 @@ import player.phonograph.repo.mediastore.loaders.AlbumLoader
 import player.phonograph.repo.mediastore.loaders.ArtistLoader
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.repo.mediastore.loaders.SongLoader
+import player.phonograph.service.queue.QueueManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -70,7 +71,8 @@ class SearchActivityViewModel : ViewModel() {
             }
             jobSongsInQueue?.cancel()
             jobSongsInQueue = viewModelScope.launch(Dispatchers.IO) {
-                _songsInQueue.value = App.instance.queueManager.playingQueue
+                val queueManager: QueueManager = GlobalContext.get().get()
+                _songsInQueue.value = queueManager.playingQueue
                     .mapIndexedNotNull { index, song ->
                         if (song.title.contains(query, true)) {
                             QueueSong(song, index)

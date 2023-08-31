@@ -3,91 +3,92 @@
  */
 package player.phonograph.mechanism
 
+import org.koin.core.context.GlobalContext
 import player.phonograph.R
-import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
-import player.phonograph.settings.Setting
 import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore
 import util.phonograph.playlist.mediastore.createOrFindPlaylistViaMediastore
 import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
 import android.content.Context
 import kotlinx.coroutines.runBlocking
 
-object Favorite {
 
-    fun isFavorite(context: Context, song: Song): Boolean =
-        if (Setting.instance.useLegacyFavoritePlaylistImpl) {
-            isFavoriteLegacyImpl(context, song)
+interface IFavorite {
+
+    fun allSongs(context: Context): List<Song>
+
+    fun isFavorite(context: Context, song: Song): Boolean
+
+    /**
+     * @return new favorite state
+     */
+    fun toggleFavorite(context: Context, song: Song): Boolean
+
+    fun clearAll(context: Context)
+
+}
+
+class FavoriteDatabaseImpl : IFavorite {
+
+    private val favoritesStore by GlobalContext.get().inject<FavoritesStore>()
+
+    override fun allSongs(context: Context): List<Song> =
+        favoritesStore.getAllSongs(context)
+
+    override fun isFavorite(context: Context, song: Song): Boolean =
+        favoritesStore.containsSong(song.id, song.data)
+
+    override fun toggleFavorite(context: Context, song: Song): Boolean {
+        return if (isFavorite(context, song)) {
+            !favoritesStore.removeSong(song)
         } else {
-            isFavoriteDatabaseImpl(song)
+            favoritesStore.addSong(song)
         }
+    }
 
-    private fun isFavoriteLegacyImpl(context: Context, song: Song): Boolean {
+    override fun clearAll(context: Context) {
+        favoritesStore.clearAll()
+    }
+}
+
+class FavoritePlaylistImpl : IFavorite {
+
+
+    override fun allSongs(context: Context): List<Song> {
         val favoritesPlaylist = getFavoritesPlaylist(context)
-        return if (favoritesPlaylist != null)
+        return favoritesPlaylist?.getSongs(context) ?: emptyList()
+    }
+
+    override fun isFavorite(context: Context, song: Song): Boolean {
+        val favoritesPlaylist = getFavoritesPlaylist(context)
+        return if (favoritesPlaylist != null) {
             PlaylistSongLoader.doesPlaylistContain(context, favoritesPlaylist.id, song.id)
-        else
+        } else {
             false
+        }
     }
 
-    private fun isFavoriteDatabaseImpl(song: Song): Boolean =
-        FavoritesStore.instance.containsSong(song.id, song.data)
-
-    /**
-     * @return new state
-     */
-    fun toggleFavorite(context: Context, song: Song): Boolean {
-        return if (Setting.instance.useLegacyFavoritePlaylistImpl) {
-            runBlocking {
-                toggleFavoriteLegacyImpl(context, song)
+    override fun toggleFavorite(context: Context, song: Song): Boolean {
+        return runBlocking {
+            if (isFavorite(context, song)) {
+                val favoritesPlaylist = getFavoritesPlaylist(context)
+                if (favoritesPlaylist != null)
+                    removeFromPlaylistViaMediastore(context, song, favoritesPlaylist.id)
+                false
+            } else {
+                addToPlaylistViaMediastore(context, song, getOrCreateFavoritesPlaylist(context).id, false)
+                true
             }
-        } else {
-            toggleFavoriteDatabaseImpl(context, song)
-        }.also {
-            notifyMediaStoreChanged()
         }
     }
 
-    /**
-     * @return new state
-     */
-    private suspend fun toggleFavoriteLegacyImpl(context: Context, song: Song): Boolean {
-        return if (isFavorite(context, song)) {
-            val favoritesPlaylist = getFavoritesPlaylist(context)
-            if (favoritesPlaylist != null)
-                removeFromPlaylistViaMediastore(context, song, favoritesPlaylist.id)
-            false
-        } else {
-            addToPlaylistViaMediastore(context, song, getOrCreateFavoritesPlaylist(context).id, false)
-            true
-        }
-    }
-
-    /**
-     * @return new state
-     */
-    private fun toggleFavoriteDatabaseImpl(context: Context, song: Song): Boolean {
-        return if (isFavorite(context, song)) {
-            !FavoritesStore.instance.removeSong(song)
-        } else {
-            FavoritesStore.instance.addSong(song)
-        }
-    }
-
-    @Deprecated(
-        "use DatabaseImpl",
-        ReplaceWith(
-            "playlist.name != null && playlist.name == context.getString(R.string.favorites)",
-            "player.phonograph.R"
-        )
-    )
-    fun isFavoritePlaylist(context: Context, playlist: Playlist): Boolean {
-        return playlist.name == context.getString(R.string.favorites)
+    override fun clearAll(context: Context) {
+        getFavoritesPlaylist(context)?.clear(context)
     }
 
     private fun getFavoritesPlaylist(context: Context): FilePlaylist? {
@@ -98,8 +99,6 @@ object Favorite {
         return PlaylistLoader.id(
             context,
             createOrFindPlaylistViaMediastore(context, context.getString(R.string.favorites))
-        ).also { notifyMediaStoreChanged() }
+        )
     }
-
-    private fun notifyMediaStoreChanged() = MediaStoreTracker.notifyAllListeners()
 }

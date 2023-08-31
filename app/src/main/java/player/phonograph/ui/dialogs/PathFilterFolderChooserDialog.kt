@@ -1,3 +1,7 @@
+/*
+ *  Copyright (c) 2022~2023 chr_56
+ */
+
 package player.phonograph.ui.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog
@@ -19,7 +23,7 @@ class PathFilterFolderChooserDialog : FileChooserDialog() {
             .title(R.string.add_blacklist)
             .message(text = file.absolutePath)
             .positiveButton(android.R.string.ok) {
-                with(PathFilterStore.getInstance(view.context)) {
+                with(PathFilterStore.get()) {
                     val mode = Setting.instance.pathFilterExcludeMode
                     if (mode) addBlacklistPath(file) else addWhitelistPath(file)
                 }

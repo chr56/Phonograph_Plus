@@ -7,7 +7,6 @@ package player.phonograph.model.file
 import lib.phonograph.storage.externalStoragePath
 import lib.phonograph.storage.root
 import player.phonograph.App
-import player.phonograph.util.FileUtil.defaultStartDirectory
 import player.phonograph.util.warning
 import androidx.core.content.getSystemService
 import android.content.Context

@@ -11,7 +11,7 @@ import com.afollestad.materialdialogs.customview.customView
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.mechanism.setting.HomeTabConfig
-import player.phonograph.model.pages.PageConfig
+import player.phonograph.mechanism.setting.PageConfig
 import player.phonograph.model.pages.Pages
 import player.phonograph.ui.adapter.SortableListAdapter
 import player.phonograph.util.warning

@@ -4,7 +4,7 @@
 
 package player.phonograph.service
 
-import player.phonograph.App
+import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
@@ -34,7 +34,7 @@ object MusicPlayerRemote {
         private set
     private val mConnectionMap = WeakHashMap<Context, MusicServiceConnection>()
 
-    val queueManager: QueueManager get() = App.instance.queueManager
+    val queueManager: QueueManager by GlobalContext.get().inject()
 
     fun bindToService(
         activity: Activity,

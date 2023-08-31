@@ -4,9 +4,10 @@
 
 package player.phonograph.repo.database
 
+import org.koin.core.context.GlobalContext
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.settings.Setting
 import player.phonograph.util.FileUtil.safeGetCanonicalPath
+import player.phonograph.util.debug
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -15,10 +16,24 @@ import android.os.Environment.DIRECTORY_ALARMS
 import android.os.Environment.DIRECTORY_NOTIFICATIONS
 import android.os.Environment.DIRECTORY_RINGTONES
 import android.os.Environment.getExternalStoragePublicDirectory
+import android.util.Log
 import java.io.File
 
 class PathFilterStore(context: Context) :
         SQLiteOpenHelper(context, DatabaseConstants.PATH_FILTER, null, VERSION) {
+
+    init {
+        val databaseFile = context.getDatabasePath(DatabaseConstants.PATH_FILTER)
+        if (!databaseFile.exists()) {
+            debug {
+                Log.v(DatabaseConstants.PATH_FILTER, "PathFilter database doesn't not existed, initializing...")
+            }
+            // blacklisted by default
+            addPathImpl(getExternalStoragePublicDirectory(DIRECTORY_ALARMS), TABLE_BLACKLIST)
+            addPathImpl(getExternalStoragePublicDirectory(DIRECTORY_NOTIFICATIONS), TABLE_BLACKLIST)
+            addPathImpl(getExternalStoragePublicDirectory(DIRECTORY_RINGTONES), TABLE_BLACKLIST)
+        }
+    }
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
@@ -116,7 +131,7 @@ class PathFilterStore(context: Context) :
     }
 
     fun removeWhitelistPath(paths: List<String>) {
-        paths.forEach { removePathImpl(it, TABLE_WHITELIST)}
+        paths.forEach { removePathImpl(it, TABLE_WHITELIST) }
         notifyMediaStoreChanged()
     }
 
@@ -191,23 +206,8 @@ class PathFilterStore(context: Context) :
         const val TABLE_WHITELIST = "whitelist"
         const val PATH = "path"
 
-        private var sInstance: PathFilterStore? = null
+        fun get() = GlobalContext.get().get<PathFilterStore>()
 
-        @Synchronized
-        fun getInstance(context: Context): PathFilterStore {
-            return sInstance ?: PathFilterStore(context.applicationContext).also { blacklistStore ->
-                sInstance = blacklistStore
-                if (!Setting.instance.initializedBlacklist) {
-                    // blacklisted by default
-                    blacklistStore.addPathImpl(getExternalStoragePublicDirectory(DIRECTORY_ALARMS), TABLE_BLACKLIST)
-                    blacklistStore.addPathImpl(getExternalStoragePublicDirectory(DIRECTORY_NOTIFICATIONS), TABLE_BLACKLIST)
-                    blacklistStore.addPathImpl(getExternalStoragePublicDirectory(DIRECTORY_RINGTONES), TABLE_BLACKLIST)
-                    Setting.instance.initializedBlacklist = true
-                }
-            }
-        }
-
-
-        private fun notifyMediaStoreChanged() = MediaStoreTracker.notifyAllListeners()
+        private fun notifyMediaStoreChanged() = GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
     }
 }
