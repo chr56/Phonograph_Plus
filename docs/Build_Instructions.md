@@ -2,11 +2,11 @@
 
 _This part is not written very well._
 
-Currently(2023.5.20), this project's toolchain & dependencies are:
+Currently(2023.8.31), this project's toolchain & dependencies are:
 
 - `Android SDK` `33` (no `NDK`)
-- `Gradlew` `8.1`, requiring `JDK` `17`
-- `Android Gradle Plugin` `8.0.2`
+- `Gradlew` `8.3`, requiring `JDK` `17`
+- `Android Gradle Plugin` `8.1.1`
 - `kotlin` for JVM(Android) `1.8.10`
 - `kotlinx.serialization`,`kotlinx.parcelize`
 - most popular `androidx`(`Jetpack`) components (most of them are latest)
@@ -16,22 +16,23 @@ Currently(2023.5.20), this project's toolchain & dependencies are:
 
 Gradle Version Catalogs is used in this project.
 
-see [setting.kt](../settings.gradle.kts) for all the libraries.
+see [libs.versions.toml](../gradle/libs.versions.toml) for all the libraries.
 
-see [build.gradle.kts](../build.gradle.kts) for all gradle plugins.
+see [plugins.versions.toml](../gradle/plugins.versions.toml) for all gradle plugins.
 
 ## **Requirement**
 
 **Build**:
 
 1. a PC : any desktop operate system platform (only `Windows` and `Ubuntu 20.04` are tested), I am not sure if it works
-   on `Android(Termux)`.
-2. JDK 17 (we are using AGP 8.0.2 with gradle 8.1).
+   on `Android(Termux)` because jvm version.
+2. JDK 17 (we are using AGP 8.1.1 with gradle 8.3).
 3. The connected and fast network.
 
 **Development**:
 
-Plus `Android Studio` with correspond `Android Gradle Plugin` (currently `Electron Eel Flamingo (Patch 2)`). (`IDEA` is untested)
+Plus `Android Studio` with correspond `Android Gradle Plugin` (currently `Giraffe (Patch 1)`). 
+(`IDEA` might be not compatible because `Android Gradle Plugin` is too new)
 
 ## **Instructions (Build with commandline)**
 
@@ -164,6 +165,6 @@ TODO
   startup
 - `crowdin.yml`: Crowdin configuration
 - `ReleaseNote.md`: GitHub Action `preview_release` read this and post to Release Page
-- `fastlane/metadata/android/`: app meta info (not used)
+- `fastlane/metadata/android/`: F-droid metadata
 - `.github/`: `Github Action` and templates
 - and other gradle's file
