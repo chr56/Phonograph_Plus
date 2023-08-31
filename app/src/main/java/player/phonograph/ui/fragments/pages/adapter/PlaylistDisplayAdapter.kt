@@ -5,6 +5,7 @@
 package player.phonograph.ui.fragments.pages.adapter
 
 import mt.util.color.resolveColor
+import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.mechanism.Favorite
 import player.phonograph.model.playlist.Playlist
@@ -66,9 +67,13 @@ class PlaylistDisplayAdapter(
         @Suppress("DEPRECATION")
         private fun getIconRes(playlist: Playlist): Int = when {
             playlist is SmartPlaylist                               -> playlist.iconRes
-            FavoritesStore.get().containsPlaylist(playlist)         -> R.drawable.ic_pin_white_24dp
+            favoritesStore.containsPlaylist(playlist)               -> R.drawable.ic_pin_white_24dp
             Favorite.isFavoritePlaylist(itemView.context, playlist) -> R.drawable.ic_favorite_white_24dp
             else                                                    -> R.drawable.ic_queue_music_white_24dp
+        }
+
+        companion object {
+            private val favoritesStore by GlobalContext.get().inject<FavoritesStore>()
         }
 
     }
