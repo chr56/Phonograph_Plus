@@ -16,7 +16,7 @@ import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.mechanism.setting.HomeTabConfig
-import player.phonograph.model.pages.PageConfig
+import player.phonograph.mechanism.setting.PageConfig
 import player.phonograph.model.pages.Pages
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
