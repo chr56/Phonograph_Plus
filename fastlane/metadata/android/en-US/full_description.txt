@@ -1,35 +1,38 @@
-<b>A fork of Phonograph under maintenance and development</b>
+<b>An independent fork of Phonograph in development</b><br />
 
-A material designed local music player for Android.<br />
-
-This is a fork of Phonograph, and is currently under my maintenance and
-development.
+Phonograph is a material designed local music player for Android.
+And Phonograph Plus is an <i>independent</i> fork of Phonograph, and is currently under my maintenance and development.<br />
 
 <b>Additional Features:</b>
 <ul>
-  <li>Unlock pro.</li>
-  <li>Automatic &amp; adaptive dark mode.</li>
-  <li>Plenty of user interface changes.</li>
-  <li>Change language in application manually.</li>
-  <li>Brand-new Detail page with more information like tags</li>
-  <li>Show Time Axis in &quot;Lyrics&quot; Dialog and allow seeking basing lyric&#39;s time axis and
-  support lyrics following.</li>
-  <li>User-defined click behavior for songs</li>
-  <li>Support history of playing queue.</li>
-  <li>Fix Android 11 Scope Storage. (Partial)</li>
-  <li>Improve menu experience.</li>
-  <li>Improve “Library” pages user experience.</li>
-  <li>Support more sort orders.</li>
-  <li>Allow collecting app crash report.</li>
-  <li>use Path filter to replace, support &quot;exclude mode&quot; (blacklist) and &quot;include mode&quot; (whitelist).</li>
-  <li>Add song menu shortcut to add new items to excluded-list (blacklist).</li>
-  <li>Co-work-with/Support StatusBar Lyric
-  Xposed Module (api)</li>
-  <li>Export internal databases for the need of backup.</li>
-  <li>Increase history played tracks and top played tracks entries capacity (
-  100-&gt;150).</li>
-  <li>Allow tabs fixed.</li>
-  <li>Brand-new File tab.</li>
-  <li>Allow deleting songs file along with its external lyrics file.</li>
-  <li>and more small features/fixes.</li>
+    <li>Unlock pro.</li>
+    <li>Automatic &amp; adaptive dark mode.</li>
+    <li>Plenty of user interface changes.</li>
+    <li>Change language in application manually.</li>
+    <li>Brand-new Detail page with more information like tags</li>
+    <li>Show Time Axis in "Lyrics" Dialog and allow seeking basing lyric's time axis and support lyrics following.</li>
+    <li>User-defined click behavior for songs</li>
+    <li>Support history of playing queue.</li>
+    <li>Fix Android 11 Scope Storage. (Partial)</li>
+    <li>Improve menu experience.</li>
+    <li>Improve "Library" pages user experience.</li>
+    <li>Support more sort orders.</li>
+    <li>Allow collecting app crash report.</li>
+    <li>use Path filter to replace, support "exclude mode" (blacklist) and "include mode" (whitelist).</li>
+    <li>Add song menu shortcut to add new items to excluded-list (blacklist).</li>
+    <li>Co-work-with/Support StatusBar Lyric Xposed Module (api)</li>
+    <li>Export internal databases and settings for the need of backup.</li>
+    <li>Increase history played tracks and top played tracks entries capacity (100-&gt;150).</li>
+    <li>Allow tabs fixed.</li>
+    <li>Brand-new File tab.</li>
+    <li>Allow deleting songs file along with its external lyrics file.</li>
+    <li>Brand-new Tag Editor</li>
+    <li>Brand-new App Intro</li>
+    <li>Better Notification Image Quality for Android T and above</li>
+    <li>Better Playlist support</li>
+    <li>Playback speed control</li>
+    <li>Resume playing after interruptions</li>
+    <li>Enhance multi-selecting</li>
+    <li>Basic support for Android Auto</li>
+    <li>and more small features/fixes.</li>
 </ul>
