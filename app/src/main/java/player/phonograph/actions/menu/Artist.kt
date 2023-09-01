@@ -19,8 +19,10 @@ import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
 import player.phonograph.ui.activities.ArtistDetailActivity
 import player.phonograph.ui.compose.tag.BatchTagEditorActivity
+import player.phonograph.ui.dialogs.LastFmDialog
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.annotation.ColorInt
+import androidx.fragment.app.FragmentActivity
 import android.content.Context
 import android.content.Intent
 import android.view.Menu
@@ -120,6 +122,17 @@ fun artistDetailToolbar(
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
                 loadBiographyCallback(artist)
+            }
+        }
+
+        menuItem(title = getString(R.string.biography)) { //id = R.id.action_biography
+            icon = getTintedDrawable(R.drawable.ic_info_outline_white_24dp, iconColor)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+            onClick {
+                if (context is FragmentActivity) {
+                    LastFmDialog.from(artist).show(context.supportFragmentManager, "LastFmDialog")
+                }
+                true
             }
         }
     }

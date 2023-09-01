@@ -17,9 +17,11 @@ import player.phonograph.model.Album
 import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
 import player.phonograph.ui.compose.tag.BatchTagEditorActivity
+import player.phonograph.ui.dialogs.LastFmDialog
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.annotation.ColorInt
+import androidx.fragment.app.FragmentActivity
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
@@ -101,6 +103,17 @@ fun albumDetailToolbar(
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
                 loadWikiCallback(album)
+            }
+        }
+
+        menuItem(title = getString(R.string.wiki)) { //id = R.id.action_wiki
+            icon = getTintedDrawable(R.drawable.ic_info_outline_white_24dp, iconColor)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+            onClick {
+                if (context is FragmentActivity) {
+                    LastFmDialog.from(album).show(context.supportFragmentManager, "LastFmDialog")
+                }
+                true
             }
         }
     }
