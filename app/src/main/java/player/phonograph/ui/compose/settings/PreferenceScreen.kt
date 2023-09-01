@@ -203,22 +203,6 @@ fun PhonographPreferenceScreen() {
                     titleRes = R.string.image_source_config,
                 )
             )
-            ListPref(
-                titleRes = R.string.pref_title_auto_download_metadata,
-                options = OptionGroupModel(
-                    AUTO_DOWNLOAD_IMAGES_POLICY,
-                    listOf(
-                        DOWNLOAD_IMAGES_POLICY_NEVER,
-                        DOWNLOAD_IMAGES_POLICY_ONLY_WIFI,
-                        DOWNLOAD_IMAGES_POLICY_ALWAYS,
-                    ),
-                    listOf(
-                        R.string.never,
-                        R.string.only_on_wifi,
-                        R.string.always,
-                    )
-                )
-            )
         }
 
 
