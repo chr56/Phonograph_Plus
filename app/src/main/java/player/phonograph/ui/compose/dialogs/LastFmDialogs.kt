@@ -106,7 +106,10 @@ private fun Link(url: String, text: String) {
 @Composable
 private fun Wiki(wikiData: LastFmWikiData?, isBio: Boolean) {
     Box(modifier = Modifier.padding(24.dp, 12.dp)) {
-        if (wikiData != null && (wikiData.content != null && wikiData.summary != null)) {
+        if (wikiData != null
+            && (wikiData.content != null && wikiData.summary != null)
+            && !wikiData.summary.startsWith(" <a href=\"https://")
+        ) {
             var clicked by remember(wikiData) { mutableStateOf(false) }
             val text = Html.fromHtml(if (clicked) wikiData.content else wikiData.summary, Html.FROM_HTML_MODE_COMPACT)
             Column(Modifier.padding(8.dp, 8.dp)) {
