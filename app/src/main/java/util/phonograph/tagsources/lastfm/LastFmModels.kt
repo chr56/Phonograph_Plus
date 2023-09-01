@@ -10,45 +10,45 @@ import kotlinx.serialization.Serializable
 
 @Keep
 @Serializable
-class LastFmAlbumResponse(var album: LastFmAlbum)
+class LastFmAlbumResponse(val album: LastFmAlbum)
 
 @Keep
 @Serializable
-class LastFmArtistResponse(var artist: LastFmArtist)
+class LastFmArtistResponse(val artist: LastFmArtist)
 
 @Keep
 @Serializable
-class LastFmTrackResponse(var track: LastFmTrack)
+class LastFmTrackResponse(val track: LastFmTrack)
 
 @Keep
 @Serializable
 class LastFmImage(
     @SerialName("#text")
-    var text: String,
-    var size: String?,
+    val text: String,
+    val size: String?,
 )
 
 @Keep
 @Serializable
 class LastFmWikiData(
-    var published: String? = null,
-    var summary: String? = null,
-    var content: String? = null,
-    // var links: Links? = null,
+    val published: String? = null,
+    val summary: String? = null,
+    val content: String? = null,
+    // val links: Links? = null,
 )
 
 @Keep
 @Serializable
 data class Links(
-    var link: Link? = null,
+    val link: Link? = null,
 ) {
     @Keep
     @Serializable
     data class Link(
         @SerialName("#text")
-        var text: String? = null,
-        var rel: String? = null,
-        var href: String? = null,
+        val text: String? = null,
+        val rel: String? = null,
+        val href: String? = null,
     )
 }
 
@@ -56,43 +56,43 @@ data class Links(
 @Keep
 @Serializable
 class LastFmAlbum(
-    var name: String? = null,
-    var artist: String? = null,
-    var mbid: String? = null,
-    var url: String,
-    var image: List<LastFmImage> = emptyList(),
-    var wiki: LastFmWikiData? = null,
-    // var tags: Tags? = null,
-    // var playcount: Long = 0,
-    // var listeners: Long = 0,
-    // var tracks: Tracks? = null,
+    val name: String,
+    val artist: String? = null,
+    val mbid: String? = null,
+    val url: String,
+    val image: List<LastFmImage> = emptyList(),
+    val wiki: LastFmWikiData? = null,
+    // val tags: Tags? = null,
+    // val playcount: Long = 0,
+    // val listeners: Long = 0,
+    // val tracks: Tracks? = null,
 ) {
     @Keep
     @Serializable
     data class Tracks(
-        var track: List<Track?>? = null,
+        val track: List<Track?>? = null,
     ) {
         @Keep
         @Serializable
         data class Track(
-            // var streamable: Streamable? = null,
-            var duration: Int = 0,
-            var url: String? = null,
-            var name: String? = null,
+            // val streamable: Streamable? = null,
+            val duration: Int = 0,
+            val url: String? = null,
+            val name: String? = null,
             // @SerialName("@attr")
-            // var attr: Attr? = null,
+            // val attr: Attr? = null,
         ) {
             @Keep
             @Serializable
             data class Streamable(
-                var fulltrack: String? = null,
+                val fulltrack: String? = null,
                 @SerialName("#text")
-                var text: String? = null,
+                val text: String? = null,
             )
             @Keep
             @Serializable
             data class Attr(
-                var rank: Int = -1,
+                val rank: Int = -1,
             )
         }
 
@@ -102,20 +102,20 @@ class LastFmAlbum(
 @Keep
 @Serializable
 class LastFmArtist(
-    var name: String,
-    var mbid: String? = null,
-    var url: String,
-    var image: List<LastFmImage> = emptyList(),
-    var bio: LastFmWikiData? = null,
-    // var streamable: String? = "",
-    // var stats: Stats? = Stats(),
-    // var tags: Tags? = Tags(),
+    val name: String,
+    val mbid: String? = null,
+    val url: String,
+    val image: List<LastFmImage> = emptyList(),
+    val bio: LastFmWikiData? = null,
+    // val streamable: String? = "",
+    // val stats: Stats? = Stats(),
+    // val tags: Tags? = Tags(),
 ) {
     @Keep
     @Serializable
     data class Stats(
-        var listeners: Long? = null,
-        var playcount: Long? = null,
+        val listeners: Long? = null,
+        val playcount: Long? = null,
     )
 
 }
@@ -123,28 +123,28 @@ class LastFmArtist(
 @Keep
 @Serializable
 class LastFmTrack(
-    var name: String,
-    var mbid: String? = null,
-    var url: String,
-    // var listeners: Long,
-    // var playcount: Long,
-    var duration: Long = 0,
-    var artist: LastFmArtist? = null,
-    var album: LastFmAlbum? = null,
-    var wiki: LastFmWikiData? = null,
-    var toptags: Tags? = null,
+    val name: String,
+    val mbid: String? = null,
+    val url: String,
+    // val listeners: Long,
+    // val playcount: Long,
+    val duration: Long = 0,
+    val artist: LastFmArtist? = null,
+    val album: LastFmAlbum? = null,
+    val wiki: LastFmWikiData? = null,
+    val toptags: Tags? = null,
 )
 
 @Keep
 @Serializable
 data class Tags(
-    var tag: List<Tag?>? = null,
+    val tag: List<Tag?>? = null,
 ) {
     @Keep
     @Serializable
     data class Tag(
-        var name: String? = null,
-        var url: String? = null,
+        val name: String? = null,
+        val url: String? = null,
     )
 }
 
