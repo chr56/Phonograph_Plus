@@ -145,14 +145,14 @@ private fun Tags(tags: Tags?) {
 @Composable
 private fun Tag(tag: Tags.Tag, context: Context) {
     Surface(
-        modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp),
         shape = RoundedCornerShape(12.dp),
         color = Color.LightGray
     ) {
         Text(
             text = tag.name,
             Modifier
-                .padding(6.dp)
+                .padding(vertical = 6.dp, horizontal = 8.dp)
                 .combinedClickable(
                     onClick = {
                         //todo
