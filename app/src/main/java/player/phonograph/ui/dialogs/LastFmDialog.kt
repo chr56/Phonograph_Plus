@@ -30,6 +30,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -91,7 +92,7 @@ class LastFmDialog : BridgeDialogFragment() {
                     }
                 }
             ) {
-                Box(Modifier.padding(16.dp)) {
+                Box(Modifier.padding(12.dp)) {
                     Text(
                         stringResource(R.string.wiki),
                         style = MaterialTheme.typography.h5
@@ -99,8 +100,9 @@ class LastFmDialog : BridgeDialogFragment() {
                 }
                 BoxWithConstraints(
                     Modifier
-                        .padding(12.dp)
-                        .fillMaxSize(0.89f)
+                        .fillMaxSize(0.97f)
+                        .padding(12.dp),
+                    Alignment.Center
                 ) {
                     when (viewModel.mode) {
                         TYPE_ARTIST -> {
