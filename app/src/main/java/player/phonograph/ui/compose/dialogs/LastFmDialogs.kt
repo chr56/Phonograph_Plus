@@ -8,13 +8,17 @@ import coil.Coil
 import coil.request.ImageRequest
 import player.phonograph.R
 import player.phonograph.ui.compose.components.HorizontalTextItem
+import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextItem
 import util.phonograph.tagsources.lastfm.LastFMUtil
 import util.phonograph.tagsources.lastfm.LastFmAlbum
 import util.phonograph.tagsources.lastfm.LastFmArtist
 import util.phonograph.tagsources.lastfm.LastFmWikiData
+import util.phonograph.tagsources.lastfm.Tags
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -23,7 +27,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
@@ -34,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
@@ -42,6 +49,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmapOrNull
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.text.Html
@@ -58,6 +66,7 @@ fun LastFmArtist(artist: LastFmArtist) {
         HorizontalTextItem(stringResource(R.string.artist), artist.name)
         Wiki(artist.bio, isBio = true)
         VerticalTextItem("mbid", artist.mbid ?: stringResource(R.string.empty))
+        Tags(artist.tags)
         Link(artist.url, "Last.FM")
     }
 }
@@ -74,6 +83,7 @@ fun LastFmAlbum(album: LastFmAlbum) {
         HorizontalTextItem(stringResource(R.string.album), album.artist.orEmpty())
         Wiki(album.wiki, isBio = false)
         VerticalTextItem("mbid", album.mbid ?: stringResource(R.string.empty))
+        Tags(album.tags)
         Link(album.url, "Last.FM")
     }
 }
@@ -84,14 +94,7 @@ private fun Link(url: String, text: String) {
     val context = LocalContext.current
     Box(Modifier.fillMaxWidth()) {
         TextButton(
-            onClick = {
-                context.startActivity(
-                    Intent(Intent.ACTION_VIEW).apply {
-                        data = Uri.parse(url)
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    }
-                )
-            },
+            onClick = { clickLink(context, url) },
             modifier = Modifier.align(Alignment.BottomEnd)
         ) {
             Text(text)
@@ -118,6 +121,45 @@ private fun Wiki(wikiData: LastFmWikiData?, isBio: Boolean) {
                 Modifier.align(Alignment.Center)
             )
         }
+    }
+}
+
+@Composable
+private fun Tags(tags: Tags?) {
+    if (tags != null)
+        Column {
+            Title(stringResource(id = R.string.music_tags))
+            val context = LocalContext.current
+            for (tag in tags.tag) {
+                Tag(tag, context)
+            }
+        }
+
+}
+
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun Tag(tag: Tags.Tag, context: Context) {
+    Surface(
+        modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
+        shape = RoundedCornerShape(12.dp),
+        color = Color.LightGray
+    ) {
+        Text(
+            text = tag.name,
+            Modifier
+                .padding(6.dp)
+                .combinedClickable(
+                    onClick = {
+                        //todo
+                    },
+                    onLongClick = {
+                        if (tag.url != null) clickLink(context, tag.url)
+                    },
+                )
+
+        )
     }
 }
 
@@ -176,4 +218,14 @@ private fun Image(bitmap: ImageBitmap?) {
                     )
             )
         }
+}
+
+
+private fun clickLink(context: Context, url: String) {
+    context.startActivity(
+        Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse(url)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+    )
 }
