@@ -4,7 +4,7 @@
 
 package util.phonograph.tagsources.lastfm
 
-import lib.phonograph.serialization.JsonDeserializationRetrofitConverter
+import lib.phonograph.misc.JsonDeserializationRetrofitConverter
 import okhttp3.Cache
 import okhttp3.Call
 import okhttp3.Interceptor
