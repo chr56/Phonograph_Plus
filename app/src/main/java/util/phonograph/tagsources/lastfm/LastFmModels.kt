@@ -5,8 +5,20 @@
 package util.phonograph.tagsources.lastfm
 
 import androidx.annotation.Keep
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.decodeFromJsonElement
 
 @Keep
 @Serializable
@@ -135,16 +147,57 @@ class LastFmTrack(
     val toptags: Tags? = null,
 )
 
+/**
+ * notices that this might be empty string instead of json object containing json array naming `tag`
+ */
 @Keep
-@Serializable
+@Serializable(with = Tags.Serializer::class)
 data class Tags(
-    val tag: List<Tag?>? = null,
+    val tag: List<Tag> = emptyList(),
 ) {
     @Keep
     @Serializable
     data class Tag(
-        val name: String? = null,
+        val name: String,
         val url: String? = null,
     )
+
+    companion object {
+        fun from(jsonElement: JsonElement, jsonFormat: Json): Tags {
+            return when (jsonElement) {
+                is JsonObject    -> {
+                    val tags = (jsonElement["tag"] as? JsonArray)?.map { tag ->
+                        jsonFormat.decodeFromJsonElement<Tag>(tag)
+                    }
+                    Tags(tags ?: emptyList())
+                }
+
+                is JsonPrimitive -> Tags()
+                else             -> Tags()
+            }
+        }
+    }
+
+    class Serializer : KSerializer<Tags> {
+
+        override fun deserialize(decoder: Decoder): Tags {
+            decoder as JsonDecoder
+            return try {
+                val jsonElement = decoder.decodeJsonElement()
+                from(jsonElement, decoder.json)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Tags()
+            }
+        }
+
+        override fun serialize(encoder: Encoder, value: Tags) {
+            encoder as JsonDecoder
+            //todo
+        }
+
+        override val descriptor: SerialDescriptor
+            get() = buildClassSerialDescriptor("LastFmTag")
+    }
 }
 
