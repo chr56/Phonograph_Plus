@@ -35,7 +35,6 @@ fun artistDetailToolbar(
     context: Context,
     artist: Artist,
     @ColorInt iconColor: Int,
-    loadBiographyCallback: (Artist) -> Boolean,
 ): Boolean = with(context) {
     attach(menu) {
 
@@ -117,13 +116,6 @@ fun artistDetailToolbar(
             }
         }
 
-        menuItem(title = getString(R.string.biography)) { //id = R.id.action_biography
-            icon = getTintedDrawable(R.drawable.ic_info_outline_white_24dp, iconColor)
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick {
-                loadBiographyCallback(artist)
-            }
-        }
 
         menuItem(title = getString(R.string.biography)) { //id = R.id.action_biography
             icon = getTintedDrawable(R.drawable.ic_info_outline_white_24dp, iconColor)

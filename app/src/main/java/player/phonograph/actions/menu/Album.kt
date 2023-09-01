@@ -32,7 +32,6 @@ fun albumDetailToolbar(
     context: Context,
     album: Album,
     @ColorInt iconColor: Int,
-    loadWikiCallback: (Album) -> Boolean,
 ): Boolean = with(context) {
     attach(menu) {
 
@@ -95,14 +94,6 @@ fun albumDetailToolbar(
                 fragmentActivity(context) {
                     album.songs.actionDelete(it)
                 }
-            }
-        }
-
-        menuItem(title = getString(R.string.wiki)) { //id = R.id.action_wiki
-            icon = getTintedDrawable(R.drawable.ic_info_outline_white_24dp, iconColor)
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick {
-                loadWikiCallback(album)
             }
         }
 

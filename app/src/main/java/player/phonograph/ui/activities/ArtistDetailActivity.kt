@@ -193,13 +193,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
     }
 
     private fun setupMenu(menu: Menu) {
-        artistDetailToolbar(
-            menu = menu,
-            context = this,
-            artist = model.artist.value ?: Artist(),
-            iconColor = primaryTextColor(viewModel.activityColor.value),
-            loadBiographyCallback = { model.showBiography(this, it) }
-        )
+        artistDetailToolbar(menu, this, model.artist.value ?: Artist(), primaryTextColor(viewModel.activityColor.value))
         attach(menu) {
             menuItem(title = getString(R.string.colored_footers)) {
                 checkable = true
@@ -234,9 +228,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
 
     private fun setUpArtist(artist: Artist) {
         model.loadArtistImage(this, artist, viewBinding.image)
-        if (Setting.instance.isAllowedToDownloadMetadata(this)) {
-            model.loadBiography(this, artist)
-        }
         supportActionBar!!.title = artist.name
         viewBinding.songCountText.text = songCountString(this, artist.songCount)
         viewBinding.albumCountText.text = albumCountString(this, artist.albumCount)
