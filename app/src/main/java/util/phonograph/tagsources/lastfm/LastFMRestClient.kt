@@ -4,11 +4,10 @@
 
 package util.phonograph.tagsources.lastfm
 
-import lib.phonograph.serialization.KtSerializationRetrofitConverterFactory
+import lib.phonograph.serialization.JsonDeserializationRetrofitConverter
 import okhttp3.Cache
 import okhttp3.Call
 import okhttp3.Interceptor
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.internal.format
 import okhttp3.internal.userAgent
@@ -33,7 +32,7 @@ class LastFMRestClient private constructor(val apiService: LastFMService) {
         private fun restRetrofitAdapter(client: Call.Factory): Retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .callFactory(client)
-            .addConverterFactory(KtSerializationRetrofitConverterFactory("application/json".toMediaType()))
+            .addConverterFactory(JsonDeserializationRetrofitConverter.Factory())
             .build()
 
         private fun lastFMOkHttpClient(context: Context): OkHttpClient.Builder = OkHttpClient.Builder()
