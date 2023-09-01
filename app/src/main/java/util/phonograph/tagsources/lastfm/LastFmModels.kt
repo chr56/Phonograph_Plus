@@ -74,7 +74,7 @@ class LastFmAlbum(
     val url: String,
     val image: List<LastFmImage> = emptyList(),
     val wiki: LastFmWikiData? = null,
-    // val tags: Tags? = null,
+    val tags: Tags? = Tags(),
     // val playcount: Long = 0,
     // val listeners: Long = 0,
     // val tracks: Tracks? = null,
@@ -121,7 +121,7 @@ class LastFmArtist(
     val bio: LastFmWikiData? = null,
     // val streamable: String? = "",
     // val stats: Stats? = Stats(),
-    // val tags: Tags? = Tags(),
+    val tags: Tags? = Tags(),
 ) {
     @Keep
     @Serializable
@@ -144,7 +144,7 @@ class LastFmTrack(
     val artist: LastFmArtist? = null,
     val album: LastFmAlbum? = null,
     val wiki: LastFmWikiData? = null,
-    val toptags: Tags? = null,
+    val toptags: Tags? = Tags(),
 )
 
 /**
