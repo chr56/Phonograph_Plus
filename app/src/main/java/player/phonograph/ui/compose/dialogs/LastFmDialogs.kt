@@ -22,6 +22,8 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
@@ -66,9 +68,9 @@ fun LastFmArtist(artist: LastFmArtist) {
         Image(artist)
         HorizontalTextItem(stringResource(R.string.artist), artist.name)
         Wiki(artist.bio, isBio = true)
-        VerticalTextItem("mbid", artist.mbid ?: stringResource(R.string.empty))
+        MusicBrainzIdentifier(artist.mbid)
         Tags(artist.tags)
-        Link(artist.url, "Last.FM")
+        Links(artist.url, artist.mbid, "artist")
     }
 }
 
@@ -83,22 +85,31 @@ fun LastFmAlbum(album: LastFmAlbum) {
         HorizontalTextItem(stringResource(R.string.artist), album.name)
         HorizontalTextItem(stringResource(R.string.album), album.artist.orEmpty())
         Wiki(album.wiki, isBio = false)
-        VerticalTextItem("mbid", album.mbid ?: stringResource(R.string.empty))
+        MusicBrainzIdentifier(album.mbid)
         Tags(album.tags)
-        Link(album.url, "Last.FM")
+        Links(album.url, album.mbid, "release")
     }
 }
 
 
 @Composable
-private fun Link(url: String, text: String) {
+private fun ColumnScope.Links(lastFmUri: String, mbid: String?, type: String) {
     val context = LocalContext.current
-    Box(Modifier.fillMaxWidth()) {
+    Row(Modifier.align(Alignment.End)) {
+        if (!mbid.isNullOrEmpty())
+            TextButton(
+                onClick = {
+                    clickLink(context, "https://musicbrainz.org/$type/$mbid")
+                },
+                modifier = Modifier.align(Alignment.CenterVertically)
+            ) {
+                Text("MusicBrainz")
+            }
         TextButton(
-            onClick = { clickLink(context, url) },
-            modifier = Modifier.align(Alignment.BottomEnd)
+            onClick = { clickLink(context, lastFmUri) },
+            modifier = Modifier.align(Alignment.CenterVertically)
         ) {
-            Text(text)
+            Text("Last.FM")
         }
     }
 }
@@ -128,6 +139,11 @@ private fun Wiki(wikiData: LastFmWikiData?, isBio: Boolean) {
             )
         }
     }
+}
+
+@Composable
+private fun MusicBrainzIdentifier(string: String?) {
+    if (!string.isNullOrEmpty()) VerticalTextItem("MusicBrainz Identifier", string)
 }
 
 @Composable
