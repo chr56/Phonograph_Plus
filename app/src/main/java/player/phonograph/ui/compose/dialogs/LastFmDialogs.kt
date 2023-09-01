@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -109,10 +110,12 @@ private fun Wiki(wikiData: LastFmWikiData?, isBio: Boolean) {
             var clicked by remember(wikiData) { mutableStateOf(false) }
             val text = Html.fromHtml(if (clicked) wikiData.content else wikiData.summary, Html.FROM_HTML_MODE_COMPACT)
             Column(Modifier.padding(8.dp, 8.dp)) {
-                Text(
-                    text.toString(),
-                    Modifier.clickable { clicked = !clicked }
-                )
+                SelectionContainer {
+                    Text(
+                        text.toString(),
+                        Modifier.clickable { clicked = !clicked }
+                    )
+                }
                 Text(wikiData.published.orEmpty(), Modifier.padding(4.dp), fontSize = 10.sp)
             }
         } else {
