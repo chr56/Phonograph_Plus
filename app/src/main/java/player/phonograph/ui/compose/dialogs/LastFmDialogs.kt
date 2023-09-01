@@ -148,7 +148,7 @@ private fun MusicBrainzIdentifier(string: String?) {
 
 @Composable
 private fun Tags(tags: Tags?) {
-    if (tags != null)
+    if (tags != null && tags.tag.isNotEmpty())
         Column {
             Title(stringResource(id = R.string.music_tags))
             val context = LocalContext.current
