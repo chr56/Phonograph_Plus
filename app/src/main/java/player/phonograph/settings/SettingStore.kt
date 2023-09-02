@@ -22,8 +22,6 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.preference.PreferenceManager
 import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 import kotlinx.coroutines.flow.Flow
@@ -61,29 +59,6 @@ class Setting {
 
     // Behavior-File
     var imageSourceConfigJsonString: String by stringPref(IMAGE_SOURCE_CONFIG, "{}")
-    var autoDownloadImagesPolicy: String by stringPref(
-        AUTO_DOWNLOAD_IMAGES_POLICY,
-        DOWNLOAD_IMAGES_POLICY_NEVER
-    )
-
-    fun isAllowedToDownloadMetadata(context: Context): Boolean {
-        return when (instance.autoDownloadImagesPolicy) {
-            DOWNLOAD_IMAGES_POLICY_ALWAYS    -> true
-            DOWNLOAD_IMAGES_POLICY_ONLY_WIFI -> {
-                val cm =
-                    context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-                if (!cm.isActiveNetworkMetered) return false // we pass first metred Wifi and Cellular
-                val network = cm.activeNetwork ?: return false // no active network?
-                val capabilities =
-                    cm.getNetworkCapabilities(network) ?: return false // no capabilities?
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-            }
-
-            DOWNLOAD_IMAGES_POLICY_NEVER     -> false
-            else                             -> false
-        }
-    }
 
     // Behavior-Playing
     var songItemClickMode: Int
@@ -273,27 +248,6 @@ class SettingFlowStore(context: Context) {
     // Behavior-File
     val imageSourceConfigJsonString: Flow<String>
         get() = from(stringPreferencesKey(IMAGE_SOURCE_CONFIG), "{}")
-    val autoDownloadImagesPolicy: Flow<String>
-        get() = from(stringPreferencesKey(AUTO_DOWNLOAD_IMAGES_POLICY), DOWNLOAD_IMAGES_POLICY_NEVER)
-    val isAllowedToDownloadMetadata: Flow<Boolean>
-        get() = autoDownloadImagesPolicy.map {
-            when (it) {
-                DOWNLOAD_IMAGES_POLICY_ALWAYS    -> true
-                DOWNLOAD_IMAGES_POLICY_ONLY_WIFI -> {
-                    val cm =
-                        App.instance.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-                    if (!cm.isActiveNetworkMetered) return@map false // we pass first metred Wifi and Cellular
-                    val network = cm.activeNetwork ?: return@map false // no active network?
-                    val capabilities =
-                        cm.getNetworkCapabilities(network) ?: return@map false // no capabilities?
-                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-                }
-
-                DOWNLOAD_IMAGES_POLICY_NEVER     -> false
-                else                             -> false
-            }
-        }
 
     // Behavior-Playing
     val songItemClickMode: Flow<Int>
@@ -440,7 +394,6 @@ const val NOW_PLAYING_SCREEN_ID = "now_playing_screen_id"
 
 // Behavior-File
 const val IMAGE_SOURCE_CONFIG = "image_source_config"
-const val AUTO_DOWNLOAD_IMAGES_POLICY = "auto_download_images_policy"
 
 // Behavior-Playing
 const val SONG_ITEM_CLICK_MODE = "song_item_click_extra_flag"
@@ -497,6 +450,9 @@ const val PLAYLIST_FILES_OPERATION_BEHAVIOUR = "playlist_files_operation_behavio
 const val USE_LEGACY_DETAIL_DIALOG = "use_legacy_detail_dialog"
 
 // unused & deprecated
+
+const val AUTO_DOWNLOAD_IMAGES_POLICY = "auto_download_images_policy"
+const val INITIALIZED_BLACKLIST = "initialized_blacklist"
 const val PREVIOUS_VERSION = "last_changelog_version"
 const val FORCE_SQUARE_ALBUM_COVER = "force_square_album_art"
 const val IGNORE_UPGRADE_VERSION_CODE = "ignore_upgrade_version_code"

@@ -20,7 +20,6 @@ import okhttp3.Request
 import okhttp3.Response
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 object NetworkUtil {
@@ -31,10 +30,9 @@ object NetworkUtil {
     suspend fun invokeRequest(request: Request): Response {
         return withContext(Dispatchers.IO) {
             val call = okHttpClient.newCall(request)
-            return@withContext try {
-                call.emit()
-            } catch (e: IOException) {
-                throw e
+            return@withContext run {
+                val result = call.emit()
+                result.getOrNull() ?: throw result.exceptionOrNull()!!
             }
         }
     }

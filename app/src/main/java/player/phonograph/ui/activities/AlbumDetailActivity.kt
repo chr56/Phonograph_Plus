@@ -3,7 +3,6 @@ package player.phonograph.ui.activities
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
-import com.google.android.material.appbar.AppBarLayout
 import lib.phonograph.misc.menuProvider
 import mt.pref.ThemeColor.primaryColor
 import mt.tint.requireLightStatusbar
@@ -25,7 +24,6 @@ import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
 import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
-import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.NavigationUtil.goToArtist
@@ -37,9 +35,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.text.Spanned
 import android.view.Menu
 import android.view.View
 import kotlinx.coroutines.flow.StateFlow
@@ -89,11 +85,9 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
     override fun createContentView(): View = wrapSlidingMusicPanel(viewBinding.root)
 
     private fun setUpViews() {
-        viewBinding.innerAppBar.addOnOffsetChangedListener(
-            AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-                viewBinding.recyclerView.setPaddingTop(viewBinding.innerAppBar.totalScrollRange + verticalOffset)
-            }
-        )
+        viewBinding.innerAppBar.addOnOffsetChangedListener { _, verticalOffset ->
+            viewBinding.recyclerView.setPaddingTop(viewBinding.innerAppBar.totalScrollRange + verticalOffset)
+        }
         // setUpSongsAdapter
         adapter =
             AlbumSongDisplayAdapter(this, album.songs, R.layout.item_list).apply {
@@ -185,9 +179,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
                     }
                     .build())
                 .enqueue()
-            if (Setting.instance.isAllowedToDownloadMetadata(this)) model.loadWiki(context = this) { _, _ ->
-                isWikiPreLoaded = true
-            }
         }
     }
 
@@ -200,17 +191,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
     }
 
     private fun setupMenu(menu: Menu) {
-        albumDetailToolbar(menu, this, album, primaryTextColor(viewModel.activityColor.value)) {
-            // load wiki
-            if (isWikiPreLoaded) {
-                showWikiDialog()
-            } else {
-                model.loadWiki(this) { wikiText: Spanned?, url: String? ->
-                    showWikiDialog(wikiText, url)
-                }
-            }
-            true
-        }
+        albumDetailToolbar(menu, this, album, primaryTextColor(viewModel.activityColor.value))
         tintMenuActionIcons(viewBinding.toolbar, menu, primaryTextColor(viewModel.activityColor.value))
     }
 
@@ -224,29 +205,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
                 getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
                 getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
             }
-    }
-
-    private fun showWikiDialog(
-        wikiText: Spanned? = model.wikiText,
-        lastFMUrl: String? = model.lastFMUrl,
-    ) {
-        wikiDialog.show {
-            if (lastFMUrl != null) {
-                negativeButton(text = "Last.FM") {
-                    startActivity(
-                        Intent(Intent.ACTION_VIEW).apply {
-                            data = Uri.parse(lastFMUrl)
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        }
-                    )
-                }
-            }
-            if (wikiText != null) {
-                message(text = wikiText)
-            } else {
-                message(R.string.wiki_unavailable)
-            }
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

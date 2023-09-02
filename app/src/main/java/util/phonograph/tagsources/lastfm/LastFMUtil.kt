@@ -1,9 +1,8 @@
 /*
- * Copyright (c) 2022-2023 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2023 chr_56
  */
-package util.phonograph.lastfm.rest
+package util.phonograph.tagsources.lastfm
 
-import util.phonograph.lastfm.rest.model.LastFmImage
 import java.util.EnumMap
 
 /**

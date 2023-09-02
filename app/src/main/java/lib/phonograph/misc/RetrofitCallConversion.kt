@@ -4,27 +4,27 @@
 
 package lib.phonograph.misc
 
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.Response
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Throws(IOException::class)
-suspend fun Call.emit(reportFailure: Boolean = true): Result<Response> =
+suspend fun <T> Call<T?>.emit(): Result<Response<T?>> =
     suspendCancellableCoroutine { continuation ->
-        enqueue(object : Callback {
-            override fun onResponse(call: Call, response: Response) {
+        enqueue(object : Callback<T?> {
+            override fun onResponse(call: Call<T?>, response: Response<T?>) {
                 continuation.resume(Result.success(response)) { }
             }
 
-            override fun onFailure(call: Call, e: IOException) {
-                if (!reportFailure || continuation.isCancelled) {
+            override fun onFailure(call: Call<T?>, t: Throwable) {
+                if (continuation.isCancelled) {
                     continuation.cancel()
                 } else {
-                    continuation.resume(Result.failure(e)) { }
+                    continuation.resume(Result.failure(t)) { }
                 }
             }
         })
