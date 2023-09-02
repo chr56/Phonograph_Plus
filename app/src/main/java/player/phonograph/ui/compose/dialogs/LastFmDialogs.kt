@@ -14,11 +14,12 @@ import util.phonograph.tagsources.lastfm.LastFmAlbum
 import util.phonograph.tagsources.lastfm.LastFmArtist
 import util.phonograph.tagsources.lastfm.LastFmWikiData
 import util.phonograph.tagsources.lastfm.Tags
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -138,18 +139,19 @@ private fun MusicBrainzIdentifier(string: String?) {
     if (!string.isNullOrEmpty()) VerticalTextItem("MusicBrainz Identifier", string)
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Tags(tags: Tags?) {
     if (tags != null && tags.tag.isNotEmpty())
         Box(
             Modifier
                 .fillMaxWidth()
-                .heightIn(max = 256.dp),
+                .heightIn(max = 96.dp),
         ) {
-            LazyVerticalGrid(
-                GridCells.Adaptive(96.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+            LazyHorizontalStaggeredGrid(
+                StaggeredGridCells.Adaptive(32.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+                horizontalItemSpacing = 2.dp
             ) {
                 for (tag in tags.tag) {
                     item { Tag(tag) }
@@ -162,7 +164,7 @@ private fun Tags(tags: Tags?) {
 @Composable
 private fun Tag(tag: Tags.Tag) {
     Surface(
-        modifier = Modifier.wrapContentSize().padding(4.dp),
+        modifier = Modifier.wrapContentSize(),
         shape = RoundedCornerShape(16.dp),
         color = Color.LightGray
     ) {
