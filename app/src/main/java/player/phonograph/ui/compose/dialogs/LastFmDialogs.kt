@@ -25,10 +25,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,6 +45,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -151,13 +154,14 @@ private fun Tags(tags: Tags?) {
                 .fillMaxWidth()
                 .heightIn(max = 96.dp),
         ) {
+            val context = LocalContext.current
             LazyHorizontalStaggeredGrid(
                 StaggeredGridCells.Adaptive(32.dp),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
                 horizontalItemSpacing = 2.dp
             ) {
                 for (tag in tags.tag) {
-                    item { Tag(tag) }
+                    item { Tag(tag, context) }
                 }
             }
         }
@@ -165,18 +169,29 @@ private fun Tags(tags: Tags?) {
 
 
 @Composable
-private fun Tag(tag: Tags.Tag) {
+private fun Tag(tag: Tags.Tag, context: Context) {
     Surface(
         modifier = Modifier.wrapContentSize(),
         shape = RoundedCornerShape(16.dp),
         color = Color.LightGray
     ) {
-        SelectionContainer {
-            Text(
-                text = tag.name,
-                modifier = Modifier.padding(vertical = 6.dp, horizontal = 8.dp),
-                overflow = TextOverflow.Ellipsis,
-                softWrap = false,
+        Row(Modifier.padding(vertical = 6.dp, horizontal = 8.dp)) {
+            SelectionContainer {
+                Text(
+                    text = tag.name,
+                    modifier = Modifier,
+                    overflow = TextOverflow.Ellipsis,
+                    softWrap = false,
+                )
+            }
+            Icon(
+                Icons.Outlined.Info,
+                contentDescription = stringResource(id = R.string.website),
+                modifier = Modifier
+                    .padding(horizontal = 2.dp)
+                    .clickable {
+                        if (tag.url != null) clickLink(context, tag.url)
+                    }
             )
         }
     }
@@ -197,16 +212,29 @@ private fun ColumnScope.Tracks(tracks: LastFmAlbum.Tracks?) {
 @Composable
 private fun ColumnScope.Track(track: LastFmAlbum.Tracks.Track) {
     val context = LocalContext.current
-    SelectionContainer(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
-        Text(
-            text = track.name,
-            color = MaterialTheme.colors.primaryVariant,
+    Row(
+        Modifier
+            .align(Alignment.Start)
+            .padding(horizontal = 16.dp, vertical = 4.dp)
+    ) {
+
+        Box(Modifier.weight(8f)) {
+            SelectionContainer {
+                Text(
+                    text = track.name,
+                    modifier = Modifier.wrapContentWidth(),
+                    textAlign = TextAlign.Start
+                )
+            }
+        }
+        Icon(
+            Icons.Outlined.Info,
+            contentDescription = stringResource(id = R.string.website),
             modifier = Modifier
-                .fillMaxWidth()
+                .weight(2f)
                 .clickable {
                     clickLink(context, track.url)
                 }
-                .align(Alignment.Start)
         )
     }
 }
