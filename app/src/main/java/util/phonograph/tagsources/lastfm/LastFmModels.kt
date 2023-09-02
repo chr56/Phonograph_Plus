@@ -77,20 +77,20 @@ class LastFmAlbum(
     val tags: Tags? = Tags(),
     // val playcount: Long = 0,
     // val listeners: Long = 0,
-    // val tracks: Tracks? = null,
+    val tracks: Tracks? = null,
 ) {
     @Keep
     @Serializable
     data class Tracks(
-        val track: List<Track?>? = null,
+        val track: List<Track>? = null,
     ) {
         @Keep
         @Serializable
         data class Track(
             // val streamable: Streamable? = null,
             val duration: Int = 0,
-            val url: String? = null,
-            val name: String? = null,
+            val url: String = "",
+            val name: String = "",
             // @SerialName("@attr")
             // val attr: Attr? = null,
         ) {
