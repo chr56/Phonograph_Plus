@@ -8,6 +8,7 @@ import coil.Coil
 import coil.request.ImageRequest
 import player.phonograph.R
 import player.phonograph.ui.compose.components.HorizontalTextItem
+import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextItem
 import util.phonograph.tagsources.lastfm.LastFMUtil
 import util.phonograph.tagsources.lastfm.LastFmAlbum
@@ -24,6 +25,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -81,6 +83,7 @@ fun LastFmAlbum(album: LastFmAlbum) {
         MusicBrainzIdentifier(album.mbid)
         Tags(album.tags)
         Links(album.url, album.mbid, "release")
+        Tracks(album.tracks)
     }
 }
 
@@ -176,6 +179,35 @@ private fun Tag(tag: Tags.Tag) {
                 softWrap = false,
             )
         }
+    }
+}
+
+
+@Composable
+private fun ColumnScope.Tracks(tracks: LastFmAlbum.Tracks?) {
+    if (tracks != null && !tracks.track.isNullOrEmpty() && tracks.track.isNotEmpty()) {
+        Title(title = stringResource(id = R.string.songs))
+        Spacer(modifier = Modifier.height(6.dp))
+        for (track in tracks.track) {
+            Track(track)
+        }
+    }
+}
+
+@Composable
+private fun ColumnScope.Track(track: LastFmAlbum.Tracks.Track) {
+    val context = LocalContext.current
+    SelectionContainer(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
+        Text(
+            text = track.name,
+            color = MaterialTheme.colors.primaryVariant,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    clickLink(context, track.url)
+                }
+                .align(Alignment.Start)
+        )
     }
 }
 
