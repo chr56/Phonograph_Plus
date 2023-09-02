@@ -12,12 +12,9 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonDecoder
-import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.serializer
@@ -206,29 +203,22 @@ data class Tags(
         val url: String? = null,
     )
 
-    companion object {
-        fun from(jsonElement: JsonElement, jsonFormat: Json): Tags {
-            return when (jsonElement) {
-                is JsonObject    -> {
-                    val tags = (jsonElement["tag"] as? JsonArray)?.map { tag ->
-                        jsonFormat.decodeFromJsonElement<Tag>(tag)
-                    }
-                    Tags(tags ?: emptyList())
-                }
-
-                is JsonPrimitive -> Tags()
-                else             -> Tags()
-            }
-        }
-    }
-
     class Serializer : KSerializer<Tags> {
 
         override fun deserialize(decoder: Decoder): Tags {
             decoder as JsonDecoder
+            val json = decoder.json
             return try {
-                val jsonElement = decoder.decodeJsonElement()
-                from(jsonElement, decoder.json)
+                when (val jsonElement = decoder.decodeJsonElement()) {
+                    is JsonObject -> {
+                        val tags = (jsonElement["tag"] as? JsonArray)?.map { tag ->
+                            json.decodeFromJsonElement<Tag>(tag)
+                        }
+                        Tags(tags ?: emptyList())
+                    }
+
+                    else          -> Tags()
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
                 Tags()
