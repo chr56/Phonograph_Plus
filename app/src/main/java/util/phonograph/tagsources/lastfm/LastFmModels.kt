@@ -31,6 +31,11 @@ class LastFmArtistResponse(val artist: LastFmArtist)
 @Serializable
 class LastFmTrackResponse(val track: LastFmTrack)
 
+
+@Keep
+@Serializable
+class LastFmSearchResultResponse(val results: LastFmSearchResults)
+
 @Keep
 @Serializable
 class LastFmImage(
@@ -237,6 +242,97 @@ data class Tags(
 
         override val descriptor: SerialDescriptor
             get() = buildClassSerialDescriptor("LastFmTag")
+    }
+}
+
+@Keep
+@Serializable
+data class LastFmSearchResults(
+    @SerialName("opensearch:Query")
+    val query: Query,
+    @SerialName("opensearch:totalResults")
+    val totalResults: String,
+    @SerialName("opensearch:startIndex")
+    val startIndex: String,
+    @SerialName("opensearch:itemsPerPage")
+    val itemsPerPage: String,
+    @SerialName("albummatches")
+    val albums: AlbumResult? = null,
+    @SerialName("artistmatches")
+    val artists: ArtistResult? = null,
+    @SerialName("trackmatches")
+    val tracks: TrackResult? = null,
+    // @SerialName("@attr")
+    // val attr: Attr,
+) {
+
+    @Keep
+    @Serializable
+    data class Query(
+        // @SerialName("#text")
+        // val text: String,
+        // val role: String,
+        val searchTerms: String,
+        val startPage: String,
+    )
+
+    // @Keep
+    // @Serializable
+    // data class Attr(
+    //     @SerialName("for")
+    //     val forX: String,
+    // )
+}
+
+
+@Keep
+@Serializable
+class AlbumResult(
+    val album: List<Album>?,
+) {
+    @Keep
+    @Serializable
+    data class Album(
+        val name: String,
+        val artist: String,
+        val url: String,
+        val image: List<LastFmImage>,
+        val mbid: String?,
+    )
+}
+
+@Keep
+@Serializable
+class ArtistResult(
+    val artist: List<Artist>?,
+) {
+    @Keep
+    @Serializable
+    data class Artist(
+        val name: String,
+        val url: String,
+        // val listeners: String,
+        val image: List<LastFmImage>,
+        val mbid: String?,
+    )
+}
+
+@Keep
+@Serializable
+class TrackResult(
+    val track: List<Track>?,
+) {
+    @Keep
+    @Serializable
+    data class Track(
+        val name: String,
+        val artist: String,
+        val url: String,
+        // val streamable: String,
+        // val listeners: String,
+        val image: List<LastFmImage>,
+        val mbid: String?,
+    ) {
     }
 }
 
