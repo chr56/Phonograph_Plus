@@ -19,6 +19,8 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.serializer
 
 @Keep
 @Serializable
@@ -137,7 +139,16 @@ class LastFmAlbum(
 
             override fun serialize(encoder: Encoder, value: Tracks) {
                 encoder as JsonDecoder
-                //todo
+                val json = encoder.json
+                val tracks = value.track
+                if (tracks != null) {
+                    val elements = tracks.map { track ->
+                        json.encodeToJsonElement(track)
+                    }
+                    encoder.encodeSerializableValue(json.serializersModule.serializer(), elements)
+                } else {
+                    encoder.encodeSerializableValue(json.serializersModule.serializer(), JsonArray(emptyList()))
+                }
             }
 
         }
@@ -226,7 +237,12 @@ data class Tags(
 
         override fun serialize(encoder: Encoder, value: Tags) {
             encoder as JsonDecoder
-            //todo
+            val json = encoder.json
+            val tags = value.tag
+            val elements = tags.map { tag ->
+                json.encodeToJsonElement(tag)
+            }
+            encoder.encodeSerializableValue(json.serializersModule.serializer(), elements)
         }
 
         override val descriptor: SerialDescriptor
