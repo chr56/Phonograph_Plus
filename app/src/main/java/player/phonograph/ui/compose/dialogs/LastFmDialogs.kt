@@ -8,26 +8,17 @@ import coil.Coil
 import coil.request.ImageRequest
 import player.phonograph.R
 import player.phonograph.ui.compose.components.HorizontalTextItem
-import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextItem
 import util.phonograph.tagsources.lastfm.LastFMUtil
 import util.phonograph.tagsources.lastfm.LastFmAlbum
 import util.phonograph.tagsources.lastfm.LastFmArtist
 import util.phonograph.tagsources.lastfm.LastFmWikiData
 import util.phonograph.tagsources.lastfm.Tags
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -49,6 +40,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmapOrNull
@@ -149,39 +141,39 @@ private fun MusicBrainzIdentifier(string: String?) {
 @Composable
 private fun Tags(tags: Tags?) {
     if (tags != null && tags.tag.isNotEmpty())
-        Column {
-            Title(stringResource(id = R.string.music_tags))
-            val context = LocalContext.current
-            for (tag in tags.tag) {
-                Tag(tag, context)
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .heightIn(max = 256.dp),
+        ) {
+            LazyVerticalGrid(
+                GridCells.Adaptive(96.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                for (tag in tags.tag) {
+                    item { Tag(tag) }
+                }
             }
         }
-
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun Tag(tag: Tags.Tag, context: Context) {
+private fun Tag(tag: Tags.Tag) {
     Surface(
-        modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp),
-        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier.wrapContentSize().padding(4.dp),
+        shape = RoundedCornerShape(16.dp),
         color = Color.LightGray
     ) {
-        Text(
-            text = tag.name,
-            Modifier
-                .padding(vertical = 6.dp, horizontal = 8.dp)
-                .combinedClickable(
-                    onClick = {
-                        //todo
-                    },
-                    onLongClick = {
-                        if (tag.url != null) clickLink(context, tag.url)
-                    },
-                )
-
-        )
+        SelectionContainer {
+            Text(
+                text = tag.name,
+                modifier = Modifier.padding(vertical = 6.dp, horizontal = 8.dp),
+                overflow = TextOverflow.Ellipsis,
+                softWrap = false,
+            )
+        }
     }
 }
 
