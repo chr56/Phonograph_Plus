@@ -80,7 +80,7 @@ class LastFmAlbum(
     val tracks: Tracks? = null,
 ) {
     @Keep
-    @Serializable
+    @Serializable(with = Tracks.Serializer::class)
     data class Tracks(
         val track: List<Track>? = null,
     ) {
@@ -108,6 +108,39 @@ class LastFmAlbum(
             )
         }
 
+        class Serializer : KSerializer<Tracks> {
+            override val descriptor: SerialDescriptor
+                get() = buildClassSerialDescriptor("LastFmAlbumTrack")
+
+            override fun deserialize(decoder: Decoder): Tracks {
+                decoder as JsonDecoder
+                val jsonElement = decoder.decodeJsonElement()
+                return when (val content = (jsonElement as? JsonObject)?.get("track")) {
+                    is JsonObject -> {
+                        // single track
+                        val track = decoder.json.decodeFromJsonElement<Track>(content)
+                        Tracks(listOf(track))
+                    }
+
+                    is JsonArray  -> {
+                        // multiple track
+                        val json = decoder.json
+                        val tracks = content.map { item ->
+                            json.decodeFromJsonElement<Track>(item)
+                        }
+                        Tracks(tracks)
+                    }
+
+                    else          -> Tracks(null)
+                }
+            }
+
+            override fun serialize(encoder: Encoder, value: Tracks) {
+                encoder as JsonDecoder
+                //todo
+            }
+
+        }
     }
 }
 
