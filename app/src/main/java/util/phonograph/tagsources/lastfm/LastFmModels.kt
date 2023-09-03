@@ -5,6 +5,7 @@
 package util.phonograph.tagsources.lastfm
 
 import androidx.annotation.Keep
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -15,6 +16,7 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonDecoder
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNames
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.decodeFromJsonElement
@@ -103,7 +105,9 @@ data class Links(
 
 @Keep
 @Serializable
+@OptIn(ExperimentalSerializationApi::class)
 class LastFmAlbum(
+    @JsonNames("name", "title") /** `title` is used in [LastFmTrack] **/
     val name: String,
     val artist: String? = null,
     val mbid: String? = null,
