@@ -5,7 +5,7 @@
 package player.phonograph.ui.compose.web
 
 import coil.Coil
-import coil.request.ImageRequest
+import coil.compose.rememberAsyncImagePainter
 import player.phonograph.R
 import player.phonograph.ui.compose.components.HorizontalTextItem
 import player.phonograph.ui.compose.components.Title
@@ -32,7 +32,6 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,21 +39,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.text.Html
-import kotlinx.coroutines.launch
 
 @Composable
 fun LastFmArtist(artist: LastFmArtist) {
@@ -252,45 +247,26 @@ private fun Image(album: LastFmAlbum) {
 @Composable
 private fun Image(artistImageUrl: String?) {
     val context = LocalContext.current
-
-    var imageBitmap: ImageBitmap? by remember(artistImageUrl) { mutableStateOf(null) }
-    LaunchedEffect(artistImageUrl) {
-        launch {
-            if (artistImageUrl != null) {
-                Coil.imageLoader(context).enqueue(
-                    ImageRequest.Builder(context)
-                        .data(artistImageUrl)
-                        .target {
-                            imageBitmap = it.toBitmapOrNull()?.asImageBitmap()
-                        }
-                        .build()
-                )
-            }
-        }
-    }
-
-
-    Image(imageBitmap)
+    val painter = rememberAsyncImagePainter(artistImageUrl, Coil.imageLoader(context))
+    Image(painter)
 }
 
 
 @Composable
-private fun Image(bitmap: ImageBitmap?) {
+private fun Image(painter: Painter?) {
 
-    if (bitmap != null)
+    if (painter != null)
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
+                .heightIn(128.dp)
         ) {
             Image(
-                painter = BitmapPainter(bitmap),
-                contentDescription = stringResource(id = R.string.pref_header_images),
-                modifier = Modifier
+                painter, stringResource(id = R.string.pref_header_images), Modifier
                     .align(Alignment.Center)
-                    .sizeIn(
-                        maxWidth = maxWidth / 2,
-                        minHeight = maxWidth.div(3)
+                    .size(
+                        width = maxWidth / 3 * 2,
+                        height = maxWidth / 3 * 2
                     )
             )
         }
