@@ -7,6 +7,7 @@ package player.phonograph.ui.compose.web
 import coil.Coil
 import coil.compose.rememberAsyncImagePainter
 import player.phonograph.R
+import player.phonograph.coil.lastfm.LastFmImageBundle
 import player.phonograph.ui.compose.components.HorizontalTextItem
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextItem
@@ -14,7 +15,6 @@ import util.phonograph.tagsources.lastfm.LastFmAlbum
 import util.phonograph.tagsources.lastfm.LastFmArtist
 import util.phonograph.tagsources.lastfm.LastFmWikiData
 import util.phonograph.tagsources.lastfm.Tags
-import util.phonograph.tagsources.lastfm.largestUrl
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -58,7 +58,7 @@ fun LastFmArtist(artist: LastFmArtist) {
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
-        Image(artist)
+        Image(LastFmImageBundle.from(artist))
         HorizontalTextItem(stringResource(R.string.artist), artist.name)
         Wiki(artist.bio, isBio = true)
         MusicBrainzIdentifier(artist.mbid)
@@ -74,7 +74,7 @@ fun LastFmAlbum(album: LastFmAlbum) {
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
-        Image(album)
+        Image(LastFmImageBundle.from(album))
         HorizontalTextItem(stringResource(R.string.artist), album.name)
         HorizontalTextItem(stringResource(R.string.album), album.artist.orEmpty())
         Wiki(album.wiki, isBio = false)
@@ -235,19 +235,9 @@ private fun ColumnScope.Track(track: LastFmAlbum.Tracks.Track) {
 }
 
 @Composable
-private fun Image(artist: LastFmArtist) {
-    Image(artist.image.largestUrl())
-}
-
-@Composable
-private fun Image(album: LastFmAlbum) {
-    Image(album.image.largestUrl())
-}
-
-@Composable
-private fun Image(artistImageUrl: String?) {
+private fun Image(lastFmImageBundle: LastFmImageBundle) {
     val context = LocalContext.current
-    val painter = rememberAsyncImagePainter(artistImageUrl, Coil.imageLoader(context))
+    val painter = rememberAsyncImagePainter(lastFmImageBundle, Coil.imageLoader(context))
     Image(painter)
 }
 
