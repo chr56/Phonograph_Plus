@@ -9,8 +9,11 @@ import lib.phonograph.misc.emit
 import player.phonograph.R
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.reportError
-import player.phonograph.util.warning
+import retrofit2.Call
+import util.phonograph.tagsources.lastfm.AlbumResult
+import util.phonograph.tagsources.lastfm.ArtistResult
 import util.phonograph.tagsources.lastfm.LastFMRestClient
+import util.phonograph.tagsources.lastfm.LastFMService
 import util.phonograph.tagsources.lastfm.LastFmSearchResults
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -28,6 +31,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.os.Bundle
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -60,11 +64,19 @@ class WebSearchActivity : ThemeActivity() {
 
                         when (pageState) {
                             WebSearchViewModel.Page.Search -> LastFmSearch(viewModel)
-                            WebSearchViewModel.Page.Detail -> {}
+                            WebSearchViewModel.Page.Detail -> Detail(viewModel)
                         }
                     }
                 }
             }
+        }
+    }
+
+    override fun onBackPressed() {
+        if (viewModel.page.value != WebSearchViewModel.Page.Search) {
+            viewModel.updatePage(WebSearchViewModel.Page.Search)
+        } else {
+            super.onBackPressed()
         }
     }
 }
@@ -73,6 +85,10 @@ class WebSearchViewModel : ViewModel() {
 
     private val _page: MutableStateFlow<Page> = MutableStateFlow(Page.Search)
     val page get() = _page.asStateFlow()
+
+    fun updatePage(page: Page) {
+        _page.value = page
+    }
 
     sealed class Page {
         object Search : Page()
@@ -87,30 +103,73 @@ class WebSearchViewModel : ViewModel() {
     val result get() = _result.asStateFlow()
 
 
+    private val _selectedItem: MutableStateFlow<Any?> = MutableStateFlow(null)
+    val selectedItem get() = _selectedItem.asStateFlow()
+
+    private val _detail: MutableStateFlow<Any?> = MutableStateFlow(null)
+    val detail get() = _detail.asStateFlow()
+
+    fun select(context: Context, item: Any) {
+        _selectedItem.value = item
+        viewModelScope.launch(Dispatchers.IO) {
+            when (item) {
+                is AlbumResult.Album   -> queryLastFMAlbum(context, item)
+                is ArtistResult.Artist -> queryLastFMArtist(context, item)
+            }
+        }
+    }
+
+
     private var lastFMRestClient: LastFMRestClient? = null
 
     fun search(context: Context, query: Query.QueryAction) {
+        lastFmQuery(context) { service ->
+            val call = when (query) {
+                is Query.QueryAction.Artist  -> service.searchArtist(query.name, 1)
+                is Query.QueryAction.Release -> service.searchAlbum(query.name, 1)
+                is Query.QueryAction.Track   -> service.searchTrack(query.name, query.artist, 1)
+            }
+            val searchResult = execute(call)
+            if (searchResult != null) {
+                _result.emit(searchResult.results)
+            }
+        }
+
+    }
+
+    private fun queryLastFMAlbum(context: Context, album: AlbumResult.Album) {
+        lastFmQuery(context) { service ->
+            val call = service.getAlbumInfo(album.name, album.artist, null)
+            val response = execute(call)
+            _detail.emit(response?.album)
+        }
+    }
+
+    private fun queryLastFMArtist(context: Context, artist: ArtistResult.Artist) {
+        lastFmQuery(context) { service ->
+            val call = service.getArtistInfo(artist.name, null, null)
+            val response = execute(call)
+            _detail.emit(response?.artist)
+        }
+    }
+
+    private fun lastFmQuery(context: Context, block: suspend CoroutineScope.(LastFMService) -> Unit) {
         if (lastFMRestClient == null) lastFMRestClient = LastFMRestClient(context)
         viewModelScope.launch(Dispatchers.IO) {
             val service = lastFMRestClient?.apiService
             if (service != null) {
-                val call = when (query) {
-                    is Query.QueryAction.Artist -> service.searchArtist(query.name, 1)
-                    is Query.QueryAction.Release -> service.searchAlbum(query.name, 1)
-                    is Query.QueryAction.Track -> service.searchTrack(query.name, query.artist, 1)
-                }
-                val response = call.emit()
-                if (response.isSuccess) {
-                    val searchResult = response.getOrNull()?.body()
-                    if (searchResult != null) {
-                        _result.emit(searchResult.results)
-                    } else {
-                        warning(TAG, ERR_MSG)
-                    }
-                } else {
-                    reportError(response.exceptionOrNull() ?: Exception(), TAG, ERR_MSG)
-                }
+                block.invoke(this, service)
             }
+        }
+    }
+
+    private suspend fun <T> execute(call: Call<T?>): T? {
+        val result = call.emit<T>()
+        return if (result.isSuccess) {
+            result.getOrNull()?.body()
+        } else {
+            reportError(result.exceptionOrNull() ?: Exception(), TAG, ERR_MSG)
+            null
         }
     }
 

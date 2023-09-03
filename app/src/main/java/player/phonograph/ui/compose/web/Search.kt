@@ -28,7 +28,11 @@ fun LastFmSearch(viewModel: WebSearchViewModel) {
         }
 
         val result by viewModel.result.collectAsState()
-        LastFmSearchResult(result, Modifier.align(Alignment.CenterHorizontally))
+        val onSelect: (Any) -> Unit = {
+            viewModel.select(context, it)
+            viewModel.updatePage(WebSearchViewModel.Page.Detail)
+        }
+        LastFmSearchResult(result, onSelect, Modifier.align(Alignment.CenterHorizontally))
 
     }
 }
