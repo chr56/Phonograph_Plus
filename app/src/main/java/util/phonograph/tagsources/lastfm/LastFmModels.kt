@@ -304,8 +304,8 @@ data class LastFmSearchResults(
         // @SerialName("#text")
         // val text: String,
         // val role: String,
-        val searchTerms: String,
-        val startPage: String,
+        val searchTerms: String = "",
+        val startPage: String = "",
     )
 
     // @Keep
