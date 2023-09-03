@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import util.phonograph.tagsources.lastfm.LastFmAlbum as LastFmAlbumModel
 import util.phonograph.tagsources.lastfm.LastFmArtist as LastFmArtistModel
+import util.phonograph.tagsources.lastfm.LastFmTrack as LastFmTrackModel
 
 @Composable
 fun Detail(viewModel: WebSearchViewModel) {
@@ -63,6 +64,7 @@ fun Detail(viewModel: WebSearchViewModel) {
             when (val i = item) {
                 is LastFmAlbumModel -> LastFmAlbum(i)
                 is LastFmArtistModel -> LastFmArtist(i)
+                is LastFmTrackModel -> LastFmTrack(i)
                 null -> Text(
                     stringResource(R.string.empty),
                     modifier = Modifier.align(Alignment.TopCenter)

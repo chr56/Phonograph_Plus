@@ -13,6 +13,7 @@ import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextItem
 import util.phonograph.tagsources.lastfm.LastFmAlbum
 import util.phonograph.tagsources.lastfm.LastFmArtist
+import util.phonograph.tagsources.lastfm.LastFmTrack
 import util.phonograph.tagsources.lastfm.LastFmWikiData
 import util.phonograph.tagsources.lastfm.Tags
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -82,6 +83,23 @@ fun LastFmAlbum(album: LastFmAlbum) {
         Tags(album.tags)
         Links(album.url, album.mbid, "release")
         Tracks(album.tracks)
+    }
+}
+
+@Composable
+fun LastFmTrack(track: LastFmTrack) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+    ) {
+        HorizontalTextItem(stringResource(R.string.title), track.name)
+        HorizontalTextItem(stringResource(R.string.artist), track.artist?.name.orEmpty())
+        HorizontalTextItem(stringResource(R.string.album), track.album?.name.orEmpty())
+        Wiki(track.wiki, isBio = false)
+        MusicBrainzIdentifier(track.mbid)
+        Tags(track.toptags)
+        Links(track.url, track.mbid, "recording")
     }
 }
 
