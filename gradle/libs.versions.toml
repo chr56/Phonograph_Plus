@@ -4,6 +4,7 @@ datastore = { strictly = "1.0.0" }
 compose = "1.4.3"
 composeCompiler = "1.4.3"
 composeSetting = "0.27.0"
+coil = "2.3.0"
 materialDialogs = "3.3.0"
 materialTools = "0.2.0"
 
@@ -58,7 +59,8 @@ compose-activity = { group = "androidx.activity", name = "activity-compose", ver
 okhttp3 = "com.squareup.okhttp3:okhttp:4.10.0"
 retrofit2 = "com.squareup.retrofit2:retrofit:2.9.0"
 kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0"
-coil = "io.coil-kt:coil:2.2.2"
+coil = { module = "io.coil-kt:coil", version.ref = "coil" }
+coil-compose = { module = "io.coil-kt:coil-compose-base", version.ref = "coil" }
 koin = "io.insert-koin:koin-android:3.4.3"
 
 #
