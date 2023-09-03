@@ -11,9 +11,9 @@ import player.phonograph.R
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.ui.compose.base.BridgeDialogFragment
-import player.phonograph.ui.compose.dialogs.LastFmAlbum
-import player.phonograph.ui.compose.dialogs.LastFmArtist
 import player.phonograph.ui.compose.theme.PhonographTheme
+import player.phonograph.ui.compose.web.LastFmAlbum
+import player.phonograph.ui.compose.web.LastFmArtist
 import player.phonograph.util.parcelable
 import player.phonograph.util.warning
 import retrofit2.Call
