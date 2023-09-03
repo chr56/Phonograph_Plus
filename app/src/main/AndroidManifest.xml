@@ -143,6 +143,10 @@
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.activities.search.SearchActivity" />
         <activity
+            android:name=".ui.compose.web.WebSearchActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".ui.compose.settings.SettingsActivity"
             android:exported="true"
             android:label="@string/action_settings" />

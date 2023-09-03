@@ -2,17 +2,18 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.ui.compose.dialogs
+package player.phonograph.ui.compose.web
 
 import coil.Coil
-import coil.request.ImageRequest
+import coil.compose.rememberAsyncImagePainter
 import player.phonograph.R
+import player.phonograph.coil.lastfm.LastFmImageBundle
 import player.phonograph.ui.compose.components.HorizontalTextItem
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextItem
-import util.phonograph.tagsources.lastfm.LastFMUtil
 import util.phonograph.tagsources.lastfm.LastFmAlbum
 import util.phonograph.tagsources.lastfm.LastFmArtist
+import util.phonograph.tagsources.lastfm.LastFmTrack
 import util.phonograph.tagsources.lastfm.LastFmWikiData
 import util.phonograph.tagsources.lastfm.Tags
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -32,7 +33,6 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,21 +40,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.text.Html
-import kotlinx.coroutines.launch
 
 @Composable
 fun LastFmArtist(artist: LastFmArtist) {
@@ -63,7 +59,7 @@ fun LastFmArtist(artist: LastFmArtist) {
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
-        Image(artist)
+        Image(LastFmImageBundle.from(artist))
         HorizontalTextItem(stringResource(R.string.artist), artist.name)
         Wiki(artist.bio, isBio = true)
         MusicBrainzIdentifier(artist.mbid)
@@ -79,7 +75,7 @@ fun LastFmAlbum(album: LastFmAlbum) {
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
-        Image(album)
+        Image(LastFmImageBundle.from(album))
         HorizontalTextItem(stringResource(R.string.artist), album.name)
         HorizontalTextItem(stringResource(R.string.album), album.artist.orEmpty())
         Wiki(album.wiki, isBio = false)
@@ -87,6 +83,23 @@ fun LastFmAlbum(album: LastFmAlbum) {
         Tags(album.tags)
         Links(album.url, album.mbid, "release")
         Tracks(album.tracks)
+    }
+}
+
+@Composable
+fun LastFmTrack(track: LastFmTrack) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+    ) {
+        HorizontalTextItem(stringResource(R.string.title), track.name)
+        HorizontalTextItem(stringResource(R.string.artist), track.artist?.name.orEmpty())
+        HorizontalTextItem(stringResource(R.string.album), track.album?.name.orEmpty())
+        Wiki(track.wiki, isBio = false)
+        MusicBrainzIdentifier(track.mbid)
+        Tags(track.toptags)
+        Links(track.url, track.mbid, "recording")
     }
 }
 
@@ -240,57 +253,28 @@ private fun ColumnScope.Track(track: LastFmAlbum.Tracks.Track) {
 }
 
 @Composable
-private fun Image(artist: LastFmArtist) {
-    Image(LastFMUtil.getLargestArtistImageUrl(artist.image))
-}
-
-@Composable
-private fun Image(album: LastFmAlbum) {
-    Image(LastFMUtil.getLargestAlbumImageUrl(album.image))
-}
-
-@Composable
-private fun Image(artistImageUrl: String?) {
+private fun Image(lastFmImageBundle: LastFmImageBundle) {
     val context = LocalContext.current
-
-    var imageBitmap: ImageBitmap? by remember(artistImageUrl) { mutableStateOf(null) }
-    LaunchedEffect(artistImageUrl) {
-        launch {
-            if (artistImageUrl != null) {
-                Coil.imageLoader(context).enqueue(
-                    ImageRequest.Builder(context)
-                        .data(artistImageUrl)
-                        .target {
-                            imageBitmap = it.toBitmapOrNull()?.asImageBitmap()
-                        }
-                        .build()
-                )
-            }
-        }
-    }
-
-
-    Image(imageBitmap)
+    val painter = rememberAsyncImagePainter(lastFmImageBundle, Coil.imageLoader(context))
+    Image(painter)
 }
 
 
 @Composable
-private fun Image(bitmap: ImageBitmap?) {
+private fun Image(painter: Painter?) {
 
-    if (bitmap != null)
+    if (painter != null)
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
+                .heightIn(128.dp)
         ) {
             Image(
-                painter = BitmapPainter(bitmap),
-                contentDescription = stringResource(id = R.string.pref_header_images),
-                modifier = Modifier
+                painter, stringResource(id = R.string.pref_header_images), Modifier
                     .align(Alignment.Center)
-                    .sizeIn(
-                        maxWidth = maxWidth / 2,
-                        minHeight = maxWidth.div(3)
+                    .size(
+                        width = maxWidth / 3 * 2,
+                        height = maxWidth / 3 * 2
                     )
             )
         }

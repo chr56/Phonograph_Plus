@@ -11,9 +11,10 @@ import player.phonograph.R
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.ui.compose.base.BridgeDialogFragment
-import player.phonograph.ui.compose.dialogs.LastFmAlbum
-import player.phonograph.ui.compose.dialogs.LastFmArtist
 import player.phonograph.ui.compose.theme.PhonographTheme
+import player.phonograph.ui.compose.web.LastFmAlbum
+import player.phonograph.ui.compose.web.LastFmArtist
+import player.phonograph.ui.compose.web.WebSearchActivity
 import player.phonograph.util.parcelable
 import player.phonograph.util.warning
 import retrofit2.Call
@@ -38,6 +39,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -84,6 +86,29 @@ class LastFmDialog : BridgeDialogFragment() {
                 elevation = 0.dp,
                 onCloseRequest = { dismiss() },
                 buttons = {
+                    negativeButton(
+                        res = R.string.web_search,
+                        textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
+                    ) {
+                        val context = requireContext()
+                        val arguments = requireArguments()
+
+                        val launchIntent: Intent = when (viewModel.mode) {
+                            TYPE_ARTIST -> WebSearchActivity.launchIntent(
+                                context, arguments.parcelable<Artist>(EXTRA_DATA)
+                            )
+
+                            TYPE_ALBUM  -> WebSearchActivity.launchIntent(
+                                context, arguments.parcelable<Album>(EXTRA_DATA)
+                            )
+
+                            else        -> WebSearchActivity.launchIntent(context)
+                        }
+
+                        dismiss()
+                        context.startActivity(launchIntent)
+
+                    }
                     button(
                         res = android.R.string.ok,
                         textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
@@ -136,6 +161,11 @@ class LastFmDialog : BridgeDialogFragment() {
 
         var mode: String? = null
 
+        var artist: Artist? = null
+            private set
+        var album: Album? = null
+            private set
+
         private val _artistResponse: MutableStateFlow<LastFmArtistResponse?> = MutableStateFlow(null)
         val artistResponse get() = _artistResponse.asStateFlow()
 
@@ -144,8 +174,8 @@ class LastFmDialog : BridgeDialogFragment() {
 
 
         fun loadArtist(context: Context, lastFMService: LastFMService, artist: Artist) {
+            this.artist = artist
             viewModelScope.launch(Dispatchers.IO) {
-
                 val response = execute(
                     listOf(
                         lastFMService.getArtistInfo(
@@ -165,6 +195,7 @@ class LastFmDialog : BridgeDialogFragment() {
         }
 
         fun loadAlbum(context: Context, lastFMService: LastFMService, album: Album) {
+            this.album = album
             viewModelScope.launch(Dispatchers.IO) {
                 val response = execute(
                     listOf(

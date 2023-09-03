@@ -5,6 +5,7 @@
 package util.phonograph.tagsources.lastfm
 
 import androidx.annotation.Keep
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -14,7 +15,10 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNames
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.serializer
@@ -31,13 +35,48 @@ class LastFmArtistResponse(val artist: LastFmArtist)
 @Serializable
 class LastFmTrackResponse(val track: LastFmTrack)
 
+
+@Keep
+@Serializable
+class LastFmSearchResultResponse(val results: LastFmSearchResults)
+
 @Keep
 @Serializable
 class LastFmImage(
     @SerialName("#text")
     val text: String,
-    val size: String?,
-)
+    val size: ImageSize,
+) {
+    @Suppress("SpellCheckingInspection")
+    @Serializable(ImageSize.Serializer::class)
+    enum class ImageSize {
+        UNKNOWN, SMALL, MEDIUM, LARGE, EXTRALARGE, MEGA;
+
+        class Serializer : KSerializer<ImageSize> {
+
+            override val descriptor: SerialDescriptor = buildClassSerialDescriptor("LastFmImageSize")
+
+            override fun deserialize(decoder: Decoder): ImageSize {
+                decoder as JsonDecoder
+                val jsonElement = decoder.decodeJsonElement()
+                return if (jsonElement is JsonPrimitive && jsonElement.isString && jsonElement.content.isNotEmpty()) {
+                    try {
+                        ImageSize.valueOf(jsonElement.content.uppercase())
+                    } catch (_: Exception) {
+                        UNKNOWN
+                    }
+                } else {
+                    UNKNOWN
+                }
+            }
+
+            override fun serialize(encoder: Encoder, value: ImageSize) {
+                encoder as JsonDecoder
+                encoder.encodeSerializableValue(encoder.serializersModule.serializer(), JsonPrimitive(value.name))
+            }
+        }
+    }
+}
 
 @Keep
 @Serializable
@@ -66,7 +105,9 @@ data class Links(
 
 @Keep
 @Serializable
+@OptIn(ExperimentalSerializationApi::class)
 class LastFmAlbum(
+    @JsonNames("name", "title") /** `title` is used in [LastFmTrack] **/
     val name: String,
     val artist: String? = null,
     val mbid: String? = null,
@@ -87,7 +128,7 @@ class LastFmAlbum(
         @Serializable
         data class Track(
             // val streamable: Streamable? = null,
-            val duration: Int = 0,
+            val duration: JsonElement? = null,
             val url: String = "",
             val name: String = "",
             // @SerialName("@attr")
@@ -181,7 +222,7 @@ class LastFmTrack(
     val url: String,
     // val listeners: Long,
     // val playcount: Long,
-    val duration: Long = 0,
+    val duration: JsonElement? = null,
     val artist: LastFmArtist? = null,
     val album: LastFmAlbum? = null,
     val wiki: LastFmWikiData? = null,
@@ -237,6 +278,97 @@ data class Tags(
 
         override val descriptor: SerialDescriptor
             get() = buildClassSerialDescriptor("LastFmTag")
+    }
+}
+
+@Keep
+@Serializable
+data class LastFmSearchResults(
+    @SerialName("opensearch:Query")
+    val query: Query,
+    @SerialName("opensearch:totalResults")
+    val totalResults: String,
+    @SerialName("opensearch:startIndex")
+    val startIndex: String,
+    @SerialName("opensearch:itemsPerPage")
+    val itemsPerPage: String,
+    @SerialName("albummatches")
+    val albums: AlbumResult? = null,
+    @SerialName("artistmatches")
+    val artists: ArtistResult? = null,
+    @SerialName("trackmatches")
+    val tracks: TrackResult? = null,
+    // @SerialName("@attr")
+    // val attr: Attr,
+) {
+
+    @Keep
+    @Serializable
+    data class Query(
+        // @SerialName("#text")
+        // val text: String,
+        // val role: String,
+        val searchTerms: String = "",
+        val startPage: String = "",
+    )
+
+    // @Keep
+    // @Serializable
+    // data class Attr(
+    //     @SerialName("for")
+    //     val forX: String,
+    // )
+}
+
+
+@Keep
+@Serializable
+class AlbumResult(
+    val album: List<Album>?,
+) {
+    @Keep
+    @Serializable
+    data class Album(
+        val name: String,
+        val artist: String,
+        val url: String,
+        val image: List<LastFmImage>,
+        val mbid: String?,
+    )
+}
+
+@Keep
+@Serializable
+class ArtistResult(
+    val artist: List<Artist>?,
+) {
+    @Keep
+    @Serializable
+    data class Artist(
+        val name: String,
+        val url: String,
+        // val listeners: String,
+        val image: List<LastFmImage>,
+        val mbid: String?,
+    )
+}
+
+@Keep
+@Serializable
+class TrackResult(
+    val track: List<Track>?,
+) {
+    @Keep
+    @Serializable
+    data class Track(
+        val name: String,
+        val artist: String,
+        val url: String,
+        // val streamable: String,
+        // val listeners: String,
+        val image: List<LastFmImage>,
+        val mbid: String?,
+    ) {
     }
 }
 

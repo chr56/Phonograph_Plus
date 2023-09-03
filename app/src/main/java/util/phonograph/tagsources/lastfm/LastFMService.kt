@@ -37,6 +37,26 @@ interface LastFMService {
         @Header("Cache-Control") cacheControl: String?
     ): Call<LastFmArtistResponse?>
 
+
+    @GET("${BASE_QUERY_PARAMETERS}&method=album.search")
+    fun searchAlbum(
+        @Query("album") name: String,
+        @Query("page") page: Int,
+    ): Call<LastFmSearchResultResponse?>
+
+    @GET("${BASE_QUERY_PARAMETERS}&method=artist.search")
+    fun searchArtist(
+        @Query("artist") name: String,
+        @Query("page") page: Int,
+    ): Call<LastFmSearchResultResponse?>
+
+    @GET("${BASE_QUERY_PARAMETERS}&method=track.search")
+    fun searchTrack(
+        @Query("track") name: String,
+        @Query("artist") artist: String?,
+        @Query("page") page: Int,
+    ): Call<LastFmSearchResultResponse?>
+
     companion object {
         private const val API_KEY = "bd9c6ea4d55ec9ed3af7d276e5ece304"
         const val BASE_QUERY_PARAMETERS = "?format=json&autocorrect=1&api_key=$API_KEY"
