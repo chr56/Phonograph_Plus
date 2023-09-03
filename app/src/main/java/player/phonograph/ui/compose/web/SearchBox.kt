@@ -35,6 +35,12 @@ import androidx.compose.ui.unit.dp
 fun LastFmSearchBox(query: Query, modifier: Modifier = Modifier, onSearch: (Query.QueryAction) -> Unit) {
     Column(modifier.padding(vertical = 8.dp)) {
         val target by query.target.collectAsState()
+        Text(
+            text = "last.fm",
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+            fontWeight = FontWeight.Black,
+            style = MaterialTheme.typography.h5
+        )
         Line(name = "Target") {
             Target(
                 all = listOf(Query.Target.Release, Query.Target.Artist, Query.Target.Track),
