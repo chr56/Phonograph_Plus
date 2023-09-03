@@ -14,6 +14,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
@@ -92,7 +93,7 @@ class LastFmAlbum(
         @Serializable
         data class Track(
             // val streamable: Streamable? = null,
-            val duration: Int = 0,
+            val duration: JsonElement? = null,
             val url: String = "",
             val name: String = "",
             // @SerialName("@attr")
@@ -186,7 +187,7 @@ class LastFmTrack(
     val url: String,
     // val listeners: Long,
     // val playcount: Long,
-    val duration: Long = 0,
+    val duration: JsonElement? = null,
     val artist: LastFmArtist? = null,
     val album: LastFmAlbum? = null,
     val wiki: LastFmWikiData? = null,
