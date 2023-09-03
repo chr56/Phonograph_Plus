@@ -7,6 +7,7 @@ package player.phonograph.ui.compose.web
 import player.phonograph.R
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -32,20 +33,17 @@ import util.phonograph.tagsources.lastfm.LastFmTrack as LastFmTrackModel
 
 @Composable
 fun Detail(viewModel: WebSearchViewModel) {
-    Column() {
+    Column {
+        val queryState by viewModel.query.collectAsState()
         // title
         Row(Modifier.height(56.dp)) {
-            Icon(
-                Icons.Default.ArrowBack,
-                stringResource(android.R.string.cancel),
-                modifier = Modifier
-                    .clickable {
-                        viewModel.updatePage(WebSearchViewModel.Page.Search)
-                    }
-                    .align(Alignment.CenterVertically)
-                    .fillMaxHeight()
-                    .padding(horizontal = 22.dp)
-            )
+            Icon(Icons.Default.ArrowBack, stringResource(android.R.string.cancel), modifier = Modifier
+                .clickable {
+                    viewModel.updatePage(WebSearchViewModel.Page.Search)
+                }
+                .align(Alignment.CenterVertically)
+                .fillMaxHeight()
+                .padding(horizontal = 22.dp))
             Text(
                 stringResource(R.string.label_details),
                 modifier = Modifier
@@ -60,17 +58,24 @@ fun Detail(viewModel: WebSearchViewModel) {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            val item by viewModel.detail.collectAsState()
-            when (val i = item) {
-                is LastFmAlbumModel -> LastFmAlbum(i)
-                is LastFmArtistModel -> LastFmArtist(i)
-                is LastFmTrackModel -> LastFmTrack(i)
-                null -> Text(
-                    stringResource(R.string.empty),
-                    modifier = Modifier.align(Alignment.TopCenter)
-                )
+            val query = queryState
+            if (query is LastFmQuery) {
+                DetailLastFm(viewModel, query)
             }
         }
     }
 }
 
+
+@Composable
+fun BoxScope.DetailLastFm(viewModel: WebSearchViewModel, query: LastFmQuery) {
+    val item by query.detail.collectAsState()
+    when (val i = item) {
+        is LastFmAlbumModel -> LastFmAlbum(i)
+        is LastFmArtistModel -> LastFmArtist(i)
+        is LastFmTrackModel -> LastFmTrack(i)
+        null -> Text(
+            stringResource(R.string.empty), modifier = Modifier.align(Alignment.TopCenter)
+        )
+    }
+}
