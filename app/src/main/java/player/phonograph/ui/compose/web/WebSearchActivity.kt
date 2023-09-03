@@ -8,6 +8,7 @@ import lib.phonograph.activity.ThemeActivity
 import lib.phonograph.misc.emit
 import player.phonograph.R
 import player.phonograph.ui.compose.theme.PhonographTheme
+import player.phonograph.util.parcelableExtra
 import player.phonograph.util.reportError
 import retrofit2.Call
 import util.phonograph.tagsources.lastfm.AlbumResult
@@ -30,12 +31,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import player.phonograph.model.Album as PhonographAlbum
+import player.phonograph.model.Artist as PhonographArtist
+import player.phonograph.model.Song as PhonographSong
 
 class WebSearchActivity : ThemeActivity() {
 
@@ -44,6 +49,12 @@ class WebSearchActivity : ThemeActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.useCustomStatusBar = false
         super.onCreate(savedInstanceState)
+
+        val query = parseIntent(intent)
+        if (query != null) {
+            viewModel.prefillQuery(query)
+        }
+
         setContent {
             PhonographTheme {
 
@@ -79,6 +90,43 @@ class WebSearchActivity : ThemeActivity() {
             super.onBackPressed()
         }
     }
+
+    private fun parseIntent(intent: Intent): Query? {
+        return when (intent.getStringExtra(EXTRA_TYPE)) {
+            EXTRA_ALBUM  -> intent.parcelableExtra<PhonographAlbum>(EXTRA_DATA)?.let { Query.from(it) }
+            EXTRA_ARTIST -> intent.parcelableExtra<PhonographArtist>(EXTRA_DATA)?.let { Query.from(it) }
+            EXTRA_SONG   -> intent.parcelableExtra<PhonographSong>(EXTRA_DATA)?.let { Query.from(it) }
+            else         -> null
+        }
+    }
+
+    companion object {
+        const val EXTRA_TYPE = "TYPE"
+        const val EXTRA_SONG = "Song"
+        const val EXTRA_ARTIST = "Artist"
+        const val EXTRA_ALBUM = "Album"
+        const val EXTRA_DATA = "DATA"
+
+        fun launchIntent(context: Context, data: PhonographAlbum?): Intent =
+            Intent(context, WebSearchActivity::class.java).apply {
+                putExtra(EXTRA_TYPE, EXTRA_ALBUM)
+                putExtra(EXTRA_DATA, data)
+            }
+
+        fun launchIntent(context: Context, data: PhonographArtist?): Intent =
+            Intent(context, WebSearchActivity::class.java).apply {
+                putExtra(EXTRA_TYPE, EXTRA_ARTIST)
+                putExtra(EXTRA_DATA, data)
+            }
+
+        fun launchIntent(context: Context, data: PhonographSong?): Intent =
+            Intent(context, WebSearchActivity::class.java).apply {
+                putExtra(EXTRA_TYPE, EXTRA_SONG)
+                putExtra(EXTRA_DATA, data)
+            }
+
+        fun launchIntent(context: Context): Intent = Intent(context, WebSearchActivity::class.java)
+    }
 }
 
 class WebSearchViewModel : ViewModel() {
@@ -97,6 +145,10 @@ class WebSearchViewModel : ViewModel() {
 
     private val _query: MutableStateFlow<Query> = MutableStateFlow(Query())
     val query get() = _query.asStateFlow()
+
+    fun prefillQuery(query: Query) {
+        _query.tryEmit(query)
+    }
 
 
     private val _result: MutableStateFlow<LastFmSearchResults?> = MutableStateFlow(null)
