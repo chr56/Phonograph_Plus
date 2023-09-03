@@ -74,11 +74,12 @@ class WebSearchActivity : ThemeActivity() {
         }
     }
 
-    private fun parseIntent(context: Context, intent: Intent): Query? {
+    private fun parseIntent(context: Context, intent: Intent): Query<*>? {
+        val factory = viewModel.queryFactory
         return when (intent.getStringExtra(EXTRA_TYPE)) {
-            EXTRA_ALBUM -> intent.parcelableExtra<PhonographAlbum>(EXTRA_DATA)?.let { LastFmQuery.from(context, it) }
-            EXTRA_ARTIST -> intent.parcelableExtra<PhonographArtist>(EXTRA_DATA)?.let { LastFmQuery.from(context, it) }
-            EXTRA_SONG -> intent.parcelableExtra<PhonographSong>(EXTRA_DATA)?.let { LastFmQuery.from(context, it) }
+            EXTRA_ALBUM -> intent.parcelableExtra<PhonographAlbum>(EXTRA_DATA)?.let { factory.from(context, it) }
+            EXTRA_ARTIST -> intent.parcelableExtra<PhonographArtist>(EXTRA_DATA)?.let { factory.from(context, it) }
+            EXTRA_SONG -> intent.parcelableExtra<PhonographSong>(EXTRA_DATA)?.let { factory.from(context, it) }
             else -> null
         }
     }

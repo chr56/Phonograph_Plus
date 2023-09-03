@@ -9,10 +9,9 @@ import player.phonograph.util.reportError
 import retrofit2.Call
 import android.content.Context
 
-sealed class Query(val source: String) {
+sealed class Query<A : Query.Action>(val source: String) {
 
-
-    abstract fun search(context: Context, action: Action)
+    abstract fun search(context: Context, action: A)
 
     abstract fun view(context: Context, item: Any)
 

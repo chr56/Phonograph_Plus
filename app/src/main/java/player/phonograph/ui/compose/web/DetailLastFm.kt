@@ -33,6 +33,7 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +52,21 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.text.Html
+
+
+
+@Composable
+fun BoxScope.DetailLastFm(viewModel: WebSearchViewModel, query: LastFmQuery) {
+    val item by query.detail.collectAsState()
+    when (val i = item) {
+        is LastFmAlbum  -> LastFmAlbum(i)
+        is LastFmArtist -> LastFmArtist(i)
+        is LastFmTrack  -> LastFmTrack(i)
+        null            -> Text(
+            stringResource(R.string.empty), modifier = Modifier.align(Alignment.TopCenter)
+        )
+    }
+}
 
 @Composable
 fun LastFmArtist(artist: LastFmArtist) {
