@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
@@ -86,12 +85,10 @@ private fun Line(name: String, modifier: Modifier = Modifier, content: @Composab
             modifier = Modifier
                 .weight(2f)
                 .align(Alignment.CenterVertically)
-                .padding(vertical = 4.dp)
         )
         Box(
             Modifier
-                .weight(8f)
-                .padding(vertical = 4.dp)
+                .weight(9f)
         ) {
             content()
         }
@@ -106,7 +103,7 @@ private fun Target(
     modifier: Modifier = Modifier,
     onUpdate: (Query.Target) -> Unit,
 ) {
-    Row(modifier.padding(horizontal = 8.dp)) {
+    Row(modifier) {
         for (target in all) {
             Row(
                 Modifier
@@ -117,7 +114,6 @@ private fun Target(
                 Text(
                     target.name,
                     Modifier
-                        .wrapContentWidth()
                         .align(Alignment.CenterVertically)
                 )
             }
