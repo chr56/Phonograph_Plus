@@ -17,13 +17,11 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,14 +42,15 @@ fun Item(
                 .fillMaxSize()
                 .maxPercentage(0.15f)
         ) {
-            Image(
-                painter ?: rememberVectorPainter(Icons.Outlined.AccountCircle),
-                null,
-                modifier
-                    .align(Alignment.Center)
-                    .padding(8.dp)
-                    .fillMaxSize()
-            )
+            if (painter != null)
+                Image(
+                    painter,
+                    null,
+                    modifier
+                        .align(Alignment.Center)
+                        .padding(8.dp)
+                        .fillMaxSize()
+                )
         }
         Column(
             Modifier
