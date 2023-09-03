@@ -8,7 +8,5 @@ import coil.key.Keyer
 import coil.request.Options
 
 class LastFmImageBundleKeyer : Keyer<LastFmImageBundle> {
-    override fun key(data: LastFmImageBundle, options: Options): String? {
-        return data.owner
-    }
+    override fun key(data: LastFmImageBundle, options: Options): String = "${data.owner}@${data.preferredSize?.name}"
 }

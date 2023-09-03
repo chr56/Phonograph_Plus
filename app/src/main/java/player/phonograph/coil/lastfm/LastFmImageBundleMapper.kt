@@ -9,5 +9,7 @@ import coil.request.Options
 import util.phonograph.tagsources.lastfm.largestUrl
 
 class LastFmImageBundleMapper : Mapper<LastFmImageBundle, String> {
-    override fun map(data: LastFmImageBundle, options: Options): String? = data.images.largestUrl()
+    override fun map(data: LastFmImageBundle, options: Options): String? {
+        return data.images.largestUrl(data.preferredSize)
+    }
 }

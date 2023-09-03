@@ -13,11 +13,19 @@ import util.phonograph.tagsources.lastfm.LastFmImage
 data class LastFmImageBundle(
     val owner: String,
     val images: List<LastFmImage>,
+    val preferredSize: LastFmImage.ImageSize?,
 ) {
     companion object {
-        fun from(artist: LastFmArtist) = LastFmImageBundle("${artist.name}:${artist.url}", artist.image)
-        fun from(album: LastFmAlbum) = LastFmImageBundle("${album.name}:${album.url}", album.image)
-        fun from(artist: ArtistResult.Artist) = LastFmImageBundle("${artist.name}:${artist.url}", artist.image)
-        fun from(album: AlbumResult.Album) = LastFmImageBundle("${album.name}:${album.url}", album.image)
+        fun from(artist: LastFmArtist, preferredSize: LastFmImage.ImageSize? = null) =
+            LastFmImageBundle("${artist.name}:${artist.url}", artist.image, preferredSize)
+
+        fun from(album: LastFmAlbum, preferredSize: LastFmImage.ImageSize? = null) =
+            LastFmImageBundle("${album.name}:${album.url}", album.image, preferredSize)
+
+        fun from(artist: ArtistResult.Artist, preferredSize: LastFmImage.ImageSize? = null) =
+            LastFmImageBundle("${artist.name}:${artist.url}", artist.image, preferredSize)
+
+        fun from(album: AlbumResult.Album, preferredSize: LastFmImage.ImageSize? = null) =
+            LastFmImageBundle("${album.name}:${album.url}", album.image, preferredSize)
     }
 }
