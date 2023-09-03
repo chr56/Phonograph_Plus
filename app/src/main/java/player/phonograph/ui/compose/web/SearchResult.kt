@@ -11,6 +11,7 @@ import player.phonograph.coil.lastfm.LastFmImageBundle
 import player.phonograph.ui.compose.components.Item
 import util.phonograph.tagsources.lastfm.AlbumResult
 import util.phonograph.tagsources.lastfm.ArtistResult
+import util.phonograph.tagsources.lastfm.LastFmImage
 import util.phonograph.tagsources.lastfm.LastFmSearchResults
 import util.phonograph.tagsources.lastfm.TrackResult
 import androidx.compose.foundation.layout.Box
@@ -59,7 +60,10 @@ private fun AlbumResult(albumResult: AlbumResult?, getDetail: (AlbumResult.Album
         LazyColumn {
             items(albumResult.album) { album ->
                 val painter =
-                    rememberAsyncImagePainter(LastFmImageBundle.from(album), Coil.imageLoader(context))
+                    rememberAsyncImagePainter(
+                        LastFmImageBundle.from(album, LastFmImage.ImageSize.LARGE),
+                        Coil.imageLoader(context)
+                    )
                 Item(Modifier, album.name, album.artist, { getDetail(album) }, {}, painter)
             }
         }
@@ -73,7 +77,10 @@ private fun ArtistResult(artistResult: ArtistResult?, getDetail: (ArtistResult.A
         LazyColumn {
             items(artistResult.artist) { artist ->
                 val painter =
-                    rememberAsyncImagePainter(LastFmImageBundle.from(artist), Coil.imageLoader(context))
+                    rememberAsyncImagePainter(
+                        LastFmImageBundle.from(artist, LastFmImage.ImageSize.LARGE),
+                        Coil.imageLoader(context)
+                    )
                 Item(Modifier, artist.name, artist.mbid.orEmpty(), { getDetail(artist) }, {}, painter)
             }
         }
