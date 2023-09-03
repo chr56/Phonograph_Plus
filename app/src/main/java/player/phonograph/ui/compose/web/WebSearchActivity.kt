@@ -36,6 +36,7 @@ import android.content.Intent
 import android.os.Bundle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -175,6 +176,7 @@ class WebSearchViewModel : ViewModel() {
 
 
     private var lastFMRestClient: LastFMRestClient? = null
+    private var lastFmQueryJob: Job? = null
 
     fun search(context: Context, query: Query.QueryAction) {
         lastFmQuery(context) { service ->
@@ -217,7 +219,8 @@ class WebSearchViewModel : ViewModel() {
 
     private fun lastFmQuery(context: Context, block: suspend CoroutineScope.(LastFMService) -> Unit) {
         if (lastFMRestClient == null) lastFMRestClient = LastFMRestClient(context)
-        viewModelScope.launch(Dispatchers.IO) {
+        lastFmQueryJob?.cancel()
+        lastFmQueryJob = viewModelScope.launch(Dispatchers.IO) {
             val service = lastFMRestClient?.apiService
             if (service != null) {
                 block.invoke(this, service)
