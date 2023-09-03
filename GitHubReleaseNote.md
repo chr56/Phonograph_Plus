@@ -1,44 +1,22 @@
-## **v1.1.0 2023.08.29**
+## **v1.2-dev1 2023.09.03**
 
-**Commit log**: 
+**Commit log**:
 
 ### EN
-1. New: Search Result now are well cataloged
-2. New: support viewing adding or editing more tags in Song Detail or in TagEditor
-3. New: show raw tag information in Song Detail/TagEditor
-4. Modify: do not show other tags in Song Detail/TagEditor
-5. Improve: (Android Auto) allow browse all catalogs
-6. Improve: (Android Auto) in playing queue, change playing position when clicking item
-7. Fix: crash when resizing window
-8. Fix: statusbar transparent issue in Card player style
-9. Fix: possible crash after devices rebooted
-10. Fix: crash when load lyrics manually
-11. Translation: update Russian (by Роман Калинин (n0viceaf))
-12. Translation: update Portuguese, Brazilian (by EddieMattos)
-13. Translation: update Finish (by Jiri Grönroos (spammemoreplease))
-14. Translation: update Japanese (by aorinngoDo)
-15. Modify: forbid upgrading from v0.2.5 and older
-16. Modify: warn when upgrading from v0.6.0 and older
-17. Development: upgrade dependencies, clean up codes
+1. New: brand-new Wiki/Bio Dialog for Album/Artist with more detailed information from last.fm
+2. New: support searching information(releases, artists, tracks) online (currently only from last.fm, planning for MusicBrainz and Discog)
+3. Remove: feature "Auto Download Metadata (from last.fm)"
+4. Development: introduce koin as dependency injection framework (may cause performance issues)
+5. Development: upgrade dependencies
+6. Translation: update Turkish (by TolDYuThad)
 
 
 ### ZH
-1. 新增 分类搜索结果
-2. 新增 在歌曲详情/标签编辑器中, 支持读写更多标签
-3. 新增 在歌曲详情/标签编辑器中, 显示原始标签信息
-4. 修改 在歌曲详情/标签编辑器中, 不显示其他标签
-5. 改进 (Android Auto) 允许浏览所有分类
-6. 改进 (Android Auto) 在播放队列中，点击项目时改变播放位置
-7. 修复 调整窗口大小时崩溃
-8. 修复 播放器卡片样式中状态栏不透明与遮挡问题
-9. 修复 设备重启后崩溃
-10. 修复 手动加载歌词时崩溃
-11. 翻译 更新俄语(Роман Калинин (n0viceaf))
-12. 翻译 更新巴西葡萄牙语(EddieMattos)
-13. 翻译 更新芬兰语(Jiri Grönroos (spammemoreplease))
-14. 翻译 更新日语(aorinngoDo)
-15. 修改 禁止从v0.2.5之前的版本升级至当前版本
-16. 修改 警告从v0.6.0之前的版本升级至当前版本
-17. 开发 更新依赖, 清理代码
+1. 新增 全新的针对专辑和艺人的 维基/简介 对话框 (数据来自last.fm)
+2. 新增 支持在线搜索专辑艺人歌曲等信息 (数据目前仅来自last.fm, 计划考虑 MusicBrainz 和 Discog)
+3. 移除 自动从 last.fm 下载元信息
+4. 开发 使用 koin 做依赖注入框架 (可能影响性能)
+5. 开发 更新依赖
+6. 翻译 更新土耳其语(TolDYuThad)
 
 
