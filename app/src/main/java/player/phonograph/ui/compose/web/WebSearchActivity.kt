@@ -16,6 +16,7 @@ import util.phonograph.tagsources.lastfm.ArtistResult
 import util.phonograph.tagsources.lastfm.LastFMRestClient
 import util.phonograph.tagsources.lastfm.LastFMService
 import util.phonograph.tagsources.lastfm.LastFmSearchResults
+import util.phonograph.tagsources.lastfm.TrackResult
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
@@ -167,6 +168,7 @@ class WebSearchViewModel : ViewModel() {
             when (item) {
                 is AlbumResult.Album   -> queryLastFMAlbum(context, item)
                 is ArtistResult.Artist -> queryLastFMArtist(context, item)
+                is TrackResult.Track   -> queryLastFMTrack(context, item)
             }
         }
     }
@@ -202,6 +204,14 @@ class WebSearchViewModel : ViewModel() {
             val call = service.getArtistInfo(artist.name, null, null)
             val response = execute(call)
             _detail.emit(response?.artist)
+        }
+    }
+
+    private fun queryLastFMTrack(context: Context, track: TrackResult.Track) {
+        lastFmQuery(context) { service ->
+            val call = service.getTrackInfo(track.name, track.artist, null)
+            val response = execute(call)
+            _detail.emit(response?.track)
         }
     }
 
