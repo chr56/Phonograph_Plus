@@ -2,13 +2,14 @@
 
 _This part is not written very well._
 
-Currently(2023.8.31), this project's toolchain & dependencies are:
+Currently(2023.9.3), this project's toolchain & dependencies are:
 
 - `Android SDK` `33` (no `NDK`)
 - `Gradlew` `8.3`, requiring `JDK` `17`
 - `Android Gradle Plugin` `8.1.1`
 - `kotlin` for JVM(Android) `1.8.10`
 - `kotlinx.serialization`,`kotlinx.parcelize`
+- `koin` as a lightweight Dependency Injection solution
 - most popular `androidx`(`Jetpack`) components (most of them are latest)
 - `Jetpack Compose` (Since 0.4)
 - many 3rd-party libraries available on (`MavenCentral` and `jitpack.io`), some might kind of old and unmaintained
