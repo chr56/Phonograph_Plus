@@ -10,11 +10,11 @@ import player.phonograph.R
 import player.phonograph.ui.compose.components.HorizontalTextItem
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextItem
-import util.phonograph.tagsources.lastfm.LastFMUtil
 import util.phonograph.tagsources.lastfm.LastFmAlbum
 import util.phonograph.tagsources.lastfm.LastFmArtist
 import util.phonograph.tagsources.lastfm.LastFmWikiData
 import util.phonograph.tagsources.lastfm.Tags
+import util.phonograph.tagsources.lastfm.largestUrl
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -236,12 +236,12 @@ private fun ColumnScope.Track(track: LastFmAlbum.Tracks.Track) {
 
 @Composable
 private fun Image(artist: LastFmArtist) {
-    Image(LastFMUtil.getLargestArtistImageUrl(artist.image))
+    Image(artist.image.largestUrl())
 }
 
 @Composable
 private fun Image(album: LastFmAlbum) {
-    Image(LastFMUtil.getLargestAlbumImageUrl(album.image))
+    Image(album.image.largestUrl())
 }
 
 @Composable

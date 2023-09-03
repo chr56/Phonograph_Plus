@@ -16,6 +16,7 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonDecoder
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.serializer
@@ -42,8 +43,38 @@ class LastFmSearchResultResponse(val results: LastFmSearchResults)
 class LastFmImage(
     @SerialName("#text")
     val text: String,
-    val size: String?,
-)
+    val size: ImageSize,
+) {
+    @Suppress("SpellCheckingInspection")
+    @Serializable(ImageSize.Serializer::class)
+    enum class ImageSize {
+        UNKNOWN, SMALL, MEDIUM, LARGE, EXTRALARGE, MEGA;
+
+        class Serializer : KSerializer<ImageSize> {
+
+            override val descriptor: SerialDescriptor = buildClassSerialDescriptor("LastFmImageSize")
+
+            override fun deserialize(decoder: Decoder): ImageSize {
+                decoder as JsonDecoder
+                val jsonElement = decoder.decodeJsonElement()
+                return if (jsonElement is JsonPrimitive && jsonElement.isString && jsonElement.content.isNotEmpty()) {
+                    try {
+                        ImageSize.valueOf(jsonElement.content.uppercase())
+                    } catch (_: Exception) {
+                        UNKNOWN
+                    }
+                } else {
+                    UNKNOWN
+                }
+            }
+
+            override fun serialize(encoder: Encoder, value: ImageSize) {
+                encoder as JsonDecoder
+                encoder.encodeSerializableValue(encoder.serializersModule.serializer(), JsonPrimitive(value.name))
+            }
+        }
+    }
+}
 
 @Keep
 @Serializable

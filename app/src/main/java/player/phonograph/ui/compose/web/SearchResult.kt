@@ -10,9 +10,9 @@ import player.phonograph.R
 import player.phonograph.ui.compose.components.Item
 import util.phonograph.tagsources.lastfm.AlbumResult
 import util.phonograph.tagsources.lastfm.ArtistResult
-import util.phonograph.tagsources.lastfm.LastFMUtil
 import util.phonograph.tagsources.lastfm.LastFmSearchResults
 import util.phonograph.tagsources.lastfm.TrackResult
+import util.phonograph.tagsources.lastfm.largestUrl
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -58,7 +58,7 @@ private fun AlbumResult(albumResult: AlbumResult?, getDetail: (AlbumResult.Album
         val context = LocalContext.current
         LazyColumn {
             items(albumResult.album) { album ->
-                val url = LastFMUtil.getLargestAlbumImageUrl(album.image)
+                val url = album.image.largestUrl()
                 val painter = rememberAsyncImagePainter(url, Coil.imageLoader(context))
                 Item(Modifier, album.name, album.artist, { getDetail(album) }, {}, painter)
             }
@@ -72,7 +72,7 @@ private fun ArtistResult(artistResult: ArtistResult?, getDetail: (ArtistResult.A
         val context = LocalContext.current
         LazyColumn {
             items(artistResult.artist) { artist ->
-                val url = LastFMUtil.getLargestArtistImageUrl(artist.image)
+                val url = artist.image.largestUrl()
                 val painter = rememberAsyncImagePainter(url, Coil.imageLoader(context))
                 Item(Modifier, artist.name, artist.mbid.orEmpty(), { getDetail(artist) }, {}, painter)
             }
