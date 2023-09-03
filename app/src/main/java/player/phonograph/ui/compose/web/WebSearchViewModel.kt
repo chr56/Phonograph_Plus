@@ -37,11 +37,11 @@ class WebSearchViewModel : ViewModel() {
         object Detail : Page()
     }
 
-    private val _query: MutableStateFlow<Query> = MutableStateFlow(LastFmQuery())
+    private val _query: MutableStateFlow<Query?> = MutableStateFlow(null)
     val query get() = _query.asStateFlow()
 
-    fun prefillQuery(lastFmQuery: LastFmQuery) {
-        _query.tryEmit(lastFmQuery)
+    fun prepareQuery(context: Context, query: Query?) {
+        _query.tryEmit(query ?: LastFmQuery(context))
     }
 
 
