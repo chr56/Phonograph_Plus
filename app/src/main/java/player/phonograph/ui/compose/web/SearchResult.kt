@@ -4,10 +4,13 @@
 
 package player.phonograph.ui.compose.web
 
+import coil.Coil
+import coil.compose.rememberAsyncImagePainter
 import player.phonograph.R
 import player.phonograph.ui.compose.components.Item
 import util.phonograph.tagsources.lastfm.AlbumResult
 import util.phonograph.tagsources.lastfm.ArtistResult
+import util.phonograph.tagsources.lastfm.LastFMUtil
 import util.phonograph.tagsources.lastfm.LastFmSearchResults
 import util.phonograph.tagsources.lastfm.TrackResult
 import androidx.compose.foundation.layout.Box
@@ -20,6 +23,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
@@ -51,9 +55,12 @@ fun LastFmSearchResult(result: LastFmSearchResults?, onSelectItem: (Any) -> Unit
 @Composable
 private fun AlbumResult(albumResult: AlbumResult?, getDetail: (AlbumResult.Album) -> Unit) {
     if (albumResult != null && !albumResult.album.isNullOrEmpty()) {
+        val context = LocalContext.current
         LazyColumn {
             items(albumResult.album) { album ->
-                Item(Modifier, album.name, album.artist, { getDetail(album) }, {})
+                val url = LastFMUtil.getLargestAlbumImageUrl(album.image)
+                val painter = rememberAsyncImagePainter(url, Coil.imageLoader(context))
+                Item(Modifier, album.name, album.artist, { getDetail(album) }, {}, painter)
             }
         }
     }
@@ -62,9 +69,12 @@ private fun AlbumResult(albumResult: AlbumResult?, getDetail: (AlbumResult.Album
 @Composable
 private fun ArtistResult(artistResult: ArtistResult?, getDetail: (ArtistResult.Artist) -> Unit) {
     if (artistResult != null && !artistResult.artist.isNullOrEmpty()) {
+        val context = LocalContext.current
         LazyColumn {
             items(artistResult.artist) { artist ->
-                Item(Modifier, artist.name, artist.mbid.orEmpty(), { getDetail(artist) }, {})
+                val url = LastFMUtil.getLargestArtistImageUrl(artist.image)
+                val painter = rememberAsyncImagePainter(url, Coil.imageLoader(context))
+                Item(Modifier, artist.name, artist.mbid.orEmpty(), { getDetail(artist) }, {}, painter)
             }
         }
     }
