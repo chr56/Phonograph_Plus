@@ -31,9 +31,9 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun LastFmSearchBox(query: Query, modifier: Modifier = Modifier, onSearch: (Query.QueryAction) -> Unit) {
+fun LastFmSearchBox(lastFmQuery: LastFmQuery, modifier: Modifier = Modifier, onSearch: (LastFmQuery.QueryAction) -> Unit) {
     Column(modifier.padding(vertical = 8.dp)) {
-        val target by query.target.collectAsState()
+        val target by lastFmQuery.target.collectAsState()
         Text(
             text = "last.fm",
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
@@ -42,30 +42,30 @@ fun LastFmSearchBox(query: Query, modifier: Modifier = Modifier, onSearch: (Quer
         )
         Line(name = "Target") {
             Target(
-                all = listOf(Query.Target.Release, Query.Target.Artist, Query.Target.Track),
+                all = listOf(LastFmQuery.Target.Release, LastFmQuery.Target.Artist, LastFmQuery.Target.Track),
                 current = target
             ) {
-                query.target.tryEmit(it)
+                lastFmQuery.target.tryEmit(it)
             }
         }
-        if (target == Query.Target.Release)
+        if (target == LastFmQuery.Target.Release)
             Line(name = stringResource(id = R.string.album)) {
-                val current by query.releaseQuery.collectAsState()
-                TextBox(current.orEmpty()) { query.releaseQuery.tryEmit(it) }
+                val current by lastFmQuery.releaseQuery.collectAsState()
+                TextBox(current.orEmpty()) { lastFmQuery.releaseQuery.tryEmit(it) }
             }
-        if (target == Query.Target.Track)
+        if (target == LastFmQuery.Target.Track)
             Line(name = stringResource(id = R.string.song)) {
-                val current by query.trackQuery.collectAsState()
-                TextBox(current.orEmpty()) { query.trackQuery.tryEmit(it) }
+                val current by lastFmQuery.trackQuery.collectAsState()
+                TextBox(current.orEmpty()) { lastFmQuery.trackQuery.tryEmit(it) }
             }
-        if (target == Query.Target.Artist || target == Query.Target.Track)
+        if (target == LastFmQuery.Target.Artist || target == LastFmQuery.Target.Track)
             Line(name = stringResource(id = R.string.artist)) {
-                val current by query.artistQuery.collectAsState()
-                TextBox(current.orEmpty()) { query.artistQuery.tryEmit(it) }
+                val current by lastFmQuery.artistQuery.collectAsState()
+                TextBox(current.orEmpty()) { lastFmQuery.artistQuery.tryEmit(it) }
             }
         TextButton(
             onClick = {
-                onSearch(query.action())
+                onSearch(lastFmQuery.action())
             },
             modifier = Modifier
                 .padding(horizontal = 12.dp)
@@ -98,10 +98,10 @@ private fun Line(name: String, modifier: Modifier = Modifier, content: @Composab
 
 @Composable
 private fun Target(
-    all: Collection<Query.Target>,
-    current: Query.Target,
+    all: Collection<LastFmQuery.Target>,
+    current: LastFmQuery.Target,
     modifier: Modifier = Modifier,
-    onUpdate: (Query.Target) -> Unit,
+    onUpdate: (LastFmQuery.Target) -> Unit,
 ) {
     Row(modifier) {
         for (target in all) {

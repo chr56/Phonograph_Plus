@@ -13,16 +13,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 
+
 @Composable
-fun LastFmSearch(viewModel: WebSearchViewModel) {
+fun Search(viewModel: WebSearchViewModel) {
+    val queryState by viewModel.query.collectAsState()
+
+    val query = queryState
+    if (query is LastFmQuery) {
+        LastFmSearch(viewModel, query)
+    }
+}
+
+@Composable
+fun LastFmSearch(viewModel: WebSearchViewModel, queryState: LastFmQuery) {
     Column {
-        val queryState by viewModel.query.collectAsState()
         val context = LocalContext.current
         LastFmSearchBox(
-            query = queryState,
-            Modifier
-                .wrapContentHeight()
-                // .background(MaterialTheme.colors.surface)
+            lastFmQuery = queryState,
+            Modifier.wrapContentHeight()
         ) {
             viewModel.search(context, it)
         }
