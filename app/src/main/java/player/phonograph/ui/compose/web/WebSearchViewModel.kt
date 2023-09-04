@@ -62,5 +62,20 @@ class WebSearchViewModel : ViewModel() {
                 trackQuery = song.title,
                 target = LastFmQuery.Target.Track
             )
+
+        fun musicBrainzQuery(context: Context): MusicBrainzQuery =
+            MusicBrainzQuery(context, this@WebSearchViewModel)
+
+        fun musicBrainzQueryReleaseGroup(context: Context, mbid: String): MusicBrainzQuery =
+            musicBrainzQuery(context).also { it.query(context, MusicBrainzQuery.QueryAction.ViewReleaseGroup(mbid)) }
+
+        fun musicBrainzQueryRelease(context: Context, mbid: String): MusicBrainzQuery =
+            musicBrainzQuery(context).also { it.query(context, MusicBrainzQuery.QueryAction.ViewRelease(mbid)) }
+
+        fun musicBrainzQueryArtist(context: Context, mbid: String): MusicBrainzQuery =
+            musicBrainzQuery(context).also { it.query(context, MusicBrainzQuery.QueryAction.ViewArtist(mbid)) }
+
+        fun musicBrainzQueryRecording(context: Context, mbid: String): MusicBrainzQuery =
+            musicBrainzQuery(context).also { it.query(context, MusicBrainzQuery.QueryAction.ViewRecording(mbid)) }
     }
 }

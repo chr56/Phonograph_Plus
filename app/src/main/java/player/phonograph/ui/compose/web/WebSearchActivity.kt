@@ -78,10 +78,36 @@ class WebSearchActivity : ThemeActivity() {
     private fun checkCommand(context: Context, intent: Intent): Query<*, *>? {
         val factory = viewModel.queryFactory
         return when (intent.getStringExtra(EXTRA_COMMAND)) {
-            EXTRA_QUERY_ALBUM  -> intent.parcelableExtra<PhonographAlbum>(EXTRA_DATA)?.let { factory.from(context, it) }
-            EXTRA_QUERY_ARTIST -> intent.parcelableExtra<PhonographArtist>(EXTRA_DATA)?.let { factory.from(context, it) }
-            EXTRA_QUERY_SONG   -> intent.parcelableExtra<PhonographSong>(EXTRA_DATA)?.let { factory.from(context, it) }
-            else             -> null
+            EXTRA_QUERY_ALBUM                    ->
+                intent.parcelableExtra<PhonographAlbum>(EXTRA_DATA)?.let { factory.from(context, it) }
+
+            EXTRA_QUERY_ARTIST                   ->
+                intent.parcelableExtra<PhonographArtist>(EXTRA_DATA)?.let { factory.from(context, it) }
+
+            EXTRA_QUERY_SONG                     ->
+                intent.parcelableExtra<PhonographSong>(EXTRA_DATA)?.let { factory.from(context, it) }
+
+            EXTRA_VIEW_MUSICBRAINZ_RELEASE_GROUP ->
+                factory.musicBrainzQueryReleaseGroup(context, intent.getStringExtra(EXTRA_DATA).orEmpty()).also {
+                    viewModel.updatePage(WebSearchViewModel.Page.Detail)
+                }
+
+            EXTRA_VIEW_MUSICBRAINZ_RELEASE       ->
+                factory.musicBrainzQueryRelease(context, intent.getStringExtra(EXTRA_DATA).orEmpty()).also {
+                    viewModel.updatePage(WebSearchViewModel.Page.Detail)
+                }
+
+            EXTRA_VIEW_MUSICBRAINZ_ARTIST        ->
+                factory.musicBrainzQueryArtist(context, intent.getStringExtra(EXTRA_DATA).orEmpty()).also {
+                    viewModel.updatePage(WebSearchViewModel.Page.Detail)
+                }
+
+            EXTRA_VIEW_MUSICBRAINZ_RECORDING     ->
+                factory.musicBrainzQueryRecording(context, intent.getStringExtra(EXTRA_DATA).orEmpty()).also {
+                    viewModel.updatePage(WebSearchViewModel.Page.Detail)
+                }
+
+            else                                 -> null
         }
     }
 
@@ -90,6 +116,10 @@ class WebSearchActivity : ThemeActivity() {
         const val EXTRA_QUERY_SONG = "Query:Song"
         const val EXTRA_QUERY_ARTIST = "Query:Artist"
         const val EXTRA_QUERY_ALBUM = "Query:Album"
+        const val EXTRA_VIEW_MUSICBRAINZ_RELEASE_GROUP = "VIEW:MusicBrain:ReleaseGroup"
+        const val EXTRA_VIEW_MUSICBRAINZ_RELEASE = "VIEW:MusicBrain:Release"
+        const val EXTRA_VIEW_MUSICBRAINZ_ARTIST = "VIEW:MusicBrain:Artist"
+        const val EXTRA_VIEW_MUSICBRAINZ_RECORDING = "VIEW:MusicBrain:Recording"
         const val EXTRA_DATA = "DATA"
 
         fun launchIntent(context: Context, data: PhonographAlbum?): Intent =
@@ -108,6 +138,30 @@ class WebSearchActivity : ThemeActivity() {
             launchIntent(context).apply {
                 putExtra(EXTRA_COMMAND, EXTRA_QUERY_SONG)
                 putExtra(EXTRA_DATA, data)
+            }
+
+        fun launchIntentMusicBrainzReleaseGroup(context: Context, mbid: String): Intent =
+            launchIntent(context).apply {
+                putExtra(EXTRA_COMMAND, EXTRA_VIEW_MUSICBRAINZ_RELEASE_GROUP)
+                putExtra(EXTRA_DATA, mbid)
+            }
+
+        fun launchIntentMusicBrainzRelease(context: Context, mbid: String): Intent =
+            launchIntent(context).apply {
+                putExtra(EXTRA_COMMAND, EXTRA_VIEW_MUSICBRAINZ_RELEASE)
+                putExtra(EXTRA_DATA, mbid)
+            }
+
+        fun launchIntentMusicBrainzArtist(context: Context, mbid: String): Intent =
+            launchIntent(context).apply {
+                putExtra(EXTRA_COMMAND, EXTRA_VIEW_MUSICBRAINZ_ARTIST)
+                putExtra(EXTRA_DATA, mbid)
+            }
+
+        fun launchIntentMusicBrainzRecording(context: Context, mbid: String): Intent =
+            launchIntent(context).apply {
+                putExtra(EXTRA_COMMAND, EXTRA_VIEW_MUSICBRAINZ_RECORDING)
+                putExtra(EXTRA_DATA, mbid)
             }
 
         fun launchIntent(context: Context): Intent =
