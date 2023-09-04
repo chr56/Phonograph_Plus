@@ -91,6 +91,7 @@ fun MusicBrainzRelease(release: MusicBrainzRelease) {
         Item(stringResource(R.string.year), release.date)
         Item("Status", release.status)
         Item("Country", release.country)
+        MusicBrainzMedias(release.media)
         Item("Media", release.media?.map { "${it.format}(${it.discCount})" })
         Item("Barcode", release.barcode)
         Item("MarketLabel", release.labelInfo?.map { it.label.name })
@@ -117,18 +118,24 @@ fun MusicBrainzArtist(artist: MusicBrainzArtist) {
 }
 
 @Composable
-fun MusicBrainzRecording(recording: MusicBrainzRecording) {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
-    ) {
+fun MusicBrainzRecording(recording: MusicBrainzRecording, embed: Boolean = false) {
+    val content = @Composable {
         Item(stringResource(R.string.title), recording.title)
         MusicBrainzArtistCredits(recording.artistCredit)
         Item(stringResource(R.string.year), recording.firstReleaseDate)
         Item(stringResource(R.string.comment), recording.disambiguation)
         Item("Releases", recording.releases?.map { "${it.title} (${it.date}/${it.barcode})" })
     }
+    if (embed) {
+        content()
+    } else
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+        ) {
+            content()
+        }
 }
 
 @Composable
@@ -184,6 +191,56 @@ fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
         }
     }
 }
+
+@Composable
+private fun MusicBrainzMedias(medias: List<MusicBrainzRelease.Media>?) {
+    if (!medias.isNullOrEmpty()) {
+        for (media in medias) {
+            MusicBrainzMedia(media)
+        }
+    }
+}
+
+@Composable
+private fun MusicBrainzMedia(media: MusicBrainzRelease.Media) {
+    SelectionContainer {
+        Column(
+            Modifier.padding(8.dp),
+            verticalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Text(
+                "Media",
+                style = TextStyle(fontWeight = FontWeight.Bold),
+                modifier = Modifier.align(Alignment.Start),
+            )
+            Column(Modifier.padding(horizontal = 4.dp)) {
+                Item("format", media.format)
+                Item("count", "${media.discCount} * ${media.trackCount}")
+                if (!media.tracks.isNullOrEmpty()) {
+                    Column(
+                        Modifier.padding(8.dp),
+                        verticalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Text(
+                            "Tracks",
+                            style = TextStyle(fontWeight = FontWeight.Bold),
+                            modifier = Modifier.align(Alignment.Start),
+                        )
+                        Column(Modifier.padding(horizontal = 4.dp)) {
+                            for (track in media.tracks) {
+                                Item("Track", value = track.title)
+                                Column(modifier = Modifier.padding(horizontal = 6.dp)) {
+                                    MusicBrainzRecording(track.recording, embed = true)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 private fun MusicBrainzLifeSpan(lifeSpan: MusicBrainzArtist.LifeSpan?) {
