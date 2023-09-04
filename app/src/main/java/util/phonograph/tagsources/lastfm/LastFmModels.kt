@@ -334,7 +334,7 @@ class AlbumResult(
         val url: String,
         val image: List<LastFmImage>,
         val mbid: String?,
-    )
+    ) : LastFmSearchResultItem
 }
 
 @Keep
@@ -350,7 +350,7 @@ class ArtistResult(
         // val listeners: String,
         val image: List<LastFmImage>,
         val mbid: String?,
-    )
+    ) : LastFmSearchResultItem
 }
 
 @Keep
@@ -368,7 +368,7 @@ class TrackResult(
         // val listeners: String,
         val image: List<LastFmImage>,
         val mbid: String?,
-    ) {
-    }
+    ) : LastFmSearchResultItem
 }
 
+sealed interface LastFmSearchResultItem

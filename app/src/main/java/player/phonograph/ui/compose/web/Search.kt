@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.compose.web
 
+import util.phonograph.tagsources.lastfm.LastFmSearchResultItem
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
@@ -36,12 +37,10 @@ fun LastFmSearch(viewModel: WebSearchViewModel, queryState: LastFmQuery) {
         }
 
         val result by queryState.result.collectAsState()
-        val onSelect: (Any) -> Unit = {
+        val onSelect: (LastFmSearchResultItem) -> Unit = {
             val action = queryState.viewAction(it)
-            if (action != null) {
-                queryState.query(context, action)
-                viewModel.updatePage(WebSearchViewModel.Page.Detail)
-            }
+            queryState.query(context, action)
+            viewModel.updatePage(WebSearchViewModel.Page.Detail)
         }
         LastFmSearchResult(result, onSelect, Modifier.align(Alignment.CenterHorizontally))
 

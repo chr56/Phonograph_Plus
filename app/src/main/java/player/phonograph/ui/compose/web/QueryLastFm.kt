@@ -8,6 +8,7 @@ import util.phonograph.tagsources.lastfm.AlbumResult
 import util.phonograph.tagsources.lastfm.ArtistResult
 import util.phonograph.tagsources.lastfm.LastFMRestClient
 import util.phonograph.tagsources.lastfm.LastFMService
+import util.phonograph.tagsources.lastfm.LastFmSearchResultItem
 import util.phonograph.tagsources.lastfm.LastFmSearchResults
 import util.phonograph.tagsources.lastfm.TrackResult
 import android.content.Context
@@ -57,12 +58,11 @@ class LastFmQuery(
         }
     }
 
-    fun viewAction(selected: Any): QueryAction? {
+    fun viewAction(selected: LastFmSearchResultItem): QueryAction {
         return when (selected) {
             is AlbumResult.Album   -> QueryAction.ViewRelease(selected)
             is ArtistResult.Artist -> QueryAction.ViewArtist(selected)
             is TrackResult.Track   -> QueryAction.ViewTrack(selected)
-            else                   -> null
         }
     }
 

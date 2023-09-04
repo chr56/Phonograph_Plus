@@ -12,6 +12,7 @@ import player.phonograph.ui.compose.components.Item
 import util.phonograph.tagsources.lastfm.AlbumResult
 import util.phonograph.tagsources.lastfm.ArtistResult
 import util.phonograph.tagsources.lastfm.LastFmImage
+import util.phonograph.tagsources.lastfm.LastFmSearchResultItem
 import util.phonograph.tagsources.lastfm.LastFmSearchResults
 import util.phonograph.tagsources.lastfm.TrackResult
 import androidx.compose.foundation.layout.Box
@@ -29,7 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LastFmSearchResult(result: LastFmSearchResults?, onSelectItem: (Any) -> Unit = {}, modifier: Modifier = Modifier) {
+fun LastFmSearchResult(result: LastFmSearchResults?, onSelectItem: (LastFmSearchResultItem) -> Unit = {}, modifier: Modifier = Modifier) {
     Box(
         modifier
             .fillMaxWidth()
