@@ -97,9 +97,10 @@ data class MusicBrainzRelease(
     data class Media(
         val format: String,
         @SerialName("disc-count")
-        val discCount: Int = 0,
+        val discCount: Int = 1,
         @SerialName("track-count")
         val trackCount: Int = 0,
+        val tracks: List<MusicBrainzTrack>? = emptyList(),
     )
 
     @Keep
@@ -148,6 +149,19 @@ data class MusicBrainzRecording(
     val tags: List<MusicBrainzTag>? = listOf(),
 ) : MusicBrainzModel
 
+
+@Keep
+@Serializable
+class MusicBrainzTrack(
+    val id: String,
+    val title: String,
+    val recording: MusicBrainzRecording,
+    val length: Int = 0,
+    val position: Int = 0,
+    @SerialName("artist-credit")
+    val artistCredit: List<MusicBrainzArtistCredit>? = listOf(),
+    val number: String = "",
+) : MusicBrainzModel
 
 @Keep
 @Serializable

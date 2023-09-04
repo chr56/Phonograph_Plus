@@ -13,6 +13,7 @@ import util.phonograph.tagsources.musicbrainz.MusicBrainzRecording
 import util.phonograph.tagsources.musicbrainz.MusicBrainzRelease
 import util.phonograph.tagsources.musicbrainz.MusicBrainzReleaseGroup
 import util.phonograph.tagsources.musicbrainz.MusicBrainzTag
+import util.phonograph.tagsources.musicbrainz.MusicBrainzTrack
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -54,6 +55,7 @@ fun BoxScope.DetailMusicBrainz(viewModel: WebSearchViewModel, query: MusicBrainz
         is MusicBrainzRelease      -> MusicBrainzRelease(i)
         is MusicBrainzArtist       -> MusicBrainzArtist(i)
         is MusicBrainzRecording    -> MusicBrainzRecording(i)
+        is MusicBrainzTrack        -> MusicBrainzTrack(i)
         null                       -> Text(
             stringResource(R.string.empty), modifier = Modifier.align(Alignment.TopCenter)
         )
@@ -126,6 +128,21 @@ fun MusicBrainzRecording(recording: MusicBrainzRecording) {
         Item(stringResource(R.string.year), recording.firstReleaseDate)
         Item(stringResource(R.string.comment), recording.disambiguation)
         Item("Releases", recording.releases?.map { "${it.title} (${it.date}/${it.barcode})" })
+    }
+}
+
+@Composable
+fun MusicBrainzTrack(track: MusicBrainzTrack) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+    ) {
+        Item(stringResource(R.string.title), track.title)
+        MusicBrainzArtistCredits(track.artistCredit)
+        Item(stringResource(R.string.label_track_length), track.length.toString())
+        Item(stringResource(R.string.track), track.number)
+        Item("recording", track.recording.title)
     }
 }
 
