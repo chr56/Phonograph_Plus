@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -50,107 +51,79 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun BoxScope.DetailMusicBrainz(viewModel: WebSearchViewModel, query: MusicBrainzQuery) {
     val item by query.detail.collectAsState()
-    when (val i = item) {
-        is MusicBrainzReleaseGroup -> MusicBrainzReleaseGroup(i)
-        is MusicBrainzRelease      -> MusicBrainzRelease(i)
-        is MusicBrainzArtist       -> MusicBrainzArtist(i)
-        is MusicBrainzRecording    -> MusicBrainzRecording(i)
-        is MusicBrainzTrack        -> MusicBrainzTrack(i)
-        null                       -> Text(
-            stringResource(R.string.empty), modifier = Modifier.align(Alignment.TopCenter)
-        )
-    }
-}
-
-
-@Composable
-fun MusicBrainzReleaseGroup(release: MusicBrainzReleaseGroup) {
     Column(
         Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
-        Item(stringResource(R.string.title), release.title)
-        MusicBrainzArtistCredits(release.artistCredit)
-        Item(stringResource(R.string.year), release.firstReleaseDate)
-        Item("Type", release.primaryType)
-        Item("Type", release.secondaryTypes)
-        Item(stringResource(R.string.comment), release.disambiguation)
-    }
-}
-@Composable
-fun MusicBrainzRelease(release: MusicBrainzRelease) {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
-    ) {
-        Item(stringResource(R.string.title), release.title)
-        MusicBrainzArtistCredits(release.artistCredit)
-        Item("Release Group", release.title)
-        Item(stringResource(R.string.year), release.date)
-        Item("Status", release.status)
-        Item("Country", release.country)
-        MusicBrainzMedias(release.media)
-        Item("Media", release.media?.map { "${it.format}(${it.discCount})" })
-        Item("Barcode", release.barcode)
-        Item("MarketLabel", release.labelInfo?.map { it.label.name })
-        MusicBrainzTags(release.tags)
-    }
-}
-
-@Composable
-fun MusicBrainzArtist(artist: MusicBrainzArtist) {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
-    ) {
-        Item(stringResource(R.string.title), artist.name)
-        Item("Type", artist.type)
-        Item("Gender", artist.gender)
-        Item("Country", artist.country)
-        MusicBrainzLifeSpan(artist.lifeSpan)
-        Item("Area", artist.area?.name)
-        Item("Alias", artist.aliases?.map { it.name })
-        MusicBrainzTags(artist.tags)
-    }
-}
-
-@Composable
-fun MusicBrainzRecording(recording: MusicBrainzRecording, embed: Boolean = false) {
-    val content = @Composable {
-        Item(stringResource(R.string.title), recording.title)
-        MusicBrainzArtistCredits(recording.artistCredit)
-        Item(stringResource(R.string.year), recording.firstReleaseDate)
-        Item(stringResource(R.string.comment), recording.disambiguation)
-        Item("Releases", recording.releases?.map { "${it.title} (${it.date}/${it.barcode})" })
-    }
-    if (embed) {
-        content()
-    } else
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-        ) {
-            content()
+        when (val i = item) {
+            is MusicBrainzReleaseGroup -> MusicBrainzReleaseGroup(i)
+            is MusicBrainzRelease      -> MusicBrainzRelease(i)
+            is MusicBrainzArtist       -> MusicBrainzArtist(i)
+            is MusicBrainzRecording    -> MusicBrainzRecording(i)
+            is MusicBrainzTrack        -> MusicBrainzTrack(i)
+            null                       -> Text(
+                stringResource(R.string.empty),
+                Modifier.align(Alignment.CenterHorizontally)
+            )
         }
+    }
+}
+
+
+@Composable
+fun ColumnScope.MusicBrainzReleaseGroup(release: MusicBrainzReleaseGroup) {
+    Item(stringResource(R.string.title), release.title)
+    MusicBrainzArtistCredits(release.artistCredit)
+    Item(stringResource(R.string.year), release.firstReleaseDate)
+    Item("Type", release.primaryType)
+    Item("Type", release.secondaryTypes)
+    Item(stringResource(R.string.comment), release.disambiguation)
 }
 
 @Composable
-fun MusicBrainzTrack(track: MusicBrainzTrack) {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
-    ) {
-        Item(stringResource(R.string.title), track.title)
-        MusicBrainzArtistCredits(track.artistCredit)
-        Item(stringResource(R.string.label_track_length), track.length.toString())
-        Item(stringResource(R.string.track), track.number)
-        Item("recording", track.recording.title)
-    }
+fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
+    Item(stringResource(R.string.title), release.title)
+    MusicBrainzArtistCredits(release.artistCredit)
+    Item("Release Group", release.title)
+    Item(stringResource(R.string.year), release.date)
+    Item("Status", release.status)
+    Item("Country", release.country)
+    MusicBrainzMedias(release.media)
+    Item("Media", release.media?.map { "${it.format}(${it.discCount})" })
+    Item("Barcode", release.barcode)
+    Item("MarketLabel", release.labelInfo?.map { it.label.name })
+    MusicBrainzTags(release.tags)
+}
+
+@Composable
+fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
+    Item(stringResource(R.string.title), artist.name)
+    Item("Type", artist.type)
+    Item("Gender", artist.gender)
+    Item("Country", artist.country)
+    MusicBrainzLifeSpan(artist.lifeSpan)
+    Item("Area", artist.area?.name)
+    Item("Alias", artist.aliases?.map { it.name })
+    MusicBrainzTags(artist.tags)
+}
+
+@Composable
+fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording) {
+    Item(stringResource(R.string.title), recording.title)
+    MusicBrainzArtistCredits(recording.artistCredit)
+    Item(stringResource(R.string.year), recording.firstReleaseDate)
+    Item(stringResource(R.string.comment), recording.disambiguation)
+    Item("Releases", recording.releases?.map { "${it.title} (${it.date}/${it.barcode})" })
+}
+
+@Composable
+fun ColumnScope.MusicBrainzTrack(track: MusicBrainzTrack) {
+    Item(stringResource(R.string.title), track.title)
+    MusicBrainzArtistCredits(track.artistCredit)
+    Item(stringResource(R.string.label_track_length), track.length.toString())
+    Item(stringResource(R.string.track), track.number)
+    Item("recording", track.recording.title)
 }
 
 @Composable
@@ -230,7 +203,7 @@ private fun MusicBrainzMedia(media: MusicBrainzRelease.Media) {
                             for (track in media.tracks) {
                                 Item("Track", value = track.title)
                                 Column(modifier = Modifier.padding(horizontal = 6.dp)) {
-                                    MusicBrainzRecording(track.recording, embed = true)
+                                    MusicBrainzRecording(track.recording)
                                 }
                             }
                         }
