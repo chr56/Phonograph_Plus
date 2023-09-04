@@ -130,7 +130,7 @@ fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
 fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording) {
     Item(stringResource(R.string.title), recording.title)
     MusicBrainzArtistCredits(recording.artistCredit)
-    Item(stringResource(R.string.year), recording.firstReleaseDate)
+    Item("Date", recording.firstReleaseDate)
     MusicBrainzDisambiguation(recording.disambiguation)
     if (!recording.releases.isNullOrEmpty()) {
         CascadeItem("Related Releases") {
@@ -195,7 +195,7 @@ private fun MusicBrainzMedia(media: MusicBrainzRelease.Media) {
             Item("Format", media.format)
             Item("Count", "${media.discCount} * ${media.trackCount}")
             if (!media.tracks.isNullOrEmpty()) {
-                CascadeItem("Tracks") {
+                CascadeItem("Tracks", innerPadding = 24.dp) {
                     for (track in media.tracks) {
                         Item("Track ${track.number}", value = track.title)
                         Column(modifier = Modifier.padding(horizontal = 6.dp)) {
