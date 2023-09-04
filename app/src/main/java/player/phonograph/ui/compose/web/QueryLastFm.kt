@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LastFmQuery(
@@ -44,17 +45,35 @@ class LastFmQuery(
         data class ViewTrack(val item: TrackResult.Track) : QueryAction()
     }
 
-    val target: MutableStateFlow<Target> = MutableStateFlow(target)
+    private val _queryParameter: MutableStateFlow<QueryParameter> =
+        MutableStateFlow(QueryParameter(target, releaseQuery, artistQuery, trackQuery))
+    val queryParameter get() = _queryParameter.asStateFlow()
+    fun updateQueryParameter(update: (QueryParameter) -> QueryParameter) {
+        _queryParameter.update {
+            update(it)
+        }
+    }
 
-    val releaseQuery: MutableStateFlow<String?> = MutableStateFlow(releaseQuery)
-    val artistQuery: MutableStateFlow<String?> = MutableStateFlow(artistQuery)
-    val trackQuery: MutableStateFlow<String?> = MutableStateFlow(trackQuery)
+    data class QueryParameter(
+        val target: Target,
+        val releaseQuery: String?,
+        val artistQuery: String?,
+        val trackQuery: String?,
+    ) {
+        fun check(): Boolean = when (target) {
+            Target.Track   -> trackQuery != null
+            Target.Artist  -> artistQuery != null
+            Target.Release -> releaseQuery != null
+        }
+    }
 
     fun searchAction(): QueryAction {
-        return when (target.value) {
-            Target.Artist  -> QueryAction.SearchArtist(artistQuery.value.orEmpty())
-            Target.Release -> QueryAction.SearchRelease(releaseQuery.value.orEmpty())
-            Target.Track   -> QueryAction.SearchTrack(trackQuery.value.orEmpty(), artistQuery.value.orEmpty())
+        with(queryParameter.value) {
+            return when (target) {
+                Target.Artist  -> QueryAction.SearchArtist(artistQuery.orEmpty())
+                Target.Release -> QueryAction.SearchRelease(releaseQuery.orEmpty())
+                Target.Track   -> QueryAction.SearchTrack(trackQuery.orEmpty(), artistQuery.orEmpty())
+            }
         }
     }
 
