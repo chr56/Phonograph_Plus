@@ -44,6 +44,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -77,7 +78,13 @@ fun ColumnScope.MusicBrainzReleaseGroup(release: MusicBrainzReleaseGroup) {
     MusicBrainzArtistCredits(release.artistCredit)
     Item(stringResource(R.string.year), release.firstReleaseDate)
     Item("Type", release.primaryType)
-    Item("Type", release.secondaryTypes)
+    CascadeItem("Type") {
+        if (!release.secondaryTypes.isNullOrEmpty()) {
+            for (secondaryType in release.secondaryTypes) {
+                Text(secondaryType)
+            }
+        }
+    }
     MusicBrainzDisambiguation(release.disambiguation)
 }
 
@@ -90,9 +97,14 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
     Item("Status", release.status)
     Item("Country", release.country)
     MusicBrainzMedias(release.media)
-    Item("Media", release.media?.map { "${it.format}(${it.discCount})" })
     Item("Barcode", release.barcode)
-    Item("MarketLabel", release.labelInfo?.map { it.label.name })
+    CascadeItem("Type") {
+        if (!release.labelInfo.isNullOrEmpty()) {
+            for (labelInfo in release.labelInfo) {
+                Text(labelInfo.label.name)
+            }
+        }
+    }
     MusicBrainzTags(release.tags)
 }
 
@@ -104,7 +116,13 @@ fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
     Item("Country", artist.country)
     MusicBrainzLifeSpan(artist.lifeSpan)
     Item("Area", artist.area?.name)
-    Item("Alias", artist.aliases?.map { it.name })
+    CascadeItem("Alias") {
+        if (!artist.aliases.isNullOrEmpty()) {
+            for (alias in artist.aliases) {
+                Text("${alias.name} (${alias.locale})")
+            }
+        }
+    }
     MusicBrainzTags(artist.tags)
 }
 
@@ -114,7 +132,13 @@ fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording) {
     MusicBrainzArtistCredits(recording.artistCredit)
     Item(stringResource(R.string.year), recording.firstReleaseDate)
     MusicBrainzDisambiguation(recording.disambiguation)
-    Item("Releases", recording.releases?.map { "${it.title} (${it.date}/${it.barcode})" })
+    if (!recording.releases.isNullOrEmpty()) {
+        CascadeItem("Related Releases") {
+            for (release in recording.releases) {
+                Text("${release.title} (${release.date}/${release.barcode})")
+            }
+        }
+    }
 }
 
 @Composable
@@ -129,36 +153,26 @@ fun ColumnScope.MusicBrainzTrack(track: MusicBrainzTrack) {
 @Composable
 fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
     if (!artistCredits.isNullOrEmpty()) {
-        Column(
-            Modifier.padding(8.dp),
-            verticalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Text(
-                stringResource(R.string.artists),
-                style = TextStyle(fontWeight = FontWeight.Bold),
-                modifier = Modifier.align(Alignment.Start),
-            )
-            SelectionContainer {
-                Column(Modifier.padding(horizontal = 4.dp)) {
-                    val stylePrimary = TextStyle(
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Start
+        SelectionContainer {
+            CascadeItem(stringResource(R.string.artists)) {
+                val stylePrimary = TextStyle(
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Start
+                )
+                val styleSecondary = TextStyle(
+                    fontSize = 12.sp,
+                    textAlign = TextAlign.Start
+                )
+                for (artistCredit in artistCredits) {
+                    Text(
+                        "${artistCredit.joinphrase} ${artistCredit.name}",
+                        style = stylePrimary,
                     )
-                    val styleSecondary = TextStyle(
-                        fontSize = 12.sp,
-                        textAlign = TextAlign.Start
+                    Text(
+                        "* ${artistCredit.artist.name} (${artistCredit.artist.type})",
+                        style = styleSecondary,
+                        modifier = Modifier.padding(start = 6.dp)
                     )
-                    for (artistCredit in artistCredits) {
-                        Text(
-                            "${artistCredit.joinphrase} ${artistCredit.name}",
-                            style = stylePrimary,
-                        )
-                        Text(
-                            "* ${artistCredit.artist.name} (${artistCredit.artist.type})",
-                            style = styleSecondary,
-                            modifier = Modifier.padding(start = 6.dp)
-                        )
-                    }
                 }
             }
         }
@@ -177,35 +191,15 @@ private fun MusicBrainzMedias(medias: List<MusicBrainzRelease.Media>?) {
 @Composable
 private fun MusicBrainzMedia(media: MusicBrainzRelease.Media) {
     SelectionContainer {
-        Column(
-            Modifier.padding(8.dp),
-            verticalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Text(
-                "Media",
-                style = TextStyle(fontWeight = FontWeight.Bold),
-                modifier = Modifier.align(Alignment.Start),
-            )
-            Column(Modifier.padding(horizontal = 4.dp)) {
-                Item("format", media.format)
-                Item("count", "${media.discCount} * ${media.trackCount}")
-                if (!media.tracks.isNullOrEmpty()) {
-                    Column(
-                        Modifier.padding(8.dp),
-                        verticalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        Text(
-                            "Tracks",
-                            style = TextStyle(fontWeight = FontWeight.Bold),
-                            modifier = Modifier.align(Alignment.Start),
-                        )
-                        Column(Modifier.padding(horizontal = 4.dp)) {
-                            for (track in media.tracks) {
-                                Item("Track", value = track.title)
-                                Column(modifier = Modifier.padding(horizontal = 6.dp)) {
-                                    MusicBrainzRecording(track.recording)
-                                }
-                            }
+        CascadeItem("Media") {
+            Item("Format", media.format)
+            Item("Count", "${media.discCount} * ${media.trackCount}")
+            if (!media.tracks.isNullOrEmpty()) {
+                CascadeItem("Tracks") {
+                    for (track in media.tracks) {
+                        Item("Track ${track.number}", value = track.title)
+                        Column(modifier = Modifier.padding(horizontal = 6.dp)) {
+                            MusicBrainzRecording(track.recording)
                         }
                     }
                 }
@@ -235,7 +229,7 @@ private fun MusicBrainzTags(tags: List<MusicBrainzTag>?) {
                 horizontalItemSpacing = 2.dp
             ) {
                 for (tag in tags) {
-                    item{ MusicBrainzTag(tag) }
+                    item { MusicBrainzTag(tag) }
                 }
             }
         }
@@ -279,5 +273,26 @@ private fun Item(label: String, values: Collection<String>?) {
     if (!values.isNullOrEmpty()) {
         val value = values.joinToString(separator = "\n") { it }
         VerticalTextItem(label, value)
+    }
+}
+
+
+@Composable
+private fun CascadeItem(
+    title: String, outerPadding: Dp = 8.dp, innerPadding: Dp = 8.dp,
+    content: @Composable () -> Unit,
+) {
+    Column(
+        Modifier.padding(outerPadding),
+        verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Text(
+            title,
+            style = TextStyle(fontWeight = FontWeight.Bold),
+            modifier = Modifier.align(Alignment.Start),
+        )
+        Column(Modifier.padding(innerPadding)) {
+            content()
+        }
     }
 }
