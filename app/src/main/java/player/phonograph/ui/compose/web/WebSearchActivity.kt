@@ -75,7 +75,7 @@ class WebSearchActivity : ThemeActivity() {
         }
     }
 
-    private fun checkCommand(context: Context, intent: Intent): Query<*>? {
+    private fun checkCommand(context: Context, intent: Intent): Query<*, *>? {
         val factory = viewModel.queryFactory
         return when (intent.getStringExtra(EXTRA_COMMAND)) {
             EXTRA_QUERY_ALBUM  -> intent.parcelableExtra<PhonographAlbum>(EXTRA_DATA)?.let { factory.from(context, it) }

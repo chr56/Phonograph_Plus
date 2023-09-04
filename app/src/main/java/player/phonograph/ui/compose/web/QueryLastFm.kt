@@ -27,7 +27,7 @@ class LastFmQuery(
     artistQuery: String? = null,
     trackQuery: String? = null,
     target: Target = Target.Release,
-) : Query<LastFmQuery.QueryAction>(viewModel, "Last.fm") {
+) : Query<LastFmQuery.QueryParameter, LastFmQuery.QueryAction>(viewModel, "Last.fm") {
 
     enum class Target {
         Artist,
@@ -47,11 +47,9 @@ class LastFmQuery(
 
     private val _queryParameter: MutableStateFlow<QueryParameter> =
         MutableStateFlow(QueryParameter(target, releaseQuery, artistQuery, trackQuery))
-    val queryParameter get() = _queryParameter.asStateFlow()
-    fun updateQueryParameter(update: (QueryParameter) -> QueryParameter) {
-        _queryParameter.update {
-            update(it)
-        }
+    override val queryParameter get() = _queryParameter.asStateFlow()
+    override fun updateQueryParameter(update: (QueryParameter) -> QueryParameter) {
+        _queryParameter.update(update)
     }
 
     data class QueryParameter(
@@ -59,7 +57,7 @@ class LastFmQuery(
         val releaseQuery: String?,
         val artistQuery: String?,
         val trackQuery: String?,
-    ) {
+    ) : Parameter {
         fun check(): Boolean = when (target) {
             Target.Track   -> trackQuery != null
             Target.Artist  -> artistQuery != null

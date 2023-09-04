@@ -26,10 +26,10 @@ class WebSearchViewModel : ViewModel() {
         _page.value = page
     }
 
-    private val _query: MutableStateFlow<Query<*>?> = MutableStateFlow(null)
+    private val _query: MutableStateFlow<Query<*, *>?> = MutableStateFlow(null)
     val query get() = _query.asStateFlow()
 
-    fun prepareQuery(context: Context, query: Query<*>?) {
+    fun prepareQuery(context: Context, query: Query<*, *>?) {
         _query.tryEmit(query ?: queryFactory.default(context))
     }
 

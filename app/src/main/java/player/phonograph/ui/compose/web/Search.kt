@@ -19,9 +19,9 @@ import androidx.compose.ui.platform.LocalContext
 fun Search(viewModel: WebSearchViewModel) {
     val queryState by viewModel.query.collectAsState()
 
-    val query = queryState
-    if (query is LastFmQuery) {
-        LastFmSearch(viewModel, query)
+    when (val query = queryState) {
+        is LastFmQuery -> LastFmSearch(viewModel, query)
+        else           -> {}
     }
 }
 

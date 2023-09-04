@@ -59,9 +59,9 @@ fun Detail(viewModel: WebSearchViewModel) {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            val query = queryState
-            if (query is LastFmQuery) {
-                DetailLastFm(viewModel, query)
+            when (val query = queryState) {
+                is LastFmQuery -> DetailLastFm(viewModel, query)
+                else           -> {}
             }
         }
     }
