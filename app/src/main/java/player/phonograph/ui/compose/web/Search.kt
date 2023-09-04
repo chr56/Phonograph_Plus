@@ -20,8 +20,9 @@ fun Search(viewModel: WebSearchViewModel) {
     val queryState by viewModel.query.collectAsState()
 
     when (val query = queryState) {
-        is LastFmQuery -> LastFmSearch(viewModel, query)
-        else           -> {}
+        is LastFmQuery      -> LastFmSearch(viewModel, query)
+        is MusicBrainzQuery -> MusicBrainSearch(viewModel, query)
+        else                -> {}
     }
 }
 
@@ -44,5 +45,16 @@ fun LastFmSearch(viewModel: WebSearchViewModel, queryState: LastFmQuery) {
         }
         LastFmSearchResult(result, onSelect, Modifier.align(Alignment.CenterHorizontally))
 
+    }
+}
+
+@Composable
+fun MusicBrainSearch(viewModel: WebSearchViewModel, queryState: MusicBrainzQuery) {
+    Column {
+        val context = LocalContext.current
+
+        // todo MusicBrainzSearchBox
+
+        // todo MusicBrainzSearchResult
     }
 }
