@@ -5,6 +5,11 @@
 package player.phonograph.ui.compose.web
 
 import player.phonograph.R
+import player.phonograph.ui.compose.web.MusicBrainzQuery.Target
+import player.phonograph.ui.compose.web.WebSearchActivity.Companion.launchIntent
+import player.phonograph.ui.compose.web.WebSearchActivity.Companion.launchIntentMusicBrainzArtist
+import player.phonograph.ui.compose.web.WebSearchActivity.Companion.launchIntentMusicBrainzRecording
+import player.phonograph.ui.compose.web.WebSearchActivity.Companion.launchIntentMusicBrainzRelease
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -69,17 +74,17 @@ fun Detail(viewModel: WebSearchViewModel) {
 }
 
 @Composable
-fun JumpMusicBrainz(modifier: Modifier, type: String, mbid: String?) {
+fun JumpMusicBrainz(modifier: Modifier, type: Target, mbid: String?) {
     if (!mbid.isNullOrEmpty()) {
         val context = LocalContext.current
         TextButton(
             onClick = {
                 context.startActivity(
                     when (type) {
-                        "artist"    -> WebSearchActivity.launchIntentMusicBrainzArtist(context, mbid)
-                        "recording" -> WebSearchActivity.launchIntentMusicBrainzRecording(context, mbid)
-                        "release"   -> WebSearchActivity.launchIntentMusicBrainzRelease(context, mbid)
-                        else        -> WebSearchActivity.launchIntent(context)
+                        Target.Artist    -> launchIntentMusicBrainzArtist(context, mbid)
+                        Target.Recording -> launchIntentMusicBrainzRecording(context, mbid)
+                        Target.Release   -> launchIntentMusicBrainzRelease(context, mbid)
+                        else             -> launchIntent(context)
                     }
                 )
             },
@@ -91,12 +96,12 @@ fun JumpMusicBrainz(modifier: Modifier, type: String, mbid: String?) {
 }
 
 @Composable
-fun LinkMusicBrainz(modifier: Modifier, type: String, mbid: String?) {
+fun LinkMusicBrainz(modifier: Modifier, type: Target, mbid: String?) {
     if (!mbid.isNullOrEmpty()) {
         val context = LocalContext.current
         TextButton(
             onClick = {
-                clickLink(context, "https://musicbrainz.org/$type/$mbid")
+                clickLink(context, "https://musicbrainz.org/${type.urlName}/$mbid")
             },
             modifier = modifier
         ) {
@@ -111,7 +116,7 @@ fun LinkLastFm(modifier: Modifier, lastFmUri: String?) {
         val context = LocalContext.current
         TextButton(
             onClick = {
-                clickLink(context, "Last.FM")
+                clickLink(context, lastFmUri)
             },
             modifier = modifier
         ) {

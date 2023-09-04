@@ -21,11 +21,11 @@ class MusicBrainzQuery(
     viewModel: WebSearchViewModel,
 ) : Query<MusicBrainzQuery.QueryParameter, MusicBrainzQuery.QueryAction>(viewModel, "Musicbrainz") {
 
-    enum class Target {
-        ReleaseGroup,
-        Release,
-        Artist,
-        Recording,
+    enum class Target(val urlName: String) {
+        ReleaseGroup("release-group"),
+        Release("release"),
+        Artist("artist"),
+        Recording("recording"),
         ;
     }
 

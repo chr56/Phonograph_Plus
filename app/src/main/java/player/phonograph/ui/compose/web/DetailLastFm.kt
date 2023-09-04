@@ -77,7 +77,7 @@ fun LastFmArtist(artist: LastFmArtist) {
         Wiki(artist.bio, isBio = true)
         MusicBrainzIdentifier(artist.mbid)
         Tags(artist.tags)
-        Links(artist.url, artist.mbid, "artist")
+        Links(artist.url, artist.mbid, MusicBrainzQuery.Target.Artist)
     }
 }
 
@@ -94,7 +94,7 @@ fun LastFmAlbum(album: LastFmAlbum) {
         Wiki(album.wiki, isBio = false)
         MusicBrainzIdentifier(album.mbid)
         Tags(album.tags)
-        Links(album.url, album.mbid, "release")
+        Links(album.url, album.mbid, MusicBrainzQuery.Target.Release)
         Tracks(album.tracks)
     }
 }
@@ -112,13 +112,13 @@ fun LastFmTrack(track: LastFmTrack) {
         Wiki(track.wiki, isBio = false)
         MusicBrainzIdentifier(track.mbid)
         Tags(track.toptags)
-        Links(track.url, track.mbid, "recording")
+        Links(track.url, track.mbid, MusicBrainzQuery.Target.Recording)
     }
 }
 
 
 @Composable
-private fun ColumnScope.Links(lastFmUri: String, mbid: String?, type: String) {
+private fun ColumnScope.Links(lastFmUri: String, mbid: String?, type: MusicBrainzQuery.Target) {
     Row(Modifier.align(Alignment.End)) {
         JumpMusicBrainz(Modifier.align(Alignment.CenterVertically), type, mbid)
         LinkMusicBrainz(Modifier.align(Alignment.CenterVertically), type, mbid)
