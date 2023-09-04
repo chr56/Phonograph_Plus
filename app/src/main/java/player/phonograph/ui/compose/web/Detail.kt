@@ -60,17 +60,39 @@ fun Detail(viewModel: WebSearchViewModel) {
                 .padding(16.dp)
         ) {
             when (val query = queryState) {
-                is LastFmQuery -> DetailLastFm(viewModel, query)
+                is LastFmQuery      -> DetailLastFm(viewModel, query)
                 is MusicBrainzQuery -> DetailMusicBrainz(viewModel, query)
-                else -> {}
+                else                -> {}
             }
         }
     }
 }
 
 @Composable
+fun JumpMusicBrainz(modifier: Modifier, type: String, mbid: String?) {
+    if (!mbid.isNullOrEmpty()) {
+        val context = LocalContext.current
+        TextButton(
+            onClick = {
+                context.startActivity(
+                    when (type) {
+                        "artist"    -> WebSearchActivity.launchIntentMusicBrainzArtist(context, mbid)
+                        "recording" -> WebSearchActivity.launchIntentMusicBrainzRecording(context, mbid)
+                        "release"   -> WebSearchActivity.launchIntentMusicBrainzRelease(context, mbid)
+                        else        -> WebSearchActivity.launchIntent(context)
+                    }
+                )
+            },
+            modifier = modifier
+        ) {
+            Text("MusicBrainz")
+        }
+    }
+}
+
+@Composable
 fun LinkMusicBrainz(modifier: Modifier, type: String, mbid: String?) {
-    if (mbid != null) {
+    if (!mbid.isNullOrEmpty()) {
         val context = LocalContext.current
         TextButton(
             onClick = {

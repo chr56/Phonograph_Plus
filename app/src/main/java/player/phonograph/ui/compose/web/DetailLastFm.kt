@@ -120,6 +120,7 @@ fun LastFmTrack(track: LastFmTrack) {
 @Composable
 private fun ColumnScope.Links(lastFmUri: String, mbid: String?, type: String) {
     Row(Modifier.align(Alignment.End)) {
+        JumpMusicBrainz(Modifier.align(Alignment.CenterVertically), type, mbid)
         LinkMusicBrainz(Modifier.align(Alignment.CenterVertically), type, mbid)
         LinkLastFm(Modifier.align(Alignment.CenterVertically), lastFmUri)
     }
