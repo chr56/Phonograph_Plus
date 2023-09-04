@@ -4,73 +4,37 @@
 
 package player.phonograph.ui.compose.web
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import player.phonograph.model.Album as PhonographAlbum
-import player.phonograph.model.Artist as PhonographArtist
-import player.phonograph.model.Song as PhonographSong
+import lib.phonograph.misc.emit
+import player.phonograph.util.reportError
+import retrofit2.Call
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import android.content.Context
+import kotlinx.coroutines.flow.StateFlow
 
-class Query(
-    releaseQuery: String? = null,
-    artistQuery: String? = null,
-    trackQuery: String? = null,
-    target: Target = Target.Release,
-) {
+sealed class Query<P : Query.Parameter, A : Query.Action>(viewModel: ViewModel, val source: String) {
 
-    enum class Target {
-        Artist,
-        Release,
-        Track,
-        ;
-    }
+    abstract val queryParameter: StateFlow<P>
+    abstract fun updateQueryParameter(update: (P) -> P)
+    abstract fun query(context: Context, action: A)
 
-    enum class Source {
-        LastFm,
-        ;
-    }
-
-
-    val target: MutableStateFlow<Target> = MutableStateFlow(target)
-
-    val source: MutableStateFlow<Source> = MutableStateFlow(Source.LastFm)
-
-    val releaseQuery: MutableStateFlow<String?> = MutableStateFlow(releaseQuery)
-    val artistQuery: MutableStateFlow<String?> = MutableStateFlow(artistQuery)
-    val trackQuery: MutableStateFlow<String?> = MutableStateFlow(trackQuery)
-
-    fun action(): QueryAction {
-        return when (target.value) {
-            Target.Artist  -> QueryAction.Artist(artistQuery.value.orEmpty())
-            Target.Release -> QueryAction.Release(releaseQuery.value.orEmpty())
-            Target.Track   -> QueryAction.Track(trackQuery.value.orEmpty(), artistQuery.value.orEmpty())
+    protected suspend fun <T> Call<T?>.tryExecute(): T? {
+        val result = emit<T>()
+        return if (result.isSuccess) {
+            result.getOrNull()?.body()
+        } else {
+            reportError(result.exceptionOrNull() ?: Exception(), TAG, ERR_MSG)
+            null
         }
     }
 
-    sealed class QueryAction {
-        data class Artist(val name: String) : QueryAction()
-        data class Release(val name: String) : QueryAction()
-        data class Track(val name: String, val artist: String?) : QueryAction()
-    }
+    interface Action
+    interface Parameter
 
     companion object {
-        fun from(artist: PhonographArtist): Query =
-            Query(
-                artistQuery = artist.name,
-                target = Target.Artist
-            )
-
-        fun from(album: PhonographAlbum): Query =
-            Query(
-                releaseQuery = album.title,
-                artistQuery = album.artistName,
-                target = Target.Release
-            )
-
-        fun from(song: PhonographSong): Query =
-            Query(
-                releaseQuery = song.albumName,
-                artistQuery = song.artistName,
-                trackQuery = song.title,
-                target = Target.Track
-            )
+        private const val TAG = "WebSearch"
+        private const val ERR_MSG = "Failed to query!\n"
     }
+
+    protected val viewModelScope = viewModel.viewModelScope
 }

@@ -29,10 +29,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,9 +48,22 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.text.Html
+
+
+
+@Composable
+fun BoxScope.DetailLastFm(viewModel: WebSearchViewModel, query: LastFmQuery) {
+    val item by query.detail.collectAsState()
+    when (val i = item) {
+        is LastFmAlbum -> LastFmAlbum(i)
+        is LastFmArtist -> LastFmArtist(i)
+        is LastFmTrack -> LastFmTrack(i)
+        null -> Text(
+            stringResource(R.string.empty), modifier = Modifier.align(Alignment.TopCenter)
+        )
+    }
+}
 
 @Composable
 fun LastFmArtist(artist: LastFmArtist) {
@@ -106,23 +119,9 @@ fun LastFmTrack(track: LastFmTrack) {
 
 @Composable
 private fun ColumnScope.Links(lastFmUri: String, mbid: String?, type: String) {
-    val context = LocalContext.current
     Row(Modifier.align(Alignment.End)) {
-        if (!mbid.isNullOrEmpty())
-            TextButton(
-                onClick = {
-                    clickLink(context, "https://musicbrainz.org/$type/$mbid")
-                },
-                modifier = Modifier.align(Alignment.CenterVertically)
-            ) {
-                Text("MusicBrainz")
-            }
-        TextButton(
-            onClick = { clickLink(context, lastFmUri) },
-            modifier = Modifier.align(Alignment.CenterVertically)
-        ) {
-            Text("Last.FM")
-        }
+        LinkMusicBrainz(Modifier.align(Alignment.CenterVertically), type, mbid)
+        LinkLastFm(Modifier.align(Alignment.CenterVertically), lastFmUri)
     }
 }
 
@@ -278,14 +277,4 @@ private fun Image(painter: Painter?) {
                     )
             )
         }
-}
-
-
-private fun clickLink(context: Context, url: String) {
-    context.startActivity(
-        Intent(Intent.ACTION_VIEW).apply {
-            data = Uri.parse(url)
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-    )
 }

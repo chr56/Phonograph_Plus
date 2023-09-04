@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.compose.web
 
+import util.phonograph.tagsources.lastfm.LastFmSearchResultItem
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
@@ -13,23 +14,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 
+
 @Composable
-fun LastFmSearch(viewModel: WebSearchViewModel) {
+fun Search(viewModel: WebSearchViewModel) {
+    val queryState by viewModel.query.collectAsState()
+
+    when (val query = queryState) {
+        is LastFmQuery -> LastFmSearch(viewModel, query)
+        else           -> {}
+    }
+}
+
+@Composable
+fun LastFmSearch(viewModel: WebSearchViewModel, queryState: LastFmQuery) {
     Column {
-        val queryState by viewModel.query.collectAsState()
         val context = LocalContext.current
         LastFmSearchBox(
-            query = queryState,
-            Modifier
-                .wrapContentHeight()
-                // .background(MaterialTheme.colors.surface)
+            lastFmQuery = queryState,
+            Modifier.wrapContentHeight()
         ) {
-            viewModel.search(context, it)
+            queryState.query(context, it)
         }
 
-        val result by viewModel.result.collectAsState()
-        val onSelect: (Any) -> Unit = {
-            viewModel.select(context, it)
+        val result by queryState.result.collectAsState()
+        val onSelect: (LastFmSearchResultItem) -> Unit = {
+            val action = queryState.viewAction(it)
+            queryState.query(context, action)
             viewModel.updatePage(WebSearchViewModel.Page.Detail)
         }
         LastFmSearchResult(result, onSelect, Modifier.align(Alignment.CenterHorizontally))
