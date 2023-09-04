@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_DOCUMENT
 import android.os.Bundle
 import player.phonograph.model.Album as PhonographAlbum
 import player.phonograph.model.Artist as PhonographArtist
@@ -92,24 +93,27 @@ class WebSearchActivity : ThemeActivity() {
         const val EXTRA_DATA = "DATA"
 
         fun launchIntent(context: Context, data: PhonographAlbum?): Intent =
-            Intent(context, WebSearchActivity::class.java).apply {
+            launchIntent(context).apply {
                 putExtra(EXTRA_TYPE, EXTRA_ALBUM)
                 putExtra(EXTRA_DATA, data)
             }
 
         fun launchIntent(context: Context, data: PhonographArtist?): Intent =
-            Intent(context, WebSearchActivity::class.java).apply {
+            launchIntent(context).apply {
                 putExtra(EXTRA_TYPE, EXTRA_ARTIST)
                 putExtra(EXTRA_DATA, data)
             }
 
         fun launchIntent(context: Context, data: PhonographSong?): Intent =
-            Intent(context, WebSearchActivity::class.java).apply {
+            launchIntent(context).apply {
                 putExtra(EXTRA_TYPE, EXTRA_SONG)
                 putExtra(EXTRA_DATA, data)
             }
 
-        fun launchIntent(context: Context): Intent = Intent(context, WebSearchActivity::class.java)
+        fun launchIntent(context: Context): Intent =
+            Intent(context, WebSearchActivity::class.java).apply {
+                flags = FLAG_ACTIVITY_NEW_DOCUMENT
+            }
     }
 }
 
