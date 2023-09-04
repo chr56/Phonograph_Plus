@@ -22,6 +22,8 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -32,8 +34,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun BoxScope.DetailMusicBrainz(viewModel: WebSearchViewModel) {
-
+fun BoxScope.DetailMusicBrainz(viewModel: WebSearchViewModel, query: MusicBrainzQuery) {
+    val item by query.detail.collectAsState()
+    when (val i = item) {
+        is MusicBrainzReleaseGroup -> MusicBrainzReleaseGroup(i)
+        is MusicBrainzRelease      -> MusicBrainzRelease(i)
+        is MusicBrainzArtist       -> MusicBrainzArtist(i)
+        is MusicBrainzRecording    -> MusicBrainzRecording(i)
+        null                       -> Text(
+            stringResource(R.string.empty), modifier = Modifier.align(Alignment.TopCenter)
+        )
+    }
 }
 
 

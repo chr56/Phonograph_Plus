@@ -61,7 +61,8 @@ fun Detail(viewModel: WebSearchViewModel) {
         ) {
             when (val query = queryState) {
                 is LastFmQuery -> DetailLastFm(viewModel, query)
-                else           -> {}
+                is MusicBrainzQuery -> DetailMusicBrainz(viewModel, query)
+                else -> {}
             }
         }
     }
