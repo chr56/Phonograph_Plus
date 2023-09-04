@@ -78,7 +78,7 @@ fun ColumnScope.MusicBrainzReleaseGroup(release: MusicBrainzReleaseGroup) {
     Item(stringResource(R.string.year), release.firstReleaseDate)
     Item("Type", release.primaryType)
     Item("Type", release.secondaryTypes)
-    Item(stringResource(R.string.comment), release.disambiguation)
+    MusicBrainzDisambiguation(release.disambiguation)
 }
 
 @Composable
@@ -113,7 +113,7 @@ fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording) {
     Item(stringResource(R.string.title), recording.title)
     MusicBrainzArtistCredits(recording.artistCredit)
     Item(stringResource(R.string.year), recording.firstReleaseDate)
-    Item(stringResource(R.string.comment), recording.disambiguation)
+    MusicBrainzDisambiguation(recording.disambiguation)
     Item("Releases", recording.releases?.map { "${it.title} (${it.date}/${it.barcode})" })
 }
 
@@ -259,6 +259,13 @@ private fun MusicBrainzTag(tag: MusicBrainzTag) {
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun MusicBrainzDisambiguation(string: String?) {
+    if (!string.isNullOrEmpty()) {
+        Item(stringResource(R.string.comment), string)
     }
 }
 
