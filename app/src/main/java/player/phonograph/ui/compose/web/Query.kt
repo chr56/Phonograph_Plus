@@ -7,9 +7,11 @@ package player.phonograph.ui.compose.web
 import lib.phonograph.misc.emit
 import player.phonograph.util.reportError
 import retrofit2.Call
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import android.content.Context
 
-sealed class Query<A : Query.Action>(val source: String) {
+sealed class Query<A : Query.Action>(viewModel: ViewModel, val source: String) {
 
     abstract fun search(context: Context, action: A)
 
@@ -31,4 +33,6 @@ sealed class Query<A : Query.Action>(val source: String) {
         private const val TAG = "WebSearch"
         private const val ERR_MSG = "Failed to query!\n"
     }
+
+    protected val viewModelScope = viewModel.viewModelScope
 }

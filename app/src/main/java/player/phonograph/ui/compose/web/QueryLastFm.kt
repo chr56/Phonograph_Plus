@@ -10,7 +10,6 @@ import util.phonograph.tagsources.lastfm.LastFMRestClient
 import util.phonograph.tagsources.lastfm.LastFMService
 import util.phonograph.tagsources.lastfm.LastFmSearchResults
 import util.phonograph.tagsources.lastfm.TrackResult
-import androidx.lifecycle.viewModelScope
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +25,7 @@ class LastFmQuery(
     artistQuery: String? = null,
     trackQuery: String? = null,
     target: Target = Target.Release,
-) : Query<LastFmQuery.QueryAction>("Last.fm") {
+) : Query<LastFmQuery.QueryAction>(viewModel, "Last.fm") {
 
     enum class Target {
         Artist,
@@ -64,7 +63,7 @@ class LastFmQuery(
 
     //region Query Implementations
     override fun search(context: Context, action: QueryAction) {
-        lastFmQuery(scope) { service ->
+        lastFmQuery() { service ->
             val call = when (action) {
                 is QueryAction.Artist  -> service.searchArtist(action.name, 1)
                 is QueryAction.Release -> service.searchAlbum(action.name, 1)
@@ -78,7 +77,7 @@ class LastFmQuery(
     }
 
     override fun view(context: Context, item: Any) {
-        scope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             when (item) {
                 is AlbumResult.Album   -> queryLastFMAlbum(context, item)
                 is ArtistResult.Artist -> queryLastFMArtist(context, item)
@@ -88,7 +87,7 @@ class LastFmQuery(
     }
 
     private fun queryLastFMAlbum(context: Context, album: AlbumResult.Album) {
-        lastFmQuery(scope) { service ->
+        lastFmQuery { service ->
             val call = service.getAlbumInfo(album.name, album.artist, null)
             val response = execute(call)
             _detail.emit(response?.album)
@@ -96,7 +95,7 @@ class LastFmQuery(
     }
 
     private fun queryLastFMArtist(context: Context, artist: ArtistResult.Artist) {
-        lastFmQuery(scope) { service ->
+        lastFmQuery { service ->
             val call = service.getArtistInfo(artist.name, null, null)
             val response = execute(call)
             _detail.emit(response?.artist)
@@ -104,7 +103,7 @@ class LastFmQuery(
     }
 
     private fun queryLastFMTrack(context: Context, track: TrackResult.Track) {
-        lastFmQuery(scope) { service ->
+        lastFmQuery { service ->
             val call = service.getTrackInfo(track.name, track.artist, null)
             val response = execute(call)
             _detail.emit(response?.track)
@@ -112,11 +111,10 @@ class LastFmQuery(
     }
 
     private fun lastFmQuery(
-        scope: CoroutineScope,
         block: suspend CoroutineScope.(LastFMService) -> Unit,
     ) {
         lastFmQueryJob?.cancel()
-        lastFmQueryJob = scope.launch(Dispatchers.IO) {
+        lastFmQueryJob = viewModelScope.launch(Dispatchers.IO) {
             val service = lastFMRestClient.apiService
             block.invoke(this, service)
         }
@@ -125,7 +123,6 @@ class LastFmQuery(
 
     private val lastFMRestClient: LastFMRestClient = LastFMRestClient(context)
     private var lastFmQueryJob: Job? = null
-    private val scope = viewModel.viewModelScope
     //endregion
 
 
