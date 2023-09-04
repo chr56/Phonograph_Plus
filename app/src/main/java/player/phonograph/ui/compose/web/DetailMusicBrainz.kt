@@ -12,26 +12,39 @@ import util.phonograph.tagsources.musicbrainz.MusicBrainzArtistCredit
 import util.phonograph.tagsources.musicbrainz.MusicBrainzRecording
 import util.phonograph.tagsources.musicbrainz.MusicBrainzRelease
 import util.phonograph.tagsources.musicbrainz.MusicBrainzReleaseGroup
+import util.phonograph.tagsources.musicbrainz.MusicBrainzTag
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 
 @Composable
 fun BoxScope.DetailMusicBrainz(viewModel: WebSearchViewModel, query: MusicBrainzQuery) {
@@ -72,12 +85,14 @@ fun MusicBrainzRelease(release: MusicBrainzRelease) {
     ) {
         Item(stringResource(R.string.title), release.title)
         MusicBrainzArtistCredits(release.artistCredit)
+        Item("Release Group", release.title)
         Item(stringResource(R.string.year), release.date)
         Item("Status", release.status)
         Item("Country", release.country)
         Item("Media", release.media?.map { "${it.format}(${it.discCount})" })
         Item("Barcode", release.barcode)
-        Item("MarketLabel", release.labelInfo?.map { "${it.label.name}(${it.catalogNumber})" })
+        Item("MarketLabel", release.labelInfo?.map { it.label.name })
+        MusicBrainzTags(release.tags)
     }
 }
 
@@ -95,7 +110,7 @@ fun MusicBrainzArtist(artist: MusicBrainzArtist) {
         MusicBrainzLifeSpan(artist.lifeSpan)
         Item("Area", artist.area?.name)
         Item("Alias", artist.aliases?.map { it.name })
-        Item("Tags", artist.tags?.map { it.name })
+        MusicBrainzTags(artist.tags)
     }
 }
 
@@ -156,6 +171,48 @@ fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
 @Composable
 private fun MusicBrainzLifeSpan(lifeSpan: MusicBrainzArtist.LifeSpan?) {
     if (lifeSpan != null) Item("LifeSpan", lifeSpan.run { "$begin~$end ${if (ended) "ENDED" else ""}" })
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun MusicBrainzTags(tags: List<MusicBrainzTag>?) {
+    if (!tags.isNullOrEmpty()) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .heightIn(max = 96.dp),
+        ) {
+            LazyHorizontalStaggeredGrid(
+                StaggeredGridCells.Adaptive(32.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+                horizontalItemSpacing = 2.dp
+            ) {
+                for (tag in tags) {
+                    item{ MusicBrainzTag(tag) }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun MusicBrainzTag(tag: MusicBrainzTag) {
+    Surface(
+        modifier = Modifier.wrapContentSize(),
+        shape = RoundedCornerShape(16.dp),
+        color = Color.LightGray
+    ) {
+        Row(Modifier.padding(vertical = 6.dp, horizontal = 8.dp)) {
+            SelectionContainer {
+                Text(
+                    text = tag.name,
+                    modifier = Modifier,
+                    overflow = TextOverflow.Ellipsis,
+                    softWrap = false,
+                )
+            }
+        }
+    }
 }
 
 @Composable

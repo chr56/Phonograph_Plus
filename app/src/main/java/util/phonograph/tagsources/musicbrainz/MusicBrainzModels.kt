@@ -145,6 +145,7 @@ data class MusicBrainzRecording(
     val firstReleaseDate: String? = null,
     val releases: List<MusicBrainzRelease>? = listOf(),
     val disambiguation: String? = null,
+    val tags: List<MusicBrainzTag>? = listOf(),
 ) : MusicBrainzModel
 
 
