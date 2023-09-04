@@ -13,12 +13,10 @@ import android.content.Context
 
 sealed class Query<A : Query.Action>(viewModel: ViewModel, val source: String) {
 
-    abstract fun search(context: Context, action: A)
+    abstract fun query(context: Context, action: A)
 
-    abstract fun view(context: Context, item: Any)
-
-    protected suspend fun <T> execute(call: Call<T?>): T? {
-        val result = call.emit<T>()
+    protected suspend fun <T> Call<T?>.tryExecute(): T? {
+        val result = emit<T>()
         return if (result.isSuccess) {
             result.getOrNull()?.body()
         } else {

@@ -65,7 +65,7 @@ fun LastFmSearchBox(lastFmQuery: LastFmQuery, modifier: Modifier = Modifier, onS
             }
         TextButton(
             onClick = {
-                onSearch(lastFmQuery.action())
+                onSearch(lastFmQuery.searchAction())
             },
             modifier = Modifier
                 .padding(horizontal = 12.dp)

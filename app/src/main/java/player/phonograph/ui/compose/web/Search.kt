@@ -32,13 +32,16 @@ fun LastFmSearch(viewModel: WebSearchViewModel, queryState: LastFmQuery) {
             lastFmQuery = queryState,
             Modifier.wrapContentHeight()
         ) {
-            queryState.search(context, it)
+            queryState.query(context, it)
         }
 
         val result by queryState.result.collectAsState()
         val onSelect: (Any) -> Unit = {
-            queryState.view(context, it)
-            viewModel.updatePage(WebSearchViewModel.Page.Detail)
+            val action = queryState.viewAction(it)
+            if (action != null) {
+                queryState.query(context, action)
+                viewModel.updatePage(WebSearchViewModel.Page.Detail)
+            }
         }
         LastFmSearchResult(result, onSelect, Modifier.align(Alignment.CenterHorizontally))
 
