@@ -68,9 +68,10 @@ class WebSearchActivity : ThemeActivity() {
                             .fillMaxWidth()
                     ) {
                         when (page) {
-                            WebSearchViewModel.Page.Home   -> Home(viewModel, page)
-                            WebSearchViewModel.Page.Search -> Search(viewModel, page)
-                            WebSearchViewModel.Page.Detail -> Detail(viewModel, page)
+                            WebSearchViewModel.Page.Home                     -> Home(viewModel, page)
+                            WebSearchViewModel.Page.Search.LastFmSearch      -> Search(viewModel, page)
+                            WebSearchViewModel.Page.Search.MusicBrainzSearch -> {}
+                            WebSearchViewModel.Page.Detail                   -> Detail(viewModel, page)
                         }
                     }
                 }

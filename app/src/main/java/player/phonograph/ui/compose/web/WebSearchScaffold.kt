@@ -72,7 +72,7 @@ fun ColumnScope.Drawer(navigator: WebSearchViewModel.Navigator) {
                 .height(32.dp)
                 .weight(WEIGHT_SPACE_GAP)
         )
-        Switcher(navigator, WebSearchViewModel.Page.Search)
+        Switcher(navigator, WebSearchViewModel.Page.Search.LastFmSearch)
         Switcher(navigator, WebSearchViewModel.Page.Home)
     }
 }

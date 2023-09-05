@@ -18,7 +18,11 @@ class WebSearchViewModel : ViewModel() {
 
     sealed class Page(@StringRes val nameRes: Int) {
         object Home : Page(R.string.intro_label)
-        object Search : Page(R.string.action_search)
+        sealed class Search(val source: String) : Page(R.string.action_search) {
+            object LastFmSearch : Search("Last.FM")
+            object MusicBrainzSearch : Search("MusicBrainz")
+        }
+
         object Detail : Page(R.string.label_details)
         companion object {
             val RootRage: Page = Home

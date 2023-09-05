@@ -13,21 +13,21 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun Home(viewModel: WebSearchViewModel, pageState: WebSearchViewModel.Page) {
     val navigator = viewModel.navigator
     Column(Modifier.fillMaxSize()) {
-        Item(navigator, WebSearchViewModel.Page.Search)
+        Item(navigator, WebSearchViewModel.Page.Search.LastFmSearch)
+        Item(navigator, WebSearchViewModel.Page.Search.MusicBrainzSearch)
     }
 }
 
 @Composable
-private fun Item(navigator: WebSearchViewModel.Navigator, page: WebSearchViewModel.Page) {
+private fun Item(navigator: WebSearchViewModel.Navigator, page: WebSearchViewModel.Page.Search) {
     Text(
-        stringResource(page.nameRes),
+        page.source,
         modifier = Modifier
             .padding(32.dp)
             .clickable {
