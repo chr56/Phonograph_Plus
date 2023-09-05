@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun LastFmSearch(viewModel: WebSearchViewModel, pageState: WebSearchViewModel.Page.Search.LastFmSearch) {
+fun LastFmSearch(viewModel: WebSearchViewModel, pageState: Page.Search.LastFmSearch) {
     val queryState by pageState.query.collectAsState()
     Column {
         val context = LocalContext.current
@@ -34,7 +34,7 @@ fun LastFmSearch(viewModel: WebSearchViewModel, pageState: WebSearchViewModel.Pa
             viewModel.viewModelScope.launch {
                 val action = queryState.viewAction(it)
                 val result = queryState.query(context, action).await() ?: return@launch //todo
-                val page = WebSearchViewModel.Page.Detail.LastFmDetail(result)
+                val page = Page.Detail.LastFmDetail(result)
                 viewModel.navigator.navigateTo(page)
             }
         }
@@ -44,7 +44,7 @@ fun LastFmSearch(viewModel: WebSearchViewModel, pageState: WebSearchViewModel.Pa
 }
 
 @Composable
-fun MusicBrainzSearch(viewModel: WebSearchViewModel, pageState: WebSearchViewModel.Page.Search.MusicBrainzSearch) {
+fun MusicBrainzSearch(viewModel: WebSearchViewModel, pageState: Page.Search.MusicBrainzSearch) {
     Column {
         val context = LocalContext.current
 

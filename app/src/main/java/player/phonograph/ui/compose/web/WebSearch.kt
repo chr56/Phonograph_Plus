@@ -4,9 +4,9 @@
 
 package player.phonograph.ui.compose.web
 
-import player.phonograph.ui.compose.web.WebSearchViewModel.Page
-import player.phonograph.ui.compose.web.WebSearchViewModel.Page.Search.LastFmSearch
-import player.phonograph.ui.compose.web.WebSearchViewModel.Page.Search.MusicBrainzSearch
+import player.phonograph.ui.compose.base.Navigator
+import player.phonograph.ui.compose.web.Page.Search.LastFmSearch
+import player.phonograph.ui.compose.web.Page.Search.MusicBrainzSearch
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -43,7 +43,7 @@ fun Home(viewModel: WebSearchViewModel, pageState: Page) {
 }
 
 @Composable
-private fun HomeItem(navigator: WebSearchViewModel.Navigator, page: Page.Search<*>) {
+private fun HomeItem(navigator: Navigator<Page>, page: Page.Search<*>) {
     Text(
         page.source,
         modifier = Modifier
@@ -56,7 +56,7 @@ private fun HomeItem(navigator: WebSearchViewModel.Navigator, page: Page.Search<
     )
 }
 @Composable
-fun NavigateButton(drawerState: DrawerState, navigator: WebSearchViewModel.Navigator) {
+fun NavigateButton(drawerState: DrawerState, navigator: Navigator<Page>) {
     val pageState by navigator.currentPage.collectAsState()
     if (pageState.isRoot()) {
         val coroutineScope = rememberCoroutineScope()
@@ -79,7 +79,7 @@ fun NavigateButton(drawerState: DrawerState, navigator: WebSearchViewModel.Navig
 }
 
 @Composable
-fun ColumnScope.Drawer(navigator: WebSearchViewModel.Navigator, viewModel: WebSearchViewModel) {
+fun ColumnScope.Drawer(navigator: Navigator<Page>, viewModel: WebSearchViewModel) {
     val page by navigator.currentPage.collectAsState()
     CompositionLocalProvider(
         LocalTextStyle provides MaterialTheme.typography.h6
@@ -97,7 +97,7 @@ fun ColumnScope.Drawer(navigator: WebSearchViewModel.Navigator, viewModel: WebSe
 }
 
 @Composable
-private fun Pages(navigator: WebSearchViewModel.Navigator, currentPage: Page) {
+private fun Pages(navigator: Navigator<Page>, currentPage: Page) {
     val pages = remember(currentPage) { navigator.pages }
     val context = LocalContext.current
     for ((index, page) in pages.reversed().withIndex()) {
@@ -113,7 +113,7 @@ private fun Pages(navigator: WebSearchViewModel.Navigator, currentPage: Page) {
 }
 
 @Composable
-private fun Switcher(navigator: WebSearchViewModel.Navigator, page: Page) {
+private fun Switcher(navigator: Navigator<Page>, page: Page) {
     Text(
         page.title(LocalContext.current),
         Modifier

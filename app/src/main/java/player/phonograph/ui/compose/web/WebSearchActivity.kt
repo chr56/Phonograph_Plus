@@ -5,6 +5,7 @@
 package player.phonograph.ui.compose.web
 
 import lib.phonograph.activity.ThemeActivity
+import player.phonograph.ui.compose.base.Navigator
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.parcelableExtra
 import androidx.activity.compose.setContent
@@ -69,11 +70,11 @@ class WebSearchActivity : ThemeActivity() {
                             .fillMaxWidth()
                     ) {
                         when (val p = page) {
-                            WebSearchViewModel.Page.Home                        -> Home(viewModel, page)
-                            is WebSearchViewModel.Page.Search.LastFmSearch      -> LastFmSearch(viewModel, p)
-                            is WebSearchViewModel.Page.Search.MusicBrainzSearch -> MusicBrainzSearch(viewModel, p)
-                            is WebSearchViewModel.Page.Detail.LastFmDetail      -> DetailLastFm(viewModel, p)
-                            is WebSearchViewModel.Page.Detail.MusicBrainzDetail -> DetailMusicBrainz(viewModel, p)
+                            Page.Home                        -> Home(viewModel, page)
+                            is Page.Search.LastFmSearch      -> LastFmSearch(viewModel, p)
+                            is Page.Search.MusicBrainzSearch -> MusicBrainzSearch(viewModel, p)
+                            is Page.Detail.LastFmDetail      -> DetailLastFm(viewModel, p)
+                            is Page.Detail.MusicBrainzDetail -> DetailMusicBrainz(viewModel, p)
                         }
                     }
                 }
@@ -140,9 +141,9 @@ class WebSearchActivity : ThemeActivity() {
         const val EXTRA_VIEW_MUSICBRAINZ_RECORDING = "VIEW:MusicBrain:Recording"
         const val EXTRA_DATA = "DATA"
 
-        private fun prefillLastFmSearch(navigator: WebSearchViewModel.Navigator, lastFmQuery: LastFmQuery?) {
+        private fun prefillLastFmSearch(navigator: Navigator<Page>, lastFmQuery: LastFmQuery?) {
             if (lastFmQuery != null) {
-                val page = WebSearchViewModel.Page.Search.LastFmSearch(lastFmQuery)
+                val page = Page.Search.LastFmSearch(lastFmQuery)
                 navigator.navigateTo(page)
             }
         }
@@ -157,7 +158,7 @@ class WebSearchActivity : ThemeActivity() {
             return viewModel.queryFactory.musicBrainzQueryArtist(context, mbid).also {
                 viewModel.viewModelScope.launch {
                     val result = it.query(context, process(mbid)).await()
-                    val page = WebSearchViewModel.Page.Detail.MusicBrainzDetail(result ?: Any())
+                    val page = Page.Detail.MusicBrainzDetail(result ?: Any())
                     viewModel.navigator.navigateTo(page)
                 }
             }

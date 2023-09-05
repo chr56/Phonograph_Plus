@@ -53,7 +53,7 @@ import android.text.Html
 
 
 @Composable
-fun DetailLastFm(viewModel: WebSearchViewModel, lastFmDetail: WebSearchViewModel.Page.Detail.LastFmDetail) {
+fun DetailLastFm(viewModel: WebSearchViewModel, lastFmDetail: Page.Detail.LastFmDetail) {
     val detail by lastFmDetail.detail.collectAsState()
     Box(
         Modifier
