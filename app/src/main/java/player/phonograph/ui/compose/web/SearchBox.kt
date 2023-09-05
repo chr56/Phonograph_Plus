@@ -6,21 +6,29 @@ package player.phonograph.ui.compose.web
 
 import player.phonograph.R
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -92,18 +100,41 @@ fun <T> Target(
     modifier: Modifier = Modifier,
     onUpdate: (T) -> Unit,
 ) {
-    Row(modifier) {
-        for (target in all) {
-            Row(
-                Modifier
-                    .weight(1f)
-                    .clickable { onUpdate(target) }
-            ) {
-                RadioButton(selected = target == current, {})
-                Text(
-                    text(target),
-                    Modifier.align(Alignment.CenterVertically)
-                )
+    var selected by remember { mutableStateOf(current) }
+    var expanded by remember { mutableStateOf(false) } // initial value
+
+    Row(
+        modifier.clickable {
+            expanded = !expanded
+        },
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Top,
+    ) {
+        Text(
+            text = text(selected),
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        )
+        Icon(Icons.Outlined.ArrowDropDown, null, modifier = Modifier.padding(8.dp))
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.wrapContentWidth()
+        ) {
+            for (item in all) {
+                DropdownMenuItem(
+                    onClick = {
+                        selected = item
+                        expanded = false
+                        onUpdate(item)
+                    }
+                ) {
+                    Text(
+                        text = text(item),
+                        modifier = Modifier.wrapContentWidth()
+                    )
+                }
             }
         }
     }
