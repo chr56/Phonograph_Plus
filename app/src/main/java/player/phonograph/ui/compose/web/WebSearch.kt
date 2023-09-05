@@ -29,7 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
@@ -100,9 +99,10 @@ fun ColumnScope.Drawer(navigator: WebSearchViewModel.Navigator, viewModel: WebSe
 @Composable
 private fun Pages(navigator: WebSearchViewModel.Navigator, currentPage: Page) {
     val pages = remember(currentPage) { navigator.pages }
+    val context = LocalContext.current
     for ((index, page) in pages.reversed().withIndex()) {
         Text(
-            text = stringResource(page.nameRes),
+            text = page.title(context),
             Modifier
                 .padding(12.dp)
                 .clickable {
@@ -114,9 +114,8 @@ private fun Pages(navigator: WebSearchViewModel.Navigator, currentPage: Page) {
 
 @Composable
 private fun Switcher(navigator: WebSearchViewModel.Navigator, page: Page) {
-    val text = "${stringResource(page.nameRes)} ${if (page is Page.Search<*>) page.source else ""}"
     Text(
-        text,
+        page.title(LocalContext.current),
         Modifier
             .clickable {
                 navigator.navigateTo(page)

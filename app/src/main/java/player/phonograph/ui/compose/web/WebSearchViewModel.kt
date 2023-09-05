@@ -20,6 +20,7 @@ class WebSearchViewModel : ViewModel() {
         object Home : Page(R.string.intro_label)
 
         sealed class Search<Q : Query<*, *>>(q: Q, val source: String) : Page(R.string.action_search) {
+            override fun title(context: Context): String = "${super.title(context)} $source"
 
             private val _query: MutableStateFlow<Q> = MutableStateFlow(q)
             val query get() = _query.asStateFlow()
@@ -40,6 +41,8 @@ class WebSearchViewModel : ViewModel() {
         companion object {
             val RootRage: Page = Home
         }
+
+        open fun title(context: Context): String = context.getString(nameRes)
 
         fun isRoot() = equals(Page.RootRage)
     }
