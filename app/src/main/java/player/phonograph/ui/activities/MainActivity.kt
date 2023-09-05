@@ -40,6 +40,7 @@ import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.SettingFlowStore
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.compose.settings.SettingsActivity
+import player.phonograph.ui.compose.web.WebSearchActivity
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.ScanMediaFolderDialog
 import player.phonograph.ui.dialogs.UpgradeDialog
@@ -285,7 +286,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                         },
                         context.getString(R.string.action_reboot) to {
                             Reboot.reboot(context)
-                        }
+                        },
+                        context.getString(R.string.web_search) to {
+                            context.startActivity(WebSearchActivity.launchIntent(context))
+                        },
                     )
                     MaterialAlertDialogBuilder(context)
                         .setTitle(R.string.more_actions)
