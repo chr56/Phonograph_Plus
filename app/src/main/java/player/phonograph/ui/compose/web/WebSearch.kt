@@ -10,10 +10,8 @@ import player.phonograph.ui.compose.web.WebSearchViewModel.Page.Search.MusicBrai
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DrawerState
 import androidx.compose.material.Icon
@@ -27,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -82,35 +81,39 @@ fun NavigateButton(drawerState: DrawerState, navigator: WebSearchViewModel.Navig
 
 @Composable
 fun ColumnScope.Drawer(navigator: WebSearchViewModel.Navigator, viewModel: WebSearchViewModel) {
-    val pageState by navigator.currentPage.collectAsState()
+    val page by navigator.currentPage.collectAsState()
     CompositionLocalProvider(
         LocalTextStyle provides MaterialTheme.typography.h6
     ) {
-        Spacer(
-            modifier = Modifier
-                .height(32.dp)
-                .weight(WEIGHT_SPACE_TOP)
-        )
-        Text(
-            text = stringResource(pageState.nameRes),
-            Modifier
-                .padding(12.dp)
-                .weight(WEIGHT_CURRENT)
-        )
-        Spacer(
-            modifier = Modifier
-                .height(32.dp)
-                .weight(WEIGHT_SPACE_GAP)
-        )
-        val context = LocalContext.current
-        Switcher(navigator, LastFmSearch(viewModel.queryFactory.lastFm(context)))
-        Switcher(navigator, MusicBrainzSearch(viewModel.queryFactory.musicBrainzQuery(context)))
-        Switcher(navigator, Page.Home)
+        Column(Modifier.weight(9f).padding(vertical = 12.dp)) {
+            Pages(navigator, page)
+        }
+        Column(Modifier.weight(4f)) {
+            val context = LocalContext.current
+            Switcher(navigator, LastFmSearch(viewModel.queryFactory.lastFm(context)))
+            Switcher(navigator, MusicBrainzSearch(viewModel.queryFactory.musicBrainzQuery(context)))
+            Switcher(navigator, Page.Home)
+        }
     }
 }
 
 @Composable
-private fun ColumnScope.Switcher(navigator: WebSearchViewModel.Navigator, page: Page) {
+private fun Pages(navigator: WebSearchViewModel.Navigator, currentPage: Page) {
+    val pages = remember(currentPage) { navigator.pages }
+    for ((index, page) in pages.reversed().withIndex()) {
+        Text(
+            text = stringResource(page.nameRes),
+            Modifier
+                .padding(12.dp)
+                .clickable {
+                    navigator.navigateUp(index)
+                }
+        )
+    }
+}
+
+@Composable
+private fun Switcher(navigator: WebSearchViewModel.Navigator, page: Page) {
     val text = "${stringResource(page.nameRes)} ${if (page is Page.Search<*>) page.source else ""}"
     Text(
         text,
@@ -119,11 +122,5 @@ private fun ColumnScope.Switcher(navigator: WebSearchViewModel.Navigator, page: 
                 navigator.navigateTo(page)
             }
             .padding(12.dp)
-            .weight(WEIGHT_SWITCHER)
     )
 }
-
-private const val WEIGHT_CURRENT = 2f
-private const val WEIGHT_SWITCHER = 2f
-private const val WEIGHT_SPACE_TOP = 3f
-private const val WEIGHT_SPACE_GAP = 20f

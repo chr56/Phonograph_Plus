@@ -48,22 +48,24 @@ class WebSearchViewModel : ViewModel() {
 
     class Navigator {
 
-        private val pages: MutableList<Page> = mutableListOf(Page.RootRage)
+        private val _pages: MutableList<Page> = mutableListOf(Page.RootRage)
+        val pages get() = _pages.toList()
 
         private val _currentPage: MutableStateFlow<Page> = MutableStateFlow(Page.RootRage)
         val currentPage get() = _currentPage.asStateFlow()
 
         fun navigateTo(page: Page) {
-            pages.add(page)
+            _pages.add(page)
             _currentPage.value = page
         }
 
         /**
          * @return false if reaching to root
          */
-        fun navigateUp(): Boolean {
-            val current = pages.removeLastOrNull()
-            val last = pages.lastOrNull()
+        fun navigateUp(level: Int = 1): Boolean {
+            if (level < 1 || level >= _pages.size) return true
+            repeat(level) { _pages.removeLastOrNull() }
+            val last = _pages.lastOrNull()
             return if (last != null) {
                 _currentPage.value = last
                 true
