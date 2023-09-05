@@ -158,7 +158,7 @@ class WebSearchActivity : ThemeActivity() {
             process: (String) -> MusicBrainzQuery.QueryAction,
         ): MusicBrainzQuery {
             val mbid = intent.getStringExtra(EXTRA_DATA).orEmpty()
-            return viewModel.queryFactory.musicBrainzQueryArtist(context, mbid).also {
+            return viewModel.queryFactory.musicBrainzQuery(context).also {
                 viewModel.viewModelScope.launch {
                     val result = it.query(context, process(mbid)).await()
                     val page = Page.Detail.MusicBrainzDetail(result ?: Any())
