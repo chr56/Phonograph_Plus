@@ -45,11 +45,23 @@ fun LastFmSearch(viewModel: WebSearchViewModel, pageState: Page.Search.LastFmSea
 
 @Composable
 fun MusicBrainzSearch(viewModel: WebSearchViewModel, pageState: Page.Search.MusicBrainzSearch) {
+    val queryState by pageState.query.collectAsState()
     Column {
         val context = LocalContext.current
+        MusicBrainzSearchBox(
+            Modifier.wrapContentHeight(), queryState
+        ) {
+            queryState.query(context, it)
+        }
 
-        // todo MusicBrainzSearchBox
-
-        // todo MusicBrainzSearchResult
+        val searchResults by queryState.result.collectAsState()
+        val onSelect: (MusicBrainzQuery.QueryAction) -> Unit = { action ->
+            viewModel.viewModelScope.launch {
+                val result = queryState.query(context, action).await() ?: return@launch //todo
+                val page = Page.Detail.MusicBrainzDetail(result)
+                viewModel.navigator.navigateTo(page)
+            }
+        }
+        MusicBrainzSearchResult(searchResults, onSelect, Modifier.align(Alignment.CenterHorizontally))
     }
 }
