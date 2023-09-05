@@ -7,6 +7,7 @@ package player.phonograph.ui.compose.web
 import player.phonograph.R
 import player.phonograph.ui.compose.components.HorizontalTextItem
 import player.phonograph.ui.compose.components.VerticalTextItem
+import player.phonograph.ui.compose.web.MusicBrainzQuery.Target
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtist
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtistCredit
 import util.phonograph.tagsources.musicbrainz.MusicBrainzMedia
@@ -94,10 +95,11 @@ fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
         CascadeItem("Release", innerModifier = Modifier.padding(24.dp)) {
             for ((index, release) in releaseGroup.releases.withIndex()) {
                 Item("Release ${index + 1}", value = release.title)
+                JumpAndLinkMusicBrainz(Modifier.align(Alignment.End), Target.Release, releaseGroup.id)
             }
         }
     }
-    LinkMusicBrainz(Modifier.align(Alignment.End), MusicBrainzQuery.Target.ReleaseGroup, releaseGroup.id)
+    JumpAndLinkMusicBrainz(Modifier.align(Alignment.End), Target.ReleaseGroup, releaseGroup.id)
 }
 
 @Composable
@@ -120,7 +122,7 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
         }
     }
     MusicBrainzTags(release.tags)
-    LinkMusicBrainz(Modifier.align(Alignment.End), MusicBrainzQuery.Target.Release, release.id)
+    JumpAndLinkMusicBrainz(Modifier.align(Alignment.End), Target.Release, release.id)
 }
 
 @Composable
@@ -139,7 +141,7 @@ fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
         }
     }
     MusicBrainzTags(artist.tags)
-    LinkMusicBrainz(Modifier.align(Alignment.End), MusicBrainzQuery.Target.Artist, artist.id)
+    JumpAndLinkMusicBrainz(Modifier.align(Alignment.End), Target.Artist, artist.id)
 }
 
 @Composable
@@ -154,14 +156,16 @@ fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording?) {
                 for ((index, release) in recording.releases.withIndex()) {
                     CascadeItem(
                         "Related Release ${index + 1}",
-                        innerModifier = Modifier.padding(horizontal = 24.dp, vertical = 24.dp).fillMaxWidth()
+                        innerModifier = Modifier
+                            .padding(horizontal = 24.dp, vertical = 24.dp)
+                            .fillMaxWidth()
                     ) {
                         MusicBrainzRelease(release)
                     }
                 }
             }
         }
-        LinkMusicBrainz(Modifier.align(Alignment.End), MusicBrainzQuery.Target.Recording, recording.id)
+        JumpAndLinkMusicBrainz(Modifier.align(Alignment.End), Target.Recording, recording.id)
     }
 }
 
@@ -233,7 +237,9 @@ private fun MusicBrainzMedia(media: MusicBrainzMedia) {
                 CascadeItem("Tracks", innerModifier = Modifier.padding(24.dp)) {
                     for (track in media.tracks) {
                         Item("Track ${track.number}", value = track.title)
-                        Column(modifier = Modifier.padding(horizontal = 6.dp).fillMaxWidth()) {
+                        Column(modifier = Modifier
+                            .padding(horizontal = 6.dp)
+                            .fillMaxWidth()) {
                             MusicBrainzRecording(track.recording)
                         }
                     }

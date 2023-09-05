@@ -14,6 +14,7 @@ import player.phonograph.ui.compose.web.WebSearchActivity.Companion.launchIntent
 import player.phonograph.ui.compose.web.WebSearchActivity.Companion.launchIntentMusicBrainzArtist
 import player.phonograph.ui.compose.web.WebSearchActivity.Companion.launchIntentMusicBrainzRecording
 import player.phonograph.ui.compose.web.WebSearchActivity.Companion.launchIntentMusicBrainzRelease
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -31,6 +32,15 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import kotlinx.coroutines.launch
+
+@Composable
+fun JumpAndLinkMusicBrainz(modifier: Modifier, type: Target, mbid: String?) {
+    Row(horizontalArrangement = Arrangement.SpaceAround) {
+        JumpMusicBrainz(modifier, type, mbid)
+        LinkMusicBrainz(modifier, type, mbid)
+    }
+}
+
 
 @Composable
 fun JumpMusicBrainz(modifier: Modifier, type: Target, mbid: String?) {
