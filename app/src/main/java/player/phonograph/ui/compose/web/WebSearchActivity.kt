@@ -52,7 +52,7 @@ class WebSearchActivity : ThemeActivity() {
             PhonographTheme {
 
                 val scaffoldState = rememberScaffoldState()
-                val pageState by viewModel.page.collectAsState()
+                val pageState by viewModel.navigator.page.collectAsState()
 
                 Scaffold(
                     scaffoldState = scaffoldState,
@@ -61,7 +61,7 @@ class WebSearchActivity : ThemeActivity() {
                             title = { Text(stringResource(pageState.nameRes)) },
                             navigationIcon = {
                                 Box(Modifier.padding(8.dp)) {
-                                    if (pageState == WebSearchViewModel.Page.Search) {
+                                    if (pageState.isRoot()) {
                                         val coroutineScope = rememberCoroutineScope()
                                         Icon(Icons.Default.Menu, null,
                                             Modifier.clickable {
@@ -75,7 +75,7 @@ class WebSearchActivity : ThemeActivity() {
                                     } else {
                                         Icon(Icons.Default.ArrowBack, null,
                                             Modifier.clickable {
-                                                viewModel.navigateBack()
+                                                viewModel.navigator.navigateUp()
                                             }
                                         )
                                     }
@@ -104,7 +104,7 @@ class WebSearchActivity : ThemeActivity() {
     }
 
     override fun onBackPressed() {
-        if (!viewModel.navigateBack()) super.onBackPressed()
+        if (!viewModel.navigator.navigateUp()) super.onBackPressed()
     }
 
     private fun checkCommand(context: Context, intent: Intent): Query<*, *>? {
@@ -121,22 +121,22 @@ class WebSearchActivity : ThemeActivity() {
 
             EXTRA_VIEW_MUSICBRAINZ_RELEASE_GROUP ->
                 factory.musicBrainzQueryReleaseGroup(context, intent.getStringExtra(EXTRA_DATA).orEmpty()).also {
-                    viewModel.updatePage(WebSearchViewModel.Page.Detail)
+                    viewModel.navigator.navigateTo(WebSearchViewModel.Page.Detail)
                 }
 
             EXTRA_VIEW_MUSICBRAINZ_RELEASE       ->
                 factory.musicBrainzQueryRelease(context, intent.getStringExtra(EXTRA_DATA).orEmpty()).also {
-                    viewModel.updatePage(WebSearchViewModel.Page.Detail)
+                    viewModel.navigator.navigateTo(WebSearchViewModel.Page.Detail)
                 }
 
             EXTRA_VIEW_MUSICBRAINZ_ARTIST        ->
                 factory.musicBrainzQueryArtist(context, intent.getStringExtra(EXTRA_DATA).orEmpty()).also {
-                    viewModel.updatePage(WebSearchViewModel.Page.Detail)
+                    viewModel.navigator.navigateTo(WebSearchViewModel.Page.Detail)
                 }
 
             EXTRA_VIEW_MUSICBRAINZ_RECORDING     ->
                 factory.musicBrainzQueryRecording(context, intent.getStringExtra(EXTRA_DATA).orEmpty()).also {
-                    viewModel.updatePage(WebSearchViewModel.Page.Detail)
+                    viewModel.navigator.navigateTo(WebSearchViewModel.Page.Detail)
                 }
 
             else                                 -> null

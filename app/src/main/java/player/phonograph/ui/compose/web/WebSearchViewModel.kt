@@ -19,24 +19,30 @@ class WebSearchViewModel : ViewModel() {
     sealed class Page(@StringRes val nameRes: Int) {
         object Search : Page(R.string.action_search)
         object Detail : Page(R.string.label_details)
+        companion object {
+            val RootRage: Page = Search
+        }
+        fun isRoot() = equals(Page.RootRage)
     }
 
-    private val _page: MutableStateFlow<Page> = MutableStateFlow(Page.Search)
-    val page get() = _page.asStateFlow()
+    val navigator = Navigator()
 
-    fun updatePage(page: Page) {
-        _page.value = page
-    }
+    class Navigator {
 
-    fun canBack(): Boolean {
-        return page.value != Page.Search
-    }
+        private val _page: MutableStateFlow<Page> = MutableStateFlow(Page.RootRage)
+        val page get() = _page.asStateFlow()
 
-    fun navigateBack(): Boolean {
-        return if (canBack()) {
-            updatePage(Page.Search)
-            true
-        } else false
+        fun navigateTo(page: Page) {
+            _page.value = page
+        }
+
+        fun navigateUp(): Boolean {
+            return if (!_page.value.isRoot()) {
+                navigateTo(Page.RootRage)
+                true
+            } else false
+        }
+
     }
 
     private val _query: MutableStateFlow<Query<*, *>?> = MutableStateFlow(null)
