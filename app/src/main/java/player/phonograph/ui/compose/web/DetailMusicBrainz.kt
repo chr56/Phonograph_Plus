@@ -97,6 +97,7 @@ fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
             }
         }
     }
+    LinkMusicBrainz(Modifier.align(Alignment.End), MusicBrainzQuery.Target.ReleaseGroup, releaseGroup.id)
 }
 
 @Composable
@@ -119,6 +120,7 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
         }
     }
     MusicBrainzTags(release.tags)
+    LinkMusicBrainz(Modifier.align(Alignment.End), MusicBrainzQuery.Target.Release, release.id)
 }
 
 @Composable
@@ -137,6 +139,7 @@ fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
         }
     }
     MusicBrainzTags(artist.tags)
+    LinkMusicBrainz(Modifier.align(Alignment.End), MusicBrainzQuery.Target.Artist, artist.id)
 }
 
 @Composable
@@ -158,6 +161,7 @@ fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording?) {
                 }
             }
         }
+        LinkMusicBrainz(Modifier.align(Alignment.End), MusicBrainzQuery.Target.Recording, recording.id)
     }
 }
 
