@@ -9,30 +9,22 @@ import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.parcelableExtra
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.lifecycleScope
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_DOCUMENT
 import android.os.Bundle
-import kotlinx.coroutines.launch
 import player.phonograph.model.Album as PhonographAlbum
 import player.phonograph.model.Artist as PhonographArtist
 import player.phonograph.model.Song as PhonographSong
@@ -60,31 +52,14 @@ class WebSearchActivity : ThemeActivity() {
                         TopAppBar(
                             title = { Text(stringResource(pageState.nameRes)) },
                             navigationIcon = {
-                                Box(Modifier.padding(8.dp)) {
-                                    if (pageState.isRoot()) {
-                                        val coroutineScope = rememberCoroutineScope()
-                                        Icon(Icons.Default.Menu, null,
-                                            Modifier.clickable {
-                                                lifecycleScope.launch {
-                                                    coroutineScope.launch {
-                                                        scaffoldState.drawerState.open()
-                                                    }
-                                                }
-                                            }
-                                        )
-                                    } else {
-                                        Icon(Icons.Default.ArrowBack, null,
-                                            Modifier.clickable {
-                                                viewModel.navigator.navigateUp()
-                                            }
-                                        )
-                                    }
+                                Box(Modifier.padding(16.dp)) {
+                                    NavigateButton(scaffoldState.drawerState, viewModel.navigator)
                                 }
                             }
                         )
                     },
                     drawerContent = {
-                        Text(text = stringResource(pageState.nameRes), Modifier.padding(12.dp))
+                        Drawer(viewModel.navigator)
                     }
                 ) {
                     Box(
@@ -92,7 +67,6 @@ class WebSearchActivity : ThemeActivity() {
                             .padding(it)
                             .fillMaxWidth()
                     ) {
-
                         when (pageState) {
                             WebSearchViewModel.Page.Search -> Search(viewModel)
                             WebSearchViewModel.Page.Detail -> Detail(viewModel)
