@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "1.2-dev2",
+      "versionCode": 1012,
+      "date": 1693926700,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.2-dev2"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>新增 基本 MusicBrainz 支持</li><li>改进 在线搜索体验(尚未完工, 将整合进标签编辑器)</li><li>改进 抽屉菜单中增加在线搜索入口</li></ol>",
+        "en": "<ol><li>New: fundamental MusicBrainz support</li><li>Improve: user experience of Online Search (not complete yet, would be integrated into Tag Editor)</li><li>Improve: add entrance of Online Search in the drawer menu </li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.2-dev1",
       "versionCode": 1011,
       "date": 1693747000,
