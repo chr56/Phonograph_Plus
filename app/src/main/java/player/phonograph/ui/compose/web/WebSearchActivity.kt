@@ -90,20 +90,19 @@ class WebSearchActivity : ThemeActivity() {
     }
 
     private fun checkCommand(context: Context, intent: Intent) {
-        val factory = viewModel.queryFactory
         val query = when (intent.getStringExtra(EXTRA_COMMAND)) {
             EXTRA_QUERY_ALBUM                    ->
-                intent.parcelableExtra<PhonographAlbum>(EXTRA_DATA)?.let { factory.from(context, it) }.also {
+                intent.parcelableExtra<PhonographAlbum>(EXTRA_DATA)?.let { queryFactory.from(context, it) }.also {
                     prefillLastFmSearch(viewModel.navigator, it)
                 }
 
             EXTRA_QUERY_ARTIST                   ->
-                intent.parcelableExtra<PhonographArtist>(EXTRA_DATA)?.let { factory.from(context, it) }.also {
+                intent.parcelableExtra<PhonographArtist>(EXTRA_DATA)?.let { queryFactory.from(context, it) }.also {
                     prefillLastFmSearch(viewModel.navigator, it)
                 }
 
             EXTRA_QUERY_SONG                     ->
-                intent.parcelableExtra<PhonographSong>(EXTRA_DATA)?.let { factory.from(context, it) }.also {
+                intent.parcelableExtra<PhonographSong>(EXTRA_DATA)?.let { queryFactory.from(context, it) }.also {
                     prefillLastFmSearch(viewModel.navigator, it)
                 }
 
@@ -132,6 +131,8 @@ class WebSearchActivity : ThemeActivity() {
         }
 
     }
+
+    val queryFactory get() = viewModel.queryFactory
 
     companion object {
         const val EXTRA_COMMAND = "COMMAND"
