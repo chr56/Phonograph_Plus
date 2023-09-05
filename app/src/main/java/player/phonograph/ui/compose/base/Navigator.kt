@@ -26,7 +26,8 @@ class Navigator<P : Navigator.IPage>(rootRage: P) {
      * @return false if reaching to root
      */
     fun navigateUp(level: Int = 1): Boolean {
-        if (level < 1 || level >= _pages.size) return true
+        if (level < 1) return true
+        if (level >= _pages.size) return false
         repeat(level) { _pages.removeLastOrNull() }
         val last = _pages.lastOrNull()
         return if (last != null) {
