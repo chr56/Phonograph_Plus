@@ -49,25 +49,25 @@ interface MusicBrainzService {
 
     //region search
 
-    @GET("${Entity.ARTIST}?fmt=json")
+    @GET("${Entity.ARTIST}?fmt=json&limit=60")
     fun searchArtist(
         @Query("query") query: String,
         @Query("offset") offset: Int,
     ): Call<MusicBrainzSearchResultArtists?>
 
-    @GET("${Entity.RELEASE}?fmt=json")
+    @GET("${Entity.RELEASE}?fmt=json&limit=60")
     fun searchRelease(
         @Query("query") query: String,
         @Query("offset") offset: Int,
     ): Call<MusicBrainzSearchResultReleases?>
 
-    @GET("${Entity.RELEASE_GROUP}?fmt=json")
+    @GET("${Entity.RELEASE_GROUP}?fmt=json&limit=60")
     fun searchReleaseGroup(
         @Query("query") query: String,
         @Query("offset") offset: Int,
     ): Call<MusicBrainzSearchResultReleasesGroup?>
 
-    @GET("${Entity.RECORDING}?fmt=json")
+    @GET("${Entity.RECORDING}?fmt=json&limit=60")
     fun searchRecording(
         @Query("query") query: String,
         @Query("offset") offset: Int,
