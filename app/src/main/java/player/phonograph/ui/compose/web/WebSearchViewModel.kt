@@ -7,37 +7,19 @@ package player.phonograph.ui.compose.web
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
+import player.phonograph.ui.compose.base.Navigator
 import androidx.lifecycle.ViewModel
 import android.content.Context
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 class WebSearchViewModel : ViewModel() {
 
-    sealed class Page {
-        object Search : Page()
-        object Detail : Page()
-    }
-
-    private val _page: MutableStateFlow<Page> = MutableStateFlow(Page.Search)
-    val page get() = _page.asStateFlow()
-
-    fun updatePage(page: Page) {
-        _page.value = page
-    }
-
-    private val _query: MutableStateFlow<Query<*, *>?> = MutableStateFlow(null)
-    val query get() = _query.asStateFlow()
-
-    fun prepareQuery(context: Context, query: Query<*, *>?) {
-        _query.tryEmit(query ?: queryFactory.default(context))
-    }
+    val navigator = Navigator<Page>(Page.Home)
 
     val queryFactory = QueryFactory()
 
     inner class QueryFactory {
 
-        fun default(context: Context): LastFmQuery = LastFmQuery(context, this@WebSearchViewModel)
+        fun lastFm(context: Context): LastFmQuery = LastFmQuery(context, this@WebSearchViewModel)
 
         fun from(context: Context, artist: Artist): LastFmQuery =
             LastFmQuery(
@@ -62,5 +44,20 @@ class WebSearchViewModel : ViewModel() {
                 trackQuery = song.title,
                 target = LastFmQuery.Target.Track
             )
+
+        fun musicBrainzQuery(context: Context): MusicBrainzQuery =
+            MusicBrainzQuery(context, this@WebSearchViewModel)
+
+        fun musicBrainzQueryReleaseGroup(context: Context, mbid: String): MusicBrainzQuery =
+            musicBrainzQuery(context).also { it.query(context, MusicBrainzQuery.QueryAction.ViewReleaseGroup(mbid)) }
+
+        fun musicBrainzQueryRelease(context: Context, mbid: String): MusicBrainzQuery =
+            musicBrainzQuery(context).also { it.query(context, MusicBrainzQuery.QueryAction.ViewRelease(mbid)) }
+
+        fun musicBrainzQueryArtist(context: Context, mbid: String): MusicBrainzQuery =
+            musicBrainzQuery(context).also { it.query(context, MusicBrainzQuery.QueryAction.ViewArtist(mbid)) }
+
+        fun musicBrainzQueryRecording(context: Context, mbid: String): MusicBrainzQuery =
+            musicBrainzQuery(context).also { it.query(context, MusicBrainzQuery.QueryAction.ViewRecording(mbid)) }
     }
 }

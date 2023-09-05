@@ -34,6 +34,7 @@ class JsonDeserializationRetrofitConverter<T : Any>(
             private val _json =
                 Json {
                     ignoreUnknownKeys = true
+                    coerceInputValues = true
                 }
         }
     }

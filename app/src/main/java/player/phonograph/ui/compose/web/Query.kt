@@ -10,13 +10,14 @@ import retrofit2.Call
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.StateFlow
 
 sealed class Query<P : Query.Parameter, A : Query.Action>(viewModel: ViewModel, val source: String) {
 
     abstract val queryParameter: StateFlow<P>
     abstract fun updateQueryParameter(update: (P) -> P)
-    abstract fun query(context: Context, action: A)
+    abstract fun query(context: Context, action: A): Deferred<*>
 
     protected suspend fun <T> Call<T?>.tryExecute(): T? {
         val result = emit<T>()
