@@ -37,8 +37,7 @@ class WebSearchActivity : ThemeActivity() {
         super.useCustomStatusBar = false
         super.onCreate(savedInstanceState)
 
-        val query = checkCommand(this, intent)
-        viewModel.prepareQuery(this, query)
+        checkCommand(this, intent)
 
         setContent {
             PhonographTheme {
@@ -83,17 +82,23 @@ class WebSearchActivity : ThemeActivity() {
         if (!viewModel.navigator.navigateUp()) super.onBackPressed()
     }
 
-    private fun checkCommand(context: Context, intent: Intent): Query<*, *>? {
+    private fun checkCommand(context: Context, intent: Intent) {
         val factory = viewModel.queryFactory
-        return when (intent.getStringExtra(EXTRA_COMMAND)) {
+        val query = when (intent.getStringExtra(EXTRA_COMMAND)) {
             EXTRA_QUERY_ALBUM                    ->
-                intent.parcelableExtra<PhonographAlbum>(EXTRA_DATA)?.let { factory.from(context, it) }
+                intent.parcelableExtra<PhonographAlbum>(EXTRA_DATA)?.let { factory.from(context, it) }.also {
+
+                }
 
             EXTRA_QUERY_ARTIST                   ->
-                intent.parcelableExtra<PhonographArtist>(EXTRA_DATA)?.let { factory.from(context, it) }
+                intent.parcelableExtra<PhonographArtist>(EXTRA_DATA)?.let { factory.from(context, it) }.also {
+
+                }
 
             EXTRA_QUERY_SONG                     ->
-                intent.parcelableExtra<PhonographSong>(EXTRA_DATA)?.let { factory.from(context, it) }
+                intent.parcelableExtra<PhonographSong>(EXTRA_DATA)?.let { factory.from(context, it) }.also {
+
+                }
 
             EXTRA_VIEW_MUSICBRAINZ_RELEASE_GROUP ->
                 factory.musicBrainzQueryReleaseGroup(context, intent.getStringExtra(EXTRA_DATA).orEmpty()).also {
@@ -117,6 +122,8 @@ class WebSearchActivity : ThemeActivity() {
 
             else                                 -> null
         }
+
+        viewModel.prepareQuery(context, query)
     }
 
     companion object {
