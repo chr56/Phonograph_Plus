@@ -24,25 +24,25 @@ interface MusicBrainzService {
     @GET("${Entity.ARTIST}/{mbid}?fmt=json")
     fun getArtist(
         @Path("mbid") mbid: String,
-        @Query("inc") inc: String = "releases",
+        @Query("inc") inc: String = "releases+release-groups+tags",
     ): Call<MusicBrainzArtist?>
 
     @GET("${Entity.RELEASE}/{mbid}?fmt=json")
     fun getRelease(
         @Path("mbid") mbid: String,
-        @Query("inc") inc: String = "artists+recordings+labels+genres",
+        @Query("inc") inc: String = "artists+recordings+labels+genres+tags",
     ): Call<MusicBrainzRelease?>
 
     @GET("${Entity.RELEASE_GROUP}/{mbid}?fmt=json")
     fun getReleaseGroup(
         @Path("mbid") mbid: String,
-        @Query("inc") inc: String = "artists+releases",
+        @Query("inc") inc: String = "artists+releases+genres+tags",
     ): Call<MusicBrainzReleaseGroup?>
 
     @GET("${Entity.RECORDING}/{mbid}?fmt=json")
     fun getRecording(
         @Path("mbid") mbid: String,
-        @Query("inc") inc: String = "artists+releases",
+        @Query("inc") inc: String = "artists+releases+genres+tags",
     ): Call<MusicBrainzRecording?>
 
     //endregion
