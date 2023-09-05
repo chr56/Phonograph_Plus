@@ -33,9 +33,9 @@ data class MusicBrainzArtist(
     @Keep
     @Serializable
     data class LifeSpan(
-        val begin: String?,
-        val end: String?,
-        val ended: Boolean,
+        val begin: String? = null,
+        val end: String? = null,
+        val ended: Boolean? = null,
     )
 
     @Keep
@@ -81,7 +81,7 @@ data class MusicBrainzRelease(
     @Serializable
     data class LabelInfo(
         @SerialName("catalog-number")
-        val catalogNumber: String?,
+        val catalogNumber: String? = null,
         val label: Label,
     ) {
         @Keep
@@ -95,7 +95,7 @@ data class MusicBrainzRelease(
     @Keep
     @Serializable
     data class Media(
-        val format: String,
+        val format: String? = null,
         @SerialName("disc-count")
         val discCount: Int = 1,
         @SerialName("track-count")
@@ -208,14 +208,14 @@ data class MusicBrainzUrl(
 data class MusicBrainzArtistCredit(
     val name: String,
     val artist: Artist,
-    val joinphrase: String?,
+    val joinphrase: String? = null,
 ) {
     @Keep
     @Serializable
     data class Artist(
         val id: String,
         val name: String,
-        val type: String,
+        val type: String = NA,
         val disambiguation: String? = "",
     )
 }
@@ -247,7 +247,7 @@ data class MusicBrainzSearchResultReleasesGroup(
     val created: String,
     val count: Int,
     val offset: Int,
-    @SerialName("releases-group")
+    @SerialName("release-groups")
     val releasesGroup: List<MusicBrainzReleaseGroup>? = emptyList(),
 ) : MusicBrainzSearchResult
 
@@ -261,3 +261,5 @@ data class MusicBrainzSearchResultRecording(
     val recordings: List<MusicBrainzRecording>? = emptyList(),
 ) : MusicBrainzSearchResult
 
+
+private const val NA = "N/A"

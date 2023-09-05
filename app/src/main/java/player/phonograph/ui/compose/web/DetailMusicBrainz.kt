@@ -214,7 +214,7 @@ private fun MusicBrainzMedia(media: MusicBrainzRelease.Media) {
 
 @Composable
 private fun MusicBrainzLifeSpan(lifeSpan: MusicBrainzArtist.LifeSpan?) {
-    if (lifeSpan != null) Item("LifeSpan", lifeSpan.run { "$begin~$end ${if (ended) "ENDED" else ""}" })
+    if (lifeSpan != null) Item("LifeSpan", lifeSpan.run { "$begin~$end ${if (ended == true) "ENDED" else ""}" })
 }
 
 @OptIn(ExperimentalFoundationApi::class)
