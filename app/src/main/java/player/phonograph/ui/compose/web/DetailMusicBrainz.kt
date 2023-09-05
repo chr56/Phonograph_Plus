@@ -154,7 +154,7 @@ fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording?) {
                 for ((index, release) in recording.releases.withIndex()) {
                     CascadeItem(
                         "Related Release ${index + 1}",
-                        innerModifier = Modifier.padding(horizontal = 24.dp, vertical = 24.dp)
+                        innerModifier = Modifier.padding(horizontal = 24.dp, vertical = 24.dp).fillMaxWidth()
                     ) {
                         MusicBrainzRelease(release)
                     }
@@ -233,7 +233,7 @@ private fun MusicBrainzMedia(media: MusicBrainzMedia) {
                 CascadeItem("Tracks", innerModifier = Modifier.padding(24.dp)) {
                     for (track in media.tracks) {
                         Item("Track ${track.number}", value = track.title)
-                        Column(modifier = Modifier.padding(horizontal = 6.dp)) {
+                        Column(modifier = Modifier.padding(horizontal = 6.dp).fillMaxWidth()) {
                             MusicBrainzRecording(track.recording)
                         }
                     }
