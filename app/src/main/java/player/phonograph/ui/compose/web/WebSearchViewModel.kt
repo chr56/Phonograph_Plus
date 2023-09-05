@@ -4,9 +4,11 @@
 
 package player.phonograph.ui.compose.web
 
+import player.phonograph.R
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import android.content.Context
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,9 +16,9 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class WebSearchViewModel : ViewModel() {
 
-    sealed class Page {
-        object Search : Page()
-        object Detail : Page()
+    sealed class Page(@StringRes val nameRes: Int) {
+        object Search : Page(R.string.action_search)
+        object Detail : Page(R.string.label_details)
     }
 
     private val _page: MutableStateFlow<Page> = MutableStateFlow(Page.Search)
@@ -24,6 +26,17 @@ class WebSearchViewModel : ViewModel() {
 
     fun updatePage(page: Page) {
         _page.value = page
+    }
+
+    fun canBack(): Boolean {
+        return page.value != Page.Search
+    }
+
+    fun navigateBack(): Boolean {
+        return if (canBack()) {
+            updatePage(Page.Search)
+            true
+        } else false
     }
 
     private val _query: MutableStateFlow<Query<*, *>?> = MutableStateFlow(null)
