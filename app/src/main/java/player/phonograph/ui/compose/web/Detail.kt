@@ -28,7 +28,7 @@ import android.content.Intent
 import android.net.Uri
 
 @Composable
-fun Detail(viewModel: WebSearchViewModel) {
+fun Detail(viewModel: WebSearchViewModel, pageState: WebSearchViewModel.Page) {
     Column {
         val queryState by viewModel.query.collectAsState()
         Box(

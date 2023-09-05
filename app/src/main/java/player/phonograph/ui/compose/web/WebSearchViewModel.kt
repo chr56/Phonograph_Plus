@@ -17,11 +17,13 @@ import kotlinx.coroutines.flow.asStateFlow
 class WebSearchViewModel : ViewModel() {
 
     sealed class Page(@StringRes val nameRes: Int) {
+        object Home : Page(R.string.intro_label)
         object Search : Page(R.string.action_search)
         object Detail : Page(R.string.label_details)
         companion object {
-            val RootRage: Page = Search
+            val RootRage: Page = Home
         }
+
         fun isRoot() = equals(Page.RootRage)
     }
 
@@ -29,18 +31,28 @@ class WebSearchViewModel : ViewModel() {
 
     class Navigator {
 
-        private val _page: MutableStateFlow<Page> = MutableStateFlow(Page.RootRage)
-        val page get() = _page.asStateFlow()
+        private val pages: MutableList<Page> = mutableListOf(Page.RootRage)
+
+        private val _currentPage: MutableStateFlow<Page> = MutableStateFlow(Page.RootRage)
+        val currentPage get() = _currentPage.asStateFlow()
 
         fun navigateTo(page: Page) {
-            _page.value = page
+            pages.add(page)
+            _currentPage.value = page
         }
 
+        /**
+         * @return false if reaching to root
+         */
         fun navigateUp(): Boolean {
-            return if (!_page.value.isRoot()) {
-                navigateTo(Page.RootRage)
+            val current = pages.removeLastOrNull()
+            val last = pages.lastOrNull()
+            return if (last != null) {
+                _currentPage.value = last
                 true
-            } else false
+            } else {
+                false
+            }
         }
 
     }

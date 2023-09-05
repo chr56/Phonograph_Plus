@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun NavigateButton(drawerState: DrawerState, navigator: WebSearchViewModel.Navigator) {
-    val pageState by navigator.page.collectAsState()
+    val pageState by navigator.currentPage.collectAsState()
     if (pageState.isRoot()) {
         val coroutineScope = rememberCoroutineScope()
         Icon(
@@ -52,7 +52,7 @@ fun NavigateButton(drawerState: DrawerState, navigator: WebSearchViewModel.Navig
 
 @Composable
 fun ColumnScope.Drawer(navigator: WebSearchViewModel.Navigator) {
-    val pageState by navigator.page.collectAsState()
+    val pageState by navigator.currentPage.collectAsState()
     CompositionLocalProvider(
         LocalTextStyle provides MaterialTheme.typography.h6
     ) {
@@ -73,7 +73,7 @@ fun ColumnScope.Drawer(navigator: WebSearchViewModel.Navigator) {
                 .weight(WEIGHT_SPACE_GAP)
         )
         Switcher(navigator, WebSearchViewModel.Page.Search)
-        Switcher(navigator, WebSearchViewModel.Page.Detail)
+        Switcher(navigator, WebSearchViewModel.Page.Home)
     }
 }
 

@@ -44,13 +44,13 @@ class WebSearchActivity : ThemeActivity() {
             PhonographTheme {
 
                 val scaffoldState = rememberScaffoldState()
-                val pageState by viewModel.navigator.page.collectAsState()
+                val page by viewModel.navigator.currentPage.collectAsState()
 
                 Scaffold(
                     scaffoldState = scaffoldState,
                     topBar = {
                         TopAppBar(
-                            title = { Text(stringResource(pageState.nameRes)) },
+                            title = { Text(stringResource(page.nameRes)) },
                             navigationIcon = {
                                 Box(Modifier.padding(16.dp)) {
                                     NavigateButton(scaffoldState.drawerState, viewModel.navigator)
@@ -67,9 +67,10 @@ class WebSearchActivity : ThemeActivity() {
                             .padding(it)
                             .fillMaxWidth()
                     ) {
-                        when (pageState) {
-                            WebSearchViewModel.Page.Search -> Search(viewModel)
-                            WebSearchViewModel.Page.Detail -> Detail(viewModel)
+                        when (page) {
+                            WebSearchViewModel.Page.Home   -> Home(viewModel, page)
+                            WebSearchViewModel.Page.Search -> Search(viewModel, page)
+                            WebSearchViewModel.Page.Detail -> Detail(viewModel, page)
                         }
                     }
                 }

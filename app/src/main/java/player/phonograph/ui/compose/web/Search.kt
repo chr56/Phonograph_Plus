@@ -16,7 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 
 
 @Composable
-fun Search(viewModel: WebSearchViewModel) {
+fun Search(viewModel: WebSearchViewModel, pageState: WebSearchViewModel.Page) {
     val queryState by viewModel.query.collectAsState()
 
     when (val query = queryState) {
