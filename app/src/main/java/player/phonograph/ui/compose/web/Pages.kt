@@ -42,6 +42,5 @@ sealed class Page(@StringRes val nameRes: Int) : Navigator.IPage {
 
     open fun title(context: Context): String = context.getString(nameRes)
 
-    fun isRoot() = equals(Page.RootRage)
 }
 

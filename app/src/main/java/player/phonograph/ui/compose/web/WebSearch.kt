@@ -58,7 +58,7 @@ private fun HomeItem(page: Page.Search<*>) {
 @Composable
 fun NavigateButton(drawerState: DrawerState, navigator: Navigator<Page>) {
     val pageState by navigator.currentPage.collectAsState()
-    if (pageState.isRoot()) {
+    if (navigator.isRoot(pageState)) {
         val coroutineScope = rememberCoroutineScope()
         Icon(
             Icons.Default.Menu, null,
@@ -85,7 +85,11 @@ fun ColumnScope.Drawer(viewModel: WebSearchViewModel) {
     CompositionLocalProvider(
         LocalTextStyle provides MaterialTheme.typography.h6
     ) {
-        Column(Modifier.weight(9f).padding(vertical = 12.dp)) {
+        Column(
+            Modifier
+                .weight(9f)
+                .padding(vertical = 12.dp)
+        ) {
             Pages(navigator, page)
         }
         Column(Modifier.weight(4f)) {

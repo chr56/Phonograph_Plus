@@ -37,4 +37,6 @@ class Navigator<P : Navigator.IPage>(rootRage: P) {
         }
     }
 
+    fun isRoot(page: P) = page == _pages.firstOrNull()
+
 }

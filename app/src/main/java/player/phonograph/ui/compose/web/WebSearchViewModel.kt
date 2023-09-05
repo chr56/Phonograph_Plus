@@ -13,7 +13,7 @@ import android.content.Context
 
 class WebSearchViewModel : ViewModel() {
 
-    val navigator = Navigator(Page.RootRage)
+    val navigator = Navigator<Page>(Page.Home)
 
     val queryFactory = QueryFactory()
 
