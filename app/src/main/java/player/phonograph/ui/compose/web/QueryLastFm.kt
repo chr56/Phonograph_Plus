@@ -8,17 +8,21 @@ import util.phonograph.tagsources.lastfm.AlbumResult
 import util.phonograph.tagsources.lastfm.ArtistResult
 import util.phonograph.tagsources.lastfm.LastFMRestClient
 import util.phonograph.tagsources.lastfm.LastFMService
+import util.phonograph.tagsources.lastfm.LastFmAlbum
+import util.phonograph.tagsources.lastfm.LastFmArtist
 import util.phonograph.tagsources.lastfm.LastFmSearchResultItem
 import util.phonograph.tagsources.lastfm.LastFmSearchResults
+import util.phonograph.tagsources.lastfm.LastFmTrack
 import util.phonograph.tagsources.lastfm.TrackResult
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 class LastFmQuery(
     context: Context,
@@ -87,12 +91,9 @@ class LastFmQuery(
     val result get() = _result.asStateFlow()
 
 
-    private val _detail: MutableStateFlow<Any?> = MutableStateFlow(null)
-    val detail get() = _detail.asStateFlow()
-
     //region Query Implementations
-    override fun query(context: Context, action: QueryAction) {
-        lastFmQuery { service ->
+    override fun query(context: Context, action: QueryAction): Deferred<*> {
+        return lastFmQuery { service ->
             when (action) {
                 is QueryAction.SearchArtist  -> searchArtist(service, action.name)
                 is QueryAction.SearchRelease -> searchAlbum(service, action.name)
@@ -124,32 +125,28 @@ class LastFmQuery(
     }
 
 
-    private suspend fun viewLastFMAlbum(service: LastFMService, album: AlbumResult.Album) {
+    private suspend fun viewLastFMAlbum(service: LastFMService, album: AlbumResult.Album): LastFmAlbum? {
         val call = service.getAlbumInfo(album.name, album.artist, null)
-        val response = call.tryExecute()
-        _detail.emit(response?.album)
+        return call.tryExecute()?.album
     }
 
-    private suspend fun viewLastFMArtist(service: LastFMService, artist: ArtistResult.Artist) {
+    private suspend fun viewLastFMArtist(service: LastFMService, artist: ArtistResult.Artist): LastFmArtist? {
         val call = service.getArtistInfo(artist.name, null, null)
-        val response = call.tryExecute()
-        _detail.emit(response?.artist)
+        return call.tryExecute()?.artist
     }
 
-    private suspend fun viewLastFMTrack(service: LastFMService, track: TrackResult.Track) {
+    private suspend fun viewLastFMTrack(service: LastFMService, track: TrackResult.Track): LastFmTrack? {
         val call = service.getTrackInfo(track.name, track.artist, null)
-        val response = call.tryExecute()
-        _detail.emit(response?.track)
+        return call.tryExecute()?.track
     }
 
-    private fun lastFmQuery(
-        block: suspend CoroutineScope.(LastFMService) -> Unit,
-    ) {
-        lastFmQueryJob?.cancel()
-        lastFmQueryJob = viewModelScope.launch(Dispatchers.IO) {
+    private fun <T> lastFmQuery(
+        block: suspend CoroutineScope.(LastFMService) -> T,
+    ): Deferred<T> {
+        return viewModelScope.async(Dispatchers.IO) {
             val service = lastFMRestClient.apiService
             block.invoke(this, service)
-        }
+        }.also { lastFmQueryJob = it }
     }
 
 

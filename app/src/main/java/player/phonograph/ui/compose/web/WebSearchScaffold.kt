@@ -4,6 +4,8 @@
 
 package player.phonograph.ui.compose.web
 
+import player.phonograph.ui.compose.web.WebSearchViewModel.Page.Search.LastFmSearch
+import player.phonograph.ui.compose.web.WebSearchViewModel.Page.Search.MusicBrainzSearch
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +25,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
@@ -51,7 +54,7 @@ fun NavigateButton(drawerState: DrawerState, navigator: WebSearchViewModel.Navig
 }
 
 @Composable
-fun ColumnScope.Drawer(navigator: WebSearchViewModel.Navigator) {
+fun ColumnScope.Drawer(navigator: WebSearchViewModel.Navigator, viewModel: WebSearchViewModel) {
     val pageState by navigator.currentPage.collectAsState()
     CompositionLocalProvider(
         LocalTextStyle provides MaterialTheme.typography.h6
@@ -72,15 +75,18 @@ fun ColumnScope.Drawer(navigator: WebSearchViewModel.Navigator) {
                 .height(32.dp)
                 .weight(WEIGHT_SPACE_GAP)
         )
-        Switcher(navigator, WebSearchViewModel.Page.Search.LastFmSearch)
+        val context = LocalContext.current
+        Switcher(navigator, LastFmSearch(viewModel.queryFactory.lastFm(context)))
+        Switcher(navigator, MusicBrainzSearch(viewModel.queryFactory.musicBrainzQuery(context)))
         Switcher(navigator, WebSearchViewModel.Page.Home)
     }
 }
 
 @Composable
 fun ColumnScope.Switcher(navigator: WebSearchViewModel.Navigator, page: WebSearchViewModel.Page) {
+    val text = "${stringResource(page.nameRes)} ${if (page is WebSearchViewModel.Page.Search<*>) page.source else ""}"
     Text(
-        text = stringResource(page.nameRes),
+        text,
         Modifier
             .clickable {
                 navigator.navigateTo(page)

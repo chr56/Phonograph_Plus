@@ -18,12 +18,25 @@ class WebSearchViewModel : ViewModel() {
 
     sealed class Page(@StringRes val nameRes: Int) {
         object Home : Page(R.string.intro_label)
-        sealed class Search(val source: String) : Page(R.string.action_search) {
-            object LastFmSearch : Search("Last.FM")
-            object MusicBrainzSearch : Search("MusicBrainz")
+
+        sealed class Search<Q : Query<*, *>>(q: Q, val source: String) : Page(R.string.action_search) {
+
+            private val _query: MutableStateFlow<Q> = MutableStateFlow(q)
+            val query get() = _query.asStateFlow()
+
+            class LastFmSearch(q: LastFmQuery) : Search<LastFmQuery>(q, "Last.FM")
+            class MusicBrainzSearch(q: MusicBrainzQuery) : Search<MusicBrainzQuery>(q, "MusicBrainz")
         }
 
-        object Detail : Page(R.string.label_details)
+        sealed class Detail(data: Any?) : Page(R.string.label_details) {
+
+            private val _detail: MutableStateFlow<Any?> = MutableStateFlow(data)
+            val detail get() = _detail.asStateFlow()
+
+            class LastFmDetail(result: Any) : Detail(result)
+            class MusicBrainzDetail(result: Any) : Detail(result)
+        }
+
         companion object {
             val RootRage: Page = Home
         }
@@ -61,18 +74,11 @@ class WebSearchViewModel : ViewModel() {
 
     }
 
-    private val _query: MutableStateFlow<Query<*, *>?> = MutableStateFlow(null)
-    val query get() = _query.asStateFlow()
-
-    fun prepareQuery(context: Context, query: Query<*, *>?) {
-        _query.tryEmit(query ?: queryFactory.default(context))
-    }
-
     val queryFactory = QueryFactory()
 
     inner class QueryFactory {
 
-        fun default(context: Context): LastFmQuery = LastFmQuery(context, this@WebSearchViewModel)
+        fun lastFm(context: Context): LastFmQuery = LastFmQuery(context, this@WebSearchViewModel)
 
         fun from(context: Context, artist: Artist): LastFmQuery =
             LastFmQuery(

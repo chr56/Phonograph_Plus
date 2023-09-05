@@ -21,10 +21,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_DOCUMENT
 import android.os.Bundle
+import kotlinx.coroutines.launch
 import player.phonograph.model.Album as PhonographAlbum
 import player.phonograph.model.Artist as PhonographArtist
 import player.phonograph.model.Song as PhonographSong
@@ -58,7 +60,7 @@ class WebSearchActivity : ThemeActivity() {
                         )
                     },
                     drawerContent = {
-                        Drawer(viewModel.navigator)
+                        Drawer(viewModel.navigator, viewModel)
                     }
                 ) {
                     Box(
@@ -66,11 +68,12 @@ class WebSearchActivity : ThemeActivity() {
                             .padding(it)
                             .fillMaxWidth()
                     ) {
-                        when (page) {
-                            WebSearchViewModel.Page.Home                     -> Home(viewModel, page)
-                            WebSearchViewModel.Page.Search.LastFmSearch      -> Search(viewModel, page)
-                            WebSearchViewModel.Page.Search.MusicBrainzSearch -> {}
-                            WebSearchViewModel.Page.Detail                   -> Detail(viewModel, page)
+                        when (val p = page) {
+                            WebSearchViewModel.Page.Home                        -> Home(viewModel, page)
+                            is WebSearchViewModel.Page.Search.LastFmSearch      -> LastFmSearch(viewModel, p)
+                            is WebSearchViewModel.Page.Search.MusicBrainzSearch -> MusicBrainzSearch(viewModel, p)
+                            is WebSearchViewModel.Page.Detail.LastFmDetail      -> DetailLastFm(viewModel, p)
+                            is WebSearchViewModel.Page.Detail.MusicBrainzDetail -> DetailMusicBrainz(viewModel, p)
                         }
                     }
                 }
@@ -87,43 +90,43 @@ class WebSearchActivity : ThemeActivity() {
         val query = when (intent.getStringExtra(EXTRA_COMMAND)) {
             EXTRA_QUERY_ALBUM                    ->
                 intent.parcelableExtra<PhonographAlbum>(EXTRA_DATA)?.let { factory.from(context, it) }.also {
-
+                    prefillLastFmSearch(viewModel.navigator, it)
                 }
 
             EXTRA_QUERY_ARTIST                   ->
                 intent.parcelableExtra<PhonographArtist>(EXTRA_DATA)?.let { factory.from(context, it) }.also {
-
+                    prefillLastFmSearch(viewModel.navigator, it)
                 }
 
             EXTRA_QUERY_SONG                     ->
                 intent.parcelableExtra<PhonographSong>(EXTRA_DATA)?.let { factory.from(context, it) }.also {
-
+                    prefillLastFmSearch(viewModel.navigator, it)
                 }
 
             EXTRA_VIEW_MUSICBRAINZ_RELEASE_GROUP ->
-                factory.musicBrainzQueryReleaseGroup(context, intent.getStringExtra(EXTRA_DATA).orEmpty()).also {
-                    viewModel.navigator.navigateTo(WebSearchViewModel.Page.Detail)
+                parseMusicBrainzDetail(context, intent, viewModel) {
+                    MusicBrainzQuery.QueryAction.ViewReleaseGroup(it)
                 }
 
             EXTRA_VIEW_MUSICBRAINZ_RELEASE       ->
-                factory.musicBrainzQueryRelease(context, intent.getStringExtra(EXTRA_DATA).orEmpty()).also {
-                    viewModel.navigator.navigateTo(WebSearchViewModel.Page.Detail)
+                parseMusicBrainzDetail(context, intent, viewModel) {
+                    MusicBrainzQuery.QueryAction.ViewRelease(it)
                 }
 
             EXTRA_VIEW_MUSICBRAINZ_ARTIST        ->
-                factory.musicBrainzQueryArtist(context, intent.getStringExtra(EXTRA_DATA).orEmpty()).also {
-                    viewModel.navigator.navigateTo(WebSearchViewModel.Page.Detail)
+                parseMusicBrainzDetail(context, intent, viewModel) {
+                    MusicBrainzQuery.QueryAction.ViewArtist(it)
                 }
 
             EXTRA_VIEW_MUSICBRAINZ_RECORDING     ->
-                factory.musicBrainzQueryRecording(context, intent.getStringExtra(EXTRA_DATA).orEmpty()).also {
-                    viewModel.navigator.navigateTo(WebSearchViewModel.Page.Detail)
+                parseMusicBrainzDetail(context, intent, viewModel) {
+                    MusicBrainzQuery.QueryAction.ViewRecording(it)
                 }
+
 
             else                                 -> null
         }
 
-        viewModel.prepareQuery(context, query)
     }
 
     companion object {
@@ -136,6 +139,29 @@ class WebSearchActivity : ThemeActivity() {
         const val EXTRA_VIEW_MUSICBRAINZ_ARTIST = "VIEW:MusicBrain:Artist"
         const val EXTRA_VIEW_MUSICBRAINZ_RECORDING = "VIEW:MusicBrain:Recording"
         const val EXTRA_DATA = "DATA"
+
+        private fun prefillLastFmSearch(navigator: WebSearchViewModel.Navigator, lastFmQuery: LastFmQuery?) {
+            if (lastFmQuery != null) {
+                val page = WebSearchViewModel.Page.Search.LastFmSearch(lastFmQuery)
+                navigator.navigateTo(page)
+            }
+        }
+
+        private fun parseMusicBrainzDetail(
+            context: Context,
+            intent: Intent,
+            viewModel: WebSearchViewModel,
+            process: (String) -> MusicBrainzQuery.QueryAction,
+        ): MusicBrainzQuery {
+            val mbid = intent.getStringExtra(EXTRA_DATA).orEmpty()
+            return viewModel.queryFactory.musicBrainzQueryArtist(context, mbid).also {
+                viewModel.viewModelScope.launch {
+                    val result = it.query(context, process(mbid)).await()
+                    val page = WebSearchViewModel.Page.Detail.MusicBrainzDetail(result ?: Any())
+                    viewModel.navigator.navigateTo(page)
+                }
+            }
+        }
 
         fun launchIntent(context: Context, data: PhonographAlbum?): Intent =
             launchIntent(context).apply {

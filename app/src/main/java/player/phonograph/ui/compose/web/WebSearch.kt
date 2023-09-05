@@ -4,6 +4,9 @@
 
 package player.phonograph.ui.compose.web
 
+import player.phonograph.ui.compose.web.WebSearchViewModel.Page
+import player.phonograph.ui.compose.web.WebSearchViewModel.Page.Search.LastFmSearch
+import player.phonograph.ui.compose.web.WebSearchViewModel.Page.Search.MusicBrainzSearch
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,19 +16,21 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Home(viewModel: WebSearchViewModel, pageState: WebSearchViewModel.Page) {
+fun Home(viewModel: WebSearchViewModel, pageState: Page) {
     val navigator = viewModel.navigator
+    val context = LocalContext.current
     Column(Modifier.fillMaxSize()) {
-        Item(navigator, WebSearchViewModel.Page.Search.LastFmSearch)
-        Item(navigator, WebSearchViewModel.Page.Search.MusicBrainzSearch)
+        Item(navigator, LastFmSearch(viewModel.queryFactory.lastFm(context)))
+        Item(navigator, MusicBrainzSearch(viewModel.queryFactory.musicBrainzQuery(context)))
     }
 }
 
 @Composable
-private fun Item(navigator: WebSearchViewModel.Navigator, page: WebSearchViewModel.Page.Search) {
+private fun Item(navigator: WebSearchViewModel.Navigator, page: Page.Search<*>) {
     Text(
         page.source,
         modifier = Modifier

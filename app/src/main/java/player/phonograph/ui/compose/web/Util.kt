@@ -10,40 +10,15 @@ import player.phonograph.ui.compose.web.WebSearchActivity.Companion.launchIntent
 import player.phonograph.ui.compose.web.WebSearchActivity.Companion.launchIntentMusicBrainzArtist
 import player.phonograph.ui.compose.web.WebSearchActivity.Companion.launchIntentMusicBrainzRecording
 import player.phonograph.ui.compose.web.WebSearchActivity.Companion.launchIntentMusicBrainzRelease
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-
-@Composable
-fun Detail(viewModel: WebSearchViewModel, pageState: WebSearchViewModel.Page) {
-    Column {
-        val queryState by viewModel.query.collectAsState()
-        Box(
-            Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            when (val query = queryState) {
-                is LastFmQuery      -> DetailLastFm(viewModel, query)
-                is MusicBrainzQuery -> DetailMusicBrainz(viewModel, query)
-                else                -> {}
-            }
-        }
-    }
-}
 
 @Composable
 fun JumpMusicBrainz(modifier: Modifier, type: Target, mbid: String?) {
@@ -53,10 +28,10 @@ fun JumpMusicBrainz(modifier: Modifier, type: Target, mbid: String?) {
             onClick = {
                 context.startActivity(
                     when (type) {
-                        Target.Artist    -> launchIntentMusicBrainzArtist(context, mbid)
+                        Target.Artist -> launchIntentMusicBrainzArtist(context, mbid)
                         Target.Recording -> launchIntentMusicBrainzRecording(context, mbid)
-                        Target.Release   -> launchIntentMusicBrainzRelease(context, mbid)
-                        else             -> launchIntent(context)
+                        Target.Release -> launchIntentMusicBrainzRelease(context, mbid)
+                        else -> launchIntent(context)
                     }
                 )
             },

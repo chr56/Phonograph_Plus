@@ -17,7 +17,6 @@ import util.phonograph.tagsources.musicbrainz.MusicBrainzTrack
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -50,20 +49,24 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun BoxScope.DetailMusicBrainz(viewModel: WebSearchViewModel, query: MusicBrainzQuery) {
-    val item by query.detail.collectAsState()
+fun DetailMusicBrainz(
+    viewModel: WebSearchViewModel,
+    musicBrainzDetail: WebSearchViewModel.Page.Detail.MusicBrainzDetail,
+) {
+    val detail by musicBrainzDetail.detail.collectAsState()
     Column(
         Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        when (val i = item) {
-            is MusicBrainzReleaseGroup -> MusicBrainzReleaseGroup(i)
-            is MusicBrainzRelease      -> MusicBrainzRelease(i)
-            is MusicBrainzArtist       -> MusicBrainzArtist(i)
-            is MusicBrainzRecording    -> MusicBrainzRecording(i)
-            is MusicBrainzTrack        -> MusicBrainzTrack(i)
-            null                       -> Text(
+        when (val item = detail) {
+            is MusicBrainzReleaseGroup -> MusicBrainzReleaseGroup(item)
+            is MusicBrainzRelease      -> MusicBrainzRelease(item)
+            is MusicBrainzArtist       -> MusicBrainzArtist(item)
+            is MusicBrainzRecording    -> MusicBrainzRecording(item)
+            is MusicBrainzTrack        -> MusicBrainzTrack(item)
+            else                       -> Text(
                 stringResource(R.string.empty),
                 Modifier.align(Alignment.CenterHorizontally)
             )

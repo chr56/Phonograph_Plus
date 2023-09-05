@@ -53,15 +53,21 @@ import android.text.Html
 
 
 @Composable
-fun BoxScope.DetailLastFm(viewModel: WebSearchViewModel, query: LastFmQuery) {
-    val item by query.detail.collectAsState()
-    when (val i = item) {
-        is LastFmAlbum -> LastFmAlbum(i)
-        is LastFmArtist -> LastFmArtist(i)
-        is LastFmTrack -> LastFmTrack(i)
-        null -> Text(
-            stringResource(R.string.empty), modifier = Modifier.align(Alignment.TopCenter)
-        )
+fun DetailLastFm(viewModel: WebSearchViewModel, lastFmDetail: WebSearchViewModel.Page.Detail.LastFmDetail) {
+    val detail by lastFmDetail.detail.collectAsState()
+    Box(
+        Modifier
+            .fillMaxSize()
+            .padding(horizontal = 24.dp, vertical = 8.dp)
+    ) {
+        when (val item = detail) {
+            is LastFmAlbum -> LastFmAlbum(item)
+            is LastFmArtist -> LastFmArtist(item)
+            is LastFmTrack -> LastFmTrack(item)
+            else -> Text(
+                stringResource(R.string.empty), modifier = Modifier.align(Alignment.TopCenter)
+            )
+        }
     }
 }
 

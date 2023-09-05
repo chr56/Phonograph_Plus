@@ -4,17 +4,21 @@
 
 package player.phonograph.ui.compose.web
 
-import util.phonograph.tagsources.musicbrainz.MusicBrainzModel
+import util.phonograph.tagsources.musicbrainz.MusicBrainzArtist
+import util.phonograph.tagsources.musicbrainz.MusicBrainzRecording
+import util.phonograph.tagsources.musicbrainz.MusicBrainzRelease
+import util.phonograph.tagsources.musicbrainz.MusicBrainzReleaseGroup
 import util.phonograph.tagsources.musicbrainz.MusicBrainzRestClient
 import util.phonograph.tagsources.musicbrainz.MusicBrainzService
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 class MusicBrainzQuery(
     context: Context,
@@ -44,13 +48,9 @@ class MusicBrainzQuery(
         data class ViewRecording(val mbid: String) : QueryAction()
     }
 
-    private val _detail: MutableStateFlow<MusicBrainzModel?> = MutableStateFlow(null)
-    val detail get() = _detail.asStateFlow()
-
-
     //region Query Implementations
-    override fun query(context: Context, action: QueryAction) {
-        musicBrainzQuery { service ->
+    override fun query(context: Context, action: QueryAction): Deferred<*> {
+        return musicBrainzQuery { service ->
             when (action) {
                 is QueryAction.ViewReleaseGroup -> viewMusicBrainzReleaseGroup(service, action.mbid)
                 is QueryAction.ViewRelease      -> viewMusicBrainzRelease(service, action.mbid)
@@ -60,43 +60,39 @@ class MusicBrainzQuery(
         }
     }
 
-    private suspend fun viewMusicBrainzReleaseGroup(service: MusicBrainzService, mbid: String) {
+    private suspend fun viewMusicBrainzReleaseGroup(
+        service: MusicBrainzService,
+        mbid: String,
+    ): MusicBrainzReleaseGroup? {
         val call = service.getReleaseGroup(mbid)
-        val response = call.tryExecute()
-        _detail.emit(response)
+        return call.tryExecute()
     }
 
-    private suspend fun viewMusicBrainzRelease(service: MusicBrainzService, mbid: String) {
+    private suspend fun viewMusicBrainzRelease(service: MusicBrainzService, mbid: String): MusicBrainzRelease? {
         val call = service.getRelease(mbid)
-        val response = call.tryExecute()
-        _detail.emit(response)
+        return call.tryExecute()
     }
 
-    private suspend fun viewMusicBrainzArtist(service: MusicBrainzService, mbid: String) {
+    private suspend fun viewMusicBrainzArtist(service: MusicBrainzService, mbid: String): MusicBrainzArtist? {
         val call = service.getArtist(mbid)
-        val response = call.tryExecute()
-        _detail.emit(response)
+        return call.tryExecute()
     }
 
-    private suspend fun viewMusicBrainzRecording(service: MusicBrainzService, mbid: String) {
+    private suspend fun viewMusicBrainzRecording(service: MusicBrainzService, mbid: String): MusicBrainzRecording? {
         val call = service.getRecording(mbid)
-        val response = call.tryExecute()
-        _detail.emit(response)
+        return call.tryExecute()
     }
 
-    private fun musicBrainzQuery(
-        block: suspend CoroutineScope.(MusicBrainzService) -> Unit,
-    ) {
-        musicBrainzQueryJob?.cancel()
-        musicBrainzQueryJob = viewModelScope.launch(Dispatchers.IO) {
+    private fun <T> musicBrainzQuery(
+        block: suspend CoroutineScope.(MusicBrainzService) -> T,
+    ): Deferred<T> {
+        return viewModelScope.async(Dispatchers.IO) {
             val service = musicBrainzRestClient.apiService
             block.invoke(this, service)
         }
     }
-    //endregion
-
-
     private val musicBrainzRestClient: MusicBrainzRestClient = MusicBrainzRestClient(context)
     private var musicBrainzQueryJob: Job? = null
+    //endregion
 
 }
