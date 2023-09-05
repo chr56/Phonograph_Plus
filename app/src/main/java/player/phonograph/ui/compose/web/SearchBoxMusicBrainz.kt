@@ -30,56 +30,44 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun LastFmSearchBox(
-    lastFmQuery: LastFmQuery,
+fun MusicBrainzSearchBox(
     modifier: Modifier = Modifier,
-    onSearch: (LastFmQuery.QueryAction) -> Unit,
+    musicBrainzQuery: MusicBrainzQuery,
+    onSearch: (MusicBrainzQuery.QueryAction) -> Unit,
 ) {
     Column(modifier.padding(vertical = 8.dp)) {
-        val queryParameter by lastFmQuery.queryParameter.collectAsState()
+        val queryParameter by musicBrainzQuery.queryParameter.collectAsState()
         Text(
-            text = "last.fm",
+            text = "MusicBrainz",
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
             fontWeight = FontWeight.Black,
             style = MaterialTheme.typography.h5
         )
         Line(name = "Target") {
             Target(
-                all = listOf(LastFmQuery.Target.Release, LastFmQuery.Target.Artist, LastFmQuery.Target.Track),
+                all = listOf(
+                    MusicBrainzQuery.Target.ReleaseGroup,
+                    MusicBrainzQuery.Target.Release,
+                    MusicBrainzQuery.Target.Artist,
+                    MusicBrainzQuery.Target.Recording
+                ),
                 current = queryParameter.target
             ) {
-                lastFmQuery.updateQueryParameter { old ->
+                musicBrainzQuery.updateQueryParameter { old ->
                     old.copy(target = it)
                 }
             }
         }
-        if (queryParameter.target == LastFmQuery.Target.Release)
-            Line(name = stringResource(id = R.string.album)) {
-                TextBox(queryParameter.releaseQuery.orEmpty()) {
-                    lastFmQuery.updateQueryParameter { old ->
-                        old.copy(releaseQuery = it)
-                    }
+        Line(name = "Query") {
+            TextBox(queryParameter.query) {
+                musicBrainzQuery.updateQueryParameter { old ->
+                    old.copy(query = it)
                 }
             }
-        if (queryParameter.target == LastFmQuery.Target.Track)
-            Line(name = stringResource(id = R.string.song)) {
-                TextBox(queryParameter.trackQuery.orEmpty()) {
-                    lastFmQuery.updateQueryParameter { old ->
-                        old.copy(trackQuery = it)
-                    }
-                }
-            }
-        if (queryParameter.target == LastFmQuery.Target.Artist || queryParameter.target == LastFmQuery.Target.Track)
-            Line(name = stringResource(id = R.string.artist)) {
-                TextBox(queryParameter.artistQuery.orEmpty()) {
-                    lastFmQuery.updateQueryParameter { old ->
-                        old.copy(artistQuery = it)
-                    }
-                }
-            }
+        }
         TextButton(
             onClick = {
-                onSearch(lastFmQuery.searchAction())
+                onSearch(queryParameter.searchAction())
             },
             modifier = Modifier
                 .padding(horizontal = 12.dp)
@@ -92,10 +80,10 @@ fun LastFmSearchBox(
 
 @Composable
 private fun Target(
-    all: Collection<LastFmQuery.Target>,
-    current: LastFmQuery.Target,
+    all: Collection<MusicBrainzQuery.Target>,
+    current: MusicBrainzQuery.Target,
     modifier: Modifier = Modifier,
-    onUpdate: (LastFmQuery.Target) -> Unit,
+    onUpdate: (MusicBrainzQuery.Target) -> Unit,
 ) {
     Row(modifier) {
         for (target in all) {
@@ -107,8 +95,7 @@ private fun Target(
                 RadioButton(selected = target == current, {})
                 Text(
                     target.name,
-                    Modifier
-                        .align(Alignment.CenterVertically)
+                    Modifier.align(Alignment.CenterVertically)
                 )
             }
         }
