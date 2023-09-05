@@ -34,22 +34,22 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun Home(viewModel: WebSearchViewModel, pageState: Page) {
-    val navigator = viewModel.navigator
     val context = LocalContext.current
     Column(Modifier.fillMaxSize()) {
-        HomeItem(navigator, LastFmSearch(viewModel.queryFactory.lastFm(context)))
-        HomeItem(navigator, MusicBrainzSearch(viewModel.queryFactory.musicBrainzQuery(context)))
+        HomeItem(LastFmSearch(viewModel.queryFactory.lastFm(context)))
+        HomeItem(MusicBrainzSearch(viewModel.queryFactory.musicBrainzQuery(context)))
     }
 }
 
 @Composable
-private fun HomeItem(navigator: Navigator<Page>, page: Page.Search<*>) {
+private fun HomeItem(page: Page.Search<*>) {
+    val navigator = LocalPageNavigator.current
     Text(
         page.source,
         modifier = Modifier
             .padding(32.dp)
             .clickable {
-                navigator.navigateTo(page)
+                navigator?.navigateTo(page)
             }
             .fillMaxWidth(),
         style = MaterialTheme.typography.h4
@@ -79,7 +79,8 @@ fun NavigateButton(drawerState: DrawerState, navigator: Navigator<Page>) {
 }
 
 @Composable
-fun ColumnScope.Drawer(navigator: Navigator<Page>, viewModel: WebSearchViewModel) {
+fun ColumnScope.Drawer(viewModel: WebSearchViewModel) {
+    val navigator = viewModel.navigator
     val page by navigator.currentPage.collectAsState()
     CompositionLocalProvider(
         LocalTextStyle provides MaterialTheme.typography.h6

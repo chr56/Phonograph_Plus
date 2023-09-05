@@ -7,9 +7,12 @@ package player.phonograph.ui.compose.web
 import player.phonograph.R
 import player.phonograph.ui.compose.base.Navigator
 import androidx.annotation.StringRes
+import androidx.compose.runtime.compositionLocalOf
 import android.content.Context
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+
+val LocalPageNavigator = compositionLocalOf<Navigator<Page>?> { null }
 
 sealed class Page(@StringRes val nameRes: Int) : Navigator.IPage {
     object Home : Page(R.string.intro_label)

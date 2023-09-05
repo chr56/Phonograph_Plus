@@ -17,6 +17,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -61,20 +62,22 @@ class WebSearchActivity : ThemeActivity() {
                         )
                     },
                     drawerContent = {
-                        Drawer(viewModel.navigator, viewModel)
+                        Drawer(viewModel)
                     }
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .padding(it)
-                            .fillMaxWidth()
-                    ) {
-                        when (val p = page) {
-                            Page.Home                        -> Home(viewModel, page)
-                            is Page.Search.LastFmSearch      -> LastFmSearch(viewModel, p)
-                            is Page.Search.MusicBrainzSearch -> MusicBrainzSearch(viewModel, p)
-                            is Page.Detail.LastFmDetail      -> DetailLastFm(viewModel, p)
-                            is Page.Detail.MusicBrainzDetail -> DetailMusicBrainz(viewModel, p)
+                    CompositionLocalProvider(LocalPageNavigator provides viewModel.navigator) {
+                        Box(
+                            modifier = Modifier
+                                .padding(it)
+                                .fillMaxWidth()
+                        ) {
+                            when (val p = page) {
+                                Page.Home                        -> Home(viewModel, page)
+                                is Page.Search.LastFmSearch      -> LastFmSearch(viewModel, p)
+                                is Page.Search.MusicBrainzSearch -> MusicBrainzSearch(viewModel, p)
+                                is Page.Detail.LastFmDetail      -> DetailLastFm(viewModel, p)
+                                is Page.Detail.MusicBrainzDetail -> DetailMusicBrainz(viewModel, p)
+                            }
                         }
                     }
                 }
