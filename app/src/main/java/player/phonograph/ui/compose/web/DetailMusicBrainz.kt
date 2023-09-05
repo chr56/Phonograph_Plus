@@ -9,6 +9,7 @@ import player.phonograph.ui.compose.components.HorizontalTextItem
 import player.phonograph.ui.compose.components.VerticalTextItem
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtist
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtistCredit
+import util.phonograph.tagsources.musicbrainz.MusicBrainzMedia
 import util.phonograph.tagsources.musicbrainz.MusicBrainzRecording
 import util.phonograph.tagsources.musicbrainz.MusicBrainzRelease
 import util.phonograph.tagsources.musicbrainz.MusicBrainzReleaseGroup
@@ -43,7 +44,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -90,9 +90,8 @@ fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
     }
     MusicBrainzDisambiguation(releaseGroup.disambiguation)
     MusicBrainzTags(releaseGroup.tags)
-    Item("Count", releaseGroup.count.toString())
     if (!releaseGroup.releases.isNullOrEmpty()) {
-        CascadeItem("Release", innerPadding = 24.dp) {
+        CascadeItem("Release", innerModifier = Modifier.padding(24.dp)) {
             for ((index, release) in releaseGroup.releases.withIndex()) {
                 Item("Release ${index + 1}", value = release.title)
             }
@@ -110,10 +109,12 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
     Item("Country", release.country)
     MusicBrainzMedias(release.media)
     Item("Barcode", release.barcode)
-    CascadeItem("Type") {
-        if (!release.labelInfo.isNullOrEmpty()) {
+    if (release.labelInfo.isNotEmpty()) {
+        CascadeItem("Label") {
             for (labelInfo in release.labelInfo) {
-                Text(labelInfo.label.name)
+                if (labelInfo.label != null) {
+                    Text(labelInfo.label.name)
+                }
             }
         }
     }
@@ -128,8 +129,8 @@ fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
     Item("Country", artist.country)
     MusicBrainzLifeSpan(artist.lifeSpan)
     Item("Area", artist.area?.name)
-    CascadeItem("Alias") {
-        if (!artist.aliases.isNullOrEmpty()) {
+    if (!artist.aliases.isNullOrEmpty()) {
+        CascadeItem("Alias") {
             for (alias in artist.aliases) {
                 Text("${alias.name} (${alias.locale})")
             }
@@ -139,15 +140,22 @@ fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
 }
 
 @Composable
-fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording) {
-    Item(stringResource(R.string.title), recording.title)
-    MusicBrainzArtistCredits(recording.artistCredit)
-    Item("Date", recording.firstReleaseDate)
-    MusicBrainzDisambiguation(recording.disambiguation)
-    if (!recording.releases.isNullOrEmpty()) {
-        CascadeItem("Related Releases") {
-            for (release in recording.releases) {
-                Text("${release.title} (${release.date}/${release.barcode})")
+fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording?) {
+    if (recording != null) {
+        Item(stringResource(R.string.title), recording.title)
+        MusicBrainzArtistCredits(recording.artistCredit)
+        Item("Date", recording.firstReleaseDate)
+        MusicBrainzDisambiguation(recording.disambiguation)
+        if (!recording.releases.isNullOrEmpty()) {
+            CascadeItem("Related Releases") {
+                for ((index, release) in recording.releases.withIndex()) {
+                    CascadeItem(
+                        "Related Release ${index + 1}",
+                        innerModifier = Modifier.padding(horizontal = 24.dp, vertical = 24.dp)
+                    ) {
+                        MusicBrainzRelease(release)
+                    }
+                }
             }
         }
     }
@@ -159,7 +167,8 @@ fun ColumnScope.MusicBrainzTrack(track: MusicBrainzTrack) {
     MusicBrainzArtistCredits(track.artistCredit)
     Item(stringResource(R.string.label_track_length), track.length.toString())
     Item(stringResource(R.string.track), track.number)
-    Item("recording", track.recording.title)
+    Item("Recording", track.recording?.title)
+    Item("Media", track.media?.title)
 }
 
 @Composable
@@ -175,16 +184,25 @@ fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
                     fontSize = 12.sp,
                     textAlign = TextAlign.Start
                 )
-                for (artistCredit in artistCredits) {
+                for (artistCredit in artistCredits.asReversed()) {
                     Text(
                         "${artistCredit.joinphrase} ${artistCredit.name}",
                         style = stylePrimary,
                     )
-                    Text(
-                        "* ${artistCredit.artist.name} (${artistCredit.artist.type})",
-                        style = styleSecondary,
-                        modifier = Modifier.padding(start = 6.dp)
-                    )
+                    with(artistCredit.artist) {
+                        Text(
+                            "* $name ${type?.let { "($it)" }.orEmpty()}",
+                            style = styleSecondary,
+                            modifier = Modifier.padding(start = 6.dp)
+                        )
+                        if (area != null) {
+                            Text(
+                                "* ${area.name} ${country.orEmpty()}",
+                                style = styleSecondary,
+                                modifier = Modifier.padding(start = 6.dp)
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -192,7 +210,7 @@ fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
 }
 
 @Composable
-private fun MusicBrainzMedias(medias: List<MusicBrainzRelease.Media>?) {
+private fun MusicBrainzMedias(medias: List<MusicBrainzMedia>?) {
     if (!medias.isNullOrEmpty()) {
         for (media in medias) {
             MusicBrainzMedia(media)
@@ -201,13 +219,14 @@ private fun MusicBrainzMedias(medias: List<MusicBrainzRelease.Media>?) {
 }
 
 @Composable
-private fun MusicBrainzMedia(media: MusicBrainzRelease.Media) {
+private fun MusicBrainzMedia(media: MusicBrainzMedia) {
     SelectionContainer {
         CascadeItem("Media") {
+            Item(stringResource(R.string.title), media.title)
             Item("Format", media.format)
             Item("Count", "${media.discCount} * ${media.trackCount}")
             if (!media.tracks.isNullOrEmpty()) {
-                CascadeItem("Tracks", innerPadding = 24.dp) {
+                CascadeItem("Tracks", innerModifier = Modifier.padding(24.dp)) {
                     for (track in media.tracks) {
                         Item("Track ${track.number}", value = track.title)
                         Column(modifier = Modifier.padding(horizontal = 6.dp)) {
@@ -223,7 +242,22 @@ private fun MusicBrainzMedia(media: MusicBrainzRelease.Media) {
 
 @Composable
 private fun MusicBrainzLifeSpan(lifeSpan: MusicBrainzArtist.LifeSpan?) {
-    if (lifeSpan != null) Item("LifeSpan", lifeSpan.run { "$begin~$end ${if (ended == true) "ENDED" else ""}" })
+    if (lifeSpan != null) {
+        val begin = lifeSpan.begin ?: "?"
+        val end = lifeSpan.end
+        val text =
+            if (!end.isNullOrEmpty()) {
+                if (lifeSpan.ended == true) {
+                    "$begin ~ $end (ended)"
+                } else {
+                    "$begin ~ $end"
+                }
+            } else {
+                "$begin ~ "
+            }
+
+        Item("LifeSpan", text)
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -277,7 +311,7 @@ private fun MusicBrainzDisambiguation(string: String?) {
 
 @Composable
 private fun Item(label: String, value: String?) {
-    if (value != null) HorizontalTextItem(label, value)
+    if (!value.isNullOrEmpty()) HorizontalTextItem(label, value)
 }
 
 @Composable
@@ -291,19 +325,22 @@ private fun Item(label: String, values: Collection<String>?) {
 
 @Composable
 private fun CascadeItem(
-    title: String, outerPadding: Dp = 8.dp, innerPadding: Dp = 8.dp,
+    title: String,
+    modifier: Modifier = Modifier,
+    textModifier: Modifier = Modifier,
+    textStyle: TextStyle = TextStyle(fontWeight = FontWeight.Bold),
+    innerModifier: Modifier = Modifier.padding(8.dp),
     content: @Composable () -> Unit,
 ) {
     Column(
-        Modifier.padding(outerPadding),
-        verticalArrangement = Arrangement.SpaceEvenly
+        modifier, verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Text(
             title,
-            style = TextStyle(fontWeight = FontWeight.Bold),
-            modifier = Modifier.align(Alignment.Start),
+            style = textStyle,
+            modifier = textModifier.align(Alignment.Start),
         )
-        Column(Modifier.padding(innerPadding)) {
+        Column(innerModifier) {
             content()
         }
     }

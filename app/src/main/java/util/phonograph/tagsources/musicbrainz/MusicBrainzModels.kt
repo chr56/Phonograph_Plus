@@ -23,11 +23,13 @@ data class MusicBrainzArtist(
     val beginArea: MusicBrainzArea? = null,
     @SerialName("life-span")
     val lifeSpan: LifeSpan? = null,
-    val isnis: List<String>? = emptyList(),
     val tags: List<MusicBrainzTag>? = emptyList(),
     val relations: List<Relation>? = emptyList(),
     val aliases: List<MusicBrainzAlias>? = emptyList(),
     val score: Int? = null,
+    val disambiguation: String? = null,
+    val ipis: List<String> = emptyList(),
+    val isnis: List<String> = emptyList(),
 ) : MusicBrainzModel {
 
     @Keep
@@ -53,27 +55,26 @@ data class MusicBrainzRelease(
     val id: String,
     val title: String,
     @SerialName("artist-credit")
-    val artistCredit: List<MusicBrainzArtistCredit>? = emptyList(),
+    val artistCredit: List<MusicBrainzArtistCredit> = emptyList(),
     @SerialName("release-group")
     val releaseGroup: MusicBrainzReleaseGroup? = null,
     val date: String? = null,
     val country: String? = null,
     val status: String? = null,
     @SerialName("release-events")
-    val releaseEvents: List<MusicBrainzReleaseEvent>? = emptyList(),
+    val releaseEvents: List<MusicBrainzReleaseEvent> = emptyList(),
     @SerialName("track-count")
     val trackCount: Int = 0,
-    val media: List<Media>? = null,
+    val packaging: String? = null,
+    val media: List<MusicBrainzMedia> = emptyList(),
     @SerialName("label-info")
-    val labelInfo: List<LabelInfo>? = null,
-    val barcode: String? = null,
-    val asin: String? = null,
+    val labelInfo: List<LabelInfo> = emptyList(),
     @SerialName("text-representation")
     val textRepresentation: TextRepresentation? = null,
     val disambiguation: String? = null,
-    val score: Int = 0,
-    val count: Int = 0,
-    val tags: List<MusicBrainzTag>? = null,
+    val tags: List<MusicBrainzTag> = emptyList(),
+    val barcode: String? = null,
+    val asin: String? = null,
 ) : MusicBrainzModel {
 
 
@@ -82,7 +83,7 @@ data class MusicBrainzRelease(
     data class LabelInfo(
         @SerialName("catalog-number")
         val catalogNumber: String? = null,
-        val label: Label,
+        val label: Label? = null,
     ) {
         @Keep
         @Serializable
@@ -91,17 +92,6 @@ data class MusicBrainzRelease(
             val name: String,
         )
     }
-
-    @Keep
-    @Serializable
-    data class Media(
-        val format: String? = null,
-        @SerialName("disc-count")
-        val discCount: Int = 1,
-        @SerialName("track-count")
-        val trackCount: Int = 0,
-        val tracks: List<MusicBrainzTrack>? = emptyList(),
-    )
 
     @Keep
     @Serializable
@@ -115,20 +105,19 @@ data class MusicBrainzRelease(
 @Serializable
 data class MusicBrainzReleaseGroup(
     val id: String,
-    val title: String?,
+    val title: String,
     @SerialName("artist-credit")
-    val artistCredit: List<MusicBrainzArtistCredit>? = listOf(),
-    val aliases: List<MusicBrainzAlias>? = listOf(),
-    val count: Int = 0,
-    val releases: List<MusicBrainzRelease>? = listOf(),
+    val artistCredit: List<MusicBrainzArtistCredit> = emptyList(),
+    val aliases: List<MusicBrainzAlias>? = emptyList(),
+    val releases: List<MusicBrainzRelease>? = emptyList(),
     @SerialName("primary-type")
-    val primaryType: String? = null,
+    val primaryType: String = NA,
     @SerialName("primary-type-id")
-    val primaryTypeId: String? = null,
+    val primaryTypeId: String = NA,
     @SerialName("secondary-types")
-    val secondaryTypes: List<String>? = listOf(),
+    val secondaryTypes: List<String> = emptyList(),
     @SerialName("secondary-type-ids")
-    val secondaryTypeIds: List<String>? = listOf(),
+    val secondaryTypeIds: List<String> = emptyList(),
     @SerialName("first-release-date")
     val firstReleaseDate: String? = null,
     val disambiguation: String? = null,
@@ -143,12 +132,12 @@ data class MusicBrainzRecording(
     val title: String,
     val length: Int? = null,
     @SerialName("artist-credit")
-    val artistCredit: List<MusicBrainzArtistCredit> = listOf(),
+    val artistCredit: List<MusicBrainzArtistCredit> = emptyList(),
     @SerialName("first-release-date")
     val firstReleaseDate: String? = null,
-    val releases: List<MusicBrainzRelease>? = listOf(),
+    val releases: List<MusicBrainzRelease>? = emptyList(),
     val disambiguation: String? = null,
-    val tags: List<MusicBrainzTag>? = listOf(),
+    val tags: List<MusicBrainzTag>? = emptyList(),
 ) : MusicBrainzModel
 
 
@@ -157,13 +146,27 @@ data class MusicBrainzRecording(
 class MusicBrainzTrack(
     val id: String,
     val title: String,
-    val recording: MusicBrainzRecording,
     val length: Int = 0,
     val position: Int = 0,
     @SerialName("artist-credit")
-    val artistCredit: List<MusicBrainzArtistCredit>? = listOf(),
+    val artistCredit: List<MusicBrainzArtistCredit> = emptyList(),
     val number: String = "",
+    val recording: MusicBrainzRecording? = null,
+    val media: MusicBrainzMedia? = null,
 ) : MusicBrainzModel
+
+@Keep
+@Serializable
+data class MusicBrainzMedia(
+    val position: Int = 1,
+    val title: String = "",
+    val format: String? = null,
+    @SerialName("disc-count")
+    val discCount: Int = 1,
+    @SerialName("track-count")
+    val trackCount: Int = 0,
+    val tracks: List<MusicBrainzTrack>? = emptyList(),
+)
 
 @Keep
 @Serializable
@@ -179,7 +182,7 @@ data class MusicBrainzArea(
 @Serializable
 data class MusicBrainzTag(
     val name: String = "",
-    val count: Int,
+    val count: Int = -1,
 )
 
 @Keep
@@ -209,18 +212,9 @@ data class MusicBrainzUrl(
 @Serializable
 data class MusicBrainzArtistCredit(
     val name: String,
-    val artist: Artist,
-    val joinphrase: String? = null,
-) {
-    @Keep
-    @Serializable
-    data class Artist(
-        val id: String,
-        val name: String,
-        val type: String = NA,
-        val disambiguation: String? = "",
-    )
-}
+    val artist: MusicBrainzArtist,
+    val joinphrase: String = "",
+)
 
 sealed interface MusicBrainzSearchResult
 

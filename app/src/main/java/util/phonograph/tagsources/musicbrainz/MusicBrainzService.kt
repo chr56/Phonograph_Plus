@@ -42,6 +42,7 @@ interface MusicBrainzService {
     @GET("${Entity.RECORDING}/{mbid}?fmt=json")
     fun getRecording(
         @Path("mbid") mbid: String,
+        @Query("inc") inc: String = "artists+releases",
     ): Call<MusicBrainzRecording?>
 
     //endregion

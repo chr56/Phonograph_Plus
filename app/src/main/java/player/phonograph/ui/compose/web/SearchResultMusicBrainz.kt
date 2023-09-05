@@ -84,7 +84,7 @@ private fun MusicBrainzSearchResultReleasesGroup(
                 ?: releaseGroup.releases?.firstOrNull()?.title
                 ?: NA
 
-        Item(Modifier, releaseGroup.title ?: NA, subtitle, { getDetail(ViewReleaseGroup(releaseGroup.id)) }, {}, null)
+        Item(Modifier, releaseGroup.title, subtitle, { getDetail(ViewReleaseGroup(releaseGroup.id)) }, {}, null)
     }
 }
 @Composable
@@ -95,11 +95,11 @@ private fun MusicBrainzSearchResultReleases(
     val items = result.releases
     SearchResult(items) { release ->
         val subtitle =
-            release.artistCredit?.firstOrNull()?.name
+            release.artistCredit.firstOrNull()?.name
                 ?: release.disambiguation
                 ?: release.releaseGroup?.title
                 ?: release.date
-                ?: release.media?.firstOrNull()?.format
+                ?: release.media.firstOrNull()?.format
                 ?: NA
         Item(Modifier, release.title, subtitle, { getDetail(ViewRelease(release.id)) }, {}, null)
     }
