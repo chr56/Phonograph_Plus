@@ -76,19 +76,28 @@ fun DetailMusicBrainz(
 
 
 @Composable
-fun ColumnScope.MusicBrainzReleaseGroup(release: MusicBrainzReleaseGroup) {
-    Item(stringResource(R.string.title), release.title)
-    MusicBrainzArtistCredits(release.artistCredit)
-    Item(stringResource(R.string.year), release.firstReleaseDate)
-    Item("Type", release.primaryType)
+fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
+    Item(stringResource(R.string.title), releaseGroup.title)
+    MusicBrainzArtistCredits(releaseGroup.artistCredit)
+    Item(stringResource(R.string.year), releaseGroup.firstReleaseDate)
+    Item("Type", releaseGroup.primaryType)
     CascadeItem("Type") {
-        if (!release.secondaryTypes.isNullOrEmpty()) {
-            for (secondaryType in release.secondaryTypes) {
+        if (!releaseGroup.secondaryTypes.isNullOrEmpty()) {
+            for (secondaryType in releaseGroup.secondaryTypes) {
                 Text(secondaryType)
             }
         }
     }
-    MusicBrainzDisambiguation(release.disambiguation)
+    MusicBrainzDisambiguation(releaseGroup.disambiguation)
+    MusicBrainzTags(releaseGroup.tags)
+    Item("Count", releaseGroup.count.toString())
+    if (!releaseGroup.releases.isNullOrEmpty()) {
+        CascadeItem("Release", innerPadding = 24.dp) {
+            for ((index, release) in releaseGroup.releases.withIndex()) {
+                Item("Release ${index + 1}", value = release.title)
+            }
+        }
+    }
 }
 
 @Composable

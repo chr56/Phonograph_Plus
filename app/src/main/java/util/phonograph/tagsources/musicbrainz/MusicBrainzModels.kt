@@ -119,6 +119,7 @@ data class MusicBrainzReleaseGroup(
     @SerialName("artist-credit")
     val artistCredit: List<MusicBrainzArtistCredit>? = listOf(),
     val aliases: List<MusicBrainzAlias>? = listOf(),
+    val count: Int = 0,
     val releases: List<MusicBrainzRelease>? = listOf(),
     @SerialName("primary-type")
     val primaryType: String? = null,
@@ -131,6 +132,7 @@ data class MusicBrainzReleaseGroup(
     @SerialName("first-release-date")
     val firstReleaseDate: String? = null,
     val disambiguation: String? = null,
+    val tags: List<MusicBrainzTag>? = emptyList(),
 ) : MusicBrainzModel
 
 @Keep
