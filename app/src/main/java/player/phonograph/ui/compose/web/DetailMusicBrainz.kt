@@ -17,6 +17,7 @@ import util.phonograph.tagsources.musicbrainz.MusicBrainzReleaseGroup
 import util.phonograph.tagsources.musicbrainz.MusicBrainzTag
 import util.phonograph.tagsources.musicbrainz.MusicBrainzTrack
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -106,7 +108,11 @@ fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
 fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
     Item("Release", release.title)
     MusicBrainzArtistCredits(release.artistCredit)
-    Item("Release Group", release.title)
+    if (release.releaseGroup != null) {
+        CascadeItem("Release Group", innerModifier = Modifier.padding(8.dp)) {
+            MusicBrainzReleaseGroup(release.releaseGroup)
+        }
+    }
     Item(stringResource(R.string.year), release.date)
     Item("Status", release.status)
     Item("Country", release.country)
@@ -175,8 +181,16 @@ fun ColumnScope.MusicBrainzTrack(track: MusicBrainzTrack) {
     MusicBrainzArtistCredits(track.artistCredit)
     Item(stringResource(R.string.label_track_length), track.length.toString())
     Item(stringResource(R.string.track), track.number)
-    Item("Recording", track.recording?.title)
-    Item("Media", track.media?.title)
+    if (track.recording != null) {
+        CascadeItem("Recording", innerModifier = Modifier.padding(8.dp)) {
+            MusicBrainzRecording(track.recording)
+        }
+    }
+    if (track.media != null) {
+        CascadeItem("Media", innerModifier = Modifier.padding(8.dp)) {
+            MusicBrainzMedia(track.media)
+        }
+    }
 }
 
 @Composable
@@ -192,6 +206,8 @@ fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
                     fontSize = 12.sp,
                     textAlign = TextAlign.Start
                 )
+                val context = LocalContext.current
+                val navigator = LocalPageNavigator.current
                 for (artistCredit in artistCredits.asReversed()) {
                     Text(
                         "${artistCredit.joinphrase} ${artistCredit.name}",
@@ -202,6 +218,9 @@ fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
                             "* $name ${type?.let { "($it)" }.orEmpty()}",
                             style = styleSecondary,
                             modifier = Modifier.padding(start = 6.dp)
+                                .clickable {
+                                    jumpMusicbrainz(context, navigator, Target.Artist, id)
+                                }
                         )
                         if (area != null) {
                             Text(
@@ -378,7 +397,9 @@ private fun CascadeItem(
         Text(
             title,
             style = textStyle,
-            modifier = textModifier.align(Alignment.Start).padding(8.dp),
+            modifier = textModifier
+                .align(Alignment.Start)
+                .padding(8.dp),
         )
         Column(innerModifier.padding(horizontal = 8.dp)) {
             content()
