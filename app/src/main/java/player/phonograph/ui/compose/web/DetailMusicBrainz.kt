@@ -82,8 +82,8 @@ fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
     MusicBrainzArtistCredits(releaseGroup.artistCredit)
     Item(stringResource(R.string.year), releaseGroup.firstReleaseDate)
     Item("Type", releaseGroup.primaryType)
-    CascadeItem("Type") {
-        if (!releaseGroup.secondaryTypes.isNullOrEmpty()) {
+    if (releaseGroup.secondaryTypes.isNotEmpty()) {
+        CascadeItem("Type") {
             for (secondaryType in releaseGroup.secondaryTypes) {
                 Text(secondaryType)
             }
