@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -22,6 +23,7 @@ fun LabeledItemLayout(
     label: String,
     labelStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
     labelModifier: Modifier = Modifier.padding(8.dp),
+    alignByLabelBaseline: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     Layout(
@@ -59,7 +61,8 @@ fun LabeledItemLayout(
 
             val height = labelTextPlaceable.height + mainContentPlaceable.height
             val width = max(labelTextPlaceable.width, mainContentPlaceable.width)
-            layout(width, height) {
+            val firstBaseline = labelTextPlaceable[FirstBaseline]
+            layout(width, height, mapOf(FirstBaseline to firstBaseline)) {
                 labelTextPlaceable.place(0, 0)
                 mainContentPlaceable.place(0, labelTextPlaceable.height)
             }
@@ -72,11 +75,15 @@ fun LabeledItemLayout(
             val mainContentPlaceable =
                 mainContent.measure(constraints.copy(maxWidth = leftWidth))
 
+            val labelBaseline = labelTextPlaceable[FirstBaseline]
+            val contentBaseline = mainContentPlaceable[FirstBaseline]
+            val offset = if (alignByLabelBaseline) labelBaseline - contentBaseline else 0
+
             val height = max(labelTextPlaceable.height, mainContentPlaceable.height)
             val width = labelTextPlaceable.width + mainContentPlaceable.width
-            layout(width, height) {
+            layout(width, height, mapOf(FirstBaseline to labelBaseline)) {
                 labelTextPlaceable.place(0, 0)
-                mainContentPlaceable.place(labelTextPlaceable.width, 0)
+                mainContentPlaceable.place(labelTextPlaceable.width, offset)
             }
         }
     }
