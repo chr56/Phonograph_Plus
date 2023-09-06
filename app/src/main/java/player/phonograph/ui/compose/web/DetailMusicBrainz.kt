@@ -85,7 +85,7 @@ fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
     Item(stringResource(R.string.year), releaseGroup.firstReleaseDate)
     Item("Type", releaseGroup.primaryType)
     if (releaseGroup.secondaryTypes.isNotEmpty()) {
-        CascadeItem("Type") {
+        CascadeVerticalItem("Type") {
             for (secondaryType in releaseGroup.secondaryTypes) {
                 Text(secondaryType)
             }
@@ -95,7 +95,7 @@ fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
     MusicBrainzGenres(releaseGroup.genres)
     MusicBrainzTags(releaseGroup.tags)
     if (!releaseGroup.releases.isNullOrEmpty()) {
-        CascadeItem("Release", innerModifier = Modifier.padding(24.dp)) {
+        CascadeVerticalItem("Release") {
             for ((index, release) in releaseGroup.releases.withIndex()) {
                 Item("Release ${index + 1}", value = release.title)
                 JumpAndLinkMusicBrainz(Modifier.align(Alignment.End), Target.Release, release.id)
@@ -110,7 +110,7 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
     Item("Release", release.title)
     MusicBrainzArtistCredits(release.artistCredit)
     if (release.releaseGroup != null) {
-        CascadeItem("Release Group", innerModifier = Modifier.padding(8.dp)) {
+        CascadeVerticalItem("Release Group") {
             MusicBrainzReleaseGroup(release.releaseGroup)
         }
     }
@@ -120,7 +120,7 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
     MusicBrainzMedias(release.media)
     Item("Barcode", release.barcode)
     if (release.labelInfo.isNotEmpty()) {
-        CascadeItem("Label") {
+        CascadeVerticalItem("Label") {
             for (labelInfo in release.labelInfo) {
                 if (labelInfo.label != null) {
                     Text(labelInfo.label.name)
@@ -144,21 +144,21 @@ fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
     MusicBrainzDisambiguation(artist.disambiguation)
     MusicBrainzTags(artist.tags)
     if (artist.aliases.isNotEmpty()) {
-        CascadeItem("Alias") {
+        CascadeVerticalItem("Alias") {
             for (alias in artist.aliases) {
                 Text("${alias.name} (${alias.locale})")
             }
         }
     }
     if (artist.releaseGroups.isNotEmpty()) {
-        CascadeItem("Release Group", innerModifier = Modifier.padding(8.dp)) {
+        CascadeVerticalItem("Release Groups") {
             for (releaseGroup in artist.releaseGroups) {
                 MusicBrainzReleaseGroup(releaseGroup)
             }
         }
     }
     if (artist.releases.isNotEmpty()) {
-        CascadeItem("Release", innerModifier = Modifier.padding(8.dp)) {
+        CascadeVerticalItem("Releases") {
             for (release in artist.releases) {
                 MusicBrainzRelease(release)
             }
@@ -179,14 +179,9 @@ fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording?) {
         MusicBrainzGenres(recording.genres)
         MusicBrainzTags(recording.tags)
         if (!recording.releases.isNullOrEmpty()) {
-            CascadeItem("Related Releases") {
+            CascadeVerticalItem("Related Releases") {
                 for ((index, release) in recording.releases.withIndex()) {
-                    CascadeItem(
-                        "Related Release ${index + 1}",
-                        innerModifier = Modifier
-                            .padding(horizontal = 24.dp, vertical = 24.dp)
-                            .fillMaxWidth()
-                    ) {
+                    CascadeVerticalItem("Related Release ${index + 1}") {
                         MusicBrainzRelease(release)
                     }
                 }
@@ -203,12 +198,12 @@ fun ColumnScope.MusicBrainzTrack(track: MusicBrainzTrack) {
     Item(stringResource(R.string.label_track_length), track.length.toString())
     Item(stringResource(R.string.track), track.number)
     if (track.recording != null) {
-        CascadeItem("Recording", innerModifier = Modifier.padding(8.dp)) {
+        CascadeVerticalItem("Recording") {
             MusicBrainzRecording(track.recording)
         }
     }
     if (track.media != null) {
-        CascadeItem("Media", innerModifier = Modifier.padding(8.dp)) {
+        CascadeVerticalItem("Media") {
             MusicBrainzMedia(track.media)
         }
     }
@@ -218,7 +213,7 @@ fun ColumnScope.MusicBrainzTrack(track: MusicBrainzTrack) {
 fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
     if (!artistCredits.isNullOrEmpty()) {
         SelectionContainer {
-            CascadeItem(stringResource(R.string.artists)) {
+            CascadeVerticalItem(stringResource(R.string.artists)) {
                 val stylePrimary = TextStyle(
                     fontSize = 14.sp,
                     textAlign = TextAlign.Start
@@ -270,12 +265,12 @@ private fun MusicBrainzMedias(medias: List<MusicBrainzMedia>?) {
 @Composable
 private fun MusicBrainzMedia(media: MusicBrainzMedia) {
     SelectionContainer {
-        CascadeItem("Media") {
+        CascadeVerticalItem("Media") {
             Item(stringResource(R.string.title), media.title)
             Item("Format", media.format)
             Item("Count", "${media.discCount} * ${media.trackCount}")
             if (!media.tracks.isNullOrEmpty()) {
-                CascadeItem("Tracks", innerModifier = Modifier.padding(24.dp)) {
+                CascadeVerticalItem("Tracks") {
                     for (track in media.tracks) {
                         Item("Track ${track.number}", value = track.title)
                         Column(
@@ -405,25 +400,16 @@ private fun ValueText(value: String) {
 
 
 @Composable
-private fun CascadeItem(
+private fun CascadeVerticalItem(
     title: String,
     modifier: Modifier = Modifier,
     textModifier: Modifier = Modifier.padding(horizontal = 8.dp),
     textStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
-    innerModifier: Modifier = Modifier.padding(8.dp),
-    content: @Composable () -> Unit,
+    innerColumnModifier: Modifier = Modifier.padding(horizontal = 8.dp),
+    content: @Composable ColumnScope.() -> Unit,
 ) {
-    Column(
-        modifier, verticalArrangement = Arrangement.SpaceEvenly
-    ) {
-        Text(
-            title,
-            style = textStyle,
-            modifier = textModifier
-                .align(Alignment.Start)
-                .padding(8.dp),
-        )
-        Column(innerModifier.padding(horizontal = 8.dp)) {
+    CascadeItem(modifier, title, textStyle, textModifier) {
+        Column(innerColumnModifier.padding(horizontal = 8.dp)) {
             content()
         }
     }
@@ -435,26 +421,39 @@ private fun CascadeHorizontalItem(
     modifier: Modifier = Modifier,
     textModifier: Modifier = Modifier.padding(horizontal = 8.dp),
     textStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
-    innerModifier: Modifier = Modifier.padding(8.dp),
+    innerRowModifier: Modifier = Modifier.padding(vertical = 8.dp),
     content: @Composable RowScope.() -> Unit,
+) {
+    CascadeItem(modifier, title, textStyle, textModifier) {
+        Row(
+            innerRowModifier
+                .padding(horizontal = 8.dp)
+                .horizontalScroll(rememberScrollState())
+        ) {
+            content()
+        }
+    }
+}
+
+@Composable
+private fun CascadeItem(
+    modifier: Modifier,
+    title: String,
+    textStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
+    textModifier: Modifier = Modifier.padding(horizontal = 8.dp),
+    content: @Composable () -> Unit,
 ) {
     Column(
         modifier, verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Text(
             title,
-            style = textStyle,
             modifier = textModifier
                 .align(Alignment.Start)
                 .padding(8.dp),
+            style = textStyle,
         )
-        Row(
-            innerModifier
-                .padding(horizontal = 8.dp)
-                .horizontalScroll(rememberScrollState())
-        ) {
-            content()
-        }
+        content()
     }
 }
 
