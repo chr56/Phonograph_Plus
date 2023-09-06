@@ -19,17 +19,20 @@ data class MusicBrainzArtist(
     val gender: String? = null,
     val country: String? = null,
     val area: MusicBrainzArea? = null,
-    @SerialName("begin-area")
-    val beginArea: MusicBrainzArea? = null,
+    // @SerialName("begin-area")
+    // val beginArea: MusicBrainzArea? = null,
     @SerialName("life-span")
     val lifeSpan: LifeSpan? = null,
-    val tags: List<MusicBrainzTag>? = emptyList(),
-    val relations: List<Relation>? = emptyList(),
-    val aliases: List<MusicBrainzAlias>? = emptyList(),
-    val score: Int? = null,
+    val tags: List<MusicBrainzTag> = emptyList(),
+    // val relations: List<Relation> = emptyList(),
+    val aliases: List<MusicBrainzAlias> = emptyList(),
+    // val score: Int? = null,
     val disambiguation: String? = null,
     val ipis: List<String> = emptyList(),
     val isnis: List<String> = emptyList(),
+    @SerialName("release-groups")
+    val releaseGroups: List<MusicBrainzReleaseGroup> = emptyList(),
+    val releases: List<MusicBrainzRelease> = emptyList(),
 ) : MusicBrainzModel {
 
     @Keep
