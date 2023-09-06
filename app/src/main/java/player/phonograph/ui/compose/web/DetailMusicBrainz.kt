@@ -5,8 +5,8 @@
 package player.phonograph.ui.compose.web
 
 import player.phonograph.R
-import player.phonograph.ui.compose.components.HorizontalTextItem
-import player.phonograph.ui.compose.components.VerticalTextItem
+import player.phonograph.ui.compose.components.TextItem
+import player.phonograph.ui.compose.components.TextItemDefaults
 import player.phonograph.ui.compose.web.MusicBrainzQuery.Target
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtist
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtistCredit
@@ -42,7 +42,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -322,15 +321,15 @@ private fun MusicBrainzDisambiguation(string: String?) {
 }
 
 @Composable
-private fun Item(label: String, value: String?) {
-    if (!value.isNullOrEmpty()) HorizontalTextItem(label, value)
+private fun Item(label: String, value: String?, maxLength: Int = 8) {
+    if (!value.isNullOrEmpty()) TextItem(title = label, maxLength = maxLength, value = value)
 }
 
 @Composable
-private fun Item(label: String, values: Collection<String>?) {
+private fun Item(label: String, values: Collection<String>?, maxLength: Int = 7) {
     if (!values.isNullOrEmpty()) {
         val value = values.joinToString(separator = "\n") { it }
-        VerticalTextItem(label, value)
+        TextItem(title = label, maxLength = maxLength, value = value)
     }
 }
 
@@ -340,7 +339,7 @@ private fun CascadeItem(
     title: String,
     modifier: Modifier = Modifier,
     textModifier: Modifier = Modifier.padding(horizontal = 8.dp),
-    textStyle: TextStyle = TextStyle(fontWeight = FontWeight.Bold),
+    textStyle: TextStyle = TextItemDefaults.titleStyle,
     innerModifier: Modifier = Modifier.padding(8.dp),
     content: @Composable () -> Unit,
 ) {
