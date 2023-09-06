@@ -322,7 +322,7 @@ private fun MusicBrainzDisambiguation(string: String?) {
 }
 
 @Composable
-private fun Item(label: String, value: String?, maxLength: Int = 8) {
+private fun Item(label: String, value: String?) {
     if (!value.isNullOrEmpty()) {
         LabeledItemLayout(Modifier.padding(horizontal = 8.dp), label) {
             SelectionContainer {
@@ -333,7 +333,7 @@ private fun Item(label: String, value: String?, maxLength: Int = 8) {
 }
 
 @Composable
-private fun Item(label: String, values: Collection<String>?, maxLength: Int = 7) {
+private fun Item(label: String, values: Collection<String>?) {
     if (!values.isNullOrEmpty()) {
         LabeledItemLayout(Modifier.padding(horizontal = 8.dp), label) {
             SelectionContainer {
