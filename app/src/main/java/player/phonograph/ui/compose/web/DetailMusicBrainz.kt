@@ -8,6 +8,7 @@ import player.phonograph.R
 import player.phonograph.ui.compose.components.LabeledItemLayout
 import player.phonograph.ui.compose.components.LabeledItemLayoutDefault
 import player.phonograph.ui.compose.web.MusicBrainzQuery.Target
+import player.phonograph.util.text.bracketedIfAny
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtist
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtistCredit
 import util.phonograph.tagsources.musicbrainz.MusicBrainzGenre
@@ -231,7 +232,7 @@ fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
                     )
                     with(artistCredit.artist) {
                         Text(
-                            "* $name ${type?.let { "($it)" }.orEmpty()}",
+                            "* $name ${type.bracketedIfAny()}",
                             style = styleSecondary,
                             modifier = Modifier
                                 .padding(start = 6.dp)
@@ -344,8 +345,7 @@ private fun MusicBrainzGenres(genres: List<MusicBrainzGenre>?) {
     if (!genres.isNullOrEmpty()) {
         CascadeHorizontalItem("Genres") {
             for (genre in genres) {
-                val text = genre.name + if (!genre.disambiguation.isNullOrEmpty()) "($genre.disambiguation)" else ""
-                Chip(text)
+                Chip("${genre.name} ${genre.disambiguation.bracketedIfAny()}")
             }
         }
     }
