@@ -135,20 +135,37 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
 
 @Composable
 fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
-    Item("Artist", artist.name)
+    Item(stringResource(R.string.artist), artist.name)
     Item("Type", artist.type)
     Item("Gender", artist.gender)
-    Item("Country", artist.country)
     MusicBrainzLifeSpan(artist.lifeSpan)
+    Item("Country", artist.country)
     Item("Area", artist.area?.name)
-    if (!artist.aliases.isNullOrEmpty()) {
+    MusicBrainzDisambiguation(artist.disambiguation)
+    MusicBrainzTags(artist.tags)
+    if (artist.aliases.isNotEmpty()) {
         CascadeItem("Alias") {
             for (alias in artist.aliases) {
                 Text("${alias.name} (${alias.locale})")
             }
         }
     }
-    MusicBrainzTags(artist.tags)
+    if (artist.releaseGroups.isNotEmpty()) {
+        CascadeItem("Release Group", innerModifier = Modifier.padding(8.dp)) {
+            for (releaseGroup in artist.releaseGroups) {
+                MusicBrainzReleaseGroup(releaseGroup)
+            }
+        }
+    }
+    if (artist.releases.isNotEmpty()) {
+        CascadeItem("Release", innerModifier = Modifier.padding(8.dp)) {
+            for (release in artist.releases) {
+                MusicBrainzRelease(release)
+            }
+        }
+    }
+    Item("IPI Code", artist.ipis)
+    Item("ISNI Code", artist.isnis)
     JumpAndLinkMusicBrainz(Modifier.align(Alignment.End), Target.Artist, artist.id)
 }
 
