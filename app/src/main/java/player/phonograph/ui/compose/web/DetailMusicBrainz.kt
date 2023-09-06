@@ -78,7 +78,7 @@ fun DetailMusicBrainz(
 
 @Composable
 fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
-    Item(stringResource(R.string.title), releaseGroup.title)
+    Item("Release Group", releaseGroup.title)
     MusicBrainzArtistCredits(releaseGroup.artistCredit)
     Item(stringResource(R.string.year), releaseGroup.firstReleaseDate)
     Item("Type", releaseGroup.primaryType)
@@ -104,7 +104,7 @@ fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
 
 @Composable
 fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
-    Item(stringResource(R.string.title), release.title)
+    Item("Release", release.title)
     MusicBrainzArtistCredits(release.artistCredit)
     Item("Release Group", release.title)
     Item(stringResource(R.string.year), release.date)
@@ -127,7 +127,7 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
 
 @Composable
 fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
-    Item(stringResource(R.string.title), artist.name)
+    Item("Artist", artist.name)
     Item("Type", artist.type)
     Item("Gender", artist.gender)
     Item("Country", artist.country)
@@ -147,7 +147,7 @@ fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
 @Composable
 fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording?) {
     if (recording != null) {
-        Item(stringResource(R.string.title), recording.title)
+        Item("Recording", recording.title)
         MusicBrainzArtistCredits(recording.artistCredit)
         Item("Date", recording.firstReleaseDate)
         MusicBrainzDisambiguation(recording.disambiguation)
@@ -171,7 +171,7 @@ fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording?) {
 
 @Composable
 fun ColumnScope.MusicBrainzTrack(track: MusicBrainzTrack) {
-    Item(stringResource(R.string.title), track.title)
+    Item("Track", track.title)
     MusicBrainzArtistCredits(track.artistCredit)
     Item(stringResource(R.string.label_track_length), track.length.toString())
     Item(stringResource(R.string.track), track.number)
