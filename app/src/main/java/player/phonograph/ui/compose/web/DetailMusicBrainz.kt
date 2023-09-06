@@ -95,7 +95,7 @@ fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
         CascadeItem("Release", innerModifier = Modifier.padding(24.dp)) {
             for ((index, release) in releaseGroup.releases.withIndex()) {
                 Item("Release ${index + 1}", value = release.title)
-                JumpAndLinkMusicBrainz(Modifier.align(Alignment.End), Target.Release, releaseGroup.id)
+                JumpAndLinkMusicBrainz(Modifier.align(Alignment.End), Target.Release, release.id)
             }
         }
     }
