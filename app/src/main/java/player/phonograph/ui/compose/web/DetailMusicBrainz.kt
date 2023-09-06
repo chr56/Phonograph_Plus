@@ -71,7 +71,7 @@ fun DetailMusicBrainz(
             is MusicBrainzTrack        -> MusicBrainzTrack(item)
             else                       -> Text(
                 stringResource(R.string.empty),
-                Modifier.align(Alignment.CenterHorizontally)
+                Modifier.align(Alignment.CenterHorizontally).padding(16.dp)
             )
         }
     }
