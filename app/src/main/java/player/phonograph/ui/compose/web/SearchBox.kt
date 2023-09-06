@@ -32,8 +32,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 
 @Composable
@@ -69,7 +71,7 @@ fun BaseSearchBox(
 }
 
 @Composable
-fun SearchTextBox(current: String, modifier: Modifier = Modifier, onUpdate: (String) -> Unit) {
+fun SearchTextBox(current: String, modifier: Modifier = Modifier, hint: String? = null, onUpdate: (String) -> Unit) {
     TextField(
         value = current,
         onValueChange = onUpdate,
@@ -88,7 +90,16 @@ fun SearchTextBox(current: String, modifier: Modifier = Modifier, onUpdate: (Str
                         onUpdate.invoke("")
                     }
             )
-        }
+        },
+        placeholder = {
+            if (!hint.isNullOrEmpty()) {
+                val textStyle = TextStyle(
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colors.onBackground.copy(alpha = 0.3f)
+                )
+                Text(hint, style = textStyle)
+            }
+        },
     )
 }
 
