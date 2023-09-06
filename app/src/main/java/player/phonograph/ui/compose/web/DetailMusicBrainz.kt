@@ -95,6 +95,7 @@ fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
         }
     }
     MusicBrainzDisambiguation(releaseGroup.disambiguation)
+    MusicBrainzGenres(releaseGroup.genres)
     MusicBrainzTags(releaseGroup.tags)
     if (!releaseGroup.releases.isNullOrEmpty()) {
         CascadeItem("Release", innerModifier = Modifier.padding(24.dp)) {
@@ -130,6 +131,7 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
             }
         }
     }
+    MusicBrainzGenres(release.genres)
     MusicBrainzTags(release.tags)
     JumpAndLinkMusicBrainz(Modifier.align(Alignment.End), Target.Release, release.id)
 }
@@ -177,6 +179,8 @@ fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording?) {
         MusicBrainzArtistCredits(recording.artistCredit)
         Item("Date", recording.firstReleaseDate)
         MusicBrainzDisambiguation(recording.disambiguation)
+        MusicBrainzGenres(recording.genres)
+        MusicBrainzTags(recording.tags)
         if (!recording.releases.isNullOrEmpty()) {
             CascadeItem("Related Releases") {
                 for ((index, release) in recording.releases.withIndex()) {
