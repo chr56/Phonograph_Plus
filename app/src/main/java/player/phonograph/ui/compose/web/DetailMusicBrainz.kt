@@ -237,9 +237,11 @@ private fun MusicBrainzMedia(media: MusicBrainzMedia) {
                 CascadeItem("Tracks", innerModifier = Modifier.padding(24.dp)) {
                     for (track in media.tracks) {
                         Item("Track ${track.number}", value = track.title)
-                        Column(modifier = Modifier
-                            .padding(horizontal = 6.dp)
-                            .fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier
+                                .padding(horizontal = 6.dp)
+                                .fillMaxWidth()
+                        ) {
                             MusicBrainzRecording(track.recording)
                         }
                     }
@@ -337,7 +339,7 @@ private fun Item(label: String, values: Collection<String>?) {
 private fun CascadeItem(
     title: String,
     modifier: Modifier = Modifier,
-    textModifier: Modifier = Modifier,
+    textModifier: Modifier = Modifier.padding(horizontal = 8.dp),
     textStyle: TextStyle = TextStyle(fontWeight = FontWeight.Bold),
     innerModifier: Modifier = Modifier.padding(8.dp),
     content: @Composable () -> Unit,
