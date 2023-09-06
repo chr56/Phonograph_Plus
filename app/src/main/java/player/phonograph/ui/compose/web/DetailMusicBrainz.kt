@@ -5,6 +5,7 @@
 package player.phonograph.ui.compose.web
 
 import player.phonograph.R
+import player.phonograph.ui.compose.components.Chip
 import player.phonograph.ui.compose.components.LabeledItemLayout
 import player.phonograph.ui.compose.components.LabeledItemLayoutDefault
 import player.phonograph.ui.compose.web.MusicBrainzQuery.Target
@@ -454,26 +455,5 @@ private fun CascadeItem(
             style = textStyle,
         )
         content()
-    }
-}
-
-
-@Composable
-private fun Chip(text: String, modifier: Modifier = Modifier) {
-    SelectionContainer {
-        Surface(
-            modifier = modifier
-                .padding(4.dp)
-                .wrapContentSize(),
-            shape = RoundedCornerShape(16.dp),
-            color = Color.LightGray
-        ) {
-            Text(
-                text = text,
-                modifier = Modifier.padding(vertical = 6.dp, horizontal = 8.dp),
-                overflow = TextOverflow.Ellipsis,
-                softWrap = false,
-            )
-        }
     }
 }
