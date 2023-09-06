@@ -278,6 +278,7 @@ private fun MusicBrainzTags(tags: List<MusicBrainzTag>?) {
     if (!tags.isNullOrEmpty()) {
         Box(
             Modifier
+                .padding(16.dp)
                 .fillMaxWidth()
                 .heightIn(max = 96.dp),
         ) {
@@ -348,14 +349,16 @@ private fun Item(label: String, values: Collection<String>?) {
 }
 
 @Composable
-private fun ValueText(value: String){
+private fun ValueText(value: String) {
     Text(
         text = value,
         style = TextStyle(
             color = MaterialTheme.colors.onSurface.copy(alpha = 0.92f),
             fontSize = 14.sp,
         ),
-        modifier = Modifier.wrapContentSize().padding(10.dp)
+        modifier = Modifier
+            .wrapContentSize()
+            .padding(10.dp)
     )
 }
 
@@ -375,9 +378,9 @@ private fun CascadeItem(
         Text(
             title,
             style = textStyle,
-            modifier = textModifier.align(Alignment.Start),
+            modifier = textModifier.align(Alignment.Start).padding(8.dp),
         )
-        Column(innerModifier) {
+        Column(innerModifier.padding(horizontal = 8.dp)) {
             content()
         }
     }
