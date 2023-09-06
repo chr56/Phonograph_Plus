@@ -17,19 +17,16 @@ import util.phonograph.tagsources.musicbrainz.MusicBrainzRelease
 import util.phonograph.tagsources.musicbrainz.MusicBrainzReleaseGroup
 import util.phonograph.tagsources.musicbrainz.MusicBrainzTag
 import util.phonograph.tagsources.musicbrainz.MusicBrainzTrack
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -316,24 +313,12 @@ private fun MusicBrainzLifeSpan(lifeSpan: MusicBrainzArtist.LifeSpan?) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MusicBrainzTags(tags: List<MusicBrainzTag>?) {
     if (!tags.isNullOrEmpty()) {
-        Box(
-            Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
-                .heightIn(max = 96.dp),
-        ) {
-            LazyHorizontalStaggeredGrid(
-                StaggeredGridCells.Adaptive(32.dp),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-                horizontalItemSpacing = 2.dp
-            ) {
-                for (tag in tags) {
-                    item { MusicBrainzTag(tag) }
-                }
+        CascadeHorizontalItem("Tags") {
+            for (tag in tags) {
+                Chip(tag.name)
             }
         }
     }
@@ -362,12 +347,10 @@ private fun MusicBrainzTag(tag: MusicBrainzTag) {
 @Composable
 private fun MusicBrainzGenres(genres: List<MusicBrainzGenre>?) {
     if (!genres.isNullOrEmpty()) {
-        CascadeItem("Genres") {
-            Column {
-                for (genre in genres) {
-                    val text = genre.name + if (!genre.disambiguation.isNullOrEmpty()) "($genre.disambiguation)" else ""
-                    Text(text)
-                }
+        CascadeHorizontalItem("Genres") {
+            for (genre in genres) {
+                val text = genre.name + if (!genre.disambiguation.isNullOrEmpty()) "($genre.disambiguation)" else ""
+                Chip(text)
             }
         }
     }
@@ -442,6 +425,56 @@ private fun CascadeItem(
         )
         Column(innerModifier.padding(horizontal = 8.dp)) {
             content()
+        }
+    }
+}
+
+@Composable
+private fun CascadeHorizontalItem(
+    title: String,
+    modifier: Modifier = Modifier,
+    textModifier: Modifier = Modifier.padding(horizontal = 8.dp),
+    textStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
+    innerModifier: Modifier = Modifier.padding(8.dp),
+    content: @Composable RowScope.() -> Unit,
+) {
+    Column(
+        modifier, verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Text(
+            title,
+            style = textStyle,
+            modifier = textModifier
+                .align(Alignment.Start)
+                .padding(8.dp),
+        )
+        Row(
+            innerModifier
+                .padding(horizontal = 8.dp)
+                .horizontalScroll(rememberScrollState())
+        ) {
+            content()
+        }
+    }
+}
+
+
+@Composable
+private fun Chip(text: String, modifier: Modifier = Modifier) {
+    SelectionContainer {
+        Surface(
+            modifier = modifier
+                .padding(4.dp)
+                .wrapContentSize(),
+            shape = RoundedCornerShape(16.dp),
+            color = Color.LightGray
+        ) {
+            Text(
+                text = text,
+                modifier = Modifier.padding(vertical = 6.dp, horizontal = 8.dp),
+                overflow = TextOverflow.Ellipsis,
+                softWrap = false,
+            )
         }
     }
 }
