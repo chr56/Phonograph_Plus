@@ -5,33 +5,35 @@
 package player.phonograph.ui.compose.web
 
 import player.phonograph.R
-import player.phonograph.ui.compose.components.HorizontalTextItem
-import player.phonograph.ui.compose.components.VerticalTextItem
+import player.phonograph.ui.compose.components.Chip
+import player.phonograph.ui.compose.components.LabeledItemLayout
+import player.phonograph.ui.compose.components.LabeledItemLayoutDefault
 import player.phonograph.ui.compose.web.MusicBrainzQuery.Target
+import player.phonograph.util.text.bracketedIfAny
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtist
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtistCredit
+import util.phonograph.tagsources.musicbrainz.MusicBrainzGenre
 import util.phonograph.tagsources.musicbrainz.MusicBrainzMedia
 import util.phonograph.tagsources.musicbrainz.MusicBrainzRecording
 import util.phonograph.tagsources.musicbrainz.MusicBrainzRelease
 import util.phonograph.tagsources.musicbrainz.MusicBrainzReleaseGroup
 import util.phonograph.tagsources.musicbrainz.MusicBrainzTag
 import util.phonograph.tagsources.musicbrainz.MusicBrainzTrack
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -40,9 +42,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -69,7 +71,9 @@ fun DetailMusicBrainz(
             is MusicBrainzTrack        -> MusicBrainzTrack(item)
             else                       -> Text(
                 stringResource(R.string.empty),
-                Modifier.align(Alignment.CenterHorizontally)
+                Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(16.dp)
             )
         }
     }
@@ -78,24 +82,25 @@ fun DetailMusicBrainz(
 
 @Composable
 fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
-    Item(stringResource(R.string.title), releaseGroup.title)
+    Item("Release Group", releaseGroup.title)
     MusicBrainzArtistCredits(releaseGroup.artistCredit)
     Item(stringResource(R.string.year), releaseGroup.firstReleaseDate)
     Item("Type", releaseGroup.primaryType)
-    CascadeItem("Type") {
-        if (!releaseGroup.secondaryTypes.isNullOrEmpty()) {
+    if (releaseGroup.secondaryTypes.isNotEmpty()) {
+        CascadeVerticalItem("Type") {
             for (secondaryType in releaseGroup.secondaryTypes) {
                 Text(secondaryType)
             }
         }
     }
     MusicBrainzDisambiguation(releaseGroup.disambiguation)
+    MusicBrainzGenres(releaseGroup.genres)
     MusicBrainzTags(releaseGroup.tags)
     if (!releaseGroup.releases.isNullOrEmpty()) {
-        CascadeItem("Release", innerModifier = Modifier.padding(24.dp)) {
+        CascadeVerticalItem("Release") {
             for ((index, release) in releaseGroup.releases.withIndex()) {
                 Item("Release ${index + 1}", value = release.title)
-                JumpAndLinkMusicBrainz(Modifier.align(Alignment.End), Target.Release, releaseGroup.id)
+                JumpAndLinkMusicBrainz(Modifier.align(Alignment.End), Target.Release, release.id)
             }
         }
     }
@@ -104,16 +109,20 @@ fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
 
 @Composable
 fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
-    Item(stringResource(R.string.title), release.title)
+    Item("Release", release.title)
     MusicBrainzArtistCredits(release.artistCredit)
-    Item("Release Group", release.title)
+    if (release.releaseGroup != null) {
+        CascadeVerticalItem("Release Group") {
+            MusicBrainzReleaseGroup(release.releaseGroup)
+        }
+    }
     Item(stringResource(R.string.year), release.date)
     Item("Status", release.status)
     Item("Country", release.country)
     MusicBrainzMedias(release.media)
     Item("Barcode", release.barcode)
     if (release.labelInfo.isNotEmpty()) {
-        CascadeItem("Label") {
+        CascadeVerticalItem("Label") {
             for (labelInfo in release.labelInfo) {
                 if (labelInfo.label != null) {
                     Text(labelInfo.label.name)
@@ -121,45 +130,60 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
             }
         }
     }
+    MusicBrainzGenres(release.genres)
     MusicBrainzTags(release.tags)
     JumpAndLinkMusicBrainz(Modifier.align(Alignment.End), Target.Release, release.id)
 }
 
 @Composable
 fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
-    Item(stringResource(R.string.title), artist.name)
+    Item(stringResource(R.string.artist), artist.name)
     Item("Type", artist.type)
     Item("Gender", artist.gender)
-    Item("Country", artist.country)
     MusicBrainzLifeSpan(artist.lifeSpan)
+    Item("Country", artist.country)
     Item("Area", artist.area?.name)
-    if (!artist.aliases.isNullOrEmpty()) {
-        CascadeItem("Alias") {
+    MusicBrainzDisambiguation(artist.disambiguation)
+    MusicBrainzTags(artist.tags)
+    if (artist.aliases.isNotEmpty()) {
+        CascadeVerticalItem("Alias") {
             for (alias in artist.aliases) {
                 Text("${alias.name} (${alias.locale})")
             }
         }
     }
-    MusicBrainzTags(artist.tags)
+    if (artist.releaseGroups.isNotEmpty()) {
+        CascadeVerticalItem("Release Groups") {
+            for (releaseGroup in artist.releaseGroups) {
+                MusicBrainzReleaseGroup(releaseGroup)
+            }
+        }
+    }
+    if (artist.releases.isNotEmpty()) {
+        CascadeVerticalItem("Releases") {
+            for (release in artist.releases) {
+                MusicBrainzRelease(release)
+            }
+        }
+    }
+    Item("IPI Code", artist.ipis)
+    Item("ISNI Code", artist.isnis)
     JumpAndLinkMusicBrainz(Modifier.align(Alignment.End), Target.Artist, artist.id)
 }
 
 @Composable
 fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording?) {
     if (recording != null) {
-        Item(stringResource(R.string.title), recording.title)
+        Item("Recording", recording.title)
         MusicBrainzArtistCredits(recording.artistCredit)
         Item("Date", recording.firstReleaseDate)
         MusicBrainzDisambiguation(recording.disambiguation)
+        MusicBrainzGenres(recording.genres)
+        MusicBrainzTags(recording.tags)
         if (!recording.releases.isNullOrEmpty()) {
-            CascadeItem("Related Releases") {
+            CascadeVerticalItem("Related Releases") {
                 for ((index, release) in recording.releases.withIndex()) {
-                    CascadeItem(
-                        "Related Release ${index + 1}",
-                        innerModifier = Modifier
-                            .padding(horizontal = 24.dp, vertical = 24.dp)
-                            .fillMaxWidth()
-                    ) {
+                    CascadeVerticalItem("Related Release ${index + 1}") {
                         MusicBrainzRelease(release)
                     }
                 }
@@ -171,19 +195,27 @@ fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording?) {
 
 @Composable
 fun ColumnScope.MusicBrainzTrack(track: MusicBrainzTrack) {
-    Item(stringResource(R.string.title), track.title)
+    Item("Track", track.title)
     MusicBrainzArtistCredits(track.artistCredit)
     Item(stringResource(R.string.label_track_length), track.length.toString())
     Item(stringResource(R.string.track), track.number)
-    Item("Recording", track.recording?.title)
-    Item("Media", track.media?.title)
+    if (track.recording != null) {
+        CascadeVerticalItem("Recording") {
+            MusicBrainzRecording(track.recording)
+        }
+    }
+    if (track.media != null) {
+        CascadeVerticalItem("Media") {
+            MusicBrainzMedia(track.media)
+        }
+    }
 }
 
 @Composable
 fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
     if (!artistCredits.isNullOrEmpty()) {
         SelectionContainer {
-            CascadeItem(stringResource(R.string.artists)) {
+            CascadeVerticalItem(stringResource(R.string.artists)) {
                 val stylePrimary = TextStyle(
                     fontSize = 14.sp,
                     textAlign = TextAlign.Start
@@ -192,6 +224,8 @@ fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
                     fontSize = 12.sp,
                     textAlign = TextAlign.Start
                 )
+                val context = LocalContext.current
+                val navigator = LocalPageNavigator.current
                 for (artistCredit in artistCredits.asReversed()) {
                     Text(
                         "${artistCredit.joinphrase} ${artistCredit.name}",
@@ -199,9 +233,13 @@ fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
                     )
                     with(artistCredit.artist) {
                         Text(
-                            "* $name ${type?.let { "($it)" }.orEmpty()}",
+                            "* $name ${type.bracketedIfAny()}",
                             style = styleSecondary,
-                            modifier = Modifier.padding(start = 6.dp)
+                            modifier = Modifier
+                                .padding(start = 6.dp)
+                                .clickable {
+                                    jumpMusicbrainz(context, navigator, Target.Artist, id)
+                                }
                         )
                         if (area != null) {
                             Text(
@@ -229,17 +267,19 @@ private fun MusicBrainzMedias(medias: List<MusicBrainzMedia>?) {
 @Composable
 private fun MusicBrainzMedia(media: MusicBrainzMedia) {
     SelectionContainer {
-        CascadeItem("Media") {
+        CascadeVerticalItem("Media") {
             Item(stringResource(R.string.title), media.title)
             Item("Format", media.format)
             Item("Count", "${media.discCount} * ${media.trackCount}")
             if (!media.tracks.isNullOrEmpty()) {
-                CascadeItem("Tracks", innerModifier = Modifier.padding(24.dp)) {
+                CascadeVerticalItem("Tracks") {
                     for (track in media.tracks) {
                         Item("Track ${track.number}", value = track.title)
-                        Column(modifier = Modifier
-                            .padding(horizontal = 6.dp)
-                            .fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier
+                                .padding(horizontal = 6.dp)
+                                .fillMaxWidth()
+                        ) {
                             MusicBrainzRecording(track.recording)
                         }
                     }
@@ -270,23 +310,12 @@ private fun MusicBrainzLifeSpan(lifeSpan: MusicBrainzArtist.LifeSpan?) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MusicBrainzTags(tags: List<MusicBrainzTag>?) {
     if (!tags.isNullOrEmpty()) {
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .heightIn(max = 96.dp),
-        ) {
-            LazyHorizontalStaggeredGrid(
-                StaggeredGridCells.Adaptive(32.dp),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-                horizontalItemSpacing = 2.dp
-            ) {
-                for (tag in tags) {
-                    item { MusicBrainzTag(tag) }
-                }
+        CascadeHorizontalItem("Tags") {
+            for (tag in tags) {
+                Chip(tag.name)
             }
         }
     }
@@ -313,6 +342,17 @@ private fun MusicBrainzTag(tag: MusicBrainzTag) {
 }
 
 @Composable
+private fun MusicBrainzGenres(genres: List<MusicBrainzGenre>?) {
+    if (!genres.isNullOrEmpty()) {
+        CascadeHorizontalItem("Genres") {
+            for (genre in genres) {
+                Chip("${genre.name} ${genre.disambiguation.bracketedIfAny()}")
+            }
+        }
+    }
+}
+
+@Composable
 private fun MusicBrainzDisambiguation(string: String?) {
     if (!string.isNullOrEmpty()) {
         Item(stringResource(R.string.comment), string)
@@ -321,25 +361,87 @@ private fun MusicBrainzDisambiguation(string: String?) {
 
 @Composable
 private fun Item(label: String, value: String?) {
-    if (!value.isNullOrEmpty()) HorizontalTextItem(label, value)
+    if (!value.isNullOrEmpty()) {
+        LabeledItemLayout(Modifier.padding(horizontal = 8.dp), label) {
+            SelectionContainer {
+                ValueText(value)
+            }
+        }
+    }
 }
 
 @Composable
 private fun Item(label: String, values: Collection<String>?) {
     if (!values.isNullOrEmpty()) {
-        val value = values.joinToString(separator = "\n") { it }
-        VerticalTextItem(label, value)
+        LabeledItemLayout(Modifier.padding(horizontal = 8.dp), label) {
+            SelectionContainer {
+                Column {
+                    for (value in values) {
+                        ValueText(value)
+                    }
+                }
+            }
+        }
     }
+}
+
+@Composable
+private fun ValueText(value: String) {
+    Text(
+        text = value,
+        style = TextStyle(
+            color = MaterialTheme.colors.onSurface.copy(alpha = 0.92f),
+            fontSize = 14.sp,
+        ),
+        modifier = Modifier
+            .wrapContentSize()
+            .padding(10.dp)
+    )
 }
 
 
 @Composable
-private fun CascadeItem(
+private fun CascadeVerticalItem(
     title: String,
     modifier: Modifier = Modifier,
-    textModifier: Modifier = Modifier,
-    textStyle: TextStyle = TextStyle(fontWeight = FontWeight.Bold),
-    innerModifier: Modifier = Modifier.padding(8.dp),
+    textModifier: Modifier = Modifier.padding(horizontal = 8.dp),
+    textStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
+    innerColumnModifier: Modifier = Modifier.padding(horizontal = 8.dp),
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    CascadeItem(modifier, title, textStyle, textModifier) {
+        Column(innerColumnModifier.padding(horizontal = 8.dp)) {
+            content()
+        }
+    }
+}
+
+@Composable
+private fun CascadeHorizontalItem(
+    title: String,
+    modifier: Modifier = Modifier,
+    textModifier: Modifier = Modifier.padding(horizontal = 8.dp),
+    textStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
+    innerRowModifier: Modifier = Modifier.padding(vertical = 8.dp),
+    content: @Composable RowScope.() -> Unit,
+) {
+    CascadeItem(modifier, title, textStyle, textModifier) {
+        Row(
+            innerRowModifier
+                .padding(horizontal = 8.dp)
+                .horizontalScroll(rememberScrollState())
+        ) {
+            content()
+        }
+    }
+}
+
+@Composable
+private fun CascadeItem(
+    modifier: Modifier,
+    title: String,
+    textStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
+    textModifier: Modifier = Modifier.padding(horizontal = 8.dp),
     content: @Composable () -> Unit,
 ) {
     Column(
@@ -347,11 +449,11 @@ private fun CascadeItem(
     ) {
         Text(
             title,
+            modifier = textModifier
+                .align(Alignment.Start)
+                .padding(8.dp),
             style = textStyle,
-            modifier = textModifier.align(Alignment.Start),
         )
-        Column(innerModifier) {
-            content()
-        }
+        content()
     }
 }

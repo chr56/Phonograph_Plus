@@ -5,6 +5,7 @@
 package player.phonograph.ui.compose.web
 
 import player.phonograph.R
+import player.phonograph.ui.compose.base.Navigator
 import player.phonograph.ui.compose.web.MusicBrainzQuery.QueryAction.ViewArtist
 import player.phonograph.ui.compose.web.MusicBrainzQuery.QueryAction.ViewRecording
 import player.phonograph.ui.compose.web.MusicBrainzQuery.QueryAction.ViewRelease
@@ -49,31 +50,7 @@ fun JumpMusicBrainz(modifier: Modifier, type: Target, mbid: String?) {
         val navigator = LocalPageNavigator.current
         TextButton(
             onClick = {
-                if (context is WebSearchActivity && navigator != null) {
-                    context.lifecycleScope.launch {
-                        val query = context.queryFactory.musicBrainzQuery(context)
-                        val result = when (type) {
-                            Target.ReleaseGroup -> query.query(context, ViewReleaseGroup(mbid))
-                            Target.Release      -> query.query(context, ViewRelease(mbid))
-                            Target.Artist       -> query.query(context, ViewArtist(mbid))
-                            Target.Recording    -> query.query(context, ViewRecording(mbid))
-                        }
-                        val page = Page.Detail.MusicBrainzDetail(
-                            result.await() ?: Any()
-                        )
-                        navigator.navigateTo(page)
-                    }
-
-                } else {
-                    context.startActivity(
-                        when (type) {
-                            Target.Artist -> launchIntentMusicBrainzArtist(context, mbid)
-                            Target.Recording -> launchIntentMusicBrainzRecording(context, mbid)
-                            Target.Release -> launchIntentMusicBrainzRelease(context, mbid)
-                            else -> launchIntent(context)
-                        }
-                    )
-                }
+                jumpMusicbrainz(context, navigator, type, mbid)
             },
             modifier = modifier
         ) {
@@ -112,6 +89,33 @@ fun LinkLastFm(modifier: Modifier, lastFmUri: String?) {
     }
 }
 
+
+fun jumpMusicbrainz(context: Context, navigator: Navigator<Page>?, type: Target, mbid: String) {
+    if (context is WebSearchActivity && navigator != null) {
+        context.lifecycleScope.launch {
+            val query = context.queryFactory.musicBrainzQuery(context)
+            val result = when (type) {
+                Target.ReleaseGroup -> query.query(context, ViewReleaseGroup(mbid))
+                Target.Release      -> query.query(context, ViewRelease(mbid))
+                Target.Artist       -> query.query(context, ViewArtist(mbid))
+                Target.Recording    -> query.query(context, ViewRecording(mbid))
+            }
+            val page = Page.Detail.MusicBrainzDetail(
+                result.await() ?: Any()
+            )
+            navigator.navigateTo(page)
+        }
+    } else {
+        context.startActivity(
+            when (type) {
+                Target.Artist -> launchIntentMusicBrainzArtist(context, mbid)
+                Target.Recording -> launchIntentMusicBrainzRecording(context, mbid)
+                Target.Release -> launchIntentMusicBrainzRelease(context, mbid)
+                else -> launchIntent(context)
+            }
+        )
+    }
+}
 
 fun clickLink(context: Context, url: String) {
     context.startActivity(

@@ -8,6 +8,7 @@ import coil.Coil
 import coil.compose.rememberAsyncImagePainter
 import player.phonograph.R
 import player.phonograph.coil.lastfm.LastFmImageBundle
+import player.phonograph.ui.compose.components.Chip
 import player.phonograph.ui.compose.components.HorizontalTextItem
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextItem
@@ -23,11 +24,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
@@ -39,7 +38,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -189,11 +187,7 @@ private fun Tags(tags: Tags?) {
 
 @Composable
 private fun Tag(tag: Tags.Tag, context: Context) {
-    Surface(
-        modifier = Modifier.wrapContentSize(),
-        shape = RoundedCornerShape(16.dp),
-        color = Color.LightGray
-    ) {
+    Chip {
         Row(Modifier.padding(vertical = 6.dp, horizontal = 8.dp)) {
             SelectionContainer {
                 Text(

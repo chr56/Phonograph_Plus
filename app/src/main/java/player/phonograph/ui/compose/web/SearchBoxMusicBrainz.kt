@@ -33,7 +33,10 @@ fun MusicBrainzSearchBox(
         onSearch = { onSearch(queryParameter.searchAction()) }
     ) {
         Line(name = "Query") {
-            SearchTextBox(queryParameter.query) {
+            SearchTextBox(
+                queryParameter.query,
+                hint = "Lucene query syntax is supported!"
+            ) {
                 musicBrainzQuery.updateQueryParameter { old ->
                     old.copy(query = it)
                 }

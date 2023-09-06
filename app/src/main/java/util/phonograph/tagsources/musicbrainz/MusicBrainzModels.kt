@@ -19,17 +19,20 @@ data class MusicBrainzArtist(
     val gender: String? = null,
     val country: String? = null,
     val area: MusicBrainzArea? = null,
-    @SerialName("begin-area")
-    val beginArea: MusicBrainzArea? = null,
+    // @SerialName("begin-area")
+    // val beginArea: MusicBrainzArea? = null,
     @SerialName("life-span")
     val lifeSpan: LifeSpan? = null,
-    val tags: List<MusicBrainzTag>? = emptyList(),
-    val relations: List<Relation>? = emptyList(),
-    val aliases: List<MusicBrainzAlias>? = emptyList(),
-    val score: Int? = null,
+    val tags: List<MusicBrainzTag> = emptyList(),
+    // val relations: List<Relation> = emptyList(),
+    val aliases: List<MusicBrainzAlias> = emptyList(),
+    // val score: Int? = null,
     val disambiguation: String? = null,
     val ipis: List<String> = emptyList(),
     val isnis: List<String> = emptyList(),
+    @SerialName("release-groups")
+    val releaseGroups: List<MusicBrainzReleaseGroup> = emptyList(),
+    val releases: List<MusicBrainzRelease> = emptyList(),
 ) : MusicBrainzModel {
 
     @Keep
@@ -73,6 +76,7 @@ data class MusicBrainzRelease(
     val textRepresentation: TextRepresentation? = null,
     val disambiguation: String? = null,
     val tags: List<MusicBrainzTag> = emptyList(),
+    val genres: List<MusicBrainzGenre> = emptyList(),
     val barcode: String? = null,
     val asin: String? = null,
 ) : MusicBrainzModel {
@@ -122,6 +126,7 @@ data class MusicBrainzReleaseGroup(
     val firstReleaseDate: String? = null,
     val disambiguation: String? = null,
     val tags: List<MusicBrainzTag>? = emptyList(),
+    val genres: List<MusicBrainzGenre> = emptyList(),
 ) : MusicBrainzModel
 
 @Keep
@@ -138,6 +143,7 @@ data class MusicBrainzRecording(
     val releases: List<MusicBrainzRelease>? = emptyList(),
     val disambiguation: String? = null,
     val tags: List<MusicBrainzTag>? = emptyList(),
+    val genres: List<MusicBrainzGenre> = emptyList(),
 ) : MusicBrainzModel
 
 
@@ -183,6 +189,15 @@ data class MusicBrainzArea(
 data class MusicBrainzTag(
     val name: String = "",
     val count: Int = -1,
+)
+
+@Keep
+@Serializable
+class MusicBrainzGenre(
+    val id: String,
+    val name: String = "",
+    val disambiguation: String? = null,
+    val count: Int = 0,
 )
 
 @Keep
