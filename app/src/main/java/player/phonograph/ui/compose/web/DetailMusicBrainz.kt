@@ -5,8 +5,8 @@
 package player.phonograph.ui.compose.web
 
 import player.phonograph.R
-import player.phonograph.ui.compose.components.TextItem
-import player.phonograph.ui.compose.components.TextItemDefaults
+import player.phonograph.ui.compose.components.LabeledItemLayout
+import player.phonograph.ui.compose.components.LabeledItemLayoutDefault
 import player.phonograph.ui.compose.web.MusicBrainzQuery.Target
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtist
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtistCredit
@@ -32,6 +32,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -322,15 +323,40 @@ private fun MusicBrainzDisambiguation(string: String?) {
 
 @Composable
 private fun Item(label: String, value: String?, maxLength: Int = 8) {
-    if (!value.isNullOrEmpty()) TextItem(title = label, maxLength = maxLength, value = value)
+    if (!value.isNullOrEmpty()) {
+        LabeledItemLayout(Modifier.padding(horizontal = 8.dp), label) {
+            SelectionContainer {
+                ValueText(value)
+            }
+        }
+    }
 }
 
 @Composable
 private fun Item(label: String, values: Collection<String>?, maxLength: Int = 7) {
     if (!values.isNullOrEmpty()) {
-        val value = values.joinToString(separator = "\n") { it }
-        TextItem(title = label, maxLength = maxLength, value = value)
+        LabeledItemLayout(Modifier.padding(horizontal = 8.dp), label) {
+            SelectionContainer {
+                Column {
+                    for (value in values) {
+                        ValueText(value)
+                    }
+                }
+            }
+        }
     }
+}
+
+@Composable
+private fun ValueText(value: String){
+    Text(
+        text = value,
+        style = TextStyle(
+            color = MaterialTheme.colors.onSurface.copy(alpha = 0.92f),
+            fontSize = 14.sp,
+        ),
+        modifier = Modifier.wrapContentSize().padding(10.dp)
+    )
 }
 
 
@@ -339,7 +365,7 @@ private fun CascadeItem(
     title: String,
     modifier: Modifier = Modifier,
     textModifier: Modifier = Modifier.padding(horizontal = 8.dp),
-    textStyle: TextStyle = TextItemDefaults.titleStyle,
+    textStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
     innerModifier: Modifier = Modifier.padding(8.dp),
     content: @Composable () -> Unit,
 ) {
