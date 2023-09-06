@@ -76,6 +76,7 @@ data class MusicBrainzRelease(
     val textRepresentation: TextRepresentation? = null,
     val disambiguation: String? = null,
     val tags: List<MusicBrainzTag> = emptyList(),
+    val genres: List<MusicBrainzGenre> = emptyList(),
     val barcode: String? = null,
     val asin: String? = null,
 ) : MusicBrainzModel {
@@ -125,6 +126,7 @@ data class MusicBrainzReleaseGroup(
     val firstReleaseDate: String? = null,
     val disambiguation: String? = null,
     val tags: List<MusicBrainzTag>? = emptyList(),
+    val genres: List<MusicBrainzGenre> = emptyList(),
 ) : MusicBrainzModel
 
 @Keep
@@ -141,6 +143,7 @@ data class MusicBrainzRecording(
     val releases: List<MusicBrainzRelease>? = emptyList(),
     val disambiguation: String? = null,
     val tags: List<MusicBrainzTag>? = emptyList(),
+    val genres: List<MusicBrainzGenre> = emptyList(),
 ) : MusicBrainzModel
 
 
@@ -186,6 +189,15 @@ data class MusicBrainzArea(
 data class MusicBrainzTag(
     val name: String = "",
     val count: Int = -1,
+)
+
+@Keep
+@Serializable
+class MusicBrainzGenre(
+    val id: String,
+    val name: String = "",
+    val disambiguation: String? = null,
+    val count: Int = 0,
 )
 
 @Keep

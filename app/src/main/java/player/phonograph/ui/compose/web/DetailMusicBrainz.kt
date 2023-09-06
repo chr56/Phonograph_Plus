@@ -10,6 +10,7 @@ import player.phonograph.ui.compose.components.LabeledItemLayoutDefault
 import player.phonograph.ui.compose.web.MusicBrainzQuery.Target
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtist
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtistCredit
+import util.phonograph.tagsources.musicbrainz.MusicBrainzGenre
 import util.phonograph.tagsources.musicbrainz.MusicBrainzMedia
 import util.phonograph.tagsources.musicbrainz.MusicBrainzRecording
 import util.phonograph.tagsources.musicbrainz.MusicBrainzRelease
@@ -349,6 +350,20 @@ private fun MusicBrainzTag(tag: MusicBrainzTag) {
                     overflow = TextOverflow.Ellipsis,
                     softWrap = false,
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun MusicBrainzGenres(genres: List<MusicBrainzGenre>?) {
+    if (!genres.isNullOrEmpty()) {
+        CascadeItem("Genres") {
+            Column {
+                for (genre in genres) {
+                    val text = genre.name + if (!genre.disambiguation.isNullOrEmpty()) "($genre.disambiguation)" else ""
+                    Text(text)
+                }
             }
         }
     }
