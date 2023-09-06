@@ -71,7 +71,9 @@ fun DetailMusicBrainz(
             is MusicBrainzTrack        -> MusicBrainzTrack(item)
             else                       -> Text(
                 stringResource(R.string.empty),
-                Modifier.align(Alignment.CenterHorizontally).padding(16.dp)
+                Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(16.dp)
             )
         }
     }
@@ -217,7 +219,8 @@ fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
                         Text(
                             "* $name ${type?.let { "($it)" }.orEmpty()}",
                             style = styleSecondary,
-                            modifier = Modifier.padding(start = 6.dp)
+                            modifier = Modifier
+                                .padding(start = 6.dp)
                                 .clickable {
                                     jumpMusicbrainz(context, navigator, Target.Artist, id)
                                 }
