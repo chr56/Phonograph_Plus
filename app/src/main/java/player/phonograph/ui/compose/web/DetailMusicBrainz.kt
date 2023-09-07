@@ -90,7 +90,7 @@ fun DetailMusicBrainz(
 
 @Composable
 fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
-    Item("Release Group", releaseGroup.title)
+    EntityTitle(Target.ReleaseGroup, releaseGroup.id, releaseGroup.title, Modifier.padding(horizontal = 8.dp))
     MusicBrainzArtistCredits(releaseGroup.artistCredit)
     Item(stringResource(R.string.year), releaseGroup.firstReleaseDate)
     Item("Type", releaseGroup.primaryType)
@@ -105,19 +105,17 @@ fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
     MusicBrainzGenres(releaseGroup.genres)
     MusicBrainzTags(releaseGroup.tags)
     if (!releaseGroup.releases.isNullOrEmpty()) {
-        CascadeVerticalItem("Release") {
-            for ((index, release) in releaseGroup.releases.withIndex()) {
-                Item("Release ${index + 1}", value = release.title)
-                JumpAndLinkMusicBrainz(Modifier.align(Alignment.End), Target.Release, release.id)
+        CascadeVerticalItem("Releases") {
+            for (release in releaseGroup.releases) {
+                EntityTitle(Target.Release, release.id, release.title, Modifier.padding(horizontal = 8.dp))
             }
         }
     }
-    JumpAndLinkMusicBrainz(Modifier.align(Alignment.End), Target.ReleaseGroup, releaseGroup.id)
 }
 
 @Composable
 fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
-    Item("Release", release.title)
+    EntityTitle(Target.Release, release.id, release.title, Modifier.padding(horizontal = 8.dp))
     MusicBrainzArtistCredits(release.artistCredit)
     if (release.releaseGroup != null) {
         CascadeVerticalItem("Release Group") {
@@ -140,12 +138,11 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
     }
     MusicBrainzGenres(release.genres)
     MusicBrainzTags(release.tags)
-    JumpAndLinkMusicBrainz(Modifier.align(Alignment.End), Target.Release, release.id)
 }
 
 @Composable
 fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
-    Item(stringResource(R.string.artist), artist.name)
+    EntityTitle(Target.Artist, artist.id, artist.name, Modifier.padding(horizontal = 8.dp))
     Item("Type", artist.type)
     Item("Gender", artist.gender)
     MusicBrainzLifeSpan(artist.lifeSpan)
@@ -176,12 +173,12 @@ fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
     }
     Item("IPI Code", artist.ipis)
     Item("ISNI Code", artist.isnis)
-    JumpAndLinkMusicBrainz(Modifier.align(Alignment.End), Target.Artist, artist.id)
 }
 
 @Composable
 fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording?) {
     if (recording != null) {
+        EntityTitle(Target.Recording, recording.id, recording.title, Modifier.padding(horizontal = 8.dp))
         Item("Recording", recording.title)
         MusicBrainzArtistCredits(recording.artistCredit)
         Item("Date", recording.firstReleaseDate)
@@ -197,7 +194,6 @@ fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording?) {
                 }
             }
         }
-        JumpAndLinkMusicBrainz(Modifier.align(Alignment.End), Target.Recording, recording.id)
     }
 }
 
