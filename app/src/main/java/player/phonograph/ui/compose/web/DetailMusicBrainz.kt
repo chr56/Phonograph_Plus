@@ -453,13 +453,12 @@ private fun ValueText(value: String) {
 private fun CascadeVerticalItem(
     title: String,
     modifier: Modifier = Modifier,
-    textModifier: Modifier = Modifier.padding(horizontal = 8.dp),
     textStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
     innerColumnModifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    CascadeItem(modifier, title, textStyle, textModifier) {
-        Column(innerColumnModifier.padding(horizontal = 8.dp)) {
+    CascadeItem(modifier, title, textStyle, Modifier.padding(start = 8.dp)) {
+        Column(innerColumnModifier.padding(start = 8.dp)) {
             content()
         }
     }
@@ -469,12 +468,11 @@ private fun CascadeVerticalItem(
 private fun CascadeHorizontalItem(
     title: String,
     modifier: Modifier = Modifier,
-    textModifier: Modifier = Modifier.padding(horizontal = 8.dp),
     textStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
     innerRowModifier: Modifier = Modifier,
     content: @Composable RowScope.() -> Unit,
 ) {
-    CascadeItem(modifier, title, textStyle, textModifier) {
+    CascadeItem(modifier, title, textStyle, Modifier.padding(start = 8.dp)) {
         Row(
             innerRowModifier
                 .padding(horizontal = 8.dp)
@@ -490,7 +488,7 @@ private fun CascadeItem(
     modifier: Modifier,
     title: String,
     textStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
-    textModifier: Modifier = Modifier.padding(start = 8.dp),
+    textModifier: Modifier,
     content: @Composable () -> Unit,
 ) {
     Column(
@@ -500,7 +498,7 @@ private fun CascadeItem(
             title,
             modifier = textModifier
                 .align(Alignment.Start)
-                .padding(8.dp),
+                .padding(start = 8.dp),
             style = textStyle,
         )
         content()
