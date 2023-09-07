@@ -161,21 +161,21 @@ fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
     MusicBrainzDisambiguation(artist.disambiguation)
     MusicBrainzTags(artist.tags)
     if (artist.aliases.isNotEmpty()) {
-        CascadeVerticalItem("Alias") {
+        CascadeVerticalItem("Alias", collapsible = true, collapsed = true) {
             for (alias in artist.aliases) {
                 Text("${alias.name} (${alias.locale})")
             }
         }
     }
     if (artist.releaseGroups.isNotEmpty()) {
-        CascadeVerticalItem("Release Groups") {
+        CascadeVerticalItem("Release Groups", collapsible = true, collapsed = true) {
             for (releaseGroup in artist.releaseGroups) {
                 MusicBrainzReleaseGroup(releaseGroup)
             }
         }
     }
     if (artist.releases.isNotEmpty()) {
-        CascadeVerticalItem("Releases") {
+        CascadeVerticalItem("Releases", collapsible = true, collapsed = true) {
             for (release in artist.releases) {
                 MusicBrainzRelease(release)
             }
@@ -280,7 +280,7 @@ private fun MusicBrainzMedia(media: MusicBrainzMedia) {
             Item("Format", media.format)
             Item("Count", "${media.discCount} * ${media.trackCount}")
             if (!media.tracks.isNullOrEmpty()) {
-                CascadeVerticalItem("Tracks") {
+                CascadeVerticalItem("Tracks", collapsible = true, collapsed = true) {
                     for (track in media.tracks) {
                         Item("Track ${track.number}", value = track.title)
                         Column(
