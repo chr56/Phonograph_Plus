@@ -41,7 +41,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.ArrowForward
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -444,7 +443,7 @@ fun LinkIconMusicbrainz(target: Target, mbid: String, modifier: Modifier = Modif
 fun LinkIconMusicbrainzWebsite(target: Target, mbid: String, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     Icon(
-        Icons.Outlined.Info, stringResource(R.string.website),
+        painterResource(R.drawable.ic_open_in_browser_white_24dp), stringResource(R.string.website),
         Modifier
             .clickable {
                 clickLink(context, target.link(mbid))
@@ -576,7 +575,7 @@ private fun CascadeItem(
 @Composable
 private fun Target.icon(): Painter {
     return when (this) {
-        Target.ReleaseGroup -> painterResource(R.drawable.ic_album_white_24dp)
+        Target.ReleaseGroup -> painterResource(R.drawable.ic_library_music_white_24dp)
         Target.Release      -> painterResource(R.drawable.ic_album_white_24dp)
         Target.Artist       -> painterResource(R.drawable.ic_person_white_24dp)
         Target.Recording    -> painterResource(R.drawable.ic_music_note_white_24dp)
