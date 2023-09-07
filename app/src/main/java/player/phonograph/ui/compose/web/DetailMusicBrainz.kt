@@ -94,7 +94,7 @@ fun DetailMusicBrainz(
 fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
     EntityTitle(Target.ReleaseGroup, releaseGroup.id, releaseGroup.title)
     MusicBrainzArtistCredits(releaseGroup.artistCredit)
-    Item(stringResource(R.string.year), releaseGroup.firstReleaseDate)
+    Item("Date", releaseGroup.firstReleaseDate)
     MusicBrainzMultipleTypes(releaseGroup.primaryType, releaseGroup.secondaryTypes)
     MusicBrainzDisambiguation(releaseGroup.disambiguation)
     MusicBrainzGenres(releaseGroup.genres)
@@ -324,7 +324,7 @@ private fun MusicBrainzTags(tags: List<MusicBrainzTag>?) {
 @Composable
 private fun MusicBrainzGenres(genres: List<MusicBrainzGenre>?) {
     if (!genres.isNullOrEmpty()) {
-        CascadeHorizontalItem("Genres") {
+        CascadeHorizontalItem(stringResource(R.string.genres)) {
             for (genre in genres) {
                 Chip("${genre.name} ${genre.disambiguation.bracketedIfAny()}")
             }
