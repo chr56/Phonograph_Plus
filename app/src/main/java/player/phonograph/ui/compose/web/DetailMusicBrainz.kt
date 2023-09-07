@@ -275,11 +275,10 @@ private fun MusicBrainzMedia(media: MusicBrainzMedia) {
             if (!media.tracks.isNullOrEmpty()) {
                 CascadeVerticalItem("Tracks", collapsible = true, collapsed = true) {
                     for (track in media.tracks) {
-                        Item("Track ${track.number}", value = track.title)
-                        Column(
-                            modifier = Modifier
-                                .padding(start = 8.dp)
-                                .fillMaxWidth()
+                        CascadeVerticalItem(
+                            "Track ${track.number}: ${track.title}",
+                            collapsible = true,
+                            collapsed = true
                         ) {
                             MusicBrainzRecording(track.recording)
                         }
