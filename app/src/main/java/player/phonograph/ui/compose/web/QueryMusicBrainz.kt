@@ -15,6 +15,7 @@ import util.phonograph.tagsources.musicbrainz.MusicBrainzSearchResultRecording
 import util.phonograph.tagsources.musicbrainz.MusicBrainzSearchResultReleases
 import util.phonograph.tagsources.musicbrainz.MusicBrainzSearchResultReleasesGroup
 import util.phonograph.tagsources.musicbrainz.MusicBrainzService
+import androidx.annotation.Keep
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -30,12 +31,15 @@ class MusicBrainzQuery(
     viewModel: WebSearchViewModel,
 ) : Query<MusicBrainzQuery.QueryParameter, MusicBrainzQuery.QueryAction>(viewModel, "Musicbrainz") {
 
-    enum class Target(val urlName: String) {
-        ReleaseGroup("release-group"),
-        Release("release"),
-        Artist("artist"),
-        Recording("recording"),
+    @Keep
+    enum class Target(val displayName: String, val urlName: String) {
+        ReleaseGroup("ReleaseGroup", "release-group"),
+        Release("Release", "release"),
+        Artist("Artist", "artist"),
+        Recording("Recording", "recording"),
         ;
+
+        fun link(mbid: String): String = "https://musicbrainz.org/${urlName}/$mbid"
     }
 
     private val _queryParameter: MutableStateFlow<QueryParameter> = MutableStateFlow(QueryParameter(Target.Release, ""))

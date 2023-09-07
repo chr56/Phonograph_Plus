@@ -27,15 +27,20 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowForward
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -45,6 +50,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -357,6 +363,60 @@ private fun MusicBrainzDisambiguation(string: String?) {
     if (!string.isNullOrEmpty()) {
         Item(stringResource(R.string.comment), string)
     }
+}
+
+@Composable
+private fun EntityTitle(target: Target, mbid: String, title: String, modifier: Modifier = Modifier) {
+    Row(
+        modifier
+            .fillMaxWidth()
+            .heightIn(max = 64.dp)
+    ) {
+        Column(Modifier.weight(5f).padding(8.dp)) {
+            Row(Modifier, Arrangement.SpaceBetween) {
+                Text(
+                    target.displayName,
+                    Modifier.weight(1f),
+                    fontSize = 17.sp, fontWeight = FontWeight.Bold
+                )
+                Text(
+                    title,
+                    Modifier.weight(4f),
+                    fontSize = 17.sp
+                )
+            }
+            Text(mbid, fontSize = 8.sp, fontWeight = FontWeight.Thin)
+        }
+        LinkIconMusicbrainz(target, mbid, Modifier.weight(1f))
+        LinkIconMusicbrainzWebsite(target, mbid, Modifier.weight(1f))
+    }
+}
+
+@Composable
+fun LinkIconMusicbrainz(target: Target, mbid: String, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val navigator = LocalPageNavigator.current
+    Icon(
+        Icons.Outlined.ArrowForward, null,
+        Modifier
+            .clickable {
+                jumpMusicbrainz(context, navigator, target, mbid)
+            }
+            .padding(8.dp)
+    )
+}
+
+@Composable
+fun LinkIconMusicbrainzWebsite(target: Target, mbid: String, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    Icon(
+        Icons.Outlined.Info, null,
+        Modifier
+            .clickable {
+                clickLink(context, "https://musicbrainz.org/${target.urlName}/$mbid")
+            }
+            .padding(8.dp)
+    )
 }
 
 @Composable
