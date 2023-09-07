@@ -114,7 +114,7 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
     MusicBrainzArtistCredits(release.artistCredit)
     if (release.releaseGroup != null) {
         CascadeVerticalItem("Release Group") {
-            MusicBrainzReleaseGroup(release.releaseGroup)
+            EntityTitle(Target.ReleaseGroup, release.releaseGroup.id, release.releaseGroup.title)
         }
     }
     Item(stringResource(R.string.year), release.date)

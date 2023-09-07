@@ -30,7 +30,7 @@ interface MusicBrainzService {
     @GET("${Entity.RELEASE}/{mbid}?fmt=json")
     fun getRelease(
         @Path("mbid") mbid: String,
-        @Query("inc") inc: String = "artists+recordings+labels+genres+tags",
+        @Query("inc") inc: String = "artists+release-groups+recordings+labels+genres+tags",
     ): Call<MusicBrainzRelease?>
 
     @GET("${Entity.RELEASE_GROUP}/{mbid}?fmt=json")
