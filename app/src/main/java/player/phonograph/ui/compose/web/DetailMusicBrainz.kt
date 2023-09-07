@@ -85,7 +85,7 @@ fun DetailMusicBrainz(
 
 @Composable
 fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
-    EntityTitle(Target.ReleaseGroup, releaseGroup.id, releaseGroup.title, Modifier.padding(horizontal = 8.dp))
+    EntityTitle(Target.ReleaseGroup, releaseGroup.id, releaseGroup.title)
     MusicBrainzArtistCredits(releaseGroup.artistCredit)
     Item(stringResource(R.string.year), releaseGroup.firstReleaseDate)
     Item("Type", releaseGroup.primaryType)
@@ -102,7 +102,7 @@ fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
     if (!releaseGroup.releases.isNullOrEmpty()) {
         CascadeVerticalItem("Releases") {
             for (release in releaseGroup.releases) {
-                EntityTitle(Target.Release, release.id, release.title, Modifier.padding(horizontal = 8.dp))
+                EntityTitle(Target.Release, release.id, release.title)
             }
         }
     }
@@ -110,7 +110,7 @@ fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
 
 @Composable
 fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
-    EntityTitle(Target.Release, release.id, release.title, Modifier.padding(horizontal = 8.dp))
+    EntityTitle(Target.Release, release.id, release.title)
     MusicBrainzArtistCredits(release.artistCredit)
     if (release.releaseGroup != null) {
         CascadeVerticalItem("Release Group") {
@@ -137,7 +137,7 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
 
 @Composable
 fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
-    EntityTitle(Target.Artist, artist.id, artist.name, Modifier.padding(horizontal = 8.dp))
+    EntityTitle(Target.Artist, artist.id, artist.name)
     Item("Type", artist.type)
     Item("Gender", artist.gender)
     MusicBrainzLifeSpan(artist.lifeSpan)
@@ -173,7 +173,7 @@ fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
 @Composable
 fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording?) {
     if (recording != null) {
-        EntityTitle(Target.Recording, recording.id, recording.title, Modifier.padding(horizontal = 8.dp))
+        EntityTitle(Target.Recording, recording.id, recording.title)
         MusicBrainzArtistCredits(recording.artistCredit)
         Item("Date", recording.firstReleaseDate)
         MusicBrainzDisambiguation(recording.disambiguation)
@@ -340,7 +340,7 @@ private fun MusicBrainzDisambiguation(string: String?) {
 @Composable
 private fun EntityTitle(target: Target, mbid: String, title: String, modifier: Modifier = Modifier) {
     Row(
-        modifier.fillMaxWidth(),
+        modifier.fillMaxWidth().padding(start = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
