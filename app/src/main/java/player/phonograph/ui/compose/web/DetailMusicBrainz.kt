@@ -21,16 +21,7 @@ import util.phonograph.tagsources.musicbrainz.MusicBrainzTag
 import util.phonograph.tagsources.musicbrainz.MusicBrainzTrack
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
@@ -323,7 +314,7 @@ private fun MusicBrainzLifeSpan(lifeSpan: MusicBrainzArtist.LifeSpan?) {
 @Composable
 private fun MusicBrainzTags(tags: List<MusicBrainzTag>?) {
     if (!tags.isNullOrEmpty()) {
-        CascadeHorizontalItem("Tags") {
+        CascadeFlowRow("Tags") {
             for (tag in tags) {
                 Chip(tag.name)
             }
@@ -334,7 +325,7 @@ private fun MusicBrainzTags(tags: List<MusicBrainzTag>?) {
 @Composable
 private fun MusicBrainzGenres(genres: List<MusicBrainzGenre>?) {
     if (!genres.isNullOrEmpty()) {
-        CascadeHorizontalItem(stringResource(R.string.genres)) {
+        CascadeFlowRow(stringResource(R.string.genres)) {
             for (genre in genres) {
                 Chip("${genre.name} ${genre.disambiguation.bracketedIfAny()}")
             }
@@ -540,7 +531,7 @@ private fun CascadeHorizontalItem(
 private fun CascadeItem(
     modifier: Modifier,
     title: String,
-    textStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
+    textStyle: TextStyle,
     textModifier: Modifier,
     collapsible: Boolean,
     collapsed: Boolean,
@@ -573,6 +564,31 @@ private fun CascadeItem(
             )
         }
         if (!collapsible || !collapseState) content() else Spacer(Modifier.height(4.dp))
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun CascadeFlowRow(
+    title: String,
+    modifier: Modifier = Modifier,
+    textStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
+    innerRowModifier: Modifier = Modifier,
+    content: @Composable RowScope.() -> Unit,
+) {
+    CascadeItem(
+        modifier = modifier,
+        title = title,
+        textStyle = textStyle,
+        textModifier = innerRowModifier,
+        collapsible = true,
+        collapsed = false
+    ) {
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            content()
+        }
     }
 }
 
