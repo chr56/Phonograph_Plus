@@ -74,7 +74,7 @@ fun DetailMusicBrainz(
             .padding(horizontal = 24.dp, vertical = 12.dp)
     ) {
         when (val item = detail) {
-            is MusicBrainzReleaseGroup -> MusicBrainzReleaseGroup(item)
+            is MusicBrainzReleaseGroup -> MusicBrainzReleaseGroup(item, false)
             is MusicBrainzRelease      -> MusicBrainzRelease(item, false)
             is MusicBrainzArtist       -> MusicBrainzArtist(item)
             is MusicBrainzRecording    -> MusicBrainzRecording(item)
@@ -91,20 +91,26 @@ fun DetailMusicBrainz(
 
 
 @Composable
-fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
+fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup, embed: Boolean) {
     EntityTitle(Target.ReleaseGroup, releaseGroup.id, releaseGroup.title)
     MusicBrainzArtistCredits(releaseGroup.artistCredit)
     Item("Date", releaseGroup.firstReleaseDate)
-    MusicBrainzMultipleTypes(releaseGroup.primaryType, releaseGroup.secondaryTypes)
-    MusicBrainzDisambiguation(releaseGroup.disambiguation)
-    MusicBrainzGenres(releaseGroup.genres)
-    MusicBrainzTags(releaseGroup.tags)
-    if (!releaseGroup.releases.isNullOrEmpty()) {
-        CascadeVerticalItem("Releases") {
-            for (release in releaseGroup.releases) {
-                EntityTitle(Target.Release, release.id, release.title)
+
+    if (!embed) {
+        MusicBrainzMultipleTypes(releaseGroup.primaryType, releaseGroup.secondaryTypes)
+        MusicBrainzDisambiguation(releaseGroup.disambiguation)
+        MusicBrainzGenres(releaseGroup.genres)
+        MusicBrainzTags(releaseGroup.tags)
+        if (!releaseGroup.releases.isNullOrEmpty()) {
+            CascadeVerticalItem("Releases") {
+                for (release in releaseGroup.releases) {
+                    EntityTitle(Target.Release, release.id, release.title)
+                }
             }
         }
+    } else {
+        MusicBrainzDisambiguation(releaseGroup.disambiguation)
+        MusicBrainzMultipleTypes(releaseGroup.primaryType, releaseGroup.secondaryTypes)
     }
 }
 
@@ -168,7 +174,7 @@ fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
     if (artist.releaseGroups.isNotEmpty()) {
         CascadeVerticalItem("Release Groups", collapsible = true, collapsed = true) {
             for (releaseGroup in artist.releaseGroups) {
-                MusicBrainzReleaseGroup(releaseGroup)
+                MusicBrainzReleaseGroup(releaseGroup, embed = true)
             }
         }
     }
