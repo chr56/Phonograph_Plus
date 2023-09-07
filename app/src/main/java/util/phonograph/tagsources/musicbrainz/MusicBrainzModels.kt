@@ -227,7 +227,7 @@ data class MusicBrainzUrl(
 @Serializable
 data class MusicBrainzArtistCredit(
     val name: String,
-    val artist: MusicBrainzArtist,
+    val artist: MusicBrainzArtist? = null,
     val joinphrase: String = "",
 )
 

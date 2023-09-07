@@ -244,30 +244,34 @@ fun MusicBrainzArtistCredit(artistCredit: MusicBrainzArtistCredit, modifier: Mod
                 fontSize = 14.sp,
                 textAlign = TextAlign.Start
             )
-            Text(
-                artistCredit.artist.name,
-                Modifier,
-                fontSize = 10.sp,
-                textAlign = TextAlign.Start
+            if (artistCredit.artist != null) {
+                Text(
+                    artistCredit.artist.name,
+                    Modifier,
+                    fontSize = 10.sp,
+                    textAlign = TextAlign.Start
+                )
+                Text(
+                    artistCredit.artist.id,
+                    fontSize = 8.sp,
+                    fontWeight = FontWeight.Thin
+                )
+            }
+        }
+        if (artistCredit.artist != null) {
+            LinkIconMusicbrainz(
+                Target.Artist, artistCredit.artist.id,
+                Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically)
             )
-            Text(
-                artistCredit.artist.id,
-                fontSize = 8.sp,
-                fontWeight = FontWeight.Thin
+            LinkIconMusicbrainzWebsite(
+                Target.Artist, artistCredit.artist.id,
+                Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically)
             )
         }
-        LinkIconMusicbrainz(
-            Target.Artist, artistCredit.artist.id,
-            Modifier
-                .weight(1f)
-                .align(Alignment.CenterVertically)
-        )
-        LinkIconMusicbrainzWebsite(
-            Target.Artist, artistCredit.artist.id,
-            Modifier
-                .weight(1f)
-                .align(Alignment.CenterVertically)
-        )
     }
 }
 
