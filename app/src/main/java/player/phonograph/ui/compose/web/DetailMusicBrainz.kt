@@ -27,8 +27,8 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -366,15 +366,12 @@ private fun MusicBrainzDisambiguation(string: String?) {
 @Composable
 private fun EntityTitle(target: Target, mbid: String, title: String, modifier: Modifier = Modifier) {
     Row(
-        modifier
-            .fillMaxWidth()
-            .heightIn(max = 64.dp)
+        modifier.fillMaxWidth()
     ) {
         Icon(
             target.icon(), null,
             Modifier
                 .weight(1f)
-                .padding(8.dp)
                 .align(Alignment.CenterVertically)
         )
         Column(
@@ -382,23 +379,33 @@ private fun EntityTitle(target: Target, mbid: String, title: String, modifier: M
                 .padding(8.dp)
                 .weight(7f)
         ) {
-            Row(Modifier, Arrangement.SpaceBetween) {
+            Row(Modifier) {
                 Text(
                     target.displayName,
-                    Modifier.weight(4f),
+                    Modifier.width(84.dp),
                     fontSize = 17.sp, fontWeight = FontWeight.Bold
                 )
                 Text(
                     title,
-                    Modifier
-                        .weight(7f),
-                    fontSize = 17.sp
+                    Modifier.padding(horizontal = 4.dp),
+                    fontSize = 17.sp,
+                    textAlign = TextAlign.Start
                 )
             }
             Text(mbid, fontSize = 8.sp, fontWeight = FontWeight.Thin)
         }
-        LinkIconMusicbrainz(target, mbid, Modifier.weight(1f))
-        LinkIconMusicbrainzWebsite(target, mbid, Modifier.weight(1f))
+        LinkIconMusicbrainz(
+            target, mbid,
+            Modifier
+                .weight(1f)
+                .align(Alignment.CenterVertically)
+        )
+        LinkIconMusicbrainzWebsite(
+            target, mbid,
+            Modifier
+                .weight(1f)
+                .align(Alignment.CenterVertically)
+        )
     }
 }
 
@@ -407,7 +414,7 @@ fun LinkIconMusicbrainz(target: Target, mbid: String, modifier: Modifier = Modif
     val context = LocalContext.current
     val navigator = LocalPageNavigator.current
     Icon(
-        Icons.Outlined.ArrowForward, null,
+        Icons.Outlined.ArrowForward, stringResource(R.string.web_search),
         Modifier
             .clickable {
                 jumpMusicbrainz(context, navigator, target, mbid)
@@ -420,7 +427,7 @@ fun LinkIconMusicbrainz(target: Target, mbid: String, modifier: Modifier = Modif
 fun LinkIconMusicbrainzWebsite(target: Target, mbid: String, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     Icon(
-        Icons.Outlined.Info, null,
+        Icons.Outlined.Info, stringResource(R.string.website),
         Modifier
             .clickable {
                 clickLink(context, target.link(mbid))
