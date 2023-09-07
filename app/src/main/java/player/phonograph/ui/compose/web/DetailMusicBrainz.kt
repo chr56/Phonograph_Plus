@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -366,32 +365,30 @@ private fun MusicBrainzDisambiguation(string: String?) {
 @Composable
 private fun EntityTitle(target: Target, mbid: String, title: String, modifier: Modifier = Modifier) {
     Row(
-        modifier.fillMaxWidth()
+        modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             target.icon(), null,
-            Modifier
-                .weight(1f)
-                .align(Alignment.CenterVertically)
+            Modifier.weight(1f)
         )
         Column(
             Modifier
                 .padding(8.dp)
-                .weight(7f)
+                .weight(7f),
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            Row(Modifier) {
-                Text(
-                    target.displayName,
-                    Modifier.width(84.dp),
-                    fontSize = 17.sp, fontWeight = FontWeight.Bold
-                )
-                Text(
-                    title,
-                    Modifier.padding(horizontal = 4.dp),
-                    fontSize = 17.sp,
-                    textAlign = TextAlign.Start
-                )
-            }
+            Text(
+                target.displayName,
+                Modifier,
+                fontSize = 17.sp, fontWeight = FontWeight.Bold
+            )
+            Text(
+                title,
+                Modifier,
+                fontSize = 17.sp,
+                textAlign = TextAlign.Start
+            )
             Text(mbid, fontSize = 8.sp, fontWeight = FontWeight.Thin)
         }
         LinkIconMusicbrainz(
