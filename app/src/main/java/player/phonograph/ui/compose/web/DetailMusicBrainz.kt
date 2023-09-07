@@ -75,7 +75,7 @@ fun DetailMusicBrainz(
     ) {
         when (val item = detail) {
             is MusicBrainzReleaseGroup -> MusicBrainzReleaseGroup(item)
-            is MusicBrainzRelease      -> MusicBrainzRelease(item)
+            is MusicBrainzRelease      -> MusicBrainzRelease(item, false)
             is MusicBrainzArtist       -> MusicBrainzArtist(item)
             is MusicBrainzRecording    -> MusicBrainzRecording(item)
             is MusicBrainzTrack        -> MusicBrainzTrack(item)
@@ -109,7 +109,7 @@ fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
 }
 
 @Composable
-fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
+fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease, embed: Boolean) {
     EntityTitle(Target.Release, release.id, release.title)
     MusicBrainzArtistCredits(release.artistCredit)
     if (release.releaseGroup != null) {
@@ -126,21 +126,26 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
         }
     }
     Item(stringResource(R.string.year), release.date)
-    Item("Status", release.status)
-    Item("Country", release.country)
-    MusicBrainzMedias(release.media)
-    Item("Barcode", release.barcode)
-    if (release.labelInfo.isNotEmpty()) {
-        CascadeVerticalItem("Label") {
-            for (labelInfo in release.labelInfo) {
-                if (labelInfo.label != null) {
-                    Text(labelInfo.label.name)
+    if (!embed) {
+        Item("Status", release.status)
+        Item("Country", release.country)
+        MusicBrainzMedias(release.media)
+        Item("Barcode", release.barcode)
+        if (release.labelInfo.isNotEmpty()) {
+            CascadeVerticalItem("Label") {
+                for (labelInfo in release.labelInfo) {
+                    if (labelInfo.label != null) {
+                        Text(labelInfo.label.name)
+                    }
                 }
             }
         }
+        MusicBrainzGenres(release.genres)
+        MusicBrainzTags(release.tags)
+    } else {
+        Item("Barcode", release.barcode)
+        Item("Country", release.country)
     }
-    MusicBrainzGenres(release.genres)
-    MusicBrainzTags(release.tags)
 }
 
 @Composable
@@ -170,7 +175,7 @@ fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
     if (artist.releases.isNotEmpty()) {
         CascadeVerticalItem("Releases", collapsible = true, collapsed = true) {
             for (release in artist.releases) {
-                MusicBrainzRelease(release)
+                MusicBrainzRelease(release, embed = true)
             }
         }
     }
@@ -191,7 +196,7 @@ fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording?) {
             CascadeVerticalItem("Related Releases") {
                 for ((index, release) in recording.releases.withIndex()) {
                     CascadeVerticalItem("Related Release ${index + 1}") {
-                        MusicBrainzRelease(release)
+                        MusicBrainzRelease(release, embed = true)
                     }
                 }
             }
