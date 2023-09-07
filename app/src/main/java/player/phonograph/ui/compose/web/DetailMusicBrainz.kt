@@ -5,9 +5,10 @@
 package player.phonograph.ui.compose.web
 
 import player.phonograph.R
+import player.phonograph.ui.compose.components.CascadeFlowRow
+import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.Chip
-import player.phonograph.ui.compose.components.LabeledItemLayout
-import player.phonograph.ui.compose.components.LabeledItemLayoutDefault
+import player.phonograph.ui.compose.components.Item
 import player.phonograph.ui.compose.web.MusicBrainzQuery.Target
 import player.phonograph.util.text.bracketedIfAny
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtist
@@ -20,31 +21,28 @@ import util.phonograph.tagsources.musicbrainz.MusicBrainzReleaseGroup
 import util.phonograph.tagsources.musicbrainz.MusicBrainzTag
 import util.phonograph.tagsources.musicbrainz.MusicBrainzTrack
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -110,7 +108,7 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease, embed: Boolean) 
     MusicBrainzArtistCredits(release.artistCredit)
     if (release.releaseGroup != null) {
         CascadeVerticalItem("Release Group") {
-            LinkableItem(Target.ReleaseGroup, release.releaseGroup.id, Modifier.padding(vertical = 4.dp)) {
+            MusicBrainzLinkableItem(Target.ReleaseGroup, release.releaseGroup.id, Modifier.padding(vertical = 4.dp)) {
                 Text(
                     release.releaseGroup.title,
                     Modifier,
@@ -233,7 +231,7 @@ fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
 
 @Composable
 fun MusicBrainzArtistCredit(artistCredit: MusicBrainzArtistCredit, modifier: Modifier = Modifier) {
-    LinkableItem(Target.Artist, artistCredit.artist?.id) {
+    MusicBrainzLinkableItem(Target.Artist, artistCredit.artist?.id) {
         Text(
             artistCredit.name,
             Modifier,
@@ -333,7 +331,7 @@ private fun MusicBrainzGenres(genres: List<MusicBrainzGenre>?) {
     }
 }
 @Composable
-fun MusicBrainzMultipleTypes(primaryType: String, secondaryTypes: List<String>?) {
+private fun MusicBrainzMultipleTypes(primaryType: String, secondaryTypes: List<String>?) {
     val text = if (!secondaryTypes.isNullOrEmpty()) {
         primaryType + secondaryTypes.joinToString(", ", " (", ")")
     } else {
@@ -358,7 +356,7 @@ private fun EntityTitle(
     modifier: Modifier = Modifier,
     titleMode: Boolean = true,
 ) {
-    LinkableItem(target, mbid) {
+    MusicBrainzLinkableItem(target, mbid) {
         Text(
             target.displayName,
             Modifier,
@@ -377,7 +375,42 @@ private fun EntityTitle(
 }
 
 @Composable
-private fun LinkableItem(
+fun LinkIconMusicbrainz(target: Target, mbid: String, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val navigator = LocalPageNavigator.current
+    Icon(
+        Icons.Outlined.ArrowForward, stringResource(R.string.web_search),
+        Modifier
+            .clickable {
+                jumpMusicbrainz(context, navigator, target, mbid)
+            }
+            .padding(8.dp)
+    )
+}
+
+@Composable
+fun LinkIconMusicbrainzWebsite(target: Target, mbid: String, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    Icon(
+        painterResource(R.drawable.ic_open_in_browser_white_24dp), stringResource(R.string.website),
+        Modifier
+            .clickable {
+                clickLink(context, target.link(mbid))
+            }
+            .padding(8.dp)
+    )
+}
+
+@Composable
+private fun Target.icon(): Painter = when (this) {
+    Target.ReleaseGroup -> painterResource(R.drawable.ic_library_music_white_24dp)
+    Target.Release      -> painterResource(R.drawable.ic_album_white_24dp)
+    Target.Artist       -> painterResource(R.drawable.ic_person_white_24dp)
+    Target.Recording    -> painterResource(R.drawable.ic_music_note_white_24dp)
+}
+
+@Composable
+fun MusicBrainzLinkableItem(
     target: Target,
     mbid: String?,
     modifier: Modifier = Modifier,
@@ -413,191 +446,5 @@ private fun LinkableItem(
                     .align(Alignment.CenterVertically)
             )
         }
-    }
-}
-
-@Composable
-fun LinkIconMusicbrainz(target: Target, mbid: String, modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    val navigator = LocalPageNavigator.current
-    Icon(
-        Icons.Outlined.ArrowForward, stringResource(R.string.web_search),
-        Modifier
-            .clickable {
-                jumpMusicbrainz(context, navigator, target, mbid)
-            }
-            .padding(8.dp)
-    )
-}
-
-@Composable
-fun LinkIconMusicbrainzWebsite(target: Target, mbid: String, modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    Icon(
-        painterResource(R.drawable.ic_open_in_browser_white_24dp), stringResource(R.string.website),
-        Modifier
-            .clickable {
-                clickLink(context, target.link(mbid))
-            }
-            .padding(8.dp)
-    )
-}
-
-@Composable
-private fun Item(label: String, value: String?) {
-    if (!value.isNullOrEmpty()) {
-        Item(label) {
-            ValueText(value)
-        }
-    }
-}
-
-@Composable
-private fun Item(label: String, values: Collection<String>?) {
-    if (!values.isNullOrEmpty()) {
-        Item(label) {
-            Column {
-                for (value in values) {
-                    ValueText(value)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun Item(label: String, content: @Composable () -> Unit) {
-    LabeledItemLayout(
-        Modifier.padding(vertical = 4.dp),
-        label = label,
-        labelModifier = Modifier.padding(end = 12.dp)
-    ) {
-        SelectionContainer {
-            content()
-        }
-    }
-}
-
-@Composable
-private fun ValueText(value: String) {
-    Text(
-        text = value,
-        style = TextStyle(
-            color = MaterialTheme.colors.onSurface.copy(alpha = 0.92f),
-            fontSize = 14.sp,
-        ),
-        modifier = Modifier.wrapContentSize()
-    )
-}
-
-
-@Composable
-private fun CascadeVerticalItem(
-    title: String,
-    modifier: Modifier = Modifier,
-    textStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
-    innerColumnModifier: Modifier = Modifier,
-    collapsible: Boolean = true,
-    collapsed: Boolean = false,
-    content: @Composable ColumnScope.() -> Unit,
-) {
-    CascadeItem(modifier.padding(vertical = 8.dp), title, textStyle, Modifier, collapsible, collapsed) {
-        Column(innerColumnModifier.padding(start = 8.dp)) {
-            content()
-        }
-    }
-}
-
-@Composable
-private fun CascadeHorizontalItem(
-    title: String,
-    modifier: Modifier = Modifier,
-    textStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
-    innerRowModifier: Modifier = Modifier,
-    content: @Composable RowScope.() -> Unit,
-) {
-    CascadeItem(modifier.padding(vertical = 4.dp), title, textStyle, Modifier, collapsible = false, collapsed = false) {
-        Row(
-            innerRowModifier
-                .padding(horizontal = 8.dp)
-                .horizontalScroll(rememberScrollState())
-        ) {
-            content()
-        }
-    }
-}
-
-@Composable
-private fun CascadeItem(
-    modifier: Modifier,
-    title: String,
-    textStyle: TextStyle,
-    textModifier: Modifier,
-    collapsible: Boolean,
-    collapsed: Boolean,
-    content: @Composable () -> Unit,
-) {
-    Column(
-        modifier, verticalArrangement = Arrangement.SpaceEvenly
-    ) {
-        var collapseState by remember { mutableStateOf(collapsed) }
-        Row(
-            Modifier
-                .clickable {
-                    collapseState = !collapseState
-                }
-        ) {
-            if (collapsible) {
-                Icon(
-                    if (collapseState) Icons.Default.KeyboardArrowRight else Icons.Default.KeyboardArrowDown,
-                    "Collapse",
-                    Modifier.align(Alignment.CenterVertically)
-                )
-            }
-            Text(
-                title,
-                modifier = textModifier
-                    .padding(vertical = 2.dp)
-                    .align(Alignment.Top)
-                    .fillMaxWidth(),
-                style = textStyle,
-            )
-        }
-        if (!collapsible || !collapseState) content() else Spacer(Modifier.height(4.dp))
-    }
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun CascadeFlowRow(
-    title: String,
-    modifier: Modifier = Modifier,
-    textStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
-    innerRowModifier: Modifier = Modifier,
-    content: @Composable RowScope.() -> Unit,
-) {
-    CascadeItem(
-        modifier = modifier,
-        title = title,
-        textStyle = textStyle,
-        textModifier = innerRowModifier,
-        collapsible = true,
-        collapsed = false
-    ) {
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            content()
-        }
-    }
-}
-
-@Composable
-private fun Target.icon(): Painter {
-    return when (this) {
-        Target.ReleaseGroup -> painterResource(R.drawable.ic_library_music_white_24dp)
-        Target.Release      -> painterResource(R.drawable.ic_album_white_24dp)
-        Target.Artist       -> painterResource(R.drawable.ic_person_white_24dp)
-        Target.Recording    -> painterResource(R.drawable.ic_music_note_white_24dp)
     }
 }
