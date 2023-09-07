@@ -444,7 +444,7 @@ private fun ValueText(value: String) {
         ),
         modifier = Modifier
             .wrapContentSize()
-            .padding(8.dp)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
     )
 }
 
