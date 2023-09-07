@@ -95,14 +95,7 @@ fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup) {
     EntityTitle(Target.ReleaseGroup, releaseGroup.id, releaseGroup.title)
     MusicBrainzArtistCredits(releaseGroup.artistCredit)
     Item(stringResource(R.string.year), releaseGroup.firstReleaseDate)
-    Item("Type", releaseGroup.primaryType)
-    if (releaseGroup.secondaryTypes.isNotEmpty()) {
-        CascadeVerticalItem("Type") {
-            for (secondaryType in releaseGroup.secondaryTypes) {
-                Text(secondaryType)
-            }
-        }
-    }
+    MusicBrainzMultipleTypes(releaseGroup.primaryType, releaseGroup.secondaryTypes)
     MusicBrainzDisambiguation(releaseGroup.disambiguation)
     MusicBrainzGenres(releaseGroup.genres)
     MusicBrainzTags(releaseGroup.tags)
@@ -339,6 +332,16 @@ private fun MusicBrainzGenres(genres: List<MusicBrainzGenre>?) {
         }
     }
 }
+@Composable
+fun MusicBrainzMultipleTypes(primaryType: String, secondaryTypes: List<String>?) {
+    val text = if (!secondaryTypes.isNullOrEmpty()) {
+        primaryType + secondaryTypes.joinToString(", ", " (", ")")
+    } else {
+        primaryType
+    }
+    Item("Type", text)
+}
+
 
 @Composable
 private fun MusicBrainzDisambiguation(string: String?) {
