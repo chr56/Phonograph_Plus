@@ -550,21 +550,25 @@ private fun CascadeItem(
         modifier, verticalArrangement = Arrangement.SpaceEvenly
     ) {
         var collapseState by remember { mutableStateOf(collapsed) }
-        Row {
+        Row(
+            Modifier
+                .clickable {
+                    collapseState = !collapseState
+                }
+        ) {
             if (collapsible) {
                 Icon(
                     if (collapseState) Icons.Default.KeyboardArrowRight else Icons.Default.KeyboardArrowDown,
                     "Collapse",
-                    Modifier
-                        .align(Alignment.CenterVertically)
-                        .clickable {
-                            collapseState = !collapseState
-                        }
+                    Modifier.align(Alignment.CenterVertically)
                 )
             }
             Text(
                 title,
-                modifier = textModifier.align(Alignment.Top),
+                modifier = textModifier
+                    .padding(vertical = 2.dp)
+                    .align(Alignment.Top)
+                    .fillMaxWidth(),
                 style = textStyle,
             )
         }
