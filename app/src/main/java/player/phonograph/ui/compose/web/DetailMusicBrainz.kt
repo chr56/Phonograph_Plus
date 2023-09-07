@@ -64,7 +64,7 @@ fun DetailMusicBrainz(
         Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 24.dp, vertical = 12.dp)
     ) {
         when (val item = detail) {
             is MusicBrainzReleaseGroup -> MusicBrainzReleaseGroup(item)
@@ -126,7 +126,7 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
         CascadeVerticalItem("Label") {
             for (labelInfo in release.labelInfo) {
                 if (labelInfo.label != null) {
-                    Text(labelInfo.label.name, Modifier.padding(start = 8.dp))
+                    Text(labelInfo.label.name)
                 }
             }
         }
@@ -229,14 +229,12 @@ fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
                         "${artistCredit.joinphrase} ${artistCredit.name}",
                         style = stylePrimary,
                         modifier = Modifier
-                            .padding(start = 8.dp)
                     )
                     with(artistCredit.artist) {
                         Text(
                             "* $name ${type.bracketedIfAny()}",
                             style = styleSecondary,
                             modifier = Modifier
-                                .padding(start = 8.dp)
                                 .clickable {
                                     jumpMusicbrainz(context, navigator, Target.Artist, id)
                                 }
@@ -245,7 +243,7 @@ fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
                             Text(
                                 "* ${area.name} ${country.orEmpty()}",
                                 style = styleSecondary,
-                                modifier = Modifier.padding(start = 16.dp)
+                                modifier = Modifier.padding(start = 8.dp)
                             )
                         }
                     }
@@ -342,9 +340,7 @@ private fun MusicBrainzDisambiguation(string: String?) {
 @Composable
 private fun EntityTitle(target: Target, mbid: String, title: String, modifier: Modifier = Modifier) {
     Row(
-        modifier
-            .fillMaxWidth()
-            .padding(start = 8.dp),
+        modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -353,7 +349,7 @@ private fun EntityTitle(target: Target, mbid: String, title: String, modifier: M
         )
         Column(
             Modifier
-                .padding(8.dp)
+                .padding(horizontal = 8.dp)
                 .weight(7f),
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
@@ -415,10 +411,8 @@ fun LinkIconMusicbrainzWebsite(target: Target, mbid: String, modifier: Modifier 
 @Composable
 private fun Item(label: String, value: String?) {
     if (!value.isNullOrEmpty()) {
-        LabeledItemLayout(Modifier.padding(horizontal = 8.dp), label) {
-            SelectionContainer {
-                ValueText(value)
-            }
+        Item(label) {
+            ValueText(value)
         }
     }
 }
@@ -426,14 +420,25 @@ private fun Item(label: String, value: String?) {
 @Composable
 private fun Item(label: String, values: Collection<String>?) {
     if (!values.isNullOrEmpty()) {
-        LabeledItemLayout(Modifier.padding(horizontal = 8.dp), label) {
-            SelectionContainer {
-                Column {
-                    for (value in values) {
-                        ValueText(value)
-                    }
+        Item(label) {
+            Column {
+                for (value in values) {
+                    ValueText(value)
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun Item(label: String, content: @Composable () -> Unit) {
+    LabeledItemLayout(
+        Modifier.padding(vertical = 4.dp),
+        label = label,
+        labelModifier = Modifier.padding(end = 12.dp)
+    ) {
+        SelectionContainer {
+            content()
         }
     }
 }
@@ -446,9 +451,7 @@ private fun ValueText(value: String) {
             color = MaterialTheme.colors.onSurface.copy(alpha = 0.92f),
             fontSize = 14.sp,
         ),
-        modifier = Modifier
-            .wrapContentSize()
-            .padding(horizontal = 8.dp, vertical = 4.dp)
+        modifier = Modifier.wrapContentSize()
     )
 }
 
@@ -461,7 +464,7 @@ private fun CascadeVerticalItem(
     innerColumnModifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    CascadeItem(modifier, title, textStyle, Modifier.padding(start = 8.dp)) {
+    CascadeItem(modifier.padding(vertical = 8.dp), title, textStyle, Modifier) {
         Column(innerColumnModifier.padding(start = 8.dp)) {
             content()
         }
@@ -476,7 +479,7 @@ private fun CascadeHorizontalItem(
     innerRowModifier: Modifier = Modifier,
     content: @Composable RowScope.() -> Unit,
 ) {
-    CascadeItem(modifier, title, textStyle, Modifier.padding(start = 8.dp)) {
+    CascadeItem(modifier.padding(vertical = 4.dp), title, textStyle, Modifier) {
         Row(
             innerRowModifier
                 .padding(horizontal = 8.dp)
@@ -501,8 +504,7 @@ private fun CascadeItem(
         Text(
             title,
             modifier = textModifier
-                .align(Alignment.Start)
-                .padding(start = 8.dp),
+                .align(Alignment.Start),
             style = textStyle,
         )
         content()
