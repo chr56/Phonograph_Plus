@@ -126,7 +126,7 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
         CascadeVerticalItem("Label") {
             for (labelInfo in release.labelInfo) {
                 if (labelInfo.label != null) {
-                    Text(labelInfo.label.name)
+                    Text(labelInfo.label.name, Modifier.padding(start = 8.dp))
                 }
             }
         }
@@ -228,6 +228,8 @@ fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
                     Text(
                         "${artistCredit.joinphrase} ${artistCredit.name}",
                         style = stylePrimary,
+                        modifier = Modifier
+                            .padding(start = 8.dp)
                     )
                     with(artistCredit.artist) {
                         Text(
@@ -243,7 +245,7 @@ fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
                             Text(
                                 "* ${area.name} ${country.orEmpty()}",
                                 style = styleSecondary,
-                                modifier = Modifier.padding(start = 8.dp)
+                                modifier = Modifier.padding(start = 16.dp)
                             )
                         }
                     }
@@ -340,7 +342,9 @@ private fun MusicBrainzDisambiguation(string: String?) {
 @Composable
 private fun EntityTitle(target: Target, mbid: String, title: String, modifier: Modifier = Modifier) {
     Row(
-        modifier.fillMaxWidth().padding(start = 8.dp),
+        modifier
+            .fillMaxWidth()
+            .padding(start = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
