@@ -33,7 +33,7 @@ class MusicBrainzQuery(
 
     @Keep
     enum class Target(val displayName: String, val urlName: String) {
-        ReleaseGroup("ReleaseGroup", "release-group"),
+        ReleaseGroup("Release Group", "release-group"),
         Release("Release", "release"),
         Artist("Artist", "artist"),
         Recording("Recording", "recording"),

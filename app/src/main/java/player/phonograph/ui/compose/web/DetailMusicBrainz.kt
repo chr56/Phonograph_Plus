@@ -47,7 +47,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -372,16 +374,28 @@ private fun EntityTitle(target: Target, mbid: String, title: String, modifier: M
             .fillMaxWidth()
             .heightIn(max = 64.dp)
     ) {
-        Column(Modifier.weight(5f).padding(8.dp)) {
+        Icon(
+            target.icon(), null,
+            Modifier
+                .weight(1f)
+                .padding(8.dp)
+                .align(Alignment.CenterVertically)
+        )
+        Column(
+            Modifier
+                .padding(8.dp)
+                .weight(7f)
+        ) {
             Row(Modifier, Arrangement.SpaceBetween) {
                 Text(
                     target.displayName,
-                    Modifier.weight(1f),
+                    Modifier.weight(4f),
                     fontSize = 17.sp, fontWeight = FontWeight.Bold
                 )
                 Text(
                     title,
-                    Modifier.weight(4f),
+                    Modifier
+                        .weight(7f),
                     fontSize = 17.sp
                 )
             }
@@ -413,7 +427,7 @@ fun LinkIconMusicbrainzWebsite(target: Target, mbid: String, modifier: Modifier 
         Icons.Outlined.Info, null,
         Modifier
             .clickable {
-                clickLink(context, "https://musicbrainz.org/${target.urlName}/$mbid")
+                clickLink(context, target.link(mbid))
             }
             .padding(8.dp)
     )
@@ -515,5 +529,15 @@ private fun CascadeItem(
             style = textStyle,
         )
         content()
+    }
+}
+
+@Composable
+private fun Target.icon(): Painter {
+    return when (this) {
+        Target.ReleaseGroup -> painterResource(R.drawable.ic_album_white_24dp)
+        Target.Release      -> painterResource(R.drawable.ic_album_white_24dp)
+        Target.Artist       -> painterResource(R.drawable.ic_person_white_24dp)
+        Target.Recording    -> painterResource(R.drawable.ic_music_note_white_24dp)
     }
 }
