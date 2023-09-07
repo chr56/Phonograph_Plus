@@ -5,7 +5,7 @@
 package player.phonograph.ui.compose.web
 
 import player.phonograph.R
-import player.phonograph.ui.compose.components.Item
+import player.phonograph.ui.compose.components.ListItem
 import player.phonograph.ui.compose.web.MusicBrainzQuery.QueryAction.ViewArtist
 import player.phonograph.ui.compose.web.MusicBrainzQuery.QueryAction.ViewRecording
 import player.phonograph.ui.compose.web.MusicBrainzQuery.QueryAction.ViewRelease
@@ -84,7 +84,7 @@ private fun MusicBrainzSearchResultReleasesGroup(
                 ?: releaseGroup.releases?.firstOrNull()?.title
                 ?: NA
 
-        Item(Modifier, releaseGroup.title, subtitle, { getDetail(ViewReleaseGroup(releaseGroup.id)) }, {}, null)
+        ListItem(Modifier, releaseGroup.title, subtitle, { getDetail(ViewReleaseGroup(releaseGroup.id)) }, {}, null)
     }
 }
 @Composable
@@ -101,7 +101,7 @@ private fun MusicBrainzSearchResultReleases(
                 ?: release.date
                 ?: release.media.firstOrNull()?.format
                 ?: NA
-        Item(Modifier, release.title, subtitle, { getDetail(ViewRelease(release.id)) }, {}, null)
+        ListItem(Modifier, release.title, subtitle, { getDetail(ViewRelease(release.id)) }, {}, null)
     }
 }
 @Composable
@@ -114,7 +114,7 @@ private fun MusicBrainzSearchResultArtists(
         val subtitle = artist.country
             ?: artist.area?.name
             ?: ""
-        Item(Modifier, artist.name, subtitle, { getDetail(ViewArtist(artist.id)) }, {}, null)
+        ListItem(Modifier, artist.name, subtitle, { getDetail(ViewArtist(artist.id)) }, {}, null)
     }
 }
 @Composable
@@ -130,7 +130,7 @@ private fun MusicBrainzSearchResultRecording(
                 ?: recording.firstReleaseDate
                 ?: recording.releases?.firstOrNull()?.title
                 ?: NA
-        Item(Modifier, recording.title, subtitle, { getDetail(ViewRecording(recording.id)) }, {}, null)
+        ListItem(Modifier, recording.title, subtitle, { getDetail(ViewRecording(recording.id)) }, {}, null)
     }
 }
 

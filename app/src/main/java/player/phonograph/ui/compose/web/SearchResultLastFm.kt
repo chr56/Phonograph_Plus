@@ -8,7 +8,7 @@ import coil.Coil
 import coil.compose.rememberAsyncImagePainter
 import player.phonograph.R
 import player.phonograph.coil.lastfm.LastFmImageBundle
-import player.phonograph.ui.compose.components.Item
+import player.phonograph.ui.compose.components.ListItem
 import util.phonograph.tagsources.lastfm.AlbumResult
 import util.phonograph.tagsources.lastfm.ArtistResult
 import util.phonograph.tagsources.lastfm.LastFmImage
@@ -65,7 +65,7 @@ private fun AlbumResult(albumResult: AlbumResult?, getDetail: (AlbumResult.Album
                         LastFmImageBundle.from(album, LastFmImage.ImageSize.LARGE),
                         Coil.imageLoader(context)
                     )
-                Item(Modifier, album.name, album.artist, { getDetail(album) }, {}, painter)
+                ListItem(Modifier, album.name, album.artist, { getDetail(album) }, {}, painter)
             }
         }
     }
@@ -82,7 +82,7 @@ private fun ArtistResult(artistResult: ArtistResult?, getDetail: (ArtistResult.A
                         LastFmImageBundle.from(artist, LastFmImage.ImageSize.LARGE),
                         Coil.imageLoader(context)
                     )
-                Item(Modifier, artist.name, artist.mbid.orEmpty(), { getDetail(artist) }, {}, painter)
+                ListItem(Modifier, artist.name, artist.mbid.orEmpty(), { getDetail(artist) }, {}, painter)
             }
         }
     }
@@ -92,7 +92,7 @@ private fun TrackResult(trackResult: TrackResult?, getDetail: (TrackResult.Track
     if (trackResult != null && !trackResult.track.isNullOrEmpty()) {
         LazyColumn {
             items(trackResult.track) { track ->
-                Item(Modifier, track.name, track.artist, { getDetail(track) }, {})
+                ListItem(Modifier, track.name, track.artist, { getDetail(track) }, {})
             }
         }
     }
