@@ -214,44 +214,63 @@ fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
     if (!artistCredits.isNullOrEmpty()) {
         SelectionContainer {
             CascadeVerticalItem(stringResource(R.string.artists)) {
-                val stylePrimary = TextStyle(
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Start
-                )
-                val styleSecondary = TextStyle(
-                    fontSize = 12.sp,
-                    textAlign = TextAlign.Start
-                )
-                val context = LocalContext.current
-                val navigator = LocalPageNavigator.current
                 for (artistCredit in artistCredits.asReversed()) {
-                    Text(
-                        "${artistCredit.joinphrase} ${artistCredit.name}",
-                        style = stylePrimary,
-                        modifier = Modifier
-                    )
-                    with(artistCredit.artist) {
-                        Text(
-                            "* $name ${type.bracketedIfAny()}",
-                            style = styleSecondary,
-                            modifier = Modifier
-                                .clickable {
-                                    jumpMusicbrainz(context, navigator, Target.Artist, id)
-                                }
-                        )
-                        if (area != null) {
-                            Text(
-                                "* ${area.name} ${country.orEmpty()}",
-                                style = styleSecondary,
-                                modifier = Modifier.padding(start = 8.dp)
-                            )
-                        }
-                    }
+                    MusicBrainzArtistCredit(artistCredit, Modifier.padding(vertical = 4.dp))
                 }
             }
         }
     }
 }
+
+@Composable
+fun MusicBrainzArtistCredit(artistCredit: MusicBrainzArtistCredit, modifier: Modifier = Modifier) {
+    Row(
+        modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            Target.Artist.icon(), null,
+            Modifier.weight(1f)
+        )
+        Column(
+            Modifier
+                .padding(horizontal = 8.dp)
+                .weight(7f),
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(
+                artistCredit.name,
+                Modifier,
+                fontSize = 14.sp,
+                textAlign = TextAlign.Start
+            )
+            Text(
+                artistCredit.artist.name,
+                Modifier,
+                fontSize = 10.sp,
+                textAlign = TextAlign.Start
+            )
+            Text(
+                artistCredit.artist.id,
+                fontSize = 8.sp,
+                fontWeight = FontWeight.Thin
+            )
+        }
+        LinkIconMusicbrainz(
+            Target.Artist, artistCredit.artist.id,
+            Modifier
+                .weight(1f)
+                .align(Alignment.CenterVertically)
+        )
+        LinkIconMusicbrainzWebsite(
+            Target.Artist, artistCredit.artist.id,
+            Modifier
+                .weight(1f)
+                .align(Alignment.CenterVertically)
+        )
+    }
+}
+
 
 @Composable
 private fun MusicBrainzMedias(medias: List<MusicBrainzMedia>?) {
