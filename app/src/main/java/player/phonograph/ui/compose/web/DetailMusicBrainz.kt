@@ -114,7 +114,15 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease) {
     MusicBrainzArtistCredits(release.artistCredit)
     if (release.releaseGroup != null) {
         CascadeVerticalItem("Release Group") {
-            EntityTitle(Target.ReleaseGroup, release.releaseGroup.id, release.releaseGroup.title)
+            LinkableItem(Target.ReleaseGroup, release.releaseGroup.id, Modifier.padding(vertical = 4.dp)) {
+                Text(
+                    release.releaseGroup.title,
+                    Modifier,
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Start
+                )
+                Text(release.releaseGroup.id, fontSize = 8.sp, fontWeight = FontWeight.Thin)
+            }
         }
     }
     Item(stringResource(R.string.year), release.date)
@@ -224,52 +232,24 @@ fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
 
 @Composable
 fun MusicBrainzArtistCredit(artistCredit: MusicBrainzArtistCredit, modifier: Modifier = Modifier) {
-    Row(
-        modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            Target.Artist.icon(), null,
-            Modifier.weight(1f)
+    LinkableItem(Target.Artist, artistCredit.artist?.id) {
+        Text(
+            artistCredit.name,
+            Modifier,
+            fontSize = 14.sp,
+            textAlign = TextAlign.Start
         )
-        Column(
-            Modifier
-                .padding(horizontal = 8.dp)
-                .weight(7f),
-            verticalArrangement = Arrangement.SpaceBetween,
-        ) {
+        if (artistCredit.artist != null) {
             Text(
-                artistCredit.name,
+                artistCredit.artist.name,
                 Modifier,
-                fontSize = 14.sp,
+                fontSize = 10.sp,
                 textAlign = TextAlign.Start
             )
-            if (artistCredit.artist != null) {
-                Text(
-                    artistCredit.artist.name,
-                    Modifier,
-                    fontSize = 10.sp,
-                    textAlign = TextAlign.Start
-                )
-                Text(
-                    artistCredit.artist.id,
-                    fontSize = 8.sp,
-                    fontWeight = FontWeight.Thin
-                )
-            }
-        }
-        if (artistCredit.artist != null) {
-            LinkIconMusicbrainz(
-                Target.Artist, artistCredit.artist.id,
-                Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically)
-            )
-            LinkIconMusicbrainzWebsite(
-                Target.Artist, artistCredit.artist.id,
-                Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically)
+            Text(
+                artistCredit.artist.id,
+                fontSize = 8.sp,
+                fontWeight = FontWeight.Thin
             )
         }
     }
@@ -361,7 +341,38 @@ private fun MusicBrainzDisambiguation(string: String?) {
 }
 
 @Composable
-private fun EntityTitle(target: Target, mbid: String, title: String, modifier: Modifier = Modifier) {
+private fun EntityTitle(
+    target: Target,
+    mbid: String,
+    title: String,
+    modifier: Modifier = Modifier,
+    titleMode: Boolean = true,
+) {
+    LinkableItem(target, mbid) {
+        Text(
+            target.displayName,
+            Modifier,
+            fontSize = if (titleMode) 17.sp else 14.sp,
+            fontWeight = if (titleMode) FontWeight.Bold else FontWeight.Normal,
+            textAlign = TextAlign.Start
+        )
+        Text(
+            title,
+            Modifier,
+            fontSize = if (titleMode) 17.sp else 14.sp,
+            textAlign = TextAlign.Start
+        )
+        Text(mbid, fontSize = 8.sp, fontWeight = FontWeight.Thin)
+    }
+}
+
+@Composable
+private fun LinkableItem(
+    target: Target,
+    mbid: String?,
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit,
+) {
     Row(
         modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -376,31 +387,22 @@ private fun EntityTitle(target: Target, mbid: String, title: String, modifier: M
                 .weight(7f),
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text(
-                target.displayName,
-                Modifier,
-                fontSize = 17.sp, fontWeight = FontWeight.Bold
-            )
-            Text(
-                title,
-                Modifier,
-                fontSize = 17.sp,
-                textAlign = TextAlign.Start
-            )
-            Text(mbid, fontSize = 8.sp, fontWeight = FontWeight.Thin)
+            content()
         }
-        LinkIconMusicbrainz(
-            target, mbid,
-            Modifier
-                .weight(1f)
-                .align(Alignment.CenterVertically)
-        )
-        LinkIconMusicbrainzWebsite(
-            target, mbid,
-            Modifier
-                .weight(1f)
-                .align(Alignment.CenterVertically)
-        )
+        if (mbid != null) {
+            LinkIconMusicbrainz(
+                target, mbid,
+                Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically)
+            )
+            LinkIconMusicbrainzWebsite(
+                target, mbid,
+                Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically)
+            )
+        }
     }
 }
 
