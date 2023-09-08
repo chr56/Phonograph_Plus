@@ -7,16 +7,31 @@ package player.phonograph.ui.compose.tag
 import lib.phonograph.misc.CreateFileStorageAccessTool
 import lib.phonograph.misc.ICreateFileStorageAccess
 import mt.pref.ThemeColor
-import mt.util.color.darkenColor
 import player.phonograph.R
 import player.phonograph.mechanism.tag.loadSongInfo
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.SongLoader
-import player.phonograph.ui.compose.base.ComposeToolbarActivity
+import player.phonograph.ui.compose.base.ComposeThemeActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -28,7 +43,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class DetailActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
+class DetailActivity : ComposeThemeActivity(), ICreateFileStorageAccess {
 
     private lateinit var song: Song
     val model: DetailScreenViewModel
@@ -42,6 +57,39 @@ class DetailActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
         createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
         song = parseIntent(this, intent)
         super.onCreate(savedInstanceState)
+
+        setContent {
+            val highlightColor by primaryColor.collectAsState()
+            PhonographTheme(highlightColor) {
+                val scaffoldState = rememberScaffoldState()
+                Scaffold(
+                    Modifier.statusBarsPadding(),
+                    scaffoldState = scaffoldState,
+                    topBar = {
+                        TopAppBar(
+                            title = { Text(stringResource(R.string.label_details)) },
+                            navigationIcon = {
+                                Box(Modifier.padding(16.dp)) {
+                                    Icon(
+                                        Icons.Default.ArrowBack, null,
+                                        Modifier.clickable {
+                                            onBackPressedDispatcher.onBackPressed()
+                                        }
+                                    )
+                                }
+                            },
+                            backgroundColor = highlightColor
+                        )
+                    }
+                ) {
+                    Box(Modifier.padding(it)) {
+                        TagBrowserScreen(model)
+                    }
+                }
+
+            }
+
+        }
         setupObservers()
         model.loadAudioDetail(this)
     }
@@ -49,20 +97,13 @@ class DetailActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
     private fun setupObservers() {
         model.viewModelScope.launch {
             model.artwork.collect {
-                val newColor = it?.paletteColor ?: primaryColor
-                updateBarsColor(darkenColor(newColor))
+                val newColor = it?.paletteColor
+                if (newColor != null) {
+                    primaryColor.value = Color(newColor)
+                }
             }
         }
     }
-
-    @Composable
-    override fun SetUpContent() {
-        PhonographTheme {
-            TagBrowserScreen(model)
-        }
-    }
-
-    override val title: String get() = getString(R.string.label_details)
 
     companion object {
         private fun parseIntent(context: Context, intent: Intent): Song =

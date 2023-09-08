@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.compose.web
 
-import lib.phonograph.activity.ThemeActivity
+import player.phonograph.ui.compose.base.ComposeThemeActivity
 import player.phonograph.ui.compose.base.Navigator
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.parcelableExtra
@@ -13,6 +13,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -33,23 +34,25 @@ import player.phonograph.model.Album as PhonographAlbum
 import player.phonograph.model.Artist as PhonographArtist
 import player.phonograph.model.Song as PhonographSong
 
-class WebSearchActivity : ThemeActivity() {
+class WebSearchActivity : ComposeThemeActivity() {
 
     private val viewModel: WebSearchViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.useCustomStatusBar = false
         super.onCreate(savedInstanceState)
 
         checkCommand(this, intent)
 
         setContent {
-            PhonographTheme {
+
+            val highlightColor by primaryColor.collectAsState()
+            PhonographTheme(highlightColor) {
 
                 val scaffoldState = rememberScaffoldState()
                 val page by viewModel.navigator.currentPage.collectAsState()
 
                 Scaffold(
+                    Modifier.statusBarsPadding(),
                     scaffoldState = scaffoldState,
                     topBar = {
                         TopAppBar(

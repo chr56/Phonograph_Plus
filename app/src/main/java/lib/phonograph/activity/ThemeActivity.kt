@@ -84,7 +84,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
 
     private val listener = object : ThemeColor.ThemePreferenceChangeListener {
         override fun onAccentColorChanged(newColor: Int) {
-            primaryColor = newColor
+            accentColor = newColor
         }
 
         override fun onPrimaryColorChanged(newColor: Int) {

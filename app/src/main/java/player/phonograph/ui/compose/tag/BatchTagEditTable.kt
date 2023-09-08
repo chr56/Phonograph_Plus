@@ -55,7 +55,9 @@ import android.content.Context
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
-internal fun BatchTagEditTable(stateHolder: BatchTagEditTableState, context: Context) {
+internal fun BatchTagEditTable(stateHolder: BatchTagEditTableState) {
+
+    val context = LocalContext.current
     val titleColor = stateHolder.titleColor.collectAsState().value
 
     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
