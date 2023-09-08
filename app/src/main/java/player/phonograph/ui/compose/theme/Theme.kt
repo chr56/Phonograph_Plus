@@ -12,7 +12,7 @@ import player.phonograph.mechanism.setting.StyleConfig.THEME_AUTO
 import player.phonograph.mechanism.setting.StyleConfig.THEME_BLACK
 import player.phonograph.mechanism.setting.StyleConfig.THEME_DARK
 import player.phonograph.mechanism.setting.StyleConfig.THEME_LIGHT
-import player.phonograph.settings.Setting
+import player.phonograph.ui.compose.darker
 import player.phonograph.ui.compose.textColorOn
 import player.phonograph.util.theme.systemDarkmode
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,7 +42,49 @@ fun PhonographTheme(content: @Composable () -> Unit) {
         THEME_LIGHT -> colorsLight(previewMode)
         else        -> colorAuto(previewMode, LocalContext.current)
     }
+    PhonographTheme(colors) {
+        content()
+    }
+}
 
+
+@Composable
+fun PhonographTheme(primary: Color?, content: @Composable () -> Unit) {
+    val previewMode = LocalInspectionMode.current
+    val colors = when (StyleConfig.generalTheme(LocalContext.current)) {
+        THEME_AUTO  -> colorAuto(previewMode, LocalContext.current)
+        THEME_DARK  -> colorsDark(previewMode)
+        THEME_BLACK -> colorsBlack(previewMode)
+        THEME_LIGHT -> colorsLight(previewMode)
+        else        -> colorAuto(previewMode, LocalContext.current)
+    }.also { colors ->
+        if (primary != null) {
+            colors.copy(
+                primary = primary,
+                primaryVariant = primary.darker().darker(),
+                onPrimary = textColorOn(LocalContext.current, primary),
+            )
+        }
+    }
+
+    MaterialTheme(colors = colors) {
+        content()
+    }
+}
+
+@Composable
+private fun PhonographTheme(colors: Colors, content: @Composable () -> Unit) {
+    // val previewMode = LocalInspectionMode.current
+    // val view = LocalView.current
+    // if (!previewMode) {
+    //     SideEffect {
+    //         val window = (view.context as Activity).window
+    //         window.statusBarColor = colors.primary.toArgb()
+    //         window.navigationBarColor = colors.primary.toArgb()
+    //         WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
+    //         WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = false
+    //     }
+    // }
     MaterialTheme(
         colors = colors,
         typography = Typography,
@@ -50,7 +92,6 @@ fun PhonographTheme(content: @Composable () -> Unit) {
         content = content
     )
 }
-
 
 private fun colorAuto(previewMode: Boolean, context: Context) =
     if (systemDarkmode(context.resources)) {
