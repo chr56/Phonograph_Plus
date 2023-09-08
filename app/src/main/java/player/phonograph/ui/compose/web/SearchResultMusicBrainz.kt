@@ -37,7 +37,7 @@ fun MusicBrainzSearchResult(
     Box(
         modifier.fillMaxSize()
     ) {
-        if (result != null) {
+        if (result != null && result.count > 0) {
             when (result) {
                 is SearchResultReleasesGroup -> MusicBrainzSearchResultReleasesGroup(result) { onSelectItem(it) }
                 is SearchResultReleases      -> MusicBrainzSearchResultReleases(result) { onSelectItem(it) }
@@ -78,7 +78,7 @@ private fun MusicBrainzSearchResultReleasesGroup(
     val items = result.releasesGroup
     SearchResult(items) { releaseGroup ->
         val subtitle =
-            releaseGroup.artistCredit?.firstOrNull()?.name
+            releaseGroup.artistCredit.firstOrNull()?.name
                 ?: releaseGroup.disambiguation
                 ?: releaseGroup.firstReleaseDate
                 ?: releaseGroup.releases?.firstOrNull()?.title

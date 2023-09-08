@@ -231,14 +231,18 @@ data class MusicBrainzArtistCredit(
     val joinphrase: String = "",
 )
 
-sealed interface MusicBrainzSearchResult
+sealed interface MusicBrainzSearchResult {
+    val created: String
+    val count: Int
+    val offset: Int
+}
 
 @Keep
 @Serializable
 data class MusicBrainzSearchResultArtists(
-    val created: String,
-    val count: Int,
-    val offset: Int,
+    override val created: String,
+    override val count: Int,
+    override val offset: Int,
     val artists: List<MusicBrainzArtist>? = emptyList(),
 ) : MusicBrainzSearchResult
 
@@ -246,18 +250,18 @@ data class MusicBrainzSearchResultArtists(
 @Keep
 @Serializable
 data class MusicBrainzSearchResultReleases(
-    val created: String,
-    val count: Int,
-    val offset: Int,
+    override val created: String,
+    override val count: Int,
+    override val offset: Int,
     val releases: List<MusicBrainzRelease>? = emptyList(),
 ) : MusicBrainzSearchResult
 
 @Keep
 @Serializable
 data class MusicBrainzSearchResultReleasesGroup(
-    val created: String,
-    val count: Int,
-    val offset: Int,
+    override val created: String,
+    override val count: Int,
+    override val offset: Int,
     @SerialName("release-groups")
     val releasesGroup: List<MusicBrainzReleaseGroup>? = emptyList(),
 ) : MusicBrainzSearchResult
@@ -266,9 +270,9 @@ data class MusicBrainzSearchResultReleasesGroup(
 @Keep
 @Serializable
 data class MusicBrainzSearchResultRecording(
-    val created: String,
-    val count: Int,
-    val offset: Int,
+    override val created: String,
+    override val count: Int,
+    override val offset: Int,
     val recordings: List<MusicBrainzRecording>? = emptyList(),
 ) : MusicBrainzSearchResult
 
