@@ -10,21 +10,34 @@ import lib.phonograph.misc.ICreateFileStorageAccess
 import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenFileStorageAccessTool
 import mt.pref.ThemeColor.primaryColor
-import mt.util.color.darkenColor
 import player.phonograph.R
 import player.phonograph.mechanism.tag.edit.selectNewArtwork
 import player.phonograph.mechanism.tag.loadSongInfo
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.SongLoader
-import player.phonograph.ui.compose.base.ComposeToolbarActivity
+import player.phonograph.ui.compose.base.ComposeThemeActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.runtime.Composable
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -40,7 +53,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 
 class TagEditorActivity :
-        ComposeToolbarActivity(),
+        ComposeThemeActivity(),
         ICreateFileStorageAccess,
         IOpenFileStorageAccess {
 
@@ -58,6 +71,45 @@ class TagEditorActivity :
         createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
         openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
         super.onCreate(savedInstanceState)
+
+        setContent {
+            val highlightColor by primaryColor.collectAsState()
+            PhonographTheme(highlightColor) {
+                val scaffoldState = rememberScaffoldState()
+                Scaffold(
+                    Modifier.statusBarsPadding(),
+                    scaffoldState = scaffoldState,
+                    topBar = {
+                        TopAppBar(
+                            title = { Text(stringResource(R.string.action_tag_editor)) },
+                            navigationIcon = {
+                                Box(Modifier.padding(16.dp)) {
+                                    Icon(
+                                        Icons.Default.ArrowBack, null,
+                                        Modifier.clickable {
+                                            onBackPressedDispatcher.onBackPressed()
+                                        }
+                                    )
+                                }
+                            },
+                            actions = {
+                                IconButton(onClick = { model.saveConfirmationDialogState.show() }) {
+                                    Icon(painterResource(id = R.drawable.ic_save_white_24dp), null)
+                                }
+                            },
+                            backgroundColor = highlightColor
+                        )
+                    }
+                ) {
+                    Box(Modifier.padding(it)) {
+                        TagBrowserScreen(model)
+                    }
+                }
+
+            }
+
+        }
+
         setupObservers()
         model.loadAudioDetail(this)
     }
@@ -66,36 +118,15 @@ class TagEditorActivity :
     private fun setupObservers() {
         model.viewModelScope.launch {
             model.artwork.collect {
-                val newColor = it?.paletteColor ?: primaryColor
-                updateBarsColor(darkenColor(newColor))
+                val newColor = it?.paletteColor
+                if (newColor != null) {
+                    primaryColor.value = Color(newColor)
+                }
             }
         }
     }
 
-    @Composable
-    override fun SetUpContent() {
-        PhonographTheme {
-            TagBrowserScreen(model)
-        }
-    }
-
-    override val title: String get() = getString(R.string.action_tag_editor)
-
-    override val toolbarActions: @Composable RowScope.() -> Unit = {
-        IconButton(onClick = { model.saveConfirmationDialogState.show() }) {
-            Icon(painterResource(id = R.drawable.ic_save_white_24dp), null)
-        }
-    }
-
-    override val toolbarBackPressed: () -> Unit = {
-        back()
-    }
-
     override fun onBackPressed() {
-        back()
-    }
-
-    private fun back() {
         if (model.audioDetail.value?.hasEdited != true) {
             finish()
         } else {
