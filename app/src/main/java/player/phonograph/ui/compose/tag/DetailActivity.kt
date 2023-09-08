@@ -13,6 +13,7 @@ import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.ui.compose.base.ComposeThemeActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
+import player.phonograph.ui.dialogs.LastFmDialog
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.clickable
@@ -25,6 +26,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -69,14 +71,26 @@ class DetailActivity : ComposeThemeActivity(), ICreateFileStorageAccess {
                         TopAppBar(
                             title = { Text(stringResource(R.string.label_details)) },
                             navigationIcon = {
-                                Box(Modifier.padding(16.dp)) {
-                                    Icon(
-                                        Icons.Default.ArrowBack, null,
-                                        Modifier.clickable {
+                                Icon(
+                                    Icons.Default.ArrowBack, null,
+                                    Modifier
+                                        .clickable {
                                             onBackPressedDispatcher.onBackPressed()
                                         }
-                                    )
-                                }
+                                        .padding(16.dp)
+                                )
+                            },
+                            actions = {
+                                Icon(
+                                    Icons.Default.Info, null,
+                                    Modifier
+                                        .clickable {
+                                            LastFmDialog
+                                                .from(song)
+                                                .show(supportFragmentManager, "DETAIL")
+                                        }
+                                        .padding(16.dp)
+                                )
                             },
                             backgroundColor = highlightColor
                         )
