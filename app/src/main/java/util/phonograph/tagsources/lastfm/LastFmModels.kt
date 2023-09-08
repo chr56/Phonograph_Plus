@@ -23,17 +23,20 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.serializer
 
-@Keep
-@Serializable
-class LastFmAlbumResponse(val album: LastFmAlbum)
+sealed interface LastFmModel
+sealed interface LastFmModelResponse
 
 @Keep
 @Serializable
-class LastFmArtistResponse(val artist: LastFmArtist)
+class LastFmAlbumResponse(val album: LastFmAlbum) : LastFmModelResponse
 
 @Keep
 @Serializable
-class LastFmTrackResponse(val track: LastFmTrack)
+class LastFmArtistResponse(val artist: LastFmArtist) : LastFmModelResponse
+
+@Keep
+@Serializable
+class LastFmTrackResponse(val track: LastFmTrack) : LastFmModelResponse
 
 
 @Keep
@@ -107,7 +110,8 @@ data class Links(
 @Serializable
 @OptIn(ExperimentalSerializationApi::class)
 class LastFmAlbum(
-    @JsonNames("name", "title") /** `title` is used in [LastFmTrack] **/
+    @JsonNames("name", "title")
+    /** `title` is used in [LastFmTrack] **/
     val name: String,
     val artist: String? = null,
     val mbid: String? = null,
@@ -118,7 +122,7 @@ class LastFmAlbum(
     // val playcount: Long = 0,
     // val listeners: Long = 0,
     val tracks: Tracks? = null,
-) {
+) : LastFmModel {
     @Keep
     @Serializable(with = Tracks.Serializer::class)
     data class Tracks(
@@ -204,7 +208,7 @@ class LastFmArtist(
     // val streamable: String? = "",
     // val stats: Stats? = Stats(),
     val tags: Tags? = Tags(),
-) {
+) : LastFmModel {
     @Keep
     @Serializable
     data class Stats(
@@ -213,7 +217,6 @@ class LastFmArtist(
     )
 
 }
-
 @Keep
 @Serializable
 class LastFmTrack(
@@ -227,7 +230,7 @@ class LastFmTrack(
     val album: LastFmAlbum? = null,
     val wiki: LastFmWikiData? = null,
     val toptags: Tags? = Tags(),
-)
+) : LastFmModel
 
 /**
  * notices that this might be empty string instead of json object containing json array naming `tag`

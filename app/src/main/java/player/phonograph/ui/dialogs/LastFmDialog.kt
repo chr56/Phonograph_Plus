@@ -23,9 +23,7 @@ import retrofit2.Call
 import retrofit2.Response
 import util.phonograph.tagsources.lastfm.LastFMRestClient
 import util.phonograph.tagsources.lastfm.LastFMService
-import util.phonograph.tagsources.lastfm.LastFmAlbumResponse
-import util.phonograph.tagsources.lastfm.LastFmArtistResponse
-import util.phonograph.tagsources.lastfm.LastFmTrackResponse
+import util.phonograph.tagsources.lastfm.LastFmModel
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,6 +32,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -50,6 +49,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
+import util.phonograph.tagsources.lastfm.LastFmAlbum as LastFmAlbumModel
+import util.phonograph.tagsources.lastfm.LastFmArtist as LastFmArtistModel
+import util.phonograph.tagsources.lastfm.LastFmTrack as LastFmTrackModel
 
 class LastFmDialog : BridgeDialogFragment() {
 
@@ -112,6 +114,10 @@ class LastFmDialog : BridgeDialogFragment() {
                                 context, arguments.parcelable<Album>(EXTRA_DATA)
                             )
 
+                            TYPE_SONG   -> WebSearchActivity.launchIntent(
+                                context, arguments.parcelable<Song>(EXTRA_DATA)
+                            )
+
                             else        -> WebSearchActivity.launchIntent(context)
                         }
 
@@ -139,36 +145,12 @@ class LastFmDialog : BridgeDialogFragment() {
                         .padding(12.dp),
                     Alignment.Center
                 ) {
-                    when (viewModel.mode) {
-                        TYPE_ARTIST -> {
-                            val artistState = viewModel.artistResponse.collectAsState()
-                            val artist = artistState.value?.artist
-                            if (artist != null) {
-                                LastFmArtist(artist)
-                            } else {
-                                Text(stringResource(R.string.biography_unavailable))
-                            }
-                        }
-
-                        TYPE_ALBUM  -> {
-                            val albumState = viewModel.albumResponse.collectAsState()
-                            val album = albumState.value?.album
-                            if (album != null) {
-                                LastFmAlbum(album)
-                            } else {
-                                Text(stringResource(R.string.wiki_unavailable))
-                            }
-                        }
-
-                        TYPE_SONG  -> {
-                            val trackState = viewModel.trackResponse.collectAsState()
-                            val track = trackState.value?.track
-                            if (track != null) {
-                                LastFmTrack(track)
-                            } else {
-                                Text(stringResource(R.string.wiki_unavailable))
-                            }
-                        }
+                    val result by viewModel.response.collectAsState()
+                    when (val item = result) {
+                        is LastFmAlbumModel -> LastFmAlbum(item)
+                        is LastFmArtistModel -> LastFmArtist(item)
+                        is LastFmTrackModel -> LastFmTrack(item)
+                        null -> Text(stringResource(R.string.wiki_unavailable))
                     }
                 }
             }
@@ -181,25 +163,10 @@ class LastFmDialog : BridgeDialogFragment() {
 
         var mode: String? = null
 
-        var artist: Artist? = null
-            private set
-        var album: Album? = null
-            private set
-        var song: Song? = null
-            private set
-
-        private val _artistResponse: MutableStateFlow<LastFmArtistResponse?> = MutableStateFlow(null)
-        val artistResponse get() = _artistResponse.asStateFlow()
-
-        private val _albumResponse: MutableStateFlow<LastFmAlbumResponse?> = MutableStateFlow(null)
-        val albumResponse get() = _albumResponse.asStateFlow()
-
-        private val _trackResponse: MutableStateFlow<LastFmTrackResponse?> = MutableStateFlow(null)
-        val trackResponse get() = _trackResponse.asStateFlow()
-
+        private val _response: MutableStateFlow<LastFmModel?> = MutableStateFlow(null)
+        val response get() = _response.asStateFlow()
 
         fun loadArtist(context: Context, lastFMService: LastFMService, artist: Artist) {
-            this.artist = artist
             viewModelScope.launch(Dispatchers.IO) {
                 val response = execute(
                     listOf(
@@ -215,12 +182,11 @@ class LastFmDialog : BridgeDialogFragment() {
                         )
                     )
                 )
-                _artistResponse.update { response?.body() }
+                _response.update { response?.body()?.artist }
             }
         }
 
         fun loadAlbum(context: Context, lastFMService: LastFMService, album: Album) {
-            this.album = album
             viewModelScope.launch(Dispatchers.IO) {
                 val response = execute(
                     listOf(
@@ -236,13 +202,12 @@ class LastFmDialog : BridgeDialogFragment() {
                         )
                     )
                 )
-                _albumResponse.update { response?.body() }
+                _response.update { response?.body()?.album }
             }
         }
 
 
         fun loadSong(context: Context, lastFMService: LastFMService, song: Song) {
-            this.song = song
             viewModelScope.launch(Dispatchers.IO) {
                 val response = execute(
                     listOf(
@@ -258,7 +223,7 @@ class LastFmDialog : BridgeDialogFragment() {
                         )
                     )
                 )
-                _trackResponse.update { response?.body() }
+                _response.update { response?.body()?.track }
             }
         }
 
