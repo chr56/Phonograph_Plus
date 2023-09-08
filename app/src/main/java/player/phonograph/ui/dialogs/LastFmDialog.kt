@@ -10,10 +10,12 @@ import lib.phonograph.misc.emit
 import player.phonograph.R
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
+import player.phonograph.model.Song
 import player.phonograph.ui.compose.base.BridgeDialogFragment
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.ui.compose.web.LastFmAlbum
 import player.phonograph.ui.compose.web.LastFmArtist
+import player.phonograph.ui.compose.web.LastFmTrack
 import player.phonograph.ui.compose.web.WebSearchActivity
 import player.phonograph.util.parcelable
 import player.phonograph.util.warning
@@ -23,6 +25,7 @@ import util.phonograph.tagsources.lastfm.LastFMRestClient
 import util.phonograph.tagsources.lastfm.LastFMService
 import util.phonograph.tagsources.lastfm.LastFmAlbumResponse
 import util.phonograph.tagsources.lastfm.LastFmArtistResponse
+import util.phonograph.tagsources.lastfm.LastFmTrackResponse
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -72,6 +75,13 @@ class LastFmDialog : BridgeDialogFragment() {
                 val album = requireArguments().parcelable<Album>(EXTRA_DATA)
                 if (album != null) {
                     viewModel.loadAlbum(requireContext(), lastFMRestClient.apiService, album)
+                }
+            }
+
+            TYPE_SONG   -> {
+                val song = requireArguments().parcelable<Song>(EXTRA_DATA)
+                if (song != null) {
+                    viewModel.loadSong(requireContext(), lastFMRestClient.apiService, song)
                 }
             }
         }
@@ -149,6 +159,16 @@ class LastFmDialog : BridgeDialogFragment() {
                                 Text(stringResource(R.string.wiki_unavailable))
                             }
                         }
+
+                        TYPE_SONG  -> {
+                            val trackState = viewModel.trackResponse.collectAsState()
+                            val track = trackState.value?.track
+                            if (track != null) {
+                                LastFmTrack(track)
+                            } else {
+                                Text(stringResource(R.string.wiki_unavailable))
+                            }
+                        }
                     }
                 }
             }
@@ -165,12 +185,17 @@ class LastFmDialog : BridgeDialogFragment() {
             private set
         var album: Album? = null
             private set
+        var song: Song? = null
+            private set
 
         private val _artistResponse: MutableStateFlow<LastFmArtistResponse?> = MutableStateFlow(null)
         val artistResponse get() = _artistResponse.asStateFlow()
 
         private val _albumResponse: MutableStateFlow<LastFmAlbumResponse?> = MutableStateFlow(null)
         val albumResponse get() = _albumResponse.asStateFlow()
+
+        private val _trackResponse: MutableStateFlow<LastFmTrackResponse?> = MutableStateFlow(null)
+        val trackResponse get() = _trackResponse.asStateFlow()
 
 
         fun loadArtist(context: Context, lastFMService: LastFMService, artist: Artist) {
@@ -215,6 +240,28 @@ class LastFmDialog : BridgeDialogFragment() {
             }
         }
 
+
+        fun loadSong(context: Context, lastFMService: LastFMService, song: Song) {
+            this.song = song
+            viewModelScope.launch(Dispatchers.IO) {
+                val response = execute(
+                    listOf(
+                        lastFMService.getTrackInfo(
+                            name = song.title,
+                            artistName = song.artistName,
+                            language = Locale.getDefault().language,
+                        ),
+                        lastFMService.getTrackInfo(
+                            name = song.title,
+                            artistName = song.artistName,
+                            language = null,
+                        )
+                    )
+                )
+                _trackResponse.update { response?.body() }
+            }
+        }
+
         private suspend fun <T> execute(
             calls: List<Call<T?>>,
         ): Response<T?>? {
@@ -245,6 +292,7 @@ class LastFmDialog : BridgeDialogFragment() {
 
         private const val TYPE_ARTIST = "artist"
         private const val TYPE_ALBUM = "album"
+        private const val TYPE_SONG = "song"
 
         private const val EXTRA_DATA = "data"
 
@@ -259,6 +307,13 @@ class LastFmDialog : BridgeDialogFragment() {
             arguments = Bundle().apply {
                 putString(EXTRA_TYPE, TYPE_ALBUM)
                 putParcelable(EXTRA_DATA, album)
+            }
+        }
+
+        fun from(song: Song) = LastFmDialog().apply {
+            arguments = Bundle().apply {
+                putString(EXTRA_TYPE, TYPE_SONG)
+                putParcelable(EXTRA_DATA, song)
             }
         }
     }
