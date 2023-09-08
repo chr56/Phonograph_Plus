@@ -4,8 +4,10 @@
 
 package player.phonograph.ui.compose.web
 
+import lib.phonograph.misc.RestResult
 import lib.phonograph.misc.emit
 import player.phonograph.util.reportError
+import player.phonograph.util.warning
 import retrofit2.Call
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,14 +21,15 @@ sealed class Query<P : Query.Parameter, A : Query.Action>(viewModel: ViewModel, 
     abstract fun updateQueryParameter(update: (P) -> P)
     abstract fun query(context: Context, action: A): Deferred<*>
 
-    protected suspend fun <T> Call<T?>.tryExecute(): T? {
-        val result = emit<T>()
-        return if (result.isSuccess) {
-            result.getOrNull()?.body()
-        } else {
-            reportError(result.exceptionOrNull() ?: Exception(), TAG, ERR_MSG)
-            null
+    protected suspend fun <T> Call<RestResult<T>?>.tryExecute(): T? {
+        // todo
+        when (val result = emit<T>()) {
+            is RestResult.ParseError   -> reportError(result.exception, TAG, "Parse error!")
+            is RestResult.NetworkError -> reportError(result.exception, TAG, "Network error!")
+            is RestResult.RemoteError  -> warning(TAG, result.message)
+            is RestResult.Success      -> return result.data
         }
+        return null
     }
 
     interface Action
@@ -34,7 +37,6 @@ sealed class Query<P : Query.Parameter, A : Query.Action>(viewModel: ViewModel, 
 
     companion object {
         private const val TAG = "WebSearch"
-        private const val ERR_MSG = "Failed to query!\n"
     }
 
     protected val viewModelScope = viewModel.viewModelScope

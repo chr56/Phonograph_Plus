@@ -7,6 +7,7 @@ package player.phonograph.ui.dialogs
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import lib.phonograph.misc.RestResult
 import lib.phonograph.misc.emit
 import player.phonograph.R
 import player.phonograph.model.Album
@@ -19,9 +20,9 @@ import player.phonograph.ui.compose.web.LastFmArtist
 import player.phonograph.ui.compose.web.LastFmTrack
 import player.phonograph.ui.compose.web.WebSearchActivity
 import player.phonograph.util.parcelable
+import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import retrofit2.Call
-import retrofit2.Response
 import util.phonograph.tagsources.lastfm.LastFMRestClient
 import util.phonograph.tagsources.lastfm.LastFMService
 import util.phonograph.tagsources.lastfm.LastFmModel
@@ -133,10 +134,10 @@ class LastFmDialog : BridgeDialogFragment() {
                 ) {
                     val result by viewModel.response.collectAsState()
                     when (val item = result) {
-                        is LastFmAlbumModel -> LastFmAlbum(item)
+                        is LastFmAlbumModel  -> LastFmAlbum(item)
                         is LastFmArtistModel -> LastFmArtist(item)
-                        is LastFmTrackModel -> LastFmTrack(item)
-                        null -> Text(stringResource(R.string.wiki_unavailable))
+                        is LastFmTrackModel  -> LastFmTrack(item)
+                        null                 -> Text(stringResource(R.string.wiki_unavailable))
                     }
                 }
             }
@@ -171,7 +172,7 @@ class LastFmDialog : BridgeDialogFragment() {
                         )
                     )
                 )
-                _response.update { response?.body()?.artist }
+                _response.update { response?.artist }
             }
         }
 
@@ -191,7 +192,7 @@ class LastFmDialog : BridgeDialogFragment() {
                         )
                     )
                 )
-                _response.update { response?.body()?.album }
+                _response.update { response?.album }
             }
         }
 
@@ -212,27 +213,25 @@ class LastFmDialog : BridgeDialogFragment() {
                         )
                     )
                 )
-                _response.update { response?.body()?.track }
+                _response.update { response?.track }
             }
         }
 
         private suspend fun <T> execute(
-            calls: List<Call<T?>>,
-        ): Response<T?>? {
-            var latestError: Throwable? = null
+            calls: List<Call<RestResult<T>?>>,
+        ): T? {
+            var errorMessage: String? = null
             for (call in calls) {
-                val result = call.emit<T>()
-                if (result.isSuccess) {
-                    return result.getOrNull()
-                } else {
-                    latestError = result.exceptionOrNull()
+                when (val result = call.emit<T>()) {
+                    is RestResult.Success      -> return result.data
+                    is RestResult.RemoteError  -> errorMessage = result.message
+                    is RestResult.ParseError   -> reportError(result.exception, TAG, "Parse error!")
+                    is RestResult.NetworkError -> reportError(result.exception, TAG, "Network error!")
                 }
             }
-            if (latestError != null)
-                warning(
-                    TAG,
-                    "${latestError.javaClass.simpleName}: ${latestError.message}\n${latestError.stackTraceToString()}"
-                )
+            if (errorMessage != null) {
+                warning(TAG, errorMessage)
+            }
             return null
         }
 

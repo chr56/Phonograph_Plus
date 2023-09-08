@@ -29,3 +29,26 @@ suspend fun <T> Call<T?>.emit(): Result<Response<T?>> =
             }
         })
     }
+
+@JvmName("emit_rest_result")
+@OptIn(ExperimentalCoroutinesApi::class)
+@Throws(IOException::class)
+suspend fun <T> Call<RestResult<T>?>.emit(): RestResult<T> =
+    suspendCancellableCoroutine { continuation ->
+        enqueue(object : Callback<RestResult<T>?> {
+
+            override fun onResponse(call: Call<RestResult<T>?>, response: Response<RestResult<T>?>) {
+                continuation.resume(
+                    response.body() ?: RestResult.RemoteError(response.errorBody()?.string().orEmpty())
+                ) {}
+            }
+
+            override fun onFailure(call: Call<RestResult<T>?>, t: Throwable) {
+                if (continuation.isCancelled) {
+                    continuation.cancel()
+                } else {
+                    continuation.resume(RestResult.NetworkError(t)) { }
+                }
+            }
+        })
+    }

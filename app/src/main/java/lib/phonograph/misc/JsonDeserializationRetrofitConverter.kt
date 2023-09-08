@@ -10,16 +10,35 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Converter
 import retrofit2.Retrofit
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.MissingFieldException
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.serializer
+import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
+
+
+sealed class RestResult<T>(val isSuccess: Boolean) {
+
+    fun dataOrNull() = (this as? Success)?.data
+    fun messageOrNull() = (this as? RemoteError)?.message
+    fun exceptionOrNull() = (this as? ParseError)?.exception
+
+    class Success<T>(val data: T) : RestResult<T>(true)
+    class RemoteError<T>(val message: String) : RestResult<T>(false)
+    class ParseError<T>(val exception: Throwable) : RestResult<T>(false)
+    class NetworkError<T>(val exception: Throwable) : RestResult<T>(false)
+}
 
 class JsonDeserializationRetrofitConverter<T : Any>(
     private val serializer: JsonSerializerDelegate<T>,
-) : Converter<ResponseBody, T> {
+) : Converter<ResponseBody, RestResult<T>> {
 
-    override fun convert(value: ResponseBody): T = serializer.fromResponseBody(value)
+    override fun convert(value: ResponseBody): RestResult<T> = serializer.fromResponseBody(value)
 
     class Factory : Converter.Factory() {
         override fun responseBodyConverter(
@@ -27,7 +46,8 @@ class JsonDeserializationRetrofitConverter<T : Any>(
             annotations: Array<out Annotation>,
             retrofit: Retrofit,
         ): Converter<ResponseBody, *> {
-            return JsonDeserializationRetrofitConverter(JsonSerializerDelegate(type, _json))
+            val wrappedType = (type as ParameterizedType).actualTypeArguments[0]
+            return JsonDeserializationRetrofitConverter(JsonSerializerDelegate(wrappedType, _json))
         }
 
         companion object {
@@ -43,9 +63,24 @@ class JsonDeserializationRetrofitConverter<T : Any>(
 
         private val serializer: KSerializer<T> = _json.serializersModule.serializer(type) as KSerializer<T>
 
-        fun fromResponseBody(body: ResponseBody): T {
+        @OptIn(ExperimentalSerializationApi::class)
+        fun fromResponseBody(body: ResponseBody): RestResult<T> {
             val jsonString = body.string()
-            return _json.decodeFromString(serializer, jsonString)
+            var jsonElement: JsonElement? = null
+            return try {
+                jsonElement = _json.parseToJsonElement(jsonString)
+                RestResult.Success(_json.decodeFromJsonElement(serializer, jsonElement))
+            } catch (e: MissingFieldException) {
+                // may return empty or error
+                val jsonObject = jsonElement as? JsonObject
+                val message = jsonObject?.get("message")
+                if (message != null)
+                    RestResult.RemoteError(message.toString())
+                else
+                    RestResult.ParseError(e)
+            } catch (e: SerializationException) {
+                RestResult.ParseError(e)
+            }
         }
 
         fun toRequestBody(contentType: MediaType, value: T): RequestBody {

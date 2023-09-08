@@ -4,6 +4,7 @@
 
 package util.phonograph.tagsources.musicbrainz
 
+import lib.phonograph.misc.RestResult
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -25,25 +26,25 @@ interface MusicBrainzService {
     fun getArtist(
         @Path("mbid") mbid: String,
         @Query("inc") inc: String = "releases+release-groups+tags",
-    ): Call<MusicBrainzArtist?>
+    ): Call<RestResult<MusicBrainzArtist>?>
 
     @GET("${Entity.RELEASE}/{mbid}?fmt=json")
     fun getRelease(
         @Path("mbid") mbid: String,
         @Query("inc") inc: String = "artists+release-groups+recordings+labels+genres+tags",
-    ): Call<MusicBrainzRelease?>
+    ): Call<RestResult<MusicBrainzRelease>?>
 
     @GET("${Entity.RELEASE_GROUP}/{mbid}?fmt=json")
     fun getReleaseGroup(
         @Path("mbid") mbid: String,
         @Query("inc") inc: String = "artists+releases+genres+tags",
-    ): Call<MusicBrainzReleaseGroup?>
+    ): Call<RestResult<MusicBrainzReleaseGroup>?>
 
     @GET("${Entity.RECORDING}/{mbid}?fmt=json")
     fun getRecording(
         @Path("mbid") mbid: String,
         @Query("inc") inc: String = "artists+releases+genres+tags",
-    ): Call<MusicBrainzRecording?>
+    ): Call<RestResult<MusicBrainzRecording>?>
 
     //endregion
 
@@ -54,25 +55,25 @@ interface MusicBrainzService {
     fun searchArtist(
         @Query("query") query: String,
         @Query("offset") offset: Int,
-    ): Call<MusicBrainzSearchResultArtists?>
+    ): Call<RestResult<MusicBrainzSearchResultArtists>?>
 
     @GET("${Entity.RELEASE}?fmt=json&limit=60")
     fun searchRelease(
         @Query("query") query: String,
         @Query("offset") offset: Int,
-    ): Call<MusicBrainzSearchResultReleases?>
+    ): Call<RestResult<MusicBrainzSearchResultReleases>?>
 
     @GET("${Entity.RELEASE_GROUP}?fmt=json&limit=60")
     fun searchReleaseGroup(
         @Query("query") query: String,
         @Query("offset") offset: Int,
-    ): Call<MusicBrainzSearchResultReleasesGroup?>
+    ): Call<RestResult<MusicBrainzSearchResultReleasesGroup>?>
 
     @GET("${Entity.RECORDING}?fmt=json&limit=60")
     fun searchRecording(
         @Query("query") query: String,
         @Query("offset") offset: Int,
-    ): Call<MusicBrainzSearchResultRecording?>
+    ): Call<RestResult<MusicBrainzSearchResultRecording>?>
 
     //endregion
 
