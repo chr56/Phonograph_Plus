@@ -12,9 +12,9 @@ import player.phonograph.ui.compose.web.MusicBrainzQuery.QueryAction.ViewRelease
 import player.phonograph.ui.compose.web.MusicBrainzQuery.QueryAction.ViewReleaseGroup
 import player.phonograph.ui.compose.web.MusicBrainzQuery.Target
 import player.phonograph.ui.compose.web.WebSearchActivity.Companion.launchIntent
-import player.phonograph.ui.compose.web.WebSearchActivity.Companion.launchIntentMusicBrainzArtist
-import player.phonograph.ui.compose.web.WebSearchActivity.Companion.launchIntentMusicBrainzRecording
-import player.phonograph.ui.compose.web.WebSearchActivity.Companion.launchIntentMusicBrainzRelease
+import player.phonograph.ui.compose.web.WebSearchActivity.Companion.viewIntentMusicBrainzArtist
+import player.phonograph.ui.compose.web.WebSearchActivity.Companion.viewIntentMusicBrainzRecording
+import player.phonograph.ui.compose.web.WebSearchActivity.Companion.viewIntentMusicBrainzRelease
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -108,9 +108,9 @@ fun jumpMusicbrainz(context: Context, navigator: Navigator<Page>?, type: Target,
     } else {
         context.startActivity(
             when (type) {
-                Target.Artist -> launchIntentMusicBrainzArtist(context, mbid)
-                Target.Recording -> launchIntentMusicBrainzRecording(context, mbid)
-                Target.Release -> launchIntentMusicBrainzRelease(context, mbid)
+                Target.Artist -> viewIntentMusicBrainzArtist(context, mbid)
+                Target.Recording -> viewIntentMusicBrainzRecording(context, mbid)
+                Target.Release -> viewIntentMusicBrainzRelease(context, mbid)
                 else -> launchIntent(context)
             }
         )

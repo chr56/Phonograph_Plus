@@ -29,6 +29,8 @@ import kotlinx.coroutines.flow.update
 class MusicBrainzQuery(
     context: Context,
     viewModel: WebSearchViewModel,
+    target: Target,
+    query: String,
 ) : Query<MusicBrainzQuery.QueryParameter, MusicBrainzQuery.QueryAction>(viewModel, "Musicbrainz") {
 
     @Keep
@@ -42,7 +44,7 @@ class MusicBrainzQuery(
         fun link(mbid: String): String = "https://musicbrainz.org/${urlName}/$mbid"
     }
 
-    private val _queryParameter: MutableStateFlow<QueryParameter> = MutableStateFlow(QueryParameter(Target.Release, ""))
+    private val _queryParameter: MutableStateFlow<QueryParameter> = MutableStateFlow(QueryParameter(target, query))
     override val queryParameter = _queryParameter.asStateFlow()
     override fun updateQueryParameter(update: (QueryParameter) -> QueryParameter) {
         _queryParameter.update(update)

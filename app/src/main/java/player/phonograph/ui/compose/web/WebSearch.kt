@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 fun Home(viewModel: WebSearchViewModel, pageState: Page) {
     val context = LocalContext.current
     Column(Modifier.fillMaxSize()) {
-        HomeItem(LastFmSearch(viewModel.queryFactory.lastFm(context)))
+        HomeItem(LastFmSearch(viewModel.queryFactory.lastFmQuery(context)))
         HomeItem(MusicBrainzSearch(viewModel.queryFactory.musicBrainzQuery(context)))
     }
 }
@@ -94,7 +94,7 @@ fun ColumnScope.Drawer(viewModel: WebSearchViewModel) {
         }
         Column(Modifier.weight(4f)) {
             val context = LocalContext.current
-            Switcher(navigator, LastFmSearch(viewModel.queryFactory.lastFm(context)))
+            Switcher(navigator, LastFmSearch(viewModel.queryFactory.lastFmQuery(context)))
             Switcher(navigator, MusicBrainzSearch(viewModel.queryFactory.musicBrainzQuery(context)))
             Switcher(navigator, Page.Home)
         }

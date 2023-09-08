@@ -106,16 +106,16 @@ class LastFmDialog : BridgeDialogFragment() {
                         val arguments = requireArguments()
 
                         val launchIntent: Intent = when (viewModel.mode) {
-                            TYPE_ARTIST -> WebSearchActivity.launchIntent(
-                                context, arguments.parcelable<Artist>(EXTRA_DATA)
+                            TYPE_ARTIST -> WebSearchActivity.searchLastFmArtist(
+                                context, arguments.parcelable(EXTRA_DATA)
                             )
 
-                            TYPE_ALBUM  -> WebSearchActivity.launchIntent(
-                                context, arguments.parcelable<Album>(EXTRA_DATA)
+                            TYPE_ALBUM  -> WebSearchActivity.searchLastFmAlbum(
+                                context, arguments.parcelable(EXTRA_DATA)
                             )
 
-                            TYPE_SONG   -> WebSearchActivity.launchIntent(
-                                context, arguments.parcelable<Song>(EXTRA_DATA)
+                            TYPE_SONG   -> WebSearchActivity.searchLastFmSong(
+                                context, arguments.parcelable(EXTRA_DATA)
                             )
 
                             else        -> WebSearchActivity.launchIntent(context)

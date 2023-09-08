@@ -17,18 +17,19 @@ class WebSearchViewModel : ViewModel() {
 
     val queryFactory = QueryFactory()
 
+    @Suppress("DeferredResultUnused")
     inner class QueryFactory {
 
-        fun lastFm(context: Context): LastFmQuery = LastFmQuery(context, this@WebSearchViewModel)
+        fun lastFmQuery(context: Context): LastFmQuery = LastFmQuery(context, this@WebSearchViewModel)
 
-        fun from(context: Context, artist: Artist): LastFmQuery =
+        fun lastFmQuery(context: Context, artist: Artist): LastFmQuery =
             LastFmQuery(
                 context, this@WebSearchViewModel,
                 artistQuery = artist.name,
                 target = LastFmQuery.Target.Artist
             )
 
-        fun from(context: Context, album: Album): LastFmQuery =
+        fun lastFmQuery(context: Context, album: Album): LastFmQuery =
             LastFmQuery(
                 context, this@WebSearchViewModel,
                 releaseQuery = album.title,
@@ -36,7 +37,7 @@ class WebSearchViewModel : ViewModel() {
                 target = LastFmQuery.Target.Release
             )
 
-        fun from(context: Context, song: Song): LastFmQuery =
+        fun lastFmQuery(context: Context, song: Song): LastFmQuery =
             LastFmQuery(
                 context, this@WebSearchViewModel,
                 releaseQuery = song.albumName,
@@ -45,19 +46,31 @@ class WebSearchViewModel : ViewModel() {
                 target = LastFmQuery.Target.Track
             )
 
+
         fun musicBrainzQuery(context: Context): MusicBrainzQuery =
-            MusicBrainzQuery(context, this@WebSearchViewModel)
+            MusicBrainzQuery(context, this@WebSearchViewModel, MusicBrainzQuery.Target.Release, "")
 
-        fun musicBrainzQueryReleaseGroup(context: Context, mbid: String): MusicBrainzQuery =
-            musicBrainzQuery(context).also { it.query(context, MusicBrainzQuery.QueryAction.ViewReleaseGroup(mbid)) }
+        fun musicBrainzQuery(context: Context, target: MusicBrainzQuery.Target, query: String): MusicBrainzQuery =
+            MusicBrainzQuery(context, this@WebSearchViewModel, target, query)
 
-        fun musicBrainzQueryRelease(context: Context, mbid: String): MusicBrainzQuery =
-            musicBrainzQuery(context).also { it.query(context, MusicBrainzQuery.QueryAction.ViewRelease(mbid)) }
+        fun musicBrainzView(context: Context, target: MusicBrainzQuery.Target, mbid: String): MusicBrainzQuery =
+            musicBrainzQuery(context).also {
+                it.query(
+                    context,
+                    when (target) {
+                        MusicBrainzQuery.Target.ReleaseGroup ->
+                            MusicBrainzQuery.QueryAction.ViewReleaseGroup(mbid)
 
-        fun musicBrainzQueryArtist(context: Context, mbid: String): MusicBrainzQuery =
-            musicBrainzQuery(context).also { it.query(context, MusicBrainzQuery.QueryAction.ViewArtist(mbid)) }
+                        MusicBrainzQuery.Target.Release      ->
+                            MusicBrainzQuery.QueryAction.ViewRelease(mbid)
 
-        fun musicBrainzQueryRecording(context: Context, mbid: String): MusicBrainzQuery =
-            musicBrainzQuery(context).also { it.query(context, MusicBrainzQuery.QueryAction.ViewRecording(mbid)) }
+                        MusicBrainzQuery.Target.Artist       ->
+                            MusicBrainzQuery.QueryAction.ViewArtist(mbid)
+
+                        MusicBrainzQuery.Target.Recording    ->
+                            MusicBrainzQuery.QueryAction.ViewRecording(mbid)
+                    }
+                )
+            }
     }
 }
