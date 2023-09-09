@@ -12,6 +12,7 @@ import player.phonograph.ui.compose.web.WebSearchActionConst.LASTFM_SEARCH_TRACK
 import player.phonograph.ui.compose.web.WebSearchActionConst.MUSICBRAINZ_SEARCH
 import player.phonograph.ui.compose.web.WebSearchActionConst.MUSICBRAINZ_VIEW
 import player.phonograph.util.parcelableExtra
+import util.phonograph.tagsources.musicbrainz.MusicBrainzModel
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material.rememberScaffoldState
@@ -66,7 +67,7 @@ class WebSearchActivity : ComposeThemeActivity() {
                     val clientDelegate = viewModel.clientDelegateMusicBrainz(context)
                     viewModel.viewModelScope.launch {
                         val result = clientDelegate.request(context, action).await()
-                        val page = PageDetail.MusicBrainzDetail(result ?: Any())
+                        val page = PageDetail.MusicBrainzDetail(result as? MusicBrainzModel)
                         viewModel.navigator.navigateTo(page)
                     }
                 }

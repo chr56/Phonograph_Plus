@@ -11,6 +11,7 @@ import player.phonograph.ui.compose.web.WebSearchActivity.Companion.launchIntent
 import player.phonograph.ui.compose.web.WebSearchActivity.Companion.viewIntentMusicBrainzArtist
 import player.phonograph.ui.compose.web.WebSearchActivity.Companion.viewIntentMusicBrainzRecording
 import player.phonograph.ui.compose.web.WebSearchActivity.Companion.viewIntentMusicBrainzRelease
+import util.phonograph.tagsources.musicbrainz.MusicBrainzModel
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
@@ -75,9 +76,7 @@ fun jumpMusicbrainz(context: Context, navigator: Navigator<Page>?, type: Target,
         context.lifecycleScope.launch {
             val clientDelegate: MusicBrainzClientDelegate = context.viewModel.clientDelegateMusicBrainz(context)
             val result = clientDelegate.request(context, MusicBrainzAction.View(type, mbid))
-            val page = PageDetail.MusicBrainzDetail(
-                result.await() ?: Any()
-            )
+            val page = PageDetail.MusicBrainzDetail(result.await() as? MusicBrainzModel)
             navigator.navigateTo(page)
         }
     } else {
