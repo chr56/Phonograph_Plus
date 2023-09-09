@@ -18,7 +18,7 @@ import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.ui.compose.web.LastFmAlbum
 import player.phonograph.ui.compose.web.LastFmArtist
 import player.phonograph.ui.compose.web.LastFmTrack
-import player.phonograph.ui.compose.web.WebSearchActivity
+import player.phonograph.ui.compose.web.WebSearchLauncher
 import player.phonograph.util.parcelable
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
@@ -268,17 +268,17 @@ class LastFmDialog : BridgeDialogFragment() {
         val context = requireContext()
         val intent = when (mode) {
             is Source.MusicBrainz -> when (viewModel.mode) {
-                TYPE_ARTIST -> WebSearchActivity.searchMusicBrainzArtist(context, viewModel.target as Artist)
-                TYPE_ALBUM  -> WebSearchActivity.searchMusicBrainzAlbum(context, viewModel.target as Album)
-                TYPE_SONG   -> WebSearchActivity.searchMusicBrainzSong(context, viewModel.target as Song)
-                else        -> WebSearchActivity.launchIntent(context)
+                TYPE_ARTIST -> WebSearchLauncher.searchMusicBrainzArtist(context, viewModel.target as Artist)
+                TYPE_ALBUM  -> WebSearchLauncher.searchMusicBrainzAlbum(context, viewModel.target as Album)
+                TYPE_SONG   -> WebSearchLauncher.searchMusicBrainzSong(context, viewModel.target as Song)
+                else        -> WebSearchLauncher.launchIntent(context)
             }
 
             is Source.LastFm      -> when (viewModel.mode) {
-                TYPE_ARTIST -> WebSearchActivity.searchLastFmArtist(context, viewModel.target as Artist)
-                TYPE_ALBUM  -> WebSearchActivity.searchLastFmAlbum(context, viewModel.target as Album)
-                TYPE_SONG   -> WebSearchActivity.searchLastFmSong(context, viewModel.target as Song)
-                else        -> WebSearchActivity.launchIntent(context)
+                TYPE_ARTIST -> WebSearchLauncher.searchLastFmArtist(context, viewModel.target as Artist)
+                TYPE_ALBUM  -> WebSearchLauncher.searchLastFmAlbum(context, viewModel.target as Album)
+                TYPE_SONG   -> WebSearchLauncher.searchLastFmSong(context, viewModel.target as Song)
+                else        -> WebSearchLauncher.launchIntent(context)
             }
         }
         context.startActivity(intent)
