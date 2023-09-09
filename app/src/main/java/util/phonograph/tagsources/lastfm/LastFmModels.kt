@@ -16,6 +16,7 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonDecoder
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonEncoder
 import kotlinx.serialization.json.JsonNames
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -74,7 +75,7 @@ class LastFmImage(
             }
 
             override fun serialize(encoder: Encoder, value: ImageSize) {
-                encoder as JsonDecoder
+                encoder as JsonEncoder
                 encoder.encodeSerializableValue(encoder.serializersModule.serializer(), JsonPrimitive(value.name))
             }
         }
@@ -182,7 +183,7 @@ class LastFmAlbum(
             }
 
             override fun serialize(encoder: Encoder, value: Tracks) {
-                encoder as JsonDecoder
+                encoder as JsonEncoder
                 val json = encoder.json
                 val tracks = value.track
                 if (tracks != null) {
@@ -272,7 +273,7 @@ data class Tags(
         }
 
         override fun serialize(encoder: Encoder, value: Tags) {
-            encoder as JsonDecoder
+            encoder as JsonEncoder
             val json = encoder.json
             val tags = value.tag
             val elements = tags.map { tag ->
