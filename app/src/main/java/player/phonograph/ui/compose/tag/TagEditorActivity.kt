@@ -17,12 +17,18 @@ import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.ui.compose.base.ComposeThemeActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
+import player.phonograph.ui.compose.web.IWebSearchRequester
+import player.phonograph.ui.compose.web.WebSearchLauncher
+import player.phonograph.ui.compose.web.WebSearchTool
+import util.phonograph.tagsources.Source
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -31,8 +37,12 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -46,6 +56,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -54,6 +65,7 @@ import kotlinx.coroutines.yield
 
 class TagEditorActivity :
         ComposeThemeActivity(),
+        IWebSearchRequester,
         ICreateFileStorageAccess,
         IOpenFileStorageAccess {
 
@@ -61,6 +73,8 @@ class TagEditorActivity :
         CreateFileStorageAccessTool()
     override val openFileStorageAccessTool: OpenFileStorageAccessTool =
         OpenFileStorageAccessTool()
+    override val webSearchTool: WebSearchTool =
+        WebSearchTool()
 
     private lateinit var song: Song
     private val model: TagEditorScreenViewModel
@@ -70,6 +84,7 @@ class TagEditorActivity :
         song = parseIntent(this, intent)
         createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
         openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
+        webSearchTool.register(lifecycle, activityResultRegistry)
         super.onCreate(savedInstanceState)
 
         setContent {
@@ -93,6 +108,7 @@ class TagEditorActivity :
                                 }
                             },
                             actions = {
+                                RequestWebSearch()
                                 IconButton(onClick = { model.saveConfirmationDialogState.show() }) {
                                     Icon(painterResource(id = R.drawable.ic_save_white_24dp), null)
                                 }
@@ -146,6 +162,34 @@ class TagEditorActivity :
                     putExtra(SONG_ID, songId)
                 }
             )
+        }
+    }
+
+    @Composable
+    private fun RequestWebSearch() {
+        var state by remember { mutableStateOf(false) }
+        IconButton(onClick = { state = !state }) {
+            Icon(painterResource(id = R.drawable.ic_search_white_24dp), null)
+        }
+        DropdownMenu(expanded = state, onDismissRequest = { state = false }) {
+            fun search(source: Source) {
+                val context = this@TagEditorActivity
+                val intent = when (source) {
+                    Source.LastFm -> WebSearchLauncher.searchLastFmSong(context, song)
+                    Source.MusicBrainz -> WebSearchLauncher.searchMusicBrainzSong(context, song)
+                }
+                webSearchTool.launch(intent) {
+                    Log.v("TagEditor", it.toString()) //todo
+                }
+            }
+            DropdownMenuItem(onClick = { search(Source.MusicBrainz) }
+            ) {
+                Text(Source.MusicBrainz.name, Modifier.padding(8.dp))
+            }
+            DropdownMenuItem(onClick = { search(Source.LastFm) }
+            ) {
+                Text(Source.LastFm.name, Modifier.padding(8.dp))
+            }
         }
     }
 }
