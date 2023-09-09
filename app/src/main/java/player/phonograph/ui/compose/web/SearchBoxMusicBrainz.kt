@@ -6,18 +6,16 @@ package player.phonograph.ui.compose.web
 
 import player.phonograph.ui.compose.web.MusicBrainzAction.Target
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 
 
 @Composable
 fun MusicBrainzSearchBox(
+    queryParameter: MusicbrainzQueryParameter,
+    updateQueryParameter: ((MusicbrainzQueryParameter) -> MusicbrainzQueryParameter) -> Unit,
     modifier: Modifier = Modifier,
-    musicBrainzQuery: MusicBrainzQuery,
     onSearch: (MusicBrainzAction.Search) -> Unit,
 ) {
-    val queryParameter by musicBrainzQuery.queryParameter.collectAsState()
     BaseSearchBox(
         modifier = modifier,
         title = "MusicBrainz",
@@ -27,7 +25,7 @@ fun MusicBrainzSearchBox(
                 text = { it.name },
                 current = queryParameter.target
             ) {
-                musicBrainzQuery.updateQueryParameter { old -> old.copy(target = it) }
+                updateQueryParameter { old -> old.copy(target = it) }
             }
         },
         onSearch = { onSearch(queryParameter.toAction()) }
@@ -37,9 +35,7 @@ fun MusicBrainzSearchBox(
                 queryParameter.query,
                 hint = "Lucene query syntax is supported!"
             ) {
-                musicBrainzQuery.updateQueryParameter { old ->
-                    old.copy(query = it)
-                }
+                updateQueryParameter { old -> old.copy(query = it) }
             }
         }
     }

@@ -113,8 +113,8 @@ fun ColumnScope.Drawer(viewModel: WebSearchViewModel) {
         }
         Column(Modifier.weight(4f)) {
             val context = LocalContext.current
-            Switcher(navigator, LastFmSearch(viewModel.queryFactory.lastFmQuery(context)))
-            Switcher(navigator, MusicBrainzSearch(viewModel.queryFactory.musicBrainzQuery(context)))
+            Switcher(navigator, LastFmSearch())
+            Switcher(navigator, MusicBrainzSearch())
             Switcher(navigator, PageHome)
         }
     }

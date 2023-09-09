@@ -23,8 +23,8 @@ object PageHome : Page(R.string.intro_label)
 fun Home(viewModel: WebSearchViewModel, pageState: Page) {
     val context = LocalContext.current
     Column(Modifier.fillMaxSize()) {
-        HomeItem(PageSearch.LastFmSearch(viewModel.queryFactory.lastFmQuery(context)))
-        HomeItem(PageSearch.MusicBrainzSearch(viewModel.queryFactory.musicBrainzQuery(context)))
+        HomeItem(PageSearch.LastFmSearch())
+        HomeItem(PageSearch.MusicBrainzSearch())
     }
 }
 
@@ -32,7 +32,7 @@ fun Home(viewModel: WebSearchViewModel, pageState: Page) {
 private fun HomeItem(page: PageSearch<*>) {
     val navigator = LocalPageNavigator.current
     Text(
-        page.source,
+        page.source.name,
         modifier = Modifier
             .padding(32.dp)
             .clickable {

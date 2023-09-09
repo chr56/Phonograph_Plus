@@ -5,7 +5,6 @@
 package player.phonograph.ui.compose.web
 
 import player.phonograph.ui.compose.base.ComposeThemeActivity
-import player.phonograph.ui.compose.base.Navigator
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.ui.compose.web.WebSearchActionConst.LASTFM_SEARCH_ALBUM
 import player.phonograph.ui.compose.web.WebSearchActionConst.LASTFM_SEARCH_ARTIST
@@ -57,58 +56,44 @@ class WebSearchActivity : ComposeThemeActivity() {
         when (intent.getStringExtra(EXTRA_ACTION_TYPE)) {
 
             MUSICBRAINZ_SEARCH   ->
-                intent.parcelableExtra<MusicBrainzAction.Search>(EXTRA_DATA)?.let { action ->
-                    val query = queryFactory.musicBrainzQuery(context, action.target, action.query)
-                    val page = PageSearch.MusicBrainzSearch(query)
+                intent.parcelableExtra<MusicBrainzAction.Search>(EXTRA_DATA)?.also { action ->
+                    val page = PageSearch.MusicBrainzSearch(action.target, action.query)
                     viewModel.navigator.navigateTo(page)
                 }
 
             MUSICBRAINZ_VIEW     ->
-                intent.parcelableExtra<MusicBrainzAction.View>(EXTRA_DATA)?.let { action ->
-                    val query = queryFactory.musicBrainzQuery(context, action.target, "")
+                intent.parcelableExtra<MusicBrainzAction.View>(EXTRA_DATA)?.also { action ->
+                    val clientDelegate = viewModel.clientDelegateMusicBrainz(context)
                     viewModel.viewModelScope.launch {
-                        val result = query.query(context, action).await()
+                        val result = clientDelegate.request(context, action).await()
                         val page = PageDetail.MusicBrainzDetail(result ?: Any())
                         viewModel.navigator.navigateTo(page)
                     }
                 }
 
-
             LASTFM_SEARCH_ARTIST ->
-                intent.parcelableExtra<LastFmAction.Search.SearchArtist>(EXTRA_DATA)
-                    ?.let { queryFactory.lastFmQuery(context, it) }
-                    .also {
-                        prefillLastFmSearch(viewModel.navigator, it)
-                    }
+                intent.parcelableExtra<LastFmAction.Search.SearchArtist>(EXTRA_DATA).also {
+                    val page = PageSearch.LastFmSearch(artistQuery = it?.name)
+                    viewModel.navigator.navigateTo(page)
+                }
 
             LASTFM_SEARCH_ALBUM  ->
-                intent.parcelableExtra<LastFmAction.Search.SearchAlbum>(EXTRA_DATA)
-                    ?.let { queryFactory.lastFmQuery(context, it) }
-                    .also {
-                        prefillLastFmSearch(viewModel.navigator, it)
-                    }
+                intent.parcelableExtra<LastFmAction.Search.SearchAlbum>(EXTRA_DATA).also {
+                    val page = PageSearch.LastFmSearch(albumQuery = it?.name)
+                    viewModel.navigator.navigateTo(page)
+                }
 
             LASTFM_SEARCH_TRACK  ->
-                intent.parcelableExtra<LastFmAction.Search.SearchTrack>(EXTRA_DATA)
-                    ?.let { queryFactory.lastFmQuery(context, it) }
-                    .also {
-                        prefillLastFmSearch(viewModel.navigator, it)
-                    }
+                intent.parcelableExtra<LastFmAction.Search.SearchTrack>(EXTRA_DATA).also {
+                    val page = PageSearch.LastFmSearch(trackQuery = it?.name, artistQuery = it?.artist)
+                    viewModel.navigator.navigateTo(page)
+                }
         }
     }
-
-    val queryFactory get() = viewModel.queryFactory
 
     companion object {
         const val EXTRA_ACTION_TYPE = "ACTION"
         const val EXTRA_DATA = "DATA"
-
-        private fun prefillLastFmSearch(navigator: Navigator<Page>, lastFmQuery: LastFmQuery?) {
-            if (lastFmQuery != null) {
-                val page = PageSearch.LastFmSearch(lastFmQuery)
-                navigator.navigateTo(page)
-            }
-        }
 
         private fun luceneQuery(song: PhonographSong): String = buildString {
             append(""""${song.title}"""")
