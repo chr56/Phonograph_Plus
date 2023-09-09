@@ -11,8 +11,8 @@ import player.phonograph.coil.lastfm.LastFmImageBundle
 import player.phonograph.ui.compose.components.ListItem
 import util.phonograph.tagsources.lastfm.AlbumResult
 import util.phonograph.tagsources.lastfm.ArtistResult
+import util.phonograph.tagsources.lastfm.LastFmAction
 import util.phonograph.tagsources.lastfm.LastFmImage
-import util.phonograph.tagsources.lastfm.LastFmSearchResultItem
 import util.phonograph.tagsources.lastfm.LastFmSearchResults
 import util.phonograph.tagsources.lastfm.TrackResult
 import androidx.compose.foundation.layout.Box
@@ -30,7 +30,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LastFmSearchResult(result: LastFmSearchResults?, onSelectItem: (LastFmSearchResultItem) -> Unit = {}, modifier: Modifier = Modifier) {
+fun LastFmSearchResult(
+    result: LastFmSearchResults?,
+    modifier: Modifier = Modifier,
+    onSelectItem: (LastFmAction.View) -> Unit = {},
+) {
     Box(
         modifier
             .fillMaxWidth()
@@ -39,9 +43,9 @@ fun LastFmSearchResult(result: LastFmSearchResults?, onSelectItem: (LastFmSearch
         if (result != null) {
             val total = result.totalResults.toLongOrNull()
             if (total != null && total > 0) {
-                AlbumResult(result.albums) { onSelectItem(it) }
-                ArtistResult(result.artists) { onSelectItem(it) }
-                TrackResult(result.tracks) { onSelectItem(it) }
+                AlbumResult(result.albums) { onSelectItem(LastFmAction.View.ViewAlbum(it)) }
+                ArtistResult(result.artists) { onSelectItem(LastFmAction.View.ViewArtist(it)) }
+                TrackResult(result.tracks) { onSelectItem(LastFmAction.View.ViewTrack(it)) }
             }
         } else {
             Text(

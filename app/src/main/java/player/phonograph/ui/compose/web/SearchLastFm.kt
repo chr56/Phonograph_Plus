@@ -4,16 +4,11 @@
 
 package player.phonograph.ui.compose.web
 
-import util.phonograph.tagsources.lastfm.AlbumResult
-import util.phonograph.tagsources.lastfm.ArtistResult
-import util.phonograph.tagsources.lastfm.LastFmAction.View
 import util.phonograph.tagsources.lastfm.LastFmAlbumResponse
 import util.phonograph.tagsources.lastfm.LastFmArtistResponse
-import util.phonograph.tagsources.lastfm.LastFmSearchResultItem
 import util.phonograph.tagsources.lastfm.LastFmSearchResultResponse
 import util.phonograph.tagsources.lastfm.LastFmSearchResults
 import util.phonograph.tagsources.lastfm.LastFmTrackResponse
-import util.phonograph.tagsources.lastfm.TrackResult
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
@@ -40,9 +35,9 @@ fun LastFmSearch(viewModel: WebSearchViewModel, page: PageSearch.LastFmSearch) {
             parameterState,
             page::updateQueryParameter,
             Modifier.wrapContentHeight()
-        ) {
+        ) { action ->
             val delegate = viewModel.clientDelegateLastFm(context)
-            val deferred = delegate.request(context, it)
+            val deferred = delegate.request(context, action)
             viewModel.viewModelScope.launch(Dispatchers.IO) {
                 when (val respond = deferred.await()) {
                     is LastFmSearchResultResponse -> searchResults = respond.results
@@ -51,13 +46,8 @@ fun LastFmSearch(viewModel: WebSearchViewModel, page: PageSearch.LastFmSearch) {
             }
         }
 
-        val onSelect: (LastFmSearchResultItem) -> Unit = { selected ->
+        LastFmSearchResult(searchResults, Modifier.align(Alignment.CenterHorizontally)) { action ->
             viewModel.viewModelScope.launch {
-                val action = when (selected) {
-                    is AlbumResult.Album   -> View.ViewAlbum(selected)
-                    is ArtistResult.Artist -> View.ViewArtist(selected)
-                    is TrackResult.Track   -> View.ViewTrack(selected)
-                }
                 val delegate = viewModel.clientDelegateLastFm(context)
                 val detailPage =
                     when (val response = delegate.request(context, action).await()) {
@@ -71,7 +61,6 @@ fun LastFmSearch(viewModel: WebSearchViewModel, page: PageSearch.LastFmSearch) {
                 }
             }
         }
-        LastFmSearchResult(searchResults, onSelect, Modifier.align(Alignment.CenterHorizontally))
 
     }
 }

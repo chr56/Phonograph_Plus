@@ -62,12 +62,12 @@ fun WebSearch(viewModel: WebSearchViewModel, scaffoldState: ScaffoldState, page:
                     .padding(it)
                     .fillMaxWidth()
             ) {
-                when (val p = page) {
+                when (page) {
                     PageHome -> Home(viewModel, page)
-                    is LastFmSearch -> LastFmSearch(viewModel, p)
-                    is MusicBrainzSearch -> MusicBrainzSearch(viewModel, p)
-                    is PageDetail.LastFmDetail -> DetailLastFm(viewModel, p)
-                    is PageDetail.MusicBrainzDetail -> DetailMusicBrainz(viewModel, p)
+                    is LastFmSearch -> LastFmSearch(viewModel, page)
+                    is MusicBrainzSearch -> MusicBrainzSearch(viewModel, page)
+                    is PageDetail.LastFmDetail -> DetailLastFm(viewModel, page)
+                    is PageDetail.MusicBrainzDetail -> DetailMusicBrainz(viewModel, page)
                 }
             }
         }
@@ -112,7 +112,6 @@ fun ColumnScope.Drawer(viewModel: WebSearchViewModel) {
             Pages(navigator, page)
         }
         Column(Modifier.weight(4f)) {
-            val context = LocalContext.current
             Switcher(navigator, LastFmSearch())
             Switcher(navigator, MusicBrainzSearch())
             Switcher(navigator, PageHome)

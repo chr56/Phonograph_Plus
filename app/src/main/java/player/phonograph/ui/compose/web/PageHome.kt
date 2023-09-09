@@ -14,14 +14,12 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
 object PageHome : Page(R.string.intro_label)
 
 @Composable
 fun Home(viewModel: WebSearchViewModel, pageState: Page) {
-    val context = LocalContext.current
     Column(Modifier.fillMaxSize()) {
         HomeItem(PageSearch.LastFmSearch())
         HomeItem(PageSearch.MusicBrainzSearch())

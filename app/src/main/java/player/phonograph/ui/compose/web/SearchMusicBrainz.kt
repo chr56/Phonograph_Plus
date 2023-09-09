@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.compose.web
 
-import util.phonograph.tagsources.musicbrainz.MusicBrainzAction
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtist
 import util.phonograph.tagsources.musicbrainz.MusicBrainzRecording
 import util.phonograph.tagsources.musicbrainz.MusicBrainzRelease
@@ -41,9 +40,9 @@ fun MusicBrainzSearch(viewModel: WebSearchViewModel, page: PageSearch.MusicBrain
         MusicBrainzSearchBox(
             parameterState, page::updateQueryParameter,
             Modifier.wrapContentHeight()
-        ) {
+        ) { action ->
             val delegate = viewModel.clientDelegateMusicBrainz(context)
-            val deferred = delegate.request(context, it)
+            val deferred = delegate.request(context, action)
             viewModel.viewModelScope.launch(Dispatchers.IO) {
                 when (val respond = deferred.await()) {
                     is MusicBrainzSearchResultArtists       -> searchResults = respond
@@ -55,7 +54,8 @@ fun MusicBrainzSearch(viewModel: WebSearchViewModel, page: PageSearch.MusicBrain
             }
         }
 
-        val onSelect: (MusicBrainzAction.View) -> Unit = { action ->
+
+        MusicBrainzSearchResult(searchResults, Modifier.align(Alignment.CenterHorizontally)) { action ->
             viewModel.viewModelScope.launch {
                 val delegate = viewModel.clientDelegateMusicBrainz(context)
                 val detailPage =
@@ -72,6 +72,5 @@ fun MusicBrainzSearch(viewModel: WebSearchViewModel, page: PageSearch.MusicBrain
                 }
             }
         }
-        MusicBrainzSearchResult(searchResults, Modifier.align(Alignment.CenterHorizontally), onSelect)
     }
 }
