@@ -25,12 +25,15 @@ class LastFmClientDelegate(
         return scope.async(Dispatchers.IO) {
             val api = musicBrainzRestClient.apiService
             when (action) {
-                is Search.SearchAlbum  -> api.searchAlbum(action.name, 1).process()
-                is Search.SearchArtist -> api.searchArtist(action.name, 1).process()
-                is Search.SearchTrack  -> api.searchTrack(action.name, action.artist, 1).process()
-                is View.ViewAlbum      -> api.getAlbumInfo(action.item.name, action.item.artist, null).process()
-                is View.ViewArtist     -> api.getArtistInfo(action.item.name, null, null).process()
-                is View.ViewTrack      -> api.getTrackInfo(action.item.name, action.item.artist, null).process()
+                is Search          -> when (action.target) {
+                    LastFmAction.Target.Artist -> api.searchArtist(action.artist, 1).process()
+                    LastFmAction.Target.Album  -> api.searchAlbum(action.album, 1).process()
+                    LastFmAction.Target.Track  -> api.searchTrack(action.track, action.artist, 1).process()
+                }
+
+                is View.ViewAlbum  -> api.getAlbumInfo(action.item.name, action.item.artist, null).process()
+                is View.ViewArtist -> api.getArtistInfo(action.item.name, null, null).process()
+                is View.ViewTrack  -> api.getTrackInfo(action.item.name, action.item.artist, null).process()
             }
         }
     }

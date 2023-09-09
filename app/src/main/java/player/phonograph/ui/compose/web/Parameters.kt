@@ -27,10 +27,6 @@ data class LastFmQueryParameter(
     }
 
     override fun toAction(): LastFmAction.Search {
-        return when (target) {
-            LastFmAction.Target.Artist -> LastFmAction.Search.SearchArtist(artistQuery.orEmpty())
-            LastFmAction.Target.Album  -> LastFmAction.Search.SearchAlbum(albumQuery.orEmpty())
-            LastFmAction.Target.Track  -> LastFmAction.Search.SearchTrack(trackQuery.orEmpty(), artistQuery.orEmpty())
-        }
+        return LastFmAction.Search(target, albumQuery.orEmpty(), artistQuery.orEmpty(), trackQuery.orEmpty())
     }
 }

@@ -6,9 +6,7 @@ package player.phonograph.ui.compose.web
 
 import player.phonograph.ui.compose.base.ComposeThemeActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
-import player.phonograph.ui.compose.web.WebSearchActionConst.LASTFM_SEARCH_ALBUM
-import player.phonograph.ui.compose.web.WebSearchActionConst.LASTFM_SEARCH_ARTIST
-import player.phonograph.ui.compose.web.WebSearchActionConst.LASTFM_SEARCH_TRACK
+import player.phonograph.ui.compose.web.WebSearchActionConst.LASTFM_SEARCH
 import player.phonograph.ui.compose.web.WebSearchActionConst.MUSICBRAINZ_SEARCH
 import player.phonograph.ui.compose.web.WebSearchActionConst.MUSICBRAINZ_VIEW
 import player.phonograph.util.parcelableExtra
@@ -56,13 +54,13 @@ class WebSearchActivity : ComposeThemeActivity() {
 
         when (intent.getStringExtra(EXTRA_ACTION_TYPE)) {
 
-            MUSICBRAINZ_SEARCH   ->
+            MUSICBRAINZ_SEARCH ->
                 intent.parcelableExtra<MusicBrainzAction.Search>(EXTRA_DATA)?.also { action ->
                     val page = PageSearch.MusicBrainzSearch(action.target, action.query)
                     viewModel.navigator.navigateTo(page)
                 }
 
-            MUSICBRAINZ_VIEW     ->
+            MUSICBRAINZ_VIEW   ->
                 intent.parcelableExtra<MusicBrainzAction.View>(EXTRA_DATA)?.also { action ->
                     val clientDelegate = viewModel.clientDelegateMusicBrainz(context)
                     viewModel.viewModelScope.launch {
@@ -72,21 +70,14 @@ class WebSearchActivity : ComposeThemeActivity() {
                     }
                 }
 
-            LASTFM_SEARCH_ARTIST ->
-                intent.parcelableExtra<LastFmAction.Search.SearchArtist>(EXTRA_DATA).also {
-                    val page = PageSearch.LastFmSearch(artistQuery = it?.name)
-                    viewModel.navigator.navigateTo(page)
-                }
-
-            LASTFM_SEARCH_ALBUM  ->
-                intent.parcelableExtra<LastFmAction.Search.SearchAlbum>(EXTRA_DATA).also {
-                    val page = PageSearch.LastFmSearch(albumQuery = it?.name)
-                    viewModel.navigator.navigateTo(page)
-                }
-
-            LASTFM_SEARCH_TRACK  ->
-                intent.parcelableExtra<LastFmAction.Search.SearchTrack>(EXTRA_DATA).also {
-                    val page = PageSearch.LastFmSearch(trackQuery = it?.name, artistQuery = it?.artist)
+            LASTFM_SEARCH      ->
+                intent.parcelableExtra<LastFmAction.Search>(EXTRA_ACTION_TYPE).also {
+                    val page = PageSearch.LastFmSearch(
+                        albumQuery = it?.album,
+                        artistQuery = it?.artist,
+                        trackQuery = it?.track,
+                        target = it?.target ?: LastFmAction.Target.Album
+                    )
                     viewModel.navigator.navigateTo(page)
                 }
         }
@@ -117,20 +108,41 @@ class WebSearchActivity : ComposeThemeActivity() {
 
         fun searchLastFmAlbum(context: Context, item: PhonographAlbum?): Intent =
             launchIntent(context).apply {
-                putExtra(EXTRA_ACTION_TYPE, LASTFM_SEARCH_ALBUM)
-                putExtra(EXTRA_DATA, LastFmAction.Search.SearchAlbum(item?.title.orEmpty()))
+                putExtra(EXTRA_ACTION_TYPE, LASTFM_SEARCH)
+                putExtra(
+                    EXTRA_DATA,
+                    LastFmAction.Search(
+                        LastFmAction.Target.Album,
+                        album = item?.title.orEmpty(),
+                        artist = item?.artistName.orEmpty()
+                    )
+                )
             }
 
         fun searchLastFmArtist(context: Context, item: PhonographArtist?): Intent =
             launchIntent(context).apply {
-                putExtra(EXTRA_ACTION_TYPE, LASTFM_SEARCH_ARTIST)
-                putExtra(EXTRA_DATA, LastFmAction.Search.SearchArtist(item?.name.orEmpty()))
+                putExtra(EXTRA_ACTION_TYPE, LASTFM_SEARCH)
+                putExtra(
+                    EXTRA_DATA,
+                    LastFmAction.Search(
+                        LastFmAction.Target.Artist,
+                        artist = item?.name.orEmpty()
+                    )
+                )
             }
 
         fun searchLastFmSong(context: Context, item: PhonographSong?): Intent =
             launchIntent(context).apply {
-                putExtra(EXTRA_ACTION_TYPE, LASTFM_SEARCH_TRACK)
-                putExtra(EXTRA_DATA, LastFmAction.Search.SearchArtist(item?.title.orEmpty()))
+                putExtra(EXTRA_ACTION_TYPE, LASTFM_SEARCH)
+                putExtra(
+                    EXTRA_DATA,
+                    LastFmAction.Search(
+                        LastFmAction.Target.Track,
+                        album = item?.albumName.orEmpty(),
+                        artist = item?.artistName.orEmpty(),
+                        track = item?.title.orEmpty()
+                    )
+                )
             }
 
         fun searchMusicBrainzAlbum(context: Context, item: PhonographAlbum?): Intent =

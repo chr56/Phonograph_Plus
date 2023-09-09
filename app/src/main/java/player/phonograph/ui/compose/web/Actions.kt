@@ -39,14 +39,13 @@ sealed interface LastFmAction : WebSearchAction {
         ;
     }
 
-    sealed interface Search : LastFmAction {
-        @Parcelize
-        data class SearchArtist(val name: String) : Search, Parcelable
-        @Parcelize
-        data class SearchAlbum(val name: String) : Search, Parcelable
-        @Parcelize
-        data class SearchTrack(val name: String, val artist: String?) : Search, Parcelable
-    }
+    @Parcelize
+    data class Search(
+        val target: Target,
+        val album: String = "",
+        val artist: String = "",
+        val track: String = "",
+    ) : LastFmAction, Parcelable
 
     sealed interface View : LastFmAction {
         data class ViewArtist(val item: ArtistResult.Artist) : View
@@ -65,9 +64,7 @@ sealed class Source(val name: String) {
 object WebSearchActionConst {
     const val MUSICBRAINZ_SEARCH = "musicbrainz_search"
     const val MUSICBRAINZ_VIEW = "musicbrainz_view"
-    const val LASTFM_SEARCH_ARTIST = "lastfm_search_artist"
-    const val LASTFM_SEARCH_ALBUM = "lastfm_search_album"
-    const val LASTFM_SEARCH_TRACK = "lastfm_search_track"
+    const val LASTFM_SEARCH = "lastfm_search"
     const val LASTFM_VIEW_ARTIST = "lastfm_view_artist"
     const val LASTFM_VIEW_ALBUM = "lastfm_view_album"
     const val LASTFM_VIEW_TRACK = "lastfm_view_track"
