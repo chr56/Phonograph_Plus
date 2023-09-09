@@ -5,6 +5,8 @@
 package player.phonograph.ui.compose.web
 
 import player.phonograph.ui.compose.base.Navigator
+import util.phonograph.tagsources.lastfm.LastFmClientDelegate
+import util.phonograph.tagsources.musicbrainz.MusicBrainzClientDelegate
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context

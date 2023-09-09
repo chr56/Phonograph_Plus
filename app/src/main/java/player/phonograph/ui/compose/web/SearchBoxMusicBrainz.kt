@@ -5,7 +5,9 @@
 package player.phonograph.ui.compose.web
 
 import player.phonograph.ui.compose.components.HorizontalTextItem
-import player.phonograph.ui.compose.web.MusicBrainzAction.Target
+import util.phonograph.tagsources.musicbrainz.MusicBrainzAction
+import util.phonograph.tagsources.musicbrainz.MusicBrainzAction.Target
+import util.phonograph.tagsources.musicbrainz.MusicbrainzQueryParameter
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 

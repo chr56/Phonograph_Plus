@@ -2,12 +2,11 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.ui.compose.web
+package util.phonograph.tagsources.lastfm
 
-import player.phonograph.ui.compose.web.LastFmAction.Search
-import player.phonograph.ui.compose.web.LastFmAction.View
-import util.phonograph.tagsources.lastfm.LastFMRestClient
-import util.phonograph.tagsources.lastfm.LastFmResponse
+import util.phonograph.tagsources.AbsClientDelegate
+import util.phonograph.tagsources.lastfm.LastFmAction.Search
+import util.phonograph.tagsources.lastfm.LastFmAction.View
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -17,7 +16,7 @@ import kotlinx.coroutines.async
 class LastFmClientDelegate(
     context: Context,
     val scope: CoroutineScope,
-) : ClientDelegate<LastFmAction, LastFmResponse>() {
+) : AbsClientDelegate<LastFmAction, LastFmResponse>() {
 
     private val musicBrainzRestClient: LastFMRestClient = LastFMRestClient(context)
 

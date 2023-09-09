@@ -2,11 +2,10 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.ui.compose.web
+package util.phonograph.tagsources.musicbrainz
 
-import player.phonograph.ui.compose.web.MusicBrainzAction.Target
-import util.phonograph.tagsources.musicbrainz.MusicBrainzResponse
-import util.phonograph.tagsources.musicbrainz.MusicBrainzRestClient
+import util.phonograph.tagsources.AbsClientDelegate
+import util.phonograph.tagsources.musicbrainz.MusicBrainzAction.Target
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -16,7 +15,7 @@ import kotlinx.coroutines.async
 class MusicBrainzClientDelegate(
     context: Context,
     val scope: CoroutineScope,
-) : ClientDelegate<MusicBrainzAction, MusicBrainzResponse>() {
+) : AbsClientDelegate<MusicBrainzAction, MusicBrainzResponse>() {
 
     private val musicBrainzRestClient: MusicBrainzRestClient = MusicBrainzRestClient(context)
 

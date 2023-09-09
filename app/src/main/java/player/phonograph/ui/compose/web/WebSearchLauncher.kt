@@ -11,6 +11,8 @@ import player.phonograph.ui.compose.web.WebSearchActionConst.LASTFM_SEARCH
 import player.phonograph.ui.compose.web.WebSearchActionConst.MUSICBRAINZ_SEARCH
 import player.phonograph.ui.compose.web.WebSearchActionConst.MUSICBRAINZ_VIEW
 import player.phonograph.util.parcelableExtra
+import util.phonograph.tagsources.lastfm.LastFmAction
+import util.phonograph.tagsources.musicbrainz.MusicBrainzAction
 import util.phonograph.tagsources.musicbrainz.MusicBrainzModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -150,6 +152,15 @@ object WebSearchLauncher {
             )
         }
 
+}
+
+object WebSearchActionConst {
+    const val MUSICBRAINZ_SEARCH = "musicbrainz_search"
+    const val MUSICBRAINZ_VIEW = "musicbrainz_view"
+    const val LASTFM_SEARCH = "lastfm_search"
+    const val LASTFM_VIEW_ARTIST = "lastfm_view_artist"
+    const val LASTFM_VIEW_ALBUM = "lastfm_view_album"
+    const val LASTFM_VIEW_TRACK = "lastfm_view_track"
 }
 
 internal fun executeCommand(

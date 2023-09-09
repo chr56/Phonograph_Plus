@@ -6,6 +6,8 @@ package player.phonograph.ui.compose.web
 
 import player.phonograph.R
 import player.phonograph.ui.compose.components.HorizontalTextItem
+import util.phonograph.tagsources.lastfm.LastFmAction
+import util.phonograph.tagsources.lastfm.LastFmQueryParameter
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource

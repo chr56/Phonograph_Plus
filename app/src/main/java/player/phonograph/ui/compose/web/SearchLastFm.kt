@@ -4,9 +4,9 @@
 
 package player.phonograph.ui.compose.web
 
-import player.phonograph.ui.compose.web.LastFmAction.View
 import util.phonograph.tagsources.lastfm.AlbumResult
 import util.phonograph.tagsources.lastfm.ArtistResult
+import util.phonograph.tagsources.lastfm.LastFmAction.View
 import util.phonograph.tagsources.lastfm.LastFmAlbumResponse
 import util.phonograph.tagsources.lastfm.LastFmArtistResponse
 import util.phonograph.tagsources.lastfm.LastFmSearchResultItem

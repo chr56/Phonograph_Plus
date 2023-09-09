@@ -9,7 +9,7 @@ import player.phonograph.ui.compose.components.CascadeFlowRow
 import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.Chip
 import player.phonograph.ui.compose.components.Item
-import player.phonograph.ui.compose.web.MusicBrainzAction.Target
+import util.phonograph.tagsources.musicbrainz.MusicBrainzAction.Target
 import player.phonograph.util.text.bracketedIfAny
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtist
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtistCredit

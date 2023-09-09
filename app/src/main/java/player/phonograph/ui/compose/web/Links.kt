@@ -6,11 +6,13 @@ package player.phonograph.ui.compose.web
 
 import player.phonograph.R
 import player.phonograph.ui.compose.base.Navigator
-import player.phonograph.ui.compose.web.MusicBrainzAction.Target
+import util.phonograph.tagsources.musicbrainz.MusicBrainzAction.Target
 import player.phonograph.ui.compose.web.WebSearchLauncher.launchIntent
 import player.phonograph.ui.compose.web.WebSearchLauncher.viewIntentMusicBrainzArtist
 import player.phonograph.ui.compose.web.WebSearchLauncher.viewIntentMusicBrainzRecording
 import player.phonograph.ui.compose.web.WebSearchLauncher.viewIntentMusicBrainzRelease
+import util.phonograph.tagsources.musicbrainz.MusicBrainzAction
+import util.phonograph.tagsources.musicbrainz.MusicBrainzClientDelegate
 import util.phonograph.tagsources.musicbrainz.MusicBrainzModel
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton

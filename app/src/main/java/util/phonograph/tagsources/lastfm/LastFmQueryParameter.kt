@@ -2,17 +2,9 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.ui.compose.web
+package util.phonograph.tagsources.lastfm
 
-interface QueryParameter {
-    fun check(): Boolean
-    fun toAction(): WebSearchAction
-}
-
-data class MusicbrainzQueryParameter(var target: MusicBrainzAction.Target, var query: String) : QueryParameter {
-    override fun check(): Boolean = query.isNotEmpty()
-    override fun toAction(): MusicBrainzAction.Search = MusicBrainzAction.Search(target, query)
-}
+import util.phonograph.tagsources.QueryParameter
 
 data class LastFmQueryParameter(
     val target: LastFmAction.Target,

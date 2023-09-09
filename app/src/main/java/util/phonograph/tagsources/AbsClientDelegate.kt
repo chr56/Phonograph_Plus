@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.ui.compose.web
+package util.phonograph.tagsources
 
 import lib.phonograph.misc.RestResult
 import lib.phonograph.misc.emit
@@ -12,7 +12,7 @@ import retrofit2.Call
 import android.content.Context
 import kotlinx.coroutines.Deferred
 
-abstract class ClientDelegate<A : WebSearchAction, R> {
+abstract class AbsClientDelegate<A : Action, R> {
 
     abstract fun request(context: Context, action: A): Deferred<R?>
 
