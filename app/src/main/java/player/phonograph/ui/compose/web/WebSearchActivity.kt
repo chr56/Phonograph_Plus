@@ -7,6 +7,11 @@ package player.phonograph.ui.compose.web
 import player.phonograph.ui.compose.base.ComposeThemeActivity
 import player.phonograph.ui.compose.base.Navigator
 import player.phonograph.ui.compose.theme.PhonographTheme
+import player.phonograph.ui.compose.web.WebSearchActionConst.LASTFM_SEARCH_ALBUM
+import player.phonograph.ui.compose.web.WebSearchActionConst.LASTFM_SEARCH_ARTIST
+import player.phonograph.ui.compose.web.WebSearchActionConst.LASTFM_SEARCH_TRACK
+import player.phonograph.ui.compose.web.WebSearchActionConst.MUSICBRAINZ_SEARCH
+import player.phonograph.ui.compose.web.WebSearchActionConst.MUSICBRAINZ_VIEW
 import player.phonograph.util.parcelableExtra
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -48,135 +53,60 @@ class WebSearchActivity : ComposeThemeActivity() {
     }
 
     private fun checkCommand(context: Context, intent: Intent) {
-        when (intent.getStringExtra(EXTRA_COMMAND)) {
-            EXTRA_QUERY_LASTFM_ALBUM              ->
-                intent.parcelableExtra<PhonographAlbum>(EXTRA_DATA)?.let { queryFactory.lastFmQuery(context, it) }
+
+        when (intent.getStringExtra(EXTRA_ACTION_TYPE)) {
+
+            MUSICBRAINZ_SEARCH   ->
+                intent.parcelableExtra<MusicBrainzAction.Search>(EXTRA_DATA)?.let { action ->
+                    val query = queryFactory.musicBrainzQuery(context, action.target, action.query)
+                    val page = Page.Search.MusicBrainzSearch(query)
+                    viewModel.navigator.navigateTo(page)
+                }
+
+            MUSICBRAINZ_VIEW     ->
+                intent.parcelableExtra<MusicBrainzAction.View>(EXTRA_DATA)?.let { action ->
+                    val query = queryFactory.musicBrainzQuery(context, action.target, "")
+                    viewModel.viewModelScope.launch {
+                        val result = query.query(context, action).await()
+                        val page = Page.Detail.MusicBrainzDetail(result ?: Any())
+                        viewModel.navigator.navigateTo(page)
+                    }
+                }
+
+
+            LASTFM_SEARCH_ARTIST ->
+                intent.parcelableExtra<LastFmAction.Search.SearchArtist>(EXTRA_DATA)
+                    ?.let { queryFactory.lastFmQuery(context, it) }
                     .also {
                         prefillLastFmSearch(viewModel.navigator, it)
                     }
 
-            EXTRA_QUERY_LASTFM_ARTIST             ->
-                intent.parcelableExtra<PhonographArtist>(EXTRA_DATA)?.let { queryFactory.lastFmQuery(context, it) }
+            LASTFM_SEARCH_ALBUM  ->
+                intent.parcelableExtra<LastFmAction.Search.SearchAlbum>(EXTRA_DATA)
+                    ?.let { queryFactory.lastFmQuery(context, it) }
                     .also {
                         prefillLastFmSearch(viewModel.navigator, it)
                     }
 
-            EXTRA_QUERY_LASTFM_SONG               ->
-                intent.parcelableExtra<PhonographSong>(EXTRA_DATA)?.let { queryFactory.lastFmQuery(context, it) }.also {
-                    prefillLastFmSearch(viewModel.navigator, it)
-                }
-
-            EXTRA_QUERY_MUSICBRAINZ_RELEASE_GROUP ->
-                intent.parcelableExtra<PhonographAlbum>(EXTRA_DATA)
-                    ?.let {
-                        queryFactory.musicBrainzQuery(
-                            context, MusicBrainzAction.Target.ReleaseGroup, luceneQuery(it)
-                        )
-                    }.also {
-                        prefillMusicBrainzSearch(viewModel.navigator, it)
-                    }
-
-            EXTRA_QUERY_MUSICBRAINZ_RELEASE       ->
-                intent.parcelableExtra<PhonographAlbum>(EXTRA_DATA)
-                    ?.let {
-                        queryFactory.musicBrainzQuery(
-                            context, MusicBrainzAction.Target.Release, luceneQuery(it)
-                        )
-                    }.also {
-                        prefillMusicBrainzSearch(viewModel.navigator, it)
-                    }
-
-            EXTRA_QUERY_MUSICBRAINZ_ARTIST        ->
-                intent.parcelableExtra<PhonographArtist>(EXTRA_DATA)
-                    ?.let {
-                        queryFactory.musicBrainzQuery(
-                            context, MusicBrainzAction.Target.Artist, it.name
-                        )
-                    }.also {
-                        prefillMusicBrainzSearch(viewModel.navigator, it)
-                    }
-
-            EXTRA_QUERY_MUSICBRAINZ_RECORDING     ->
-                intent.parcelableExtra<PhonographSong>(EXTRA_DATA)
-                    ?.let {
-                        queryFactory.musicBrainzQuery(
-                            context, MusicBrainzAction.Target.Recording, luceneQuery(it)
-                        )
-                    }
+            LASTFM_SEARCH_TRACK  ->
+                intent.parcelableExtra<LastFmAction.Search.SearchTrack>(EXTRA_DATA)
+                    ?.let { queryFactory.lastFmQuery(context, it) }
                     .also {
-                        prefillMusicBrainzSearch(viewModel.navigator, it)
+                        prefillLastFmSearch(viewModel.navigator, it)
                     }
-
-            EXTRA_VIEW_MUSICBRAINZ_RELEASE_GROUP  ->
-                parseMusicBrainzDetail(context, intent, viewModel) {
-                    MusicBrainzAction.View(MusicBrainzAction.Target.ReleaseGroup, it)
-                }
-
-            EXTRA_VIEW_MUSICBRAINZ_RELEASE        ->
-                parseMusicBrainzDetail(context, intent, viewModel) {
-                    MusicBrainzAction.View(MusicBrainzAction.Target.Release, it)
-                }
-
-            EXTRA_VIEW_MUSICBRAINZ_ARTIST         ->
-                parseMusicBrainzDetail(context, intent, viewModel) {
-                    MusicBrainzAction.View(MusicBrainzAction.Target.Artist, it)
-                }
-
-            EXTRA_VIEW_MUSICBRAINZ_RECORDING      ->
-                parseMusicBrainzDetail(context, intent, viewModel) {
-                    MusicBrainzAction.View(MusicBrainzAction.Target.Recording, it)
-                }
-
-
-            else                                  -> null
         }
-
     }
 
     val queryFactory get() = viewModel.queryFactory
 
     companion object {
-        const val EXTRA_COMMAND = "COMMAND"
-        const val EXTRA_QUERY_LASTFM_SONG = "Query:LastFm:Song"
-        const val EXTRA_QUERY_LASTFM_ARTIST = "Query:LastFm:Artist"
-        const val EXTRA_QUERY_LASTFM_ALBUM = "Query:LastFm:Album"
-        const val EXTRA_QUERY_MUSICBRAINZ_RELEASE_GROUP = "Query:MusicBrain:ReleaseGroup"
-        const val EXTRA_QUERY_MUSICBRAINZ_RELEASE = "Query:MusicBrain:Release"
-        const val EXTRA_QUERY_MUSICBRAINZ_ARTIST = "Query:MusicBrain:Artist"
-        const val EXTRA_QUERY_MUSICBRAINZ_RECORDING = "Query:MusicBrain:Recording"
-        const val EXTRA_VIEW_MUSICBRAINZ_RELEASE_GROUP = "view:MusicBrain:ReleaseGroup"
-        const val EXTRA_VIEW_MUSICBRAINZ_RELEASE = "view:MusicBrain:Release"
-        const val EXTRA_VIEW_MUSICBRAINZ_ARTIST = "view:MusicBrain:Artist"
-        const val EXTRA_VIEW_MUSICBRAINZ_RECORDING = "view:MusicBrain:Recording"
+        const val EXTRA_ACTION_TYPE = "ACTION"
         const val EXTRA_DATA = "DATA"
 
         private fun prefillLastFmSearch(navigator: Navigator<Page>, lastFmQuery: LastFmQuery?) {
             if (lastFmQuery != null) {
                 val page = Page.Search.LastFmSearch(lastFmQuery)
                 navigator.navigateTo(page)
-            }
-        }
-
-        private fun prefillMusicBrainzSearch(navigator: Navigator<Page>, musicBrainzQuery: MusicBrainzQuery?) {
-            if (musicBrainzQuery != null) {
-                val page = Page.Search.MusicBrainzSearch(musicBrainzQuery)
-                navigator.navigateTo(page)
-            }
-        }
-
-        private fun parseMusicBrainzDetail(
-            context: Context,
-            intent: Intent,
-            viewModel: WebSearchViewModel,
-            process: (String) -> MusicBrainzAction,
-        ): MusicBrainzQuery {
-            val mbid = intent.getStringExtra(EXTRA_DATA).orEmpty()
-            return viewModel.queryFactory.musicBrainzQuery(context).also {
-                viewModel.viewModelScope.launch {
-                    val result = it.query(context, process(mbid)).await()
-                    val page = Page.Detail.MusicBrainzDetail(result ?: Any())
-                    viewModel.navigator.navigateTo(page)
-                }
             }
         }
 
@@ -191,71 +121,95 @@ class WebSearchActivity : ComposeThemeActivity() {
             if (album.artistName.isNotEmpty()) append(""" AND artist:"${album.artistName}"""")
         }
 
-
-
+        /**
+         * default launch intent
+         */
         fun launchIntent(context: Context): Intent =
             Intent(context, WebSearchActivity::class.java).apply {
                 flags = FLAG_ACTIVITY_NEW_DOCUMENT
             }
 
-        fun searchLastFmAlbum(context: Context, data: PhonographAlbum?): Intent =
+        fun searchLastFmAlbum(context: Context, item: PhonographAlbum?): Intent =
             launchIntent(context).apply {
-                putExtra(EXTRA_COMMAND, EXTRA_QUERY_LASTFM_ALBUM)
-                putExtra(EXTRA_DATA, data)
+                putExtra(EXTRA_ACTION_TYPE, LASTFM_SEARCH_ALBUM)
+                putExtra(EXTRA_DATA, LastFmAction.Search.SearchAlbum(item?.title.orEmpty()))
             }
 
-        fun searchLastFmArtist(context: Context, data: PhonographArtist?): Intent =
+        fun searchLastFmArtist(context: Context, item: PhonographArtist?): Intent =
             launchIntent(context).apply {
-                putExtra(EXTRA_COMMAND, EXTRA_QUERY_LASTFM_ARTIST)
-                putExtra(EXTRA_DATA, data)
+                putExtra(EXTRA_ACTION_TYPE, LASTFM_SEARCH_ARTIST)
+                putExtra(EXTRA_DATA, LastFmAction.Search.SearchArtist(item?.name.orEmpty()))
             }
 
-        fun searchLastFmSong(context: Context, data: PhonographSong?): Intent =
+        fun searchLastFmSong(context: Context, item: PhonographSong?): Intent =
             launchIntent(context).apply {
-                putExtra(EXTRA_COMMAND, EXTRA_QUERY_LASTFM_SONG)
-                putExtra(EXTRA_DATA, data)
+                putExtra(EXTRA_ACTION_TYPE, LASTFM_SEARCH_TRACK)
+                putExtra(EXTRA_DATA, LastFmAction.Search.SearchArtist(item?.title.orEmpty()))
             }
 
-        fun searchMusicBrainzAlbum(context: Context, data: PhonographAlbum?): Intent =
+        fun searchMusicBrainzAlbum(context: Context, item: PhonographAlbum?): Intent =
             launchIntent(context).apply {
-                putExtra(EXTRA_COMMAND, EXTRA_QUERY_MUSICBRAINZ_RELEASE_GROUP)
-                putExtra(EXTRA_DATA, data)
+                if (item != null) {
+                    putExtra(EXTRA_ACTION_TYPE, MUSICBRAINZ_SEARCH)
+                    putExtra(
+                        EXTRA_DATA,
+                        MusicBrainzAction.Search(MusicBrainzAction.Target.ReleaseGroup, luceneQuery(item))
+                    )
+                }
             }
 
-        fun searchMusicBrainzArtist(context: Context, data: PhonographArtist?): Intent =
+        fun searchMusicBrainzArtist(context: Context, item: PhonographArtist?): Intent =
             launchIntent(context).apply {
-                putExtra(EXTRA_COMMAND, EXTRA_QUERY_MUSICBRAINZ_ARTIST)
-                putExtra(EXTRA_DATA, data)
+                if (item != null) {
+                    putExtra(EXTRA_ACTION_TYPE, MUSICBRAINZ_SEARCH)
+                    putExtra(
+                        EXTRA_DATA,
+                        MusicBrainzAction.Search(MusicBrainzAction.Target.Artist, item.name)
+                    )
+                }
             }
 
-        fun searchMusicBrainzSong(context: Context, data: PhonographSong?): Intent =
+        fun searchMusicBrainzSong(context: Context, item: PhonographSong?): Intent =
             launchIntent(context).apply {
-                putExtra(EXTRA_COMMAND, EXTRA_QUERY_MUSICBRAINZ_RECORDING)
-                putExtra(EXTRA_DATA, data)
+                if (item != null) {
+                    putExtra(EXTRA_ACTION_TYPE, MUSICBRAINZ_SEARCH)
+                    putExtra(
+                        EXTRA_DATA,
+                        MusicBrainzAction.Search(MusicBrainzAction.Target.Recording, luceneQuery(item))
+                    )
+                }
             }
 
         fun viewIntentMusicBrainzReleaseGroup(context: Context, mbid: String): Intent =
             launchIntent(context).apply {
-                putExtra(EXTRA_COMMAND, EXTRA_VIEW_MUSICBRAINZ_RELEASE_GROUP)
-                putExtra(EXTRA_DATA, mbid)
+                putExtra(EXTRA_ACTION_TYPE, MUSICBRAINZ_VIEW)
+                putExtra(
+                    EXTRA_DATA, MusicBrainzAction.View(MusicBrainzAction.Target.ReleaseGroup, mbid)
+                )
             }
 
         fun viewIntentMusicBrainzRelease(context: Context, mbid: String): Intent =
             launchIntent(context).apply {
-                putExtra(EXTRA_COMMAND, EXTRA_VIEW_MUSICBRAINZ_RELEASE)
-                putExtra(EXTRA_DATA, mbid)
+                putExtra(EXTRA_ACTION_TYPE, MUSICBRAINZ_VIEW)
+                putExtra(
+                    EXTRA_DATA, MusicBrainzAction.View(MusicBrainzAction.Target.Release, mbid)
+                )
             }
 
         fun viewIntentMusicBrainzArtist(context: Context, mbid: String): Intent =
             launchIntent(context).apply {
-                putExtra(EXTRA_COMMAND, EXTRA_VIEW_MUSICBRAINZ_ARTIST)
-                putExtra(EXTRA_DATA, mbid)
+                putExtra(EXTRA_ACTION_TYPE, MUSICBRAINZ_VIEW)
+                putExtra(
+                    EXTRA_DATA, MusicBrainzAction.View(MusicBrainzAction.Target.Artist, mbid)
+                )
             }
 
         fun viewIntentMusicBrainzRecording(context: Context, mbid: String): Intent =
             launchIntent(context).apply {
-                putExtra(EXTRA_COMMAND, EXTRA_VIEW_MUSICBRAINZ_RECORDING)
-                putExtra(EXTRA_DATA, mbid)
+                putExtra(EXTRA_ACTION_TYPE, MUSICBRAINZ_VIEW)
+                putExtra(
+                    EXTRA_DATA, MusicBrainzAction.View(MusicBrainzAction.Target.Recording, mbid)
+                )
             }
     }
 }

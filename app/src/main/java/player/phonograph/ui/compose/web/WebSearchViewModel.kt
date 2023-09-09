@@ -46,6 +46,27 @@ class WebSearchViewModel : ViewModel() {
                 target = LastFmAction.Target.Track
             )
 
+        fun lastFmQuery(context: Context, action: LastFmAction.Search): LastFmQuery = when (action) {
+            is LastFmAction.Search.SearchArtist -> LastFmQuery(
+                context, this@WebSearchViewModel,
+                artistQuery = action.name,
+                target = LastFmAction.Target.Artist
+            )
+
+            is LastFmAction.Search.SearchAlbum  -> LastFmQuery(
+                context, this@WebSearchViewModel,
+                albumQuery = action.name,
+                target = LastFmAction.Target.Album
+            )
+
+            is LastFmAction.Search.SearchTrack  -> LastFmQuery(
+                context, this@WebSearchViewModel,
+                trackQuery = action.name,
+                artistQuery = action.artist,
+                target = LastFmAction.Target.Track
+            )
+        }
+
 
         fun musicBrainzQuery(context: Context): MusicBrainzQuery =
             MusicBrainzQuery(context, this@WebSearchViewModel, MusicBrainzAction.Target.Release, "")
