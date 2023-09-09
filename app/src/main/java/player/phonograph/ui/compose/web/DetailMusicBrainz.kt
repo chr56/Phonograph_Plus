@@ -52,7 +52,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun DetailMusicBrainz(
     viewModel: WebSearchViewModel,
-    musicBrainzDetail: Page.Detail.MusicBrainzDetail,
+    musicBrainzDetail: PageDetail.MusicBrainzDetail,
 ) {
     val detail by musicBrainzDetail.detail.collectAsState()
     Column(

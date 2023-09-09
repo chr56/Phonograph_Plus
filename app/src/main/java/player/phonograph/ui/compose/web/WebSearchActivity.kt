@@ -59,7 +59,7 @@ class WebSearchActivity : ComposeThemeActivity() {
             MUSICBRAINZ_SEARCH   ->
                 intent.parcelableExtra<MusicBrainzAction.Search>(EXTRA_DATA)?.let { action ->
                     val query = queryFactory.musicBrainzQuery(context, action.target, action.query)
-                    val page = Page.Search.MusicBrainzSearch(query)
+                    val page = PageSearch.MusicBrainzSearch(query)
                     viewModel.navigator.navigateTo(page)
                 }
 
@@ -68,7 +68,7 @@ class WebSearchActivity : ComposeThemeActivity() {
                     val query = queryFactory.musicBrainzQuery(context, action.target, "")
                     viewModel.viewModelScope.launch {
                         val result = query.query(context, action).await()
-                        val page = Page.Detail.MusicBrainzDetail(result ?: Any())
+                        val page = PageDetail.MusicBrainzDetail(result ?: Any())
                         viewModel.navigator.navigateTo(page)
                     }
                 }
@@ -105,7 +105,7 @@ class WebSearchActivity : ComposeThemeActivity() {
 
         private fun prefillLastFmSearch(navigator: Navigator<Page>, lastFmQuery: LastFmQuery?) {
             if (lastFmQuery != null) {
-                val page = Page.Search.LastFmSearch(lastFmQuery)
+                val page = PageSearch.LastFmSearch(lastFmQuery)
                 navigator.navigateTo(page)
             }
         }

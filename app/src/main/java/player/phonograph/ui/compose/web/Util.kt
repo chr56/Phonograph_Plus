@@ -91,7 +91,7 @@ fun jumpMusicbrainz(context: Context, navigator: Navigator<Page>?, type: Target,
         context.lifecycleScope.launch {
             val query = context.queryFactory.musicBrainzQuery(context)
             val result = query.query(context, MusicBrainzAction.View(type, mbid))
-            val page = Page.Detail.MusicBrainzDetail(
+            val page = PageDetail.MusicBrainzDetail(
                 result.await() ?: Any()
             )
             navigator.navigateTo(page)

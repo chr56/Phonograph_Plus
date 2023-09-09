@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun LastFmSearch(viewModel: WebSearchViewModel, pageState: Page.Search.LastFmSearch) {
+fun LastFmSearch(viewModel: WebSearchViewModel, pageState: PageSearch.LastFmSearch) {
     val queryState by pageState.query.collectAsState()
     Column {
         val context = LocalContext.current
@@ -42,7 +42,7 @@ fun LastFmSearch(viewModel: WebSearchViewModel, pageState: Page.Search.LastFmSea
                     is TrackResult.Track   -> View.ViewTrack(selected)
                 }
                 val result = queryState.query(context, action).await() ?: return@launch //todo
-                val page = Page.Detail.LastFmDetail(result)
+                val page = PageDetail.LastFmDetail(result)
                 viewModel.navigator.navigateTo(page)
             }
         }
@@ -52,7 +52,7 @@ fun LastFmSearch(viewModel: WebSearchViewModel, pageState: Page.Search.LastFmSea
 }
 
 @Composable
-fun MusicBrainzSearch(viewModel: WebSearchViewModel, pageState: Page.Search.MusicBrainzSearch) {
+fun MusicBrainzSearch(viewModel: WebSearchViewModel, pageState: PageSearch.MusicBrainzSearch) {
     val queryState by pageState.query.collectAsState()
     Column {
         val context = LocalContext.current
@@ -66,7 +66,7 @@ fun MusicBrainzSearch(viewModel: WebSearchViewModel, pageState: Page.Search.Musi
         val onSelect: (MusicBrainzAction.View) -> Unit = { action ->
             viewModel.viewModelScope.launch {
                 val result = queryState.query(context, action).await() ?: return@launch //todo
-                val page = Page.Detail.MusicBrainzDetail(result)
+                val page = PageDetail.MusicBrainzDetail(result)
                 viewModel.navigator.navigateTo(page)
             }
         }

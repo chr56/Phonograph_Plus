@@ -14,7 +14,7 @@ import android.content.Context
 
 class WebSearchViewModel : ViewModel() {
 
-    val navigator = Navigator<Page>(Page.Home)
+    val navigator = Navigator<Page>(PageHome)
 
     private var clientDelegateLastFm: LastFmClientDelegate? = null
     fun clientDelegateLastFm(context: Context): LastFmClientDelegate {
