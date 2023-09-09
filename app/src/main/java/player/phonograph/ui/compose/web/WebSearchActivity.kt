@@ -10,20 +10,9 @@ import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.parcelableExtra
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.content.Intent
@@ -47,43 +36,9 @@ class WebSearchActivity : ComposeThemeActivity() {
 
             val highlightColor by primaryColor.collectAsState()
             PhonographTheme(highlightColor) {
-
                 val scaffoldState = rememberScaffoldState()
                 val page by viewModel.navigator.currentPage.collectAsState()
-
-                Scaffold(
-                    Modifier.statusBarsPadding(),
-                    scaffoldState = scaffoldState,
-                    topBar = {
-                        TopAppBar(
-                            title = { Text(page.title(LocalContext.current)) },
-                            navigationIcon = {
-                                Box(Modifier.padding(16.dp)) {
-                                    NavigateButton(scaffoldState.drawerState, viewModel.navigator)
-                                }
-                            }
-                        )
-                    },
-                    drawerContent = {
-                        Drawer(viewModel)
-                    }
-                ) {
-                    CompositionLocalProvider(LocalPageNavigator provides viewModel.navigator) {
-                        Box(
-                            modifier = Modifier
-                                .padding(it)
-                                .fillMaxWidth()
-                        ) {
-                            when (val p = page) {
-                                Page.Home                        -> Home(viewModel, page)
-                                is Page.Search.LastFmSearch      -> LastFmSearch(viewModel, p)
-                                is Page.Search.MusicBrainzSearch -> MusicBrainzSearch(viewModel, p)
-                                is Page.Detail.LastFmDetail      -> DetailLastFm(viewModel, p)
-                                is Page.Detail.MusicBrainzDetail -> DetailMusicBrainz(viewModel, p)
-                            }
-                        }
-                    }
-                }
+                WebSearch(viewModel, scaffoldState, page)
             }
         }
     }

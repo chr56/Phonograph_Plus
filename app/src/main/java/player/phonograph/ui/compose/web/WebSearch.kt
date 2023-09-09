@@ -8,16 +8,21 @@ import player.phonograph.ui.compose.base.Navigator
 import player.phonograph.ui.compose.web.Page.Search.LastFmSearch
 import player.phonograph.ui.compose.web.Page.Search.MusicBrainzSearch
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.DrawerState
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
@@ -31,6 +36,44 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+
+
+@Composable
+fun WebSearch(viewModel: WebSearchViewModel, scaffoldState: ScaffoldState, page: Page) {
+    Scaffold(
+        Modifier.statusBarsPadding(),
+        scaffoldState = scaffoldState,
+        topBar = {
+            TopAppBar(
+                title = { Text(page.title(LocalContext.current)) },
+                navigationIcon = {
+                    Box(Modifier.padding(16.dp)) {
+                        NavigateButton(scaffoldState.drawerState, viewModel.navigator)
+                    }
+                }
+            )
+        },
+        drawerContent = {
+            Drawer(viewModel)
+        }
+    ) {
+        CompositionLocalProvider(LocalPageNavigator provides viewModel.navigator) {
+            Box(
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxWidth()
+            ) {
+                when (val p = page) {
+                    Page.Home -> Home(viewModel, page)
+                    is LastFmSearch -> LastFmSearch(viewModel, p)
+                    is MusicBrainzSearch -> MusicBrainzSearch(viewModel, p)
+                    is Page.Detail.LastFmDetail -> DetailLastFm(viewModel, p)
+                    is Page.Detail.MusicBrainzDetail -> DetailMusicBrainz(viewModel, p)
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun Home(viewModel: WebSearchViewModel, pageState: Page) {
