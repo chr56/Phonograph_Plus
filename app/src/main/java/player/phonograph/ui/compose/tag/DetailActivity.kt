@@ -32,6 +32,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
@@ -81,6 +82,15 @@ class DetailActivity : ComposeThemeActivity(), ICreateFileStorageAccess {
                                 )
                             },
                             actions = {
+                                Icon(
+                                    painterResource(R.drawable.ic_edit_white_24dp),
+                                    stringResource(R.string.edit),
+                                    Modifier
+                                        .clickable {
+                                            TagEditorActivity.launch(this@DetailActivity, song.id)
+                                        }
+                                        .padding(16.dp)
+                                )
                                 Icon(
                                     Icons.Default.Info, null,
                                     Modifier
