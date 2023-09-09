@@ -8,7 +8,9 @@ import androidx.annotation.Keep
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-sealed interface MusicBrainzModel
+sealed interface MusicBrainzRespond
+
+sealed interface MusicBrainzModel : MusicBrainzRespond
 
 @Keep
 @Serializable
@@ -231,7 +233,7 @@ data class MusicBrainzArtistCredit(
     val joinphrase: String = "",
 )
 
-sealed interface MusicBrainzSearchResult {
+sealed interface MusicBrainzSearchResult : MusicBrainzRespond {
     val created: String
     val count: Int
     val offset: Int

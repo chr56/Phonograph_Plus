@@ -23,8 +23,8 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.serializer
 
-sealed interface LastFmModel
-sealed interface LastFmModelResponse
+sealed interface LastFmResponse
+sealed interface LastFmModelResponse : LastFmResponse
 
 @Keep
 @Serializable
@@ -41,7 +41,7 @@ class LastFmTrackResponse(val track: LastFmTrack) : LastFmModelResponse
 
 @Keep
 @Serializable
-class LastFmSearchResultResponse(val results: LastFmSearchResults)
+class LastFmSearchResultResponse(val results: LastFmSearchResults) : LastFmResponse
 
 @Keep
 @Serializable
@@ -105,6 +105,8 @@ data class Links(
     )
 }
 
+
+sealed interface LastFmModel
 
 @Keep
 @Serializable
@@ -324,6 +326,9 @@ data class LastFmSearchResults(
 }
 
 
+
+sealed interface LastFmSearchResultItem
+
 @Keep
 @Serializable
 class AlbumResult(
@@ -373,5 +378,3 @@ class TrackResult(
         val mbid: String?,
     ) : LastFmSearchResultItem
 }
-
-sealed interface LastFmSearchResultItem
