@@ -105,7 +105,7 @@ data class Links(
     )
 }
 
-
+@Serializable
 sealed interface LastFmModel
 
 @Keep
