@@ -29,7 +29,7 @@ import player.phonograph.model.Song as PhonographSong
 
 class WebSearchActivity : ComposeThemeActivity() {
 
-    private val viewModel: WebSearchViewModel by viewModels()
+    val viewModel: WebSearchViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

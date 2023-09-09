@@ -89,13 +89,12 @@ fun LinkLastFm(modifier: Modifier, lastFmUri: String?) {
 fun jumpMusicbrainz(context: Context, navigator: Navigator<Page>?, type: Target, mbid: String) {
     if (context is WebSearchActivity && navigator != null) {
         context.lifecycleScope.launch {
-            // fixme
-            // val clientDelegate: MusicBrainzClientDelegate
-            // val result = clientDelegate.request(context, MusicBrainzAction.View(type, mbid))
-            // val page = PageDetail.MusicBrainzDetail(
-            //     result.await() ?: Any()
-            // )
-            // navigator.navigateTo(page)
+            val clientDelegate: MusicBrainzClientDelegate = context.viewModel.clientDelegateMusicBrainz(context)
+            val result = clientDelegate.request(context, MusicBrainzAction.View(type, mbid))
+            val page = PageDetail.MusicBrainzDetail(
+                result.await() ?: Any()
+            )
+            navigator.navigateTo(page)
         }
     } else {
         context.startActivity(
