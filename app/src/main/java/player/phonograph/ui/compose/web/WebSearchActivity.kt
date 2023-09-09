@@ -6,6 +6,7 @@ package player.phonograph.ui.compose.web
 
 import player.phonograph.ui.compose.base.ComposeThemeActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
+import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material.rememberScaffoldState
@@ -31,10 +32,11 @@ class WebSearchActivity : ComposeThemeActivity() {
                 WebSearch(viewModel, scaffoldState, page)
             }
         }
-    }
 
-    override fun onBackPressed() {
-        if (!viewModel.navigator.navigateUp()) super.onBackPressed()
+        onBackPressedDispatcher.addCallback(this) {
+            val result = viewModel.navigator.navigateUp()
+            isEnabled = result
+        }
     }
 
 }
