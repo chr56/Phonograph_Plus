@@ -5,6 +5,7 @@
 package player.phonograph.ui.compose.web
 
 import player.phonograph.R
+import player.phonograph.ui.compose.components.HorizontalTextItem
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -53,7 +54,7 @@ fun BaseSearchBox(
             fontWeight = FontWeight.Black,
             style = MaterialTheme.typography.h5
         )
-        Line(name = "Target") {
+        HorizontalTextItem(name = "Target") {
             target()
         }
         fields()

@@ -5,54 +5,55 @@
 package player.phonograph.ui.compose.web
 
 import player.phonograph.R
+import player.phonograph.ui.compose.components.HorizontalTextItem
+import util.phonograph.tagsources.lastfm.LastFmAction
+import util.phonograph.tagsources.lastfm.LastFmQueryParameter
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 
 
 @Composable
 fun LastFmSearchBox(
-    lastFmQuery: LastFmQuery,
+    queryParameter: LastFmQueryParameter,
+    updateQueryParameter: ((LastFmQueryParameter) -> LastFmQueryParameter) -> Unit,
     modifier: Modifier = Modifier,
-    onSearch: (LastFmQuery.QueryAction) -> Unit,
+    onSearch: (LastFmAction.Search) -> Unit,
 ) {
-    val queryParameter by lastFmQuery.queryParameter.collectAsState()
     BaseSearchBox(
         modifier,
         title = "last.fm",
         target = {
             Target(
-                all = listOf(LastFmQuery.Target.Release, LastFmQuery.Target.Artist, LastFmQuery.Target.Track),
-                text = { it.name },
+                all = listOf(LastFmAction.Target.Album, LastFmAction.Target.Artist, LastFmAction.Target.Track),
+                text = { it.displayName },
                 current = queryParameter.target
             ) {
-                lastFmQuery.updateQueryParameter { old -> old.copy(target = it) }
+                updateQueryParameter { old -> old.copy(target = it) }
             }
         },
-        onSearch = { onSearch(lastFmQuery.searchAction()) }
+        onSearch = { onSearch(queryParameter.toAction()) }
     ) {
-        if (queryParameter.target == LastFmQuery.Target.Release)
-            Line(name = stringResource(id = R.string.album)) {
-                SearchTextBox(queryParameter.releaseQuery.orEmpty()) {
-                    lastFmQuery.updateQueryParameter { old ->
-                        old.copy(releaseQuery = it)
+        if (queryParameter.target == LastFmAction.Target.Album)
+            HorizontalTextItem(name = stringResource(id = R.string.album)) {
+                SearchTextBox(queryParameter.albumQuery.orEmpty()) {
+                    updateQueryParameter { old ->
+                        old.copy(albumQuery = it)
                     }
                 }
             }
-        if (queryParameter.target == LastFmQuery.Target.Track)
-            Line(name = stringResource(id = R.string.song)) {
+        if (queryParameter.target == LastFmAction.Target.Track)
+            HorizontalTextItem(name = stringResource(id = R.string.song)) {
                 SearchTextBox(queryParameter.trackQuery.orEmpty()) {
-                    lastFmQuery.updateQueryParameter { old ->
+                    updateQueryParameter { old ->
                         old.copy(trackQuery = it)
                     }
                 }
             }
-        if (queryParameter.target == LastFmQuery.Target.Artist || queryParameter.target == LastFmQuery.Target.Track)
-            Line(name = stringResource(id = R.string.artist)) {
+        if (queryParameter.target == LastFmAction.Target.Artist || queryParameter.target == LastFmAction.Target.Track)
+            HorizontalTextItem(name = stringResource(id = R.string.artist)) {
                 SearchTextBox(queryParameter.artistQuery.orEmpty()) {
-                    lastFmQuery.updateQueryParameter { old ->
+                    updateQueryParameter { old ->
                         old.copy(artistQuery = it)
                     }
                 }

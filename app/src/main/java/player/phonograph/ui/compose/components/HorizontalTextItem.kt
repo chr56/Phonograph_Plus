@@ -36,3 +36,22 @@ fun HorizontalTextItem(tag: String = "KeyName", value: String = "KeyValue") {
         }
     }
 }
+
+@Composable
+fun HorizontalTextItem(name: String, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Row(modifier.padding(horizontal = 12.dp, vertical = 4.dp)) {
+        Text(
+            name,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .weight(2f)
+                .align(Alignment.CenterVertically)
+        )
+        Box(
+            Modifier
+                .weight(9f)
+        ) {
+            content()
+        }
+    }
+}

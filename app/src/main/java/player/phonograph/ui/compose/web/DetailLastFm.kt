@@ -12,6 +12,7 @@ import player.phonograph.ui.compose.components.Chip
 import player.phonograph.ui.compose.components.HorizontalTextItem
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextItem
+import util.phonograph.tagsources.musicbrainz.MusicBrainzAction
 import util.phonograph.tagsources.lastfm.LastFmAlbum
 import util.phonograph.tagsources.lastfm.LastFmArtist
 import util.phonograph.tagsources.lastfm.LastFmTrack
@@ -51,7 +52,7 @@ import android.text.Html
 
 
 @Composable
-fun DetailLastFm(viewModel: WebSearchViewModel, lastFmDetail: Page.Detail.LastFmDetail) {
+fun DetailLastFm(viewModel: WebSearchViewModel, lastFmDetail: PageDetail.LastFmDetail) {
     val detail by lastFmDetail.detail.collectAsState()
     Box(
         Modifier
@@ -81,7 +82,7 @@ fun LastFmArtist(artist: LastFmArtist) {
         Wiki(artist.bio, isBio = true)
         MusicBrainzIdentifier(artist.mbid)
         Tags(artist.tags)
-        Links(artist.url, artist.mbid, MusicBrainzQuery.Target.Artist)
+        Links(artist.url, artist.mbid, MusicBrainzAction.Target.Artist)
     }
 }
 
@@ -98,7 +99,7 @@ fun LastFmAlbum(album: LastFmAlbum) {
         Wiki(album.wiki, isBio = false)
         MusicBrainzIdentifier(album.mbid)
         Tags(album.tags)
-        Links(album.url, album.mbid, MusicBrainzQuery.Target.Release)
+        Links(album.url, album.mbid, MusicBrainzAction.Target.Release)
         Tracks(album.tracks)
     }
 }
@@ -116,13 +117,13 @@ fun LastFmTrack(track: LastFmTrack) {
         Wiki(track.wiki, isBio = false)
         MusicBrainzIdentifier(track.mbid)
         Tags(track.toptags)
-        Links(track.url, track.mbid, MusicBrainzQuery.Target.Recording)
+        Links(track.url, track.mbid, MusicBrainzAction.Target.Recording)
     }
 }
 
 
 @Composable
-private fun ColumnScope.Links(lastFmUri: String, mbid: String?, type: MusicBrainzQuery.Target) {
+private fun ColumnScope.Links(lastFmUri: String, mbid: String?, type: MusicBrainzAction.Target) {
     Row(Modifier.align(Alignment.End)) {
         JumpMusicBrainz(Modifier.align(Alignment.CenterVertically), type, mbid)
         LinkMusicBrainz(Modifier.align(Alignment.CenterVertically), type, mbid)

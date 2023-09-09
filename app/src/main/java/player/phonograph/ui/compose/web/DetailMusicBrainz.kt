@@ -9,7 +9,7 @@ import player.phonograph.ui.compose.components.CascadeFlowRow
 import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.Chip
 import player.phonograph.ui.compose.components.Item
-import player.phonograph.ui.compose.web.MusicBrainzQuery.Target
+import util.phonograph.tagsources.musicbrainz.MusicBrainzAction.Target
 import player.phonograph.util.text.bracketedIfAny
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtist
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtistCredit
@@ -52,7 +52,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun DetailMusicBrainz(
     viewModel: WebSearchViewModel,
-    musicBrainzDetail: Page.Detail.MusicBrainzDetail,
+    musicBrainzDetail: PageDetail.MusicBrainzDetail,
 ) {
     val detail by musicBrainzDetail.detail.collectAsState()
     Column(

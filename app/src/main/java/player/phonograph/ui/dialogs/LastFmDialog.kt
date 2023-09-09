@@ -5,7 +5,9 @@
 package player.phonograph.ui.dialogs
 
 import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import lib.phonograph.misc.RestResult
 import lib.phonograph.misc.emit
 import player.phonograph.R
 import player.phonograph.model.Album
@@ -16,17 +18,20 @@ import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.ui.compose.web.LastFmAlbum
 import player.phonograph.ui.compose.web.LastFmArtist
 import player.phonograph.ui.compose.web.LastFmTrack
-import player.phonograph.ui.compose.web.WebSearchActivity
+import player.phonograph.ui.compose.web.WebSearchLauncher
 import player.phonograph.util.parcelable
+import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import retrofit2.Call
-import retrofit2.Response
 import util.phonograph.tagsources.lastfm.LastFMRestClient
 import util.phonograph.tagsources.lastfm.LastFMService
 import util.phonograph.tagsources.lastfm.LastFmModel
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -41,7 +46,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -70,6 +74,7 @@ class LastFmDialog : BridgeDialogFragment() {
                 val artist = requireArguments().parcelable<Artist>(EXTRA_DATA)
                 if (artist != null) {
                     viewModel.loadArtist(requireContext(), lastFMRestClient.apiService, artist)
+                    viewModel.target = artist
                 }
             }
 
@@ -77,6 +82,7 @@ class LastFmDialog : BridgeDialogFragment() {
                 val album = requireArguments().parcelable<Album>(EXTRA_DATA)
                 if (album != null) {
                     viewModel.loadAlbum(requireContext(), lastFMRestClient.apiService, album)
+                    viewModel.target = album
                 }
             }
 
@@ -84,6 +90,7 @@ class LastFmDialog : BridgeDialogFragment() {
                 val song = requireArguments().parcelable<Song>(EXTRA_DATA)
                 if (song != null) {
                     viewModel.loadSong(requireContext(), lastFMRestClient.apiService, song)
+                    viewModel.target = song
                 }
             }
         }
@@ -92,6 +99,7 @@ class LastFmDialog : BridgeDialogFragment() {
     @Composable
     override fun Content() {
         val dialogState = rememberMaterialDialogState(true)
+        val webSearchDialogState = rememberMaterialDialogState(false)
         PhonographTheme {
             MaterialDialog(
                 dialogState = dialogState,
@@ -102,28 +110,7 @@ class LastFmDialog : BridgeDialogFragment() {
                         res = R.string.web_search,
                         textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
                     ) {
-                        val context = requireContext()
-                        val arguments = requireArguments()
-
-                        val launchIntent: Intent = when (viewModel.mode) {
-                            TYPE_ARTIST -> WebSearchActivity.launchIntent(
-                                context, arguments.parcelable<Artist>(EXTRA_DATA)
-                            )
-
-                            TYPE_ALBUM  -> WebSearchActivity.launchIntent(
-                                context, arguments.parcelable<Album>(EXTRA_DATA)
-                            )
-
-                            TYPE_SONG   -> WebSearchActivity.launchIntent(
-                                context, arguments.parcelable<Song>(EXTRA_DATA)
-                            )
-
-                            else        -> WebSearchActivity.launchIntent(context)
-                        }
-
-                        dismiss()
-                        context.startActivity(launchIntent)
-
+                        webSearchDialogState.show()
                     }
                     button(
                         res = android.R.string.ok,
@@ -147,13 +134,14 @@ class LastFmDialog : BridgeDialogFragment() {
                 ) {
                     val result by viewModel.response.collectAsState()
                     when (val item = result) {
-                        is LastFmAlbumModel -> LastFmAlbum(item)
+                        is LastFmAlbumModel  -> LastFmAlbum(item)
                         is LastFmArtistModel -> LastFmArtist(item)
-                        is LastFmTrackModel -> LastFmTrack(item)
-                        null -> Text(stringResource(R.string.wiki_unavailable))
+                        is LastFmTrackModel  -> LastFmTrack(item)
+                        null                 -> Text(stringResource(R.string.wiki_unavailable))
                     }
                 }
             }
+            StartWebSearchDialog(webSearchDialogState)
         }
 
     }
@@ -162,6 +150,8 @@ class LastFmDialog : BridgeDialogFragment() {
     class LastFmViewModel : ViewModel() {
 
         var mode: String? = null
+
+        var target: Any? = null
 
         private val _response: MutableStateFlow<LastFmModel?> = MutableStateFlow(null)
         val response get() = _response.asStateFlow()
@@ -182,7 +172,7 @@ class LastFmDialog : BridgeDialogFragment() {
                         )
                     )
                 )
-                _response.update { response?.body()?.artist }
+                _response.update { response?.artist }
             }
         }
 
@@ -202,7 +192,7 @@ class LastFmDialog : BridgeDialogFragment() {
                         )
                     )
                 )
-                _response.update { response?.body()?.album }
+                _response.update { response?.album }
             }
         }
 
@@ -223,31 +213,83 @@ class LastFmDialog : BridgeDialogFragment() {
                         )
                     )
                 )
-                _response.update { response?.body()?.track }
+                _response.update { response?.track }
             }
         }
 
         private suspend fun <T> execute(
-            calls: List<Call<T?>>,
-        ): Response<T?>? {
-            var latestError: Throwable? = null
+            calls: List<Call<RestResult<T>?>>,
+        ): T? {
+            var errorMessage: String? = null
             for (call in calls) {
-                val result = call.emit<T>()
-                if (result.isSuccess) {
-                    return result.getOrNull()
-                } else {
-                    latestError = result.exceptionOrNull()
+                when (val result = call.emit<T>()) {
+                    is RestResult.Success      -> return result.data
+                    is RestResult.RemoteError  -> errorMessage = result.message
+                    is RestResult.ParseError   -> reportError(result.exception, TAG, "Parse error!")
+                    is RestResult.NetworkError -> reportError(result.exception, TAG, "Network error!")
                 }
             }
-            if (latestError != null)
-                warning(
-                    TAG,
-                    "${latestError.javaClass.simpleName}: ${latestError.message}\n${latestError.stackTraceToString()}"
-                )
+            if (errorMessage != null) {
+                warning(TAG, errorMessage)
+            }
             return null
         }
 
     }
+
+
+    @Composable
+    private fun StartWebSearchDialog(state: MaterialDialogState) {
+        MaterialDialog(state) {
+            Column(Modifier.padding(16.dp)) {
+                Text(Source.LastFm.name,
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            startWebSearch(Source.LastFm)
+                            state.hide()
+                        }
+                        .padding(vertical = 24.dp)
+                )
+                Text(Source.MusicBrainz.name,
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            startWebSearch(Source.MusicBrainz)
+                            state.hide()
+                        }
+                        .padding(vertical = 24.dp)
+                )
+            }
+        }
+    }
+
+    private fun startWebSearch(mode: Source) {
+        val context = requireContext()
+        val intent = when (mode) {
+            is Source.MusicBrainz -> when (viewModel.mode) {
+                TYPE_ARTIST -> WebSearchLauncher.searchMusicBrainzArtist(context, viewModel.target as Artist)
+                TYPE_ALBUM  -> WebSearchLauncher.searchMusicBrainzAlbum(context, viewModel.target as Album)
+                TYPE_SONG   -> WebSearchLauncher.searchMusicBrainzSong(context, viewModel.target as Song)
+                else        -> WebSearchLauncher.launchIntent(context)
+            }
+
+            is Source.LastFm      -> when (viewModel.mode) {
+                TYPE_ARTIST -> WebSearchLauncher.searchLastFmArtist(context, viewModel.target as Artist)
+                TYPE_ALBUM  -> WebSearchLauncher.searchLastFmAlbum(context, viewModel.target as Album)
+                TYPE_SONG   -> WebSearchLauncher.searchLastFmSong(context, viewModel.target as Song)
+                else        -> WebSearchLauncher.launchIntent(context)
+            }
+        }
+        context.startActivity(intent)
+        dismiss()
+    }
+
+    private sealed class Source(val name: String) {
+        object MusicBrainz : Source("MusicBrainz")
+        object LastFm : Source("last.fm")
+    }
+
 
     companion object {
 
