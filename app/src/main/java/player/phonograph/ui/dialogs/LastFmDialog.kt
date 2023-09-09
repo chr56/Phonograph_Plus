@@ -244,21 +244,21 @@ class LastFmDialog : BridgeDialogFragment() {
             Column(Modifier.padding(16.dp)) {
                 Text(Source.LastFm.name,
                     Modifier
-                        .padding(vertical = 24.dp)
                         .fillMaxWidth()
                         .clickable {
                             startWebSearch(Source.LastFm)
                             state.hide()
                         }
+                        .padding(vertical = 24.dp)
                 )
                 Text(Source.MusicBrainz.name,
                     Modifier
-                        .padding(vertical = 24.dp)
                         .fillMaxWidth()
                         .clickable {
                             startWebSearch(Source.MusicBrainz)
                             state.hide()
                         }
+                        .padding(vertical = 24.dp)
                 )
             }
         }
