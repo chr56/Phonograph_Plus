@@ -4,13 +4,13 @@
 
 package player.phonograph.ui.compose.web
 
+import player.phonograph.ui.compose.web.LastFmAction.Target
 import util.phonograph.tagsources.lastfm.AlbumResult
 import util.phonograph.tagsources.lastfm.ArtistResult
 import util.phonograph.tagsources.lastfm.LastFMRestClient
 import util.phonograph.tagsources.lastfm.LastFMService
 import util.phonograph.tagsources.lastfm.LastFmAlbum
 import util.phonograph.tagsources.lastfm.LastFmArtist
-import util.phonograph.tagsources.lastfm.LastFmSearchResultItem
 import util.phonograph.tagsources.lastfm.LastFmSearchResults
 import util.phonograph.tagsources.lastfm.LastFmTrack
 import util.phonograph.tagsources.lastfm.TrackResult
@@ -27,30 +27,14 @@ import kotlinx.coroutines.flow.update
 class LastFmQuery(
     context: Context,
     viewModel: WebSearchViewModel,
-    releaseQuery: String? = null,
+    albumQuery: String? = null,
     artistQuery: String? = null,
     trackQuery: String? = null,
-    target: Target = Target.Release,
-) : Query<LastFmQuery.QueryParameter, LastFmQuery.QueryAction>(viewModel, "Last.fm") {
-
-    enum class Target {
-        Artist,
-        Release,
-        Track,
-        ;
-    }
-
-    sealed class QueryAction : Action {
-        data class SearchArtist(val name: String) : QueryAction()
-        data class SearchRelease(val name: String) : QueryAction()
-        data class SearchTrack(val name: String, val artist: String?) : QueryAction()
-        data class ViewArtist(val item: ArtistResult.Artist) : QueryAction()
-        data class ViewRelease(val item: AlbumResult.Album) : QueryAction()
-        data class ViewTrack(val item: TrackResult.Track) : QueryAction()
-    }
+    target: Target = Target.Album,
+) : Query<LastFmQuery.QueryParameter, LastFmAction>(viewModel, Source.LastFm.name) {
 
     private val _queryParameter: MutableStateFlow<QueryParameter> =
-        MutableStateFlow(QueryParameter(target, releaseQuery, artistQuery, trackQuery))
+        MutableStateFlow(QueryParameter(target, albumQuery, artistQuery, trackQuery))
     override val queryParameter get() = _queryParameter.asStateFlow()
     override fun updateQueryParameter(update: (QueryParameter) -> QueryParameter) {
         _queryParameter.update(update)
@@ -58,32 +42,24 @@ class LastFmQuery(
 
     data class QueryParameter(
         val target: Target,
-        val releaseQuery: String?,
+        val albumQuery: String?,
         val artistQuery: String?,
         val trackQuery: String?,
     ) : Parameter {
         fun check(): Boolean = when (target) {
-            Target.Track   -> trackQuery != null
-            Target.Artist  -> artistQuery != null
-            Target.Release -> releaseQuery != null
+            Target.Track  -> trackQuery != null
+            Target.Artist -> artistQuery != null
+            Target.Album  -> albumQuery != null
         }
     }
 
-    fun searchAction(): QueryAction {
+    fun searchAction(): LastFmAction.Search {
         with(queryParameter.value) {
             return when (target) {
-                Target.Artist  -> QueryAction.SearchArtist(artistQuery.orEmpty())
-                Target.Release -> QueryAction.SearchRelease(releaseQuery.orEmpty())
-                Target.Track   -> QueryAction.SearchTrack(trackQuery.orEmpty(), artistQuery.orEmpty())
+                Target.Artist -> LastFmAction.Search.SearchArtist(artistQuery.orEmpty())
+                Target.Album  -> LastFmAction.Search.SearchAlbum(albumQuery.orEmpty())
+                Target.Track  -> LastFmAction.Search.SearchTrack(trackQuery.orEmpty(), artistQuery.orEmpty())
             }
-        }
-    }
-
-    fun viewAction(selected: LastFmSearchResultItem): QueryAction {
-        return when (selected) {
-            is AlbumResult.Album   -> QueryAction.ViewRelease(selected)
-            is ArtistResult.Artist -> QueryAction.ViewArtist(selected)
-            is TrackResult.Track   -> QueryAction.ViewTrack(selected)
         }
     }
 
@@ -92,15 +68,15 @@ class LastFmQuery(
 
 
     //region Query Implementations
-    override fun query(context: Context, action: QueryAction): Deferred<*> {
+    override fun query(context: Context, action: LastFmAction): Deferred<*> {
         return lastFmQuery { service ->
             when (action) {
-                is QueryAction.SearchArtist  -> searchArtist(service, action.name)
-                is QueryAction.SearchRelease -> searchAlbum(service, action.name)
-                is QueryAction.SearchTrack   -> searchTrack(service, action.name, action.artist)
-                is QueryAction.ViewArtist    -> viewLastFMArtist(service, action.item)
-                is QueryAction.ViewRelease   -> viewLastFMAlbum(service, action.item)
-                is QueryAction.ViewTrack     -> viewLastFMTrack(service, action.item)
+                is LastFmAction.Search.SearchArtist -> searchArtist(service, action.name)
+                is LastFmAction.Search.SearchAlbum  -> searchAlbum(service, action.name)
+                is LastFmAction.Search.SearchTrack  -> searchTrack(service, action.name, action.artist)
+                is LastFmAction.View.ViewArtist -> viewLastFMArtist(service, action.item)
+                is LastFmAction.View.ViewAlbum  -> viewLastFMAlbum(service, action.item)
+                is LastFmAction.View.ViewTrack  -> viewLastFMTrack(service, action.item)
             }
         }
     }

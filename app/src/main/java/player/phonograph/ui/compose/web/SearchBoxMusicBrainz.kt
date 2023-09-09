@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.compose.web
 
-import player.phonograph.ui.compose.web.MusicBrainzQuery.Target
+import player.phonograph.ui.compose.web.MusicBrainzAction.Target
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 fun MusicBrainzSearchBox(
     modifier: Modifier = Modifier,
     musicBrainzQuery: MusicBrainzQuery,
-    onSearch: (MusicBrainzQuery.QueryAction) -> Unit,
+    onSearch: (MusicBrainzAction.Search) -> Unit,
 ) {
     val queryParameter by musicBrainzQuery.queryParameter.collectAsState()
     BaseSearchBox(

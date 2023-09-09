@@ -6,10 +6,6 @@ package player.phonograph.ui.compose.web
 
 import player.phonograph.R
 import player.phonograph.ui.compose.components.ListItem
-import player.phonograph.ui.compose.web.MusicBrainzQuery.QueryAction.ViewArtist
-import player.phonograph.ui.compose.web.MusicBrainzQuery.QueryAction.ViewRecording
-import player.phonograph.ui.compose.web.MusicBrainzQuery.QueryAction.ViewRelease
-import player.phonograph.ui.compose.web.MusicBrainzQuery.QueryAction.ViewReleaseGroup
 import util.phonograph.tagsources.musicbrainz.MusicBrainzSearchResult
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,7 +16,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import util.phonograph.tagsources.musicbrainz.MusicBrainzSearchResultArtists as SearchResultArtists
@@ -31,8 +26,8 @@ import util.phonograph.tagsources.musicbrainz.MusicBrainzSearchResultReleasesGro
 @Composable
 fun MusicBrainzSearchResult(
     result: MusicBrainzSearchResult?,
-    onSelectItem: (MusicBrainzQuery.QueryAction) -> Unit = {},
     modifier: Modifier = Modifier,
+    onSelectItem: (MusicBrainzAction.View) -> Unit = {},
 ) {
     Box(
         modifier.fillMaxSize()
@@ -59,7 +54,6 @@ fun MusicBrainzSearchResult(
 @Composable
 private fun <T> SearchResult(items: List<T>?, content: @Composable LazyItemScope.(T) -> Unit) {
     if (!items.isNullOrEmpty()) {
-        val context = LocalContext.current
         LazyColumn {
             for (item in items) {
                 item {
@@ -73,7 +67,7 @@ private fun <T> SearchResult(items: List<T>?, content: @Composable LazyItemScope
 @Composable
 private fun MusicBrainzSearchResultReleasesGroup(
     result: SearchResultReleasesGroup,
-    getDetail: (MusicBrainzQuery.QueryAction) -> Unit,
+    getDetail: (MusicBrainzAction.View) -> Unit,
 ) {
     val items = result.releasesGroup
     SearchResult(items) { releaseGroup ->
@@ -84,13 +78,15 @@ private fun MusicBrainzSearchResultReleasesGroup(
                 ?: releaseGroup.releases?.firstOrNull()?.title
                 ?: NA
 
-        ListItem(Modifier, releaseGroup.title, subtitle, { getDetail(ViewReleaseGroup(releaseGroup.id)) }, {}, null)
+        ListItem(Modifier, releaseGroup.title, subtitle, {
+            getDetail(MusicBrainzAction.View(MusicBrainzAction.Target.ReleaseGroup, releaseGroup.id))
+        }, {}, null)
     }
 }
 @Composable
 private fun MusicBrainzSearchResultReleases(
     result: SearchResultReleases,
-    getDetail: (MusicBrainzQuery.QueryAction) -> Unit,
+    getDetail: (MusicBrainzAction.View) -> Unit,
 ) {
     val items = result.releases
     SearchResult(items) { release ->
@@ -101,26 +97,30 @@ private fun MusicBrainzSearchResultReleases(
                 ?: release.date
                 ?: release.media.firstOrNull()?.format
                 ?: NA
-        ListItem(Modifier, release.title, subtitle, { getDetail(ViewRelease(release.id)) }, {}, null)
+        ListItem(Modifier, release.title, subtitle, {
+            getDetail(MusicBrainzAction.View(MusicBrainzAction.Target.Release, release.id))
+        }, {}, null)
     }
 }
 @Composable
 private fun MusicBrainzSearchResultArtists(
     result: SearchResultArtists,
-    getDetail: (MusicBrainzQuery.QueryAction) -> Unit,
+    getDetail: (MusicBrainzAction.View) -> Unit,
 ) {
     val items = result.artists
     SearchResult(items) { artist ->
         val subtitle = artist.country
             ?: artist.area?.name
             ?: ""
-        ListItem(Modifier, artist.name, subtitle, { getDetail(ViewArtist(artist.id)) }, {}, null)
+        ListItem(Modifier, artist.name, subtitle, {
+            getDetail(MusicBrainzAction.View(MusicBrainzAction.Target.Artist, artist.id))
+        }, {}, null)
     }
 }
 @Composable
 private fun MusicBrainzSearchResultRecording(
     result: SearchResultRecording,
-    getDetail: (MusicBrainzQuery.QueryAction) -> Unit,
+    getDetail: (MusicBrainzAction.View) -> Unit,
 ) {
     val items = result.recordings
     SearchResult(items) { recording ->
@@ -130,7 +130,9 @@ private fun MusicBrainzSearchResultRecording(
                 ?: recording.firstReleaseDate
                 ?: recording.releases?.firstOrNull()?.title
                 ?: NA
-        ListItem(Modifier, recording.title, subtitle, { getDetail(ViewRecording(recording.id)) }, {}, null)
+        ListItem(Modifier, recording.title, subtitle, {
+            getDetail(MusicBrainzAction.View(MusicBrainzAction.Target.Recording, recording.id))
+        }, {}, null)
     }
 }
 

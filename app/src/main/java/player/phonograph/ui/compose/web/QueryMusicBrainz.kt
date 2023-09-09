@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.compose.web
 
+import player.phonograph.ui.compose.web.MusicBrainzAction.Target
 import util.phonograph.tagsources.musicbrainz.MusicBrainzArtist
 import util.phonograph.tagsources.musicbrainz.MusicBrainzRecording
 import util.phonograph.tagsources.musicbrainz.MusicBrainzRelease
@@ -15,7 +16,6 @@ import util.phonograph.tagsources.musicbrainz.MusicBrainzSearchResultRecording
 import util.phonograph.tagsources.musicbrainz.MusicBrainzSearchResultReleases
 import util.phonograph.tagsources.musicbrainz.MusicBrainzSearchResultReleasesGroup
 import util.phonograph.tagsources.musicbrainz.MusicBrainzService
-import androidx.annotation.Keep
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -31,18 +31,7 @@ class MusicBrainzQuery(
     viewModel: WebSearchViewModel,
     target: Target,
     query: String,
-) : Query<MusicBrainzQuery.QueryParameter, MusicBrainzQuery.QueryAction>(viewModel, "Musicbrainz") {
-
-    @Keep
-    enum class Target(val displayName: String, val urlName: String) {
-        ReleaseGroup("Release Group", "release-group"),
-        Release("Release", "release"),
-        Artist("Artist", "artist"),
-        Recording("Recording", "recording"),
-        ;
-
-        fun link(mbid: String): String = "https://musicbrainz.org/${urlName}/$mbid"
-    }
+) : Query<MusicBrainzQuery.QueryParameter, MusicBrainzAction>(viewModel, Source.MusicBrainz.name) {
 
     private val _queryParameter: MutableStateFlow<QueryParameter> = MutableStateFlow(QueryParameter(target, query))
     override val queryParameter = _queryParameter.asStateFlow()
@@ -51,41 +40,29 @@ class MusicBrainzQuery(
     }
 
     data class QueryParameter(var target: Target, var query: String) : Parameter {
-        fun searchAction(): QueryAction = when (target) {
-            Target.ReleaseGroup -> QueryAction.SearchReleaseGroup(query)
-            Target.Release      -> QueryAction.SearchRelease(query)
-            Target.Artist       -> QueryAction.SearchArtist(query)
-            Target.Recording    -> QueryAction.SearchRecording(query)
-        }
+        fun searchAction(): MusicBrainzAction.Search = MusicBrainzAction.Search(target, query)
     }
-
-    sealed class QueryAction : Action {
-        data class SearchArtist(val query: String) : QueryAction()
-        data class SearchRelease(val query: String) : QueryAction()
-        data class SearchReleaseGroup(val query: String) : QueryAction()
-        data class SearchRecording(val query: String) : QueryAction()
-        data class ViewArtist(val mbid: String) : QueryAction()
-        data class ViewRelease(val mbid: String) : QueryAction()
-        data class ViewReleaseGroup(val mbid: String) : QueryAction()
-        data class ViewRecording(val mbid: String) : QueryAction()
-    }
-
 
     private val _result: MutableStateFlow<MusicBrainzSearchResult?> = MutableStateFlow(null)
     val result get() = _result.asStateFlow()
 
     //region Query Implementations
-    override fun query(context: Context, action: QueryAction): Deferred<*> {
+    override fun query(context: Context, action: MusicBrainzAction): Deferred<*> {
         return musicBrainzQuery { service ->
             when (action) {
-                is QueryAction.ViewReleaseGroup   -> viewMusicBrainzReleaseGroup(service, action.mbid)
-                is QueryAction.ViewRelease        -> viewMusicBrainzRelease(service, action.mbid)
-                is QueryAction.ViewArtist         -> viewMusicBrainzArtist(service, action.mbid)
-                is QueryAction.ViewRecording      -> viewMusicBrainzRecording(service, action.mbid)
-                is QueryAction.SearchReleaseGroup -> searchMusicBrainzReleaseGroup(service, action.query)
-                is QueryAction.SearchRelease      -> searchMusicBrainzRelease(service, action.query)
-                is QueryAction.SearchArtist       -> searchMusicBrainzArtists(service, action.query)
-                is QueryAction.SearchRecording    -> searchMusicBrainzRecordings(service, action.query)
+                is MusicBrainzAction.Search -> when (action.target) {
+                    Target.ReleaseGroup -> searchMusicBrainzReleaseGroup(service, action.query)
+                    Target.Release      -> searchMusicBrainzRelease(service, action.query)
+                    Target.Artist       -> searchMusicBrainzArtists(service, action.query)
+                    Target.Recording    -> searchMusicBrainzRecordings(service, action.query)
+                }
+
+                is MusicBrainzAction.View   -> when (action.target) {
+                    Target.ReleaseGroup -> viewMusicBrainzReleaseGroup(service, action.mbid)
+                    Target.Release      -> viewMusicBrainzRelease(service, action.mbid)
+                    Target.Artist       -> viewMusicBrainzArtist(service, action.mbid)
+                    Target.Recording    -> viewMusicBrainzRecording(service, action.mbid)
+                }
             }
         }
     }

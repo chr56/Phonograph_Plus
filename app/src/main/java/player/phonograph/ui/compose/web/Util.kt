@@ -6,11 +6,7 @@ package player.phonograph.ui.compose.web
 
 import player.phonograph.R
 import player.phonograph.ui.compose.base.Navigator
-import player.phonograph.ui.compose.web.MusicBrainzQuery.QueryAction.ViewArtist
-import player.phonograph.ui.compose.web.MusicBrainzQuery.QueryAction.ViewRecording
-import player.phonograph.ui.compose.web.MusicBrainzQuery.QueryAction.ViewRelease
-import player.phonograph.ui.compose.web.MusicBrainzQuery.QueryAction.ViewReleaseGroup
-import player.phonograph.ui.compose.web.MusicBrainzQuery.Target
+import player.phonograph.ui.compose.web.MusicBrainzAction.Target
 import player.phonograph.ui.compose.web.WebSearchActivity.Companion.launchIntent
 import player.phonograph.ui.compose.web.WebSearchActivity.Companion.viewIntentMusicBrainzArtist
 import player.phonograph.ui.compose.web.WebSearchActivity.Companion.viewIntentMusicBrainzRecording
@@ -94,12 +90,7 @@ fun jumpMusicbrainz(context: Context, navigator: Navigator<Page>?, type: Target,
     if (context is WebSearchActivity && navigator != null) {
         context.lifecycleScope.launch {
             val query = context.queryFactory.musicBrainzQuery(context)
-            val result = when (type) {
-                Target.ReleaseGroup -> query.query(context, ViewReleaseGroup(mbid))
-                Target.Release      -> query.query(context, ViewRelease(mbid))
-                Target.Artist       -> query.query(context, ViewArtist(mbid))
-                Target.Recording    -> query.query(context, ViewRecording(mbid))
-            }
+            val result = query.query(context, MusicBrainzAction.View(type, mbid))
             val page = Page.Detail.MusicBrainzDetail(
                 result.await() ?: Any()
             )

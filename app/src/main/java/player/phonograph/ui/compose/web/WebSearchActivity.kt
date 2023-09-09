@@ -70,7 +70,7 @@ class WebSearchActivity : ComposeThemeActivity() {
                 intent.parcelableExtra<PhonographAlbum>(EXTRA_DATA)
                     ?.let {
                         queryFactory.musicBrainzQuery(
-                            context, MusicBrainzQuery.Target.ReleaseGroup, luceneQuery(it)
+                            context, MusicBrainzAction.Target.ReleaseGroup, luceneQuery(it)
                         )
                     }.also {
                         prefillMusicBrainzSearch(viewModel.navigator, it)
@@ -80,7 +80,7 @@ class WebSearchActivity : ComposeThemeActivity() {
                 intent.parcelableExtra<PhonographAlbum>(EXTRA_DATA)
                     ?.let {
                         queryFactory.musicBrainzQuery(
-                            context, MusicBrainzQuery.Target.Release, luceneQuery(it)
+                            context, MusicBrainzAction.Target.Release, luceneQuery(it)
                         )
                     }.also {
                         prefillMusicBrainzSearch(viewModel.navigator, it)
@@ -90,7 +90,7 @@ class WebSearchActivity : ComposeThemeActivity() {
                 intent.parcelableExtra<PhonographArtist>(EXTRA_DATA)
                     ?.let {
                         queryFactory.musicBrainzQuery(
-                            context, MusicBrainzQuery.Target.Artist, it.name
+                            context, MusicBrainzAction.Target.Artist, it.name
                         )
                     }.also {
                         prefillMusicBrainzSearch(viewModel.navigator, it)
@@ -100,7 +100,7 @@ class WebSearchActivity : ComposeThemeActivity() {
                 intent.parcelableExtra<PhonographSong>(EXTRA_DATA)
                     ?.let {
                         queryFactory.musicBrainzQuery(
-                            context, MusicBrainzQuery.Target.Recording, luceneQuery(it)
+                            context, MusicBrainzAction.Target.Recording, luceneQuery(it)
                         )
                     }
                     .also {
@@ -109,22 +109,22 @@ class WebSearchActivity : ComposeThemeActivity() {
 
             EXTRA_VIEW_MUSICBRAINZ_RELEASE_GROUP  ->
                 parseMusicBrainzDetail(context, intent, viewModel) {
-                    MusicBrainzQuery.QueryAction.ViewReleaseGroup(it)
+                    MusicBrainzAction.View(MusicBrainzAction.Target.ReleaseGroup, it)
                 }
 
             EXTRA_VIEW_MUSICBRAINZ_RELEASE        ->
                 parseMusicBrainzDetail(context, intent, viewModel) {
-                    MusicBrainzQuery.QueryAction.ViewRelease(it)
+                    MusicBrainzAction.View(MusicBrainzAction.Target.Release, it)
                 }
 
             EXTRA_VIEW_MUSICBRAINZ_ARTIST         ->
                 parseMusicBrainzDetail(context, intent, viewModel) {
-                    MusicBrainzQuery.QueryAction.ViewArtist(it)
+                    MusicBrainzAction.View(MusicBrainzAction.Target.Artist, it)
                 }
 
             EXTRA_VIEW_MUSICBRAINZ_RECORDING      ->
                 parseMusicBrainzDetail(context, intent, viewModel) {
-                    MusicBrainzQuery.QueryAction.ViewRecording(it)
+                    MusicBrainzAction.View(MusicBrainzAction.Target.Recording, it)
                 }
 
 
@@ -168,7 +168,7 @@ class WebSearchActivity : ComposeThemeActivity() {
             context: Context,
             intent: Intent,
             viewModel: WebSearchViewModel,
-            process: (String) -> MusicBrainzQuery.QueryAction,
+            process: (String) -> MusicBrainzAction,
         ): MusicBrainzQuery {
             val mbid = intent.getStringExtra(EXTRA_DATA).orEmpty()
             return viewModel.queryFactory.musicBrainzQuery(context).also {

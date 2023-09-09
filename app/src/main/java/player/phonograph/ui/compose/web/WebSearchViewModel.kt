@@ -26,51 +26,36 @@ class WebSearchViewModel : ViewModel() {
             LastFmQuery(
                 context, this@WebSearchViewModel,
                 artistQuery = artist.name,
-                target = LastFmQuery.Target.Artist
+                target = LastFmAction.Target.Artist
             )
 
         fun lastFmQuery(context: Context, album: Album): LastFmQuery =
             LastFmQuery(
                 context, this@WebSearchViewModel,
-                releaseQuery = album.title,
+                albumQuery = album.title,
                 artistQuery = album.artistName,
-                target = LastFmQuery.Target.Release
+                target = LastFmAction.Target.Album
             )
 
         fun lastFmQuery(context: Context, song: Song): LastFmQuery =
             LastFmQuery(
                 context, this@WebSearchViewModel,
-                releaseQuery = song.albumName,
+                albumQuery = song.albumName,
                 artistQuery = song.artistName,
                 trackQuery = song.title,
-                target = LastFmQuery.Target.Track
+                target = LastFmAction.Target.Track
             )
 
 
         fun musicBrainzQuery(context: Context): MusicBrainzQuery =
-            MusicBrainzQuery(context, this@WebSearchViewModel, MusicBrainzQuery.Target.Release, "")
+            MusicBrainzQuery(context, this@WebSearchViewModel, MusicBrainzAction.Target.Release, "")
 
-        fun musicBrainzQuery(context: Context, target: MusicBrainzQuery.Target, query: String): MusicBrainzQuery =
+        fun musicBrainzQuery(context: Context, target: MusicBrainzAction.Target, query: String): MusicBrainzQuery =
             MusicBrainzQuery(context, this@WebSearchViewModel, target, query)
 
-        fun musicBrainzView(context: Context, target: MusicBrainzQuery.Target, mbid: String): MusicBrainzQuery =
+        fun musicBrainzView(context: Context, target: MusicBrainzAction.Target, mbid: String): MusicBrainzQuery =
             musicBrainzQuery(context).also {
-                it.query(
-                    context,
-                    when (target) {
-                        MusicBrainzQuery.Target.ReleaseGroup ->
-                            MusicBrainzQuery.QueryAction.ViewReleaseGroup(mbid)
-
-                        MusicBrainzQuery.Target.Release      ->
-                            MusicBrainzQuery.QueryAction.ViewRelease(mbid)
-
-                        MusicBrainzQuery.Target.Artist       ->
-                            MusicBrainzQuery.QueryAction.ViewArtist(mbid)
-
-                        MusicBrainzQuery.Target.Recording    ->
-                            MusicBrainzQuery.QueryAction.ViewRecording(mbid)
-                    }
-                )
+                it.query(context, MusicBrainzAction.View(target, mbid))
             }
     }
 }

@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 fun LastFmSearchBox(
     lastFmQuery: LastFmQuery,
     modifier: Modifier = Modifier,
-    onSearch: (LastFmQuery.QueryAction) -> Unit,
+    onSearch: (LastFmAction.Search) -> Unit,
 ) {
     val queryParameter by lastFmQuery.queryParameter.collectAsState()
     BaseSearchBox(
@@ -24,8 +24,8 @@ fun LastFmSearchBox(
         title = "last.fm",
         target = {
             Target(
-                all = listOf(LastFmQuery.Target.Release, LastFmQuery.Target.Artist, LastFmQuery.Target.Track),
-                text = { it.name },
+                all = listOf(LastFmAction.Target.Album, LastFmAction.Target.Artist, LastFmAction.Target.Track),
+                text = { it.displayName },
                 current = queryParameter.target
             ) {
                 lastFmQuery.updateQueryParameter { old -> old.copy(target = it) }
@@ -33,15 +33,15 @@ fun LastFmSearchBox(
         },
         onSearch = { onSearch(lastFmQuery.searchAction()) }
     ) {
-        if (queryParameter.target == LastFmQuery.Target.Release)
+        if (queryParameter.target == LastFmAction.Target.Album)
             Line(name = stringResource(id = R.string.album)) {
-                SearchTextBox(queryParameter.releaseQuery.orEmpty()) {
+                SearchTextBox(queryParameter.albumQuery.orEmpty()) {
                     lastFmQuery.updateQueryParameter { old ->
-                        old.copy(releaseQuery = it)
+                        old.copy(albumQuery = it)
                     }
                 }
             }
-        if (queryParameter.target == LastFmQuery.Target.Track)
+        if (queryParameter.target == LastFmAction.Target.Track)
             Line(name = stringResource(id = R.string.song)) {
                 SearchTextBox(queryParameter.trackQuery.orEmpty()) {
                     lastFmQuery.updateQueryParameter { old ->
@@ -49,7 +49,7 @@ fun LastFmSearchBox(
                     }
                 }
             }
-        if (queryParameter.target == LastFmQuery.Target.Artist || queryParameter.target == LastFmQuery.Target.Track)
+        if (queryParameter.target == LastFmAction.Target.Artist || queryParameter.target == LastFmAction.Target.Track)
             Line(name = stringResource(id = R.string.artist)) {
                 SearchTextBox(queryParameter.artistQuery.orEmpty()) {
                     lastFmQuery.updateQueryParameter { old ->
