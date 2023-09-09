@@ -10,6 +10,7 @@ import kotlinx.serialization.Serializable
 
 sealed interface MusicBrainzResponse
 
+@Serializable
 sealed interface MusicBrainzModel : MusicBrainzResponse
 
 @Keep

@@ -23,6 +23,8 @@ class WebSearchActivity : ComposeThemeActivity() {
 
         executeCommand(this, intent)
 
+        viewModel.selectorMode = intent.getBooleanExtra(EXTRA_SELECTOR_MODE, false)
+
         setContent {
 
             val highlightColor by primaryColor.collectAsState()
@@ -37,6 +39,7 @@ class WebSearchActivity : ComposeThemeActivity() {
             val result = viewModel.navigator.navigateUp()
             isEnabled = result
         }
+        setResult(RESULT_CANCELED)
     }
 
 }
