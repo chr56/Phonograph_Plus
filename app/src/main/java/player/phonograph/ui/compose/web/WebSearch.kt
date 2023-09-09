@@ -65,8 +65,8 @@ fun WebSearch(viewModel: WebSearchViewModel, scaffoldState: ScaffoldState, page:
                 when (val p = page) {
                     PageHome -> Home(viewModel, page)
                     is LastFmSearch -> LastFmSearch(viewModel, p)
-                    is MusicBrainzSearch            -> MusicBrainzSearch(viewModel, p)
-                    is PageDetail.LastFmDetail      -> DetailLastFm(viewModel, p)
+                    is MusicBrainzSearch -> MusicBrainzSearch(viewModel, p)
+                    is PageDetail.LastFmDetail -> DetailLastFm(viewModel, p)
                     is PageDetail.MusicBrainzDetail -> DetailMusicBrainz(viewModel, p)
                 }
             }
