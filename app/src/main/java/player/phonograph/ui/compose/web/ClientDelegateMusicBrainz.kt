@@ -12,7 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 
-class MusicbrainzClientDelegate(
+class MusicBrainzClientDelegate(
     context: Context,
     val scope: CoroutineScope,
 ) : ClientDelegate<MusicBrainzAction, MusicBrainzRespond>() {
