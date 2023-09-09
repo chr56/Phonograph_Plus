@@ -9,11 +9,30 @@ import player.phonograph.model.Artist
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.base.Navigator
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import android.content.Context
 
 class WebSearchViewModel : ViewModel() {
 
     val navigator = Navigator<Page>(Page.Home)
+
+    private var clientDelegateLastFm: LastFmClientDelegate? = null
+    fun clientDelegateLastFm(context: Context): LastFmClientDelegate {
+        return if (clientDelegateLastFm != null) {
+            clientDelegateLastFm!!
+        } else {
+            LastFmClientDelegate(context, viewModelScope).also { clientDelegateLastFm = it }
+        }
+    }
+
+    private var clientDelegateMusicBrainz: MusicBrainzClientDelegate? = null
+    fun clientDelegateMusicBrainz(context: Context): MusicBrainzClientDelegate {
+        return if (clientDelegateMusicBrainz != null) {
+            clientDelegateMusicBrainz!!
+        } else {
+            MusicBrainzClientDelegate(context, viewModelScope).also { clientDelegateMusicBrainz = it }
+        }
+    }
 
     val queryFactory = QueryFactory()
 

@@ -5,22 +5,23 @@
 package player.phonograph.ui.compose.web
 
 import player.phonograph.ui.compose.web.MusicBrainzAction.Target
-import util.phonograph.tagsources.musicbrainz.MusicBrainzRespond
+import util.phonograph.tagsources.musicbrainz.MusicBrainzResponse
 import util.phonograph.tagsources.musicbrainz.MusicBrainzRestClient
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 
 class MusicBrainzClientDelegate(
     context: Context,
     val scope: CoroutineScope,
-) : ClientDelegate<MusicBrainzAction, MusicBrainzRespond>() {
+) : ClientDelegate<MusicBrainzAction, MusicBrainzResponse>() {
 
     private val musicBrainzRestClient: MusicBrainzRestClient = MusicBrainzRestClient(context)
 
-    override fun request(context: Context, action: MusicBrainzAction): Deferred<MusicBrainzRespond?> {
-        return scope.async {
+    override fun request(context: Context, action: MusicBrainzAction): Deferred<MusicBrainzResponse?> {
+        return scope.async(Dispatchers.IO) {
             val api = musicBrainzRestClient.apiService
             when (action) {
                 is MusicBrainzAction.View   -> when (action.target) {

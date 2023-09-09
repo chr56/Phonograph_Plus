@@ -11,6 +11,7 @@ import util.phonograph.tagsources.lastfm.LastFmResponse
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 
 class LastFmClientDelegate(
@@ -21,7 +22,7 @@ class LastFmClientDelegate(
     private val musicBrainzRestClient: LastFMRestClient = LastFMRestClient(context)
 
     override fun request(context: Context, action: LastFmAction): Deferred<LastFmResponse?> {
-        return scope.async {
+        return scope.async(Dispatchers.IO) {
             val api = musicBrainzRestClient.apiService
             when (action) {
                 is Search.SearchAlbum  -> api.searchAlbum(action.name, 1).process()
