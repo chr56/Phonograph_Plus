@@ -24,6 +24,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -33,21 +34,38 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun WebSearch(viewModel: WebSearchViewModel, scaffoldState: ScaffoldState, page: Page) {
+    val context = LocalContext.current
     Scaffold(
         Modifier.statusBarsPadding(),
         scaffoldState = scaffoldState,
         topBar = {
             TopAppBar(
-                title = { Text(page.title(LocalContext.current)) },
+                title = { Text(page.title(context)) },
                 navigationIcon = {
                     Box(Modifier.padding(16.dp)) {
                         NavigateButton(scaffoldState.drawerState, viewModel.navigator)
+                    }
+                },
+                actions = {
+                    if (page is PageDetail<*> && viewModel.selectorMode) {
+                        Icon(
+                            Icons.Default.Check, stringResource(android.R.string.ok),
+                            Modifier
+                                .clickable {
+                                    val activity = context as? WebSearchActivity
+                                    if (activity != null) {
+                                        viewModel.exit(activity)
+                                    }
+                                }
+                                .padding(8.dp)
+                        )
                     }
                 }
             )

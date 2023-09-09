@@ -33,6 +33,16 @@ private fun luceneQuery(album: Album): String = buildString {
 
 const val EXTRA_ACTION_TYPE = "ACTION"
 const val EXTRA_DATA = "DATA"
+const val EXTRA_SELECTOR_MODE = "SELECTOR"
+
+const val EXTRA_SELECTOR_RESULT = "SELECTOR_RESULT"
+const val MUSICBRAINZ_ARTIST = "MusicBrainzArtist"
+const val MUSICBRAINZ_RECORDING = "MusicBrainzRecording"
+const val MUSICBRAINZ_RELEASE = "MusicBrainzRelease"
+const val MUSICBRAINZ_RELEASE_GROUP = "MusicBrainzReleaseGroup"
+const val LASTFM_ALBUM = "LastFmAlbum"
+const val LASTFM_ARTIST = "LastFmArtist"
+const val LASTFM_TRACK = "LastFmTrack"
 
 
 /**
@@ -151,6 +161,11 @@ object WebSearchLauncher {
                 EXTRA_DATA, MusicBrainzAction.View(MusicBrainzAction.Target.Recording, mbid)
             )
         }
+
+    fun Intent.selectable(): Intent {
+        putExtra(EXTRA_SELECTOR_MODE, true)
+        return this
+    }
 
 }
 
