@@ -190,7 +190,7 @@ internal fun executeCommand(
             }
 
         LASTFM_SEARCH      ->
-            intent.parcelableExtra<LastFmAction.Search>(EXTRA_ACTION_TYPE).also {
+            intent.parcelableExtra<LastFmAction.Search>(EXTRA_DATA).also {
                 val page = PageSearch.LastFmSearch(
                     albumQuery = it?.album,
                     artistQuery = it?.artist,
