@@ -72,3 +72,9 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.backup.* extends player.phonograph.mechanism.backup.BackupItem { public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.migrate.* extends player.phonograph.mechanism.migrate.Migration { public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.event.* { public <methods>; }
+
+-keepclassmembernames class lib.phonograph.misc.RestResult { <methods>; }
+-keepclassmembernames class lib.phonograph.misc.RestResult$Success { <methods>; }
+-keepclassmembernames class lib.phonograph.misc.RestResult$RemoteError { <methods>; }
+-keepclassmembernames class lib.phonograph.misc.RestResult$ParseError { <methods>; }
+-keepclassmembernames class lib.phonograph.misc.RestResult$NetworkError { <methods>; }

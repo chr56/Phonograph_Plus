@@ -10,6 +10,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Converter
 import retrofit2.Retrofit
+import androidx.annotation.Keep
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.MissingFieldException
@@ -22,6 +23,7 @@ import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
 
+@Keep
 sealed class RestResult<T>(val isSuccess: Boolean) {
 
     fun dataOrNull() = (this as? Success)?.data
