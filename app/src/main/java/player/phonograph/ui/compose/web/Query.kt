@@ -15,7 +15,7 @@ import android.content.Context
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.StateFlow
 
-sealed class Query<P : Query.Parameter, A : WebSearchAction>(viewModel: ViewModel, val source: String) {
+sealed class Query<P : QueryParameter, A : WebSearchAction>(viewModel: ViewModel, val source: String) {
 
     abstract val queryParameter: StateFlow<P>
     abstract fun updateQueryParameter(update: (P) -> P)
@@ -31,8 +31,6 @@ sealed class Query<P : Query.Parameter, A : WebSearchAction>(viewModel: ViewMode
         }
         return null
     }
-
-    interface Parameter
 
     companion object {
         private const val TAG = "WebSearch"

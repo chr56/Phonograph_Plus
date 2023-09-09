@@ -30,7 +30,7 @@ fun MusicBrainzSearchBox(
                 musicBrainzQuery.updateQueryParameter { old -> old.copy(target = it) }
             }
         },
-        onSearch = { onSearch(queryParameter.searchAction()) }
+        onSearch = { onSearch(queryParameter.toAction()) }
     ) {
         Line(name = "Query") {
             SearchTextBox(

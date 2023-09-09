@@ -31,37 +31,15 @@ class LastFmQuery(
     artistQuery: String? = null,
     trackQuery: String? = null,
     target: Target = Target.Album,
-) : Query<LastFmQuery.QueryParameter, LastFmAction>(viewModel, Source.LastFm.name) {
+) : Query<LastFmQueryParameter, LastFmAction>(viewModel, Source.LastFm.name) {
 
-    private val _queryParameter: MutableStateFlow<QueryParameter> =
-        MutableStateFlow(QueryParameter(target, albumQuery, artistQuery, trackQuery))
+    private val _queryParameter: MutableStateFlow<LastFmQueryParameter> =
+        MutableStateFlow(LastFmQueryParameter(target, albumQuery, artistQuery, trackQuery))
     override val queryParameter get() = _queryParameter.asStateFlow()
-    override fun updateQueryParameter(update: (QueryParameter) -> QueryParameter) {
+    override fun updateQueryParameter(update: (LastFmQueryParameter) -> LastFmQueryParameter) {
         _queryParameter.update(update)
     }
 
-    data class QueryParameter(
-        val target: Target,
-        val albumQuery: String?,
-        val artistQuery: String?,
-        val trackQuery: String?,
-    ) : Parameter {
-        fun check(): Boolean = when (target) {
-            Target.Track  -> trackQuery != null
-            Target.Artist -> artistQuery != null
-            Target.Album  -> albumQuery != null
-        }
-    }
-
-    fun searchAction(): LastFmAction.Search {
-        with(queryParameter.value) {
-            return when (target) {
-                Target.Artist -> LastFmAction.Search.SearchArtist(artistQuery.orEmpty())
-                Target.Album  -> LastFmAction.Search.SearchAlbum(albumQuery.orEmpty())
-                Target.Track  -> LastFmAction.Search.SearchTrack(trackQuery.orEmpty(), artistQuery.orEmpty())
-            }
-        }
-    }
 
     private val _result: MutableStateFlow<LastFmSearchResults?> = MutableStateFlow(null)
     val result get() = _result.asStateFlow()
@@ -74,9 +52,9 @@ class LastFmQuery(
                 is LastFmAction.Search.SearchArtist -> searchArtist(service, action.name)
                 is LastFmAction.Search.SearchAlbum  -> searchAlbum(service, action.name)
                 is LastFmAction.Search.SearchTrack  -> searchTrack(service, action.name, action.artist)
-                is LastFmAction.View.ViewArtist -> viewLastFMArtist(service, action.item)
-                is LastFmAction.View.ViewAlbum  -> viewLastFMAlbum(service, action.item)
-                is LastFmAction.View.ViewTrack  -> viewLastFMTrack(service, action.item)
+                is LastFmAction.View.ViewArtist     -> viewLastFMArtist(service, action.item)
+                is LastFmAction.View.ViewAlbum      -> viewLastFMAlbum(service, action.item)
+                is LastFmAction.View.ViewTrack      -> viewLastFMTrack(service, action.item)
             }
         }
     }

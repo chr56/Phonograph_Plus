@@ -31,16 +31,14 @@ class MusicBrainzQuery(
     viewModel: WebSearchViewModel,
     target: Target,
     query: String,
-) : Query<MusicBrainzQuery.QueryParameter, MusicBrainzAction>(viewModel, Source.MusicBrainz.name) {
+) : Query<MusicbrainzQueryParameter, MusicBrainzAction>(viewModel, Source.MusicBrainz.name) {
 
-    private val _queryParameter: MutableStateFlow<QueryParameter> = MutableStateFlow(QueryParameter(target, query))
+
+    private val _queryParameter: MutableStateFlow<MusicbrainzQueryParameter> =
+        MutableStateFlow(MusicbrainzQueryParameter(target, query))
     override val queryParameter = _queryParameter.asStateFlow()
-    override fun updateQueryParameter(update: (QueryParameter) -> QueryParameter) {
+    override fun updateQueryParameter(update: (MusicbrainzQueryParameter) -> MusicbrainzQueryParameter) {
         _queryParameter.update(update)
-    }
-
-    data class QueryParameter(var target: Target, var query: String) : Parameter {
-        fun searchAction(): MusicBrainzAction.Search = MusicBrainzAction.Search(target, query)
     }
 
     private val _result: MutableStateFlow<MusicBrainzSearchResult?> = MutableStateFlow(null)

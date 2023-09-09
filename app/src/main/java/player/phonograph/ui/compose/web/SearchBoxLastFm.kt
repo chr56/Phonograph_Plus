@@ -31,7 +31,7 @@ fun LastFmSearchBox(
                 lastFmQuery.updateQueryParameter { old -> old.copy(target = it) }
             }
         },
-        onSearch = { onSearch(lastFmQuery.searchAction()) }
+        onSearch = { onSearch(queryParameter.toAction()) }
     ) {
         if (queryParameter.target == LastFmAction.Target.Album)
             Line(name = stringResource(id = R.string.album)) {
