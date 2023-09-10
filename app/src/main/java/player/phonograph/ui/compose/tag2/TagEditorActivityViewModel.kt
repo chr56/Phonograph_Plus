@@ -4,16 +4,21 @@
 
 package player.phonograph.ui.compose.tag2
 
+import com.vanpra.composematerialdialogs.MaterialDialogState
 import org.jaudiotagger.tag.FieldKey
+import player.phonograph.App
+import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.retriever.PARAMETERS_RAW
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.mechanism.tag.EditAction
+import player.phonograph.mechanism.tag.edit.applyEdit
 import player.phonograph.mechanism.tag.loadSongInfo
 import player.phonograph.model.Song
 import player.phonograph.model.SongInfoModel
 import player.phonograph.model.TagData
 import player.phonograph.model.TagField
+import player.phonograph.util.permissions.navigateToStorageSetting
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.ViewModel
@@ -21,11 +26,14 @@ import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.widget.Toast
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
+import java.io.File
 
 class TagEditorActivityViewModel : ViewModel() {
 
@@ -76,6 +84,7 @@ class TagEditorActivityViewModel : ViewModel() {
         saveArtwork(viewModelScope, activity, bitmap, fileName)
     }
 
+    val saveConfirmationDialogState = MaterialDialogState(false)
 
 
     private var _pendingEditRequests: MutableList<EditAction> = mutableListOf()
@@ -128,6 +137,41 @@ class TagEditorActivityViewModel : ViewModel() {
             val newTagFields: Map<FieldKey, TagField> = action(old.tagFields.toMutableMap())
             val new = old.copy(tagFields = newTagFields)
             _currentSongInfo.emit(new)
+        }
+    }
+
+    internal fun diff(): TagDiff {
+        mergeActions()
+        val current = currentSongInfo.value
+        val tagDiff = pendingEditRequests.map { action ->
+            val old = current.tagFields[action.key]?.value() ?: ""
+            val new = when (action) {
+                is EditAction.Delete -> null
+                is EditAction.Update -> action.newValue
+            }
+            Triple(action.key, old, new)
+        }
+        return TagDiff(tagDiff, TagDiff.ArtworkDiff.None)
+    }
+
+    internal fun save(context: Context) {
+        val songFile = File(song.value.data)
+        if (songFile.canWrite()) {
+            mergeActions()
+            applyEdit(
+                scope = CoroutineScope(Dispatchers.Unconfined),
+                context = context,
+                songFile = songFile,
+                editRequests = pendingEditRequests,
+                needDeleteCover = false,
+                needReplaceCover = false,
+                newCoverUri = null
+            )
+        } else {
+            navigateToStorageSetting(context)
+            Toast.makeText(
+                App.instance, R.string.permission_manage_external_storage_denied, Toast.LENGTH_SHORT
+            ).show()
         }
     }
 

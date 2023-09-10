@@ -102,6 +102,13 @@ fun TagBrowserScreen(viewModel: TagEditorActivityViewModel) {
             RawTag(key, rawTag)
         }
     }
+    if (editable) {
+        val context = LocalContext.current
+        SaveConfirmationDialog(
+            viewModel.saveConfirmationDialogState,
+            viewModel::diff
+        ) { viewModel.save(context) }
+    }
 }
 
 
