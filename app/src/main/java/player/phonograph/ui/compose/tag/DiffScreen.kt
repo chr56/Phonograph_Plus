@@ -26,12 +26,6 @@ import androidx.compose.ui.unit.dp
 import android.net.Uri
 
 @Composable
-internal fun DiffScreen(model: TagEditorScreenViewModel) {
-    val diff = remember { model.generateDiff() }
-    DiffScreen(diff)
-}
-
-@Composable
 internal fun DiffScreen(model: BatchTagEditScreenViewModel) {
     val diff = remember { model.generateDiff() }
     DiffScreen(diff)
