@@ -82,27 +82,31 @@ fun TagBrowserScreen(viewModel: TagEditorActivityViewModel) {
         // cover
         Artwork(viewModel, bitmap, editable)
         // file
-        Spacer(modifier = Modifier.height(16.dp))
-        Title(stringResource(R.string.file))
-        Item(R.string.label_file_name, info.fileName.value())
-        Item(R.string.label_file_path, info.filePath.value())
-        Item(R.string.label_file_size, getFileSizeString(info.fileSize.value()))
-        for ((key, field) in info.audioPropertyFields) {
-            Item(stringResource(key.res), value = field.value().toString())
-        }
-        // music tags
-        Spacer(modifier = Modifier.height(16.dp))
-        Title(stringResource(R.string.music_tags))
-        Item(stringResource(R.string.tag_format), info.tagFormat.id)
-        Spacer(modifier = Modifier.height(8.dp))
-        for ((key, field) in info.tagTextOnlyFields) {
-            CommonTag(key, field.content, editable, viewModel::process)
-        }
-        if (editable) AddMoreButton(viewModel)
-        Spacer(modifier = Modifier.height(16.dp))
-        Title(stringResource(R.string.raw_tags))
-        for ((key, rawTag) in info.allTags) {
-            RawTag(key, rawTag)
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Title(stringResource(R.string.file))
+            Item(R.string.label_file_name, info.fileName.value())
+            Item(R.string.label_file_path, info.filePath.value())
+            Item(R.string.label_file_size, getFileSizeString(info.fileSize.value()))
+            for ((key, field) in info.audioPropertyFields) {
+                Item(stringResource(key.res), value = field.value().toString())
+            }
+            // music tags
+            Spacer(modifier = Modifier.height(16.dp))
+            Title(stringResource(R.string.music_tags))
+            Item(stringResource(R.string.tag_format), info.tagFormat.id)
+            Spacer(modifier = Modifier.height(8.dp))
+            for ((key, field) in info.tagTextOnlyFields) {
+                CommonTag(key, field.content, editable, viewModel::process)
+            }
+            if (editable) AddMoreButton(viewModel)
+            Spacer(modifier = Modifier.height(16.dp))
+            Title(stringResource(R.string.raw_tags))
+            for ((key, rawTag) in info.allTags) {
+                RawTag(key, rawTag)
+            }
         }
     }
     if (editable) {
