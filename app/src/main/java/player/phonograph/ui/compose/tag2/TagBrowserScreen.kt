@@ -118,9 +118,9 @@ fun TagBrowserScreen(viewModel: TagEditorActivityViewModel) {
 @Composable
 private fun AddMoreButton(model: TagEditorActivityViewModel) {
     Box(Modifier.fillMaxWidth()) {
+        val current by model.currentSongInfo.collectAsState()
         var showed by remember { mutableStateOf(false) }
-        val fieldKeys =
-            allFieldKey.filterNot { it in model.currentSongInfo.value.tagFields.keys }
+        val fieldKeys = allFieldKey.subtract(current.tagTextOnlyFields.keys)
 
         DropdownMenu(expanded = showed, onDismissRequest = { showed = false }) {
             val context = LocalContext.current
