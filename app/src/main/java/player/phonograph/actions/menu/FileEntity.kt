@@ -19,7 +19,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.ui.compose.tag.TagEditorActivity
+import player.phonograph.ui.compose.tag2.TagBrowserActivity
 import player.phonograph.util.lifecycleScopeOrNewOne
 import android.app.Activity
 import android.content.Context
@@ -78,7 +78,7 @@ fun fileEntityPopupMenu(
                 menuItem(title = getString(R.string.action_tag_editor)) { //id = R.id.action_tag_editor
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                     onClick {
-                        TagEditorActivity.launch(context, file.id)
+                        TagBrowserActivity.launch(context, file.location.absolutePath)
                         true
                     }
                 }

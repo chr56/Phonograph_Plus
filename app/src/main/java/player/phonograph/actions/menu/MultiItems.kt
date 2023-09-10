@@ -20,7 +20,7 @@ import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.compose.tag.BatchTagEditorActivity
-import player.phonograph.ui.compose.tag.TagEditorActivity
+import player.phonograph.ui.compose.tag2.TagBrowserActivity
 import player.phonograph.util.theme.getTintedDrawable
 import android.content.Context
 import android.view.Menu
@@ -80,7 +80,7 @@ fun <I> multiItemsToolbar(
                     if (songs.size > 1)
                         BatchTagEditorActivity.launch(context, ArrayList(songs))
                     else
-                        TagEditorActivity.launch(context, songs.first().id)
+                        TagBrowserActivity.launch(context, songs.first().data)
                     true
                 }
             }

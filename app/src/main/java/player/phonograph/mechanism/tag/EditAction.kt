@@ -63,8 +63,7 @@ sealed interface EditAction {
         override val key: FieldKey = FieldKey.COVER_ART
         override val description: String get() = "Replace Cover Art to ${file.path}"
         override fun valid(audioFile: AudioFile): ValidResult {
-            val size = audioFile.tag?.artworkList?.size ?: 0
-            return if (size > 0) ValidResult.Valid else ValidResult.NoSuchKey
+            return ValidResult.Valid
         }
     }
 

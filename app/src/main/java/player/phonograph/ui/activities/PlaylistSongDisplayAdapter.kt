@@ -18,7 +18,7 @@ import player.phonograph.actions.actionGotoDetail
 import player.phonograph.coil.loadImage
 import player.phonograph.model.Song
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.compose.tag.TagEditorActivity
+import player.phonograph.ui.compose.tag2.TagBrowserActivity
 import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.util.ui.hitTest
 import androidx.appcompat.app.AppCompatActivity
@@ -161,7 +161,7 @@ class PlaylistSongDisplayAdapter(
                 menuItem {
                     titleRes(R.string.action_tag_editor)
                     onClick {
-                        TagEditorActivity.launch(activity, song.id)
+                        TagBrowserActivity.launch(activity, song.data)
                         true
                     }
                 }
