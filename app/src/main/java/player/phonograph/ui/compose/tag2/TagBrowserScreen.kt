@@ -64,7 +64,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun TagBrowserScreen(viewModel: TagEditorActivityViewModel) {
-    val info by viewModel.songInfo.collectAsState()
+    val info by viewModel.currentSongInfo.collectAsState()
     val bitmap by viewModel.songBitmap.collectAsState()
     val editable by viewModel.editable.collectAsState()
     Column(
@@ -92,9 +92,8 @@ fun TagBrowserScreen(viewModel: TagEditorActivityViewModel) {
         Title(stringResource(R.string.music_tags))
         Item(stringResource(R.string.tag_format), info.tagFormat.id)
         Spacer(modifier = Modifier.height(8.dp))
-        val allTags = info.tagFields.filter { it.value.content is TagData.TextData }.mapValues { it.value.content }
-        for ((key, field) in allTags) {
-            CommonTag(key, field, editable, viewModel::process)
+        for ((key, field) in info.tagTextOnlyFields) {
+            CommonTag(key, field.content, editable, viewModel::process)
         }
         if (editable) AddMoreButton(viewModel)
         Spacer(modifier = Modifier.height(16.dp))
@@ -111,7 +110,7 @@ private fun AddMoreButton(model: TagEditorActivityViewModel) {
     Box(Modifier.fillMaxWidth()) {
         var showed by remember { mutableStateOf(false) }
         val fieldKeys =
-            allFieldKey.filterNot { it in model.songInfo.value.tagFields.keys }
+            allFieldKey.filterNot { it in model.currentSongInfo.value.tagFields.keys }
 
         DropdownMenu(expanded = showed, onDismissRequest = { showed = false }) {
             val context = LocalContext.current
