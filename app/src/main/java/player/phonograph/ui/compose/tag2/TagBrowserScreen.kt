@@ -5,9 +5,10 @@
 package player.phonograph.ui.compose.tag2
 
 import com.vanpra.composematerialdialogs.MaterialDialogState
+import lib.phonograph.misc.IOpenFileStorageAccess
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
-import player.phonograph.mechanism.tag.edit.selectNewArtwork
+import player.phonograph.mechanism.tag.edit.selectImage
 import player.phonograph.model.RawTag
 import player.phonograph.model.TagData
 import player.phonograph.model.allFieldKey
@@ -66,8 +67,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
 import android.graphics.Bitmap
+import android.widget.Toast
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
+import kotlinx.coroutines.withContext
 
 @Composable
 fun TagBrowserScreen(viewModel: TagBrowserViewModel) {
@@ -136,11 +139,17 @@ fun Artwork(viewModel: TagBrowserViewModel, bitmap: Bitmap?, editable: Boolean) 
             onSave = { viewModel.saveArtwork(context) },
             onDelete = { viewModel.process(TagEditEvent.RemoveArtwork) },
             onUpdate = {
-                viewModel.viewModelScope.launch {
-                    val newArtwork = selectNewArtwork(context)
-                    while (newArtwork.value == null) yield()
-                    viewModel.process(TagEditEvent.UpdateArtwork.from(context, newArtwork.value!!))
+                viewModel.viewModelScope.launch(Dispatchers.IO) {
+                    val uri = selectImage((context as IOpenFileStorageAccess).openFileStorageAccessTool)
+                    if (uri != null) {
+                        viewModel.process(TagEditEvent.UpdateArtwork.from(context, uri, viewModel.song.value))
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, android.R.string.cancel, Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
+                coverImageDetailDialogState.hide()
             },
             editMode = editable
         )

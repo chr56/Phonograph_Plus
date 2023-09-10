@@ -6,6 +6,7 @@ package player.phonograph.mechanism.tag.edit
 
 import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenDocumentContract
+import lib.phonograph.misc.OpenFileStorageAccessTool
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.exceptions.CannotReadException
@@ -25,6 +26,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import android.content.Context
 import android.net.Uri
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
 import java.io.IOException
 
@@ -51,6 +54,15 @@ internal fun applyEditImpl(
 }
 
 
+@OptIn(ExperimentalCoroutinesApi::class)
+suspend fun selectImage(accessTool: OpenFileStorageAccessTool): Uri? {
+    val cfg = OpenDocumentContract.Config(mime_types = arrayOf("image/*"))
+    return suspendCancellableCoroutine {
+        accessTool.launch(cfg) { uri: Uri? ->
+            it.resume(uri) {}
+        }
+    }
+}
 
 fun selectNewArtwork(activity: Context): MutableState<Uri?> {
     val state = mutableStateOf<Uri?>(null)
