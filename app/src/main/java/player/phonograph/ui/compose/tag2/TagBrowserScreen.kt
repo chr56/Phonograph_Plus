@@ -31,6 +31,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -38,9 +39,9 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -184,7 +185,7 @@ private fun CommonTag(
 
     Box(modifier = Modifier.fillMaxWidth()) {
         if (editable) {
-            EditableItem(key, tagName, tagValue, onEdit)
+            EditableItem(key, tagName, tagValue, onEdit = onEdit)
         } else {
             if (tagValue.isNotEmpty()) Item(tagName, tagValue)
         }
@@ -195,7 +196,8 @@ private fun CommonTag(
 private fun EditableItem(
     key: FieldKey,
     tagName: String,
-    original: String,
+    value: String,
+    alternatives: Collection<String> = emptyList(),
     onEdit: (TagInfoTableEvent) -> Unit,
 ) {
     Column(
@@ -213,18 +215,19 @@ private fun EditableItem(
                 .align(Alignment.Start),
         )
         // content
-        var currentValue by remember(key) { mutableStateOf(original) }
+        val originalValue = remember(key) { value }
+        var currentValue by remember(key) { mutableStateOf(value) }
         var hasEdited by remember(key) { mutableStateOf(false) }
 
 
-        var indicatorColor by remember(key, original) {
+        var indicatorColor by remember(key, originalValue) {
             mutableStateOf(Color(0xFF707070))
         }
 
 
         fun updateValue(newValue: String) {
             currentValue = newValue
-            hasEdited = newValue != original
+            hasEdited = newValue != originalValue
             indicatorColor = if (hasEdited) Color(0xFFF59C01) else Color(0xFF707070)
         }
 
@@ -236,9 +239,10 @@ private fun EditableItem(
             indicatorColor = Color(0xFF00C72C)
         }
 
+        var showDropdownMenu by remember { mutableStateOf(false) }
+
         TextField(
             value = currentValue,
-            // placeholder = { Text(text = currentValue) },
             onValueChange = ::updateValue,
             modifier = Modifier
                 .align(Alignment.Start)
@@ -249,10 +253,7 @@ private fun EditableItem(
                 focusedIndicatorColor = indicatorColor.copy(alpha = TextFieldDefaults.IconOpacity),
                 unfocusedIndicatorColor = Color.Transparent,
             ),
-            textStyle = TextStyle(
-                //color = MaterialTheme.colors.onSurface.copy(alpha = 0.92f),
-                fontSize = 14.sp,
-            ),
+            textStyle = TextStyle(fontSize = 14.sp),
             trailingIcon = {
                 Row {
                     if (hasEdited) {
@@ -263,14 +264,14 @@ private fun EditableItem(
                                 .padding(8.dp)
                                 .clickable { submit() }
                         )
-                        Icon(
-                            Icons.Default.Refresh,
-                            contentDescription = stringResource(id = R.string.reset_action),
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .clickable { updateValue(original) }
-                        )
                     }
+                    Icon(
+                        Icons.Default.ArrowDropDown,
+                        contentDescription = stringResource(id = R.string.more_actions),
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .clickable { showDropdownMenu = !showDropdownMenu }
+                    )
                     Icon(
                         Icons.Default.Close,
                         contentDescription = stringResource(id = R.string.delete_action),
@@ -283,6 +284,26 @@ private fun EditableItem(
                 }
             }
         )
+        DropdownMenu(
+            expanded = showDropdownMenu,
+            modifier = Modifier.fillMaxWidth(0.7f),
+            onDismissRequest = {
+                showDropdownMenu = false
+            }
+        ) {
+            fun onClick(value: String) {
+                showDropdownMenu = false
+                updateValue(value)
+            }
+            for (alternative in alternatives) {
+                DropdownMenuItem(onClick = { onClick(alternative) }) {
+                    Text(text = alternative)
+                }
+            }
+            DropdownMenuItem(onClick = { onClick(originalValue) }) {
+                Text(text = " [${stringResource(id = R.string.reset_action)}] ")
+            }
+        }
     }
 
 }
