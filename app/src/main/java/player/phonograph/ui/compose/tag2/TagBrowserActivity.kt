@@ -49,10 +49,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class TagBrowserActivity :
         ComposeThemeActivity(),
@@ -70,12 +74,8 @@ class TagBrowserActivity :
         viewModel.updateSong(this, song)
         super.onCreate(savedInstanceState)
 
-        val initialColor = primaryColor.value
-        val color = combine(viewModel.color, primaryColor) { songColor, themeColor ->
-            songColor ?: themeColor
-        }
         setContent {
-            val highlightColor by color.collectAsState(initialColor)
+            val highlightColor by primaryColor.collectAsState()
             TagEditor(viewModel, highlightColor, onBackPressedDispatcher, webSearchTool)
         }
         onBackPressedDispatcher.addCallback {
@@ -83,6 +83,13 @@ class TagBrowserActivity :
                 viewModel.exitWithoutSavingDialogState.show()
             } else {
                 finish()
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.color.collect { color ->
+                    if (color != null) primaryColor.update { color }
+                }
             }
         }
     }
