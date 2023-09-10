@@ -138,6 +138,11 @@
             android:label="@string/action_tag_editor"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:name=".ui.compose.tag2.TagEditorActivity"
+            android:label="@string/action_tag_editor"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".ui.compose.tag.BatchTagEditorActivity"
             android:label="@string/action_tag_editor"
             android:windowSoftInputMode="adjustResize" />
