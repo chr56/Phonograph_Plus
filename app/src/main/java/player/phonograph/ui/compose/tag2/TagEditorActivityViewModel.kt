@@ -69,5 +69,7 @@ class TagEditorActivityViewModel : ViewModel() {
         saveArtwork(viewModelScope, activity, bitmap, fileName)
     }
 
+    fun process(event: TagInfoTableEvent) {} //todo
+
 
 }
