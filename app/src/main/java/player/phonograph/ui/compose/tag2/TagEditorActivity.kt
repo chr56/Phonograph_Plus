@@ -16,6 +16,7 @@ import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.ui.compose.web.IWebSearchRequester
 import player.phonograph.ui.compose.web.WebSearchLauncher
 import player.phonograph.ui.compose.web.WebSearchTool
+import player.phonograph.ui.dialogs.LastFmDialog
 import util.phonograph.tagsources.Source
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.addCallback
@@ -47,6 +48,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.fragment.app.FragmentActivity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -170,6 +172,14 @@ private fun RequestWebSearch(viewModel: TagEditorActivityViewModel, webSearchToo
         DropdownMenuItem(onClick = { search(Source.LastFm) }
         ) {
             Text(Source.LastFm.name, Modifier.padding(8.dp))
+        }
+        DropdownMenuItem(onClick = {
+            val fragmentManager = (context as? FragmentActivity)?.supportFragmentManager
+            if (fragmentManager != null) {
+                LastFmDialog.from(viewModel.song.value).show(fragmentManager, "WEB_SEARCH_DIALOG")
+            }
+        }) {
+            Text(stringResource(R.string.wiki), Modifier.padding(8.dp))
         }
     }
 }
