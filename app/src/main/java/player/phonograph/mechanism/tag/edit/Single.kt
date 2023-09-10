@@ -29,6 +29,7 @@ fun applyEdit(
     needDeleteCover: Boolean,
     needReplaceCover: Boolean,
     newCoverUri: Uri?,
+    onComplete: () -> Unit = {},
 ) {
     scope.launch(Dispatchers.Default) {
         // notify user first
@@ -61,6 +62,7 @@ fun applyEdit(
         MediaScannerConnection.scanFile(
             App.instance, arrayOf(songFile.path), null, listener
         )
+        onComplete()
     }
 }
 

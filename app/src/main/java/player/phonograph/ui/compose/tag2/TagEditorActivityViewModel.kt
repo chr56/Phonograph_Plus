@@ -182,7 +182,9 @@ class TagEditorActivityViewModel : ViewModel() {
                 needDeleteCover = false,
                 needReplaceCover = false,
                 newCoverUri = null
-            )
+            ) {
+                updateEditable(false)
+            }
         } else {
             navigateToStorageSetting(context)
             Toast.makeText(
