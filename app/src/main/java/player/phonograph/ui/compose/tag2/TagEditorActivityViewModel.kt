@@ -31,14 +31,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import java.io.File
 
 class TagEditorActivityViewModel : ViewModel() {
 
-    private val _editable: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    private val _editable: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val editable get() = _editable.asStateFlow()
+    fun updateEditable(editable: Boolean) {
+        _editable.update { editable }
+    }
 
     private val _song: MutableStateFlow<Song> = MutableStateFlow(Song.EMPTY_SONG)
     val song get() = _song.asStateFlow()

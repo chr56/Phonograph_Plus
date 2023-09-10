@@ -116,12 +116,17 @@ private fun TagEditor(
 ) {
     PhonographTheme(highlightColor) {
         val scaffoldState = rememberScaffoldState()
+        val editable by viewModel.editable.collectAsState()
         Scaffold(
             Modifier.statusBarsPadding(),
             scaffoldState = scaffoldState,
             topBar = {
                 TopAppBar(
-                    title = { Text(stringResource(R.string.action_tag_editor)) },
+                    title = {
+                        Text(
+                            stringResource(if (editable) R.string.action_tag_editor else R.string.label_details)
+                        )
+                    },
                     navigationIcon = {
                         Box(Modifier.padding(16.dp)) {
                             Icon(
@@ -134,8 +139,14 @@ private fun TagEditor(
                     },
                     actions = {
                         RequestWebSearch(viewModel, webSearchTool)
-                        IconButton(onClick = { viewModel.saveConfirmationDialogState.show() }) {
-                            Icon(painterResource(id = R.drawable.ic_save_white_24dp), null)
+                        if (editable) {
+                            IconButton(onClick = { viewModel.saveConfirmationDialogState.show() }) {
+                                Icon(painterResource(id = R.drawable.ic_save_white_24dp), stringResource(R.string.save))
+                            }
+                        } else {
+                            IconButton(onClick = { viewModel.updateEditable(true) }) {
+                                Icon(painterResource(id = R.drawable.ic_edit_white_24dp), stringResource(R.string.edit))
+                            }
                         }
                     }
                 )
