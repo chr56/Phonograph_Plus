@@ -10,6 +10,7 @@ import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.mechanism.tag.loadSongInfo
 import player.phonograph.model.Song
 import player.phonograph.model.SongInfoModel
+import player.phonograph.ui.compose.tag.EditAction
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.ViewModel
@@ -69,7 +70,39 @@ class TagEditorActivityViewModel : ViewModel() {
         saveArtwork(viewModelScope, activity, bitmap, fileName)
     }
 
-    fun process(event: TagInfoTableEvent) {} //todo
 
+
+    private var _pendingEditRequests: MutableList<EditAction> = mutableListOf()
+    val pendingEditRequests: List<EditAction> get() = _pendingEditRequests.toList()
+
+    fun process(event: TagInfoTableEvent) {
+        when (event) {
+            is TagInfoTableEvent.UpdateTag -> editTag(EditAction.Update(event.fieldKey, event.newValue))
+
+            is TagInfoTableEvent.AddNewTag -> {
+                //todo
+                editTag(EditAction.Update(event.fieldKey, ""))
+            }
+
+            is TagInfoTableEvent.RemoveTag -> {
+                //todo
+                editTag(EditAction.Delete(event.fieldKey))
+            }
+        }
+    }
+
+
+    fun mergeActions() {
+        _pendingEditRequests = EditAction.merge(_pendingEditRequests)
+    }
+
+    private fun editTag(action: EditAction): Boolean {
+        return if (editable.value) {
+            _pendingEditRequests.add(action)
+            true
+        } else {
+            false
+        }
+    }
 
 }
