@@ -57,13 +57,15 @@ fun PhonographTheme(primary: Color?, content: @Composable () -> Unit) {
         THEME_BLACK -> colorsBlack(previewMode)
         THEME_LIGHT -> colorsLight(previewMode)
         else        -> colorAuto(previewMode, LocalContext.current)
-    }.also { colors ->
+    }.let { colors ->
         if (primary != null) {
             colors.copy(
                 primary = primary,
                 primaryVariant = primary.darker().darker(),
                 onPrimary = textColorOn(LocalContext.current, primary),
             )
+        } else {
+            colors
         }
     }
 

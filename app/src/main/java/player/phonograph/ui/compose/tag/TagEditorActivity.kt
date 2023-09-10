@@ -11,6 +11,7 @@ import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenFileStorageAccessTool
 import mt.pref.ThemeColor.primaryColor
 import player.phonograph.R
+import player.phonograph.mechanism.tag.EditAction
 import player.phonograph.mechanism.tag.edit.selectNewArtwork
 import player.phonograph.mechanism.tag.loadSongInfo
 import player.phonograph.model.Song
@@ -260,6 +261,8 @@ internal fun TagEditorScreenViewModel.generateDiff(): TagDiff {
         val new = when (action) {
             is EditAction.Delete -> null
             is EditAction.Update -> action.newValue
+            is EditAction.ImageReplace -> null
+            is EditAction.ImageDelete -> null
         }
         Triple(action.key, old, new)
     }

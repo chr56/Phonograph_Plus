@@ -2,12 +2,12 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.ui.compose.tag
+package player.phonograph.mechanism.tag
 
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.TagNotFoundException
-import android.util.Log
+import java.io.File
 
 sealed interface EditAction {
 
@@ -33,6 +33,15 @@ sealed interface EditAction {
         }
     }
 
+    object ImageDelete : EditAction {
+        override val key: FieldKey = FieldKey.COVER_ART
+        override val description: String get() = "Delete Cover Art"
+        override fun valid(audioFile: AudioFile): ValidResult {
+            val size = audioFile.tag?.artworkList?.size ?: 0
+            return if (size > 0) ValidResult.Valid else ValidResult.NoSuchKey
+        }
+    }
+
     data class Update(override val key: FieldKey, val newValue: String) : EditAction {
         override val description: String get() = "Update $key to $newValue"
         override fun valid(audioFile: AudioFile): ValidResult {
@@ -47,6 +56,15 @@ sealed interface EditAction {
                 newValue -> ValidResult.NoChange
                 else     -> ValidResult.Valid
             }
+        }
+    }
+
+    class ImageReplace(val file: File) : EditAction {
+        override val key: FieldKey = FieldKey.COVER_ART
+        override val description: String get() = "Replace Cover Art to ${file.path}"
+        override fun valid(audioFile: AudioFile): ValidResult {
+            val size = audioFile.tag?.artworkList?.size ?: 0
+            return if (size > 0) ValidResult.Valid else ValidResult.NoSuchKey
         }
     }
 

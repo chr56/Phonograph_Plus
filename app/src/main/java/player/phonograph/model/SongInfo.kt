@@ -12,7 +12,7 @@ import android.content.res.Resources
 /**
  * class describing a song file
  */
-class SongInfoModel(
+data class SongInfoModel(
     val fileName: StringFilePropertyField,
     val filePath: StringFilePropertyField,
     val fileSize: LongFilePropertyField,
@@ -21,6 +21,8 @@ class SongInfoModel(
     val tagFormat: TagFormat,
     val allTags: Map<String, RawTag>,
 ) {
+
+    val tagTextOnlyFields get() = tagFields.filter { it.value.content is TagData.TextData }
 
     companion object {
         @Suppress("FunctionName")
@@ -35,18 +37,6 @@ class SongInfoModel(
                 emptyMap(),
             )
     }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SongInfoModel) return false
-
-        if (fileName != other.fileName) return false
-        if (filePath != other.filePath) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int = fileName.hashCode() * 31 + filePath.hashCode()
 
 }
 
