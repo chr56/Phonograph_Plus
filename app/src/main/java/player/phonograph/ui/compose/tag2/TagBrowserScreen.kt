@@ -4,8 +4,10 @@
 
 package player.phonograph.ui.compose.tag2
 
+import com.vanpra.composematerialdialogs.MaterialDialogState
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
+import player.phonograph.mechanism.tag.edit.selectNewArtwork
 import player.phonograph.model.RawTag
 import player.phonograph.model.TagData
 import player.phonograph.model.allFieldKey
@@ -62,6 +64,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
+import android.graphics.Bitmap
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 
 @Composable
 fun TagBrowserScreen(viewModel: TagEditorActivityViewModel) {
@@ -74,11 +80,7 @@ fun TagBrowserScreen(viewModel: TagEditorActivityViewModel) {
             .fillMaxSize()
     ) {
         // cover
-        BoxWithConstraints {
-            if (bitmap != null || editable) {
-                CoverImage(bitmap, MaterialTheme.colors.primary)
-            }
-        }
+        Artwork(viewModel, bitmap, editable)
         // file
         Spacer(modifier = Modifier.height(16.dp))
         Title(stringResource(R.string.file))
@@ -111,6 +113,33 @@ fun TagBrowserScreen(viewModel: TagEditorActivityViewModel) {
         ) { viewModel.save(context) }
         val activity = context as? ComponentActivity
         ExitWithoutSavingDialog(viewModel.exitWithoutSavingDialogState) { activity?.finish() }
+    }
+}
+
+@Composable
+fun Artwork(viewModel: TagEditorActivityViewModel, bitmap: Bitmap?, editable: Boolean) {
+    val context = LocalContext.current
+    BoxWithConstraints {
+        val coverImageDetailDialogState = remember { MaterialDialogState(false) }
+        if (bitmap != null || editable) {
+            CoverImage(bitmap, MaterialTheme.colors.primary, Modifier.clickable {
+                coverImageDetailDialogState.show()
+            })
+        }
+        CoverImageDetailDialog(
+            state = coverImageDetailDialogState,
+            artworkExist = bitmap != null,
+            onSave = { viewModel.saveArtwork(context) },
+            onDelete = { viewModel.process(TagInfoTableEvent.RemoveArtwork) },
+            onUpdate = {
+                viewModel.viewModelScope.launch {
+                    val newArtwork = selectNewArtwork(context)
+                    while (newArtwork.value == null) yield()
+                    viewModel.process(TagInfoTableEvent.UpdateArtwork.from(context, newArtwork.value!!))
+                }
+            },
+            editMode = editable
+        )
     }
 }
 

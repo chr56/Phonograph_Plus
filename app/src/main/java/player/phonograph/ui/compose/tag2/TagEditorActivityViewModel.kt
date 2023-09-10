@@ -88,6 +88,7 @@ class TagEditorActivityViewModel : ViewModel() {
         saveArtwork(viewModelScope, activity, bitmap, fileName)
     }
 
+
     val saveConfirmationDialogState = MaterialDialogState(false)
     val exitWithoutSavingDialogState = MaterialDialogState(false)
 
