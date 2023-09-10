@@ -36,6 +36,8 @@ class TagEditorActivityViewModel : ViewModel() {
             readSongInfo(context, _song.updateAndGet { song })
     }
 
+    private val _originalSongInfo: MutableStateFlow<SongInfoModel> = MutableStateFlow(SongInfoModel.EMPTY())
+    val originalSongInfo get() = _originalSongInfo.asStateFlow()
     private val _songInfo: MutableStateFlow<SongInfoModel> = MutableStateFlow(SongInfoModel.EMPTY())
     val songInfo get() = _songInfo.asStateFlow()
 
@@ -60,6 +62,7 @@ class TagEditorActivityViewModel : ViewModel() {
                         .build()
                 )
             }
+            _originalSongInfo.emit(info)
             _songInfo.emit(info)
         }
     }
