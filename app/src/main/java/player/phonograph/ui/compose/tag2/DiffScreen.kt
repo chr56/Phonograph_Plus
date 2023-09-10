@@ -4,8 +4,8 @@
 
 package player.phonograph.ui.compose.tag2
 
-import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
+import player.phonograph.mechanism.tag.EditAction
 import player.phonograph.model.text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,24 +21,16 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import android.net.Uri
 
 
 
 internal class TagDiff(
     /**
-     * <TagFieldKey, oldValue, newValue> triple
+     * <EditAction, oldValue> pair
      */
-    val tagDiff: List<Triple<FieldKey, String?, String?>>,
-    val artworkDiff: ArtworkDiff
+    val tagDiff: List<Pair<EditAction, String?>>,
 ) {
-    sealed class ArtworkDiff {
-        class Replaced(val uri: Uri?) : ArtworkDiff()
-        object Deleted : ArtworkDiff()
-        object None : ArtworkDiff()
-    }
-
-    fun noChange() = tagDiff.isEmpty() && artworkDiff is ArtworkDiff.None
+    fun noChange() = tagDiff.isEmpty()
 }
 
 
@@ -53,25 +45,24 @@ internal fun DiffScreen(diff: TagDiff) {
                     TagDiff(tag)
                 }
             }
-            if (diff.artworkDiff is TagDiff.ArtworkDiff.Deleted)
-                item {
-                    player.phonograph.ui.compose.components.Title(stringResource(id = R.string.remove_cover))
-                }
-            if (diff.artworkDiff is TagDiff.ArtworkDiff.Replaced)
-                item {
-                    player.phonograph.ui.compose.components.Title(stringResource(id = R.string.update_image))
-                    DiffText("-> ${diff.artworkDiff.uri}")
-                }
         }
 }
 
 @Composable
-private fun TagDiff(tag: Triple<FieldKey, String?, String?>) {
+private fun TagDiff(tag: Pair<EditAction, String?>) {
+    val (action, old) = tag
     Column(Modifier.padding(vertical = 16.dp)) {
-        player.phonograph.ui.compose.components.Title(tag.first.text(LocalContext.current.resources), horizontalPadding = 0.dp)
-        DiffText(tag.second)
+        Title(action.key.text(LocalContext.current.resources), horizontalPadding = 0.dp)
+        DiffText(old)
         Icon(Icons.Outlined.ArrowDropDown, contentDescription = null)
-        DiffText(tag.third)
+        DiffText(
+            when (action) {
+                is EditAction.Update       -> action.newValue
+                is EditAction.Delete       -> stringResource(id = R.string.empty)
+                EditAction.ImageDelete     -> stringResource(id = R.string.remove_cover)
+                is EditAction.ImageReplace -> stringResource(id = R.string.update_image)
+            }
+        )
     }
 }
 

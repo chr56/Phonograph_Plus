@@ -15,6 +15,7 @@ import org.jaudiotagger.audio.exceptions.ReadOnlyFileException
 import org.jaudiotagger.tag.KeyNotFoundException
 import org.jaudiotagger.tag.Tag
 import org.jaudiotagger.tag.TagException
+import org.jaudiotagger.tag.images.AndroidArtwork
 import org.jaudiotagger.tag.images.Artwork
 import org.jaudiotagger.tag.images.ArtworkFactory
 import player.phonograph.mechanism.tag.EditAction
@@ -87,8 +88,10 @@ private fun writeTags(file: AudioFile, requests: List<EditAction>) {
 private fun writeTag(tagsHeader: Tag, action: EditAction) {
     try {
         when (action) {
-            is EditAction.Delete -> tagsHeader.deleteField(action.key)
-            is EditAction.Update -> tagsHeader.setField(action.key, action.newValue)
+            is EditAction.Delete       -> tagsHeader.deleteField(action.key)
+            is EditAction.Update       -> tagsHeader.setField(action.key, action.newValue)
+            is EditAction.ImageReplace -> tagsHeader.addField(AndroidArtwork.createArtworkFromFile(action.file))
+            EditAction.ImageDelete     -> tagsHeader.deleteArtworkField()
         }
     } catch (e: KeyNotFoundException) {
         e.report("Unknown FieldKey: ${action.key}")

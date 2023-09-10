@@ -383,7 +383,7 @@ private fun RawTag(key: String, rawTag: RawTag) {
 }
 
 @Composable
-private fun Title(
+fun Title(
     title: String,
     color: Color = MaterialTheme.colors.primary,
     horizontalPadding: Dp = 8.dp,

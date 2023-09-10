@@ -61,20 +61,24 @@ class TagEditorActivityViewModel : ViewModel() {
     private fun readSongInfo(context: Context, song: Song) {
         viewModelScope.launch(Dispatchers.IO) {
             val info = loadSongInfo(song)
-            loadImage(context) {
-                data(song)
-                parameters(PARAMETERS_RAW)
-                target(
-                    PaletteTargetBuilder(context)
-                        .onResourceReady { result: Drawable, paletteColor: Int ->
-                            _songBitmap.tryEmit(result.toBitmap())
-                            _color.tryEmit(Color(paletteColor))
-                        }
-                        .build()
-                )
-            }
+            readBitmap(context, song)
             _originalSongInfo.emit(info)
             _currentSongInfo.emit(info)
+        }
+    }
+
+    private fun readBitmap(context: Context, data: Any) {
+        loadImage(context) {
+            data(data)
+            parameters(PARAMETERS_RAW)
+            target(
+                PaletteTargetBuilder(context)
+                    .onResourceReady { result: Drawable, paletteColor: Int ->
+                        _songBitmap.tryEmit(result.toBitmap())
+                        _color.tryEmit(Color(paletteColor))
+                    }
+                    .build()
+            )
         }
     }
 
@@ -114,6 +118,17 @@ class TagEditorActivityViewModel : ViewModel() {
                     }
                     modifyEditRequest(EditAction.Delete(event.fieldKey))
                 }
+
+                is TagInfoTableEvent.UpdateArtwork -> {
+                    readBitmap(App.instance, event.file)
+                    modifyEditRequest(EditAction.ImageReplace(event.file))
+
+                }
+
+                TagInfoTableEvent.RemoveArtwork -> {
+                    _songBitmap.emit(null)
+                    modifyEditRequest(EditAction.ImageDelete)
+                }
             }
         }
     }
@@ -143,16 +158,11 @@ class TagEditorActivityViewModel : ViewModel() {
 
     internal fun diff(): TagDiff {
         mergeActions()
-        val current = currentSongInfo.value
+        val original = originalSongInfo.value
         val tagDiff = pendingEditRequests.map { action ->
-            val old = current.tagFields[action.key]?.value() ?: ""
-            val new = when (action) {
-                is EditAction.Delete -> null
-                is EditAction.Update -> action.newValue
-            }
-            Triple(action.key, old, new)
+            Pair(action, original.tagFields[action.key]?.value())
         }
-        return TagDiff(tagDiff, TagDiff.ArtworkDiff.None)
+        return TagDiff(tagDiff)
     }
 
     internal fun save(context: Context) {
