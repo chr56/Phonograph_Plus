@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import kotlinx.coroutines.flow.combine
 
 class TagEditorActivity :
         ComposeThemeActivity(),
@@ -53,11 +54,16 @@ class TagEditorActivity :
         openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
         webSearchTool.register(lifecycle, activityResultRegistry)
         val song = parseIntent(this, intent)
-        viewModel.updateSong(song)
+        viewModel.updateSong(this, song)
         super.onCreate(savedInstanceState)
+
+        val initialColor = primaryColor.value
+        val color = combine(viewModel.color, primaryColor) { songColor, themeColor ->
+            songColor ?: themeColor
+        }
         setContent {
-            val highlightColor by primaryColor.collectAsState()
-            TagEditor(highlightColor, onBackPressedDispatcher)
+            val highlightColor by color.collectAsState(initialColor)
+            TagEditor(viewModel, highlightColor, onBackPressedDispatcher)
         }
     }
 
@@ -82,7 +88,11 @@ class TagEditorActivity :
 }
 
 @Composable
-private fun TagEditor(highlightColor: Color, onBackPressedDispatcher: OnBackPressedDispatcher) {
+private fun TagEditor(
+    viewModel: TagEditorActivityViewModel,
+    highlightColor: Color,
+    onBackPressedDispatcher: OnBackPressedDispatcher,
+) {
     PhonographTheme(highlightColor) {
         val scaffoldState = rememberScaffoldState()
         Scaffold(
@@ -106,7 +116,7 @@ private fun TagEditor(highlightColor: Color, onBackPressedDispatcher: OnBackPres
             }
         ) {
             Box(Modifier.padding(it)) {
-
+                TagBrowserScreen(viewModel)
             }
         }
     }
