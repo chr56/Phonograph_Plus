@@ -17,7 +17,7 @@ import org.jaudiotagger.tag.Tag
 import org.jaudiotagger.tag.TagException
 import org.jaudiotagger.tag.images.Artwork
 import org.jaudiotagger.tag.images.ArtworkFactory
-import player.phonograph.ui.compose.tag.EditAction
+import player.phonograph.mechanism.tag.EditAction
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import androidx.compose.runtime.MutableState

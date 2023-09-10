@@ -8,12 +8,12 @@ import org.jaudiotagger.tag.FieldKey
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.retriever.PARAMETERS_RAW
 import player.phonograph.coil.target.PaletteTargetBuilder
+import player.phonograph.mechanism.tag.EditAction
 import player.phonograph.mechanism.tag.loadSongInfo
 import player.phonograph.model.Song
 import player.phonograph.model.SongInfoModel
 import player.phonograph.model.TagData
 import player.phonograph.model.TagField
-import player.phonograph.ui.compose.tag.EditAction
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.ViewModel

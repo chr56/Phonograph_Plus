@@ -6,9 +6,9 @@ package player.phonograph.mechanism.tag.edit
 
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.mechanism.tag.EditAction
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.notification.BackgroundNotification
-import player.phonograph.ui.compose.tag.EditAction
 import android.app.Activity
 import android.content.Context
 import android.media.MediaScannerConnection
