@@ -14,7 +14,9 @@ import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.ui.compose.base.ComposeThemeActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.ui.compose.web.IWebSearchRequester
+import player.phonograph.ui.compose.web.WebSearchLauncher
 import player.phonograph.ui.compose.web.WebSearchTool
+import util.phonograph.tagsources.Source
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
@@ -23,6 +25,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -34,8 +38,12 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -66,7 +74,7 @@ class TagEditorActivity :
         }
         setContent {
             val highlightColor by color.collectAsState(initialColor)
-            TagEditor(viewModel, highlightColor, onBackPressedDispatcher)
+            TagEditor(viewModel, highlightColor, onBackPressedDispatcher, webSearchTool)
         }
         onBackPressedDispatcher.addCallback {
             if (viewModel.pendingEditRequests.isNotEmpty()) {
@@ -102,6 +110,7 @@ private fun TagEditor(
     viewModel: TagEditorActivityViewModel,
     highlightColor: Color,
     onBackPressedDispatcher: OnBackPressedDispatcher,
+    webSearchTool: WebSearchTool,
 ) {
     PhonographTheme(highlightColor) {
         val scaffoldState = rememberScaffoldState()
@@ -122,6 +131,7 @@ private fun TagEditor(
                         }
                     },
                     actions = {
+                        RequestWebSearch(viewModel, webSearchTool)
                         IconButton(onClick = { viewModel.saveConfirmationDialogState.show() }) {
                             Icon(painterResource(id = R.drawable.ic_save_white_24dp), null)
                         }
@@ -132,6 +142,34 @@ private fun TagEditor(
             Box(Modifier.padding(it)) {
                 TagBrowserScreen(viewModel)
             }
+        }
+    }
+}
+
+@Composable
+private fun RequestWebSearch(viewModel: TagEditorActivityViewModel, webSearchTool: WebSearchTool) {
+    var state by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    IconButton(onClick = { state = !state }) {
+        Icon(painterResource(id = R.drawable.ic_search_white_24dp), null)
+    }
+    DropdownMenu(expanded = state, onDismissRequest = { state = false }) {
+        fun search(source: Source) {
+            val intent = when (source) {
+                Source.LastFm -> WebSearchLauncher.searchLastFmSong(context, viewModel.song.value)
+                Source.MusicBrainz -> WebSearchLauncher.searchMusicBrainzSong(context, viewModel.song.value)
+            }
+            webSearchTool.launch(intent) {
+                // Log.v("TagEditor", it.toString()) //todo
+            }
+        }
+        DropdownMenuItem(onClick = { search(Source.MusicBrainz) }
+        ) {
+            Text(Source.MusicBrainz.name, Modifier.padding(8.dp))
+        }
+        DropdownMenuItem(onClick = { search(Source.LastFm) }
+        ) {
+            Text(Source.LastFm.name, Modifier.padding(8.dp))
         }
     }
 }
