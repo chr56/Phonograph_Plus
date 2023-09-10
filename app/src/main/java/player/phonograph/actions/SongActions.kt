@@ -5,18 +5,17 @@
 package player.phonograph.actions
 
 import player.phonograph.R
-import player.phonograph.ui.dialogs.SongDetailDialog
+import player.phonograph.mechanism.PathFilter
+import player.phonograph.misc.RingtoneManager
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
-import player.phonograph.ui.compose.tag.DetailActivity
-import player.phonograph.ui.compose.tag.TagEditorActivity
+import player.phonograph.ui.compose.tag2.TagBrowserActivity
 import player.phonograph.ui.dialogs.AddToPlaylistDialog
 import player.phonograph.ui.dialogs.DeleteSongsDialog
+import player.phonograph.ui.dialogs.SongDetailDialog
 import player.phonograph.util.NavigationUtil
-import player.phonograph.mechanism.PathFilter
-import player.phonograph.misc.RingtoneManager
 import player.phonograph.util.shareFileIntent
 import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
@@ -60,7 +59,7 @@ fun Song.actionGotoDetail(activity: FragmentActivity): Boolean {
     if (Setting.instance.useLegacyDetailDialog)
         SongDetailDialog.create(this).show(activity.supportFragmentManager, "SONG_DETAILS")
     else
-        DetailActivity.launch(activity, id)
+        TagBrowserActivity.launch(activity, data)
     return true
 }
 
@@ -109,7 +108,7 @@ fun Song.actionAddToBlacklist(context: Context): Boolean {
 }
 
 fun Song.actionTagEditor(context: Context): Boolean {
-    TagEditorActivity.launch(context, id)
+    TagBrowserActivity.launch(context, data)
     return true
 }
 

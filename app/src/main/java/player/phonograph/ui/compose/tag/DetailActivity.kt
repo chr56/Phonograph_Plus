@@ -12,6 +12,7 @@ import player.phonograph.mechanism.tag.loadSongInfo
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.ui.compose.base.ComposeThemeActivity
+import player.phonograph.ui.compose.tag2.TagBrowserActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.ui.dialogs.LastFmDialog
 import androidx.activity.compose.setContent
@@ -87,7 +88,7 @@ class DetailActivity : ComposeThemeActivity(), ICreateFileStorageAccess {
                                     stringResource(R.string.edit),
                                     Modifier
                                         .clickable {
-                                            TagEditorActivity.launch(this@DetailActivity, song.id)
+                                            TagBrowserActivity.launch(this@DetailActivity, song.data)
                                         }
                                         .padding(16.dp)
                                 )
