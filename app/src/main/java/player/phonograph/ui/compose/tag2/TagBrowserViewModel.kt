@@ -36,7 +36,7 @@ import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import java.io.File
 
-class TagEditorActivityViewModel : ViewModel() {
+class TagBrowserViewModel : ViewModel() {
 
     private val _editable: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val editable get() = _editable.asStateFlow()
@@ -100,37 +100,37 @@ class TagEditorActivityViewModel : ViewModel() {
     private var _pendingEditRequests: MutableList<EditAction> = mutableListOf()
     val pendingEditRequests: List<EditAction> get() = _pendingEditRequests.toList()
 
-    fun process(event: TagInfoTableEvent) {
+    fun process(event: TagEditEvent) {
         viewModelScope.launch {
             when (event) {
-                is TagInfoTableEvent.UpdateTag -> {
+                is TagEditEvent.UpdateTag     -> {
                     modifyView { old ->
                         old.apply { put(event.fieldKey, TagField(event.fieldKey, TagData.TextData(event.newValue))) }
                     }
                     modifyEditRequest(EditAction.Update(event.fieldKey, event.newValue))
                 }
 
-                is TagInfoTableEvent.AddNewTag -> {
+                is TagEditEvent.AddNewTag     -> {
                     modifyView { old ->
                         old + (event.fieldKey to TagField(event.fieldKey, TagData.TextData("")))
                     }
                     modifyEditRequest(EditAction.Update(event.fieldKey, ""))
                 }
 
-                is TagInfoTableEvent.RemoveTag -> {
+                is TagEditEvent.RemoveTag     -> {
                     modifyView { old ->
                         old.apply { remove(event.fieldKey) }
                     }
                     modifyEditRequest(EditAction.Delete(event.fieldKey))
                 }
 
-                is TagInfoTableEvent.UpdateArtwork -> {
+                is TagEditEvent.UpdateArtwork -> {
                     readBitmap(App.instance, event.file)
                     modifyEditRequest(EditAction.ImageReplace(event.file))
 
                 }
 
-                TagInfoTableEvent.RemoveArtwork -> {
+                TagEditEvent.RemoveArtwork    -> {
                     _songBitmap.emit(null)
                     modifyEditRequest(EditAction.ImageDelete)
                 }

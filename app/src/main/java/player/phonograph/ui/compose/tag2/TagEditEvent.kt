@@ -10,13 +10,13 @@ import android.content.Context
 import android.net.Uri
 import java.io.File
 
-sealed interface TagInfoTableEvent {
-    data class UpdateTag(val fieldKey: FieldKey, val newValue: String) : TagInfoTableEvent
-    data class AddNewTag(val fieldKey: FieldKey) : TagInfoTableEvent
-    data class RemoveTag(val fieldKey: FieldKey) : TagInfoTableEvent
+sealed interface TagEditEvent {
+    data class UpdateTag(val fieldKey: FieldKey, val newValue: String) : TagEditEvent
+    data class AddNewTag(val fieldKey: FieldKey) : TagEditEvent
+    data class RemoveTag(val fieldKey: FieldKey) : TagEditEvent
 
-    object RemoveArtwork : TagInfoTableEvent
-    data class UpdateArtwork(val file: File) : TagInfoTableEvent {
+    object RemoveArtwork : TagEditEvent
+    data class UpdateArtwork(val file: File) : TagEditEvent {
         companion object {
             fun from(context: Context, uri: Uri): UpdateArtwork {
                 val cacheFile = File(context.externalCacheDir, "Cover_${uri.path}.png")

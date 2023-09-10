@@ -70,7 +70,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 
 @Composable
-fun TagBrowserScreen(viewModel: TagEditorActivityViewModel) {
+fun TagBrowserScreen(viewModel: TagBrowserViewModel) {
     val info by viewModel.currentSongInfo.collectAsState()
     val bitmap by viewModel.songBitmap.collectAsState()
     val editable by viewModel.editable.collectAsState()
@@ -121,7 +121,7 @@ fun TagBrowserScreen(viewModel: TagEditorActivityViewModel) {
 }
 
 @Composable
-fun Artwork(viewModel: TagEditorActivityViewModel, bitmap: Bitmap?, editable: Boolean) {
+fun Artwork(viewModel: TagBrowserViewModel, bitmap: Bitmap?, editable: Boolean) {
     val context = LocalContext.current
     BoxWithConstraints {
         val coverImageDetailDialogState = remember { MaterialDialogState(false) }
@@ -134,12 +134,12 @@ fun Artwork(viewModel: TagEditorActivityViewModel, bitmap: Bitmap?, editable: Bo
             state = coverImageDetailDialogState,
             artworkExist = bitmap != null,
             onSave = { viewModel.saveArtwork(context) },
-            onDelete = { viewModel.process(TagInfoTableEvent.RemoveArtwork) },
+            onDelete = { viewModel.process(TagEditEvent.RemoveArtwork) },
             onUpdate = {
                 viewModel.viewModelScope.launch {
                     val newArtwork = selectNewArtwork(context)
                     while (newArtwork.value == null) yield()
-                    viewModel.process(TagInfoTableEvent.UpdateArtwork.from(context, newArtwork.value!!))
+                    viewModel.process(TagEditEvent.UpdateArtwork.from(context, newArtwork.value!!))
                 }
             },
             editMode = editable
@@ -149,7 +149,7 @@ fun Artwork(viewModel: TagEditorActivityViewModel, bitmap: Bitmap?, editable: Bo
 
 
 @Composable
-private fun AddMoreButton(model: TagEditorActivityViewModel) {
+private fun AddMoreButton(model: TagBrowserViewModel) {
     Box(Modifier.fillMaxWidth()) {
         val current by model.currentSongInfo.collectAsState()
         var showed by remember { mutableStateOf(false) }
@@ -162,7 +162,7 @@ private fun AddMoreButton(model: TagEditorActivityViewModel) {
                     .fillMaxWidth()
                     .clickable {
                         showed = false
-                        model.process(TagInfoTableEvent.AddNewTag(fieldKey))
+                        model.process(TagEditEvent.AddNewTag(fieldKey))
                     }
                     .padding(8.dp, 16.dp)
                 ) {
@@ -219,7 +219,7 @@ private fun CommonTag(
     key: FieldKey,
     field: TagData,
     editable: Boolean,
-    onEdit: (TagInfoTableEvent) -> Unit,
+    onEdit: (TagEditEvent) -> Unit,
 ) {
     val context = LocalContext.current
     val tagName = key.text(context.resources)
@@ -240,7 +240,7 @@ private fun EditableItem(
     tagName: String,
     value: String,
     alternatives: Collection<String> = emptyList(),
-    onEdit: (TagInfoTableEvent) -> Unit,
+    onEdit: (TagEditEvent) -> Unit,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
@@ -275,7 +275,7 @@ private fun EditableItem(
 
         fun submit() {
             onEdit.invoke(
-                TagInfoTableEvent.UpdateTag(key, currentValue)
+                TagEditEvent.UpdateTag(key, currentValue)
             )
             hasEdited = false
             indicatorColor = Color(0xFF00C72C)
@@ -320,7 +320,7 @@ private fun EditableItem(
                         modifier = Modifier
                             .padding(8.dp)
                             .clickable {
-                                onEdit.invoke(TagInfoTableEvent.RemoveTag(key))
+                                onEdit.invoke(TagEditEvent.RemoveTag(key))
                             }
                     )
                 }

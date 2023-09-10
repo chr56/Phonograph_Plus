@@ -54,13 +54,13 @@ import android.content.Intent
 import android.os.Bundle
 import kotlinx.coroutines.flow.combine
 
-class TagEditorActivity :
+class TagBrowserActivity :
         ComposeThemeActivity(),
         IWebSearchRequester,
         ICreateFileStorageAccess,
         IOpenFileStorageAccess {
 
-    private val viewModel: TagEditorActivityViewModel by viewModels()
+    private val viewModel: TagBrowserViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
@@ -99,7 +99,7 @@ class TagEditorActivity :
 
         fun launch(context: Context, path: String) {
             context.startActivity(
-                Intent(context, TagEditorActivity::class.java).apply {
+                Intent(context, TagBrowserActivity::class.java).apply {
                     putExtra(PATH, path)
                 }
             )
@@ -109,7 +109,7 @@ class TagEditorActivity :
 
 @Composable
 private fun TagEditor(
-    viewModel: TagEditorActivityViewModel,
+    viewModel: TagBrowserViewModel,
     highlightColor: Color,
     onBackPressedDispatcher: OnBackPressedDispatcher,
     webSearchTool: WebSearchTool,
@@ -160,7 +160,7 @@ private fun TagEditor(
 }
 
 @Composable
-private fun RequestWebSearch(viewModel: TagEditorActivityViewModel, webSearchTool: WebSearchTool) {
+private fun RequestWebSearch(viewModel: TagBrowserViewModel, webSearchTool: WebSearchTool) {
     var state by remember { mutableStateOf(false) }
     val context = LocalContext.current
     IconButton(onClick = { state = !state }) {
