@@ -184,6 +184,7 @@ class TagBrowserViewModel : ViewModel() {
                 newCoverUri = null
             ) {
                 updateEditable(false)
+                updateSong(context, song.value)
             }
         } else {
             navigateToStorageSetting(context)
