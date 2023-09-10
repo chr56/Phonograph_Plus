@@ -85,6 +85,7 @@ class TagEditorActivityViewModel : ViewModel() {
     }
 
     val saveConfirmationDialogState = MaterialDialogState(false)
+    val exitWithoutSavingDialogState = MaterialDialogState(false)
 
 
     private var _pendingEditRequests: MutableList<EditAction> = mutableListOf()

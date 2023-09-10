@@ -14,6 +14,7 @@ import player.phonograph.model.text
 import player.phonograph.ui.compose.components.CoverImage
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextItem
+import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -108,6 +109,8 @@ fun TagBrowserScreen(viewModel: TagEditorActivityViewModel) {
             viewModel.saveConfirmationDialogState,
             viewModel::diff
         ) { viewModel.save(context) }
+        val activity = context as? ComponentActivity
+        ExitWithoutSavingDialog(viewModel.exitWithoutSavingDialogState) { activity?.finish() }
     }
 }
 

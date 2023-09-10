@@ -16,6 +16,7 @@ import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.ui.compose.web.IWebSearchRequester
 import player.phonograph.ui.compose.web.WebSearchTool
 import androidx.activity.OnBackPressedDispatcher
+import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.clickable
@@ -66,6 +67,13 @@ class TagEditorActivity :
         setContent {
             val highlightColor by color.collectAsState(initialColor)
             TagEditor(viewModel, highlightColor, onBackPressedDispatcher)
+        }
+        onBackPressedDispatcher.addCallback {
+            if (viewModel.pendingEditRequests.isNotEmpty()) {
+                viewModel.exitWithoutSavingDialogState.show()
+            } else {
+                finish()
+            }
         }
     }
 
