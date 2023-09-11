@@ -6,7 +6,6 @@ package player.phonograph.ui.compose.tag2
 
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import org.jaudiotagger.tag.FieldKey
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mechanism.tag.EditAction
 import player.phonograph.mechanism.tag.edit.applyEdit
@@ -79,24 +78,24 @@ class TagBrowserViewModel : ViewModel() {
     private var _pendingEditRequests: MutableList<EditAction> = mutableListOf()
     val pendingEditRequests: List<EditAction> get() = _pendingEditRequests.toList()
 
-    fun process(event: TagEditEvent) {
+    fun process(context: Context, event: TagEditEvent) {
         viewModelScope.launch {
             when (event) {
-                is TagEditEvent.UpdateTag -> {
+                is TagEditEvent.UpdateTag     -> {
                     modifyView { old ->
                         old.apply { put(event.fieldKey, TagField(event.fieldKey, TagData.TextData(event.newValue))) }
                     }
                     modifyEditRequest(EditAction.Update(event.fieldKey, event.newValue))
                 }
 
-                is TagEditEvent.AddNewTag -> {
+                is TagEditEvent.AddNewTag     -> {
                     modifyView { old ->
                         old + (event.fieldKey to TagField(event.fieldKey, TagData.TextData("")))
                     }
                     modifyEditRequest(EditAction.Update(event.fieldKey, ""))
                 }
 
-                is TagEditEvent.RemoveTag -> {
+                is TagEditEvent.RemoveTag     -> {
                     modifyView { old ->
                         old.apply { remove(event.fieldKey) }
                     }
@@ -104,12 +103,12 @@ class TagBrowserViewModel : ViewModel() {
                 }
 
                 is TagEditEvent.UpdateArtwork -> {
-                    val (bitmap, _) = loadCover(App.instance, event.file)
+                    val (bitmap, _) = loadCover(context, event.file)
                     _songBitmap.emit(bitmap)
                     modifyEditRequest(EditAction.ImageReplace(event.file))
                 }
 
-                TagEditEvent.RemoveArtwork -> {
+                TagEditEvent.RemoveArtwork    -> {
                     _songBitmap.emit(null)
                     modifyEditRequest(EditAction.ImageDelete)
                 }
@@ -168,7 +167,7 @@ class TagBrowserViewModel : ViewModel() {
         } else {
             navigateToStorageSetting(context)
             Toast.makeText(
-                App.instance, R.string.permission_manage_external_storage_denied, Toast.LENGTH_SHORT
+                context, R.string.permission_manage_external_storage_denied, Toast.LENGTH_SHORT
             ).show()
         }
     }

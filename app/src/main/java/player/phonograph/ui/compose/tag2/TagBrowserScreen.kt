@@ -66,6 +66,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
+import android.content.Context
 import android.graphics.Bitmap
 import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
@@ -137,12 +138,14 @@ fun Artwork(viewModel: TagBrowserViewModel, bitmap: Bitmap?, editable: Boolean) 
             state = coverImageDetailDialogState,
             artworkExist = bitmap != null,
             onSave = { viewModel.saveArtwork(context) },
-            onDelete = { viewModel.process(TagEditEvent.RemoveArtwork) },
+            onDelete = { viewModel.process(context, TagEditEvent.RemoveArtwork) },
             onUpdate = {
                 viewModel.viewModelScope.launch(Dispatchers.IO) {
                     val uri = selectImage((context as IOpenFileStorageAccess).openFileStorageAccessTool)
                     if (uri != null) {
-                        viewModel.process(TagEditEvent.UpdateArtwork.from(context, uri, viewModel.song.value))
+                        viewModel.process(
+                            context, TagEditEvent.UpdateArtwork.from(context, uri, viewModel.song.value)
+                        )
                     } else {
                         withContext(Dispatchers.Main) {
                             Toast.makeText(context, android.R.string.cancel, Toast.LENGTH_SHORT).show()
@@ -171,7 +174,7 @@ private fun AddMoreButton(model: TagBrowserViewModel) {
                     .fillMaxWidth()
                     .clickable {
                         showed = false
-                        model.process(TagEditEvent.AddNewTag(fieldKey))
+                        model.process(context, TagEditEvent.AddNewTag(fieldKey))
                     }
                     .padding(8.dp, 16.dp)
                 ) {
@@ -228,7 +231,7 @@ private fun CommonTag(
     key: FieldKey,
     field: TagData,
     editable: Boolean,
-    onEdit: (TagEditEvent) -> Unit,
+    onEdit: (Context, TagEditEvent) -> Unit,
 ) {
     val context = LocalContext.current
     val tagName = key.text(context.resources)
@@ -236,7 +239,7 @@ private fun CommonTag(
 
     Box(modifier = Modifier.fillMaxWidth()) {
         if (editable) {
-            EditableItem(key, tagName, tagValue, onEdit = onEdit)
+            EditableItem(key, tagName, tagValue, onEdit = { onEdit(context, it) })
         } else {
             if (tagValue.isNotEmpty()) Item(tagName, tagValue)
         }
