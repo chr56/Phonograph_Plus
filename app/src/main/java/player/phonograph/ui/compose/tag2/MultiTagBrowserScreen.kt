@@ -124,7 +124,7 @@ private fun CoverUpdater(viewModel: MultiTagBrowserViewModel) {
     )
     val context = LocalContext.current
     CoverImageDetailDialog(
-        state = viewModel.exitWithoutSavingDialogState,
+        state = viewModel.coverImageDetailDialogState,
         artworkExist = false,
         onSave = { }, onDelete = { viewModel.process(context, TagEditEvent.RemoveArtwork) },
         onUpdate = {
