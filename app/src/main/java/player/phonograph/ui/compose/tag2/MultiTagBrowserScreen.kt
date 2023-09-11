@@ -85,7 +85,7 @@ private fun CommonTags(viewModel: MultiTagBrowserViewModel) {
             viewModel::process
         )
     }
-    AddMoreButton(allFieldKey.subtract(reducedTags.keys), viewModel::process)
+    if (editable) AddMoreButton(allFieldKey.subtract(reducedTags.keys), viewModel::process)
 }
 
 @Composable
