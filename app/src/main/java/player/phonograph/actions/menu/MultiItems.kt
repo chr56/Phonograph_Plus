@@ -19,7 +19,7 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
 import player.phonograph.ui.adapter.MultiSelectionController
-import player.phonograph.ui.compose.tag.BatchTagEditorActivity
+import player.phonograph.ui.compose.tag2.MultiTagBrowserActivity
 import player.phonograph.ui.compose.tag2.TagBrowserActivity
 import player.phonograph.util.theme.getTintedDrawable
 import android.content.Context
@@ -78,7 +78,7 @@ fun <I> multiItemsToolbar(
                 onClick {
                     val songs = convertToSongs(controller.selected, context)
                     if (songs.size > 1)
-                        BatchTagEditorActivity.launch(context, ArrayList(songs))
+                        MultiTagBrowserActivity.launch(context, ArrayList(songs.map { it.data }))
                     else
                         TagBrowserActivity.launch(context, songs.first().data)
                     true

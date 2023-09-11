@@ -16,7 +16,7 @@ import player.phonograph.actions.fragmentActivity
 import player.phonograph.model.Album
 import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
-import player.phonograph.ui.compose.tag.BatchTagEditorActivity
+import player.phonograph.ui.compose.tag2.MultiTagBrowserActivity
 import player.phonograph.ui.dialogs.LastFmDialog
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.theme.getTintedDrawable
@@ -81,7 +81,7 @@ fun albumDetailToolbar(
             icon = getTintedDrawable(R.drawable.ic_library_music_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                BatchTagEditorActivity.launch(context, ArrayList(album.songs))
+                MultiTagBrowserActivity.launch(context, ArrayList(album.songs.map { it.data }))
                 true
             }
         }
