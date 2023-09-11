@@ -144,7 +144,7 @@ fun Artwork(viewModel: TagBrowserViewModel, bitmap: Bitmap?, editable: Boolean) 
                     val uri = selectImage((context as IOpenFileStorageAccess).openFileStorageAccessTool)
                     if (uri != null) {
                         viewModel.process(
-                            context, TagEditEvent.UpdateArtwork.from(context, uri, viewModel.song.value)
+                            context, TagEditEvent.UpdateArtwork.from(context, uri, viewModel.song.value.title)
                         )
                     } else {
                         withContext(Dispatchers.Main) {

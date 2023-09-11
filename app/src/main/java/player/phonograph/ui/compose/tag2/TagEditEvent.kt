@@ -5,7 +5,6 @@
 package player.phonograph.ui.compose.tag2
 
 import org.jaudiotagger.tag.FieldKey
-import player.phonograph.model.Song
 import player.phonograph.util.warning
 import android.content.Context
 import android.net.Uri
@@ -19,8 +18,8 @@ sealed interface TagEditEvent {
     object RemoveArtwork : TagEditEvent
     data class UpdateArtwork(val file: File) : TagEditEvent {
         companion object {
-            fun from(context: Context, uri: Uri, song: Song): UpdateArtwork {
-                val cacheFile = File(context.externalCacheDir, "Cover_${song.title}.png")
+            fun from(context: Context, uri: Uri, name: String): UpdateArtwork {
+                val cacheFile = File(context.externalCacheDir, "Cover_$name.png")
                 if (cacheFile.exists()) cacheFile.delete() else cacheFile.createNewFile()
                 context.contentResolver.openInputStream(uri).use { inputStream ->
                     if (inputStream != null) {
