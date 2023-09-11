@@ -12,7 +12,6 @@ import player.phonograph.mechanism.tag.edit.applyEdit
 import player.phonograph.mechanism.tag.loadSongInfo
 import player.phonograph.model.Song
 import player.phonograph.model.SongInfoModel
-import player.phonograph.model.TagData
 import player.phonograph.model.TagField
 import player.phonograph.util.permissions.navigateToStorageSetting
 import androidx.lifecycle.ViewModel
@@ -21,8 +20,10 @@ import android.content.Context
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
@@ -46,7 +47,7 @@ class MultiTagBrowserViewModel : ViewModel() {
                     val info = loadSongInfo(song)
                     infos.add(info)
                 }
-                _displaySongInfo.emit(SongInfoModel.EMPTY())
+                _displayTags.emit(emptyMap())
                 _originalSongInfos.emit(infos)
             }
         }
@@ -54,8 +55,27 @@ class MultiTagBrowserViewModel : ViewModel() {
 
     private val _originalSongInfos: MutableStateFlow<List<SongInfoModel>> = MutableStateFlow(emptyList())
     val originalSongInfos get() = _originalSongInfos.asStateFlow()
-    private val _displaySongInfo: MutableStateFlow<SongInfoModel> = MutableStateFlow(SongInfoModel.EMPTY())
-    val displaySongInfo get() = _displaySongInfo.asStateFlow()
+
+
+    fun reducedOriginalTags(): Flow<Map<FieldKey, List<TagField>>> =
+        originalSongInfos.map {
+            it.fold(mutableMapOf()) { acc, model ->
+                for ((key, value) in model.tagTextOnlyFields) {
+                    val oldValue = acc[key]
+                    val newValue = if (oldValue != null) {
+                        oldValue + listOf(value)
+                    } else {
+                        listOf(value)
+                    }
+                    acc[key] = newValue
+                }
+                acc
+            }
+        }
+
+
+    private val _displayTags: MutableStateFlow<Map<FieldKey, String?>> = MutableStateFlow(emptyMap())
+    val displayTags get() = _displayTags.asStateFlow()
 
     val saveConfirmationDialogState = MaterialDialogState(false)
     val exitWithoutSavingDialogState = MaterialDialogState(false)
@@ -70,14 +90,14 @@ class MultiTagBrowserViewModel : ViewModel() {
             when (event) {
                 is TagEditEvent.UpdateTag     -> {
                     modifyView { old ->
-                        old.apply { put(event.fieldKey, TagField(event.fieldKey, TagData.TextData(event.newValue))) }
+                        old.apply { put(event.fieldKey, event.newValue) }
                     }
                     modifyEditRequest(EditAction.Update(event.fieldKey, event.newValue))
                 }
 
                 is TagEditEvent.AddNewTag     -> {
                     modifyView { old ->
-                        old + (event.fieldKey to TagField(event.fieldKey, TagData.TextData("")))
+                        old + (event.fieldKey to "")
                     }
                     modifyEditRequest(EditAction.Update(event.fieldKey, ""))
                 }
@@ -114,12 +134,11 @@ class MultiTagBrowserViewModel : ViewModel() {
         }
     }
 
-    private fun modifyView(action: (old: MutableMap<FieldKey, TagField>) -> Map<FieldKey, TagField>) {
+    private fun modifyView(action: (old: MutableMap<FieldKey, String?>) -> Map<FieldKey, String?>) {
         viewModelScope.launch(Dispatchers.Default) {
-            val old = _displaySongInfo.value
-            val newTagFields: Map<FieldKey, TagField> = action(old.tagFields.toMutableMap())
-            val new = old.copy(tagFields = newTagFields)
-            _displaySongInfo.emit(new)
+            val old = _displayTags.value.toMutableMap()
+            val new = action(old)
+            _displayTags.emit(new)
         }
     }
 

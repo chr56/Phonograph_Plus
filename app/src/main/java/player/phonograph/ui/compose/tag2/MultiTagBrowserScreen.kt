@@ -8,14 +8,14 @@ import lib.phonograph.misc.IOpenFileStorageAccess
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.mechanism.tag.edit.selectImage
-import player.phonograph.model.TagData
-import player.phonograph.model.TagField
 import player.phonograph.model.allFieldKey
+import player.phonograph.model.text
 import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.VerticalTextItem
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -72,33 +72,42 @@ internal fun MultiTagBrowserScreen(viewModel: MultiTagBrowserViewModel) {
 @Composable
 private fun CommonTags(viewModel: MultiTagBrowserViewModel) {
     val editable by viewModel.editable.collectAsState()
-    val songInfoModels by viewModel.originalSongInfos.collectAsState()
-    val reduced =
-        songInfoModels.fold(mutableMapOf<FieldKey, TagField>()) { acc, model ->
-            for ((key, value) in model.tagTextOnlyFields) {
-                val oldValue = acc[key]
-                val newValue = if (oldValue != null) {
-                    TagField(
-                        key, TagData.TextData("${oldValue.content.text()},\n${value.content.text()}")
-                    )
-                } else {
-                    value
-                }
-                acc[key] = newValue
-            }
-            acc
-        }
-    for ((key, field) in reduced) {
-        CommonTag(key, field.content, editable, viewModel::process)
+    val displayTags by viewModel.displayTags.collectAsState()
+    val reducedTags by viewModel.reducedOriginalTags().collectAsState(mutableMapOf())
+    for ((key, field) in reducedTags) {
+        val reducedValues = field.map { it.content.text() }
+        val editorValue = displayTags[key]
+        CommonTag(
+            key,
+            reducedValues,
+            editorValue,
+            editable,
+            viewModel::process
+        )
     }
-    AddMoreButton(reduced, viewModel::process)
+    AddMoreButton(allFieldKey.subtract(reducedTags.keys), viewModel::process)
 }
 
 @Composable
-private fun AddMoreButton(allKeys: Map<FieldKey, TagField>, onEdit: (Context, TagEditEvent) -> Unit) {
-    val existKeys = allKeys.keys
-    val remainedKeys = allFieldKey.subtract(existKeys)
-    AddMoreButton(keys = remainedKeys, onEdit)
+private fun CommonTag(
+    key: FieldKey,
+    allValues: List<String>,
+    editorValue: String?,
+    editable: Boolean,
+    onEdit: (Context, TagEditEvent) -> Unit,
+) {
+    val context = LocalContext.current
+    val tagName = key.text(context.resources)
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        if (editable) {
+            EditableItem(key, tagName, editorValue.orEmpty(), allValues, onEdit = { onEdit(context, it) })
+        } else {
+            if (allValues.isNotEmpty()) {
+                Item(tagName, allValues.joinToString(",\n"))
+            }
+        }
+    }
 }
 
 

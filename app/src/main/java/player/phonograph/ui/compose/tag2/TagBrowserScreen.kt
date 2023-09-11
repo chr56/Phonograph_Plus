@@ -6,20 +6,25 @@ package player.phonograph.ui.compose.tag2
 
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import lib.phonograph.misc.IOpenFileStorageAccess
+import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.mechanism.tag.edit.selectImage
+import player.phonograph.model.TagData
 import player.phonograph.model.allFieldKey
 import player.phonograph.model.getFileSizeString
+import player.phonograph.model.text
 import player.phonograph.ui.compose.components.CoverImage
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextItem
 import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -39,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
+import android.content.Context
 import android.graphics.Bitmap
 import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
@@ -137,6 +143,27 @@ private fun AddMoreButton(model: TagBrowserViewModel) {
     val existKeys = songInfoModel.tagTextOnlyFields.keys
     val remainedKeys = allFieldKey.subtract(existKeys)
     AddMoreButton(remainedKeys, model::process)
+}
+
+
+@Composable
+private fun CommonTag(
+    key: FieldKey,
+    field: TagData,
+    editable: Boolean,
+    onEdit: (Context, TagEditEvent) -> Unit,
+) {
+    val context = LocalContext.current
+    val tagName = key.text(context.resources)
+    val tagValue = field.text()
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        if (editable) {
+            EditableItem(key, tagName, tagValue, onEdit = { onEdit(context, it) })
+        } else {
+            if (tagValue.isNotEmpty()) Item(tagName, tagValue)
+        }
+    }
 }
 
 @Composable

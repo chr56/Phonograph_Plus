@@ -115,26 +115,7 @@ internal fun AddMoreButton(keys: Set<FieldKey>, onEdit: (Context, TagEditEvent) 
     }
 }
 @Composable
-internal fun CommonTag(
-    key: FieldKey,
-    field: TagData,
-    editable: Boolean,
-    onEdit: (Context, TagEditEvent) -> Unit,
-) {
-    val context = LocalContext.current
-    val tagName = key.text(context.resources)
-    val tagValue = field.text()
-
-    Box(modifier = Modifier.fillMaxWidth()) {
-        if (editable) {
-            EditableItem(key, tagName, tagValue, onEdit = { onEdit(context, it) })
-        } else {
-            if (tagValue.isNotEmpty()) Item(tagName, tagValue)
-        }
-    }
-}
-@Composable
-private fun EditableItem(
+internal fun EditableItem(
     key: FieldKey,
     tagName: String,
     value: String,
