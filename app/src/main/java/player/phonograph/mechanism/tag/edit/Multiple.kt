@@ -27,7 +27,8 @@ fun applyEdit(
     allEditRequest: List<EditAction>,
     needDeleteCover: Boolean,
     needReplaceCover: Boolean,
-    newCoverUri: Uri?
+    newCoverUri: Uri?,
+    onComplete: () -> Unit = {},
 ) {
     scope.launch(Dispatchers.Default) {
         // notify user first
@@ -63,6 +64,7 @@ fun applyEdit(
         MediaScannerConnection.scanFile(
             App.instance, paths, null, listener
         )
+        onComplete()
     }
 }
 
