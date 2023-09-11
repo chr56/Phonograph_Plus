@@ -176,6 +176,7 @@ class MultiTagBrowserViewModel : ViewModel() {
                 ) {
                     updateEditable(false)
                     updateSong(context, _songs.value)
+                    _pendingEditRequests.clear()
                 }
             } else {
                 navigateToStorageSetting(context)

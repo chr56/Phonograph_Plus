@@ -163,6 +163,7 @@ class TagBrowserViewModel : ViewModel() {
             ) {
                 updateEditable(false)
                 updateSong(context, song.value)
+                _pendingEditRequests.clear()
             }
         } else {
             navigateToStorageSetting(context)
