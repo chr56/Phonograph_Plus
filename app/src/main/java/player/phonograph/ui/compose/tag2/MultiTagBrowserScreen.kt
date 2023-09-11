@@ -74,8 +74,8 @@ private fun CommonTags(viewModel: MultiTagBrowserViewModel) {
     val editable by viewModel.editable.collectAsState()
     val displayTags by viewModel.displayTags.collectAsState()
     val reducedTags by viewModel.reducedOriginalTags().collectAsState(mutableMapOf())
-    for ((key, field) in reducedTags) {
-        val reducedValues = field.map { it.content.text() }
+    for ((key, _) in displayTags) {
+        val reducedValues = reducedTags[key]?.map { it.content.text() }
         val editorValue = displayTags[key]
         CommonTag(
             key,
@@ -91,7 +91,7 @@ private fun CommonTags(viewModel: MultiTagBrowserViewModel) {
 @Composable
 private fun CommonTag(
     key: FieldKey,
-    allValues: List<String>,
+    allValues: List<String>?,
     editorValue: String?,
     editable: Boolean,
     onEdit: (Context, TagEditEvent) -> Unit,
@@ -101,9 +101,9 @@ private fun CommonTag(
 
     Box(modifier = Modifier.fillMaxWidth()) {
         if (editable) {
-            EditableItem(key, tagName, editorValue.orEmpty(), allValues, onEdit = { onEdit(context, it) })
+            EditableItem(key, tagName, editorValue.orEmpty(), allValues.orEmpty(), onEdit = { onEdit(context, it) })
         } else {
-            if (allValues.isNotEmpty()) {
+            if (!allValues.isNullOrEmpty()) {
                 Item(tagName, allValues.joinToString(",\n"))
             }
         }

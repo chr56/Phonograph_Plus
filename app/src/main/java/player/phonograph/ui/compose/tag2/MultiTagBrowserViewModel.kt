@@ -47,8 +47,9 @@ class MultiTagBrowserViewModel : ViewModel() {
                     val info = loadSongInfo(song)
                     infos.add(info)
                 }
-                _displayTags.emit(emptyMap())
                 _originalSongInfos.emit(infos)
+                val default = reducedOriginalTagsImpl(infos).mapValues { "" }
+                _displayTags.emit(default)
             }
         }
     }
@@ -59,19 +60,23 @@ class MultiTagBrowserViewModel : ViewModel() {
 
     fun reducedOriginalTags(): Flow<Map<FieldKey, List<TagField>>> =
         originalSongInfos.map {
-            it.fold(mutableMapOf()) { acc, model ->
-                for ((key, value) in model.tagTextOnlyFields) {
-                    val oldValue = acc[key]
-                    val newValue = if (oldValue != null) {
-                        oldValue + listOf(value)
-                    } else {
-                        listOf(value)
-                    }
-                    acc[key] = newValue
-                }
-                acc
-            }
+            reducedOriginalTagsImpl(it)
         }
+
+    private fun reducedOriginalTagsImpl(list: List<SongInfoModel>): MutableMap<FieldKey, List<TagField>> =
+        list.fold(mutableMapOf()) { acc, model ->
+            for ((key, value) in model.tagTextOnlyFields) {
+                val oldValue = acc[key]
+                val newValue = if (oldValue != null) {
+                    oldValue + listOf(value)
+                } else {
+                    listOf(value)
+                }
+                acc[key] = newValue
+            }
+            acc
+        }
+
 
 
     private val _displayTags: MutableStateFlow<Map<FieldKey, String?>> = MutableStateFlow(emptyMap())
