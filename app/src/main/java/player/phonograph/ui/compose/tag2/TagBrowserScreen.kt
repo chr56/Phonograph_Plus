@@ -13,6 +13,7 @@ import player.phonograph.model.TagData
 import player.phonograph.model.allFieldKey
 import player.phonograph.model.getFileSizeString
 import player.phonograph.model.text
+import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.CoverImage
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextItem
@@ -85,9 +86,10 @@ fun TagBrowserScreen(viewModel: TagBrowserViewModel) {
             }
             if (editable) AddMoreButton(viewModel)
             Spacer(modifier = Modifier.height(16.dp))
-            Title(stringResource(R.string.raw_tags))
-            for ((key, rawTag) in info.allTags) {
-                RawTag(key, rawTag)
+            CascadeVerticalItem(stringResource(R.string.raw_tags)) {
+                for ((key, rawTag) in info.allTags) {
+                    RawTag(key, rawTag)
+                }
             }
         }
     }
