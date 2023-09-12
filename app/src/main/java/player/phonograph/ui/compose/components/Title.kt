@@ -18,12 +18,13 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun Title(
     title: String,
+    modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colors.onSurface,
     horizontalPadding: Dp = 8.dp,
 ) {
     Text(
         title,
+        modifier = modifier.padding(horizontal = horizontalPadding),
         style = TextStyle(fontWeight = FontWeight.Bold, color = color),
-        modifier = Modifier.padding(horizontal = horizontalPadding)
     )
 }

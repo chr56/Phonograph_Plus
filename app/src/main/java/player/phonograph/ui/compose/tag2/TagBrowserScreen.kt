@@ -16,9 +16,7 @@ import player.phonograph.model.text
 import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.CoverImage
 import player.phonograph.ui.compose.components.Title
-import player.phonograph.ui.compose.components.VerticalTextItem
 import androidx.activity.ComponentActivity
-import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -31,18 +29,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -69,7 +62,7 @@ fun TagBrowserScreen(viewModel: TagBrowserViewModel) {
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
             Spacer(modifier = Modifier.height(16.dp))
-            Title(stringResource(R.string.file))
+            Title(stringResource(R.string.file), color = MaterialTheme.colors.primary)
             Item(R.string.label_file_name, info.fileName.value())
             Item(R.string.label_file_path, info.filePath.value())
             Item(R.string.label_file_size, getFileSizeString(info.fileSize.value()))
@@ -78,7 +71,7 @@ fun TagBrowserScreen(viewModel: TagBrowserViewModel) {
             }
             // music tags
             Spacer(modifier = Modifier.height(16.dp))
-            Title(stringResource(R.string.music_tags))
+            Title(stringResource(R.string.music_tags), color = MaterialTheme.colors.primary)
             Item(stringResource(R.string.tag_format), info.tagFormat.id)
             Spacer(modifier = Modifier.height(8.dp))
             for ((key, field) in info.tagTextOnlyFields) {
@@ -167,23 +160,4 @@ private fun CommonTag(
         }
     }
 }
-
-@Composable
-fun Title(
-    title: String,
-    color: Color = MaterialTheme.colors.primary,
-    horizontalPadding: Dp = 8.dp,
-) {
-    Text(
-        title,
-        style = TextStyle(fontWeight = FontWeight.Bold, color = color),
-        modifier = Modifier.padding(horizontal = horizontalPadding)
-    )
-}
-
-@Composable
-private fun Item(@StringRes tagStringRes: Int, value: String) = Item(stringResource(tagStringRes), value)
-
-@Composable
-internal fun Item(tag: String, value: String) = VerticalTextItem(title = tag, value = value)
 

@@ -11,6 +11,7 @@ import player.phonograph.mechanism.tag.edit.selectImage
 import player.phonograph.model.allFieldKey
 import player.phonograph.model.text
 import player.phonograph.ui.compose.components.CascadeVerticalItem
+import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextItem
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.clickable
@@ -52,12 +53,12 @@ internal fun MultiTagBrowserScreen(viewModel: MultiTagBrowserViewModel) {
             .padding(horizontal = 16.dp)
             .fillMaxSize()
     ) {
-        Title(stringResource(R.string.files))
+        Title(stringResource(R.string.files), color = MaterialTheme.colors.primary)
         FileList(viewModel)
         Spacer(modifier = Modifier.height(16.dp))
         CoverUpdater(viewModel)
         Spacer(modifier = Modifier.height(16.dp))
-        Title(stringResource(R.string.music_tags))
+        Title(stringResource(R.string.music_tags), color = MaterialTheme.colors.primary)
         CommonTags(viewModel)
     }
     val editable by viewModel.editable.collectAsState()
@@ -159,7 +160,10 @@ private fun FileList(viewModel: MultiTagBrowserViewModel, modifier: Modifier = M
     ) {
         for ((index, song) in songs.withIndex()) {
             Row(modifier = Modifier.fillMaxWidth(), Arrangement.Start) {
-                Box(Modifier.align(Alignment.Top).padding(top = 8.dp)) {
+                Box(
+                    Modifier
+                        .align(Alignment.Top)
+                        .padding(top = 8.dp)) {
                     Icon(
                         painterResource(R.drawable.ic_music_note_white_24dp), null
                     )

@@ -9,6 +9,8 @@ import player.phonograph.R
 import player.phonograph.model.RawTag
 import player.phonograph.model.TagData
 import player.phonograph.model.text
+import player.phonograph.ui.compose.components.VerticalTextItem
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -293,3 +295,10 @@ internal fun RawTag(key: String, rawTag: RawTag) {
         }
     }
 }
+
+
+@Composable
+internal fun Item(@StringRes tagStringRes: Int, value: String) = Item(stringResource(tagStringRes), value)
+
+@Composable
+internal fun Item(tag: String, value: String) = VerticalTextItem(title = tag, value = value)

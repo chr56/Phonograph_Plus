@@ -7,6 +7,7 @@ package player.phonograph.ui.compose.tag2
 import player.phonograph.R
 import player.phonograph.mechanism.tag.EditAction
 import player.phonograph.model.text
+import player.phonograph.ui.compose.components.Title
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
