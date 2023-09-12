@@ -2,38 +2,26 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.ui.compose.tag2
+package player.phonograph.ui.compose.tag
 
-import com.vanpra.composematerialdialogs.MaterialDialogState
-import lib.phonograph.misc.IOpenFileStorageAccess
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
-import player.phonograph.mechanism.tag.edit.selectImage
 import player.phonograph.model.RawTag
 import player.phonograph.model.TagData
-import player.phonograph.model.allFieldKey
-import player.phonograph.model.getFileSizeString
 import player.phonograph.model.text
-import player.phonograph.ui.compose.components.CoverImage
-import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextItem
-import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
@@ -47,7 +35,6 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,116 +49,23 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewModelScope
-import android.graphics.Bitmap
-import android.widget.Toast
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-
-@Composable
-fun TagBrowserScreen(viewModel: TagBrowserViewModel) {
-    val info by viewModel.currentSongInfo.collectAsState()
-    val bitmap by viewModel.songBitmap.collectAsState()
-    val editable by viewModel.editable.collectAsState()
-    Column(
-        modifier = Modifier
-            .verticalScroll(state = rememberScrollState())
-            .fillMaxSize()
-    ) {
-        // cover
-        Artwork(viewModel, bitmap, editable)
-        // file
-        Column(
-            modifier = Modifier.padding(horizontal = 16.dp)
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Title(stringResource(R.string.file))
-            Item(R.string.label_file_name, info.fileName.value())
-            Item(R.string.label_file_path, info.filePath.value())
-            Item(R.string.label_file_size, getFileSizeString(info.fileSize.value()))
-            for ((key, field) in info.audioPropertyFields) {
-                Item(stringResource(key.res), value = field.value().toString())
-            }
-            // music tags
-            Spacer(modifier = Modifier.height(16.dp))
-            Title(stringResource(R.string.music_tags))
-            Item(stringResource(R.string.tag_format), info.tagFormat.id)
-            Spacer(modifier = Modifier.height(8.dp))
-            for ((key, field) in info.tagTextOnlyFields) {
-                CommonTag(key, field.content, editable, viewModel::process)
-            }
-            if (editable) AddMoreButton(viewModel)
-            Spacer(modifier = Modifier.height(16.dp))
-            Title(stringResource(R.string.raw_tags))
-            for ((key, rawTag) in info.allTags) {
-                RawTag(key, rawTag)
-            }
-        }
-    }
-    if (editable) {
-        val context = LocalContext.current
-        SaveConfirmationDialog(
-            viewModel.saveConfirmationDialogState,
-            viewModel::diff
-        ) { viewModel.save(context) }
-        val activity = context as? ComponentActivity
-        ExitWithoutSavingDialog(viewModel.exitWithoutSavingDialogState) { activity?.finish() }
-    }
-}
-
-@Composable
-fun Artwork(viewModel: TagBrowserViewModel, bitmap: Bitmap?, editable: Boolean) {
-    val context = LocalContext.current
-    BoxWithConstraints {
-        val coverImageDetailDialogState = remember { MaterialDialogState(false) }
-        if (bitmap != null || editable) {
-            CoverImage(bitmap, MaterialTheme.colors.primary, Modifier.clickable {
-                coverImageDetailDialogState.show()
-            })
-        }
-        CoverImageDetailDialog(
-            state = coverImageDetailDialogState,
-            artworkExist = bitmap != null,
-            onSave = { viewModel.saveArtwork(context) },
-            onDelete = { viewModel.process(TagEditEvent.RemoveArtwork) },
-            onUpdate = {
-                viewModel.viewModelScope.launch(Dispatchers.IO) {
-                    val uri = selectImage((context as IOpenFileStorageAccess).openFileStorageAccessTool)
-                    if (uri != null) {
-                        viewModel.process(TagEditEvent.UpdateArtwork.from(context, uri, viewModel.song.value))
-                    } else {
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(context, android.R.string.cancel, Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-                coverImageDetailDialogState.hide()
-            },
-            editMode = editable
-        )
-    }
-}
+import android.content.Context
 
 
 @Composable
-private fun AddMoreButton(model: TagBrowserViewModel) {
+internal fun AddMoreButton(keys: Set<FieldKey>, onEdit: (Context, TagEditEvent) -> Unit) {
     Box(Modifier.fillMaxWidth()) {
-        val current by model.currentSongInfo.collectAsState()
         var showed by remember { mutableStateOf(false) }
-        val fieldKeys = allFieldKey.subtract(current.tagTextOnlyFields.keys)
-
         DropdownMenu(expanded = showed, onDismissRequest = { showed = false }) {
             val context = LocalContext.current
-            for (fieldKey in fieldKeys) {
+            for (fieldKey in keys) {
                 Column(modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
                         showed = false
-                        model.process(TagEditEvent.AddNewTag(fieldKey))
+                        onEdit(context, TagEditEvent.AddNewTag(fieldKey))
                     }
                     .padding(8.dp, 16.dp)
                 ) {
@@ -222,29 +116,8 @@ private fun AddMoreButton(model: TagBrowserViewModel) {
         }
     }
 }
-
 @Composable
-private fun CommonTag(
-    key: FieldKey,
-    field: TagData,
-    editable: Boolean,
-    onEdit: (TagEditEvent) -> Unit,
-) {
-    val context = LocalContext.current
-    val tagName = key.text(context.resources)
-    val tagValue = field.text()
-
-    Box(modifier = Modifier.fillMaxWidth()) {
-        if (editable) {
-            EditableItem(key, tagName, tagValue, onEdit = onEdit)
-        } else {
-            if (tagValue.isNotEmpty()) Item(tagName, tagValue)
-        }
-    }
-}
-
-@Composable
-private fun EditableItem(
+internal fun EditableItem(
     key: FieldKey,
     tagName: String,
     value: String,
@@ -358,9 +231,8 @@ private fun EditableItem(
     }
 
 }
-
 @Composable
-private fun RawTag(key: String, rawTag: RawTag) {
+internal fun RawTag(key: String, rawTag: RawTag) {
     val (
         id: String,
         name: String,
@@ -424,22 +296,9 @@ private fun RawTag(key: String, rawTag: RawTag) {
     }
 }
 
-@Composable
-fun Title(
-    title: String,
-    color: Color = MaterialTheme.colors.primary,
-    horizontalPadding: Dp = 8.dp,
-) {
-    Text(
-        title,
-        style = TextStyle(fontWeight = FontWeight.Bold, color = color),
-        modifier = Modifier.padding(horizontal = horizontalPadding)
-    )
-}
 
 @Composable
-private fun Item(@StringRes tagStringRes: Int, value: String) = Item(stringResource(tagStringRes), value)
+internal fun Item(@StringRes tagStringRes: Int, value: String) = Item(stringResource(tagStringRes), value)
 
 @Composable
 internal fun Item(tag: String, value: String) = VerticalTextItem(title = tag, value = value)
-

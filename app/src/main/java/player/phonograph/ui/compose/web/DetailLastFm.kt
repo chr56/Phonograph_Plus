@@ -10,14 +10,13 @@ import player.phonograph.R
 import player.phonograph.coil.lastfm.LastFmImageBundle
 import player.phonograph.ui.compose.components.Chip
 import player.phonograph.ui.compose.components.HorizontalTextItem
-import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextItem
-import util.phonograph.tagsources.musicbrainz.MusicBrainzAction
 import util.phonograph.tagsources.lastfm.LastFmAlbum
 import util.phonograph.tagsources.lastfm.LastFmArtist
 import util.phonograph.tagsources.lastfm.LastFmTrack
 import util.phonograph.tagsources.lastfm.LastFmWikiData
 import util.phonograph.tagsources.lastfm.Tags
+import util.phonograph.tagsources.musicbrainz.MusicBrainzAction
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -42,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -215,7 +215,7 @@ private fun Tag(tag: Tags.Tag, context: Context) {
 @Composable
 private fun ColumnScope.Tracks(tracks: LastFmAlbum.Tracks?) {
     if (tracks != null && !tracks.track.isNullOrEmpty() && tracks.track.isNotEmpty()) {
-        Title(title = stringResource(id = R.string.songs))
+        Text(stringResource(id = R.string.songs), fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(6.dp))
         for (track in tracks.track) {
             Track(track)

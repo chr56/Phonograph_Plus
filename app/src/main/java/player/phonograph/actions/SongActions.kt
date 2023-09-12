@@ -11,7 +11,7 @@ import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
-import player.phonograph.ui.compose.tag2.TagBrowserActivity
+import player.phonograph.ui.compose.tag.TagBrowserActivity
 import player.phonograph.ui.dialogs.AddToPlaylistDialog
 import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.ui.dialogs.SongDetailDialog

@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 package player.phonograph.ui.compose.tag
 
-import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
+import player.phonograph.mechanism.tag.EditAction
 import player.phonograph.model.text
 import player.phonograph.ui.compose.components.Title
 import androidx.compose.foundation.layout.Column
@@ -17,22 +17,26 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import android.net.Uri
 
-@Composable
-internal fun DiffScreen(model: BatchTagEditScreenViewModel) {
-    val diff = remember { model.generateDiff() }
-    DiffScreen(diff)
+
+
+internal class TagDiff(
+    /**
+     * <EditAction, oldValue> pair
+     */
+    val tagDiff: List<Pair<EditAction, String?>>,
+) {
+    fun noChange() = tagDiff.isEmpty()
 }
 
+
 @Composable
-private fun DiffScreen(diff: TagDiff) {
+internal fun DiffScreen(diff: TagDiff) {
     if (diff.noChange())
         Text(text = stringResource(id = R.string.no_changes))
     else
@@ -42,25 +46,24 @@ private fun DiffScreen(diff: TagDiff) {
                     TagDiff(tag)
                 }
             }
-            if (diff.artworkDiff is TagDiff.ArtworkDiff.Deleted)
-                item {
-                    Title(stringResource(id = R.string.remove_cover))
-                }
-            if (diff.artworkDiff is TagDiff.ArtworkDiff.Replaced)
-                item {
-                    Title(stringResource(id = R.string.update_image))
-                    DiffText("-> ${diff.artworkDiff.uri}")
-                }
         }
 }
 
 @Composable
-private fun TagDiff(tag: Triple<FieldKey, String?, String?>) {
+private fun TagDiff(tag: Pair<EditAction, String?>) {
+    val (action, old) = tag
     Column(Modifier.padding(vertical = 16.dp)) {
-        Title(tag.first.text(LocalContext.current.resources), horizontalPadding = 0.dp)
-        DiffText(tag.second)
+        Title(action.key.text(LocalContext.current.resources), horizontalPadding = 0.dp)
+        DiffText(old)
         Icon(Icons.Outlined.ArrowDropDown, contentDescription = null)
-        DiffText(tag.third)
+        DiffText(
+            when (action) {
+                is EditAction.Update       -> action.newValue
+                is EditAction.Delete       -> stringResource(id = R.string.empty)
+                EditAction.ImageDelete     -> stringResource(id = R.string.remove_cover)
+                is EditAction.ImageReplace -> stringResource(id = R.string.update_image)
+            }
+        )
     }
 }
 
@@ -76,20 +79,4 @@ private fun DiffText(string: String?, modifier: Modifier = Modifier) {
     } else {
         Text(string, modifier.fillMaxWidth())
     }
-}
-
-internal class TagDiff(
-    /**
-     * <TagFieldKey, oldValue, newValue> triple
-     */
-    val tagDiff: List<Triple<FieldKey, String?, String?>>,
-    val artworkDiff: ArtworkDiff
-) {
-    sealed class ArtworkDiff {
-        class Replaced(val uri: Uri?) : ArtworkDiff()
-        object Deleted : ArtworkDiff()
-        object None : ArtworkDiff()
-    }
-
-    fun noChange() = tagDiff.isEmpty() && artworkDiff is ArtworkDiff.None
 }
