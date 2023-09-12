@@ -129,12 +129,12 @@
         <activity android:name=".ui.activities.GenreDetailActivity" />
         <activity android:name=".ui.activities.PlaylistDetailActivity" />
         <activity
-            android:name=".ui.compose.tag2.TagBrowserActivity"
+            android:name=".ui.compose.tag.TagBrowserActivity"
             android:label="@string/action_details"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".ui.compose.tag2.MultiTagBrowserActivity"
+            android:name=".ui.compose.tag.MultiTagBrowserActivity"
             android:label="@string/action_details"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />

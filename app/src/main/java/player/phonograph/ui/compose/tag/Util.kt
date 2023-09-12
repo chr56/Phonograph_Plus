@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.ui.compose.tag2
+package player.phonograph.ui.compose.tag
 
 import lib.phonograph.misc.ICreateFileStorageAccess
 import player.phonograph.coil.loadImage

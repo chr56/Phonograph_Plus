@@ -29,7 +29,7 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.PlaylistModel
-import player.phonograph.ui.compose.tag2.MultiTagBrowserActivity
+import player.phonograph.ui.compose.tag.MultiTagBrowserActivity
 import player.phonograph.util.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.annotation.ColorInt

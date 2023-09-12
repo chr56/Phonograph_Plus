@@ -18,7 +18,7 @@ import player.phonograph.model.Artist
 import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
 import player.phonograph.ui.activities.ArtistDetailActivity
-import player.phonograph.ui.compose.tag2.MultiTagBrowserActivity
+import player.phonograph.ui.compose.tag.MultiTagBrowserActivity
 import player.phonograph.ui.dialogs.LastFmDialog
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.annotation.ColorInt

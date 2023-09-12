@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.ui.compose.tag2
+package player.phonograph.ui.compose.tag
 
 import lib.phonograph.misc.CreateFileStorageAccessTool
 import lib.phonograph.misc.ICreateFileStorageAccess
@@ -16,6 +16,7 @@ import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.ui.compose.web.IWebSearchRequester
 import player.phonograph.ui.compose.web.WebSearchLauncher
 import player.phonograph.ui.compose.web.WebSearchTool
+import player.phonograph.ui.dialogs.LastFmDialog
 import util.phonograph.tagsources.Source
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.addCallback
@@ -37,38 +38,53 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class MultiTagBrowserActivity :
+class TagBrowserActivity :
         ComposeThemeActivity(),
         IWebSearchRequester,
         ICreateFileStorageAccess,
         IOpenFileStorageAccess {
 
-    private val viewModel: MultiTagBrowserViewModel by viewModels()
+    private val viewModel: TagBrowserViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
         openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
         webSearchTool.register(lifecycle, activityResultRegistry)
-        val songs = parseIntent(this, intent)
-        viewModel.updateSong(this, songs)
+        val song = parseIntent(this, intent)
+        viewModel.updateSong(this, song)
         super.onCreate(savedInstanceState)
 
         setContent {
-            BatchTagEditor(viewModel, onBackPressedDispatcher, webSearchTool)
+            val highlightColor by primaryColor.collectAsState()
+            TagEditor(viewModel, highlightColor, onBackPressedDispatcher, webSearchTool)
         }
         onBackPressedDispatcher.addCallback {
             if (viewModel.pendingEditRequests.isNotEmpty()) {
                 viewModel.exitWithoutSavingDialogState.show()
             } else {
                 finish()
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.color.collect { color ->
+                    if (color != null) primaryColor.update { color }
+                }
             }
         }
     }
@@ -79,30 +95,28 @@ class MultiTagBrowserActivity :
 
     companion object {
 
-        private const val PATHS = "PATHS"
-        private fun parseIntent(context: Context, intent: Intent): List<Song> {
-            val paths = intent.extras?.getStringArrayList(PATHS) ?: return emptyList()
-            return paths.mapNotNull { SongLoader.path(context, it) }
-        }
+        private const val PATH = "PATH"
+        private fun parseIntent(context: Context, intent: Intent): Song =
+            SongLoader.path(context, intent.extras?.getString(PATH).orEmpty())
 
-        fun launch(context: Context, paths: ArrayList<String>) {
+        fun launch(context: Context, path: String) {
             context.startActivity(
-                Intent(context, MultiTagBrowserActivity::class.java).apply {
-                    putStringArrayListExtra(PATHS, paths)
+                Intent(context, TagBrowserActivity::class.java).apply {
+                    putExtra(PATH, path)
                 }
             )
         }
     }
 }
 
-
 @Composable
-private fun BatchTagEditor(
-    viewModel: MultiTagBrowserViewModel,
+private fun TagEditor(
+    viewModel: TagBrowserViewModel,
+    highlightColor: Color,
     onBackPressedDispatcher: OnBackPressedDispatcher,
     webSearchTool: WebSearchTool,
 ) {
-    PhonographTheme {
+    PhonographTheme(highlightColor) {
         val scaffoldState = rememberScaffoldState()
         val editable by viewModel.editable.collectAsState()
         Scaffold(
@@ -141,24 +155,31 @@ private fun BatchTagEditor(
             }
         ) {
             Box(Modifier.padding(it)) {
-                MultiTagBrowserScreen(viewModel)
+                TagBrowserScreen(viewModel)
             }
         }
     }
 }
 
 @Composable
-private fun RequestWebSearch(viewModel: MultiTagBrowserViewModel, webSearchTool: WebSearchTool) {
+private fun RequestWebSearch(viewModel: TagBrowserViewModel, webSearchTool: WebSearchTool) {
     val context = LocalContext.current
     fun search(source: Source) {
         val intent = when (source) {
-            Source.LastFm -> WebSearchLauncher.searchLastFmSong(context, null)
-            Source.MusicBrainz -> WebSearchLauncher.searchMusicBrainzSong(context, null)
+            Source.LastFm -> WebSearchLauncher.searchLastFmSong(context, viewModel.song.value)
+            Source.MusicBrainz -> WebSearchLauncher.searchMusicBrainzSong(context, viewModel.song.value)
         }
         webSearchTool.launch(intent) {
             // Log.v("TagEditor", it.toString()) //todo
         }
     }
-    RequestWebSearch(webSearchTool, ::search, null)
+
+    fun onShowWikiDialog() {
+        val fragmentManager = (context as? FragmentActivity)?.supportFragmentManager
+        if (fragmentManager != null) {
+            LastFmDialog.from(viewModel.song.value).show(fragmentManager, "WEB_SEARCH_DIALOG")
+        }
+    }
+    RequestWebSearch(webSearchTool, ::search, ::onShowWikiDialog)
 }
 

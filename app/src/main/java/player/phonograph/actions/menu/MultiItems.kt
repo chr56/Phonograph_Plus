@@ -19,8 +19,8 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
 import player.phonograph.ui.adapter.MultiSelectionController
-import player.phonograph.ui.compose.tag2.MultiTagBrowserActivity
-import player.phonograph.ui.compose.tag2.TagBrowserActivity
+import player.phonograph.ui.compose.tag.MultiTagBrowserActivity
+import player.phonograph.ui.compose.tag.TagBrowserActivity
 import player.phonograph.util.theme.getTintedDrawable
 import android.content.Context
 import android.view.Menu
