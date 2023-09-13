@@ -12,16 +12,21 @@ import player.phonograph.service.MusicService.MusicBinder
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
-import android.app.Activity
+import player.phonograph.util.debug
+import androidx.activity.ComponentActivity
+import androidx.lifecycle.Lifecycle
 import android.content.ComponentName
 import android.content.Context
 import android.content.Context.BIND_AUTO_CREATE
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.ServiceConnection
+import android.os.Build
+import android.os.Build.VERSION_CODES.O
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.IBinder
+import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import java.util.WeakHashMap
@@ -37,28 +42,37 @@ object MusicPlayerRemote {
     val queueManager: QueueManager by GlobalContext.get().inject()
 
     fun bindToService(
-        activity: Activity,
+        activity: ComponentActivity,
         callback: ServiceConnection?,
     ): ServiceToken? {
         val contextWrapper = ContextWrapper(
             activity.parent ?: activity // try to use parent activity
         )
-        // start service
-        contextWrapper.startService(Intent(contextWrapper, MusicService::class.java))
+        return if (activity.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) && Build.VERSION.SDK_INT >= O) {
+            // start service foreground
+            contextWrapper.startService(Intent(contextWrapper, MusicService::class.java))
 
-        val serviceConnection = MusicServiceConnection(callback)
+            val serviceConnection = MusicServiceConnection(callback)
 
-        // bind service
-        return if (
-            contextWrapper.bindService(
-                Intent().setClass(contextWrapper, MusicService::class.java),
-                serviceConnection,
-                BIND_AUTO_CREATE
-            )
-        ) {
-            mConnectionMap[contextWrapper] = serviceConnection
-            ServiceToken(contextWrapper)
-        } else null
+            // bind service
+            if (
+                contextWrapper.bindService(
+                    Intent().setClass(contextWrapper, MusicService::class.java),
+                    serviceConnection,
+                    BIND_AUTO_CREATE
+                )
+            ) {
+                debug { Log.v(TAG, "${activity.javaClass.simpleName} is successfully bind to service!") }
+                mConnectionMap[contextWrapper] = serviceConnection
+                ServiceToken(contextWrapper)
+            } else {
+                null
+            }
+        } else {
+            Log.w(TAG, "${activity.javaClass.simpleName} is trying to start service in background!")
+            null
+        }
+
     }
 
     fun unbindFromService(token: ServiceToken?) {

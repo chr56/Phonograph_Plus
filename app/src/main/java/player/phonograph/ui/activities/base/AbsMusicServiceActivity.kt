@@ -17,7 +17,6 @@ import player.phonograph.settings.CLASSIC_NOTIFICATION
 import player.phonograph.settings.COLORED_NOTIFICATION
 import player.phonograph.settings.GAPLESS_PLAYBACK
 import player.phonograph.settings.SettingFlowStore
-import player.phonograph.util.debug
 import player.phonograph.util.permissions.NonGrantedPermission
 import player.phonograph.util.permissions.checkStorageReadPermission
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -31,11 +30,9 @@ import android.content.ServiceConnection
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.IBinder
-import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import java.lang.System.currentTimeMillis
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -62,43 +59,32 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
                     }
                 }
             }
-        }
+            serviceToken =
+                MusicPlayerRemote.bindToService(
+                    this@AbsMusicServiceActivity,
+                    object : ServiceConnection {
+                        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+                            this@AbsMusicServiceActivity.onServiceConnected()
+                        }
 
-        debug {
-            Log.v(
-                "Metrics",
-                "${currentTimeMillis().mod(10000000)} AbsMusicServiceActivity start Music Service"
-            )
-        }
-        serviceToken =
-            MusicPlayerRemote.bindToService(
-                this,
-                object : ServiceConnection {
-                    override fun onServiceConnected(name: ComponentName, service: IBinder) {
-                        this@AbsMusicServiceActivity.onServiceConnected()
+                        override fun onServiceDisconnected(name: ComponentName) {
+                            this@AbsMusicServiceActivity.onServiceDisconnected()
+                        }
                     }
-
-                    override fun onServiceDisconnected(name: ComponentName) {
-                        this@AbsMusicServiceActivity.onServiceDisconnected()
-                    }
-                }
-            )
-        debug {
-            Log.v(
-                "Metrics",
-                "${currentTimeMillis().mod(10000000)} AbsMusicServiceActivity Music Service is started"
-            )
+                )
         }
         volumeControlStream = AudioManager.STREAM_MUSIC
         lifecycle.addObserver(LifeCycleObserver())
         observeSetting()
     }
+
     private fun observeSetting() {
         fun observe(block: suspend CoroutineScope.() -> Unit) {
             lifecycleScope.launch {
                 lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED, block)
             }
         }
+
         val store = SettingFlowStore(this)
         observe {
             store.gaplessPlayback.distinctUntilChanged()
