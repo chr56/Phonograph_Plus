@@ -47,18 +47,6 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-            val permission = checkStorageReadPermission(this@AbsMusicServiceActivity)
-            if (permission is NonGrantedPermission) {
-                withResumed {
-                    notifyPermissionDeniedUser(listOf(permission)) {
-                        requestPermissionImpl(arrayOf(permission.permissionId)) { result ->
-                            if (result.entries.first().value) {
-                                GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
-                            }
-                        }
-                    }
-                }
-            }
             serviceToken =
                 MusicPlayerRemote.bindToService(
                     this@AbsMusicServiceActivity,
@@ -72,8 +60,20 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
                         }
                     }
                 )
+            volumeControlStream = AudioManager.STREAM_MUSIC
+            val permission = checkStorageReadPermission(this@AbsMusicServiceActivity)
+            if (permission is NonGrantedPermission) {
+                withResumed {
+                    notifyPermissionDeniedUser(listOf(permission)) {
+                        requestPermissionImpl(arrayOf(permission.permissionId)) { result ->
+                            if (result.entries.first().value) {
+                                GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
+                            }
+                        }
+                    }
+                }
+            }
         }
-        volumeControlStream = AudioManager.STREAM_MUSIC
         lifecycle.addObserver(LifeCycleObserver())
         observeSetting()
     }

@@ -13,16 +13,15 @@ import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.util.debug
+import player.phonograph.util.warning
 import androidx.activity.ComponentActivity
-import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.withStarted
 import android.content.ComponentName
 import android.content.Context
 import android.content.Context.BIND_AUTO_CREATE
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.ServiceConnection
-import android.os.Build
-import android.os.Build.VERSION_CODES.O
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.IBinder
@@ -41,14 +40,14 @@ object MusicPlayerRemote {
 
     val queueManager: QueueManager by GlobalContext.get().inject()
 
-    fun bindToService(
+    suspend fun bindToService(
         activity: ComponentActivity,
         callback: ServiceConnection?,
     ): ServiceToken? {
         val contextWrapper = ContextWrapper(
             activity.parent ?: activity // try to use parent activity
         )
-        return if (activity.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) && Build.VERSION.SDK_INT >= O) {
+        return activity.lifecycle.withStarted {
             // start service foreground
             contextWrapper.startService(Intent(contextWrapper, MusicService::class.java))
 
@@ -66,11 +65,9 @@ object MusicPlayerRemote {
                 mConnectionMap[contextWrapper] = serviceConnection
                 ServiceToken(contextWrapper)
             } else {
+                warning(TAG,"Failed to start MusicService")
                 null
             }
-        } else {
-            Log.w(TAG, "${activity.javaClass.simpleName} is trying to start service in background!")
-            null
         }
 
     }
