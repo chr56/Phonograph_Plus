@@ -382,6 +382,13 @@ class MusicService : MediaBrowserServiceCompat() {
                 }
 
                 songPlayCountHelper.notifyPlayStateChanged(isPlaying)
+
+                if (controller.playerState != PlayerState.PLAYING) {
+                    // wait for seconds and try to stop foreground notification
+                    controller.handler.postDelayed({
+                        if (controller.playerState != PlayerState.PLAYING) stopForeground(STOP_FOREGROUND_DETACH)
+                    }, 5_000)
+                }
             }
 
             META_CHANGED       -> {
