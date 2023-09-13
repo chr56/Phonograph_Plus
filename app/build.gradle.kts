@@ -202,6 +202,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.koin)
 
+    implementation(libs.kotlinx.coroutines)
     implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.licensesdialog)
