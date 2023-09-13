@@ -383,12 +383,8 @@ class MusicService : MediaBrowserServiceCompat() {
 
                 songPlayCountHelper.notifyPlayStateChanged(isPlaying)
 
-                if (controller.playerState != PlayerState.PLAYING) {
-                    // wait for seconds and try to stop foreground notification
-                    controller.handler.postDelayed({
-                        if (controller.playerState != PlayerState.PLAYING) stopForeground(STOP_FOREGROUND_DETACH)
-                    }, 5_000)
-                }
+                // wait for seconds and try to stop foreground notification
+                throttledTimer.setCancelableNotificationTimer(5_000)
             }
 
             META_CHANGED       -> {
@@ -522,6 +518,15 @@ class MusicService : MediaBrowserServiceCompat() {
             )
             mHandler.removeCallbacks(this)
             mHandler.postDelayed(this, THROTTLE)
+        }
+
+        private val onSetCancelableNotification = Runnable {
+            if (controller.playerState != PlayerState.PLAYING) stopForeground(STOP_FOREGROUND_DETACH)
+        }
+
+        fun setCancelableNotificationTimer(time: Long) {
+            mHandler.removeCallbacks(onSetCancelableNotification)
+            mHandler.postDelayed(onSetCancelableNotification, time)
         }
 
         override fun run() {
