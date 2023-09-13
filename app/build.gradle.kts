@@ -22,8 +22,8 @@ if (isSigningFileExist) {
 }
 
 android {
-    compileSdk = 33
-    buildToolsVersion = "33.0.2"
+    compileSdk = 34
+    buildToolsVersion = "34.0.0"
     namespace = "player.phonograph"
 
     val appName = "Phonograph Plus"
@@ -202,6 +202,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.koin)
 
+    implementation(libs.kotlinx.coroutines)
     implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.licensesdialog)

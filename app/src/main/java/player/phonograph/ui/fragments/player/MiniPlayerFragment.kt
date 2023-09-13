@@ -115,7 +115,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
             GestureDetector(
                 context,
                 object : GestureDetector.SimpleOnGestureListener() {
-                    override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                    override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
 
                         if (abs(velocityX) > abs(velocityY)) {
                             if (velocityX < 0) {

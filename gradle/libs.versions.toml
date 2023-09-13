@@ -1,22 +1,22 @@
 [versions]
 activity = "1.7.2"
 datastore = { strictly = "1.0.0" }
-compose = "1.4.3"
-composeCompiler = "1.4.3"
+compose = "1.5.1"
+composeCompiler = "1.5.3"
 composeSetting = "0.27.0"
-coil = "2.3.0"
+coil = "2.4.0"
 materialDialogs = "3.3.0"
 materialTools = "0.2.0"
 
 [libraries]
 
-androidx-core = "androidx.core:core-ktx:1.9.0"
+androidx-core = "androidx.core:core-ktx:1.12.0"
 androidx-appcompat = "androidx.appcompat:appcompat:1.6.1"
 androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
 androidx-fragment = "androidx.fragment:fragment-ktx:1.6.1"
 androidx-lifecycle_runtime = "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
 
-androidx-annotation = "androidx.annotation:annotation:1.5.0"
+androidx-annotation = "androidx.annotation:annotation:1.7.0"
 androidx-preference = "androidx.preference:preference-ktx:1.2.0"
 
 androidx-recyclerview = "androidx.recyclerview:recyclerview:1.2.1"
@@ -56,12 +56,13 @@ compose-activity = { group = "androidx.activity", name = "activity-compose", ver
 # popular
 #
 
-okhttp3 = "com.squareup.okhttp3:okhttp:4.10.0"
+okhttp3 = "com.squareup.okhttp3:okhttp:4.11.0"
 retrofit2 = "com.squareup.retrofit2:retrofit:2.9.0"
-kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0"
+kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"
 coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt:coil-compose-base", version.ref = "coil" }
 koin = "io.insert-koin:koin-android:3.4.3"
+kotlinx-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1"
 
 #
 # other
