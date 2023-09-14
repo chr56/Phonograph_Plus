@@ -48,10 +48,12 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -173,8 +175,10 @@ private fun RequestWebSearch(viewModel: TagBrowserViewModel, webSearchTool: WebS
         }
         webSearchTool.launch(intent) {
             if (it != null) {
-                debug { Log.v("TagEditor", it.toString()) }
-                importResult(viewModel, it)
+                viewModel.viewModelScope.launch(Dispatchers.Default) {
+                    debug { Log.v("TagEditor", it.toString()) }
+                    importResult(viewModel, it)
+                }
             }
         }
     }
