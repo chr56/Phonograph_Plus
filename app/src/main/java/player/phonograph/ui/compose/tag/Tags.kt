@@ -31,6 +31,7 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
@@ -220,8 +221,26 @@ internal fun EditableItem(
                 updateValue(value)
             }
             for (alternative in alternatives) {
-                DropdownMenuItem(onClick = { onClick(alternative) }) {
-                    Text(text = alternative)
+                DropdownMenuItem({}) {
+                    Text(
+                        text = alternative,
+                        modifier =
+                        Modifier.weight(5f)
+                    )
+                    Icon(
+                        Icons.Default.Add, stringResource(R.string.add_action),
+                        modifier = Modifier
+                            .clickable { onClick("$currentValue ; $alternative") }
+                            .weight(1f)
+                    )
+                    Icon(
+                        Icons.Default.Check, stringResource(R.string.save),
+                        modifier =
+                        Modifier
+                            .clickable { onClick(alternative) }
+                            .weight(1f)
+                    )
+
                 }
             }
             DropdownMenuItem(onClick = { onClick(originalValue) }) {

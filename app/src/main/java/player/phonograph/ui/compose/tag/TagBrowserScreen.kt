@@ -74,8 +74,10 @@ fun TagBrowserScreen(viewModel: TagBrowserViewModel) {
             Title(stringResource(R.string.music_tags), color = MaterialTheme.colors.primary)
             Item(stringResource(R.string.tag_format), info.tagFormat.id)
             Spacer(modifier = Modifier.height(8.dp))
+            val updateKey by viewModel.prefillUpdateKey
+            val prefillsMap = remember(updateKey) { viewModel.prefillsMap }
             for ((key, field) in info.tagTextOnlyFields) {
-                CommonTag(key, field.content, editable, viewModel::process)
+                CommonTag(key, field.content, editable, prefillsMap[key], viewModel::process)
             }
             if (editable) AddMoreButton(viewModel)
             Spacer(modifier = Modifier.height(16.dp))
@@ -146,6 +148,7 @@ private fun CommonTag(
     key: FieldKey,
     field: TagData,
     editable: Boolean,
+    prefills: Collection<String>?,
     onEdit: (Context, TagEditEvent) -> Unit,
 ) {
     val context = LocalContext.current
@@ -154,7 +157,7 @@ private fun CommonTag(
 
     Box(modifier = Modifier.fillMaxWidth()) {
         if (editable) {
-            EditableItem(key, tagName, tagValue, onEdit = { onEdit(context, it) })
+            EditableItem(key, tagName, tagValue, prefills.orEmpty(), onEdit = { onEdit(context, it) })
         } else {
             if (tagValue.isNotEmpty()) Item(tagName, tagValue)
         }
