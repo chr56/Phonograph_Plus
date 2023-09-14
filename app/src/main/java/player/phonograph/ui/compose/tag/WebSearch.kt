@@ -4,9 +4,12 @@
 
 package player.phonograph.ui.compose.tag
 
+import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.ui.compose.web.WebSearchTool
 import util.phonograph.tagsources.Source
+import util.phonograph.tagsources.lastfm.LastFmTrack
+import util.phonograph.tagsources.musicbrainz.MusicBrainzRecording
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -49,5 +52,54 @@ internal fun RequestWebSearch(
                 Text(stringResource(R.string.wiki), Modifier.padding(8.dp))
             }
         }
+    }
+}
+
+internal fun importResult(viewModel: TagBrowserViewModel, item: Any) {
+    when (item) {
+        is LastFmTrack          -> insert(viewModel, item)
+        is MusicBrainzRecording -> insert(viewModel, item)
+    }
+}
+
+private fun insert(tableViewModel: TagBrowserViewModel, track: LastFmTrack) =
+    with(ProcessScope(tableViewModel)) {
+
+        link(FieldKey.MUSICBRAINZ_TRACK_ID, track.mbid)
+        link(FieldKey.TITLE, track.name)
+        link(FieldKey.ARTIST, track.artist?.name)
+        link(FieldKey.ALBUM, track.album?.name)
+
+        val tags = track.toptags?.tag?.map { it.name }
+        link(FieldKey.COMMENT, tags)
+        link(FieldKey.GENRE, tags)
+
+    }
+
+private fun insert(tableViewModel: TagBrowserViewModel, recording: MusicBrainzRecording) =
+    with(ProcessScope(tableViewModel)) {
+        link(FieldKey.MUSICBRAINZ_TRACK_ID, recording.id)
+        link(FieldKey.TITLE, recording.title)
+
+        val artists = recording.artistCredit.map { it.name }
+        link(FieldKey.ARTIST, artists)
+        val releases = recording.releases?.map { it.title }
+        link(FieldKey.ALBUM, releases)
+
+        val genre = recording.genres.map { it.name }
+        val tags = recording.tags?.map { it.name }
+        link(FieldKey.GENRE, genre)
+        link(FieldKey.COMMENT, tags)
+        link(FieldKey.COMMENT, recording.disambiguation)
+        link(FieldKey.YEAR, recording.firstReleaseDate)
+    }
+
+private class ProcessScope(val tableViewModel: TagBrowserViewModel) {
+    fun link(fieldKey: FieldKey, value: String?) {
+        if (value != null) tableViewModel.insertPrefill(fieldKey, value)
+    }
+
+    fun link(fieldKey: FieldKey, values: List<String>?) {
+        if (values != null) tableViewModel.insertPrefill(fieldKey, values)
     }
 }

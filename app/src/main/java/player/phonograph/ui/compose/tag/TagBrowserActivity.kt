@@ -17,6 +17,7 @@ import player.phonograph.ui.compose.web.IWebSearchRequester
 import player.phonograph.ui.compose.web.WebSearchLauncher
 import player.phonograph.ui.compose.web.WebSearchTool
 import player.phonograph.ui.dialogs.LastFmDialog
+import player.phonograph.util.debug
 import util.phonograph.tagsources.Source
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.addCallback
@@ -50,6 +51,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -170,7 +172,10 @@ private fun RequestWebSearch(viewModel: TagBrowserViewModel, webSearchTool: WebS
             Source.MusicBrainz -> WebSearchLauncher.searchMusicBrainzSong(context, viewModel.song.value)
         }
         webSearchTool.launch(intent) {
-            // Log.v("TagEditor", it.toString()) //todo
+            if (it != null) {
+                debug { Log.v("TagEditor", it.toString()) }
+                importResult(viewModel, it)
+            }
         }
     }
 
