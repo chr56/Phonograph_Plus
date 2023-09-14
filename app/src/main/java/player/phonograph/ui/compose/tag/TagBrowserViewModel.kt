@@ -139,6 +139,23 @@ class TagBrowserViewModel : ViewModel() {
         }
     }
 
+    private val _prefillsMap: MutableStateFlow<Map<FieldKey, List<String>>> = MutableStateFlow(mapOf())
+    val prefillsMap get() = _prefillsMap.asStateFlow()
+
+    fun insertPrefill(key: FieldKey, value: String) {
+        val oldMap = _prefillsMap.value.toMutableMap()
+        val newList = (oldMap[key] ?: listOf()) + value
+        val newMap = oldMap.also { it[key] = newList }
+        _prefillsMap.tryEmit(newMap.toMap())
+    }
+
+    fun insertPrefill(key: FieldKey, values: List<String>) {
+        val oldMap = _prefillsMap.value.toMutableMap()
+        val newList = (oldMap[key] ?: listOf()) + values
+        val newMap = oldMap.also { it[key] = newList }
+        _prefillsMap.tryEmit(newMap.toMap())
+    }
+
     internal fun diff(): TagDiff {
         mergeActions()
         val original = originalSongInfo.value
