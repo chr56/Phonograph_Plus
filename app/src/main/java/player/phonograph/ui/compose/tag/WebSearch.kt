@@ -81,10 +81,16 @@ private fun insert(tableViewModel: TagBrowserViewModel, recording: MusicBrainzRe
         link(FieldKey.MUSICBRAINZ_TRACK_ID, recording.id)
         link(FieldKey.TITLE, recording.title)
 
-        val artists = recording.artistCredit.map { it.name }
-        link(FieldKey.ARTIST, artists)
-        val releases = recording.releases?.map { it.title }
-        link(FieldKey.ALBUM, releases)
+        for (artistCredit in recording.artistCredit) {
+            link(FieldKey.ARTIST, artistCredit.name)
+            link(FieldKey.MUSICBRAINZ_ARTISTID, artistCredit.artist?.id)
+        }
+        recording.releases?.forEach { release ->
+            link(FieldKey.ALBUM, release.title)
+            link(FieldKey.MUSICBRAINZ_RELEASEID, release.id)
+            link(FieldKey.MUSICBRAINZ_RELEASE_STATUS, release.status)
+            link(FieldKey.MUSICBRAINZ_RELEASE_COUNTRY, release.country)
+        }
 
         val genre = recording.genres.map { it.name }
         val tags = recording.tags?.map { it.name }
