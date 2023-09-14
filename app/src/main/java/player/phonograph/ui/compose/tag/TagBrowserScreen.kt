@@ -74,7 +74,8 @@ fun TagBrowserScreen(viewModel: TagBrowserViewModel) {
             Title(stringResource(R.string.music_tags), color = MaterialTheme.colors.primary)
             Item(stringResource(R.string.tag_format), info.tagFormat.id)
             Spacer(modifier = Modifier.height(8.dp))
-            val prefillsMap by viewModel.prefillsMap.collectAsState()
+            val updateKey by viewModel.prefillUpdateKey
+            val prefillsMap = remember(updateKey) { viewModel.prefillsMap }
             for ((key, field) in info.tagTextOnlyFields) {
                 CommonTag(key, field.content, editable, prefillsMap[key], viewModel::process)
             }

@@ -15,6 +15,9 @@ import player.phonograph.model.SongInfoModel
 import player.phonograph.model.TagData
 import player.phonograph.model.TagField
 import player.phonograph.util.permissions.navigateToStorageSetting
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -139,21 +142,22 @@ class TagBrowserViewModel : ViewModel() {
         }
     }
 
-    private val _prefillsMap: MutableStateFlow<Map<FieldKey, List<String>>> = MutableStateFlow(mapOf())
-    val prefillsMap get() = _prefillsMap.asStateFlow()
+
+    private val _prefillsMap: MutableMap<FieldKey, List<String>> = mutableMapOf()
+    val prefillsMap get() = _prefillsMap.toMap()
+    private val _prefillUpdateKey: MutableState<Int> = mutableStateOf(0)
+    val prefillUpdateKey get() = _prefillUpdateKey as State<Int>
 
     fun insertPrefill(key: FieldKey, value: String) {
-        val oldMap = _prefillsMap.value.toMutableMap()
-        val newList = (oldMap[key] ?: listOf()) + value
-        val newMap = oldMap.also { it[key] = newList }
-        _prefillsMap.tryEmit(newMap.toMap())
+        val newList = (_prefillsMap[key] ?: listOf()) + value
+        _prefillsMap.also { it[key] = newList }
+        _prefillUpdateKey.value += 1
     }
 
     fun insertPrefill(key: FieldKey, values: List<String>) {
-        val oldMap = _prefillsMap.value.toMutableMap()
-        val newList = (oldMap[key] ?: listOf()) + values
-        val newMap = oldMap.also { it[key] = newList }
-        _prefillsMap.tryEmit(newMap.toMap())
+        val newList = (_prefillsMap[key] ?: listOf()) + values
+        _prefillsMap.also { it[key] = newList }
+        _prefillUpdateKey.value += 1
     }
 
     internal fun diff(): TagDiff {
