@@ -4,7 +4,7 @@
 
 package util.phonograph.changelog
 
-import util.phonograph.format.dateString
+import util.phonograph.dateString
 import util.phonograph.format.div
 import util.phonograph.format.html
 import util.phonograph.format.htmlNoteItem

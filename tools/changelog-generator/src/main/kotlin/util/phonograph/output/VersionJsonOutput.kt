@@ -5,7 +5,7 @@
 package util.phonograph.output
 
 import util.phonograph.changelog.generateHTMLNoteMinify
-import util.phonograph.parser
+import util.phonograph.jsonParser
 import util.phonograph.releasenote.Language
 import util.phonograph.releasenote.ReleaseNote
 import kotlinx.serialization.SerialName
@@ -21,7 +21,7 @@ private const val GITHUB_LINK = "https://github.com/chr56/Phonograph_Plus/releas
 
 class VersionJsonOutput(versionJsonFile: File, private val releaseNote: ReleaseNote) : OutputFormat {
 
-    private val versionJson: VersionJson = parser.decodeFromString(versionJsonFile.readText())
+    private val versionJson: VersionJson = jsonParser.decodeFromString(versionJsonFile.readText())
 
     private fun ReleaseNote.toVersionJsonItem(): VersionJsonItem =
         VersionJsonItem(
@@ -65,7 +65,7 @@ class VersionJsonOutput(versionJsonFile: File, private val releaseNote: ReleaseN
 
     override fun write(target: Writer) {
         val updatedVersionJson = updateVersionJson(versionJson)
-        val string = parser.encodeToString(updatedVersionJson)
+        val string = jsonParser.encodeToString(updatedVersionJson)
         target.write(string)
     }
 

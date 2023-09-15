@@ -4,7 +4,7 @@
 
 package util.phonograph.output
 
-import util.phonograph.format.dateString
+import util.phonograph.dateString
 import util.phonograph.releasenote.Notes
 import util.phonograph.releasenote.ReleaseNote
 import java.io.Writer
