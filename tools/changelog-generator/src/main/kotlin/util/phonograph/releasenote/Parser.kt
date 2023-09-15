@@ -4,19 +4,13 @@
 
 package util.phonograph.releasenote
 
-import com.akuleshov7.ktoml.Toml
-import com.akuleshov7.ktoml.TomlInputConfig
+import util.phonograph.tomlParser
 import kotlinx.serialization.decodeFromString
 import java.io.File
 
-private val toml = Toml(
-    TomlInputConfig(ignoreUnknownNames = true)
-)
-
-
 fun parseReleaseNoteToml(file: File): ReleaseNote {
     val text = file.readText()
-    val releaseNote = toml.decodeFromString<ReleaseNote>(text)
+    val releaseNote = tomlParser.decodeFromString<ReleaseNote>(text)
     println(releaseNote)
     return releaseNote
 }

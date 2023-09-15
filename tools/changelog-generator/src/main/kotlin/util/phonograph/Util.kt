@@ -4,6 +4,8 @@
 
 package util.phonograph
 
+import com.akuleshov7.ktoml.Toml
+import com.akuleshov7.ktoml.TomlInputConfig
 import kotlinx.serialization.json.Json
 import java.io.BufferedWriter
 import java.io.File
@@ -16,6 +18,10 @@ val jsonParser = Json {
     isLenient = true
     prettyPrint = true
 }
+
+val tomlParser = Toml(
+    TomlInputConfig(ignoreUnknownNames = true)
+)
 
 private val dateFormatter = SimpleDateFormat("yyyy.MM.dd", Locale.ENGLISH)
 fun dateString(stamp: Long): String {
