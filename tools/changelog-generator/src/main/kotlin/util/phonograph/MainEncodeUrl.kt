@@ -4,7 +4,7 @@
 
 package util.phonograph
 
-import util.phonograph.changelog.generateTGReleaseMarkDown
+import util.phonograph.output.GitHubReleaseMarkdown
 import util.phonograph.releasenote.parseReleaseNoteToml
 import java.io.File
 import java.net.URLEncoder
@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
 
     val model = parseReleaseNoteToml(File("$rootPath/$sourcePath"))
 
-    val markdown = generateTGReleaseMarkDown(model)
+    val markdown = GitHubReleaseMarkdown(model).write()
 
     val url = URLEncoder.encode(markdown, "UTF-8")
 
