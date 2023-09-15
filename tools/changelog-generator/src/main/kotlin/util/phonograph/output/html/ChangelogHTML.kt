@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package util.phonograph.changelog
+package util.phonograph.output.html
 
 import util.phonograph.releasenote.Language
 import util.phonograph.releasenote.ReleaseChannel
@@ -14,18 +14,13 @@ private const val TAG_PREVIEW_START = "<<<PREVIEW>>>"
 private const val TAG_PREVIEW_END = "<<</PREVIEW>>>"
 private const val TAG_CURRENT_PREVIEW_START = "<<<CURRENT_PREVIEW>>>"
 private const val TAG_CURRENT_PREVIEW_END = "<<</CURRENT_PREVIEW>>>"
-
-
 private const val ANCHOR_LATEST = "<!-- $TAG_LATEST -->"
 private const val ANCHOR_PREVIEW_START = "<!-- $TAG_PREVIEW_START -->"
 private const val ANCHOR_PREVIEW_END = "<!-- $TAG_PREVIEW_END -->"
 private const val ANCHOR_CURRENT_PREVIEW_START = "<!-- $TAG_CURRENT_PREVIEW_START -->"
 private const val ANCHOR_CURRENT_PREVIEW_END = "<!-- $TAG_CURRENT_PREVIEW_END -->"
-
-
 private const val FILE_CHANGELOG_DEFAULT = "changelog.html"
 private const val FILE_CHANGELOG_ZH = "changelog-ZH-CN.html"
-
 
 class ChangelogHTML(
     val lines: MutableList<String>,
@@ -154,7 +149,6 @@ fun updateStableChangelog(changelogsDir: File, lang: Language, releaseNote: Stri
         changelogHTML.insertLatestChangelog(releaseNote.lines())
     }
 }
-
 
 fun updatePreviewChangelog(changelogsDir: File, lang: Language, releaseNote: String) {
     updateChangelog(changelogFile(changelogsDir, lang)) { changelogHTML ->

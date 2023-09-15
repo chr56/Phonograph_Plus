@@ -4,8 +4,8 @@
 
 package util.phonograph.output
 
-import util.phonograph.changelog.generateHTMLNoteMinify
 import util.phonograph.jsonParser
+import util.phonograph.output.html.generateHTMLNoteMinify
 import util.phonograph.releasenote.Language
 import util.phonograph.releasenote.ReleaseNote
 import kotlinx.serialization.SerialName

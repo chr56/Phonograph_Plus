@@ -4,7 +4,7 @@
 
 package util.phonograph
 
-import util.phonograph.changelog.generateHTML
+import util.phonograph.output.html.generateHTML
 import util.phonograph.releasenote.parseReleaseNoteToml
 import java.io.File
 

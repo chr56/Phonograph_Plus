@@ -4,7 +4,7 @@
 
 package util.phonograph
 
-import util.phonograph.changelog.updateChangelogs
+import util.phonograph.output.html.updateChangelogs
 import util.phonograph.releasenote.parseReleaseNoteToml
 import java.io.File
 

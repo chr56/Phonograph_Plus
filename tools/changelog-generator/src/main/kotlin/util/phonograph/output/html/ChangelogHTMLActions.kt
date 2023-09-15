@@ -1,13 +1,10 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package util.phonograph.changelog
+package util.phonograph.output.html
 
 import util.phonograph.dateString
-import util.phonograph.format.div
-import util.phonograph.format.html
-import util.phonograph.format.htmlNoteItem
 import util.phonograph.releasenote.Language
 import util.phonograph.releasenote.Notes
 import util.phonograph.releasenote.ReleaseNote
