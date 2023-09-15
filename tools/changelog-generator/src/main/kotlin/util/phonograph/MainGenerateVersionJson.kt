@@ -4,7 +4,6 @@
 
 package util.phonograph
 
-import util.phonograph.writeToFile
 import util.phonograph.output.VersionJsonOutput
 import util.phonograph.releasenote.parseReleaseNoteToml
 import java.io.File

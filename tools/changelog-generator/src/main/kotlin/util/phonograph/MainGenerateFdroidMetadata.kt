@@ -4,7 +4,6 @@
 
 package util.phonograph
 
-import util.phonograph.writeToFile
 import util.phonograph.output.FdroidChangelogTextOutput
 import util.phonograph.output.FdroidMetadataVersionInfoOutput
 import util.phonograph.releasenote.Language
