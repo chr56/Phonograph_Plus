@@ -7,18 +7,17 @@ package util.phonograph.changelog
 import util.phonograph.format.VersionJson
 import util.phonograph.format.VersionJsonItem
 import util.phonograph.parser
-import kotlinx.serialization.decodeFromString
+import util.phonograph.releasenote.Language
+import util.phonograph.releasenote.ReleaseNote
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.encodeToJsonElement
 import java.io.File
 
 
-private fun ReleaseNoteModel.versionJsonItem(): VersionJsonItem = VersionJsonItem(
-    channel = channel?.name ?: "NA",
+private fun ReleaseNote.versionJsonItem(): VersionJsonItem = VersionJsonItem(
+    channel = channel.name,
     versionName = version,
     versionCode = versionCode,
-    date = timestamp.posixTimestamp,
+    date = timestamp,
     link = listOf(
         VersionJsonItem.Link(
             name = "Github Release",
@@ -26,14 +25,14 @@ private fun ReleaseNoteModel.versionJsonItem(): VersionJsonItem = VersionJsonIte
         )
     ),
     releaseNote = VersionJsonItem.ReleaseNote(
-        zh = generateHTMLNoteMinify(note, Language.Chinese),
-        en = generateHTMLNoteMinify(note, Language.English),
+        zh = generateHTMLNoteMinify(this, Language.ZH),
+        en = generateHTMLNoteMinify(this, Language.EN),
     )
 )
 
 private const val LINK = "https://github.com/chr56/Phonograph_Plus/releases/tag/"
 
-private fun ReleaseNoteModel.downloadUrl(): String = "$LINK$tag"
+private fun ReleaseNote.downloadUrl(): String = "$LINK$tag"
 
 
 fun parseVersionJson(path: String): VersionJson = parseVersionJson(File(path))
@@ -45,9 +44,9 @@ fun parseVersionJson(file: File): VersionJson {
 
 const val MAX_CHANNEL_ITEM = 3
 
-fun updateVersionJson(versionJson: VersionJson, releaseNoteModel: ReleaseNoteModel): VersionJson {
+fun updateVersionJson(versionJson: VersionJson, ReleaseNote: ReleaseNote): VersionJson {
     // new item
-    val newVersionJsonItem = releaseNoteModel.versionJsonItem()
+    val newVersionJsonItem = ReleaseNote.versionJsonItem()
 
     // with old items
     val allItems = mutableListOf(newVersionJsonItem).also { it.addAll(versionJson.versions) }

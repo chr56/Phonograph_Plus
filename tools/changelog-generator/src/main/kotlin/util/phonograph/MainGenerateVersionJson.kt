@@ -4,11 +4,12 @@
 
 package util.phonograph
 
-import util.phonograph.changelog.parseReleaseNote
 import util.phonograph.changelog.parseVersionJson
 import util.phonograph.changelog.serializeVersionJson
 import util.phonograph.changelog.updateVersionJson
 import util.phonograph.changelog.writeToFile
+import util.phonograph.releasenote.parseReleaseNoteToml
+import java.io.File
 
 
 fun main(args: Array<String>) {
@@ -18,7 +19,7 @@ fun main(args: Array<String>) {
     val outputPath = args[2]
 
     println("Parse data...")
-    val model = parseReleaseNote("$rootPath/$sourcePath")
+    val model = parseReleaseNoteToml(File("$rootPath/$sourcePath"))
     val versionJson = parseVersionJson("$rootPath/$outputPath")
 
     println("Process version json")

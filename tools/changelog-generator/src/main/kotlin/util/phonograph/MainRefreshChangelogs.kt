@@ -4,8 +4,8 @@
 
 package util.phonograph
 
-import util.phonograph.changelog.parseReleaseNote
 import util.phonograph.changelog.updateChangelogs
+import util.phonograph.releasenote.parseReleaseNoteToml
 import java.io.File
 
 fun main(args: Array<String>) {
@@ -14,7 +14,7 @@ fun main(args: Array<String>) {
     val sourcePath = args[1]
     val changelogsPath = args[2]
 
-    val model = parseReleaseNote("$rootPath/$sourcePath")
+    val model = parseReleaseNoteToml(File("$rootPath/$sourcePath"))
 
     updateChangelogs(model, File("$rootPath/$changelogsPath"))
 }

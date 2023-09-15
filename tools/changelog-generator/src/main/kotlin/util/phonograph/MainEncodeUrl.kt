@@ -5,7 +5,7 @@
 package util.phonograph
 
 import util.phonograph.changelog.generateTGReleaseMarkDown
-import util.phonograph.changelog.parseReleaseNote
+import util.phonograph.releasenote.parseReleaseNoteToml
 import java.io.File
 import java.net.URLEncoder
 
@@ -16,7 +16,7 @@ fun main(args: Array<String>) {
     val sourcePath = args[1]
     val targetPath = args[2]
 
-    val model = parseReleaseNote("$rootPath/$sourcePath")
+    val model = parseReleaseNoteToml(File("$rootPath/$sourcePath"))
 
     val markdown = generateTGReleaseMarkDown(model)
 

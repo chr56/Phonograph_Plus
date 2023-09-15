@@ -4,82 +4,98 @@
 
 package util.phonograph.changelog
 
+import util.phonograph.format.dateString
 import util.phonograph.format.div
 import util.phonograph.format.html
 import util.phonograph.format.htmlNoteItem
-import util.phonograph.format.markdownNoteItem
+import util.phonograph.format.markdownNoteHighlight
 import util.phonograph.format.markdownNoteSubtitle
+import util.phonograph.releasenote.Language
+import util.phonograph.releasenote.Notes
+import util.phonograph.releasenote.ReleaseNote
 
-internal fun ReleaseNoteModel.markdownHeader() = "## **v${version} ${timestamp.date}**"
-fun generateGitHubReleaseMarkDown(model: ReleaseNoteModel): String {
+fun generateGitHubReleaseMarkDown(model: ReleaseNote): String {
 
-    val header = model.markdownHeader()
-    val extra = "**Commit log**:"
+    val header = "## **v${model.version} ${dateString(model.timestamp)}**"
 
     val zh = buildString {
-        appendLine(markdownNoteSubtitle(Language.Chinese.code.uppercase()))
-        appendLine(markdownNoteItem(model.note.language(Language.Chinese)))
+        val note = model.notes.zh
+        appendLine(markdownNoteSubtitle("ZH")).append('\n')
+        appendLine(markdownNoteHighlight(note.highlights)).append('\n')
+        appendLine(markdownNoteHighlight(note.items)).append('\n')
     }
 
     val en = buildString {
-        appendLine(markdownNoteSubtitle(Language.English.code.uppercase()))
-        appendLine(markdownNoteItem(model.note.language(Language.English)))
+        val note = model.notes.en
+        appendLine(markdownNoteSubtitle("EN")).append('\n')
+        appendLine(markdownNoteHighlight(note.highlights)).append('\n')
+        appendLine(markdownNoteHighlight(note.items)).append('\n')
     }
+
+    val extra = "**Commit log**: "
 
     return buildString {
         append(header).append('\n').append('\n')
+        append(en).append('\n').append('\n')
+        append(zh).append('\n').append('\n')
         append(extra).append('\n').append('\n')
-        append(en).append('\n')
-        append(zh).append('\n')
     }
 }
 
-fun generateTGReleaseMarkDown(model: ReleaseNoteModel): String {
+fun generateTGReleaseMarkDown(model: ReleaseNote): String {
 
-    val header = "**v${model.version} ${model.timestamp.date}**"
+    val header = "**v${model.version} ${dateString(model.timestamp)}**"
 
-    val en = buildString {
-        appendLine("**${Language.English.code.uppercase()}**")
-        appendLine(markdownNoteItem(model.note.language(Language.English)))
-    }
 
     val zh = buildString {
-        appendLine("**${Language.Chinese.code.uppercase()}**")
-        appendLine(markdownNoteItem(model.note.language(Language.Chinese)))
+        val note = model.notes.zh
+        appendLine("**ZH**").append('\n')
+        appendLine(markdownNoteHighlight(note.highlights)).append('\n')
+        appendLine(markdownNoteHighlight(note.items)).append('\n')
+    }
+
+    val en = buildString {
+        val note = model.notes.en
+        appendLine("**EN**").append('\n')
+        appendLine(markdownNoteHighlight(note.highlights)).append('\n')
+        appendLine(markdownNoteHighlight(note.items)).append('\n')
     }
 
     return buildString {
         append(header).append('\n').append('\n')
-        append(en).append('\n')
-        append(zh).append('\n')
+        append(zh).append('\n').append('\n')
+        append(en).append('\n').append('\n')
     }
 }
 
-fun generateHTML(model: ReleaseNoteModel): Map<Language, String> {
-    val en = generateHTMLImpl(model.version, model.timestamp, model.note.language(Language.English)).collect()
-    val zh = generateHTMLImpl(model.version, model.timestamp, model.note.language(Language.Chinese)).collect()
+fun generateHTML(model: ReleaseNote): Map<Language, String> {
+
+
+    val en = generateHTMLImpl(model.version, model.timestamp, model.language(Language.EN)).collect()
+    val zh = generateHTMLImpl(model.version, model.timestamp, model.language(Language.ZH)).collect()
     return mapOf(
-        Language.English to en,
-        Language.Chinese to zh,
+        Language.EN to en,
+        Language.ZH to zh,
     )
 }
 
-fun generateHTMLNoteMinify(note: ReleaseNoteModel.Note, lang: Language): String = html {
-    htmlNoteItem(note.language(lang))
-}.map { it.trimStart() }.reduce { acc, s -> "$acc$s" }.replace("\n", "\\n")
+fun generateHTMLNoteMinify(releaseNote: ReleaseNote, lang: Language): String =
+    html {
+        htmlNoteItem(releaseNote.language(lang).items)
+    }.map { it.trimStart() }.reduce { acc, s -> "$acc$s" }.replace("\n", "\\n")
 
 private fun generateHTMLImpl(
     version: String,
-    timestamp: Timestamp,
-    items: List<String>,
+    timestamp: Long,
+    note: Notes.Note,
 ) = html {
     line(htmlHeader(version, timestamp))
     div {
-        htmlNoteItem(items)
+        htmlNoteItem(note.items)
     }
 }
 
-private fun htmlHeader(version: String, timestamp: Timestamp) =
-    "<h4><b>$version</b> ${timestamp.date}</h4>"
+private fun htmlHeader(version: String, timestamp: Long) =
+    "<h4><b>$version</b> ${dateString(timestamp)}</h4>"
 
 private fun List<String>.collect(): String = reduce { acc, s -> "$acc\n$s" }

@@ -4,9 +4,10 @@
 
 package util.phonograph
 
-import util.phonograph.changelog.writeToFile
 import util.phonograph.changelog.generateGitHubReleaseMarkDown
-import util.phonograph.changelog.parseReleaseNote
+import util.phonograph.changelog.writeToFile
+import util.phonograph.releasenote.parseReleaseNoteToml
+import java.io.File
 
 fun main(args: Array<String>) {
 
@@ -14,7 +15,7 @@ fun main(args: Array<String>) {
     val sourcePath = args[1]
     val targetPath = args[2]
 
-    val model = parseReleaseNote("$rootPath/$sourcePath")
+    val model = parseReleaseNoteToml(File("$rootPath/$sourcePath"))
 
     val markdown = generateGitHubReleaseMarkDown(model)
     writeToFile(markdown, "$rootPath/$targetPath")

@@ -4,18 +4,22 @@
 
 package util.phonograph.changelog
 
+import util.phonograph.format.dateString
+import util.phonograph.releasenote.Language
+import util.phonograph.releasenote.ReleaseChannel
+import util.phonograph.releasenote.ReleaseNote
 import java.io.File
 
-fun generateFdroidMetadataChangelogText(model: ReleaseNoteModel, language: Language): String =
+fun generateFdroidMetadataChangelogText(model: ReleaseNote, language: Language): String =
     buildString {
-        appendLine("<b>${model.version}(${model.versionCode}) ${model.timestamp.date}</b>")
-        val note = model.note.language(language)
-        for (line in note) {
+        appendLine("<b>${model.version}(${model.versionCode}) ${dateString(model.timestamp)}</b>")
+        val lines = model.language(language).items
+        for (line in lines) {
             appendLine("- $line")
         }
     }.cutOff()
 
-fun writeFdroidMetadataChangelogText(model: ReleaseNoteModel, rootPath: String, lang: Language) {
+fun writeFdroidMetadataChangelogText(model: ReleaseNote, rootPath: String, lang: Language) {
     val text = generateFdroidMetadataChangelogText(model, lang)
     val file = targetFile(rootPath, lang, model.versionCode)
     writeToFile(text, file)
@@ -40,8 +44,8 @@ private fun targetFile(rootPath: String, lang: Language, versionCode: Int): File
 private fun targetPath(rootPath: String, lang: Language) =
     "$rootPath/fastlane/metadata/android/${lang.fullCode}/changelogs"
 
-fun writeFdroidMetadataVersionInfo(model: ReleaseNoteModel, rootPath: String) {
-    if (model.channel is ReleaseChannel.STABLE) {
+fun writeFdroidMetadataVersionInfo(model: ReleaseNote, rootPath: String) {
+    if (model.channel == ReleaseChannel.STABLE) {
         val text = generateFdroidMetadataVersionInfo(model)
         val file = File(rootPath, FDROID_METADATA_VERSION_INFO)
         if (file.exists()) file.delete() else file.createNewFile()
@@ -51,7 +55,7 @@ fun writeFdroidMetadataVersionInfo(model: ReleaseNoteModel, rootPath: String) {
     }
 }
 
-private fun generateFdroidMetadataVersionInfo(model: ReleaseNoteModel): String =
+private fun generateFdroidMetadataVersionInfo(model: ReleaseNote): String =
     buildString {
         appendLine("$LATEST_VERSION_NAME=${model.version}")
         appendLine("$LATEST_VERSION_CODE=${model.versionCode}")

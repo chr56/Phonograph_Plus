@@ -4,6 +4,9 @@
 
 package util.phonograph.changelog
 
+import util.phonograph.releasenote.Language
+import util.phonograph.releasenote.ReleaseChannel
+import util.phonograph.releasenote.ReleaseNote
 import java.io.File
 
 private const val TAG_LATEST = "<<<LATEST/>>>"
@@ -145,20 +148,17 @@ class ChangelogHTML(
     }
 }
 
-fun updateStableChangelog(changelogFile: File, lang: Language, releaseNote: Map<Language, String>) {
-    updateChangelog(changelogFile) { changelogHTML ->
-        val newItem = releaseNote[lang]
-        require(newItem != null) { "changelog $lang is empty!" }
+fun updateStableChangelog(changelogsDir: File, lang: Language, releaseNote: String) {
+    updateChangelog(changelogFile(changelogsDir, lang)) { changelogHTML ->
         changelogHTML.clearPreviewChangelog()
-        changelogHTML.insertLatestChangelog(newItem.lines())
+        changelogHTML.insertLatestChangelog(releaseNote.lines())
     }
 }
 
-fun updatePreviewChangelog(changelogFile: File, lang: Language, releaseNote: Map<Language, String>) {
-    updateChangelog(changelogFile) { changelogHTML ->
-        val newItem = releaseNote[lang]
-        require(newItem != null) { "changelog $lang is empty!" }
-        changelogHTML.insertPreviewChangelog(newItem.lines())
+
+fun updatePreviewChangelog(changelogsDir: File, lang: Language, releaseNote: String) {
+    updateChangelog(changelogFile(changelogsDir, lang)) { changelogHTML ->
+        changelogHTML.insertPreviewChangelog(releaseNote.lines())
     }
 }
 
@@ -175,19 +175,22 @@ private inline fun updateChangelog(file: File, block: (ChangelogHTML) -> Unit) {
     }
 }
 
-fun updateChangelogs(model: ReleaseNoteModel, changelogsDir: File) {
+private fun changelogFile(changelogsDir: File, lang: Language): File =
+    when (lang) {
+        Language.EN -> File(changelogsDir, FILE_CHANGELOG_DEFAULT)
+        Language.ZH -> File(changelogsDir, FILE_CHANGELOG_ZH)
+    }
+
+fun updateChangelogs(model: ReleaseNote, changelogsDir: File) {
     require(changelogsDir.exists() && changelogsDir.isDirectory)
 
-    val en = File(changelogsDir, FILE_CHANGELOG_DEFAULT)
-    val zh = File(changelogsDir, FILE_CHANGELOG_ZH)
+    val notes = generateHTML(model)
 
-    listOf(en to Language.English, zh to Language.Chinese).forEach { (file, lang) ->
-        val map = generateHTML(model)
+    for ((lang, note) in notes) {
         when (model.channel) {
-            ReleaseChannel.PREVIEW -> updatePreviewChangelog(file, lang, map)
-            ReleaseChannel.STABLE  -> updateStableChangelog(file, lang, map)
-            ReleaseChannel.LTS     -> updateStableChangelog(file, lang, map)
-            else                   -> throw Exception("Unknown channel ${model.channel}")
+            ReleaseChannel.PREVIEW -> updatePreviewChangelog(changelogsDir, lang, note)
+            ReleaseChannel.STABLE  -> updateStableChangelog(changelogsDir, lang, note)
+            ReleaseChannel.LTS     -> updateStableChangelog(changelogsDir, lang, note)
         }
     }
 
