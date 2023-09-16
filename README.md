@@ -96,6 +96,9 @@ Translate Phonograph Plus into your language -> [Crowdin](https://crowdin.com/pr
 
 We have removed Swedish and Norwegian Nynorsk translations due to missing too many translations
 
+## **Trouble Shooting & FAQ**
+See [Trouble Shooting & FAQ](docs/FAQ.md)
+
 ## **Screenshot**
 
 For reference only, actual app might be different

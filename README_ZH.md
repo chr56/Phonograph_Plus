@@ -95,6 +95,9 @@
 
 [Crowdin](https://crowdin.com/project/phonograph-plus)
 
+## **常见问题**
+见 [Trouble Shooting & FAQ](docs/FAQ.md)
+
 ## **截图**
 
 仅供参考， 以实际为准
