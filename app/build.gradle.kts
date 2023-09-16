@@ -10,6 +10,7 @@ plugins {
     alias(plugins.plugins.kotlin.android)
     alias(plugins.plugins.kotlin.serialization)
     alias(plugins.plugins.kotlin.parcelize)
+    alias(plugins.plugins.kotlin.ksp)
     id("tools.release")
 }
 
@@ -180,7 +181,9 @@ dependencies {
     implementation(libs.androidx.media)
     implementation(libs.androidx.cardview)
     implementation(libs.androidx.palette)
+    implementation(libs.bundles.androidx.room)
     implementation(libs.bundles.androidx.datastore)
+    ksp(libs.androidx.room.compiler)
 
     implementation(libs.google.material)
 
