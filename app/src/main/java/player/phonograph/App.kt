@@ -19,10 +19,12 @@ import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.coil.createPhonographImageLoader
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
+import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.CrashActivity
 import player.phonograph.ui.moduleViewModels
 import player.phonograph.util.debug
+import player.phonograph.util.text.currentTimestamp
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -97,6 +99,9 @@ class App : Application(), ImageLoaderFactory {
 
             modules(moduleStatus, moduleLoaders, moduleViewModels)
         }
+
+        // database
+        MusicDatabase.Metadata.lastAccessTimestamp = currentTimestamp() / 1000
     }
 
     override fun onTerminate() {
