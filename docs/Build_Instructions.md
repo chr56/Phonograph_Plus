@@ -1,25 +1,9 @@
-# **Build Instructions & Developer Guide** / **构建指南与开发指南**
+# **Build Instructions For Beginners** / **入门构建指南**
 
 _This part is not written very well._
 
-Currently(2023.9.17), this project's toolchain & dependencies are:
+See also [Developer Guide](./Developer_Guide.md).
 
-- `Android SDK` `34` (no `NDK`)
-- `Gradlew` `8.3`, requiring `JDK` `17`
-- `Android Gradle Plugin` `8.1.1`
-- `kotlin` for JVM(Android) `1.9.10`
-- `kotlinx.serialization`,`kotlinx.parcelize`
-- `koin` as a lightweight Dependency Injection solution
-- most popular `androidx`(`Jetpack`) components (most of them are latest)
-- `Jetpack Compose` (Since 0.4)
-- many 3rd-party libraries available on (`MavenCentral` and `jitpack.io`), some might kind of old and unmaintained
-  including some modified libraries by me
-
-Gradle Version Catalogs is used in this project.
-
-see [libs.versions.toml](../gradle/libs.versions.toml) for all the libraries.
-
-see [plugins.versions.toml](../gradle/plugins.versions.toml) for all gradle plugins.
 
 ## **Requirement**
 
@@ -132,40 +116,3 @@ you can run
 
 to move apk to `./products/stableRelease` and rename to `Phonograph Plus_<VERSION>.apk`
 
-## Build Variant
-
-only one flavor `purpose` and two default `BuildType` (`debug`/`release`), and all `release` shrinks and minifies.
-
-|       Build Variant        |                                        Note                                        |
-|:--------------------------:|:----------------------------------------------------------------------------------:|
-|          `stable`          |                             for stable and LTS release                             |
-| ~`common` (before v0.4.0)~ |                     for stable and LTS release (before v0.4.0)                     |
-|         `preview`          |                for preview release, package name suffix `.preview`                 |
-|         `checkout`         | for bug-locate and `dev` build of `Github Action`, package name suffix `.checkout` |
-
-before v4.0, we have more (like `ci` for `Github Action`).
-
-## Project Structure
-
-#### Gradle Module
-
-Currently:
-
-- `app`: all actual code of the Phonograph Plus
-- `release-tool`: (composite build) store libraries dependencies meta (versions etc) and some util for gradle build
-  script
-
-#### Source Code Structure of Phonograph Plus
-
-TODO
-
-#### Repository Structure
-
-- `app/`, `tools/release-tool/`, `tools/changelog-generator`: Gradle Module
-- `version.json`,`version_catalog.json`: containing the latest version information that Phonograph Plus would read at
-  startup
-- `crowdin.yml`: Crowdin configuration
-- `ReleaseNote.md`: GitHub Action `preview_release` read this and post to Release Page
-- `fastlane/metadata/android/`: F-droid metadata
-- `.github/`: `Github Action` and templates
-- and other gradle's file

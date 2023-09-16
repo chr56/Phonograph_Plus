@@ -120,6 +120,8 @@ For reference only, actual app might be different
 
 See [Build_Instructions.md](docs/Build_Instructions.md)
 
+See [Developer Guide](docs/Developer_Guide.md)
+
 ## **Development Plan (or Road Map?)** & **TO-DO list**
 
 ### **2022**

@@ -119,6 +119,8 @@
 
 [Build_Instructions.md](docs/Build_Instructions.md)
 
+[Developer Guide](docs/Developer_Guide.md)
+
 ## **开发计划**
 
 ### **2022**
