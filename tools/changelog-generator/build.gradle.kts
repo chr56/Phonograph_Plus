@@ -17,7 +17,7 @@ sourceSets {
     }
 }
 
-val originalReleaseNotePath = "ReleaseNote.md"
+val originalReleaseNotePath = "ReleaseNote.toml"
 
 val outputGitHubReleaseNotePath = "GitHubReleaseNote.md"
 val outputEncodedUrlPath = "GitHubReleaseNote.url.txt"
@@ -111,4 +111,5 @@ tasks.withType(KotlinCompile::class.java) {
 
 dependencies {
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.serialization.ktoml)
 }
