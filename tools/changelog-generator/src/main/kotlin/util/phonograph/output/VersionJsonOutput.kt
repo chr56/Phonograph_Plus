@@ -25,7 +25,7 @@ class VersionJsonOutput(versionJsonFile: File, private val releaseNote: ReleaseN
 
     private fun ReleaseNote.toVersionJsonItem(): VersionJsonItem =
         VersionJsonItem(
-            channel = channel.name,
+            channel = channel.name.lowercase(),
             versionName = version,
             versionCode = versionCode,
             date = timestamp,
