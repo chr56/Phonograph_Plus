@@ -112,7 +112,7 @@ object MediaItemProvider {
 
     fun browseLastAdded(context: Context): List<MediaItem> {
         return listOf(selectAllItem(context.resources, MEDIA_BROWSER_SONGS_FAVORITES)) +
-                SongLoader.since(context, Setting.instance.lastAddedCutoff).map { it.toMediaItem() }
+                SongLoader.since(context, Setting.instance.lastAddedCutoffTimeStamp / 1000).map { it.toMediaItem() }
     }
 
     fun browseHistory(context: Context): List<MediaItem> {
