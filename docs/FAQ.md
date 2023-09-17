@@ -1,6 +1,6 @@
 # Trouble Shooting & FAQ
 
-## Can not find Phonograph PLus in Android Auto
+## Can not find Phonograph Plus in Android Auto
 
 Well, it is because Phonograph Plus is an _Unknown Source_ application (Well, looks like that _only_ applications installed by Google Play can be
 Known Source). _Unknown Source_ applications **won't be displayed** in  Android Auto's launcher settings.
@@ -45,7 +45,7 @@ _See Also Issue: #6_
 And Phonograph Plus is currently relaying on OS to decode media.
 
 
-**How to fix it:**
+**Workaround**
 
 - Convert your audio files to other format. (**Suggested**)
 
