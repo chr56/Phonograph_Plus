@@ -11,6 +11,7 @@ import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
 import player.phonograph.model.time.CalculationMode
 import player.phonograph.model.time.Duration
+import player.phonograph.model.time.displayText
 import player.phonograph.ui.compose.base.BridgeDialogFragment
 import player.phonograph.ui.compose.dialogs.PastTimeIntervalPicker
 import player.phonograph.ui.compose.theme.PhonographTheme
@@ -29,7 +30,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import android.content.res.Resources
 import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -45,14 +48,16 @@ class LastAddedPlaylistIntervalDialog : BridgeDialogFragment() {
         val flow =
             remember { snapshotFlow { currentlySelectedMode to currentlySelected } }
 
-        var time: String by remember { mutableStateOf("NA") }
+
+        val resources = LocalContext.current.resources
+        var text by remember { mutableStateOf("") }
         LaunchedEffect(dialogState) {
             flow.collect { (calculationMode, duration) ->
                 val cutOff = System.currentTimeMillis() - when (calculationMode) {
                     CalculationMode.PAST   -> past(duration)
                     CalculationMode.RECENT -> recently(duration)
                 }
-                time = formatter.format(cutOff)
+                text = previewText(resources, calculationMode, duration, cutOff)
             }
         }
 
@@ -83,7 +88,7 @@ class LastAddedPlaylistIntervalDialog : BridgeDialogFragment() {
                             }
                         )
                         Text(
-                            "Last Added Playlist Interval will be after:\n $time",
+                            text,
                             Modifier
                                 .fillMaxWidth()
                                 .padding(12.dp)
@@ -95,6 +100,21 @@ class LastAddedPlaylistIntervalDialog : BridgeDialogFragment() {
     }
 
     private val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+    private fun previewText(
+        resources: Resources,
+        currentlySelectedMode: CalculationMode,
+        currentlySelected: Duration,
+        time: Long,
+    ): String {
+        val timeText = formatter.format(time)
+        val resultText = resources.getString(
+            R.string.time_interval_text,
+            currentlySelectedMode.displayText(resources),
+            currentlySelected.value,
+            currentlySelected.unit.displayText(resources)
+        )
+        return resources.getString(R.string.description_time_interval_preview, timeText, resultText)
+    }
 
     companion object {
         private const val TAG = "LastAddedInterval"

@@ -7,6 +7,7 @@ package player.phonograph.ui.compose.dialogs
 import player.phonograph.model.time.CalculationMode
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeUnit
+import player.phonograph.model.time.displayText
 import player.phonograph.ui.compose.components.WheelPicker
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -27,6 +29,7 @@ fun PastTimeIntervalPicker(
     onChangeDuration: (Duration) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val resources = LocalContext.current.resources
 
     val modes = remember { CalculationMode.values() }
 
@@ -41,7 +44,7 @@ fun PastTimeIntervalPicker(
         Arrangement.SpaceBetween
     ) {
         WheelPicker(
-            items = modes.map { it.name },
+            items = modes.map { it.displayText(resources) },
             initialIndex = modes.indexOf(selectedMode),
             modifier = Modifier
                 .weight(5f)
@@ -62,7 +65,7 @@ fun PastTimeIntervalPicker(
         }
 
         WheelPicker(
-            items = units.map { it.name },
+            items = units.map { it.displayText(resources) },
             initialIndex = units.indexOf(selected.unit),
             modifier = Modifier
                 .weight(6f)
