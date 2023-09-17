@@ -15,14 +15,19 @@ import java.util.TimeZone
 
 private val calendar: Calendar by lazy { Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault()) }
 
-
+/**
+ * @return elapsed milli-second
+ */
 fun past(duration: Duration): Long {
-    return duration.toSeconds()
+    return duration.toSeconds() * TimeUnit.MILLI_PER_SECOND
 }
 
+/**
+ * @return elapsed milli-second
+ */
 fun recently(duration: Duration): Long {
     return when (duration) {
-        is Duration.Second -> duration.value
+        is Duration.Second -> duration.value * TimeUnit.MILLI_PER_SECOND
         is Duration.Minute -> elapsedMinute(duration.value)
         is Duration.Hour   -> elapsedHour(duration.value)
         is Duration.Day    -> elapsedDay(duration.value)
@@ -33,20 +38,27 @@ fun recently(duration: Duration): Long {
 }
 
 private fun elapsedMinute(minutes: Long): Long =
-    calendar[Calendar.SECOND] + (minutes - 1) * TimeUnit.SECONDS_PER_MINUTE
+    (minutes - 1) * TimeUnit.MILLI_PER_MINUTE +
+            calendar[Calendar.SECOND] * TimeUnit.MILLI_PER_SECOND +
+            calendar[Calendar.MILLISECOND]
 
 private fun elapsedHour(hours: Long): Long =
-    calendar[Calendar.MINUTE] * TimeUnit.SECONDS_PER_MINUTE + (hours - 1) * TimeUnit.SECONDS_PER_HOUR
+    (hours - 1) * TimeUnit.MILLI_PER_HOUR +
+            calendar[Calendar.MINUTE] * TimeUnit.MILLI_PER_MINUTE +
+            calendar[Calendar.SECOND] * TimeUnit.MILLI_PER_SECOND +
+            calendar[Calendar.MILLISECOND]
 
 
-private val elapsedToday
-    get() = (calendar[Calendar.HOUR_OF_DAY] * 60 + calendar[Calendar.MINUTE]).toLong() * TimeUnit.SECONDS_PER_MINUTE +
-            calendar[Calendar.SECOND]
+private val elapsedToday: Long
+    get() = (
+            ((calendar[Calendar.HOUR_OF_DAY] * 60 + calendar[Calendar.MINUTE]) * TimeUnit.SECONDS_PER_MINUTE +
+                    calendar[Calendar.SECOND]) * TimeUnit.MILLI_PER_SECOND + calendar[Calendar.MILLISECOND]
+            ).toLong()
 
 private fun elapsedDay(days: Long): Long {
     val restDays = days - 1
     return if (restDays > 0) {
-        restDays * TimeUnit.SECONDS_PER_DAY + elapsedToday
+        restDays * TimeUnit.MILLI_PER_DAY + elapsedToday
     } else {
         elapsedToday
     }
@@ -55,7 +67,7 @@ private fun elapsedDay(days: Long): Long {
 private fun elapsedWeek(weeks: Long): Long {
     val restDays = (weeks - 1) * TimeUnit.DAYS_PER_WEEK + (calendar[Calendar.DAY_OF_WEEK] - 1)
     return if (restDays > 0) {
-        restDays * TimeUnit.SECONDS_PER_DAY + elapsedToday
+        restDays * TimeUnit.MILLI_PER_DAY + elapsedToday
     } else {
         elapsedToday
     }
@@ -63,7 +75,7 @@ private fun elapsedWeek(weeks: Long): Long {
 
 private fun elapsedMonth(months: Long): Long {
     val restDaysThisMonth = calendar[Calendar.DAY_OF_MONTH] - 1
-    var elapsed = restDaysThisMonth * TimeUnit.SECONDS_PER_DAY + elapsedToday
+    var elapsed = restDaysThisMonth * TimeUnit.MILLI_PER_DAY + elapsedToday
 
     var month = calendar[Calendar.MONTH]
     var year = calendar[Calendar.YEAR]
@@ -73,7 +85,7 @@ private fun elapsedMonth(months: Long): Long {
             month = Calendar.DECEMBER
             year--
         }
-        elapsed += getDaysInMonth(year, month) * TimeUnit.SECONDS_PER_DAY
+        elapsed += getDaysInMonth(year, month).toLong() * TimeUnit.MILLI_PER_DAY
     }
     return elapsed
 
@@ -85,7 +97,7 @@ private fun elapsedYear(years: Long): Long {
     var year = calendar[Calendar.YEAR]
     for (i in 0 until years - 1) {
         year--
-        elapsed += getDaysInYear(year) * TimeUnit.SECONDS_PER_DAY
+        elapsed += getDaysInYear(year).toLong() * TimeUnit.MILLI_PER_DAY
     }
     return elapsed
 
