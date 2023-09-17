@@ -34,7 +34,7 @@ fun PastTimeIntervalPicker(
     val modes = remember { CalculationMode.values() }
 
     val units = remember { TimeUnit.values() }
-    val numbers = remember { 1..30 }
+    val numbers = remember { (1..30).toList() }
 
     var currentNumber by remember { mutableStateOf(selected.value) }
     var currentUnit by remember { mutableStateOf(selected.unit) }
@@ -55,13 +55,13 @@ fun PastTimeIntervalPicker(
 
         WheelPicker(
             items = numbers.map { it.toString() },
-            initialIndex = (selected.value + 1).coerceAtMost(30).toInt(),
+            initialIndex = (selected.value - 1).coerceAtMost(30).toInt(),
             modifier = Modifier
                 .weight(6f)
                 .padding(horizontal = 6.dp)
         ) {
-            currentNumber = (it + 1).toLong()
-            onChangeDuration(Duration.of((it + 1).toLong(), currentUnit))
+            currentNumber = numbers[it].toLong()
+            onChangeDuration(Duration.of(numbers[it].toLong(), currentUnit))
         }
 
         WheelPicker(
