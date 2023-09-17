@@ -10,10 +10,10 @@ import player.phonograph.actions.click.mode.SongClickMode.SONG_PLAY_NOW
 import player.phonograph.model.sort.FileSortMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.model.time.CalculationMode
 import player.phonograph.model.time.Duration
-import player.phonograph.util.time.past
-import player.phonograph.util.time.recently
+import player.phonograph.model.time.TimeIntervalCalculationMode
+import player.phonograph.util.time.TimeInterval.past
+import player.phonograph.util.time.TimeInterval.recently
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.SharedPreferencesMigration
 import androidx.datastore.preferences.core.Preferences
@@ -83,9 +83,9 @@ class Setting {
     var synchronizedLyricsShow: Boolean by booleanPref(SYNCHRONIZED_LYRICS_SHOW, true)
     var displaySynchronizedLyricsTimeAxis: Boolean by booleanPref(DISPLAY_LYRICS_TIME_AXIS, true)
 
-    private var _lastAddedCutOffMode: Int by intPref(LAST_ADDED_CUTOFF_MODE, CalculationMode.PAST.value)
-    var lastAddedCutOffMode: CalculationMode
-        get() = CalculationMode.from(_lastAddedCutOffMode) ?: CalculationMode.PAST
+    private var _lastAddedCutOffMode: Int by intPref(LAST_ADDED_CUTOFF_MODE, TimeIntervalCalculationMode.PAST.value)
+    var lastAddedCutOffMode: TimeIntervalCalculationMode
+        get() = TimeIntervalCalculationMode.from(_lastAddedCutOffMode) ?: TimeIntervalCalculationMode.PAST
         set(value) {
             _lastAddedCutOffMode = value.value
         }
@@ -99,8 +99,8 @@ class Setting {
 
     val lastAddedCutoffTimeStamp: Long
         get() = System.currentTimeMillis() - when (lastAddedCutOffMode) {
-            CalculationMode.PAST   -> past(lastAddedCutOffDuration)
-            CalculationMode.RECENT -> recently(lastAddedCutOffDuration)
+            TimeIntervalCalculationMode.PAST   -> past(lastAddedCutOffDuration)
+            TimeIntervalCalculationMode.RECENT -> recently(lastAddedCutOffDuration)
         }
 
     // Upgrade
@@ -286,19 +286,19 @@ class SettingFlowStore(context: Context) {
         get() = from(booleanPreferencesKey(DISPLAY_LYRICS_TIME_AXIS), true)
 
     private val _lastAddedCutOffMode: Flow<Int>
-        get() = from(intPreferencesKey(LAST_ADDED_CUTOFF_MODE), CalculationMode.PAST.value)
+        get() = from(intPreferencesKey(LAST_ADDED_CUTOFF_MODE), TimeIntervalCalculationMode.PAST.value)
 
     private val _lastAddedCutOffDuration: Flow<String>
         get() = from(stringPreferencesKey(LAST_ADDED_CUTOFF_DURATION), Duration.Week(3).serialise())
 
     val lastAddedCutoffTimeStamp: Flow<Long>
         get() = _lastAddedCutOffDuration.combine(_lastAddedCutOffMode) { durationPref, modePref ->
-            val calculationMode = CalculationMode.from(modePref)
+            val timeIntervalCalculationMode = TimeIntervalCalculationMode.from(modePref)
             val duration = Duration.from(durationPref)
-            if (calculationMode != null && duration != null) {
-                System.currentTimeMillis() - when (calculationMode) {
-                    CalculationMode.PAST   -> past(duration)
-                    CalculationMode.RECENT -> recently(duration)
+            if (timeIntervalCalculationMode != null && duration != null) {
+                System.currentTimeMillis() - when (timeIntervalCalculationMode) {
+                    TimeIntervalCalculationMode.PAST   -> past(duration)
+                    TimeIntervalCalculationMode.RECENT -> recently(duration)
                 }
             } else {
                 System.currentTimeMillis()

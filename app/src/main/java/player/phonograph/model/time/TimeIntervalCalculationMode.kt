@@ -7,7 +7,7 @@ package player.phonograph.model.time
 private const val CONST_PAST = -1
 private const val CONST_RECENT = 1
 
-enum class CalculationMode(val value: Int) {
+enum class TimeIntervalCalculationMode(val value: Int) {
     PAST(CONST_PAST),
     RECENT(CONST_RECENT),
     ;

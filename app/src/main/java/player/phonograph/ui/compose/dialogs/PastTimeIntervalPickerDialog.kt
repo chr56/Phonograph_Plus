@@ -4,8 +4,8 @@
 
 package player.phonograph.ui.compose.dialogs
 
-import player.phonograph.model.time.CalculationMode
 import player.phonograph.model.time.Duration
+import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.time.TimeUnit
 import player.phonograph.model.time.displayText
 import player.phonograph.ui.compose.components.WheelPicker
@@ -23,15 +23,15 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun PastTimeIntervalPicker(
-    selectedMode: CalculationMode,
+    selectedMode: TimeIntervalCalculationMode,
     selected: Duration,
-    onChangeMode: (CalculationMode) -> Unit,
+    onChangeMode: (TimeIntervalCalculationMode) -> Unit,
     onChangeDuration: (Duration) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val resources = LocalContext.current.resources
 
-    val modes = remember { CalculationMode.values() }
+    val modes = remember { TimeIntervalCalculationMode.values() }
 
     val units = remember { TimeUnit.values() }
     val numbers = remember { (1..30).toList() }

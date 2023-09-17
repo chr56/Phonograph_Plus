@@ -18,25 +18,28 @@ import java.util.TimeZone
 private val calendar: Calendar by lazy { Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault()) }
 
 
-/**
- * @return elapsed milli-second
- */
-fun past(duration: Duration): Long {
-    return duration.toSeconds() * TimeUnit.MILLI_PER_SECOND
-}
 
-/**
- * @return elapsed milli-second
- */
-fun recently(duration: Duration): Long {
-    return when (duration) {
-        is Duration.Second -> duration.value * TimeUnit.MILLI_PER_SECOND
-        is Duration.Minute -> elapsedMinute(duration.value)
-        is Duration.Hour   -> elapsedHour(duration.value)
-        is Duration.Day    -> elapsedDay(duration.value)
-        is Duration.Week   -> elapsedWeek(duration.value)
-        is Duration.Month  -> elapsedMonth(duration.value)
-        is Duration.Year   -> elapsedYear(duration.value)
+object TimeInterval {
+    /**
+     * @return elapsed milli-second
+     */
+    fun past(duration: Duration): Long {
+        return duration.toSeconds() * TimeUnit.MILLI_PER_SECOND
+    }
+
+    /**
+     * @return elapsed milli-second
+     */
+    fun recently(duration: Duration): Long {
+        return when (duration) {
+            is Duration.Second -> duration.value * TimeUnit.MILLI_PER_SECOND
+            is Duration.Minute -> elapsedMinute(duration.value)
+            is Duration.Hour   -> elapsedHour(duration.value)
+            is Duration.Day    -> elapsedDay(duration.value)
+            is Duration.Week   -> elapsedWeek(duration.value)
+            is Duration.Month  -> elapsedMonth(duration.value)
+            is Duration.Year   -> elapsedYear(duration.value)
+        }
     }
 }
 

@@ -8,9 +8,9 @@ import player.phonograph.R
 import android.content.res.Resources
 
 
-fun CalculationMode.displayText(resources: Resources) = when (this) {
-    CalculationMode.PAST   -> resources.getString(R.string.interval_past)
-    CalculationMode.RECENT -> resources.getString(R.string.interval_recent)
+fun TimeIntervalCalculationMode.displayText(resources: Resources) = when (this) {
+    TimeIntervalCalculationMode.PAST   -> resources.getString(R.string.interval_past)
+    TimeIntervalCalculationMode.RECENT -> resources.getString(R.string.interval_recent)
 }
 
 fun TimeUnit.displayText(resources: Resources)=when(this){

@@ -9,16 +9,16 @@ import com.vanpra.composematerialdialogs.customView
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
-import player.phonograph.model.time.CalculationMode
 import player.phonograph.model.time.Duration
+import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.time.displayText
 import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.base.BridgeDialogFragment
 import player.phonograph.ui.compose.dialogs.PastTimeIntervalPicker
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.debug
-import player.phonograph.util.time.past
-import player.phonograph.util.time.recently
+import player.phonograph.util.time.TimeInterval.past
+import player.phonograph.util.time.TimeInterval.recently
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -42,7 +42,7 @@ class LastAddedPlaylistIntervalDialog : BridgeDialogFragment() {
     @Composable
     override fun Content() {
         val dialogState = rememberMaterialDialogState(true)
-        var currentlySelectedMode: CalculationMode by remember {
+        var currentlySelectedMode: TimeIntervalCalculationMode by remember {
             mutableStateOf(Setting.instance.lastAddedCutOffMode)
         }
         var currentlySelected: Duration by remember {
@@ -59,8 +59,8 @@ class LastAddedPlaylistIntervalDialog : BridgeDialogFragment() {
         LaunchedEffect(dialogState) {
             flow.collect { (calculationMode, duration) ->
                 val cutOff = System.currentTimeMillis() - when (calculationMode) {
-                    CalculationMode.PAST -> past(duration)
-                    CalculationMode.RECENT -> recently(duration)
+                    TimeIntervalCalculationMode.PAST   -> past(duration)
+                    TimeIntervalCalculationMode.RECENT -> recently(duration)
                 }
                 text = previewText(resources, calculationMode, duration, cutOff)
             }
@@ -111,7 +111,7 @@ class LastAddedPlaylistIntervalDialog : BridgeDialogFragment() {
     private val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
     private fun previewText(
         resources: Resources,
-        currentlySelectedMode: CalculationMode,
+        currentlySelectedMode: TimeIntervalCalculationMode,
         currentlySelected: Duration,
         time: Long,
     ): String {
