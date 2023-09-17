@@ -10,7 +10,10 @@ import player.phonograph.actions.click.mode.SongClickMode.SONG_PLAY_NOW
 import player.phonograph.model.sort.FileSortMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.util.CalendarUtil
+import player.phonograph.model.time.Duration
+import player.phonograph.model.time.TimeIntervalCalculationMode
+import player.phonograph.util.time.TimeInterval.past
+import player.phonograph.util.time.TimeInterval.recently
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.SharedPreferencesMigration
 import androidx.datastore.preferences.core.Preferences
@@ -25,6 +28,7 @@ import android.content.Context
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
@@ -79,23 +83,25 @@ class Setting {
     var synchronizedLyricsShow: Boolean by booleanPref(SYNCHRONIZED_LYRICS_SHOW, true)
     var displaySynchronizedLyricsTimeAxis: Boolean by booleanPref(DISPLAY_LYRICS_TIME_AXIS, true)
 
-    // List-Cutoff
-    val lastAddedCutoff: Long
-        get() {
-            val interval: Long = when (lastAddedCutoffPref) {
-                INTERVAL_TODAY              -> CalendarUtil.elapsedToday
-                INTERVAL_PAST_SEVEN_DAYS    -> CalendarUtil.getElapsedDays(7)
-                INTERVAL_PAST_FOURTEEN_DAYS -> CalendarUtil.getElapsedDays(14)
-                INTERVAL_PAST_ONE_MONTH     -> CalendarUtil.getElapsedMonths(1)
-                INTERVAL_PAST_THREE_MONTHS  -> CalendarUtil.getElapsedMonths(3)
-                INTERVAL_THIS_WEEK          -> CalendarUtil.elapsedWeek
-                INTERVAL_THIS_MONTH         -> CalendarUtil.elapsedMonth
-                INTERVAL_THIS_YEAR          -> CalendarUtil.elapsedYear
-                else                        -> CalendarUtil.getElapsedMonths(1)
-            }
-            return (System.currentTimeMillis() - interval) / 1000
+    private var _lastAddedCutOffMode: Int by intPref(LAST_ADDED_CUTOFF_MODE, TimeIntervalCalculationMode.PAST.value)
+    var lastAddedCutOffMode: TimeIntervalCalculationMode
+        get() = TimeIntervalCalculationMode.from(_lastAddedCutOffMode) ?: TimeIntervalCalculationMode.PAST
+        set(value) {
+            _lastAddedCutOffMode = value.value
         }
-    var lastAddedCutoffPref: String by stringPref(LAST_ADDED_CUTOFF, "past_one_months")
+
+    private var _lastAddedCutOffDuration: String by stringPref(LAST_ADDED_CUTOFF_DURATION, Duration.Week(3).serialise())
+    var lastAddedCutOffDuration: Duration
+        get() = Duration.from(_lastAddedCutOffDuration) ?: Duration.Week(3)
+        set(value) {
+            _lastAddedCutOffDuration = value.serialise()
+        }
+
+    val lastAddedCutoffTimeStamp: Long
+        get() = System.currentTimeMillis() - when (lastAddedCutOffMode) {
+            TimeIntervalCalculationMode.PAST   -> past(lastAddedCutOffDuration)
+            TimeIntervalCalculationMode.RECENT -> recently(lastAddedCutOffDuration)
+        }
 
     // Upgrade
     var checkUpgradeAtStartup: Boolean by booleanPref(CHECK_UPGRADE_AT_STARTUP, false)
@@ -279,23 +285,25 @@ class SettingFlowStore(context: Context) {
     val displaySynchronizedLyricsTimeAxis: Flow<Boolean>
         get() = from(booleanPreferencesKey(DISPLAY_LYRICS_TIME_AXIS), true)
 
-    val lastAddedCutoff: Flow<Long>
-        get() = lastAddedCutoffPref.map {
-            val interval: Long = when (it) {
-                INTERVAL_TODAY              -> CalendarUtil.elapsedToday
-                INTERVAL_PAST_SEVEN_DAYS    -> CalendarUtil.getElapsedDays(7)
-                INTERVAL_PAST_FOURTEEN_DAYS -> CalendarUtil.getElapsedDays(14)
-                INTERVAL_PAST_ONE_MONTH     -> CalendarUtil.getElapsedMonths(1)
-                INTERVAL_PAST_THREE_MONTHS  -> CalendarUtil.getElapsedMonths(3)
-                INTERVAL_THIS_WEEK          -> CalendarUtil.elapsedWeek
-                INTERVAL_THIS_MONTH         -> CalendarUtil.elapsedMonth
-                INTERVAL_THIS_YEAR          -> CalendarUtil.elapsedYear
-                else                        -> CalendarUtil.getElapsedMonths(1)
+    private val _lastAddedCutOffMode: Flow<Int>
+        get() = from(intPreferencesKey(LAST_ADDED_CUTOFF_MODE), TimeIntervalCalculationMode.PAST.value)
+
+    private val _lastAddedCutOffDuration: Flow<String>
+        get() = from(stringPreferencesKey(LAST_ADDED_CUTOFF_DURATION), Duration.Week(3).serialise())
+
+    val lastAddedCutoffTimeStamp: Flow<Long>
+        get() = _lastAddedCutOffDuration.combine(_lastAddedCutOffMode) { durationPref, modePref ->
+            val timeIntervalCalculationMode = TimeIntervalCalculationMode.from(modePref)
+            val duration = Duration.from(durationPref)
+            if (timeIntervalCalculationMode != null && duration != null) {
+                System.currentTimeMillis() - when (timeIntervalCalculationMode) {
+                    TimeIntervalCalculationMode.PAST   -> past(duration)
+                    TimeIntervalCalculationMode.RECENT -> recently(duration)
+                }
+            } else {
+                System.currentTimeMillis()
             }
-            return@map (System.currentTimeMillis() - interval) / 1000
         }
-    val lastAddedCutoffPref: Flow<String>
-        get() = from(stringPreferencesKey(LAST_ADDED_CUTOFF), "past_one_months")
 
     // Upgrade
     val checkUpgradeAtStartup: Flow<Boolean>
@@ -413,7 +421,8 @@ const val SYNCHRONIZED_LYRICS_SHOW = "synchronized_lyrics_show"
 const val DISPLAY_LYRICS_TIME_AXIS = "display_lyrics_time_axis"
 
 // List-Cutoff
-const val LAST_ADDED_CUTOFF = "last_added_interval"
+const val LAST_ADDED_CUTOFF_MODE = "last_added_cutoff_mode"
+const val LAST_ADDED_CUTOFF_DURATION = "last_added_cutoff_duration"
 
 // Upgrade
 const val CHECK_UPGRADE_AT_STARTUP = "check_upgrade_at_startup"
@@ -451,7 +460,19 @@ const val USE_LEGACY_DETAIL_DIALOG = "use_legacy_detail_dialog"
 
 // unused & deprecated
 
+const val LEGACY_LAST_ADDED_CUTOFF = "last_added_interval"
+const val INTERVAL_TODAY = "today"
+const val INTERVAL_PAST_SEVEN_DAYS = "past_seven_days"
+const val INTERVAL_PAST_FOURTEEN_DAYS = "past_fourteen_days"
+const val INTERVAL_PAST_ONE_MONTH = "past_one_month"
+const val INTERVAL_PAST_THREE_MONTHS = "past_three_months"
+const val INTERVAL_THIS_WEEK = "this_week"
+const val INTERVAL_THIS_MONTH = "this_month"
+const val INTERVAL_THIS_YEAR = "this_year"
 const val AUTO_DOWNLOAD_IMAGES_POLICY = "auto_download_images_policy"
+const val DOWNLOAD_IMAGES_POLICY_ALWAYS = "always"
+const val DOWNLOAD_IMAGES_POLICY_ONLY_WIFI = "only_wifi"
+const val DOWNLOAD_IMAGES_POLICY_NEVER = "never"
 const val INITIALIZED_BLACKLIST = "initialized_blacklist"
 const val PREVIOUS_VERSION = "last_changelog_version"
 const val FORCE_SQUARE_ALBUM_COVER = "force_square_album_art"
@@ -461,17 +482,6 @@ const val IGNORE_MEDIA_STORE_ARTWORK = "ignore_media_store_artwork"
 
 //region Values
 // StringArrayPref
-const val DOWNLOAD_IMAGES_POLICY_ALWAYS = "always"
-const val DOWNLOAD_IMAGES_POLICY_ONLY_WIFI = "only_wifi"
-const val DOWNLOAD_IMAGES_POLICY_NEVER = "never"
-const val INTERVAL_TODAY = "today"
-const val INTERVAL_PAST_SEVEN_DAYS = "past_seven_days"
-const val INTERVAL_PAST_FOURTEEN_DAYS = "past_fourteen_days"
-const val INTERVAL_PAST_ONE_MONTH = "past_one_month"
-const val INTERVAL_PAST_THREE_MONTHS = "past_three_months"
-const val INTERVAL_THIS_WEEK = "this_week"
-const val INTERVAL_THIS_MONTH = "this_month"
-const val INTERVAL_THIS_YEAR = "this_year"
 const val PLAYLIST_OPS_BEHAVIOUR_AUTO = "auto"
 const val PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF = "force_saf"
 const val PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY = "force_legacy"

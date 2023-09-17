@@ -80,7 +80,7 @@ object MediaBrowserDelegate {
         return when (mediaId) {
             MEDIA_BROWSER_SONGS_FAVORITES  -> FavoritesStore.get().getAllSongs(context)
             MEDIA_BROWSER_SONGS_TOP_TRACKS -> TopTracksLoader.get().tracks(context)
-            MEDIA_BROWSER_SONGS_LAST_ADDED -> SongLoader.since(context, Setting.instance.lastAddedCutoff)
+            MEDIA_BROWSER_SONGS_LAST_ADDED -> SongLoader.since(context, Setting.instance.lastAddedCutoffTimeStamp / 1000)
             MEDIA_BROWSER_SONGS_HISTORY    -> RecentlyPlayedTracksLoader.get().tracks(context)
 
             else                           -> {

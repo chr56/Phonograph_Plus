@@ -25,11 +25,13 @@ import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.mechanism.setting.StyleConfig
 import player.phonograph.mechanism.setting.StyleConfig.THEME_AUTO
+import player.phonograph.model.time.displayText
 import player.phonograph.settings.*
 import player.phonograph.ui.compose.components.ColorCircle
 import player.phonograph.ui.dialogs.ClickModeSettingDialog
 import player.phonograph.ui.dialogs.HomeTabConfigDialog
 import player.phonograph.ui.dialogs.ImageSourceConfigDialog
+import player.phonograph.ui.dialogs.LastAddedPlaylistIntervalDialog
 import player.phonograph.ui.dialogs.MonetColorPickerDialog
 import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
 import player.phonograph.ui.dialogs.PathFilterDialog
@@ -162,32 +164,21 @@ fun PhonographPreferenceScreen() {
                     }
                 )
             )
-            ListPref(
-                titleRes = R.string.pref_title_last_added_interval,
-                options =
-                OptionGroupModel(
-                    LAST_ADDED_CUTOFF,
-                    listOf(
-                        INTERVAL_TODAY,
-                        INTERVAL_PAST_SEVEN_DAYS,
-                        INTERVAL_PAST_FOURTEEN_DAYS,
-                        INTERVAL_PAST_ONE_MONTH,
-                        INTERVAL_PAST_THREE_MONTHS,
-                        INTERVAL_THIS_WEEK,
-                        INTERVAL_THIS_MONTH,
-                        INTERVAL_THIS_YEAR,
-                    ),
-                    listOf(
-                        R.string.today,
-                        R.string.past_seven_days,
-                        R.string.past_fourteen_days,
-                        R.string.past_one_month,
-                        R.string.past_three_months,
-                        R.string.this_week,
-                        R.string.this_month,
-                        R.string.this_year,
-                    ),
-                    defaultValueIndex = 1
+            DialogPref(
+                model = DialogPreferenceModel(
+                    dialog = LastAddedPlaylistIntervalDialog::class.java,
+                    titleRes = R.string.pref_title_last_added_interval,
+                    currentValueForHint = {
+                        val resources = it.resources
+                        val calculationMode = Setting.instance.lastAddedCutOffMode
+                        val duration = Setting.instance.lastAddedCutOffDuration
+                        resources.getString(
+                            R.string.time_interval_text,
+                            calculationMode.displayText(resources),
+                            duration.value,
+                            duration.unit.displayText(resources)
+                        )
+                    }
                 )
             )
             DialogPref(

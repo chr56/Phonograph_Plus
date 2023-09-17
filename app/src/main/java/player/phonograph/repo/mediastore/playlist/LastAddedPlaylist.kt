@@ -19,7 +19,7 @@ class LastAddedPlaylistImpl : LastAddedPlaylist {
     constructor(context: Context) : super(context)
 
     override fun getSongs(context: Context): List<Song> =
-        SongLoader.since(context, Setting.instance.lastAddedCutoff)
+        SongLoader.since(context, Setting.instance.lastAddedCutoffTimeStamp / 1000)
 
     override fun containsSong(context: Context, songId: Long): Boolean =
         getSongs(context).find { it.id == songId } != null

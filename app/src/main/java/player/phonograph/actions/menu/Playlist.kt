@@ -4,11 +4,8 @@
 
 package player.phonograph.actions.menu
 
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
-import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.actions.actionAddToCurrentQueue
 import player.phonograph.actions.actionAddToPlaylist
@@ -25,14 +22,15 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.PlaylistType
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
-import player.phonograph.notification.ErrorNotification
 import player.phonograph.repo.database.FavoritesStore
-import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.PlaylistModel
 import player.phonograph.ui.compose.tag.MultiTagBrowserActivity
+import player.phonograph.ui.dialogs.LastAddedPlaylistIntervalDialog
 import player.phonograph.util.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.annotation.ColorInt
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
@@ -174,25 +172,16 @@ fun playlistToolbar(
                     title = getString(R.string.pref_title_last_added_interval)
                     icon = getTintedDrawable(R.drawable.ic_timer_white_24dp, iconColor)
                     onClick {
-                        val prefValue =
-                            resources.getStringArray(R.array.pref_playlists_last_added_interval_values)
-                        val currentChoice = prefValue.indexOf(Setting.instance.lastAddedCutoffPref)
-                        MaterialDialog(context)
-                            .listItemsSingleChoice(
-                                res = R.array.pref_playlists_last_added_interval_titles,
-                                initialSelection = currentChoice.let { if (it == -1) 0 else it },
-                                checkedColor = ThemeColor.accentColor(context)
-                            ) { dialog, index, _ ->
-                                try {
-                                    Setting.instance.lastAddedCutoffPref = prefValue[index]
-                                    model.refreshPlaylist(context)
-                                } catch (e: Exception) {
-                                    ErrorNotification.postErrorNotification(e)
+                        fragmentActivity(context) { activity ->
+                            val dialog = LastAddedPlaylistIntervalDialog()
+                            dialog.show(activity.supportFragmentManager, "LAST_ADDED")
+                            dialog.lifecycle.addObserver(object : DefaultLifecycleObserver {
+                                override fun onDestroy(owner: LifecycleOwner) {
+                                    model.refreshPlaylist(activity)
                                 }
-                                dialog.dismiss()
-                            }
-                            .title(R.string.pref_title_last_added_interval)
-                            .show()
+                            })
+                            true
+                        }
                         true
                     }
                 }
