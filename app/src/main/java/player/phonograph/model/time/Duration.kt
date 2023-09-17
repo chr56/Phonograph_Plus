@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.util.time
+package player.phonograph.model.time
 
 sealed class Duration(val value: Long, val unit: TimeUnit) {
     init {
@@ -44,6 +44,9 @@ sealed class Duration(val value: Long, val unit: TimeUnit) {
         return true
     }
 
+    fun serialise() =
+        "$value${unit.symbol}"
+
     companion object {
         fun of(value: Long, unit: TimeUnit): Duration = when (unit) {
             TimeUnit.Year   -> Year(value)
@@ -53,6 +56,14 @@ sealed class Duration(val value: Long, val unit: TimeUnit) {
             TimeUnit.Hour   -> Hour(value)
             TimeUnit.Minute -> Minute(value)
             TimeUnit.Second -> Second(value)
+        }
+
+        fun from(str: String): Duration? {
+            if (str.length <= 1) return null
+            val symbol = str.last()
+            val timeUnit = TimeUnit.from(symbol)
+            val value = str.dropLast(1).toLongOrNull() ?: return null
+            return of(value, timeUnit)
         }
     }
 

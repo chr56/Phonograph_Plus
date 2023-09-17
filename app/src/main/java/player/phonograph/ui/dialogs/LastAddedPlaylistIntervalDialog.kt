@@ -9,12 +9,12 @@ import com.vanpra.composematerialdialogs.customView
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
+import player.phonograph.model.time.CalculationMode
+import player.phonograph.model.time.Duration
 import player.phonograph.ui.compose.base.BridgeDialogFragment
 import player.phonograph.ui.compose.dialogs.PastTimeIntervalPicker
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.debug
-import player.phonograph.util.time.CalculationMode
-import player.phonograph.util.time.Duration
 import player.phonograph.util.time.past
 import player.phonograph.util.time.recently
 import androidx.compose.foundation.layout.Column

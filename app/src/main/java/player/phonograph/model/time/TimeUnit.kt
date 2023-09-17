@@ -2,16 +2,26 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.util.time
+package player.phonograph.model.time
+
+
+private const val SYMBOL_YEAR = 'Y'
+private const val SYMBOL_MONTH = 'M'
+private const val SYMBOL_WEEK = 'W'
+private const val SYMBOL_DAY = 'D'
+private const val SYMBOL_HOUR = 'h'
+private const val SYMBOL_MINUTE = 'm'
+private const val SYMBOL_SECOND = 's'
+
 
 enum class TimeUnit(val symbol: Char) {
-    Year('Y'),
-    Month('M'),
-    Week('W'),
-    Day('D'),
-    Hour('h'),
-    Minute('m'),
-    Second('s'),
+    Year(SYMBOL_YEAR),
+    Month(SYMBOL_MONTH),
+    Week(SYMBOL_WEEK),
+    Day(SYMBOL_DAY),
+    Hour(SYMBOL_HOUR),
+    Minute(SYMBOL_MINUTE),
+    Second(SYMBOL_SECOND),
     ;
 
 
@@ -49,14 +59,14 @@ enum class TimeUnit(val symbol: Char) {
 
 
         fun from(symbol: Char): TimeUnit = when (symbol) {
-            'Y'  -> Year
-            'M'  -> Month
-            'W'  -> Week
-            'D'  -> Day
-            'h'  -> Hour
-            'm'  -> Minute
-            's'  -> Second
-            else -> throw IllegalArgumentException("Unknown time unit $symbol!")
+            SYMBOL_YEAR   -> Year
+            SYMBOL_MONTH  -> Month
+            SYMBOL_WEEK   -> Week
+            SYMBOL_DAY    -> Day
+            SYMBOL_HOUR   -> Hour
+            SYMBOL_MINUTE -> Minute
+            SYMBOL_SECOND -> Second
+            else          -> throw IllegalArgumentException("Unknown time unit $symbol!")
         }
 
     }

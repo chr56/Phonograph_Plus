@@ -4,10 +4,10 @@
 
 package player.phonograph.ui.compose.dialogs
 
+import player.phonograph.model.time.CalculationMode
+import player.phonograph.model.time.Duration
+import player.phonograph.model.time.TimeUnit
 import player.phonograph.ui.compose.components.WheelPicker
-import player.phonograph.util.time.CalculationMode
-import player.phonograph.util.time.Duration
-import player.phonograph.util.time.TimeUnit
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding

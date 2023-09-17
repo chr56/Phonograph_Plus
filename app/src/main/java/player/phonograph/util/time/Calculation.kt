@@ -7,6 +7,8 @@
  */
 package player.phonograph.util.time
 
+import player.phonograph.model.time.Duration
+import player.phonograph.model.time.TimeUnit
 import java.util.Calendar
 import java.util.GregorianCalendar
 import java.util.Locale
@@ -15,12 +17,6 @@ import java.util.TimeZone
 
 private val calendar: Calendar by lazy { Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault()) }
 
-
-enum class CalculationMode(val value: Int) {
-    PAST(-1),
-    RECENT(1),
-    ;
-}
 
 /**
  * @return elapsed milli-second
