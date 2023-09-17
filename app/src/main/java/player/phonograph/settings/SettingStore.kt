@@ -10,7 +10,11 @@ import player.phonograph.actions.click.mode.SongClickMode.SONG_PLAY_NOW
 import player.phonograph.model.sort.FileSortMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
+import player.phonograph.model.time.CalculationMode
+import player.phonograph.model.time.Duration
 import player.phonograph.util.CalendarUtil
+import player.phonograph.util.time.past
+import player.phonograph.util.time.recently
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.SharedPreferencesMigration
 import androidx.datastore.preferences.core.Preferences
@@ -25,6 +29,7 @@ import android.content.Context
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
@@ -96,6 +101,26 @@ class Setting {
             return (System.currentTimeMillis() - interval) / 1000
         }
     var lastAddedCutoffPref: String by stringPref(LAST_ADDED_CUTOFF, "past_one_months")
+
+    private var _lastAddedCutOffMode: Int by intPref(LAST_ADDED_CUTOFF_MODE, CalculationMode.PAST.value)
+    var lastAddedCutOffMode: CalculationMode
+        get() = CalculationMode.from(_lastAddedCutOffMode) ?: CalculationMode.PAST
+        set(value) {
+            _lastAddedCutOffMode = value.value
+        }
+
+    private var _lastAddedCutOffDuration: String by stringPref(LAST_ADDED_CUTOFF_DURATION, Duration.Week(3).serialise())
+    var lastAddedCutOffDuration: Duration
+        get() = Duration.from(_lastAddedCutOffDuration) ?: Duration.Week(3)
+        set(value) {
+            _lastAddedCutOffDuration = value.serialise()
+        }
+
+    val lastAddedCutoffTimeStamp: Long
+        get() = System.currentTimeMillis() - when (lastAddedCutOffMode) {
+            CalculationMode.PAST   -> past(lastAddedCutOffDuration)
+            CalculationMode.RECENT -> recently(lastAddedCutOffDuration)
+        }
 
     // Upgrade
     var checkUpgradeAtStartup: Boolean by booleanPref(CHECK_UPGRADE_AT_STARTUP, false)
@@ -297,6 +322,26 @@ class SettingFlowStore(context: Context) {
     val lastAddedCutoffPref: Flow<String>
         get() = from(stringPreferencesKey(LAST_ADDED_CUTOFF), "past_one_months")
 
+    private val _lastAddedCutOffMode: Flow<Int>
+        get() = from(intPreferencesKey(LAST_ADDED_CUTOFF_MODE), CalculationMode.PAST.value)
+
+    private val _lastAddedCutOffDuration: Flow<String>
+        get() = from(stringPreferencesKey(LAST_ADDED_CUTOFF_DURATION), Duration.Week(3).serialise())
+
+    val lastAddedCutoffTimeStamp: Flow<Long>
+        get() = _lastAddedCutOffDuration.combine(_lastAddedCutOffMode) { durationPref, modePref ->
+            val calculationMode = CalculationMode.from(modePref)
+            val duration = Duration.from(durationPref)
+            if (calculationMode != null && duration != null) {
+                System.currentTimeMillis() - when (calculationMode) {
+                    CalculationMode.PAST   -> past(duration)
+                    CalculationMode.RECENT -> recently(duration)
+                }
+            } else {
+                System.currentTimeMillis()
+            }
+        }
+
     // Upgrade
     val checkUpgradeAtStartup: Flow<Boolean>
         get() = from(booleanPreferencesKey(CHECK_UPGRADE_AT_STARTUP), false)
@@ -414,6 +459,8 @@ const val DISPLAY_LYRICS_TIME_AXIS = "display_lyrics_time_axis"
 
 // List-Cutoff
 const val LAST_ADDED_CUTOFF = "last_added_interval"
+const val LAST_ADDED_CUTOFF_MODE = "last_added_cutoff_mode"
+const val LAST_ADDED_CUTOFF_DURATION = "last_added_cutoff_duration"
 
 // Upgrade
 const val CHECK_UPGRADE_AT_STARTUP = "check_upgrade_at_startup"
