@@ -12,6 +12,7 @@ import player.phonograph.R
 import player.phonograph.model.time.CalculationMode
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.displayText
+import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.base.BridgeDialogFragment
 import player.phonograph.ui.compose.dialogs.PastTimeIntervalPicker
 import player.phonograph.ui.compose.theme.PhonographTheme
@@ -41,8 +42,12 @@ class LastAddedPlaylistIntervalDialog : BridgeDialogFragment() {
     @Composable
     override fun Content() {
         val dialogState = rememberMaterialDialogState(true)
-        var currentlySelectedMode: CalculationMode by remember { mutableStateOf(CalculationMode.PAST) }
-        var currentlySelected: Duration by remember { mutableStateOf(Duration.Week(1)) }
+        var currentlySelectedMode: CalculationMode by remember {
+            mutableStateOf(Setting.instance.lastAddedCutOffMode)
+        }
+        var currentlySelected: Duration by remember {
+            mutableStateOf(Setting.instance.lastAddedCutOffDuration)
+        }
 
 
         val flow =
@@ -54,7 +59,7 @@ class LastAddedPlaylistIntervalDialog : BridgeDialogFragment() {
         LaunchedEffect(dialogState) {
             flow.collect { (calculationMode, duration) ->
                 val cutOff = System.currentTimeMillis() - when (calculationMode) {
-                    CalculationMode.PAST   -> past(duration)
+                    CalculationMode.PAST -> past(duration)
                     CalculationMode.RECENT -> recently(duration)
                 }
                 text = previewText(resources, calculationMode, duration, cutOff)
@@ -69,6 +74,10 @@ class LastAddedPlaylistIntervalDialog : BridgeDialogFragment() {
                     negativeButton(res = android.R.string.cancel) { dismiss() }
                     positiveButton(res = android.R.string.ok) {
                         dismiss()
+                        synchronized(this) {
+                            Setting.instance.lastAddedCutOffMode = currentlySelectedMode
+                            Setting.instance.lastAddedCutOffDuration = currentlySelected
+                        }
                     }
                 }
             ) {
