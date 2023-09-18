@@ -1,14 +1,5 @@
 package player.phonograph.util
 
-import android.app.Activity
-import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
-import android.media.audiofx.AudioEffect
-import android.view.View
-import android.widget.Toast
-import androidx.core.app.ActivityOptionsCompat
-import androidx.core.util.Pair
 import player.phonograph.R
 import player.phonograph.model.Genre
 import player.phonograph.model.playlist.Playlist
@@ -16,7 +7,16 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.activities.AlbumDetailActivity
 import player.phonograph.ui.activities.ArtistDetailActivity
 import player.phonograph.ui.activities.GenreDetailActivity
-import player.phonograph.ui.activities.PlaylistDetailActivity
+import player.phonograph.ui.modules.playlist.PlaylistDetailActivity
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.util.Pair
+import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import android.media.audiofx.AudioEffect
+import android.view.View
+import android.widget.Toast
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

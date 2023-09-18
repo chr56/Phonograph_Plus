@@ -2,7 +2,7 @@
  * Copyright (c) 2021 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.ui.activities
+package player.phonograph.ui.modules.playlist
 
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
@@ -21,7 +21,6 @@ import mt.util.color.primaryTextColor
 import mt.util.color.secondaryDisabledTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
-import player.phonograph.actions.menu.playlistToolbar
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
@@ -341,7 +340,7 @@ class PlaylistDetailActivity :
     }
 
     private fun setupMenu(menu: Menu) {
-        playlistToolbar(menu, this, model, iconColor = primaryTextColor(primaryColor))
+        playlistDetailToolbar(menu, this, model, iconColor = primaryTextColor(primaryColor))
     }
 
     private fun setupMenuCallback(item: MenuItem): Boolean {

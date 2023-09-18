@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.ui.activities
+package player.phonograph.ui.modules.playlist
 
 import coil.size.ViewSizeResolver
 import com.github.chr56.android.menu_dsl.attach

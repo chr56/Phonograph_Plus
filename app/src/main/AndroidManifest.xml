@@ -127,7 +127,7 @@
         <activity android:name=".ui.activities.AlbumDetailActivity" />
         <activity android:name=".ui.activities.ArtistDetailActivity" />
         <activity android:name=".ui.activities.GenreDetailActivity" />
-        <activity android:name=".ui.activities.PlaylistDetailActivity" />
+        <activity android:name=".ui.modules.playlist.PlaylistDetailActivity" />
         <activity
             android:name=".ui.modules.tag.TagBrowserActivity"
             android:label="@string/action_details"
