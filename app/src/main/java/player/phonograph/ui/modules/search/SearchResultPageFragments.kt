@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.ui.activities.search
+package player.phonograph.ui.modules.search
 
 import player.phonograph.R
 import player.phonograph.databinding.RecyclerViewWrappedProperBinding

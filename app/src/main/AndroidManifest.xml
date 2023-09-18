@@ -138,7 +138,7 @@
             android:label="@string/action_details"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".ui.activities.search.SearchActivity" />
+        <activity android:name=".ui.modules.search.SearchActivity" />
         <activity
             android:name=".ui.modules.web.WebSearchActivity"
             android:exported="true"
