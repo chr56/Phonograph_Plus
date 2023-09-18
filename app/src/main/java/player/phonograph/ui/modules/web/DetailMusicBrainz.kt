@@ -82,7 +82,7 @@ fun DetailMusicBrainz(
 fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup, embed: Boolean) {
     EntityTitle(Target.ReleaseGroup, releaseGroup.id, releaseGroup.title)
     MusicBrainzArtistCredits(releaseGroup.artistCredit)
-    Item("Date", releaseGroup.firstReleaseDate)
+    Item(stringResource(R.string.key_date), releaseGroup.firstReleaseDate)
 
     if (!embed) {
         MusicBrainzMultipleTypes(releaseGroup.primaryType, releaseGroup.secondaryTypes)
@@ -121,12 +121,12 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease, embed: Boolean) 
     }
     Item(stringResource(R.string.year), release.date)
     if (!embed) {
-        Item("Status", release.status)
-        Item("Country", release.country)
+        Item(stringResource(R.string.status), release.status)
+        Item(stringResource(R.string.key_country), release.country)
         MusicBrainzMedias(release.media)
-        Item("Barcode", release.barcode)
+        Item(stringResource(R.string.key_barcode), release.barcode)
         if (release.labelInfo.isNotEmpty()) {
-            CascadeVerticalItem("Label") {
+            CascadeVerticalItem(stringResource(R.string.key_record_label)) {
                 for (labelInfo in release.labelInfo) {
                     if (labelInfo.label != null) {
                         Text(labelInfo.label.name)
@@ -137,23 +137,23 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease, embed: Boolean) 
         MusicBrainzGenres(release.genres)
         MusicBrainzTags(release.tags)
     } else {
-        Item("Barcode", release.barcode)
-        Item("Country", release.country)
+        Item(stringResource(R.string.key_barcode), release.barcode)
+        Item(stringResource(R.string.key_country), release.country)
     }
 }
 
 @Composable
 fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
     EntityTitle(Target.Artist, artist.id, artist.name)
-    Item("Type", artist.type)
-    Item("Gender", artist.gender)
+    Item(stringResource(R.string.type), artist.type)
+    Item(stringResource(R.string.key_gender), artist.gender)
     MusicBrainzLifeSpan(artist.lifeSpan)
-    Item("Country", artist.country)
-    Item("Area", artist.area?.name)
+    Item(stringResource(R.string.key_country), artist.country)
+    Item(stringResource(R.string.key_area), artist.area?.name)
     MusicBrainzDisambiguation(artist.disambiguation)
     MusicBrainzTags(artist.tags)
     if (artist.aliases.isNotEmpty()) {
-        CascadeVerticalItem("Alias", collapsible = true, collapsed = true) {
+        CascadeVerticalItem(stringResource(R.string.alias), collapsible = true, collapsed = true) {
             for (alias in artist.aliases) {
                 Text("${alias.name} (${alias.locale})")
             }
@@ -182,7 +182,7 @@ fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording?) {
     if (recording != null) {
         EntityTitle(Target.Recording, recording.id, recording.title)
         MusicBrainzArtistCredits(recording.artistCredit)
-        Item("Date", recording.firstReleaseDate)
+        Item(stringResource(R.string.key_date), recording.firstReleaseDate)
         MusicBrainzDisambiguation(recording.disambiguation)
         MusicBrainzGenres(recording.genres)
         MusicBrainzTags(recording.tags)
@@ -210,7 +210,7 @@ fun ColumnScope.MusicBrainzTrack(track: MusicBrainzTrack) {
         }
     }
     if (track.media != null) {
-        CascadeVerticalItem("Media") {
+        CascadeVerticalItem(stringResource(R.string.key_media)) {
             MusicBrainzMedia(track.media)
         }
     }
@@ -267,10 +267,10 @@ private fun MusicBrainzMedias(medias: List<MusicBrainzMedia>?) {
 @Composable
 private fun MusicBrainzMedia(media: MusicBrainzMedia) {
     SelectionContainer {
-        CascadeVerticalItem("Media") {
+        CascadeVerticalItem(stringResource(R.string.key_media)) {
             Item(stringResource(R.string.title), media.title)
-            Item("Format", media.format)
-            Item("Count", "${media.discCount} * ${media.trackCount}")
+            Item(stringResource(R.string.format), media.format)
+            Item(stringResource(R.string.count), "${media.discCount} * ${media.trackCount}")
             if (!media.tracks.isNullOrEmpty()) {
                 CascadeVerticalItem("Tracks", collapsible = true, collapsed = true) {
                     for (track in media.tracks) {
@@ -305,14 +305,14 @@ private fun MusicBrainzLifeSpan(lifeSpan: MusicBrainzArtist.LifeSpan?) {
                 "$begin ~ "
             }
 
-        Item("LifeSpan", text)
+        Item(stringResource(R.string.key_lifespan), text)
     }
 }
 
 @Composable
 private fun MusicBrainzTags(tags: List<MusicBrainzTag>?) {
     if (!tags.isNullOrEmpty()) {
-        CascadeFlowRow("Tags") {
+        CascadeFlowRow(stringResource(R.string.key_tags)) {
             for (tag in tags) {
                 Chip(tag.name)
             }
@@ -337,7 +337,7 @@ private fun MusicBrainzMultipleTypes(primaryType: String, secondaryTypes: List<S
     } else {
         primaryType
     }
-    Item("Type", text)
+    Item(stringResource(R.string.type), text)
 }
 
 

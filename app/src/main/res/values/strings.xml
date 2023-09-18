@@ -463,4 +463,18 @@
     <string name="target_artist">Artist</string>
     <string name="target_recording">Recording</string>
     <string name="target_track">Track</string>
+    <string name="alias">Alias</string>
+    <string name="type">Type</string>
+    <string name="key_tags">Tags</string>
+    <string name="key_date">Date</string>
+    <string name="key_country">Country</string>
+    <string name="key_area">Area</string>
+    <string name="key_gender">Gender</string>
+    <string name="key_lifespan">LifeSpan</string>
+    <string name="key_media">Media</string>
+    <string name="count">Count</string>
+    <string name="format">Format</string>
+    <string name="status">Status</string>
+    <string name="key_barcode">Barcode</string>
+    <string name="key_record_label">Record Label</string>
 </resources>
