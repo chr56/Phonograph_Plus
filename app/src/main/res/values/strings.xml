@@ -452,4 +452,5 @@
     <string name="preview_text_cutoff_time_interval">The cutoff timestamp will be: \n %1$s \n(%2$s)</string>
     <string name="preview_text_next_upgrade_check">The next upgrade check will be after: \n %1$s \n(%2$s)</string>
     <string name="home">Home</string>
+    <string name="search_online">Search Online</string>
 </resources>

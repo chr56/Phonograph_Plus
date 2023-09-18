@@ -13,8 +13,8 @@ import player.phonograph.R
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
-import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.BridgeDialogFragment
+import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.util.parcelable
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
@@ -103,7 +103,7 @@ class LastFmDialog : BridgeDialogFragment() {
                 onCloseRequest = { dismiss() },
                 buttons = {
                     negativeButton(
-                        res = R.string.web_search,
+                        res = R.string.search_online,
                         textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
                     ) {
                         webSearchDialogState.show()

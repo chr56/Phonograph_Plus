@@ -379,7 +379,7 @@ fun LinkIconMusicbrainz(target: Target, mbid: String, modifier: Modifier = Modif
     val context = LocalContext.current
     val navigator = LocalPageNavigator.current
     Icon(
-        Icons.Outlined.ArrowForward, stringResource(R.string.web_search),
+        Icons.Outlined.ArrowForward, stringResource(R.string.search_online),
         Modifier
             .clickable {
                 jumpMusicbrainz(context, navigator, target, mbid)

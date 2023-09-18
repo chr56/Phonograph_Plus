@@ -288,7 +288,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                         context.getString(R.string.action_reboot) to {
                             Reboot.reboot(context)
                         },
-                        context.getString(R.string.web_search) to {
+                        context.getString(R.string.search_online) to {
                             context.startActivity(WebSearchLauncher.launchIntent(context))
                         },
                     )
