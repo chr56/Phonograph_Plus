@@ -16,7 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-object PageHome : Page(R.string.intro_label)
+object PageHome : Page(R.string.home)
 
 @Composable
 fun Home(viewModel: WebSearchViewModel, pageState: Page) {

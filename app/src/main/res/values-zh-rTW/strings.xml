@@ -438,4 +438,5 @@
     <string name="time_interval_text">%1$s %2$d %3$s</string>
     <string name="preview_text_cutoff_time_interval">截至時間戳為: \n %1$s \n(%2$s)</string>
     <string name="preview_text_next_upgrade_check">下一次檢查更新將在 %1$s 之後 (%2$s)</string>
+    <string name="home">主页</string>
 </resources>
