@@ -107,7 +107,7 @@ fun SearchTextBox(current: String, modifier: Modifier = Modifier, hint: String? 
 @Composable
 fun <T> Target(
     all: Collection<T>,
-    text: (T) -> String,
+    text: @Composable (T) -> String,
     current: T,
     modifier: Modifier = Modifier,
     onUpdate: (T) -> Unit,

@@ -457,4 +457,10 @@
     <string name="key_mbid">MusicBrainz Identifier</string>
     <string name="query">Query</string>
     <string name="hint_lucene_query_syntax">Lucene query syntax is supported!</string>
+    <string name="target_release_group">ReleaseGroup</string>
+    <string name="target_release">Release</string>
+    <string name="target_album">Album</string>
+    <string name="target_artist">Artist</string>
+    <string name="target_recording">Recording</string>
+    <string name="target_track">Track</string>
 </resources>

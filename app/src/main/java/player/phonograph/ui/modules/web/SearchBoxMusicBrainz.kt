@@ -27,7 +27,7 @@ fun MusicBrainzSearchBox(
         target = {
             Target(
                 all = listOf(Target.ReleaseGroup, Target.Release, Target.Artist, Target.Recording),
-                text = { it.name },
+                text = { stringResource(it.displayTextRes) },
                 current = queryParameter.target
             ) {
                 updateQueryParameter { old -> old.copy(target = it) }

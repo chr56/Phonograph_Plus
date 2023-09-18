@@ -444,4 +444,10 @@
     <string name="key_mbid">MusicBrainz 標識符</string>
     <string name="query">搜尋詞</string>
     <string name="hint_lucene_query_syntax">支援 Lucene 搜尋語法!</string>
+    <string name="target_release_group">專輯(ReleaseGroup)</string>
+    <string name="target_release">發行物(Release)</string>
+    <string name="target_album">專輯(Album)</string>
+    <string name="target_artist">藝術家(Artist)</string>
+    <string name="target_recording">音頻(Recording)</string>
+    <string name="target_track">單曲(Track)</string>
 </resources>
