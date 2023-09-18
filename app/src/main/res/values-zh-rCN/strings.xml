@@ -426,6 +426,7 @@
     <string name="rating">评分</string>
     <string name="interval_past">过去</string>
     <string name="interval_recent">最近</string>
+    <string name="interval_every">每</string>
     <string name="timeunit_second">秒</string>
     <string name="timeunit_minute">分</string>
     <string name="timeunit_hour">时</string>
@@ -435,4 +436,6 @@
     <string name="timeunit_year">年</string>
     <string name="time_interval_text">%1$s %2$d %3$s</string>
     <string name="description_time_interval_preview">截至时间戳为: \n %1$s \n(%2$s)</string>
+    <string name="pref_title_check_upgrade_interval">检查更新周期</string>
+    <string name="description_next_check_upgrade_preview">下一次检测更新将在 %1$s 之后 (%2$s)</string>
 </resources>

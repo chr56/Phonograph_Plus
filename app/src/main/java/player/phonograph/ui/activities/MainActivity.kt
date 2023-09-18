@@ -37,6 +37,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.PrerequisiteSetting
+import player.phonograph.settings.Setting
 import player.phonograph.settings.SettingFlowStore
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.dialogs.ChangelogDialog
@@ -417,6 +418,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                     UpgradeNotification.sendUpgradeNotification(versionCatalog, channel)
                 }
             }
+            Setting.instance.lastCheckUpgradeTimeStamp = System.currentTimeMillis()
         }
     }
 
@@ -451,8 +453,18 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         // check upgrade
         val store = SettingFlowStore(this)
         lifecycleScope.launch {
-            store.checkUpgradeAtStartup.collect { value ->
-                if (value) checkUpdate()
+            store.checkUpgradeAtStartup.collect { enabled ->
+                if (enabled) {
+                    val lastTimeStamp = Setting.instance.lastCheckUpgradeTimeStamp
+                    val interval = Setting.instance.checkUpdateInterval
+                    if (System.currentTimeMillis() > lastTimeStamp + interval.toSeconds() * 1000L) {
+                        checkUpdate()
+                    } else {
+                        debug {
+                            Log.v(TAG, "Ignore upgrade check due to CheckUpdateInterval!")
+                        }
+                    }
+                }
             }
         }
     }

@@ -439,6 +439,7 @@
     <string name="rating">Rating</string>
     <string name="interval_past">Past</string>
     <string name="interval_recent">Recent</string>
+    <string name="interval_every">Every</string>
     <string name="timeunit_second">Second</string>
     <string name="timeunit_minute">Minute</string>
     <string name="timeunit_hour">Hour</string>
@@ -448,4 +449,6 @@
     <string name="timeunit_year">Year</string>
     <string name="time_interval_text">%1$s %2$d %3$s</string>
     <string name="description_time_interval_preview">The cutoff timestamp will be: \n %1$s \n(%2$s)</string>
+    <string name="pref_title_check_upgrade_interval">Check upgrade interval</string>
+    <string name="description_next_check_upgrade_preview">The next check upgrade will be after: \n %1$s \n(%2$s)</string>
 </resources>

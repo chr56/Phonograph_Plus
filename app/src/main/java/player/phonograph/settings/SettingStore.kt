@@ -106,6 +106,14 @@ class Setting {
     // Upgrade
     var checkUpgradeAtStartup: Boolean by booleanPref(CHECK_UPGRADE_AT_STARTUP, false)
 
+    private var _checkUpdateInterval: String by stringPref(CHECK_UPGRADE_INTERVAL, Duration.Day(1).serialise())
+    var checkUpdateInterval: Duration
+        get() = Duration.from(_checkUpdateInterval) ?: Duration.Day(1)
+        set(value) {
+            _checkUpdateInterval = value.serialise()
+        }
+    var lastCheckUpgradeTimeStamp: Long by longPref(LAST_CHECK_UPGRADE_TIME, 0)
+
     // List-SortMode
     private var _songSortMode: String by stringPref(
         SONG_SORT_MODE,
@@ -309,6 +317,16 @@ class SettingFlowStore(context: Context) {
     val checkUpgradeAtStartup: Flow<Boolean>
         get() = from(booleanPreferencesKey(CHECK_UPGRADE_AT_STARTUP), false)
 
+    private val _checkUpgradeAtInterval: Flow<String>
+        get() = from(stringPreferencesKey(CHECK_UPGRADE_INTERVAL), Duration.Day(1).serialise())
+    val checkUpgradeAtInterval: Flow<Duration>
+        get() = _checkUpgradeAtInterval.map {
+            Duration.from(it) ?: Duration.Day(1)
+        }
+
+    val lastCheckUpgradeTimeStamp: Flow<Long>
+        get() = from(longPreferencesKey(LAST_CHECK_UPGRADE_TIME), 0)
+
     // List-SortMode
     private val _songSortMode: Flow<String>
         get() = from(stringPreferencesKey(SONG_SORT_MODE), SortMode(SortRef.ID).serialize())
@@ -426,6 +444,8 @@ const val LAST_ADDED_CUTOFF_DURATION = "last_added_cutoff_duration"
 
 // Upgrade
 const val CHECK_UPGRADE_AT_STARTUP = "check_upgrade_at_startup"
+const val CHECK_UPGRADE_INTERVAL = "check_upgrade_interval"
+const val LAST_CHECK_UPGRADE_TIME = "last_check_upgrade_time"
 
 // List-SortMode
 const val SONG_SORT_MODE = "song_sort_mode"
