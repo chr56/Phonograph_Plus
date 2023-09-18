@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.ui.compose.base
+package player.phonograph.ui.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView

@@ -5,8 +5,8 @@
 package player.phonograph.ui.dialogs
 
 import player.phonograph.R
+import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.Progress
-import player.phonograph.ui.compose.theme.PhonographTheme
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.DialogFragment

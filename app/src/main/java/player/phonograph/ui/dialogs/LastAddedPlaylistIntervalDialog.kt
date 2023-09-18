@@ -13,9 +13,9 @@ import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.time.displayText
 import player.phonograph.settings.Setting
-import player.phonograph.ui.compose.base.BridgeDialogFragment
+import player.phonograph.ui.compose.BridgeDialogFragment
+import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.dialogs.PastTimeIntervalPicker
-import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.debug
 import player.phonograph.util.time.TimeInterval.past
 import player.phonograph.util.time.TimeInterval.recently

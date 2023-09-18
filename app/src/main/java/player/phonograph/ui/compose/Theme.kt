@@ -1,9 +1,10 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.ui.compose.theme
+package player.phonograph.ui.compose
 
+import mt.color.R
 import mt.pref.ThemeColor
 import mt.util.color.shiftColor
 import player.phonograph.App
@@ -12,8 +13,6 @@ import player.phonograph.mechanism.setting.StyleConfig.THEME_AUTO
 import player.phonograph.mechanism.setting.StyleConfig.THEME_BLACK
 import player.phonograph.mechanism.setting.StyleConfig.THEME_DARK
 import player.phonograph.mechanism.setting.StyleConfig.THEME_LIGHT
-import player.phonograph.ui.compose.darker
-import player.phonograph.ui.compose.textColorOn
 import player.phonograph.util.theme.systemDarkmode
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Colors
@@ -168,10 +167,10 @@ class ColorConfig(
 fun colorConfig(previewMode: Boolean, context: Context = App.instance): ColorConfig =
     if (previewMode) {
         ColorConfig(
-            Color(mt.color.R.color.md_blue_A400),
-            Color(mt.color.R.color.md_blue_900),
-            Color(mt.color.R.color.md_yellow_900),
-            Color(mt.color.R.color.md_orange_900),
+            Color(R.color.md_blue_A400),
+            Color(R.color.md_blue_900),
+            Color(R.color.md_yellow_900),
+            Color(R.color.md_orange_900),
         )
     } else {
         val primary = ThemeColor.primaryColor(context)

@@ -17,9 +17,9 @@ import lib.phonograph.misc.Reboot
 import player.phonograph.R
 import player.phonograph.mechanism.SettingDataManager
 import player.phonograph.mechanism.backup.Backup
-import player.phonograph.ui.compose.base.ComposeThemeActivity
+import player.phonograph.ui.compose.ComposeThemeActivity
+import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.DropDownMenuContent
-import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.ui.dialogs.BackupExportDialog
 import player.phonograph.ui.dialogs.BackupImportDialog
 import androidx.activity.compose.setContent

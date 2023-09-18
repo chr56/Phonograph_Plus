@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.modules.web
 
-import player.phonograph.ui.compose.base.Navigator
+import player.phonograph.ui.compose.Navigator
 import androidx.annotation.StringRes
 import androidx.compose.runtime.compositionLocalOf
 import android.content.Context

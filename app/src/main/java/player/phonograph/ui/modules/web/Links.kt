@@ -5,7 +5,7 @@
 package player.phonograph.ui.modules.web
 
 import player.phonograph.R
-import player.phonograph.ui.compose.base.Navigator
+import player.phonograph.ui.compose.Navigator
 import player.phonograph.ui.modules.web.WebSearchLauncher.launchIntent
 import player.phonograph.ui.modules.web.WebSearchLauncher.viewIntentMusicBrainzArtist
 import player.phonograph.ui.modules.web.WebSearchLauncher.viewIntentMusicBrainzRecording

@@ -4,8 +4,8 @@
 
 package player.phonograph.ui.modules.web
 
-import player.phonograph.ui.compose.base.ComposeThemeActivity
-import player.phonograph.ui.compose.theme.PhonographTheme
+import player.phonograph.ui.compose.ComposeThemeActivity
+import player.phonograph.ui.compose.PhonographTheme
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels

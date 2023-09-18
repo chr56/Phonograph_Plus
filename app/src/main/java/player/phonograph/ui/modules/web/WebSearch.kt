@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.modules.web
 
-import player.phonograph.ui.compose.base.Navigator
+import player.phonograph.ui.compose.Navigator
 import player.phonograph.ui.modules.web.PageSearch.LastFmSearch
 import player.phonograph.ui.modules.web.PageSearch.MusicBrainzSearch
 import androidx.compose.foundation.clickable

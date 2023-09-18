@@ -11,9 +11,9 @@ import com.vanpra.composematerialdialogs.title
 import org.koin.android.ext.android.inject
 import player.phonograph.R
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.ui.compose.base.BridgeDialogFragment
+import player.phonograph.ui.compose.BridgeDialogFragment
+import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.dialogs.QueueSnapshotsDialogContent
-import player.phonograph.ui.compose.theme.PhonographTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 

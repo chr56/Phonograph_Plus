@@ -5,12 +5,9 @@
 package player.phonograph.ui.compose
 
 import mt.util.color.primaryTextColor
-import player.phonograph.mechanism.setting.StyleConfig
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import android.content.Context
 import android.graphics.Color.RGBToHSV
 import kotlin.math.abs

@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.modules.web
 
-import player.phonograph.ui.compose.base.Navigator
+import player.phonograph.ui.compose.Navigator
 import util.phonograph.tagsources.lastfm.LastFmAlbum
 import util.phonograph.tagsources.lastfm.LastFmArtist
 import util.phonograph.tagsources.lastfm.LastFmClientDelegate

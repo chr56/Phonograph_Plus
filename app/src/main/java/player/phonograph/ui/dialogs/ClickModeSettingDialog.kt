@@ -9,10 +9,10 @@ import com.vanpra.composematerialdialogs.customView
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
-import player.phonograph.ui.compose.base.BridgeDialogFragment
+import player.phonograph.ui.compose.BridgeDialogFragment
+import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.DialogContent
 import player.phonograph.ui.compose.dialogs.ClickModeSettingDialogContent
-import player.phonograph.ui.compose.theme.PhonographTheme
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.MaterialTheme

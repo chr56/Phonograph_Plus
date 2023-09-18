@@ -11,8 +11,8 @@ import lib.phonograph.misc.OpenFileStorageAccessTool
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.SongLoader
-import player.phonograph.ui.compose.base.ComposeThemeActivity
-import player.phonograph.ui.compose.theme.PhonographTheme
+import player.phonograph.ui.compose.PhonographTheme
+import player.phonograph.ui.compose.ComposeThemeActivity
 import player.phonograph.ui.modules.web.IWebSearchRequester
 import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.ui.modules.web.WebSearchTool
