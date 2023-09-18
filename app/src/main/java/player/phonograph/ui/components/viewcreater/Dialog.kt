@@ -4,25 +4,29 @@
 
 package player.phonograph.ui.components.viewcreater
 
+import player.phonograph.R
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.ButtonBarLayout
+import androidx.core.util.valueIterator
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
 import android.util.SparseArray
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.Space
 import android.widget.TextView
-import androidx.appcompat.widget.ButtonBarLayout
-import androidx.core.util.valueIterator
-import player.phonograph.R
-import android.view.Gravity
-import android.view.ViewGroup
-import android.widget.LinearLayout.LayoutParams as LinearLayoutLayoutParams
 import android.widget.FrameLayout.LayoutParams as FrameLayoutLayoutParams
+import android.widget.LinearLayout.LayoutParams as LinearLayoutLayoutParams
 
 
 fun buildDialogView(
@@ -132,4 +136,18 @@ internal fun contentPanel(context: Context, constructor: FrameLayout.() -> Unit)
             setPadding(24, 16, 24, 16)
         }.apply(constructor)
     return ContentPanel(contentPanel)
+}
+
+private fun createButton(context: Context, buttonText: String, color: Int, onClick: (View) -> Unit): Button {
+    return AppCompatButton(context).apply {
+        text = buttonText
+        textSize = 14f
+        isSingleLine = true
+        gravity = Gravity.CENTER
+        setPadding(12, 0, 12, 0)
+        minWidth = 64
+        background = ColorDrawable(Color.TRANSPARENT)
+        setTextColor(color)
+        setOnClickListener { onClick(it) }
+    }
 }
