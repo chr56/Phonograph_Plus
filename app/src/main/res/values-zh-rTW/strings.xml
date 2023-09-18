@@ -440,4 +440,8 @@
     <string name="preview_text_next_upgrade_check">下一次檢查更新將在 %1$s 之後 (%2$s)</string>
     <string name="home">主页</string>
     <string name="search_online">聯機搜尋</string>
+    <string name="target">目標</string>
+    <string name="key_mbid">MusicBrainz 標識符</string>
+    <string name="query">搜尋詞</string>
+    <string name="hint_lucene_query_syntax">支援 Lucene 搜尋語法!</string>
 </resources>

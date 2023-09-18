@@ -4,12 +4,14 @@
 
 package player.phonograph.ui.modules.web
 
+import player.phonograph.R
 import player.phonograph.ui.compose.components.HorizontalTextItem
 import util.phonograph.tagsources.musicbrainz.MusicBrainzAction
 import util.phonograph.tagsources.musicbrainz.MusicBrainzAction.Target
 import util.phonograph.tagsources.musicbrainz.MusicbrainzQueryParameter
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 
 
 @Composable
@@ -33,10 +35,10 @@ fun MusicBrainzSearchBox(
         },
         onSearch = { onSearch(queryParameter.toAction()) }
     ) {
-        HorizontalTextItem(name = "Query") {
+        HorizontalTextItem(stringResource(R.string.query)) {
             SearchTextBox(
                 queryParameter.query,
-                hint = "Lucene query syntax is supported!"
+                hint = stringResource(R.string.hint_lucene_query_syntax)
             ) {
                 updateQueryParameter { old -> old.copy(query = it) }
             }

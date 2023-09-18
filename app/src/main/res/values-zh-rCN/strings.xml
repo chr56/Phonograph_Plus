@@ -440,4 +440,8 @@
     <string name="preview_text_next_upgrade_check">下一次检测更新将在 %1$s 之后 (%2$s)</string>
     <string name="home">主页</string>
     <string name="search_online">在线搜索</string>
+    <string name="target">目标</string>
+    <string name="key_mbid">MusicBrainz 标识符</string>
+    <string name="query">关键词</string>
+    <string name="hint_lucene_query_syntax">支持 Lucene 搜索语法!</string>
 </resources>

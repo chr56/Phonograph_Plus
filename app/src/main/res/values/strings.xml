@@ -453,4 +453,8 @@
     <string name="preview_text_next_upgrade_check">The next upgrade check will be after: \n %1$s \n(%2$s)</string>
     <string name="home">Home</string>
     <string name="search_online">Search Online</string>
+    <string name="target">Target</string>
+    <string name="key_mbid">MusicBrainz Identifier</string>
+    <string name="query">Query</string>
+    <string name="hint_lucene_query_syntax">Lucene query syntax is supported!</string>
 </resources>

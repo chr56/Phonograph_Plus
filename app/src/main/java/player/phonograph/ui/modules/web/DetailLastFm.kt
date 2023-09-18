@@ -160,7 +160,7 @@ private fun Wiki(wikiData: LastFmWikiData?, isBio: Boolean) {
 
 @Composable
 private fun MusicBrainzIdentifier(string: String?) {
-    if (!string.isNullOrEmpty()) VerticalTextItem("MusicBrainz Identifier", string)
+    if (!string.isNullOrEmpty()) VerticalTextItem(stringResource(R.string.key_mbid), string)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
