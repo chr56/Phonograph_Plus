@@ -90,13 +90,8 @@ class CheckUpdateIntervalDialog : BridgeDialogFragment() {
         duration: Duration,
     ): String {
         val timeText = formatter.format(System.currentTimeMillis() + duration.toSeconds() * 1000)
-        val resultText = resources.getString(
-            R.string.time_interval_text,
-            resources.getString(R.string.interval_every),
-            duration.value,
-            duration.unit.displayText(resources)
-        )
-        return resources.getString(R.string.description_next_check_upgrade_preview, timeText, resultText)
+        val durationText = duration.displayText(resources, resources.getString(R.string.interval_every))
+        return resources.getString(R.string.preview_text_next_upgrade_check, timeText, durationText)
     }
 
     companion object {

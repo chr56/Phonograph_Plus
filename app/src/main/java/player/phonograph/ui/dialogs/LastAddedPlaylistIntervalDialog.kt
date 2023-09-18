@@ -62,7 +62,7 @@ class LastAddedPlaylistIntervalDialog : BridgeDialogFragment() {
         LaunchedEffect(dialogState) {
             flow.collect { (calculationMode, duration) ->
                 val cutOff = System.currentTimeMillis() - when (calculationMode) {
-                    TimeIntervalCalculationMode.PAST   -> past(duration)
+                    TimeIntervalCalculationMode.PAST -> past(duration)
                     TimeIntervalCalculationMode.RECENT -> recently(duration)
                 }
                 text = previewText(resources, calculationMode, duration, cutOff)
@@ -119,13 +119,8 @@ class LastAddedPlaylistIntervalDialog : BridgeDialogFragment() {
         time: Long,
     ): String {
         val timeText = formatter.format(time)
-        val resultText = resources.getString(
-            R.string.time_interval_text,
-            currentlySelectedMode.displayText(resources),
-            currentlySelected.value,
-            currentlySelected.unit.displayText(resources)
-        )
-        return resources.getString(R.string.description_time_interval_preview, timeText, resultText)
+        val durationText = currentlySelected.displayText(resources, currentlySelectedMode.displayText(resources))
+        return resources.getString(R.string.preview_text_cutoff_time_interval, timeText, durationText)
     }
 
     companion object {

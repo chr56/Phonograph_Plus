@@ -13,7 +13,7 @@ fun TimeIntervalCalculationMode.displayText(resources: Resources) = when (this) 
     TimeIntervalCalculationMode.RECENT -> resources.getString(R.string.interval_recent)
 }
 
-fun TimeUnit.displayText(resources: Resources)=when(this){
+fun TimeUnit.displayText(resources: Resources) = when (this) {
     TimeUnit.Year   -> resources.getString(R.string.timeunit_year)
     TimeUnit.Month  -> resources.getString(R.string.timeunit_month)
     TimeUnit.Week   -> resources.getString(R.string.timeunit_week)
@@ -22,3 +22,12 @@ fun TimeUnit.displayText(resources: Resources)=when(this){
     TimeUnit.Minute -> resources.getString(R.string.timeunit_minute)
     TimeUnit.Second -> resources.getString(R.string.timeunit_second)
 }
+
+
+fun Duration.displayText(resources: Resources, prefix: String): String =
+    resources.getString(
+        R.string.time_interval_text,
+        prefix,
+        value,
+        unit.displayText(resources)
+    )

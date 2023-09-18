@@ -424,6 +424,7 @@
     <string name="disk_number">牒號</string>
     <string name="disk_number_total">牒號總數</string>
     <string name="rating">評分</string>
+    <string name="pref_title_check_upgrade_interval">檢查更新周期</string>
     <string name="interval_past">過去</string>
     <string name="interval_recent">最近</string>
     <string name="interval_every">每</string>
@@ -435,7 +436,6 @@
     <string name="timeunit_month">月</string>
     <string name="timeunit_year">年</string>
     <string name="time_interval_text">%1$s %2$d %3$s</string>
-    <string name="description_time_interval_preview">截至時間戳為: \n %1$s \n(%2$s)</string>
-    <string name="pref_title_check_upgrade_interval">檢查更新周期</string>
-    <string name="description_next_check_upgrade_preview">下一次檢查更新將在 %1$s 之後 (%2$s)</string>
+    <string name="preview_text_cutoff_time_interval">截至時間戳為: \n %1$s \n(%2$s)</string>
+    <string name="preview_text_next_upgrade_check">下一次檢查更新將在 %1$s 之後 (%2$s)</string>
 </resources>
