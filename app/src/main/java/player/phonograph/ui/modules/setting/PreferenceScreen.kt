@@ -28,6 +28,7 @@ import player.phonograph.mechanism.setting.StyleConfig.THEME_AUTO
 import player.phonograph.model.time.displayText
 import player.phonograph.settings.*
 import player.phonograph.ui.compose.components.ColorCircle
+import player.phonograph.ui.dialogs.CheckUpdateIntervalDialog
 import player.phonograph.ui.dialogs.ClickModeSettingDialog
 import player.phonograph.ui.dialogs.HomeTabConfigDialog
 import player.phonograph.ui.dialogs.ImageSourceConfigDialog
@@ -330,6 +331,21 @@ fun PhonographPreferenceScreen() {
                 titleRes = R.string.auto_check_upgrade,
                 summaryRes = R.string.auto_check_upgrade_summary,
                 defaultValue = false,
+            )
+            DialogPref(
+                model = DialogPreferenceModel(
+                    CheckUpdateIntervalDialog::class.java,
+                    R.string.pref_title_check_upgrade_interval,
+                ) {
+                    val resources = it.resources
+                    val duration = Setting.instance.checkUpdateInterval
+                    resources.getString(
+                        R.string.time_interval_text,
+                        resources.getString(R.string.interval_every),
+                        duration.value,
+                        duration.unit.displayText(resources)
+                    )
+                }
             )
         }
 
