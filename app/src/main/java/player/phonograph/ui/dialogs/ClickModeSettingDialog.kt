@@ -9,16 +9,26 @@ import com.vanpra.composematerialdialogs.customView
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
+import player.phonograph.actions.click.mode.SongClickMode
+import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.BridgeDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.DialogContent
-import player.phonograph.ui.compose.dialogs.ClickModeSettingDialogContent
+import player.phonograph.ui.compose.components.FlagCheckBox
+import player.phonograph.ui.compose.components.ModeRadioBox
+import player.phonograph.util.setBit
+import player.phonograph.util.testBit
+import player.phonograph.util.unsetBit
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import android.content.Context
 
 class ClickModeSettingDialog : BridgeDialogFragment() {
     @Composable
@@ -47,5 +57,55 @@ class ClickModeSettingDialog : BridgeDialogFragment() {
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun ClickModeSettingDialogContent(context: Context) {
+    Column {
+
+        val currentMode = remember {
+            mutableStateOf(Setting.instance.songItemClickMode)
+        }
+        val setCurrentMode = { new: Int ->
+            currentMode.value = new
+            Setting.instance.songItemClickMode = new
+        }
+        for (id in SongClickMode.baseModes) {
+            ModeRadioBox(
+                mode = id,
+                name = SongClickMode.modeName(context.resources, id),
+                currentMode = currentMode,
+                setCurrentMode = setCurrentMode
+            )
+        }
+
+        Spacer(Modifier.height(8.dp))
+
+        val currentExtraFlag = remember {
+            mutableStateOf(Setting.instance.songItemClickExtraFlag)
+        }
+        val flipExtraFlagBit = { mask: Int ->
+            val new = if (currentExtraFlag.value.testBit(mask)) {
+                currentExtraFlag.value.unsetBit(mask)
+            } else {
+                currentExtraFlag.value.setBit(mask)
+            }
+            currentExtraFlag.value = new
+            Setting.instance.songItemClickExtraFlag = new
+        }
+
+        FlagCheckBox(
+            mask = SongClickMode.FLAG_MASK_GOTO_POSITION_FIRST,
+            name = context.getString(R.string.mode_flag_goto_position_first),
+            currentExtraFlag = currentExtraFlag,
+            flipExtraFlagBit = flipExtraFlagBit
+        )
+        FlagCheckBox(
+            mask = SongClickMode.FLAG_MASK_PLAY_QUEUE_IF_EMPTY,
+            name = context.getString(R.string.mode_flag_play_queue_if_empty),
+            currentExtraFlag = currentExtraFlag,
+            flipExtraFlagBit = flipExtraFlagBit
+        )
     }
 }

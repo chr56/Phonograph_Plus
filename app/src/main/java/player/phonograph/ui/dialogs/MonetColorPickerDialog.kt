@@ -9,18 +9,24 @@ import com.vanpra.composematerialdialogs.customView
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import lib.phonograph.misc.ColorPalette
+import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.ui.compose.BridgeDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.dialogs.MonetColorPickerDialogContent
+import player.phonograph.ui.compose.components.MonetColorPicker
+import player.phonograph.util.lifecycleScopeOrNewOne
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import android.app.Activity
 import android.os.Build
 import android.os.Bundle
+import kotlinx.coroutines.launch
 
 class MonetColorPickerDialog : BridgeDialogFragment() {
     private var mode: Int = -1
@@ -70,5 +76,26 @@ class MonetColorPickerDialog : BridgeDialogFragment() {
                     putInt(KEY_MODE, mode)
                 }
             }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+private fun MonetColorPickerDialogContent(
+    mode: Int,
+    onDismiss: () -> Unit,
+) {
+    val context = LocalContext.current
+    MonetColorPicker { type: Int, depth: Int ->
+        context.lifecycleScopeOrNewOne().launch {
+            ThemeColor.edit(context) {
+                when (mode) {
+                    ColorPalette.MODE_MONET_PRIMARY_COLOR -> preferredMonetPrimaryColor(type, depth)
+                    ColorPalette.MODE_MONET_ACCENT_COLOR  -> preferredMonetAccentColor(type, depth)
+                }
+            }
+            onDismiss()
+            (context as? Activity)?.recreate()
+        }
     }
 }
