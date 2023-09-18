@@ -24,8 +24,8 @@ import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.ui.activities.PlaylistModel
-import player.phonograph.ui.compose.tag.MultiTagBrowserActivity
 import player.phonograph.ui.dialogs.LastAddedPlaylistIntervalDialog
+import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.util.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.annotation.ColorInt

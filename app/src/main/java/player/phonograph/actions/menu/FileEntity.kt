@@ -19,7 +19,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.ui.compose.tag.TagBrowserActivity
+import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.util.lifecycleScopeOrNewOne
 import android.app.Activity
 import android.content.Context

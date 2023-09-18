@@ -11,10 +11,10 @@ import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
-import player.phonograph.ui.compose.tag.TagBrowserActivity
 import player.phonograph.ui.dialogs.AddToPlaylistDialog
 import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.ui.dialogs.SongDetailDialog
+import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.shareFileIntent
 import androidx.core.util.Pair

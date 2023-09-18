@@ -129,22 +129,22 @@
         <activity android:name=".ui.activities.GenreDetailActivity" />
         <activity android:name=".ui.activities.PlaylistDetailActivity" />
         <activity
-            android:name=".ui.compose.tag.TagBrowserActivity"
+            android:name=".ui.modules.tag.TagBrowserActivity"
             android:label="@string/action_details"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".ui.compose.tag.MultiTagBrowserActivity"
+            android:name=".ui.modules.tag.MultiTagBrowserActivity"
             android:label="@string/action_details"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.activities.search.SearchActivity" />
         <activity
-            android:name=".ui.compose.web.WebSearchActivity"
+            android:name=".ui.modules.web.WebSearchActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".ui.compose.settings.SettingsActivity"
+            android:name=".ui.modules.setting.SettingsActivity"
             android:exported="true"
             android:label="@string/action_settings" />
         <activity

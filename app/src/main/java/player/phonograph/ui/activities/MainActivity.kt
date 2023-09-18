@@ -39,12 +39,12 @@ import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.SettingFlowStore
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
-import player.phonograph.ui.compose.settings.SettingsActivity
-import player.phonograph.ui.compose.web.WebSearchLauncher
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.ScanMediaFolderDialog
 import player.phonograph.ui.dialogs.UpgradeDialog
 import player.phonograph.ui.fragments.HomeFragment
+import player.phonograph.ui.modules.setting.SettingsActivity
+import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.debug
 import player.phonograph.util.parcelableExtra
