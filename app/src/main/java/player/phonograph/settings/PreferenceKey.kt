@@ -24,5 +24,4 @@ sealed class PrimitiveKey<T>(
  */
 sealed class CompositeKey<T>(
     val valueProvider: CompositePreferenceProvider<T>,
-    val defaultValue: () -> T,
 ) : PreferenceKey<T>

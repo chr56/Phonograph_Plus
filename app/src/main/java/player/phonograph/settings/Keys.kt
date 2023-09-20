@@ -102,7 +102,7 @@ object Keys {
             PrimitiveKey<String>(stringPK(LAST_ADDED_CUTOFF_DURATION), { Duration.Week(3).serialise() })
 
     data object lastAddedCutoffTimeStamp :
-            CompositeKey<Long>(LastAddedCutOffDurationPreferenceProvider, { System.currentTimeMillis() })
+            CompositeKey<Long>(LastAddedCutOffDurationPreferenceProvider)
 
     // Upgrade
     data object checkUpgradeAtStartup :
@@ -112,7 +112,7 @@ object Keys {
             PrimitiveKey<String>(stringPK(CHECK_UPGRADE_INTERVAL), { Duration.Day(1).serialise() })
 
     data object checkUpdateInterval :
-            CompositeKey<Duration>(CheckUpdateIntervalPreferenceProvider, { Duration.Day(1) })
+            CompositeKey<Duration>(CheckUpdateIntervalPreferenceProvider)
 
     data object lastCheckUpgradeTimeStamp :
             PrimitiveKey<Long>(longPK(LAST_CHECK_UPGRADE_TIME), { 0 })
@@ -122,49 +122,49 @@ object Keys {
             PrimitiveKey<String>(stringPK(SONG_SORT_MODE), { SortMode(SortRef.ID, false).serialize() })
 
     data object songSortMode :
-            CompositeKey<SortMode>(SortModePreferenceProvider.SongSortMode, { SortMode(SortRef.ID, false) })
+            CompositeKey<SortMode>(SortModePreferenceProvider.SongSortMode)
 
 
     data object _albumSortMode :
             PrimitiveKey<String>(stringPK(ALBUM_SORT_MODE), { SortMode(SortRef.ID, false).serialize() })
 
     data object albumSortMode :
-            CompositeKey<SortMode>(SortModePreferenceProvider.AlbumSortMode, { SortMode(SortRef.ID, false) })
+            CompositeKey<SortMode>(SortModePreferenceProvider.AlbumSortMode)
 
 
     data object _artistSortMode :
             PrimitiveKey<String>(stringPK(ARTIST_SORT_MODE), { SortMode(SortRef.ID, false).serialize() })
 
     data object artistSortMode :
-            CompositeKey<SortMode>(SortModePreferenceProvider.ArtistSortMode, { SortMode(SortRef.ID, false) })
+            CompositeKey<SortMode>(SortModePreferenceProvider.ArtistSortMode)
 
 
     data object _genreSortMode :
             PrimitiveKey<String>(stringPK(GENRE_SORT_MODE), { SortMode(SortRef.ID, false).serialize() })
 
     data object genreSortMode :
-            CompositeKey<SortMode>(SortModePreferenceProvider.GenreSortMode, { SortMode(SortRef.ID, false) })
+            CompositeKey<SortMode>(SortModePreferenceProvider.GenreSortMode)
 
 
     data object _fileSortMode :
             PrimitiveKey<String>(stringPK(FILE_SORT_MODE), { FileSortMode(SortRef.ID, false).serialize() })
 
     data object fileSortMode :
-            CompositeKey<FileSortMode>(FileSortModePreferenceProvider, { FileSortMode(SortRef.ID, false) })
+            CompositeKey<FileSortMode>(FileSortModePreferenceProvider)
 
 
     data object _collectionSortMode :
             PrimitiveKey<String>(stringPK(SONG_COLLECTION_SORT_MODE), { SortMode(SortRef.ID, false).serialize() })
 
     data object collectionSortMode :
-            CompositeKey<SortMode>(SortModePreferenceProvider.CollectionSortMode, { SortMode(SortRef.ID, false) })
+            CompositeKey<SortMode>(SortModePreferenceProvider.CollectionSortMode)
 
 
     data object _playlistSortMode :
             PrimitiveKey<String>(stringPK(PLAYLIST_SORT_MODE), { SortMode(SortRef.ID, false).serialize() })
 
     data object playlistSortMode :
-            CompositeKey<SortMode>(SortModePreferenceProvider.PlaylistSortMode, { SortMode(SortRef.ID, false) })
+            CompositeKey<SortMode>(SortModePreferenceProvider.PlaylistSortMode)
 
 
     // List-Appearance

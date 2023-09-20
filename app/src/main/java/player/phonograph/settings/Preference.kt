@@ -33,16 +33,18 @@ class PrimitivePreference<T>(private val key: PrimitiveKey<T>, context: Context)
 
 }
 
-class CompositePreference<T>(private val key: CompositeKey<T>, context: Context) : Preference<T> {
+class CompositePreference<T>(key: CompositeKey<T>, context: Context) : Preference<T> {
 
     private val dataStore = context.dataStore
 
-    suspend fun flow(): Flow<T> = key.valueProvider.flow(dataStore)
+    private val provider = key.valueProvider
 
-    suspend fun flowData(): T = flow().first() ?: key.defaultValue()
+    suspend fun flow(): Flow<T> = provider.flow(dataStore)
+
+    suspend fun flowData(): T = flow().first() ?: provider.default()
 
     suspend fun edit(value: () -> T) {
-        key.valueProvider.edit(dataStore, value)
+        provider.edit(dataStore, value)
     }
 
     val data: T get() = runBlocking { flowData() }
