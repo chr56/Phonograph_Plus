@@ -11,6 +11,7 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
+import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import android.content.Context
@@ -64,6 +65,17 @@ class CompositePreference<T>(private val key: CompositeKey<T>, context: Context)
 
     private val dataStore = context.dataStore
 
+    suspend fun flow(): Flow<T> = key.valueProvider.flow(dataStore)
+
+    suspend fun flowData(): T = flow().first() ?: key.defaultValue()
+
+    suspend fun edit(value: () -> T) {
+        key.valueProvider.edit(dataStore, value)
+    }
+
+    val data: T get() = runBlocking { flowData() }
+
+    fun put(value: T) = runBlocking { edit { value } }
 }
 
 sealed interface PreferenceKey<T>
@@ -72,6 +84,7 @@ sealed interface PreferenceKey<T>
  * Key container of composite type preference
  */
 sealed class CompositeKey<T>(
+    val valueProvider: CompositePreferenceProvider<T>,
     val defaultValue: () -> T,
 ) : PreferenceKey<T>
 
@@ -240,3 +253,41 @@ object Keys {
             PrimitiveKey<Boolean>(bpk(USE_LEGACY_DETAIL_DIALOG), { false })
 
 }
+
+/**
+ * Provider for Composite Preference (not primitive type)
+ */
+interface CompositePreferenceProvider<T> {
+    val default: () -> T
+    suspend fun flow(dataStore: DataStore<Preferences>): Flow<T>
+    suspend fun edit(dataStore: DataStore<Preferences>, value: () -> T)
+}
+
+/**
+ * Provider for Composite Preference which has only one [backField],
+ * and we just need to deserialize and serialize
+ * @param T backfield primitive type
+ * @param R actual composite preference type
+ */
+sealed class MonoPreferenceProvider<T, R>(
+    private val backField: PrimitiveKey<R>,
+    override val default: () -> T,
+) : CompositePreferenceProvider<T> {
+
+    abstract fun read(flow: Flow<R>): Flow<T>
+    abstract fun save(data: T): R
+
+    override suspend fun flow(dataStore: DataStore<Preferences>): Flow<T> {
+        val preferencesFlow = dataStore.data
+        val rawFlow = preferencesFlow.map { it[backField.preferenceKey] ?: backField.defaultValue() }
+        return read(rawFlow)
+    }
+
+    override suspend fun edit(dataStore: DataStore<Preferences>, value: () -> T) {
+        dataStore.edit {
+            it[backField.preferenceKey] = save(value())
+        }
+    }
+}
+
+
