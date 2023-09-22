@@ -12,6 +12,7 @@
 -keep class player.phonograph.ui.views.** {*;}
 
 -keep class player.phonograph.model.** {public <fields>;}
+-keepclasseswithmembernames class player.phonograph.repo.mediastore.playlist.** { <methods>;}
 
 -keepnames,allowoptimization,allowshrinking class player.phonograph.ui.activities.** extends android.app.Activity {public <methods>;}
 
