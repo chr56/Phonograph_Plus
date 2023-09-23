@@ -1,0 +1,8 @@
+<b>1.2.0(1020) 2023.09.23</b>
+- New: brand-new Wiki/Bio Dialog for Album/Artist with more detailed information from last.fm
+- New: support searching information (releases, artists, tracks) online from last.fm and MusicBrainz
+- Remove: feature "Auto Download Metadata (from last.fm)"
+- Improve: merge Detail and Tag Editor
+- Improve: add shortcut of Online Search, for Tag Editor and Detail
+- Improve: support importing results 
+...(Visit project homepage to see full changelogs)
