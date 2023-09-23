@@ -8,7 +8,6 @@
 -keepclasseswithmembernames class lib.phonograph.activity.** {public <methods>; public <fields>;}
 
 
--keep class player.phonograph.preferences.*PreferenceX {*;}
 -keep class player.phonograph.ui.views.** {*;}
 
 -keep class player.phonograph.model.** {public <fields>;}
@@ -50,29 +49,71 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.HomeFragment$HomePagerAdapter {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.player.AlbumCoverPagerAdapter {public <methods>;}
 
--keepnames,allowoptimization,allowshrinking class player.phonograph.dialogs.**
+-keep, allowoptimization, allowshrinking class player.phonograph.util.permissions.CheckKt { *; }
+-keepnames,allowoptimization,allowshrinking class player.phonograph.util.permissions.** extends player.phonograph.util.permissions.Permission
+-keepnames,allowoptimization,allowshrinking class player.phonograph.util.permissions.PermissionDelegate {
+    public void grant(...);
+}
+-keepnames,allowoptimization,allowshrinking class player.phonograph.util.permissions.UIKt {
+    public void notifyUser(...);
+}
 
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.** {public <methods>;}
-
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.permissions.** {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.theme.ThemeKt {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.theme.DrawableTintKt {public <methods>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.ui.BitmapUtil {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.zip.ZipUtil {public <methods>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.*Util {public <methods>;}
+-keepnames,allowoptimization,allowshrinking class player.phonograph.util.FileUtil
+-keep,allowoptimization,allowshrinking class player.phonograph.util.NavigationUtil { public <methods>; }
+-keep,allowoptimization,allowshrinking class player.phonograph.util.FileUtil$FileScanner {
+    public *** listPaths(...);
+}
 
 
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.settings.Setting {public void set**(...); public *** get**();}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.settings.PrerequisiteSetting {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.settings.Setting {
+	public void set**(...);
+	public *** get**();
+}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.settings.PrerequisiteSetting {
+	public void set**(...);
+	public *** get**();
+}
 
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.notification.**Impl {public <methods>;}
 
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.SettingDataManager { public <methods>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.backup.DatabaseDataManger { boolean *(...);}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.backup.DatabaseManger { boolean *(...);}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.backup.* extends player.phonograph.mechanism.backup.BackupItem { public <methods>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.migrate.* extends player.phonograph.mechanism.migrate.Migration { public <methods>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.event.* { public <methods>; }
+-keepnames,allowoptimization,allowshrinking class player.phonograph.notification.* extends player.phonograph.notification.AbsNotificationImpl {public <methods>;}
+
+-keep,allowoptimization,allowshrinking class player.phonograph.mechanism.backup.* extends player.phonograph.mechanism.backup.BackupItem {
+ 	*** getKey();
+ 	boolean import(java.io.InputStream,android.content.Context);
+ 	java.io.InputStream data(android.content.Context);
+}
+
+-keepclasseswithmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.migrate.Migration {
+	public void doMigrate(android.content.Context);
+}
+
+-keepnames,allowoptimization,allowshrinking class player.phonograph.mechanism.event.MediaStoreTracker$EventReceiver {
+	public void onReceive(android.content.Context, android.content.Intent);
+}
+
+-keepnames,allowoptimization,allowshrinking class player.phonograph.mechanism.event.MediaStoreTracker {
+	public void dispatch();
+}
+-keep,allowoptimization,allowshrinking class player.phonograph.mechanism.lyrics.LyricsLoader {
+	public *** loadLyrics(...);
+}
+
+-keepnames,allowoptimization,allowshrinking class player.phonograph.mechanism.tag.edit.CommonKt { public <methods>; }
+-keepnames,allowoptimization,allowshrinking class player.phonograph.mechanism.tag.edit.SingleKt { public <methods>; }
+-keepnames,allowoptimization,allowshrinking class player.phonograph.mechanism.tag.edit.MultipleKt { public <methods>; }
+-keepnames,allowoptimization,allowshrinking class player.phonograph.mechanism.tag.ArtworkKt { public <methods>; }
+-keepnames,allowoptimization,allowshrinking class player.phonograph.mechanism.tag.SongInfoReaderKt { public <methods>; }
+-keepnames,allowoptimization,allowshrinking class player.phonograph.mechanism.tag.TagParserKt { public <methods>; }
+-keepnames,allowoptimization,allowshrinking class player.phonograph.mechanism.tag.** extends player.phonograph.mechanism.tag.TagReader { public *** read(...); }
+-keepclasseswithmembernames,allowshrinking class player.phonograph.mechanism.tag.* extends player.phonograph.mechanism.tag.EditAction { public <methods>; }
+
+
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.* extends player.phonograph.mechanism.IFavorite { public <methods>; }
+-keep,allowoptimization,allowshrinking class player.phonograph.mechanism.UpdateKt { *** fetchVersionCatalog(...);}
+
 
 -keepclassmembernames class lib.phonograph.misc.RestResult { <methods>; }
 -keepclassmembernames class lib.phonograph.misc.RestResult$Success { <methods>; }
