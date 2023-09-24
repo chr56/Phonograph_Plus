@@ -13,8 +13,12 @@ import mt.tint.viewtint.tintCollapseIcon
 import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.ActivitySearchBinding
+import player.phonograph.databinding.PopupWindowSearchBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.settings.SettingFlowStore
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
+import player.phonograph.ui.components.popup.OptionsPopup
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.hideKeyboard
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
@@ -22,7 +26,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
+import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.coroutines.launch
@@ -56,6 +62,14 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
                 }
             }
         }
+        lifecycleScope.launch {
+            val disableRealTimeSearchFlow = SettingFlowStore(this@SearchActivity).disableRealTimeSearch
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                disableRealTimeSearchFlow.collect {
+                    disableRealTimeSearch = it
+                }
+            }
+        }
 
         lifecycle.addObserver(MediaStoreListener())
     }
@@ -73,6 +87,8 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
             }
             with(tabs) {
                 tabMode = TabLayout.MODE_SCROLLABLE
+            }
+            with(actionBarContainer) {
                 setBackgroundColor(primaryColor)
             }
         }
@@ -80,7 +96,18 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
             tab.text = getText(SearchResultPageAdapter.TabType.values()[i].nameRes)
         }
         mediator.attach()
+        with(binding.config) {
+            setImageDrawable(getTintedDrawable(R.drawable.ic_settings_white_24dp, textColorPrimary))
+            setBackgroundDrawable(null)
+            setOnClickListener {
+                if (popup == null) {
+                    popup = SearchOptionsPopup(this@SearchActivity)
+                }
+                popup?.showAsDropDown(this)
+            }
+        }
     }
+
 
     private fun setUpToolBar() {
         setSupportActionBar(binding.toolbar)
@@ -118,12 +145,16 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
     }
 
     override fun onQueryTextSubmit(query: String): Boolean {
+        viewModel.query(this, query)
         hideSoftKeyboard()
         return false
     }
 
+    private var disableRealTimeSearch: Boolean = false
     override fun onQueryTextChange(newText: String): Boolean {
-        viewModel.query(this, newText)
+        if (!disableRealTimeSearch) {
+            viewModel.query(this, newText)
+        }
         return false
     }
 
@@ -138,4 +169,25 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
         }
     }
 
+    private var popup: SearchOptionsPopup? = null
+
+    inner class SearchOptionsPopup private constructor(
+        private val popupBinding: PopupWindowSearchBinding,
+    ) : OptionsPopup(popupBinding) {
+
+        constructor(context: Context) : this(PopupWindowSearchBinding.inflate(LayoutInflater.from(context)))
+
+        override fun onShow() {
+            super.onShow()
+            prepareColors(contentView.context)
+            popupBinding.checkboxDisableRealTimeSearch.isChecked = disableRealTimeSearch
+            popupBinding.checkboxDisableRealTimeSearch.buttonTintList = widgetColor
+        }
+
+        override fun dismiss() {
+            super.dismiss()
+            disableRealTimeSearch = popupBinding.checkboxDisableRealTimeSearch.isChecked
+        }
+
+    }
 }

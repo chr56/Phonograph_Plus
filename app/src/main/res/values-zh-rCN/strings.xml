@@ -464,4 +464,6 @@
     <string name="key_media">媒介</string>
     <string name="key_barcode">条码</string>
     <string name="key_record_label">唱片厂牌</string>
+    <string name="pref_title_disable_real_time_search">关闭本地实时搜索</string>
+    <string name="pref_summary_disable_real_time_search">本地搜索结果只有在回车键提交后才会更新 \n此选项用于解决某些启用“内嵌输入”的输入法无法显示候选栏或提示预测的问题, 尤其是对于某些中日韩输入法 (或需要在输入前进行选择的语言)</string>
 </resources>

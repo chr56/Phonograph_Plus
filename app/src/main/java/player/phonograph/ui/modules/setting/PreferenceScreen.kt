@@ -306,6 +306,12 @@ fun PhonographPreferenceScreen() {
                 summaryRes = R.string.pref_summary_use_legacy_detail_dialog,
                 defaultValue = false,
             )
+            BooleanPref(
+                key = DISABLE_REAL_TIME_SEARCH,
+                titleRes = R.string.pref_title_disable_real_time_search,
+                summaryRes = R.string.pref_summary_disable_real_time_search,
+                defaultValue = false,
+            )
             ListPref(
                 titleRes = R.string.pref_title_playlist_files_operation_behaviour,
                 summaryRes = R.string.pref_summary_playlist_files_operation_behaviour,
