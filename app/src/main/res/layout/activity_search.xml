@@ -29,13 +29,27 @@
                 android:layout_height="?android:attr/actionBarSize" />
         </FrameLayout>
 
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabs"
+        <FrameLayout
+            android:id="@+id/action_bar_container"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/tab_height"
-            app:tabContentStart="72dp"
-            tools:ignore="SpeakableTextPresentCheck" />
+            android:layout_height="@dimen/tab_height">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/tab_height"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/config"
+                android:layout_width="@dimen/tab_height"
+                android:layout_gravity="end"
+                android:layout_height="match_parent"
+                style="@style/Widget.AppCompat.ImageButton"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+        </FrameLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 

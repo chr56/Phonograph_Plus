@@ -16,6 +16,7 @@ import player.phonograph.databinding.ActivitySearchBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.settings.SettingFlowStore
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.hideKeyboard
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
@@ -82,6 +83,8 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
             }
             with(tabs) {
                 tabMode = TabLayout.MODE_SCROLLABLE
+            }
+            with(actionBarContainer) {
                 setBackgroundColor(primaryColor)
             }
         }
@@ -89,6 +92,10 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
             tab.text = getText(SearchResultPageAdapter.TabType.values()[i].nameRes)
         }
         mediator.attach()
+        with(binding.config) {
+            setImageDrawable(getTintedDrawable(R.drawable.ic_settings_white_24dp, textColorPrimary))
+            setBackgroundDrawable(null)
+        }
     }
 
 
