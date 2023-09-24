@@ -13,9 +13,11 @@ import mt.tint.viewtint.tintCollapseIcon
 import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.ActivitySearchBinding
+import player.phonograph.databinding.PopupWindowSearchBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.settings.SettingFlowStore
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
+import player.phonograph.ui.components.popup.OptionsPopup
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.hideKeyboard
 import androidx.activity.viewModels
@@ -24,7 +26,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
+import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.coroutines.launch
@@ -95,6 +99,12 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
         with(binding.config) {
             setImageDrawable(getTintedDrawable(R.drawable.ic_settings_white_24dp, textColorPrimary))
             setBackgroundDrawable(null)
+            setOnClickListener {
+                if (popup == null) {
+                    popup = SearchOptionsPopup(this@SearchActivity)
+                }
+                popup?.showAsDropDown(this)
+            }
         }
     }
 
@@ -159,4 +169,25 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
         }
     }
 
+    private var popup: SearchOptionsPopup? = null
+
+    inner class SearchOptionsPopup private constructor(
+        private val popupBinding: PopupWindowSearchBinding,
+    ) : OptionsPopup(popupBinding) {
+
+        constructor(context: Context) : this(PopupWindowSearchBinding.inflate(LayoutInflater.from(context)))
+
+        override fun onShow() {
+            super.onShow()
+            prepareColors(contentView.context)
+            popupBinding.checkboxDisableRealTimeSearch.isChecked = disableRealTimeSearch
+            popupBinding.checkboxDisableRealTimeSearch.buttonTintList = widgetColor
+        }
+
+        override fun dismiss() {
+            super.dismiss()
+            disableRealTimeSearch = popupBinding.checkboxDisableRealTimeSearch.isChecked
+        }
+
+    }
 }
