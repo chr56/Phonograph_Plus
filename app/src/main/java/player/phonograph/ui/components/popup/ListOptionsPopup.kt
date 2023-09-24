@@ -4,34 +4,25 @@
 
 package player.phonograph.ui.components.popup
 
-import mt.pref.ThemeColor
-import mt.util.color.resolveColor
-import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.model.sort.SortRef
-import player.phonograph.util.theme.nightMode
 import androidx.annotation.IdRes
 import androidx.core.view.forEach
 import androidx.core.view.get
 import androidx.core.view.iterator
 import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
-import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.PopupWindow
 import android.widget.RadioButton
 
 class ListOptionsPopup private constructor(
-    private val context: Context,
     val viewBinding: PopupWindowMainBinding,
     width: Int,
     height: Int,
-) : PopupWindow(viewBinding.root, width, height, true) {
+) : OptionsPopup(viewBinding, width, height) {
 
     var onDismiss: (ListOptionsPopup) -> Unit = { }
     var onShow: (ListOptionsPopup) -> Unit = { }
@@ -40,16 +31,13 @@ class ListOptionsPopup private constructor(
         context: Context,
         width: Int = ViewGroup.LayoutParams.WRAP_CONTENT,
         height: Int = ViewGroup.LayoutParams.WRAP_CONTENT,
-    ) : this(
-        context,
-        PopupWindowMainBinding.inflate(LayoutInflater.from(context)),
-        width, height
-    )
+    ) : this(PopupWindowMainBinding.inflate(LayoutInflater.from(context)), width, height)
 
-    init {
+    override fun onShow() {
+        super.onShow()
+        hideAllPopupItems()
         updateColor()
-        setBackgroundDrawable(ColorDrawable(backgroundColor(context)))
-        this.animationStyle = android.R.style.Animation_Dialog
+        onShow(this)
     }
 
     override fun dismiss() {
@@ -57,26 +45,9 @@ class ListOptionsPopup private constructor(
         onDismiss(this)
     }
 
-    override fun showAtLocation(parent: View?, gravity: Int, x: Int, y: Int) {
-        super.showAtLocation(parent, gravity, x, y)
-        onShow()
-    }
-
-    override fun showAsDropDown(anchor: View?, xoff: Int, yoff: Int, gravity: Int) {
-        super.showAsDropDown(anchor, xoff, yoff, gravity)
-        onShow()
-    }
-
-    private fun onShow() {
-        hideAllPopupItems()
-        setBackgroundDrawable(ColorDrawable(backgroundColor(context)))
-        this.animationStyle = android.R.style.Animation_Dialog
-        onShow(this)
-    }
-
     @Suppress("MemberVisibilityCanBePrivate")
     fun hideAllPopupItems() {
-        viewBinding.apply {
+        with(viewBinding) {
             groupSortOrderMethod.visibility = GONE
             groupSortOrderMethod.clearCheck()
             titleSortOrderMethod.visibility = GONE
@@ -98,17 +69,8 @@ class ListOptionsPopup private constructor(
      */
     private fun updateColor() {
         // color
-        val accentColor = ThemeColor.accentColor(context)
-        val textColor = context.secondaryTextColor(context.nightMode)
-        val widgetColor = ColorStateList(
-            arrayOf(
-                intArrayOf(android.R.attr.state_enabled),
-                intArrayOf(android.R.attr.state_selected),
-                intArrayOf()
-            ),
-            intArrayOf(accentColor, accentColor, textColor)
-        )
-        viewBinding.apply {
+        prepareColors(contentView.context)
+        with(viewBinding) {
             // text color
             this.titleGridSize.setTextColor(accentColor)
             this.titleSortOrderMethod.setTextColor(accentColor)
@@ -118,28 +80,21 @@ class ListOptionsPopup private constructor(
             this.useLegacyListFiles.buttonTintList = widgetColor
             this.showFileImagines.buttonTintList = widgetColor
             // radioButton
-            for (i in 0 until this.groupGridSize.childCount) (this.groupGridSize.getChildAt(i) as RadioButton).buttonTintList =
-                widgetColor
-            for (i in 0 until this.groupSortOrderRef.childCount) (this.groupSortOrderRef.getChildAt(i) as RadioButton).buttonTintList =
-                widgetColor
-            for (i in 0 until this.groupSortOrderMethod.childCount) (this.groupSortOrderMethod.getChildAt(i) as RadioButton).buttonTintList =
-                widgetColor
+            for (i in 0 until this.groupGridSize.childCount)
+                (this.groupGridSize.getChildAt(i) as RadioButton).buttonTintList = widgetColor
+            for (i in 0 until this.groupSortOrderRef.childCount)
+                (this.groupSortOrderRef.getChildAt(i) as RadioButton).buttonTintList = widgetColor
+            for (i in 0 until this.groupSortOrderMethod.childCount)
+                (this.groupSortOrderMethod.getChildAt(i) as RadioButton).buttonTintList = widgetColor
         }
     }
-
-    private fun backgroundColor(context: Context): Int =
-        resolveColor(
-            context,
-            androidx.appcompat.R.attr.colorBackgroundFloating,
-            context.getColor(R.color.cardBackgroundColor)
-        )
 
     var revert: Boolean
         get() =
             when (viewBinding.groupSortOrderMethod.checkedRadioButtonId) {
                 R.id.sort_method_a_z -> false
                 R.id.sort_method_z_a -> true
-                else -> true
+                else                 -> true
             }
         set(value) {
             viewBinding.apply {
@@ -228,7 +183,9 @@ class ListOptionsPopup private constructor(
 
     var colorFooter: Boolean
         get() = viewBinding.actionColoredFooters.isChecked
-        set(value) { viewBinding.actionColoredFooters.isChecked = value }
+        set(value) {
+            viewBinding.actionColoredFooters.isChecked = value
+        }
 
     var colorFooterVisibility: Boolean
         get() = viewBinding.actionColoredFooters.visibility == VISIBLE
