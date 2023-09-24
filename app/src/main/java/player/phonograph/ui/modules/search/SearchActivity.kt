@@ -14,6 +14,7 @@ import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.ActivitySearchBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.settings.SettingFlowStore
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
 import player.phonograph.util.ui.hideKeyboard
 import androidx.activity.viewModels
@@ -56,6 +57,14 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
                 }
             }
         }
+        lifecycleScope.launch {
+            val disableRealTimeSearchFlow = SettingFlowStore(this@SearchActivity).disableRealTimeSearch
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                disableRealTimeSearchFlow.collect {
+                    disableRealTimeSearch = it
+                }
+            }
+        }
 
         lifecycle.addObserver(MediaStoreListener())
     }
@@ -81,6 +90,7 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
         }
         mediator.attach()
     }
+
 
     private fun setUpToolBar() {
         setSupportActionBar(binding.toolbar)
@@ -118,12 +128,16 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
     }
 
     override fun onQueryTextSubmit(query: String): Boolean {
+        viewModel.query(this, query)
         hideSoftKeyboard()
         return false
     }
 
+    private var disableRealTimeSearch: Boolean = false
     override fun onQueryTextChange(newText: String): Boolean {
-        viewModel.query(this, newText)
+        if (!disableRealTimeSearch) {
+            viewModel.query(this, newText)
+        }
         return false
     }
 
