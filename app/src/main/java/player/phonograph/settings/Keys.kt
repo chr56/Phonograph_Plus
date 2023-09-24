@@ -205,4 +205,7 @@ object Keys {
     data object useLegacyDetailDialog :
             PrimitiveKey<Boolean>(booleanPK(USE_LEGACY_DETAIL_DIALOG), { false })
 
+    data object disableRealTimeSearch :
+            PrimitiveKey<Boolean>(booleanPK(DISABLE_REAL_TIME_SEARCH), { false })
+
 }

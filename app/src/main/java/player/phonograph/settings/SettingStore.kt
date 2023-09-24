@@ -212,6 +212,8 @@ class Setting {
 
     var useLegacyDetailDialog: Boolean by booleanPref(USE_LEGACY_DETAIL_DIALOG, false)
 
+    var disableRealTimeSearch: Boolean by booleanPref(DISABLE_REAL_TIME_SEARCH, false)
+
     //endregion
 
     companion object {
@@ -394,6 +396,8 @@ class SettingFlowStore(context: Context) {
         get() = from(stringPreferencesKey(PLAYLIST_FILES_OPERATION_BEHAVIOUR), PLAYLIST_OPS_BEHAVIOUR_AUTO)
     val useLegacyDetailDialog: Flow<Boolean>
         get() = from(booleanPreferencesKey(USE_LEGACY_DETAIL_DIALOG), false)
+    val disableRealTimeSearch: Flow<Boolean>
+        get() = from(booleanPreferencesKey(DISABLE_REAL_TIME_SEARCH), false)
 
     //endregion
 
@@ -477,6 +481,7 @@ const val USE_LEGACY_FAVORITE_PLAYLIST_IMPL = "use_legacy_favorite_playlist_impl
 const val USE_LEGACY_LIST_FILES_IMPL = "use_legacy_list_files_impl"
 const val PLAYLIST_FILES_OPERATION_BEHAVIOUR = "playlist_files_operation_behaviour"
 const val USE_LEGACY_DETAIL_DIALOG = "use_legacy_detail_dialog"
+const val DISABLE_REAL_TIME_SEARCH = "disable_real_time_search"
 
 // unused & deprecated
 
