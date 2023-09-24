@@ -19,7 +19,6 @@ import player.phonograph.settings.Setting
 import player.phonograph.util.FileUtil
 import player.phonograph.util.debug
 import player.phonograph.util.permissions.hasStorageReadPermission
-import player.phonograph.util.reportError
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -27,7 +26,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import java.io.File
-import java.io.FileNotFoundException
 
 object LyricsLoader {
 
@@ -84,7 +82,7 @@ object LyricsLoader {
     private fun parseEmbedded(
         songFile: File,
         lyricsSource: LyricsSource = LyricsSource.Embedded(),
-    ): AbsLyrics? = try {
+    ): AbsLyrics? = tryLoad(songFile) {
         AudioFileIO.read(songFile).tag?.getFirst(FieldKey.LYRICS).let { str ->
             if (str != null && str.trim().isNotBlank()) {
                 parse(str, lyricsSource)
@@ -92,44 +90,41 @@ object LyricsLoader {
                 null
             }
         }
-    } catch (e: CannotReadException) {
-        val suffix = songFile.name.substringAfterLast('.', "")
-        if (ErrorMessage.NO_READER_FOR_THIS_FORMAT.getMsg(suffix) != e.message) {
-            reportError(e, TAG, "Failed to read song file\n")
-        }
-        null
-    } catch (e: FileNotFoundException) {
-        debug {
-            e.printStackTrace()
-            Log.v(TAG, "$songFile not available!")
-        }
-        null
-    } catch (e: Exception) {
-        reportError(e, TAG, "Failed to read lyrics from song\n")
-        null
     }
 
     private fun parseExternal(
         file: File,
         lyricsSource: LyricsSource = LyricsSource.Unknown(),
-    ): AbsLyrics? =
-        try {
-            if (file.exists())
-                file.readText().let { content ->
-                    if (content.isNotEmpty()) parse(content, lyricsSource) else null
-                }
-            else
-                null
-        } catch (e: FileNotFoundException) {
-            debug {
-                e.printStackTrace()
-                Log.v(TAG, "$file not available!")
-            }
-            null
-        } catch (e: Exception) {
-            reportError(e, TAG, "Failed to parse lyrics file")
+    ): AbsLyrics? = tryLoad(file) {
+        if (file.exists()) {
+            val content = file.readText()
+            if (content.isNotEmpty()) parse(content, lyricsSource) else null
+        } else {
             null
         }
+    }
+
+    private fun tryLoad(songFile: File, block: () -> AbsLyrics?): AbsLyrics? =
+        try {
+            block()
+        } catch (e: CannotReadException) {
+            val errorMsg = errorMsg(songFile.path, e)
+            val suffix = songFile.name.substringAfterLast('.', "")
+            if (ErrorMessage.NO_READER_FOR_THIS_FORMAT.getMsg(suffix) == e.message) {
+                // ignore
+            } else {
+                Log.i(TAG, errorMsg)
+            }
+            TextLyrics.from(errorMsg)
+        } catch (e: Exception) {
+            val errorMsg = errorMsg(songFile.path, e)
+            Log.i(TAG, errorMsg)
+            TextLyrics.from(errorMsg)
+        }
+
+    private fun errorMsg(path: String, t: Throwable?) =
+        "$ERR_MSG_HEADER $path: ${t?.message}\n${Log.getStackTraceString(t)}"
+
 
     private fun parse(raw: String, lyricsSource: LyricsSource = LyricsSource.Unknown()): AbsLyrics {
         val lines = raw.take(80).lines()
@@ -200,4 +195,5 @@ object LyricsLoader {
 
 
     private const val TAG = "LyricsLoader"
+    private const val ERR_MSG_HEADER = "Failed to read "
 }
