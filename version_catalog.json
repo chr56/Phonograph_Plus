@@ -1,6 +1,22 @@
 {
   "versions": [
     {
+      "channel": "stable",
+      "versionName": "1.2.0",
+      "versionCode": 1020,
+      "date": 1695484780,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.2.0"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>新增 全新的针对专辑和艺人的 维基/简介 对话框 (数据来自 last.fm )</li><li>新增 支持在线搜索专辑艺人歌曲等信息, 数据来自 last.fm 与 musicbrainz (计划考虑Discog)</li><li>移除 自动从 last.fm 下载元信息</li><li>改进 合并详细信息和标签编辑器</li><li>改进 标签编辑器内, 添加在线搜索按钮</li><li>改进 支持在标签编辑器内导入在线搜索结果</li><li>改进 标签编辑器</li><li>改进 自定义检查更新时间间隔</li><li>改进 自定义最后添加播放列表截止时间间隔</li><li>修改 播放通知可在暂停 5 秒后划去</li><li>翻译 更新土耳其语(TolDYuThad)</li><li>翻译 更新西班牙语 (Leoh)</li><li>翻译 更新葡萄牙语 (drcor)</li><li>开发 更新依赖</li><li>开发 清理代码</li><li>开发 使用 koin 做依赖注入框架 (可能影响性能)</li><li>开发 更新 kotlin 至 1.9.10, 使用 SDK 34, 更新 Compose 至 1.5.1 等</li></ol>",
+        "en": "<ol><li>New: brand-new Wiki/Bio Dialog for Album/Artist with more detailed information from last.fm</li><li>New: support searching information (releases, artists, tracks) online from last.fm and MusicBrainz (planning for Discog)</li><li>Remove: feature \"Auto Download Metadata (from last.fm)\"</li><li>Improve: merge Detail and Tag Editor</li><li>Improve: add shortcut of Online Search, for Tag Editor and Detail</li><li>Improve: support importing results as tags from Online Search in Tag Editor</li><li>Improve: Tag Editor</li><li>Improve: customizable upgrade check interval</li><li>Improve: customizable last added playlist cutoff interval</li><li>Modify: make playback notification cancelable after 5 seconds if paused</li><li>Translation: update Turkish (by TolDYuThad)</li><li>Translation: update Spanish (by Leoh)</li><li>Translation: update Portuguese (by drcor)</li><li>Development: upgrade dependencies</li><li>Development: cleanup code</li><li>Development: introduce koin as dependency injection framework (may cause performance issues)</li><li>Development: upgrade Kotlin to 1.9.10, compile with SDK 34, upgrade Compose to 1.5.1 etc.</li></ol>"
+      }
+    },
+    {
       "channel": "preview",
       "versionName": "1.2-dev7",
       "versionCode": 1015,
@@ -78,22 +94,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>修复 播放列表搜索有时无效</li><li>修复 单击时显示“选择 0 个项目”</li><li>修复 切换主播放器样式时崩溃 </li><li>修复 艺术家详情中的横向专辑没有图像</li><li>修复 艺术家详情中的横向专辑的描述重复</li><li>翻译 更新俄语 (Evgeniy Khramov (thejenja))</li><li>翻译 更新土耳其语 (TolDYuThad)</li></ol>",
         "en": "<ol><li>Fix: playlist search may not work expectedly</li><li>Fix: selecting 0 item when clicking an item in list</li><li>Fix: crash when switching main player styles </li><li>Fix: no images for horizontal albums in Artist Detail</li><li>Fix: duplicated descriptions for horizontal albums in Artist Detail</li><li>Translation: update Russian (by Evgeniy Khramov (thejenja))</li><li>Translation: update Turkish (by TolDYuThad)</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "1.0.1",
-      "versionCode": 1001,
-      "date": 1691900000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.0.1"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 播放列表页与流派页在更改网格列数后布局不正常</li><li>修复 无法通过部分蓝牙设备控制播放</li></ol>",
-        "en": "<ol><li>Fix: incorrect layout after changing grid size in Playlist page and Genre page</li><li>Fix: playback controls not working via some bluetooth devices</li></ol>"
       }
     },
     {
