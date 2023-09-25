@@ -27,9 +27,12 @@ class PrimitivePreference<T>(private val key: PrimitiveKey<T>, context: Context)
         }
     }
 
-    val data: T get() = runBlocking { flowData() }
-
-    fun put(value: T) = runBlocking { edit { value } }
+    /**
+     * block api
+     */
+    var data: T
+        get() = runBlocking { flowData() }
+        set(value) = runBlocking { edit { value } }
 
 }
 
@@ -47,7 +50,10 @@ class CompositePreference<T>(key: CompositeKey<T>, context: Context) : Preferenc
         provider.edit(dataStore, value)
     }
 
-    val data: T get() = runBlocking { flowData() }
-
-    fun put(value: T) = runBlocking { edit { value } }
+    /**
+     * block api
+     */
+    var data: T
+        get() = runBlocking { flowData() }
+        set(value) = runBlocking { edit { value } }
 }
