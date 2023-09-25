@@ -8,10 +8,12 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import mt.pref.ThemeColor
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.file.Location
 import player.phonograph.repo.database.PathFilterStore
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import android.view.View
 import java.io.File
 
@@ -24,7 +26,7 @@ class PathFilterFolderChooserDialog : FileChooserDialog() {
             .message(text = file.absolutePath)
             .positiveButton(android.R.string.ok) {
                 with(PathFilterStore.get()) {
-                    val mode = Setting.instance.pathFilterExcludeMode
+                    val mode = SettingStore(App.instance)[Keys.pathFilterExcludeMode].data
                     if (mode) addBlacklistPath(file) else addWhitelistPath(file)
                 }
 

@@ -21,7 +21,8 @@ import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.model.lyrics.TextLyrics
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import player.phonograph.ui.fragments.player.LyricsViewModel
 import player.phonograph.util.reportError
 import player.phonograph.util.text.lyricsTimestamp
@@ -391,7 +392,7 @@ private class LyricsAdapter(
 
             time.text = lyricsTimestamp(timeStamps[bindingAdapterPosition])
             time.setTextColor(context.getColor(R.color.dividerColor))
-            if (timeStamps[bindingAdapterPosition] < 0 || !Setting.instance.displaySynchronizedLyricsTimeAxis)
+            if (timeStamps[bindingAdapterPosition] < 0 || !SettingStore(context)[Keys.displaySynchronizedLyricsTimeAxis].data)
                 time.visibility = View.GONE
 
             line.text = actual.trim().toString()

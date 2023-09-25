@@ -8,12 +8,14 @@
  */
 package player.phonograph.repo.mediastore
 
+import player.phonograph.App
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortRef
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import android.util.ArrayMap
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
@@ -83,13 +85,14 @@ fun List<Song>.toAlbumList(): List<Album> {
 }
 
 fun List<Album>.sortAllAlbums(): List<Album> {
-    val revert = Setting.instance.albumSortMode.revert
-    return when (Setting.instance.albumSortMode.sortRef) {
-        SortRef.ALBUM_NAME -> this.sort(revert) { it.title }
+    val sortMode = SettingStore(App.instance).Composites[Keys.albumSortMode].data
+    val revert = sortMode.revert
+    return when (sortMode.sortRef) {
+        SortRef.ALBUM_NAME  -> this.sort(revert) { it.title }
         SortRef.ARTIST_NAME -> this.sort(revert) { it.artistName }
-        SortRef.YEAR -> this.sort(revert) { it.year }
-        SortRef.SONG_COUNT -> this.sort(revert) { it.songCount }
-        else -> this
+        SortRef.YEAR        -> this.sort(revert) { it.year }
+        SortRef.SONG_COUNT  -> this.sort(revert) { it.songCount }
+        else                -> this
     }
 }
 
@@ -183,12 +186,13 @@ fun List<Song>.toArtistList(): List<Artist> {
 }
 
 fun List<Artist>.sortAllArtist(): List<Artist> {
-    val revert = Setting.instance.artistSortMode.revert
-    return when (Setting.instance.artistSortMode.sortRef) {
+    val sortMode = SettingStore(App.instance).Composites[Keys.artistSortMode].data
+    val revert = sortMode.revert
+    return when (sortMode.sortRef) {
         SortRef.ARTIST_NAME -> this.sort(revert) { it.name.lowercase() }
         SortRef.ALBUM_COUNT -> this.sort(revert) { it.albumCount }
-        SortRef.SONG_COUNT -> this.sort(revert) { it.songCount }
-        else -> this
+        SortRef.SONG_COUNT  -> this.sort(revert) { it.songCount }
+        else                -> this
     }
 }
 

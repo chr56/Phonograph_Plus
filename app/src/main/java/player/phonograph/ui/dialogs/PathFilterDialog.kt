@@ -8,10 +8,12 @@ import lib.phonograph.dialog.alertDialog
 import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import org.koin.core.context.GlobalContext
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.repo.database.PathFilterStore
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import player.phonograph.ui.components.viewcreater.ButtonPanel
 import player.phonograph.ui.components.viewcreater.ContentPanel
 import player.phonograph.ui.components.viewcreater.TitlePanel
@@ -40,7 +42,7 @@ class PathFilterDialog : DialogFragment() {
 
     private val pathFilterStore: PathFilterStore by GlobalContext.get().inject()
 
-    private val mode get() = Setting.instance.pathFilterExcludeMode
+    private val mode get() = SettingStore(App.instance)[Keys.pathFilterExcludeMode].data
 
     private lateinit var titlePanel: TitlePanel
     private lateinit var contentPanel: ContentPanel
@@ -70,8 +72,8 @@ class PathFilterDialog : DialogFragment() {
 
         buttonPanel = buttonPanel(context) {
             button(0, getString(R.string.swith_mode), accentColor) {
-                val inv = !Setting.instance.pathFilterExcludeMode
-                Setting.instance.pathFilterExcludeMode = inv
+                val inv = !SettingStore(context)[Keys.pathFilterExcludeMode].data
+                SettingStore(context)[Keys.pathFilterExcludeMode].data = inv
                 loadPaths()
                 GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
             }
@@ -98,13 +100,16 @@ class PathFilterDialog : DialogFragment() {
                 clearAll(mode)
             }
         }
-        root.addView(controlPanel.panel,
-                     LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, Gravity.TOP)
+        root.addView(
+            controlPanel.panel,
+            LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, Gravity.TOP)
         )
         root.addView(recyclerView,
-                     LayoutParams(LayoutParams.WRAP_CONTENT,
-                                  LayoutParams.MATCH_PARENT,
-                                  Gravity.BOTTOM).apply { setMargins(0, 128, 0, 0) }
+            LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.MATCH_PARENT,
+                Gravity.BOTTOM
+            ).apply { setMargins(0, 128, 0, 0) }
         )
     }
 

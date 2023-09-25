@@ -11,13 +11,14 @@ import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.ui.fragments.pages.adapter.SongCollectionDisplayAdapter
-import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import player.phonograph.ui.components.popup.ListOptionsPopup
+import player.phonograph.ui.fragments.pages.adapter.SongCollectionDisplayAdapter
+import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import player.phonograph.util.theme.getTintedDrawable
@@ -125,7 +126,7 @@ class FlattenFolderPage : AbsPage() {
     }
 
     private fun configPopupFolder(popup: ListOptionsPopup) {
-        val currentSortMode = Setting.instance.collectionSortMode
+        val currentSortMode = SettingStore(popup.contentView.context).Composites[Keys.collectionSortMode].data
 
         popup.allowRevert = true
         popup.revert = currentSortMode.revert
@@ -161,8 +162,9 @@ class FlattenFolderPage : AbsPage() {
     private fun dismissPopupFolder(popup: ListOptionsPopup) {
 
         val selected = SortMode(popup.sortRef, popup.revert)
-        if (Setting.instance.collectionSortMode != selected) {
-            Setting.instance.collectionSortMode = selected
+        val preference = SettingStore(popup.contentView.context).Composites[Keys.collectionSortMode]
+        if (preference.data != selected) {
+            preference.data = selected
             viewModel.loadFolders(requireContext())
         }
     }

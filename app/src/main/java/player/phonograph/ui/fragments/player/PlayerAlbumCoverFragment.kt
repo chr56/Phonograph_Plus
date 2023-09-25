@@ -1,13 +1,15 @@
 package player.phonograph.ui.fragments.player
 
 import lib.phonograph.misc.SimpleAnimatorListener
+import player.phonograph.App
 import player.phonograph.databinding.FragmentAlbumCoverBinding
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.parcelable
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
@@ -83,7 +85,7 @@ class PlayerAlbumCoverFragment :
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 playerViewModel.lyrics.collect {
-                    val lyricsShow = Setting.instance.synchronizedLyricsShow
+                    val lyricsShow = SettingStore(App.instance)[Keys.synchronizedLyricsShow].data
                     withContext(Dispatchers.Main) {
                         if (lyricsShow) {
                             resetLyricsLayout()

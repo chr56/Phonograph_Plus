@@ -15,10 +15,11 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.settings.Keys
 import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_AUTO
 import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY
 import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF
-import player.phonograph.settings.Setting
+import player.phonograph.settings.SettingStore
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.text.currentDate
@@ -50,7 +51,7 @@ object PlaylistsManager {
         name: String,
         songs: List<Song>,
     ) {
-        if (shouldUseSAF && context is ICreateFileStorageAccess) {
+        if (shouldUseSAF(context) && context is ICreateFileStorageAccess) {
             CoroutineScope(Dispatchers.IO).launch { // independent scope to avoid scope is canceled
                 createPlaylistViaSAF(context, playlistName = name, songs = songs)
             }
@@ -80,7 +81,7 @@ object PlaylistsManager {
         songs: List<Song>,
         filePlaylist: FilePlaylist,
     ) = withContext(Dispatchers.Default) {
-        if (shouldUseSAF && context is IOpenFileStorageAccess) {
+        if (shouldUseSAF(context) && context is IOpenFileStorageAccess) {
             coroutineToast(context, R.string.direction_open_file_with_saf)
             appendToPlaylistViaSAF(context, songs = songs, filePlaylist = filePlaylist)
         } else {
@@ -96,19 +97,18 @@ object PlaylistsManager {
         playlistId: Long,
     ) = appendPlaylist(context, songs, PlaylistLoader.id(context, playlistId))
 
-    private val shouldUseSAF: Boolean
-        get() {
-            return when (val behavior = Setting.instance.playlistFilesOperationBehaviour) {
-                PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF    -> true
-                PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY -> false
-                PLAYLIST_OPS_BEHAVIOUR_AUTO         -> Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-                else                                -> {
-                    Setting.instance.playlistFilesOperationBehaviour =
-                        PLAYLIST_OPS_BEHAVIOUR_AUTO // reset to default
-                    throw IllegalStateException("$behavior is not a valid option")
-                }
+    private fun shouldUseSAF(context: Context): Boolean {
+        val preference = SettingStore(context)[Keys.playlistFilesOperationBehaviour]
+        return when (val behavior = preference.data) {
+            PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF    -> true
+            PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY -> false
+            PLAYLIST_OPS_BEHAVIOUR_AUTO         -> Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+            else                                -> {
+                preference.data = PLAYLIST_OPS_BEHAVIOUR_AUTO // reset to default
+                throw IllegalStateException("$behavior is not a valid option")
             }
         }
+    }
 
     suspend fun duplicatePlaylistsViaSaf(
         context: Context,

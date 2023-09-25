@@ -4,11 +4,13 @@ import de.psdev.licensesdialog.LicensesDialog
 import lib.phonograph.activity.ToolbarActivity
 import lib.phonograph.misc.NoticesProcessor
 import mt.tint.setActivityToolbarColorAuto
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.ActivityAboutBinding
 import player.phonograph.mechanism.Update
 import player.phonograph.model.version.VersionCatalog
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.DebugDialog
 import player.phonograph.ui.dialogs.ReportIssueDialog
@@ -166,7 +168,9 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
                     Update.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
                         if (upgradable) {
                             UpgradeDialog.create(versionCatalog).show(supportFragmentManager, "UPGRADE_DIALOG")
-                            if (Setting.instance.ignoreUpgradeDate >= versionCatalog.currentLatestChannelVersionBy { it.date }.date) {
+                            if (SettingStore(App.instance)[Keys.ignoreUpgradeDate].data
+                                >= versionCatalog.currentLatestChannelVersionBy { it.date }.date
+                            ) {
                                 toast(getString(R.string.upgrade_ignored))
                             }
                         } else {

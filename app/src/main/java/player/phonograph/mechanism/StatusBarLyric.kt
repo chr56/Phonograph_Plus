@@ -9,7 +9,8 @@ import player.phonograph.App
 import player.phonograph.PACKAGE_NAME
 import player.phonograph.R
 import player.phonograph.service.MusicService
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap
 import android.graphics.Bitmap
@@ -27,8 +28,9 @@ object StatusBarLyric {
     private val iconBase64: String? = icon?.toBase64()
 
     fun updateLyric(lyric: String) {
-        if (Setting.instance.broadcastSynchronizedLyrics) {
-            if (Setting.instance.useLegacyStatusBarLyricsApi) {
+        val settingStore = SettingStore(App.instance)
+        if (settingStore[Keys.broadcastSynchronizedLyrics].data) {
+            if (settingStore[Keys.useLegacyStatusBarLyricsApi].data) {
                 lyricsService.updateLyric(lyric)
             } else {
                 EventTools.sendLyric(
@@ -45,8 +47,9 @@ object StatusBarLyric {
     }
 
     fun stopLyric() {
-        if (Setting.instance.broadcastSynchronizedLyrics) {
-            if (Setting.instance.useLegacyStatusBarLyricsApi) {
+        val settingStore = SettingStore(App.instance)
+        if (settingStore[Keys.broadcastSynchronizedLyrics].data) {
+            if (settingStore[Keys.useLegacyStatusBarLyricsApi].data) {
                 lyricsService.stopLyric()
             } else {
                 EventTools.stopLyric(App.instance)

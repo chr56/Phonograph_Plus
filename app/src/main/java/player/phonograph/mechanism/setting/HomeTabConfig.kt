@@ -4,10 +4,12 @@
 
 package player.phonograph.mechanism.setting
 
+import player.phonograph.App
 import player.phonograph.mechanism.setting.HomeTabConfig.PageConfigUtil.fromJson
 import player.phonograph.mechanism.setting.HomeTabConfig.PageConfigUtil.toJson
 import player.phonograph.model.pages.Pages
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import player.phonograph.ui.fragments.pages.AbsPage
 import player.phonograph.ui.fragments.pages.AlbumPage
 import player.phonograph.ui.fragments.pages.ArtistPage
@@ -33,7 +35,7 @@ object HomeTabConfig {
 
     var homeTabConfig: PageConfig
         @Synchronized get() {
-            val rawString = Setting.instance.homeTabConfigJsonString
+            val rawString = SettingStore(App.instance)[Keys.homeTabConfigJsonString].data
 
             if (rawString.isEmpty()) {
                 resetHomeTabConfig()
@@ -75,10 +77,9 @@ object HomeTabConfig {
                     // return default
                     PageConfig.DEFAULT_CONFIG.toJson()
                 }
-            val str =
-                parser.encodeToString(json)
+            val str = parser.encodeToString(json)
             synchronized(this) {
-                Setting.instance.homeTabConfigJsonString = str
+                SettingStore(App.instance)[Keys.homeTabConfigJsonString].data = str
             }
         }
 
@@ -92,7 +93,7 @@ object HomeTabConfig {
     }
 
     fun resetHomeTabConfig() {
-        Setting.instance.homeTabConfigJsonString =
+        SettingStore(App.instance)[Keys.homeTabConfigJsonString].data =
             Json.encodeToString(PageConfig.DEFAULT_CONFIG.toJson())
     }
 

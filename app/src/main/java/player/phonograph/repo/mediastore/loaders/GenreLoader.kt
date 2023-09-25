@@ -11,7 +11,8 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.internal.BASE_AUDIO_SELECTION
 import player.phonograph.repo.mediastore.internal.BASE_SONG_PROJECTION
 import player.phonograph.repo.mediastore.internal.intoSongs
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import android.content.Context
 import android.database.Cursor
 import android.os.Build
@@ -21,7 +22,7 @@ import android.provider.MediaStore.Audio.Genres
 object GenreLoader : Loader<Genre> {
 
     override fun all(context: Context): List<Genre> =
-        queryGenre(context)?.intoGenres(context)?.sortAll() ?: emptyList()
+        queryGenre(context)?.intoGenres(context)?.sortAll(context) ?: emptyList()
 
     override fun id(context: Context, id: Long): Genre? =
         queryGenre(context, id)?.intoGenres(context)?.first()
@@ -84,9 +85,10 @@ object GenreLoader : Loader<Genre> {
 
     fun List<Genre>.allGenreSongs(): List<Song> = this.flatMap { genreSongs(App.instance, it.id) }
 
-    private fun List<Genre>.sortAll(): List<Genre> {
-        val revert = Setting.instance.genreSortMode.revert
-        return when (Setting.instance.genreSortMode.sortRef) {
+    private fun List<Genre>.sortAll(context: Context): List<Genre> {
+        val sortMode = SettingStore(context).Composites[Keys.genreSortMode].data
+        val revert = sortMode.revert
+        return when (sortMode.sortRef) {
             SortRef.DISPLAY_NAME -> this.sort(revert) { it.name }
             SortRef.SONG_COUNT   -> this.sort(revert) { it.songCount }
             else                 -> this

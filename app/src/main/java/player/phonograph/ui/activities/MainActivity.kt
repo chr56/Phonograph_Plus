@@ -36,9 +36,9 @@ import player.phonograph.repo.mediastore.loaders.SongLoader.all
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.service.queue.ShuffleMode
+import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSetting
-import player.phonograph.settings.Setting
-import player.phonograph.settings.SettingFlowStore
+import player.phonograph.settings.SettingStore
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.ScanMediaFolderDialog
@@ -118,9 +118,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 if (showUpgradeDialog) {
                     showUpgradeDialog(intent.parcelableExtra(VERSION_INFO) as? VersionCatalog)
                 }
+                val settingStore = SettingStore(this)
                 lifecycleScope.launch(Dispatchers.Main) {
                     lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                        SettingFlowStore(this@MainActivity).homeTabConfigJsonString.distinctUntilChanged().collect {
+                        settingStore[Keys.homeTabConfigJsonString].flow.distinctUntilChanged().collect {
                             withStarted {
                                 setupDrawerMenu(drawerBinding.navigationView.menu)
                             }
@@ -418,7 +419,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                     UpgradeNotification.sendUpgradeNotification(versionCatalog, channel)
                 }
             }
-            Setting.instance.lastCheckUpgradeTimeStamp = System.currentTimeMillis()
+            SettingStore(this@MainActivity)[Keys.lastCheckUpgradeTimeStamp].data = System.currentTimeMillis()
         }
     }
 
@@ -451,12 +452,12 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         // check changelog
         checkChangelog()
         // check upgrade
-        val store = SettingFlowStore(this)
+        val settingStore = SettingStore(this)
         lifecycleScope.launch {
-            store.checkUpgradeAtStartup.collect { enabled ->
+            settingStore[Keys.checkUpgradeAtStartup].flow.collect { enabled ->
                 if (enabled) {
-                    val lastTimeStamp = Setting.instance.lastCheckUpgradeTimeStamp
-                    val interval = Setting.instance.checkUpdateInterval
+                    val lastTimeStamp = settingStore[Keys.lastCheckUpgradeTimeStamp].data
+                    val interval = settingStore.Composites[Keys.checkUpdateInterval].data
                     if (System.currentTimeMillis() > lastTimeStamp + interval.toSeconds() * 1000L) {
                         checkUpdate()
                     } else {

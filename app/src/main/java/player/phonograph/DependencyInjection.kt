@@ -28,7 +28,8 @@ import player.phonograph.repo.mediastore.playlist.LastAddedPlaylistImpl
 import player.phonograph.repo.mediastore.playlist.MyTopTracksPlaylistImpl
 import player.phonograph.repo.mediastore.playlist.ShuffleAllPlaylistImpl
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import android.content.Context
 import android.os.Parcel
 
@@ -45,7 +46,8 @@ val moduleLoaders = module {
     single { MusicPlaybackQueueStore(get()) }
 
     factory {
-        if (Setting.instance.useLegacyFavoritePlaylistImpl) FavoritePlaylistImpl() else FavoriteDatabaseImpl()
+        val preference = SettingStore(get())[Keys.useLegacyFavoritePlaylistImpl]
+        if (preference.data) FavoritePlaylistImpl() else FavoriteDatabaseImpl()
     }
 
     factory { TopTracksLoader(get()) }

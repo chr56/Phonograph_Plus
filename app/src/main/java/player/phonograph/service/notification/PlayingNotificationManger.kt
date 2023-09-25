@@ -12,7 +12,8 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.service.MusicService
 import player.phonograph.service.player.PlayerState
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.theme.createTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
@@ -31,6 +32,8 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.media.MediaMetadata.*
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.N
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
@@ -60,7 +63,7 @@ class PlayingNotificationManger(private val service: MusicService) {
 
     @SuppressLint("ObsoleteSdkInt")
     fun setUpNotification() {
-        impl = if (!Setting.instance.classicNotification && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        impl = if (!SettingStore(service)[Keys.classicNotification].data && SDK_INT >= N) {
             Impl24()
         } else {
             Impl0()
@@ -83,7 +86,7 @@ class PlayingNotificationManger(private val service: MusicService) {
     }
 
     private fun postNotification(notification: OSNotification) {
-        when(service.isDestroyed) {
+        when (service.isDestroyed) {
             true  -> {
                 // service stopped
                 removeNotification()
@@ -166,7 +169,7 @@ class PlayingNotificationManger(private val service: MusicService) {
                             .setLargeIcon(bitmap)
                             .also { builder ->
                                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O &&
-                                    Setting.instance.coloredNotification
+                                    SettingStore(service)[Keys.coloredNotification].data
                                 ) {
                                     builder.color = paletteColor
                                 }
@@ -229,7 +232,7 @@ class PlayingNotificationManger(private val service: MusicService) {
                 if (bitmap != null) {
                     notificationLayout.setImageViewBitmap(R.id.image, bitmap)
                     notificationLayoutBig.setImageViewBitmap(R.id.image, bitmap)
-                    if (Setting.instance.coloredNotification) {
+                    if (SettingStore(service)[Keys.coloredNotification].data) {
                         setBackgroundColor(backgroundColor, notificationLayout, notificationLayoutBig)
                         setNotificationContent(backgroundColor, notificationLayout, notificationLayoutBig)
                     }
