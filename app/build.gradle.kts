@@ -36,7 +36,7 @@ android {
 
     defaultConfig {
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
 
         renderscriptTargetApi = 29
         vectorDrawables.useSupportLibrary = true
