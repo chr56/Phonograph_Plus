@@ -1,8 +1,5 @@
 package player.phonograph.ui.activities
 
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.WhichButton
-import com.afollestad.materialdialogs.actions.getActionButton
 import lib.phonograph.misc.menuProvider
 import mt.pref.ThemeColor.primaryColor
 import mt.tint.requireLightStatusbar
@@ -47,18 +44,6 @@ import kotlinx.coroutines.launch
  * Be careful when changing things in this Activity!
  */
 class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvider {
-
-    companion object {
-        const val TAG_EDITOR_REQUEST = 2001
-
-        private const val EXTRA_ALBUM_ID = "extra_album_id"
-        fun launchIntent(from: Context, albumId: Long): Intent =
-            Intent(from, AlbumDetailActivity::class.java).apply {
-                putExtra(EXTRA_ALBUM_ID, albumId)
-            }
-
-        private fun parseIntent(intent: Intent): Long = intent.extras?.getLong(EXTRA_ALBUM_ID) ?: -1
-    }
 
     private lateinit var viewBinding: ActivityAlbumDetailBinding
     private val model: AlbumDetailActivityViewModel by viewModels()
@@ -203,26 +188,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         tintMenuActionIcons(viewBinding.toolbar, menu, primaryTextColor(viewModel.activityColor.value))
     }
 
-    private var isWikiPreLoaded = false
-    private val wikiDialog: MaterialDialog by lazy(LazyThreadSafetyMode.NONE) {
-        MaterialDialog(this)
-            .title(null, album.title)
-            .message(R.string.loading)
-            .positiveButton(android.R.string.ok, null, null)
-            .apply {
-                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
-                getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
-            }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == TAG_EDITOR_REQUEST) {
-            load()
-            setResult(RESULT_OK)
-        }
-    }
-
     override fun onBackPressed() {
         viewBinding.recyclerView.stopScroll()
         super.onBackPressed()
@@ -238,4 +203,16 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         super.setStatusbarColor(color)
         requireLightStatusbar(false)
     }
+
+    companion object {
+
+        private const val EXTRA_ALBUM_ID = "extra_album_id"
+        fun launchIntent(from: Context, albumId: Long): Intent =
+            Intent(from, AlbumDetailActivity::class.java).apply {
+                putExtra(EXTRA_ALBUM_ID, albumId)
+            }
+
+        private fun parseIntent(intent: Intent): Long = intent.extras?.getLong(EXTRA_ALBUM_ID) ?: -1
+    }
+
 }
