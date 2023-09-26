@@ -33,7 +33,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
-import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -96,14 +95,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
             }
         with(viewBinding.albumRecycleView) {
             adapter = albumAdapter
-            layoutManager =
-                LinearLayoutManager(this@ArtistDetailActivity, HORIZONTAL, false)
-            albumAdapter.registerAdapterDataObserver(object : AdapterDataObserver() {
-                override fun onChanged() {
-                    super.onChanged()
-                    if (albumAdapter.itemCount == 0) finish()
-                }
-            })
+            layoutManager = LinearLayoutManager(this@ArtistDetailActivity, HORIZONTAL, false)
         }
 
         setColors(resolveColor(this, R.attr.defaultFooterColor))
