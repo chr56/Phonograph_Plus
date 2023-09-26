@@ -3,6 +3,8 @@ package player.phonograph.ui.activities.base
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import mt.tint.setNavigationBarColor
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import player.phonograph.R
 import player.phonograph.databinding.SlidingMusicPanelLayoutBinding
 import player.phonograph.model.NowPlayingScreen
@@ -14,7 +16,6 @@ import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.MiniPlayerFragment
 import player.phonograph.ui.fragments.player.card.CardPlayerFragment
 import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment
-import androidx.activity.viewModels
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.lifecycle.Lifecycle
@@ -47,11 +48,13 @@ abstract class AbsSlidingMusicPanelActivity :
     private var panelBinding: SlidingMusicPanelLayoutBinding? = null
     private val slidingUpPanelLayout: SlidingUpPanelLayout? get() = panelBinding?.slidingLayout
 
-    val viewModel: PanelViewModel by viewModels(factoryProducer = {
+    val viewModel: PanelViewModel by viewModel {
         val paletteColor = playerFragment?.paletteColorState?.value ?: 0
         val highlightColor = if (paletteColor > 0) paletteColor else getColor(R.color.defaultFooterColor)
-        PanelViewModel.Factory(this, primaryColor, highlightColor)
-    })
+        parametersOf(
+            primaryColor, highlightColor, getColor(R.color.defaultFooterColor)
+        )
+    }
 
     /**
      * See [wrapSlidingMusicPanel]

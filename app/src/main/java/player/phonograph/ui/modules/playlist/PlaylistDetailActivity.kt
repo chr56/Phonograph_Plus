@@ -20,6 +20,8 @@ import mt.tint.viewtint.setBackgroundTint
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryDisabledTextColor
 import mt.util.color.secondaryTextColor
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import player.phonograph.R
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
@@ -37,7 +39,6 @@ import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import util.phonograph.playlist.mediastore.moveItemViaMediastore
 import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
-import androidx.activity.viewModels
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
@@ -62,7 +63,7 @@ class PlaylistDetailActivity :
 
     private lateinit var binding: ActivityPlaylistDetailBinding
 
-    private val model: PlaylistModel by viewModels()
+    private val model: PlaylistDetailViewModel by viewModel { parametersOf(parseIntent(intent)) }
 
     private lateinit var adapter: PlaylistSongDisplayAdapter // init in OnCreate() -> setUpRecyclerView()
 
@@ -85,13 +86,6 @@ class PlaylistDetailActivity :
      * ********************/
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        val playlist = parseIntent(intent)
-        if (playlist == null) {
-            finish()
-        } else {
-            model.initPlaylist(playlist)
-        }
 
         binding = ActivityPlaylistDetailBinding.inflate(layoutInflater)
 

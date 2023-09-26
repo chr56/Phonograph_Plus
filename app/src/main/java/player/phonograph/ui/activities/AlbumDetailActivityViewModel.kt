@@ -4,45 +4,62 @@
 
 package player.phonograph.ui.activities
 
+import mt.pref.ThemeColor
+import player.phonograph.R
+import player.phonograph.coil.loadImage
+import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Album
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
+import android.widget.ImageView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 
-class AlbumDetailActivityViewModel : ViewModel() {
+class AlbumDetailActivityViewModel(val albumId: Long) : ViewModel() {
 
     var isRecyclerViewPrepared: Boolean = false
 
-    var albumId: Long = -1
-    private var _album: Album? = null
-    val album: Album get() = _album ?: Album()
+    private var _album: MutableStateFlow<Album> = MutableStateFlow(Album())
+    val album get() = _album.asStateFlow()
 
-    fun loadDataSet(
-        context: Context,
-        callback: (Album, List<Song>) -> Unit,
-    ) {
+    private var _songs:MutableStateFlow<List<Song>> = MutableStateFlow(emptyList())
+    val songs get() = _songs.asStateFlow()
+
+    fun loadDataSet(context: Context) {
         viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
 
-            _album = AlbumLoader.id(context, albumId)
-
+            val album = AlbumLoader.id(context, albumId)
             val songs: List<Song> = album.songs
-
-            while (!isRecyclerViewPrepared) yield() // wait until ready
-            withContext(Dispatchers.Main) {
-                if (isRecyclerViewPrepared) {
-                    callback(album, songs)
-                }
-            }
+            _album.emit(album)
+            _songs.emit(songs)
         }
     }
 
-    val paletteColor: MutableStateFlow<Int> = MutableStateFlow(0)
+    private val _paletteColor: MutableStateFlow<Int> = MutableStateFlow(0)
+    val paletteColor get() = _paletteColor.asStateFlow()
+
+    fun loadAlbumImage(context: Context, album: Album, imageView: ImageView) {
+        val defaultColor = ThemeColor.primaryColor(context)
+        loadImage(context)
+            .from(album.safeGetFirstSong())
+            .into(
+                PaletteTargetBuilder(defaultColor)
+                    .onResourceReady { result, color ->
+                        imageView.setImageDrawable(result)
+                        _paletteColor.tryEmit(color)
+                    }
+                    .onFail {
+                        imageView.setImageResource(R.drawable.default_album_art)
+                        _paletteColor.tryEmit(defaultColor)
+                    }
+                    .build()
+            )
+            .enqueue()
+    }
 }
