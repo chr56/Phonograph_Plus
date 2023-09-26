@@ -62,13 +62,8 @@ object NavigationUtil {
         context.startActivity(GenreDetailActivity.launchIntent(context, genre))
 
     @Suppress("UNUSED_PARAMETER")
-    fun goToPlaylist(context: Context, playlist: Playlist?, vararg sharedElements: Pair<*, *>?) {
-        context.startActivity(
-            Intent(context, PlaylistDetailActivity::class.java).apply {
-                putExtra(PlaylistDetailActivity.EXTRA_PLAYLIST, playlist)
-            }
-        )
-    }
+    fun goToPlaylist(context: Context, playlist: Playlist, vararg sharedElements: Pair<*, *>?) =
+        context.startActivity(PlaylistDetailActivity.launchIntent(context, playlist))
 
     fun openEqualizer(activity: Activity) {
         val sessionId = MusicPlayerRemote.audioSessionId
