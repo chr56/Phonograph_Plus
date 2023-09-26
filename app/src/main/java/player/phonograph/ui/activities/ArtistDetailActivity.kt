@@ -12,6 +12,8 @@ import mt.util.color.primaryTextColor
 import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
 import mt.util.color.toolbarTitleColor
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.actions.menu.artistDetailToolbar
@@ -47,7 +49,7 @@ import kotlinx.coroutines.launch
 class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvider {
 
     private lateinit var viewBinding: ActivityArtistDetailBinding
-    private lateinit var model: ArtistDetailActivityViewModel
+    private val model: ArtistDetailActivityViewModel by viewModel { parametersOf(parseIntent(intent)) }
 
     private lateinit var albumAdapter: HorizontalAlbumDisplayAdapter
     private lateinit var songAdapter: SongDisplayAdapter
@@ -65,8 +67,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val artistId = parseIntent(intent)
-        model = ArtistDetailActivityViewModel(artistId)
         viewBinding = ActivityArtistDetailBinding.inflate(layoutInflater)
         model.load(this)
 
