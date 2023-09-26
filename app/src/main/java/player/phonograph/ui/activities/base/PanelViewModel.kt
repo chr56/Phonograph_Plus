@@ -4,14 +4,10 @@
 
 package player.phonograph.ui.activities.base
 
-import player.phonograph.R
-import player.phonograph.coil.retriever.PARAMETERS_RAW
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.MiniPlayerFragment
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import android.content.Context
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -57,19 +53,4 @@ class PanelViewModel(
     val miniPlayerFragment: WeakReference<MiniPlayerFragment?> = WeakReference(null)
 
 
-    class Factory(
-        context: Context,
-        private val initialActivityColor: Int,
-        private val initialHighlightColor: Int,
-    ) : ViewModelProvider.Factory {
-        val defaultColor = context.getColor(R.color.defaultFooterColor)
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            @Suppress("UNCHECKED_CAST")
-            return PanelViewModel(
-                initialActivityColor = initialActivityColor,
-                initialHighlightColor = initialHighlightColor,
-                defaultColor
-            ) as T
-        }
-    }
 }
