@@ -21,6 +21,7 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.CrashActivity
+import player.phonograph.ui.moduleViewModels
 import player.phonograph.util.debug
 import android.app.Application
 import android.content.Context
@@ -94,7 +95,7 @@ class App : Application(), ImageLoaderFactory {
             androidLogger(if (DEBUG) Level.DEBUG else Level.WARNING)
             androidContext(this@App)
 
-            modules(moduleStatus, moduleLoaders)
+            modules(moduleStatus, moduleLoaders, moduleViewModels)
         }
     }
 
