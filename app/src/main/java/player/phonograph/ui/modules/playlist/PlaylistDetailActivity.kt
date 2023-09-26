@@ -43,6 +43,8 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -84,7 +86,7 @@ class PlaylistDetailActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val playlist = intent.extras?.parcelable<Playlist>(EXTRA_PLAYLIST)
+        val playlist = parseIntent(intent)
         if (playlist == null) {
             finish()
         } else {
@@ -441,6 +443,12 @@ class PlaylistDetailActivity :
 
     companion object {
         private const val TAG = "PlaylistDetail"
-        const val EXTRA_PLAYLIST = "extra_playlist"
+        private const val EXTRA_PLAYLIST = "extra_playlist"
+        fun launchIntent(from: Context, playlist: Playlist): Intent =
+            Intent(from, PlaylistDetailActivity::class.java).apply {
+                putExtra(EXTRA_PLAYLIST, playlist)
+            }
+
+        private fun parseIntent(intent: Intent) = intent.extras?.parcelable<Playlist>(EXTRA_PLAYLIST)
     }
 }
