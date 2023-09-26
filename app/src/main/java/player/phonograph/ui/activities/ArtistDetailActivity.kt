@@ -54,6 +54,11 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
             field = value
             Setting.instance.albumArtistColoredFooters = usePalette
             albumAdapter.usePalette = usePalette
+            val dataset = albumAdapter.dataset
+            synchronized(albumAdapter) {
+                albumAdapter.dataset = emptyList()
+                albumAdapter.dataset = dataset
+            }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
