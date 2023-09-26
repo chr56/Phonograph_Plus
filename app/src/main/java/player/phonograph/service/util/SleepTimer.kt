@@ -4,15 +4,16 @@
 
 package player.phonograph.service.util
 
+import player.phonograph.App
+import player.phonograph.service.MusicService
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
 import java.lang.ref.WeakReference
-import player.phonograph.App
-import player.phonograph.service.MusicService
-import player.phonograph.settings.Setting
 
 class SleepTimer private constructor(s: MusicService) {
     val reference: WeakReference<MusicService> = WeakReference(s)
@@ -36,7 +37,7 @@ class SleepTimer private constructor(s: MusicService) {
         val context: Context = reference.get() ?: return false
         return runCatching {
             val nextSleepTimerElapsedTime = SystemClock.elapsedRealtime() + minutesToQuit * 60 * 1000
-            Setting.instance.nextSleepTimerElapsedRealTime = nextSleepTimerElapsedTime
+            SettingStore(context)[Keys.nextSleepTimerElapsedRealTime].data = nextSleepTimerElapsedTime
 
             currentTimerPendingIntent = stopMusicServicePendingIntent(context, shouldFinishLastSong)
             alarmManager.set(

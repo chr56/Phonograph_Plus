@@ -13,7 +13,8 @@ import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.repo.mediastore.processQuery
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot
 import android.content.Context
 import android.os.Bundle
@@ -80,7 +81,7 @@ object MediaBrowserDelegate {
         return when (mediaId) {
             MEDIA_BROWSER_SONGS_FAVORITES  -> FavoritesStore.get().getAllSongs(context)
             MEDIA_BROWSER_SONGS_TOP_TRACKS -> TopTracksLoader.get().tracks(context)
-            MEDIA_BROWSER_SONGS_LAST_ADDED -> SongLoader.since(context, Setting.instance.lastAddedCutoffTimeStamp / 1000)
+            MEDIA_BROWSER_SONGS_LAST_ADDED -> SongLoader.since(context, lastAddedCutoffTimeStamp(context))
             MEDIA_BROWSER_SONGS_HISTORY    -> RecentlyPlayedTracksLoader.get().tracks(context)
 
             else                           -> {
@@ -149,4 +150,7 @@ object MediaBrowserDelegate {
         // fetchPackageSignatures(context, clientPackageName)
         return true
     }
+
+    private fun lastAddedCutoffTimeStamp(context: Context): Long =
+        SettingStore(context).Composites[Keys.lastAddedCutoffTimeStamp].data / 1000
 }

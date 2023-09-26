@@ -13,7 +13,9 @@ class SettingStore(val context: Context) {
         PrimitivePreference(key, context)
 
     @Suppress("PropertyName")
-    val Composites = object {
+    val Composites = CompositesSettingStore()
+
+    inner class CompositesSettingStore {
         operator fun <T> get(key: CompositeKey<T>): CompositePreference<T> =
             CompositePreference(key, context)
     }

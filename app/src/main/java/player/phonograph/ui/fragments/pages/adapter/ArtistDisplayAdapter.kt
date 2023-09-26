@@ -10,7 +10,8 @@ import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Artist
 import player.phonograph.model.sort.SortRef
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
@@ -27,8 +28,9 @@ class ArtistDisplayAdapter(
 
     override fun getSectionNameImp(position: Int): String {
         val artist = dataset[position]
+        val sortMode = SettingStore(activity).Composites[Keys.artistSortMode].data
         val sectionName: String =
-            when (Setting.instance.artistSortMode.sortRef) {
+            when (sortMode.sortRef) {
                 SortRef.ARTIST_NAME -> makeSectionName(artist.name)
                 SortRef.ALBUM_COUNT -> artist.albumCount.toString()
                 SortRef.SONG_COUNT  -> artist.songCount.toString()

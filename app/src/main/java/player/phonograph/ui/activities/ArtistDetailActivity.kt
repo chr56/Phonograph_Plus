@@ -12,6 +12,7 @@ import mt.util.color.primaryTextColor
 import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
 import mt.util.color.toolbarTitleColor
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.actions.menu.artistDetailToolbar
 import player.phonograph.coil.CustomArtistImageStore
@@ -23,7 +24,8 @@ import player.phonograph.model.albumCountString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.theme.getTintedDrawable
@@ -49,10 +51,10 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
     private lateinit var albumAdapter: HorizontalAlbumDisplayAdapter
     private lateinit var songAdapter: SongDisplayAdapter
 
-    private var usePalette = Setting.instance.albumArtistColoredFooters
+    private var usePalette = SettingStore(App.instance)[Keys.albumArtistColoredFooters].data
         set(value) {
             field = value
-            Setting.instance.albumArtistColoredFooters = usePalette
+            SettingStore(App.instance)[Keys.albumArtistColoredFooters].data = usePalette
             albumAdapter.usePalette = usePalette
             val dataset = albumAdapter.dataset
             synchronized(albumAdapter) {

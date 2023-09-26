@@ -10,7 +10,8 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
 import player.phonograph.actions.click.mode.SongClickMode
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import player.phonograph.ui.compose.BridgeDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.DialogContent
@@ -63,13 +64,12 @@ class ClickModeSettingDialog : BridgeDialogFragment() {
 @Composable
 private fun ClickModeSettingDialogContent(context: Context) {
     Column {
-
         val currentMode = remember {
-            mutableStateOf(Setting.instance.songItemClickMode)
+            mutableStateOf(SettingStore(context)[Keys.songItemClickMode].data)
         }
         val setCurrentMode = { new: Int ->
             currentMode.value = new
-            Setting.instance.songItemClickMode = new
+            SettingStore(context)[Keys.songItemClickMode].data = new
         }
         for (id in SongClickMode.baseModes) {
             ModeRadioBox(
@@ -83,7 +83,7 @@ private fun ClickModeSettingDialogContent(context: Context) {
         Spacer(Modifier.height(8.dp))
 
         val currentExtraFlag = remember {
-            mutableStateOf(Setting.instance.songItemClickExtraFlag)
+            mutableStateOf(SettingStore(context)[Keys.songItemClickExtraFlag].data)
         }
         val flipExtraFlagBit = { mask: Int ->
             val new = if (currentExtraFlag.value.testBit(mask)) {
@@ -92,7 +92,7 @@ private fun ClickModeSettingDialogContent(context: Context) {
                 currentExtraFlag.value.setBit(mask)
             }
             currentExtraFlag.value = new
-            Setting.instance.songItemClickExtraFlag = new
+            SettingStore(context)[Keys.songItemClickExtraFlag].data = new
         }
 
         FlagCheckBox(

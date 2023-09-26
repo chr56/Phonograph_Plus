@@ -16,7 +16,8 @@ import player.phonograph.settings.BROADCAST_CURRENT_PLAYER_STATE
 import player.phonograph.settings.CLASSIC_NOTIFICATION
 import player.phonograph.settings.COLORED_NOTIFICATION
 import player.phonograph.settings.GAPLESS_PLAYBACK
-import player.phonograph.settings.SettingFlowStore
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import player.phonograph.util.permissions.NonGrantedPermission
 import player.phonograph.util.permissions.checkStorageReadPermission
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -85,21 +86,21 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
             }
         }
 
-        val store = SettingFlowStore(this)
+        val store = SettingStore(this)
         observe {
-            store.gaplessPlayback.distinctUntilChanged()
+            store[Keys.gaplessPlayback].flow.distinctUntilChanged()
                 .collect { MusicPlayerRemote.musicService?.updateSetting(GAPLESS_PLAYBACK, it) }
         }
         observe {
-            store.coloredNotification.distinctUntilChanged()
+            store[Keys.coloredNotification].flow.distinctUntilChanged()
                 .collect { MusicPlayerRemote.musicService?.updateSetting(COLORED_NOTIFICATION, it) }
         }
         observe {
-            store.broadcastCurrentPlayerState.distinctUntilChanged()
+            store[Keys.broadcastCurrentPlayerState].flow.distinctUntilChanged()
                 .collect { MusicPlayerRemote.musicService?.updateSetting(BROADCAST_CURRENT_PLAYER_STATE, it) }
         }
         observe {
-            store.classicNotification.distinctUntilChanged()
+            store[Keys.classicNotification].flow.distinctUntilChanged()
                 .collect { MusicPlayerRemote.musicService?.updateSetting(CLASSIC_NOTIFICATION, it) }
         }
     }

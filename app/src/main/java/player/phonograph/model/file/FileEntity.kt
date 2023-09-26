@@ -4,8 +4,10 @@
 
 package player.phonograph.model.file
 
+import player.phonograph.App
 import player.phonograph.model.sort.SortRef
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 
 /**
  * Presenting a file
@@ -21,7 +23,8 @@ sealed class FileEntity(
         return if ((this is Folder) xor (other is Folder)) {
             if (this is Folder) -1 else 1
         } else {
-            when (Setting.instance.fileSortMode.sortRef) {
+            val preference = SettingStore(App.instance).Composites[Keys.fileSortMode]
+            when (preference.data.sortRef) {
                 SortRef.MODIFIED_DATE -> dateModified.compareTo(other.dateModified)
                 SortRef.ADDED_DATE    -> dateAdded.compareTo(other.dateAdded)
                 SortRef.SIZE          -> {
@@ -31,7 +34,7 @@ sealed class FileEntity(
 
                 else                  -> name.compareTo(other.name)
             }.let {
-                if (Setting.instance.fileSortMode.revert) -it else it
+                if (preference.data.revert) -it else it
             }
         }
     }

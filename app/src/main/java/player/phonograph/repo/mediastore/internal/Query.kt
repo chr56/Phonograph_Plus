@@ -5,7 +5,8 @@
 package player.phonograph.repo.mediastore.internal
 
 import legacy.phonograph.MediaStoreCompat
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import player.phonograph.util.reportError
 import android.content.Context
 import android.database.Cursor
@@ -22,7 +23,7 @@ fun querySongs(
     context: Context,
     selection: String = "",
     selectionValues: Array<String> = emptyArray(),
-    sortOrder: String? = Setting.instance.songSortMode.SQLQuerySortOrder,
+    sortOrder: String? = defaultSortOrder(context),
     withoutPathFilter: Boolean = false,
 ): Cursor? = queryAudio(
     context,
@@ -41,7 +42,7 @@ fun querySongFiles(
     context: Context,
     selection: String = "",
     selectionValues: Array<String> = emptyArray(),
-    sortOrder: String? = Setting.instance.songSortMode.SQLQuerySortOrder,
+    sortOrder: String? = defaultSortOrder(context),
 ): Cursor? = queryAudio(
     context,
     BASE_FILE_PROJECTION,
@@ -59,7 +60,7 @@ fun queryAudio(
     projection: Array<String>,
     selection: String = "",
     selectionValues: Array<String> = emptyArray(),
-    sortOrder: String? = Setting.instance.songSortMode.SQLQuerySortOrder,
+    sortOrder: String? = defaultSortOrder(context),
     withoutPathFilter: Boolean,
 ): Cursor? {
 
@@ -118,3 +119,6 @@ const val BASE_AUDIO_SELECTION =
 
 const val BASE_PLAYLIST_SELECTION =
     "${MediaStoreCompat.Audio.PlaylistsColumns.NAME} != '' "
+
+private fun defaultSortOrder(context: Context) =
+    SettingStore(context).Composites[Keys.songSortMode].data.SQLQuerySortOrder

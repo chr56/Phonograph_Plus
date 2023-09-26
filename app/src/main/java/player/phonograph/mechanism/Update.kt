@@ -6,6 +6,7 @@ package player.phonograph.mechanism
 
 import okhttp3.Request
 import okhttp3.Response
+import player.phonograph.App
 import player.phonograph.BuildConfig
 import player.phonograph.UpdateConfig.requestUriBitBucket
 import player.phonograph.UpdateConfig.requestUriCodeberg
@@ -13,7 +14,8 @@ import player.phonograph.UpdateConfig.requestUriFastGit
 import player.phonograph.UpdateConfig.requestUriGitHub
 import player.phonograph.UpdateConfig.requestUriJsdelivr
 import player.phonograph.model.version.VersionCatalog
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import player.phonograph.util.NetworkUtil.invokeRequest
 import player.phonograph.util.debug
 import player.phonograph.util.text.dateText
@@ -34,7 +36,7 @@ object Update {
 
     /**
      * check update from repositories
-     * @param force override [Setting.ignoreUpgradeDate]
+     * @param force override [Keys.ignoreUpgradeDate]
      * @param callback execute if [VersionCatalog] is fetched successfully
      */
     suspend fun checkUpdate(
@@ -141,7 +143,7 @@ private suspend fun processResponse(response: Response): VersionCatalog? {
 
 /**
  * check if the current is outdated
- * @param force override [Setting.ignoreUpgradeDate]
+ * @param force override [Keys.ignoreUpgradeDate]
  * @return true if new versions available
  */
 @Suppress("KotlinConstantConditions")
@@ -159,7 +161,7 @@ private fun checkUpgradable(versionCatalog: VersionCatalog, force: Boolean): Boo
     }
 
     // check if ignored
-    val ignoredDate = Setting.instance.ignoreUpgradeDate
+    val ignoredDate = SettingStore(App.instance)[Keys.ignoreUpgradeDate].data
     val latestVersionByTime = versionCatalog.currentLatestChannelVersionBy { it.date }
     if (ignoredDate >= latestVersionByTime.date && !force) {
         Log.d(TAG, "ignore this upgrade: ${latestVersionByTime.date}(${dateText(latestVersionByTime.date)})")

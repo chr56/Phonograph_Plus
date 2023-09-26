@@ -11,7 +11,8 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.database.FavoritesStore
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
@@ -27,7 +28,8 @@ class PlaylistDisplayAdapter(
 ) : DisplayAdapter<Playlist>(activity, ArrayList(), R.layout.item_list_single_row) {
 
     override fun getSectionNameImp(position: Int): String {
-        return when (Setting.instance.genreSortMode.sortRef) {
+        val sortMode = SettingStore(activity).Composites[Keys.playlistSortMode].data
+        return when (sortMode.sortRef) {
             SortRef.DISPLAY_NAME -> makeSectionName(dataset[position].name)
             else                 -> ""
         }

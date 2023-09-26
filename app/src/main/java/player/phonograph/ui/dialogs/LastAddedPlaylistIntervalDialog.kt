@@ -13,7 +13,8 @@ import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.time.TimeUnit
 import player.phonograph.model.time.displayText
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import player.phonograph.ui.compose.BridgeDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.WheelPicker
@@ -45,11 +46,18 @@ class LastAddedPlaylistIntervalDialog : BridgeDialogFragment() {
     @Composable
     override fun Content() {
         val dialogState = rememberMaterialDialogState(true)
+        val context = LocalContext.current
         var currentlySelectedMode: TimeIntervalCalculationMode by remember {
-            mutableStateOf(Setting.instance.lastAddedCutOffMode)
+            val preference = SettingStore(context)[Keys._lastAddedCutOffMode]
+            val mode = (TimeIntervalCalculationMode.from(preference.data)
+                ?: TimeIntervalCalculationMode.from(Keys._lastAddedCutOffMode.defaultValue()))!!
+            mutableStateOf(mode)
         }
         var currentlySelected: Duration by remember {
-            mutableStateOf(Setting.instance.lastAddedCutOffDuration)
+            val preference = SettingStore(context)[Keys._lastAddedCutOffDuration]
+            val duration =
+                Duration.from(preference.data) ?: Duration.from(Keys._lastAddedCutOffDuration.defaultValue())!!
+            mutableStateOf(duration)
         }
 
 
@@ -57,7 +65,7 @@ class LastAddedPlaylistIntervalDialog : BridgeDialogFragment() {
             remember { snapshotFlow { currentlySelectedMode to currentlySelected } }
 
 
-        val resources = LocalContext.current.resources
+        val resources = context.resources
         var text by remember { mutableStateOf("") }
         LaunchedEffect(dialogState) {
             flow.collect { (calculationMode, duration) ->
@@ -78,8 +86,8 @@ class LastAddedPlaylistIntervalDialog : BridgeDialogFragment() {
                     positiveButton(res = android.R.string.ok) {
                         dismiss()
                         synchronized(this) {
-                            Setting.instance.lastAddedCutOffMode = currentlySelectedMode
-                            Setting.instance.lastAddedCutOffDuration = currentlySelected
+                            SettingStore(context)[Keys._lastAddedCutOffMode].data = currentlySelectedMode.value
+                            SettingStore(context)[Keys._lastAddedCutOffDuration].data = currentlySelected.serialise()
                         }
                     }
                 }

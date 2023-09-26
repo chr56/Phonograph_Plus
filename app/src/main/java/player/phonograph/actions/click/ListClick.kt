@@ -4,6 +4,7 @@
 
 package player.phonograph.actions.click
 
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -11,10 +12,10 @@ import player.phonograph.model.Displayable
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import player.phonograph.util.NavigationUtil
 import androidx.core.util.Pair
-import android.app.Activity
 import android.content.Context
 import android.widget.ImageView
 
@@ -35,8 +36,9 @@ fun <T : Displayable> listClick(
     if (list.isEmpty()) return false
     when (list.firstOrNull()) {
         is Song     -> {
-            val base = Setting.instance.songItemClickMode
-            val extra = Setting.instance.songItemClickExtraFlag
+            val settingStore = SettingStore(App.instance)
+            val base = settingStore[Keys.songItemClickMode].data
+            val extra = settingStore[Keys.songItemClickExtraFlag].data
             songClick(list.filterIsInstance<Song>(), position, base, extra)
         }
         is Album    -> {

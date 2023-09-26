@@ -4,8 +4,10 @@
 
 package player.phonograph.actions.click.mode
 
+import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import android.content.res.Resources
 
 @Suppress("MemberVisibilityCanBePrivate")
@@ -60,10 +62,10 @@ object SongClickMode {
 
 
     fun resetBaseMode() {
-        Setting.instance.songItemClickMode = SONG_PLAY_NOW
+        SettingStore(App.instance)[Keys.songItemClickMode].data = SONG_PLAY_NOW
     }
 
     fun resetExtraMode() {
-        Setting.instance.songItemClickExtraFlag = FLAG_MASK_PLAY_QUEUE_IF_EMPTY
+        SettingStore(App.instance)[Keys.songItemClickExtraFlag].data = FLAG_MASK_PLAY_QUEUE_IF_EMPTY
     }
 }

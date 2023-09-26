@@ -11,7 +11,8 @@ import player.phonograph.repo.mediastore.internal.SQLWhereClause
 import player.phonograph.repo.mediastore.internal.withBasePlaylistFilter
 import player.phonograph.repo.mediastore.internal.withPathFilter
 import player.phonograph.repo.mediastore.playlist.FilePlaylistImpl
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
@@ -23,7 +24,7 @@ import android.provider.MediaStore.VOLUME_EXTERNAL
 object PlaylistLoader : Loader<FilePlaylist> {
 
     override fun all(context: Context): List<FilePlaylist> =
-        queryPlaylists(context, null, null).intoPlaylists().sortAll()
+        queryPlaylists(context, null, null).intoPlaylists().sortAll(context)
 
     override fun id(context: Context, id: Long): FilePlaylist =
         queryPlaylists(context, BaseColumns._ID + "=?", arrayOf(id.toString())).intoFirstPlaylist()
@@ -140,9 +141,10 @@ object PlaylistLoader : Loader<FilePlaylist> {
 
 
 
-    private fun List<FilePlaylist>.sortAll(): List<FilePlaylist> {
-        val revert = Setting.instance.playlistSortMode.revert
-        return when (Setting.instance.playlistSortMode.sortRef) {
+    private fun List<FilePlaylist>.sortAll(context: Context): List<FilePlaylist> {
+        val sortMode = SettingStore(context).Composites[Keys.playlistSortMode].data
+        val revert = sortMode.revert
+        return when (sortMode.sortRef) {
             SortRef.DISPLAY_NAME  -> this.sort(revert) { it.name }
             SortRef.PATH          -> this.sort(revert) { it.associatedFilePath }
             SortRef.ADDED_DATE    -> this.sort(revert) { it.dateAdded }

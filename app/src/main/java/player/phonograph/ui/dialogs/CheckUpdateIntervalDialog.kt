@@ -8,11 +8,13 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.customView
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeUnit
 import player.phonograph.model.time.displayText
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import player.phonograph.ui.compose.BridgeDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.WheelPicker
@@ -41,12 +43,15 @@ import java.util.Locale
 class CheckUpdateIntervalDialog : BridgeDialogFragment() {
     @Composable
     override fun Content() {
-        var duration: Duration by remember { mutableStateOf(Setting.instance.checkUpdateInterval) }
+        val context = LocalContext.current
+        var duration: Duration by remember {
+            mutableStateOf(SettingStore(context).Composites[Keys.checkUpdateInterval].data)
+        }
         PhonographTheme {
             val dialogState = rememberMaterialDialogState(true)
             var text by remember { mutableStateOf("") }
             val flow = snapshotFlow { duration }
-            val resources = LocalContext.current.resources
+            val resources = context.resources
             LaunchedEffect(dialogState) {
                 flow.collect {
                     text = previewText(resources, it)
@@ -60,7 +65,7 @@ class CheckUpdateIntervalDialog : BridgeDialogFragment() {
                     positiveButton(res = android.R.string.ok) {
                         dismiss()
                         synchronized(this) {
-                            Setting.instance.checkUpdateInterval = duration
+                            SettingStore(App.instance).Composites[Keys.checkUpdateInterval].data = duration
                         }
                     }
                 }

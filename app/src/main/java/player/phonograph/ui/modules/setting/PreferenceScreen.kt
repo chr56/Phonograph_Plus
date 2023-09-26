@@ -25,6 +25,8 @@ import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.mechanism.setting.StyleConfig
 import player.phonograph.mechanism.setting.StyleConfig.THEME_AUTO
+import player.phonograph.model.time.Duration
+import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.time.displayText
 import player.phonograph.settings.*
 import player.phonograph.ui.compose.components.ColorCircle
@@ -156,7 +158,8 @@ fun PhonographPreferenceScreen() {
                     titleRes = R.string.path_filter,
                     currentValueForHint = { context ->
                         with(context) {
-                            if (Setting.instance.pathFilterExcludeMode) {
+                            val preference = SettingStore(context)[Keys.pathFilterExcludeMode]
+                            if (preference.data) {
                                 "${getString(R.string.path_filter_excluded_mode)} - \n${getString(R.string.pref_summary_path_filter_excluded_mode)}"
                             } else {
                                 "${getString(R.string.path_filter_included_mode)} - \n${getString(R.string.pref_summary_path_filter_included_mode)}"
@@ -169,16 +172,24 @@ fun PhonographPreferenceScreen() {
                 model = DialogPreferenceModel(
                     dialog = LastAddedPlaylistIntervalDialog::class.java,
                     titleRes = R.string.pref_title_last_added_interval,
-                    currentValueForHint = {
-                        val resources = it.resources
-                        val calculationMode = Setting.instance.lastAddedCutOffMode
-                        val duration = Setting.instance.lastAddedCutOffDuration
-                        resources.getString(
-                            R.string.time_interval_text,
-                            calculationMode.displayText(resources),
-                            duration.value,
-                            duration.unit.displayText(resources)
-                        )
+                    currentValueForHint = { context ->
+                        val resources = context.resources
+                        val settingStore = SettingStore(context)
+                        val calculationMode =
+                            settingStore[Keys._lastAddedCutOffMode].data
+                                .let(TimeIntervalCalculationMode.Companion::from)
+                        val duration =
+                            settingStore[Keys._lastAddedCutOffDuration].data
+                                .let(Duration.Companion::from)
+                        if (calculationMode != null && duration != null)
+                            resources.getString(
+                                R.string.time_interval_text,
+                                calculationMode.displayText(resources),
+                                duration.value,
+                                duration.unit.displayText(resources)
+                            )
+                        else
+                            resources.getString(R.string._default)
                     }
                 )
             )
@@ -344,7 +355,8 @@ fun PhonographPreferenceScreen() {
                     R.string.pref_title_check_upgrade_interval,
                 ) {
                     val resources = it.resources
-                    val duration = Setting.instance.checkUpdateInterval
+                    val preference = SettingStore(it).Composites[Keys.checkUpdateInterval]
+                    val duration = preference.data
                     resources.getString(
                         R.string.time_interval_text,
                         resources.getString(R.string.interval_every),

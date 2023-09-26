@@ -12,6 +12,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import lib.phonograph.misc.menuProvider
 import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
+import player.phonograph.App
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.databinding.FragmentHomeBinding
@@ -19,8 +20,8 @@ import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.PageConfig
 import player.phonograph.model.pages.Pages
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.settings.Setting
-import player.phonograph.settings.SettingFlowStore
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.AbsPage
@@ -55,20 +56,20 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val store = SettingFlowStore(requireContext())
+        val store = SettingStore(requireContext())
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                store.homeTabConfigJsonString.distinctUntilChanged().collect {
+                store[Keys.homeTabConfigJsonString].flow.distinctUntilChanged().collect {
                     withStarted { reloadPages() }
                 }
             }
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                store.rememberLastTab.distinctUntilChanged().collect { rememberLastTab ->
+                store[Keys.rememberLastTab].flow.distinctUntilChanged().collect { rememberLastTab ->
                     withStarted {
                         if (rememberLastTab) {
-                            val last = Setting.instance.lastPage
+                            val last = SettingStore(requireContext())[Keys.lastPage].data
                             binding.pager.currentItem = last
                             mainActivity.switchPageChooserTo(last)
                         }
@@ -78,7 +79,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                store.fixedTabLayout.distinctUntilChanged().collect { fixedTabLayout ->
+                store[Keys.fixedTabLayout].flow.distinctUntilChanged().collect { fixedTabLayout ->
                     withStarted {
                         binding.tabs.tabMode = if (fixedTabLayout) TabLayout.MODE_FIXED else TabLayout.MODE_SCROLLABLE
                     }
@@ -170,7 +171,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
     private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
-            Setting.instance.lastPage = position
+            SettingStore(App.instance)[Keys.lastPage].data = position
             mainActivity.switchPageChooserTo(position)
             super.onPageSelected(position)
         }

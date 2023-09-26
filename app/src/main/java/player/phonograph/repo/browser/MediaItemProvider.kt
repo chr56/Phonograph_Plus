@@ -14,7 +14,8 @@ import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import androidx.annotation.DrawableRes
 import android.content.ContentResolver
 import android.content.Context
@@ -112,7 +113,7 @@ object MediaItemProvider {
 
     fun browseLastAdded(context: Context): List<MediaItem> {
         return listOf(selectAllItem(context.resources, MEDIA_BROWSER_SONGS_FAVORITES)) +
-                SongLoader.since(context, Setting.instance.lastAddedCutoffTimeStamp / 1000).map { it.toMediaItem() }
+                SongLoader.since(context, lastAddedCutoffTimeStamp(context)).map { it.toMediaItem() }
     }
 
     fun browseHistory(context: Context): List<MediaItem> {
@@ -147,4 +148,7 @@ object MediaItemProvider {
             .appendPath(res.getResourceTypeName(resourceId))
             .appendPath(res.getResourceEntryName(resourceId))
             .build()
+
+    private fun lastAddedCutoffTimeStamp(context: Context): Long =
+        SettingStore(context).Composites[Keys.lastAddedCutoffTimeStamp].data / 1000
 }

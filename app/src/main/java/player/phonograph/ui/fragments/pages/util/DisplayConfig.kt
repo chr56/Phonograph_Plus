@@ -8,8 +8,8 @@ package player.phonograph.ui.fragments.pages.util
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.sort.SortMode
-import player.phonograph.model.sort.SortRef
-import player.phonograph.settings.Setting
+import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingStore
 import player.phonograph.settings.dataStore
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.AlbumPage
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.ArtistPage
@@ -79,26 +79,24 @@ class DisplayConfig internal constructor(private val page: DisplayConfigTarget) 
 
     var sortMode: SortMode
         get() {
-            val pref = Setting.instance
-            return when (page) {
-                is SongPage     -> pref.songSortMode
-                is AlbumPage    -> pref.albumSortMode
-                is ArtistPage   -> pref.artistSortMode
-                is GenrePage    -> pref.genreSortMode
-                is PlaylistPage -> pref.playlistSortMode
-                else            -> SortMode(SortRef.ID)
-            }
+            val settingStore = SettingStore(App.instance).Composites
+            return settingStore[when (page) {
+                is SongPage     -> Keys.songSortMode
+                is AlbumPage    -> Keys.albumSortMode
+                is ArtistPage   -> Keys.artistSortMode
+                is GenrePage    -> Keys.genreSortMode
+                is PlaylistPage -> Keys.playlistSortMode
+            }].data
         }
         set(value) {
-            val pref = Setting.instance
-            when (page) {
-                is SongPage   -> pref.songSortMode = value
-                is AlbumPage  -> pref.albumSortMode = value
-                is ArtistPage -> pref.artistSortMode = value
-                is GenrePage  -> pref.genreSortMode = value
-                PlaylistPage  -> pref.playlistSortMode = value
-                else          -> {}
-            }
+            val settingStore = SettingStore(App.instance).Composites
+            settingStore[when (page) {
+                is SongPage     -> Keys.songSortMode
+                is AlbumPage    -> Keys.albumSortMode
+                is ArtistPage   -> Keys.artistSortMode
+                is GenrePage    -> Keys.genreSortMode
+                is PlaylistPage -> Keys.playlistSortMode
+            }].data = value
         }
 
     /**
