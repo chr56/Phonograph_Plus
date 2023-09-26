@@ -35,6 +35,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -64,7 +65,8 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        model = ArtistDetailActivityViewModel(intent.extras!!.getLong(EXTRA_ARTIST_ID))
+        val artistId = parseIntent(intent)
+        model = ArtistDetailActivityViewModel(artistId)
         viewBinding = ActivityArtistDetailBinding.inflate(layoutInflater)
         model.load(this)
 
@@ -239,6 +241,13 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
 
     companion object {
         const val REQUEST_CODE_SELECT_IMAGE = 1000
-        const val EXTRA_ARTIST_ID = "extra_artist_id"
+        private const val EXTRA_ARTIST_ID = "extra_artist_id"
+
+        fun launchIntent(from: Context, artistId: Long): Intent =
+            Intent(from, ArtistDetailActivity::class.java).apply {
+                putExtra(EXTRA_ARTIST_ID, artistId)
+            }
+
+        private fun parseIntent(intent: Intent): Long = intent.extras?.getLong(EXTRA_ARTIST_ID) ?: -1
     }
 }

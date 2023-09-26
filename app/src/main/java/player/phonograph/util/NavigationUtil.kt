@@ -23,22 +23,17 @@ import android.widget.Toast
  */
 object NavigationUtil {
 
-    fun goToArtist(context: Context, artistId: Long) {
-        context.startActivity(
-            Intent(context.applicationContext, ArtistDetailActivity::class.java)
-                .apply { putExtra(ArtistDetailActivity.EXTRA_ARTIST_ID, artistId) }
-        )
-    }
+    fun goToArtist(context: Context, artistId: Long) =
+        context.startActivity(ArtistDetailActivity.launchIntent(context.applicationContext, artistId))
 
     fun goToArtist(context: Context, artistId: Long, vararg sharedElements: Pair<View, String>) {
-        val intent =
-            Intent(context.applicationContext, ArtistDetailActivity::class.java)
-                .apply { putExtra(ArtistDetailActivity.EXTRA_ARTIST_ID, artistId) }
+        val intent = ArtistDetailActivity.launchIntent(context.applicationContext, artistId)
         if (sharedElements.isNotEmpty() && context is Activity) {
-            context.startActivity(intent,
-                                  ActivityOptionsCompat
-                                      .makeSceneTransitionAnimation(context, *sharedElements)
-                                      .toBundle()
+            context.startActivity(
+                intent,
+                ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(context, *sharedElements)
+                    .toBundle()
             )
         } else {
             context.startActivity(intent)
