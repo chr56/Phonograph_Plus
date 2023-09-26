@@ -63,7 +63,7 @@ class PlaylistDetailActivity :
 
     private lateinit var binding: ActivityPlaylistDetailBinding
 
-    private val model: PlaylistModel by viewModel { parametersOf(parseIntent(intent)) }
+    private val model: PlaylistDetailViewModel by viewModel { parametersOf(parseIntent(intent)) }
 
     private lateinit var adapter: PlaylistSongDisplayAdapter // init in OnCreate() -> setUpRecyclerView()
 

@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @Suppress("LocalVariableName")
-class PlaylistModel( _playlist: Playlist) : ViewModel() {
+class PlaylistDetailViewModel( _playlist: Playlist) : ViewModel() {
 
 
     private val _playlist: MutableStateFlow<Playlist> = MutableStateFlow(_playlist)

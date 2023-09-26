@@ -34,7 +34,7 @@ import android.view.MenuItem
 fun playlistDetailToolbar(
     menu: Menu,
     context: Context,
-    model: PlaylistModel,
+    model: PlaylistDetailViewModel,
     @ColorInt iconColor: Int,
 ) =
     context.run {
