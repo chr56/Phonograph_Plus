@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
@@ -25,8 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 
-class GenreDetailActivity :
-        AbsSlidingMusicPanelActivity() {
+class GenreDetailActivity : AbsSlidingMusicPanelActivity() {
 
     private var _viewBinding: ActivityGenreDetailBinding? = null
     private val binding: ActivityGenreDetailBinding get() = _viewBinding!!
@@ -35,9 +35,7 @@ class GenreDetailActivity :
     private lateinit var adapter: SongDisplayAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        genre = intent.extras?.parcelable(EXTRA_GENRE) ?: throw Exception(
-            "No genre in the intent!"
-        )
+        genre = parseIntent(intent) ?: throw IllegalArgumentException()
         loadDataSet(this)
         _viewBinding = ActivityGenreDetailBinding.inflate(layoutInflater)
 
@@ -116,13 +114,13 @@ class GenreDetailActivity :
         _viewBinding = null
     }
 
-    /* *******************
-     *
-     *     cabCallBack
-     *
-     * *******************/
-
     companion object {
-        const val EXTRA_GENRE = "extra_genre"
+        private const val EXTRA_GENRE = "extra_genre"
+        fun launchIntent(from: Context, genre: Genre): Intent =
+            Intent(from, GenreDetailActivity::class.java).apply {
+                putExtra(EXTRA_GENRE, genre)
+            }
+
+        private fun parseIntent(intent: Intent) = intent.extras?.parcelable<Genre>(EXTRA_GENRE)
     }
 }

@@ -58,14 +58,8 @@ object NavigationUtil {
     }
 
     @Suppress("UNUSED_PARAMETER")
-    fun goToGenre(context: Context, genre: Genre?, vararg sharedElements: Pair<*, *>?) {
-        context.startActivity(
-            Intent(context, GenreDetailActivity::class.java)
-                .apply {
-                    putExtra(GenreDetailActivity.EXTRA_GENRE, genre)
-                }
-        )
-    }
+    fun goToGenre(context: Context, genre: Genre, vararg sharedElements: Pair<*, *>?) =
+        context.startActivity(GenreDetailActivity.launchIntent(context, genre))
 
     @Suppress("UNUSED_PARAMETER")
     fun goToPlaylist(context: Context, playlist: Playlist?, vararg sharedElements: Pair<*, *>?) {
