@@ -34,6 +34,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -49,7 +50,14 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
 
     companion object {
         const val TAG_EDITOR_REQUEST = 2001
-        const val EXTRA_ALBUM_ID = "extra_album_id"
+
+        private const val EXTRA_ALBUM_ID = "extra_album_id"
+        fun launchIntent(from: Context, albumId: Long): Intent =
+            Intent(from, AlbumDetailActivity::class.java).apply {
+                putExtra(EXTRA_ALBUM_ID, albumId)
+            }
+
+        private fun parseIntent(intent: Intent): Long = intent.extras?.getLong(EXTRA_ALBUM_ID) ?: -1
     }
 
     private lateinit var viewBinding: ActivityAlbumDetailBinding
@@ -58,7 +66,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
     private lateinit var adapter: SongDisplayAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val albumID = intent.extras!!.getLong(EXTRA_ALBUM_ID)
+        val albumID = parseIntent(intent)
         model.albumId = albumID
         load()
 

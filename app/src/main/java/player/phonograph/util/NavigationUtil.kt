@@ -40,22 +40,17 @@ object NavigationUtil {
         }
     }
 
-    fun goToAlbum(context: Context, albumId: Long) {
-        context.startActivity(
-            Intent(context.applicationContext, AlbumDetailActivity::class.java)
-                .apply { putExtra(AlbumDetailActivity.EXTRA_ALBUM_ID, albumId) }
-        )
-    }
+    fun goToAlbum(context: Context, albumId: Long) =
+        context.startActivity(AlbumDetailActivity.launchIntent(context.applicationContext, albumId))
 
     fun goToAlbum(context: Context, albumId: Long, vararg sharedElements: Pair<View, String>) {
-        val intent =
-            Intent(context.applicationContext, AlbumDetailActivity::class.java)
-                .apply { putExtra(AlbumDetailActivity.EXTRA_ALBUM_ID, albumId) }
+        val intent = AlbumDetailActivity.launchIntent(context.applicationContext, albumId)
         if (sharedElements.isNotEmpty() && context is Activity) {
-            context.startActivity(intent,
-                                  ActivityOptionsCompat
-                                      .makeSceneTransitionAnimation(context, *sharedElements)
-                                      .toBundle()
+            context.startActivity(
+                intent,
+                ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(context, *sharedElements)
+                    .toBundle()
             )
         } else {
             context.startActivity(intent)
