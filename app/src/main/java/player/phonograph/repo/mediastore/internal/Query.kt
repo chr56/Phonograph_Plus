@@ -6,7 +6,7 @@ package player.phonograph.repo.mediastore.internal
 
 import legacy.phonograph.MediaStoreCompat
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.util.reportError
 import android.content.Context
 import android.database.Cursor
@@ -121,4 +121,4 @@ const val BASE_PLAYLIST_SELECTION =
     "${MediaStoreCompat.Audio.PlaylistsColumns.NAME} != '' "
 
 private fun defaultSortOrder(context: Context) =
-    SettingStore(context).Composites[Keys.songSortMode].data.SQLQuerySortOrder
+    Setting(context).Composites[Keys.songSortMode].data.SQLQuerySortOrder

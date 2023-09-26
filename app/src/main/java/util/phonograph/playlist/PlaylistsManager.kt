@@ -19,7 +19,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_AUTO
 import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY
 import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.text.currentDate
@@ -98,7 +98,7 @@ object PlaylistsManager {
     ) = appendPlaylist(context, songs, PlaylistLoader.id(context, playlistId))
 
     private fun shouldUseSAF(context: Context): Boolean {
-        val preference = SettingStore(context)[Keys.playlistFilesOperationBehaviour]
+        val preference = Setting(context)[Keys.playlistFilesOperationBehaviour]
         return when (val behavior = preference.data) {
             PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF    -> true
             PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY -> false

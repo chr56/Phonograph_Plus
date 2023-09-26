@@ -21,7 +21,7 @@ import player.phonograph.databinding.ItemSimpleBinding
 import player.phonograph.mechanism.backup.Backup
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSetting
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.ui.dialogs.BackupImportDialog
 import player.phonograph.util.permissions.GrantedPermission
 import player.phonograph.util.permissions.checkPermission
@@ -248,8 +248,8 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
             contentBinding.checkUpgradeDesc.text = msg
             contentBinding.checkUpgradeChoose.setOnCheckedChangeListener { _, selected ->
                 when (selected) {
-                    R.id.enable  -> SettingStore(view.context)[Keys.checkUpgradeAtStartup].data = true
-                    R.id.disable -> SettingStore(view.context)[Keys.checkUpgradeAtStartup].data = false
+                    R.id.enable  -> Setting(view.context)[Keys.checkUpgradeAtStartup].data = true
+                    R.id.disable -> Setting(view.context)[Keys.checkUpgradeAtStartup].data = false
                 }
             }
             contentBinding.backup.text = getString(R.string.action_import, getString(R.string.action_backup))

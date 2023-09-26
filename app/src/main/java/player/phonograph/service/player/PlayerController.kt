@@ -11,7 +11,7 @@ import player.phonograph.service.MusicService
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.util.registerReceiverCompat
 import androidx.core.content.ContextCompat
 import android.content.BroadcastReceiver
@@ -53,7 +53,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     private var lyricsUpdater: LyricsUpdater
 
     init {
-        audioPlayer = AudioPlayer(service, SettingStore(service)[Keys.gaplessPlayback].data, this)
+        audioPlayer = AudioPlayer(service, Setting(service)[Keys.gaplessPlayback].data, this)
 
         wakeLock =
             (service.getSystemService(Context.POWER_SERVICE) as PowerManager)
@@ -410,7 +410,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
             }
         }
 
-    internal val resumeAfterAudioFocusGain: Boolean get() = SettingStore(service)[Keys.resumeAfterAudioFocusGain].data
+    internal val resumeAfterAudioFocusGain: Boolean get() = Setting(service)[Keys.resumeAfterAudioFocusGain].data
 
     override fun onTrackWentToNext() {
         handler.request {
@@ -560,7 +560,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
 
                 DUCK                    -> {
                     controllerRef.get()?.let {
-                        if (SettingStore(it.service)[Keys.audioDucking].data) {
+                        if (Setting(it.service)[Keys.audioDucking].data) {
                             currentDuckVolume -= .05f
                             if (currentDuckVolume > .2f) {
                                 sendEmptyMessageDelayed(DUCK, 10)
@@ -576,7 +576,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
 
                 UNDUCK                  -> {
                     controllerRef.get()?.let {
-                        if (SettingStore(it.service)[Keys.audioDucking].data) {
+                        if (Setting(it.service)[Keys.audioDucking].data) {
                             currentDuckVolume += .03f
                             if (currentDuckVolume < 1f) {
                                 sendEmptyMessageDelayed(UNDUCK, 10)
@@ -612,7 +612,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         private fun broadcastLyrics(): Boolean {
             val controller = controllerRef.get() ?: return false
             if (controller.playerState != PlayerState.PLAYING ||
-                !SettingStore(controller.service)[Keys.broadcastSynchronizedLyrics].data
+                !Setting(controller.service)[Keys.broadcastSynchronizedLyrics].data
             ) {
                 controller.broadcastStopLyric()
                 return false

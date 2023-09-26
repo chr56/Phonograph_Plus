@@ -15,7 +15,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.sort.SortRef
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import android.util.ArrayMap
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
@@ -85,7 +85,7 @@ fun List<Song>.toAlbumList(): List<Album> {
 }
 
 fun List<Album>.sortAllAlbums(): List<Album> {
-    val sortMode = SettingStore(App.instance).Composites[Keys.albumSortMode].data
+    val sortMode = Setting(App.instance).Composites[Keys.albumSortMode].data
     val revert = sortMode.revert
     return when (sortMode.sortRef) {
         SortRef.ALBUM_NAME  -> this.sort(revert) { it.title }
@@ -186,7 +186,7 @@ fun List<Song>.toArtistList(): List<Artist> {
 }
 
 fun List<Artist>.sortAllArtist(): List<Artist> {
-    val sortMode = SettingStore(App.instance).Composites[Keys.artistSortMode].data
+    val sortMode = Setting(App.instance).Composites[Keys.artistSortMode].data
     val revert = sortMode.revert
     return when (sortMode.sortRef) {
         SortRef.ARTIST_NAME -> this.sort(revert) { it.name.lowercase() }

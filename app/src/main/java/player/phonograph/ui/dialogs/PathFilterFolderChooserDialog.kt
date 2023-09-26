@@ -13,7 +13,7 @@ import player.phonograph.R
 import player.phonograph.model.file.Location
 import player.phonograph.repo.database.PathFilterStore
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import android.view.View
 import java.io.File
 
@@ -26,7 +26,7 @@ class PathFilterFolderChooserDialog : FileChooserDialog() {
             .message(text = file.absolutePath)
             .positiveButton(android.R.string.ok) {
                 with(PathFilterStore.get()) {
-                    val mode = SettingStore(App.instance)[Keys.pathFilterExcludeMode].data
+                    val mode = Setting(App.instance)[Keys.pathFilterExcludeMode].data
                     if (mode) addBlacklistPath(file) else addWhitelistPath(file)
                 }
 

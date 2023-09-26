@@ -12,7 +12,7 @@ import player.phonograph.repo.mediastore.internal.withBasePlaylistFilter
 import player.phonograph.repo.mediastore.internal.withPathFilter
 import player.phonograph.repo.mediastore.playlist.FilePlaylistImpl
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
@@ -142,7 +142,7 @@ object PlaylistLoader : Loader<FilePlaylist> {
 
 
     private fun List<FilePlaylist>.sortAll(context: Context): List<FilePlaylist> {
-        val sortMode = SettingStore(context).Composites[Keys.playlistSortMode].data
+        val sortMode = Setting(context).Composites[Keys.playlistSortMode].data
         val revert = sortMode.revert
         return when (sortMode.sortRef) {
             SortRef.DISPLAY_NAME  -> this.sort(revert) { it.name }

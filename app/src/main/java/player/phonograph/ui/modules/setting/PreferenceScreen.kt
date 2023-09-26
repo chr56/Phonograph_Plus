@@ -158,7 +158,7 @@ fun PhonographPreferenceScreen() {
                     titleRes = R.string.path_filter,
                     currentValueForHint = { context ->
                         with(context) {
-                            val preference = SettingStore(context)[Keys.pathFilterExcludeMode]
+                            val preference = Setting(context)[Keys.pathFilterExcludeMode]
                             if (preference.data) {
                                 "${getString(R.string.path_filter_excluded_mode)} - \n${getString(R.string.pref_summary_path_filter_excluded_mode)}"
                             } else {
@@ -174,12 +174,12 @@ fun PhonographPreferenceScreen() {
                     titleRes = R.string.pref_title_last_added_interval,
                     currentValueForHint = { context ->
                         val resources = context.resources
-                        val settingStore = SettingStore(context)
+                        val setting = Setting(context)
                         val calculationMode =
-                            settingStore[Keys._lastAddedCutOffMode].data
+                            setting[Keys._lastAddedCutOffMode].data
                                 .let(TimeIntervalCalculationMode.Companion::from)
                         val duration =
-                            settingStore[Keys._lastAddedCutOffDuration].data
+                            setting[Keys._lastAddedCutOffDuration].data
                                 .let(Duration.Companion::from)
                         if (calculationMode != null && duration != null)
                             resources.getString(
@@ -355,7 +355,7 @@ fun PhonographPreferenceScreen() {
                     R.string.pref_title_check_upgrade_interval,
                 ) {
                     val resources = it.resources
-                    val preference = SettingStore(it).Composites[Keys.checkUpdateInterval]
+                    val preference = Setting(it).Composites[Keys.checkUpdateInterval]
                     val duration = preference.data
                     resources.getString(
                         R.string.time_interval_text,

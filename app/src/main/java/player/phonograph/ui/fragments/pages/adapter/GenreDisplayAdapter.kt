@@ -7,7 +7,7 @@ package player.phonograph.ui.fragments.pages.adapter
 import player.phonograph.model.Genre
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +21,7 @@ class GenreDisplayAdapter(
 ) : DisplayAdapter<Genre>(activity, dataSet, layoutRes) {
 
     override fun getSectionNameImp(position: Int): String {
-        val sortMode = SettingStore(activity).Composites[Keys.genreSortMode].data
+        val sortMode = Setting(activity).Composites[Keys.genreSortMode].data
         return when (sortMode.sortRef) {
             SortRef.DISPLAY_NAME -> makeSectionName(dataset[position].name)
             SortRef.SONG_COUNT   -> dataset[position].songCount.toString()

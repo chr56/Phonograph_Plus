@@ -9,7 +9,7 @@ import player.phonograph.model.NowPlayingScreen
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.MiniPlayerFragment
 import player.phonograph.ui.fragments.player.card.CardPlayerFragment
@@ -98,7 +98,7 @@ abstract class AbsSlidingMusicPanelActivity :
         miniPlayerFragment?.requireView()?.setOnClickListener { expandPanel() }
 
         // add fragment
-        val flow = SettingStore(this)[Keys.nowPlayingScreenIndex].flow
+        val flow = Setting(this)[Keys.nowPlayingScreenIndex].flow
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 flow.distinctUntilChanged().collect { id ->

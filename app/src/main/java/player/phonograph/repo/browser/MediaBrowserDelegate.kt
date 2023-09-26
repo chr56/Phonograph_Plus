@@ -14,7 +14,7 @@ import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.repo.mediastore.processQuery
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot
 import android.content.Context
 import android.os.Bundle
@@ -152,5 +152,5 @@ object MediaBrowserDelegate {
     }
 
     private fun lastAddedCutoffTimeStamp(context: Context): Long =
-        SettingStore(context).Composites[Keys.lastAddedCutoffTimeStamp].data / 1000
+        Setting(context).Composites[Keys.lastAddedCutoffTimeStamp].data / 1000
 }

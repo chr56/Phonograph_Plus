@@ -7,7 +7,7 @@ package player.phonograph.service.util
 import player.phonograph.App
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -37,7 +37,7 @@ class SleepTimer private constructor(s: MusicService) {
         val context: Context = reference.get() ?: return false
         return runCatching {
             val nextSleepTimerElapsedTime = SystemClock.elapsedRealtime() + minutesToQuit * 60 * 1000
-            SettingStore(context)[Keys.nextSleepTimerElapsedRealTime].data = nextSleepTimerElapsedTime
+            Setting(context)[Keys.nextSleepTimerElapsedRealTime].data = nextSleepTimerElapsedTime
 
             currentTimerPendingIntent = stopMusicServicePendingIntent(context, shouldFinishLastSong)
             alarmManager.set(

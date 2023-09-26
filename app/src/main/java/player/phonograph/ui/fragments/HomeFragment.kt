@@ -21,7 +21,7 @@ import player.phonograph.mechanism.setting.PageConfig
 import player.phonograph.model.pages.Pages
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.AbsPage
@@ -56,7 +56,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val store = SettingStore(requireContext())
+        val store = Setting(requireContext())
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 store[Keys.homeTabConfigJsonString].flow.distinctUntilChanged().collect {
@@ -69,7 +69,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
                 store[Keys.rememberLastTab].flow.distinctUntilChanged().collect { rememberLastTab ->
                     withStarted {
                         if (rememberLastTab) {
-                            val last = SettingStore(requireContext())[Keys.lastPage].data
+                            val last = Setting(requireContext())[Keys.lastPage].data
                             binding.pager.currentItem = last
                             mainActivity.switchPageChooserTo(last)
                         }
@@ -171,7 +171,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
     private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
-            SettingStore(App.instance)[Keys.lastPage].data = position
+            Setting(App.instance)[Keys.lastPage].data = position
             mainActivity.switchPageChooserTo(position)
             super.onPageSelected(position)
         }

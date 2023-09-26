@@ -15,7 +15,7 @@ import player.phonograph.mechanism.canAccessGitHub
 import player.phonograph.model.version.Version
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.ui.components.viewcreater.ContentPanel
 import player.phonograph.ui.components.viewcreater.buildDialogView
 import player.phonograph.ui.components.viewcreater.buttonPanel
@@ -154,7 +154,7 @@ class UpgradeDialog : DialogFragment() {
 
     private fun actionIgnore() {
         dismiss()
-        SettingStore(requireContext())[Keys.ignoreUpgradeDate].data =
+        Setting(requireContext())[Keys.ignoreUpgradeDate].data =
             versionCatalog.currentLatestChannelVersionBy { it.date }.date
         Toast.makeText(activity, R.string.upgrade_ignored, Toast.LENGTH_SHORT).show()
     }

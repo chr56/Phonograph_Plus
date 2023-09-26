@@ -16,7 +16,7 @@ import player.phonograph.databinding.ActivitySearchBinding
 import player.phonograph.databinding.PopupWindowSearchBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
 import player.phonograph.ui.components.popup.OptionsPopup
 import player.phonograph.util.theme.getTintedDrawable
@@ -64,7 +64,7 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
             }
         }
         lifecycleScope.launch {
-            val disableRealTimeSearchFlow = SettingStore(this@SearchActivity)[Keys.disableRealTimeSearch].flow
+            val disableRealTimeSearchFlow = Setting(this@SearchActivity)[Keys.disableRealTimeSearch].flow
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 disableRealTimeSearchFlow.collect {
                     disableRealTimeSearch = it

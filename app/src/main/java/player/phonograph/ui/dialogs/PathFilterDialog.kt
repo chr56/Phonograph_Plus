@@ -13,7 +13,7 @@ import player.phonograph.R
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.repo.database.PathFilterStore
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.ui.components.viewcreater.ButtonPanel
 import player.phonograph.ui.components.viewcreater.ContentPanel
 import player.phonograph.ui.components.viewcreater.TitlePanel
@@ -42,7 +42,7 @@ class PathFilterDialog : DialogFragment() {
 
     private val pathFilterStore: PathFilterStore by GlobalContext.get().inject()
 
-    private val mode get() = SettingStore(App.instance)[Keys.pathFilterExcludeMode].data
+    private val mode get() = Setting(App.instance)[Keys.pathFilterExcludeMode].data
 
     private lateinit var titlePanel: TitlePanel
     private lateinit var contentPanel: ContentPanel
@@ -72,8 +72,8 @@ class PathFilterDialog : DialogFragment() {
 
         buttonPanel = buttonPanel(context) {
             button(0, getString(R.string.swith_mode), accentColor) {
-                val inv = !SettingStore(context)[Keys.pathFilterExcludeMode].data
-                SettingStore(context)[Keys.pathFilterExcludeMode].data = inv
+                val inv = !Setting(context)[Keys.pathFilterExcludeMode].data
+                Setting(context)[Keys.pathFilterExcludeMode].data = inv
                 loadPaths()
                 GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
             }

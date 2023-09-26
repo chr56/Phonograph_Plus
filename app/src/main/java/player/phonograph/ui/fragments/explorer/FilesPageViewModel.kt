@@ -9,22 +9,22 @@ import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.repo.mediastore.loaders.FileEntityLoader
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 
 class FilesPageViewModel : AbsFileViewModel() {
 
     var useLegacyListFile: Boolean
-        get() = SettingStore(App.instance)[Keys.useLegacyListFilesImpl].data
+        get() = Setting(App.instance)[Keys.useLegacyListFilesImpl].data
         set(value) {
-            SettingStore(App.instance)[Keys.useLegacyListFilesImpl].data = value
+            Setting(App.instance)[Keys.useLegacyListFilesImpl].data = value
         }
 
     var showFilesImages: Boolean
-        get() = SettingStore(App.instance)[Keys.showFileImages].data
+        get() = Setting(App.instance)[Keys.showFileImages].data
         set(value) {
-            SettingStore(App.instance)[Keys.showFileImages].data = value
+            Setting(App.instance)[Keys.showFileImages].data = value
         }
 
     override suspend fun listFiles(context: Context, location: Location, scope: CoroutineScope?): Set<FileEntity> {

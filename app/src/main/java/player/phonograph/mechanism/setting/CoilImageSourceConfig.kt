@@ -7,7 +7,7 @@ package player.phonograph.mechanism.setting
 import player.phonograph.App
 import player.phonograph.model.config.ImageSourceConfig
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import android.util.Log
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -20,7 +20,7 @@ object CoilImageSourceConfig {
 
     var currentConfig: ImageSourceConfig
         get() {
-            val rawString = SettingStore(App.instance)[Keys.imageSourceConfigJsonString].data
+            val rawString = Setting(App.instance)[Keys.imageSourceConfigJsonString].data
             val config: ImageSourceConfig = try {
                 readFromJson(rawString)
             } catch (e: SerializationException) {
@@ -38,7 +38,7 @@ object CoilImageSourceConfig {
         }
         set(value) {
             val json = writeToJson(value) as JsonObject
-            SettingStore(App.instance)[Keys.imageSourceConfigJsonString].data = json.toString()
+            Setting(App.instance)[Keys.imageSourceConfigJsonString].data = json.toString()
         }
 
     fun resetToDefault() {

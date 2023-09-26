@@ -3,7 +3,7 @@ package player.phonograph.appshortcuts
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.util.theme.createTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
 import androidx.annotation.RequiresApi
@@ -22,7 +22,7 @@ import android.util.TypedValue
 object AppShortcutIconGenerator {
 
     fun generateThemedIcon(context: Context, iconId: Int): Icon =
-        if (SettingStore(context)[Keys.coloredAppShortcuts].data) {
+        if (Setting(context)[Keys.coloredAppShortcuts].data) {
             generateUserThemedIcon(context, iconId).toIcon(context)
         } else {
             generateDefaultThemedIcon(context, iconId).toIcon(context)

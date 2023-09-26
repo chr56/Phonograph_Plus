@@ -11,7 +11,7 @@ import player.phonograph.model.file.Location
 import player.phonograph.model.sort.FileSortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.ui.views.StatusBarView
@@ -83,8 +83,8 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel>()
                 }
 
                 is FileEntity.File   -> {
-                    val base = SettingStore(activity)[Keys.songItemClickMode].data
-                    val extra = SettingStore(activity)[Keys.songItemClickExtraFlag].data
+                    val base = Setting(activity)[Keys.songItemClickMode].data
+                    val extra = Setting(activity)[Keys.songItemClickExtraFlag].data
                     fileClick(
                         fileEntities,
                         position,
@@ -115,7 +115,7 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel>()
     }
 
     private fun configPopup(popup: ListOptionsPopup) {
-        val currentSortMode = SettingStore(popup.contentView.context).Composites[Keys.fileSortMode].data
+        val currentSortMode = Setting(popup.contentView.context).Composites[Keys.fileSortMode].data
         popup.allowRevert = true
         popup.revert = currentSortMode.revert
 
@@ -129,7 +129,7 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel>()
     }
 
     private fun dismissPopup(popup: ListOptionsPopup) {
-        SettingStore(popup.contentView.context).Composites[Keys.fileSortMode].data =
+        Setting(popup.contentView.context).Composites[Keys.fileSortMode].data =
             FileSortMode(popup.sortRef, popup.revert)
         fileModel.useLegacyListFile = popup.useLegacyListFiles
         if (fileModel.showFilesImages != popup.showFilesImages) {

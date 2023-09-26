@@ -10,7 +10,7 @@ import player.phonograph.databinding.ActivityAboutBinding
 import player.phonograph.mechanism.Update
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.DebugDialog
 import player.phonograph.ui.dialogs.ReportIssueDialog
@@ -168,7 +168,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
                     Update.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
                         if (upgradable) {
                             UpgradeDialog.create(versionCatalog).show(supportFragmentManager, "UPGRADE_DIALOG")
-                            if (SettingStore(App.instance)[Keys.ignoreUpgradeDate].data
+                            if (Setting(App.instance)[Keys.ignoreUpgradeDate].data
                                 >= versionCatalog.currentLatestChannelVersionBy { it.date }.date
                             ) {
                                 toast(getString(R.string.upgrade_ignored))

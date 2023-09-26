@@ -9,7 +9,7 @@ import player.phonograph.model.SongCollection
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.loaders.SongCollectionLoader
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -58,7 +58,7 @@ class FlattenFolderPageViewModel : ViewModel() {
     }
 
     private fun MutableList<SongCollection>.sort(context: Context): List<SongCollection> {
-        val mode = SettingStore(context).Composites[Keys.collectionSortMode].data
+        val mode = Setting(context).Composites[Keys.collectionSortMode].data
         sortBy {
             when (mode.sortRef) {
                 SortRef.DISPLAY_NAME -> it.name

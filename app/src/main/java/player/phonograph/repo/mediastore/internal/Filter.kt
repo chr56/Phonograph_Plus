@@ -7,7 +7,7 @@ package player.phonograph.repo.mediastore.internal
 import org.koin.core.context.GlobalContext
 import player.phonograph.repo.database.PathFilterStore
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import android.content.Context
 import android.provider.MediaStore
 
@@ -22,7 +22,7 @@ private val pathFilterStore: PathFilterStore by GlobalContext.get().inject()
 fun withPathFilter(context: Context, escape: Boolean = false, block: () -> SQLWhereClause): SQLWhereClause {
     if (escape) return block()
 
-    val includeMode = !SettingStore(context)[Keys.pathFilterExcludeMode].data
+    val includeMode = !Setting(context)[Keys.pathFilterExcludeMode].data
 
     val paths =
         if (includeMode)

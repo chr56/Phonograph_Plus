@@ -8,7 +8,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.LastAddedPlaylist
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
@@ -20,7 +20,7 @@ class LastAddedPlaylistImpl : LastAddedPlaylist {
     constructor(context: Context) : super(context)
 
     override fun getSongs(context: Context): List<Song> =
-        SongLoader.since(context, SettingStore(context).Composites[Keys.lastAddedCutoffTimeStamp].data / 1000)
+        SongLoader.since(context, Setting(context).Composites[Keys.lastAddedCutoffTimeStamp].data / 1000)
 
     override fun containsSong(context: Context, songId: Long): Boolean =
         getSongs(context).find { it.id == songId } != null

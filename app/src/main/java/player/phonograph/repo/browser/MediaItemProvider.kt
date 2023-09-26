@@ -15,7 +15,7 @@ import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import androidx.annotation.DrawableRes
 import android.content.ContentResolver
 import android.content.Context
@@ -150,5 +150,5 @@ object MediaItemProvider {
             .build()
 
     private fun lastAddedCutoffTimeStamp(context: Context): Long =
-        SettingStore(context).Composites[Keys.lastAddedCutoffTimeStamp].data / 1000
+        Setting(context).Composites[Keys.lastAddedCutoffTimeStamp].data / 1000
 }

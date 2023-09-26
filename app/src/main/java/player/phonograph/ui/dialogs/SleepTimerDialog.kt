@@ -13,7 +13,7 @@ import player.phonograph.model.getReadableDurationString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.util.SleepTimer
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import android.app.Dialog
@@ -75,7 +75,7 @@ class SleepTimerDialog : DialogFragment() {
 
         SleepTimer.instance(service).setTimer(
             minutesToQuit.toLong(),
-            SettingStore(service)[Keys.sleepTimerFinishMusic].data
+            Setting(service)[Keys.sleepTimerFinishMusic].data
         ).let { success ->
             Toast.makeText(
                 requireActivity(),
@@ -133,7 +133,7 @@ class SleepTimerDialog : DialogFragment() {
 
                 override fun onStartTrackingTouch(seekArc: SeekArc) {}
                 override fun onStopTrackingTouch(seekArc: SeekArc) {
-                    SettingStore(App.instance)[Keys.lastSleepTimerValue].data = seekArc.progress
+                    Setting(App.instance)[Keys.lastSleepTimerValue].data = seekArc.progress
                 }
             })
 
@@ -141,15 +141,15 @@ class SleepTimerDialog : DialogFragment() {
         alertDialog
             .findViewById<CheckBoxX>(R.id.should_finish_last_song)!!// To remember settings last use sleep-timer
             .apply {
-                isChecked = SettingStore(context)[Keys.sleepTimerFinishMusic].data
+                isChecked = Setting(context)[Keys.sleepTimerFinishMusic].data
                 setOnCheckedChangeListener { _, isChecked ->
-                    SettingStore(context)[Keys.sleepTimerFinishMusic].data = isChecked
+                    Setting(context)[Keys.sleepTimerFinishMusic].data = isChecked
                 }
             }
 
         // init views : set remaining time for timeDisplay
         timeDisplay.text =
-            getString(R.string.minutes_short, SettingStore(requireContext())[Keys.lastSleepTimerValue].data)
+            getString(R.string.minutes_short, Setting(requireContext())[Keys.lastSleepTimerValue].data)
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -161,7 +161,7 @@ class SleepTimerDialog : DialogFragment() {
      * A CountDownTimer to update UI
      */
     private inner class TimerUpdater : CountDownTimer(
-        SettingStore(requireContext())[Keys.nextSleepTimerElapsedRealTime].data - SystemClock.elapsedRealtime(),
+        Setting(requireContext())[Keys.nextSleepTimerElapsedRealTime].data - SystemClock.elapsedRealtime(),
         1000
     ) {
         override fun onTick(millisUntilFinished: Long) {

@@ -9,7 +9,7 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.sort.SortMode
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.settings.dataStore
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.AlbumPage
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.ArtistPage
@@ -79,8 +79,8 @@ class DisplayConfig internal constructor(private val page: DisplayConfigTarget) 
 
     var sortMode: SortMode
         get() {
-            val settingStore = SettingStore(App.instance).Composites
-            return settingStore[when (page) {
+            val setting = Setting(App.instance).Composites
+            return setting[when (page) {
                 is SongPage     -> Keys.songSortMode
                 is AlbumPage    -> Keys.albumSortMode
                 is ArtistPage   -> Keys.artistSortMode
@@ -89,8 +89,8 @@ class DisplayConfig internal constructor(private val page: DisplayConfigTarget) 
             }].data
         }
         set(value) {
-            val settingStore = SettingStore(App.instance).Composites
-            settingStore[when (page) {
+            val setting = Setting(App.instance).Composites
+            setting[when (page) {
                 is SongPage     -> Keys.songSortMode
                 is AlbumPage    -> Keys.albumSortMode
                 is ArtistPage   -> Keys.artistSortMode

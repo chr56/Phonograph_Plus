@@ -18,7 +18,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.dialogs.CreatePlaylistDialog
 import player.phonograph.ui.fragments.pages.adapter.PlaylistDisplayAdapter
@@ -46,7 +46,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
                 SmartPlaylist.historyPlaylist,
                 SmartPlaylist.myTopTracksPlaylist,
             ).also {
-                if (!SettingStore(context)[Keys.useLegacyFavoritePlaylistImpl].data) {
+                if (!Setting(context)[Keys.useLegacyFavoritePlaylistImpl].data) {
                     it.add(SmartPlaylist.favoriteSongsPlaylist)
                 }
             }.also {

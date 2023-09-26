@@ -13,7 +13,7 @@ import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.util.text.dateTextShortText
 import player.phonograph.util.text.makeSectionName
@@ -30,7 +30,7 @@ open class SongDisplayAdapter(
 
     override fun getSectionNameImp(position: Int): String {
         val song = dataset[position]
-        val sortMode = SettingStore(activity).Composites[Keys.songSortMode].data
+        val sortMode = Setting(activity).Composites[Keys.songSortMode].data
         val sectionName: String =
             when (sortMode.sortRef) {
                 SortRef.SONG_NAME         -> makeSectionName(song.title)

@@ -11,7 +11,7 @@ import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.ui.dialogs.AddToPlaylistDialog
 import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.ui.dialogs.SongDetailDialog
@@ -57,7 +57,7 @@ internal fun actionRemoveFromQueue(index: Int): Boolean =
     MusicPlayerRemote.removeFromQueue(index)
 
 fun Song.actionGotoDetail(activity: FragmentActivity): Boolean {
-    val preference = SettingStore(activity)[Keys.useLegacyDetailDialog]
+    val preference = Setting(activity)[Keys.useLegacyDetailDialog]
     if (preference.data)
         SongDetailDialog.create(this).show(activity.supportFragmentManager, "SONG_DETAILS")
     else

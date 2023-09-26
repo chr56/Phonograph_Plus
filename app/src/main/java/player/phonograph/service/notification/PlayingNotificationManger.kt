@@ -13,7 +13,7 @@ import player.phonograph.model.Song
 import player.phonograph.service.MusicService
 import player.phonograph.service.player.PlayerState
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.theme.createTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
@@ -63,7 +63,7 @@ class PlayingNotificationManger(private val service: MusicService) {
 
     @SuppressLint("ObsoleteSdkInt")
     fun setUpNotification() {
-        impl = if (!SettingStore(service)[Keys.classicNotification].data && SDK_INT >= N) {
+        impl = if (!Setting(service)[Keys.classicNotification].data && SDK_INT >= N) {
             Impl24()
         } else {
             Impl0()
@@ -169,7 +169,7 @@ class PlayingNotificationManger(private val service: MusicService) {
                             .setLargeIcon(bitmap)
                             .also { builder ->
                                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O &&
-                                    SettingStore(service)[Keys.coloredNotification].data
+                                    Setting(service)[Keys.coloredNotification].data
                                 ) {
                                     builder.color = paletteColor
                                 }
@@ -232,7 +232,7 @@ class PlayingNotificationManger(private val service: MusicService) {
                 if (bitmap != null) {
                     notificationLayout.setImageViewBitmap(R.id.image, bitmap)
                     notificationLayoutBig.setImageViewBitmap(R.id.image, bitmap)
-                    if (SettingStore(service)[Keys.coloredNotification].data) {
+                    if (Setting(service)[Keys.coloredNotification].data) {
                         setBackgroundColor(backgroundColor, notificationLayout, notificationLayoutBig)
                         setNotificationContent(backgroundColor, notificationLayout, notificationLayoutBig)
                     }

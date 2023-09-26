@@ -17,7 +17,7 @@ import player.phonograph.settings.CLASSIC_NOTIFICATION
 import player.phonograph.settings.COLORED_NOTIFICATION
 import player.phonograph.settings.GAPLESS_PLAYBACK
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.util.permissions.NonGrantedPermission
 import player.phonograph.util.permissions.checkStorageReadPermission
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -86,7 +86,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
             }
         }
 
-        val store = SettingStore(this)
+        val store = Setting(this)
         observe {
             store[Keys.gaplessPlayback].flow.distinctUntilChanged()
                 .collect { MusicPlayerRemote.musicService?.updateSetting(GAPLESS_PLAYBACK, it) }

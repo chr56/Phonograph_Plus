@@ -13,7 +13,7 @@ import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.activity.ComponentActivity
@@ -107,6 +107,6 @@ class FilesPageAdapter(
 
     override val allowMultiSelection: Boolean get() = true
 
-    var loadCover: Boolean = SettingStore(activity)[Keys.showFileImages].data
+    var loadCover: Boolean = Setting(activity)[Keys.showFileImages].data
 
 }

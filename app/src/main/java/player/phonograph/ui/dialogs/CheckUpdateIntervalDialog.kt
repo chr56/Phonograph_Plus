@@ -14,7 +14,7 @@ import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeUnit
 import player.phonograph.model.time.displayText
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.BridgeDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.WheelPicker
@@ -45,7 +45,7 @@ class CheckUpdateIntervalDialog : BridgeDialogFragment() {
     override fun Content() {
         val context = LocalContext.current
         var duration: Duration by remember {
-            mutableStateOf(SettingStore(context).Composites[Keys.checkUpdateInterval].data)
+            mutableStateOf(Setting(context).Composites[Keys.checkUpdateInterval].data)
         }
         PhonographTheme {
             val dialogState = rememberMaterialDialogState(true)
@@ -65,7 +65,7 @@ class CheckUpdateIntervalDialog : BridgeDialogFragment() {
                     positiveButton(res = android.R.string.ok) {
                         dismiss()
                         synchronized(this) {
-                            SettingStore(App.instance).Composites[Keys.checkUpdateInterval].data = duration
+                            Setting(App.instance).Composites[Keys.checkUpdateInterval].data = duration
                         }
                     }
                 }

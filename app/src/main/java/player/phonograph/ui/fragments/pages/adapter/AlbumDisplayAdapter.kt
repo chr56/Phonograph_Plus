@@ -12,7 +12,7 @@ import player.phonograph.model.Album
 import player.phonograph.model.getYearString
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
@@ -27,7 +27,7 @@ open class AlbumDisplayAdapter(
 
     override fun getSectionNameImp(position: Int): String {
         val album = dataset[position]
-        val sortMode = SettingStore(activity).Composites[Keys.albumSortMode].data
+        val sortMode = Setting(activity).Composites[Keys.albumSortMode].data
         val sectionName: String =
             when (sortMode.sortRef) {
                 SortRef.ALBUM_NAME -> makeSectionName(album.title)

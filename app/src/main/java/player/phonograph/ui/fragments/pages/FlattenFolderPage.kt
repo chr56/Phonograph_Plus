@@ -15,7 +15,7 @@ import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
-import player.phonograph.settings.SettingStore
+import player.phonograph.settings.Setting
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.adapter.SongCollectionDisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
@@ -126,7 +126,7 @@ class FlattenFolderPage : AbsPage() {
     }
 
     private fun configPopupFolder(popup: ListOptionsPopup) {
-        val currentSortMode = SettingStore(popup.contentView.context).Composites[Keys.collectionSortMode].data
+        val currentSortMode = Setting(popup.contentView.context).Composites[Keys.collectionSortMode].data
 
         popup.allowRevert = true
         popup.revert = currentSortMode.revert
@@ -162,7 +162,7 @@ class FlattenFolderPage : AbsPage() {
     private fun dismissPopupFolder(popup: ListOptionsPopup) {
 
         val selected = SortMode(popup.sortRef, popup.revert)
-        val preference = SettingStore(popup.contentView.context).Composites[Keys.collectionSortMode]
+        val preference = Setting(popup.contentView.context).Composites[Keys.collectionSortMode]
         if (preference.data != selected) {
             preference.data = selected
             viewModel.loadFolders(requireContext())
