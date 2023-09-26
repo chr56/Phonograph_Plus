@@ -9,6 +9,8 @@ import mt.tint.setNavigationBarColor
 import mt.tint.viewtint.tintMenuActionIcons
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import player.phonograph.R
 import player.phonograph.actions.menu.albumDetailToolbar
 import player.phonograph.coil.loadImage
@@ -26,7 +28,6 @@ import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
-import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -46,13 +47,11 @@ import kotlinx.coroutines.launch
 class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvider {
 
     private lateinit var viewBinding: ActivityAlbumDetailBinding
-    private val model: AlbumDetailActivityViewModel by viewModels()
+    private val model: AlbumDetailActivityViewModel by viewModel { parametersOf(parseIntent(intent)) }
 
     private lateinit var adapter: SongDisplayAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val albumID = parseIntent(intent)
-        model.albumId = albumID
         load()
 
         viewBinding = ActivityAlbumDetailBinding.inflate(layoutInflater)

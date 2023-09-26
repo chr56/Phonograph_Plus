@@ -17,11 +17,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 
-class AlbumDetailActivityViewModel : ViewModel() {
+class AlbumDetailActivityViewModel(val albumId: Long) : ViewModel() {
 
     var isRecyclerViewPrepared: Boolean = false
 
-    var albumId: Long = -1
     private var _album: Album? = null
     val album: Album get() = _album ?: Album()
 
