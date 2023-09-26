@@ -1,7 +1,6 @@
 package player.phonograph.ui.activities
 
 import lib.phonograph.misc.menuProvider
-import mt.pref.ThemeColor.primaryColor
 import mt.tint.requireLightStatusbar
 import mt.tint.setActivityToolbarColor
 import mt.tint.setActivityToolbarColorAuto
@@ -13,8 +12,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
 import player.phonograph.actions.menu.albumDetailToolbar
-import player.phonograph.coil.loadImage
-import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityAlbumDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.misc.IPaletteColorProvider
@@ -28,7 +25,9 @@ import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
@@ -38,7 +37,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.View
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
@@ -52,7 +50,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
     private lateinit var adapter: SongDisplayAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        load()
+        model.loadDataSet(this)
 
         viewBinding = ActivityAlbumDetailBinding.inflate(layoutInflater)
 
@@ -72,6 +70,22 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
 
         // MediaStore
         lifecycle.addObserver(MediaStoreListener())
+
+        // Observer
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                model.album.collect {
+                    if (it.id >= 0) updateAlbumsInfo(it)
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                model.songs.collect {
+                    adapter.dataset = it
+                }
+            }
+        }
     }
 
     override fun createContentView(): View = wrapSlidingMusicPanel(viewBinding.root)
@@ -82,7 +96,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         }
         // setUpSongsAdapter
         adapter =
-            AlbumSongDisplayAdapter(this, album.songs, R.layout.item_list).apply {
+            AlbumSongDisplayAdapter(this, model.album.value.songs, R.layout.item_list).apply {
                 useImageText = true
                 usePalette = false
             }
@@ -97,7 +111,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         model.isRecyclerViewPrepared = true
         // jump
         viewBinding.artistText.setOnClickListener {
-            goToArtist(this, album.artistId)
+            goToArtist(this, model.album.value.artistId)
         }
         // paletteColor
         lifecycleScope.launch {
@@ -146,33 +160,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         viewModel.updateActivityColor(color)
     }
 
-    override val paletteColor: StateFlow<Int>
-        get() = model.paletteColor
-
-    private val album: Album get() = model.album
-
-    private fun load() {
-        val defaultColor = primaryColor(this)
-        model.loadDataSet(
-            this
-        ) { album, songs ->
-            updateAlbumsInfo(album)
-            adapter.dataset = songs
-            loadImage(this)
-                .from(album.safeGetFirstSong())
-                .into(PaletteTargetBuilder(defaultColor)
-                    .onResourceReady { result, palette ->
-                        viewBinding.image.setImageDrawable(result)
-                        model.paletteColor.update { palette }
-                    }
-                    .onFail {
-                        viewBinding.image.setImageResource(R.drawable.default_album_art)
-                        model.paletteColor.update { defaultColor }
-                    }
-                    .build())
-                .enqueue()
-        }
-    }
+    override val paletteColor: StateFlow<Int> get() = model.paletteColor
 
     private fun updateAlbumsInfo(album: Album) {
         supportActionBar!!.title = album.title
@@ -180,10 +168,11 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         viewBinding.songCountText.text = songCountString(this, album.songCount)
         viewBinding.durationText.text = getReadableDurationString(album.songs.totalDuration())
         viewBinding.albumYearText.text = getYearString(album.year)
+        model.loadAlbumImage(this, album, viewBinding.image)
     }
 
     private fun setupMenu(menu: Menu) {
-        albumDetailToolbar(menu, this, album, primaryTextColor(viewModel.activityColor.value))
+        albumDetailToolbar(menu, this, model.album.value, primaryTextColor(viewModel.activityColor.value))
         tintMenuActionIcons(viewBinding.toolbar, menu, primaryTextColor(viewModel.activityColor.value))
     }
 
@@ -194,7 +183,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
-            load()
+            model.loadDataSet(this@AlbumDetailActivity)
         }
     }
 
