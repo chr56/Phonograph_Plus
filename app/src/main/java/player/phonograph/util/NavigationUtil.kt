@@ -68,20 +68,25 @@ object NavigationUtil {
     fun openEqualizer(activity: Activity) {
         val sessionId = MusicPlayerRemote.audioSessionId
         if (sessionId == AudioEffect.ERROR_BAD_VALUE) {
-            Toast.makeText(activity,
-                           activity.resources.getString(R.string.no_audio_ID),
-                           Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                activity,
+                activity.resources.getString(R.string.no_audio_ID),
+                Toast.LENGTH_LONG
+            ).show()
         } else {
             try {
                 activity.startActivityForResult(
                     Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
                         putExtra(AudioEffect.EXTRA_AUDIO_SESSION, sessionId)
                         putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-                    }, 0)
+                    }, 0
+                )
             } catch (notFound: ActivityNotFoundException) {
-                Toast.makeText(activity,
-                               activity.resources.getString(R.string.no_equalizer),
-                               Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    activity,
+                    activity.resources.getString(R.string.no_equalizer),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
