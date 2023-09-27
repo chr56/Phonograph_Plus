@@ -14,7 +14,11 @@ data class Artist(
     var artistName: String
 )
 
-@Entity(tableName = "artist_song_linkage", primaryKeys = ["artist_id", "song_id"])
+@Entity(
+    tableName = "artist_song_linkage",
+    primaryKeys = ["artist_id", "song_id"],
+    indices = [Index(value = ["song_id", "artist_id"])]
+)
 data class SongAndArtistLinkage(
     @ColumnInfo(name = "song_id")
     var songId: Long,

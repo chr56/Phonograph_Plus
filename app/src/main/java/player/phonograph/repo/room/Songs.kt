@@ -9,7 +9,7 @@ import androidx.room.*
 // @Fts3
 @Entity(
     tableName = "songs",
-    indices = [Index(value = ["song_id"])]
+    indices = [Index(value = ["song_id", "path", "title"])]
 )
 data class Song(
     @PrimaryKey
