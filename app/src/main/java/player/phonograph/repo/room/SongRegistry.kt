@@ -34,7 +34,7 @@ object SongRegistry {
         artistSongsDao: ArtistSongDAO,
         song: Song,
         raw: String?,
-        @ArtistRole role: String,
+        @ArtistRole role: Int,
     ) {
         if (raw != null) {
             val parsed = splitMultiTag(raw)

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "b14dda2c6967165798a1a7e7dfd1f6eb",
+    "identityHash": "7e6a8f39972628a4f11dacd0493769e9",
     "entities": [
       {
         "tableName": "songs",
@@ -187,7 +187,7 @@
       },
       {
         "tableName": "artist_song_linkage",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`song_id` INTEGER NOT NULL, `artist_id` INTEGER NOT NULL, `role` TEXT NOT NULL DEFAULT 'artist', PRIMARY KEY(`artist_id`, `song_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`song_id` INTEGER NOT NULL, `artist_id` INTEGER NOT NULL, `role` INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(`artist_id`, `song_id`))",
         "fields": [
           {
             "fieldPath": "songId",
@@ -204,9 +204,9 @@
           {
             "fieldPath": "role",
             "columnName": "role",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": true,
-            "defaultValue": "'artist'"
+            "defaultValue": "0"
           }
         ],
         "primaryKey": {
@@ -234,7 +234,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b14dda2c6967165798a1a7e7dfd1f6eb')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7e6a8f39972628a4f11dacd0493769e9')"
     ]
   }
 }
