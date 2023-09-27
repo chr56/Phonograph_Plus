@@ -15,7 +15,7 @@ object SongMarker {
 
     @TypeConverter
     fun getAlbum(song: Song): Album {
-        return Album(song.albumId, song.albumName)
+        return Album(song.albumId, song.albumName, song.albumArtistName)
     }
     @TypeConverter
     fun getArtist(song: Song): Artist {

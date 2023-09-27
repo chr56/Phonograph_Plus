@@ -12,6 +12,8 @@ data class Album(
     @ColumnInfo(name = "album_id")
     var albumId: Long = 0,
     @ColumnInfo(name = "album_name")
-    var albumName: String? = null
+    var albumName: String? = null,
+    @ColumnInfo(name = "album_artist_name")
+    var albumArtistName: String? = null
 )
 
