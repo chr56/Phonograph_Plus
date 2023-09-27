@@ -4,8 +4,10 @@
 
 package player.phonograph.repo.room
 
+import player.phonograph.repo.room.dao.AlbumDAO
 import player.phonograph.repo.room.dao.ArtistDAO
 import player.phonograph.repo.room.dao.ArtistSongDAO
+import player.phonograph.repo.room.entity.Album
 import player.phonograph.repo.room.entity.Artist
 import player.phonograph.repo.room.entity.Song
 import player.phonograph.repo.room.entity.SongAndArtistLinkage
@@ -18,6 +20,17 @@ import player.phonograph.util.text.splitMultiTag
 import android.util.Log
 
 object SongRegistry {
+
+    fun registerAlbum(
+        song: Song,
+        albumDao: AlbumDAO,
+    ) {
+        val albumName = song.albumName
+        if (albumName != null) {
+            val album = Album(song.albumId, albumName, song.albumArtistName)
+            albumDao.override(album)
+        }
+    }
 
     fun registerArtists(
         song: Song,

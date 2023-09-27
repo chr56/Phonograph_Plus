@@ -55,12 +55,13 @@ object Scanner {
         val songDataBase = MusicDatabase.songsDataBase
         val artistSongsDao = songDataBase.ArtistSongsDao()
         val artistDao = songDataBase.ArtistDao()
+        val albumDao = songDataBase.AlbumDao()
         for (song in songs) {
             // song
             songDataBase.SongDao().override(song)
             debug { Log.d(TAG, "Override Song: ${song.title}") }
             // album
-            songDataBase.AlbumDao().override(SongMarker.getAlbum(song))
+            SongRegistry.registerAlbum(song, albumDao)
             // artist
             SongRegistry.registerArtists(song, artistDao, artistSongsDao)
         }
