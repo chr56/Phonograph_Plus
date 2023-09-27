@@ -434,4 +434,24 @@
     <string name="disk_number">Número do Disco</string>
     <string name="disk_number_total">Número Total de Discos</string>
     <string name="rating">Classificação</string>
+    <string name="pref_title_check_upgrade_interval">Verificar o intervalo de atualizações </string>
+    <string name="interval_past">Anterior</string>
+    <string name="interval_recent">Recente</string>
+    <string name="interval_every">Todo</string>
+    <string name="timeunit_second">Segundo</string>
+    <string name="timeunit_minute">Minuto</string>
+    <string name="timeunit_hour">Hora</string>
+    <string name="timeunit_day">Dia</string>
+    <string name="timeunit_week">Semana</string>
+    <string name="timeunit_month">Mês</string>
+    <string name="timeunit_year">Ano</string>
+    <string name="time_interval_text">%1$s %2$d %3$s</string>
+    <string name="preview_text_cutoff_time_interval"> Valor do tempo limite será: \n %1$s \n(%2$s)</string>
+    <string name="preview_text_next_upgrade_check">A próxima verificação de atualizações será após: \n %1$s \n(%2$s)</string>
+    <string name="home">Início</string>
+    <string name="search_online">Procurar na Rede</string>
+    <string name="target">Alvo</string>
+    <string name="key_mbid">Identificador MusicBrainz</string>
+    <string name="query">Consulta</string>
+    <string name="hint_lucene_query_syntax">Sintaxe de consulta Lucene é suportada!</string>
 </resources>
