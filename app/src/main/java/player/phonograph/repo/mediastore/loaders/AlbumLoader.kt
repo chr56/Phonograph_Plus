@@ -20,8 +20,8 @@ object AlbumLoader : Loader<Album> {
     }
 
     override fun id(context: Context, id: Long): Album {
-        val songs = querySongs(context, "${AudioColumns.ALBUM_ID}=?", arrayOf(id.toString()), null).intoSongs()
-        return Album(id, albumTitle(songs), songs.toMutableList().sortedBy { it.trackNumber })
+        val songs = AlbumSongLoader.id(context, id)
+        return Album(id, albumTitle(songs), songs.size)
     }
 
     fun searchByName(context: Context, query: String): List<Album> {

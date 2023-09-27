@@ -72,7 +72,7 @@ fun List<Song>.toAlbumList(): List<Album> {
                 emit(Pair(id, list))
             }
         }.map { (id, list) ->
-            Album(id, albumNames[id], list)
+            Album(id, albumNames[id], list.size)
         }.catch { e ->
             Log.e("Loader", e.message.orEmpty())
             ErrorNotification.postErrorNotification(e, "Fail to load albums")
@@ -167,13 +167,13 @@ fun List<Song>.toArtistList(): List<Artist> {
                     emit(Pair(id, list))
                 }
             }.map { (id, list) ->
-                Album(id, albumNames[id], list)
+                Album(id, albumNames[id], list.size)
             }.catch { e ->
                 Log.e("Loader", e.message.orEmpty())
                 ErrorNotification.postErrorNotification(e, "Fail to load albums")
             }.toList()
 
-            Artist(artistId, artistNames[artistId], albumList)
+            Artist(artistId, artistNames[artistId], albumList.size, size)
         }.catch { e ->
             Log.e("Loader", e.message.orEmpty())
             ErrorNotification.postErrorNotification(e, "Fail to load albums")

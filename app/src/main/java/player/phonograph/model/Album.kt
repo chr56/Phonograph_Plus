@@ -14,22 +14,20 @@ class Album : Parcelable, Displayable {
     val title: String
 
     @JvmField
-    val songs: List<Song>
+    val songCount: Int
 
-    constructor(id: Long, title: String?, songs: List<Song>) {
+    constructor(id: Long, title: String?, songCount: Int) {
         this.id = id
         this.title = title ?: "UNKNOWN"
-        this.songs = songs
+        this.songCount = songCount
     }
 
     constructor() {
         this.id = -1
         this.title = "UNKNOWN"
-        this.songs = ArrayList()
+        this.songCount = -1
     }
 
-    val songCount: Int
-        get() = songs.size
 
     val artistId: Long
         get() = safeGetFirstSong().artistId
@@ -44,16 +42,24 @@ class Album : Parcelable, Displayable {
     val dateModified: Long
         get() = safeGetFirstSong().dateModified
 
-    fun safeGetFirstSong(): Song = if (songs.isEmpty()) Song.EMPTY_SONG else songs[0]
+    fun safeGetFirstSong(): Song = Song.EMPTY_SONG //todo
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val that = other as Album
-        return songs == that.songs
+        if (other !is Album) return false
+
+        if (id != other.id) return false
+        if (title != other.title) return false
+
+        return true
     }
 
-    override fun hashCode(): Int = songs.hashCode()
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + title.hashCode()
+        return result
+    }
+
     override fun toString(): String = "Album{name=$title,id=$id,artist=$artistName}"
 
     override fun getItemID(): Long = id
@@ -78,16 +84,14 @@ class Album : Parcelable, Displayable {
 
     override fun describeContents(): Int = 0
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeTypedList(songs)
         dest.writeLong(id)
         dest.writeString(title)
+        dest.writeInt(songCount)
     }
 
     constructor(parcel: Parcel) {
-        songs = parcel.createTypedArrayList(Song.CREATOR) ?: throw Exception(
-            "Fail to recreate Album from song"
-        )
         id = parcel.readLong()
         title = parcel.readString() ?: "UNKNOWN"
+        songCount = parcel.readInt()
     }
 }

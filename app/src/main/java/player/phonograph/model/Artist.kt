@@ -1,9 +1,9 @@
 package player.phonograph.model
 
+import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.annotation.Keep
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -12,37 +12,39 @@ class Artist : Parcelable, Displayable {
 
     val id: Long
     val name: String
-    @JvmField val albums: List<Album>
+    @JvmField
+    val albumCount: Int
+    @JvmField
+    val songCount: Int
 
-    constructor(id: Long, name: String?, albums: List<Album>) {
-        this.albums = albums
+    constructor(id: Long, name: String?, albumCount: Int, songCount: Int) {
         this.id = id
         this.name = name ?: UNKNOWN_ARTIST_DISPLAY_NAME
+        this.albumCount = albumCount
+        this.songCount = songCount
     }
 
     constructor() {
         this.id = -1
         this.name = UNKNOWN_ARTIST_DISPLAY_NAME
-        this.albums = ArrayList()
+        this.albumCount = -1
+        this.songCount = -1
     }
 
-    val albumCount: Int get() = albums.size
-
-    val songs: List<Song>
-        get() = albums.flatMap { it.songs }
-    val songCount: Int
-        get() = albums.fold(0) { i: Int, album: Album -> i + album.songCount }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val artist = other as Artist
-        return albums == artist.albums
+        if (other !is Artist) return false
+
+        if (id != other.id) return false
+        if (name != other.name) return false
+
+        return true
     }
 
-    override fun hashCode(): Int = albums.hashCode()
+    override fun hashCode(): Int = name.hashCode() * 17 + id.toInt()
 
-    override fun toString(): String = "Artist{name=$name,id =$id,albums=$albums}"
+    override fun toString(): String = "Artist{name=$name,id =$id,albumsCount=$albumCount}"
 
     override fun getItemID(): Long = id
 
@@ -70,12 +72,14 @@ class Artist : Parcelable, Displayable {
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeLong(id)
         dest.writeString(name)
-        dest.writeTypedList(albums)
+        dest.writeInt(albumCount)
+        dest.writeInt(songCount)
     }
 
     constructor(parcel: Parcel) {
         id = parcel.readLong()
         name = parcel.readString() ?: UNKNOWN_ARTIST_DISPLAY_NAME
-        albums = parcel.createTypedArrayList(Album.CREATOR) ?: ArrayList()
+        albumCount = parcel.readInt()
+        songCount = parcel.readInt()
     }
 }
