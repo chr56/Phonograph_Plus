@@ -2,26 +2,12 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.repo.room
+package player.phonograph.repo.room.dao
 
+import player.phonograph.repo.room.SongMarker
+import player.phonograph.repo.room.entity.Album
+import player.phonograph.repo.room.entity.AlbumWithSongs
 import androidx.room.*
-
-@Entity(tableName = "albums", primaryKeys = ["album_id"])
-data class Album(
-    @ColumnInfo(name = "album_id")
-    var albumId: Long = 0,
-    @ColumnInfo(name = "album_name")
-    var albumName: String? = null
-)
-
-data class AlbumWithSongs(
-    @Embedded var album: Album,
-    @Relation(
-        parentColumn = "album_id",
-        entityColumn = "album_id"
-    )
-    var songs: List<Song>
-)
 
 @Dao
 @TypeConverters(SongMarker::class)

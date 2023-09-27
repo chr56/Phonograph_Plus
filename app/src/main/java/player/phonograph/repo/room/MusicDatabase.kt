@@ -5,11 +5,33 @@
 package player.phonograph.repo.room
 
 import player.phonograph.App
+import player.phonograph.repo.room.dao.AlbumDAO
+import player.phonograph.repo.room.dao.ArtistDAO
+import player.phonograph.repo.room.dao.ArtistSongDAO
+import player.phonograph.repo.room.dao.SongDao
+import player.phonograph.repo.room.entity.Album
+import player.phonograph.repo.room.entity.Artist
+import player.phonograph.repo.room.entity.Song
+import player.phonograph.repo.room.entity.SongAndArtistLinkage
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import android.content.Context
 import android.content.SharedPreferences
+
+
+@Database(
+    entities = [Song::class, Album::class, Artist::class, SongAndArtistLinkage::class],
+    version = 1,
+    exportSchema = true,
+)
+@Suppress("FunctionName")
+abstract class SongDataBase : RoomDatabase() {
+    abstract fun SongDao(): SongDao
+    abstract fun AlbumDao(): AlbumDAO
+    abstract fun ArtistDao(): ArtistDAO
+    abstract fun ArtistSongsDao(): ArtistSongDAO
+}
 
 object MusicDatabase {
     private var innerSongsDataBase: SongDataBase? = null
@@ -49,16 +71,4 @@ object MusicDatabase {
         private const val LAST_MUSIC_DATABASE_UPDATE_TIMESTAMP = "last_music_database_update_timestamp"
         private const val LAST_MUSIC_DATABASE_ACCESS_TIMESTAMP = "last_music_database_access_timestamp"
     }
-}
-
-@Database(
-    entities = [Song::class, Album::class, Artist::class, SongAndArtistLinkage::class],
-    version = 1,
-    exportSchema = true,
-)
-abstract class SongDataBase : RoomDatabase() {
-    abstract fun SongDao(): SongDao
-    abstract fun AlbumDao(): AlbumDAO
-    abstract fun ArtistDao(): ArtistDAO
-    abstract fun ArtistSongsDao(): ArtistSongDAO
 }

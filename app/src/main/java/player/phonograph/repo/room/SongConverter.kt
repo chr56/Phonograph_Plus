@@ -2,18 +2,16 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-@file:Suppress("unused")
-
 package player.phonograph.repo.room
 
+import player.phonograph.model.Song
 import androidx.room.TypeConverter
-import player.phonograph.model.Song as OldSongModel
 
 object SongConverter {
     @TypeConverter
-    fun fromSongModel(song: OldSongModel): Song {
+    fun fromSongModel(song: Song): player.phonograph.repo.room.entity.Song {
         // todo
-        return Song(
+        return player.phonograph.repo.room.entity.Song(
             id = song.id,
             path = song.data,
             size = 0,
@@ -34,8 +32,8 @@ object SongConverter {
     }
 
     @TypeConverter
-    fun toSongModel(song: Song): OldSongModel {
-        return OldSongModel(
+    fun toSongModel(song: player.phonograph.repo.room.entity.Song): Song {
+        return Song(
             id = song.id,
             title = song.title ?: "UNKNOWN",
             trackNumber = song.trackNumber,
@@ -53,16 +51,3 @@ object SongConverter {
         )
     }
 }
-
-object SongMarker {
-
-    @TypeConverter
-    fun getAlbum(song: Song): Album {
-        return Album(song.albumId, song.albumName)
-    }
-    @TypeConverter
-    fun getArtist(song: Song): Artist {
-        return Artist(song.artistId, song.artistName ?: "")
-    }
-}
-

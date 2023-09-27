@@ -4,6 +4,9 @@
 
 package player.phonograph.repo.room
 
+import player.phonograph.repo.room.entity.Artist
+import player.phonograph.repo.room.entity.Song
+import player.phonograph.repo.room.entity.SongAndArtistLinkage
 import player.phonograph.util.debug
 import player.phonograph.util.text.splitMultiTag
 import android.util.Log
