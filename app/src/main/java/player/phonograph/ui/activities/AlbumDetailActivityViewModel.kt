@@ -11,6 +11,7 @@ import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Album
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
+import player.phonograph.repo.mediastore.loaders.AlbumSongLoader.allSongs
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -35,7 +36,7 @@ class AlbumDetailActivityViewModel(val albumId: Long) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
 
             val album = AlbumLoader.id(context, albumId)
-            val songs: List<Song> = album.songs
+            val songs: List<Song> = album.allSongs(context)
             _album.emit(album)
             _songs.emit(songs)
         }
