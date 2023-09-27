@@ -63,7 +63,9 @@ object Scanner {
                 // album
                 songDataBase.AlbumDao().override(SongMarker.getAlbum(song))
                 // artist
-                SongRegistry.registerArtists(song)
+                val artistSongsDao = MusicDatabase.songsDataBase.ArtistSongsDao()
+                val artistDao = MusicDatabase.songsDataBase.ArtistDao()
+                SongRegistry.registerArtists(song, artistDao, artistSongsDao)
             }
 
             Log.i(TAG, "End importing")

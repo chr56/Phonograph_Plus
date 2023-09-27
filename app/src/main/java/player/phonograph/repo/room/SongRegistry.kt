@@ -4,37 +4,52 @@
 
 package player.phonograph.repo.room
 
+import player.phonograph.repo.room.dao.ArtistDAO
+import player.phonograph.repo.room.dao.ArtistSongDAO
 import player.phonograph.repo.room.entity.Artist
 import player.phonograph.repo.room.entity.Song
 import player.phonograph.repo.room.entity.SongAndArtistLinkage
+import player.phonograph.repo.room.entity.SongAndArtistLinkage.ArtistRole
+import player.phonograph.repo.room.entity.SongAndArtistLinkage.Companion.ROLE_ALBUM_ARTIST
+import player.phonograph.repo.room.entity.SongAndArtistLinkage.Companion.ROLE_ARTIST
+import player.phonograph.repo.room.entity.SongAndArtistLinkage.Companion.ROLE_COMPOSER
 import player.phonograph.util.debug
 import player.phonograph.util.text.splitMultiTag
 import android.util.Log
 
 object SongRegistry {
-    fun registerArtists(song: Song) {
-        val raw = song.artistName
+
+    fun registerArtists(
+        song: Song,
+        artistDao: ArtistDAO,
+        artistSongsDao: ArtistSongDAO,
+    ) {
+        register(artistDao, artistSongsDao, song, song.artistName, ROLE_ARTIST)
+        register(artistDao, artistSongsDao, song, song.composer, ROLE_COMPOSER)
+        register(artistDao, artistSongsDao, song, song.albumArtistName, ROLE_ALBUM_ARTIST)
+    }
+
+    private fun register(
+        artistDao: ArtistDAO,
+        artistSongsDao: ArtistSongDAO,
+        song: Song,
+        raw: String?,
+        @ArtistRole role: String,
+    ) {
         if (raw != null) {
-            val artistSongsDao = MusicDatabase.songsDataBase.ArtistSongsDao()
-            val artistDao = MusicDatabase.songsDataBase.ArtistDao()
-
             val parsed = splitMultiTag(raw)
-
             if (parsed.isNotEmpty()) {
                 for (name in parsed) {
                     val artist = Artist(name.hashCode().toLong(), name)
-
                     artistDao.override(artist)
-                    artistSongsDao.override(SongAndArtistLinkage(song.id, artist.artistId))
-
-                    debug { Log.v(TAG, "::artist was registered: ${song.title} <-> $name") }
+                    artistSongsDao.override(SongAndArtistLinkage(song.id, artist.artistId, role))
+                    debug {
+                        Log.v(TAG, "* Registering Artist: ${song.title} <--> $name [$role]")
+                    }
                 }
-            } else {
-                debug { Log.v(TAG, "no artist in Song ${song.title}") }
             }
-        } else {
-            debug { Log.v(TAG, "no artist in Song ${song.title}") }
         }
     }
+
     private const val TAG = "RoomSongRegistry"
 }
