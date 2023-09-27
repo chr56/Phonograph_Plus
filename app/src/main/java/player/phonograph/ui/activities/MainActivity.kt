@@ -284,6 +284,9 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                         context.getString(R.string.refresh_database) to {
                             Scanner.refreshDatabase(context)
                         },
+                        context.getString(R.string.refresh_database) to {
+                            Scanner.refreshDatabase(context, true)
+                        },
                         context.getString(R.string.action_grant_storage_permission) to {
                             navigateToStorageSetting(context)
                         },
