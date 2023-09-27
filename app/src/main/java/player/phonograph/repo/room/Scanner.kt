@@ -4,7 +4,6 @@
 
 package player.phonograph.repo.room
 
-import player.phonograph.App
 import player.phonograph.notification.DatabaseUpdateNotification
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.repo.room.entity.Song
@@ -15,6 +14,7 @@ import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import player.phonograph.model.Song as SongModel
 
 object Scanner {
 
@@ -39,13 +39,12 @@ object Scanner {
 
         // compare
         scope.launch {
+            val songs: List<Song>
             if (force) {
-                val songs =
-                    SongLoader.all(context).map(SongConverter::fromSongModel)
+                songs = SongLoader.all(context).map(SongConverter::fromSongModel)
                 importFromMediaStore(context, songs)
             } else if (latestSongTimestamp > databaseUpdateTimestamp || databaseUpdateTimestamp == -1L) {
-                val songs: List<Song> =
-                    SongLoader.since(context, databaseUpdateTimestamp).map(SongConverter::fromSongModel)
+                songs = SongLoader.since(context, databaseUpdateTimestamp).map(SongConverter::fromSongModel)
                 importFromMediaStore(context, songs)
                 MusicDatabase.Metadata.lastUpdateTimestamp = currentTimestamp() / 1000
             }
@@ -54,6 +53,8 @@ object Scanner {
 
     private fun importFromMediaStore(context: Context, songs: List<Song>) = withNotification(context) {
         val songDataBase = MusicDatabase.songsDataBase
+        val artistSongsDao = songDataBase.ArtistSongsDao()
+        val artistDao = songDataBase.ArtistDao()
         for (song in songs) {
             // song
             songDataBase.SongDao().override(song)
@@ -61,27 +62,22 @@ object Scanner {
             // album
             songDataBase.AlbumDao().override(SongMarker.getAlbum(song))
             // artist
-            val artistSongsDao = MusicDatabase.songsDataBase.ArtistSongsDao()
-            val artistDao = MusicDatabase.songsDataBase.ArtistDao()
             SongRegistry.registerArtists(song, artistDao, artistSongsDao)
         }
     }
 
-    fun refreshSingleSong(context: Context?, songId: Long) {
-        refreshSingleSong(context, SongLoader.id(context ?: App.instance, songId))
-    }
+    fun refreshSingleSong(context: Context, songId: Long) =
+        refreshSingleSong(context, SongLoader.id(context, songId))
 
-    fun refreshSingleSong(context: Context?, song: player.phonograph.model.Song) {
-        scope.launch {
-            val songDataBaseDao = MusicDatabase.songsDataBase.SongDao()
-            songDataBaseDao.update(SongConverter.fromSongModel(song))
-        }
-    }
+    fun refreshSingleSong(context: Context, song: SongModel) =
+        refreshSingleSong(context, SongConverter.fromSongModel(song))
 
-    fun refreshSingleSong(context: Context?, song: Song) {
+    fun refreshSingleSong(context: Context, song: Song) {
         scope.launch {
-            val songDataBaseDao = MusicDatabase.songsDataBase.SongDao()
-            songDataBaseDao.update(song)
+            withNotification(context) {
+                val songDataBaseDao = MusicDatabase.songsDataBase.SongDao()
+                songDataBaseDao.update(song)
+            }
         }
     }
 
