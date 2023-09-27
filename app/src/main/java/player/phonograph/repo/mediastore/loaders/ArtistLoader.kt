@@ -21,7 +21,7 @@ object ArtistLoader : Loader<Artist> {
     override fun id(context: Context, id: Long): Artist {
         val songs = ArtistSongLoader.id(context, id)
         val albums = ArtistAlbumLoader.id(context, id)
-        return Artist(id, songs[0].artistName, albums.size, songs.size)
+        return Artist(id, songs[0].artistName ?: Artist.UNKNOWN_ARTIST_DISPLAY_NAME, albums.size, songs.size)
     }
 
     fun searchByName(context: Context, query: String): List<Artist> {

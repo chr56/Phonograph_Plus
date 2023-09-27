@@ -5,7 +5,7 @@
 package player.phonograph.repo.mediastore.loaders
 
 import player.phonograph.model.Album
-import player.phonograph.model.Song
+import player.phonograph.repo.mediastore.createAlbum
 import player.phonograph.repo.mediastore.internal.intoSongs
 import player.phonograph.repo.mediastore.internal.querySongs
 import player.phonograph.repo.mediastore.toAlbumList
@@ -21,17 +21,12 @@ object AlbumLoader : Loader<Album> {
 
     override fun id(context: Context, id: Long): Album {
         val songs = AlbumSongLoader.id(context, id)
-        return Album(id, albumTitle(songs), songs.size)
+        return createAlbum(id, songs)
     }
 
     fun searchByName(context: Context, query: String): List<Album> {
         val songs = querySongs(context, "${AudioColumns.ALBUM} LIKE ?", arrayOf("%$query%"), null).intoSongs()
         return if (songs.isEmpty()) return emptyList() else songs.toAlbumList()
-    }
-
-    private fun albumTitle(list: List<Song>): String? {
-        if (list.isEmpty()) return null
-        return list[0].albumName
     }
 
 }

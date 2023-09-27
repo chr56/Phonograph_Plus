@@ -28,7 +28,7 @@ private fun luceneQuery(song: Song): String = buildString {
 
 private fun luceneQuery(album: Album): String = buildString {
     append(""""${album.title}"""")
-    if (album.artistName.isNotEmpty()) append(""" AND artist:"${album.artistName}"""")
+    if (!album.artistName.isNullOrEmpty()) append(""" AND artist:"${album.artistName}"""")
 }
 
 const val EXTRA_ACTION_TYPE = "ACTION"
