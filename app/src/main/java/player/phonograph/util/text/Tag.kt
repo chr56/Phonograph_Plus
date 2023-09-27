@@ -4,14 +4,7 @@
 
 package player.phonograph.util.text
 
-fun splitMultiTag(source: String): Array<String>? {
-
-    if (source.isEmpty()) return null
-    val output: MutableList<String> = arrayListOf()
-
-    source.trim().split(";", "/", "&").forEach {
-        output.add(it.trim())
-    }
-
-    return output.toTypedArray()
+fun splitMultiTag(source: String): Collection<String> {
+    if (source.isEmpty()) return emptySet()
+    return source.trim(Char::isWhitespace).split(";", "/", "&").map { it.trimStart() }
 }

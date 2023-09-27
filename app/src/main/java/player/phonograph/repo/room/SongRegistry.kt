@@ -20,14 +20,14 @@ object SongRegistry {
 
             val parsed = splitMultiTag(raw)
 
-            if (parsed != null) {
+            if (parsed.isNotEmpty()) {
                 for (name in parsed) {
                     val artist = Artist(name.hashCode().toLong(), name)
 
                     artistDao.override(artist)
                     artistSongsDao.override(SongAndArtistLinkage(song.id, artist.artistId))
 
-                    debug { Log.v(TAG, "::artist was registered: ${song.title}<->$name") }
+                    debug { Log.v(TAG, "::artist was registered: ${song.title} <-> $name") }
                 }
             } else {
                 debug { Log.v(TAG, "no artist in Song ${song.title}") }
