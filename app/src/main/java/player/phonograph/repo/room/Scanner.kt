@@ -21,7 +21,7 @@ object Scanner {
     private const val TAG = "DatabaseScanner"
     private val scope by lazy { CoroutineScope(Dispatchers.IO) }
 
-    fun refreshDatabase(context: Context) {
+    fun refreshDatabase(context: Context, force: Boolean = false) {
         Log.i(TAG, "Start refreshing")
         var latestSongTimestamp = -1L
         var databaseUpdateTimestamp = -1L
@@ -38,39 +38,32 @@ object Scanner {
         }
 
         // compare
-        if (latestSongTimestamp > databaseUpdateTimestamp || databaseUpdateTimestamp == -1L) {
-            importFromMediaStore(
-                context, MusicDatabase.Metadata.lastUpdateTimestamp, null
-            )
-            MusicDatabase.Metadata.lastUpdateTimestamp = currentTimestamp() / 1000
+        scope.launch {
+            if (force) {
+                val songs =
+                    SongLoader.all(context).map(SongConverter::fromSongModel)
+                importFromMediaStore(context, songs)
+            } else if (latestSongTimestamp > databaseUpdateTimestamp || databaseUpdateTimestamp == -1L) {
+                val songs: List<Song> =
+                    SongLoader.since(context, databaseUpdateTimestamp).map(SongConverter::fromSongModel)
+                importFromMediaStore(context, songs)
+                MusicDatabase.Metadata.lastUpdateTimestamp = currentTimestamp() / 1000
+            }
         }
     }
 
-    fun importFromMediaStore(context: Context, sinceTimestamp: Long, callbacks: (() -> Unit)?) {
-        Log.i(TAG, "Start importing")
-
-        scope.launch {
-            DatabaseUpdateNotification.send(context)
-            val songs: List<Song> = SongLoader.since(context, sinceTimestamp).map(SongConverter::fromSongModel)
-            val songDataBase = MusicDatabase.songsDataBase
-
-            for (song in songs) {
-                // song
-                songDataBase.SongDao().override(song)
-                debug {
-                    Log.d(TAG, "Override Song: ${song.title}")
-                }
-                // album
-                songDataBase.AlbumDao().override(SongMarker.getAlbum(song))
-                // artist
-                val artistSongsDao = MusicDatabase.songsDataBase.ArtistSongsDao()
-                val artistDao = MusicDatabase.songsDataBase.ArtistDao()
-                SongRegistry.registerArtists(song, artistDao, artistSongsDao)
-            }
-
-            Log.i(TAG, "End importing")
-            DatabaseUpdateNotification.cancel(context)
-            callbacks?.let { it() }
+    private fun importFromMediaStore(context: Context, songs: List<Song>) = withNotification(context) {
+        val songDataBase = MusicDatabase.songsDataBase
+        for (song in songs) {
+            // song
+            songDataBase.SongDao().override(song)
+            debug { Log.d(TAG, "Override Song: ${song.title}") }
+            // album
+            songDataBase.AlbumDao().override(SongMarker.getAlbum(song))
+            // artist
+            val artistSongsDao = MusicDatabase.songsDataBase.ArtistSongsDao()
+            val artistDao = MusicDatabase.songsDataBase.ArtistDao()
+            SongRegistry.registerArtists(song, artistDao, artistSongsDao)
         }
     }
 
@@ -90,6 +83,16 @@ object Scanner {
             val songDataBaseDao = MusicDatabase.songsDataBase.SongDao()
             songDataBaseDao.update(song)
         }
+    }
+
+    private inline fun withNotification(context: Context, block: (Context) -> Unit) {
+        Log.d(TAG, "Start importing")
+        DatabaseUpdateNotification.send(context)
+
+        block(context)
+
+        Log.d(TAG, "End importing")
+        DatabaseUpdateNotification.cancel(context)
     }
 
 }
