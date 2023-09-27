@@ -41,10 +41,10 @@ object Scanner {
         scope.launch {
             val songs: List<Song>
             if (force) {
-                songs = SongLoader.all(context).map(SongConverter::fromSongModel)
+                songs = SongLoader.all(context).map(Converters::fromSongModel)
                 importFromMediaStore(context, songs)
             } else if (latestSongTimestamp > databaseUpdateTimestamp || databaseUpdateTimestamp == -1L) {
-                songs = SongLoader.since(context, databaseUpdateTimestamp).map(SongConverter::fromSongModel)
+                songs = SongLoader.since(context, databaseUpdateTimestamp).map(Converters::fromSongModel)
                 importFromMediaStore(context, songs)
                 MusicDatabase.Metadata.lastUpdateTimestamp = currentTimestamp() / 1000
             }
@@ -71,7 +71,7 @@ object Scanner {
         refreshSingleSong(context, SongLoader.id(context, songId))
 
     fun refreshSingleSong(context: Context, song: SongModel) =
-        refreshSingleSong(context, SongConverter.fromSongModel(song))
+        refreshSingleSong(context, Converters.fromSongModel(song))
 
     fun refreshSingleSong(context: Context, song: Song) {
         scope.launch {

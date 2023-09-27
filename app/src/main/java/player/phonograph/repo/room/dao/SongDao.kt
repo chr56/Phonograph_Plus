@@ -4,12 +4,12 @@
 
 package player.phonograph.repo.room.dao
 
-import player.phonograph.repo.room.SongConverter
+import player.phonograph.repo.room.Converters
 import player.phonograph.repo.room.entity.Song
 import androidx.room.*
 
 @Dao
-@TypeConverters(SongConverter::class)
+@TypeConverters(Converters::class)
 interface SongDao {
     @Query("SELECT * from songs")
     fun getAllSongs(): List<Song>

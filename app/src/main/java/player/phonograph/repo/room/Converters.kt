@@ -4,14 +4,16 @@
 
 package player.phonograph.repo.room
 
-import player.phonograph.model.Song
+import player.phonograph.repo.room.entity.Song
 import androidx.room.TypeConverter
+import player.phonograph.model.Song as SongModel
 
-object SongConverter {
+object Converters {
+
     @TypeConverter
-    fun fromSongModel(song: Song): player.phonograph.repo.room.entity.Song {
+    fun fromSongModel(song: SongModel): Song {
         // todo
-        return player.phonograph.repo.room.entity.Song(
+        return Song(
             id = song.id,
             path = song.data,
             size = 0,
@@ -32,8 +34,8 @@ object SongConverter {
     }
 
     @TypeConverter
-    fun toSongModel(song: player.phonograph.repo.room.entity.Song): Song {
-        return Song(
+    fun toSongModel(song: Song): SongModel {
+        return SongModel(
             id = song.id,
             title = song.title ?: "UNKNOWN",
             trackNumber = song.trackNumber,
