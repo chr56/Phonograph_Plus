@@ -4,18 +4,15 @@
 
 package player.phonograph.repo.room.dao
 
-import player.phonograph.repo.room.SongMarker
 import player.phonograph.repo.room.entity.Artist
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.TypeConverters
 import androidx.room.Update
 
 @Dao
-@TypeConverters(SongMarker::class)
 interface ArtistDAO {
     @Query("SELECT * from artists order by :sortOrder")
     fun getAllArtists(sortOrder: String): List<Artist>

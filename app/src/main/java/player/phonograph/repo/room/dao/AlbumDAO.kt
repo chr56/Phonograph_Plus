@@ -4,13 +4,11 @@
 
 package player.phonograph.repo.room.dao
 
-import player.phonograph.repo.room.SongMarker
 import player.phonograph.repo.room.entity.Album
 import player.phonograph.repo.room.entity.AlbumWithSongs
 import androidx.room.*
 
 @Dao
-@TypeConverters(SongMarker::class)
 interface AlbumDAO {
     @Query("SELECT * from albums order by :sortOrder")
     fun getAllAlbums(sortOrder: String): List<Album>
