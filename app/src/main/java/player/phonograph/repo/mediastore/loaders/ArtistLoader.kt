@@ -5,7 +5,6 @@
 package player.phonograph.repo.mediastore.loaders
 
 import player.phonograph.model.Artist
-import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.internal.intoSongs
 import player.phonograph.repo.mediastore.internal.querySongs
 import player.phonograph.repo.mediastore.toAlbumList
@@ -31,5 +30,4 @@ object ArtistLoader : Loader<Artist> {
         return if (songs.isEmpty()) return emptyList() else songs.toArtistList()
     }
 
-    fun List<Artist>.allArtistSongs(): List<Song> = this.flatMap { it.songs }
 }
