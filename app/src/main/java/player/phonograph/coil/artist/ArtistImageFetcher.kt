@@ -14,6 +14,7 @@ import player.phonograph.coil.retriever.ExternalFileRetriever
 import player.phonograph.coil.retriever.ImageRetriever
 import player.phonograph.coil.retriever.raw
 import player.phonograph.coil.retriever.readFromFile
+import player.phonograph.coil.retriever.retrieveAudioFile
 import player.phonograph.coil.retriever.retrieverFromConfig
 import player.phonograph.util.debug
 import android.content.Context
@@ -52,23 +53,11 @@ class ArtistImageFetcher(
         size: Size,
     ): FetchResult? {
         for (file in data.files) {
-            for (retriever in retrievers) {
-                val result = retriever.retrieve(file.path, file.songId, context, size, raw)
-                if (result == null) {
-                    debug {
-                        Log.v(
-                            TAG,
-                            "Image not available from ${retriever.name} for ${data.name} in file ${file.songId}"
-                        )
-                    }
-                    continue
-                } else {
-                    return result
-                }
-            }
+            val result = retrieveAudioFile(retrievers, file, context, size, raw)
+            if (result != null) return result
         }
         debug {
-            Log.v(TAG, "No any cover for ${data.name}")
+            Log.v(TAG, "No any image for artist ${data.name}")
         }
         return null
     }
