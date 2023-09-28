@@ -12,7 +12,7 @@ import player.phonograph.R
 import player.phonograph.actions.actionPlay
 import player.phonograph.actions.actionPlayNext
 import player.phonograph.model.Genre
-import player.phonograph.repo.loader.Genres
+import player.phonograph.repo.loader.Songs
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.util.theme.getTintedDrawable
 import android.content.Context
@@ -27,7 +27,7 @@ fun genreDetailToolbar(
 ): Boolean = with(context) {
     val iconColor = primaryTextColor(ThemeColor.primaryColor(context))
     attach(menu) {
-        val allSongs = Genres.songs(context, genre.id)
+        val allSongs = Songs.genres(context, genre.id)
         menuItem(getString(R.string.action_play)) {
             icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS

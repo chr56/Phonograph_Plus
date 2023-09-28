@@ -89,7 +89,7 @@ object MediaItemProvider {
 
     fun browseAlbum(context: Context, id: Long): List<MediaItem> {
         return mutableListOf(albumAllItem(context.resources, id)) +
-                Albums.songs(context, id).map { it.toMediaItem() }
+                Songs.album(context, id).map { it.toMediaItem() }
     }
 
     fun browseArtists(context: Context): List<MediaItem> {
@@ -98,7 +98,7 @@ object MediaItemProvider {
 
     fun browseArtist(context: Context, id: Long): List<MediaItem> {
         return mutableListOf(artistAllItem(context.resources, id)) +
-                Artists.songs(context, id).map { it.toMediaItem() }
+                Songs.artist(context, id).map { it.toMediaItem() }
     }
 
     fun browseFavorite(context: Context): List<MediaItem> {

@@ -20,7 +20,7 @@ import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
 import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
-import player.phonograph.repo.loader.Albums
+import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.NavigationUtil.goToArtist
@@ -97,7 +97,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         }
         // setUpSongsAdapter
         adapter =
-            AlbumSongDisplayAdapter(this, Albums.songs(this, model.album.value.id), R.layout.item_list).apply {
+            AlbumSongDisplayAdapter(this, Songs.album(this, model.album.value.id), R.layout.item_list).apply {
                 useImageText = true
                 usePalette = false
             }
@@ -167,7 +167,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         supportActionBar!!.title = album.title
         viewBinding.artistText.text = album.artistName
         viewBinding.songCountText.text = songCountString(this, album.songCount)
-        viewBinding.durationText.text = getReadableDurationString(Albums.songs(this, album.id).totalDuration())
+        viewBinding.durationText.text = getReadableDurationString(Songs.album(this, album.id).totalDuration())
         viewBinding.albumYearText.text = getYearString(album.year)
         model.loadAlbumImage(this, album, viewBinding.image)
     }

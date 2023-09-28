@@ -11,7 +11,9 @@ import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
+import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Artists
+import player.phonograph.repo.loader.Songs
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -38,8 +40,8 @@ class ArtistDetailActivityViewModel(var artistId: Long) : ViewModel() {
     fun load(context: Context) {
         viewModelScope.launch(SupervisorJob()) {
             _artist.emit(Artists.id(context, artistId))
-            _albums.emit(Artists.albums(context, artistId))
-            _songs.emit(Artists.songs(context, artistId))
+            _albums.emit(Albums.artist(context, artistId))
+            _songs.emit(Songs.artist(context, artistId))
         }
     }
 

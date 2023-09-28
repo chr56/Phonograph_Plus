@@ -11,6 +11,7 @@ import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Album
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Albums
+import player.phonograph.repo.loader.Songs
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -33,11 +34,8 @@ class AlbumDetailActivityViewModel(val albumId: Long) : ViewModel() {
 
     fun loadDataSet(context: Context) {
         viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
-
-            val album = Albums.id(context, albumId)
-            val songs: List<Song> = Albums.songs(context, albumId)
-            _album.emit(album)
-            _songs.emit(songs)
+            _album.emit(Albums.id(context, albumId))
+            _songs.emit(Songs.album(context, albumId))
         }
     }
 
@@ -47,7 +45,7 @@ class AlbumDetailActivityViewModel(val albumId: Long) : ViewModel() {
     fun loadAlbumImage(context: Context, album: Album, imageView: ImageView) {
         val defaultColor = ThemeColor.primaryColor(context)
         loadImage(context)
-            .from(Albums.songs(context, album.id).firstOrNull())
+            .from(Songs.album(context, album.id).firstOrNull())
             .into(
                 PaletteTargetBuilder(defaultColor)
                     .onResourceReady { result, color ->
