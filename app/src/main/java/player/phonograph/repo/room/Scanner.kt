@@ -53,7 +53,7 @@ object Scanner {
 
     private fun importFromMediaStore(context: Context, songs: List<Song>) = withNotification(context) {
         val songDataBase = MusicDatabase.songsDataBase
-        val artistSongsDao = songDataBase.ArtistSongsDao()
+        val relationShipDao = songDataBase.RelationShipDao()
         val artistDao = songDataBase.ArtistDao()
         val albumDao = songDataBase.AlbumDao()
         for (song in songs) {
@@ -63,7 +63,7 @@ object Scanner {
             // album
             SongRegistry.registerAlbum(song, albumDao)
             // artist
-            SongRegistry.registerArtists(song, artistDao, artistSongsDao)
+            SongRegistry.registerArtists(song, artistDao, relationShipDao)
         }
     }
 

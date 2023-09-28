@@ -5,6 +5,8 @@
 package player.phonograph.repo.room.dao
 
 import player.phonograph.repo.room.entity.Artist
+import player.phonograph.repo.room.entity.Columns.ARTIST_ID
+import player.phonograph.repo.room.entity.Tables.ARTISTS
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -13,12 +15,11 @@ import androidx.room.Query
 import androidx.room.Update
 
 @Dao
-interface ArtistDAO {
-    @Query("SELECT * from artists order by :sortOrder")
-    fun getAllArtists(sortOrder: String): List<Artist>
+interface ArtistDao {
 
-    @Query("SELECT * from artists where artist_name like :artistName order by :sortOrder")
-    fun searchArtists(artistName: String, sortOrder: String): List<Artist>
+
+    @Query("SELECT * from $ARTISTS order by :sortOrder")
+    fun all(sortOrder: String = ARTIST_ID): List<Artist>
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insert(artist: Artist)

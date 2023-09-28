@@ -4,9 +4,9 @@
 
 package player.phonograph.repo.room
 
-import player.phonograph.repo.room.dao.AlbumDAO
-import player.phonograph.repo.room.dao.ArtistDAO
-import player.phonograph.repo.room.dao.ArtistSongDAO
+import player.phonograph.repo.room.dao.AlbumDao
+import player.phonograph.repo.room.dao.ArtistDao
+import player.phonograph.repo.room.dao.RelationShipDao
 import player.phonograph.repo.room.entity.Album
 import player.phonograph.repo.room.entity.Artist
 import player.phonograph.repo.room.entity.Song
@@ -23,7 +23,7 @@ object SongRegistry {
 
     fun registerAlbum(
         song: Song,
-        albumDao: AlbumDAO,
+        albumDao: AlbumDao,
     ) {
         val albumName = song.albumName
         if (albumName != null) {
@@ -41,17 +41,17 @@ object SongRegistry {
 
     fun registerArtists(
         song: Song,
-        artistDao: ArtistDAO,
-        artistSongsDao: ArtistSongDAO,
+        artistDao: ArtistDao,
+        relationShipDao: RelationShipDao,
     ) {
-        register(artistDao, artistSongsDao, song, song.artistName, ROLE_ARTIST)
-        register(artistDao, artistSongsDao, song, song.composer, ROLE_COMPOSER)
-        register(artistDao, artistSongsDao, song, song.albumArtistName, ROLE_ALBUM_ARTIST)
+        register(artistDao, relationShipDao, song, song.artistName, ROLE_ARTIST)
+        register(artistDao, relationShipDao, song, song.composer, ROLE_COMPOSER)
+        register(artistDao, relationShipDao, song, song.albumArtistName, ROLE_ALBUM_ARTIST)
     }
 
     private fun register(
-        artistDao: ArtistDAO,
-        artistSongsDao: ArtistSongDAO,
+        artistDao: ArtistDao,
+        relationShipDao: RelationShipDao,
         song: Song,
         raw: String?,
         @ArtistRole role: Int,
@@ -62,7 +62,7 @@ object SongRegistry {
                 for (name in parsed) {
                     val artist = Artist(name.hashCode().toLong(), name)
                     artistDao.override(artist)
-                    artistSongsDao.override(SongAndArtistLinkage(song.id, artist.artistId, role))
+                    relationShipDao.override(SongAndArtistLinkage(song.id, artist.artistId, role))
                     debug {
                         Log.v(TAG, "* Registering Artist: ${song.title} <--> $name [$role]")
                     }

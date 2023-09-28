@@ -5,9 +5,10 @@
 package player.phonograph.repo.room
 
 import player.phonograph.App
-import player.phonograph.repo.room.dao.AlbumDAO
-import player.phonograph.repo.room.dao.ArtistDAO
-import player.phonograph.repo.room.dao.ArtistSongDAO
+import player.phonograph.repo.room.dao.AlbumDao
+import player.phonograph.repo.room.dao.ArtistDao
+import player.phonograph.repo.room.dao.QueryDao
+import player.phonograph.repo.room.dao.RelationShipDao
 import player.phonograph.repo.room.dao.SongDao
 import player.phonograph.repo.room.entity.Album
 import player.phonograph.repo.room.entity.Artist
@@ -25,12 +26,13 @@ import android.content.SharedPreferences
     version = 1,
     exportSchema = true,
 )
-@Suppress("FunctionName")
+
 abstract class SongDataBase : RoomDatabase() {
     abstract fun SongDao(): SongDao
-    abstract fun AlbumDao(): AlbumDAO
-    abstract fun ArtistDao(): ArtistDAO
-    abstract fun ArtistSongsDao(): ArtistSongDAO
+    abstract fun AlbumDao(): AlbumDao
+    abstract fun ArtistDao(): ArtistDao
+    abstract fun RelationShipDao(): RelationShipDao
+    abstract fun QueryDao(): QueryDao
 }
 
 object MusicDatabase {
