@@ -8,6 +8,9 @@ import player.phonograph.repo.room.entity.AlbumEntity
 import player.phonograph.repo.room.entity.ArtistEntity
 import player.phonograph.repo.room.entity.LinkageSongAndArtist
 import player.phonograph.repo.room.entity.LinkageSongAndArtist.ArtistRole
+import player.phonograph.repo.room.entity.LinkageSongAndArtist.Companion.ROLE_ALBUM_ARTIST
+import player.phonograph.repo.room.entity.LinkageSongAndArtist.Companion.ROLE_ARTIST
+import player.phonograph.repo.room.entity.LinkageSongAndArtist.Companion.ROLE_COMPOSER
 import player.phonograph.repo.room.entity.SongEntity
 import player.phonograph.util.debug
 import player.phonograph.util.text.splitMultiTag
@@ -25,8 +28,8 @@ abstract class RelationShipDao {
     @Transaction
     open fun register(songEntity: SongEntity, albumDao: AlbumDao, artistDao: ArtistDao) {
         overrideSong(songEntity)
-        registerArtists(songEntity, artistDao)
-        registerAlbum(songEntity, albumDao)
+        val registerArtists = registerArtists(songEntity, artistDao)
+        registerAlbum(songEntity, registerArtists, albumDao)
     }
 
 
@@ -40,16 +43,21 @@ abstract class RelationShipDao {
         private const val TAG: String = "RelationShipDao"
     }
 
-    private fun registerAlbum(songEntity: SongEntity, albumDao: AlbumDao) {
+    private fun registerAlbum(songEntity: SongEntity, registerArtists: Collection<ArtistEntity>, albumDao: AlbumDao) {
         val albumName = songEntity.albumName
         if (albumName != null) {
+            val artists = registerArtists.toSet()
+            val albumArtistName = songEntity.albumArtistName
             val old = albumDao.id(songEntity.albumId)
+            val targetArtist =
+                artists.firstOrNull { it.artistName == albumArtistName } ?: artists.firstOrNull()
             @Suppress("IfThenToElvis")
             val album =
                 if (old != null) {
                     // update
                     old.copy(
-                        albumArtistName = old.albumArtistName.ifEmpty { songEntity.albumArtistName ?: "" },
+                        artistId = targetArtist?.artistId ?: 0,
+                        albumArtistName = targetArtist?.artistName ?: "",
                         dateModified = max(old.dateModified, songEntity.dateModified),
                         year = max(old.year, songEntity.year),
                         songCount = old.songCount + 1,
@@ -59,8 +67,8 @@ abstract class RelationShipDao {
                     AlbumEntity(
                         albumId = songEntity.albumId,
                         albumName = albumName,
-                        artistId = 0,
-                        albumArtistName = songEntity.albumArtistName ?: "",
+                        artistId = targetArtist?.artistId ?: 0,
+                        albumArtistName = targetArtist?.artistName ?: "",
                         year = songEntity.year,
                         dateModified = songEntity.dateModified,
                         songCount = 1,
@@ -74,41 +82,50 @@ abstract class RelationShipDao {
     private fun registerArtists(
         songEntity: SongEntity,
         artistDao: ArtistDao,
-    ) {
-        registerArtist(songEntity, artistDao, songEntity.rawArtistName, LinkageSongAndArtist.ROLE_ARTIST)
-        registerArtist(songEntity, artistDao, songEntity.composer, LinkageSongAndArtist.ROLE_COMPOSER)
-        registerArtist(songEntity, artistDao, songEntity.albumArtistName, LinkageSongAndArtist.ROLE_ALBUM_ARTIST)
+    ): Collection<ArtistEntity> {
+        val r = registerArtist(songEntity, artistDao, songEntity.rawArtistName, ROLE_ARTIST)
+        val c = registerArtist(songEntity, artistDao, songEntity.composer, ROLE_COMPOSER)
+        val a = registerArtist(songEntity, artistDao, songEntity.albumArtistName, ROLE_ALBUM_ARTIST)
+        return r + c + a
     }
 
+    /**
+     * @return registered artists
+     */
     private fun registerArtist(
         songEntity: SongEntity,
         artistDao: ArtistDao,
         raw: String?,
         @ArtistRole role: Int,
-    ) {
+    ): Collection<ArtistEntity> =
         if (raw != null) {
             val parsed = splitMultiTag(raw)
             if (parsed.isNotEmpty()) {
-                for (name in parsed) {
+                parsed.map { name ->
                     val old = artistDao.named(name)
                     @Suppress("IfThenToElvis")
-                    val artist = if (old != null) {
+                    if (old != null) {
                         // update
                         old.copy(
                             songCount = old.songCount + 1
                         )
                     } else {
-                        ArtistEntity(name.hashCode().toLong(), name, songCount = 1)
+                        ArtistEntity(name.hashCode().toLong(), name, albumCount = 1, songCount = 1)
                     }
+                }.map { artist ->
                     overrideArtist(artist)
                     overrideLinkageSongAndArtist(LinkageSongAndArtist(songEntity.id, artist.artistId, role))
                     debug {
-                        Log.v(TAG, "* Registering Artist: ${songEntity.title} <--> $name [$role]")
+                        Log.v(TAG, "* Registering Artist: ${songEntity.title} <--> ${artist.artistName} [$role]")
                     }
+                    artist
                 }
+            } else {
+                emptyList()
             }
+        } else {
+            emptyList()
         }
-    }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract fun overrideSong(songEntity: SongEntity)
