@@ -37,7 +37,7 @@ fun catalogArtists(songs: List<Song>): List<Artist> {
             reportError(e, TAG_ARTIST, "Fail to load artists")
         }
 
-        // artistID <-> List of songs which are grouped by song
+        // artistID <-> List of songs which are grouped by album
         val table: MutableMap<Long, MutableMap<Long, MutableList<Song>>> = ArrayMap()
 
         // artistID <-> artistName
@@ -95,7 +95,12 @@ fun catalogArtists(songs: List<Song>): List<Artist> {
                 reportError(e, TAG_ARTIST, "Fail to load artists")
             }.toList()
 
-            Artist(artistId, artistNames[artistId] ?: Artist.UNKNOWN_ARTIST_DISPLAY_NAME, albumList.size, songs.size)
+            Artist(
+                id = artistId,
+                name = artistNames[artistId] ?: Artist.UNKNOWN_ARTIST_DISPLAY_NAME,
+                albumCount = albumList.size,
+                songCount = albumList.fold(0) { acc, album -> acc + album.songCount }
+            )
         }.catch { e ->
             reportError(e, TAG_ARTIST, "Fail to load artists")
         }.toList().sortAllArtist()
