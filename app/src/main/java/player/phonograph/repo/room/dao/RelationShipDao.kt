@@ -4,7 +4,7 @@
 
 package player.phonograph.repo.room.dao
 
-import player.phonograph.repo.room.entity.SongAndArtistLinkage
+import player.phonograph.repo.room.entity.LinkageSongAndArtist
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -14,8 +14,8 @@ import androidx.room.OnConflictStrategy
 interface RelationShipDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun override(linkage: SongAndArtistLinkage)
+    fun override(linkage: LinkageSongAndArtist)
 
     @Delete
-    fun remove(linkage: SongAndArtistLinkage)
+    fun remove(linkage: LinkageSongAndArtist)
 }

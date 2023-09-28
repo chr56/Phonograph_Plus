@@ -8,17 +8,17 @@ object Tables {
     const val SONGS = "songs"
     const val ALBUMS = "albums"
     const val ARTISTS = "artists"
-    const val ARTIST_SONG_LINKAGE = "artist_song_linkage"
+    const val LINKAGE_ARTIST_SONG = "linkage_artist_song"
 }
 
 object Columns {
     const val SONG_ID = "song_id"
     const val PATH = "path"
-    const val SIZE = "size"
-    const val DISPLAY_NAME = "display_name"
     const val DATE_ADDED = "date_added"
     const val DATE_MODIFIED = "date_modified"
     const val TITLE = "title"
+    const val RAW_ARTIST_ID = "raw_artist_id"
+    const val RAW_ARTIST_NAME = "raw_artist_name"
     const val ALBUM_ID = "album_id"
     const val ALBUM_NAME = "album_name"
     const val ARTIST_ID = "artist_id"

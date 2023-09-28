@@ -20,7 +20,7 @@ import androidx.room.Index
     primaryKeys = [ALBUM_ID],
     indices = [Index(ALBUM_ID, ALBUM_NAME)]
 )
-data class Album(
+data class AlbumEntity(
     @ColumnInfo(name = ALBUM_ID)
     var albumId: Long,
     @ColumnInfo(name = ALBUM_NAME, defaultValue = UNKNOWN_ALBUM_DISPLAY_NAME)

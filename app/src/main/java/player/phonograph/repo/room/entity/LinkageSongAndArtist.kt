@@ -13,11 +13,11 @@ import androidx.room.Entity
 import androidx.room.Index
 
 @Entity(
-    tableName = Tables.ARTIST_SONG_LINKAGE,
+    tableName = Tables.LINKAGE_ARTIST_SONG,
     primaryKeys = [ARTIST_ID, SONG_ID],
     indices = [Index(value = [SONG_ID, ARTIST_ID])]
 )
-data class SongAndArtistLinkage(
+data class LinkageSongAndArtist(
     @ColumnInfo(name = SONG_ID)
     var songId: Long,
     @ColumnInfo(name = ARTIST_ID)

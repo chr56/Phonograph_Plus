@@ -4,17 +4,18 @@
 
 package player.phonograph.repo.room.dao
 
-import player.phonograph.repo.room.entity.Album
+import player.phonograph.repo.room.entity.AlbumEntity
 import player.phonograph.repo.room.entity.AlbumWithSongs
-import player.phonograph.repo.room.entity.Artist
+import player.phonograph.repo.room.entity.ArtistEntity
 import player.phonograph.repo.room.entity.ArtistWithSongs
 import player.phonograph.repo.room.entity.Columns.ALBUM_ID
 import player.phonograph.repo.room.entity.Columns.ALBUM_NAME
 import player.phonograph.repo.room.entity.Columns.ARTIST_ID
 import player.phonograph.repo.room.entity.Columns.ARTIST_NAME
+import player.phonograph.repo.room.entity.Columns.RAW_ARTIST_NAME
 import player.phonograph.repo.room.entity.Columns.SONG_ID
 import player.phonograph.repo.room.entity.Columns.TITLE
-import player.phonograph.repo.room.entity.Song
+import player.phonograph.repo.room.entity.SongEntity
 import player.phonograph.repo.room.entity.SongWithArtists
 import player.phonograph.repo.room.entity.Tables.ALBUMS
 import player.phonograph.repo.room.entity.Tables.ARTISTS
@@ -28,19 +29,19 @@ interface QueryDao {
 
     // Search Songs
     @Query("SELECT * from $SONGS where $TITLE like :title order by :sortOrder")
-    fun songsWithTitle(title: String, sortOrder: String): List<Song>
+    fun songsWithTitle(title: String, sortOrder: String): List<SongEntity>
     @Query("SELECT * from $SONGS where $ALBUM_NAME like :albumName order by :sortOrder")
-    fun songsWithAlbum(albumName: String, sortOrder: String): List<Song>
-    @Query("SELECT * from $SONGS where $ARTIST_NAME like :artistName order by :sortOrder")
-    fun songsWithArtist(artistName: String, sortOrder: String): List<Song>
+    fun songsWithAlbum(albumName: String, sortOrder: String): List<SongEntity>
+    @Query("SELECT * from $SONGS where $RAW_ARTIST_NAME like :artistName order by :sortOrder")
+    fun songsWithArtist(artistName: String, sortOrder: String): List<SongEntity>
 
     // Search Albums
     @Query("SELECT * from $ALBUMS where $ALBUM_NAME like :albumName order by :sortOrder")
-    fun albumsWithName(albumName: String, sortOrder: String = ALBUM_ID): List<Album>
+    fun albumsWithName(albumName: String, sortOrder: String = ALBUM_ID): List<AlbumEntity>
 
     // Search Artist
     @Query("SELECT * from $ARTISTS where $ARTIST_NAME like :artistName order by :sortOrder")
-    fun artistsWithName(artistName: String, sortOrder: String = ARTIST_ID): List<Artist>
+    fun artistsWithName(artistName: String, sortOrder: String = ARTIST_ID): List<ArtistEntity>
 
 
     // Relationship

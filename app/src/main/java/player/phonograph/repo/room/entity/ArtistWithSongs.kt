@@ -11,11 +11,11 @@ import androidx.room.Junction
 import androidx.room.Relation
 
 data class ArtistWithSongs(
-    @Embedded var artist: Artist,
+    @Embedded var artist: ArtistEntity,
     @Relation(
         parentColumn = ARTIST_ID,
         entityColumn = SONG_ID,
-        associateBy = Junction(SongAndArtistLinkage::class)
+        associateBy = Junction(LinkageSongAndArtist::class)
     )
-    var songs: List<Song>,
+    var songEntities: List<SongEntity>,
 )

@@ -4,10 +4,7 @@
 
 package player.phonograph.repo.room.dao
 
-import player.phonograph.repo.room.entity.Album
-import player.phonograph.repo.room.entity.AlbumWithSongs
-import player.phonograph.repo.room.entity.Columns.ALBUM_ID
-import player.phonograph.repo.room.entity.Columns.ALBUM_NAME
+import player.phonograph.repo.room.entity.AlbumEntity
 import player.phonograph.repo.room.entity.Tables.ALBUMS
 import androidx.room.*
 
@@ -15,25 +12,17 @@ import androidx.room.*
 interface AlbumDao {
 
     @Query("SELECT * from $ALBUMS order by :sortOrder")
-    fun all(sortOrder: String): List<Album>
-
-    @Transaction
-    @Query("SELECT * from $ALBUMS where $ALBUM_ID = :albumId or $ALBUM_NAME like :albumName order by :sortOrder")
-    fun getAlbumsWithSongs(albumId: Long, albumName: String, sortOrder: String): List<AlbumWithSongs>
-
-    @Transaction
-    @Query("SELECT * from $ALBUMS order by :sortOrder")
-    fun getAllAlbumsWithSongs(sortOrder: String): List<AlbumWithSongs>
+    fun all(sortOrder: String): List<AlbumEntity>
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    fun insert(album: Album)
+    fun insert(album: AlbumEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun override(album: Album)
+    fun override(album: AlbumEntity)
 
     @Update
-    fun update(album: Album)
+    fun update(album: AlbumEntity)
 
     @Delete
-    fun delete(album: Album)
+    fun delete(album: AlbumEntity)
 }

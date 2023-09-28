@@ -6,7 +6,7 @@ package player.phonograph.repo.room
 
 import player.phonograph.notification.DatabaseUpdateNotification
 import player.phonograph.repo.mediastore.loaders.SongLoader
-import player.phonograph.repo.room.entity.Song
+import player.phonograph.repo.room.entity.SongEntity
 import player.phonograph.util.debug
 import player.phonograph.util.text.currentTimestamp
 import android.content.Context
@@ -39,24 +39,24 @@ object Scanner {
 
         // compare
         scope.launch {
-            val songs: List<Song>
+            val songEntities: List<SongEntity>
             if (force) {
-                songs = SongLoader.all(context).map(Converters::fromSongModel)
-                importFromMediaStore(context, songs)
+                songEntities = SongLoader.all(context).map(Converters::fromSongModel)
+                importFromMediaStore(context, songEntities)
             } else if (latestSongTimestamp > databaseUpdateTimestamp || databaseUpdateTimestamp == -1L) {
-                songs = SongLoader.since(context, databaseUpdateTimestamp).map(Converters::fromSongModel)
-                importFromMediaStore(context, songs)
+                songEntities = SongLoader.since(context, databaseUpdateTimestamp).map(Converters::fromSongModel)
+                importFromMediaStore(context, songEntities)
                 MusicDatabase.Metadata.lastUpdateTimestamp = currentTimestamp() / 1000
             }
         }
     }
 
-    private fun importFromMediaStore(context: Context, songs: List<Song>) = withNotification(context) {
+    private fun importFromMediaStore(context: Context, songEntities: List<SongEntity>) = withNotification(context) {
         val songDataBase = MusicDatabase.songsDataBase
         val relationShipDao = songDataBase.RelationShipDao()
         val artistDao = songDataBase.ArtistDao()
         val albumDao = songDataBase.AlbumDao()
-        for (song in songs) {
+        for (song in songEntities) {
             // song
             songDataBase.SongDao().override(song)
             debug { Log.d(TAG, "Override Song: ${song.title}") }
@@ -73,11 +73,11 @@ object Scanner {
     fun refreshSingleSong(context: Context, song: SongModel) =
         refreshSingleSong(context, Converters.fromSongModel(song))
 
-    fun refreshSingleSong(context: Context, song: Song) {
+    fun refreshSingleSong(context: Context, songEntity: SongEntity) {
         scope.launch {
             withNotification(context) {
                 val songDataBaseDao = MusicDatabase.songsDataBase.SongDao()
-                songDataBaseDao.update(song)
+                songDataBaseDao.update(songEntity)
             }
         }
     }

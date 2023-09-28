@@ -4,7 +4,7 @@
 
 package player.phonograph.repo.room.dao
 
-import player.phonograph.repo.room.entity.Artist
+import player.phonograph.repo.room.entity.ArtistEntity
 import player.phonograph.repo.room.entity.Columns.ARTIST_ID
 import player.phonograph.repo.room.entity.Tables.ARTISTS
 import androidx.room.Dao
@@ -17,19 +17,18 @@ import androidx.room.Update
 @Dao
 interface ArtistDao {
 
-
     @Query("SELECT * from $ARTISTS order by :sortOrder")
-    fun all(sortOrder: String = ARTIST_ID): List<Artist>
+    fun all(sortOrder: String = ARTIST_ID): List<ArtistEntity>
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    fun insert(artist: Artist)
+    fun insert(artist: ArtistEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun override(artist: Artist)
+    fun override(artist: ArtistEntity)
 
     @Update
-    fun update(artist: Artist)
+    fun update(artist: ArtistEntity)
 
     @Delete
-    fun delete(artist: Artist)
+    fun delete(artist: ArtistEntity)
 }

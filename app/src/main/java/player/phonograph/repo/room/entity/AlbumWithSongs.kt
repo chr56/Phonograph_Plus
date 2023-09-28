@@ -9,10 +9,10 @@ import androidx.room.Embedded
 import androidx.room.Relation
 
 data class AlbumWithSongs(
-    @Embedded var album: Album,
+    @Embedded var album: AlbumEntity,
     @Relation(
         parentColumn = ALBUM_ID,
         entityColumn = ALBUM_ID
     )
-    var songs: List<Song>,
+    var songEntities: List<SongEntity>,
 )

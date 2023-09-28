@@ -15,7 +15,7 @@ import androidx.room.Entity
     tableName = Tables.ARTISTS,
     primaryKeys = [ARTIST_ID, ARTIST_NAME]
 )
-data class Artist(
+data class ArtistEntity(
     @ColumnInfo(name = ARTIST_ID)
     var artistId: Long = 0,
     @ColumnInfo(name = ARTIST_NAME)

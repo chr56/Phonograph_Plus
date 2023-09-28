@@ -7,14 +7,14 @@ package player.phonograph.repo.room
 import player.phonograph.repo.room.dao.AlbumDao
 import player.phonograph.repo.room.dao.ArtistDao
 import player.phonograph.repo.room.dao.RelationShipDao
-import player.phonograph.repo.room.entity.Album
-import player.phonograph.repo.room.entity.Artist
-import player.phonograph.repo.room.entity.Song
-import player.phonograph.repo.room.entity.SongAndArtistLinkage
-import player.phonograph.repo.room.entity.SongAndArtistLinkage.ArtistRole
-import player.phonograph.repo.room.entity.SongAndArtistLinkage.Companion.ROLE_ALBUM_ARTIST
-import player.phonograph.repo.room.entity.SongAndArtistLinkage.Companion.ROLE_ARTIST
-import player.phonograph.repo.room.entity.SongAndArtistLinkage.Companion.ROLE_COMPOSER
+import player.phonograph.repo.room.entity.AlbumEntity
+import player.phonograph.repo.room.entity.ArtistEntity
+import player.phonograph.repo.room.entity.LinkageSongAndArtist
+import player.phonograph.repo.room.entity.LinkageSongAndArtist.ArtistRole
+import player.phonograph.repo.room.entity.LinkageSongAndArtist.Companion.ROLE_ALBUM_ARTIST
+import player.phonograph.repo.room.entity.LinkageSongAndArtist.Companion.ROLE_ARTIST
+import player.phonograph.repo.room.entity.LinkageSongAndArtist.Companion.ROLE_COMPOSER
+import player.phonograph.repo.room.entity.SongEntity
 import player.phonograph.util.debug
 import player.phonograph.util.text.splitMultiTag
 import android.util.Log
@@ -22,16 +22,16 @@ import android.util.Log
 object SongRegistry {
 
     fun registerAlbum(
-        song: Song,
+        songEntity: SongEntity,
         albumDao: AlbumDao,
     ) {
-        val albumName = song.albumName
+        val albumName = songEntity.albumName
         if (albumName != null) {
-            val album = Album(
-                albumId = song.albumId,
+            val album = AlbumEntity(
+                albumId = songEntity.albumId,
                 albumName = albumName,
                 artistId = 0,
-                albumArtistName = song.albumArtistName ?: "",
+                albumArtistName = songEntity.albumArtistName ?: "",
                 year = 0,
                 dateModified = 0
             )
@@ -40,19 +40,19 @@ object SongRegistry {
     }
 
     fun registerArtists(
-        song: Song,
+        songEntity: SongEntity,
         artistDao: ArtistDao,
         relationShipDao: RelationShipDao,
     ) {
-        register(artistDao, relationShipDao, song, song.artistName, ROLE_ARTIST)
-        register(artistDao, relationShipDao, song, song.composer, ROLE_COMPOSER)
-        register(artistDao, relationShipDao, song, song.albumArtistName, ROLE_ALBUM_ARTIST)
+        register(artistDao, relationShipDao, songEntity, songEntity.rawArtistName, ROLE_ARTIST)
+        register(artistDao, relationShipDao, songEntity, songEntity.composer, ROLE_COMPOSER)
+        register(artistDao, relationShipDao, songEntity, songEntity.albumArtistName, ROLE_ALBUM_ARTIST)
     }
 
     private fun register(
         artistDao: ArtistDao,
         relationShipDao: RelationShipDao,
-        song: Song,
+        songEntity: SongEntity,
         raw: String?,
         @ArtistRole role: Int,
     ) {
@@ -60,11 +60,11 @@ object SongRegistry {
             val parsed = splitMultiTag(raw)
             if (parsed.isNotEmpty()) {
                 for (name in parsed) {
-                    val artist = Artist(name.hashCode().toLong(), name)
+                    val artist = ArtistEntity(name.hashCode().toLong(), name)
                     artistDao.override(artist)
-                    relationShipDao.override(SongAndArtistLinkage(song.id, artist.artistId, role))
+                    relationShipDao.override(LinkageSongAndArtist(songEntity.id, artist.artistId, role))
                     debug {
-                        Log.v(TAG, "* Registering Artist: ${song.title} <--> $name [$role]")
+                        Log.v(TAG, "* Registering Artist: ${songEntity.title} <--> $name [$role]")
                     }
                 }
             }
