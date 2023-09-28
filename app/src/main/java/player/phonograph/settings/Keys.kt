@@ -50,6 +50,8 @@ object Keys {
     data object nowPlayingScreenIndex :
             PrimitiveKey<Int>(intPK(NOW_PLAYING_SCREEN_ID), { 0 })
 
+    // Database
+
     // Behavior-File
     data object imageSourceConfigJsonString :
             PrimitiveKey<String>(stringPK(IMAGE_SOURCE_CONFIG), { "{}" })
