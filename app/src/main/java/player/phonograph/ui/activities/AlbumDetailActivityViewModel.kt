@@ -45,7 +45,7 @@ class AlbumDetailActivityViewModel(val albumId: Long) : ViewModel() {
     fun loadAlbumImage(context: Context, album: Album, imageView: ImageView) {
         val defaultColor = ThemeColor.primaryColor(context)
         loadImage(context)
-            .from(Songs.album(context, album.id).firstOrNull())
+            .from(album)
             .into(
                 PaletteTargetBuilder(defaultColor)
                     .onResourceReady { result, color ->
