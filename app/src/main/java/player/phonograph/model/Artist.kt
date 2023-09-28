@@ -1,48 +1,35 @@
 package player.phonograph.model
 
 import android.content.Context
-import android.os.Parcel
 import android.os.Parcelable
-import androidx.annotation.Keep
+import kotlinx.parcelize.Parcelize
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-class Artist : Parcelable, Displayable {
+@Parcelize
+data class Artist(
+    val id: Long,
+    val name: String,
+    val albumCount: Int,
+    val songCount: Int,
+) : Parcelable, Displayable {
 
-    val id: Long
-    val name: String
-    @JvmField val albums: List<Album>
-
-    constructor(id: Long, name: String?, albums: List<Album>) {
-        this.albums = albums
-        this.id = id
-        this.name = name ?: UNKNOWN_ARTIST_DISPLAY_NAME
-    }
-
-    constructor() {
-        this.id = -1
-        this.name = UNKNOWN_ARTIST_DISPLAY_NAME
-        this.albums = ArrayList()
-    }
-
-    val albumCount: Int get() = albums.size
-
-    val songs: List<Song>
-        get() = albums.flatMap { it.songs }
-    val songCount: Int
-        get() = albums.fold(0) { i: Int, album: Album -> i + album.songCount }
+    constructor() : this(-1, UNKNOWN_ARTIST_DISPLAY_NAME, -1, -1)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val artist = other as Artist
-        return albums == artist.albums
+        if (other !is Artist) return false
+
+        if (id != other.id) return false
+        if (name != other.name) return false
+        if (songCount != other.songCount) return false
+        if (albumCount != other.albumCount) return false
+
+        return true
     }
 
-    override fun hashCode(): Int = albums.hashCode()
-
-    override fun toString(): String = "Artist{name=$name,id =$id,albums=$albums}"
+    override fun hashCode(): Int = id.toInt() * 101 + name.hashCode()
 
     override fun getItemID(): Long = id
 
@@ -52,30 +39,5 @@ class Artist : Parcelable, Displayable {
 
     companion object {
         const val UNKNOWN_ARTIST_DISPLAY_NAME = "Unknown Artist"
-
-        @Keep
-        @JvmField
-        val CREATOR: Parcelable.Creator<Artist> = object : Parcelable.Creator<Artist> {
-            override fun createFromParcel(source: Parcel): Artist {
-                return Artist(source)
-            }
-
-            override fun newArray(size: Int): Array<Artist?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
-
-    override fun describeContents(): Int = 0
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeLong(id)
-        dest.writeString(name)
-        dest.writeTypedList(albums)
-    }
-
-    constructor(parcel: Parcel) {
-        id = parcel.readLong()
-        name = parcel.readString() ?: UNKNOWN_ARTIST_DISPLAY_NAME
-        albums = parcel.createTypedArrayList(Album.CREATOR) ?: ArrayList()
     }
 }

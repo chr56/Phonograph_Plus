@@ -6,9 +6,10 @@ package player.phonograph.repo.mediastore.loaders
 
 import player.phonograph.model.Album
 import player.phonograph.model.Song
+import player.phonograph.repo.mediastore.internal.catalogAlbums
+import player.phonograph.repo.mediastore.internal.createAlbum
 import player.phonograph.repo.mediastore.internal.intoSongs
 import player.phonograph.repo.mediastore.internal.querySongs
-import player.phonograph.repo.mediastore.toAlbumList
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns
 
@@ -20,8 +21,8 @@ object AlbumLoader : Loader<Album> {
     }
 
     override fun id(context: Context, id: Long): Album {
-        val songs = querySongs(context, "${AudioColumns.ALBUM_ID}=?", arrayOf(id.toString()), null).intoSongs()
-        return Album(id, albumTitle(songs), songs.toMutableList().sortedBy { it.trackNumber })
+        val songs = AlbumSongLoader.id(context, id)
+        return createAlbum(id, songs)
     }
 
     fun searchByName(context: Context, query: String): List<Album> {
@@ -29,10 +30,6 @@ object AlbumLoader : Loader<Album> {
         return if (songs.isEmpty()) return emptyList() else songs.toAlbumList()
     }
 
-    private fun albumTitle(list: List<Song>): String? {
-        if (list.isEmpty()) return null
-        return list[0].albumName
-    }
-
-    fun List<Album>.allSongs(): List<Song> = this.flatMap { it.songs }
+    private fun List<Song>.toAlbumList(): List<Album> = catalogAlbums(this)
 }
+

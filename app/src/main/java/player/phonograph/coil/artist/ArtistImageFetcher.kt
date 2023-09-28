@@ -52,7 +52,7 @@ class ArtistImageFetcher(
         context: Context,
         size: Size,
     ): FetchResult? {
-        for (cover in data.albumCovers) {
+        for (cover in data.songCovers) {
             for (retriever in retrievers) {
                 val result = retriever.retrieve(cover.filePath, cover.id, context, size, raw)
                 if (result == null) {

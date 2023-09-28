@@ -9,7 +9,9 @@ import player.phonograph.R
 import player.phonograph.model.QueueSong
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
+import player.phonograph.repo.mediastore.loaders.AlbumSongLoader.allSongs
 import player.phonograph.repo.mediastore.loaders.ArtistLoader
+import player.phonograph.repo.mediastore.loaders.ArtistSongLoader.allSongs
 import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.repo.mediastore.loaders.TopTracksLoader
@@ -89,7 +91,7 @@ object MediaItemProvider {
 
     fun browseAlbum(context: Context, id: Long): List<MediaItem> {
         return mutableListOf(albumAllItem(context.resources, id)) +
-                AlbumLoader.id(context, id).songs.map { it.toMediaItem() }
+                AlbumLoader.id(context, id).allSongs(context).map { it.toMediaItem() }
     }
 
     fun browseArtists(context: Context): List<MediaItem> {
@@ -98,7 +100,7 @@ object MediaItemProvider {
 
     fun browseArtist(context: Context, id: Long): List<MediaItem> {
         return mutableListOf(artistAllItem(context.resources, id)) +
-                ArtistLoader.id(context, id).songs.map { it.toMediaItem() }
+                ArtistLoader.id(context, id).allSongs(context).map { it.toMediaItem() }
     }
 
     fun browseFavorite(context: Context): List<MediaItem> {

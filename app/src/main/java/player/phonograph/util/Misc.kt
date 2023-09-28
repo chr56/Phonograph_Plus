@@ -141,6 +141,18 @@ inline fun <reified T, reified F> T.reflectDeclaredField(fieldName: String): F {
 }
 
 //
+// Sort
+//
+
+inline fun <T> List<T>.sort(
+    revert: Boolean,
+    crossinline selector: (T) -> Comparable<*>?,
+): List<T> {
+    return if (revert) this.sortedWith(compareByDescending(selector))
+    else this.sortedWith(compareBy(selector))
+}
+
+//
 // Other
 //
 

@@ -7,7 +7,9 @@ package player.phonograph.repo.browser
 import player.phonograph.model.Song
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.AlbumLoader
+import player.phonograph.repo.mediastore.loaders.AlbumSongLoader.allSongs
 import player.phonograph.repo.mediastore.loaders.ArtistLoader
+import player.phonograph.repo.mediastore.loaders.ArtistSongLoader.allSongs
 import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.repo.mediastore.loaders.TopTracksLoader
@@ -97,8 +99,8 @@ object MediaBrowserDelegate {
 
                 when (type) {
                     MEDIA_BROWSER_SONGS       -> listOf(SongLoader.id(context, id))
-                    MEDIA_BROWSER_ALBUMS      -> AlbumLoader.id(context, id).songs
-                    MEDIA_BROWSER_ARTISTS     -> ArtistLoader.id(context, id).songs
+                    MEDIA_BROWSER_ALBUMS      -> AlbumLoader.id(context, id).allSongs(context)
+                    MEDIA_BROWSER_ARTISTS     -> ArtistLoader.id(context, id).allSongs(context)
 
                     MEDIA_BROWSER_SONGS_QUEUE -> {
                         MusicPlayerRemote.playSongAt(id.toInt())
