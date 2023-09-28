@@ -27,7 +27,14 @@ object SongRegistry {
     ) {
         val albumName = song.albumName
         if (albumName != null) {
-            val album = Album(song.albumId, albumName, song.albumArtistName)
+            val album = Album(
+                albumId = song.albumId,
+                albumName = albumName,
+                artistId = 0,
+                albumArtistName = song.albumArtistName ?: "",
+                year = 0,
+                dateModified = 0
+            )
             albumDao.override(album)
         }
     }

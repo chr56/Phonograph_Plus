@@ -4,14 +4,19 @@
 
 package player.phonograph.repo.room.entity
 
+import player.phonograph.repo.room.entity.Columns.ARTIST_ID
+import player.phonograph.repo.room.entity.Columns.ARTIST_NAME
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 
-@Entity(tableName = "artists", primaryKeys = ["artist_id", "artist_name"])
+@Entity(
+    tableName = Tables.ARTISTS,
+    primaryKeys = [ARTIST_ID, ARTIST_NAME]
+)
 data class Artist(
-    @ColumnInfo(name = "artist_id")
+    @ColumnInfo(name = ARTIST_ID)
     var artistId: Long = 0,
-    @ColumnInfo(name = "artist_name")
-    var artistName: String
+    @ColumnInfo(name = ARTIST_NAME)
+    var artistName: String,
 )
 

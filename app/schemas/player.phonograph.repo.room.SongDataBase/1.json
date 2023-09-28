@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7e6a8f39972628a4f11dacd0493769e9",
+    "identityHash": "f850ccda59db7b5d12734e5b451f5e74",
     "entities": [
       {
         "tableName": "songs",
@@ -128,7 +128,7 @@
       },
       {
         "tableName": "albums",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`album_id` INTEGER NOT NULL, `album_name` TEXT, `album_artist_name` TEXT, PRIMARY KEY(`album_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`album_id` INTEGER NOT NULL, `album_name` TEXT NOT NULL DEFAULT 'Unnamed Album', `artist_id` INTEGER NOT NULL, `album_artist_name` TEXT NOT NULL DEFAULT 'Unknown Artist', `year` INTEGER NOT NULL, `date_modified` INTEGER NOT NULL, PRIMARY KEY(`album_id`))",
         "fields": [
           {
             "fieldPath": "albumId",
@@ -140,13 +140,33 @@
             "fieldPath": "albumName",
             "columnName": "album_name",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true,
+            "defaultValue": "'Unnamed Album'"
+          },
+          {
+            "fieldPath": "artistId",
+            "columnName": "artist_id",
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
             "fieldPath": "albumArtistName",
             "columnName": "album_artist_name",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true,
+            "defaultValue": "'Unknown Artist'"
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateModified",
+            "columnName": "date_modified",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -155,7 +175,18 @@
             "album_id"
           ]
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_albums_album_id_album_name",
+            "unique": false,
+            "columnNames": [
+              "album_id",
+              "album_name"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_albums_album_id_album_name` ON `${TABLE_NAME}` (`album_id`, `album_name`)"
+          }
+        ],
         "foreignKeys": []
       },
       {
@@ -234,7 +265,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7e6a8f39972628a4f11dacd0493769e9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f850ccda59db7b5d12734e5b451f5e74')"
     ]
   }
 }

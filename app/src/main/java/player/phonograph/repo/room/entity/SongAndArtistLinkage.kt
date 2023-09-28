@@ -4,22 +4,25 @@
 
 package player.phonograph.repo.room.entity
 
+import player.phonograph.repo.room.entity.Columns.ARTIST_ID
+import player.phonograph.repo.room.entity.Columns.ROLE
+import player.phonograph.repo.room.entity.Columns.SONG_ID
 import androidx.annotation.IntDef
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 
 @Entity(
-    tableName = "artist_song_linkage",
-    primaryKeys = ["artist_id", "song_id"],
-    indices = [Index(value = ["song_id", "artist_id"])]
+    tableName = Tables.ARTIST_SONG_LINKAGE,
+    primaryKeys = [ARTIST_ID, SONG_ID],
+    indices = [Index(value = [SONG_ID, ARTIST_ID])]
 )
 data class SongAndArtistLinkage(
-    @ColumnInfo(name = "song_id")
+    @ColumnInfo(name = SONG_ID)
     var songId: Long,
-    @ColumnInfo(name = "artist_id")
+    @ColumnInfo(name = ARTIST_ID)
     var artistId: Long,
-    @ColumnInfo(name = "role", defaultValue = "$ROLE_ARTIST")
+    @ColumnInfo(name = ROLE, defaultValue = "$ROLE_ARTIST")
     @ArtistRole
     var role: Int,
 ) {
