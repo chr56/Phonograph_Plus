@@ -5,6 +5,9 @@
 package player.phonograph.coil
 
 import coil.ImageLoader
+import player.phonograph.coil.album.AlbumImageFetcher
+import player.phonograph.coil.album.AlbumImageMapper
+import player.phonograph.coil.album.AlbumKeyer
 import player.phonograph.coil.artist.ArtistImageFetcher
 import player.phonograph.coil.artist.ArtistImageMapper
 import player.phonograph.coil.artist.ArtistKeyer
@@ -23,6 +26,10 @@ fun createPhonographImageLoader(context: Context): ImageLoader {
             add(AudioFileKeyer())
             add(AudioFileMapper())
             add(AudioFileFetcher.Factory())
+            // album
+            add(AlbumKeyer())
+            add(AlbumImageMapper())
+            add(AlbumImageFetcher.Factory())
             // artist
             add(ArtistKeyer())
             add(ArtistImageMapper())
