@@ -1,16 +1,12 @@
 package player.phonograph.coil.artist
 
+import player.phonograph.coil.audiofile.AudioFile
+
 data class ArtistImage(
-    val artistName: String,
-    val artistId: Long,
-    val songCovers: List<SongCover>,
+    val name: String,
+    val id: Long,
+    val files: List<AudioFile>,
 ) {
-
     override fun toString(): String =
-        "ArtistImage{artistName:$artistName($artistId),albumCovers:{${songCovers.fold("") { acc, albumCover -> "$acc$albumCover," }}}}"
-
-
-    data class SongCover(val id: Long, val year: Int, val filePath: String) {
-        override fun toString(): String = "[$id($filePath),year:$year]"
-    }
+        "ArtistImage(name=$name, id=$id, files=${files.joinToString(prefix = "[", postfix = "]") { it.path }})"
 }

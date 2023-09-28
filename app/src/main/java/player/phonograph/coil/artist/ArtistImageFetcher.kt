@@ -14,6 +14,7 @@ import player.phonograph.coil.retriever.ExternalFileRetriever
 import player.phonograph.coil.retriever.ImageRetriever
 import player.phonograph.coil.retriever.raw
 import player.phonograph.coil.retriever.readFromFile
+import player.phonograph.coil.retriever.retrieveAudioFile
 import player.phonograph.coil.retriever.retrieverFromConfig
 import player.phonograph.util.debug
 import android.content.Context
@@ -37,10 +38,9 @@ class ArtistImageFetcher(
 
     override suspend fun fetch(): FetchResult? {
         // first check if the custom artist image exist
-        val file = CustomArtistImageStore.instance(context)
-            .getCustomArtistImageFile(data.artistId, data.artistName)
+        val file = CustomArtistImageStore.instance(context).getCustomArtistImageFile(data.id, data.name)
         if (file != null) {
-            return readFromFile(file, "#${data.artistId}#${data.artistName}", "image/jpeg")
+            return readFromFile(file, "#${data.id}#${data.name}", "image/jpeg")
         }
         // then choose an AlbumCover as ArtistImage
         return retrieve(retriever, data, context, size)
@@ -52,24 +52,12 @@ class ArtistImageFetcher(
         context: Context,
         size: Size,
     ): FetchResult? {
-        for (cover in data.songCovers) {
-            for (retriever in retrievers) {
-                val result = retriever.retrieve(cover.filePath, cover.id, context, size, raw)
-                if (result == null) {
-                    debug {
-                        Log.v(
-                            TAG,
-                            "Image not available from ${retriever.name} for ${data.artistName} in cover ${cover.id}"
-                        )
-                    }
-                    continue
-                } else {
-                    return result
-                }
-            }
+        for (file in data.files) {
+            val result = retrieveAudioFile(retrievers, file, context, size, raw)
+            if (result != null) return result
         }
         debug {
-            Log.v(TAG, "No any cover for ${data.artistName}")
+            Log.v(TAG, "No any image for artist ${data.name}")
         }
         return null
     }

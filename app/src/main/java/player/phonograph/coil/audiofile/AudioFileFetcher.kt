@@ -11,10 +11,9 @@ import coil.request.Options
 import coil.size.Size
 import player.phonograph.coil.retriever.ImageRetriever
 import player.phonograph.coil.retriever.raw
+import player.phonograph.coil.retriever.retrieveAudioFile
 import player.phonograph.coil.retriever.retrieverFromConfig
-import player.phonograph.util.debug
 import android.content.Context
-import android.util.Log
 
 class AudioFileFetcher private constructor(
     private val audioFile: AudioFile,
@@ -42,21 +41,7 @@ class AudioFileFetcher private constructor(
         context: Context,
         size: Size,
     ): FetchResult? {
-        for (retriever in retrievers) {
-            val result = retriever.retrieve(audioFile.path, audioFile.albumId, context, size, rawImage)
-            if (result == null) {
-                debug {
-                    Log.v(TAG, "Image not available from ${retriever.name} for $audioFile")
-                }
-                continue
-            } else {
-                return result
-            }
-        }
-        debug {
-            Log.v(TAG, "No any cover for $audioFile")
-        }
-        return null
+        return retrieveAudioFile(retrievers, audioFile, context, size, rawImage)
     }
 
     companion object {

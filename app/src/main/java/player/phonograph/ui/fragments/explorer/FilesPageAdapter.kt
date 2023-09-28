@@ -11,7 +11,6 @@ import player.phonograph.actions.menu.fileEntityPopupMenu
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity
-import player.phonograph.repo.loader.Songs
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.MultiSelectionController
@@ -73,7 +72,7 @@ class FilesPageAdapter(
             if (item is FileEntity.File) {
                 if (loadCover) {
                     loadImage(image.context) {
-                        data(Songs.searchByFileEntity(context, item))
+                        data(item)
                         size(ViewSizeResolver(image))
                         target(
                             onStart = {
