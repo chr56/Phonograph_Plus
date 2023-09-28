@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f850ccda59db7b5d12734e5b451f5e74",
+    "identityHash": "362658260cc9eccb104f7a6716b1179a",
     "entities": [
       {
         "tableName": "songs",
@@ -128,7 +128,7 @@
       },
       {
         "tableName": "albums",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`album_id` INTEGER NOT NULL, `album_name` TEXT NOT NULL DEFAULT 'Unnamed Album', `artist_id` INTEGER NOT NULL, `album_artist_name` TEXT NOT NULL DEFAULT 'Unknown Artist', `year` INTEGER NOT NULL, `date_modified` INTEGER NOT NULL, PRIMARY KEY(`album_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`album_id` INTEGER NOT NULL, `album_name` TEXT NOT NULL DEFAULT 'Unnamed Album', `artist_id` INTEGER NOT NULL, `album_artist_name` TEXT NOT NULL DEFAULT 'Unknown Artist', `year` INTEGER NOT NULL, `date_modified` INTEGER NOT NULL, `song_count` INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(`album_id`))",
         "fields": [
           {
             "fieldPath": "albumId",
@@ -167,6 +167,13 @@
             "columnName": "date_modified",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "songCount",
+            "columnName": "song_count",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
           }
         ],
         "primaryKey": {
@@ -191,7 +198,7 @@
       },
       {
         "tableName": "artists",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`artist_id` INTEGER NOT NULL, `artist_name` TEXT NOT NULL, PRIMARY KEY(`artist_id`, `artist_name`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`artist_id` INTEGER NOT NULL, `artist_name` TEXT NOT NULL, `album_count` INTEGER NOT NULL DEFAULT 0, `song_count` INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(`artist_id`, `artist_name`))",
         "fields": [
           {
             "fieldPath": "artistId",
@@ -204,6 +211,20 @@
             "columnName": "artist_name",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "albumCount",
+            "columnName": "album_count",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "songCount",
+            "columnName": "song_count",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
           }
         ],
         "primaryKey": {
@@ -265,7 +286,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f850ccda59db7b5d12734e5b451f5e74')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '362658260cc9eccb104f7a6716b1179a')"
     ]
   }
 }

@@ -4,8 +4,10 @@
 
 package player.phonograph.repo.room.entity
 
+import player.phonograph.repo.room.entity.Columns.ALBUM_COUNT
 import player.phonograph.repo.room.entity.Columns.ARTIST_ID
 import player.phonograph.repo.room.entity.Columns.ARTIST_NAME
+import player.phonograph.repo.room.entity.Columns.SONG_COUNT
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 
@@ -18,5 +20,9 @@ data class Artist(
     var artistId: Long = 0,
     @ColumnInfo(name = ARTIST_NAME)
     var artistName: String,
+    @ColumnInfo(name = ALBUM_COUNT, defaultValue = "0")
+    val albumCount: Int = 0,
+    @ColumnInfo(name = SONG_COUNT, defaultValue = "0")
+    val songCount: Int = 0,
 )
 

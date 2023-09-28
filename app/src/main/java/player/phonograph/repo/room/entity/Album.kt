@@ -9,6 +9,7 @@ import player.phonograph.repo.room.entity.Columns.ALBUM_ID
 import player.phonograph.repo.room.entity.Columns.ALBUM_NAME
 import player.phonograph.repo.room.entity.Columns.ARTIST_ID
 import player.phonograph.repo.room.entity.Columns.DATE_MODIFIED
+import player.phonograph.repo.room.entity.Columns.SONG_COUNT
 import player.phonograph.repo.room.entity.Columns.YEAR
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -32,6 +33,8 @@ data class Album(
     val year: Int,
     @ColumnInfo(name = DATE_MODIFIED)
     val dateModified: Long,
+    @ColumnInfo(name = SONG_COUNT, defaultValue = "0")
+    val songCount: Int = 0,
 ) {
 }
 
