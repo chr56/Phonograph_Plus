@@ -5,10 +5,11 @@
 package player.phonograph.repo.mediastore.loaders
 
 import player.phonograph.model.Album
-import player.phonograph.repo.mediastore.createAlbum
+import player.phonograph.model.Song
+import player.phonograph.repo.mediastore.internal.catalogAlbums
+import player.phonograph.repo.mediastore.internal.createAlbum
 import player.phonograph.repo.mediastore.internal.intoSongs
 import player.phonograph.repo.mediastore.internal.querySongs
-import player.phonograph.repo.mediastore.toAlbumList
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns
 
@@ -29,4 +30,6 @@ object AlbumLoader : Loader<Album> {
         return if (songs.isEmpty()) return emptyList() else songs.toAlbumList()
     }
 
+    private fun List<Song>.toAlbumList(): List<Album> = catalogAlbums(this)
 }
+

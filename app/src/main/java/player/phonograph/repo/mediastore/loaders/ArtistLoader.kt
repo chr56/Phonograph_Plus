@@ -5,9 +5,10 @@
 package player.phonograph.repo.mediastore.loaders
 
 import player.phonograph.model.Artist
+import player.phonograph.model.Song
+import player.phonograph.repo.mediastore.internal.catalogArtists
 import player.phonograph.repo.mediastore.internal.intoSongs
 import player.phonograph.repo.mediastore.internal.querySongs
-import player.phonograph.repo.mediastore.toArtistList
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns
 
@@ -29,4 +30,5 @@ object ArtistLoader : Loader<Artist> {
         return if (songs.isEmpty()) return emptyList() else songs.toArtistList()
     }
 
+    private fun List<Song>.toArtistList() = catalogArtists(this)
 }
