@@ -54,16 +54,8 @@ object Scanner {
     private fun importFromMediaStore(context: Context, songEntities: List<SongEntity>) = withNotification(context) {
         val songDataBase = MusicDatabase.songsDataBase
         val relationShipDao = songDataBase.RelationShipDao()
-        val artistDao = songDataBase.ArtistDao()
-        val albumDao = songDataBase.AlbumDao()
         for (song in songEntities) {
-            // song
-            songDataBase.SongDao().override(song)
-            debug { Log.d(TAG, "Override Song: ${song.title}") }
-            // album
-            SongRegistry.registerAlbum(song, albumDao)
-            // artist
-            SongRegistry.registerArtists(song, artistDao, relationShipDao)
+            relationShipDao.register(song)
         }
     }
 
@@ -76,8 +68,8 @@ object Scanner {
     fun refreshSingleSong(context: Context, songEntity: SongEntity) {
         scope.launch {
             withNotification(context) {
-                val songDataBaseDao = MusicDatabase.songsDataBase.SongDao()
-                songDataBaseDao.update(songEntity)
+                val relationShipDao = MusicDatabase.songsDataBase.RelationShipDao()
+                relationShipDao.register(songEntity)
             }
         }
     }

@@ -30,15 +30,4 @@ interface SongDao {
     @Query("SELECT * from $SONGS where $DATE_MODIFIED > :time order by :sortOrder")
     fun since(time: Long, sortOrder: String = SONG_ID): List<SongEntity>
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    fun insert(songEntity: SongEntity)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun override(songEntity: SongEntity)
-
-    @Update
-    fun update(songEntity: SongEntity)
-
-    @Delete
-    fun delete(songEntity: SongEntity)
 }
