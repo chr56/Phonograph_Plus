@@ -10,10 +10,7 @@ import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.repo.mediastore.loaders.AlbumSongLoader.allSongs
-import player.phonograph.repo.mediastore.loaders.ArtistSongLoader.allSongs
-import player.phonograph.repo.mediastore.loaders.GenreLoader
-import player.phonograph.repo.mediastore.loaders.SongLoader
+import player.phonograph.repo.loader.Songs
 import androidx.fragment.app.FragmentActivity
 import android.app.Activity
 import android.content.Context
@@ -21,11 +18,11 @@ import android.content.Context
 internal fun convertToSongs(selections: Iterable<*>, context: Context): List<Song> = selections.flatMap {
     when (it) {
         is Song -> listOf(it)
-        is Album -> it.allSongs(context)
-        is Artist -> it.allSongs(context)
-        is Genre -> GenreLoader.genreSongs(context, it.id)
+        is Album -> Songs.album(context, it.id)
+        is Artist -> Songs.artist(context, it.id)
+        is Genre -> Songs.genres(context, it.id)
         is Playlist -> it.getSongs(context)
-        is FileEntity.File -> listOf(SongLoader.searchByFileEntity(context, it))
+        is FileEntity.File -> listOf(Songs.searchByFileEntity(context, it))
         // is FileEntity.Folder -> TODO()
         else -> emptyList()
     }

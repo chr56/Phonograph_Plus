@@ -32,7 +32,7 @@ import player.phonograph.model.infoString
 import player.phonograph.model.pages.Pages
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.notification.UpgradeNotification
-import player.phonograph.repo.mediastore.loaders.SongLoader.all
+import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.service.queue.ShuffleMode
@@ -220,7 +220,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                     drawerBinding.drawerLayout.closeDrawers()
                     Handler(Looper.getMainLooper()).postDelayed(
                         {
-                            val songs = all(activity)
+                            val songs = Songs.all(activity)
                             if (songs.isNotEmpty())
                                 songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
                         }, 350

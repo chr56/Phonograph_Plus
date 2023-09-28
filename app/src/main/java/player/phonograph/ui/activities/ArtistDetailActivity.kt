@@ -26,7 +26,7 @@ import player.phonograph.model.albumCountString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
-import player.phonograph.repo.mediastore.loaders.ArtistSongLoader.allSongs
+import player.phonograph.repo.loader.Songs
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
@@ -233,7 +233,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         supportActionBar!!.title = artist.name
         viewBinding.songCountText.text = songCountString(this, artist.songCount)
         viewBinding.albumCountText.text = albumCountString(this, artist.albumCount)
-        viewBinding.durationText.text = getReadableDurationString(artist.allSongs(this).totalDuration())
+        viewBinding.durationText.text = getReadableDurationString(Songs.artist(this, artist.id).totalDuration())
     }
 
 

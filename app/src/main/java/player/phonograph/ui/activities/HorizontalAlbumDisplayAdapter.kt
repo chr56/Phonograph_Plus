@@ -12,7 +12,7 @@ import player.phonograph.model.Album
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getYearString
 import player.phonograph.model.songCountString
-import player.phonograph.repo.mediastore.loaders.AlbumSongLoader
+import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -69,7 +69,7 @@ class HorizontalAlbumDisplayAdapter(
             val context = itemView.context
             image?.let { view ->
                 loadImage(context) {
-                    data(AlbumSongLoader.id(context, dataset[position].id).firstOrNull())
+                    data(Songs.album(context, dataset[position].id).firstOrNull())
                     size(ViewSizeResolver(view))
                     target(
                         PaletteTargetBuilder(context)

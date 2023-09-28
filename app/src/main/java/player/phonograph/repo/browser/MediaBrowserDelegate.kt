@@ -6,12 +6,8 @@ package player.phonograph.repo.browser
 
 import player.phonograph.model.Song
 import player.phonograph.repo.database.FavoritesStore
-import player.phonograph.repo.mediastore.loaders.AlbumLoader
-import player.phonograph.repo.mediastore.loaders.AlbumSongLoader.allSongs
-import player.phonograph.repo.mediastore.loaders.ArtistLoader
-import player.phonograph.repo.mediastore.loaders.ArtistSongLoader.allSongs
+import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
-import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.repo.mediastore.processQuery
 import player.phonograph.service.MusicPlayerRemote
@@ -83,7 +79,7 @@ object MediaBrowserDelegate {
         return when (mediaId) {
             MEDIA_BROWSER_SONGS_FAVORITES  -> FavoritesStore.get().getAllSongs(context)
             MEDIA_BROWSER_SONGS_TOP_TRACKS -> TopTracksLoader.get().tracks(context)
-            MEDIA_BROWSER_SONGS_LAST_ADDED -> SongLoader.since(context, lastAddedCutoffTimeStamp(context))
+            MEDIA_BROWSER_SONGS_LAST_ADDED -> Songs.since(context, lastAddedCutoffTimeStamp(context))
             MEDIA_BROWSER_SONGS_HISTORY    -> RecentlyPlayedTracksLoader.get().tracks(context)
 
             else                           -> {
@@ -98,9 +94,9 @@ object MediaBrowserDelegate {
                 val id = fragments[1].toLongOrNull() ?: return emptyList()
 
                 when (type) {
-                    MEDIA_BROWSER_SONGS       -> listOf(SongLoader.id(context, id))
-                    MEDIA_BROWSER_ALBUMS      -> AlbumLoader.id(context, id).allSongs(context)
-                    MEDIA_BROWSER_ARTISTS     -> ArtistLoader.id(context, id).allSongs(context)
+                    MEDIA_BROWSER_SONGS       -> listOf(Songs.id(context, id))
+                    MEDIA_BROWSER_ALBUMS      -> Songs.album(context, id)
+                    MEDIA_BROWSER_ARTISTS     -> Songs.artist(context, id)
 
                     MEDIA_BROWSER_SONGS_QUEUE -> {
                         MusicPlayerRemote.playSongAt(id.toInt())
@@ -115,12 +111,12 @@ object MediaBrowserDelegate {
 
     fun playFromSearch(context: Context, query: String?, extras: Bundle?): List<Song> {
         return if (query.isNullOrEmpty()) {
-            SongLoader.all(context)
+            Songs.all(context)
         } else {
             if (extras != null) {
                 processQuery(context, extras)
             } else {
-                SongLoader.searchByTitle(context, query)
+                Songs.searchByTitle(context, query)
             }
         }
     }

@@ -7,7 +7,7 @@ package player.phonograph.ui.fragments.pages
 import player.phonograph.R
 import player.phonograph.model.Genre
 import player.phonograph.model.sort.SortRef
-import player.phonograph.repo.mediastore.loaders.GenreLoader
+import player.phonograph.repo.loader.Genres
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.GenreDisplayAdapter
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
@@ -23,7 +23,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
 
     class GenrePageViewModel : AbsDisplayPageViewModel<Genre>() {
         override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Genre> {
-            return GenreLoader.all(context)
+            return Genres.all(context)
         }
 
         override val headerTextRes: Int get() = R.plurals.item_genres

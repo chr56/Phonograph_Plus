@@ -10,9 +10,9 @@ import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenFileStorageAccessTool
 import player.phonograph.R
 import player.phonograph.model.Song
-import player.phonograph.repo.mediastore.loaders.SongLoader
-import player.phonograph.ui.compose.PhonographTheme
+import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.compose.ComposeThemeActivity
+import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.modules.web.IWebSearchRequester
 import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.ui.modules.web.WebSearchTool
@@ -82,7 +82,7 @@ class MultiTagBrowserActivity :
         private const val PATHS = "PATHS"
         private fun parseIntent(context: Context, intent: Intent): List<Song> {
             val paths = intent.extras?.getStringArrayList(PATHS) ?: return emptyList()
-            return paths.mapNotNull { SongLoader.path(context, it) }
+            return paths.mapNotNull { Songs.path(context, it) }
         }
 
         fun launch(context: Context, paths: ArrayList<String>) {

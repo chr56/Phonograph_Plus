@@ -12,7 +12,7 @@ import player.phonograph.R
 import player.phonograph.actions.actionPlay
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortRef
-import player.phonograph.repo.mediastore.loaders.SongLoader
+import player.phonograph.repo.loader.Songs
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
@@ -36,7 +36,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
 
     class SongPageViewModel : AbsDisplayPageViewModel<Song>() {
         override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Song> {
-            return SongLoader.all(App.instance)
+            return Songs.all(App.instance)
         }
 
         override val headerTextRes: Int get() = R.plurals.item_songs
@@ -83,7 +83,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
                     )
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
-                    val allSongs = SongLoader.all(context)
+                    val allSongs = Songs.all(context)
                     allSongs.actionPlay(ShuffleMode.NONE, 0)
                     true
                 }
@@ -96,7 +96,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
                     )
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
-                    val allSongs = SongLoader.all(context)
+                    val allSongs = Songs.all(context)
                     allSongs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(allSongs.size))
                     true
                 }

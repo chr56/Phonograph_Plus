@@ -13,21 +13,21 @@ import player.phonograph.settings.Setting
 import player.phonograph.util.reportError
 import player.phonograph.util.sort
 import android.util.ArrayMap
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.yield
 
 
-fun catalogArtists(songs: List<Song>): List<Artist> {
-    val artists = CoroutineScope(Dispatchers.Default).async {
+suspend fun catalogArtists(songs: List<Song>): Deferred<List<Artist>> = coroutineScope {
+    async {
 
         var completed = false
 
@@ -104,10 +104,6 @@ fun catalogArtists(songs: List<Song>): List<Artist> {
         }.catch { e ->
             reportError(e, TAG_ARTIST, "Fail to load artists")
         }.toList().sortAllArtist()
-    }
-
-    return runBlocking {
-        return@runBlocking artists.await()
     }
 }
 

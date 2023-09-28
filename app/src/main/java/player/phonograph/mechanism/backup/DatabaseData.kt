@@ -12,8 +12,8 @@ import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.database.MusicPlaybackQueueStore
 import player.phonograph.repo.database.PathFilterStore
+import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
-import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import androidx.annotation.Keep
@@ -244,7 +244,7 @@ object DatabaseDataManger {
         }
 
         fun getMatchingSong(context: Context): Song? =
-            SongLoader.searchByPath(context, path, withoutPathFilter = true).firstOrNull()
+            Songs.searchByPath(context, path, withoutPathFilter = true).firstOrNull()
     }
     @Keep
     @Serializable

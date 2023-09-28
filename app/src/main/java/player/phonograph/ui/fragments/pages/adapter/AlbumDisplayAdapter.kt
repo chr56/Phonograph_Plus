@@ -11,7 +11,7 @@ import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Album
 import player.phonograph.model.getYearString
 import player.phonograph.model.sort.SortRef
-import player.phonograph.repo.mediastore.loaders.AlbumSongLoader
+import player.phonograph.repo.loader.Songs
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
@@ -55,7 +55,7 @@ open class AlbumDisplayAdapter(
             val context = itemView.context
             image?.let { view ->
                 loadImage(context) {
-                    data(AlbumSongLoader.id(context, dataset[position].id).firstOrNull())
+                    data(Songs.album(context, dataset[position].id).firstOrNull())
                     size(ViewSizeResolver(view))
                     target(
                         PaletteTargetBuilder(context)

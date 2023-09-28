@@ -12,6 +12,7 @@ import player.phonograph.repo.mediastore.internal.intoSongs
 import player.phonograph.repo.mediastore.internal.querySongs
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns
+import kotlinx.coroutines.runBlocking
 
 object AlbumLoader : Loader<Album> {
 
@@ -30,6 +31,6 @@ object AlbumLoader : Loader<Album> {
         return if (songs.isEmpty()) return emptyList() else songs.toAlbumList()
     }
 
-    private fun List<Song>.toAlbumList(): List<Album> = catalogAlbums(this)
+    private fun List<Song>.toAlbumList(): List<Album> = runBlocking { catalogAlbums(this@toAlbumList).await() }
 }
 

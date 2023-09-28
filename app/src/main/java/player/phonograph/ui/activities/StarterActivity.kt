@@ -31,13 +31,8 @@ import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.repo.mediastore.loaders.AlbumLoader
-import player.phonograph.repo.mediastore.loaders.AlbumSongLoader.allSongs
-import player.phonograph.repo.mediastore.loaders.ArtistLoader
-import player.phonograph.repo.mediastore.loaders.ArtistSongLoader.allSongs
+import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
-import player.phonograph.repo.mediastore.loaders.SongLoader
-import player.phonograph.repo.mediastore.loaders.SongLoader.searchByPath
 import player.phonograph.repo.mediastore.processQuery
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
@@ -150,7 +145,7 @@ class StarterActivity : AppCompatActivity() {
                     else                     -> null
                 }
             if (songId != null) {
-                songs = listOf(SongLoader.id(this, songId.toLong()))
+                songs = listOf(Songs.id(this, songId.toLong()))
             }
         }
 
@@ -171,7 +166,7 @@ class StarterActivity : AppCompatActivity() {
                 }
 
             if (file != null) {
-                songs = searchByPath(this, file.absolutePath, withoutPathFilter = true)
+                songs = Songs.searchByPath(this, file.absolutePath, withoutPathFilter = true)
             }
         }
 
@@ -203,7 +198,7 @@ class StarterActivity : AppCompatActivity() {
                 val id = parseIdFromIntent(intent, "albumId", "album")
                 if (id >= 0) {
                     val position = intent.getIntExtra("position", 0)
-                    val songs = AlbumLoader.id(this, id).allSongs(this)
+                    val songs = Songs.album(this, id)
                     if (songs.isNotEmpty()) return PlayRequest(songs, position)
                 }
             }
@@ -212,7 +207,7 @@ class StarterActivity : AppCompatActivity() {
                 val id = parseIdFromIntent(intent, "artistId", "artist")
                 if (id >= 0) {
                     val position = intent.getIntExtra("position", 0)
-                    val songs = ArtistLoader.id(this, id).allSongs(this)
+                    val songs = Songs.artist(this, id)
                     if (songs.isNotEmpty()) return PlayRequest(songs, position)
                 }
             }

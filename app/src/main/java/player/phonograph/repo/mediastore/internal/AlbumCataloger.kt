@@ -13,16 +13,16 @@ import player.phonograph.settings.Setting
 import player.phonograph.util.reportError
 import player.phonograph.util.sort
 import android.util.ArrayMap
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.yield
 
 fun createAlbum(id: Long, songs: List<Song>): Album {
@@ -51,8 +51,8 @@ fun createAlbum(id: Long, songs: List<Song>): Album {
     }
 }
 
-fun catalogAlbums(songs: List<Song>): List<Album> {
-    val albums = CoroutineScope(Dispatchers.Default).async {
+suspend fun catalogAlbums(songs: List<Song>): Deferred<List<Album>> = coroutineScope {
+    async {
 
         var completed = false
 
@@ -92,10 +92,6 @@ fun catalogAlbums(songs: List<Song>): List<Album> {
         }.catch { e ->
             reportError(e, TAG_ALBUM, "Fail to load albums")
         }.toList().sortAllAlbums()
-    }
-
-    return runBlocking {
-        return@runBlocking albums.await()
     }
 }
 
