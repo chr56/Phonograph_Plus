@@ -19,10 +19,10 @@ import androidx.room.Transaction
 import android.util.Log
 
 @Dao
-interface RelationShipDao {
+abstract class RelationShipDao {
 
     @Transaction
-    fun register(songEntity: SongEntity) {
+    open fun register(songEntity: SongEntity) {
         overrideSong(songEntity)
         registerAlbum(songEntity)
         registerArtists(songEntity)
@@ -30,7 +30,7 @@ interface RelationShipDao {
 
 
     @Transaction
-    fun unregister(songEntity: SongEntity) {
+    open fun unregister(songEntity: SongEntity) {
         removeSong(songEntity)
         //todo
     }
@@ -84,20 +84,20 @@ interface RelationShipDao {
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun overrideSong(songEntity: SongEntity)
+    protected abstract fun overrideSong(songEntity: SongEntity)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun overrideAlbum(albumEntity: AlbumEntity)
+    protected abstract fun overrideAlbum(albumEntity: AlbumEntity)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun overrideArtist(artistEntity: ArtistEntity)
+    protected abstract fun overrideArtist(artistEntity: ArtistEntity)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun overrideLinkageSongAndArtist(linkage: LinkageSongAndArtist)
+    protected abstract fun overrideLinkageSongAndArtist(linkage: LinkageSongAndArtist)
 
     @Delete
-    fun removeSong(songEntity: SongEntity)
+    protected abstract fun removeSong(songEntity: SongEntity)
     @Delete
-    fun removeAlbum(albumEntity: AlbumEntity)
+    protected abstract fun removeAlbum(albumEntity: AlbumEntity)
     @Delete
-    fun removeArtist(artistEntity: ArtistEntity)
+    protected abstract fun removeArtist(artistEntity: ArtistEntity)
     @Delete
-    fun removeLinkageSongAndArtist(linkage: LinkageSongAndArtist)
+    protected abstract fun removeLinkageSongAndArtist(linkage: LinkageSongAndArtist)
 }
