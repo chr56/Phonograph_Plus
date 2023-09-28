@@ -54,8 +54,10 @@ object Scanner {
     private fun importFromMediaStore(context: Context, songEntities: List<SongEntity>) = withNotification(context) {
         val songDataBase = MusicDatabase.songsDataBase
         val relationShipDao = songDataBase.RelationShipDao()
+        val artistDao = songDataBase.ArtistDao()
+        val albumDao = songDataBase.AlbumDao()
         for (song in songEntities) {
-            relationShipDao.register(song)
+            relationShipDao.register(song, albumDao, artistDao)
         }
     }
 
@@ -68,8 +70,11 @@ object Scanner {
     fun refreshSingleSong(context: Context, songEntity: SongEntity) {
         scope.launch {
             withNotification(context) {
-                val relationShipDao = MusicDatabase.songsDataBase.RelationShipDao()
-                relationShipDao.register(songEntity)
+                val songDataBase = MusicDatabase.songsDataBase
+                val relationShipDao = songDataBase.RelationShipDao()
+                val artistDao = songDataBase.ArtistDao()
+                val albumDao = songDataBase.AlbumDao()
+                relationShipDao.register(songEntity, albumDao, artistDao)
             }
         }
     }

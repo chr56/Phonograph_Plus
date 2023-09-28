@@ -17,20 +17,21 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Transaction
 import android.util.Log
+import kotlin.math.max
 
 @Dao
 abstract class RelationShipDao {
 
     @Transaction
-    open fun register(songEntity: SongEntity) {
+    open fun register(songEntity: SongEntity, albumDao: AlbumDao, artistDao: ArtistDao) {
         overrideSong(songEntity)
-        registerAlbum(songEntity)
-        registerArtists(songEntity)
+        registerArtists(songEntity, artistDao)
+        registerAlbum(songEntity, albumDao)
     }
 
 
     @Transaction
-    open fun unregister(songEntity: SongEntity) {
+    open fun unregister(songEntity: SongEntity, albumDao: AlbumDao, artistDao: ArtistDao) {
         removeSong(songEntity)
         //todo
     }
@@ -39,17 +40,32 @@ abstract class RelationShipDao {
         private const val TAG: String = "RelationShipDao"
     }
 
-    private fun registerAlbum(songEntity: SongEntity) {
+    private fun registerAlbum(songEntity: SongEntity, albumDao: AlbumDao) {
         val albumName = songEntity.albumName
         if (albumName != null) {
-            val album = AlbumEntity(
-                albumId = songEntity.albumId,
-                albumName = albumName,
-                artistId = 0,
-                albumArtistName = songEntity.albumArtistName ?: "",
-                year = 0,
-                dateModified = 0
-            )
+            val old = albumDao.id(songEntity.albumId)
+            @Suppress("IfThenToElvis")
+            val album =
+                if (old != null) {
+                    // update
+                    old.copy(
+                        albumArtistName = old.albumArtistName.ifEmpty { songEntity.albumArtistName ?: "" },
+                        dateModified = max(old.dateModified, songEntity.dateModified),
+                        year = max(old.year, songEntity.year),
+                        songCount = old.songCount + 1,
+                    )
+                } else {
+                    // new
+                    AlbumEntity(
+                        albumId = songEntity.albumId,
+                        albumName = albumName,
+                        artistId = 0,
+                        albumArtistName = songEntity.albumArtistName ?: "",
+                        year = songEntity.year,
+                        dateModified = songEntity.dateModified,
+                        songCount = 1,
+                    )
+                }
             overrideAlbum(album)
         }
     }
@@ -57,14 +73,16 @@ abstract class RelationShipDao {
 
     private fun registerArtists(
         songEntity: SongEntity,
+        artistDao: ArtistDao,
     ) {
-        register(songEntity, songEntity.rawArtistName, LinkageSongAndArtist.ROLE_ARTIST)
-        register(songEntity, songEntity.composer, LinkageSongAndArtist.ROLE_COMPOSER)
-        register(songEntity, songEntity.albumArtistName, LinkageSongAndArtist.ROLE_ALBUM_ARTIST)
+        registerArtist(songEntity, artistDao, songEntity.rawArtistName, LinkageSongAndArtist.ROLE_ARTIST)
+        registerArtist(songEntity, artistDao, songEntity.composer, LinkageSongAndArtist.ROLE_COMPOSER)
+        registerArtist(songEntity, artistDao, songEntity.albumArtistName, LinkageSongAndArtist.ROLE_ALBUM_ARTIST)
     }
 
-    private fun register(
+    private fun registerArtist(
         songEntity: SongEntity,
+        artistDao: ArtistDao,
         raw: String?,
         @ArtistRole role: Int,
     ) {
@@ -72,7 +90,16 @@ abstract class RelationShipDao {
             val parsed = splitMultiTag(raw)
             if (parsed.isNotEmpty()) {
                 for (name in parsed) {
-                    val artist = ArtistEntity(name.hashCode().toLong(), name)
+                    val old = artistDao.named(name)
+                    @Suppress("IfThenToElvis")
+                    val artist = if (old != null) {
+                        // update
+                        old.copy(
+                            songCount = old.songCount + 1
+                        )
+                    } else {
+                        ArtistEntity(name.hashCode().toLong(), name, songCount = 1)
+                    }
                     overrideArtist(artist)
                     overrideLinkageSongAndArtist(LinkageSongAndArtist(songEntity.id, artist.artistId, role))
                     debug {

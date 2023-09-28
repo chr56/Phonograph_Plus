@@ -5,6 +5,7 @@
 package player.phonograph.repo.room.dao
 
 import player.phonograph.repo.room.entity.AlbumEntity
+import player.phonograph.repo.room.entity.Columns.ALBUM_ID
 import player.phonograph.repo.room.entity.Tables.ALBUMS
 import androidx.room.*
 
@@ -13,5 +14,8 @@ interface AlbumDao {
 
     @Query("SELECT * from $ALBUMS order by :sortOrder")
     fun all(sortOrder: String): List<AlbumEntity>
+
+    @Query("SELECT * from $ALBUMS where $ALBUM_ID = :id")
+    fun id(id: Long): AlbumEntity?
 
 }
