@@ -31,10 +31,8 @@ import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.repo.mediastore.loaders.AlbumLoader
-import player.phonograph.repo.mediastore.loaders.AlbumSongLoader.allSongs
-import player.phonograph.repo.mediastore.loaders.ArtistLoader
-import player.phonograph.repo.mediastore.loaders.ArtistSongLoader.allSongs
+import player.phonograph.repo.loader.Albums
+import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.repo.mediastore.loaders.SongLoader.searchByPath
@@ -203,7 +201,7 @@ class StarterActivity : AppCompatActivity() {
                 val id = parseIdFromIntent(intent, "albumId", "album")
                 if (id >= 0) {
                     val position = intent.getIntExtra("position", 0)
-                    val songs = AlbumLoader.id(this, id).allSongs(this)
+                    val songs = Albums.songs(this, id)
                     if (songs.isNotEmpty()) return PlayRequest(songs, position)
                 }
             }
@@ -212,7 +210,7 @@ class StarterActivity : AppCompatActivity() {
                 val id = parseIdFromIntent(intent, "artistId", "artist")
                 if (id >= 0) {
                     val position = intent.getIntExtra("position", 0)
-                    val songs = ArtistLoader.id(this, id).allSongs(this)
+                    val songs = Artists.songs(this, id)
                     if (songs.isNotEmpty()) return PlayRequest(songs, position)
                 }
             }

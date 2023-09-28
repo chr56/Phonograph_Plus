@@ -8,7 +8,7 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.Artist
 import player.phonograph.model.sort.SortRef
-import player.phonograph.repo.mediastore.loaders.ArtistLoader
+import player.phonograph.repo.loader.Artists
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.ArtistDisplayAdapter
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
@@ -25,7 +25,7 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>>() {
 
     class ArtistPageViewModel : AbsDisplayPageViewModel<Artist>() {
         override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Artist> {
-            return ArtistLoader.all(App.instance)
+            return Artists.all(App.instance)
         }
 
         override val headerTextRes: Int get() = R.plurals.item_artists

@@ -8,10 +8,8 @@ import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.model.QueueSong
 import player.phonograph.repo.database.FavoritesStore
-import player.phonograph.repo.mediastore.loaders.AlbumLoader
-import player.phonograph.repo.mediastore.loaders.AlbumSongLoader.allSongs
-import player.phonograph.repo.mediastore.loaders.ArtistLoader
-import player.phonograph.repo.mediastore.loaders.ArtistSongLoader.allSongs
+import player.phonograph.repo.loader.Albums
+import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.repo.mediastore.loaders.TopTracksLoader
@@ -86,21 +84,21 @@ object MediaItemProvider {
     }
 
     fun browseAlbums(context: Context): List<MediaItem> {
-        return AlbumLoader.all(context).map { it.toMediaItem() }
+        return Albums.all(context).map { it.toMediaItem() }
     }
 
     fun browseAlbum(context: Context, id: Long): List<MediaItem> {
         return mutableListOf(albumAllItem(context.resources, id)) +
-                AlbumLoader.id(context, id).allSongs(context).map { it.toMediaItem() }
+                Albums.songs(context, id).map { it.toMediaItem() }
     }
 
     fun browseArtists(context: Context): List<MediaItem> {
-        return ArtistLoader.all(context).map { it.toMediaItem() }
+        return Artists.all(context).map { it.toMediaItem() }
     }
 
     fun browseArtist(context: Context, id: Long): List<MediaItem> {
         return mutableListOf(artistAllItem(context.resources, id)) +
-                ArtistLoader.id(context, id).allSongs(context).map { it.toMediaItem() }
+                Artists.songs(context, id).map { it.toMediaItem() }
     }
 
     fun browseFavorite(context: Context): List<MediaItem> {

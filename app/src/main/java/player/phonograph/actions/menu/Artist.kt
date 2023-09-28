@@ -15,7 +15,7 @@ import player.phonograph.actions.actionPlayNext
 import player.phonograph.actions.activity
 import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.model.Artist
-import player.phonograph.repo.mediastore.loaders.ArtistSongLoader.allSongs
+import player.phonograph.repo.loader.Artists
 import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
 import player.phonograph.ui.activities.ArtistDetailActivity
@@ -42,14 +42,14 @@ fun artistDetailToolbar(
         menuItem(title = getString(R.string.action_play)) { //id = R.id.action_shuffle_artist
             icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick { artist.allSongs(context).actionPlay(NONE, 0) }
+            onClick { Artists.songs(context, artist.id).actionPlay(NONE, 0) }
         }
 
         menuItem(title = getString(R.string.action_shuffle_artist)) { //id = R.id.action_shuffle_artist
             icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                val songs = artist.allSongs(context)
+                val songs = Artists.songs(context, artist.id)
                 songs.actionPlay(SHUFFLE, Random.nextInt(songs.size))
             }
         }
@@ -58,20 +58,20 @@ fun artistDetailToolbar(
         menuItem(title = getString(R.string.action_play_next)) { //id = R.id.action_play_next
             icon = getTintedDrawable(R.drawable.ic_redo_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick { artist.allSongs(context).actionPlayNext() }
+            onClick { Artists.songs(context, artist.id).actionPlayNext() }
         }
 
 
         menuItem(title = getString(R.string.action_add_to_playing_queue)) { //id = R.id.action_add_to_current_playing
             icon = getTintedDrawable(R.drawable.ic_library_add_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick { artist.allSongs(context).actionEnqueue() }
+            onClick { Artists.songs(context, artist.id).actionEnqueue() }
         }
 
         menuItem(title = getString(R.string.action_add_to_playlist)) { //id = R.id.action_add_to_playlist
             icon = getTintedDrawable(R.drawable.ic_playlist_add_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick { artist.allSongs(context).actionAddToPlaylist(context) }
+            onClick { Artists.songs(context, artist.id).actionAddToPlaylist(context) }
         }
 
         menuItem(title = getString(R.string.set_artist_image)) { //id = R.id.action_set_artist_image
@@ -109,7 +109,7 @@ fun artistDetailToolbar(
             icon = getTintedDrawable(R.drawable.ic_library_music_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                MultiTagBrowserActivity.launch(context, ArrayList(artist.allSongs(context).map { it.data }))
+                MultiTagBrowserActivity.launch(context, ArrayList(Artists.songs(context, artist.id).map { it.data }))
                 true
             }
         }
@@ -118,7 +118,7 @@ fun artistDetailToolbar(
             icon = getTintedDrawable(R.drawable.ic_delete_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                artist.allSongs(context).actionDelete(context)
+                Artists.songs(context, artist.id).actionDelete(context)
             }
         }
 

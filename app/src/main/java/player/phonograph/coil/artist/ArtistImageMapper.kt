@@ -7,13 +7,13 @@ package player.phonograph.coil.artist
 import coil.map.Mapper
 import coil.request.Options
 import player.phonograph.model.Artist
-import player.phonograph.repo.mediastore.loaders.ArtistSongLoader.allSongs
+import player.phonograph.repo.loader.Artists
 
 class ArtistImageMapper : Mapper<Artist, ArtistImage> {
     override fun map(data: Artist, options: Options): ArtistImage? =
         ArtistImage(
             data.name,
             data.id,
-            data.allSongs(options.context).map { ArtistImage.SongCover(it.id, it.year, it.data) }
+            Artists.songs(options.context, data.id).map { ArtistImage.SongCover(it.id, it.year, it.data) }
         ).takeIf { it.songCovers.isNotEmpty() }
 }
