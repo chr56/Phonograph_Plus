@@ -10,8 +10,8 @@ import player.phonograph.model.QueueSong
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Artists
+import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
-import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.Keys
@@ -80,7 +80,7 @@ object MediaItemProvider {
     }
 
     fun browseSongs(context: Context): List<MediaItem> {
-        return SongLoader.all(context).map { it.toMediaItem() }
+        return Songs.all(context).map { it.toMediaItem() }
     }
 
     fun browseAlbums(context: Context): List<MediaItem> {
@@ -113,7 +113,7 @@ object MediaItemProvider {
 
     fun browseLastAdded(context: Context): List<MediaItem> {
         return listOf(selectAllItem(context.resources, MEDIA_BROWSER_SONGS_FAVORITES)) +
-                SongLoader.since(context, lastAddedCutoffTimeStamp(context)).map { it.toMediaItem() }
+                Songs.since(context, lastAddedCutoffTimeStamp(context)).map { it.toMediaItem() }
     }
 
     fun browseHistory(context: Context): List<MediaItem> {

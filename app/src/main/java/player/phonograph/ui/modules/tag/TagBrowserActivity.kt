@@ -10,9 +10,9 @@ import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenFileStorageAccessTool
 import player.phonograph.R
 import player.phonograph.model.Song
-import player.phonograph.repo.mediastore.loaders.SongLoader
-import player.phonograph.ui.compose.PhonographTheme
+import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.compose.ComposeThemeActivity
+import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.modules.web.IWebSearchRequester
 import player.phonograph.ui.modules.web.LastFmDialog
 import player.phonograph.ui.modules.web.WebSearchLauncher
@@ -101,7 +101,7 @@ class TagBrowserActivity :
 
         private const val PATH = "PATH"
         private fun parseIntent(context: Context, intent: Intent): Song =
-            SongLoader.path(context, intent.extras?.getString(PATH).orEmpty())
+            Songs.path(context, intent.extras?.getString(PATH).orEmpty())
 
         fun launch(context: Context, path: String) {
             context.startActivity(

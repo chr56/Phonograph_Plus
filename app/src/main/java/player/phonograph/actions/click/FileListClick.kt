@@ -26,7 +26,7 @@ import player.phonograph.actions.click.mode.SongClickMode.resetBaseMode
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
-import player.phonograph.repo.mediastore.loaders.SongLoader
+import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
@@ -73,7 +73,7 @@ fun fileClick(
         SONG_SINGLE_PLAY,
              -> {
             val fileEntity = list[position] as? FileEntity.File ?: return false
-            val song = SongLoader.searchByFileEntity(context, fileEntity)
+            val song = Songs.searchByFileEntity(context, fileEntity)
             when (base) {
                 SONG_PLAY_NEXT    -> song.actionPlayNext()
                 SONG_PLAY_NOW     -> song.actionPlayNow()
@@ -119,7 +119,7 @@ private fun filter(list: List<FileEntity>, position: Int, context: Context): Pla
     val actualFileList = ArrayList<Song>(position)
     for ((index, item) in list.withIndex()) {
         if (item is FileEntity.File) {
-            actualFileList.add(SongLoader.searchByFileEntity(context, item))
+            actualFileList.add(Songs.searchByFileEntity(context, item))
         } else {
             if (index < position) actualPosition--
         }

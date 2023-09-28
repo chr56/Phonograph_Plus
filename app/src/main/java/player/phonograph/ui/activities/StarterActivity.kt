@@ -33,9 +33,8 @@ import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Artists
+import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
-import player.phonograph.repo.mediastore.loaders.SongLoader
-import player.phonograph.repo.mediastore.loaders.SongLoader.searchByPath
 import player.phonograph.repo.mediastore.processQuery
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
@@ -148,7 +147,7 @@ class StarterActivity : AppCompatActivity() {
                     else                     -> null
                 }
             if (songId != null) {
-                songs = listOf(SongLoader.id(this, songId.toLong()))
+                songs = listOf(Songs.id(this, songId.toLong()))
             }
         }
 
@@ -169,7 +168,7 @@ class StarterActivity : AppCompatActivity() {
                 }
 
             if (file != null) {
-                songs = searchByPath(this, file.absolutePath, withoutPathFilter = true)
+                songs = Songs.searchByPath(this, file.absolutePath, withoutPathFilter = true)
             }
         }
 

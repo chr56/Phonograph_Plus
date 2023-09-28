@@ -10,8 +10,8 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.DatabaseConstants.FAVORITE_DB
+import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
-import player.phonograph.repo.mediastore.loaders.SongLoader
 import player.phonograph.util.text.currentTimestamp
 import player.phonograph.util.warning
 import android.content.ContentValues
@@ -60,7 +60,7 @@ class FavoritesStore constructor(context: Context) :
 
     private fun getAllSongsImpl(context: Context): List<Song> {
         return parseCursorImpl(TABLE_NAME_SONGS) { cursor ->
-            SongLoader.path(context, cursor.getString(1))
+            Songs.path(context, cursor.getString(1))
         }
     }
 
