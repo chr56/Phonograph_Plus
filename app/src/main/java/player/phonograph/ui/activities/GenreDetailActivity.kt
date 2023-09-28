@@ -8,7 +8,7 @@ import player.phonograph.databinding.ActivityGenreDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
-import player.phonograph.repo.mediastore.loaders.GenreLoader
+import player.phonograph.repo.loader.Genres
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.parcelable
@@ -55,7 +55,7 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity() {
 
     private fun loadDataSet(context: Context) {
         lifecycleScope.launch(Dispatchers.IO) {
-            val list: List<Song> = GenreLoader.genreSongs(context, genre.id)
+            val list: List<Song> = Genres.songs(context, genre.id)
 
             while (!isRecyclerViewPrepared) yield() // wait until ready
 
