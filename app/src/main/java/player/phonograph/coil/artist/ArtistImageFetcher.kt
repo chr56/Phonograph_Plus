@@ -37,10 +37,9 @@ class ArtistImageFetcher(
 
     override suspend fun fetch(): FetchResult? {
         // first check if the custom artist image exist
-        val file = CustomArtistImageStore.instance(context)
-            .getCustomArtistImageFile(data.artistId, data.artistName)
+        val file = CustomArtistImageStore.instance(context).getCustomArtistImageFile(data.id, data.name)
         if (file != null) {
-            return readFromFile(file, "#${data.artistId}#${data.artistName}", "image/jpeg")
+            return readFromFile(file, "#${data.id}#${data.name}", "image/jpeg")
         }
         // then choose an AlbumCover as ArtistImage
         return retrieve(retriever, data, context, size)
@@ -52,14 +51,14 @@ class ArtistImageFetcher(
         context: Context,
         size: Size,
     ): FetchResult? {
-        for (cover in data.songCovers) {
+        for (file in data.files) {
             for (retriever in retrievers) {
-                val result = retriever.retrieve(cover.filePath, cover.id, context, size, raw)
+                val result = retriever.retrieve(file.path, file.songId, context, size, raw)
                 if (result == null) {
                     debug {
                         Log.v(
                             TAG,
-                            "Image not available from ${retriever.name} for ${data.artistName} in cover ${cover.id}"
+                            "Image not available from ${retriever.name} for ${data.name} in file ${file.songId}"
                         )
                     }
                     continue
@@ -69,7 +68,7 @@ class ArtistImageFetcher(
             }
         }
         debug {
-            Log.v(TAG, "No any cover for ${data.artistName}")
+            Log.v(TAG, "No any cover for ${data.name}")
         }
         return null
     }
