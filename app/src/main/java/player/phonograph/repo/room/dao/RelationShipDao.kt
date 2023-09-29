@@ -152,41 +152,6 @@ abstract class RelationShipDao {
         }
     }
 
-    private fun registerAlbum(songEntity: SongEntity, registerArtists: Collection<ArtistEntity>, albumDao: AlbumDao) {
-        val albumName = songEntity.albumName
-        if (albumName != null) {
-            val artists = registerArtists.toSet()
-            val albumArtistName = songEntity.albumArtistName
-            val old = albumDao.id(songEntity.albumId)
-            val targetArtist =
-                artists.firstOrNull { it.artistName == albumArtistName } ?: artists.firstOrNull()
-            @Suppress("IfThenToElvis")
-            val album =
-                if (old != null) {
-                    // update
-                    old.copy(
-                        artistId = targetArtist?.artistId ?: 0,
-                        albumArtistName = targetArtist?.artistName ?: "",
-                        dateModified = max(old.dateModified, songEntity.dateModified),
-                        year = max(old.year, songEntity.year),
-                        songCount = old.songCount + 1,
-                    )
-                } else {
-                    // new
-                    AlbumEntity(
-                        albumId = songEntity.albumId,
-                        albumName = albumName,
-                        artistId = targetArtist?.artistId ?: 0,
-                        albumArtistName = targetArtist?.artistName ?: "",
-                        year = songEntity.year,
-                        dateModified = songEntity.dateModified,
-                        songCount = 1,
-                    )
-                }
-            overrideAlbum(album)
-        }
-    }
-
     /**
      * @return registered artists
      */
@@ -224,54 +189,6 @@ abstract class RelationShipDao {
             artist
         }
     }
-
-    private fun registerArtists(
-        songEntity: SongEntity,
-        artistDao: ArtistDao,
-    ): Collection<ArtistEntity> {
-        val r = registerArtist(songEntity, artistDao, songEntity.rawArtistName, ROLE_ARTIST)
-        val c = registerArtist(songEntity, artistDao, songEntity.composer, ROLE_COMPOSER)
-        val a = registerArtist(songEntity, artistDao, songEntity.albumArtistName, ROLE_ALBUM_ARTIST)
-        return r + c + a
-    }
-
-    /**
-     * @return registered artists
-     */
-    private fun registerArtist(
-        songEntity: SongEntity,
-        artistDao: ArtistDao,
-        raw: String?,
-        @ArtistRole role: Int,
-    ): Collection<ArtistEntity> =
-        if (raw != null) {
-            val parsed = splitMultiTag(raw)
-            if (parsed.isNotEmpty()) {
-                parsed.map { name ->
-                    val old = artistDao.named(name)
-                    @Suppress("IfThenToElvis")
-                    if (old != null) {
-                        // update
-                        old.copy(
-                            songCount = old.songCount + 1
-                        )
-                    } else {
-                        ArtistEntity(name.hashCode().toLong(), name, albumCount = 1, songCount = 1)
-                    }
-                }.map { artist ->
-                    overrideArtist(artist)
-                    overrideLinkageSongAndArtist(LinkageSongAndArtist(songEntity.id, artist.artistId, role))
-                    debug {
-                        Log.v(TAG, "* Registering Artist: ${songEntity.title} <--> ${artist.artistName} [$role]")
-                    }
-                    artist
-                }
-            } else {
-                emptyList()
-            }
-        } else {
-            emptyList()
-        }
 
     @Query("SELECT * from ${Tables.LINKAGE_ARTIST_ALBUM} where ${Columns.ARTIST_ID} = :artistId")
     protected abstract fun queryLinkageAlbumAndArtist(artistId: Long): List<LinkageAlbumAndArtist>
