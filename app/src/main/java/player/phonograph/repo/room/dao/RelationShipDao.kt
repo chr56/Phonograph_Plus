@@ -156,9 +156,12 @@ abstract class RelationShipDao {
      * @return registered artists
      */
     private fun registerArtists(parsedSong: ParsedSong): Map<Int, Collection<ArtistEntity>> {
-        val r = registerArtist(parsedSong.song, ROLE_ARTIST, parsedSong.defaultArtists)
-        val c = registerArtist(parsedSong.song, ROLE_COMPOSER, parsedSong.composerArtists)
-        val a = registerArtist(parsedSong.song, ROLE_ALBUM_ARTIST, parsedSong.albumArtists)
+        val r =
+            registerArtist(parsedSong.song, ROLE_ARTIST, parsedSong.defaultArtists, parsedSong.knownAlbums)
+        val c =
+            registerArtist(parsedSong.song, ROLE_COMPOSER, parsedSong.composerArtists, parsedSong.knownAlbums)
+        val a =
+            registerArtist(parsedSong.song, ROLE_ALBUM_ARTIST, parsedSong.albumArtists, parsedSong.knownAlbums)
         return mapOf(ROLE_ARTIST to r, ROLE_COMPOSER to c, ROLE_ALBUM_ARTIST to a)
     }
 
@@ -169,11 +172,16 @@ abstract class RelationShipDao {
         songEntity: SongEntity,
         @ArtistRole role: Int,
         artists: Map<String, ArtistEntity?>,
+        knownAlbums: Map<ArtistEntity?, List<Long>>,
     ): Collection<ArtistEntity> {
         return artists.map { (name, existedArtist) ->
             val artist = if (existedArtist != null) {
                 // update existed
+                val albumList = knownAlbums[existedArtist]
+                val bumpAlbumCount = !(albumList != null && songEntity.albumId in albumList)
+                val albumCount = if (bumpAlbumCount) existedArtist.albumCount + 1 else existedArtist.albumCount
                 existedArtist.copy(
+                    albumCount = albumCount,
                     songCount = existedArtist.songCount + 1
                 )
             } else {
@@ -182,7 +190,7 @@ abstract class RelationShipDao {
             }
             overrideArtist(artist)
             overrideLinkageSongAndArtist(LinkageSongAndArtist(songEntity.id, artist.artistId, role))
-            overrideLinkageAlbumAndArtist(LinkageAlbumAndArtist(songEntity.albumId, artist.artistId)) //todo
+            overrideLinkageAlbumAndArtist(LinkageAlbumAndArtist(songEntity.albumId, artist.artistId))
             debug {
                 Log.v(TAG, "* Registering Artist: ${songEntity.title} <--> ${artist.artistName} [$role]")
             }
