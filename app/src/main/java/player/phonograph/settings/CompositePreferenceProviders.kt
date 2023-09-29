@@ -4,7 +4,6 @@
 
 package player.phonograph.settings
 
-import player.phonograph.model.sort.FileSortMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.time.Duration
@@ -77,14 +76,7 @@ sealed class SortModePreferenceProvider(backField: PrimitiveKey<String>) :
     data object GenreSortMode : SortModePreferenceProvider(Keys._genreSortMode)
     data object PlaylistSortMode : SortModePreferenceProvider(Keys._playlistSortMode)
     data object CollectionSortMode : SortModePreferenceProvider(Keys._collectionSortMode)
-}
-
-data object FileSortModePreferenceProvider :
-        MonoPreferenceProvider<FileSortMode, String>(
-            Keys._fileSortMode, { FileSortMode(SortRef.ID) }
-        ) {
-    override fun read(flow: Flow<String>): Flow<FileSortMode> = flow.map { FileSortMode.deserialize(it) }
-    override fun save(data: FileSortMode): String = data.serialize()
+    data object FileSortMode : SortModePreferenceProvider(Keys._fileSortMode)
 }
 
 object LastAddedCutOffDurationPreferenceProvider : CompositePreferenceProvider<Long> {

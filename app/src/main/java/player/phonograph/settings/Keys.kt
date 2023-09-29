@@ -5,7 +5,6 @@
 package player.phonograph.settings
 
 import player.phonograph.actions.click.mode.SongClickMode
-import player.phonograph.model.sort.FileSortMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.time.Duration
@@ -149,10 +148,10 @@ object Keys {
 
 
     data object _fileSortMode :
-            PrimitiveKey<String>(stringPK(FILE_SORT_MODE), { FileSortMode(SortRef.ID, false).serialize() })
+            PrimitiveKey<String>(stringPK(FILE_SORT_MODE), { SortMode(SortRef.ID, false).serialize() })
 
     data object fileSortMode :
-            CompositeKey<FileSortMode>(FileSortModePreferenceProvider)
+            CompositeKey<SortMode>(SortModePreferenceProvider.FileSortMode)
 
 
     data object _collectionSortMode :

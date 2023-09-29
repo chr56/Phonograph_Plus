@@ -8,7 +8,7 @@ import player.phonograph.R
 import player.phonograph.actions.click.fileClick
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
-import player.phonograph.model.sort.FileSortMode
+import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
@@ -130,7 +130,7 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel>()
 
     private fun dismissPopup(popup: ListOptionsPopup) {
         Setting(popup.contentView.context).Composites[Keys.fileSortMode].data =
-            FileSortMode(popup.sortRef, popup.revert)
+            SortMode(popup.sortRef, popup.revert)
         fileModel.useLegacyListFile = popup.useLegacyListFiles
         if (fileModel.showFilesImages != popup.showFilesImages) {
             fileModel.showFilesImages = popup.showFilesImages
