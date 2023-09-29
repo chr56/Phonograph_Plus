@@ -17,6 +17,9 @@ interface ArtistDao {
     @Query("SELECT * from $ARTISTS order by :sortOrder")
     fun all(sortOrder: String = ARTIST_ID): List<ArtistEntity>
 
+    @Query("SELECT * from $ARTISTS where $ARTIST_ID = :id")
+    fun id(id: Long): ArtistEntity?
+
     @Query("SELECT * from $ARTISTS where $ARTIST_NAME = :name")
     fun named(name: String): ArtistEntity?
 

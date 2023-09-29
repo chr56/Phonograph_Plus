@@ -6,6 +6,7 @@ package player.phonograph.repo.room.dao
 
 import player.phonograph.repo.room.entity.AlbumEntity
 import player.phonograph.repo.room.entity.Columns.ALBUM_ID
+import player.phonograph.repo.room.entity.Columns.ALBUM_NAME
 import player.phonograph.repo.room.entity.Tables.ALBUMS
 import androidx.room.*
 
@@ -17,5 +18,8 @@ interface AlbumDao {
 
     @Query("SELECT * from $ALBUMS where $ALBUM_ID = :id")
     fun id(id: Long): AlbumEntity?
+
+    @Query("SELECT * from $ALBUMS where $ALBUM_NAME = :name")
+    fun named(name: String): AlbumEntity?
 
 }
