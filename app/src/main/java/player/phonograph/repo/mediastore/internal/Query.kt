@@ -5,6 +5,8 @@
 package player.phonograph.repo.mediastore.internal
 
 import legacy.phonograph.MediaStoreCompat
+import player.phonograph.model.sort.SortMode
+import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.reportError
@@ -121,4 +123,25 @@ const val BASE_PLAYLIST_SELECTION =
     "${MediaStoreCompat.Audio.PlaylistsColumns.NAME} != '' "
 
 private fun defaultSortOrder(context: Context) =
-    Setting(context).Composites[Keys.songSortMode].data.SQLQuerySortOrder
+    Setting(context).Composites[Keys.songSortMode].data.mediastoreQuerySortOrder()
+
+fun SortMode.mediastoreQuerySortOrder(): String {
+    val first = when (sortRef) {
+        SortRef.ID                -> AudioColumns._ID
+        SortRef.SONG_NAME         -> Audio.Media.DEFAULT_SORT_ORDER
+        SortRef.ARTIST_NAME       -> Audio.Artists.DEFAULT_SORT_ORDER
+        SortRef.ALBUM_NAME        -> Audio.Albums.DEFAULT_SORT_ORDER
+        SortRef.ALBUM_ARTIST_NAME -> Audio.Media.ALBUM_ARTIST
+        SortRef.COMPOSER          -> Audio.Media.COMPOSER
+        SortRef.ADDED_DATE        -> Audio.Media.DATE_ADDED
+        SortRef.MODIFIED_DATE     -> Audio.Media.DATE_MODIFIED
+        SortRef.DURATION          -> Audio.Media.DURATION
+        SortRef.YEAR              -> Audio.Media.YEAR
+        // SortRef.SONG_COUNT        -> "" // todo
+        // SortRef.ALBUM_COUNT       -> "" // todo
+        else                      -> throw IllegalStateException("invalid sort mode")
+    }
+    val second = if (revert) "DESC" else "ASC"
+
+    return "$first $second"
+}
