@@ -6,6 +6,7 @@ package player.phonograph.repo.room.dao
 
 import player.phonograph.repo.room.entity.AlbumEntity
 import player.phonograph.repo.room.entity.ArtistEntity
+import player.phonograph.repo.room.entity.LinkageAlbumAndArtist
 import player.phonograph.repo.room.entity.LinkageSongAndArtist
 import player.phonograph.repo.room.entity.LinkageSongAndArtist.ArtistRole
 import player.phonograph.repo.room.entity.LinkageSongAndArtist.Companion.ROLE_ALBUM_ARTIST
@@ -135,6 +136,8 @@ abstract class RelationShipDao {
     protected abstract fun overrideArtist(artistEntity: ArtistEntity)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract fun overrideLinkageSongAndArtist(linkage: LinkageSongAndArtist)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    protected abstract fun overrideLinkageAlbumAndArtist(linkage: LinkageAlbumAndArtist)
 
     @Delete
     protected abstract fun removeSong(songEntity: SongEntity)
@@ -144,4 +147,6 @@ abstract class RelationShipDao {
     protected abstract fun removeArtist(artistEntity: ArtistEntity)
     @Delete
     protected abstract fun removeLinkageSongAndArtist(linkage: LinkageSongAndArtist)
+    @Delete
+    protected abstract fun removeLinkageLinkageAlbumAndArtist(linkage: LinkageAlbumAndArtist)
 }

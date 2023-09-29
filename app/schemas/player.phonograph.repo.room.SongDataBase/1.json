@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f4c3f9f593aba57f268eb54c2db5bb90",
+    "identityHash": "7ce30752f144f0f2cdae269168a63093",
     "entities": [
       {
         "tableName": "songs",
@@ -51,13 +51,13 @@
             "notNull": false
           },
           {
-            "fieldPath": "artistId",
+            "fieldPath": "rawArtistId",
             "columnName": "raw_artist_id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "artistName",
+            "fieldPath": "rawArtistName",
             "columnName": "raw_artist_name",
             "affinity": "TEXT",
             "notNull": false
@@ -269,12 +269,50 @@
           }
         ],
         "foreignKeys": []
+      },
+      {
+        "tableName": "linkage_artist_album",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`album_id` INTEGER NOT NULL, `artist_id` INTEGER NOT NULL, PRIMARY KEY(`artist_id`, `album_id`))",
+        "fields": [
+          {
+            "fieldPath": "albumId",
+            "columnName": "album_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "artistId",
+            "columnName": "artist_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "artist_id",
+            "album_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_linkage_artist_album_album_id_artist_id",
+            "unique": false,
+            "columnNames": [
+              "album_id",
+              "artist_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_linkage_artist_album_album_id_artist_id` ON `${TABLE_NAME}` (`album_id`, `artist_id`)"
+          }
+        ],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f4c3f9f593aba57f268eb54c2db5bb90')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7ce30752f144f0f2cdae269168a63093')"
     ]
   }
 }

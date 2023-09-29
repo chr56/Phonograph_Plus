@@ -9,6 +9,7 @@ object Tables {
     const val ALBUMS = "albums"
     const val ARTISTS = "artists"
     const val LINKAGE_ARTIST_SONG = "linkage_artist_song"
+    const val LINKAGE_ARTIST_ALBUM = "linkage_artist_album"
 }
 
 object Columns {

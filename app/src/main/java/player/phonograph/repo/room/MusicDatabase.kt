@@ -12,6 +12,7 @@ import player.phonograph.repo.room.dao.RelationShipDao
 import player.phonograph.repo.room.dao.SongDao
 import player.phonograph.repo.room.entity.AlbumEntity
 import player.phonograph.repo.room.entity.ArtistEntity
+import player.phonograph.repo.room.entity.LinkageAlbumAndArtist
 import player.phonograph.repo.room.entity.LinkageSongAndArtist
 import player.phonograph.repo.room.entity.SongEntity
 import androidx.room.Database
@@ -22,7 +23,7 @@ import android.content.SharedPreferences
 
 
 @Database(
-    entities = [SongEntity::class, AlbumEntity::class, ArtistEntity::class, LinkageSongAndArtist::class],
+    entities = [SongEntity::class, AlbumEntity::class, ArtistEntity::class, LinkageSongAndArtist::class, LinkageAlbumAndArtist::class],
     version = 1,
     exportSchema = true,
 )
