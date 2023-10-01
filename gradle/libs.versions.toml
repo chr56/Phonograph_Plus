@@ -38,7 +38,7 @@ androidx-datastore-preferences-core = { group = "androidx.datastore", name = "da
 androidx-datastore-core = { group = "androidx.datastore", name = "datastore-core", version.ref = "datastore" }
 
 
-google-material = "com.google.android.material:material:1.8.0"
+google-material = "com.google.android.material:material:1.9.0"
 
 #
 # Jetpack Compose
