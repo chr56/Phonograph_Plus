@@ -7,6 +7,7 @@ package player.phonograph.repo.room.entity
 object Tables {
 
     const val MEDIASTORE_SONGS = "mediastore"
+
     const val PLAYLISTS = "playlists"
     const val PLAYLIST_SONGS = "playlist_songs"
 
@@ -14,4 +15,12 @@ object Tables {
     const val PINED_PLAYLISTS = "favorite_playlists"
 
     const val METADATA = "metadata"
+
+    const val ALBUMS = "albums"
+    const val ARTISTS = "artists"
+    const val LINKAGE_ARTIST_SONG = "linkage_artist_song"
+    const val LINKAGE_ARTIST_ALBUM = "linkage_artist_album"
+
+    const val GENRES = "genres"
+    const val LINKAGE_GENRE_SONG = "linkage_genre_song"
 }

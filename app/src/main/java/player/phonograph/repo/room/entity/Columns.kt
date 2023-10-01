@@ -23,6 +23,11 @@ object Columns {
     const val ALBUM_ARTIST = "album_artist"
     const val COMPOSER = "composer"
 
+    // genre
+    const val GENRE_ID = "genre_id"
+    const val GENRE_ID_MEDIASTORE = "genre_id_mediastore"
+    const val GENRE = "genre"
+
     // playlist
     const val PLAYLIST_ID = "playlist_id"
     const val PLAYLIST_NAME = "playlist_name"
@@ -32,7 +37,6 @@ object Columns {
     const val PATH = "path"
 
     // favorite playlist
-
     const val TYPE = "type"
     const val PRIMARY_ID = "primary_id"
     const val SUB_ID = "sub_id"
@@ -42,4 +46,13 @@ object Columns {
     // metadata
     const val METADATA_KEY = "key"
     const val METADATA_VALUE = "value"
+
+
+    // Misc
+    const val ROLE = "role"
+    const val SONG_COUNT = "song_count"
+    const val ALBUM_COUNT = "album_count"
+
+    const val SOURCE = "source"
+    const val CATEGORY = "category"
 }
