@@ -243,6 +243,19 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                     )
                 }
             }
+            menuItem {
+                groupId = groupIds[2]
+                itemId = R.id.action_scan
+                icon = getTintedDrawable(R.drawable.ic_refresh_white_24dp, textColorPrimary)
+                titleRes(R.string.refresh_database)
+                onClick {
+                    drawerBinding.drawerLayout.closeDrawers()
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        Scanner.refreshDatabase(context)
+                    }
+                    true
+                }
+            }
 
             menuItem {
                 groupId = groupIds[3]
@@ -290,10 +303,9 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                             }
                         },
                         context.getString(R.string.refresh_database) to {
-                            Scanner.refreshDatabase(context)
-                        },
-                        context.getString(R.string.refresh_database) to {
-                            Scanner.refreshDatabase(context, true)
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                Scanner.refreshDatabase(context, true)
+                            }
                         },
                         context.getString(R.string.action_grant_storage_permission) to {
                             navigateToStorageSetting(context)
