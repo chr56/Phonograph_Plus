@@ -6,6 +6,7 @@ package player.phonograph.repo.mediastore.loaders
 
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
 import player.phonograph.model.PlaylistSong
+import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.internal.BASE_AUDIO_SELECTION
 import android.content.Context
 import android.database.Cursor
@@ -29,20 +30,22 @@ object PlaylistSongLoader {
 
     private fun getPlaylistSongFromCursorImpl(cursor: Cursor, playlistId: Long): PlaylistSong =
         PlaylistSong(
-            id = cursor.getLong(0),
-            title = cursor.getString(1),
-            trackNumber = cursor.getInt(2),
-            year = cursor.getInt(3),
-            duration = cursor.getLong(4),
-            data = cursor.getString(5),
-            dateAdded = cursor.getLong(6),
-            dateModified = cursor.getLong(7),
-            albumId = cursor.getLong(8),
-            albumName = cursor.getString(9),
-            artistId = cursor.getLong(10),
-            artistName = cursor.getString(11),
-            albumArtistName = cursor.getString(12),
-            composer = cursor.getString(13),
+            Song(
+                id = cursor.getLong(0),
+                title = cursor.getString(1),
+                trackNumber = cursor.getInt(2),
+                year = cursor.getInt(3),
+                duration = cursor.getLong(4),
+                data = cursor.getString(5),
+                dateAdded = cursor.getLong(6),
+                dateModified = cursor.getLong(7),
+                albumId = cursor.getLong(8),
+                albumName = cursor.getString(9),
+                artistId = cursor.getLong(10),
+                artistName = cursor.getString(11),
+                albumArtistName = cursor.getString(12),
+                composer = cursor.getString(13),
+            ),
             playlistId = playlistId,
             idInPlayList = cursor.getLong(14),
         )
