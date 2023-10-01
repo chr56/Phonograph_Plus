@@ -5,9 +5,13 @@
 package player.phonograph.repo.room.converter
 
 import player.phonograph.R
+import player.phonograph.model.Album
+import player.phonograph.model.Artist
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.DatabasePlaylistLocation
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.repo.room.entity.AlbumEntity
+import player.phonograph.repo.room.entity.ArtistEntity
 import player.phonograph.repo.room.entity.MediastoreSongEntity
 import player.phonograph.repo.room.entity.PlaylistEntity
 import androidx.room.TypeConverter
@@ -62,5 +66,28 @@ object EntityConverter {
             dateModified = playlist.dateModified,
             iconRes = R.drawable.ic_queue_music_white_24dp
         )
+    //endregion
+
+    //region Album
+    @TypeConverter
+    fun toAlbumModel(albumEntity: AlbumEntity) = Album(
+        id = albumEntity.albumId,
+        title = albumEntity.albumName,
+        songCount = albumEntity.songCount,
+        artistId = albumEntity.artistId,
+        artistName = albumEntity.albumArtistName,
+        year = albumEntity.year,
+        dateModified = albumEntity.dateModified,
+    )
+    //endregion
+
+    //region Artist
+    @TypeConverter
+    fun toArtistModel(artistEntity: ArtistEntity) = Artist(
+        id = artistEntity.artistId,
+        name = artistEntity.artistName,
+        albumCount = artistEntity.albumCount,
+        songCount = artistEntity.songCount,
+    )
     //endregion
 }

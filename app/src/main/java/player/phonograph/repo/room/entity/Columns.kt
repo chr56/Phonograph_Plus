@@ -42,4 +42,10 @@ object Columns {
     // metadata
     const val METADATA_KEY = "key"
     const val METADATA_VALUE = "value"
+
+
+    // Misc
+    const val ROLE = "role"
+    const val SONG_COUNT = "song_count"
+    const val ALBUM_COUNT = "album_count"
 }
