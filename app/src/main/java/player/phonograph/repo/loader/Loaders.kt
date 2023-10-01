@@ -4,15 +4,15 @@
 
 package player.phonograph.repo.loader
 
-import player.phonograph.repo.mediastore.MediaStoreAlbums
-import player.phonograph.repo.mediastore.MediaStoreArtists
 import player.phonograph.repo.mediastore.MediaStoreGenres
-import player.phonograph.repo.mediastore.MediaStoreSongs
+import player.phonograph.repo.room.loader.RoomAlbums
+import player.phonograph.repo.room.loader.RoomArtists
+import player.phonograph.repo.room.loader.RoomSongs
 
-object Albums : IAlbums by MediaStoreAlbums
+object Albums : IAlbums by RoomAlbums
 
-object Artists : IArtists by MediaStoreArtists
+object Artists : IArtists by RoomArtists
 
 object Genres : IGenres by MediaStoreGenres
 
-object Songs : ISongs by MediaStoreSongs
+object Songs : ISongs by RoomSongs
