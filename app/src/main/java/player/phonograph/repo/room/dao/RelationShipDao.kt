@@ -6,7 +6,9 @@ package player.phonograph.repo.room.dao
 
 import player.phonograph.repo.room.entity.AlbumEntity
 import player.phonograph.repo.room.entity.ArtistEntity
-import player.phonograph.repo.room.entity.Columns
+import player.phonograph.repo.room.entity.Columns.ALBUM_ID
+import player.phonograph.repo.room.entity.Columns.ARTIST_ID
+import player.phonograph.repo.room.entity.Columns.SONG_ID
 import player.phonograph.repo.room.entity.LinkageAlbumAndArtist
 import player.phonograph.repo.room.entity.LinkageSongAndArtist
 import player.phonograph.repo.room.entity.LinkageSongAndArtist.ArtistRole
@@ -32,10 +34,17 @@ abstract class RelationShipDao {
     @Transaction
     open fun register(songEntity: SongEntity, albumDao: AlbumDao, artistDao: ArtistDao) {
         overrideSong(songEntity)
-        val parsedSong = ParsedSong.parse(songEntity, albumDao, artistDao) { queryLinkageAlbumAndArtist(it) }
+        val parsedSong = ParsedSong.parse(songEntity, albumDao, artistDao)
 
-        val registerArtists = registerArtists(parsedSong)
-        registerAlbum(parsedSong, registerArtists)
+        val registeredArtists = registerArtists(parsedSong)
+        val registeredAlbum = registerAlbum(parsedSong, registeredArtists)
+
+        for (artistEntity in registeredArtists.flatMap { it.value }) {
+            updateArtistCounter(artistEntity)
+        }
+        if (registeredAlbum != null) {
+            updateAlbumCounter(registeredAlbum)
+        }
     }
 
 
@@ -52,7 +61,6 @@ abstract class RelationShipDao {
         val defaultArtists: Map<String, ArtistEntity?>,
         val albumArtists: Map<String, ArtistEntity?>,
         val composerArtists: Map<String, ArtistEntity?>,
-        val knownAlbums: Map<ArtistEntity?, List<Long>>,
     ) {
         companion object {
 
@@ -60,7 +68,6 @@ abstract class RelationShipDao {
                 songEntity: SongEntity,
                 albumDao: AlbumDao,
                 artistDao: ArtistDao,
-                queryAlbum: (artistId: Long) -> Collection<LinkageAlbumAndArtist>,
             ): ParsedSong {
                 val albumName = songEntity.albumName
                 val album = if (albumName != null) albumDao.named(albumName) else null
@@ -90,25 +97,8 @@ abstract class RelationShipDao {
                 } else emptyMap()
 
 
-                fun queryAlbums(map: Map<String, ArtistEntity?>): Map<ArtistEntity?, List<Long>> =
-                    map
-                        .mapKeys { it.value }
-                        .mapValues { (_, artist) ->
-                            val artistId = artist?.artistId ?: -1
-                            if (artistId > 0)
-                                queryAlbum(artistId).map { it.albumId }
-                            else
-                                emptyList()
-                        }
-
-                val r = queryAlbums(defaultArtists)
-                val a = queryAlbums(albumArtists)
-                val c = queryAlbums(composerArtists)
-
-                val knownAlbums = r + a + c
-
                 return ParsedSong(
-                    songEntity, albumName, album, defaultArtists, albumArtists, composerArtists, knownAlbums
+                    songEntity, albumName, album, defaultArtists, albumArtists, composerArtists
                 )
             }
 
@@ -119,13 +109,16 @@ abstract class RelationShipDao {
         private const val TAG: String = "RelationShipDao"
     }
 
-    private fun registerAlbum(parsedSong: ParsedSong, registerArtists: Map<Int, Collection<ArtistEntity>>) {
+    private fun registerAlbum(
+        parsedSong: ParsedSong,
+        registerArtists: Map<Int, Collection<ArtistEntity>>,
+    ): AlbumEntity? {
         val albumName = parsedSong.albumName
         val existedAlbum = parsedSong.album
         val targetArtist: ArtistEntity? = run {
             registerArtists[ROLE_ALBUM_ARTIST]?.firstOrNull() ?: registerArtists[ROLE_ARTIST]?.firstOrNull()
         }
-        if (albumName != null) {
+        return if (albumName != null) {
             @Suppress("IfThenToElvis")
             val albumEntity = if (existedAlbum != null) {
                 // update
@@ -134,7 +127,6 @@ abstract class RelationShipDao {
                     albumArtistName = targetArtist?.artistName ?: "",
                     dateModified = max(existedAlbum.dateModified, parsedSong.song.dateModified),
                     year = max(existedAlbum.year, parsedSong.song.year),
-                    songCount = existedAlbum.songCount + 1,
                 )
             } else {
                 // new
@@ -149,6 +141,9 @@ abstract class RelationShipDao {
                 )
             }
             overrideAlbum(albumEntity)
+            albumEntity
+        } else {
+            null
         }
     }
 
@@ -157,11 +152,11 @@ abstract class RelationShipDao {
      */
     private fun registerArtists(parsedSong: ParsedSong): Map<Int, Collection<ArtistEntity>> {
         val r =
-            registerArtist(parsedSong.song, ROLE_ARTIST, parsedSong.defaultArtists, parsedSong.knownAlbums)
+            registerArtist(parsedSong.song, ROLE_ARTIST, parsedSong.defaultArtists)
         val c =
-            registerArtist(parsedSong.song, ROLE_COMPOSER, parsedSong.composerArtists, parsedSong.knownAlbums)
+            registerArtist(parsedSong.song, ROLE_COMPOSER, parsedSong.composerArtists)
         val a =
-            registerArtist(parsedSong.song, ROLE_ALBUM_ARTIST, parsedSong.albumArtists, parsedSong.knownAlbums)
+            registerArtist(parsedSong.song, ROLE_ALBUM_ARTIST, parsedSong.albumArtists)
         return mapOf(ROLE_ARTIST to r, ROLE_COMPOSER to c, ROLE_ALBUM_ARTIST to a)
     }
 
@@ -172,23 +167,16 @@ abstract class RelationShipDao {
         songEntity: SongEntity,
         @ArtistRole role: Int,
         artists: Map<String, ArtistEntity?>,
-        knownAlbums: Map<ArtistEntity?, List<Long>>,
     ): Collection<ArtistEntity> {
         return artists.map { (name, existedArtist) ->
-            val artist = if (existedArtist != null) {
-                // update existed
-                val albumList = knownAlbums[existedArtist]
-                val bumpAlbumCount = !(albumList != null && songEntity.albumId in albumList)
-                val albumCount = if (bumpAlbumCount) existedArtist.albumCount + 1 else existedArtist.albumCount
-                existedArtist.copy(
-                    albumCount = albumCount,
-                    songCount = existedArtist.songCount + 1
-                )
-            } else {
+            @Suppress("IfThenToElvis")
+            val artist = if (existedArtist == null) {
                 // create new
-                ArtistEntity(name.hashCode().toLong(), name, albumCount = 1, songCount = 1)
+                ArtistEntity(name.hashCode().toLong(), name, albumCount = 1, songCount = 1).also { overrideArtist(it) }
+            } else {
+                // update existed
+                existedArtist
             }
-            overrideArtist(artist)
             overrideLinkageSongAndArtist(LinkageSongAndArtist(songEntity.id, artist.artistId, role))
             overrideLinkageAlbumAndArtist(LinkageAlbumAndArtist(songEntity.albumId, artist.artistId))
             debug {
@@ -198,8 +186,30 @@ abstract class RelationShipDao {
         }
     }
 
-    @Query("SELECT * from ${Tables.LINKAGE_ARTIST_ALBUM} where ${Columns.ARTIST_ID} = :artistId")
+
+    private fun updateArtistCounter(artistEntity: ArtistEntity) {
+        val songCount = queryArtistSongCount(artistEntity.artistId)
+        val albumCount = queryArtistAlbumCount(artistEntity.artistId)
+        overrideArtist(artistEntity.copy(albumCount = albumCount, songCount = songCount))
+    }
+
+    private fun updateAlbumCounter(albumEntity: AlbumEntity) {
+        val count = queryAlbumSongCount(albumEntity.albumId)
+        overrideAlbum(albumEntity.copy(songCount = count))
+    }
+
+    @Query("SELECT COUNT(*) from ${Tables.SONGS} where $ALBUM_ID = :albumId")
+    abstract fun queryAlbumSongCount(albumId: Long): Int
+
+    @Query("SELECT COUNT($ALBUM_ID) from ${Tables.LINKAGE_ARTIST_ALBUM} where $ARTIST_ID = :artistId")
+    protected abstract fun queryArtistAlbumCount(artistId: Long): Int
+    @Query("SELECT COUNT($SONG_ID) from ${Tables.LINKAGE_ARTIST_SONG} where $ARTIST_ID = :artistId")
+    protected abstract fun queryArtistSongCount(artistId: Long): Int
+
+    @Query("SELECT * from ${Tables.LINKAGE_ARTIST_ALBUM} where $ARTIST_ID = :artistId")
     protected abstract fun queryLinkageAlbumAndArtist(artistId: Long): List<LinkageAlbumAndArtist>
+    @Query("SELECT * from ${Tables.LINKAGE_ARTIST_SONG} where $ARTIST_ID = :artistId")
+    protected abstract fun queryLinkageSongAndArtist(artistId: Long): List<LinkageSongAndArtist>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract fun overrideSong(songEntity: SongEntity)
