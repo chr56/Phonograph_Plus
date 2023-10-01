@@ -1,0 +1,318 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "7ce30752f144f0f2cdae269168a63093",
+    "entities": [
+      {
+        "tableName": "songs",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`song_id` INTEGER NOT NULL, `path` TEXT NOT NULL, `date_added` INTEGER NOT NULL, `date_modified` INTEGER NOT NULL, `title` TEXT, `album_id` INTEGER NOT NULL, `album_name` TEXT, `raw_artist_id` INTEGER NOT NULL, `raw_artist_name` TEXT, `album_artist_name` TEXT, `composer` TEXT, `year` INTEGER NOT NULL, `duration` INTEGER NOT NULL, `track_number` INTEGER NOT NULL, PRIMARY KEY(`song_id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "song_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "path",
+            "columnName": "path",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateAdded",
+            "columnName": "date_added",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateModified",
+            "columnName": "date_modified",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "albumId",
+            "columnName": "album_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "albumName",
+            "columnName": "album_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "rawArtistId",
+            "columnName": "raw_artist_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rawArtistName",
+            "columnName": "raw_artist_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "albumArtistName",
+            "columnName": "album_artist_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "composer",
+            "columnName": "composer",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "duration",
+            "columnName": "duration",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "trackNumber",
+            "columnName": "track_number",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "song_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_songs_song_id_path_title",
+            "unique": false,
+            "columnNames": [
+              "song_id",
+              "path",
+              "title"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_songs_song_id_path_title` ON `${TABLE_NAME}` (`song_id`, `path`, `title`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "albums",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`album_id` INTEGER NOT NULL, `album_name` TEXT NOT NULL DEFAULT 'Unnamed Album', `artist_id` INTEGER NOT NULL, `album_artist_name` TEXT NOT NULL DEFAULT 'Unknown Artist', `year` INTEGER NOT NULL, `date_modified` INTEGER NOT NULL, `song_count` INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(`album_id`))",
+        "fields": [
+          {
+            "fieldPath": "albumId",
+            "columnName": "album_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "albumName",
+            "columnName": "album_name",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Unnamed Album'"
+          },
+          {
+            "fieldPath": "artistId",
+            "columnName": "artist_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "albumArtistName",
+            "columnName": "album_artist_name",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Unknown Artist'"
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateModified",
+            "columnName": "date_modified",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "songCount",
+            "columnName": "song_count",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "album_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_albums_album_id_album_name",
+            "unique": false,
+            "columnNames": [
+              "album_id",
+              "album_name"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_albums_album_id_album_name` ON `${TABLE_NAME}` (`album_id`, `album_name`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "artists",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`artist_id` INTEGER NOT NULL, `artist_name` TEXT NOT NULL, `album_count` INTEGER NOT NULL DEFAULT 0, `song_count` INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(`artist_id`, `artist_name`))",
+        "fields": [
+          {
+            "fieldPath": "artistId",
+            "columnName": "artist_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "artistName",
+            "columnName": "artist_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "albumCount",
+            "columnName": "album_count",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "songCount",
+            "columnName": "song_count",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "artist_id",
+            "artist_name"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "linkage_artist_song",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`song_id` INTEGER NOT NULL, `artist_id` INTEGER NOT NULL, `role` INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(`artist_id`, `song_id`))",
+        "fields": [
+          {
+            "fieldPath": "songId",
+            "columnName": "song_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "artistId",
+            "columnName": "artist_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "role",
+            "columnName": "role",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "artist_id",
+            "song_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_linkage_artist_song_song_id_artist_id",
+            "unique": false,
+            "columnNames": [
+              "song_id",
+              "artist_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_linkage_artist_song_song_id_artist_id` ON `${TABLE_NAME}` (`song_id`, `artist_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "linkage_artist_album",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`album_id` INTEGER NOT NULL, `artist_id` INTEGER NOT NULL, PRIMARY KEY(`artist_id`, `album_id`))",
+        "fields": [
+          {
+            "fieldPath": "albumId",
+            "columnName": "album_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "artistId",
+            "columnName": "artist_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "artist_id",
+            "album_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_linkage_artist_album_album_id_artist_id",
+            "unique": false,
+            "columnNames": [
+              "album_id",
+              "artist_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_linkage_artist_album_album_id_artist_id` ON `${TABLE_NAME}` (`album_id`, `artist_id`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7ce30752f144f0f2cdae269168a63093')"
+    ]
+  }
+}
