@@ -33,6 +33,7 @@ import player.phonograph.model.pages.Pages
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.repo.loader.Songs
+import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.repo.room.Scanner
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
@@ -281,6 +282,13 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 titleRes(R.string.more_actions)
                 onClick {
                     val items = listOf(
+                        "Delete Databases" to {
+                            MusicDatabase.songsDataBase.close()
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                MusicDatabase.songsDataBase.clearAllTables()
+                                MusicDatabase.Metadata.lastUpdateTimestamp = 0
+                            }
+                        },
                         context.getString(R.string.refresh_database) to {
                             Scanner.refreshDatabase(context)
                         },
