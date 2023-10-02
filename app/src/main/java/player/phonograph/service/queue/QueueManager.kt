@@ -24,9 +24,14 @@ class QueueManager(val context: Application) {
         thread.start()
         handler = QueueManagerHandler(thread.looper)
         queueHolder = QueueHolder.fromPersistence(context)
-        queueHolder.valid(context)
         observerManager = ObserverManager()
 
+        handler.post {
+            val changed = queueHolder.valid(context)
+            if (changed) {
+                observerManager.notifyQueueChanged(queueHolder.playingQueue, queueHolder.originalPlayingQueue)
+            }
+        }
     }
 
     private var snapShotsItemCount: Long = 0
@@ -44,8 +49,8 @@ class QueueManager(val context: Application) {
     private inner class QueueManagerHandler(looper: Looper) : Handler(looper) {
         override fun handleMessage(msg: Message) {
             when (msg.what) {
-                MSG_SAVE_QUEUE        -> saveQueue()
-                MSG_SAVE_CFG          -> saveCfg()
+                MSG_SAVE_QUEUE -> saveQueue()
+                MSG_SAVE_CFG   -> saveCfg()
             }
         }
     }

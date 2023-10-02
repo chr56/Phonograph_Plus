@@ -13,7 +13,6 @@ import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import java.util.concurrent.CopyOnWriteArrayList
 
 class QueueHolder private constructor(
@@ -191,15 +190,15 @@ class QueueHolder private constructor(
         queuePreferenceManager.shuffleMode = shuffleMode
     }
 
-    fun valid(context: Context) {
-        coroutineScope.launch {
-            val validatedQueue = validSongs(context, playingQueue)
-            val validatedOriginalQueue = validSongs(context, originalPlayingQueue)
-            synchronized(queueLock) {
-                playingQueue = CopyOnWriteArrayList(validatedQueue)
-                originalPlayingQueue = CopyOnWriteArrayList(validatedOriginalQueue)
-            }
+    fun valid(context: Context): Boolean {
+        val validatedQueue = validSongs(context, playingQueue)
+        val validatedOriginalQueue = validSongs(context, originalPlayingQueue)
+        val changed = validatedQueue != playingQueue || validatedOriginalQueue != originalPlayingQueue
+        synchronized(queueLock) {
+            playingQueue = CopyOnWriteArrayList(validatedQueue)
+            originalPlayingQueue = CopyOnWriteArrayList(validatedOriginalQueue)
         }
+        return changed
     }
 
     @Suppress("UNCHECKED_CAST")
