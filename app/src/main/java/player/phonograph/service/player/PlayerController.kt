@@ -200,7 +200,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         } else {
             Toast.makeText(
                 service,
-                service.resources.getString(R.string.unplayable_file),
+                makeErrorMessage(service.resources, queueManager.currentSong.data),
                 Toast.LENGTH_SHORT
             ).show()
             jumpForwardImp(false)
@@ -449,7 +449,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     }
 
     override fun onError(what: Int, extra: Int) {
-        val msg = makeErrorMessage(service, what, extra)
+        val msg = makeErrorMessage(service.resources, what, extra, audioPlayer.currentDataSource)
         Handler(Looper.getMainLooper()).post {
             Toast.makeText(service, msg, Toast.LENGTH_SHORT).show()
         }

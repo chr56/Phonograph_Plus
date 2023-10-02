@@ -4,25 +4,34 @@
 
 package player.phonograph.service.util
 
-import android.content.Context
-import android.media.MediaPlayer.*
-import android.util.Log
 import player.phonograph.R
+import android.content.res.Resources
+import android.media.MediaPlayer.MEDIA_ERROR_IO
+import android.media.MediaPlayer.MEDIA_ERROR_MALFORMED
+import android.media.MediaPlayer.MEDIA_ERROR_SERVER_DIED
+import android.media.MediaPlayer.MEDIA_ERROR_TIMED_OUT
+import android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN
+import android.media.MediaPlayer.MEDIA_ERROR_UNSUPPORTED
+import android.util.Log
 
-internal fun makeErrorMessage(context: Context, what: Int, extra: Int): String {
+internal fun makeErrorMessage(resources: Resources, what: Int, extra: Int, path: String): String {
     val generic = when (what) {
-        MEDIA_ERROR_UNKNOWN -> "Unknown"
+        MEDIA_ERROR_UNKNOWN     -> "Unknown"
         MEDIA_ERROR_SERVER_DIED -> "Media server unavailable, restart player!"
-        else -> null
+        else                    -> what.toString()
     }
     val detail = when (extra) {
-        MEDIA_ERROR_IO -> "(File unavailable)"
-        MEDIA_ERROR_MALFORMED -> "(Glitch of stream format)"
+        MEDIA_ERROR_IO          -> "(File unavailable)"
+        MEDIA_ERROR_MALFORMED   -> "(Glitch of stream format)"
         MEDIA_ERROR_UNSUPPORTED -> "(Unsupported format)"
-        MEDIA_ERROR_TIMED_OUT -> "(Time out)"
-        else -> null
+        MEDIA_ERROR_TIMED_OUT   -> "(Time out)"
+        else                    -> extra.toString()
     }
-    val msg = "${context.getString(R.string.unplayable_file)}: $generic$detail"
+    val msg = "${makeErrorMessage(resources, path)} ($generic - $detail)"
     Log.w("MediaPlayer", msg)
     return msg
+}
+
+internal fun makeErrorMessage(resources: Resources, path: String): String {
+    return "${resources.getString(R.string.unplayable_file)} $path"
 }

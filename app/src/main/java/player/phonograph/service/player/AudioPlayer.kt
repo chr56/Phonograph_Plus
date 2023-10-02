@@ -24,6 +24,10 @@ class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) :
             PowerManager.PARTIAL_WAKE_LOCK
         )
     }
+
+    var currentDataSource: String = ""
+        private set
+
     private var nextMediaPlayer: MediaPlayer? = null
 
     private var callbacks: Playback.PlaybackCallbacks? = null
@@ -76,6 +80,8 @@ class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) :
             } else {
                 player.setDataSource(path)
             }
+
+            currentDataSource = path
 
             player.setAudioAttributes(
                 AudioAttributes.Builder()
