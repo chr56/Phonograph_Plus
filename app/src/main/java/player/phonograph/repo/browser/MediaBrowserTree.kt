@@ -6,12 +6,7 @@ package player.phonograph.repo.browser
 
 object MediaBrowserTree {
 
-    internal const val ROOT_PATH = "/"
-
-    class TreeItem(val segments: List<String>, val parameters: Map<String, String>?)
-
-
-    fun resolve(raw: String): TreeItem? {
+    fun resolve(raw: String): MediaItemPath? {
         if (!raw.startsWith('/')) return null
         val parameters = raw.substringAfterLast('?', "")
         val path = raw.substringBefore('?')
@@ -19,11 +14,11 @@ object MediaBrowserTree {
         val node = resolvePathInternal(path)
         val parametersMap = resolveParametersInternal(parameters)
 
-        return TreeItem(node, parametersMap)
+        return MediaItemPath(node, parametersMap)
     }
 
     private fun resolvePathInternal(path: String): List<String> {
-        if (path == ROOT_PATH) return emptyList()
+        if (path == MediaItemPath.ROOT_PATH) return emptyList()
         val segments = path.pathSplit('/')
         return if (!segments.isNullOrEmpty()) {
             return segments
