@@ -10,6 +10,10 @@ import player.phonograph.repo.database.MusicPlaybackQueueStore
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.util.text.currentTimestamp
 import android.content.Context
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import java.util.concurrent.CopyOnWriteArrayList
 
 class QueueHolder private constructor(
@@ -187,6 +191,17 @@ class QueueHolder private constructor(
         queuePreferenceManager.shuffleMode = shuffleMode
     }
 
+    fun valid(context: Context) {
+        coroutineScope.launch {
+            val validatedQueue = validSongs(context, playingQueue)
+            val validatedOriginalQueue = validSongs(context, originalPlayingQueue)
+            synchronized(queueLock) {
+                playingQueue = CopyOnWriteArrayList(validatedQueue)
+                originalPlayingQueue = CopyOnWriteArrayList(validatedOriginalQueue)
+            }
+        }
+    }
+
     @Suppress("UNCHECKED_CAST")
     @Synchronized
     fun clone(): QueueHolder = QueueHolder(
@@ -219,5 +234,16 @@ class QueueHolder private constructor(
                 )
             }
         }
+
+        private var _coroutineScope: CoroutineScope? = null
+        private val coroutineScope: CoroutineScope
+            get() {
+                val scope = _coroutineScope
+                return if (scope != null && scope.isActive) {
+                    scope
+                } else {
+                    CoroutineScope(Dispatchers.IO).also { _coroutineScope = it }
+                }
+            }
     }
 }
