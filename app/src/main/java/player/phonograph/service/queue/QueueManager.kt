@@ -24,7 +24,9 @@ class QueueManager(val context: Application) {
         thread.start()
         handler = QueueManagerHandler(thread.looper)
         queueHolder = QueueHolder.fromPersistence(context)
+        queueHolder.valid(context)
         observerManager = ObserverManager()
+
     }
 
     private var snapShotsItemCount: Long = 0
@@ -228,7 +230,7 @@ class QueueManager(val context: Application) {
     fun recoverSnapshot(
         newQueueHolder: QueueHolder,
         createSnapshot: Boolean = false,
-        async: Boolean = true
+        async: Boolean = true,
     ) = async(async) {
         snapshotAndNotify(queueHolder, createSnapshot) {
             queueHolder = newQueueHolder.clone()
