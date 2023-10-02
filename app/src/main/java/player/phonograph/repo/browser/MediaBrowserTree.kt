@@ -6,26 +6,10 @@ package player.phonograph.repo.browser
 
 object MediaBrowserTree {
 
-    class TreeItem(val node: INode?, val parameters: Map<String, String>?)
+    internal const val ROOT_PATH = "/"
 
-    interface INode {
-        val parent: INode
-        val name: String
-        val path: String
-    }
+    class TreeItem(val segments: List<String>, val parameters: Map<String, String>?)
 
-    data class Node(
-        override val parent: INode,
-        override val name: String,
-    ) : INode {
-        override val path: String get() = parent.path + "/" + this.name
-    }
-
-    data object Root : INode {
-        override val parent: INode get() = Root
-        override val name: String get() = "/"
-        override val path: String get() = "/"
-    }
 
     fun resolve(raw: String): TreeItem? {
         if (!raw.startsWith('/')) return null
@@ -38,23 +22,13 @@ object MediaBrowserTree {
         return TreeItem(node, parametersMap)
     }
 
-    private fun resolvePathInternal(path: String): INode? {
-        if (path == Root.path) return Root
+    private fun resolvePathInternal(path: String): List<String> {
+        if (path == ROOT_PATH) return emptyList()
         val segments = path.pathSplit('/')
         return if (!segments.isNullOrEmpty()) {
-            val head = Node(Root, segments.first())
-            if (segments.size > 1) {
-                val tails = segments.tail()
-                var current: INode = head
-                for (seg in tails.reversed()) {
-                    current = Node(current, seg)
-                }
-                current
-            } else {
-                head
-            }
+            return segments
         } else {
-            null
+            emptyList()
         }
     }
 
@@ -75,8 +49,6 @@ object MediaBrowserTree {
         }
 
     }
-
-    private fun <T> List<T>.tail() = subList(1, size)
 
     private fun CharSequence.pathSplit(delimiter: Char): List<String>? {
         if (isEmpty() || (length == 1 && this[0] == delimiter)) return null
