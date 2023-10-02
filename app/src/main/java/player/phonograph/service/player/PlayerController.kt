@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.io.File
 import java.lang.ref.WeakReference
 
 // todo cleanup queueManager.setQueueCursor
@@ -198,11 +199,19 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         if (prepareSongsImp(position)) {
             playImp()
         } else {
-            Toast.makeText(
-                service,
-                makeErrorMessage(service.resources, queueManager.currentSong.data),
-                Toast.LENGTH_SHORT
-            ).show()
+            val path = queueManager.currentSong.data
+            handler.post {
+                val exists = try {
+                    File(path).exists()
+                } catch (e: SecurityException) {
+                    false
+                }
+                Toast.makeText(
+                    service,
+                    makeErrorMessage(service.resources, path, exists),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
             jumpForwardImp(false)
         }
         log("playAtImp", "current: at $position song(${queueManager.currentSong.title})")

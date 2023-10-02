@@ -32,6 +32,8 @@ internal fun makeErrorMessage(resources: Resources, what: Int, extra: Int, path:
     return msg
 }
 
-internal fun makeErrorMessage(resources: Resources, path: String): String {
-    return "${resources.getString(R.string.unplayable_file)} $path"
-}
+internal fun makeErrorMessage(resources: Resources, path: String, exist: Boolean) =
+    "${makeErrorMessage(resources, path)} (${if (!exist) resources.getString(R.string.deleted) else resources.getString(R.string.permissions_denied)})"
+
+private fun makeErrorMessage(resources: Resources, path: String): String =
+    "${resources.getString(R.string.unplayable_file)} ${path.removePrefix("/storage")}"
