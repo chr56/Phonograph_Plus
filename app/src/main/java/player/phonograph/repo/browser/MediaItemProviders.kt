@@ -8,12 +8,14 @@ import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
+import player.phonograph.model.Genre
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Artists
+import player.phonograph.repo.loader.Genres
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
@@ -118,6 +120,13 @@ object MediaItemProviders {
                 setTitle(name)
                 setMediaId(MediaItemPath.playlist(id).mediaId)
             }
+
+        protected fun Genre.toMediaItem(): MediaItem =
+            mediaItem(FLAG_BROWSABLE) {
+                setTitle(name)
+                setSubtitle(songCount.toString())
+                setMediaId(MediaItemPath.genre(id).mediaId)
+            }
     }
 
     private fun parse(path: String): MediaItemProvider {
@@ -138,6 +147,7 @@ object MediaItemProviders {
                 MediaItemPath.SONGS_TOP_TRACKS -> TopTracksProvider
                 MediaItemPath.SONGS_LAST_ADDED -> RecentAddedProvider
                 MediaItemPath.SONGS_HISTORY    -> RecentlyPlayedProvider
+                MediaItemPath.GENRES           -> GenresProvider
                 else                           -> EmptyProvider
             }
 
@@ -186,6 +196,11 @@ object MediaItemProviders {
 
                     MediaItemPath.SONGS_HISTORY    -> {
                         if (segments[1] == MediaItemPath.PLAY_ALL) RecentlyPlayedProvider else EmptyProvider
+                    }
+
+                    MediaItemPath.GENRES           -> {
+                        val item = segments[1]
+                        GenreProvider(item.toLong())
                     }
 
                     else                           -> EmptyProvider
@@ -250,6 +265,11 @@ object MediaItemProviders {
                     setIconUri(iconRes(res, R.drawable.ic_access_time_white_24dp))
                     setMediaId(MediaItemPath.pageHistory.mediaId)
                 },
+                mediaItem(FLAG_BROWSABLE) {
+                    setTitle(res.getString(R.string.genres))
+                    setIconUri(iconRes(res, R.drawable.ic_library_music_white_24dp))
+                    setMediaId(MediaItemPath.pageGenres.mediaId)
+                }
             )
         }
 
@@ -404,6 +424,26 @@ object MediaItemProviders {
             PlayRequest.SongsRequest(RecentlyPlayedTracksLoader.get().tracks(context), 0)
     }
 
+
+
+    private object GenresProvider : AbsMediaItemProvider() {
+        override fun browser(context: Context): List<MediaItem> =
+            Genres.all(context).map { it.toMediaItem() }
+    }
+
+    private class GenreProvider(val genreId: Long) : AbsMediaItemProvider() {
+        private fun fetch(context: Context) = Songs.genres(context, genreId)
+
+        override fun browser(context: Context): List<MediaItem> =
+            withPlayAllItems(
+                context.resources,
+                MediaItemPath.genre(genreId).mediaId,
+                fetch(context).map { it.toMediaItem() }
+            )
+
+        override fun play(context: Context): PlayRequest =
+            PlayRequest.SongsRequest(fetch(context), 0)
+    }
 
     @Suppress("unused")
     private const val TAG = "MediaItemProviders"

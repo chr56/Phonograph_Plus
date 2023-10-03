@@ -34,6 +34,7 @@ data class MediaItemPath(val segments: List<String>, val parameters: Map<String,
 
         const val ALBUMS = "ALBUMS"
         const val ARTISTS = "ARTISTS"
+        const val GENRES = "GENRES"
 
         const val PLAYLISTS = "PLAYLISTS"
 
@@ -62,6 +63,13 @@ data class MediaItemPath(val segments: List<String>, val parameters: Map<String,
             )
 
 
+        fun genre(genreId: Long) =
+            MediaItemPath(
+                listOf(GENRES, genreId.toString()),
+                null
+            )
+
+
 
         val root = MediaItemPath(listOf(), null)
         val pageSongs = MediaItemPath(listOf(SONGS), null)
@@ -73,6 +81,7 @@ data class MediaItemPath(val segments: List<String>, val parameters: Map<String,
         val pageTopTracks = MediaItemPath(listOf(SONGS_TOP_TRACKS), null)
         val pageLastAdded = MediaItemPath(listOf(SONGS_LAST_ADDED), null)
         val pageHistory = MediaItemPath(listOf(SONGS_HISTORY), null)
+        val pageGenres = MediaItemPath(listOf(GENRES), null)
 
 
 
