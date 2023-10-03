@@ -19,7 +19,7 @@ fun Song.toMediaItem(): MediaItem =
             .setTitle(title)
             .setSubtitle(albumName)
             .setDescription(artistName)
-            .setMediaId("$MEDIA_BROWSER_SONGS$MEDIA_BROWSER_SEPARATOR$id")
+            .setMediaId(MediaItemPath.song(id).mediaId)
             .build(),
         FLAG_PLAYABLE
     )
@@ -30,7 +30,7 @@ fun QueueSong.toMediaItem(): MediaItem =
             .setTitle(song.title)
             .setSubtitle(song.albumName)
             .setDescription(song.artistName)
-            .setMediaId("$MEDIA_BROWSER_SONGS_QUEUE$MEDIA_BROWSER_SEPARATOR$index")
+            .setMediaId(MediaItemPath.queueSong(index).mediaId)
             .build(),
         FLAG_PLAYABLE
     )
@@ -41,7 +41,7 @@ fun Album.toMediaItem(): MediaItem =
             .setTitle(title)
             .setSubtitle(artistName)
             .setDescription(artistName)
-            .setMediaId("$MEDIA_BROWSER_ALBUMS$MEDIA_BROWSER_SEPARATOR$id")
+            .setMediaId(MediaItemPath.album(id).mediaId)
             .build(),
         FLAG_BROWSABLE
     )
@@ -50,7 +50,7 @@ fun Artist.toMediaItem(): MediaItem =
     MediaItem(
         MediaDescriptionCompat.Builder()
             .setTitle(name)
-            .setMediaId("$MEDIA_BROWSER_ARTISTS$MEDIA_BROWSER_SEPARATOR$id")
+            .setMediaId(MediaItemPath.artist(id).mediaId)
             .build(),
         FLAG_BROWSABLE
     )

@@ -5,10 +5,7 @@
 package player.phonograph.repo.browser
 
 import player.phonograph.model.Song
-import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.loader.Songs
-import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
-import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.repo.mediastore.processQuery
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
@@ -26,12 +23,12 @@ object MediaBrowserDelegate {
     fun onGetRoot(context: Context, clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? =
         if (validate(context, clientPackageName, clientUid)) {
             val root = if (rootHints == null) {
-                MEDIA_BROWSER_ROOT
+                MediaItemPath.ROOT_PATH
             } else {
                 when {
-                    rootHints.getBoolean(BrowserRoot.EXTRA_RECENT)    -> MEDIA_BROWSER_SONGS_LAST_ADDED
-                    rootHints.getBoolean(BrowserRoot.EXTRA_SUGGESTED) -> MEDIA_BROWSER_SONGS_TOP_TRACKS
-                    else                                              -> MEDIA_BROWSER_ROOT
+                    rootHints.getBoolean(BrowserRoot.EXTRA_RECENT)    -> MediaItemPath.pageLastAdded.mediaId
+                    rootHints.getBoolean(BrowserRoot.EXTRA_SUGGESTED) -> MediaItemPath.pageTopTracks.mediaId
+                    else                                              -> MediaItemPath.ROOT_PATH
                 }
             }
             BrowserRoot(root, null)
@@ -43,35 +40,19 @@ object MediaBrowserDelegate {
         MediaItemProviders.of(path).browser(context)
 
     fun playFromMediaId(context: Context, mediaId: String, @Suppress("UNUSED_PARAMETER") extras: Bundle?): List<Song> {
-        return when (mediaId) {
-            MEDIA_BROWSER_SONGS_FAVORITES  -> FavoritesStore.get().getAllSongs(context)
-            MEDIA_BROWSER_SONGS_TOP_TRACKS -> TopTracksLoader.get().tracks(context)
-            MEDIA_BROWSER_SONGS_LAST_ADDED -> Songs.since(context, lastAddedCutoffTimeStamp(context))
-            MEDIA_BROWSER_SONGS_HISTORY    -> RecentlyPlayedTracksLoader.get().tracks(context)
+        return when (val request = MediaItemProviders.of(mediaId).play(context)) {
+            PlayRequest.EmptyRequest     -> emptyList()
 
-            else                           -> {
-                val fragments = mediaId.split(MEDIA_BROWSER_SEPARATOR, limit = 2)
+            is PlayRequest.PlayAtRequest -> {
+                MusicPlayerRemote.playSongAt(request.index)
+                emptyList()
+            }
 
-                if (fragments.size != 2) {
-                    Log.e(TAG, "Failed to parse: $mediaId")
-                    return emptyList()
-                }
-
-                val type = fragments[0]
-                val id = fragments[1].toLongOrNull() ?: return emptyList()
-
-                when (type) {
-                    MEDIA_BROWSER_SONGS       -> listOf(Songs.id(context, id))
-                    MEDIA_BROWSER_ALBUMS      -> Songs.album(context, id)
-                    MEDIA_BROWSER_ARTISTS     -> Songs.artist(context, id)
-
-                    MEDIA_BROWSER_SONGS_QUEUE -> {
-                        MusicPlayerRemote.playSongAt(id.toInt())
-                        emptyList()
-                    }
-
-                    else                      -> emptyList()
-                }
+            is PlayRequest.SongRequest   -> {
+                listOf(request.song)
+            }
+            is PlayRequest.SongsRequest  -> {
+                request.songs
             }
         }
     }
