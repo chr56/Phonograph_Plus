@@ -4,13 +4,8 @@
 
 package player.phonograph.repo.browser
 
-import player.phonograph.model.Song
-import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.loader.Songs
-import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
-import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.repo.mediastore.processQuery
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot
@@ -26,12 +21,12 @@ object MediaBrowserDelegate {
     fun onGetRoot(context: Context, clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? =
         if (validate(context, clientPackageName, clientUid)) {
             val root = if (rootHints == null) {
-                MEDIA_BROWSER_ROOT
+                MediaItemPath.ROOT_PATH
             } else {
                 when {
-                    rootHints.getBoolean(BrowserRoot.EXTRA_RECENT)    -> MEDIA_BROWSER_SONGS_LAST_ADDED
-                    rootHints.getBoolean(BrowserRoot.EXTRA_SUGGESTED) -> MEDIA_BROWSER_SONGS_TOP_TRACKS
-                    else                                              -> MEDIA_BROWSER_ROOT
+                    rootHints.getBoolean(BrowserRoot.EXTRA_RECENT)    -> MediaItemPath.pageLastAdded.mediaId
+                    rootHints.getBoolean(BrowserRoot.EXTRA_SUGGESTED) -> MediaItemPath.pageTopTracks.mediaId
+                    else                                              -> MediaItemPath.ROOT_PATH
                 }
             }
             BrowserRoot(root, null)
@@ -39,87 +34,24 @@ object MediaBrowserDelegate {
             null
         }
 
-    fun listChildren(path: String, context: Context): List<MediaBrowserCompat.MediaItem> {
-        return when (path) {
-            MEDIA_BROWSER_ROOT             -> MediaItemProvider.browseRoot(context.resources)
-            MEDIA_BROWSER_SONGS_QUEUE      -> MediaItemProvider.browseQueue()
-            MEDIA_BROWSER_SONGS            -> MediaItemProvider.browseSongs(context)
-            MEDIA_BROWSER_ALBUMS           -> MediaItemProvider.browseAlbums(context)
-            MEDIA_BROWSER_ARTISTS          -> MediaItemProvider.browseArtists(context)
-            MEDIA_BROWSER_SONGS_FAVORITES  -> MediaItemProvider.browseFavorite(context)
-            MEDIA_BROWSER_SONGS_TOP_TRACKS -> MediaItemProvider.browseMyTopTrack(context)
-            MEDIA_BROWSER_SONGS_LAST_ADDED -> MediaItemProvider.browseLastAdded(context)
-            MEDIA_BROWSER_SONGS_HISTORY    -> MediaItemProvider.browseHistory(context)
-            else                           -> {
+    fun listChildren(path: String, context: Context): List<MediaBrowserCompat.MediaItem> =
+        MediaItemProviders.of(path).browser(context)
 
-                val fragments = path.split(MEDIA_BROWSER_SEPARATOR, limit = 2)
+    fun playFromMediaId(context: Context, mediaId: String, @Suppress("UNUSED_PARAMETER") extras: Bundle?): PlayRequest =
+        MediaItemProviders.of(mediaId).play(context)
 
-                if (fragments.size != 2) {
-                    Log.e(TAG, "Failed to parse: $path")
-                    return emptyList()
-                }
-
-                val type = fragments[0]
-                val id = fragments[1].toLongOrNull() ?: return emptyList()
-
-                when (type) {
-                    MEDIA_BROWSER_ALBUMS  -> MediaItemProvider.browseAlbum(context, id)
-                    MEDIA_BROWSER_ARTISTS -> MediaItemProvider.browseArtist(context, id)
-                    else                  -> {
-                        // Unknown
-                        Log.w(TAG, "Unknown path: $path")
-                        emptyList()
-                    }
-                }
-            }
-        }
-    }
-
-    fun playFromMediaId(context: Context, mediaId: String, @Suppress("UNUSED_PARAMETER") extras: Bundle?): List<Song> {
-        return when (mediaId) {
-            MEDIA_BROWSER_SONGS_FAVORITES  -> FavoritesStore.get().getAllSongs(context)
-            MEDIA_BROWSER_SONGS_TOP_TRACKS -> TopTracksLoader.get().tracks(context)
-            MEDIA_BROWSER_SONGS_LAST_ADDED -> Songs.since(context, lastAddedCutoffTimeStamp(context))
-            MEDIA_BROWSER_SONGS_HISTORY    -> RecentlyPlayedTracksLoader.get().tracks(context)
-
-            else                           -> {
-                val fragments = mediaId.split(MEDIA_BROWSER_SEPARATOR, limit = 2)
-
-                if (fragments.size != 2) {
-                    Log.e(TAG, "Failed to parse: $mediaId")
-                    return emptyList()
-                }
-
-                val type = fragments[0]
-                val id = fragments[1].toLongOrNull() ?: return emptyList()
-
-                when (type) {
-                    MEDIA_BROWSER_SONGS       -> listOf(Songs.id(context, id))
-                    MEDIA_BROWSER_ALBUMS      -> Songs.album(context, id)
-                    MEDIA_BROWSER_ARTISTS     -> Songs.artist(context, id)
-
-                    MEDIA_BROWSER_SONGS_QUEUE -> {
-                        MusicPlayerRemote.playSongAt(id.toInt())
-                        emptyList()
-                    }
-
-                    else                      -> emptyList()
-                }
-            }
-        }
-    }
-
-    fun playFromSearch(context: Context, query: String?, extras: Bundle?): List<Song> {
-        return if (query.isNullOrEmpty()) {
-            Songs.all(context)
+    fun playFromSearch(context: Context, query: String?, extras: Bundle?): PlayRequest.SongsRequest =
+        if (query.isNullOrEmpty()) {
+            PlayRequest.SongsRequest(Songs.all(context), 0)
         } else {
             if (extras != null) {
-                processQuery(context, extras)
+                val songs = processQuery(context, extras)
+                PlayRequest.SongsRequest(songs, 0)
             } else {
-                Songs.searchByTitle(context, query)
+                val songs = Songs.searchByTitle(context, query)
+                PlayRequest.SongsRequest(songs, 0)
             }
         }
-    }
 
     // todo: validate package names & signatures
     private fun validate(context: Context, clientPackageName: String, clientUid: Int): Boolean {
