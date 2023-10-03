@@ -114,7 +114,7 @@ fun fileClick(
 /**
  * filter folders and relocate position
  */
-private fun filter(list: List<FileEntity>, position: Int, context: Context): PlayRequest {
+private fun filter(list: List<FileEntity>, position: Int, context: Context): PlayRequest.SongsRequest {
     var actualPosition: Int = position
     val actualFileList = ArrayList<Song>(position)
     for ((index, item) in list.withIndex()) {
@@ -124,5 +124,5 @@ private fun filter(list: List<FileEntity>, position: Int, context: Context): Pla
             if (index < position) actualPosition--
         }
     }
-    return PlayRequest(actualFileList, actualPosition)
+    return PlayRequest.SongsRequest(actualFileList, actualPosition)
 }

@@ -27,7 +27,7 @@ import player.phonograph.appshortcuts.DynamicShortcutManager.Companion.reportSho
 import player.phonograph.appshortcuts.shortcuttype.LastAddedShortcutType
 import player.phonograph.appshortcuts.shortcuttype.ShuffleAllShortcutType
 import player.phonograph.appshortcuts.shortcuttype.TopTracksShortcutType
-import player.phonograph.model.PlayRequest
+import player.phonograph.model.PlayRequest.SongsRequest
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.notification.ErrorNotification
@@ -107,8 +107,8 @@ class StarterActivity : AppCompatActivity() {
     }
 
 
-    private fun lookupSongsFromIntent(intent: Intent): PlayRequest? {
-        var playRequest: PlayRequest? = null
+    private fun lookupSongsFromIntent(intent: Intent): SongsRequest? {
+        var playRequest: SongsRequest? = null
         // uri first
         playRequest = handleUriPlayRequest(intent)
 
@@ -124,11 +124,11 @@ class StarterActivity : AppCompatActivity() {
         return playRequest
     }
 
-    private fun handleUriPlayRequest(intent: Intent): PlayRequest? {
+    private fun handleUriPlayRequest(intent: Intent): SongsRequest? {
         val uri = intent.data
         if (uri != null && uri.toString().isNotEmpty()) {
             val songs = parseUri(uri)
-            if (songs != null) return PlayRequest(songs, 0)
+            if (songs != null) return SongsRequest(songs, 0)
         }
         return null
     }
@@ -173,24 +173,24 @@ class StarterActivity : AppCompatActivity() {
         return songs
     }
 
-    private fun handleSearchRequest(intent: Intent): PlayRequest? {
+    private fun handleSearchRequest(intent: Intent): SongsRequest? {
         intent.action?.let {
             if (it == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH) {
                 val songs = processQuery(this, intent.extras!!)
-                if (songs.isNotEmpty()) return PlayRequest(songs, 0)
+                if (songs.isNotEmpty()) return SongsRequest(songs, 0)
             }
         }
         return null
     }
 
-    private fun handleExtra(intent: Intent): PlayRequest? {
+    private fun handleExtra(intent: Intent): SongsRequest? {
         when (intent.type) {
             MediaStoreCompat.Audio.Playlists.CONTENT_TYPE -> {
                 val id = parseIdFromIntent(intent, "playlistId", "playlist")
                 if (id >= 0) {
                     val position = intent.getIntExtra("position", 0)
                     val songs = PlaylistSongLoader.getPlaylistSongList(this, id).map { it.song }
-                    if (songs.isNotEmpty()) return PlayRequest(songs, position)
+                    if (songs.isNotEmpty()) return SongsRequest(songs, position)
                 }
             }
 
@@ -199,7 +199,7 @@ class StarterActivity : AppCompatActivity() {
                 if (id >= 0) {
                     val position = intent.getIntExtra("position", 0)
                     val songs = Songs.album(this, id)
-                    if (songs.isNotEmpty()) return PlayRequest(songs, position)
+                    if (songs.isNotEmpty()) return SongsRequest(songs, position)
                 }
             }
 
@@ -208,7 +208,7 @@ class StarterActivity : AppCompatActivity() {
                 if (id >= 0) {
                     val position = intent.getIntExtra("position", 0)
                     val songs = Songs.artist(this, id)
-                    if (songs.isNotEmpty()) return PlayRequest(songs, position)
+                    if (songs.isNotEmpty()) return SongsRequest(songs, position)
                 }
             }
         }
@@ -270,7 +270,7 @@ class StarterActivity : AppCompatActivity() {
 
     class Dialog(
         private val context: Context,
-        private val playRequest: PlayRequest,
+        private val playRequest: SongsRequest,
         private val callback: () -> Unit,
     ) {
         fun getString(id: Int) = context.getString(id)

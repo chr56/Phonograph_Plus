@@ -1,9 +1,12 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 package player.phonograph.model
 
-import player.phonograph.model.Song
-
-data class PlayRequest(val songs: List<Song>, val position: Int)
+sealed interface PlayRequest {
+    data object EmptyRequest : PlayRequest
+    data class SongRequest(val song: Song) : PlayRequest
+    data class SongsRequest(val songs: List<Song>, val position: Int) : PlayRequest
+    data class PlayAtRequest(val position: Int) : PlayRequest
+}

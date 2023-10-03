@@ -17,10 +17,10 @@ import player.phonograph.appwidgets.AppWidgetBig
 import player.phonograph.appwidgets.AppWidgetCard
 import player.phonograph.appwidgets.AppWidgetClassic
 import player.phonograph.appwidgets.AppWidgetSmall
+import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.repo.browser.MediaBrowserDelegate
-import player.phonograph.repo.browser.PlayRequest
 import player.phonograph.repo.database.HistoryStore
 import player.phonograph.service.notification.CoverLoader
 import player.phonograph.service.notification.PlayingNotificationManger
@@ -242,13 +242,13 @@ class MusicService : MediaBrowserServiceCompat() {
         private fun processRequest(request: PlayRequest) {
             when (request) {
                 PlayRequest.EmptyRequest     -> {}
-                is PlayRequest.PlayAtRequest -> playSongAt(request.index)
+                is PlayRequest.PlayAtRequest -> playSongAt(request.position)
                 is PlayRequest.SongRequest   -> {
                     queueManager.addSong(request.song, queueManager.currentSongPosition, false)
                     playSongAt(queueManager.currentSongPosition)
                 }
                 is PlayRequest.SongsRequest  -> {
-                    queueManager.swapQueue(request.songs, request.index, false)
+                    queueManager.swapQueue(request.songs, request.position, false)
                     playSongAt(0)
                 }
             }
