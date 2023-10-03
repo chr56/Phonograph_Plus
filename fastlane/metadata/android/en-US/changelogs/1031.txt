@@ -1,0 +1,8 @@
+<b>1.3.1(1031) 2023.10.04</b>
+- Fix: crash when sending the playback notification on Android U
+- Fix: some albums cover artworks not showing
+- Fix: various minor bugs in Android Auto
+- Improvement: show Genres and Playlists in Android Auto
+- Improvement: check existences of songs in playing queue at start-up
+- Improvement: loading of Artists and Albums
+- Development: upgrade APG to 8.1.2, upgrade dependencies, cleanup code
