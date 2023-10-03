@@ -4,10 +4,8 @@
 
 package player.phonograph.repo.browser
 
-import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.processQuery
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot
@@ -39,35 +37,21 @@ object MediaBrowserDelegate {
     fun listChildren(path: String, context: Context): List<MediaBrowserCompat.MediaItem> =
         MediaItemProviders.of(path).browser(context)
 
-    fun playFromMediaId(context: Context, mediaId: String, @Suppress("UNUSED_PARAMETER") extras: Bundle?): List<Song> {
-        return when (val request = MediaItemProviders.of(mediaId).play(context)) {
-            PlayRequest.EmptyRequest     -> emptyList()
+    fun playFromMediaId(context: Context, mediaId: String, @Suppress("UNUSED_PARAMETER") extras: Bundle?): PlayRequest =
+        MediaItemProviders.of(mediaId).play(context)
 
-            is PlayRequest.PlayAtRequest -> {
-                MusicPlayerRemote.playSongAt(request.index)
-                emptyList()
-            }
-
-            is PlayRequest.SongRequest   -> {
-                listOf(request.song)
-            }
-            is PlayRequest.SongsRequest  -> {
-                request.songs
-            }
-        }
-    }
-
-    fun playFromSearch(context: Context, query: String?, extras: Bundle?): List<Song> {
-        return if (query.isNullOrEmpty()) {
-            Songs.all(context)
+    fun playFromSearch(context: Context, query: String?, extras: Bundle?): PlayRequest.SongsRequest =
+        if (query.isNullOrEmpty()) {
+            PlayRequest.SongsRequest(Songs.all(context), 0)
         } else {
             if (extras != null) {
-                processQuery(context, extras)
+                val songs = processQuery(context, extras)
+                PlayRequest.SongsRequest(songs, 0)
             } else {
-                Songs.searchByTitle(context, query)
+                val songs = Songs.searchByTitle(context, query)
+                PlayRequest.SongsRequest(songs, 0)
             }
         }
-    }
 
     // todo: validate package names & signatures
     private fun validate(context: Context, clientPackageName: String, clientUid: Int): Boolean {

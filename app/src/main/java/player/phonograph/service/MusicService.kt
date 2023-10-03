@@ -20,6 +20,7 @@ import player.phonograph.appwidgets.AppWidgetSmall
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.repo.browser.MediaBrowserDelegate
+import player.phonograph.repo.browser.PlayRequest
 import player.phonograph.repo.database.HistoryStore
 import player.phonograph.service.notification.CoverLoader
 import player.phonograph.service.notification.PlayingNotificationManger
@@ -228,23 +229,26 @@ class MusicService : MediaBrowserServiceCompat() {
 
         override fun onPlayFromMediaId(mediaId: String, extras: Bundle?) {
             val musicService = this@MusicService
-            val songs = MediaBrowserDelegate.playFromMediaId(musicService, mediaId, extras)
-            playNewQueue(songs)
+            val request = MediaBrowserDelegate.playFromMediaId(musicService, mediaId, extras)
+            processRequest(request)
         }
 
         override fun onPlayFromSearch(query: String?, extras: Bundle?) {
             val musicService = this@MusicService
-            val songs = MediaBrowserDelegate.playFromSearch(musicService, query, extras)
-            playNewQueue(songs)
+            val request = MediaBrowserDelegate.playFromSearch(musicService, query, extras)
+            processRequest(request)
         }
 
-        private fun playNewQueue(songs: List<Song>) {
-            if (songs.isNotEmpty()) {
-                if (songs.size == 1) {
-                    queueManager.addSong(songs.first(), queueManager.currentSongPosition, false)
+        private fun processRequest(request: PlayRequest) {
+            when (request) {
+                PlayRequest.EmptyRequest     -> {}
+                is PlayRequest.PlayAtRequest -> playSongAt(request.index)
+                is PlayRequest.SongRequest   -> {
+                    queueManager.addSong(request.song, queueManager.currentSongPosition, false)
                     playSongAt(queueManager.currentSongPosition)
-                } else {
-                    queueManager.swapQueue(songs, 0, false)
+                }
+                is PlayRequest.SongsRequest  -> {
+                    queueManager.swapQueue(request.songs, request.index, false)
                     playSongAt(0)
                 }
             }
