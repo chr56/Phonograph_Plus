@@ -10,6 +10,7 @@ import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Artists
@@ -111,6 +112,12 @@ object MediaItemProviders {
                 setTitle(name)
                 setMediaId(MediaItemPath.artist(id).mediaId)
             }
+
+        protected fun FilePlaylist.toMediaItem(): MediaItem =
+            mediaItem(FLAG_BROWSABLE) {
+                setTitle(name)
+                setMediaId(MediaItemPath.playlist(id).mediaId)
+            }
     }
 
     private fun parse(path: String): MediaItemProvider {
@@ -126,6 +133,7 @@ object MediaItemProviders {
                 MediaItemPath.ALBUMS           -> AlbumsProvider
                 MediaItemPath.ARTISTS          -> ArtistsProvider
                 MediaItemPath.SONGS_QUEUE      -> QueueProvider
+                MediaItemPath.PLAYLISTS        -> PlaylistsProvider
                 MediaItemPath.SONGS_FAVORITES  -> FavoriteSongsProvider
                 MediaItemPath.SONGS_TOP_TRACKS -> TopTracksProvider
                 MediaItemPath.SONGS_LAST_ADDED -> RecentAddedProvider
@@ -157,6 +165,11 @@ object MediaItemProviders {
                     MediaItemPath.SONGS_QUEUE      -> {
                         val item = segments[1]
                         QueueSongProvider(item.toInt())
+                    }
+
+                    MediaItemPath.PLAYLISTS        -> {
+                        val item = segments[1]
+                        PlaylistProvider(item.toLong())
                     }
 
                     MediaItemPath.SONGS_FAVORITES  -> {
@@ -211,6 +224,11 @@ object MediaItemProviders {
                     setTitle(res.getString(R.string.label_playing_queue))
                     setIconUri(iconRes(res, R.drawable.ic_queue_music_white_24dp))
                     setMediaId(MediaItemPath.pageQueue.mediaId)
+                },
+                mediaItem(FLAG_BROWSABLE) {
+                    setTitle(res.getString(R.string.playlists))
+                    setIconUri(iconRes(res, R.drawable.ic_description_white_24dp))
+                    setMediaId(MediaItemPath.pagePlaylists.mediaId)
                 },
                 mediaItem(FLAG_BROWSABLE) {
                     setTitle(res.getString(R.string.favorites))
@@ -303,6 +321,27 @@ object MediaItemProviders {
         override fun play(context: Context): PlayRequest =
             PlayRequest.SongsRequest(fetch(context), 0)
     }
+
+
+    private object PlaylistsProvider : AbsMediaItemProvider() {
+        override fun browser(context: Context): List<MediaItem> =
+            PlaylistLoader.all(context).map { it.toMediaItem() }
+    }
+
+    private class PlaylistProvider(val playlistId: Long) : AbsMediaItemProvider() {
+        private fun fetch(context: Context) = PlaylistLoader.id(context, playlistId).getSongs(context)
+
+        override fun browser(context: Context): List<MediaItem> =
+            withPlayAllItems(
+                context.resources,
+                MediaItemPath.playlist(playlistId).mediaId,
+                fetch(context).map { it.toMediaItem() }
+            )
+
+        override fun play(context: Context): PlayRequest =
+            PlayRequest.SongsRequest(fetch(context), 0)
+    }
+
 
     private object FavoriteSongsProvider : AbsMediaItemProvider() {
         private fun fetch(context: Context): List<Song> = FavoritesStore.get().getAllSongs(context)

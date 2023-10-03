@@ -12,7 +12,7 @@ data class MediaItemPath(val segments: List<String>, val parameters: Map<String,
             val parametersString = parameters?.map { (k, v) -> "$k=$v" }?.joinToString(separator = "&", prefix = "?")
             return if (parametersString == null) {
                 path
-            } else{
+            } else {
                 path + parametersString
             }
         }
@@ -35,6 +35,8 @@ data class MediaItemPath(val segments: List<String>, val parameters: Map<String,
         const val ALBUMS = "ALBUMS"
         const val ARTISTS = "ARTISTS"
 
+        const val PLAYLISTS = "PLAYLISTS"
+
         fun song(songId: Long) =
             MediaItemPath(
                 listOf(SONGS, songId.toString()),
@@ -53,6 +55,12 @@ data class MediaItemPath(val segments: List<String>, val parameters: Map<String,
                 null
             )
 
+        fun playlist(playlistId: Long) =
+            MediaItemPath(
+                listOf(PLAYLISTS, playlistId.toString()),
+                null
+            )
+
 
 
         val root = MediaItemPath(listOf(), null)
@@ -60,6 +68,7 @@ data class MediaItemPath(val segments: List<String>, val parameters: Map<String,
         val pageAlbums = MediaItemPath(listOf(ALBUMS), null)
         val pageArtist = MediaItemPath(listOf(ARTISTS), null)
         val pageQueue = MediaItemPath(listOf(SONGS_QUEUE), null)
+        val pagePlaylists = MediaItemPath(listOf(PLAYLISTS), null)
         val pageFavorites = MediaItemPath(listOf(SONGS_FAVORITES), null)
         val pageTopTracks = MediaItemPath(listOf(SONGS_TOP_TRACKS), null)
         val pageLastAdded = MediaItemPath(listOf(SONGS_LAST_ADDED), null)
