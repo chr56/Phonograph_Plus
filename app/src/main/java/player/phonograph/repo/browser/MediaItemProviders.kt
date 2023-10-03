@@ -36,6 +36,8 @@ object MediaItemProviders {
 
         abstract fun fetch(context: Context): List<Song>
 
+        open fun play(context: Context): PlayRequest = PlayRequest.EmptyRequest
+
         /**
          * add [allItem] at the top
          */
@@ -166,11 +168,30 @@ object MediaItemProviders {
         override fun fetch(context: Context): List<Song> = queueManager.playingQueue
     }
 
+
+    private class QueueSongProvider(val index: Long) : MediaItemProvider() {
+        override fun browser(context: Context): List<MediaItem> = emptyList()
+
+        override fun fetch(context: Context): List<Song> = emptyList()
+    }
+
     private object SongsProvider : MediaItemProvider() {
         override fun browser(context: Context): List<MediaItem> =
             fetch(context).map { it.toMediaItem() }
 
         override fun fetch(context: Context): List<Song> = Songs.all(context)
+    }
+
+    private class SongProvider(val songId: Long) : MediaItemProvider() {
+        override fun browser(context: Context): List<MediaItem> = emptyList()
+
+        override fun fetch(context: Context): List<Song> = emptyList()
+    }
+
+    private object AllSongProvider : MediaItemProvider() {
+        override fun browser(context: Context): List<MediaItem> = emptyList()
+
+        override fun fetch(context: Context): List<Song> = emptyList()
     }
 
     private object AlbumsProvider : MediaItemProvider() {
@@ -180,6 +201,11 @@ object MediaItemProviders {
         override fun fetch(context: Context): List<Song> = emptyList()
     }
 
+    private class AlbumProvider(val albumId: Long) : MediaItemProvider() {
+        override fun browser(context: Context): List<MediaItem> = emptyList()
+
+        override fun fetch(context: Context): List<Song> = emptyList()
+    }
 
     private class AlbumSongProvider(val albumId: Long) : MediaItemProvider() {
         override fun browser(context: Context): List<MediaItem> =
@@ -199,6 +225,11 @@ object MediaItemProviders {
         override fun fetch(context: Context): List<Song> = emptyList()
     }
 
+    private class ArtistProvider(val artistId: Long) : MediaItemProvider() {
+        override fun browser(context: Context): List<MediaItem> = emptyList()
+
+        override fun fetch(context: Context): List<Song> = emptyList()
+    }
 
     private class ArtistSongProvider(val artistId: Long) : MediaItemProvider() {
         override fun browser(context: Context): List<MediaItem> =
