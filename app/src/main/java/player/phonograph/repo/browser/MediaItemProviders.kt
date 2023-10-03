@@ -6,12 +6,15 @@ package player.phonograph.repo.browser
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
+import player.phonograph.model.Album
+import player.phonograph.model.Artist
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.loader.Songs
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.service.queue.QueueManager
@@ -29,19 +32,31 @@ import android.support.v4.media.MediaDescriptionCompat
 
 object MediaItemProviders {
 
-    abstract class MediaItemProvider {
+    /**
+     * Present a MediaItem
+     */
+    interface MediaItemProvider {
+        fun browser(context: Context): List<MediaItem>
+        fun play(context: Context): PlayRequest
+    }
 
-        abstract fun browser(context: Context): List<MediaItem>
 
-        abstract fun fetch(context: Context): List<Song>
+    fun of(path: String): MediaItemProvider = parse(path)
 
-        open fun play(context: Context): PlayRequest = PlayRequest.EmptyRequest
+
+    abstract class AbsMediaItemProvider : MediaItemProvider {
+
+        override fun browser(context: Context): List<MediaItem> = emptyList()
+
+        override fun play(context: Context): PlayRequest = PlayRequest.EmptyRequest
 
         /**
          * add [allItem] at the top
          */
         protected fun withPlayAllItems(resources: Resources, path: String, items: List<MediaItem>): List<MediaItem> =
-            listOf(allItem(resources, path)) + items
+            listOf(
+                allItem(resources, path)
+            ) + items
 
         /**
          * MediaItem of "Play All"
@@ -54,6 +69,9 @@ object MediaItemProviders {
                 setMediaId(path)
             }
 
+        /**
+         * create a MediaItem
+         */
         protected fun mediaItem(flag: Int, block: MediaDescriptionCompat.Builder.() -> Unit): MediaItem =
             MediaItem(MediaDescriptionCompat.Builder().apply(block).build(), flag)
 
@@ -63,9 +81,39 @@ object MediaItemProviders {
                 .appendPath(res.getResourceTypeName(resourceId))
                 .appendPath(res.getResourceEntryName(resourceId))
                 .build()
+
+        protected fun Song.toMediaItem(): MediaItem =
+            mediaItem(FLAG_PLAYABLE) {
+                setTitle(title)
+                setSubtitle(albumName)
+                setDescription(artistName)
+                setMediaId(MediaItemPath.song(id).mediaId)
+            }
+
+        protected fun QueueSong.toMediaItem(): MediaItem =
+            mediaItem(FLAG_PLAYABLE) {
+                setTitle(song.title)
+                setSubtitle(song.albumName)
+                setDescription(song.artistName)
+                setMediaId(MediaItemPath.queueSong(index).mediaId)
+            }
+
+        protected fun Album.toMediaItem(): MediaItem =
+            mediaItem(FLAG_BROWSABLE) {
+                setTitle(title)
+                setSubtitle(artistName)
+                setDescription(artistName)
+                setMediaId(MediaItemPath.album(id).mediaId)
+            }
+
+        protected fun Artist.toMediaItem(): MediaItem =
+            mediaItem(FLAG_BROWSABLE) {
+                setTitle(name)
+                setMediaId(MediaItemPath.artist(id).mediaId)
+            }
     }
 
-    fun of(path: String): MediaItemProvider {
+    private fun parse(path: String): MediaItemProvider {
         val mediaItemPath = MediaBrowserTree.resolve(path) ?: return EmptyProvider
 
         val segments = mediaItemPath.segments
@@ -90,7 +138,7 @@ object MediaItemProviders {
                     MediaItemPath.SONGS            -> {
                         val item = segments[1]
                         if (item == MediaItemPath.PLAY_ALL) {
-                            AllSongProvider
+                            SongsProvider
                         } else {
                             SongProvider(item.toLong())
                         }
@@ -98,26 +146,12 @@ object MediaItemProviders {
 
                     MediaItemPath.ALBUMS           -> {
                         val item = segments[1]
-                        if (segments.size == 2) {
-                            AlbumProvider(item.toLong())
-                        } else {
-                            if (segments[3] == MediaItemPath.PLAY_ALL)
-                                AlbumSongProvider(item.toLong())
-                            else
-                                EmptyProvider
-                        }
+                        AlbumProvider(item.toLong())
                     }
 
                     MediaItemPath.ARTISTS          -> {
                         val item = segments[1]
-                        if (segments.size == 2) {
-                            ArtistProvider(item.toLong())
-                        } else {
-                            if (segments[3] == MediaItemPath.PLAY_ALL)
-                                ArtistSongProvider(item.toLong())
-                            else
-                                EmptyProvider
-                        }
+                        ArtistProvider(item.toLong())
                     }
 
                     MediaItemPath.SONGS_QUEUE      -> {
@@ -148,12 +182,13 @@ object MediaItemProviders {
         }
     }
 
-    object EmptyProvider : MediaItemProvider() {
+
+    object EmptyProvider : MediaItemProvider {
         override fun browser(context: Context): List<MediaItem> = emptyList()
-        override fun fetch(context: Context): List<Song> = emptyList()
+        override fun play(context: Context): PlayRequest = PlayRequest.EmptyRequest
     }
 
-    private object RootProvider : MediaItemProvider() {
+    private object RootProvider : AbsMediaItemProvider() {
         override fun browser(context: Context): List<MediaItem> = run {
             val res = context.resources
             listOf(
@@ -200,63 +235,44 @@ object MediaItemProviders {
             )
         }
 
-        override fun fetch(context: Context): List<Song> = emptyList()
     }
 
 
-    private object QueueProvider : MediaItemProvider() {
+    private object QueueProvider : AbsMediaItemProvider() {
         private val queueManager: QueueManager get() = GlobalContext.get().get()
         override fun browser(context: Context): List<MediaItem> {
-            val queue = fetch(context)
+            val queue = queueManager.playingQueue
             return QueueSong.fromQueue(queue).map { it.toMediaItem() }
         }
-
-        override fun fetch(context: Context): List<Song> = queueManager.playingQueue
     }
 
 
-    private class QueueSongProvider(val index: Int) : MediaItemProvider() {
-        override fun browser(context: Context): List<MediaItem> = emptyList()
-
-        override fun fetch(context: Context): List<Song> = emptyList()
-
+    private class QueueSongProvider(val index: Int) : AbsMediaItemProvider() {
         override fun play(context: Context): PlayRequest =
             PlayRequest.PlayAtRequest(index)
     }
 
-    private object SongsProvider : MediaItemProvider() {
+    private object SongsProvider : AbsMediaItemProvider() {
         override fun browser(context: Context): List<MediaItem> =
-            fetch(context).map { it.toMediaItem() }
-
-        override fun fetch(context: Context): List<Song> = Songs.all(context)
-    }
-
-    private class SongProvider(val songId: Long) : MediaItemProvider() {
-        override fun browser(context: Context): List<MediaItem> = emptyList()
-
-        override fun fetch(context: Context): List<Song> = emptyList()
-
-        override fun play(context: Context): PlayRequest =
-            PlayRequest.SongRequest(Songs.id(context, songId))
-    }
-
-    private object AllSongProvider : MediaItemProvider() {
-        override fun browser(context: Context): List<MediaItem> = emptyList()
-
-        override fun fetch(context: Context): List<Song> = emptyList()
+            Songs.all(context).map { it.toMediaItem() }
 
         override fun play(context: Context): PlayRequest =
             PlayRequest.SongsRequest(Songs.all(context), 0)
     }
 
-    private object AlbumsProvider : MediaItemProvider() {
-        override fun browser(context: Context): List<MediaItem> =
-            Albums.all(context).map { it.toMediaItem() }
-
-        override fun fetch(context: Context): List<Song> = emptyList()
+    private class SongProvider(val songId: Long) : AbsMediaItemProvider() {
+        override fun play(context: Context): PlayRequest =
+            PlayRequest.SongRequest(Songs.id(context, songId))
     }
 
-    private class AlbumProvider(val albumId: Long) : MediaItemProvider() {
+    private object AlbumsProvider : AbsMediaItemProvider() {
+        override fun browser(context: Context): List<MediaItem> =
+            Albums.all(context).map { it.toMediaItem() }
+    }
+
+    private class AlbumProvider(val albumId: Long) : AbsMediaItemProvider() {
+        private fun fetch(context: Context): List<Song> = Songs.album(context, albumId)
+
         override fun browser(context: Context): List<MediaItem> =
             withPlayAllItems(
                 context.resources,
@@ -264,26 +280,19 @@ object MediaItemProviders {
                 fetch(context).map { it.toMediaItem() }
             )
 
-        override fun fetch(context: Context): List<Song> = Songs.album(context, albumId)
-    }
-
-    private class AlbumSongProvider(val albumId: Long) : MediaItemProvider() {
-        override fun browser(context: Context): List<MediaItem> = emptyList()
-
-        override fun fetch(context: Context): List<Song> = emptyList()
-
         override fun play(context: Context): PlayRequest =
-            PlayRequest.SongsRequest(Songs.album(context, albumId), 0)
+            PlayRequest.SongsRequest(fetch(context), 0)
     }
 
-    private object ArtistsProvider : MediaItemProvider() {
+
+    private object ArtistsProvider : AbsMediaItemProvider() {
         override fun browser(context: Context): List<MediaItem> =
             Artists.all(context).map { it.toMediaItem() }
-
-        override fun fetch(context: Context): List<Song> = emptyList()
     }
 
-    private class ArtistProvider(val artistId: Long) : MediaItemProvider() {
+    private class ArtistProvider(val artistId: Long) : AbsMediaItemProvider() {
+        private fun fetch(context: Context): List<Song> = Songs.artist(context, artistId)
+
         override fun browser(context: Context): List<MediaItem> =
             withPlayAllItems(
                 context.resources,
@@ -291,20 +300,13 @@ object MediaItemProviders {
                 fetch(context).map { it.toMediaItem() }
             )
 
-        override fun fetch(context: Context): List<Song> = Songs.artist(context, artistId)
-    }
-
-    private class ArtistSongProvider(val artistId: Long) : MediaItemProvider() {
-
-        override fun browser(context: Context): List<MediaItem> = emptyList()
-
-        override fun fetch(context: Context): List<Song> = emptyList()
-
         override fun play(context: Context): PlayRequest =
-            PlayRequest.SongsRequest(Songs.artist(context, artistId), 0)
+            PlayRequest.SongsRequest(fetch(context), 0)
     }
 
-    private object FavoriteSongsProvider : MediaItemProvider() {
+    private object FavoriteSongsProvider : AbsMediaItemProvider() {
+        private fun fetch(context: Context): List<Song> = FavoritesStore.get().getAllSongs(context)
+
         override fun browser(context: Context): List<MediaItem> =
             withPlayAllItems(
                 context.resources,
@@ -312,14 +314,13 @@ object MediaItemProviders {
                 fetch(context).map { it.toMediaItem() }
             )
 
-        override fun fetch(context: Context): List<Song> = FavoritesStore.get().getAllSongs(context)
-
         override fun play(context: Context): PlayRequest =
             PlayRequest.SongsRequest(FavoritesStore.get().getAllSongs(context), 0)
-
     }
 
-    private object TopTracksProvider : MediaItemProvider() {
+    private object TopTracksProvider : AbsMediaItemProvider() {
+        private fun fetch(context: Context): List<Song> = TopTracksLoader.get().tracks(context)
+
         override fun browser(context: Context): List<MediaItem> =
             withPlayAllItems(
                 context.resources,
@@ -327,14 +328,17 @@ object MediaItemProviders {
                 fetch(context).map { it.toMediaItem() }
             )
 
-        override fun fetch(context: Context): List<Song> = TopTracksLoader.get().tracks(context)
-
         override fun play(context: Context): PlayRequest =
             PlayRequest.SongsRequest(TopTracksLoader.get().tracks(context), 0)
-
     }
 
-    private object RecentAddedProvider : MediaItemProvider() {
+    private object RecentAddedProvider : AbsMediaItemProvider() {
+
+        private fun lastAddedCutoffTimeStamp(context: Context): Long =
+            Setting(context).Composites[Keys.lastAddedCutoffTimeStamp].data / 1000
+
+        private fun fetch(context: Context): List<Song> = Songs.since(context, lastAddedCutoffTimeStamp(context))
+
         override fun browser(context: Context): List<MediaItem> =
             withPlayAllItems(
                 context.resources,
@@ -342,18 +346,14 @@ object MediaItemProviders {
                 fetch(context).map { it.toMediaItem() }
             )
 
-        private fun lastAddedCutoffTimeStamp(context: Context): Long =
-            Setting(context).Composites[Keys.lastAddedCutoffTimeStamp].data / 1000
-
-        override fun fetch(context: Context): List<Song> = Songs.since(context, lastAddedCutoffTimeStamp(context))
-
         override fun play(context: Context): PlayRequest =
             PlayRequest.SongsRequest(Songs.since(context, lastAddedCutoffTimeStamp(context)), 0)
-
     }
 
 
-    private object RecentlyPlayedProvider : MediaItemProvider() {
+    private object RecentlyPlayedProvider : AbsMediaItemProvider() {
+        private fun fetch(context: Context): List<Song> = RecentlyPlayedTracksLoader.get().tracks(context)
+
         override fun browser(context: Context): List<MediaItem> =
             withPlayAllItems(
                 context.resources,
@@ -361,13 +361,11 @@ object MediaItemProviders {
                 fetch(context).map { it.toMediaItem() }
             )
 
-        override fun fetch(context: Context): List<Song> = RecentlyPlayedTracksLoader.get().tracks(context)
-
         override fun play(context: Context): PlayRequest =
             PlayRequest.SongsRequest(RecentlyPlayedTracksLoader.get().tracks(context), 0)
-
     }
 
 
+    @Suppress("unused")
     private const val TAG = "MediaItemProviders"
 }
