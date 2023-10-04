@@ -13,7 +13,6 @@ import player.phonograph.util.debug
 import player.phonograph.util.reportError
 import androidx.core.graphics.BitmapCompat
 import androidx.core.graphics.toRectF
-import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -21,7 +20,6 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Matrix.ScaleToFit
 import android.graphics.Rect
-import android.net.Uri
 import android.util.Log
 import kotlin.math.min
 
@@ -99,9 +97,6 @@ internal val folderCoverFiles = arrayOf(
     "album.png",
     "folder.png"
 )
-
-internal fun getMediaStoreAlbumCoverUri(albumId: Long): Uri =
-    ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId)
 
 private const val TAG = "Coil"
 internal fun retrieveAudioFile(

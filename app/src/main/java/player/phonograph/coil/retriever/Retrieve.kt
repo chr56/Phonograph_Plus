@@ -19,6 +19,7 @@ import okio.buffer
 import okio.source
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
+import player.phonograph.util.mediaStoreAlbumArtUri
 import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
@@ -35,7 +36,7 @@ internal fun readFromMediaStore(
     size: Size,
 ): SourceResult? =
     runCatching {
-        val uri = getMediaStoreAlbumCoverUri(albumId)
+        val uri = mediaStoreAlbumArtUri(albumId)
         readFromMediaStore(uri, context, size)
     }.getOrNull()
 
