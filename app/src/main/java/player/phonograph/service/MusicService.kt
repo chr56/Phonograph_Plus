@@ -232,6 +232,7 @@ class MusicService : MediaBrowserServiceCompat() {
                 MEDIA_SESSION_ACTION_TOGGLE_SHUFFLE -> queueManager.toggleShuffle()
                 MEDIA_SESSION_ACTION_TOGGLE_REPEAT  -> queueManager.cycleRepeatMode()
             }
+            handleAndSendChangeInternal(PLAY_STATE_CHANGED)
         }
 
         override fun onPlayFromMediaId(mediaId: String, extras: Bundle?) {
