@@ -227,6 +227,13 @@ class MusicService : MediaBrowserServiceCompat() {
             return MediaButtonIntentReceiver.handleIntent(this@MusicService, mediaButtonEvent)
         }
 
+        override fun onCustomAction(action: String?, extras: Bundle?) {
+            when (action) {
+                MEDIA_SESSION_ACTION_TOGGLE_SHUFFLE -> queueManager.toggleShuffle()
+                MEDIA_SESSION_ACTION_TOGGLE_REPEAT  -> queueManager.cycleRepeatMode()
+            }
+        }
+
         override fun onPlayFromMediaId(mediaId: String, extras: Bundle?) {
             val musicService = this@MusicService
             val request = MediaBrowserDelegate.playFromMediaId(musicService, mediaId, extras)
@@ -584,6 +591,9 @@ class MusicService : MediaBrowserServiceCompat() {
         const val ACTION_STOP_AND_QUIT_NOW = "$ACTUAL_PACKAGE_NAME.stop_and_quit_now"
         const val ACTION_STOP_AND_QUIT_PENDING = "$ACTUAL_PACKAGE_NAME.stop_and_quit_pending"
         const val ACTION_CANCEL_PENDING_QUIT = "$ACTUAL_PACKAGE_NAME.cancel_pending_quit"
+
+        const val MEDIA_SESSION_ACTION_TOGGLE_SHUFFLE = "$ACTUAL_PACKAGE_NAME.toggle_shuffle"
+        const val MEDIA_SESSION_ACTION_TOGGLE_REPEAT = "$ACTUAL_PACKAGE_NAME.toggle_repeat"
 
         const val APP_WIDGET_UPDATE = "$ACTUAL_PACKAGE_NAME.appwidgetupdate"
         const val EXTRA_APP_WIDGET_NAME = ACTUAL_PACKAGE_NAME + "app_widget_name"
