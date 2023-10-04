@@ -271,7 +271,7 @@ object MediaItemProviders {
                 },
                 mediaItem(FLAG_BROWSABLE) {
                     setTitle(res.getString(R.string.genres))
-                    setIconUri(iconRes(res, R.drawable.ic_library_music_white_24dp))
+                    setIconUri(iconRes(res, R.drawable.ic_bookmark_music_white_24dp))
                     setMediaId(MediaItemPath.pageGenres.mediaId)
                 }
             )

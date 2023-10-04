@@ -230,7 +230,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
             menuItem {
                 groupId = groupIds[2]
                 itemId = R.id.action_scan
-                icon = getTintedDrawable(R.drawable.ic_scanner_white_24dp, textColorPrimary)
+                icon = getTintedDrawable(R.drawable.ic_scan_white_24dp, textColorPrimary)
                 titleRes(R.string.scan_media)
                 onClick {
                     drawerBinding.drawerLayout.closeDrawers()
