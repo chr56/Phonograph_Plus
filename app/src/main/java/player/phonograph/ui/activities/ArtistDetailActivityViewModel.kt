@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.widget.ImageView
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,7 +39,7 @@ class ArtistDetailActivityViewModel(var artistId: Long) : ViewModel() {
     val paletteColor get() = _paletteColor.asStateFlow()
 
     fun load(context: Context) {
-        viewModelScope.launch(SupervisorJob()) {
+        viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
             _artist.emit(Artists.id(context, artistId))
             _albums.emit(Albums.artist(context, artistId))
             _songs.emit(Songs.artist(context, artistId))
