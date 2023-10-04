@@ -480,4 +480,6 @@
     <string name="pref_title_disable_real_time_search">Disable realtime local search</string>
     <string name="pref_summary_disable_real_time_search">Search result would be updated ONLY after committing by Enter. This would be helpful for fixing some IMEs can not show Candidate Bar or Words Hint/Prediction if inline composition enabled, especially for some CJK IMEs (or languages require compositions before inputting).</string>
     <string name="deleted">Deleted</string>
+    <string name="action_shuffle_mode">Shuffle Mode</string>
+    <string name="action_repeat_mode">Repeat Mode</string>
 </resources>

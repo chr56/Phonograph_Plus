@@ -467,4 +467,6 @@
     <string name="pref_title_disable_real_time_search">关闭本地实时搜索</string>
     <string name="pref_summary_disable_real_time_search">本地搜索结果只有在回车键提交后才会更新 \n此选项用于解决某些启用“内嵌输入”的输入法无法显示候选栏或提示预测的问题, 尤其是对于某些中日韩输入法 (或需要在输入前进行选择的语言)</string>
     <string name="deleted">已删除</string>
+    <string name="action_shuffle_mode">随机模式</string>
+    <string name="action_repeat_mode">循环模式</string>
 </resources>
