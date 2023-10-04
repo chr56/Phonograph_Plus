@@ -6,9 +6,14 @@ package player.phonograph.service.player
 
 import coil.request.Disposable
 import player.phonograph.BuildConfig
+import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.service.MusicService
+import player.phonograph.service.MusicService.Companion.MEDIA_SESSION_ACTION_TOGGLE_REPEAT
+import player.phonograph.service.MusicService.Companion.MEDIA_SESSION_ACTION_TOGGLE_SHUFFLE
 import player.phonograph.service.notification.PlayingNotificationManger
+import player.phonograph.service.queue.RepeatMode
+import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.service.util.MediaButtonIntentReceiver
 import android.app.PendingIntent
 import android.content.ComponentName
@@ -70,16 +75,39 @@ class MediaSessionController(
     }
 
 
-    private val sessionPlaybackStateBuilder =
-        PlaybackStateCompat.Builder().setActions(availableActions)
+    private val sessionPlaybackStateBuilder
+        get() =
+            PlaybackStateCompat.Builder().setActions(availableActions)
 
 
     fun updatePlaybackState(isPlaying: Boolean, songProgressMillis: Long) {
         mediaSession.setPlaybackState(
-            sessionPlaybackStateBuilder
+            sessionPlaybackStateBuilder.setCustomActions(musicService)
                 .setState(if (isPlaying) STATE_PLAYING else STATE_PAUSED, songProgressMillis, musicService.speed)
                 .build()
         )
+    }
+
+
+    private fun PlaybackStateCompat.Builder.setCustomActions(musicService: MusicService): PlaybackStateCompat.Builder {
+        addCustomAction(
+            MEDIA_SESSION_ACTION_TOGGLE_SHUFFLE,
+            musicService.getString(R.string.action_shuffle_mode),
+            when (musicService.queueManager.shuffleMode) {
+                ShuffleMode.SHUFFLE -> R.drawable.ic_shuffle_white_24dp
+                ShuffleMode.NONE    -> R.drawable.ic_shuffle_disabled_white_24dp
+            }
+        )
+        addCustomAction(
+            MEDIA_SESSION_ACTION_TOGGLE_REPEAT,
+            musicService.getString(R.string.action_repeat_mode),
+            when (musicService.queueManager.repeatMode) {
+                RepeatMode.REPEAT_QUEUE       -> R.drawable.ic_repeat_white_24dp
+                RepeatMode.REPEAT_SINGLE_SONG -> R.drawable.ic_repeat_one_white_24dp
+                RepeatMode.NONE               -> R.drawable.ic_repeat_off_white_24dp
+            }
+        )
+        return this
     }
 
     @Suppress("SameParameterValue")

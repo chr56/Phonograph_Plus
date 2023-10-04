@@ -467,4 +467,6 @@
     <string name="pref_title_disable_real_time_search">關閉本機即時搜尋</string>
     <string name="pref_summary_disable_real_time_search">本地搜尋結果只有在回車鍵提交後才會更新 \n此選項用於解決某些啟用「內嵌輸入」的輸入法無法顯示候選欄或提示預測的問題, 尤其是對於某些中日韓輸入法(或需要在輸入前進行選擇的語言)</string>
     <string name="deleted">已刪除</string>
+    <string name="action_shuffle_mode">隨機模式</string>
+    <string name="action_repeat_mode">迴圈模式</string>
 </resources>

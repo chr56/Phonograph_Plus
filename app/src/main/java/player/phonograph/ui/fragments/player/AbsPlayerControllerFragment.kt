@@ -81,7 +81,7 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
 
         binding.setUpPlayPauseButton(context)
         binding.updatePlayPauseColor(controlsColor)
-        binding.updatePrevNextColor(controlsColor)
+        binding.updateButtonsColor(controlsColor)
 
         binding.setUpProgressSlider(lightColor)
         binding.updateProgressTextColor(lightColor)
@@ -93,14 +93,14 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 CurrentQueueState.repeatMode.collect { repeatMode ->
-                    binding.updateRepeatState(repeatMode, controlsColor, disabledControlsColor)
+                    binding.updateRepeatModeIcon(repeatMode)
                 }
             }
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 CurrentQueueState.shuffleMode.collect { shuffleMode ->
-                    binding.updateShuffleState(shuffleMode, controlsColor, disabledControlsColor)
+                    binding.updateShuffleModeIcon(shuffleMode)
                 }
             }
         }
@@ -118,9 +118,9 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
                 backgroundColor.collect { newColor ->
                     calculateColor(requireContext(), newColor)
                     binding.updatePlayPauseColor(controlsColor)
-                    binding.updatePrevNextColor(controlsColor)
-                    binding.updateRepeatState(MusicPlayerRemote.repeatMode, controlsColor, disabledControlsColor)
-                    binding.updateShuffleState(MusicPlayerRemote.shuffleMode, controlsColor, disabledControlsColor)
+                    binding.updateButtonsColor(controlsColor)
+                    binding.updateRepeatModeIcon(MusicPlayerRemote.repeatMode)
+                    binding.updateShuffleModeIcon(MusicPlayerRemote.shuffleMode)
                 }
             }
         }
@@ -192,37 +192,27 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
 
 
         //region Color
-        fun updatePrevNextColor(@ColorInt color: Int) {
+        fun updateButtonsColor(@ColorInt color: Int) {
             nextButton.setColorFilter(color, SRC_IN)
             prevButton.setColorFilter(color, SRC_IN)
+            repeatButton.setColorFilter(color, SRC_IN)
+            shuffleButton.setColorFilter(color, SRC_IN)
         }
 
-        fun updateRepeatState(repeatMode: RepeatMode, @ColorInt color: Int, @ColorInt disabledColor: Int) =
-            when (repeatMode) {
-                RepeatMode.NONE               -> {
-                    repeatButton.setImageResource(R.drawable.ic_repeat_white_24dp)
-                    repeatButton.setColorFilter(disabledColor, SRC_IN)
+        fun updateRepeatModeIcon(repeatMode: RepeatMode) =
+            repeatButton.setImageResource(
+                when (repeatMode) {
+                    RepeatMode.NONE               -> R.drawable.ic_repeat_off_white_24dp
+                    RepeatMode.REPEAT_QUEUE       -> R.drawable.ic_repeat_white_24dp
+                    RepeatMode.REPEAT_SINGLE_SONG -> R.drawable.ic_repeat_one_white_24dp
                 }
-
-                RepeatMode.REPEAT_QUEUE       -> {
-                    repeatButton.setImageResource(R.drawable.ic_repeat_white_24dp)
-                    repeatButton.setColorFilter(color, SRC_IN)
-                }
-
-                RepeatMode.REPEAT_SINGLE_SONG -> {
-                    repeatButton.setImageResource(R.drawable.ic_repeat_one_white_24dp)
-                    repeatButton.setColorFilter(color, SRC_IN)
-                }
-            }
-
-        fun updateShuffleState(shuffleMode: ShuffleMode, @ColorInt color: Int, @ColorInt disabledColor: Int) =
-            shuffleButton.setColorFilter(
-                when (shuffleMode) {
-                    ShuffleMode.SHUFFLE -> color
-                    ShuffleMode.NONE    -> disabledColor
-                },
-                SRC_IN
             )
+
+        fun updateShuffleModeIcon(shuffleMode: ShuffleMode) =
+            when (shuffleMode) {
+                ShuffleMode.NONE    -> shuffleButton.setImageResource(R.drawable.ic_shuffle_disabled_white_24dp)
+                ShuffleMode.SHUFFLE -> shuffleButton.setImageResource(R.drawable.ic_shuffle_white_24dp)
+            }
 
         fun updateProgressTextColor(color: Int) {
             songTotalTime.setTextColor(color)
