@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="disable">عطل</string>
     <string name="action_set_as_ringtone">تعيين كنغمة الرنين</string>
     <string name="action_share">مشاركة</string>
     <string name="action_settings">الإعدادات</string>
