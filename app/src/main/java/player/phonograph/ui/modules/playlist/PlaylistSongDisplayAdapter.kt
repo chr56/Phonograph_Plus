@@ -39,7 +39,7 @@ class PlaylistSongDisplayAdapter(
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Song> {
-        return PlaylistSongViewHolder(inflatedView(layoutRes, parent))
+        return PlaylistSongViewHolder(inflatedView(layoutRes, parent, viewType))
     }
 
     override fun onBindViewHolder(holder: DisplayViewHolder<Song>, position: Int) {

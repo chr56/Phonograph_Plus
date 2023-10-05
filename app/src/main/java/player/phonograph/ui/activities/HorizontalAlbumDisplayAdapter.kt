@@ -51,7 +51,7 @@ class HorizontalAlbumDisplayAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Album> {
-        return HorizontalAlbumViewHolder(inflatedView(layoutRes, parent))
+        return HorizontalAlbumViewHolder(inflatedView(layoutRes, parent, viewType))
     }
 
     class HorizontalAlbumViewHolder(itemView: View) : DisplayViewHolder<Album>(itemView) {

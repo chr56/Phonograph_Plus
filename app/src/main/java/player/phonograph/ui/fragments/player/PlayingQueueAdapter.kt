@@ -44,7 +44,7 @@ class PlayingQueueAdapter(
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Song> {
-        return PlayingQueueViewHolder(inflatedView(R.layout.item_list, parent))
+        return PlayingQueueViewHolder(inflatedView(R.layout.item_list, parent, viewType))
     }
 
     override fun getItemViewType(position: Int): Int =

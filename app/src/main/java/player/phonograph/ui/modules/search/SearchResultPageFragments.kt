@@ -161,7 +161,7 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<QueueSong> =
-            QueueSongViewHolder(inflatedView(layoutRes, parent))
+            QueueSongViewHolder(inflatedView(layoutRes, parent, viewType))
 
         inner class QueueSongViewHolder(itemView: View) : DisplayViewHolder<QueueSong>(itemView) {
 

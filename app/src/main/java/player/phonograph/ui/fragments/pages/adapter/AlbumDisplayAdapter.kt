@@ -41,7 +41,7 @@ open class AlbumDisplayAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Album> {
-        return AlbumViewHolder(inflatedView(layoutRes, parent))
+        return AlbumViewHolder(inflatedView(layoutRes, parent, viewType))
     }
 
     inner class AlbumViewHolder(itemView: View) : DisplayViewHolder<Album>(itemView) {

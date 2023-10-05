@@ -42,7 +42,7 @@ class PlaylistDisplayAdapter(
         if (dataset[position] is SmartPlaylist) SMART_PLAYLIST else DEFAULT_PLAYLIST
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Playlist> {
-        val view = inflatedView(layoutRes, parent)
+        val view = inflatedView(layoutRes, parent, viewType)
         return if (viewType == SMART_PLAYLIST) SmartPlaylistViewHolder(view) else CommonPlaylistViewHolder(view)
     }
 

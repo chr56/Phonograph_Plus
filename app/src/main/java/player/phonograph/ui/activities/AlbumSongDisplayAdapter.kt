@@ -21,7 +21,7 @@ class AlbumSongDisplayAdapter(
     override fun getSectionNameImp(position: Int): String = getTrackNumber(dataset[position])
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Song> {
-        return AlbumSongViewHolder(inflatedView(layoutRes, parent))
+        return AlbumSongViewHolder(inflatedView(layoutRes, parent, viewType))
     }
 
     open class AlbumSongViewHolder(itemView: View) : DisplayViewHolder<Song>(itemView) {

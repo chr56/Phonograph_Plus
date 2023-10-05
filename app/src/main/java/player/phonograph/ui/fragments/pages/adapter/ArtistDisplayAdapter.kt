@@ -41,7 +41,7 @@ class ArtistDisplayAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Artist> {
-        return ArtistViewHolder(inflatedView(layoutRes, parent))
+        return ArtistViewHolder(inflatedView(layoutRes, parent, viewType))
     }
 
     class ArtistViewHolder(itemView: View) : DisplayViewHolder<Artist>(itemView) {

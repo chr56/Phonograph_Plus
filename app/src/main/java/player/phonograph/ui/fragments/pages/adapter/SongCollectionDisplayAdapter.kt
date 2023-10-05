@@ -25,7 +25,7 @@ class SongCollectionDisplayAdapter(
 ) : DisplayAdapter<SongCollection>(activity, layoutRes, config) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<SongCollection> =
-        SongCollectionViewHolder(inflatedView(layoutRes, parent), onClick)
+        SongCollectionViewHolder(inflatedView(layoutRes, parent, viewType), onClick)
 
     class SongCollectionViewHolder(
         itemView: View,

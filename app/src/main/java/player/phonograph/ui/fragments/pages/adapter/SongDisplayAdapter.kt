@@ -50,7 +50,7 @@ open class SongDisplayAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Song> =
-        SongViewHolder(inflatedView(layoutRes, parent))
+        SongViewHolder(inflatedView(layoutRes, parent, viewType))
 
     inner class SongViewHolder(itemView: View) : DisplayViewHolder<Song>(itemView) {
         override fun setImage(position: Int, dataset: List<Song>, usePalette: Boolean) {

@@ -50,7 +50,7 @@ abstract class DisplayAdapter<I : Displayable>(
     override fun getItemId(position: Int): Long = dataset[position].getItemID()
     override fun getItem(datasetPosition: Int): I = dataset[datasetPosition]
 
-    protected fun inflatedView(layoutRes: Int, parent: ViewGroup): View =
+    protected fun inflatedView(layoutRes: Int, parent: ViewGroup, viewType: Int): View =
         LayoutInflater.from(activity).inflate(layoutRes, parent, false)
 
     override fun onBindViewHolder(holder: DisplayViewHolder<I>, position: Int) {

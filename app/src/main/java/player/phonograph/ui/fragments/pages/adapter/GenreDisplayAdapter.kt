@@ -32,7 +32,7 @@ class GenreDisplayAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Genre> =
-        GenreViewHolder(inflatedView(layoutRes, parent))
+        GenreViewHolder(inflatedView(layoutRes, parent, viewType))
 
     class GenreViewHolder(itemView: View) : DisplayViewHolder<Genre>(itemView)
 
