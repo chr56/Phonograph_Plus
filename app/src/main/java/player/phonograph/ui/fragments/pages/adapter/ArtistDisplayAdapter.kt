@@ -14,6 +14,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayConfig
+import player.phonograph.ui.adapter.ViewHolderType
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -23,9 +24,9 @@ import android.view.ViewGroup
 
 class ArtistDisplayAdapter(
     activity: AppCompatActivity,
-    layoutRes: Int,
+    @ViewHolderType layoutType: Int,
     config: DisplayConfig,
-) : DisplayAdapter<Artist>(activity, layoutRes, config) {
+) : DisplayAdapter<Artist>(activity, layoutType, config) {
 
     override fun getSectionNameImp(position: Int): String {
         val artist = dataset[position]
@@ -41,7 +42,7 @@ class ArtistDisplayAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Artist> {
-        return ArtistViewHolder(inflatedView(layoutRes, parent, viewType))
+        return ArtistViewHolder(inflatedView(parent, viewType))
     }
 
     class ArtistViewHolder(itemView: View) : DisplayViewHolder<Artist>(itemView) {

@@ -16,6 +16,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DefaultDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayConfig
+import player.phonograph.ui.adapter.ViewHolderTypes
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -28,7 +29,7 @@ import android.view.ViewGroup
 class PlaylistDisplayAdapter(
     activity: AppCompatActivity,
     config: DisplayConfig = DefaultDisplayConfig,
-) : DisplayAdapter<Playlist>(activity, R.layout.item_list_single_row, config) {
+) : DisplayAdapter<Playlist>(activity, ViewHolderTypes.LIST_SINGLE_ROW, config) {
 
     override fun getSectionNameImp(position: Int): String {
         val sortMode = Setting(activity).Composites[Keys.playlistSortMode].data
@@ -42,7 +43,7 @@ class PlaylistDisplayAdapter(
         if (dataset[position] is SmartPlaylist) SMART_PLAYLIST else DEFAULT_PLAYLIST
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Playlist> {
-        val view = inflatedView(layoutRes, parent, viewType)
+        val view = inflatedView(parent, viewType)
         return if (viewType == SMART_PLAYLIST) SmartPlaylistViewHolder(view) else CommonPlaylistViewHolder(view)
     }
 

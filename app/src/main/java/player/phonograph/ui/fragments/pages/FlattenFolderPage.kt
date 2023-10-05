@@ -18,6 +18,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DefaultDisplayConfig
+import player.phonograph.ui.adapter.ViewHolderTypes
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.adapter.SongCollectionDisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
@@ -192,14 +193,13 @@ class FlattenFolderPage : AbsPage() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         songCollectionDisplayAdapter = SongCollectionDisplayAdapter(
             hostFragment.mainActivity,
-            R.layout.item_list,
             DefaultDisplayConfig,
             ::onFolderClick
         )
 
         songAdapter = SongDisplayAdapter(
             hostFragment.mainActivity,
-            R.layout.item_list,
+            ViewHolderTypes.LIST,
             ConstDisplayConfig(false)
         )
 

@@ -16,7 +16,7 @@ import androidx.annotation.LayoutRes
     ViewHolderTypes.GRID,
     ViewHolderTypes.GRID_CARD_HORIZONTAL,
 )
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 annotation class ViewHolderType
 
 object ViewHolderTypes {

@@ -242,10 +242,10 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         if (gridSizeSelected > 0 && gridSizeSelected != displayConfig.gridSize) {
 
             displayConfig.gridSize = gridSizeSelected
-            val itemLayoutRes = displayConfig.layoutRes(gridSizeSelected)
+            val itemLayoutType = displayConfig.layoutType(gridSizeSelected)
 
-            if (adapter.layoutRes != itemLayoutRes) {
-                adapter.layoutRes = itemLayoutRes
+            if (adapter.layoutType != itemLayoutType) {
+                adapter.layoutType = itemLayoutType
                 refreshAllViewHolder()
             }
             layoutManager.spanCount = gridSizeSelected

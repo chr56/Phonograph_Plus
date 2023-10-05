@@ -100,7 +100,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         adapter =
             AlbumSongDisplayAdapter(
                 this,
-                R.layout.item_list,
                 ConstDisplayConfig(false)
             )
         viewBinding.recyclerView.layoutManager = LinearLayoutManager(this)

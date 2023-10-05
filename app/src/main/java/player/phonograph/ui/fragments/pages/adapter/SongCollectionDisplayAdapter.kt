@@ -10,6 +10,7 @@ import player.phonograph.R
 import player.phonograph.model.SongCollection
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayConfig
+import player.phonograph.ui.adapter.ViewHolderTypes
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.appcompat.app.AppCompatActivity
@@ -19,13 +20,12 @@ import android.widget.ImageView
 
 class SongCollectionDisplayAdapter(
     activity: AppCompatActivity,
-    layoutRes: Int,
     config: DisplayConfig,
     val onClick: (bindingAdapterPosition: Int) -> Unit,
-) : DisplayAdapter<SongCollection>(activity, layoutRes, config) {
+) : DisplayAdapter<SongCollection>(activity, ViewHolderTypes.LIST, config) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<SongCollection> =
-        SongCollectionViewHolder(inflatedView(layoutRes, parent, viewType), onClick)
+        SongCollectionViewHolder(inflatedView(parent, viewType), onClick)
 
     class SongCollectionViewHolder(
         itemView: View,

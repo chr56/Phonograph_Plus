@@ -48,11 +48,11 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
     override fun initAdapter(): DisplayAdapter<Song> {
         val displayConfig = DisplayConfig(displayConfigTarget)
 
-        val layoutRes = displayConfig.layoutRes(displayConfig.gridSize)
+        val layoutType = displayConfig.layoutType(displayConfig.gridSize)
 
         return SongDisplayAdapter(
             hostFragment.mainActivity,
-            layoutRes,
+            layoutType,
             ConstDisplayConfig(displayConfig.colorFooter)
         )
     }

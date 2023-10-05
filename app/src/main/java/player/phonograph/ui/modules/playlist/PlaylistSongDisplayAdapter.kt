@@ -19,6 +19,7 @@ import player.phonograph.coil.loadImage
 import player.phonograph.model.Song
 import player.phonograph.ui.adapter.DefaultDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.ViewHolderTypes
 import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.util.ui.hitTest
@@ -31,7 +32,7 @@ import android.widget.PopupMenu
 
 class PlaylistSongDisplayAdapter(
     activity: AppCompatActivity,
-) : DisplayAdapter<Song>(activity, R.layout.item_list, DefaultDisplayConfig),
+) : DisplayAdapter<Song>(activity, ViewHolderTypes.LIST, DefaultDisplayConfig),
     DraggableItemAdapter<PlaylistSongDisplayAdapter.PlaylistSongViewHolder> {
 
     override fun getSectionNameImp(position: Int): String = (position + 1).toString()
@@ -39,7 +40,7 @@ class PlaylistSongDisplayAdapter(
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Song> {
-        return PlaylistSongViewHolder(inflatedView(layoutRes, parent, viewType))
+        return PlaylistSongViewHolder(inflatedView(parent, viewType))
     }
 
     override fun onBindViewHolder(holder: DisplayViewHolder<Song>, position: Int) {

@@ -33,10 +33,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
     override val displayConfigTarget get() = DisplayConfigTarget.GenrePage
 
     override fun initAdapter(): DisplayAdapter<Genre> {
-        return GenreDisplayAdapter(
-            hostFragment.mainActivity,
-            R.layout.item_list_no_image
-        )
+        return GenreDisplayAdapter(hostFragment.mainActivity)
     }
 
     override val availableSortRefs: Array<SortRef>

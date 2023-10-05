@@ -10,7 +10,6 @@ import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.click.listClick
 import player.phonograph.model.Displayable
-import androidx.annotation.LayoutRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +22,7 @@ import android.widget.PopupMenu
 
 abstract class DisplayAdapter<I : Displayable>(
     protected val activity: FragmentActivity,
-    @LayoutRes var layoutRes: Int,
+    @ViewHolderType var layoutType: Int,
     var config: DisplayConfig,
     val useImageText: Boolean = false,
 ) : RecyclerView.Adapter<DisplayAdapter.DisplayViewHolder<I>>(),
@@ -47,11 +46,13 @@ abstract class DisplayAdapter<I : Displayable>(
 
     protected open val allowMultiSelection: Boolean get() = true
 
-    override fun getItemId(position: Int): Long = dataset[position].getItemID()
+    override fun getItemId(position: Int): Long = dataset[position].getItemID() // shl 3 + layoutType
     override fun getItem(datasetPosition: Int): I = dataset[datasetPosition]
 
-    protected fun inflatedView(layoutRes: Int, parent: ViewGroup, viewType: Int): View =
-        LayoutInflater.from(activity).inflate(layoutRes, parent, false)
+    protected fun layoutRes()= ViewHolderTypes.layout(layoutType)
+
+    protected fun inflatedView(parent: ViewGroup, viewType: Int): View =
+        LayoutInflater.from(activity).inflate(layoutRes(), parent, false)
 
     override fun onBindViewHolder(holder: DisplayViewHolder<I>, position: Int) {
         val item: I = dataset[position]
@@ -62,6 +63,8 @@ abstract class DisplayAdapter<I : Displayable>(
 
     override fun getSectionName(position: Int): String =
         if (config.showSectionName) getSectionNameImp(position) else ""
+
+    override fun getItemViewType(position: Int): Int = layoutType
 
     // for inheriting
     open fun getSectionNameImp(position: Int): String =

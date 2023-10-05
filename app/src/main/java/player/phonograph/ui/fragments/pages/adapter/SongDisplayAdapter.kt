@@ -16,6 +16,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayConfig
+import player.phonograph.ui.adapter.ViewHolderType
 import player.phonograph.util.text.dateTextShortText
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
@@ -24,10 +25,10 @@ import android.view.ViewGroup
 
 open class SongDisplayAdapter(
     activity: AppCompatActivity,
-    layoutRes: Int,
+    @ViewHolderType layoutType: Int,
     displayConfig: DisplayConfig,
     useImageText: Boolean = false,
-) : DisplayAdapter<Song>(activity, layoutRes, displayConfig, useImageText) {
+) : DisplayAdapter<Song>(activity, layoutType, displayConfig, useImageText) {
 
 
     override fun getSectionNameImp(position: Int): String {
@@ -50,7 +51,7 @@ open class SongDisplayAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Song> =
-        SongViewHolder(inflatedView(layoutRes, parent, viewType))
+        SongViewHolder(inflatedView(parent, viewType))
 
     inner class SongViewHolder(itemView: View) : DisplayViewHolder<Song>(itemView) {
         override fun setImage(position: Int, dataset: List<Song>, usePalette: Boolean) {

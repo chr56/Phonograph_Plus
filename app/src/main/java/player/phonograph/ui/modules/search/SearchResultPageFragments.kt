@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.modules.search
 
-import player.phonograph.R
 import player.phonograph.databinding.RecyclerViewWrappedProperBinding
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -17,6 +16,7 @@ import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DefaultDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayConfig
+import player.phonograph.ui.adapter.ViewHolderTypes
 import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.ArtistDisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.PlaylistDisplayAdapter
@@ -98,7 +98,7 @@ abstract class SearchResultPageFragment<T : Displayable> : Fragment() {
 class SongSearchResultPageFragment : SearchResultPageFragment<Song>() {
 
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Song> =
-        SongDisplayAdapter(activity, R.layout.item_list, ConstDisplayConfig(false))
+        SongDisplayAdapter(activity, ViewHolderTypes.LIST, ConstDisplayConfig(false))
 
     override fun targetFlow(): StateFlow<List<Song>> = viewModel.songs
 
@@ -109,7 +109,7 @@ class SongSearchResultPageFragment : SearchResultPageFragment<Song>() {
 
 class AlbumSearchResultPageFragment : SearchResultPageFragment<Album>() {
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Album> =
-        AlbumDisplayAdapter(activity, R.layout.item_list, ConstDisplayConfig())
+        AlbumDisplayAdapter(activity, ViewHolderTypes.LIST, ConstDisplayConfig())
 
     override fun targetFlow(): StateFlow<List<Album>> = viewModel.albums
 
@@ -120,7 +120,7 @@ class AlbumSearchResultPageFragment : SearchResultPageFragment<Album>() {
 
 class ArtistSearchResultPageFragment : SearchResultPageFragment<Artist>() {
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Artist> =
-        ArtistDisplayAdapter(activity, R.layout.item_list, ConstDisplayConfig())
+        ArtistDisplayAdapter(activity, ViewHolderTypes.LIST, ConstDisplayConfig())
 
     override fun targetFlow(): StateFlow<List<Artist>> = viewModel.artists
 
@@ -154,14 +154,14 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
 
     class QueueSongAdapter(
         activity: FragmentActivity, config: DisplayConfig = DefaultDisplayConfig,
-    ) : DisplayAdapter<QueueSong>(activity, R.layout.item_list, config, useImageText = true) {
+    ) : DisplayAdapter<QueueSong>(activity, ViewHolderTypes.LIST, config, useImageText = true) {
 
         override fun getSectionNameImp(position: Int): String {
             return dataset[position].index.toString()
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<QueueSong> =
-            QueueSongViewHolder(inflatedView(layoutRes, parent, viewType))
+            QueueSongViewHolder(inflatedView(parent, viewType))
 
         inner class QueueSongViewHolder(itemView: View) : DisplayViewHolder<QueueSong>(itemView) {
 

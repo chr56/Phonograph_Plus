@@ -11,6 +11,8 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.settings.dataStore
+import player.phonograph.ui.adapter.ViewHolderType
+import player.phonograph.ui.adapter.ViewHolderTypes
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.AlbumPage
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.ArtistPage
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.GenrePage
@@ -18,7 +20,6 @@ import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.PlaylistPag
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.SongPage
 import player.phonograph.util.debug
 import player.phonograph.util.ui.isLandscape
-import androidx.annotation.LayoutRes
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -47,12 +48,12 @@ class DisplayConfig internal constructor(private val page: DisplayConfigTarget) 
     private val isLandscape: Boolean
         get() = isLandscape(App.instance.resources)
 
-    @LayoutRes
-    fun layoutRes(size: Int): Int =
-        if (gridMode(size)) R.layout.item_grid else when (page) {
-            is PlaylistPage -> R.layout.item_list_single_row
-            is GenrePage    -> R.layout.item_list_no_image
-            else            -> R.layout.item_list
+    @ViewHolderType
+    fun layoutType(size: Int): Int =
+        if (gridMode(size)) ViewHolderTypes.GRID else when (page) {
+            is PlaylistPage -> ViewHolderTypes.LIST_SINGLE_ROW
+            is GenrePage    -> ViewHolderTypes.LIST_NO_IMAGE
+            else            -> ViewHolderTypes.LIST
         }
 
     fun gridMode(size: Int): Boolean = size > maxGridSizeForList

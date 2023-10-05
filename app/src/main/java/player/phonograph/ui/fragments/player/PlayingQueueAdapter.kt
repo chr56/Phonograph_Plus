@@ -9,7 +9,6 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemState
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
-import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
@@ -17,6 +16,7 @@ import player.phonograph.ui.adapter.DefaultDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayConfig
 import player.phonograph.ui.adapter.MultiSelectionController
+import player.phonograph.ui.adapter.ViewHolderTypes
 import player.phonograph.ui.adapter.hasMenu
 import player.phonograph.ui.adapter.initMenu
 import player.phonograph.util.ui.hitTest
@@ -33,7 +33,7 @@ import android.widget.PopupMenu
 class PlayingQueueAdapter(
     activity: FragmentActivity,
     config: DisplayConfig = DefaultDisplayConfig,
-) : DisplayAdapter<Song>(activity, R.layout.item_list, config),
+) : DisplayAdapter<Song>(activity, ViewHolderTypes.LIST, config, useImageText = true),
     DraggableItemAdapter<PlayingQueueAdapter.PlayingQueueViewHolder> {
 
     var current: Int = -1
@@ -44,7 +44,7 @@ class PlayingQueueAdapter(
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Song> {
-        return PlayingQueueViewHolder(inflatedView(R.layout.item_list, parent, viewType))
+        return PlayingQueueViewHolder(inflatedView(parent, viewType))
     }
 
     override fun getItemViewType(position: Int): Int =

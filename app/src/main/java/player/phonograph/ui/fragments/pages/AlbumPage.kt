@@ -36,11 +36,11 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
     override fun initAdapter(): DisplayAdapter<Album> {
         val displayConfig = DisplayConfig(displayConfigTarget)
 
-        val layoutRes = displayConfig.layoutRes(displayConfig.gridSize)
+        val layoutType = displayConfig.layoutType(displayConfig.gridSize)
 
         return AlbumDisplayAdapter(
             hostFragment.mainActivity,
-            layoutRes,
+            layoutType,
             ConstDisplayConfig(displayConfig.colorFooter),
         )
     }

@@ -15,6 +15,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayConfig
+import player.phonograph.ui.adapter.ViewHolderType
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
@@ -22,9 +23,9 @@ import android.view.ViewGroup
 
 open class AlbumDisplayAdapter(
     activity: AppCompatActivity,
-    layoutRes: Int,
+    @ViewHolderType layoutType: Int,
     config: DisplayConfig,
-) : DisplayAdapter<Album>(activity, layoutRes, config) {
+) : DisplayAdapter<Album>(activity, layoutType, config) {
 
     override fun getSectionNameImp(position: Int): String {
         val album = dataset[position]
@@ -41,7 +42,7 @@ open class AlbumDisplayAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Album> {
-        return AlbumViewHolder(inflatedView(layoutRes, parent, viewType))
+        return AlbumViewHolder(inflatedView(parent, viewType))
     }
 
     inner class AlbumViewHolder(itemView: View) : DisplayViewHolder<Album>(itemView) {
