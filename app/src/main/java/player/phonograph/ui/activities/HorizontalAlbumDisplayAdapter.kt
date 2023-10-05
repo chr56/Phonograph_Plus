@@ -45,11 +45,13 @@ class HorizontalAlbumDisplayAdapter(
         }
     }
 
+    /*
     override fun getItemViewType(position: Int): Int = when (position) {
         0             -> TYPE_FIRST
         itemCount - 1 -> TYPE_LAST
         else          -> TYPE_MIDDLE
     }
+     */
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Album> {
         return HorizontalAlbumViewHolder(inflatedView(parent, viewType))
@@ -90,8 +92,10 @@ class HorizontalAlbumDisplayAdapter(
     }
 
     companion object {
+        /*
         private const val TYPE_FIRST = 1
         private const val TYPE_MIDDLE = 2
         private const val TYPE_LAST = 3
+         */
     }
 }

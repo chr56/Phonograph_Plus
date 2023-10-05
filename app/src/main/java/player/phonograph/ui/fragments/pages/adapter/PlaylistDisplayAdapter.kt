@@ -23,6 +23,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
@@ -43,7 +44,9 @@ class PlaylistDisplayAdapter(
         if (dataset[position] is SmartPlaylist) SMART_PLAYLIST else DEFAULT_PLAYLIST
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Playlist> {
-        val view = inflatedView(parent, viewType)
+        val view =
+            LayoutInflater.from(activity)
+                .inflate(ViewHolderTypes.layout(ViewHolderTypes.LIST_SINGLE_ROW), parent, false)
         return if (viewType == SMART_PLAYLIST) SmartPlaylistViewHolder(view) else CommonPlaylistViewHolder(view)
     }
 

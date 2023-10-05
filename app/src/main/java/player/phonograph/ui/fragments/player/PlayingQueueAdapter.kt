@@ -23,6 +23,7 @@ import player.phonograph.util.ui.hitTest
 import androidx.fragment.app.FragmentActivity
 import android.annotation.SuppressLint
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -44,7 +45,9 @@ class PlayingQueueAdapter(
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Song> {
-        return PlayingQueueViewHolder(inflatedView(parent, viewType))
+        val view =
+            LayoutInflater.from(activity).inflate(ViewHolderTypes.layout(ViewHolderTypes.LIST), parent, false)
+        return PlayingQueueViewHolder(view)
     }
 
     override fun getItemViewType(position: Int): Int =
@@ -80,7 +83,7 @@ class PlayingQueueAdapter(
             dataset: List<Song>,
             controller: MultiSelectionController<Song>,
             useImageText: Boolean,
-            usePalette: Boolean
+            usePalette: Boolean,
         ) {
 
             val song = dataset[position]

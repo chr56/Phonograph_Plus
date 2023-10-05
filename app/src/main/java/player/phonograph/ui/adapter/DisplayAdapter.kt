@@ -49,10 +49,13 @@ abstract class DisplayAdapter<I : Displayable>(
     override fun getItemId(position: Int): Long = dataset[position].getItemID() // shl 3 + layoutType
     override fun getItem(datasetPosition: Int): I = dataset[datasetPosition]
 
-    protected fun layoutRes()= ViewHolderTypes.layout(layoutType)
 
-    protected fun inflatedView(parent: ViewGroup, viewType: Int): View =
-        LayoutInflater.from(activity).inflate(layoutRes(), parent, false)
+    override fun getItemViewType(position: Int): Int = layoutType
+
+    protected open fun inflatedView(parent: ViewGroup, viewType: Int): View =
+        LayoutInflater.from(activity).inflate(layoutRes(viewType), parent, false)
+
+    private fun layoutRes(layoutType: Int) = ViewHolderTypes.layout(layoutType)
 
     override fun onBindViewHolder(holder: DisplayViewHolder<I>, position: Int) {
         val item: I = dataset[position]
@@ -63,8 +66,6 @@ abstract class DisplayAdapter<I : Displayable>(
 
     override fun getSectionName(position: Int): String =
         if (config.showSectionName) getSectionNameImp(position) else ""
-
-    override fun getItemViewType(position: Int): Int = layoutType
 
     // for inheriting
     open fun getSectionNameImp(position: Int): String =
