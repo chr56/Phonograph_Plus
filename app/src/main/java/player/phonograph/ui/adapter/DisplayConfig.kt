@@ -10,4 +10,5 @@ interface DisplayConfig {
 
     val showSectionName: Boolean
 
+    val useImageText: Boolean
 }

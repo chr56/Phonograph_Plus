@@ -12,9 +12,8 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableI
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.ui.adapter.DefaultDisplayConfig
+import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.adapter.DisplayConfig
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.adapter.ViewHolderTypes
 import player.phonograph.ui.adapter.hasMenu
@@ -33,8 +32,7 @@ import android.widget.PopupMenu
 
 class PlayingQueueAdapter(
     activity: FragmentActivity,
-    config: DisplayConfig = DefaultDisplayConfig,
-) : DisplayAdapter<Song>(activity, ViewHolderTypes.LIST, config, useImageText = true),
+) : DisplayAdapter<Song>(activity, ViewHolderTypes.LIST, ConstDisplayConfig(useImageText = true)),
     DraggableItemAdapter<PlayingQueueAdapter.PlayingQueueViewHolder> {
 
     var current: Int = -1

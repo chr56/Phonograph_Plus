@@ -24,7 +24,6 @@ abstract class DisplayAdapter<I : Displayable>(
     protected val activity: FragmentActivity,
     @ViewHolderType var layoutType: Int,
     var config: DisplayConfig,
-    val useImageText: Boolean = false,
 ) : RecyclerView.Adapter<DisplayAdapter.DisplayViewHolder<I>>(),
     FastScrollRecyclerView.SectionedAdapter,
     IMultiSelectableAdapter<I> {
@@ -59,7 +58,7 @@ abstract class DisplayAdapter<I : Displayable>(
 
     override fun onBindViewHolder(holder: DisplayViewHolder<I>, position: Int) {
         val item: I = dataset[position]
-        holder.bind(item, position, dataset, controller, useImageText, config.usePalette)
+        holder.bind(item, position, dataset, controller, config.useImageText, config.usePalette)
     }
 
     override fun getItemCount(): Int = dataset.size

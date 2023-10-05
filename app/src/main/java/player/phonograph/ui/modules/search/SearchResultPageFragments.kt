@@ -13,9 +13,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.adapter.ConstDisplayConfig
-import player.phonograph.ui.adapter.DefaultDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.adapter.DisplayConfig
 import player.phonograph.ui.adapter.ViewHolderTypes
 import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.ArtistDisplayAdapter
@@ -153,8 +151,12 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
     }
 
     class QueueSongAdapter(
-        activity: FragmentActivity, config: DisplayConfig = DefaultDisplayConfig,
-    ) : DisplayAdapter<QueueSong>(activity, ViewHolderTypes.LIST, config, useImageText = true) {
+        activity: FragmentActivity,
+    ) : DisplayAdapter<QueueSong>(
+        activity,
+        ViewHolderTypes.LIST,
+        ConstDisplayConfig(useImageText = true)
+    ) {
 
         override fun getSectionNameImp(position: Int): String {
             return dataset[position].index.toString()
