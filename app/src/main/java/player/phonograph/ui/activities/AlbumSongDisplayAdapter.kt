@@ -14,10 +14,9 @@ import android.view.ViewGroup
 
 class AlbumSongDisplayAdapter(
     activity: AppCompatActivity,
-    dataSet: List<Song>,
     layoutRes: Int,
     displayConfig: DisplayConfig
-) : SongDisplayAdapter(activity, dataSet, layoutRes, displayConfig, useImageText = false) {
+) : SongDisplayAdapter(activity, layoutRes, displayConfig, useImageText = false) {
 
     override fun getSectionNameImp(position: Int): String = getTrackNumber(dataset[position])
 

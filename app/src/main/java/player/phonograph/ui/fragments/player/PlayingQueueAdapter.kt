@@ -20,7 +20,7 @@ import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.adapter.hasMenu
 import player.phonograph.ui.adapter.initMenu
 import player.phonograph.util.ui.hitTest
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import android.annotation.SuppressLint
 import android.text.TextUtils
 import android.view.View
@@ -31,14 +31,12 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 
 class PlayingQueueAdapter(
-    activity: AppCompatActivity,
-    dataSet: List<Song>,
-    current: Int,
+    activity: FragmentActivity,
     config: DisplayConfig = DefaultDisplayConfig,
-) : DisplayAdapter<Song>(activity, dataSet, R.layout.item_list, config),
+) : DisplayAdapter<Song>(activity, R.layout.item_list, config),
     DraggableItemAdapter<PlayingQueueAdapter.PlayingQueueViewHolder> {
 
-    var current: Int = current
+    var current: Int = -1
         @SuppressLint("NotifyDataSetChanged") // number 0 is moving, meaning all items' number is changing
         set(value) {
             field = value

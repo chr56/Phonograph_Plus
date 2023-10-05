@@ -98,7 +98,7 @@ abstract class SearchResultPageFragment<T : Displayable> : Fragment() {
 class SongSearchResultPageFragment : SearchResultPageFragment<Song>() {
 
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Song> =
-        SongDisplayAdapter(activity, emptyList(), R.layout.item_list, ConstDisplayConfig(false))
+        SongDisplayAdapter(activity, R.layout.item_list, ConstDisplayConfig(false))
 
     override fun targetFlow(): StateFlow<List<Song>> = viewModel.songs
 
@@ -109,7 +109,7 @@ class SongSearchResultPageFragment : SearchResultPageFragment<Song>() {
 
 class AlbumSearchResultPageFragment : SearchResultPageFragment<Album>() {
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Album> =
-        AlbumDisplayAdapter(activity, emptyList(), R.layout.item_list, ConstDisplayConfig())
+        AlbumDisplayAdapter(activity, R.layout.item_list, ConstDisplayConfig())
 
     override fun targetFlow(): StateFlow<List<Album>> = viewModel.albums
 
@@ -120,7 +120,7 @@ class AlbumSearchResultPageFragment : SearchResultPageFragment<Album>() {
 
 class ArtistSearchResultPageFragment : SearchResultPageFragment<Artist>() {
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Artist> =
-        ArtistDisplayAdapter(activity, emptyList(), R.layout.item_list, ConstDisplayConfig())
+        ArtistDisplayAdapter(activity, R.layout.item_list, ConstDisplayConfig())
 
     override fun targetFlow(): StateFlow<List<Artist>> = viewModel.artists
 
@@ -144,7 +144,7 @@ class PlaylistSearchResultPageFragment : SearchResultPageFragment<Playlist>() {
 class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
 
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<QueueSong> =
-        QueueSongAdapter(activity, emptyList())
+        QueueSongAdapter(activity)
 
     override fun targetFlow(): StateFlow<List<QueueSong>> = viewModel.songsInQueue
 
@@ -153,8 +153,8 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
     }
 
     class QueueSongAdapter(
-        activity: FragmentActivity, dataSet: List<QueueSong>, config: DisplayConfig = DefaultDisplayConfig,
-    ) : DisplayAdapter<QueueSong>(activity, dataSet, R.layout.item_list, config, useImageText = true) {
+        activity: FragmentActivity, config: DisplayConfig = DefaultDisplayConfig,
+    ) : DisplayAdapter<QueueSong>(activity, R.layout.item_list, config, useImageText = true) {
 
         override fun getSectionNameImp(position: Int): String {
             return dataset[position].index.toString()

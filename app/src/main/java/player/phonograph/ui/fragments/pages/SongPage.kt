@@ -52,7 +52,6 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
 
         return SongDisplayAdapter(
             hostFragment.mainActivity,
-            ArrayList(), // empty until songs loaded
             layoutRes,
             ConstDisplayConfig(displayConfig.colorFooter)
         )

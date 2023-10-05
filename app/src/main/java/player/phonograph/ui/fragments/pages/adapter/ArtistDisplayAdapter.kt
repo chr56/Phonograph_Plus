@@ -23,10 +23,9 @@ import android.view.ViewGroup
 
 class ArtistDisplayAdapter(
     activity: AppCompatActivity,
-    dataSet: List<Artist>,
     layoutRes: Int,
     config: DisplayConfig,
-) : DisplayAdapter<Artist>(activity, dataSet, layoutRes, config) {
+) : DisplayAdapter<Artist>(activity, layoutRes, config) {
 
     override fun getSectionNameImp(position: Int): String {
         val artist = dataset[position]

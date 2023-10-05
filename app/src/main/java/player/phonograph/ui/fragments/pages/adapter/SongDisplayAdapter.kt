@@ -24,11 +24,10 @@ import android.view.ViewGroup
 
 open class SongDisplayAdapter(
     activity: AppCompatActivity,
-    dataSet: List<Song>,
     layoutRes: Int,
     displayConfig: DisplayConfig,
     useImageText: Boolean = false,
-) : DisplayAdapter<Song>(activity, dataSet, layoutRes, displayConfig, useImageText) {
+) : DisplayAdapter<Song>(activity, layoutRes, displayConfig, useImageText) {
 
 
     override fun getSectionNameImp(position: Int): String {

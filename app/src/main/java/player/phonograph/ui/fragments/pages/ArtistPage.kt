@@ -41,7 +41,6 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>>() {
 
         return ArtistDisplayAdapter(
             hostFragment.mainActivity,
-            ArrayList(), // empty until Artist loaded
             layoutRes,
             ConstDisplayConfig(displayConfig.colorFooter),
         )

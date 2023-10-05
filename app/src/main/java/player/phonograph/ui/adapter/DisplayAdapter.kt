@@ -23,7 +23,6 @@ import android.widget.PopupMenu
 
 abstract class DisplayAdapter<I : Displayable>(
     protected val activity: FragmentActivity,
-    dataSet: List<I>,
     @LayoutRes var layoutRes: Int,
     var config: DisplayConfig,
     val useImageText: Boolean = false,
@@ -31,7 +30,7 @@ abstract class DisplayAdapter<I : Displayable>(
     FastScrollRecyclerView.SectionedAdapter,
     IMultiSelectableAdapter<I> {
 
-    var dataset: List<I> = dataSet
+    var dataset: List<I> = emptyList()
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value

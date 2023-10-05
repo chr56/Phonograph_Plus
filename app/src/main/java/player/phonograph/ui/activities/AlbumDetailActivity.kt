@@ -100,7 +100,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         adapter =
             AlbumSongDisplayAdapter(
                 this,
-                Songs.album(this, model.album.value.id),
                 R.layout.item_list,
                 ConstDisplayConfig(false)
             )

@@ -28,7 +28,7 @@ import android.view.ViewGroup
 class PlaylistDisplayAdapter(
     activity: AppCompatActivity,
     config: DisplayConfig = DefaultDisplayConfig,
-) : DisplayAdapter<Playlist>(activity, ArrayList(), R.layout.item_list_single_row, config) {
+) : DisplayAdapter<Playlist>(activity, R.layout.item_list_single_row, config) {
 
     override fun getSectionNameImp(position: Int): String {
         val sortMode = Setting(activity).Composites[Keys.playlistSortMode].data

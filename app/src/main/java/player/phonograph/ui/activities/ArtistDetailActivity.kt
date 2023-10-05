@@ -93,7 +93,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         }
 
         songAdapter =
-            SongDisplayAdapter(this, emptyList(), R.layout.item_list, ConstDisplayConfig(false))
+            SongDisplayAdapter(this, R.layout.item_list, ConstDisplayConfig(false))
         with(viewBinding.songsRecycleView) {
             adapter = songAdapter
             layoutManager =
@@ -101,7 +101,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         }
 
         albumAdapter =
-            HorizontalAlbumDisplayAdapter(this, emptyList(), ConstDisplayConfig(usePalette))
+            HorizontalAlbumDisplayAdapter(this, ConstDisplayConfig(usePalette))
         with(viewBinding.albumRecycleView) {
             adapter = albumAdapter
             layoutManager = LinearLayoutManager(this@ArtistDetailActivity, HORIZONTAL, false)

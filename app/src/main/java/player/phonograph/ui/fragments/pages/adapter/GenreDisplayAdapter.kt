@@ -18,10 +18,9 @@ import android.view.ViewGroup
 
 class GenreDisplayAdapter(
     activity: AppCompatActivity,
-    dataSet: List<Genre>,
     layoutRes: Int,
     config: DisplayConfig = DefaultDisplayConfig,
-) : DisplayAdapter<Genre>(activity, dataSet, layoutRes, config) {
+) : DisplayAdapter<Genre>(activity, layoutRes, config) {
 
     override fun getSectionNameImp(position: Int): String {
         val sortMode = Setting(activity).Composites[Keys.genreSortMode].data

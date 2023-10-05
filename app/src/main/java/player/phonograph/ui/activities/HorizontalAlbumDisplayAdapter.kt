@@ -23,9 +23,8 @@ import android.view.ViewGroup.MarginLayoutParams
 
 class HorizontalAlbumDisplayAdapter(
     activity: AppCompatActivity,
-    dataSet: List<Album>,
     config: DisplayConfig,
-) : AlbumDisplayAdapter(activity, dataSet, R.layout.item_grid_card_horizontal, config) {
+) : AlbumDisplayAdapter(activity, R.layout.item_grid_card_horizontal, config) {
 
 
     override fun onBindViewHolder(holder: DisplayViewHolder<Album>, position: Int) {

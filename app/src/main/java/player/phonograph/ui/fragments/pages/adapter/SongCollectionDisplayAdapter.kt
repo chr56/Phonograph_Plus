@@ -19,11 +19,10 @@ import android.widget.ImageView
 
 class SongCollectionDisplayAdapter(
     activity: AppCompatActivity,
-    dataSet: List<SongCollection>,
     layoutRes: Int,
     config: DisplayConfig,
     val onClick: (bindingAdapterPosition: Int) -> Unit,
-) : DisplayAdapter<SongCollection>(activity, dataSet, layoutRes, config) {
+) : DisplayAdapter<SongCollection>(activity, layoutRes, config) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<SongCollection> =
         SongCollectionViewHolder(inflatedView(layoutRes, parent), onClick)

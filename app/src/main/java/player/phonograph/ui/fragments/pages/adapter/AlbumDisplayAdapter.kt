@@ -22,10 +22,9 @@ import android.view.ViewGroup
 
 open class AlbumDisplayAdapter(
     activity: AppCompatActivity,
-    dataSet: List<Album>,
     layoutRes: Int,
     config: DisplayConfig,
-) : DisplayAdapter<Album>(activity, dataSet, layoutRes, config) {
+) : DisplayAdapter<Album>(activity, layoutRes, config) {
 
     override fun getSectionNameImp(position: Int): String {
         val album = dataset[position]

@@ -40,7 +40,6 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
 
         return AlbumDisplayAdapter(
             hostFragment.mainActivity,
-            ArrayList(), // empty until Albums loaded
             layoutRes,
             ConstDisplayConfig(displayConfig.colorFooter),
         )

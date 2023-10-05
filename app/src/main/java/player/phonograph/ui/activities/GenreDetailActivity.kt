@@ -70,7 +70,6 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity() {
         adapter =
             SongDisplayAdapter(
                 this,
-                ArrayList(),
                 R.layout.item_list,
                 ConstDisplayConfig(usePalette = false, showSectionName = false)
             )

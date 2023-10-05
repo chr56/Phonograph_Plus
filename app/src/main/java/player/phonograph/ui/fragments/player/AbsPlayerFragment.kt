@@ -29,7 +29,6 @@ import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.warning
 import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.animation.doOnEnd
 import androidx.fragment.app.viewModels
@@ -86,11 +85,9 @@ abstract class AbsPlayerFragment :
 
     private fun initRecyclerView() {
         layoutManager = LinearLayoutManager(requireActivity())
-        playingQueueAdapter = PlayingQueueAdapter(
-            requireActivity() as AppCompatActivity,
-            MusicPlayerRemote.playingQueue,
-            MusicPlayerRemote.position
-        )
+        playingQueueAdapter = PlayingQueueAdapter(requireActivity())
+        playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
+        playingQueueAdapter.current = MusicPlayerRemote.position
         _recyclerViewDragDropManager = RecyclerViewDragDropManager()
         _wrappedAdapter = recyclerViewDragDropManager.createWrappedAdapter(playingQueueAdapter)
         implementRecyclerView()

@@ -192,7 +192,6 @@ class FlattenFolderPage : AbsPage() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         songCollectionDisplayAdapter = SongCollectionDisplayAdapter(
             hostFragment.mainActivity,
-            emptyList(),
             R.layout.item_list,
             DefaultDisplayConfig,
             ::onFolderClick
@@ -200,7 +199,6 @@ class FlattenFolderPage : AbsPage() {
 
         songAdapter = SongDisplayAdapter(
             hostFragment.mainActivity,
-            emptyList(),
             R.layout.item_list,
             ConstDisplayConfig(false)
         )
