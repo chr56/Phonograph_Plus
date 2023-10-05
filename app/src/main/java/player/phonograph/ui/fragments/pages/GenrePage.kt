@@ -37,9 +37,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
             hostFragment.mainActivity,
             ArrayList(), // empty until Genre loaded
             R.layout.item_list_no_image
-        ).apply {
-            showSectionName = true
-        }
+        )
     }
 
     override val availableSortRefs: Array<SortRef>

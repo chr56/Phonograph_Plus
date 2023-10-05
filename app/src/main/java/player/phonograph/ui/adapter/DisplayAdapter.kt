@@ -25,6 +25,7 @@ abstract class DisplayAdapter<I : Displayable>(
     protected val activity: FragmentActivity,
     dataSet: List<I>,
     @LayoutRes var layoutRes: Int,
+    val useImageText: Boolean = false,
 ) : RecyclerView.Adapter<DisplayAdapter.DisplayViewHolder<I>>(),
     FastScrollRecyclerView.SectionedAdapter,
     IMultiSelectableAdapter<I> {
@@ -42,8 +43,6 @@ abstract class DisplayAdapter<I : Displayable>(
     }
 
     var usePalette: Boolean = false
-
-    var useImageText: Boolean = false
 
     var showSectionName: Boolean = true
 

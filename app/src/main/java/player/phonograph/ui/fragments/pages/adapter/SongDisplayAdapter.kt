@@ -25,7 +25,8 @@ open class SongDisplayAdapter(
     activity: AppCompatActivity,
     dataSet: List<Song>,
     layoutRes: Int,
-) : DisplayAdapter<Song>(activity, dataSet, layoutRes) {
+    useImageText: Boolean = false
+) : DisplayAdapter<Song>(activity, dataSet, layoutRes, useImageText) {
 
 
     override fun getSectionNameImp(position: Int): String {

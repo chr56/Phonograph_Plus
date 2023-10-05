@@ -98,7 +98,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         // setUpSongsAdapter
         adapter =
             AlbumSongDisplayAdapter(this, Songs.album(this, model.album.value.id), R.layout.item_list).apply {
-                useImageText = true
                 usePalette = false
             }
         viewBinding.recyclerView.layoutManager = LinearLayoutManager(this)

@@ -15,7 +15,7 @@ class AlbumSongDisplayAdapter(
     activity: AppCompatActivity,
     dataSet: List<Song>,
     layoutRes: Int,
-) : SongDisplayAdapter(activity, dataSet, layoutRes) {
+) : SongDisplayAdapter(activity, dataSet, layoutRes, useImageText = false) {
 
     override fun getSectionNameImp(position: Int): String = getTrackNumber(dataset[position])
 

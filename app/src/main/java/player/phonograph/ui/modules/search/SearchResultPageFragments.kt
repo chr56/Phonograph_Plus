@@ -151,11 +151,7 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
 
     class QueueSongAdapter(
         activity: FragmentActivity, dataSet: List<QueueSong>,
-    ) : DisplayAdapter<QueueSong>(activity, dataSet, R.layout.item_list) {
-
-        init {
-            useImageText = true
-        }
+    ) : DisplayAdapter<QueueSong>(activity, dataSet, R.layout.item_list, useImageText = true) {
 
         override fun getSectionNameImp(position: Int): String {
             return dataset[position].index.toString()
