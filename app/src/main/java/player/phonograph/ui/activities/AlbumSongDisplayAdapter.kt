@@ -6,7 +6,7 @@ package player.phonograph.ui.activities
 
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
-import player.phonograph.ui.adapter.DisplayConfig
+import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.ViewHolderTypes
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import androidx.appcompat.app.AppCompatActivity
@@ -15,8 +15,7 @@ import android.view.ViewGroup
 
 class AlbumSongDisplayAdapter(
     activity: AppCompatActivity,
-    displayConfig: DisplayConfig
-) : SongDisplayAdapter(activity, ViewHolderTypes.LIST, displayConfig) {
+) : SongDisplayAdapter(activity, ConstDisplayConfig(ViewHolderTypes.LIST, false)) {
 
     override fun getSectionNameImp(position: Int): String = getTrackNumber(dataset[position])
 

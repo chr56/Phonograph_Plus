@@ -6,6 +6,8 @@ package player.phonograph.ui.adapter
 
 interface DisplayConfig {
 
+    @ViewHolderType val layoutType: Int
+
     val usePalette: Boolean
 
     val showSectionName: Boolean

@@ -70,8 +70,7 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity() {
         adapter =
             SongDisplayAdapter(
                 this,
-                ViewHolderTypes.LIST,
-                ConstDisplayConfig(usePalette = false, showSectionName = false)
+                ConstDisplayConfig(layoutType = ViewHolderTypes.LIST, usePalette = false, showSectionName = false)
             )
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@GenreDetailActivity)

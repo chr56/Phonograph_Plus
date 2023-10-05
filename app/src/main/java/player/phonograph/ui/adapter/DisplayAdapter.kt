@@ -22,7 +22,6 @@ import android.widget.PopupMenu
 
 abstract class DisplayAdapter<I : Displayable>(
     protected val activity: FragmentActivity,
-    @ViewHolderType var layoutType: Int,
     var config: DisplayConfig,
 ) : RecyclerView.Adapter<DisplayAdapter.DisplayViewHolder<I>>(),
     FastScrollRecyclerView.SectionedAdapter,
@@ -49,7 +48,7 @@ abstract class DisplayAdapter<I : Displayable>(
     override fun getItem(datasetPosition: Int): I = dataset[datasetPosition]
 
 
-    override fun getItemViewType(position: Int): Int = layoutType
+    override fun getItemViewType(position: Int): Int = config.layoutType
 
     protected open fun inflatedView(parent: ViewGroup, viewType: Int): View =
         LayoutInflater.from(activity).inflate(layoutRes(viewType), parent, false)

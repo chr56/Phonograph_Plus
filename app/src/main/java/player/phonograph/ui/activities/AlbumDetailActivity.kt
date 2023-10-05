@@ -22,7 +22,6 @@ import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
-import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.theme.getTintedDrawable
@@ -97,11 +96,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
             viewBinding.recyclerView.setPaddingTop(viewBinding.innerAppBar.totalScrollRange + verticalOffset)
         }
         // setUpSongsAdapter
-        adapter =
-            AlbumSongDisplayAdapter(
-                this,
-                ConstDisplayConfig(false)
-            )
+        adapter = AlbumSongDisplayAdapter(this)
         viewBinding.recyclerView.layoutManager = LinearLayoutManager(this)
         viewBinding.recyclerView.adapter = adapter
         adapter.registerAdapterDataObserver(object : AdapterDataObserver() {

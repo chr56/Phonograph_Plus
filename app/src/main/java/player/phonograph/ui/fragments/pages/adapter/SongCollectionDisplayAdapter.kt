@@ -8,8 +8,8 @@ import mt.util.color.primaryTextColor
 import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.model.SongCollection
+import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.adapter.DisplayConfig
 import player.phonograph.ui.adapter.ViewHolderTypes
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
@@ -20,9 +20,8 @@ import android.widget.ImageView
 
 class SongCollectionDisplayAdapter(
     activity: AppCompatActivity,
-    config: DisplayConfig,
     val onClick: (bindingAdapterPosition: Int) -> Unit,
-) : DisplayAdapter<SongCollection>(activity, ViewHolderTypes.LIST, config) {
+) : DisplayAdapter<SongCollection>(activity, ConstDisplayConfig(ViewHolderTypes.LIST)) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<SongCollection> =
         SongCollectionViewHolder(inflatedView(parent, viewType), onClick)

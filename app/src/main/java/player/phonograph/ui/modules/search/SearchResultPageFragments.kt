@@ -96,7 +96,7 @@ abstract class SearchResultPageFragment<T : Displayable> : Fragment() {
 class SongSearchResultPageFragment : SearchResultPageFragment<Song>() {
 
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Song> =
-        SongDisplayAdapter(activity, ViewHolderTypes.LIST, ConstDisplayConfig(false))
+        SongDisplayAdapter(activity, ConstDisplayConfig(ViewHolderTypes.LIST, false))
 
     override fun targetFlow(): StateFlow<List<Song>> = viewModel.songs
 
@@ -107,7 +107,7 @@ class SongSearchResultPageFragment : SearchResultPageFragment<Song>() {
 
 class AlbumSearchResultPageFragment : SearchResultPageFragment<Album>() {
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Album> =
-        AlbumDisplayAdapter(activity, ViewHolderTypes.LIST, ConstDisplayConfig())
+        AlbumDisplayAdapter(activity, ConstDisplayConfig(ViewHolderTypes.LIST))
 
     override fun targetFlow(): StateFlow<List<Album>> = viewModel.albums
 
@@ -118,7 +118,7 @@ class AlbumSearchResultPageFragment : SearchResultPageFragment<Album>() {
 
 class ArtistSearchResultPageFragment : SearchResultPageFragment<Artist>() {
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Artist> =
-        ArtistDisplayAdapter(activity, ViewHolderTypes.LIST, ConstDisplayConfig())
+        ArtistDisplayAdapter(activity, ConstDisplayConfig(ViewHolderTypes.LIST))
 
     override fun targetFlow(): StateFlow<List<Artist>> = viewModel.artists
 
@@ -153,9 +153,7 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
     class QueueSongAdapter(
         activity: FragmentActivity,
     ) : DisplayAdapter<QueueSong>(
-        activity,
-        ViewHolderTypes.LIST,
-        ConstDisplayConfig(useImageText = true)
+        activity, ConstDisplayConfig(layoutType = ViewHolderTypes.LIST, useImageText = true)
     ) {
 
         override fun getSectionNameImp(position: Int): String {

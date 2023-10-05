@@ -61,7 +61,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         set(value) {
             field = value
             Setting(App.instance)[Keys.albumArtistColoredFooters].data = usePalette
-            albumAdapter.config = ConstDisplayConfig(usePalette)
+            albumAdapter.config = ConstDisplayConfig(ViewHolderTypes.LIST, usePalette)
             val dataset = albumAdapter.dataset
             synchronized(albumAdapter) {
                 albumAdapter.dataset = emptyList()
@@ -94,7 +94,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         }
 
         songAdapter =
-            SongDisplayAdapter(this, ViewHolderTypes.LIST, ConstDisplayConfig(false))
+            SongDisplayAdapter(this, ConstDisplayConfig(ViewHolderTypes.LIST, false))
         with(viewBinding.songsRecycleView) {
             adapter = songAdapter
             layoutManager =
@@ -102,7 +102,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         }
 
         albumAdapter =
-            HorizontalAlbumDisplayAdapter(this, ConstDisplayConfig(usePalette))
+            HorizontalAlbumDisplayAdapter(this)
         with(viewBinding.albumRecycleView) {
             adapter = albumAdapter
             layoutManager = LinearLayoutManager(this@ArtistDetailActivity, HORIZONTAL, false)

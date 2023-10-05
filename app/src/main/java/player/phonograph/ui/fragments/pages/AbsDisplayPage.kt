@@ -244,8 +244,8 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
             displayConfig.gridSize = gridSizeSelected
             val itemLayoutType = displayConfig.layoutType(gridSizeSelected)
 
-            if (adapter.layoutType != itemLayoutType) {
-                adapter.layoutType = itemLayoutType
+            if (adapter.config.layoutType != itemLayoutType) {
+                adapter.config = ConstDisplayConfig(itemLayoutType, adapter.config.usePalette)
                 adapter.notifyDataSetChanged()
             }
             layoutManager.spanCount = gridSizeSelected
@@ -256,7 +256,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
             val coloredFootersSelected = popup.colorFooter
             if (displayConfig.colorFooter != coloredFootersSelected) {
                 displayConfig.colorFooter = coloredFootersSelected
-                adapter.config = ConstDisplayConfig(coloredFootersSelected)
+                adapter.config = ConstDisplayConfig(adapter.config.layoutType, coloredFootersSelected)
                 adapter.notifyDataSetChanged()
             }
         }

@@ -32,7 +32,7 @@ import android.widget.PopupMenu
 
 class PlayingQueueAdapter(
     activity: FragmentActivity,
-) : DisplayAdapter<Song>(activity, ViewHolderTypes.LIST, ConstDisplayConfig(useImageText = true)),
+) : DisplayAdapter<Song>(activity, ConstDisplayConfig(layoutType = ViewHolderTypes.LIST, useImageText = true)),
     DraggableItemAdapter<PlayingQueueAdapter.PlayingQueueViewHolder> {
 
     var current: Int = -1

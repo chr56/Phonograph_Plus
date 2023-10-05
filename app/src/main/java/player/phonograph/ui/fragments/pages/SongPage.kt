@@ -52,8 +52,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
 
         return SongDisplayAdapter(
             hostFragment.mainActivity,
-            layoutType,
-            ConstDisplayConfig(displayConfig.colorFooter)
+            ConstDisplayConfig(layoutType, displayConfig.colorFooter)
         )
     }
 
