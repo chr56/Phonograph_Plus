@@ -246,7 +246,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
 
             if (adapter.layoutType != itemLayoutType) {
                 adapter.layoutType = itemLayoutType
-                refreshAllViewHolder()
+                adapter.notifyDataSetChanged()
             }
             layoutManager.spanCount = gridSizeSelected
         }
