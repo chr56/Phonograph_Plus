@@ -14,7 +14,6 @@ import player.phonograph.model.Song
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
@@ -52,7 +51,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
 
         return SongDisplayAdapter(
             hostFragment.mainActivity,
-            ConstDisplayConfig(layoutType, displayConfig.colorFooter)
+            adapterDisplayConfig.copy(layoutType = layoutType, usePalette = displayConfig.colorFooter),
         )
     }
 

@@ -18,6 +18,7 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.ViewHolderTypes
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
@@ -163,6 +164,8 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
 
     internal abstract val displayConfigTarget: DisplayConfigTarget
 
+    protected var adapterDisplayConfig: ConstDisplayConfig = ConstDisplayConfig(ViewHolderTypes.LIST)
+
     private fun initAppBar() {
 
         binding.panel.setExpanded(false)
@@ -244,8 +247,9 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
             displayConfig.gridSize = gridSizeSelected
             val itemLayoutType = displayConfig.layoutType(gridSizeSelected)
 
-            if (adapter.config.layoutType != itemLayoutType) {
-                adapter.config = ConstDisplayConfig(itemLayoutType, adapter.config.usePalette)
+            if (adapterDisplayConfig.layoutType != itemLayoutType) {
+                adapterDisplayConfig = adapterDisplayConfig.copy(layoutType = itemLayoutType)
+                adapter.config = adapterDisplayConfig
                 adapter.notifyDataSetChanged()
             }
             layoutManager.spanCount = gridSizeSelected
@@ -256,7 +260,8 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
             val coloredFootersSelected = popup.colorFooter
             if (displayConfig.colorFooter != coloredFootersSelected) {
                 displayConfig.colorFooter = coloredFootersSelected
-                adapter.config = ConstDisplayConfig(adapter.config.layoutType, coloredFootersSelected)
+                adapterDisplayConfig = adapterDisplayConfig.copy(useImageText = coloredFootersSelected)
+                adapter.config = adapterDisplayConfig
                 adapter.notifyDataSetChanged()
             }
         }
