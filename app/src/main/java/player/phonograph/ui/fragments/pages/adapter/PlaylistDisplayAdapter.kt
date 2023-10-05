@@ -13,7 +13,9 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.ui.adapter.DefaultDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.DisplayConfig
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -25,7 +27,8 @@ import android.view.ViewGroup
 
 class PlaylistDisplayAdapter(
     activity: AppCompatActivity,
-) : DisplayAdapter<Playlist>(activity, ArrayList(), R.layout.item_list_single_row) {
+    config: DisplayConfig = DefaultDisplayConfig,
+) : DisplayAdapter<Playlist>(activity, ArrayList(), R.layout.item_list_single_row, config) {
 
     override fun getSectionNameImp(position: Int): String {
         val sortMode = Setting(activity).Composites[Keys.playlistSortMode].data
@@ -67,10 +70,10 @@ class PlaylistDisplayAdapter(
         }
 
         private fun getIconRes(playlist: Playlist): Int = when {
-            playlist is SmartPlaylist                               -> playlist.iconRes
-            favoritesStore.containsPlaylist(playlist)               -> R.drawable.ic_pin_white_24dp
+            playlist is SmartPlaylist                      -> playlist.iconRes
+            favoritesStore.containsPlaylist(playlist)      -> R.drawable.ic_pin_white_24dp
             isFavoritePlaylist(itemView.context, playlist) -> R.drawable.ic_favorite_white_24dp
-            else                                                    -> R.drawable.ic_queue_music_white_24dp
+            else                                           -> R.drawable.ic_queue_music_white_24dp
         }
 
         companion object {

@@ -25,6 +25,7 @@ abstract class DisplayAdapter<I : Displayable>(
     protected val activity: FragmentActivity,
     dataSet: List<I>,
     @LayoutRes var layoutRes: Int,
+    var config: DisplayConfig,
     val useImageText: Boolean = false,
 ) : RecyclerView.Adapter<DisplayAdapter.DisplayViewHolder<I>>(),
     FastScrollRecyclerView.SectionedAdapter,
@@ -42,11 +43,6 @@ abstract class DisplayAdapter<I : Displayable>(
         setHasStableIds(true)
     }
 
-    var usePalette: Boolean = false
-
-    var showSectionName: Boolean = true
-
-
     protected val controller: MultiSelectionController<I>
             by lazy { MultiSelectionController(this, activity, allowMultiSelection) }
 
@@ -60,13 +56,13 @@ abstract class DisplayAdapter<I : Displayable>(
 
     override fun onBindViewHolder(holder: DisplayViewHolder<I>, position: Int) {
         val item: I = dataset[position]
-        holder.bind(item, position, dataset, controller, useImageText, usePalette)
+        holder.bind(item, position, dataset, controller, useImageText, config.usePalette)
     }
 
     override fun getItemCount(): Int = dataset.size
 
     override fun getSectionName(position: Int): String =
-        if (showSectionName) getSectionNameImp(position) else ""
+        if (config.showSectionName) getSectionNameImp(position) else ""
 
     // for inheriting
     open fun getSectionNameImp(position: Int): String =

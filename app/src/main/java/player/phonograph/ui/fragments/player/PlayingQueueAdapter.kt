@@ -13,7 +13,9 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.ui.adapter.DefaultDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.DisplayConfig
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.adapter.hasMenu
 import player.phonograph.ui.adapter.initMenu
@@ -32,7 +34,8 @@ class PlayingQueueAdapter(
     activity: AppCompatActivity,
     dataSet: List<Song>,
     current: Int,
-) : DisplayAdapter<Song>(activity, dataSet, R.layout.item_list),
+    config: DisplayConfig = DefaultDisplayConfig,
+) : DisplayAdapter<Song>(activity, dataSet, R.layout.item_list, config),
     DraggableItemAdapter<PlayingQueueAdapter.PlayingQueueViewHolder> {
 
     var current: Int = current

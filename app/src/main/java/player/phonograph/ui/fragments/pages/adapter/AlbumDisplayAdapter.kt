@@ -14,6 +14,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.DisplayConfig
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
@@ -23,7 +24,8 @@ open class AlbumDisplayAdapter(
     activity: AppCompatActivity,
     dataSet: List<Album>,
     layoutRes: Int,
-) : DisplayAdapter<Album>(activity, dataSet, layoutRes) {
+    config: DisplayConfig,
+) : DisplayAdapter<Album>(activity, dataSet, layoutRes, config) {
 
     override fun getSectionNameImp(position: Int): String {
         val album = dataset[position]

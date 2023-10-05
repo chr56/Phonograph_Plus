@@ -15,6 +15,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.DisplayConfig
 import player.phonograph.util.text.dateTextShortText
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
@@ -25,8 +26,9 @@ open class SongDisplayAdapter(
     activity: AppCompatActivity,
     dataSet: List<Song>,
     layoutRes: Int,
-    useImageText: Boolean = false
-) : DisplayAdapter<Song>(activity, dataSet, layoutRes, useImageText) {
+    displayConfig: DisplayConfig,
+    useImageText: Boolean = false,
+) : DisplayAdapter<Song>(activity, dataSet, layoutRes, displayConfig, useImageText) {
 
 
     override fun getSectionNameImp(position: Int): String {

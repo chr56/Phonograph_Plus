@@ -9,6 +9,7 @@ import player.phonograph.R
 import player.phonograph.model.Artist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.loader.Artists
+import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.ArtistDisplayAdapter
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
@@ -41,10 +42,9 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>>() {
         return ArtistDisplayAdapter(
             hostFragment.mainActivity,
             ArrayList(), // empty until Artist loaded
-            layoutRes
-        ).apply {
-            usePalette = displayConfig.colorFooter
-        }
+            layoutRes,
+            ConstDisplayConfig(displayConfig.colorFooter),
+        )
     }
 
     override val availableSortRefs: Array<SortRef>

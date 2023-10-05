@@ -9,6 +9,7 @@ import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.model.SongCollection
 import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.DisplayConfig
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.appcompat.app.AppCompatActivity
@@ -20,8 +21,9 @@ class SongCollectionDisplayAdapter(
     activity: AppCompatActivity,
     dataSet: List<SongCollection>,
     layoutRes: Int,
+    config: DisplayConfig,
     val onClick: (bindingAdapterPosition: Int) -> Unit,
-) : DisplayAdapter<SongCollection>(activity, dataSet, layoutRes) {
+) : DisplayAdapter<SongCollection>(activity, dataSet, layoutRes, config) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<SongCollection> =
         SongCollectionViewHolder(inflatedView(layoutRes, parent), onClick)

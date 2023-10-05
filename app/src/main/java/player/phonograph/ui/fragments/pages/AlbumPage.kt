@@ -8,6 +8,7 @@ import player.phonograph.R
 import player.phonograph.model.Album
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.loader.Albums
+import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
@@ -40,10 +41,9 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
         return AlbumDisplayAdapter(
             hostFragment.mainActivity,
             ArrayList(), // empty until Albums loaded
-            layoutRes
-        ).apply {
-            usePalette = displayConfig.colorFooter
-        }
+            layoutRes,
+            ConstDisplayConfig(displayConfig.colorFooter),
+        )
     }
 
     override val availableSortRefs: Array<SortRef>

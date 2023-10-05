@@ -16,6 +16,8 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.ui.adapter.ConstDisplayConfig
+import player.phonograph.ui.adapter.DefaultDisplayConfig
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.adapter.SongCollectionDisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
@@ -192,6 +194,7 @@ class FlattenFolderPage : AbsPage() {
             hostFragment.mainActivity,
             emptyList(),
             R.layout.item_list,
+            DefaultDisplayConfig,
             ::onFolderClick
         )
 
@@ -199,6 +202,7 @@ class FlattenFolderPage : AbsPage() {
             hostFragment.mainActivity,
             emptyList(),
             R.layout.item_list,
+            ConstDisplayConfig(false)
         )
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(

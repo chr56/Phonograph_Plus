@@ -8,7 +8,9 @@ import player.phonograph.model.Genre
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.ui.adapter.DefaultDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.DisplayConfig
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
@@ -18,7 +20,8 @@ class GenreDisplayAdapter(
     activity: AppCompatActivity,
     dataSet: List<Genre>,
     layoutRes: Int,
-) : DisplayAdapter<Genre>(activity, dataSet, layoutRes) {
+    config: DisplayConfig = DefaultDisplayConfig,
+) : DisplayAdapter<Genre>(activity, dataSet, layoutRes, config) {
 
     override fun getSectionNameImp(position: Int): String {
         val sortMode = Setting(activity).Composites[Keys.genreSortMode].data
