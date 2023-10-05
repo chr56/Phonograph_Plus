@@ -16,8 +16,8 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
-import player.phonograph.ui.fragments.pages.util.DisplayConfig
-import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
+import player.phonograph.ui.fragments.pages.util.PageDisplayConfig
+import player.phonograph.ui.fragments.pages.util.SongPageDisplayConfig
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.appcompat.widget.Toolbar
@@ -42,16 +42,13 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
         override val headerTextRes: Int get() = R.plurals.item_songs
     }
 
-    override val displayConfigTarget get() = DisplayConfigTarget.SongPage
+
+    override val displayConfig: PageDisplayConfig = SongPageDisplayConfig
 
     override fun initAdapter(): DisplayAdapter<Song> {
-        val displayConfig = DisplayConfig(displayConfigTarget)
-
-        val layoutType = displayConfig.layoutType(displayConfig.gridSize)
-
         return SongDisplayAdapter(
             hostFragment.mainActivity,
-            adapterDisplayConfig.copy(layoutType = layoutType, usePalette = displayConfig.colorFooter),
+            adapterDisplayConfig.copy(layoutType = displayConfig.layoutType, usePalette = displayConfig.colorFooter),
         )
     }
 

@@ -11,8 +11,8 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.loader.Artists
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.ArtistDisplayAdapter
-import player.phonograph.ui.fragments.pages.util.DisplayConfig
-import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
+import player.phonograph.ui.fragments.pages.util.ArtistPageDisplayConfig
+import player.phonograph.ui.fragments.pages.util.PageDisplayConfig
 import androidx.fragment.app.viewModels
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
@@ -31,16 +31,12 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>>() {
         override val headerTextRes: Int get() = R.plurals.item_artists
     }
 
-    override val displayConfigTarget get() = DisplayConfigTarget.ArtistPage
+    override val displayConfig: PageDisplayConfig = ArtistPageDisplayConfig
 
     override fun initAdapter(): DisplayAdapter<Artist> {
-        val displayConfig = DisplayConfig(displayConfigTarget)
-
-        val layoutType = displayConfig.layoutType(displayConfig.gridSize)
-
         return ArtistDisplayAdapter(
             hostFragment.mainActivity,
-            adapterDisplayConfig.copy(layoutType = layoutType, usePalette = displayConfig.colorFooter)
+            adapterDisplayConfig.copy(layoutType = displayConfig.layoutType, usePalette = displayConfig.colorFooter),
         )
     }
 

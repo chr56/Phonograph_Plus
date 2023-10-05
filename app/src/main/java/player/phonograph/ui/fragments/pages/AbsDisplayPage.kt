@@ -20,8 +20,7 @@ import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.ViewHolderTypes
 import player.phonograph.ui.components.popup.ListOptionsPopup
-import player.phonograph.ui.fragments.pages.util.DisplayConfig
-import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
+import player.phonograph.ui.fragments.pages.util.PageDisplayConfig
 import player.phonograph.util.debug
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
@@ -131,7 +130,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
 
     private fun initRecyclerView() {
 
-        layoutManager = GridLayoutManager(hostFragment.requireContext(), DisplayConfig(displayConfigTarget).gridSize)
+        layoutManager = GridLayoutManager(hostFragment.requireContext(), displayConfig.gridSize)
         adapter = initAdapter()
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(
@@ -162,7 +161,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         layoutManager.requestLayout()
     }
 
-    internal abstract val displayConfigTarget: DisplayConfigTarget
+    protected abstract val displayConfig: PageDisplayConfig
 
     protected var adapterDisplayConfig: ConstDisplayConfig = ConstDisplayConfig(ViewHolderTypes.LIST)
 
@@ -202,11 +201,14 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
     protected open fun configAppBar(panelToolbar: Toolbar) {}
 
     private fun configPopup(popup: ListOptionsPopup) {
-        val displayConfig = DisplayConfig(displayConfigTarget)
 
         // grid size
-        if (isLandscape(resources)) popup.viewBinding.titleGridSize.text =
-            resources.getText(R.string.action_grid_size_land)
+        popup.viewBinding.titleGridSize.text =
+            if (isLandscape(resources)) {
+                resources.getText(R.string.action_grid_size_land)
+            } else {
+                resources.getText(R.string.action_grid_size)
+            }
         popup.maxGridSize = displayConfig.maxGridSize
         popup.gridSize = displayConfig.gridSize
 
@@ -237,18 +239,16 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
     @SuppressLint("NotifyDataSetChanged")
     protected fun dismissPopup(popup: ListOptionsPopup) {
 
-        val displayConfig = DisplayConfig(displayConfigTarget)
-
         //  Grid Size
         val gridSizeSelected = popup.gridSize
 
         if (gridSizeSelected > 0 && gridSizeSelected != displayConfig.gridSize) {
 
             displayConfig.gridSize = gridSizeSelected
-            val itemLayoutType = displayConfig.layoutType(gridSizeSelected)
+            val targetLayoutType = displayConfig.layoutType(gridSizeSelected)
 
-            if (adapterDisplayConfig.layoutType != itemLayoutType) {
-                adapterDisplayConfig = adapterDisplayConfig.copy(layoutType = itemLayoutType)
+            if (adapter.config.layoutType != targetLayoutType) {
+                adapterDisplayConfig = adapterDisplayConfig.copy(layoutType = targetLayoutType)
                 adapter.config = adapterDisplayConfig
                 adapter.notifyDataSetChanged()
             }

@@ -10,7 +10,8 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.loader.Genres
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.GenreDisplayAdapter
-import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
+import player.phonograph.ui.fragments.pages.util.GenrePageDisplayConfig
+import player.phonograph.ui.fragments.pages.util.PageDisplayConfig
 import androidx.fragment.app.viewModels
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
@@ -29,8 +30,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
         override val headerTextRes: Int get() = R.plurals.item_genres
     }
 
-
-    override val displayConfigTarget get() = DisplayConfigTarget.GenrePage
+    override val displayConfig: PageDisplayConfig = GenrePageDisplayConfig
 
     override fun initAdapter(): DisplayAdapter<Genre> {
         return GenreDisplayAdapter(hostFragment.mainActivity)

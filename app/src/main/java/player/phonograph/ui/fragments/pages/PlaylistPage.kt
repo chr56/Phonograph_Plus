@@ -22,7 +22,8 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.dialogs.CreatePlaylistDialog
 import player.phonograph.ui.fragments.pages.adapter.PlaylistDisplayAdapter
-import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
+import player.phonograph.ui.fragments.pages.util.PageDisplayConfig
+import player.phonograph.ui.fragments.pages.util.PlaylistPageDisplayConfig
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.content.Context
@@ -85,7 +86,8 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
     }
     //endregion
 
-    override val displayConfigTarget: DisplayConfigTarget get() = DisplayConfigTarget.PlaylistPage
+
+    override val displayConfig: PageDisplayConfig = PlaylistPageDisplayConfig
 
     override fun initAdapter(): DisplayAdapter<Playlist> {
         return PlaylistDisplayAdapter(

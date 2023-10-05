@@ -10,8 +10,8 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.loader.Albums
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
-import player.phonograph.ui.fragments.pages.util.DisplayConfig
-import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
+import player.phonograph.ui.fragments.pages.util.AlbumPageDisplayConfig
+import player.phonograph.ui.fragments.pages.util.PageDisplayConfig
 import androidx.fragment.app.viewModels
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
@@ -30,16 +30,12 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
         override val headerTextRes: Int get() = R.plurals.item_albums
     }
 
-    override val displayConfigTarget get() = DisplayConfigTarget.AlbumPage
+    override val displayConfig: PageDisplayConfig = AlbumPageDisplayConfig
 
     override fun initAdapter(): DisplayAdapter<Album> {
-        val displayConfig = DisplayConfig(displayConfigTarget)
-
-        val layoutType = displayConfig.layoutType(displayConfig.gridSize)
-
         return AlbumDisplayAdapter(
             hostFragment.mainActivity,
-            adapterDisplayConfig.copy(layoutType = layoutType, usePalette = displayConfig.colorFooter),
+            adapterDisplayConfig.copy(layoutType = displayConfig.layoutType, usePalette = displayConfig.colorFooter),
         )
     }
 
