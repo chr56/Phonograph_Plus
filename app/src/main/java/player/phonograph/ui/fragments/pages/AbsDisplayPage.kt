@@ -23,7 +23,6 @@ import player.phonograph.ui.fragments.pages.util.PageDisplayConfig
 import player.phonograph.util.debug
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
-import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.Toolbar
@@ -200,35 +199,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
     protected open fun configAppBar(panelToolbar: Toolbar) {}
 
     private fun configPopup(popup: ListOptionsPopup) {
-        val displayConfig = displayConfig()
-
-        // grid size
-        popup.viewBinding.titleGridSize.text =
-            if (isLandscape(resources)) {
-                resources.getText(R.string.action_grid_size_land)
-            } else {
-                resources.getText(R.string.action_grid_size)
-            }
-        popup.maxGridSize = displayConfig.maxGridSize
-        popup.gridSize = displayConfig.gridSize
-
-        // color footer
-        if (displayConfig.allowColoredFooter) {
-            popup.colorFooterVisibility = true
-            popup.colorFooterEnability = displayConfig.gridMode(displayConfig.gridSize)
-            popup.colorFooter = displayConfig.colorFooter
-        }
-
-        // sort order
-        if (displayConfig.availableSortRefs.isNotEmpty()) {
-            val currentSortMode = displayConfig.sortMode
-
-            popup.sortRef = currentSortMode.sortRef
-            popup.sortRefAvailable = displayConfig.availableSortRefs
-
-            popup.allowRevert = displayConfig.allowRevertSort
-            popup.revert = currentSortMode.revert
-        }
+        popup.setup(displayConfig())
     }
 
     @SuppressLint("NotifyDataSetChanged")
