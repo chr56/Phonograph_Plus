@@ -31,9 +31,10 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>>() {
         override val headerTextRes: Int get() = R.plurals.item_artists
     }
 
-    override val displayConfig: PageDisplayConfig = ArtistPageDisplayConfig
+    override fun displayConfig(): PageDisplayConfig = ArtistPageDisplayConfig(requireContext())
 
     override fun initAdapter(): DisplayAdapter<Artist> {
+        val displayConfig = displayConfig()
         return ArtistDisplayAdapter(
             hostFragment.mainActivity,
             adapterDisplayConfig.copy(layoutType = displayConfig.layoutType, usePalette = displayConfig.colorFooter),

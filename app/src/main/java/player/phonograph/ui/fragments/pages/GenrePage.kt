@@ -30,7 +30,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
         override val headerTextRes: Int get() = R.plurals.item_genres
     }
 
-    override val displayConfig: PageDisplayConfig = GenrePageDisplayConfig
+    override fun displayConfig(): PageDisplayConfig = GenrePageDisplayConfig(requireContext())
 
     override fun initAdapter(): DisplayAdapter<Genre> {
         return GenreDisplayAdapter(hostFragment.mainActivity)

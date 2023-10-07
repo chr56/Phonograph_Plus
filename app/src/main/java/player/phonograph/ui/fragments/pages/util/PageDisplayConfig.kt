@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.fragments.pages.util
 
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.sort.SortMode
 import player.phonograph.settings.Keys
@@ -13,10 +12,13 @@ import player.phonograph.ui.adapter.ViewHolderType
 import player.phonograph.ui.adapter.ViewHolderTypes
 import player.phonograph.util.debug
 import player.phonograph.util.ui.isLandscape
+import android.content.Context
+import android.content.res.Resources
 import android.util.Log
 
-sealed class PageDisplayConfig {
+sealed class PageDisplayConfig(context: Context) {
 
+    protected val res: Resources = context.resources
     protected val isLandscape: Boolean get() = isLandscape(res)
 
     @ViewHolderType
@@ -54,13 +56,12 @@ sealed class PageDisplayConfig {
             false
         }
 
-    internal val pref get() = DisplaySetting(App.instance)
-    protected val setting get() = Setting(App.instance).Composites
-    protected val res get() = App.instance.resources
+    internal val pref = DisplaySetting(context)
+    protected val setting = Setting(context).Composites
 
 }
 
-sealed class ImagePageDisplayConfig : PageDisplayConfig() {
+sealed class ImagePageDisplayConfig(context: Context) : PageDisplayConfig(context) {
 
     override val listLayoutType: Int = ViewHolderTypes.LIST
 
@@ -71,7 +72,7 @@ sealed class ImagePageDisplayConfig : PageDisplayConfig() {
 
 }
 
-object SongPageDisplayConfig : ImagePageDisplayConfig() {
+class SongPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context) {
 
     override var gridSize: Int
         get() = if (isLandscape) pref.songGridSizeLand else pref.songGridSize
@@ -93,7 +94,7 @@ object SongPageDisplayConfig : ImagePageDisplayConfig() {
 
 }
 
-object AlbumPageDisplayConfig : ImagePageDisplayConfig() {
+class AlbumPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context) {
 
     override var gridSize: Int
         get() = if (isLandscape) pref.albumGridSizeLand else pref.albumGridSize
@@ -115,7 +116,7 @@ object AlbumPageDisplayConfig : ImagePageDisplayConfig() {
 
 }
 
-object ArtistPageDisplayConfig : ImagePageDisplayConfig() {
+class ArtistPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context) {
 
     override var gridSize: Int
         get() = if (isLandscape) pref.artistGridSizeLand else pref.artistGridSize
@@ -137,7 +138,7 @@ object ArtistPageDisplayConfig : ImagePageDisplayConfig() {
 
 }
 
-object PlaylistPageDisplayConfig : PageDisplayConfig() {
+class PlaylistPageDisplayConfig(context: Context) : PageDisplayConfig(context) {
 
     override val listLayoutType: Int = ViewHolderTypes.LIST_SINGLE_ROW
 
@@ -152,7 +153,7 @@ object PlaylistPageDisplayConfig : PageDisplayConfig() {
     override var colorFooter: Boolean = false
 }
 
-object GenrePageDisplayConfig : PageDisplayConfig() {
+class GenrePageDisplayConfig(context: Context) : PageDisplayConfig(context) {
 
     override val listLayoutType: Int = ViewHolderTypes.LIST_NO_IMAGE
 

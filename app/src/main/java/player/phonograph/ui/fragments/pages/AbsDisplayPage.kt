@@ -130,7 +130,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
 
     private fun initRecyclerView() {
 
-        layoutManager = GridLayoutManager(hostFragment.requireContext(), displayConfig.gridSize)
+        layoutManager = GridLayoutManager(hostFragment.requireContext(), displayConfig().gridSize)
         adapter = initAdapter()
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(
@@ -161,7 +161,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         layoutManager.requestLayout()
     }
 
-    protected abstract val displayConfig: PageDisplayConfig
+    protected abstract fun displayConfig(): PageDisplayConfig
 
     protected var adapterDisplayConfig: ConstDisplayConfig = ConstDisplayConfig(ViewHolderTypes.LIST)
 
@@ -201,6 +201,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
     protected open fun configAppBar(panelToolbar: Toolbar) {}
 
     private fun configPopup(popup: ListOptionsPopup) {
+        val displayConfig = displayConfig()
 
         // grid size
         popup.viewBinding.titleGridSize.text =
@@ -238,6 +239,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
 
     @SuppressLint("NotifyDataSetChanged")
     protected fun dismissPopup(popup: ListOptionsPopup) {
+        val displayConfig = displayConfig()
 
         //  Grid Size
         val gridSizeSelected = popup.gridSize

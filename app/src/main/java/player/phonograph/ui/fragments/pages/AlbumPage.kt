@@ -30,9 +30,10 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
         override val headerTextRes: Int get() = R.plurals.item_albums
     }
 
-    override val displayConfig: PageDisplayConfig = AlbumPageDisplayConfig
+    override fun displayConfig(): PageDisplayConfig = AlbumPageDisplayConfig(requireContext())
 
     override fun initAdapter(): DisplayAdapter<Album> {
+        val displayConfig = displayConfig()
         return AlbumDisplayAdapter(
             hostFragment.mainActivity,
             adapterDisplayConfig.copy(layoutType = displayConfig.layoutType, usePalette = displayConfig.colorFooter),

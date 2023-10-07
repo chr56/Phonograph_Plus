@@ -138,7 +138,7 @@ class FlattenFolderPage : AbsPage() {
     }
 
     private fun configPopupSongs(popup: ListOptionsPopup) {
-        val displayConfig = SongPageDisplayConfig
+        val displayConfig = SongPageDisplayConfig(requireContext())
         val currentSortMode = displayConfig.sortMode
 
         popup.allowRevert = true
@@ -171,7 +171,7 @@ class FlattenFolderPage : AbsPage() {
     }
 
     private fun dismissPopupSongs(popup: ListOptionsPopup) {
-        val displayConfig = SongPageDisplayConfig
+        val displayConfig = SongPageDisplayConfig(requireContext())
 
         val selected = SortMode(popup.sortRef, popup.revert)
         if (displayConfig.sortMode != selected) {

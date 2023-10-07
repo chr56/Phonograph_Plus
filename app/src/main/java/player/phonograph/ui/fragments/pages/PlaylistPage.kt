@@ -87,7 +87,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
     //endregion
 
 
-    override val displayConfig: PageDisplayConfig = PlaylistPageDisplayConfig
+    override fun displayConfig(): PageDisplayConfig = PlaylistPageDisplayConfig(requireContext())
 
     override fun initAdapter(): DisplayAdapter<Playlist> {
         return PlaylistDisplayAdapter(
