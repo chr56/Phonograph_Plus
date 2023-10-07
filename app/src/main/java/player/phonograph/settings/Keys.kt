@@ -211,6 +211,12 @@ object Keys {
     data object genreGridSizeLand :
             PrimitiveKey<Int>(intPK(GENRE_GRID_SIZE_LAND), { 2 })
 
+    data object playlistGridSize :
+            PrimitiveKey<Int>(intPK(PLAYLIST_GRID_SIZE), { 1 })
+
+    data object playlistGridSizeLand :
+            PrimitiveKey<Int>(intPK(PLAYLIST_GRID_SIZE_LAND), { 2 })
+
     // SleepTimer
     data object lastSleepTimerValue :
             PrimitiveKey<Int>(intPK(LAST_SLEEP_TIMER_VALUE), { 30 })

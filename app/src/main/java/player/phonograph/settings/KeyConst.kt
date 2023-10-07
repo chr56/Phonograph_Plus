@@ -78,6 +78,8 @@ const val ARTIST_GRID_SIZE = "artist_grid_size"
 const val ARTIST_GRID_SIZE_LAND = "artist_grid_size_land"
 const val GENRE_GRID_SIZE = "genre_grid_size"
 const val GENRE_GRID_SIZE_LAND = "genre_grid_size_land"
+const val PLAYLIST_GRID_SIZE = "playlist_grid_size"
+const val PLAYLIST_GRID_SIZE_LAND = "playlist_grid_size_land"
 
 
 // SleepTimer
