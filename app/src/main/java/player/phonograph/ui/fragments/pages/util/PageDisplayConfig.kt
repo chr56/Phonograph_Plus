@@ -185,7 +185,13 @@ class PlaylistPageDisplayConfig(context: Context) : PageDisplayConfig(context) {
 
     override val maxGridSizeForList: Int = Int.MAX_VALUE
 
-    override var gridSize: Int = 1
+     override var gridSize: Int
+        get() = if (isLandscape) setting[Keys.playlistGridSizeLand].data else setting[Keys.playlistGridSize].data
+        set(value) {
+            if (value <= 0) return
+            if (isLandscape) setting[Keys.playlistGridSizeLand].data = value
+            else setting[Keys.playlistGridSize].data = value
+        }
     override var sortMode: SortMode
         get() = setting.Composites[Keys.playlistSortMode].data
         set(value) {
