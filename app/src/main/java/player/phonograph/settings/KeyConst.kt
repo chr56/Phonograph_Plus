@@ -63,9 +63,22 @@ const val SONG_COLLECTION_SORT_MODE = "song_collection_sort_mode"
 const val PLAYLIST_SORT_MODE = "playlist_sort_mode"
 
 // List-Appearance
-/*  see also [DisplaySetting] */
 const val ALBUM_ARTIST_COLORED_FOOTERS = "album_artist_colored_footers"
+const val ALBUM_COLORED_FOOTERS = "album_colored_footers"
+const val SONG_COLORED_FOOTERS = "song_colored_footers"
+const val ARTIST_COLORED_FOOTERS = "artist_colored_footers"
 const val SHOW_FILE_IMAGINES = "show_file_imagines"
+
+// ListPage-Appearance
+const val ALBUM_GRID_SIZE = "album_grid_size"
+const val ALBUM_GRID_SIZE_LAND = "album_grid_size_land"
+const val SONG_GRID_SIZE = "song_grid_size"
+const val SONG_GRID_SIZE_LAND = "song_grid_size_land"
+const val ARTIST_GRID_SIZE = "artist_grid_size"
+const val ARTIST_GRID_SIZE_LAND = "artist_grid_size_land"
+const val GENRE_GRID_SIZE = "genre_grid_size"
+const val GENRE_GRID_SIZE_LAND = "genre_grid_size_land"
+
 
 // SleepTimer
 const val LAST_SLEEP_TIMER_VALUE = "last_sleep_timer_value"

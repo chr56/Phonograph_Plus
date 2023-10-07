@@ -173,8 +173,43 @@ object Keys {
     data object albumArtistColoredFooters :
             PrimitiveKey<Boolean>(booleanPK(ALBUM_ARTIST_COLORED_FOOTERS), { true })
 
+    data object albumColoredFooters :
+            PrimitiveKey<Boolean>(booleanPK(ALBUM_COLORED_FOOTERS), { true })
+
+    data object songColoredFooters :
+            PrimitiveKey<Boolean>(booleanPK(SONG_COLORED_FOOTERS), { true })
+
+    data object artistColoredFooters :
+            PrimitiveKey<Boolean>(booleanPK(ARTIST_COLORED_FOOTERS), { true })
+
     data object showFileImages :
             PrimitiveKey<Boolean>(booleanPK(SHOW_FILE_IMAGINES), { false })
+
+    // ListPage-Appearance
+
+    data object songGridSize :
+            PrimitiveKey<Int>(intPK(SONG_GRID_SIZE), { 1 })
+
+    data object songGridSizeLand :
+            PrimitiveKey<Int>(intPK(SONG_GRID_SIZE_LAND), { 2 })
+
+    data object albumGridSize :
+            PrimitiveKey<Int>(intPK(ALBUM_GRID_SIZE), { 2 })
+
+    data object albumGridSizeLand :
+            PrimitiveKey<Int>(intPK(ALBUM_GRID_SIZE_LAND), { 3 })
+
+    data object artistGridSize :
+            PrimitiveKey<Int>(intPK(ARTIST_GRID_SIZE), { 3 })
+
+    data object artistGridSizeLand :
+            PrimitiveKey<Int>(intPK(ARTIST_GRID_SIZE_LAND), { 4 })
+
+    data object genreGridSize :
+            PrimitiveKey<Int>(intPK(GENRE_GRID_SIZE), { 1 })
+
+    data object genreGridSizeLand :
+            PrimitiveKey<Int>(intPK(GENRE_GRID_SIZE_LAND), { 2 })
 
     // SleepTimer
     data object lastSleepTimerValue :
