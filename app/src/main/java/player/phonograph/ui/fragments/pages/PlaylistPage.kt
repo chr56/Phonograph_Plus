@@ -14,7 +14,6 @@ import player.phonograph.R
 import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
-import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.settings.Keys
@@ -95,15 +94,6 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
         )
     }
 
-
-    override val availableSortRefs: Array<SortRef>
-        get() = arrayOf(
-            SortRef.DISPLAY_NAME,
-            SortRef.PATH,
-            SortRef.ADDED_DATE,
-            SortRef.MODIFIED_DATE,
-        )
-
     private fun setUpFloatingActionButton() {
         val primaryColor = addNewItemButton.context.primaryColor()
         val accentColor = addNewItemButton.context.accentColor()
@@ -122,8 +112,6 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
             CreatePlaylistDialog.create(null).show(childFragmentManager, "CREATE_NEW_PLAYLIST")
         }
     }
-
-    override fun allowColoredFooter(): Boolean = false
 
     companion object {
         const val TAG = "PlaylistPage"

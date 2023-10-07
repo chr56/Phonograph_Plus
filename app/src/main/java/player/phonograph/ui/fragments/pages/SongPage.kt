@@ -11,7 +11,6 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.actions.actionPlay
 import player.phonograph.model.Song
-import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.adapter.DisplayAdapter
@@ -52,20 +51,6 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
             adapterDisplayConfig.copy(layoutType = displayConfig.layoutType, usePalette = displayConfig.colorFooter),
         )
     }
-
-
-    override val availableSortRefs: Array<SortRef>
-        get() = arrayOf(
-            SortRef.SONG_NAME,
-            SortRef.ALBUM_NAME,
-            SortRef.ARTIST_NAME,
-            SortRef.ALBUM_ARTIST_NAME,
-            SortRef.COMPOSER,
-            SortRef.YEAR,
-            SortRef.ADDED_DATE,
-            SortRef.MODIFIED_DATE,
-            SortRef.DURATION,
-        )
 
     override fun configAppBar(panelToolbar: Toolbar) {
         val context = hostFragment.mainActivity

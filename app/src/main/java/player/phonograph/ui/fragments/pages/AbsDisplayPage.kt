@@ -15,7 +15,6 @@ import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Displayable
 import player.phonograph.model.sort.SortMode
-import player.phonograph.model.sort.SortRef
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.ViewHolderTypes
@@ -214,28 +213,23 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         popup.gridSize = displayConfig.gridSize
 
         // color footer
-        if (allowColoredFooter()) {
+        if (displayConfig.allowColoredFooter) {
             popup.colorFooterVisibility = true
             popup.colorFooterEnability = displayConfig.gridMode(displayConfig.gridSize)
             popup.colorFooter = displayConfig.colorFooter
         }
 
         // sort order
-        if (availableSortRefs.isNotEmpty()) {
+        if (displayConfig.availableSortRefs.isNotEmpty()) {
             val currentSortMode = displayConfig.sortMode
 
             popup.sortRef = currentSortMode.sortRef
-            popup.sortRefAvailable = availableSortRefs
+            popup.sortRefAvailable = displayConfig.availableSortRefs
 
-            popup.allowRevert = allowRevertSort
+            popup.allowRevert = displayConfig.allowRevertSort
             popup.revert = currentSortMode.revert
         }
     }
-
-    protected open fun allowColoredFooter(): Boolean = true
-
-    protected open val allowRevertSort: Boolean get() = true
-    protected open val availableSortRefs: Array<SortRef> get() = arrayOf()
 
     @SuppressLint("NotifyDataSetChanged")
     protected fun dismissPopup(popup: ListOptionsPopup) {
@@ -258,7 +252,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         }
 
         // color footer
-        if (allowColoredFooter()) {
+        if (displayConfig.allowColoredFooter) {
             val coloredFootersSelected = popup.colorFooter
             if (displayConfig.colorFooter != coloredFootersSelected) {
                 displayConfig.colorFooter = coloredFootersSelected

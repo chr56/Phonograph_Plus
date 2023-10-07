@@ -6,7 +6,6 @@ package player.phonograph.ui.fragments.pages
 
 import player.phonograph.R
 import player.phonograph.model.Album
-import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.loader.Albums
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
@@ -39,14 +38,6 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
             adapterDisplayConfig.copy(layoutType = displayConfig.layoutType, usePalette = displayConfig.colorFooter),
         )
     }
-
-    override val availableSortRefs: Array<SortRef>
-        get() = arrayOf(
-            SortRef.ALBUM_NAME,
-            SortRef.ARTIST_NAME,
-            SortRef.YEAR,
-            SortRef.SONG_COUNT,
-        )
 
     companion object {
         const val TAG = "AlbumPage"

@@ -6,6 +6,7 @@ package player.phonograph.ui.fragments.pages.util
 
 import player.phonograph.R
 import player.phonograph.model.sort.SortMode
+import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.ViewHolderType
@@ -39,10 +40,16 @@ sealed class PageDisplayConfig(context: Context) {
     val maxGridSize: Int get() = if (isLandscape) res.getInteger(R.integer.max_columns_land) else res.getInteger(R.integer.max_columns)
 
 
-    // todo valid input
     abstract var gridSize: Int
+
+    // todo valid input
     abstract var sortMode: SortMode
+    abstract val availableSortRefs: Array<SortRef>
+
     abstract var colorFooter: Boolean
+
+    open val allowColoredFooter: Boolean = true
+    open val allowRevertSort: Boolean = true
 
     /**
      * @return true if success
@@ -74,6 +81,19 @@ sealed class ImagePageDisplayConfig(context: Context) : PageDisplayConfig(contex
 
 class SongPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context) {
 
+    override val availableSortRefs: Array<SortRef>
+        get() = arrayOf(
+            SortRef.SONG_NAME,
+            SortRef.ALBUM_NAME,
+            SortRef.ARTIST_NAME,
+            SortRef.ALBUM_ARTIST_NAME,
+            SortRef.COMPOSER,
+            SortRef.YEAR,
+            SortRef.ADDED_DATE,
+            SortRef.MODIFIED_DATE,
+            SortRef.DURATION,
+        )
+
     override var gridSize: Int
         get() = if (isLandscape) pref.songGridSizeLand else pref.songGridSize
         set(value) {
@@ -95,6 +115,14 @@ class SongPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context) 
 }
 
 class AlbumPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context) {
+
+    override val availableSortRefs: Array<SortRef>
+        get() = arrayOf(
+            SortRef.ALBUM_NAME,
+            SortRef.ARTIST_NAME,
+            SortRef.YEAR,
+            SortRef.SONG_COUNT,
+        )
 
     override var gridSize: Int
         get() = if (isLandscape) pref.albumGridSizeLand else pref.albumGridSize
@@ -118,6 +146,13 @@ class AlbumPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context)
 
 class ArtistPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context) {
 
+    override val availableSortRefs: Array<SortRef>
+        get() = arrayOf(
+            SortRef.ARTIST_NAME,
+            SortRef.ALBUM_COUNT,
+            SortRef.SONG_COUNT,
+        )
+
     override var gridSize: Int
         get() = if (isLandscape) pref.artistGridSizeLand else pref.artistGridSize
         set(value) {
@@ -140,6 +175,14 @@ class ArtistPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context
 
 class PlaylistPageDisplayConfig(context: Context) : PageDisplayConfig(context) {
 
+    override val availableSortRefs: Array<SortRef>
+        get() = arrayOf(
+            SortRef.DISPLAY_NAME,
+            SortRef.PATH,
+            SortRef.ADDED_DATE,
+            SortRef.MODIFIED_DATE,
+        )
+
     override val listLayoutType: Int = ViewHolderTypes.LIST_SINGLE_ROW
 
     override val maxGridSizeForList: Int = Int.MAX_VALUE
@@ -151,9 +194,17 @@ class PlaylistPageDisplayConfig(context: Context) : PageDisplayConfig(context) {
             setting[Keys.playlistSortMode].data = value
         }
     override var colorFooter: Boolean = false
+    override val allowColoredFooter: Boolean
+        get() = false
 }
 
 class GenrePageDisplayConfig(context: Context) : PageDisplayConfig(context) {
+
+    override val availableSortRefs: Array<SortRef>
+        get() = arrayOf(
+            SortRef.DISPLAY_NAME,
+            SortRef.SONG_COUNT,
+        )
 
     override val listLayoutType: Int = ViewHolderTypes.LIST_NO_IMAGE
 
@@ -172,4 +223,6 @@ class GenrePageDisplayConfig(context: Context) : PageDisplayConfig(context) {
             setting[Keys.genreSortMode].data = value
         }
     override var colorFooter: Boolean = false
+    override val allowColoredFooter: Boolean
+        get() = false
 }
