@@ -37,8 +37,7 @@ sealed class PageDisplayConfig(context: Context) {
     fun gridMode(size: Int): Boolean = size > maxGridSizeForList
     protected abstract val maxGridSizeForList: Int
 
-    val maxGridSize: Int get() = if (isLandscape) res.getInteger(R.integer.max_columns_land) else res.getInteger(R.integer.max_columns)
-
+    abstract val maxGridSize: Int
 
     abstract var gridSize: Int
 
@@ -71,9 +70,12 @@ sealed class ImagePageDisplayConfig(context: Context) : PageDisplayConfig(contex
     override val listLayoutType: Int = ViewHolderTypes.LIST
 
     override val maxGridSizeForList: Int
-        get() {
-            return if (isLandscape) res.getInteger(R.integer.default_list_columns_land) else res.getInteger(R.integer.default_list_columns)
-        }
+        get() = if (isLandscape) res.getInteger(R.integer.default_list_columns_land)
+        else res.getInteger(R.integer.default_list_columns)
+
+    override val maxGridSize: Int
+        get() = if (isLandscape) res.getInteger(R.integer.max_columns_land)
+        else res.getInteger(R.integer.max_columns)
 
 }
 
@@ -183,9 +185,10 @@ class PlaylistPageDisplayConfig(context: Context) : PageDisplayConfig(context) {
 
     override val listLayoutType: Int = ViewHolderTypes.LIST_SINGLE_ROW
 
+    override val maxGridSize: Int get() = if (isLandscape) 4 else 2
     override val maxGridSizeForList: Int = Int.MAX_VALUE
 
-     override var gridSize: Int
+    override var gridSize: Int
         get() = if (isLandscape) setting[Keys.playlistGridSizeLand].data else setting[Keys.playlistGridSize].data
         set(value) {
             if (value <= 0) return
@@ -213,6 +216,8 @@ class GenrePageDisplayConfig(context: Context) : PageDisplayConfig(context) {
     override val listLayoutType: Int = ViewHolderTypes.LIST_NO_IMAGE
 
     override val maxGridSizeForList: Int = Int.MAX_VALUE
+
+    override val maxGridSize: Int get() = if (isLandscape) 6 else 4
 
     override var gridSize: Int
         get() = if (isLandscape) setting[Keys.genreGridSizeLand].data else setting[Keys.genreGridSize].data
