@@ -126,6 +126,9 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
 
     protected abstract fun initAdapter(): A
 
+    protected abstract fun displayConfig(): PageDisplayConfig
+    protected var adapterDisplayConfig: ConstDisplayConfig = ConstDisplayConfig(ViewHolderTypes.LIST)
+
     private fun initRecyclerView() {
 
         layoutManager = GridLayoutManager(hostFragment.requireContext(), displayConfig().gridSize)
@@ -140,28 +143,6 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
             it.layoutManager = layoutManager
         }
     }
-
-
-    /**
-     * Invalid all view holders & show again
-     */
-    @SuppressLint("NotifyDataSetChanged")
-    private fun refreshAllViewHolder() {
-        // remove all existed ViewHolders
-        val recyclerView = binding.recyclerView
-        // val recycler = recyclerView.Recycler()
-        // layoutManager.removeAndRecycleAllViews(recycler)
-        // recycler.clear()
-        // recyclerView.recycledViewPool.clear()
-        recyclerView.adapter = null
-        // replace all
-        recyclerView.adapter = adapter
-        layoutManager.requestLayout()
-    }
-
-    protected abstract fun displayConfig(): PageDisplayConfig
-
-    protected var adapterDisplayConfig: ConstDisplayConfig = ConstDisplayConfig(ViewHolderTypes.LIST)
 
     private fun initAppBar() {
 
@@ -205,6 +186,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
     @SuppressLint("NotifyDataSetChanged")
     protected fun dismissPopup(popup: ListOptionsPopup) {
         val displayConfig = displayConfig()
+        var update = false
 
         //  Grid Size
         val gridSizeSelected = popup.gridSize
@@ -215,9 +197,8 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
             val targetLayoutType = displayConfig.layoutType(gridSizeSelected)
 
             if (adapter.config.layoutType != targetLayoutType) {
+                update = true
                 adapterDisplayConfig = adapterDisplayConfig.copy(layoutType = targetLayoutType)
-                adapter.config = adapterDisplayConfig
-                adapter.notifyDataSetChanged()
             }
             layoutManager.spanCount = gridSizeSelected
         }
@@ -227,9 +208,8 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
             val coloredFootersSelected = popup.colorFooter
             if (displayConfig.colorFooter != coloredFootersSelected) {
                 displayConfig.colorFooter = coloredFootersSelected
+                update = true
                 adapterDisplayConfig = adapterDisplayConfig.copy(useImageText = coloredFootersSelected)
-                adapter.config = adapterDisplayConfig
-                adapter.notifyDataSetChanged()
             }
         }
 
@@ -237,6 +217,11 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         val selected = SortMode(popup.sortRef, popup.revert)
         if (displayConfig.updateSortMode(selected)) {
             viewModel.loadDataset(requireContext())
+        }
+
+        if (update) {
+            adapter.config = adapterDisplayConfig
+            adapter.notifyDataSetChanged()
         }
     }
 
