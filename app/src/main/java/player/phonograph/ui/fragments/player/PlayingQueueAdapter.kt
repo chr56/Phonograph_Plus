@@ -159,7 +159,7 @@ class PlayingQueueAdapter(
 
     // Playing Queue might have multiple items of SAME song, so we have to avoid crash
     override fun getItemId(position: Int): Long =
-        dataset[position].getItemID() * dataset.size + position
+        dataset[position].getItemID() shl 17 + position
 
 
     companion object {
