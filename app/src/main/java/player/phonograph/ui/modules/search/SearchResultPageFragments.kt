@@ -27,6 +27,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -47,9 +48,9 @@ abstract class SearchResultPageFragment<T : Displayable> : Fragment() {
 
     val viewModel: SearchActivityViewModel by viewModels(ownerProducer = { requireActivity() })
 
-    protected lateinit var adapter: DisplayAdapter<T>
+    protected lateinit var actualAdapter: RecyclerView.Adapter<*>
 
-    protected abstract fun createAdapter(activity: AppCompatActivity): DisplayAdapter<T>
+    protected abstract fun createAdapter(activity: AppCompatActivity): RecyclerView.Adapter<*>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _viewBinding = RecyclerViewWrappedProperBinding.inflate(inflater, container, false)
@@ -59,10 +60,10 @@ abstract class SearchResultPageFragment<T : Displayable> : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity()
-        adapter = createAdapter(activity as AppCompatActivity)
+        actualAdapter = createAdapter(activity as AppCompatActivity)
         with(binding) {
             recyclerView.layoutManager = LinearLayoutManager(activity)
-            recyclerView.adapter = adapter
+            recyclerView.adapter = actualAdapter
             // noinspection ClickableViewAccessibility
             recyclerView.setOnTouchListener { _, _ ->
                 // hideSoftKeyboard() //todo
@@ -95,39 +96,54 @@ abstract class SearchResultPageFragment<T : Displayable> : Fragment() {
 
 class SongSearchResultPageFragment : SearchResultPageFragment<Song>() {
 
+    @Suppress("UNCHECKED_CAST")
+    private val adapter: DisplayAdapter<Song>? get() = actualAdapter as? DisplayAdapter<Song>
+
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Song> =
         SongDisplayAdapter(activity, ConstDisplayConfig(ViewHolderTypes.LIST, false))
 
     override fun targetFlow(): StateFlow<List<Song>> = viewModel.songs
 
     override fun updateDataset(newData: List<Song>) {
-        adapter.dataset = newData
+        adapter?.dataset = newData
     }
 }
 
 class AlbumSearchResultPageFragment : SearchResultPageFragment<Album>() {
+
+    @Suppress("UNCHECKED_CAST")
+    private val adapter: DisplayAdapter<Album>? get() = actualAdapter as? DisplayAdapter<Album>
+
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Album> =
         AlbumDisplayAdapter(activity, ConstDisplayConfig(ViewHolderTypes.LIST))
 
     override fun targetFlow(): StateFlow<List<Album>> = viewModel.albums
 
     override fun updateDataset(newData: List<Album>) {
-        adapter.dataset = newData
+        adapter?.dataset = newData
     }
 }
 
 class ArtistSearchResultPageFragment : SearchResultPageFragment<Artist>() {
+    @Suppress("UNCHECKED_CAST")
+    private val adapter: DisplayAdapter<Artist>? get() = actualAdapter as? DisplayAdapter<Artist>
+
+
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Artist> =
         ArtistDisplayAdapter(activity, ConstDisplayConfig(ViewHolderTypes.LIST))
 
     override fun targetFlow(): StateFlow<List<Artist>> = viewModel.artists
 
     override fun updateDataset(newData: List<Artist>) {
-        adapter.dataset = newData
+        adapter?.dataset = newData
     }
 }
 
 class PlaylistSearchResultPageFragment : SearchResultPageFragment<Playlist>() {
+
+    @Suppress("UNCHECKED_CAST")
+    private val adapter: DisplayAdapter<Playlist>? get() = actualAdapter as? DisplayAdapter<Playlist>
+
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Playlist> {
         return PlaylistDisplayAdapter(activity)
     }
@@ -135,11 +151,13 @@ class PlaylistSearchResultPageFragment : SearchResultPageFragment<Playlist>() {
     override fun targetFlow(): StateFlow<List<Playlist>> = viewModel.playlists
 
     override fun updateDataset(newData: List<Playlist>) {
-        adapter.dataset = newData
+        adapter?.dataset = newData
     }
 }
 
 class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
+
+    private val adapter: QueueSongAdapter? get() = actualAdapter as? QueueSongAdapter
 
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<QueueSong> =
         QueueSongAdapter(activity)
@@ -147,7 +165,7 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
     override fun targetFlow(): StateFlow<List<QueueSong>> = viewModel.songsInQueue
 
     override fun updateDataset(newData: List<QueueSong>) {
-        adapter.dataset = newData
+        adapter?.dataset = newData
     }
 
     class QueueSongAdapter(
