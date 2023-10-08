@@ -83,6 +83,8 @@ abstract class DisplayAdapter<I : Displayable>(
             itemView.isActivated = controller.isSelected(item)
             title?.text = item.getDisplayTitle(context = itemView.context)
             text?.text = getDescription(item)
+            textSecondary?.text = item.getSecondaryText(itemView.context)
+            textTertiary?.text = item.getTertiaryText(itemView.context)
             if (useImageText) {
                 setImageText(getRelativeOrdinalText(item))
             } else {
@@ -144,6 +146,8 @@ abstract class DisplayAdapter<I : Displayable>(
                 paletteColorContainer.setBackgroundColor(color)
                 title?.setTextColor(context.primaryTextColor(color))
                 text?.setTextColor(context.secondaryTextColor(color))
+                textSecondary?.setTextColor(context.secondaryTextColor(color))
+                textTertiary?.setTextColor(context.secondaryTextColor(color))
             }
         }
     }
