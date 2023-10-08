@@ -9,12 +9,12 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemState
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
+import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.ui.adapter.ConstDisplayConfig
-import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.MultiSelectionController
+import player.phonograph.ui.adapter.OrderedItemAdapter
 import player.phonograph.ui.adapter.ViewHolderTypes
 import player.phonograph.ui.adapter.hasMenu
 import player.phonograph.ui.adapter.initMenu
@@ -32,7 +32,7 @@ import android.widget.PopupMenu
 
 class PlayingQueueAdapter(
     activity: FragmentActivity,
-) : DisplayAdapter<Song>(activity, ConstDisplayConfig(layoutType = ViewHolderTypes.LIST, useImageText = true)),
+) : OrderedItemAdapter<Song>(activity, R.layout.item_list, useImageText = true),
     DraggableItemAdapter<PlayingQueueAdapter.PlayingQueueViewHolder> {
 
     var current: Int = -1
@@ -42,7 +42,7 @@ class PlayingQueueAdapter(
             notifyDataSetChanged()
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Song> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderedItemViewHolder<Song> {
         val view =
             LayoutInflater.from(activity).inflate(ViewHolderTypes.layout(ViewHolderTypes.LIST), parent, false)
         return PlayingQueueViewHolder(view)
@@ -57,9 +57,8 @@ class PlayingQueueAdapter(
 
     override val allowMultiSelection: Boolean get() = false
 
-    inner class PlayingQueueViewHolder(itemView: View) : DisplayViewHolder<Song>(itemView), DraggableItemViewHolder {
-
-        override fun setImage(position: Int, dataset: List<Song>, usePalette: Boolean) {}
+    inner class PlayingQueueViewHolder(itemView: View) :
+            OrderedItemViewHolder<Song>(itemView), DraggableItemViewHolder {
 
         override fun onClick(position: Int, dataset: List<Song>, imageView: ImageView?): Boolean {
             MusicPlayerRemote.playSongAt(position)
@@ -81,7 +80,6 @@ class PlayingQueueAdapter(
             dataset: List<Song>,
             controller: MultiSelectionController<Song>,
             useImageText: Boolean,
-            usePalette: Boolean,
         ) {
 
             val song = dataset[position]
