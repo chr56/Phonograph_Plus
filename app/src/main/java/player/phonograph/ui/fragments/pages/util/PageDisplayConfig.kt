@@ -9,8 +9,7 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.ui.adapter.ViewHolderType
-import player.phonograph.ui.adapter.ViewHolderTypes
+import player.phonograph.ui.adapter.ViewHolderLayout
 import player.phonograph.util.debug
 import player.phonograph.util.ui.isLandscape
 import android.content.Context
@@ -22,16 +21,12 @@ sealed class PageDisplayConfig(context: Context) {
     protected val res: Resources = context.resources
     protected val isLandscape: Boolean get() = isLandscape(res)
 
-    @ViewHolderType
-    val layoutType: Int get() = layoutType(gridSize)
 
-    @ViewHolderType
-    fun layoutType(size: Int): Int =
-        if (gridMode(size)) ViewHolderTypes.GRID else listLayoutType
+    val layout: ViewHolderLayout get() = layout(gridSize)
+    fun layout(size: Int): ViewHolderLayout =
+        if (gridMode(size)) ViewHolderLayout.GRID else listLayout
 
-
-    @ViewHolderType
-    protected abstract val listLayoutType: Int
+    protected abstract val listLayout: ViewHolderLayout
 
 
     fun gridMode(size: Int): Boolean = size > maxGridSizeForList
@@ -67,7 +62,7 @@ sealed class PageDisplayConfig(context: Context) {
 
 sealed class ImagePageDisplayConfig(context: Context) : PageDisplayConfig(context) {
 
-    override val listLayoutType: Int = ViewHolderTypes.LIST
+    override val listLayout: ViewHolderLayout = ViewHolderLayout.LIST
 
     override val maxGridSizeForList: Int
         get() = if (isLandscape) res.getInteger(R.integer.default_list_columns_land)
@@ -183,7 +178,7 @@ class PlaylistPageDisplayConfig(context: Context) : PageDisplayConfig(context) {
             SortRef.MODIFIED_DATE,
         )
 
-    override val listLayoutType: Int = ViewHolderTypes.LIST_SINGLE_ROW
+    override val listLayout: ViewHolderLayout = ViewHolderLayout.LIST_SINGLE_ROW
 
     override val maxGridSize: Int get() = if (isLandscape) 4 else 2
     override val maxGridSizeForList: Int = Int.MAX_VALUE
@@ -213,7 +208,7 @@ class GenrePageDisplayConfig(context: Context) : PageDisplayConfig(context) {
             SortRef.SONG_COUNT,
         )
 
-    override val listLayoutType: Int = ViewHolderTypes.LIST_NO_IMAGE
+    override val listLayout: ViewHolderLayout = ViewHolderLayout.LIST_NO_IMAGE
 
     override val maxGridSizeForList: Int = Int.MAX_VALUE
 

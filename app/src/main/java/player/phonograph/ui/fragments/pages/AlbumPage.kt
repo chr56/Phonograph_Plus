@@ -35,7 +35,7 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
         val displayConfig = displayConfig()
         return AlbumDisplayAdapter(
             hostFragment.mainActivity,
-            adapterDisplayConfig.copy(layoutType = displayConfig.layoutType, usePalette = displayConfig.colorFooter),
+            adapterDisplayConfig.copy(layoutType = displayConfig.layout, usePalette = displayConfig.colorFooter),
         )
     }
 

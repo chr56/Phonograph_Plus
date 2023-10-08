@@ -17,7 +17,7 @@ import player.phonograph.model.Displayable
 import player.phonograph.model.sort.SortMode
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.adapter.ViewHolderTypes
+import player.phonograph.ui.adapter.ViewHolderLayout
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.PageDisplayConfig
 import player.phonograph.util.debug
@@ -127,7 +127,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
     protected abstract fun initAdapter(): A
 
     protected abstract fun displayConfig(): PageDisplayConfig
-    protected var adapterDisplayConfig: ConstDisplayConfig = ConstDisplayConfig(ViewHolderTypes.LIST)
+    protected var adapterDisplayConfig: ConstDisplayConfig = ConstDisplayConfig(ViewHolderLayout.LIST)
 
     private fun initRecyclerView() {
 
@@ -194,11 +194,11 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         if (gridSizeSelected > 0 && gridSizeSelected != displayConfig.gridSize) {
 
             displayConfig.gridSize = gridSizeSelected
-            val targetLayoutType = displayConfig.layoutType(gridSizeSelected)
+            val targetLayout = displayConfig.layout(gridSizeSelected)
 
-            if (adapter.config.layoutType != targetLayoutType) {
+            if (adapter.config.layoutType != targetLayout) {
                 update = true
-                adapterDisplayConfig = adapterDisplayConfig.copy(layoutType = targetLayoutType)
+                adapterDisplayConfig = adapterDisplayConfig.copy(layoutType = targetLayout)
             }
             layoutManager.spanCount = gridSizeSelected
         }

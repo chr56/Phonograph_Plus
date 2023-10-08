@@ -16,7 +16,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.OrderedItemAdapter
-import player.phonograph.ui.adapter.ViewHolderTypes
+import player.phonograph.ui.adapter.ViewHolderLayout
 import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.ArtistDisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.PlaylistDisplayAdapter
@@ -102,7 +102,7 @@ class SongSearchResultPageFragment : SearchResultPageFragment<Song>() {
     private val adapter: DisplayAdapter<Song>? get() = actualAdapter as? DisplayAdapter<Song>
 
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Song> =
-        SongDisplayAdapter(activity, ConstDisplayConfig(ViewHolderTypes.LIST, false))
+        SongDisplayAdapter(activity, ConstDisplayConfig(ViewHolderLayout.LIST, false))
 
     override fun targetFlow(): StateFlow<List<Song>> = viewModel.songs
 
@@ -117,7 +117,7 @@ class AlbumSearchResultPageFragment : SearchResultPageFragment<Album>() {
     private val adapter: DisplayAdapter<Album>? get() = actualAdapter as? DisplayAdapter<Album>
 
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Album> =
-        AlbumDisplayAdapter(activity, ConstDisplayConfig(ViewHolderTypes.LIST))
+        AlbumDisplayAdapter(activity, ConstDisplayConfig(ViewHolderLayout.LIST))
 
     override fun targetFlow(): StateFlow<List<Album>> = viewModel.albums
 
@@ -132,7 +132,7 @@ class ArtistSearchResultPageFragment : SearchResultPageFragment<Artist>() {
 
 
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Artist> =
-        ArtistDisplayAdapter(activity, ConstDisplayConfig(ViewHolderTypes.LIST))
+        ArtistDisplayAdapter(activity, ConstDisplayConfig(ViewHolderLayout.LIST))
 
     override fun targetFlow(): StateFlow<List<Artist>> = viewModel.artists
 
