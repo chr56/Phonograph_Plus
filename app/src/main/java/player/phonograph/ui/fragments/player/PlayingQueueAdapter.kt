@@ -157,9 +157,9 @@ class PlayingQueueAdapter(
         }
     }
 
-    // Playing Queue might have multiple items of SAME song, so we have to make differences
+    // Playing Queue might have multiple items of SAME song, so we have to avoid crash
     override fun getItemId(position: Int): Long =
-        super.getItemId(position) + position * 65537 // 65537, the fifth Fermat prime
+        dataset[position].getItemID() * dataset.size + position
 
 
     companion object {
