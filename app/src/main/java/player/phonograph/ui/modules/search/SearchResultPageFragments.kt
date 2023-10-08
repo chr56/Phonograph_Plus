@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.modules.search
 
+import player.phonograph.R
 import player.phonograph.databinding.RecyclerViewWrappedProperBinding
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -14,6 +15,7 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.OrderedItemAdapter
 import player.phonograph.ui.adapter.ViewHolderTypes
 import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.ArtistDisplayAdapter
@@ -159,7 +161,7 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
 
     private val adapter: QueueSongAdapter? get() = actualAdapter as? QueueSongAdapter
 
-    override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<QueueSong> =
+    override fun createAdapter(activity: AppCompatActivity): QueueSongAdapter =
         QueueSongAdapter(activity)
 
     override fun targetFlow(): StateFlow<List<QueueSong>> = viewModel.songsInQueue
@@ -170,20 +172,18 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
 
     class QueueSongAdapter(
         activity: FragmentActivity,
-    ) : DisplayAdapter<QueueSong>(
-        activity, ConstDisplayConfig(layoutType = ViewHolderTypes.LIST, useImageText = true)
-    ) {
+    ) : OrderedItemAdapter<QueueSong>(activity, R.layout.item_list, showSectionName = true) {
 
         override fun getSectionNameImp(position: Int): String {
             return dataset[position].index.toString()
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<QueueSong> =
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderedItemViewHolder<QueueSong> =
             QueueSongViewHolder(inflatedView(parent, viewType))
 
-        inner class QueueSongViewHolder(itemView: View) : DisplayViewHolder<QueueSong>(itemView) {
+        inner class QueueSongViewHolder(itemView: View) : OrderedItemViewHolder<QueueSong>(itemView) {
 
-            override fun getRelativeOrdinalText(item: QueueSong): String {
+            override fun getRelativeOrdinalText(item: QueueSong, position: Int): String {
                 return item.index.toString()
             }
 
