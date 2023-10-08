@@ -36,6 +36,8 @@ data class Artist(
     override fun getDisplayTitle(context: Context): CharSequence = name
 
     override fun getDescription(context: Context): CharSequence = infoString(context)
+    override fun getSecondaryText(context: Context): CharSequence = albumCountString(context, albumCount)
+    override fun getTertiaryText(context: Context): CharSequence = songCountString(context, songCount)
 
     companion object {
         const val UNKNOWN_ARTIST_DISPLAY_NAME = "Unknown Artist"

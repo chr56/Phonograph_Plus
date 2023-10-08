@@ -11,4 +11,7 @@ interface Displayable {
 
     fun getDisplayTitle(context: Context): CharSequence
     fun getDescription(context: Context): CharSequence?
+
+    fun getSecondaryText(context: Context): CharSequence? = getDescription(context)
+    fun getTertiaryText(context: Context): CharSequence? = null
 }

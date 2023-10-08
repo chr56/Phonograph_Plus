@@ -61,7 +61,9 @@ data class Song(
 
     override fun getDisplayTitle(context: Context): CharSequence = title
 
-    override fun getDescription(context: Context): CharSequence? = infoString()
+    override fun getDescription(context: Context): CharSequence = infoString()
+    override fun getSecondaryText(context: Context): CharSequence? = albumName
+    override fun getTertiaryText(context: Context): CharSequence? = artistName
 
     companion object {
         @JvmField

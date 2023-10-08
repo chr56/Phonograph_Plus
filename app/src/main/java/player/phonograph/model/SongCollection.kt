@@ -25,6 +25,9 @@ data class SongCollection(
     override fun getDescription(context: Context) =
         "${songCountString(context, songs.size)} ...${stripStorageVolume(detail.orEmpty())}"
 
+    override fun getSecondaryText(context: Context): CharSequence = stripStorageVolume(detail.orEmpty())
+    override fun getTertiaryText(context: Context): CharSequence = songCountString(context, songs.size)
+
     companion object {
 
         private fun stripStorageVolume(str: String): String {
