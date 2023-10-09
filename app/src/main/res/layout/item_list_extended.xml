@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="84dp"
     android:foreground="?attr/rectSelector"
     tools:ignore="UnusedAttribute">
 
@@ -66,8 +66,9 @@
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="middle"
                 android:fontFamily="sans-serif"
-                android:maxLines="2"
+                android:maxLines="3"
                 android:singleLine="false"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 tools:text="TITLE" />
@@ -77,7 +78,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:singleLine="true"
+                android:maxLines="2"
+                android:singleLine="false"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="?android:textColorSecondary"
                 tools:text="SUBTITLE" />
@@ -88,7 +90,8 @@
             style="@style/OverFlowButton"
             android:layout_width="24dp"
             android:layout_gravity="center_vertical"
-            android:layout_margin="2dp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="0dp"
             tools:ignore="ContentDescription" />
 
     </LinearLayout>
