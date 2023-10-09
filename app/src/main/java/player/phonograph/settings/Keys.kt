@@ -189,7 +189,7 @@ object Keys {
     // ListPage-Appearance
 
     data object _songItemLayout :
-            PrimitiveKey<Int>(intPK(SONG_ITEM_LAYOUT), { ViewHolderLayout.LIST.ordinal })
+            PrimitiveKey<Int>(intPK(SONG_ITEM_LAYOUT), { ViewHolderLayout.LIST_EXTENDED.ordinal })
 
     data object songItemLayout :
             CompositeKey<ViewHolderLayout>(ItemLayoutProvider.SongItemLayoutProvider)

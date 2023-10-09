@@ -85,7 +85,7 @@ sealed class ItemLayoutProvider(backField: PrimitiveKey<Int>, default: () -> Vie
     override fun read(flow: Flow<Int>): Flow<ViewHolderLayout> = flow.map { ViewHolderLayout.from(it) }
     override fun save(data: ViewHolderLayout): Int = data.ordinal
 
-    data object SongItemLayoutProvider : ItemLayoutProvider(Keys._songItemLayout, { ViewHolderLayout.LIST })
+    data object SongItemLayoutProvider : ItemLayoutProvider(Keys._songItemLayout, { ViewHolderLayout.LIST_EXTENDED })
     data object AlbumItemLayoutProvider : ItemLayoutProvider(Keys._albumItemLayout, { ViewHolderLayout.LIST_3L })
     data object ArtistItemLayoutProvider : ItemLayoutProvider(Keys._artistItemLayout, { ViewHolderLayout.LIST })
     data object LandSongItemLayoutProvider : ItemLayoutProvider(Keys._songItemLayoutLand, { ViewHolderLayout.LIST })

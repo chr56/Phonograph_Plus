@@ -66,6 +66,7 @@ sealed class ImagePageDisplayConfig(context: Context) : PageDisplayConfig(contex
     override val availableLayouts: Array<ViewHolderLayout>
         get() = arrayOf(
             ViewHolderLayout.LIST,
+            ViewHolderLayout.LIST_EXTENDED,
             ViewHolderLayout.LIST_3L,
             ViewHolderLayout.GRID,
         )
