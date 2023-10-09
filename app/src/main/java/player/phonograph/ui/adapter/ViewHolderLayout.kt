@@ -49,12 +49,13 @@ value class ViewHolderLayout private constructor(@ViewHolderType val ordinal: In
 
 
         const val TYPE_LIST = 1
-        const val TYPE_LIST_EXTENDED = 7
-        const val TYPE_LIST_SINGLE_ROW = 2
-        const val TYPE_LIST_NO_IMAGE = 3
-        const val TYPE_LIST_3L = 4
-        const val TYPE_GRID = 5
-        const val TYPE_GRID_CARD_HORIZONTAL = 6
+        const val TYPE_LIST_EXTENDED = 2
+        const val TYPE_LIST_SINGLE_ROW = 5
+        const val TYPE_LIST_NO_IMAGE = 6
+        const val TYPE_LIST_3L = 8
+
+        const val TYPE_GRID = 12
+        const val TYPE_GRID_CARD_HORIZONTAL = 15
 
         const val TYPE_CUSTOM = 0
 
