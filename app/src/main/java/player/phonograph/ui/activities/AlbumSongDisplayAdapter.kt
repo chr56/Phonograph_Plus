@@ -5,6 +5,7 @@
 package player.phonograph.ui.activities
 
 import player.phonograph.model.Song
+import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.ItemLayoutStyle
@@ -24,13 +25,11 @@ class AlbumSongDisplayAdapter(
     }
 
     open class AlbumSongViewHolder(itemView: View) : DisplayViewHolder<Song>(itemView) {
-        override fun getRelativeOrdinalText(item: Song): String {
-            return getTrackNumber(item)
-        }
+        override fun getRelativeOrdinalText(item: Song): String =
+            getTrackNumber(item)
 
-        override fun getDescription(item: Song): CharSequence? {
-            return "${getReadableDurationString(item.duration)} · ${item.artistName}"
-        }
+        override fun getDescription(item: Song): CharSequence? =
+            buildInfoString(getReadableDurationString(item.duration), item.artistName)
     }
 
     companion object {
