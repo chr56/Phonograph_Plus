@@ -7,6 +7,7 @@ package player.phonograph.ui.components.popup
 import player.phonograph.R
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.model.sort.SortRef
+import player.phonograph.ui.adapter.ViewHolderLayout
 import player.phonograph.ui.fragments.pages.util.PageDisplayConfig
 import player.phonograph.util.ui.isLandscape
 import androidx.annotation.IdRes
@@ -58,6 +59,10 @@ class ListOptionsPopup private constructor(
             groupSortOrderRef.clearCheck()
             titleSortOrderRef.visibility = GONE
 
+            groupItemLayout.visibility = GONE
+            groupItemLayout.clearCheck()
+            titleItemLayout.visibility = GONE
+
             groupGridSize.visibility = GONE
             groupGridSize.clearCheck()
             titleGridSize.visibility = GONE
@@ -103,6 +108,7 @@ class ListOptionsPopup private constructor(
         with(viewBinding) {
             // text color
             this.titleGridSize.setTextColor(accentColor)
+            this.titleItemLayout.setTextColor(accentColor)
             this.titleSortOrderMethod.setTextColor(accentColor)
             this.titleSortOrderRef.setTextColor(accentColor)
             // checkbox color
@@ -112,6 +118,8 @@ class ListOptionsPopup private constructor(
             // radioButton
             for (i in 0 until this.groupGridSize.childCount)
                 (this.groupGridSize.getChildAt(i) as RadioButton).buttonTintList = widgetColor
+            for (i in 0 until this.groupItemLayout.childCount)
+                (this.groupItemLayout.getChildAt(i) as RadioButton).buttonTintList = widgetColor
             for (i in 0 until this.groupSortOrderRef.childCount)
                 (this.groupSortOrderRef.getChildAt(i) as RadioButton).buttonTintList = widgetColor
             for (i in 0 until this.groupSortOrderMethod.childCount)
@@ -175,6 +183,28 @@ class ListOptionsPopup private constructor(
             }
             for (v in viewBinding.groupSortOrderRef.iterator()) v.visibility = GONE // hide all
             for (ref in value) findSortOrderButton(ref)?.visibility = VISIBLE // show selected
+        }
+
+    var itemLayout: ViewHolderLayout
+        get() = getViewHolderLayoutById(viewBinding.groupItemLayout.checkedRadioButtonId)
+        set(value) {
+            with(viewBinding) {
+                titleItemLayout.visibility = VISIBLE
+                groupItemLayout.clearCheck()
+                check(
+                    findItemLayoutButton(value)
+                )
+            }
+        }
+    var itemLayoutAvailable: Array<ViewHolderLayout> = emptyArray()
+        set(value) {
+            field = value
+            if (value.isNotEmpty()) {
+                viewBinding.groupItemLayout.visibility = VISIBLE // container
+                viewBinding.titleItemLayout.visibility = VISIBLE // title
+            }
+            for (v in viewBinding.groupItemLayout.iterator()) v.visibility = GONE // hide all
+            for (ref in value) findItemLayoutButton(ref)?.visibility = VISIBLE // show selected
         }
 
     var gridSize: Int
@@ -286,6 +316,22 @@ class ListOptionsPopup private constructor(
             SortRef.SIZE              -> viewBinding.sortOrderSize
             SortRef.PATH              -> viewBinding.sortOrderPath
             else                      -> null
+        }
+
+    private fun getViewHolderLayoutById(@IdRes id: Int): ViewHolderLayout =
+        when (id) {
+            R.id.item_layout_list    -> ViewHolderLayout.LIST
+            R.id.item_layout_list_3l -> ViewHolderLayout.LIST_3L
+            R.id.item_layout_grid    -> ViewHolderLayout.GRID
+            else                     -> ViewHolderLayout.LIST
+        }
+
+    private fun findItemLayoutButton(layout: ViewHolderLayout): RadioButton? =
+        when (layout) {
+            ViewHolderLayout.LIST    -> viewBinding.itemLayoutList
+            ViewHolderLayout.LIST_3L -> viewBinding.itemLayoutList3l
+            ViewHolderLayout.GRID    -> viewBinding.itemLayoutGrid
+            else                     -> null
         }
 
     private fun check(radioButton: RadioButton?) {
