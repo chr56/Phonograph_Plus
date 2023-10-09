@@ -40,6 +40,7 @@ import android.view.Menu.NONE
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import kotlinx.coroutines.launch
 
 
@@ -221,6 +222,19 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         if (update) {
             adapter.config = adapterDisplayConfig
             adapter.notifyDataSetChanged()
+        }
+        checkValidation(displayConfig)
+    }
+
+    private fun checkValidation(displayConfig: PageDisplayConfig) {
+        var warningLayout = false
+        warningLayout = when (displayConfig.layout) {
+            ViewHolderLayout.GRID    -> displayConfig.gridSize <= 2
+            ViewHolderLayout.LIST_3L -> displayConfig.gridSize > 3
+            else                     -> displayConfig.gridSize > 2
+        }
+        if (warningLayout) {
+            Toast.makeText(requireContext(), R.string.warning_inappropriate_config, Toast.LENGTH_SHORT).show()
         }
     }
 

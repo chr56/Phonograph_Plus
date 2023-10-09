@@ -473,4 +473,5 @@
     <string name="item_layout_list">列表</string>
     <string name="item_layout_list_3l">列表 (3行)</string>
     <string name="item_layout_grid">网格</string>
+    <string name="warning_inappropriate_config">当前配置疑似不当!</string>
 </resources>
