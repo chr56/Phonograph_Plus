@@ -188,18 +188,17 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         val displayConfig = displayConfig()
         var update = false
 
-        //  Grid Size
+        // layout
+        val layoutSelected = popup.itemLayout
+        if (displayConfig.updateItemLayout(layoutSelected)) {
+            update = true
+            adapterDisplayConfig = adapterDisplayConfig.copy(layoutType = layoutSelected)
+        }
+
+        // grid size
         val gridSizeSelected = popup.gridSize
-
         if (gridSizeSelected > 0 && gridSizeSelected != displayConfig.gridSize) {
-
             displayConfig.gridSize = gridSizeSelected
-            val targetLayout = displayConfig.layout(gridSizeSelected)
-
-            if (adapter.config.layoutType != targetLayout) {
-                update = true
-                adapterDisplayConfig = adapterDisplayConfig.copy(layoutType = targetLayout)
-            }
             layoutManager.spanCount = gridSizeSelected
         }
 

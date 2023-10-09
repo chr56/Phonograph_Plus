@@ -83,7 +83,7 @@ class ListOptionsPopup private constructor(
 
         colorFooterVisibility = displayConfig.allowColoredFooter
         if (displayConfig.allowColoredFooter) {
-            colorFooterEnability = displayConfig.gridMode(displayConfig.gridSize) // available in grid mode
+            colorFooterEnability = displayConfig.layout == ViewHolderLayout.GRID // available in grid mode
             colorFooter = displayConfig.colorFooter
         }
 
@@ -96,6 +96,14 @@ class ListOptionsPopup private constructor(
 
             allowRevert = displayConfig.allowRevertSort
             revert = currentSortMode.revert
+        }
+
+        if (displayConfig.availableLayouts.isNotEmpty()) {
+
+            val currentLayout = displayConfig.layout
+
+            itemLayout = currentLayout
+            itemLayoutAvailable = displayConfig.availableLayouts
         }
     }
 

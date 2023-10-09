@@ -21,24 +21,15 @@ sealed class PageDisplayConfig(context: Context) {
     protected val res: Resources = context.resources
     protected val isLandscape: Boolean get() = isLandscape(res)
 
-
-    val layout: ViewHolderLayout get() = layout(gridSize)
-    fun layout(size: Int): ViewHolderLayout =
-        if (gridMode(size)) ViewHolderLayout.GRID else listLayout
-
-    protected abstract val listLayout: ViewHolderLayout
-
-
-    fun gridMode(size: Int): Boolean = size > maxGridSizeForList
-    protected abstract val maxGridSizeForList: Int
-
-    abstract val maxGridSize: Int
-
-    abstract var gridSize: Int
-
     // todo valid input
     abstract var sortMode: SortMode
     abstract val availableSortRefs: Array<SortRef>
+
+    abstract var layout: ViewHolderLayout
+    abstract val availableLayouts: Array<ViewHolderLayout>
+
+    abstract var gridSize: Int
+    abstract val maxGridSize: Int
 
     abstract var colorFooter: Boolean
 
@@ -56,22 +47,31 @@ sealed class PageDisplayConfig(context: Context) {
         } else {
             false
         }
+    /**
+     * @return true if success
+     */
+    fun updateItemLayout(viewHolderLayout: ViewHolderLayout): Boolean =
+        if (viewHolderLayout != layout) {
+            debug { Log.d("DisplayConfig", "Layout $layout -> $viewHolderLayout") }
+            layout = viewHolderLayout
+            true
+        } else {
+            false
+        }
 
     protected val setting = Setting(context)
 }
 
 sealed class ImagePageDisplayConfig(context: Context) : PageDisplayConfig(context) {
-
-    override val listLayout: ViewHolderLayout = ViewHolderLayout.LIST
-
-    override val maxGridSizeForList: Int
-        get() = if (isLandscape) res.getInteger(R.integer.default_list_columns_land)
-        else res.getInteger(R.integer.default_list_columns)
-
+    override val availableLayouts: Array<ViewHolderLayout>
+        get() = arrayOf(
+            ViewHolderLayout.LIST,
+            ViewHolderLayout.LIST_3L,
+            ViewHolderLayout.GRID,
+        )
     override val maxGridSize: Int
         get() = if (isLandscape) res.getInteger(R.integer.max_columns_land)
         else res.getInteger(R.integer.max_columns)
-
 }
 
 class SongPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context) {
@@ -89,6 +89,12 @@ class SongPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context) 
             SortRef.DURATION,
         )
 
+    override var layout: ViewHolderLayout
+        get() = if (isLandscape) setting.Composites[Keys.songItemLayoutLand].data else setting.Composites[Keys.songItemLayout].data
+        set(value) {
+            if (isLandscape) setting.Composites[Keys.songItemLayoutLand].data = value
+            else setting.Composites[Keys.songItemLayout].data = value
+        }
     override var gridSize: Int
         get() = if (isLandscape) setting[Keys.songGridSizeLand].data else setting[Keys.songGridSize].data
         set(value) {
@@ -119,6 +125,12 @@ class AlbumPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context)
             SortRef.SONG_COUNT,
         )
 
+    override var layout: ViewHolderLayout
+        get() = if (isLandscape) setting.Composites[Keys.albumItemLayoutLand].data else setting.Composites[Keys.albumItemLayout].data
+        set(value) {
+            if (isLandscape) setting.Composites[Keys.albumItemLayoutLand].data = value
+            else setting.Composites[Keys.albumItemLayout].data = value
+        }
     override var gridSize: Int
         get() = if (isLandscape) setting[Keys.albumGridSizeLand].data else setting[Keys.albumGridSize].data
         set(value) {
@@ -148,6 +160,12 @@ class ArtistPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context
             SortRef.SONG_COUNT,
         )
 
+    override var layout: ViewHolderLayout
+        get() = if (isLandscape) setting.Composites[Keys.artistItemLayoutLand].data else setting.Composites[Keys.artistItemLayout].data
+        set(value) {
+            if (isLandscape) setting.Composites[Keys.artistItemLayoutLand].data = value
+            else setting.Composites[Keys.artistItemLayout].data = value
+        }
     override var gridSize: Int
         get() = if (isLandscape) setting[Keys.artistGridSizeLand].data else setting[Keys.artistGridSize].data
         set(value) {
@@ -178,10 +196,10 @@ class PlaylistPageDisplayConfig(context: Context) : PageDisplayConfig(context) {
             SortRef.MODIFIED_DATE,
         )
 
-    override val listLayout: ViewHolderLayout = ViewHolderLayout.LIST_SINGLE_ROW
+    override var layout: ViewHolderLayout = ViewHolderLayout.LIST_SINGLE_ROW
+    override val availableLayouts: Array<ViewHolderLayout> get() = emptyArray()
 
     override val maxGridSize: Int get() = if (isLandscape) 4 else 2
-    override val maxGridSizeForList: Int = Int.MAX_VALUE
 
     override var gridSize: Int
         get() = if (isLandscape) setting[Keys.playlistGridSizeLand].data else setting[Keys.playlistGridSize].data
@@ -208,9 +226,8 @@ class GenrePageDisplayConfig(context: Context) : PageDisplayConfig(context) {
             SortRef.SONG_COUNT,
         )
 
-    override val listLayout: ViewHolderLayout = ViewHolderLayout.LIST_NO_IMAGE
-
-    override val maxGridSizeForList: Int = Int.MAX_VALUE
+    override var layout: ViewHolderLayout = ViewHolderLayout.LIST_SINGLE_ROW
+    override val availableLayouts: Array<ViewHolderLayout> get() = emptyArray()
 
     override val maxGridSize: Int get() = if (isLandscape) 6 else 4
 
