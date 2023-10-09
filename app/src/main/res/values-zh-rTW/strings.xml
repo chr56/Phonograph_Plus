@@ -469,4 +469,8 @@
     <string name="deleted">已刪除</string>
     <string name="action_shuffle_mode">隨機模式</string>
     <string name="action_repeat_mode">迴圈模式</string>
+    <string name="action_item_layout">佈局模式</string>
+    <string name="item_layout_list">列表</string>
+    <string name="item_layout_list_3l">列表 (3行)</string>
+    <string name="item_layout_grid">網格</string>
 </resources>
