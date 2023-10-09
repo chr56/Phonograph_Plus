@@ -68,6 +68,7 @@ sealed class ImagePageDisplayConfig(context: Context) : PageDisplayConfig(contex
             ViewHolderLayout.LIST,
             ViewHolderLayout.LIST_EXTENDED,
             ViewHolderLayout.LIST_3L,
+            ViewHolderLayout.LIST_3L_EXTENDED,
             ViewHolderLayout.GRID,
         )
     override val maxGridSize: Int
