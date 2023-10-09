@@ -48,7 +48,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
         val displayConfig = displayConfig()
         return SongDisplayAdapter(
             hostFragment.mainActivity,
-            adapterDisplayConfig.copy(layoutType = displayConfig.layout, usePalette = displayConfig.colorFooter),
+            adapterDisplayConfig.copy(layoutStyle = displayConfig.layout, usePalette = displayConfig.colorFooter),
         )
     }
 

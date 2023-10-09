@@ -10,7 +10,7 @@ import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.adapter.ConstDisplayConfig
-import player.phonograph.ui.adapter.ViewHolderLayout
+import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.parcelable
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
@@ -70,7 +70,7 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity() {
         adapter =
             SongDisplayAdapter(
                 this,
-                ConstDisplayConfig(layoutType = ViewHolderLayout.LIST, usePalette = false, showSectionName = false)
+                ConstDisplayConfig(layoutStyle = ItemLayoutStyle.LIST, usePalette = false, showSectionName = false)
             )
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@GenreDetailActivity)

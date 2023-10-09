@@ -9,7 +9,7 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.ui.adapter.ViewHolderLayout
+import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.util.debug
 import player.phonograph.util.ui.isLandscape
 import android.content.Context
@@ -25,8 +25,8 @@ sealed class PageDisplayConfig(context: Context) {
     abstract var sortMode: SortMode
     abstract val availableSortRefs: Array<SortRef>
 
-    abstract var layout: ViewHolderLayout
-    abstract val availableLayouts: Array<ViewHolderLayout>
+    abstract var layout: ItemLayoutStyle
+    abstract val availableLayouts: Array<ItemLayoutStyle>
 
     abstract var gridSize: Int
     abstract val maxGridSize: Int
@@ -50,10 +50,10 @@ sealed class PageDisplayConfig(context: Context) {
     /**
      * @return true if success
      */
-    fun updateItemLayout(viewHolderLayout: ViewHolderLayout): Boolean =
-        if (viewHolderLayout != layout) {
-            debug { Log.d("DisplayConfig", "Layout $layout -> $viewHolderLayout") }
-            layout = viewHolderLayout
+    fun updateItemLayout(itemLayoutStyle: ItemLayoutStyle): Boolean =
+        if (itemLayoutStyle != layout) {
+            debug { Log.d("DisplayConfig", "Layout $layout -> $itemLayoutStyle") }
+            layout = itemLayoutStyle
             true
         } else {
             false
@@ -63,13 +63,13 @@ sealed class PageDisplayConfig(context: Context) {
 }
 
 sealed class ImagePageDisplayConfig(context: Context) : PageDisplayConfig(context) {
-    override val availableLayouts: Array<ViewHolderLayout>
+    override val availableLayouts: Array<ItemLayoutStyle>
         get() = arrayOf(
-            ViewHolderLayout.LIST,
-            ViewHolderLayout.LIST_EXTENDED,
-            ViewHolderLayout.LIST_3L,
-            ViewHolderLayout.LIST_3L_EXTENDED,
-            ViewHolderLayout.GRID,
+            ItemLayoutStyle.LIST,
+            ItemLayoutStyle.LIST_EXTENDED,
+            ItemLayoutStyle.LIST_3L,
+            ItemLayoutStyle.LIST_3L_EXTENDED,
+            ItemLayoutStyle.GRID,
         )
     override val maxGridSize: Int
         get() = if (isLandscape) res.getInteger(R.integer.max_columns_land)
@@ -91,7 +91,7 @@ class SongPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context) 
             SortRef.DURATION,
         )
 
-    override var layout: ViewHolderLayout
+    override var layout: ItemLayoutStyle
         get() = if (isLandscape) setting.Composites[Keys.songItemLayoutLand].data else setting.Composites[Keys.songItemLayout].data
         set(value) {
             if (isLandscape) setting.Composites[Keys.songItemLayoutLand].data = value
@@ -127,7 +127,7 @@ class AlbumPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context)
             SortRef.SONG_COUNT,
         )
 
-    override var layout: ViewHolderLayout
+    override var layout: ItemLayoutStyle
         get() = if (isLandscape) setting.Composites[Keys.albumItemLayoutLand].data else setting.Composites[Keys.albumItemLayout].data
         set(value) {
             if (isLandscape) setting.Composites[Keys.albumItemLayoutLand].data = value
@@ -162,7 +162,7 @@ class ArtistPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context
             SortRef.SONG_COUNT,
         )
 
-    override var layout: ViewHolderLayout
+    override var layout: ItemLayoutStyle
         get() = if (isLandscape) setting.Composites[Keys.artistItemLayoutLand].data else setting.Composites[Keys.artistItemLayout].data
         set(value) {
             if (isLandscape) setting.Composites[Keys.artistItemLayoutLand].data = value
@@ -198,8 +198,8 @@ class PlaylistPageDisplayConfig(context: Context) : PageDisplayConfig(context) {
             SortRef.MODIFIED_DATE,
         )
 
-    override var layout: ViewHolderLayout = ViewHolderLayout.LIST_SINGLE_ROW
-    override val availableLayouts: Array<ViewHolderLayout> get() = emptyArray()
+    override var layout: ItemLayoutStyle = ItemLayoutStyle.LIST_SINGLE_ROW
+    override val availableLayouts: Array<ItemLayoutStyle> get() = emptyArray()
 
     override val maxGridSize: Int get() = if (isLandscape) 4 else 2
 
@@ -228,8 +228,8 @@ class GenrePageDisplayConfig(context: Context) : PageDisplayConfig(context) {
             SortRef.SONG_COUNT,
         )
 
-    override var layout: ViewHolderLayout = ViewHolderLayout.LIST_SINGLE_ROW
-    override val availableLayouts: Array<ViewHolderLayout> get() = emptyArray()
+    override var layout: ItemLayoutStyle = ItemLayoutStyle.LIST_SINGLE_ROW
+    override val availableLayouts: Array<ItemLayoutStyle> get() = emptyArray()
 
     override val maxGridSize: Int get() = if (isLandscape) 6 else 4
 

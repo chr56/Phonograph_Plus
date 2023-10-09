@@ -48,10 +48,10 @@ abstract class DisplayAdapter<I : Displayable>(
     override fun getItem(datasetPosition: Int): I = dataset[datasetPosition]
 
 
-    override fun getItemViewType(position: Int): Int = config.layoutType.ordinal
+    override fun getItemViewType(position: Int): Int = config.layoutStyle.ordinal
 
     protected open fun inflatedView(parent: ViewGroup, viewType: Int): View =
-        LayoutInflater.from(activity).inflate(ViewHolderLayout.from(viewType).layout(), parent, false)
+        LayoutInflater.from(activity).inflate(ItemLayoutStyle.from(viewType).layout(), parent, false)
 
     override fun onBindViewHolder(holder: DisplayViewHolder<I>, position: Int) {
         val item: I = dataset[position]

@@ -5,7 +5,7 @@
 package player.phonograph.ui.adapter
 
 data class ConstDisplayConfig(
-    @ViewHolderType override var layoutType: ViewHolderLayout,
+    @ViewHolderType override var layoutStyle: ItemLayoutStyle,
     override val usePalette: Boolean = false,
     override val showSectionName: Boolean = true,
     override val useImageText: Boolean = false,

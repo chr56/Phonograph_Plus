@@ -5,20 +5,20 @@
 package player.phonograph.ui.adapter
 
 import player.phonograph.R
-import player.phonograph.ui.adapter.ViewHolderLayout.Companion.from
+import player.phonograph.ui.adapter.ItemLayoutStyle.Companion.from
 import androidx.annotation.IntDef
 import androidx.annotation.LayoutRes
 
 @IntDef(
-    ViewHolderLayout.TYPE_CUSTOM,
-    ViewHolderLayout.TYPE_LIST,
-    ViewHolderLayout.TYPE_LIST_EXTENDED,
-    ViewHolderLayout.TYPE_LIST_SINGLE_ROW,
-    ViewHolderLayout.TYPE_LIST_NO_IMAGE,
-    ViewHolderLayout.TYPE_LIST_3L,
-    ViewHolderLayout.TYPE_LIST_3L_EXTENDED,
-    ViewHolderLayout.TYPE_GRID,
-    ViewHolderLayout.TYPE_GRID_CARD_HORIZONTAL,
+    ItemLayoutStyle.TYPE_CUSTOM,
+    ItemLayoutStyle.TYPE_LIST,
+    ItemLayoutStyle.TYPE_LIST_EXTENDED,
+    ItemLayoutStyle.TYPE_LIST_SINGLE_ROW,
+    ItemLayoutStyle.TYPE_LIST_NO_IMAGE,
+    ItemLayoutStyle.TYPE_LIST_3L,
+    ItemLayoutStyle.TYPE_LIST_3L_EXTENDED,
+    ItemLayoutStyle.TYPE_GRID,
+    ItemLayoutStyle.TYPE_GRID_CARD_HORIZONTAL,
 )
 @Retention(AnnotationRetention.BINARY)
 annotation class ViewHolderType
@@ -29,7 +29,7 @@ annotation class ViewHolderType
  * use [from] or static value to create
  */
 @JvmInline
-value class ViewHolderLayout private constructor(@ViewHolderType val ordinal: Int) {
+value class ItemLayoutStyle private constructor(@ViewHolderType val ordinal: Int) {
 
     /**
      * Layout resource id
@@ -62,24 +62,24 @@ value class ViewHolderLayout private constructor(@ViewHolderType val ordinal: In
 
         const val TYPE_CUSTOM = 0
 
-        val LIST: ViewHolderLayout
-            get() = ViewHolderLayout(TYPE_LIST)
-        val LIST_EXTENDED: ViewHolderLayout
-            get() = ViewHolderLayout(TYPE_LIST_EXTENDED)
-        val LIST_SINGLE_ROW: ViewHolderLayout
-            get() = ViewHolderLayout(TYPE_LIST_SINGLE_ROW)
-        val LIST_NO_IMAGE: ViewHolderLayout
-            get() = ViewHolderLayout(TYPE_LIST_NO_IMAGE)
-        val LIST_3L: ViewHolderLayout
-            get() = ViewHolderLayout(TYPE_LIST_3L)
-        val LIST_3L_EXTENDED: ViewHolderLayout
-            get() = ViewHolderLayout(TYPE_LIST_3L_EXTENDED)
-        val GRID: ViewHolderLayout
-            get() = ViewHolderLayout(TYPE_GRID)
-        val GRID_CARD_HORIZONTAL: ViewHolderLayout
-            get() = ViewHolderLayout(TYPE_GRID_CARD_HORIZONTAL)
+        val LIST: ItemLayoutStyle
+            get() = ItemLayoutStyle(TYPE_LIST)
+        val LIST_EXTENDED: ItemLayoutStyle
+            get() = ItemLayoutStyle(TYPE_LIST_EXTENDED)
+        val LIST_SINGLE_ROW: ItemLayoutStyle
+            get() = ItemLayoutStyle(TYPE_LIST_SINGLE_ROW)
+        val LIST_NO_IMAGE: ItemLayoutStyle
+            get() = ItemLayoutStyle(TYPE_LIST_NO_IMAGE)
+        val LIST_3L: ItemLayoutStyle
+            get() = ItemLayoutStyle(TYPE_LIST_3L)
+        val LIST_3L_EXTENDED: ItemLayoutStyle
+            get() = ItemLayoutStyle(TYPE_LIST_3L_EXTENDED)
+        val GRID: ItemLayoutStyle
+            get() = ItemLayoutStyle(TYPE_GRID)
+        val GRID_CARD_HORIZONTAL: ItemLayoutStyle
+            get() = ItemLayoutStyle(TYPE_GRID_CARD_HORIZONTAL)
 
-        fun from(@ViewHolderType type: Int): ViewHolderLayout = when (type) {
+        fun from(@ViewHolderType type: Int): ItemLayoutStyle = when (type) {
             TYPE_LIST                 -> LIST
             TYPE_LIST_EXTENDED        -> LIST_EXTENDED
             TYPE_LIST_SINGLE_ROW      -> LIST_SINGLE_ROW
@@ -88,7 +88,7 @@ value class ViewHolderLayout private constructor(@ViewHolderType val ordinal: In
             TYPE_LIST_3L_EXTENDED     -> LIST_3L_EXTENDED
             TYPE_GRID                 -> GRID
             TYPE_GRID_CARD_HORIZONTAL -> GRID_CARD_HORIZONTAL
-            else                      -> ViewHolderLayout(TYPE_CUSTOM)
+            else                      -> ItemLayoutStyle(TYPE_CUSTOM)
         }
 
     }

@@ -17,7 +17,7 @@ import player.phonograph.model.Displayable
 import player.phonograph.model.sort.SortMode
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.adapter.ViewHolderLayout
+import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.PageDisplayConfig
 import player.phonograph.util.debug
@@ -128,7 +128,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
     protected abstract fun initAdapter(): A
 
     protected abstract fun displayConfig(): PageDisplayConfig
-    protected var adapterDisplayConfig: ConstDisplayConfig = ConstDisplayConfig(ViewHolderLayout.LIST)
+    protected var adapterDisplayConfig: ConstDisplayConfig = ConstDisplayConfig(ItemLayoutStyle.LIST)
 
     private fun initRecyclerView() {
 
@@ -193,7 +193,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         val layoutSelected = popup.itemLayout
         if (displayConfig.updateItemLayout(layoutSelected)) {
             update = true
-            adapterDisplayConfig = adapterDisplayConfig.copy(layoutType = layoutSelected)
+            adapterDisplayConfig = adapterDisplayConfig.copy(layoutStyle = layoutSelected)
         }
 
         // grid size
@@ -229,9 +229,9 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
     private fun checkValidation(displayConfig: PageDisplayConfig) {
         var warningLayout = false
         warningLayout = when (displayConfig.layout) {
-            ViewHolderLayout.GRID    -> displayConfig.gridSize <= 2
-            ViewHolderLayout.LIST_3L -> displayConfig.gridSize > 3
-            else                     -> displayConfig.gridSize > 2
+            ItemLayoutStyle.GRID    -> displayConfig.gridSize <= 2
+            ItemLayoutStyle.LIST_3L -> displayConfig.gridSize > 3
+            else                    -> displayConfig.gridSize > 2
         }
         if (warningLayout) {
             Toast.makeText(requireContext(), R.string.warning_inappropriate_config, Toast.LENGTH_SHORT).show()

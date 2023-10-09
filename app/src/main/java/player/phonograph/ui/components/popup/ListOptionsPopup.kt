@@ -7,7 +7,7 @@ package player.phonograph.ui.components.popup
 import player.phonograph.R
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.model.sort.SortRef
-import player.phonograph.ui.adapter.ViewHolderLayout
+import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.ui.fragments.pages.util.PageDisplayConfig
 import player.phonograph.util.ui.isLandscape
 import androidx.annotation.IdRes
@@ -83,7 +83,7 @@ class ListOptionsPopup private constructor(
 
         colorFooterVisibility = displayConfig.allowColoredFooter
         if (displayConfig.allowColoredFooter) {
-            colorFooterEnability = displayConfig.layout == ViewHolderLayout.GRID // available in grid mode
+            colorFooterEnability = displayConfig.layout == ItemLayoutStyle.GRID // available in grid mode
             colorFooter = displayConfig.colorFooter
         }
 
@@ -193,7 +193,7 @@ class ListOptionsPopup private constructor(
             for (ref in value) findSortOrderButton(ref)?.visibility = VISIBLE // show selected
         }
 
-    var itemLayout: ViewHolderLayout
+    var itemLayout: ItemLayoutStyle
         get() = getViewHolderLayoutById(viewBinding.groupItemLayout.checkedRadioButtonId)
         set(value) {
             with(viewBinding) {
@@ -204,7 +204,7 @@ class ListOptionsPopup private constructor(
                 )
             }
         }
-    var itemLayoutAvailable: Array<ViewHolderLayout> = emptyArray()
+    var itemLayoutAvailable: Array<ItemLayoutStyle> = emptyArray()
         set(value) {
             field = value
             if (value.isNotEmpty()) {
@@ -326,24 +326,24 @@ class ListOptionsPopup private constructor(
             else                      -> null
         }
 
-    private fun getViewHolderLayoutById(@IdRes id: Int): ViewHolderLayout =
+    private fun getViewHolderLayoutById(@IdRes id: Int): ItemLayoutStyle =
         when (id) {
-            R.id.item_layout_list             -> ViewHolderLayout.LIST
-            R.id.item_layout_list_extended    -> ViewHolderLayout.LIST_EXTENDED
-            R.id.item_layout_list_3l          -> ViewHolderLayout.LIST_3L
-            R.id.item_layout_list_3l_extended -> ViewHolderLayout.LIST_3L_EXTENDED
-            R.id.item_layout_grid             -> ViewHolderLayout.GRID
-            else                              -> ViewHolderLayout.LIST
+            R.id.item_layout_list             -> ItemLayoutStyle.LIST
+            R.id.item_layout_list_extended    -> ItemLayoutStyle.LIST_EXTENDED
+            R.id.item_layout_list_3l          -> ItemLayoutStyle.LIST_3L
+            R.id.item_layout_list_3l_extended -> ItemLayoutStyle.LIST_3L_EXTENDED
+            R.id.item_layout_grid             -> ItemLayoutStyle.GRID
+            else                              -> ItemLayoutStyle.LIST
         }
 
-    private fun findItemLayoutButton(layout: ViewHolderLayout): RadioButton? =
+    private fun findItemLayoutButton(layout: ItemLayoutStyle): RadioButton? =
         when (layout) {
-            ViewHolderLayout.LIST             -> viewBinding.itemLayoutList
-            ViewHolderLayout.LIST_EXTENDED    -> viewBinding.itemLayoutListExtended
-            ViewHolderLayout.LIST_3L          -> viewBinding.itemLayoutList3l
-            ViewHolderLayout.LIST_3L_EXTENDED -> viewBinding.itemLayoutList3lExtended
-            ViewHolderLayout.GRID             -> viewBinding.itemLayoutGrid
-            else                              -> null
+            ItemLayoutStyle.LIST             -> viewBinding.itemLayoutList
+            ItemLayoutStyle.LIST_EXTENDED    -> viewBinding.itemLayoutListExtended
+            ItemLayoutStyle.LIST_3L          -> viewBinding.itemLayoutList3l
+            ItemLayoutStyle.LIST_3L_EXTENDED -> viewBinding.itemLayoutList3lExtended
+            ItemLayoutStyle.GRID             -> viewBinding.itemLayoutGrid
+            else                             -> null
         }
 
     private fun check(radioButton: RadioButton?) {

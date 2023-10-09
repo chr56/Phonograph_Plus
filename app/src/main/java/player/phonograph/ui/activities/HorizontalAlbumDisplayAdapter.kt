@@ -13,7 +13,7 @@ import player.phonograph.model.buildInfoString
 import player.phonograph.model.getYearString
 import player.phonograph.model.songCountString
 import player.phonograph.ui.adapter.ConstDisplayConfig
-import player.phonograph.ui.adapter.ViewHolderLayout
+import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -24,7 +24,7 @@ import android.view.ViewGroup.MarginLayoutParams
 
 class HorizontalAlbumDisplayAdapter(
     activity: AppCompatActivity,
-) : AlbumDisplayAdapter(activity, ConstDisplayConfig(ViewHolderLayout.GRID_CARD_HORIZONTAL)) {
+) : AlbumDisplayAdapter(activity, ConstDisplayConfig(ItemLayoutStyle.GRID_CARD_HORIZONTAL)) {
 
 
     override fun onBindViewHolder(holder: DisplayViewHolder<Album>, position: Int) {

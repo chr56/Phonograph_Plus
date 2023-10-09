@@ -13,9 +13,9 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.adapter.OrderedItemAdapter
-import player.phonograph.ui.adapter.ViewHolderLayout
 import player.phonograph.ui.adapter.hasMenu
 import player.phonograph.ui.adapter.initMenu
 import player.phonograph.util.ui.hitTest
@@ -44,7 +44,7 @@ class PlayingQueueAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderedItemViewHolder<Song> {
         val view =
-            LayoutInflater.from(activity).inflate(ViewHolderLayout.LIST.layout(), parent, false)
+            LayoutInflater.from(activity).inflate(ItemLayoutStyle.LIST.layout(), parent, false)
         return PlayingQueueViewHolder(view)
     }
 

@@ -6,7 +6,7 @@ package player.phonograph.ui.adapter
 
 interface DisplayConfig {
 
-    val layoutType: ViewHolderLayout
+    val layoutStyle: ItemLayoutStyle
 
     val usePalette: Boolean
 
