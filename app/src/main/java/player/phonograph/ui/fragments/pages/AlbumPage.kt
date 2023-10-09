@@ -9,8 +9,6 @@ import player.phonograph.model.Album
 import player.phonograph.repo.loader.Albums
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
-import player.phonograph.ui.fragments.pages.util.AlbumPageDisplayConfig
-import player.phonograph.ui.fragments.pages.util.PageDisplayConfig
 import androidx.fragment.app.viewModels
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope

@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.ui.fragments.pages.util
+package player.phonograph.ui.fragments.pages
 
 import player.phonograph.R
 import player.phonograph.model.sort.SortMode

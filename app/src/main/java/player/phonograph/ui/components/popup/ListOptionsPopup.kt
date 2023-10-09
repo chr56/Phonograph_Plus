@@ -8,7 +8,7 @@ import player.phonograph.R
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.model.sort.SortRef
 import player.phonograph.ui.adapter.ItemLayoutStyle
-import player.phonograph.ui.fragments.pages.util.PageDisplayConfig
+import player.phonograph.ui.fragments.pages.PageDisplayConfig
 import player.phonograph.util.ui.isLandscape
 import androidx.annotation.IdRes
 import androidx.core.view.forEach

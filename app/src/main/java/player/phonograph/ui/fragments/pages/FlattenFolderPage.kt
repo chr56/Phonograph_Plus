@@ -21,7 +21,6 @@ import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.adapter.SongCollectionDisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
-import player.phonograph.ui.fragments.pages.util.SongPageDisplayConfig
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor

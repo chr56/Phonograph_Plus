@@ -19,7 +19,6 @@ import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.ui.components.popup.ListOptionsPopup
-import player.phonograph.ui.fragments.pages.util.PageDisplayConfig
 import player.phonograph.util.debug
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
