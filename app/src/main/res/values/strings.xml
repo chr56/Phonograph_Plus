@@ -488,4 +488,5 @@
     <string name="item_layout_list_3l">List (3 lines)</string>
     <string name="item_layout_grid">Grid</string>
     <string name="warning_inappropriate_config">Your current configuration is considered as "Inappropriate".</string>
+    <string name="item_layout_list_3l_extended">List (3 lines, extended)</string>
 </resources>

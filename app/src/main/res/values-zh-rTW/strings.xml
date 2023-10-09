@@ -473,6 +473,7 @@
     <string name="item_layout_list">列表 (2行)</string>
     <string name="item_layout_list_3l">列表 (3行)</string>
     <string name="item_layout_list_extended">列表 (2行, 擴充)</string>
+    <string name="item_layout_list_3l_extended">列表 (3行, 擴充)</string>
     <string name="item_layout_grid">網格</string>
     <string name="warning_inappropriate_config">當前配置疑似不當!</string>
 </resources>

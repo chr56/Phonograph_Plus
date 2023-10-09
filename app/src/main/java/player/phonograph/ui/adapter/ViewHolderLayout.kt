@@ -16,6 +16,7 @@ import androidx.annotation.LayoutRes
     ViewHolderLayout.TYPE_LIST_SINGLE_ROW,
     ViewHolderLayout.TYPE_LIST_NO_IMAGE,
     ViewHolderLayout.TYPE_LIST_3L,
+    ViewHolderLayout.TYPE_LIST_3L_EXTENDED,
     ViewHolderLayout.TYPE_GRID,
     ViewHolderLayout.TYPE_GRID_CARD_HORIZONTAL,
 )
@@ -40,6 +41,7 @@ value class ViewHolderLayout private constructor(@ViewHolderType val ordinal: In
         TYPE_LIST_SINGLE_ROW      -> R.layout.item_list_single_row
         TYPE_LIST_NO_IMAGE        -> R.layout.item_list_no_image
         TYPE_LIST_3L              -> R.layout.item_list_3l
+        TYPE_LIST_3L_EXTENDED     -> R.layout.item_list_3l_extended
         TYPE_GRID                 -> R.layout.item_grid
         TYPE_GRID_CARD_HORIZONTAL -> R.layout.item_grid_card_horizontal
         else                      -> R.layout.item_list //default
@@ -53,6 +55,7 @@ value class ViewHolderLayout private constructor(@ViewHolderType val ordinal: In
         const val TYPE_LIST_SINGLE_ROW = 5
         const val TYPE_LIST_NO_IMAGE = 6
         const val TYPE_LIST_3L = 8
+        const val TYPE_LIST_3L_EXTENDED = 9
 
         const val TYPE_GRID = 12
         const val TYPE_GRID_CARD_HORIZONTAL = 15
@@ -69,6 +72,8 @@ value class ViewHolderLayout private constructor(@ViewHolderType val ordinal: In
             get() = ViewHolderLayout(TYPE_LIST_NO_IMAGE)
         val LIST_3L: ViewHolderLayout
             get() = ViewHolderLayout(TYPE_LIST_3L)
+        val LIST_3L_EXTENDED: ViewHolderLayout
+            get() = ViewHolderLayout(TYPE_LIST_3L_EXTENDED)
         val GRID: ViewHolderLayout
             get() = ViewHolderLayout(TYPE_GRID)
         val GRID_CARD_HORIZONTAL: ViewHolderLayout
@@ -80,6 +85,7 @@ value class ViewHolderLayout private constructor(@ViewHolderType val ordinal: In
             TYPE_LIST_SINGLE_ROW      -> LIST_SINGLE_ROW
             TYPE_LIST_NO_IMAGE        -> LIST_NO_IMAGE
             TYPE_LIST_3L              -> LIST_3L
+            TYPE_LIST_3L_EXTENDED     -> LIST_3L_EXTENDED
             TYPE_GRID                 -> GRID
             TYPE_GRID_CARD_HORIZONTAL -> GRID_CARD_HORIZONTAL
             else                      -> ViewHolderLayout(TYPE_CUSTOM)
