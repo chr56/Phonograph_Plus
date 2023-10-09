@@ -328,18 +328,20 @@ class ListOptionsPopup private constructor(
 
     private fun getViewHolderLayoutById(@IdRes id: Int): ViewHolderLayout =
         when (id) {
-            R.id.item_layout_list    -> ViewHolderLayout.LIST
-            R.id.item_layout_list_3l -> ViewHolderLayout.LIST_3L
-            R.id.item_layout_grid    -> ViewHolderLayout.GRID
-            else                     -> ViewHolderLayout.LIST
+            R.id.item_layout_list          -> ViewHolderLayout.LIST
+            R.id.item_layout_list_extended -> ViewHolderLayout.LIST_EXTENDED
+            R.id.item_layout_list_3l       -> ViewHolderLayout.LIST_3L
+            R.id.item_layout_grid          -> ViewHolderLayout.GRID
+            else                           -> ViewHolderLayout.LIST
         }
 
     private fun findItemLayoutButton(layout: ViewHolderLayout): RadioButton? =
         when (layout) {
-            ViewHolderLayout.LIST    -> viewBinding.itemLayoutList
-            ViewHolderLayout.LIST_3L -> viewBinding.itemLayoutList3l
-            ViewHolderLayout.GRID    -> viewBinding.itemLayoutGrid
-            else                     -> null
+            ViewHolderLayout.LIST          -> viewBinding.itemLayoutList
+            ViewHolderLayout.LIST_EXTENDED -> viewBinding.itemLayoutListExtended
+            ViewHolderLayout.LIST_3L       -> viewBinding.itemLayoutList3l
+            ViewHolderLayout.GRID          -> viewBinding.itemLayoutGrid
+            else                           -> null
         }
 
     private fun check(radioButton: RadioButton?) {
