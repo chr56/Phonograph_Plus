@@ -42,7 +42,7 @@ value class ViewHolderLayout private constructor(@ViewHolderType val ordinal: In
         TYPE_LIST_3L              -> R.layout.item_list_3l
         TYPE_GRID                 -> R.layout.item_grid
         TYPE_GRID_CARD_HORIZONTAL -> R.layout.item_grid_card_horizontal
-        else                      -> 0
+        else                      -> R.layout.item_list //default
     }
 
     companion object {
