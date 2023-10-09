@@ -70,6 +70,14 @@ const val ARTIST_COLORED_FOOTERS = "artist_colored_footers"
 const val SHOW_FILE_IMAGINES = "show_file_imagines"
 
 // ListPage-Appearance
+
+const val SONG_ITEM_LAYOUT = "song_item_layout"
+const val SONG_ITEM_LAYOUT_LAND = "song_item_layout_land"
+const val ALBUM_ITEM_LAYOUT = "album_item_layout"
+const val ALBUM_ITEM_LAYOUT_LAND = "album_item_layout_land"
+const val ARTIST_ITEM_LAYOUT = "artist_item_layout"
+const val ARTIST_ITEM_LAYOUT_LAND = "artist_item_layout_land"
+
 const val ALBUM_GRID_SIZE = "album_grid_size"
 const val ALBUM_GRID_SIZE_LAND = "album_grid_size_land"
 const val SONG_GRID_SIZE = "song_grid_size"

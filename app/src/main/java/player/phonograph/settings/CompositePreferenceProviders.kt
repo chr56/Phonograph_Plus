@@ -8,6 +8,7 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
+import player.phonograph.ui.adapter.ViewHolderLayout
 import player.phonograph.util.time.TimeInterval
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -77,6 +78,19 @@ sealed class SortModePreferenceProvider(backField: PrimitiveKey<String>) :
     data object PlaylistSortMode : SortModePreferenceProvider(Keys._playlistSortMode)
     data object CollectionSortMode : SortModePreferenceProvider(Keys._collectionSortMode)
     data object FileSortMode : SortModePreferenceProvider(Keys._fileSortMode)
+}
+
+sealed class ItemLayoutProvider(backField: PrimitiveKey<Int>, default: () -> ViewHolderLayout) :
+        MonoPreferenceProvider<ViewHolderLayout, Int>(backField, default) {
+    override fun read(flow: Flow<Int>): Flow<ViewHolderLayout> = flow.map { ViewHolderLayout.from(it) }
+    override fun save(data: ViewHolderLayout): Int = data.ordinal
+
+    data object SongItemLayoutProvider : ItemLayoutProvider(Keys._songItemLayout, { ViewHolderLayout.LIST })
+    data object AlbumItemLayoutProvider : ItemLayoutProvider(Keys._albumItemLayout, { ViewHolderLayout.LIST_3L })
+    data object ArtistItemLayoutProvider : ItemLayoutProvider(Keys._artistItemLayout, { ViewHolderLayout.LIST })
+    data object LandSongItemLayoutProvider : ItemLayoutProvider(Keys._songItemLayoutLand, { ViewHolderLayout.LIST })
+    data object LandAlbumItemLayoutProvider : ItemLayoutProvider(Keys._albumItemLayoutLand, { ViewHolderLayout.LIST_3L })
+    data object LandArtistItemLayoutProvider : ItemLayoutProvider(Keys._artistItemLayoutLand, { ViewHolderLayout.LIST_3L })
 }
 
 object LastAddedCutOffDurationPreferenceProvider : CompositePreferenceProvider<Long> {
