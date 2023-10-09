@@ -12,6 +12,7 @@ import android.os.HandlerThread
 import android.os.Looper
 import android.os.Message
 import android.os.Process.THREAD_PRIORITY_BACKGROUND
+import kotlin.concurrent.thread
 
 class QueueManager(val context: Application) {
 
@@ -26,7 +27,8 @@ class QueueManager(val context: Application) {
         queueHolder = QueueHolder.fromPersistence(context)
         observerManager = ObserverManager()
 
-        handler.post {
+
+        thread(name = "queue_validation", priority = THREAD_PRIORITY_BACKGROUND) {
             val changed = queueHolder.valid(context)
             if (changed) {
                 observerManager.notifyQueueChanged(queueHolder.playingQueue, queueHolder.originalPlayingQueue)
