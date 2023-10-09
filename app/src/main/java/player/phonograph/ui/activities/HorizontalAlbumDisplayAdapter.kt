@@ -12,6 +12,8 @@ import player.phonograph.model.Album
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getYearString
 import player.phonograph.model.songCountString
+import player.phonograph.ui.adapter.ConstDisplayConfig
+import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -22,8 +24,7 @@ import android.view.ViewGroup.MarginLayoutParams
 
 class HorizontalAlbumDisplayAdapter(
     activity: AppCompatActivity,
-    dataSet: List<Album>,
-) : AlbumDisplayAdapter(activity, dataSet, R.layout.item_grid_card_horizontal) {
+) : AlbumDisplayAdapter(activity, ConstDisplayConfig(ItemLayoutStyle.GRID_CARD_HORIZONTAL)) {
 
 
     override fun onBindViewHolder(holder: DisplayViewHolder<Album>, position: Int) {
@@ -43,14 +44,16 @@ class HorizontalAlbumDisplayAdapter(
         }
     }
 
+    /*
     override fun getItemViewType(position: Int): Int = when (position) {
         0             -> TYPE_FIRST
         itemCount - 1 -> TYPE_LAST
         else          -> TYPE_MIDDLE
     }
+     */
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Album> {
-        return HorizontalAlbumViewHolder(inflatedView(layoutRes, parent))
+        return HorizontalAlbumViewHolder(inflatedView(parent, viewType))
     }
 
     class HorizontalAlbumViewHolder(itemView: View) : DisplayViewHolder<Album>(itemView) {
@@ -88,8 +91,10 @@ class HorizontalAlbumDisplayAdapter(
     }
 
     companion object {
+        /*
         private const val TYPE_FIRST = 1
         private const val TYPE_MIDDLE = 2
         private const val TYPE_LAST = 3
+         */
     }
 }

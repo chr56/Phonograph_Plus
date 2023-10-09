@@ -13,19 +13,22 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
 class PlaylistDisplayAdapter(
     activity: AppCompatActivity,
-) : DisplayAdapter<Playlist>(activity, ArrayList(), R.layout.item_list_single_row) {
+) : DisplayAdapter<Playlist>(activity, ConstDisplayConfig(ItemLayoutStyle.LIST_SINGLE_ROW)) {
 
     override fun getSectionNameImp(position: Int): String {
         val sortMode = Setting(activity).Composites[Keys.playlistSortMode].data
@@ -39,7 +42,9 @@ class PlaylistDisplayAdapter(
         if (dataset[position] is SmartPlaylist) SMART_PLAYLIST else DEFAULT_PLAYLIST
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Playlist> {
-        val view = inflatedView(layoutRes, parent)
+        val view =
+            LayoutInflater.from(activity)
+                .inflate(ItemLayoutStyle.LIST_SINGLE_ROW.layout(), parent, false)
         return if (viewType == SMART_PLAYLIST) SmartPlaylistViewHolder(view) else CommonPlaylistViewHolder(view)
     }
 
@@ -67,10 +72,10 @@ class PlaylistDisplayAdapter(
         }
 
         private fun getIconRes(playlist: Playlist): Int = when {
-            playlist is SmartPlaylist                               -> playlist.iconRes
-            favoritesStore.containsPlaylist(playlist)               -> R.drawable.ic_pin_white_24dp
+            playlist is SmartPlaylist                      -> playlist.iconRes
+            favoritesStore.containsPlaylist(playlist)      -> R.drawable.ic_pin_white_24dp
             isFavoritePlaylist(itemView.context, playlist) -> R.drawable.ic_favorite_white_24dp
-            else                                                    -> R.drawable.ic_queue_music_white_24dp
+            else                                           -> R.drawable.ic_queue_music_white_24dp
         }
 
         companion object {

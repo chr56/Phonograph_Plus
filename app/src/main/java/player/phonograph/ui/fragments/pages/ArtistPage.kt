@@ -7,12 +7,9 @@ package player.phonograph.ui.fragments.pages
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.Artist
-import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.loader.Artists
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.ArtistDisplayAdapter
-import player.phonograph.ui.fragments.pages.util.DisplayConfig
-import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import androidx.fragment.app.viewModels
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
@@ -31,28 +28,15 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>>() {
         override val headerTextRes: Int get() = R.plurals.item_artists
     }
 
-    override val displayConfigTarget get() = DisplayConfigTarget.ArtistPage
+    override fun displayConfig(): PageDisplayConfig = ArtistPageDisplayConfig(requireContext())
 
     override fun initAdapter(): DisplayAdapter<Artist> {
-        val displayConfig = DisplayConfig(displayConfigTarget)
-
-        val layoutRes = displayConfig.layoutRes(displayConfig.gridSize)
-
+        val displayConfig = displayConfig()
         return ArtistDisplayAdapter(
             hostFragment.mainActivity,
-            ArrayList(), // empty until Artist loaded
-            layoutRes
-        ).apply {
-            usePalette = displayConfig.colorFooter
-        }
-    }
-
-    override val availableSortRefs: Array<SortRef>
-        get() = arrayOf(
-            SortRef.ARTIST_NAME,
-            SortRef.ALBUM_COUNT,
-            SortRef.SONG_COUNT,
+            adapterDisplayConfig.copy(layoutStyle = displayConfig.layout, usePalette = displayConfig.colorFooter),
         )
+    }
 
     companion object {
         const val TAG = "ArtistPage"

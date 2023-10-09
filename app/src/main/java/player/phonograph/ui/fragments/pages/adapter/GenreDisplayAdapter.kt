@@ -8,7 +8,9 @@ import player.phonograph.model.Genre
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
@@ -16,9 +18,7 @@ import android.view.ViewGroup
 
 class GenreDisplayAdapter(
     activity: AppCompatActivity,
-    dataSet: List<Genre>,
-    layoutRes: Int,
-) : DisplayAdapter<Genre>(activity, dataSet, layoutRes) {
+) : DisplayAdapter<Genre>(activity, ConstDisplayConfig(ItemLayoutStyle.LIST_NO_IMAGE)) {
 
     override fun getSectionNameImp(position: Int): String {
         val sortMode = Setting(activity).Composites[Keys.genreSortMode].data
@@ -30,7 +30,7 @@ class GenreDisplayAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Genre> =
-        GenreViewHolder(inflatedView(layoutRes, parent))
+        GenreViewHolder(inflatedView(parent, viewType))
 
     class GenreViewHolder(itemView: View) : DisplayViewHolder<Genre>(itemView)
 

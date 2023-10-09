@@ -96,11 +96,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
             viewBinding.recyclerView.setPaddingTop(viewBinding.innerAppBar.totalScrollRange + verticalOffset)
         }
         // setUpSongsAdapter
-        adapter =
-            AlbumSongDisplayAdapter(this, Songs.album(this, model.album.value.id), R.layout.item_list).apply {
-                useImageText = true
-                usePalette = false
-            }
+        adapter = AlbumSongDisplayAdapter(this)
         viewBinding.recyclerView.layoutManager = LinearLayoutManager(this)
         viewBinding.recyclerView.adapter = adapter
         adapter.registerAdapterDataObserver(object : AdapterDataObserver() {

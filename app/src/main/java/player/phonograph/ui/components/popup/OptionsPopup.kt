@@ -12,6 +12,7 @@ import androidx.appcompat.R
 import androidx.viewbinding.ViewBinding
 import android.content.Context
 import android.content.res.ColorStateList
+import android.content.res.Resources
 import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.ViewGroup
@@ -67,4 +68,6 @@ abstract class OptionsPopup protected constructor(
             intArrayOf(accentColor, accentColor, textColor)
         )
     }
+
+    protected val resources: Resources get() = contentView.resources
 }

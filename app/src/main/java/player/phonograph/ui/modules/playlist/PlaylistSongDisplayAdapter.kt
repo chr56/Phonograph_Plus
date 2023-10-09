@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.modules.playlist
 
-import coil.size.ViewSizeResolver
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.github.chr56.android.menu_dsl.submenu
@@ -15,9 +14,8 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
 import player.phonograph.actions.actionGotoDetail
-import player.phonograph.coil.loadImage
 import player.phonograph.model.Song
-import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.OrderedItemAdapter
 import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.util.ui.hitTest
@@ -30,19 +28,16 @@ import android.widget.PopupMenu
 
 class PlaylistSongDisplayAdapter(
     activity: AppCompatActivity,
-    dataSet: List<Song>,
-) : DisplayAdapter<Song>(activity, dataSet, R.layout.item_list),
+) : OrderedItemAdapter<Song>(activity, R.layout.item_list, showSectionName = true),
     DraggableItemAdapter<PlaylistSongDisplayAdapter.PlaylistSongViewHolder> {
 
     override fun getSectionNameImp(position: Int): String = (position + 1).toString()
 
-
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Song> {
-        return PlaylistSongViewHolder(inflatedView(layoutRes, parent))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderedItemViewHolder<Song> {
+        return PlaylistSongViewHolder(inflatedView(parent, viewType))
     }
 
-    override fun onBindViewHolder(holder: DisplayViewHolder<Song>, position: Int) {
+    override fun onBindViewHolder(holder: OrderedItemViewHolder<Song>, position: Int) {
         if (editMode) holder.dragView?.visibility = View.VISIBLE
         super.onBindViewHolder(holder, position)
     }
@@ -199,20 +194,8 @@ class PlaylistSongDisplayAdapter(
     }
 
     inner class PlaylistSongViewHolder(itemView: View) :
-            DisplayViewHolder<Song>(itemView),
+            OrderedItemViewHolder<Song>(itemView),
             DraggableItemViewHolder {
-
-        override fun setImage(position: Int, dataset: List<Song>, usePalette: Boolean) {
-            val context = itemView.context
-            loadImage(context) {
-                data(dataset[position])
-                size(ViewSizeResolver(image!!))
-                target(
-                    onStart = { image!!.setImageResource(R.drawable.default_album_art) },
-                    onSuccess = { image!!.setImageDrawable(it) }
-                )
-            }
-        }
 
 
         override fun onMenuClick(dataset: List<Song>, bindingAdapterPosition: Int, menuButtonView: View) {
@@ -224,6 +207,9 @@ class PlaylistSongDisplayAdapter(
                 super.onMenuClick(dataset, bindingAdapterPosition, menuButtonView)
             }
         }
+
+        override fun getRelativeOrdinalText(item: Song, position: Int): String = (position+1).toString()
+
         @DraggableItemStateFlags
         private var mDragStateFlags = 0
 

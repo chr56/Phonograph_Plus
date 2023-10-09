@@ -16,11 +16,11 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.ui.adapter.ConstDisplayConfig
+import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.adapter.SongCollectionDisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
-import player.phonograph.ui.fragments.pages.util.DisplayConfig
-import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
@@ -137,7 +137,7 @@ class FlattenFolderPage : AbsPage() {
     }
 
     private fun configPopupSongs(popup: ListOptionsPopup) {
-        val displayConfig = DisplayConfig(DisplayConfigTarget.SongPage)
+        val displayConfig = SongPageDisplayConfig(requireContext())
         val currentSortMode = displayConfig.sortMode
 
         popup.allowRevert = true
@@ -170,7 +170,7 @@ class FlattenFolderPage : AbsPage() {
     }
 
     private fun dismissPopupSongs(popup: ListOptionsPopup) {
-        val displayConfig = DisplayConfig(DisplayConfigTarget.SongPage)
+        val displayConfig = SongPageDisplayConfig(requireContext())
 
         val selected = SortMode(popup.sortRef, popup.revert)
         if (displayConfig.sortMode != selected) {
@@ -190,15 +190,12 @@ class FlattenFolderPage : AbsPage() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         songCollectionDisplayAdapter = SongCollectionDisplayAdapter(
             hostFragment.mainActivity,
-            emptyList(),
-            R.layout.item_list,
             ::onFolderClick
         )
 
         songAdapter = SongDisplayAdapter(
             hostFragment.mainActivity,
-            emptyList(),
-            R.layout.item_list,
+            ConstDisplayConfig(ItemLayoutStyle.LIST, false)
         )
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(

@@ -13,14 +13,16 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.ui.adapter.MultiSelectionController
+import player.phonograph.ui.adapter.OrderedItemAdapter
 import player.phonograph.ui.adapter.hasMenu
 import player.phonograph.ui.adapter.initMenu
 import player.phonograph.util.ui.hitTest
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import android.annotation.SuppressLint
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -29,21 +31,21 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 
 class PlayingQueueAdapter(
-    activity: AppCompatActivity,
-    dataSet: List<Song>,
-    current: Int,
-) : DisplayAdapter<Song>(activity, dataSet, R.layout.item_list),
+    activity: FragmentActivity,
+) : OrderedItemAdapter<Song>(activity, R.layout.item_list, useImageText = true),
     DraggableItemAdapter<PlayingQueueAdapter.PlayingQueueViewHolder> {
 
-    var current: Int = current
+    var current: Int = -1
         @SuppressLint("NotifyDataSetChanged") // number 0 is moving, meaning all items' number is changing
         set(value) {
             field = value
             notifyDataSetChanged()
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Song> {
-        return PlayingQueueViewHolder(inflatedView(R.layout.item_list, parent))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderedItemViewHolder<Song> {
+        val view =
+            LayoutInflater.from(activity).inflate(ItemLayoutStyle.LIST.layout(), parent, false)
+        return PlayingQueueViewHolder(view)
     }
 
     override fun getItemViewType(position: Int): Int =
@@ -55,9 +57,8 @@ class PlayingQueueAdapter(
 
     override val allowMultiSelection: Boolean get() = false
 
-    inner class PlayingQueueViewHolder(itemView: View) : DisplayViewHolder<Song>(itemView), DraggableItemViewHolder {
-
-        override fun setImage(position: Int, dataset: List<Song>, usePalette: Boolean) {}
+    inner class PlayingQueueViewHolder(itemView: View) :
+            OrderedItemViewHolder<Song>(itemView), DraggableItemViewHolder {
 
         override fun onClick(position: Int, dataset: List<Song>, imageView: ImageView?): Boolean {
             MusicPlayerRemote.playSongAt(position)
@@ -79,7 +80,6 @@ class PlayingQueueAdapter(
             dataset: List<Song>,
             controller: MultiSelectionController<Song>,
             useImageText: Boolean,
-            usePalette: Boolean
         ) {
 
             val song = dataset[position]
@@ -157,9 +157,9 @@ class PlayingQueueAdapter(
         }
     }
 
-    // Playing Queue might have multiple items of SAME song, so we have to make differences
+    // Playing Queue might have multiple items of SAME song, so we have to avoid crash
     override fun getItemId(position: Int): Long =
-        super.getItemId(position) + position * 65537 // 65537, the fifth Fermat prime
+        dataset[position].getItemID() shl 17 + position
 
 
     companion object {

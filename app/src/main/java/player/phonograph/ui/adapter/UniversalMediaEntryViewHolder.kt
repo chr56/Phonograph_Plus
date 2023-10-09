@@ -16,6 +16,8 @@ open class UniversalMediaEntryViewHolder(itemView: View) :
     var imageText: TextView? = null
     var title: TextView? = null
     var text: TextView? = null
+    var textSecondary: TextView? = null
+    var textTertiary: TextView? = null
     var menu: View? = null
     var separator: View? = null
     var shortSeparator: View? = null
@@ -28,6 +30,8 @@ open class UniversalMediaEntryViewHolder(itemView: View) :
         imageText = itemView.findViewById(R.id.image_text)
         title = itemView.findViewById(R.id.title)
         text = itemView.findViewById(R.id.text)
+        textSecondary = itemView.findViewById(R.id.secondary_text)
+        textTertiary = itemView.findViewById(R.id.tertiary_text)
         menu = itemView.findViewById(R.id.menu)
         separator = itemView.findViewById(R.id.separator)
         shortSeparator = itemView.findViewById(R.id.short_separator)

@@ -11,13 +11,10 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.actions.actionPlay
 import player.phonograph.model.Song
-import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
-import player.phonograph.ui.fragments.pages.util.DisplayConfig
-import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.appcompat.widget.Toolbar
@@ -42,35 +39,16 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
         override val headerTextRes: Int get() = R.plurals.item_songs
     }
 
-    override val displayConfigTarget get() = DisplayConfigTarget.SongPage
+
+    override fun displayConfig(): PageDisplayConfig = SongPageDisplayConfig(requireContext())
 
     override fun initAdapter(): DisplayAdapter<Song> {
-        val displayConfig = DisplayConfig(displayConfigTarget)
-
-        val layoutRes = displayConfig.layoutRes(displayConfig.gridSize)
-
+        val displayConfig = displayConfig()
         return SongDisplayAdapter(
             hostFragment.mainActivity,
-            ArrayList(), // empty until songs loaded
-            layoutRes
-        ).apply {
-            usePalette = displayConfig.colorFooter
-        }
-    }
-
-
-    override val availableSortRefs: Array<SortRef>
-        get() = arrayOf(
-            SortRef.SONG_NAME,
-            SortRef.ALBUM_NAME,
-            SortRef.ARTIST_NAME,
-            SortRef.ALBUM_ARTIST_NAME,
-            SortRef.COMPOSER,
-            SortRef.YEAR,
-            SortRef.ADDED_DATE,
-            SortRef.MODIFIED_DATE,
-            SortRef.DURATION,
+            adapterDisplayConfig.copy(layoutStyle = displayConfig.layout, usePalette = displayConfig.colorFooter),
         )
+    }
 
     override fun configAppBar(panelToolbar: Toolbar) {
         val context = hostFragment.mainActivity

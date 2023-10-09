@@ -482,4 +482,11 @@
     <string name="deleted">Deleted</string>
     <string name="action_shuffle_mode">Shuffle Mode</string>
     <string name="action_repeat_mode">Repeat Mode</string>
+    <string name="action_item_layout">Item Layout</string>
+    <string name="item_layout_list">List (2 lines)</string>
+    <string name="item_layout_list_extended">List (2 lines, extended)</string>
+    <string name="item_layout_list_3l">List (3 lines)</string>
+    <string name="item_layout_list_3l_extended">List (3 lines, extended)</string>
+    <string name="item_layout_grid">Grid</string>
+    <string name="warning_inappropriate_config">Your current configuration is considered as \"Inappropriate\".</string>
 </resources>

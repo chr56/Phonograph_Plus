@@ -20,10 +20,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 
-abstract class DisplayAdapter<I : Displayable>(
+abstract class OrderedItemAdapter<I : Displayable>(
     protected val activity: FragmentActivity,
-    var config: DisplayConfig,
-) : RecyclerView.Adapter<DisplayAdapter.DisplayViewHolder<I>>(),
+    protected val layoutRes: Int,
+    protected var useImageText: Boolean = true,
+    protected var showSectionName: Boolean = false,
+) : RecyclerView.Adapter<OrderedItemAdapter.OrderedItemViewHolder<I>>(),
     FastScrollRecyclerView.SectionedAdapter,
     IMultiSelectableAdapter<I> {
 
@@ -39,6 +41,7 @@ abstract class DisplayAdapter<I : Displayable>(
         setHasStableIds(true)
     }
 
+
     protected val controller: MultiSelectionController<I>
             by lazy { MultiSelectionController(this, activity, allowMultiSelection) }
 
@@ -47,27 +50,24 @@ abstract class DisplayAdapter<I : Displayable>(
     override fun getItemId(position: Int): Long = dataset[position].getItemID() // shl 3 + layoutType
     override fun getItem(datasetPosition: Int): I = dataset[datasetPosition]
 
-
-    override fun getItemViewType(position: Int): Int = config.layoutStyle.ordinal
-
     protected open fun inflatedView(parent: ViewGroup, viewType: Int): View =
-        LayoutInflater.from(activity).inflate(ItemLayoutStyle.from(viewType).layout(), parent, false)
+        LayoutInflater.from(activity).inflate(layoutRes, parent, false)
 
-    override fun onBindViewHolder(holder: DisplayViewHolder<I>, position: Int) {
+    override fun onBindViewHolder(holder: OrderedItemViewHolder<I>, position: Int) {
         val item: I = dataset[position]
-        holder.bind(item, position, dataset, controller, config.useImageText, config.usePalette)
+        holder.bind(item, position, dataset, controller, useImageText)
     }
 
     override fun getItemCount(): Int = dataset.size
 
     override fun getSectionName(position: Int): String =
-        if (config.showSectionName) getSectionNameImp(position) else ""
+        if (showSectionName) getSectionNameImp(position) else ""
 
     // for inheriting
     open fun getSectionNameImp(position: Int): String =
         dataset[position].defaultSortOrderReference()?.substring(0..1) ?: ""
 
-    open class DisplayViewHolder<I : Displayable>(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
+    open class OrderedItemViewHolder<I : Displayable>(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
 
         open fun bind(
             item: I,
@@ -75,7 +75,6 @@ abstract class DisplayAdapter<I : Displayable>(
             dataset: List<I>,
             controller: MultiSelectionController<I>,
             useImageText: Boolean,
-            usePalette: Boolean,
         ) {
             shortSeparator?.visibility = View.VISIBLE
             itemView.isActivated = controller.isSelected(item)
@@ -84,9 +83,9 @@ abstract class DisplayAdapter<I : Displayable>(
             textSecondary?.text = item.getSecondaryText(itemView.context)
             textTertiary?.text = item.getTertiaryText(itemView.context)
             if (useImageText) {
-                setImageText(getRelativeOrdinalText(item))
+                setImageText(getRelativeOrdinalText(item, position))
             } else {
-                setImage(position, dataset, usePalette)
+                setImage(position, dataset)
             }
             controller.registerClicking(itemView, position) {
                 onClick(position, dataset, image)
@@ -113,14 +112,13 @@ abstract class DisplayAdapter<I : Displayable>(
             }
         }
 
-        protected open fun getRelativeOrdinalText(item: I): String = "-"
+        protected open fun getRelativeOrdinalText(item: I, position: Int): String = "-"
         protected open fun getDescription(item: I): CharSequence? =
             item.getDescription(context = itemView.context)
 
         protected open fun setImage(
             position: Int,
             dataset: List<I>,
-            usePalette: Boolean,
         ) {
             image?.also {
                 it.visibility = View.VISIBLE

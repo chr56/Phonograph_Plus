@@ -6,11 +6,9 @@ package player.phonograph.ui.fragments.pages
 
 import player.phonograph.R
 import player.phonograph.model.Genre
-import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.loader.Genres
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.GenreDisplayAdapter
-import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import androidx.fragment.app.viewModels
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
@@ -29,26 +27,11 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
         override val headerTextRes: Int get() = R.plurals.item_genres
     }
 
-
-    override val displayConfigTarget get() = DisplayConfigTarget.GenrePage
+    override fun displayConfig(): PageDisplayConfig = GenrePageDisplayConfig(requireContext())
 
     override fun initAdapter(): DisplayAdapter<Genre> {
-        return GenreDisplayAdapter(
-            hostFragment.mainActivity,
-            ArrayList(), // empty until Genre loaded
-            R.layout.item_list_no_image
-        ).apply {
-            showSectionName = true
-        }
+        return GenreDisplayAdapter(hostFragment.mainActivity)
     }
-
-    override val availableSortRefs: Array<SortRef>
-        get() = arrayOf(
-            SortRef.DISPLAY_NAME,
-            SortRef.SONG_COUNT,
-        )
-
-    override fun allowColoredFooter(): Boolean = false
 
     companion object {
         const val TAG = "GenrePage"

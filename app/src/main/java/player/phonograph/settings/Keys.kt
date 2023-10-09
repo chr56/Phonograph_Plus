@@ -9,6 +9,7 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
+import player.phonograph.ui.adapter.ItemLayoutStyle
 import androidx.datastore.preferences.core.booleanPreferencesKey as booleanPK
 import androidx.datastore.preferences.core.intPreferencesKey as intPK
 import androidx.datastore.preferences.core.longPreferencesKey as longPK
@@ -173,8 +174,85 @@ object Keys {
     data object albumArtistColoredFooters :
             PrimitiveKey<Boolean>(booleanPK(ALBUM_ARTIST_COLORED_FOOTERS), { true })
 
+    data object albumColoredFooters :
+            PrimitiveKey<Boolean>(booleanPK(ALBUM_COLORED_FOOTERS), { true })
+
+    data object songColoredFooters :
+            PrimitiveKey<Boolean>(booleanPK(SONG_COLORED_FOOTERS), { true })
+
+    data object artistColoredFooters :
+            PrimitiveKey<Boolean>(booleanPK(ARTIST_COLORED_FOOTERS), { true })
+
     data object showFileImages :
             PrimitiveKey<Boolean>(booleanPK(SHOW_FILE_IMAGINES), { false })
+
+    // ListPage-Appearance
+
+    data object _songItemLayout :
+            PrimitiveKey<Int>(intPK(SONG_ITEM_LAYOUT), { ItemLayoutStyle.LIST_EXTENDED.ordinal })
+
+    data object songItemLayout :
+            CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.SongItemLayoutProvider)
+
+    data object _songItemLayoutLand :
+            PrimitiveKey<Int>(intPK(SONG_ITEM_LAYOUT_LAND), { ItemLayoutStyle.LIST.ordinal })
+
+    data object songItemLayoutLand :
+            CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandSongItemLayoutProvider)
+
+    data object _albumItemLayout :
+            PrimitiveKey<Int>(intPK(ALBUM_ITEM_LAYOUT), { ItemLayoutStyle.LIST_3L.ordinal })
+
+    data object albumItemLayout :
+            CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.AlbumItemLayoutProvider)
+
+    data object _albumItemLayoutLand :
+            PrimitiveKey<Int>(intPK(ALBUM_ITEM_LAYOUT_LAND), { ItemLayoutStyle.LIST_3L.ordinal })
+
+    data object albumItemLayoutLand :
+            CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandAlbumItemLayoutProvider)
+
+    data object _artistItemLayout :
+            PrimitiveKey<Int>(intPK(ARTIST_ITEM_LAYOUT), { ItemLayoutStyle.LIST.ordinal })
+
+    data object artistItemLayout :
+            CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.ArtistItemLayoutProvider)
+
+    data object _artistItemLayoutLand :
+            PrimitiveKey<Int>(intPK(ARTIST_ITEM_LAYOUT_LAND), { ItemLayoutStyle.LIST_3L.ordinal })
+
+    data object artistItemLayoutLand :
+            CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandArtistItemLayoutProvider)
+
+    data object songGridSize :
+            PrimitiveKey<Int>(intPK(SONG_GRID_SIZE), { 1 })
+
+    data object songGridSizeLand :
+            PrimitiveKey<Int>(intPK(SONG_GRID_SIZE_LAND), { 2 })
+
+    data object albumGridSize :
+            PrimitiveKey<Int>(intPK(ALBUM_GRID_SIZE), { 2 })
+
+    data object albumGridSizeLand :
+            PrimitiveKey<Int>(intPK(ALBUM_GRID_SIZE_LAND), { 3 })
+
+    data object artistGridSize :
+            PrimitiveKey<Int>(intPK(ARTIST_GRID_SIZE), { 3 })
+
+    data object artistGridSizeLand :
+            PrimitiveKey<Int>(intPK(ARTIST_GRID_SIZE_LAND), { 4 })
+
+    data object genreGridSize :
+            PrimitiveKey<Int>(intPK(GENRE_GRID_SIZE), { 1 })
+
+    data object genreGridSizeLand :
+            PrimitiveKey<Int>(intPK(GENRE_GRID_SIZE_LAND), { 2 })
+
+    data object playlistGridSize :
+            PrimitiveKey<Int>(intPK(PLAYLIST_GRID_SIZE), { 1 })
+
+    data object playlistGridSizeLand :
+            PrimitiveKey<Int>(intPK(PLAYLIST_GRID_SIZE_LAND), { 2 })
 
     // SleepTimer
     data object lastSleepTimerValue :

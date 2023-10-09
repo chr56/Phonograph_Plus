@@ -11,19 +11,17 @@ import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Displayable
 import player.phonograph.model.sort.SortMode
-import player.phonograph.model.sort.SortRef
+import player.phonograph.ui.adapter.ConstDisplayConfig
+import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.ui.components.popup.ListOptionsPopup
-import player.phonograph.ui.fragments.pages.util.DisplayConfig
-import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import player.phonograph.util.debug
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
-import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.Toolbar
@@ -41,6 +39,7 @@ import android.view.Menu.NONE
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import kotlinx.coroutines.launch
 
 
@@ -127,9 +126,12 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
 
     protected abstract fun initAdapter(): A
 
+    protected abstract fun displayConfig(): PageDisplayConfig
+    protected var adapterDisplayConfig: ConstDisplayConfig = ConstDisplayConfig(ItemLayoutStyle.LIST)
+
     private fun initRecyclerView() {
 
-        layoutManager = GridLayoutManager(hostFragment.requireContext(), DisplayConfig(displayConfigTarget).gridSize)
+        layoutManager = GridLayoutManager(hostFragment.requireContext(), displayConfig().gridSize)
         adapter = initAdapter()
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(
@@ -141,26 +143,6 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
             it.layoutManager = layoutManager
         }
     }
-
-
-    /**
-     * Invalid all view holders & show again
-     */
-    @SuppressLint("NotifyDataSetChanged")
-    private fun refreshAllViewHolder() {
-        // remove all existed ViewHolders
-        val recyclerView = binding.recyclerView
-        // val recycler = recyclerView.Recycler()
-        // layoutManager.removeAndRecycleAllViews(recycler)
-        // recycler.clear()
-        // recyclerView.recycledViewPool.clear()
-        recyclerView.adapter = null
-        // replace all
-        recyclerView.adapter = adapter
-        layoutManager.requestLayout()
-    }
-
-    internal abstract val displayConfigTarget: DisplayConfigTarget
 
     private fun initAppBar() {
 
@@ -198,65 +180,35 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
     protected open fun configAppBar(panelToolbar: Toolbar) {}
 
     private fun configPopup(popup: ListOptionsPopup) {
-        val displayConfig = DisplayConfig(displayConfigTarget)
-
-        // grid size
-        if (isLandscape(resources)) popup.viewBinding.titleGridSize.text =
-            resources.getText(R.string.action_grid_size_land)
-        popup.maxGridSize = displayConfig.maxGridSize
-        popup.gridSize = displayConfig.gridSize
-
-        // color footer
-        if (allowColoredFooter()) {
-            popup.colorFooterVisibility = true
-            popup.colorFooterEnability = displayConfig.gridMode(displayConfig.gridSize)
-            popup.colorFooter = displayConfig.colorFooter
-        }
-
-        // sort order
-        if (availableSortRefs.isNotEmpty()) {
-            val currentSortMode = displayConfig.sortMode
-
-            popup.sortRef = currentSortMode.sortRef
-            popup.sortRefAvailable = availableSortRefs
-
-            popup.allowRevert = allowRevertSort
-            popup.revert = currentSortMode.revert
-        }
+        popup.setup(displayConfig())
     }
-
-    protected open fun allowColoredFooter(): Boolean = true
-
-    protected open val allowRevertSort: Boolean get() = true
-    protected open val availableSortRefs: Array<SortRef> get() = arrayOf()
 
     @SuppressLint("NotifyDataSetChanged")
     protected fun dismissPopup(popup: ListOptionsPopup) {
+        val displayConfig = displayConfig()
+        var update = false
 
-        val displayConfig = DisplayConfig(displayConfigTarget)
+        // layout
+        val layoutSelected = popup.itemLayout
+        if (displayConfig.updateItemLayout(layoutSelected)) {
+            update = true
+            adapterDisplayConfig = adapterDisplayConfig.copy(layoutStyle = layoutSelected)
+        }
 
-        //  Grid Size
+        // grid size
         val gridSizeSelected = popup.gridSize
-
         if (gridSizeSelected > 0 && gridSizeSelected != displayConfig.gridSize) {
-
             displayConfig.gridSize = gridSizeSelected
-            val itemLayoutRes = displayConfig.layoutRes(gridSizeSelected)
-
-            if (adapter.layoutRes != itemLayoutRes) {
-                adapter.layoutRes = itemLayoutRes
-                refreshAllViewHolder()
-            }
             layoutManager.spanCount = gridSizeSelected
         }
 
         // color footer
-        if (allowColoredFooter()) {
+        if (displayConfig.allowColoredFooter) {
             val coloredFootersSelected = popup.colorFooter
             if (displayConfig.colorFooter != coloredFootersSelected) {
                 displayConfig.colorFooter = coloredFootersSelected
-                adapter.usePalette = coloredFootersSelected
-                adapter.notifyDataSetChanged()
+                update = true
+                adapterDisplayConfig = adapterDisplayConfig.copy(useImageText = coloredFootersSelected)
             }
         }
 
@@ -264,6 +216,24 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         val selected = SortMode(popup.sortRef, popup.revert)
         if (displayConfig.updateSortMode(selected)) {
             viewModel.loadDataset(requireContext())
+        }
+
+        if (update) {
+            adapter.config = adapterDisplayConfig
+            adapter.notifyDataSetChanged()
+        }
+        checkValidation(displayConfig)
+    }
+
+    private fun checkValidation(displayConfig: PageDisplayConfig) {
+        var warningLayout = false
+        warningLayout = when (displayConfig.layout) {
+            ItemLayoutStyle.GRID    -> displayConfig.gridSize <= 2
+            ItemLayoutStyle.LIST_3L -> displayConfig.gridSize > 3
+            else                    -> displayConfig.gridSize > 2
+        }
+        if (warningLayout) {
+            Toast.makeText(requireContext(), R.string.warning_inappropriate_config, Toast.LENGTH_SHORT).show()
         }
     }
 

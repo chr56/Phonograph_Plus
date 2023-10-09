@@ -7,6 +7,9 @@ package player.phonograph.ui.components.popup
 import player.phonograph.R
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.model.sort.SortRef
+import player.phonograph.ui.adapter.ItemLayoutStyle
+import player.phonograph.ui.fragments.pages.PageDisplayConfig
+import player.phonograph.util.ui.isLandscape
 import androidx.annotation.IdRes
 import androidx.core.view.forEach
 import androidx.core.view.get
@@ -56,11 +59,51 @@ class ListOptionsPopup private constructor(
             groupSortOrderRef.clearCheck()
             titleSortOrderRef.visibility = GONE
 
+            groupItemLayout.visibility = GONE
+            groupItemLayout.clearCheck()
+            titleItemLayout.visibility = GONE
+
             groupGridSize.visibility = GONE
             groupGridSize.clearCheck()
             titleGridSize.visibility = GONE
 
             actionColoredFooters.visibility = GONE
+        }
+    }
+
+    fun setup(displayConfig: PageDisplayConfig) {
+        viewBinding.titleGridSize.text =
+            if (isLandscape(resources)) {
+                resources.getText(R.string.action_grid_size_land)
+            } else {
+                resources.getText(R.string.action_grid_size)
+            }
+        maxGridSize = displayConfig.maxGridSize
+        gridSize = displayConfig.gridSize
+
+        colorFooterVisibility = displayConfig.allowColoredFooter
+        if (displayConfig.allowColoredFooter) {
+            colorFooterEnability = displayConfig.layout == ItemLayoutStyle.GRID // available in grid mode
+            colorFooter = displayConfig.colorFooter
+        }
+
+        if (displayConfig.availableSortRefs.isNotEmpty()) {
+
+            val currentSortMode = displayConfig.sortMode
+
+            sortRef = currentSortMode.sortRef
+            sortRefAvailable = displayConfig.availableSortRefs
+
+            allowRevert = displayConfig.allowRevertSort
+            revert = currentSortMode.revert
+        }
+
+        if (displayConfig.availableLayouts.isNotEmpty()) {
+
+            val currentLayout = displayConfig.layout
+
+            itemLayout = currentLayout
+            itemLayoutAvailable = displayConfig.availableLayouts
         }
     }
 
@@ -73,6 +116,7 @@ class ListOptionsPopup private constructor(
         with(viewBinding) {
             // text color
             this.titleGridSize.setTextColor(accentColor)
+            this.titleItemLayout.setTextColor(accentColor)
             this.titleSortOrderMethod.setTextColor(accentColor)
             this.titleSortOrderRef.setTextColor(accentColor)
             // checkbox color
@@ -82,6 +126,8 @@ class ListOptionsPopup private constructor(
             // radioButton
             for (i in 0 until this.groupGridSize.childCount)
                 (this.groupGridSize.getChildAt(i) as RadioButton).buttonTintList = widgetColor
+            for (i in 0 until this.groupItemLayout.childCount)
+                (this.groupItemLayout.getChildAt(i) as RadioButton).buttonTintList = widgetColor
             for (i in 0 until this.groupSortOrderRef.childCount)
                 (this.groupSortOrderRef.getChildAt(i) as RadioButton).buttonTintList = widgetColor
             for (i in 0 until this.groupSortOrderMethod.childCount)
@@ -145,6 +191,28 @@ class ListOptionsPopup private constructor(
             }
             for (v in viewBinding.groupSortOrderRef.iterator()) v.visibility = GONE // hide all
             for (ref in value) findSortOrderButton(ref)?.visibility = VISIBLE // show selected
+        }
+
+    var itemLayout: ItemLayoutStyle
+        get() = getViewHolderLayoutById(viewBinding.groupItemLayout.checkedRadioButtonId)
+        set(value) {
+            with(viewBinding) {
+                titleItemLayout.visibility = VISIBLE
+                groupItemLayout.clearCheck()
+                check(
+                    findItemLayoutButton(value)
+                )
+            }
+        }
+    var itemLayoutAvailable: Array<ItemLayoutStyle> = emptyArray()
+        set(value) {
+            field = value
+            if (value.isNotEmpty()) {
+                viewBinding.groupItemLayout.visibility = VISIBLE // container
+                viewBinding.titleItemLayout.visibility = VISIBLE // title
+            }
+            for (v in viewBinding.groupItemLayout.iterator()) v.visibility = GONE // hide all
+            for (ref in value) findItemLayoutButton(ref)?.visibility = VISIBLE // show selected
         }
 
     var gridSize: Int
@@ -256,6 +324,26 @@ class ListOptionsPopup private constructor(
             SortRef.SIZE              -> viewBinding.sortOrderSize
             SortRef.PATH              -> viewBinding.sortOrderPath
             else                      -> null
+        }
+
+    private fun getViewHolderLayoutById(@IdRes id: Int): ItemLayoutStyle =
+        when (id) {
+            R.id.item_layout_list             -> ItemLayoutStyle.LIST
+            R.id.item_layout_list_extended    -> ItemLayoutStyle.LIST_EXTENDED
+            R.id.item_layout_list_3l          -> ItemLayoutStyle.LIST_3L
+            R.id.item_layout_list_3l_extended -> ItemLayoutStyle.LIST_3L_EXTENDED
+            R.id.item_layout_grid             -> ItemLayoutStyle.GRID
+            else                              -> ItemLayoutStyle.LIST
+        }
+
+    private fun findItemLayoutButton(layout: ItemLayoutStyle): RadioButton? =
+        when (layout) {
+            ItemLayoutStyle.LIST             -> viewBinding.itemLayoutList
+            ItemLayoutStyle.LIST_EXTENDED    -> viewBinding.itemLayoutListExtended
+            ItemLayoutStyle.LIST_3L          -> viewBinding.itemLayoutList3l
+            ItemLayoutStyle.LIST_3L_EXTENDED -> viewBinding.itemLayoutList3lExtended
+            ItemLayoutStyle.GRID             -> viewBinding.itemLayoutGrid
+            else                             -> null
         }
 
     private fun check(radioButton: RadioButton?) {

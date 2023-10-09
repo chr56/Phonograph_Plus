@@ -14,7 +14,6 @@ import player.phonograph.R
 import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
-import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.settings.Keys
@@ -22,7 +21,6 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.dialogs.CreatePlaylistDialog
 import player.phonograph.ui.fragments.pages.adapter.PlaylistDisplayAdapter
-import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.content.Context
@@ -85,24 +83,14 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
     }
     //endregion
 
-    override val displayConfigTarget: DisplayConfigTarget get() = DisplayConfigTarget.PlaylistPage
+
+    override fun displayConfig(): PageDisplayConfig = PlaylistPageDisplayConfig(requireContext())
 
     override fun initAdapter(): DisplayAdapter<Playlist> {
         return PlaylistDisplayAdapter(
             hostFragment.mainActivity,
-        ).apply {
-            showSectionName = true
-        }
-    }
-
-
-    override val availableSortRefs: Array<SortRef>
-        get() = arrayOf(
-            SortRef.DISPLAY_NAME,
-            SortRef.PATH,
-            SortRef.ADDED_DATE,
-            SortRef.MODIFIED_DATE,
         )
+    }
 
     private fun setUpFloatingActionButton() {
         val primaryColor = addNewItemButton.context.primaryColor()
@@ -122,8 +110,6 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
             CreatePlaylistDialog.create(null).show(childFragmentManager, "CREATE_NEW_PLAYLIST")
         }
     }
-
-    override fun allowColoredFooter(): Boolean = false
 
     companion object {
         const val TAG = "PlaylistPage"

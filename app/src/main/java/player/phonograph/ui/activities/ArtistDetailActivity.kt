@@ -30,6 +30,8 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
+import player.phonograph.ui.adapter.ConstDisplayConfig
+import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.lifecycle.Lifecycle
@@ -59,7 +61,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         set(value) {
             field = value
             Setting(App.instance)[Keys.albumArtistColoredFooters].data = usePalette
-            albumAdapter.usePalette = usePalette
+            albumAdapter.config = ConstDisplayConfig(ItemLayoutStyle.LIST, usePalette)
             val dataset = albumAdapter.dataset
             synchronized(albumAdapter) {
                 albumAdapter.dataset = emptyList()
@@ -92,7 +94,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         }
 
         songAdapter =
-            SongDisplayAdapter(this, emptyList(), R.layout.item_list)
+            SongDisplayAdapter(this, ConstDisplayConfig(ItemLayoutStyle.LIST, false))
         with(viewBinding.songsRecycleView) {
             adapter = songAdapter
             layoutManager =
@@ -100,9 +102,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         }
 
         albumAdapter =
-            HorizontalAlbumDisplayAdapter(this, emptyList()).apply {
-                usePalette = this@ArtistDetailActivity.usePalette
-            }
+            HorizontalAlbumDisplayAdapter(this)
         with(viewBinding.albumRecycleView) {
             adapter = albumAdapter
             layoutManager = LinearLayoutManager(this@ArtistDetailActivity, HORIZONTAL, false)
