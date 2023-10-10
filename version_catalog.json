@@ -1,6 +1,22 @@
 {
   "versions": [
     {
+      "channel": "preview",
+      "versionName": "1.4-dev1",
+      "versionCode": 1032,
+      "date": 1696865000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.4-dev1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>新增 可定制列表项样式</li><li>修复 尝试修复播放和队列在启动时冻结</li><li>改进 在通知(Android T 及以上)和 Android Auto 中, 添加随机模式和重复模式按钮</li><li>改进 在 Android Auto 中, 显示专辑封面 (仅基本支持)</li><li>修改 替换部分图标</li><li>修改 在 播放列表详情 中, 显示歌曲顺序而非图片</li><li>开发 使用 webp 和 svg 格式以减少大小</li></ol>",
+        "en": "<ol><li>New: customizable list item layout style with more options</li><li>Fix: try to fix playback and queue got frozen at startup</li><li>Improvement: add Shuffle Mode and Repeat Mode buttons in Notification (since Android T) and Android Auto</li><li>Improvement: display album artwork in Android Auto (basic support)</li><li>Modify: replace some icons</li><li>Modify: show song order instead of images in Playlist Detail</li><li>Development: use webp and svg formats in assets and resource to shrink artifacts size</li></ol>"
+      }
+    },
+    {
       "channel": "stable",
       "versionName": "1.3.1",
       "versionCode": 1031,
