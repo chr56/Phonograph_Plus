@@ -125,67 +125,9 @@ See [Build_Instructions.md](docs/Build_Instructions.md)
 
 See [Developer Guide](docs/Developer_Guide.md)
 
-## **Development Plan (or Road Map?)** & **TO-DO list**
+## **Development Plan** & **TO-DO list**
 
-### **2022**
-
-- [x] Refactor File Fragment
-
-- [x] Refactor Library UI
-
-- [x] Better 'My Top Songs' algorithm
-
-- [x] Complete README
-
-- [x] Refactor MusicService
-
-- [x] Migrate Glide to Coil
-
-- [x] Whitelist
-
-- [x] Migrate Song Detail to Jetpack Compose
-
-- [x] Refactor Update Dialog
-
-- [x] User-defined click behavior for songs
-
-- [x] Support history of playing queue.
-
-- [x] Refactor Setting UI
-
-- [x] Refactor Search
-
-- [ ] Use AndroidX Room to build
-  Media database, to parse multi-artists songs and ‘;’, '&', '/', '\', ',' in tags, and improve search result
-
-### **2023~2024(?)**
-
-- [x] Rewrite Tag Editor
-
-- [x] Improve data backup/migrate
-
-- [x] Refactor Pages
-
-- [ ] Improve App Intro (WIP🚧)
-
-- [ ] Refactor Main Player
-
-- [ ] Enhance Playlist Detail: support search, Better way to
-  modify , handle intent of open (playlist) file
-
-- [ ] improve SlidingMusicBar
-
-- [ ] Support some Android's StatusBar lyrics, such as FlyMe / EvolutionX
-
-- [ ] <del>Validate audio files</del>
-
-- [ ] <del>Completed Android 11+ File Permission</del>
-
-- [ ] <del>Refactor so-called Theme Engine</del>
-
-- [ ] <del>Make songs listening statistics</del>
-
-- [ ] ...
+See [Road Map](docs/Road_Map.md)
 
 ## **Repository Mirror**
 
