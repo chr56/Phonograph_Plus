@@ -1,14 +1,19 @@
 # Phonograph Plus
 
+<p align="center">
+    <img src= "fastlane/metadata/android/en-US/images/icon.png" alt="ICON" height="120"/>
+</p>
+
+[English](./README.md) |
+[简体中文](./README_ZH.md)
+<br/>
+
+
 [![Crowdin](https://badges.crowdin.net/phonograph-plus/localized.svg)](https://crowdin.com/project/phonograph-plus)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/chr56/Phonograph_Plus/blob/release/LICENSE.txt)
 [<img src="https://github.com/chr56/Phonograph_Plus/actions/workflows/dev.yml/badge.svg" alt="Dev CI Status">](https://github.com/chr56/Phonograph_Plus/actions/workflows/dev.yml)
 ![DownloadsStatistics](https://img.shields.io/github/downloads/chr56/Phonograph_Plus/total)
 
-- [ENGLISH](./README.md)
-- [简体中文](./README_ZH.md)
-
-<br/>
 
 **Phonograph 第三方维护版**
 
