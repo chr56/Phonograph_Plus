@@ -51,39 +51,39 @@ All listed features are compared with the original Phonograph.
 
 - Support more sort orders.
 
-- Fix Android 11 Scope Storage. (Partial)
+- Partially Fix Android 11 Scope Storage.
 
-- Improve menu experience.
+- Resume playing after interruptions.
 
 - Improve "Library" pages user experience.
 
 - Allow collecting app crash report.
 
-- use Path filter to replace, support "exclude mode" (blacklist) and "include mode" (whitelist).
+- Path filter, support "exclude mode" (blacklist) and "include mode" (whitelist).
 
-- Add song menu shortcut to add new items to excluded-list (blacklist).
+- Add song menu shortcuts to add new items to excluded-list (blacklist).
 
-- Co-work-with/Support [StatusBar Lyric Xposed Module (api)](https://github.com/Block-Network/StatusBarLyric)
-
-- Increase history played tracks and top played tracks entries capacity (100->150).
-
-- Export internal databases and settings for the need of backup.
+- Co-work-with/Support [StatusBar Lyric Xposed Module (api)](https://github.com/Block-Network/StatusBarLyric).
 
 - Allow deleting songs file along with its external lyrics file.
-
-- Allow tabs fixed.
 
 - Brand-new File tab.
 
 - Brand-new App Intro.
 
+- Enhance multi-selecting.
+
+- Increase history played tracks and top played tracks entries capacity (100->150).
+
+- Export internal databases and settings for the need of backup.
+
+- Allow tabs fixed.
+
 - Better Playlist support.
 
 - <del>Poor</del> support of Monet.
 
-- Resume playing after interruptions.
-
-- Enhance multi-selecting.
+- Improve menu experience.
 
 - and more small features/fixes.
 
