@@ -1,15 +1,21 @@
 ## **开发计划/路线图**
 
-详见 [Road Map](docs/Road_Map.md)
+详见 [Road Map](Road_Map.md)
 
 ### 主要
 
 
 #### Room 独立数据库
+(详见 `Road Map`)
+
+开发中:
+见分支 `room` 或 `database`
 
 #### 重构 Player UI
+(详见 `Road Map`)
 
 #### 重构 `AlbumDetail` 与 `ArtistDetail`
+(详见 `Road Map`)
 
 
 ### 次要
