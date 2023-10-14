@@ -22,7 +22,9 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -76,10 +78,20 @@ class PlayerFragmentViewModel : ViewModel() {
     private val _paletteColor: MutableStateFlow<Int> = MutableStateFlow(Color.GRAY)
     val paletteColor get() = _paletteColor.asStateFlow()
 
+    private var fetcherDeferred: Deferred<Int>? = null
     fun refreshPaletteColor(context: Context, song: Song) {
+        fetcherDeferred?.cancel()
+        fetcherDeferred = viewModelScope.async {
+            fetchPaletteColor(context, song = song)
+        }
         viewModelScope.launch {
-            val color = fetchPaletteColor(context, song = song)
-            _paletteColor.emit(color)
+            val current = fetcherDeferred
+            if (current != null && !current.isCancelled) {
+                val color = current.await()
+                if (current == fetcherDeferred) {
+                    _paletteColor.emit(color)
+                }
+            }
         }
     }
 
