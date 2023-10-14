@@ -14,12 +14,14 @@ import player.phonograph.model.Song
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.service.MusicPlayerRemote
+import androidx.annotation.ColorInt
 import androidx.collection.LruCache
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.graphics.Color
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -71,12 +73,18 @@ class PlayerFragmentViewModel : ViewModel() {
 
     //region Image & PaletteColor
 
-    private val _paletteColor: MutableStateFlow<Int> = MutableStateFlow(0)
+    private val _paletteColor: MutableStateFlow<Int> = MutableStateFlow(Color.GRAY)
     val paletteColor get() = _paletteColor.asStateFlow()
 
-    fun refreshPaletteColor(context: Context, song: Song?) {
+    fun refreshPaletteColor(context: Context, song: Song) {
         viewModelScope.launch {
-            val color = fetchPaletteColor(context, song = song ?: currentSong.value)
+            val color = fetchPaletteColor(context, song = song)
+            _paletteColor.emit(color)
+        }
+    }
+
+    fun refreshPaletteColor(@ColorInt color: Int) {
+        viewModelScope.launch {
             _paletteColor.emit(color)
         }
     }

@@ -2,6 +2,7 @@ package player.phonograph.ui.fragments.player
 
 import lib.phonograph.misc.SimpleAnimatorListener
 import player.phonograph.App
+import player.phonograph.R
 import player.phonograph.databinding.FragmentAlbumCoverBinding
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
@@ -60,6 +61,7 @@ class PlayerAlbumCoverFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycle.addObserver(progressViewUpdateHelperDelegate)
+        playerViewModel.refreshPaletteColor(requireContext().getColor(R.color.defaultFooterColor))
     }
 
     private fun observeState() {
@@ -198,11 +200,13 @@ class PlayerAlbumCoverFragment :
     }
 
     private fun refreshPaletteColor(position: Int) {
-        val adapter = albumCoverPagerAdapter
+        val adapter = albumCoverPagerAdapter ?: return
         lifecycleScope.launch(Dispatchers.Default) {
-            if (adapter != null) {
-                val song = adapter.dataSet.getOrNull(position) ?: return@launch
+            val song = adapter.dataSet.getOrNull(position)
+            if (song != null && song != Song.EMPTY_SONG) {
                 playerViewModel.refreshPaletteColor(requireContext(), song)
+            } else {
+                playerViewModel.refreshPaletteColor(requireContext().getColor(R.color.defaultFooterColor))
             }
         }
     }
