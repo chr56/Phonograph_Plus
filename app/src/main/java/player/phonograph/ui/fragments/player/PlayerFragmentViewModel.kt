@@ -13,7 +13,6 @@ import player.phonograph.mechanism.IFavorite
 import player.phonograph.model.Song
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
-import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import androidx.collection.LruCache
 import androidx.lifecycle.ViewModel
@@ -52,15 +51,6 @@ class PlayerFragmentViewModel : ViewModel() {
     }
 
     val favorite: IFavorite by GlobalContext.get().inject()
-
-    private val _lyrics: MutableStateFlow<LrcLyrics?> = MutableStateFlow(null)
-    val lyrics get() = _lyrics.asStateFlow()
-
-    fun updateLrcLyrics(lyrics: LrcLyrics?) {
-        viewModelScope.launch {
-            _lyrics.emit(lyrics)
-        }
-    }
 
     private var _shownToolbar: MutableStateFlow<Boolean> = MutableStateFlow(true)
     val showToolbar get() = _shownToolbar.asStateFlow()

@@ -6,6 +6,7 @@ import player.phonograph.databinding.FragmentAlbumCoverBinding
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.model.Song
+import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.settings.Keys
@@ -49,6 +50,7 @@ class PlayerAlbumCoverFragment :
     private val binding: FragmentPlayerAlbumCoverBinding get() = _viewBinding!!
 
     private val playerViewModel: PlayerFragmentViewModel by viewModels({ requireParentFragment() })
+    private val lyricsViewModel: LyricsViewModel by viewModels({ requireActivity() })
 
     private var albumCoverPagerAdapter: AlbumCoverPagerAdapter? = null
 
@@ -84,7 +86,7 @@ class PlayerAlbumCoverFragment :
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                playerViewModel.lyrics.collect {
+                lyricsViewModel.lyricsInfo.collect { lyricsList ->
                     val lyricsShow = Setting(App.instance)[Keys.synchronizedLyricsShow].data
                     withContext(Dispatchers.Main) {
                         if (lyricsShow) {
@@ -221,8 +223,8 @@ class PlayerAlbumCoverFragment :
     }
 
     private suspend fun updateLyrics(progress: Int) {
-        val lyrics = playerViewModel.lyrics.value
-        if (lyrics != null) {
+        val lyrics = lyricsViewModel.lyricsInfo.value.activatedLyrics
+        if (lyrics != null && lyrics is LrcLyrics) {
             lifecycle.withResumed {
                 binding.playerLyrics.apply {
                     visibility = View.VISIBLE

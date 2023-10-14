@@ -368,13 +368,9 @@ abstract class AbsPlayerFragment :
         observe(lyricsViewModel.lyricsInfo) { lyricsList ->
             withContext(Dispatchers.Main) {
                 val activated = lyricsList.activatedLyrics
-                if (lyricsList.isNotEmpty() && activated is LrcLyrics) {
-                    MusicPlayerRemote.musicService?.replaceLyrics(activated)
-                    viewModel.updateLrcLyrics(activated)
-                } else {
-                    MusicPlayerRemote.musicService?.replaceLyrics(null)
-                    viewModel.updateLrcLyrics(null)
-                }
+                MusicPlayerRemote.musicService?.replaceLyrics(
+                    if (lyricsList.isNotEmpty() && activated is LrcLyrics) activated else null
+                )
                 lyricsMenuItem?.isVisible = lyricsList.isNotEmpty()
             }
         }
