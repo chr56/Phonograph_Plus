@@ -175,6 +175,10 @@ class FlatPlayerFragment :
     override fun generatePaletteColorAnimators(oldColor: Int, newColor: Int): AnimatorSet =
         impl.generateAnimators(oldColor, newColor)
 
+    override fun forceChangePaletteColor(newColor: Int) {
+        impl.forceChangeColor(newColor)
+    }
+
     private abstract class BaseImpl(protected var fragment: FlatPlayerFragment) : Impl {
 
         fun defaultColorChangeAnimatorSet(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet {
@@ -195,6 +199,15 @@ class FlatPlayerFragment :
                 play(backgroundAnimator).with(statusBarAnimator).apply {
                     if (lightMode) with(subHeaderAnimator)
                 }
+            }
+        }
+
+        override fun forceChangeColor(newColor: Int) {
+            fragment.playbackControlsFragment.requireView().setBackgroundColor(newColor)
+            with(fragment.viewBinding) {
+                playerStatusBar.setBackgroundColor(newColor)
+                playerQueueSubHeader.setTextColor(requireDarkenColor(newColor))
+                playerToolbar.setBackgroundColor(newColor)
             }
         }
 
