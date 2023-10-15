@@ -193,6 +193,10 @@ class CardPlayerFragment :
     override fun generatePaletteColorAnimators(oldColor: Int, newColor: Int): AnimatorSet =
         impl.generateAnimators(oldColor, newColor)
 
+    override fun forceChangePaletteColor(newColor: Int) {
+        impl.forceChangeColor(newColor)
+    }
+
     private abstract class BaseImpl(protected var fragment: CardPlayerFragment) : Impl {
 
         @SuppressLint("ObsoleteSdkInt")
@@ -239,6 +243,13 @@ class CardPlayerFragment :
                         if (lightMode) with(subHeaderAnimator)
                     }
                 }
+        }
+
+        override fun forceChangeColor(newColor: Int) {
+            fragment.playbackControlsFragment.requireView().setBackgroundColor(newColor)
+            with(fragment.viewBinding) {
+                playerQueueSubHeader.setTextColor(requireDarkenColor(newColor))
+            }
         }
 
         override fun init() {}

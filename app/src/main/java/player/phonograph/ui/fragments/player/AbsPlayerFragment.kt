@@ -302,10 +302,21 @@ abstract class AbsPlayerFragment :
         fun updateCurrentSong(song: Song)
         fun setUpPanelAndAlbumCoverHeight()
         fun generateAnimators(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet
+        fun forceChangeColor(@ColorInt newColor: Int)
     }
 
     protected var lastPaletteColor = 0
     protected var currentAnimatorSet: AnimatorSet? = null
+
+
+    @MainThread
+    private fun changeHighlightColor(newColor: Int, animated: Boolean = true) {
+        if (animated) {
+            requestAnimateColorChanging(newColor)
+        } else {
+            forceChangePaletteColor(newColor)
+        }
+    }
 
     @MainThread
     protected fun requestAnimateColorChanging(newColor: Int) {
@@ -320,6 +331,7 @@ abstract class AbsPlayerFragment :
     }
 
     abstract fun generatePaletteColorAnimators(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet
+    abstract fun forceChangePaletteColor(@ColorInt newColor: Int)
 
     private fun observeState() {
         observe(CurrentQueueState.queue) { queue ->
