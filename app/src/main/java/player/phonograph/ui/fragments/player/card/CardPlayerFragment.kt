@@ -28,6 +28,9 @@ import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withCreated
 import androidx.lifecycle.withStarted
 import android.animation.Animator
@@ -46,6 +49,7 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.PopupMenu
 import kotlin.math.max
+import kotlinx.coroutines.launch
 
 class CardPlayerFragment :
         AbsPlayerFragment(),
@@ -77,10 +81,16 @@ class CardPlayerFragment :
         }
         view.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                if (!isDetached && isAdded) {
-                    view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    impl.setUpPanelAndAlbumCoverHeight()
+                lifecycleScope.launch {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        prepareHeight()
+                    }
                 }
+            }
+
+            fun prepareHeight() {
+                // view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                impl.setUpPanelAndAlbumCoverHeight()
             }
         })
 
