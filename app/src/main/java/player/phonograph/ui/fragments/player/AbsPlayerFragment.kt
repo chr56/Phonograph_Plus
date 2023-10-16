@@ -389,7 +389,7 @@ abstract class AbsPlayerFragment :
         observe(viewModel.paletteColor) { newColor ->
             playbackControlsFragment.modifyColor(newColor)
             withResumed {
-                requestAnimateColorChanging(newColor)
+                changeHighlightColor(newColor, lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED))
             }
         }
     }
