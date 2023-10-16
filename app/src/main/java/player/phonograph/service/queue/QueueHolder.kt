@@ -190,13 +190,24 @@ class QueueHolder private constructor(
         queuePreferenceManager.shuffleMode = shuffleMode
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun valid(context: Context): Boolean {
-        val validatedQueue = validSongs(context, playingQueue)
-        val validatedOriginalQueue = validSongs(context, originalPlayingQueue)
-        val changed = validatedQueue != playingQueue || validatedOriginalQueue != originalPlayingQueue
+        val previousPlayingQueue =
+            (playingQueue as CopyOnWriteArrayList<Song>).clone() as List<Song>
+        val previousOriginalPlayingQueue =
+            (originalPlayingQueue as CopyOnWriteArrayList<Song>).clone() as List<Song>
+        val validatedQueue = validSongs(context, previousPlayingQueue)
+        val validatedOriginalQueue = validSongs(context, previousOriginalPlayingQueue)
+        val changed = validatedQueue != previousPlayingQueue || validatedOriginalQueue != previousOriginalPlayingQueue
         synchronized(queueLock) {
-            playingQueue = CopyOnWriteArrayList(validatedQueue)
-            originalPlayingQueue = CopyOnWriteArrayList(validatedOriginalQueue)
+            if (
+                previousPlayingQueue == playingQueue && previousOriginalPlayingQueue == originalPlayingQueue // avoid data race
+            ) {
+                if (changed) {
+                    playingQueue = CopyOnWriteArrayList(validatedQueue)
+                    originalPlayingQueue = CopyOnWriteArrayList(validatedOriginalQueue)
+                }
+            } // cancel if user changes queue before validation
         }
         return changed
     }
