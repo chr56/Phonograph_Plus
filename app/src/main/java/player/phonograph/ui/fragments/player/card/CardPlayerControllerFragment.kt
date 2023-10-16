@@ -98,8 +98,8 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment<FragmentCardPla
 
             viewBinding.playerPlayPauseFab.setImageDrawable(playPauseDrawable) // Note: set the drawable AFTER TintHelper.setTintAuto() was called
             viewBinding.playerPlayPauseFab.setOnClickListener(PlayPauseButtonOnClickHandler())
-            viewBinding.playerPlayPauseFab.pivotX = viewBinding.playerPlayPauseFab.width.toFloat() / 2
-            viewBinding.playerPlayPauseFab.pivotY = viewBinding.playerPlayPauseFab.height.toFloat() / 2
+            // viewBinding.playerPlayPauseFab.pivotX = viewBinding.playerPlayPauseFab.width.toFloat() / 2
+            // viewBinding.playerPlayPauseFab.pivotY = viewBinding.playerPlayPauseFab.height.toFloat() / 2
         }
 
         override fun updatePlayPauseColor(controlsColor: Int) {}
