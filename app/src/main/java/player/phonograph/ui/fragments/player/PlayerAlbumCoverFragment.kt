@@ -2,10 +2,12 @@ package player.phonograph.ui.fragments.player
 
 import lib.phonograph.misc.SimpleAnimatorListener
 import player.phonograph.App
+import player.phonograph.R
 import player.phonograph.databinding.FragmentAlbumCoverBinding
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.model.Song
+import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.settings.Keys
@@ -49,6 +51,7 @@ class PlayerAlbumCoverFragment :
     private val binding: FragmentPlayerAlbumCoverBinding get() = _viewBinding!!
 
     private val playerViewModel: PlayerFragmentViewModel by viewModels({ requireParentFragment() })
+    private val lyricsViewModel: LyricsViewModel by viewModels({ requireActivity() })
 
     private var albumCoverPagerAdapter: AlbumCoverPagerAdapter? = null
 
@@ -58,6 +61,7 @@ class PlayerAlbumCoverFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycle.addObserver(progressViewUpdateHelperDelegate)
+        playerViewModel.refreshPaletteColor(requireContext().getColor(R.color.defaultFooterColor))
     }
 
     private fun observeState() {
@@ -84,7 +88,7 @@ class PlayerAlbumCoverFragment :
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                playerViewModel.lyrics.collect {
+                lyricsViewModel.lyricsInfo.collect { lyricsList ->
                     val lyricsShow = Setting(App.instance)[Keys.synchronizedLyricsShow].data
                     withContext(Dispatchers.Main) {
                         if (lyricsShow) {
@@ -196,11 +200,13 @@ class PlayerAlbumCoverFragment :
     }
 
     private fun refreshPaletteColor(position: Int) {
-        val adapter = albumCoverPagerAdapter
+        val adapter = albumCoverPagerAdapter ?: return
         lifecycleScope.launch(Dispatchers.Default) {
-            if (adapter != null) {
-                val song = adapter.dataSet.getOrNull(position) ?: return@launch
+            val song = adapter.dataSet.getOrNull(position)
+            if (song != null && song != Song.EMPTY_SONG) {
                 playerViewModel.refreshPaletteColor(requireContext(), song)
+            } else {
+                playerViewModel.refreshPaletteColor(requireContext().getColor(R.color.defaultFooterColor))
             }
         }
     }
@@ -221,8 +227,8 @@ class PlayerAlbumCoverFragment :
     }
 
     private suspend fun updateLyrics(progress: Int) {
-        val lyrics = playerViewModel.lyrics.value
-        if (lyrics != null) {
+        val lyrics = lyricsViewModel.lyricsInfo.value.activatedLyrics
+        if (lyrics != null && lyrics is LrcLyrics) {
             lifecycle.withResumed {
                 binding.playerLyrics.apply {
                     visibility = View.VISIBLE

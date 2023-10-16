@@ -1,11 +1,10 @@
 package player.phonograph.ui.fragments.player.card
 
-import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
-import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
-import mt.color.MaterialColor
 import mt.util.color.darkenColor
+import mt.util.color.lightenColor
 import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.App
@@ -25,12 +24,14 @@ import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.ui.backgroundColorTransitionAnimator
 import player.phonograph.util.ui.convertDpToPixel
 import player.phonograph.util.ui.isLandscape
-import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.ui.textColorTransitionAnimator
 import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withCreated
 import androidx.lifecycle.withStarted
 import android.animation.Animator
@@ -49,6 +50,7 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.PopupMenu
 import kotlin.math.max
+import kotlinx.coroutines.launch
 
 class CardPlayerFragment :
         AbsPlayerFragment(),
@@ -80,10 +82,16 @@ class CardPlayerFragment :
         }
         view.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                if (!isDetached && isAdded) {
-                    view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    impl.setUpPanelAndAlbumCoverHeight()
+                lifecycleScope.launch {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        prepareHeight()
+                    }
                 }
+            }
+
+            fun prepareHeight() {
+                // view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                impl.setUpPanelAndAlbumCoverHeight()
             }
         })
 
@@ -127,25 +135,9 @@ class CardPlayerFragment :
         }
     }
 
-    override fun setUpControllerFragment() {
-        playbackControlsFragment = childFragmentManager.findFragmentById(
-            R.id.playback_controls_fragment
-        ) as CardPlayerControllerFragment
-    }
+    override fun fetchRecyclerView(): FastScrollRecyclerView = viewBinding.playerRecyclerView
 
     override fun getImplToolbar(): Toolbar = viewBinding.playerToolbar
-
-    override fun implementRecyclerView() {
-        val animator: GeneralItemAnimator = RefactoredDefaultItemAnimator()
-        viewBinding.playerRecyclerView.setUpFastScrollRecyclerViewColor(
-            requireContext(), MaterialColor.Grey._500.asColor
-        )
-        viewBinding.playerRecyclerView.layoutManager = layoutManager
-        viewBinding.playerRecyclerView.adapter = wrappedAdapter
-        viewBinding.playerRecyclerView.itemAnimator = animator
-        recyclerViewDragDropManager.attachRecyclerView(viewBinding.playerRecyclerView)
-        layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
-    }
 
     override fun onBackPressed(): Boolean {
         val wasExpanded = viewBinding.playerSlidingLayout.panelState == PanelState.EXPANDED
@@ -190,14 +182,19 @@ class CardPlayerFragment :
         layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
     }
 
-    override fun generatePaletteColorAnimators(oldColor: Int, newColor: Int): AnimatorSet =
-        impl.generateAnimators(oldColor, newColor)
-
     private abstract class BaseImpl(protected var fragment: CardPlayerFragment) : Impl {
+
+        private fun textColor(@ColorInt color: Int): Int {
+            val context = fragment.requireContext()
+            val defaultFooterColor = fragment.resources.getColor(R.color.defaultFooterColor, null)
+            val nightMode = context.nightMode
+            return if (color == defaultFooterColor) context.secondaryTextColor(nightMode)
+            else if (nightMode) lightenColor(color) else darkenColor(color)
+        }
+
 
         @SuppressLint("ObsoleteSdkInt")
         fun defaultColorChangeAnimatorSet(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet {
-            val lightMode = App.instance.nightMode
             val controllerFragment =
                 (fragment.playbackControlsFragment as CardPlayerControllerFragment)
             val fab = controllerFragment.playerPlayPauseFab
@@ -225,20 +222,24 @@ class CardPlayerFragment :
                         oldColor, newColor
                     )
                 }
-            // darken the text color
+            val oldTextColor: Int = textColor(oldColor)
+            val newTextColor: Int = textColor(newColor)
             val subHeaderAnimator =
-                if (lightMode)
-                    fragment.viewBinding.playerQueueSubHeader.textColorTransitionAnimator(
-                        requireDarkenColor(oldColor), requireDarkenColor(newColor)
-                    )
-                else null
+                fragment.viewBinding.playerQueueSubHeader.textColorTransitionAnimator(oldTextColor, newTextColor)
             return AnimatorSet()
                 .apply {
                     duration = PHONOGRAPH_ANIM_TIME / 2
                     play(backgroundAnimator).apply {
-                        if (lightMode) with(subHeaderAnimator)
+                        with(subHeaderAnimator)
                     }
                 }
+        }
+
+        override fun forceChangeColor(newColor: Int) {
+            fragment.playbackControlsFragment.requireView().setBackgroundColor(newColor)
+            with(fragment.viewBinding) {
+                playerQueueSubHeader.setTextColor(requireDarkenColor(newColor))
+            }
         }
 
         override fun init() {}
