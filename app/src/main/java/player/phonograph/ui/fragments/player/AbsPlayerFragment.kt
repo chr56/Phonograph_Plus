@@ -256,7 +256,7 @@ abstract class AbsPlayerFragment :
 
     }
 
-    abstract fun getImplToolbar(): Toolbar
+    protected abstract fun getImplToolbar(): Toolbar
 
     private fun showToolbar(toolbar: View) {
         toolbar.visibility = View.VISIBLE
@@ -268,7 +268,7 @@ abstract class AbsPlayerFragment :
             .withEndAction { toolbar.visibility = View.GONE }
     }
 
-    abstract fun getToolBarContainer(): View?
+   protected abstract fun getToolBarContainer(): View?
 
     var favoriteMenuItem: MenuItem? = null
 
