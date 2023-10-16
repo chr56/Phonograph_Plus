@@ -105,11 +105,9 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
             }
         }
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 PlayerController.currentState.collect {
-                    binding.updatePlayPauseDrawableState(
-                        lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-                    )
+                    binding.updatePlayPauseDrawableState(true)
                 }
             }
         }

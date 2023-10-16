@@ -109,8 +109,8 @@ class FlatPlayerControllerFragment : AbsPlayerControllerFragment<FragmentFlatPla
             playPauseDrawable = PlayPauseDrawable(context)
             viewBinding.playerPlayPauseButton.setOnClickListener(PlayPauseButtonOnClickHandler())
             viewBinding.playerPlayPauseButton.setImageDrawable(playPauseDrawable)
-            viewBinding.playerPlayPauseButton.pivotX = viewBinding.playerPlayPauseButton.width.toFloat() / 2
-            viewBinding.playerPlayPauseButton.pivotY = viewBinding.playerPlayPauseButton.height.toFloat() / 2
+            // viewBinding.playerPlayPauseButton.pivotX = viewBinding.playerPlayPauseButton.width.toFloat() / 2
+            // viewBinding.playerPlayPauseButton.pivotY = viewBinding.playerPlayPauseButton.height.toFloat() / 2
         }
 
         override fun updatePlayPauseColor(@ColorInt controlsColor: Int) {

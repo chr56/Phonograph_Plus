@@ -15,13 +15,17 @@ import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
+import androidx.annotation.ColorInt
 import androidx.collection.LruCache
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.graphics.Color
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -81,12 +85,28 @@ class PlayerFragmentViewModel : ViewModel() {
 
     //region Image & PaletteColor
 
-    private val _paletteColor: MutableStateFlow<Int> = MutableStateFlow(0)
+    private val _paletteColor: MutableStateFlow<Int> = MutableStateFlow(Color.GRAY)
     val paletteColor get() = _paletteColor.asStateFlow()
 
-    fun refreshPaletteColor(context: Context, song: Song?) {
+    private var fetcherDeferred: Deferred<Int>? = null
+    fun refreshPaletteColor(context: Context, song: Song) {
+        fetcherDeferred?.cancel()
+        fetcherDeferred = viewModelScope.async {
+            fetchPaletteColor(context, song = song)
+        }
         viewModelScope.launch {
-            val color = fetchPaletteColor(context, song = song ?: currentSong.value)
+            val current = fetcherDeferred
+            if (current != null && !current.isCancelled) {
+                val color = current.await()
+                if (current == fetcherDeferred) {
+                    _paletteColor.emit(color)
+                }
+            }
+        }
+    }
+
+    fun refreshPaletteColor(@ColorInt color: Int) {
+        viewModelScope.launch {
             _paletteColor.emit(color)
         }
     }
