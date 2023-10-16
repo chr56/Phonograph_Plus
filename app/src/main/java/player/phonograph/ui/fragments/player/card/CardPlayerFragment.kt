@@ -4,6 +4,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import mt.util.color.darkenColor
+import mt.util.color.lightenColor
 import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.App
@@ -183,9 +184,17 @@ class CardPlayerFragment :
 
     private abstract class BaseImpl(protected var fragment: CardPlayerFragment) : Impl {
 
+        private fun textColor(@ColorInt color: Int): Int {
+            val context = fragment.requireContext()
+            val defaultFooterColor = fragment.resources.getColor(R.color.defaultFooterColor, null)
+            val nightMode = context.nightMode
+            return if (color == defaultFooterColor) context.secondaryTextColor(nightMode)
+            else if (nightMode) lightenColor(color) else darkenColor(color)
+        }
+
+
         @SuppressLint("ObsoleteSdkInt")
         fun defaultColorChangeAnimatorSet(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet {
-            val lightMode = App.instance.nightMode
             val controllerFragment =
                 (fragment.playbackControlsFragment as CardPlayerControllerFragment)
             val fab = controllerFragment.playerPlayPauseFab
@@ -213,18 +222,15 @@ class CardPlayerFragment :
                         oldColor, newColor
                     )
                 }
-            // darken the text color
+            val oldTextColor: Int = textColor(oldColor)
+            val newTextColor: Int = textColor(newColor)
             val subHeaderAnimator =
-                if (lightMode)
-                    fragment.viewBinding.playerQueueSubHeader.textColorTransitionAnimator(
-                        requireDarkenColor(oldColor), requireDarkenColor(newColor)
-                    )
-                else null
+                fragment.viewBinding.playerQueueSubHeader.textColorTransitionAnimator(oldTextColor, newTextColor)
             return AnimatorSet()
                 .apply {
                     duration = PHONOGRAPH_ANIM_TIME / 2
                     play(backgroundAnimator).apply {
-                        if (lightMode) with(subHeaderAnimator)
+                        with(subHeaderAnimator)
                     }
                 }
         }
