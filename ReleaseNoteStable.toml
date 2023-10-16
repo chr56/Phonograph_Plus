@@ -1,0 +1,36 @@
+version = "1.4.0"
+versionCode = 1040
+timestamp = 1697446000
+channel = "STABLE"
+
+[notes.en]
+highlights = []
+items = [
+    "New: customizable list item layout style with more options",
+    "Fix: try to fix playback and queue got frozen at startup",
+    "Fix: in Main Player, PlayPause button sometimes gets frozen and has glitchy animation",
+    "Fix: in Main Player, palette color is not correctly updated if you change current song too quickly",
+    "Fix: in Main Player, legibility of \"Up Next\" text (color)",
+    "Fix: in Main Player, sometimes controls and queue may disappear or cover the partial of images",
+    "Improvement: add Shuffle Mode and Repeat Mode buttons in Notification (since Android T) and Android Auto",
+    "Improvement: display album artwork in Android Auto (basic support)",
+    "Modify: replace some icons",
+    "Modify: show song order instead of images in Playlist Detail",
+    "Development: use webp and svg formats in assets and resource to shrink artifacts size",
+]
+
+[notes.zh]
+highlights = []
+items = [
+    "新增 可定制列表项样式",
+    "修复 尝试修复播放和队列在启动时冻结",
+    "修复 主播放器内, 暂停播放按钮有时会卡住和动画异常",
+    "修复 主播放器内, 主色调无法正确更新若切歌过快",
+    "修复 主播放器内, \"接下来\"文本颜色问题",
+    "修复 主播放器内, 有时控件和队列可能会消失不见或覆盖部分图片",
+    "改进 在通知(Android T 及以上)和 Android Auto 中, 添加随机模式和重复模式按钮",
+    "改进 在 Android Auto 中, 显示专辑封面 (仅基本支持)",
+    "修改 替换部分图标",
+    "修改 在 播放列表详情 中, 显示歌曲顺序而非图片",
+    "开发 使用 webp 和 svg 格式以减少大小",
+]
