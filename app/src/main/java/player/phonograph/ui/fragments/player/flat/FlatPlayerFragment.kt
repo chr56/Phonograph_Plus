@@ -1,10 +1,8 @@
 package player.phonograph.ui.fragments.player.flat
 
-import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
-import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
-import mt.color.MaterialColor
 import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.App
@@ -25,7 +23,6 @@ import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.ui.backgroundColorTransitionAnimator
 import player.phonograph.util.ui.convertDpToPixel
 import player.phonograph.util.ui.isLandscape
-import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.ui.textColorTransitionAnimator
 import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
@@ -122,26 +119,9 @@ class FlatPlayerFragment :
         }
     }
 
-
-    override fun setUpControllerFragment() {
-        playbackControlsFragment = childFragmentManager.findFragmentById(
-            R.id.playback_controls_fragment
-        ) as FlatPlayerControllerFragment
-    }
+    override fun fetchRecyclerView(): FastScrollRecyclerView = viewBinding.playerRecyclerView
 
     override fun getImplToolbar(): Toolbar = viewBinding.playerToolbar
-
-    override fun implementRecyclerView() {
-        val animator: GeneralItemAnimator = RefactoredDefaultItemAnimator()
-        viewBinding.playerRecyclerView.setUpFastScrollRecyclerViewColor(
-            requireContext(), MaterialColor.Grey._500.asColor
-        )
-        viewBinding.playerRecyclerView.layoutManager = layoutManager
-        viewBinding.playerRecyclerView.adapter = wrappedAdapter
-        viewBinding.playerRecyclerView.itemAnimator = animator
-        recyclerViewDragDropManager.attachRecyclerView(viewBinding.playerRecyclerView)
-        layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
-    }
 
     override fun onBackPressed(): Boolean {
         var wasExpanded = false
@@ -170,13 +150,6 @@ class FlatPlayerFragment :
     private fun resetToCurrentPosition() {
         viewBinding.playerRecyclerView.stopScroll()
         layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
-    }
-
-    override fun generatePaletteColorAnimators(oldColor: Int, newColor: Int): AnimatorSet =
-        impl.generateAnimators(oldColor, newColor)
-
-    override fun forceChangePaletteColor(newColor: Int) {
-        impl.forceChangeColor(newColor)
     }
 
     private abstract class BaseImpl(protected var fragment: FlatPlayerFragment) : Impl {

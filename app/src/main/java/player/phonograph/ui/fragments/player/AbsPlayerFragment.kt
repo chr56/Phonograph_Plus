@@ -2,10 +2,14 @@ package player.phonograph.ui.fragments.player
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
+import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
+import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenDocumentContract
+import mt.color.MaterialColor
 import mt.tint.viewtint.setMenuColor
 import mt.util.color.toolbarIconColor
 import org.koin.core.context.GlobalContext
@@ -26,6 +30,7 @@ import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.warning
 import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
@@ -77,7 +82,8 @@ abstract class AbsPlayerFragment :
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
         initToolbar()
-        setUpControllerFragment()
+        playbackControlsFragment =
+            childFragmentManager.findFragmentById(R.id.playback_controls_fragment) as AbsPlayerControllerFragment<*>
 
         observeState()
         lastPaletteColor = resources.getColor(R.color.defaultFooterColor, null)
@@ -90,12 +96,19 @@ abstract class AbsPlayerFragment :
         playingQueueAdapter.current = MusicPlayerRemote.position
         _recyclerViewDragDropManager = RecyclerViewDragDropManager()
         _wrappedAdapter = recyclerViewDragDropManager.createWrappedAdapter(playingQueueAdapter)
-        implementRecyclerView()
+
+        val playerRecyclerView = fetchRecyclerView()
+
+        val animator: GeneralItemAnimator = RefactoredDefaultItemAnimator()
+        playerRecyclerView.setUpFastScrollRecyclerViewColor(requireContext(), MaterialColor.Grey._500.asColor)
+        playerRecyclerView.layoutManager = layoutManager
+        playerRecyclerView.adapter = wrappedAdapter
+        playerRecyclerView.itemAnimator = animator
+        recyclerViewDragDropManager.attachRecyclerView(playerRecyclerView)
+        layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
     }
 
-    protected abstract fun implementRecyclerView()
-
-    abstract fun setUpControllerFragment()
+    protected abstract fun fetchRecyclerView(): FastScrollRecyclerView
 
     override fun onDestroyView() {
         favoriteMenuItem = null
@@ -312,26 +325,18 @@ abstract class AbsPlayerFragment :
     @MainThread
     private fun changeHighlightColor(newColor: Int, animated: Boolean = true) {
         if (animated) {
-            requestAnimateColorChanging(newColor)
-        } else {
-            forceChangePaletteColor(newColor)
-        }
-    }
-
-    @MainThread
-    protected fun requestAnimateColorChanging(newColor: Int) {
-        currentAnimatorSet?.end()
-        currentAnimatorSet?.cancel()
-        currentAnimatorSet = generatePaletteColorAnimators(lastPaletteColor, newColor).also {
-            it.doOnEnd {
-                lastPaletteColor = newColor
+            currentAnimatorSet?.end()
+            currentAnimatorSet?.cancel()
+            currentAnimatorSet = impl.generateAnimators(lastPaletteColor, newColor).also {
+                it.doOnEnd {
+                    lastPaletteColor = newColor
+                }
+                it.start()
             }
-            it.start()
+        } else {
+            impl.forceChangeColor(newColor)
         }
     }
-
-    abstract fun generatePaletteColorAnimators(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet
-    abstract fun forceChangePaletteColor(@ColorInt newColor: Int)
 
     private fun observeState() {
         observe(CurrentQueueState.queue) { queue ->
