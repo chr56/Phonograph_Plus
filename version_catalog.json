@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "1.4-dev2",
+      "versionCode": 1033,
+      "date": 1697446000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.4-dev2"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 主播放器内, 暂停播放按钮有时会卡住和动画异常</li><li>修复 主播放器内, 主色调无法正确更新若切歌过快</li><li>修复 主播放器内, \"接下来\"文本颜色问题</li><li>修复 主播放器内, 有时控件和队列可能会消失不见或覆盖部分图片</li></ol>",
+        "en": "<ol><li>Fix: in Main Player, PlayPause button sometimes gets frozen and has glitchy animation</li><li>Fix: in Main Player, palette color is not correctly updated if you change current song too quickly</li><li>Fix: in Main Player, legibility of \"Up Next\" text (color)</li><li>Fix: in Main Player, sometimes controls and queue may disappear or cover the partial of images</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.4-dev1",
       "versionCode": 1032,
       "date": 1696865000,
