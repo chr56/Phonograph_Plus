@@ -18,7 +18,6 @@ import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.model.Song
-import player.phonograph.notification.ErrorNotification
 import androidx.annotation.StringRes
 import androidx.core.content.FileProvider
 import androidx.lifecycle.LifecycleOwner
@@ -29,10 +28,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import kotlin.coroutines.CoroutineContext
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -48,20 +45,6 @@ import java.io.File
  */
 inline fun debug(crossinline block: () -> Unit) {
     if (DEBUG) block()
-}
-
-//
-// Exception
-//
-
-fun reportError(e: Throwable, tag: String, message: String) {
-    Log.e(tag, message, e)
-    ErrorNotification.postErrorNotification(e, message)
-}
-
-fun warning(tag: String, message: String) {
-    Log.w(tag, message)
-    ErrorNotification.postErrorNotification(message)
 }
 
 //
@@ -101,14 +84,6 @@ inline fun withLooper(crossinline block: () -> Unit) {
 //
 // Coroutine
 //
-
-fun createDefaultExceptionHandler(@Suppress("UNUSED_PARAMETER") TAG: String, defaultMessageHeader: String = "Error!"): CoroutineExceptionHandler =
-    CoroutineExceptionHandler { _, exception ->
-        ErrorNotification.postErrorNotification(
-            exception,
-            "$defaultMessageHeader:${exception.message}"
-        )
-    }
 
 suspend fun coroutineToast(context: Context, text: String, longToast: Boolean = false) {
     withContext(Dispatchers.Main) {
