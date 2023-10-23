@@ -64,7 +64,7 @@ class CrashActivity : ToolbarActivity() {
         // toolbar theme
         binding.toolbar.apply {
             setBackgroundColor(colorPrimary)
-            title = if (crashReportMode) getString(R.string.crash) else "Internal Error"
+            title = if (crashReportMode) getString(R.string.crash) else getString(R.string.internal_error)
             setSupportActionBar(this)
         }
         // float button
@@ -101,7 +101,7 @@ class CrashActivity : ToolbarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        stackTraceText = intent.getStringExtra(KEY_STACK_TRACE) ?: getString(R.string.empty)
+        stackTraceText = intent.getStringExtra(KEY_STACK_TRACE) ?: "N/A"
         crashReportMode = intent.getBooleanExtra(KEY_IS_A_CRASH, true)
 
         printStackTraceText(stackTraceText)
@@ -117,6 +117,7 @@ class CrashActivity : ToolbarActivity() {
         displayText = buildString {
             append("${if (crashReportMode) "Crash Report" else "Internal Error"}:\n\n")
             append("$deviceInfo\n")
+            append("Stack Track:\n")
             append("$stackTraceText\n")
         }
 
