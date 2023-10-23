@@ -45,6 +45,7 @@ import player.phonograph.settings.BROADCAST_CURRENT_PLAYER_STATE
 import player.phonograph.settings.CLASSIC_NOTIFICATION
 import player.phonograph.settings.COLORED_NOTIFICATION
 import player.phonograph.settings.GAPLESS_PLAYBACK
+import player.phonograph.util.recordThrowable
 import player.phonograph.util.registerReceiverCompat
 import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
@@ -558,12 +559,22 @@ class MusicService : MediaBrowserServiceCompat() {
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
         log("onGetRoot() clientPackageName: $clientPackageName, clientUid: $clientUid", false)
         log("onGetRoot() rootHints: ${rootHints?.toString()}", false)
-        return MediaBrowserDelegate.onGetRoot(this, clientPackageName, clientUid, rootHints)
+        return try {
+            MediaBrowserDelegate.onGetRoot(this, clientPackageName, clientUid, rootHints)
+        } catch (e: Throwable) {
+            recordThrowable(this, javaClass.name, e)
+            null
+        }
     }
 
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         log("onLoadChildren(): parentId $parentId", false)
-        val mediaItems = MediaBrowserDelegate.listChildren(parentId, this)
+        val mediaItems = try {
+            MediaBrowserDelegate.listChildren(parentId, this)
+        } catch (e: Throwable) {
+            recordThrowable(this, javaClass.name, e)
+            MediaBrowserDelegate.error(this)
+        }
         result.sendResult(ArrayList(mediaItems))
     }
 
