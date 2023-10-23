@@ -9,7 +9,6 @@ import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineExceptionHandler
 import java.io.File
-import java.io.PrintWriter
 import java.io.StringWriter
 
 private const val ERROR_STACKS_FILE = "errors.txt"
@@ -32,7 +31,7 @@ fun recordThrowable(context: Context?, tag: String, e: Throwable) {
         if (externalCacheDir != null && externalCacheDir.isDirectory) {
             val errorStacksFile = File(externalCacheDir, ERROR_STACKS_FILE).also { it.assure() }
             errorStacksFile.appendText(
-                "----------------\nError at time ${System.currentTimeMillis()}:\n$report"
+                "----------------\nError at timestamp(${System.currentTimeMillis()}):\n$report"
             )
         }
     }
@@ -40,16 +39,29 @@ fun recordThrowable(context: Context?, tag: String, e: Throwable) {
 
 
 private fun Throwable.report(): String {
-    val writer = StringWriter(256)
-    PrintWriter(writer).use { printWriter ->
-        printStackTrace(printWriter)
-        val causeThrowable = cause
-        if (causeThrowable != null) {
-            printWriter.print(causeThrowable.report())
-        }
+    val writer = StringWriter()
+
+    writer.write(stackTraceText(""))
+    writer.write("\n")
+
+    var indent = 2
+    var causeThrowable: Throwable? = cause
+    while (causeThrowable != null) {
+        val padding = " ".repeat(indent + 1)
+        writer.write("${padding}# Caused by: \n")
+        writer.write(causeThrowable.stackTraceText(padding))
+        writer.write("\n")
+        causeThrowable = causeThrowable.cause
+        indent += 2
     }
-    val stackTrace = writer.toString()
-    return "Error: $message\n$stackTrace"
+    return writer.toString()
+}
+
+private fun Throwable.stackTraceText(padding: String): String {
+    val head = "$padding# ${javaClass.name}: $message"
+    return stackTrace.fold(head) { acc, stackTraceElement ->
+        "$acc\n$padding- $stackTraceElement"
+    }
 }
 
 private fun File.assure() {
