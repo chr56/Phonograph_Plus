@@ -9,7 +9,7 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.util.reportError
+import player.phonograph.util.recordThrowable
 import player.phonograph.util.warning
 import android.content.Context
 import android.database.Cursor
@@ -91,13 +91,13 @@ fun queryAudio(
                 sortOrder
             )
         } else {
-            warning("MediaStore", "Can not access to MediaStore")
+            warning(TAG, "Can not access to MediaStore")
             null
         }
     } catch (e: SecurityException) {
         null
     } catch (e: IllegalArgumentException) {
-        reportError(e, "MediaStore", "Failed to query audio via MediaStore")
+        recordThrowable(context, TAG, e)
         null
     }
 }
@@ -161,3 +161,5 @@ fun SortMode.mediastoreQuerySortOrder(): String {
 
     return "$first $second"
 }
+
+private const val TAG = "MediaStoreQuery"
