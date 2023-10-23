@@ -54,6 +54,8 @@ object MediaBrowserDelegate {
             }
         }
 
+    fun error(context: Context): List<MediaBrowserCompat.MediaItem> = listOf(MediaItemProviders.error(context))
+
     // todo: validate package names & signatures
     private fun validate(context: Context, clientPackageName: String, clientUid: Int): Boolean {
         return if (clientUid == Process.SYSTEM_UID) {

@@ -451,4 +451,16 @@ object MediaItemProviders {
 
     @Suppress("unused")
     private const val TAG = "MediaItemProviders"
+
+
+    /**
+     * a MediaItem presenting errors
+     */
+    fun error(context: Context): MediaItem =
+        MediaItem(
+            MediaDescriptionCompat.Builder()
+                .setTitle(context.getString(R.string.internal_error))
+                .setMediaId(MediaItemPath.ROOT_PATH)
+                .build(), FLAG_BROWSABLE
+        )
 }
