@@ -6,6 +6,7 @@ package player.phonograph.service.queue
 
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.util.recordThrowable
 import android.app.Application
 import android.os.Handler
 import android.os.HandlerThread
@@ -29,9 +30,14 @@ class QueueManager(val context: Application) {
 
 
         thread(name = "queue_validation", priority = THREAD_PRIORITY_BACKGROUND) {
-            val changed = queueHolder.valid(context)
-            if (changed) {
-                observerManager.notifyQueueChanged(queueHolder.playingQueue, queueHolder.originalPlayingQueue)
+            try {
+                val changed = queueHolder.valid(context)
+                if (changed) {
+                    observerManager.notifyQueueChanged(queueHolder.playingQueue, queueHolder.originalPlayingQueue)
+                }
+            } catch (e: Throwable) {
+                // validation is optional
+                recordThrowable(context, TAG, e)
             }
         }
     }
@@ -306,5 +312,7 @@ class QueueManager(val context: Application) {
         const val MSG_STATE_RESTORE_ALL = 1
         const val MSG_SAVE_QUEUE = 2
         const val MSG_SAVE_CFG = 4
+
+        private const val TAG = "QueueManager"
     }
 }
