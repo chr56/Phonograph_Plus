@@ -27,7 +27,9 @@ import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Handler
 import android.os.Looper
+import android.os.Message
 import android.widget.Toast
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
@@ -65,7 +67,7 @@ fun sentPlaylistChangedLocalBoardCast() =
     )
 
 //
-// Looper
+// Looper & Handler
 //
 
 /**
@@ -79,6 +81,23 @@ inline fun withLooper(crossinline block: () -> Unit) {
     } else {
         block()
     }
+}
+
+/**
+ * post a delayed message with callback which can only be called for _ONCE_ (without dither due to multiple call in a short time)
+ * @param handler target handler
+ * @param id `what` of the message
+ * @return true if the message was successfully placed in to the message queue
+ */
+fun postDelayedOnceHandlerCallback(
+    handler: Handler,
+    delay: Long,
+    id: Int = delay.toInt(),
+    callback: Runnable,
+): Boolean {
+    val message = Message.obtain(handler, callback).apply { what = id }
+    handler.removeMessages(id)
+    return handler.sendMessageDelayed(message, delay)
 }
 
 //
