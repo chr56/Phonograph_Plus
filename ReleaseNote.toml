@@ -1,22 +1,22 @@
-version = "1.4-dev2"
-versionCode = 1033
-timestamp = 1697446000
+version = "1.4-dev3"
+versionCode = 1034
+timestamp = 1698137200
 channel = "PREVIEW"
 
 [notes.en]
 highlights = []
 items = [
-    "Fix: in Main Player, PlayPause button sometimes gets frozen and has glitchy animation",
-    "Fix: in Main Player, palette color is not correctly updated if you change current song too quickly",
-    "Fix: in Main Player, legibility of \"Up Next\" text (color)",
-    "Fix: in Main Player, sometimes controls and queue may disappear or cover the partial of images",
+    "Fix: spamming error notifications after devices rebooting (merely mute)",
+    "Improvement: Dark/Light Mode would be switched after system dark mode changed instantly without closing and reopening the app",
+    "Translation: Translation: update Finnish (by Latzze)",
+    "Translation: Translation: update Arabic (by Yrando)",
 ]
 
 [notes.zh]
 highlights = []
 items = [
-    "修复 主播放器内, 暂停播放按钮有时会卡住和动画异常",
-    "修复 主播放器内, 主色调无法正确更新若切歌过快",
-    "修复 主播放器内, \"接下来\"文本颜色问题",
-    "修复 主播放器内, 有时控件和队列可能会消失不见或覆盖部分图片",
+    "修复 设备重启后出现的大量错误通知(仅屏蔽)",
+    "改进 深色模式在系统深色模式改变后立即更改而无需重进",
+    "翻译 更新芬兰语 (Latzze)",
+    "翻译 更新阿拉伯语 (Yrando)",
 ]
