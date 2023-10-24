@@ -23,6 +23,7 @@ import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.CrashActivity
 import player.phonograph.ui.moduleViewModels
 import player.phonograph.util.debug
+import androidx.appcompat.app.AppCompatDelegate
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -90,6 +91,8 @@ class App : Application(), ImageLoaderFactory {
                 .accentColorRes(mt.color.R.color.md_yellow_900)
                 .commit()
         }
+        // night mode
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
         startKoin {
             androidLogger(if (DEBUG) Level.DEBUG else Level.WARNING)

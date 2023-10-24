@@ -15,7 +15,6 @@ import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.mechanism.setting.StyleConfig
 import player.phonograph.util.theme.nightMode
-import androidx.appcompat.app.AppCompatDelegate
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.os.Handler
@@ -46,9 +45,6 @@ abstract class ThemeActivity : MultiLanguageActivity() {
 
         // theme
         setTheme(StyleConfig.generalThemeStyle(this))
-
-        // night mode
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
         // immersive status bar
         if (useCustomStatusBar) setFullScreenAndIncludeStatusBar()
