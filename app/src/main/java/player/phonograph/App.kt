@@ -58,8 +58,8 @@ class App : Application(), ImageLoaderFactory {
             ContextLocaleDelegate.onConfigurationChanged(this, newConfig)
         )
         // Night Mode
-        checkNightMode(newConfig) { nightMode ->
-            changeGlobalNightMode(nightMode)
+        checkNightMode(newConfig) { present, nightMode ->
+            changeGlobalNightMode(present, nightMode)
         }
     }
 

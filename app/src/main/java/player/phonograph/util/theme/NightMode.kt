@@ -11,13 +11,13 @@ import android.util.Log
 
 private const val TAG = "NightMode"
 
-inline fun checkNightMode(config: Configuration, block: (Boolean) -> Unit) {
+inline fun checkNightMode(config: Configuration, block: (present: Boolean, night: Boolean) -> Unit) {
     val mode: Int = config.uiMode and Configuration.UI_MODE_NIGHT_MASK
     debug { displayCurrentUiMode(mode) }
     when (mode) {
-        Configuration.UI_MODE_NIGHT_NO        -> block(false)
-        Configuration.UI_MODE_NIGHT_YES       -> block(true)
-        Configuration.UI_MODE_NIGHT_UNDEFINED -> Log.i("checkNightMode", "unspecified night mode")
+        Configuration.UI_MODE_NIGHT_NO        -> block(true, false)
+        Configuration.UI_MODE_NIGHT_YES       -> block(true, true)
+        Configuration.UI_MODE_NIGHT_UNDEFINED -> block(false, false)
     }
 }
 
@@ -45,16 +45,24 @@ fun displayCurrentUiMode(mode: Int) {
 }
 
 
-fun changeGlobalNightMode(nightMode: Boolean) {
-    debug { Log.v(TAG, "switch global night mode : $nightMode") }
+fun changeGlobalNightMode(present: Boolean, nightMode: Boolean) {
+    debug { Log.v(TAG, "switch global night mode : present-$present, nightMode-$nightMode") }
     AppCompatDelegate.setDefaultNightMode(
-        if (nightMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        if (present) {
+            if (nightMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        } else {
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
     )
 }
 
-fun changeLocalNightMode(delegate: AppCompatDelegate, nightMode: Boolean) {
-    debug { Log.v(TAG, "switch local night mode : $nightMode") }
+fun changeLocalNightMode(delegate: AppCompatDelegate, present: Boolean, nightMode: Boolean) {
+    debug { Log.v(TAG, "switch local night mode : present-$present, nightMode-$nightMode") }
     delegate.localNightMode =
-        if (nightMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        if (present) {
+            if (nightMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        } else {
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
 }
 
