@@ -23,10 +23,16 @@ import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.CrashActivity
 import player.phonograph.ui.moduleViewModels
 import player.phonograph.util.debug
+import player.phonograph.util.postDelayedOnceHandlerCallback
+import player.phonograph.util.theme.changeGlobalNightMode
+import player.phonograph.util.theme.checkNightMode
+import androidx.appcompat.app.AppCompatDelegate
 import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.os.Handler
+import android.os.Looper
 import android.os.Process
 import android.util.Log
 import kotlin.system.exitProcess
@@ -50,6 +56,12 @@ class App : Application(), ImageLoaderFactory {
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
+        // Night Mode
+        checkNightMode(newConfig) { present, nightMode ->
+            postDelayedOnceHandlerCallback(Handler(Looper.getMainLooper()), 550, 536870912) {
+                changeGlobalNightMode(present, nightMode)
+            }
+        }
         // Localization
         super.onConfigurationChanged(
             ContextLocaleDelegate.onConfigurationChanged(this, newConfig)
@@ -90,6 +102,8 @@ class App : Application(), ImageLoaderFactory {
                 .accentColorRes(mt.color.R.color.md_yellow_900)
                 .commit()
         }
+        // night mode
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
         startKoin {
             androidLogger(if (DEBUG) Level.DEBUG else Level.WARNING)
