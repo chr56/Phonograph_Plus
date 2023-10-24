@@ -23,6 +23,8 @@ import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.CrashActivity
 import player.phonograph.ui.moduleViewModels
 import player.phonograph.util.debug
+import player.phonograph.util.theme.changeGlobalNightMode
+import player.phonograph.util.theme.checkNightMode
 import androidx.appcompat.app.AppCompatDelegate
 import android.app.Application
 import android.content.Context
@@ -55,6 +57,10 @@ class App : Application(), ImageLoaderFactory {
         super.onConfigurationChanged(
             ContextLocaleDelegate.onConfigurationChanged(this, newConfig)
         )
+        // Night Mode
+        checkNightMode(newConfig) { nightMode ->
+            changeGlobalNightMode(nightMode)
+        }
     }
 
     override fun onCreate() {
