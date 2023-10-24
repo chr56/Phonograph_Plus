@@ -13,7 +13,6 @@ import android.content.ContextWrapper
 import android.content.res.Configuration
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.TIRAMISU
-import java.lang.IllegalStateException
 import java.util.Locale
 
 object ContextLocaleDelegate {
@@ -35,8 +34,15 @@ object ContextLocaleDelegate {
     /**
      * Wrap [newConfig] with this in [ComponentCallbacks.onConfigurationChanged]
      */
-    fun onConfigurationChanged(context: Context, newConfig: Configuration): Configuration =
-        amendConfiguration(newConfig, LocalizationStore.current(context))
+    fun onConfigurationChanged(context: Context, newConfig: Configuration): Configuration {
+        val storedLocale = LocalizationStore.current(context)
+        val currentLocale = newConfig.locales[0]
+        return if (storedLocale != currentLocale) { // avoid unnecessary changes
+            amendConfiguration(newConfig, storedLocale)
+        } else {
+            newConfig
+        }
+    }
 
 
     private var startupLocale: Locale = Locale.getDefault()
