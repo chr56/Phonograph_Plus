@@ -56,16 +56,16 @@ class App : Application(), ImageLoaderFactory {
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
-        // Localization
-        super.onConfigurationChanged(
-            ContextLocaleDelegate.onConfigurationChanged(this, newConfig)
-        )
         // Night Mode
         checkNightMode(newConfig) { present, nightMode ->
             postDelayedOnceHandlerCallback(Handler(Looper.getMainLooper()), 550, 536870912) {
                 changeGlobalNightMode(present, nightMode)
             }
         }
+        // Localization
+        super.onConfigurationChanged(
+            ContextLocaleDelegate.onConfigurationChanged(this, newConfig)
+        )
     }
 
     override fun onCreate() {
