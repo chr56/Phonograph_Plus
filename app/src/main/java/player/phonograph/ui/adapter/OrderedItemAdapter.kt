@@ -17,7 +17,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.PopupMenu
 
 abstract class OrderedItemAdapter<I : Displayable>(
     protected val activity: FragmentActivity,
@@ -102,11 +101,6 @@ abstract class OrderedItemAdapter<I : Displayable>(
             bindingAdapterPosition: Int,
             menuButtonView: View,
         ) {
-            if (dataset.isNotEmpty()) {
-                PopupMenu(itemView.context, menuButtonView).apply {
-                    dataset[bindingAdapterPosition].initMenu(itemView.context, this.menu)
-                }.show()
-            }
         }
 
         protected open fun getRelativeOrdinalText(item: I, position: Int): String = "-"

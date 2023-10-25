@@ -15,6 +15,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableI
 import player.phonograph.R
 import player.phonograph.actions.ClickActionProviders
 import player.phonograph.actions.actionGotoDetail
+import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.model.Song
 import player.phonograph.ui.adapter.OrderedItemAdapter
 import player.phonograph.ui.dialogs.DeleteSongsDialog
@@ -181,8 +182,8 @@ class PlaylistSongDisplayAdapter(
     override fun onItemDragFinished(fromPosition: Int, toPosition: Int, result: Boolean) {
         @Suppress("KotlinConstantConditions")
         when {
-            fromPosition < toPosition -> notifyItemRangeChanged(fromPosition, toPosition)
-            fromPosition > toPosition -> notifyItemRangeChanged(toPosition, fromPosition)
+            fromPosition < toPosition  -> notifyItemRangeChanged(fromPosition, toPosition)
+            fromPosition > toPosition  -> notifyItemRangeChanged(toPosition, fromPosition)
             fromPosition == toPosition -> notifyItemChanged(fromPosition)
         }
 
@@ -210,11 +211,14 @@ class PlaylistSongDisplayAdapter(
                     injectPlaylistEditor(menu, itemView.context, bindingAdapterPosition)
                 }.show()
             } else {
-                super.onMenuClick(dataset, bindingAdapterPosition, menuButtonView)
+                PopupMenu(itemView.context, menuButtonView).apply {
+                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = bindingAdapterPosition)
+                        .inflateMenu(menu, menuButtonView.context, dataset[bindingAdapterPosition])
+                }.show()
             }
         }
 
-        override fun getRelativeOrdinalText(item: Song, position: Int): String = (position+1).toString()
+        override fun getRelativeOrdinalText(item: Song, position: Int): String = (position + 1).toString()
 
         @DraggableItemStateFlags
         private var mDragStateFlags = 0

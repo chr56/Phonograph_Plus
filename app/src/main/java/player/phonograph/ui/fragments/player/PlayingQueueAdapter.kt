@@ -10,6 +10,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHold
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
+import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
@@ -17,7 +18,6 @@ import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.adapter.OrderedItemAdapter
 import player.phonograph.ui.adapter.hasMenu
-import player.phonograph.ui.adapter.initMenu
 import player.phonograph.util.ui.hitTest
 import androidx.fragment.app.FragmentActivity
 import android.annotation.SuppressLint
@@ -66,12 +66,10 @@ class PlayingQueueAdapter(
         }
 
         override fun onMenuClick(dataset: List<Song>, bindingAdapterPosition: Int, menuButtonView: View) {
-            if (dataset.isNotEmpty()) {
-                PopupMenu(itemView.context, menuButtonView).apply {
-                    dataset[bindingAdapterPosition]
-                        .initMenu(itemView.context, this.menu, index = bindingAdapterPosition)
-                }.show()
-            }
+            PopupMenu(itemView.context, menuButtonView).apply {
+                ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = bindingAdapterPosition)
+                    .inflateMenu(menu, menuButtonView.context, dataset[bindingAdapterPosition])
+            }.show()
         }
 
         override fun bind(

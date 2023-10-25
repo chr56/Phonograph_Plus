@@ -5,6 +5,7 @@
 package player.phonograph.ui.modules.search
 
 import player.phonograph.R
+import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.databinding.RecyclerViewWrappedProperBinding
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -35,6 +36,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.PopupMenu
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -192,6 +194,12 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
                 return true
             }
 
+            override fun onMenuClick(dataset: List<QueueSong>, bindingAdapterPosition: Int, menuButtonView: View) {
+                PopupMenu(itemView.context, menuButtonView).apply {
+                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = bindingAdapterPosition)
+                        .inflateMenu(menu, menuButtonView.context, dataset[bindingAdapterPosition].song)
+                }.show()
+            }
         }
     }
 
