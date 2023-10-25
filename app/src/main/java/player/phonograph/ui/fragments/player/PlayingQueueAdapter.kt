@@ -10,14 +10,13 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHold
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
+import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.adapter.OrderedItemAdapter
-import player.phonograph.ui.adapter.hasMenu
-import player.phonograph.ui.adapter.initMenu
 import player.phonograph.util.ui.hitTest
 import androidx.fragment.app.FragmentActivity
 import android.annotation.SuppressLint
@@ -65,11 +64,11 @@ class PlayingQueueAdapter(
             return true
         }
 
-        override fun onMenuClick(dataset: List<Song>, bindingAdapterPosition: Int, menuButtonView: View) {
-            if (dataset.isNotEmpty()) {
+        override fun prepareMenu(item: Song, position: Int, menuButtonView: View) {
+            menuButtonView.setOnClickListener {
                 PopupMenu(itemView.context, menuButtonView).apply {
-                    dataset[bindingAdapterPosition]
-                        .initMenu(itemView.context, this.menu, index = bindingAdapterPosition)
+                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = position)
+                        .inflateMenu(menu, menuButtonView.context, item)
                 }.show()
             }
         }
@@ -100,9 +99,8 @@ class PlayingQueueAdapter(
             controller.registerClicking(itemView, position) {
                 onClick(position, dataset, image)
             }
-            menu?.visibility = if (item.hasMenu()) VISIBLE else GONE
-            menu?.setOnClickListener {
-                onMenuClick(dataset, position, it)
+            menu?.let {
+                prepareMenu(dataset[position], position, it)
             }
         }
 

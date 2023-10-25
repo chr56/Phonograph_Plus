@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.activities
 
+import player.phonograph.actions.ClickActionProviders
 import player.phonograph.model.Song
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
@@ -30,6 +31,9 @@ class AlbumSongDisplayAdapter(
 
         override fun getDescription(item: Song): CharSequence? =
             buildInfoString(getReadableDurationString(item.duration), item.artistName)
+
+        override val clickActionProvider: ClickActionProviders.ClickActionProvider<Song>
+            get() = ClickActionProviders.SongClickActionProvider()
     }
 
     companion object {

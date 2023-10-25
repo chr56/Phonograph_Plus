@@ -6,6 +6,7 @@ package player.phonograph.ui.activities
 
 import coil.size.ViewSizeResolver
 import player.phonograph.R
+import player.phonograph.actions.ClickActionProviders
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Album
@@ -88,6 +89,9 @@ class HorizontalAlbumDisplayAdapter(
                 }
             }
         }
+
+        override val clickActionProvider: ClickActionProviders.ClickActionProvider<Album>
+            get() = ClickActionProviders.AlbumClickActionProvider()
     }
 
     companion object {

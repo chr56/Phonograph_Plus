@@ -18,4 +18,5 @@ data class Genre(
 
     override fun getDescription(context: Context): CharSequence = infoString(context)
 
+    override fun defaultSortOrderReference(): String? = name
 }

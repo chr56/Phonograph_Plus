@@ -14,4 +14,5 @@ interface Displayable {
 
     fun getSecondaryText(context: Context): CharSequence? = getDescription(context)
     fun getTertiaryText(context: Context): CharSequence? = null
+    fun defaultSortOrderReference(): String? = null
 }

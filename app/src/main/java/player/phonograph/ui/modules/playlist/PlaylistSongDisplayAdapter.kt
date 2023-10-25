@@ -13,7 +13,9 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHold
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
+import player.phonograph.actions.ClickActionProviders
 import player.phonograph.actions.actionGotoDetail
+import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.model.Song
 import player.phonograph.ui.adapter.OrderedItemAdapter
 import player.phonograph.ui.dialogs.DeleteSongsDialog
@@ -24,6 +26,7 @@ import android.content.Context
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.PopupMenu
 
 class PlaylistSongDisplayAdapter(
@@ -179,8 +182,8 @@ class PlaylistSongDisplayAdapter(
     override fun onItemDragFinished(fromPosition: Int, toPosition: Int, result: Boolean) {
         @Suppress("KotlinConstantConditions")
         when {
-            fromPosition < toPosition -> notifyItemRangeChanged(fromPosition, toPosition)
-            fromPosition > toPosition -> notifyItemRangeChanged(toPosition, fromPosition)
+            fromPosition < toPosition  -> notifyItemRangeChanged(fromPosition, toPosition)
+            fromPosition > toPosition  -> notifyItemRangeChanged(toPosition, fromPosition)
             fromPosition == toPosition -> notifyItemChanged(fromPosition)
         }
 
@@ -197,18 +200,26 @@ class PlaylistSongDisplayAdapter(
             OrderedItemViewHolder<Song>(itemView),
             DraggableItemViewHolder {
 
+        override fun onClick(position: Int, dataset: List<Song>, imageView: ImageView?): Boolean {
+            return ClickActionProviders.SongClickActionProvider()
+                .listClick(dataset, position, itemView.context, imageView)
+        }
 
-        override fun onMenuClick(dataset: List<Song>, bindingAdapterPosition: Int, menuButtonView: View) {
-            if (editMode) {
+
+        override fun prepareMenu(item: Song, position: Int, menuButtonView: View) {
+            menuButtonView.setOnClickListener {
                 PopupMenu(itemView.context, menuButtonView).apply {
-                    injectPlaylistEditor(menu, itemView.context, bindingAdapterPosition)
+                    if (editMode) {
+                        injectPlaylistEditor(menu, itemView.context, position)
+                    } else {
+                        ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = position)
+                            .inflateMenu(menu, menuButtonView.context, item)
+                    }
                 }.show()
-            } else {
-                super.onMenuClick(dataset, bindingAdapterPosition, menuButtonView)
             }
         }
 
-        override fun getRelativeOrdinalText(item: Song, position: Int): String = (position+1).toString()
+        override fun getRelativeOrdinalText(item: Song, position: Int): String = (position + 1).toString()
 
         @DraggableItemStateFlags
         private var mDragStateFlags = 0

@@ -6,6 +6,7 @@ package player.phonograph.ui.fragments.pages.adapter
 
 import coil.size.ViewSizeResolver
 import player.phonograph.R
+import player.phonograph.actions.ClickActionProviders
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Album
@@ -15,7 +16,6 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayConfig
-import player.phonograph.ui.adapter.ViewHolderType
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
@@ -72,5 +72,8 @@ open class AlbumDisplayAdapter(
                 }
             }
         }
+
+        override val clickActionProvider: ClickActionProviders.ClickActionProvider<Album>
+            get() = ClickActionProviders.AlbumClickActionProvider()
     }
 }

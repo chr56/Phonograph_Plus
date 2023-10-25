@@ -8,7 +8,8 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
-import player.phonograph.actions.click.listClick
+import player.phonograph.actions.ClickActionProviders
+import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.model.Displayable
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentActivity
@@ -91,27 +92,35 @@ abstract class DisplayAdapter<I : Displayable>(
             controller.registerClicking(itemView, position) {
                 onClick(position, dataset, image)
             }
-            menu?.visibility = if (item.hasMenu()) View.VISIBLE else View.GONE
-            menu?.setOnClickListener {
-                onMenuClick(dataset, position, it)
+            menu?.let {
+                prepareMenu(dataset[position], it)
             }
         }
+
+        @Suppress("UNCHECKED_CAST")
+        open val clickActionProvider: ClickActionProviders.ClickActionProvider<I> =
+            ClickActionProviders.EmptyClickActionProvider as ClickActionProviders.ClickActionProvider<I>
 
         protected open fun onClick(position: Int, dataset: List<I>, imageView: ImageView?): Boolean {
-            return listClick(dataset, position, itemView.context, imageView)
+            return clickActionProvider.listClick(dataset, position, itemView.context, imageView)
         }
 
-        protected open fun onMenuClick(
-            dataset: List<I>,
-            bindingAdapterPosition: Int,
-            menuButtonView: View,
-        ) {
-            if (dataset.isNotEmpty()) {
-                PopupMenu(itemView.context, menuButtonView).apply {
-                    dataset[bindingAdapterPosition].initMenu(itemView.context, this.menu)
-                }.show()
+        open val menuProvider: ActionMenuProviders.ActionMenuProvider<I>? = null
+
+        private fun prepareMenu(item: I, menuButtonView: View) {
+            val provider = menuProvider
+            if (provider != null) {
+                menuButtonView.visibility = View.VISIBLE
+                menuButtonView.setOnClickListener {
+                    PopupMenu(itemView.context, menuButtonView).apply {
+                        provider.inflateMenu(menu, itemView.context, item)
+                    }.show()
+                }
+            } else {
+                menuButtonView.visibility = View.GONE
             }
         }
+
 
         protected open fun getRelativeOrdinalText(item: I): String = "-"
         protected open fun getDescription(item: I): CharSequence? =

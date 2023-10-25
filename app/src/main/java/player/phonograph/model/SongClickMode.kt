@@ -1,13 +1,10 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.actions.click.mode
+package player.phonograph.model
 
-import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
 import android.content.res.Resources
 
 @Suppress("MemberVisibilityCanBePrivate")
@@ -61,11 +58,4 @@ object SongClickMode {
     }
 
 
-    fun resetBaseMode() {
-        Setting(App.instance)[Keys.songItemClickMode].data = SONG_PLAY_NOW
-    }
-
-    fun resetExtraMode() {
-        Setting(App.instance)[Keys.songItemClickExtraFlag].data = FLAG_MASK_PLAY_QUEUE_IF_EMPTY
-    }
 }

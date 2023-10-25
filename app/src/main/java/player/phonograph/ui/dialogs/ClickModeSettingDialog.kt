@@ -9,7 +9,7 @@ import com.vanpra.composematerialdialogs.customView
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
-import player.phonograph.actions.click.mode.SongClickMode
+import player.phonograph.model.SongClickMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.BridgeDialogFragment
