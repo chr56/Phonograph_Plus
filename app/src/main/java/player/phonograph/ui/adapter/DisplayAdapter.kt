@@ -92,9 +92,8 @@ abstract class DisplayAdapter<I : Displayable>(
             controller.registerClicking(itemView, position) {
                 onClick(position, dataset, image)
             }
-            menu?.visibility = if (item.hasMenu()) View.VISIBLE else View.GONE
-            menu?.setOnClickListener {
-                onMenuClick(dataset, position, it)
+            menu?.let {
+                prepareMenu(dataset[position], it)
             }
         }
 
@@ -106,19 +105,22 @@ abstract class DisplayAdapter<I : Displayable>(
             return clickActionProvider.listClick(dataset, position, itemView.context, imageView)
         }
 
-        @Suppress("UNCHECKED_CAST")
-        open val menuProvider: ActionMenuProviders.ActionMenuProvider<I> =
-            ActionMenuProviders.EmptyActionMenuProvider as ActionMenuProviders.ActionMenuProvider<I>
+        open val menuProvider: ActionMenuProviders.ActionMenuProvider<I>? = null
 
-        protected open fun onMenuClick(
-            dataset: List<I>,
-            bindingAdapterPosition: Int,
-            menuButtonView: View,
-        ) {
-            PopupMenu(itemView.context, menuButtonView).apply {
-                menuProvider.inflateMenu(menu, itemView.context, dataset[bindingAdapterPosition])
-            }.show()
+        private fun prepareMenu(item: I, menuButtonView: View) {
+            val provider = menuProvider
+            if (provider != null) {
+                menuButtonView.visibility = View.VISIBLE
+                menuButtonView.setOnClickListener {
+                    PopupMenu(itemView.context, menuButtonView).apply {
+                        provider.inflateMenu(menu, itemView.context, item)
+                    }.show()
+                }
+            } else {
+                menuButtonView.visibility = View.GONE
+            }
         }
+
 
         protected open fun getRelativeOrdinalText(item: I): String = "-"
         protected open fun getDescription(item: I): CharSequence? =
