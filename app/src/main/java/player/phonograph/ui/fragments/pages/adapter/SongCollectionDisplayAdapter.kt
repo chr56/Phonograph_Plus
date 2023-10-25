@@ -7,6 +7,7 @@ package player.phonograph.ui.fragments.pages.adapter
 import mt.util.color.primaryTextColor
 import mt.util.color.resolveColor
 import player.phonograph.R
+import player.phonograph.actions.click.ClickActionProviders
 import player.phonograph.model.SongCollection
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
@@ -30,6 +31,9 @@ class SongCollectionDisplayAdapter(
         itemView: View,
         private val onClick: (bindingAdapterPosition: Int) -> Unit,
     ) : DisplayViewHolder<SongCollection>(itemView) {
+
+        override val clickActionProvider: ClickActionProviders.ClickActionProvider<SongCollection>
+            get() = super.clickActionProvider
 
         override fun onClick(position: Int, dataset: List<SongCollection>, imageView: ImageView?): Boolean {
             onClick(position)

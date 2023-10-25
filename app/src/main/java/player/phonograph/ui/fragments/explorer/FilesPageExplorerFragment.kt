@@ -5,7 +5,7 @@ package player.phonograph.ui.fragments.explorer
 
 import mt.pref.ThemeColor
 import player.phonograph.R
-import player.phonograph.actions.click.fileClick
+import player.phonograph.actions.click.ClickActionProviders
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.model.sort.SortMode
@@ -83,14 +83,11 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel>()
                 }
 
                 is FileEntity.File   -> {
-                    val base = Setting(activity)[Keys.songItemClickMode].data
-                    val extra = Setting(activity)[Keys.songItemClickExtraFlag].data
-                    fileClick(
+                    ClickActionProviders.FileEntityClickActionProvider().listClick(
                         fileEntities,
                         position,
-                        base,
-                        extra,
-                        activity
+                        activity,
+                        null
                     )
                 }
             }

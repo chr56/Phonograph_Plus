@@ -8,7 +8,6 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
-import player.phonograph.actions.click.listClick
 import player.phonograph.model.Displayable
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentActivity
@@ -96,9 +95,7 @@ abstract class OrderedItemAdapter<I : Displayable>(
             }
         }
 
-        protected open fun onClick(position: Int, dataset: List<I>, imageView: ImageView?): Boolean {
-            return listClick(dataset, position, itemView.context, imageView)
-        }
+        open fun onClick(position: Int, dataset: List<I>, imageView: ImageView?): Boolean = false
 
         protected open fun onMenuClick(
             dataset: List<I>,

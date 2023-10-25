@@ -14,6 +14,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
 import player.phonograph.actions.actionGotoDetail
+import player.phonograph.actions.click.ClickActionProviders
 import player.phonograph.model.Song
 import player.phonograph.ui.adapter.OrderedItemAdapter
 import player.phonograph.ui.dialogs.DeleteSongsDialog
@@ -24,6 +25,7 @@ import android.content.Context
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.PopupMenu
 
 class PlaylistSongDisplayAdapter(
@@ -197,6 +199,10 @@ class PlaylistSongDisplayAdapter(
             OrderedItemViewHolder<Song>(itemView),
             DraggableItemViewHolder {
 
+        override fun onClick(position: Int, dataset: List<Song>, imageView: ImageView?): Boolean {
+            return ClickActionProviders.SongClickActionProvider()
+                .listClick(dataset, position, itemView.context, imageView)
+        }
 
         override fun onMenuClick(dataset: List<Song>, bindingAdapterPosition: Int, menuButtonView: View) {
             if (editMode) {
