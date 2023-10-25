@@ -39,6 +39,8 @@ data class Artist(
     override fun getSecondaryText(context: Context): CharSequence = albumCountString(context, albumCount)
     override fun getTertiaryText(context: Context): CharSequence = songCountString(context, songCount)
 
+    override fun defaultSortOrderReference(): String = name
+
     companion object {
         const val UNKNOWN_ARTIST_DISPLAY_NAME = "Unknown Artist"
     }

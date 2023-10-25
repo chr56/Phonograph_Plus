@@ -65,6 +65,8 @@ data class Song(
     override fun getSecondaryText(context: Context): CharSequence? = albumName
     override fun getTertiaryText(context: Context): CharSequence? = artistName
 
+    override fun defaultSortOrderReference(): String = title
+
     companion object {
         @JvmField
         val EMPTY_SONG = Song()
