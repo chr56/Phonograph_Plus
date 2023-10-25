@@ -2,32 +2,27 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.actions.click
+package player.phonograph.actions
 
 import player.phonograph.R
-import player.phonograph.actions.actionEnqueue
-import player.phonograph.actions.actionPlay
-import player.phonograph.actions.actionPlayNext
-import player.phonograph.actions.actionPlayNow
-import player.phonograph.actions.click.mode.SongClickMode
-import player.phonograph.actions.click.mode.SongClickMode.FLAG_MASK_GOTO_POSITION_FIRST
-import player.phonograph.actions.click.mode.SongClickMode.FLAG_MASK_PLAY_QUEUE_IF_EMPTY
-import player.phonograph.actions.click.mode.SongClickMode.QUEUE_APPEND_QUEUE
-import player.phonograph.actions.click.mode.SongClickMode.QUEUE_PLAY_NEXT
-import player.phonograph.actions.click.mode.SongClickMode.QUEUE_PLAY_NOW
-import player.phonograph.actions.click.mode.SongClickMode.QUEUE_SHUFFLE
-import player.phonograph.actions.click.mode.SongClickMode.QUEUE_SWITCH_TO_BEGINNING
-import player.phonograph.actions.click.mode.SongClickMode.QUEUE_SWITCH_TO_POSITION
-import player.phonograph.actions.click.mode.SongClickMode.SONG_APPEND_QUEUE
-import player.phonograph.actions.click.mode.SongClickMode.SONG_PLAY_NEXT
-import player.phonograph.actions.click.mode.SongClickMode.SONG_PLAY_NOW
-import player.phonograph.actions.click.mode.SongClickMode.SONG_SINGLE_PLAY
-import player.phonograph.actions.click.mode.SongClickMode.resetBaseMode
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
+import player.phonograph.model.SongClickMode
+import player.phonograph.model.SongClickMode.FLAG_MASK_GOTO_POSITION_FIRST
+import player.phonograph.model.SongClickMode.FLAG_MASK_PLAY_QUEUE_IF_EMPTY
+import player.phonograph.model.SongClickMode.QUEUE_APPEND_QUEUE
+import player.phonograph.model.SongClickMode.QUEUE_PLAY_NEXT
+import player.phonograph.model.SongClickMode.QUEUE_PLAY_NOW
+import player.phonograph.model.SongClickMode.QUEUE_SHUFFLE
+import player.phonograph.model.SongClickMode.QUEUE_SWITCH_TO_BEGINNING
+import player.phonograph.model.SongClickMode.QUEUE_SWITCH_TO_POSITION
+import player.phonograph.model.SongClickMode.SONG_APPEND_QUEUE
+import player.phonograph.model.SongClickMode.SONG_PLAY_NEXT
+import player.phonograph.model.SongClickMode.SONG_PLAY_NOW
+import player.phonograph.model.SongClickMode.SONG_SINGLE_PLAY
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.loader.Songs
@@ -63,10 +58,11 @@ object ClickActionProviders {
             val setting = Setting(context)
             val base = setting[Keys.songItemClickMode].data
             val extra = setting[Keys.songItemClickExtraFlag].data
-            return songClick(list, position, base, extra)
+            return songClick(context, list, position, base, extra)
         }
 
         private fun songClick(
+            context: Context,
             list: List<Song>,
             position: Int,
             baseMode: Int,
@@ -107,7 +103,7 @@ object ClickActionProviders {
                 )
 
                 else  /* invalided */     -> {
-                    resetBaseMode()
+                    Setting(context)[Keys.songItemClickMode].data = SONG_PLAY_NOW // reset base mode
                     return false
                 }
             }
@@ -203,7 +199,7 @@ object ClickActionProviders {
             val setting = Setting(context)
             val base = setting[Keys.songItemClickMode].data
             val extra = setting[Keys.songItemClickExtraFlag].data
-            return fileClick(list, position, base, extra, context)
+            return fileClick(context, list, position, base, extra)
         }
 
         /**
@@ -211,11 +207,11 @@ object ClickActionProviders {
          * @param position in-list position
          */
         private fun fileClick(
+            context: Context,
             list: List<FileEntity>,
             position: Int,
             baseMode: Int,
             extraFlag: Int,
-            context: Context,
         ): Boolean {
             var base = baseMode
             val songRequest by lazy(LazyThreadSafetyMode.NONE) { filter(list, position, context) }
@@ -240,7 +236,7 @@ object ClickActionProviders {
                 SONG_PLAY_NOW,
                 SONG_APPEND_QUEUE,
                 SONG_SINGLE_PLAY,
-                     -> {
+                                      -> {
                     val fileEntity = list[position] as? FileEntity.File ?: return false
                     val song = Songs.searchByFileEntity(context, fileEntity)
                     when (base) {
@@ -257,7 +253,7 @@ object ClickActionProviders {
                 QUEUE_SWITCH_TO_BEGINNING,
                 QUEUE_SWITCH_TO_POSITION,
                 QUEUE_SHUFFLE,
-                     -> {
+                                      -> {
                     val songs = songRequest.songs
                     val actualPosition = songRequest.position
 
@@ -272,8 +268,8 @@ object ClickActionProviders {
                     }
                 }
 
-                else -> {
-                    resetBaseMode()
+                else  /* invalided */ -> {
+                    Setting(context)[Keys.songItemClickMode].data = SONG_PLAY_NOW // reset base mode
                     return false
                 }
             }

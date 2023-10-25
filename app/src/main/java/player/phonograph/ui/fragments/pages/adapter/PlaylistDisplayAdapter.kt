@@ -7,7 +7,7 @@ package player.phonograph.ui.fragments.pages.adapter
 import mt.util.color.resolveColor
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
-import player.phonograph.actions.click.ClickActionProviders
+import player.phonograph.actions.ClickActionProviders
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.sort.SortRef

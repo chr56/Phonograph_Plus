@@ -7,7 +7,7 @@ package player.phonograph.ui.fragments.pages.adapter
 import mt.util.color.primaryTextColor
 import mt.util.color.resolveColor
 import player.phonograph.R
-import player.phonograph.actions.click.ClickActionProviders
+import player.phonograph.actions.ClickActionProviders
 import player.phonograph.model.SongCollection
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter

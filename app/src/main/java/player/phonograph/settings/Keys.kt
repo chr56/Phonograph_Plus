@@ -4,7 +4,7 @@
 
 package player.phonograph.settings
 
-import player.phonograph.actions.click.mode.SongClickMode
+import player.phonograph.model.SongClickMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.time.Duration

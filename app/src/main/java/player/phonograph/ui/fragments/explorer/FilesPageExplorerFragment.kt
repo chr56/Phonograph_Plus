@@ -5,7 +5,7 @@ package player.phonograph.ui.fragments.explorer
 
 import mt.pref.ThemeColor
 import player.phonograph.R
-import player.phonograph.actions.click.ClickActionProviders
+import player.phonograph.actions.ClickActionProviders
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.model.sort.SortMode

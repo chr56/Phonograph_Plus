@@ -6,7 +6,7 @@ package player.phonograph.ui.fragments.pages.adapter
 
 import coil.size.ViewSizeResolver
 import player.phonograph.R
-import player.phonograph.actions.click.ClickActionProviders
+import player.phonograph.actions.ClickActionProviders
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Artist

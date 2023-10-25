@@ -13,8 +13,8 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHold
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
+import player.phonograph.actions.ClickActionProviders
 import player.phonograph.actions.actionGotoDetail
-import player.phonograph.actions.click.ClickActionProviders
 import player.phonograph.model.Song
 import player.phonograph.ui.adapter.OrderedItemAdapter
 import player.phonograph.ui.dialogs.DeleteSongsDialog

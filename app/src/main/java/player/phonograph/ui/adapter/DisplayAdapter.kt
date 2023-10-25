@@ -8,7 +8,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
-import player.phonograph.actions.click.ClickActionProviders
+import player.phonograph.actions.ClickActionProviders
 import player.phonograph.model.Displayable
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentActivity

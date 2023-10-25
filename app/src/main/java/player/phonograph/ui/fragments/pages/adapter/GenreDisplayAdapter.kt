@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.fragments.pages.adapter
 
-import player.phonograph.actions.click.ClickActionProviders
+import player.phonograph.actions.ClickActionProviders
 import player.phonograph.model.Genre
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
