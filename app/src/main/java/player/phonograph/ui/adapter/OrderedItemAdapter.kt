@@ -88,20 +88,14 @@ abstract class OrderedItemAdapter<I : Displayable>(
             controller.registerClicking(itemView, position) {
                 onClick(position, dataset, image)
             }
-            menu?.visibility = if (item.hasMenu()) View.VISIBLE else View.GONE
-            menu?.setOnClickListener {
-                onMenuClick(dataset, position, it)
+            menu?.let {
+                prepareMenu(dataset[position], position, it)
             }
         }
 
         open fun onClick(position: Int, dataset: List<I>, imageView: ImageView?): Boolean = false
 
-        protected open fun onMenuClick(
-            dataset: List<I>,
-            bindingAdapterPosition: Int,
-            menuButtonView: View,
-        ) {
-        }
+        protected open fun prepareMenu(item: I, position: Int, menuButtonView: View) {}
 
         protected open fun getRelativeOrdinalText(item: I, position: Int): String = "-"
         protected open fun getDescription(item: I): CharSequence? =

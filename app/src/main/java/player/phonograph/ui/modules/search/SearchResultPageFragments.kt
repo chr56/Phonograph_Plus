@@ -194,11 +194,13 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
                 return true
             }
 
-            override fun onMenuClick(dataset: List<QueueSong>, bindingAdapterPosition: Int, menuButtonView: View) {
-                PopupMenu(itemView.context, menuButtonView).apply {
-                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = bindingAdapterPosition)
-                        .inflateMenu(menu, menuButtonView.context, dataset[bindingAdapterPosition].song)
-                }.show()
+            override fun prepareMenu(item: QueueSong, position: Int, menuButtonView: View) {
+                menuButtonView.setOnClickListener {
+                    PopupMenu(itemView.context, menuButtonView).apply {
+                        ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = position)
+                            .inflateMenu(menu, menuButtonView.context, item.song)
+                    }.show()
+                }
             }
         }
     }

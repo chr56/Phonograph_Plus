@@ -17,7 +17,6 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.adapter.OrderedItemAdapter
-import player.phonograph.ui.adapter.hasMenu
 import player.phonograph.util.ui.hitTest
 import androidx.fragment.app.FragmentActivity
 import android.annotation.SuppressLint
@@ -65,11 +64,13 @@ class PlayingQueueAdapter(
             return true
         }
 
-        override fun onMenuClick(dataset: List<Song>, bindingAdapterPosition: Int, menuButtonView: View) {
-            PopupMenu(itemView.context, menuButtonView).apply {
-                ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = bindingAdapterPosition)
-                    .inflateMenu(menu, menuButtonView.context, dataset[bindingAdapterPosition])
-            }.show()
+        override fun prepareMenu(item: Song, position: Int, menuButtonView: View) {
+            menuButtonView.setOnClickListener {
+                PopupMenu(itemView.context, menuButtonView).apply {
+                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = position)
+                        .inflateMenu(menu, menuButtonView.context, item)
+                }.show()
+            }
         }
 
         override fun bind(
@@ -98,9 +99,8 @@ class PlayingQueueAdapter(
             controller.registerClicking(itemView, position) {
                 onClick(position, dataset, image)
             }
-            menu?.visibility = if (item.hasMenu()) VISIBLE else GONE
-            menu?.setOnClickListener {
-                onMenuClick(dataset, position, it)
+            menu?.let {
+                prepareMenu(dataset[position], position, it)
             }
         }
 

@@ -205,15 +205,16 @@ class PlaylistSongDisplayAdapter(
                 .listClick(dataset, position, itemView.context, imageView)
         }
 
-        override fun onMenuClick(dataset: List<Song>, bindingAdapterPosition: Int, menuButtonView: View) {
-            if (editMode) {
+
+        override fun prepareMenu(item: Song, position: Int, menuButtonView: View) {
+            menuButtonView.setOnClickListener {
                 PopupMenu(itemView.context, menuButtonView).apply {
-                    injectPlaylistEditor(menu, itemView.context, bindingAdapterPosition)
-                }.show()
-            } else {
-                PopupMenu(itemView.context, menuButtonView).apply {
-                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = bindingAdapterPosition)
-                        .inflateMenu(menu, menuButtonView.context, dataset[bindingAdapterPosition])
+                    if (editMode) {
+                        injectPlaylistEditor(menu, itemView.context, position)
+                    } else {
+                        ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = position)
+                            .inflateMenu(menu, menuButtonView.context, item)
+                    }
                 }.show()
             }
         }
