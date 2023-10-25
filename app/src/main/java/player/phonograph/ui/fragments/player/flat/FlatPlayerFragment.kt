@@ -8,6 +8,7 @@ import mt.util.color.lightenColor
 import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
+import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.databinding.FragmentFlatPlayerBinding
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.Song
@@ -15,7 +16,6 @@ import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
-import player.phonograph.ui.adapter.initMenu
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.util.theme.isWindowBackgroundDarkSafe
 import player.phonograph.util.theme.nightMode
@@ -236,12 +236,8 @@ class FlatPlayerFragment :
                 }
                 menu.setOnClickListener {
                     PopupMenu(fragment.requireContext(), it).apply {
-                        MusicPlayerRemote.currentSong
-                            .initMenu(
-                                fragment.requireContext(),
-                                this.menu,
-                                index = MusicPlayerRemote.position
-                            )
+                        ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = MusicPlayerRemote.position)
+                            .inflateMenu(menu, fragment.requireContext(), MusicPlayerRemote.currentSong)
                     }.show()
                 }
             }
