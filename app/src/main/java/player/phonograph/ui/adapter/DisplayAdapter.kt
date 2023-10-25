@@ -9,6 +9,7 @@ import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.ClickActionProviders
+import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.model.Displayable
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentActivity
@@ -105,16 +106,18 @@ abstract class DisplayAdapter<I : Displayable>(
             return clickActionProvider.listClick(dataset, position, itemView.context, imageView)
         }
 
+        @Suppress("UNCHECKED_CAST")
+        open val menuProvider: ActionMenuProviders.ActionMenuProvider<I> =
+            ActionMenuProviders.EmptyActionMenuProvider as ActionMenuProviders.ActionMenuProvider<I>
+
         protected open fun onMenuClick(
             dataset: List<I>,
             bindingAdapterPosition: Int,
             menuButtonView: View,
         ) {
-            if (dataset.isNotEmpty()) {
-                PopupMenu(itemView.context, menuButtonView).apply {
-                    dataset[bindingAdapterPosition].initMenu(itemView.context, this.menu)
-                }.show()
-            }
+            PopupMenu(itemView.context, menuButtonView).apply {
+                menuProvider.inflateMenu(menu, itemView.context, dataset[bindingAdapterPosition])
+            }.show()
         }
 
         protected open fun getRelativeOrdinalText(item: I): String = "-"

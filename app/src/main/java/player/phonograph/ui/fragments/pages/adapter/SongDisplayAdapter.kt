@@ -7,6 +7,7 @@ package player.phonograph.ui.fragments.pages.adapter
 import coil.size.ViewSizeResolver
 import player.phonograph.R
 import player.phonograph.actions.ClickActionProviders
+import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
@@ -77,5 +78,8 @@ open class SongDisplayAdapter(
 
         override val clickActionProvider: ClickActionProviders.ClickActionProvider<Song>
             get() = ClickActionProviders.SongClickActionProvider()
+
+        override val menuProvider: ActionMenuProviders.ActionMenuProvider<Song>
+            get() = ActionMenuProviders.SongActionMenuProvider(showPlay = false)
     }
 }
