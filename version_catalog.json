@@ -1,6 +1,22 @@
 {
   "versions": [
     {
+      "channel": "preview",
+      "versionName": "1.4-dev3",
+      "versionCode": 1034,
+      "date": 1698137200,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.4-dev3"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 设备重启后出现的大量错误通知(仅屏蔽)</li><li>改进 深色模式在系统深色模式改变后立即更改而无需重进</li><li>翻译 更新芬兰语 (Latzze)</li><li>翻译 更新阿拉伯语 (Yrando)</li></ol>",
+        "en": "<ol><li>Fix: spamming error notifications after devices rebooting (merely mute)</li><li>Improvement: Dark/Light Mode would be switched after system dark mode changed instantly without closing and reopening the app</li><li>Translation: Translation: update Finnish (by Latzze)</li><li>Translation: Translation: update Arabic (by Yrando)</li></ol>"
+      }
+    },
+    {
       "channel": "stable",
       "versionName": "1.3.2",
       "versionCode": 1032,
@@ -94,22 +110,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>新增 全新的针对专辑和艺人的 维基/简介 对话框 (数据来自 last.fm )</li><li>新增 支持在线搜索专辑艺人歌曲等信息, 数据来自 last.fm 与 musicbrainz (计划考虑Discog)</li><li>移除 自动从 last.fm 下载元信息</li><li>改进 合并详细信息和标签编辑器</li><li>改进 标签编辑器内, 添加在线搜索按钮</li><li>改进 支持在标签编辑器内导入在线搜索结果</li><li>改进 标签编辑器</li><li>改进 自定义检查更新时间间隔</li><li>改进 自定义最后添加播放列表截止时间间隔</li><li>修改 播放通知可在暂停 5 秒后划去</li><li>翻译 更新土耳其语(TolDYuThad)</li><li>翻译 更新西班牙语 (Leoh)</li><li>翻译 更新葡萄牙语 (drcor)</li><li>开发 更新依赖</li><li>开发 清理代码</li><li>开发 使用 koin 做依赖注入框架 (可能影响性能)</li><li>开发 更新 kotlin 至 1.9.10, 使用 SDK 34, 更新 Compose 至 1.5.1 等</li></ol>",
         "en": "<ol><li>New: brand-new Wiki/Bio Dialog for Album/Artist with more detailed information from last.fm</li><li>New: support searching information (releases, artists, tracks) online from last.fm and MusicBrainz (planning for Discog)</li><li>Remove: feature \"Auto Download Metadata (from last.fm)\"</li><li>Improve: merge Detail and Tag Editor</li><li>Improve: add shortcut of Online Search, for Tag Editor and Detail</li><li>Improve: support importing results as tags from Online Search in Tag Editor</li><li>Improve: Tag Editor</li><li>Improve: customizable upgrade check interval</li><li>Improve: customizable last added playlist cutoff interval</li><li>Modify: make playback notification cancelable after 5 seconds if paused</li><li>Translation: update Turkish (by TolDYuThad)</li><li>Translation: update Spanish (by Leoh)</li><li>Translation: update Portuguese (by drcor)</li><li>Development: upgrade dependencies</li><li>Development: cleanup code</li><li>Development: introduce koin as dependency injection framework (may cause performance issues)</li><li>Development: upgrade Kotlin to 1.9.10, compile with SDK 34, upgrade Compose to 1.5.1 etc.</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "1.1.0",
-      "versionCode": 1010,
-      "date": 1693296000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.1.0"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>新增 分类搜索结果</li><li>新增 在歌曲详情/标签编辑器中, 支持读写更多标签</li><li>新增 在歌曲详情/标签编辑器中, 显示原始标签信息</li><li>修改 在歌曲详情/标签编辑器中, 不显示其他标签</li><li>改进 (Android Auto) 允许浏览所有分类</li><li>改进 (Android Auto) 在播放队列中，点击项目时改变播放位置</li><li>修复 调整窗口大小时崩溃</li><li>修复 播放器卡片样式中状态栏不透明与遮挡问题</li><li>修复 设备重启后崩溃</li><li>修复 手动加载歌词时崩溃</li><li>翻译 更新俄语(Роман Калинин (n0viceaf))</li><li>翻译 更新巴西葡萄牙语(EddieMattos)</li><li>翻译 更新芬兰语(Jiri Grönroos (spammemoreplease))</li><li>翻译 更新日语(aorinngoDo)</li><li>修改 禁止从v0.2.5之前的版本升级至当前版本</li><li>修改 警告从v0.6.0之前的版本升级至当前版本</li><li>开发 更新依赖, 清理代码</li></ol>",
-        "en": "<ol><li>New: Search Result now are well cataloged</li><li>New: support viewing adding or editing more tags in Song Detail or in TagEditor</li><li>New: show raw tag information in Song Detail/TagEditor</li><li>Modify: do not show other tags in Song Detail/TagEditor</li><li>Improve: (Android Auto) allow browse all catalogs</li><li>Improve: (Android Auto) in playing queue, change playing position when clicking item</li><li>Fix: crash when resizing window</li><li>Fix: statusbar transparent issue in Card player style</li><li>Fix: possible crash after devices rebooted</li><li>Fix: crash when load lyrics manually</li><li>Translation: update Russian (by Роман Калинин (n0viceaf))</li><li>Translation: update Portuguese, Brazilian (by EddieMattos)</li><li>Translation: update Finish (by Jiri Grönroos (spammemoreplease))</li><li>Translation: update Japanese (by aorinngoDo)</li><li>Modify: forbid upgrading from v0.2.5 and older</li><li>Modify: warn when upgrading from v0.6.0 and older</li><li>Development: upgrade dependencies, clean up codes</li></ol>"
       }
     },
     {
