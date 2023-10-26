@@ -48,7 +48,6 @@ import android.view.ViewAnimationUtils.createCircularReveal
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
-import android.widget.PopupMenu
 import kotlin.math.max
 import kotlinx.coroutines.launch
 
@@ -276,10 +275,8 @@ class CardPlayerFragment :
                     }
                 }
                 menu.setOnClickListener {
-                    PopupMenu(fragment.requireContext(), it).apply {
-                        ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = MusicPlayerRemote.position)
-                            .inflateMenu(menu, fragment.requireContext(), MusicPlayerRemote.currentSong)
-                    }.show()
+                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = MusicPlayerRemote.position)
+                        .prepareMenu(it, MusicPlayerRemote.currentSong)
                 }
             }
         }

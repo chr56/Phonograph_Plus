@@ -36,7 +36,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.PopupMenu
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -196,10 +195,8 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
 
             override fun prepareMenu(item: QueueSong, position: Int, menuButtonView: View) {
                 menuButtonView.setOnClickListener {
-                    PopupMenu(itemView.context, menuButtonView).apply {
-                        ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = position)
-                            .inflateMenu(menu, menuButtonView.context, item.song)
-                    }.show()
+                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = position)
+                        .prepareMenu(menuButtonView, item.song)
                 }
             }
         }

@@ -19,7 +19,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.PopupMenu
 
 abstract class DisplayAdapter<I : Displayable>(
     protected val activity: FragmentActivity,
@@ -112,9 +111,7 @@ abstract class DisplayAdapter<I : Displayable>(
             if (provider != null) {
                 menuButtonView.visibility = View.VISIBLE
                 menuButtonView.setOnClickListener {
-                    PopupMenu(itemView.context, menuButtonView).apply {
-                        provider.inflateMenu(menu, itemView.context, item)
-                    }.show()
+                    provider.prepareMenu(menuButtonView, item)
                 }
             } else {
                 menuButtonView.visibility = View.GONE

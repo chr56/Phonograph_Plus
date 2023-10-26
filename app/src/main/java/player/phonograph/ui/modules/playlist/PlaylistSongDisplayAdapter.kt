@@ -208,14 +208,14 @@ class PlaylistSongDisplayAdapter(
 
         override fun prepareMenu(item: Song, position: Int, menuButtonView: View) {
             menuButtonView.setOnClickListener {
-                PopupMenu(itemView.context, menuButtonView).apply {
-                    if (editMode) {
+                if (editMode) {
+                    PopupMenu(itemView.context, menuButtonView).apply {
                         injectPlaylistEditor(menu, itemView.context, position)
-                    } else {
-                        ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = position)
-                            .inflateMenu(menu, menuButtonView.context, item)
-                    }
-                }.show()
+                    }.show()
+                } else {
+                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = position)
+                        .prepareMenu(menuButtonView, item)
+                }
             }
         }
 

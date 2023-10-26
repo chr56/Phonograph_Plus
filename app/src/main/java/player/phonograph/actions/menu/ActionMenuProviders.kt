@@ -19,12 +19,20 @@ import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.PopupMenu
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
 object ActionMenuProviders {
     interface ActionMenuProvider<I> {
+
+        fun prepareMenu(menuButtonView: View, item: I) {
+            PopupMenu(menuButtonView.context, menuButtonView).apply {
+                inflateMenu(menu, menuButtonView.context, item)
+            }.show()
+        }
+
         /**
          * inflate [menu] of this [item]
          */

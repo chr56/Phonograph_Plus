@@ -27,7 +27,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.PopupMenu
 
 class PlayingQueueAdapter(
     activity: FragmentActivity,
@@ -66,10 +65,8 @@ class PlayingQueueAdapter(
 
         override fun prepareMenu(item: Song, position: Int, menuButtonView: View) {
             menuButtonView.setOnClickListener {
-                PopupMenu(itemView.context, menuButtonView).apply {
-                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = position)
-                        .inflateMenu(menu, menuButtonView.context, item)
-                }.show()
+                ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = position)
+                    .prepareMenu(menuButtonView, item)
             }
         }
 
