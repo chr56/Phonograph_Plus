@@ -18,7 +18,6 @@ import player.phonograph.ui.components.popup.SongActionMenuPopupContent
 import player.phonograph.util.lifecycleScopeOrNewOne
 import android.app.Activity
 import android.content.Context
-import android.graphics.Rect
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -54,28 +53,16 @@ object ActionMenuProviders {
         override fun prepareMenu(menuButtonView: View, song: Song) {
             val activity = menuButtonView.context as Activity
 
-            val screen: Rect = Rect().also { activity.window.peekDecorView().getWindowVisibleDisplayFrame(it) }
-
             val location: IntArray = intArrayOf(0, 0).also { menuButtonView.getLocationInWindow(it) }
-
-            val yOff = kotlin.run {
-                val yAnchor = location[1]
-                val heightScreen = screen.height()
-                if (heightScreen > 0 && yAnchor > 0) {
-                    if (heightScreen / yAnchor < 2) {
-                        -heightScreen / 3
-                    } else {
-                        0
-                    }
-                } else {
-                    0
-                }
-            }
 
             val popup = ComposePopup.content(activity) {
                 SongActionMenuPopupContent(song, showPlay, index, transitionView)
             }
-            popup.showAsDropDown(menuButtonView, 0, yOff, Gravity.TOP)
+
+            val x = menuButtonView.width
+            val y = menuButtonView.height + location[1]
+
+            popup.showAtLocation(activity.window.decorView, Gravity.TOP or Gravity.END, -x, y)
         }
     }
 
