@@ -194,10 +194,8 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
             }
 
             override fun prepareMenu(item: QueueSong, position: Int, menuButtonView: View) {
-                menuButtonView.setOnClickListener {
-                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = position)
-                        .prepareMenu(menuButtonView, item.song)
-                }
+                ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = position)
+                    .prepareActionMenu(menuButtonView, item.song)
             }
         }
     }

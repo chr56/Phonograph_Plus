@@ -64,10 +64,8 @@ class PlayingQueueAdapter(
         }
 
         override fun prepareMenu(item: Song, position: Int, menuButtonView: View) {
-            menuButtonView.setOnClickListener {
-                ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = position)
-                    .prepareMenu(menuButtonView, item)
-            }
+            ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = position)
+                .prepareActionMenu(menuButtonView, item)
         }
 
         override fun bind(

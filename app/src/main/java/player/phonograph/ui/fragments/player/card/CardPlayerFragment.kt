@@ -274,10 +274,8 @@ class CardPlayerFragment :
                         fragment.viewBinding.playerSlidingLayout.panelState = PanelState.COLLAPSED
                     }
                 }
-                menu.setOnClickListener {
-                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = MusicPlayerRemote.position)
-                        .prepareMenu(it, MusicPlayerRemote.currentSong)
-                }
+                ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = MusicPlayerRemote.position)
+                    .prepareActionMenu(menu, MusicPlayerRemote.currentSong)
             }
         }
 

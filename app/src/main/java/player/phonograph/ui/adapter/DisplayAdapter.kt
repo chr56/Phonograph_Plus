@@ -110,9 +110,7 @@ abstract class DisplayAdapter<I : Displayable>(
             val provider = menuProvider
             if (provider != null) {
                 menuButtonView.visibility = View.VISIBLE
-                menuButtonView.setOnClickListener {
-                    provider.prepareMenu(menuButtonView, item)
-                }
+                provider.prepareActionMenu(menuButtonView, item)
             } else {
                 menuButtonView.visibility = View.GONE
             }
