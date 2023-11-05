@@ -477,4 +477,14 @@
     <string name="pref_title_disable_real_time_search">Desativar busca em tempo real</string>
     <string name="pref_summary_disable_real_time_search">O resultado da pesquisa será atualizado APENAS após a confirmação pelo Enter. Isso seria útil para corrigir alguns IMEs não pode mostrar Barra de Candidato ou Dica/Predição se a composição em linha estiver habilitada, especialmente para alguns IMEs do CJK (ou idiomas requerem composições antes de entrar).</string>
     <string name="deleted">Deletado</string>
+    <string name="action_shuffle_mode">Modo Aleatório</string>
+    <string name="action_repeat_mode">Modo de Repetição</string>
+    <string name="action_item_layout">Disposição de Itens</string>
+    <string name="item_layout_list">Lista (2 linhas)</string>
+    <string name="item_layout_list_extended">Lista (2 linhas, estendidas)</string>
+    <string name="item_layout_list_3l">Lista (3 linhas)</string>
+    <string name="item_layout_list_3l_extended">Lista (3 linhas, estendidas)</string>
+    <string name="item_layout_grid">Grade</string>
+    <string name="warning_inappropriate_config">A sua configuração atual é considerada \"Inapropriada\".</string>
+    <string name="internal_error">Erro Interno</string>
 </resources>
