@@ -4,7 +4,7 @@ datastore = { strictly = "1.0.0" }
 compose = "1.5.2"
 composeCompiler = "1.5.3"
 composeSetting = "0.27.0"
-coil = "2.4.0"
+coil = "2.5.0"
 materialDialogs = "3.3.0"
 materialTools = "0.2.0"
 room = "2.5.2"
