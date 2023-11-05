@@ -65,7 +65,7 @@ compose-activity = { group = "androidx.activity", name = "activity-compose", ver
 # popular
 #
 
-okhttp3 = "com.squareup.okhttp3:okhttp:4.11.0"
+okhttp3 = "com.squareup.okhttp3:okhttp:4.12.0"
 retrofit2 = "com.squareup.retrofit2:retrofit:2.9.0"
 kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"
 kotlinx-serialization-ktoml = "com.akuleshov7:ktoml-core:0.5.0"
