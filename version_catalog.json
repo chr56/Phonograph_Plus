@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "1.4-beta1",
+      "versionCode": 1035,
+      "date": 1699157800,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.4-beta1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>翻译 更新巴西葡萄牙语(EddieMattos)</li><li>开发 更新依赖, 清理代码</li></ol>",
+        "en": "<ol><li>Translation: update Portuguese, Brazilian (by EddieMattos)</li><li>Development: upgrade dependencies, cleanup code</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.4-dev3",
       "versionCode": 1034,
       "date": 1698137200,
@@ -33,38 +49,6 @@
       }
     },
     {
-      "channel": "preview",
-      "versionName": "1.4-dev2",
-      "versionCode": 1033,
-      "date": 1697446000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.4-dev2"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 主播放器内, 暂停播放按钮有时会卡住和动画异常</li><li>修复 主播放器内, 主色调无法正确更新若切歌过快</li><li>修复 主播放器内, \"接下来\"文本颜色问题</li><li>修复 主播放器内, 有时控件和队列可能会消失不见或覆盖部分图片</li></ol>",
-        "en": "<ol><li>Fix: in Main Player, PlayPause button sometimes gets frozen and has glitchy animation</li><li>Fix: in Main Player, palette color is not correctly updated if you change current song too quickly</li><li>Fix: in Main Player, legibility of \"Up Next\" text (color)</li><li>Fix: in Main Player, sometimes controls and queue may disappear or cover the partial of images</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.4-dev1",
-      "versionCode": 1032,
-      "date": 1696865000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.4-dev1"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>新增 可定制列表项样式</li><li>修复 尝试修复播放和队列在启动时冻结</li><li>改进 在通知(Android T 及以上)和 Android Auto 中, 添加随机模式和重复模式按钮</li><li>改进 在 Android Auto 中, 显示专辑封面 (仅基本支持)</li><li>修改 替换部分图标</li><li>修改 在 播放列表详情 中, 显示歌曲顺序而非图片</li><li>开发 使用 webp 和 svg 格式以减少大小</li></ol>",
-        "en": "<ol><li>New: customizable list item layout style with more options</li><li>Fix: try to fix playback and queue got frozen at startup</li><li>Improvement: add Shuffle Mode and Repeat Mode buttons in Notification (since Android T) and Android Auto</li><li>Improvement: display album artwork in Android Auto (basic support)</li><li>Modify: replace some icons</li><li>Modify: show song order instead of images in Playlist Detail</li><li>Development: use webp and svg formats in assets and resource to shrink artifacts size</li></ol>"
-      }
-    },
-    {
       "channel": "stable",
       "versionName": "1.3.1",
       "versionCode": 1031,
@@ -78,38 +62,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>修复 Android U 上弹出播放通知时崩溃</li><li>修复 某些专辑的封面艺术不显示</li><li>修复 大量 Android Auto 上的问题</li><li>改进 在 Android Auto 中显示全部流派和全部播放列表</li><li>改进 启动时检查播放队列中歌曲是否存在</li><li>改进 艺术家和专辑加载</li><li>开发 升级AGP至8.1.2, 更新依赖, 清理代码</li></ol>",
         "en": "<ol><li>Fix: crash when sending the playback notification on Android U</li><li>Fix: some albums cover artworks not showing</li><li>Fix: various minor bugs in Android Auto</li><li>Improvement: show Genres and Playlists in Android Auto</li><li>Improvement: check existences of songs in playing queue at start-up</li><li>Improvement: loading of Artists and Albums</li><li>Development: upgrade AGP to 8.1.2, upgrade dependencies, cleanup code</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "1.3.0",
-      "versionCode": 1030,
-      "date": 1695789000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.3.0"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>开发 升级 targetSdk 至 34</li><li>修复 艺术家详细中的专辑页脚着色在更改后无法刷新</li><li>改进 加载歌词时避免发送内部错误通知</li><li>改进 添加‘关闭本地实时搜索’选项, 用于解决某些启用'内嵌输入'的输入法无法显示候选栏的问题, 尤其针对某些中日韩输入法</li><li>开发 更新依赖, 清理代码</li><li>翻译 更新巴西葡萄牙语(EddieMattos)</li></ol>",
-        "en": "<ol><li>Development: upgrade targetSdk to 34</li><li>Fix: albums color footer in Artist Detail can not refresh after changing</li><li>Improvement: add 'Disable realtime local search' option, this would be helpful for fixing some IMEs can not show Candidate Bar if inline composition enabled, especially for some CJK IMEs</li><li>Improvement: avoid sending internal error notifications if failing to load lyrics</li><li>Development: upgrade dependencies, cleanup code</li><li>Translation: update Portuguese, Brazilian (by EddieMattos)</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "1.2.0",
-      "versionCode": 1020,
-      "date": 1695484780,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.2.0"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>新增 全新的针对专辑和艺人的 维基/简介 对话框 (数据来自 last.fm )</li><li>新增 支持在线搜索专辑艺人歌曲等信息, 数据来自 last.fm 与 musicbrainz (计划考虑Discog)</li><li>移除 自动从 last.fm 下载元信息</li><li>改进 合并详细信息和标签编辑器</li><li>改进 标签编辑器内, 添加在线搜索按钮</li><li>改进 支持在标签编辑器内导入在线搜索结果</li><li>改进 标签编辑器</li><li>改进 自定义检查更新时间间隔</li><li>改进 自定义最后添加播放列表截止时间间隔</li><li>修改 播放通知可在暂停 5 秒后划去</li><li>翻译 更新土耳其语(TolDYuThad)</li><li>翻译 更新西班牙语 (Leoh)</li><li>翻译 更新葡萄牙语 (drcor)</li><li>开发 更新依赖</li><li>开发 清理代码</li><li>开发 使用 koin 做依赖注入框架 (可能影响性能)</li><li>开发 更新 kotlin 至 1.9.10, 使用 SDK 34, 更新 Compose 至 1.5.1 等</li></ol>",
-        "en": "<ol><li>New: brand-new Wiki/Bio Dialog for Album/Artist with more detailed information from last.fm</li><li>New: support searching information (releases, artists, tracks) online from last.fm and MusicBrainz (planning for Discog)</li><li>Remove: feature \"Auto Download Metadata (from last.fm)\"</li><li>Improve: merge Detail and Tag Editor</li><li>Improve: add shortcut of Online Search, for Tag Editor and Detail</li><li>Improve: support importing results as tags from Online Search in Tag Editor</li><li>Improve: Tag Editor</li><li>Improve: customizable upgrade check interval</li><li>Improve: customizable last added playlist cutoff interval</li><li>Modify: make playback notification cancelable after 5 seconds if paused</li><li>Translation: update Turkish (by TolDYuThad)</li><li>Translation: update Spanish (by Leoh)</li><li>Translation: update Portuguese (by drcor)</li><li>Development: upgrade dependencies</li><li>Development: cleanup code</li><li>Development: introduce koin as dependency injection framework (may cause performance issues)</li><li>Development: upgrade Kotlin to 1.9.10, compile with SDK 34, upgrade Compose to 1.5.1 etc.</li></ol>"
       }
     },
     {
