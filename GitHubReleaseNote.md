@@ -1,21 +1,17 @@
-## **v1.4-dev3 2023.10.24**
+## **v1.4-beta1 2023.11.05**
 
 ### EN
 
-1. Fix: spamming error notifications after devices rebooting (merely mute)
-2. Improvement: Dark/Light Mode would be switched after system dark mode changed instantly without closing and reopening the app
-3. Translation: Translation: update Finnish (by Latzze)
-4. Translation: Translation: update Arabic (by Yrando)
+1. Translation: update Portuguese, Brazilian (by EddieMattos)
+2. Development: upgrade dependencies, cleanup code
 
 
 
 
 ### ZH
 
-1. 修复 设备重启后出现的大量错误通知(仅屏蔽)
-2. 改进 深色模式在系统深色模式改变后立即更改而无需重进
-3. 翻译 更新芬兰语 (Latzze)
-4. 翻译 更新阿拉伯语 (Yrando)
+1. 翻译 更新巴西葡萄牙语(EddieMattos)
+2. 开发 更新依赖, 清理代码
 
 
 

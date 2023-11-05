@@ -7,11 +7,6 @@ channel = "STABLE"
 highlights = []
 items = [
     "New: customizable list item layout style with more options",
-    "Fix: try to fix playback and queue got frozen at startup",
-    "Fix: in Main Player, PlayPause button sometimes gets frozen and has glitchy animation",
-    "Fix: in Main Player, palette color is not correctly updated if you change current song too quickly",
-    "Fix: in Main Player, legibility of \"Up Next\" text (color)",
-    "Fix: in Main Player, sometimes controls and queue may disappear or cover the partial of images",
     "Fix: spamming error notifications after devices rebooting (merely mute)",
     "Improvement: Dark/Light Mode would be switched after system dark mode changed instantly without closeing and reopening the app",
     "Improvement: add Shuffle Mode and Repeat Mode buttons in Notification (since Android T) and Android Auto",
@@ -20,18 +15,15 @@ items = [
     "Modify: show song order instead of images in Playlist Detail",
     "Translation: Translation: update Finnish (by Latzze)",
     "Translation: Translation: update Arabic (by Yrando)",
-    "Development: use webp and svg formats in assets and resource to shrink artifacts size",
+    "Translation: update Portuguese, Brazilian (by EddieMattos)",
+    "Development: use webp and svg formats in assets and resources to shrink artifacts size",
+    "Development: upgrade dependencies, cleanup code",
 ]
 
 [notes.zh]
 highlights = []
 items = [
     "新增 可定制列表项样式",
-    "修复 尝试修复播放和队列在启动时冻结",
-    "修复 主播放器内, 暂停播放按钮有时会卡住和动画异常",
-    "修复 主播放器内, 主色调无法正确更新若切歌过快",
-    "修复 主播放器内, \"接下来\"文本颜色问题",
-    "修复 主播放器内, 有时控件和队列可能会消失不见或覆盖部分图片",
     "修复 设备重启后出现的大量错误通知(仅屏蔽)",
     "改进 深色模式在系统深色模式改变后立即更改而无需重进",
     "改进 在通知(Android T 及以上)和 Android Auto 中, 添加随机模式和重复模式按钮",
@@ -40,5 +32,7 @@ items = [
     "修改 在 播放列表详情 中, 显示歌曲顺序而非图片",
     "翻译 更新芬兰语 (Latzze)",
     "翻译 更新阿拉伯语 (Yrando)",
+    "翻译 更新巴西葡萄牙语(EddieMattos)",
     "开发 使用 webp 和 svg 格式以减少大小",
+    "开发 更新依赖, 清理代码",
 ]

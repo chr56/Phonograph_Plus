@@ -1,22 +1,18 @@
-version = "1.4-dev3"
-versionCode = 1034
-timestamp = 1698137200
+version = "1.4-beta1"
+versionCode = 1035
+timestamp = 1699157800
 channel = "PREVIEW"
 
 [notes.en]
 highlights = []
 items = [
-    "Fix: spamming error notifications after devices rebooting (merely mute)",
-    "Improvement: Dark/Light Mode would be switched after system dark mode changed instantly without closing and reopening the app",
-    "Translation: Translation: update Finnish (by Latzze)",
-    "Translation: Translation: update Arabic (by Yrando)",
+    "Translation: update Portuguese, Brazilian (by EddieMattos)",
+    "Development: upgrade dependencies, cleanup code",
 ]
 
 [notes.zh]
 highlights = []
 items = [
-    "修复 设备重启后出现的大量错误通知(仅屏蔽)",
-    "改进 深色模式在系统深色模式改变后立即更改而无需重进",
-    "翻译 更新芬兰语 (Latzze)",
-    "翻译 更新阿拉伯语 (Yrando)",
+    "翻译 更新巴西葡萄牙语(EddieMattos)",
+    "开发 更新依赖, 清理代码",
 ]
