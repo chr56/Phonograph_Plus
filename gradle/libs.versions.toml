@@ -1,5 +1,5 @@
 [versions]
-activity = "1.7.2"
+activity = "1.8.0"
 datastore = { strictly = "1.0.0" }
 compose = "1.5.2"
 composeCompiler = "1.5.3"
