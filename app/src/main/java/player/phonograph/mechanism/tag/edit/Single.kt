@@ -7,11 +7,9 @@ package player.phonograph.mechanism.tag.edit
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mechanism.tag.EditAction
-import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
+import player.phonograph.misc.MediaScanner
 import player.phonograph.notification.BackgroundNotification
-import android.app.Activity
 import android.content.Context
-import android.media.MediaScannerConnection
 import android.net.Uri
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -52,16 +50,8 @@ fun applyEdit(
         // notify user
         BackgroundNotification.remove(TAG_EDITOR_NOTIFICATION_CODE)
         // refresh media store
-        val listener =
-            if (context is Activity)
-                UpdateToastMediaScannerCompletionListener(
-                    context,
-                    arrayOf(songFile.path)
-                ) else null
         yield()
-        MediaScannerConnection.scanFile(
-            App.instance, arrayOf(songFile.path), null, listener
-        )
+        MediaScanner(context).scan(songFile.path)
         onComplete()
     }
 }
