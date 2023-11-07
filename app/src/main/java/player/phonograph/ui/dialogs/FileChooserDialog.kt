@@ -8,10 +8,10 @@ import lib.phonograph.dialog.LargeDialog
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.model.file.Location
-import player.phonograph.ui.fragments.explorer.FilesChooserExplorerFragment
-import player.phonograph.ui.fragments.explorer.FilesChooserViewModel
 import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
+import player.phonograph.ui.fragments.explorer.FilesChooserExplorerFragment
+import player.phonograph.ui.fragments.explorer.FilesChooserViewModel
 import player.phonograph.util.permissions.navigateToStorageSetting
 import androidx.core.view.setMargins
 import androidx.fragment.app.commit
@@ -53,7 +53,7 @@ abstract class FileChooserDialog : LargeDialog() {
                 navigateToStorageSetting(activity)
             }
             space(1)
-            button(2, getString(android.R.string.selectAll), accentColor) {
+            button(2, getString(R.string.action_select), accentColor) {
                 affirmative(it, model.currentLocation.value)
             }
         }
