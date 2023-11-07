@@ -477,4 +477,5 @@
     <string name="item_layout_grid">网格</string>
     <string name="warning_inappropriate_config">当前配置疑似不妥!</string>
     <string name="internal_error">内部错误</string>
+    <string name="storage_volumes">储存卷</string>
 </resources>

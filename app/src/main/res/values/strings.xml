@@ -490,4 +490,5 @@
     <string name="item_layout_grid">Grid</string>
     <string name="warning_inappropriate_config">Your current configuration is considered as \"Inappropriate\".</string>
     <string name="internal_error">Internal Error</string>
+    <string name="storage_volumes">Storage Volumes</string>
 </resources>
