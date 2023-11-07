@@ -5,22 +5,22 @@
 package player.phonograph.ui.fragments.explorer
 
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
-import player.phonograph.ui.adapter.IMultiSelectableAdapter
-import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity
+import player.phonograph.ui.adapter.IMultiSelectableAdapter
+import player.phonograph.ui.adapter.MultiSelectionController
 import androidx.activity.ComponentActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
 
 abstract class AbsFilesAdapter<VH : AbsFilesAdapter.ViewHolder>(
     val activity: ComponentActivity,
-    dataset: MutableList<FileEntity>,
+    dataset: Collection<FileEntity>,
 ) : RecyclerView.Adapter<VH>(),
     SectionedAdapter,
     IMultiSelectableAdapter<FileEntity> {
 
-    var dataSet: MutableList<FileEntity> = dataset
+    var dataSet: MutableList<FileEntity> = dataset.toMutableList()
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value

@@ -26,7 +26,7 @@ import android.widget.PopupMenu
 
 class FilesPageAdapter(
     activity: ComponentActivity,
-    dataset: MutableList<FileEntity>,
+    dataset: Collection<FileEntity>,
     private val callback: (List<FileEntity>, Int) -> Unit,
 ) : AbsFilesAdapter<FilesPageAdapter.ViewHolder>(activity, dataset) {
 

@@ -57,15 +57,12 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewMo
 
         // recycle view
         layoutManager = LinearLayoutManager(activity)
-        adapter = FilesChooserAdapter(activity, model.currentFiles.value.toMutableList(), {
+        adapter = FilesChooserAdapter(activity, model.currentFiles.value) {
             when (it) {
-                is FileEntity.Folder -> {
-                    model.changeLocation(requireContext(), it.location)
-                }
-
+                is FileEntity.Folder -> model.changeLocation(requireContext(), it.location)
                 is FileEntity.File   -> {}
             }
-        })
+        }
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(
             activity,
