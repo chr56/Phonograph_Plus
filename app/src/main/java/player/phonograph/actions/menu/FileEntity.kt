@@ -14,22 +14,19 @@ import player.phonograph.actions.actionShare
 import player.phonograph.actions.fragmentActivity
 import player.phonograph.mechanism.PathFilter
 import player.phonograph.mechanism.setting.FileConfig
-import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
+import player.phonograph.misc.MediaScanner
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.util.lifecycleScopeOrNewOne
-import android.app.Activity
 import android.content.Context
-import android.media.MediaScannerConnection
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 
 fun fileEntityPopupMenu(
@@ -134,16 +131,7 @@ private fun scan(context: Context, dir: FileEntity.Folder) {
         val files = File(dir.location.absolutePath).listFiles() ?: return@launch
         val paths: Array<String> = Array(files.size) { files[it].path }
 
-        withContext(Dispatchers.Main) {
-            MediaScannerConnection.scanFile(
-                context,
-                paths,
-                arrayOf("audio/*"),
-                if (context is Activity)
-                    UpdateToastMediaScannerCompletionListener(context, paths)
-                else null
-            )
-        }
+        MediaScanner(context).scan(paths)
     }
 }
 
