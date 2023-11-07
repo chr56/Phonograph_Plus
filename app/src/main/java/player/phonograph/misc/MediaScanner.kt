@@ -10,49 +10,65 @@ import player.phonograph.util.debug
 import android.content.Context
 import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 
 class MediaScanner(val context: Context) : MediaScannerConnection.MediaScannerConnectionClient {
 
     private val scannerConnection = MediaScannerConnection(context, this)
 
-    private var target: Array<String>? = null
-    private var failed: MutableList<String> = mutableListOf()
-    private var successed: Int = 0
+    class Task(
+        val target: Array<String>,
+        var failed: MutableList<String> = mutableListOf(),
+        var succeed: Int = 0,
+    ) {
+        val id = System.currentTimeMillis().mod(1 shl 12)
+    }
 
+    private val queue: ArrayDeque<Task> = ArrayDeque(0)
 
     fun scan(path: String) = scan(arrayOf(path))
 
     fun scan(paths: Array<String>) {
+        val task = Task(paths)
         synchronized(scannerConnection) {
             if (!scannerConnection.isConnected) {
-                successed = 0
-                failed.clear()
-                target = paths
+                // initial start
+                queue.addFirst(task)
                 scannerConnection.connect()
             } else {
-                // cancel
-                scannerConnection.disconnect()
-                target = null
-                successed = 0
-                failed.clear()
+                if (queue.isEmpty()) {
+                    // active
+                    queue.addFirst(task)
+                    executeTask(queue.first())
+                } else {
+                    // queue
+                    queue.addLast(task)
+                }
             }
         }
     }
 
     override fun onMediaScannerConnected() {
-        Log.i(TAG, "Start scanning...")
+        Log.i(TAG, "MediaScannerConnected!")
 
-        val paths = target ?: return
-        val id = paths.hashCode()
-        reportProcess(0, paths, id)
+        val task = queue.firstOrNull() ?: return
+        executeTask(task)
+    }
+
+    private fun executeTask(task: Task) {
+
+        val paths: Array<String> = task.target
+
+        Log.i(TAG, "Start scan task (${task.id})")
+        reportProcess(0, paths, task.id)
         for ((index, path) in paths.withIndex()) {
             scannerConnection.scanFile(path, null)
-            if (index % 17 == 0) reportProcess(index, paths, id)
+            if (index % 17 == 0) reportProcess(index, paths, task.id)
         }
-        BackgroundNotification.remove(id)
-        // reportResult()
-        // scannerConnection.disconnect()
+        BackgroundNotification.remove(task.id)
     }
 
 
@@ -60,10 +76,27 @@ class MediaScanner(val context: Context) : MediaScannerConnection.MediaScannerCo
         debug {
             Log.i(TAG, "Scanned $path --> $uri")
         }
-        if (uri == null && path != null) { // failed
-            failed.add(path)
-        } else {
-            successed++
+        if (path != null) {
+            val task = queue.first()
+            // collect
+            if (uri == null) { // failed
+                task.failed.add(path)
+            } else {
+                task.succeed++
+            }
+            // check if current task is completed
+            if (task.succeed >= task.target.size) {
+                synchronized(queue) {
+                    // remove and report
+                    val completed = queue.removeFirst()
+                    reportResult(completed)
+                    Log.i(TAG, "Scan completed for task (${completed.id})!")
+                    // execute next task
+                    val next = queue.firstOrNull() ?: return
+                    executeTask(next)
+                }
+            }
+
         }
     }
 
@@ -77,18 +110,17 @@ class MediaScanner(val context: Context) : MediaScannerConnection.MediaScannerCo
         )
     }
 
-    /*
-    private fun reportResult() {
+    private fun reportResult(task: Task) {
         Handler(Looper.getMainLooper()).post {
-            val failed = failed.size
+            val failed = task.failed.size
+            val succeed = task.succeed
             if (failed > 0) {
                 Toast.makeText(context, String.format(couldNotScanFiles, failed), Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(context, String.format(scannedFiles, successed, successed), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, String.format(scannedFiles, succeed, succeed), Toast.LENGTH_SHORT).show()
             }
         }
     }
-     */
 
     private val scannedFiles = context.getString(R.string.scanned_files)
     private val couldNotScanFiles = context.getString(R.string.could_not_scan_files)

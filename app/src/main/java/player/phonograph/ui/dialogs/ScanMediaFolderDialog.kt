@@ -7,15 +7,16 @@ import player.phonograph.util.FileUtil.DirectoryInfo
 import player.phonograph.util.FileUtil.FileScanner
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.reportError
-import android.content.Context
+import android.os.Bundle
 import android.view.View
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 
 class ScanMediaFolderDialog : FileChooserDialog() {
+
+    private var mediaScanner: MediaScanner? = null
 
     override fun affirmative(view: View, currentLocation: Location) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -25,7 +26,7 @@ class ScanMediaFolderDialog : FileChooserDialog() {
                     this
                 )
                 if (!paths.isNullOrEmpty()) {
-                    scanFile(activity ?: requireContext(), paths)
+                    mediaScanner?.scan(paths)
                 } else {
                     coroutineToast(requireContext().applicationContext, R.string.nothing_to_scan)
                 }
@@ -36,11 +37,15 @@ class ScanMediaFolderDialog : FileChooserDialog() {
         // dismiss()
     }
 
-    companion object {
-        suspend fun scanFile(context: Context, paths: Array<String>) {
-            withContext(Dispatchers.Main) {
-                MediaScanner(context).scan(paths)
-            }
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mediaScanner = MediaScanner(requireContext())
     }
+
+    override fun onDestroyView() {
+        mediaScanner = null
+        super.onDestroyView()
+    }
+
+    companion object {}
 }
