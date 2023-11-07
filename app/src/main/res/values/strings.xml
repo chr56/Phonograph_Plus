@@ -492,4 +492,5 @@
     <string name="internal_error">Internal Error</string>
     <string name="storage_volumes">Storage Volumes</string>
     <string name="no_volume_found">No Volume found! Your system might be not supported!</string>
+    <string name="action_select">Select</string>
 </resources>

@@ -479,4 +479,5 @@
     <string name="internal_error">内部錯誤</string>
     <string name="storage_volumes">磁碟區</string>
     <string name="no_volume_found">找不到任何磁碟區! 作業系統可能不支援!</string>
+    <string name="action_select">選擇</string>
 </resources>
