@@ -1,16 +1,13 @@
 package player.phonograph.ui.dialogs
 
-import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
+import player.phonograph.misc.MediaScanner
 import player.phonograph.model.file.Location
 import player.phonograph.util.FileUtil.DirectoryInfo
 import player.phonograph.util.FileUtil.FileScanner
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.reportError
-import android.app.Activity
 import android.content.Context
-import android.media.MediaScannerConnection
 import android.view.View
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,12 +39,7 @@ class ScanMediaFolderDialog : FileChooserDialog() {
     companion object {
         suspend fun scanFile(context: Context, paths: Array<String>) {
             withContext(Dispatchers.Main) {
-                MediaScannerConnection.scanFile(
-                    context.applicationContext ?: App.instance,
-                    paths,
-                    arrayOf("audio/*", "application/ogg", "application/x-ogg", "application/itunes"),
-                    if (context is Activity) UpdateToastMediaScannerCompletionListener(context, paths) else null
-                )
+                MediaScanner(context).scan(paths)
             }
         }
     }
