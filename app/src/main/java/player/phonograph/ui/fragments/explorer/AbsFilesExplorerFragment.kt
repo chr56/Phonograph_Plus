@@ -85,7 +85,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
                         binding.buttonBack.setImageDrawable(
                             requireContext().getThemedDrawable(
                                 if (newLocation.parent == null) {
-                                    R.drawable.ic_library_music_white_24dp
+                                    R.drawable.ic_sdcard_white_24dp
                                 } else {
                                     com.afollestad.materialdialogs.color.R.drawable.icon_back_white
                                 }
@@ -163,7 +163,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
                     model.changeLocation(requireContext(), Location.fromAbsolutePath("$path/"))
                 }
             }
-            .title(R.string.folders)
+            .title(R.string.storage_volumes)
             .positiveButton(android.R.string.ok)
             .show()
         return true
