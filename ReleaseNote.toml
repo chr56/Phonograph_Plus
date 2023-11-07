@@ -1,18 +1,18 @@
-version = "1.4-beta1"
-versionCode = 1035
-timestamp = 1699157800
+version = "1.4-beta2"
+versionCode = 1036
+timestamp = 1699337220
 channel = "PREVIEW"
 
 [notes.en]
 highlights = []
 items = [
-    "Translation: update Portuguese, Brazilian (by EddieMattos)",
-    "Development: upgrade dependencies, cleanup code",
+    "Improvement: improve mediastore refresh (may fix the problem of scaning media in some devices)",
+    "Improvement: various minor miscellaneous ui refinement",
 ]
 
 [notes.zh]
 highlights = []
 items = [
-    "翻译 更新巴西葡萄牙语(EddieMattos)",
-    "开发 更新依赖, 清理代码",
+    "改进 改进 mediastore 刷新 (可能将修复某些设备中扫描媒体的问题)",
+    "改进 各种细小用户界面改进",
 ]
