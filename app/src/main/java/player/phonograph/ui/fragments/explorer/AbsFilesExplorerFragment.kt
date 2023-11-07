@@ -4,8 +4,6 @@
 
 package player.phonograph.ui.fragments.explorer
 
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import lib.phonograph.storage.root
@@ -15,8 +13,8 @@ import player.phonograph.databinding.FragmentFolderPageBinding
 import player.phonograph.model.file.Location
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
-import player.phonograph.util.warning
 import androidx.annotation.DrawableRes
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -138,33 +136,31 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
 
     /**
      * open a dialog to ask change storage volume (disk)
+     * @return true if dialog created
      */
-    internal fun requireChangeVolume(): Boolean {
+    protected fun requireChangeVolume(): Boolean {
         if (context == null) return false
         val storageManager = requireContext().getSystemService<StorageManager>()
         val volumes = storageManager?.storageVolumes
             ?.filter { it.state == Environment.MEDIA_MOUNTED || it.state == Environment.MEDIA_MOUNTED_READ_ONLY }
             ?: emptyList()
         if (volumes.isEmpty()) {
-            warning(TAG, "No volumes found! Your system might be not supported!")
+            Snackbar.make(binding.root, getString(R.string.no_volume_found), Snackbar.LENGTH_SHORT).show()
             return false
         }
-        MaterialDialog(requireContext())
-            .listItemsSingleChoice(
-                items = volumes.map { "${it.getDescription(context)}\n(${it.root()?.path ?: "N/A"})" },
-                initialSelection = volumes.indexOf(model.currentLocation.value.storageVolume),
-                waitForPositiveButton = true,
-            ) { materialDialog: MaterialDialog, i: Int, _: CharSequence ->
-                materialDialog.dismiss()
-                val path = volumes[i].root()?.absolutePath
+        val volumesNames = volumes.map { "${it.getDescription(context)}\n(${it.root()?.path ?: "N/A"})" }
+        val selected = volumes.indexOf(model.currentLocation.value.storageVolume)
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.storage_volumes)
+            .setSingleChoiceItems(volumesNames.toTypedArray(), selected) { dialog, choice ->
+                dialog.dismiss()
+                val path = volumes[choice].root()?.absolutePath
                 if (path == null) {
-                    Toast.makeText(context, "Unmounted volume", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.not_available_now, Toast.LENGTH_SHORT).show()
                 } else { // todo
                     model.changeLocation(requireContext(), Location.fromAbsolutePath("$path/"))
                 }
             }
-            .title(R.string.storage_volumes)
-            .positiveButton(android.R.string.ok)
             .show()
         return true
     }
