@@ -61,7 +61,7 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.theme.ThemeKt {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.theme.DrawableTintKt {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.zip.ZipUtil {public <methods>;}
--keepnames,allowoptimization,allowshrinking class player.phonograph.util.FileUtil
+-keepnames,allowoptimization,allowshrinking class player.phonograph.util.file.* {public <methods>;}
 -keep,allowoptimization,allowshrinking class player.phonograph.util.NavigationUtil { public <methods>; }
 -keep,allowoptimization,allowshrinking class player.phonograph.mechanism.scanner.FileScanner {
     public *** listPaths(...);

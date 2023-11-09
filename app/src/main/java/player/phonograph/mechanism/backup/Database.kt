@@ -6,8 +6,8 @@ package player.phonograph.mechanism.backup
 
 import okio.BufferedSink
 import okio.source
-import player.phonograph.util.FileUtil.createOrOverrideFile
-import player.phonograph.util.FileUtil.moveFile
+import player.phonograph.util.file.createOrOverrideFile
+import player.phonograph.util.file.moveFile
 import player.phonograph.util.reportError
 import player.phonograph.util.text.currentTimestamp
 import player.phonograph.util.transferToOutputStream

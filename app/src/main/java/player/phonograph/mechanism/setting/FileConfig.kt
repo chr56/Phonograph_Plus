@@ -7,7 +7,7 @@ package player.phonograph.mechanism.setting
 import player.phonograph.App
 import player.phonograph.model.file.defaultStartDirectory
 import player.phonograph.settings.dataStore
-import player.phonograph.util.FileUtil
+import player.phonograph.util.file.safeGetCanonicalPath
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.first
@@ -18,7 +18,7 @@ object FileConfig {
     var startDirectory: File
         get() = File(startDirectoryPath)
         set(value) {
-            startDirectoryPath = FileUtil.safeGetCanonicalPath(value)
+            startDirectoryPath = safeGetCanonicalPath(value)
         }
 
     private var startDirectoryPath: String
