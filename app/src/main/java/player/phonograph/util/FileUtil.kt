@@ -4,6 +4,7 @@
 
 package player.phonograph.util
 
+import player.phonograph.model.DirectoryInfo
 import player.phonograph.notification.ErrorNotification
 import android.content.ContentResolver
 import android.net.Uri
@@ -168,7 +169,6 @@ object FileUtil {
     }
 
 
-    class DirectoryInfo(val file: File, val fileFilter: FileFilter)
     object FileScanner {
         fun listPaths(
             directoryInfos: DirectoryInfo,
