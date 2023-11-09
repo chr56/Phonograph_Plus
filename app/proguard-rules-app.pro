@@ -63,7 +63,7 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.zip.ZipUtil {public <methods>;}
 -keepnames,allowoptimization,allowshrinking class player.phonograph.util.FileUtil
 -keep,allowoptimization,allowshrinking class player.phonograph.util.NavigationUtil { public <methods>; }
--keep,allowoptimization,allowshrinking class player.phonograph.util.FileUtil$FileScanner {
+-keep,allowoptimization,allowshrinking class player.phonograph.mechanism.scanner.FileScanner {
     public *** listPaths(...);
 }
 

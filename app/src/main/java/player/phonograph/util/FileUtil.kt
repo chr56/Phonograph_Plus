@@ -4,17 +4,12 @@
 
 package player.phonograph.util
 
-import player.phonograph.model.DirectoryInfo
-import player.phonograph.notification.ErrorNotification
 import android.content.ContentResolver
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import android.webkit.MimeTypeMap
 import kotlin.math.log10
 import kotlin.math.pow
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.isActive
 import java.io.File
 import java.io.FileFilter
 import java.io.FileOutputStream
@@ -168,57 +163,6 @@ object FileUtil {
         ) + " " + units[digitGroups]
     }
 
-
-    object FileScanner {
-        fun listPaths(
-            directoryInfos: DirectoryInfo,
-            scope: CoroutineScope,
-            recursive: Boolean = false,
-        ): Array<String>? {
-            if (!scope.isActive) return null
-
-            val paths: Array<String>? =
-                try {
-                    if (directoryInfos.file.isDirectory) {
-                        if (!scope.isActive) return null
-                        // todo
-                        val files =
-                            if (recursive) {
-                                FileUtil.listFilesDeep(
-                                    directoryInfos.file,
-                                    directoryInfos.fileFilter
-                                )
-                            } else {
-                                FileUtil.listFiles(directoryInfos.file, directoryInfos.fileFilter)?.toList()
-                            }
-
-                        if (files.isNullOrEmpty()) return null
-                        Array(files.size) { i ->
-                            if (!scope.isActive) return null
-                            FileUtil.safeGetCanonicalPath(files[i])
-                        }
-                    } else {
-                        arrayOf(FileUtil.safeGetCanonicalPath(directoryInfos.file))
-                    }.also {
-                        Log.v("FileScanner", "success")
-                    }
-                } catch (e: Exception) {
-                    ErrorNotification.postErrorNotification(e, "Fail to Load files!")
-                    Log.w("FolderFragment", e)
-                    null
-                }
-            return paths
-        }
-
-        val audioFileFilter: FileFilter =
-            FileFilter { file: File ->
-                !file.isHidden && (
-                        file.isDirectory ||
-                                file.mimeTypeIs("audio/*") ||
-                                file.mimeTypeIs("application/ogg")
-                        )
-            }
-    }
 
     /**
      * save [content] to a file from document uri ([dest])

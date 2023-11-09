@@ -1,10 +1,10 @@
 package player.phonograph.ui.dialogs
 
 import player.phonograph.R
+import player.phonograph.mechanism.scanner.FileScanner
 import player.phonograph.misc.MediaScanner
 import player.phonograph.model.DirectoryInfo
 import player.phonograph.model.file.Location
-import player.phonograph.util.FileUtil.FileScanner
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.reportError
 import android.os.Bundle

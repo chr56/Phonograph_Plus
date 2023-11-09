@@ -4,11 +4,11 @@
 
 package player.phonograph.repo.mediastore.loaders
 
+import player.phonograph.mechanism.scanner.FileScanner
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.repo.mediastore.internal.querySongFiles
 import player.phonograph.repo.mediastore.internal.readFileEntity
-import player.phonograph.util.FileUtil
 import android.content.Context
 import android.provider.MediaStore
 import kotlinx.coroutines.CoroutineScope
@@ -69,7 +69,7 @@ object FileEntityLoader {
         scope: CoroutineScope?,
     ): Set<FileEntity> {
         val directory = File(location.absolutePath).also { if (!it.isDirectory) return emptySet() }
-        val files = directory.listFiles(FileUtil.FileScanner.audioFileFilter) ?: return emptySet()
+        val files = directory.listFiles(FileScanner.audioFileFilter) ?: return emptySet()
         val set = TreeSet<FileEntity>()
         for (file in files) {
             val l = Location.fromAbsolutePath(file.absolutePath)
