@@ -22,8 +22,7 @@ class ScanMediaFolderDialog : FileChooserDialog() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val paths = FileScanner.listPaths(
-                    DirectoryInfo(File(currentLocation.absolutePath), FileScanner.audioFileFilter),
-                    this
+                    DirectoryInfo(File(currentLocation.absolutePath), FileScanner.audioFileFilter)
                 )
                 if (!paths.isNullOrEmpty()) {
                     mediaScanner?.scan(paths)

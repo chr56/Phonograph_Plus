@@ -8,7 +8,7 @@ import player.phonograph.model.DirectoryInfo
 import player.phonograph.util.FileUtil
 import player.phonograph.util.FileUtil.mimeTypeIs
 import player.phonograph.util.reportError
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import java.io.File
 import java.io.FileFilter
@@ -20,42 +20,35 @@ object FileScanner {
 
     private const val TAG = "FileScanner"
 
-    fun listPaths(
+    suspend fun listPaths(
         directoryInfos: DirectoryInfo,
-        scope: CoroutineScope,
         recursive: Boolean = false,
-    ): Array<String>? {
-        if (!scope.isActive) return null
+    ): Array<String>? = coroutineScope {
+          try {
+              if (directoryInfos.file.isDirectory) {
+                  if (!isActive) return@coroutineScope null
+                  // todo
+                  val files =
+                      if (recursive) {
+                          FileUtil.listFilesDeep(directoryInfos.file, directoryInfos.fileFilter)
+                      } else {
+                          FileUtil.listFiles(directoryInfos.file, directoryInfos.fileFilter)?.toList()
+                      }
 
-        val paths: Array<String>? =
-            try {
-                if (directoryInfos.file.isDirectory) {
-                    if (!scope.isActive) return null
-                    // todo
-                    val files =
-                        if (recursive) {
-                            FileUtil.listFilesDeep(
-                                directoryInfos.file,
-                                directoryInfos.fileFilter
-                            )
-                        } else {
-                            FileUtil.listFiles(directoryInfos.file, directoryInfos.fileFilter)?.toList()
-                        }
+                  if (files.isNullOrEmpty()) return@coroutineScope null
 
-                    if (files.isNullOrEmpty()) return null
-                    Array(files.size) { i ->
-                        if (!scope.isActive) return null
-                        FileUtil.safeGetCanonicalPath(files[i])
-                    }
-                } else {
-                    arrayOf(FileUtil.safeGetCanonicalPath(directoryInfos.file))
-                }
-            } catch (e: Exception) {
-                reportError(e, TAG, "Fail to Load files!")
-                null
-            }
-        return paths
-    }
+                  Array(files.size) { i ->
+                      if (!isActive) return@coroutineScope null
+                      FileUtil.safeGetCanonicalPath(files[i])
+                  }
+              } else {
+                  arrayOf(FileUtil.safeGetCanonicalPath(directoryInfos.file))
+              }
+          } catch (e: Exception) {
+              reportError(e, TAG, "Fail to Load files!")
+              null
+          }
+      }
 
     val audioFileFilter: FileFilter =
         FileFilter { file: File ->
