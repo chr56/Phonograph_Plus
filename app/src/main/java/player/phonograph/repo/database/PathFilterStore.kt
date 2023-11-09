@@ -6,8 +6,8 @@ package player.phonograph.repo.database
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.util.FileUtil.safeGetCanonicalPath
 import player.phonograph.util.debug
+import player.phonograph.util.file.safeGetCanonicalPath
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase

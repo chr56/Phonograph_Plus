@@ -61,11 +61,8 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.theme.ThemeKt {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.theme.DrawableTintKt {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.zip.ZipUtil {public <methods>;}
--keepnames,allowoptimization,allowshrinking class player.phonograph.util.FileUtil
+-keepnames,allowoptimization,allowshrinking class player.phonograph.util.file.* {public <methods>;}
 -keep,allowoptimization,allowshrinking class player.phonograph.util.NavigationUtil { public <methods>; }
--keep,allowoptimization,allowshrinking class player.phonograph.util.FileUtil$FileScanner {
-    public *** listPaths(...);
-}
 
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.settings.Setting {
@@ -99,6 +96,14 @@
 }
 -keep,allowoptimization,allowshrinking class player.phonograph.mechanism.lyrics.LyricsLoader {
 	public *** loadLyrics(...);
+}
+
+-keepnames,allowoptimization,allowshrinking class player.phonograph.mechanism.scanner.FileScanner {
+    *** listPaths(...);
+}
+-keepnames,allowoptimization,allowshrinking class player.phonograph.mechanism.scanner.MediaStoreScanner {
+    *** scan(...);
+    *** executeTask(...);
 }
 
 -keepnames,allowoptimization,allowshrinking class player.phonograph.mechanism.tag.edit.CommonKt { public <methods>; }

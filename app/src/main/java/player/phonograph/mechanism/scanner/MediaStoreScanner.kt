@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.misc
+package player.phonograph.mechanism.scanner
 
 import player.phonograph.R
 import player.phonograph.notification.BackgroundNotification
@@ -15,7 +15,7 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 
-class MediaScanner(val context: Context) : MediaScannerConnection.MediaScannerConnectionClient {
+class MediaStoreScanner(val context: Context) : MediaScannerConnection.MediaScannerConnectionClient {
 
     private val scannerConnection = MediaScannerConnection(context, this)
 

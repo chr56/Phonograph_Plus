@@ -6,8 +6,8 @@ package player.phonograph.mechanism.tag.edit
 
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.mechanism.tag.EditAction
-import player.phonograph.misc.MediaScanner
 import player.phonograph.notification.BackgroundNotification
 import android.content.Context
 import android.net.Uri
@@ -53,7 +53,7 @@ fun applyEdit(
         // refresh media store
         val paths = songFiles.map { it.path }.toTypedArray()
         yield()
-        MediaScanner(context).scan(paths)
+        MediaStoreScanner(context).scan(paths)
         onComplete()
     }
 }

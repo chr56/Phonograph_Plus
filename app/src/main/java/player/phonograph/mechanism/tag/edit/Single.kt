@@ -6,8 +6,8 @@ package player.phonograph.mechanism.tag.edit
 
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.mechanism.tag.EditAction
-import player.phonograph.misc.MediaScanner
 import player.phonograph.notification.BackgroundNotification
 import android.content.Context
 import android.net.Uri
@@ -51,7 +51,7 @@ fun applyEdit(
         BackgroundNotification.remove(TAG_EDITOR_NOTIFICATION_CODE)
         // refresh media store
         yield()
-        MediaScanner(context).scan(songFile.path)
+        MediaStoreScanner(context).scan(songFile.path)
         onComplete()
     }
 }

@@ -17,8 +17,8 @@ import player.phonograph.model.lyrics.LyricsSource
 import player.phonograph.model.lyrics.TextLyrics
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.util.FileUtil
 import player.phonograph.util.debug
+import player.phonograph.util.file.stripExtension
 import player.phonograph.util.permissions.hasStorageReadPermission
 import android.content.Context
 import android.net.Uri
@@ -141,7 +141,7 @@ object LyricsLoader {
     }
 
     fun getExternalPreciseLyricsFile(songFile: File): List<File> {
-        val filename = FileUtil.stripExtension(songFile.absolutePath)
+        val filename = stripExtension(songFile.absolutePath)
         val lrc = File("$filename.lrc").takeIf { it.exists() }
         val txt = File("$filename.txt").takeIf { it.exists() }
         return listOfNotNull(lrc, txt)
@@ -152,7 +152,7 @@ object LyricsLoader {
 
         if (!dir.exists() || !dir.isDirectory) return emptyList()
 
-        val fileName = FileUtil.stripExtension(songFile.name)
+        val fileName = stripExtension(songFile.name)
         val eFileName = Regex.escape(fileName)
         val eSongName = Regex.escape(song.title)
 

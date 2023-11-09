@@ -1,10 +1,10 @@
 package player.phonograph.ui.dialogs
 
 import player.phonograph.R
-import player.phonograph.misc.MediaScanner
+import player.phonograph.mechanism.scanner.FileScanner
+import player.phonograph.mechanism.scanner.MediaStoreScanner
+import player.phonograph.model.DirectoryInfo
 import player.phonograph.model.file.Location
-import player.phonograph.util.FileUtil.DirectoryInfo
-import player.phonograph.util.FileUtil.FileScanner
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.reportError
 import android.os.Bundle
@@ -16,17 +16,16 @@ import java.io.File
 
 class ScanMediaFolderDialog : FileChooserDialog() {
 
-    private var mediaScanner: MediaScanner? = null
+    private var mediaStoreScanner: MediaStoreScanner? = null
 
     override fun affirmative(view: View, currentLocation: Location) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val paths = FileScanner.listPaths(
-                    DirectoryInfo(File(currentLocation.absolutePath), FileScanner.audioFileFilter),
-                    this
+                    DirectoryInfo(File(currentLocation.absolutePath), FileScanner.audioFileFilter)
                 )
                 if (!paths.isNullOrEmpty()) {
-                    mediaScanner?.scan(paths)
+                    mediaStoreScanner?.scan(paths)
                 } else {
                     coroutineToast(requireContext().applicationContext, R.string.nothing_to_scan)
                 }
@@ -39,11 +38,11 @@ class ScanMediaFolderDialog : FileChooserDialog() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mediaScanner = MediaScanner(requireContext())
+        mediaStoreScanner = MediaStoreScanner(requireContext())
     }
 
     override fun onDestroyView() {
-        mediaScanner = null
+        mediaStoreScanner = null
         super.onDestroyView()
     }
 

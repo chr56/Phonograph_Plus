@@ -13,8 +13,8 @@ import player.phonograph.actions.actionGotoDetail
 import player.phonograph.actions.actionShare
 import player.phonograph.actions.fragmentActivity
 import player.phonograph.mechanism.PathFilter
+import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.mechanism.setting.FileConfig
-import player.phonograph.misc.MediaScanner
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.repo.loader.Songs
@@ -131,7 +131,7 @@ private fun scan(context: Context, dir: FileEntity.Folder) {
         val files = File(dir.location.absolutePath).listFiles() ?: return@launch
         val paths: Array<String> = Array(files.size) { files[it].path }
 
-        MediaScanner(context).scan(paths)
+        MediaStoreScanner(context).scan(paths)
     }
 }
 

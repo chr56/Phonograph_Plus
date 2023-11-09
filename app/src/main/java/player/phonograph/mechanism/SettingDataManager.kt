@@ -10,7 +10,7 @@ import player.phonograph.App
 import player.phonograph.BuildConfig.VERSION_CODE
 import player.phonograph.R
 import player.phonograph.settings.dataStore
-import player.phonograph.util.FileUtil.saveToFile
+import player.phonograph.util.file.saveToFile
 import player.phonograph.util.gitRevisionHash
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
@@ -29,7 +29,6 @@ import kotlin.LazyThreadSafetyMode.NONE
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
 import java.io.FileInputStream
