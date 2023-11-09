@@ -19,10 +19,10 @@ import android.util.Log
 fun migrate(context: Context, from: Int, to: Int) {
 
     when (from) {
-        in 1 until 225   -> {
+        in 1 until 313   -> {
             throw IllegalStateException("You are upgrading from a very old version (version $from)! Please Wipe app data!")
         }
-        in 210 until 500 -> {
+        in 313 until 611 -> {
             reportError(
                 IllegalStateException(), TAG,
                 "You are upgrading from a very old version (version $from)! Try to wipe app data!"
