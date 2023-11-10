@@ -69,6 +69,7 @@
     <string name="save_playlists_title">Dosya olarak kaydet</string>
     <string name="add_playlist_title">Çalma listesine ekle</string>
     <string name="select_all_title">Tümünü seç</string>
+    <string name="unselect_all_title">Tüm seçimi kaldır</string>
     <string name="invert_selection">Seçimi tersine çevir</string>
     <string name="action_play_all">Hepsini çal</string>
     <string name="action_shuffle_all">Tümünü karıştır</string>
