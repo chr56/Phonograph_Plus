@@ -10,6 +10,7 @@ import player.phonograph.R
 import player.phonograph.databinding.ActivityCrashBinding
 import player.phonograph.mechanism.SettingDataManager
 import player.phonograph.notification.ErrorNotification.KEY_IS_A_CRASH
+import player.phonograph.notification.ErrorNotification.KEY_NOTE
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
 import player.phonograph.ui.modules.setting.SettingsActivity
 import player.phonograph.util.text.currentDate
@@ -85,6 +86,11 @@ class CrashActivity : ToolbarActivity() {
     }
 
     /**
+     * note
+     */
+    private lateinit var note: String
+
+    /**
      * stack trace text
      */
     private lateinit var stackTraceText: String
@@ -101,7 +107,8 @@ class CrashActivity : ToolbarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        stackTraceText = intent.getStringExtra(KEY_STACK_TRACE) ?: "N/A"
+        note = intent.getStringExtra(KEY_NOTE) ?: ""
+        stackTraceText = intent.getStringExtra(KEY_STACK_TRACE) ?: ""
         crashReportMode = intent.getBooleanExtra(KEY_IS_A_CRASH, true)
 
         printStackTraceText(stackTraceText)
@@ -117,8 +124,13 @@ class CrashActivity : ToolbarActivity() {
         displayText = buildString {
             append("${if (crashReportMode) "Crash Report" else "Internal Error"}:\n\n")
             append("$deviceInfo\n")
-            append("Stack Track:\n")
-            append("$stackTraceText\n")
+            if (note.isNotEmpty()) {
+                append("$note\n")
+            }
+            if (stackTraceText.isNotEmpty()) {
+                append("\nStack Track:\n")
+                append("$stackTraceText\n")
+            }
         }
 
         // display textview

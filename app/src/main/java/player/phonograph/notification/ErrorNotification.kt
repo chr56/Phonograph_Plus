@@ -4,10 +4,10 @@
 
 package player.phonograph.notification
 
-import android.app.Activity
-import android.content.Context
 import player.phonograph.App
 import player.phonograph.R
+import android.app.Activity
+import android.content.Context
 
 object ErrorNotification {
     /**
@@ -22,8 +22,9 @@ object ErrorNotification {
     @JvmOverloads
     fun postErrorNotification(e: Throwable, note: String? = null, context: Context = App.instance) {
         getImpl(context, crashActivity).send(
-            msg = "$note\n${e.stackTraceToString()}}",
-            title = "${e::class.simpleName}\n$note",
+            note = note ?: e.message ?: "",
+            throwable = e,
+            title = "${e::class.simpleName}",
             context = context
         )
     }
@@ -31,12 +32,13 @@ object ErrorNotification {
     @JvmOverloads
     fun postErrorNotification(note: String, context: Context = App.instance) {
         getImpl(context, crashActivity).send(
-            msg = note,
-            title = App.instance.getString(R.string.error_notification_name),
+            note = note,
+            title = App.instance.getString(R.string.internal_error),
             context = context
         )
     }
 
+    const val KEY_NOTE = "note"
     const val KEY_STACK_TRACE = "stack_trace"
-    const val KEY_IS_A_CRASH ="is_a_crash"
+    const val KEY_IS_A_CRASH = "is_a_crash"
 }
