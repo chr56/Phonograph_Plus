@@ -48,7 +48,7 @@ fun loadSongInfo(songFile: File): SongInfoModel {
             allTags,
         )
     } catch (e: Exception) {
-        reportError(e, "TagRead", "error while reading the song file")
+        reportError(e, TAG, String.format(ERR_MSG_FAILED_TO_READ, filePath, filePath.substringAfterLast('.')))
         return SongInfoModel(
             fileName = StringFilePropertyField(fileName),
             filePath = StringFilePropertyField(filePath),
@@ -100,3 +100,11 @@ private fun readTagFieldsImpl(audioFile: AudioFile, keys: Set<FieldKey>): Map<Fi
         }
         TagField(key, value)
     }
+
+
+private const val TAG = "SongInfoReader"
+
+private const val ERR_MSG_FAILED_TO_READ =
+    "Failed to read metadata of song (%s). This might cause by: " +
+            "1) storage permission is not fully granted. " +
+            "2) the format (%s) is not supported."
