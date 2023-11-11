@@ -534,7 +534,12 @@ class MusicService : MediaBrowserServiceCompat() {
         }
 
         private val onSetCancelableNotification = Runnable {
-            if (controller.playerState != PlayerState.PLAYING) stopForeground(STOP_FOREGROUND_DETACH)
+            if (controller.playerState != PlayerState.PLAYING) {
+                when (controller.pauseReason) {
+                    PlayerController.PAUSE_BY_MANUAL_ACTION, PlayerController.PAUSE_FOR_QUEUE_ENDED, PlayerController.PAUSE_ERROR,
+                    -> stopForeground(STOP_FOREGROUND_DETACH)
+                }
+            }
         }
 
         fun setCancelableNotificationTimer(time: Long) {
