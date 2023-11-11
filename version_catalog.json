@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "1.4-beta2",
+      "versionCode": 1036,
+      "date": 1699587900,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.4-beta2"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>改进 改进 mediastore 刷新 (可能将修复某些设备中扫描媒体的问题)</li><li>改进 各种细小用户界面改进</li><li>翻译 更新 日语(aorinngoDo)</li><li>翻译 更新 土耳其语(evladifatihan)</li><li>修改 禁止从 v0.3.4 之前的版本升级至当前版本</li><li>修改 警告从 v0.7.1 之前的版本升级至当前版本</li></ol>",
+        "en": "<ol><li>Improvement: improve mediastore refresh (may fix the problem of scaning media in some devices)</li><li>Improvement: various minor miscellaneous ui refinements</li><li>Translation: update Japanese (by aorinngoDo)</li><li>Translation: update Turkish (by evladifatihan)</li><li>Modify: forbid upgrading from v0.3.4 and older</li><li>Modify: warn when upgrading from v0.7.1 and older</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.4-beta1",
       "versionCode": 1035,
       "date": 1699157800,
@@ -14,22 +30,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>翻译 更新巴西葡萄牙语(EddieMattos)</li><li>开发 更新依赖, 清理代码</li></ol>",
         "en": "<ol><li>Translation: update Portuguese, Brazilian (by EddieMattos)</li><li>Development: upgrade dependencies, cleanup code</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.4-dev3",
-      "versionCode": 1034,
-      "date": 1698137200,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.4-dev3"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 设备重启后出现的大量错误通知(仅屏蔽)</li><li>改进 深色模式在系统深色模式改变后立即更改而无需重进</li><li>翻译 更新芬兰语 (Latzze)</li><li>翻译 更新阿拉伯语 (Yrando)</li></ol>",
-        "en": "<ol><li>Fix: spamming error notifications after devices rebooting (merely mute)</li><li>Improvement: Dark/Light Mode would be switched after system dark mode changed instantly without closing and reopening the app</li><li>Translation: Translation: update Finnish (by Latzze)</li><li>Translation: Translation: update Arabic (by Yrando)</li></ol>"
       }
     },
     {
