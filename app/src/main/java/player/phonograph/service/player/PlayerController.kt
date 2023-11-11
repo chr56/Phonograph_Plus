@@ -275,23 +275,26 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                 ).show()
             }
         } else {
-            pauseImp(force = true)
+            pauseImp(force = true, reason = PAUSE_FOR_QUEUE_ENDED)
         }
     }
 
-    @PauseReasonInt var pauseReason: Int = NOT_PAUSED
+    @PauseReasonInt
+    var pauseReason: Int = NOT_PAUSED
 
     /**
      * Pause
      * @param releaseResource false if not release taken resource
+     * @param reason cause of this pause (see [PauseReasonInt])
      */
-    fun pause(releaseResource: Boolean) = handler.request {
-        it.pauseImp(force = false, releaseResource = releaseResource)
+    fun pause(releaseResource: Boolean, @PauseReasonInt reason: Int) = handler.request {
+        it.pauseImp(force = false, releaseResource = releaseResource, reason = reason)
     }
 
-    private fun pauseImp(force: Boolean = false, releaseResource: Boolean = true) {
+    private fun pauseImp(force: Boolean = false, @PauseReasonInt reason: Int, releaseResource: Boolean = true) {
         if (audioPlayer.isPlaying() || force) {
             audioPlayer.pause()
+            pauseReason = reason
             broadcastStopLyric()
             playerState = PlayerState.PAUSED
             if (releaseResource) releaseTakenResources()
@@ -304,8 +307,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
 
     private fun togglePlayPauseImp() {
         if (audioPlayer.isPlaying()) {
-            pauseImp(force = false)
-            pauseReason = PAUSE_BY_MANUAL_ACTION
+            pauseImp(force = false, reason = PAUSE_BY_MANUAL_ACTION)
         } else {
             playImp()
         }
@@ -376,7 +378,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
             if (!queueManager.isLastTrack()) {
                 playAtImp(queueManager.nextSongPosition)
             } else {
-                pauseImp(force = true)
+                pauseImp(force = true, reason = PAUSE_FOR_QUEUE_ENDED)
                 observers.executeForEach {
                     onReceivingMessage(MSG_NO_MORE_SONGS)
                 }
@@ -444,7 +446,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         }
         if (queueManager.isQueueEnded()) {
             handler.request {
-                pauseImp(force = true)
+                pauseImp(force = true, reason = PAUSE_FOR_QUEUE_ENDED)
             }
             broadcastStopLyric()
             observers.executeForEach {
@@ -464,6 +466,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         Handler(Looper.getMainLooper()).post {
             Toast.makeText(service, msg, Toast.LENGTH_SHORT).show()
         }
+        pauseReason = PAUSE_ERROR
     }
 
     companion object {
@@ -513,7 +516,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     private val becomingNoisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
-                pause(releaseResource = true)
+                pause(releaseResource = true, reason = PAUSE_FOR_AUDIO_BECOMING_NOISY)
             }
         }
     }

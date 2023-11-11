@@ -333,7 +333,7 @@ class MusicService : MediaBrowserServiceCompat() {
     }
 
     fun playSongAt(position: Int) = controller.playAt(position)
-    fun pause() = controller.pause(releaseResource = true)
+    fun pause() = controller.pause(releaseResource = true, reason = PlayerController.PAUSE_BY_MANUAL_ACTION)
     fun play() = controller.play()
     fun playPreviousSong(force: Boolean) = controller.jumpBackward(force)
     fun back(force: Boolean) = controller.back(force)
