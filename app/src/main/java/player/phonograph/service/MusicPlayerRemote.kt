@@ -7,7 +7,6 @@ package player.phonograph.service
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.model.Song
-import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicService.MusicBinder
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.RepeatMode
@@ -153,7 +152,8 @@ object MusicPlayerRemote {
         shuffleMode: ShuffleMode?,
     ): Boolean {
         if (queue.isEmpty() || startPosition !in queue.indices) {
-            ErrorNotification.postErrorNotification(
+            warning(
+                TAG,
                 "Queue(size:${queue.size}) submitted is empty or start position ($startPosition) is out ranged"
             )
             return false

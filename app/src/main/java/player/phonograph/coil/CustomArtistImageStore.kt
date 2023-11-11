@@ -11,7 +11,6 @@ import android.graphics.Bitmap.CompressFormat.JPEG
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI
-import android.util.Log
 import androidx.core.graphics.drawable.toBitmapOrNull
 import coil.Coil
 import coil.request.ImageRequest
@@ -22,9 +21,9 @@ import java.io.FileOutputStream
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.createDefaultExceptionHandler
 import player.phonograph.util.ui.BitmapUtil.restraintBitmapSize
+import player.phonograph.util.warning
 
 /**
  * Class that manage custom artist image
@@ -38,9 +37,7 @@ class CustomArtistImageStore private constructor(context: Context) {
         private const val CUSTOM_ARTIST_IMAGE_PREFS: String = "custom_artist_image"
 
         private fun sendErrorInfo(targetArtistName: String) {
-            val msg = "Can not save custom image for $targetArtistName"
-            ErrorNotification.postErrorNotification(msg)
-            Log.w("Coil:ArtistImage", msg)
+            warning(TAG, "Can not save custom image for $targetArtistName")
         }
 
         private var sInstance: CustomArtistImageStore? = null

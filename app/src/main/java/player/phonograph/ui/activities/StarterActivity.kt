@@ -30,7 +30,6 @@ import player.phonograph.model.SongClickMode.SONG_PLAY_NOW
 import player.phonograph.model.SongClickMode.SONG_SINGLE_PLAY
 import player.phonograph.model.SongClickMode.modeName
 import player.phonograph.model.playlist.SmartPlaylist
-import player.phonograph.notification.ErrorNotification
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
 import player.phonograph.repo.mediastore.processQuery
@@ -41,6 +40,7 @@ import player.phonograph.ui.components.viewcreater.buildDialogView
 import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
 import player.phonograph.ui.components.viewcreater.titlePanel
+import player.phonograph.util.reportError
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.provider.DocumentsContractCompat.getDocumentId
@@ -378,6 +378,7 @@ class StarterActivity : AppCompatActivity() {
     }
 
     companion object {
+        const val TAG = "Starter"
         const val AUTHORITY_MEDIA_PROVIDER = "com.android.providers.media.documents"
         const val AUTHORITY_DOCUMENTS_PROVIDER = "com.android.externalstorage.documents"
         const val AUTHORITY_MEDIA = "media"
@@ -402,8 +403,7 @@ class StarterActivity : AppCompatActivity() {
                     }
                 }
             } catch (e: Exception) {
-                ErrorNotification.postErrorNotification(e)
-                e.printStackTrace()
+                reportError(e, TAG, "Failed parse $uri")
             }
             return null
         }

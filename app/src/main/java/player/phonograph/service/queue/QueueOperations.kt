@@ -5,7 +5,7 @@
 package player.phonograph.service.queue
 
 import player.phonograph.model.Song
-import player.phonograph.notification.ErrorNotification
+import player.phonograph.util.warning
 
 
 
@@ -83,7 +83,8 @@ fun removeSongAt(queueHolder: QueueHolder, position: Int) {
             }
             rePosition(queueHolder, position)
         } else {
-            ErrorNotification.postErrorNotification(
+            warning(
+                TAG,
                 "Warning: removing song at position$position,but we only have ${_originalPlayingQueue.size} songs"
             )
         }
@@ -112,7 +113,7 @@ fun moveSong(queueHolder: QueueHolder, from: Int, to: Int) {
     if (from == to) return
     val range = queueHolder.originalPlayingQueue.indices
     if (from !in range || to !in range) {
-        ErrorNotification.postErrorNotification("Warning: from $from to $to is outrage ")
+        warning(TAG, "Warning: from $from to $to is outrage ")
         return
     }
     // start moving
@@ -175,3 +176,5 @@ private fun shuffle(songs: MutableList<Song>, current: Int) {
         songs.shuffle()
     }
 }
+
+private const val TAG = "QueueOperations"

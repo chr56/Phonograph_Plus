@@ -8,9 +8,9 @@ import lib.phonograph.localization.LocalizationStore
 import mt.pref.ThemeColor
 import mt.util.color.resolveColor
 import player.phonograph.R
-import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.util.currentVersionCode
+import player.phonograph.util.reportError
 import player.phonograph.util.text.changelogCSS
 import player.phonograph.util.text.changelogHTML
 import player.phonograph.util.theme.nightMode
@@ -37,12 +37,12 @@ class ChangelogDialog : DialogFragment() {
             try {
                 requireActivity().layoutInflater.inflate(R.layout.dialog_web_view, null)
             } catch (e: InflateException) {
-                ErrorNotification.postErrorNotification(e)
+                val msg =
+                    "This device doesn't support web view, which is necessary to view the change log. It is missing a system component."
+                reportError(e, "ChangelogDialog", msg)
                 return MaterialDialog(requireActivity())
                     .title(android.R.string.dialog_alert_title)
-                    .message(
-                        text = "This device doesn't support web view, which is necessary to view the change log. It is missing a system component."
-                    )
+                    .message(text = msg)
                     .positiveButton(android.R.string.ok)
             }
 

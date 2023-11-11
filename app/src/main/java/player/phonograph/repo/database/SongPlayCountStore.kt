@@ -6,12 +6,12 @@ package player.phonograph.repo.database
 
 import player.phonograph.R
 import player.phonograph.notification.BackgroundNotification
-import player.phonograph.notification.ErrorNotification
 import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.ID
 import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.LAST_UPDATED_WEEK_INDEX
 import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.NAME
 import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.PLAY_COUNT_SCORE
 import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.WEEK
+import player.phonograph.util.reportError
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
@@ -225,7 +225,7 @@ class SongPlayCountStore(context: Context) :
             }
             database.setTransactionSuccessful()
         } catch (e: Exception) {
-            ErrorNotification.postErrorNotification(e, "Failed to update song play count in SongPlayCountDatabase (songId=$id)")
+            reportError(e, this::class.java.simpleName, "Failed to update song play count in SongPlayCountDatabase (songId=$id)")
         } finally {
             cursor?.close()
             database.endTransaction()
@@ -311,7 +311,7 @@ class SongPlayCountStore(context: Context) :
                             )
                     } while (cursor.moveToNext())
                 } catch (e: Exception) {
-                    ErrorNotification.postErrorNotification(e, "${context.getString(R.string.failed)}:\n${Thread.currentThread().stackTrace}")
+                    reportError(e, this::class.java.simpleName, "Failed to recalculate score!")
                 } finally {
                     BackgroundNotification.remove(NOTIFICATION_ID)
                 }

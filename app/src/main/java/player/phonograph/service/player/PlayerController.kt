@@ -13,6 +13,7 @@ import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.registerReceiverCompat
+import player.phonograph.util.warning
 import androidx.core.content.ContextCompat
 import android.content.BroadcastReceiver
 import android.content.ContentUris
@@ -554,7 +555,8 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                     val requestId = msg.arg1
                     val controller = controllerRef.get()
                     if (controller == null) {
-                        ErrorNotification.postErrorNotification(
+                        warning(
+                            this::class.java.simpleName,
                             "ControllerHandler: weak reference for PlayerController is missing!\n${Thread.currentThread().stackTrace}"
                         )
                         return

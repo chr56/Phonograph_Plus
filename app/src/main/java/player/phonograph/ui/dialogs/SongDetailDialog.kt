@@ -28,8 +28,8 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.getFileSizeString
 import player.phonograph.model.getReadableDurationString
-import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.parcelable
+import player.phonograph.util.reportError
 import androidx.fragment.app.DialogFragment
 import android.app.Activity
 import android.app.Dialog
@@ -37,7 +37,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Html
 import android.text.Spanned
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -183,11 +182,7 @@ class SongDetailDialog : DialogFragment() {
                         else                          ->
                             "Unknown"
                     }
-                    Log.w(TAG, errorMsg)
-                    ErrorNotification.postErrorNotification(
-                        exceptionOrNull() ?: Exception(),
-                        "Error while reading the song file:\n$errorMsg",
-                    )
+                    reportError(exceptionOrNull() ?: Exception(), TAG, "Failed to read metadata of the song file:\n$errorMsg")
                 }
             }
         }

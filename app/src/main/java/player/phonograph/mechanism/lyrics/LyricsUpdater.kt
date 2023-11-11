@@ -7,8 +7,7 @@ package player.phonograph.mechanism.lyrics
 import player.phonograph.mechanism.StatusBarLyric
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
-import player.phonograph.notification.ErrorNotification
-import android.util.Log
+import player.phonograph.util.reportError
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.runBlocking
 import java.io.File
@@ -73,9 +72,7 @@ class LyricsUpdater(song: Song?) {
 
     private val exceptionHandler by lazy {
         CoroutineExceptionHandler { _, throwable ->
-            val msg = "Exception while fetching lyrics!"
-            Log.w("LyricsFetcher", "${msg}\n${throwable.message}")
-            ErrorNotification.postErrorNotification(throwable, note = msg)
+            reportError(throwable, "LyricsFetcher", "Exception while fetching lyrics!")
         }
     }
 

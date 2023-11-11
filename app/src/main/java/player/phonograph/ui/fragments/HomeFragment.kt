@@ -19,13 +19,13 @@ import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.PageConfig
 import player.phonograph.model.pages.Pages
-import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.AbsPage
 import player.phonograph.ui.modules.search.SearchActivity
+import player.phonograph.util.reportError
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
@@ -183,7 +183,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         try {
             binding.pager.currentItem = page
         } catch (e: Exception) {
-            ErrorNotification.postErrorNotification(e, "Failed to select page $page")
+            reportError(e, "HomeFragment", "Failed to select page $page")
         }
     }
 
