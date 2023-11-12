@@ -112,4 +112,5 @@ tasks.withType(KotlinCompile::class.java) {
 dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.serialization.ktoml)
+    implementation(libs.kotlinx.serialization.kaml)
 }
