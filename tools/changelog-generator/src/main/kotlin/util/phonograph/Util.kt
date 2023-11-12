@@ -31,8 +31,8 @@ fun dateString(stamp: Long): String {
 }
 
 fun checkFile(file: File, override: Boolean) {
-    require(file.isFile) { "${file.path} is not a file!" }
     if (file.exists()) {
+        require(file.isFile) { "${file.path} is not a file!" }
         if (override) file.delete()
     } else {
         file.createNewFile()
