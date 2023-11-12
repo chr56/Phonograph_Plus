@@ -6,18 +6,6 @@ package util.phonograph
 
 import util.phonograph.output.html.generateHTML
 import util.phonograph.releasenote.ReleaseNote
-import util.phonograph.releasenote.parseReleaseNoteYaml
-import java.io.File
-
-fun main(args: Array<String>) {
-
-    val rootPath = args[0]
-    val sourcePath = args[1]
-
-    val model = parseReleaseNoteYaml(File("$rootPath/$sourcePath"))
-
-    generateHtml(model)
-}
 
 fun generateHtml(model: ReleaseNote) {
     val html = generateHTML(model)

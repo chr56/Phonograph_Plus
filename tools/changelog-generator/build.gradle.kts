@@ -26,76 +26,82 @@ val changelogsPath = "app/src/main/assets"
 
 tasks.register("GenerateGithubReleaseNote", JavaExec::class.java) {
     args = listOf(
+        "GenerateGithubReleaseNote",
         rootProject.projectDir.absolutePath,
         originalReleaseNotePath,
         outputGitHubReleaseNotePath
     )
 
     classpath = sourceSets.named("main").get().runtimeClasspath
-    mainClass.set("util.phonograph.MainGenerateGithubReleaseNoteKt")
+    mainClass.set("util.phonograph.MainKt")
 
     dependsOn(tasks.findByPath("build"))
 }
 
 tasks.register("GenerateEncodedUrl", JavaExec::class.java) {
     args = listOf(
+        "GenerateEncodedUrl",
         rootProject.projectDir.absolutePath,
         originalReleaseNotePath,
         outputEncodedUrlPath
     )
 
     classpath = sourceSets.named("main").get().runtimeClasspath
-    mainClass.set("util.phonograph.MainEncodeUrlKt")
+    mainClass.set("util.phonograph.MainKt")
 
     dependsOn(tasks.findByPath("build"))
 }
 
 tasks.register("GenerateHTML", JavaExec::class.java) {
     args = listOf(
+        "GenerateHTML",
         rootProject.projectDir.absolutePath,
         originalReleaseNotePath,
     )
 
     classpath = sourceSets.named("main").get().runtimeClasspath
-    mainClass.set("util.phonograph.MainGenerateHtmlKt")
+    mainClass.set("util.phonograph.MainKt")
 
     dependsOn(tasks.findByPath("build"))
 }
 
 tasks.register("RefreshChangelogs", JavaExec::class.java) {
     args = listOf(
+        "RefreshChangelogs",
         rootProject.projectDir.absolutePath,
         originalReleaseNotePath,
         changelogsPath
     )
 
     classpath = sourceSets.named("main").get().runtimeClasspath
-    mainClass.set("util.phonograph.MainRefreshChangelogsKt")
+    mainClass.set("util.phonograph.MainKt")
 
     dependsOn(tasks.findByPath("build"))
 }
 
 tasks.register("GenerateVersionJson", JavaExec::class.java) {
     args = listOf(
+        "GenerateVersionJson",
         rootProject.projectDir.absolutePath,
         originalReleaseNotePath,
         "version_catalog.json"
     )
 
     classpath = sourceSets.named("main").get().runtimeClasspath
-    mainClass.set("util.phonograph.MainGenerateVersionJsonKt")
+    mainClass.set("util.phonograph.MainKt")
 
     dependsOn(tasks.findByPath("build"))
 }
 
 tasks.register("GenerateFdroidMetadata", JavaExec::class.java) {
     args = listOf(
+        "GenerateFdroidMetadata",
         rootProject.projectDir.absolutePath,
         originalReleaseNotePath
     )
 
     classpath = sourceSets.named("main").get().runtimeClasspath
-    mainClass.set("util.phonograph.MainGenerateFdroidMetadataKt")
+    mainClass.set("util.phonograph.MainKt")
 
     dependsOn(tasks.findByPath("build"))
 }

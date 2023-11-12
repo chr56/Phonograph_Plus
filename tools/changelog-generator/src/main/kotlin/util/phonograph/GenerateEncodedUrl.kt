@@ -6,21 +6,8 @@ package util.phonograph
 
 import util.phonograph.output.IMReleaseMarkdown
 import util.phonograph.releasenote.ReleaseNote
-import util.phonograph.releasenote.parseReleaseNoteYaml
 import java.io.File
 import java.net.URLEncoder
-
-
-fun main(args: Array<String>) {
-
-    val rootPath = args[0]
-    val sourcePath = args[1]
-    val targetPath = args[2]
-
-    val model = parseReleaseNoteYaml(File("$rootPath/$sourcePath"))
-
-    generateEncodedUrl(model, "$rootPath/$targetPath")
-}
 
 fun generateEncodedUrl(model: ReleaseNote, path: String) {
     val markdown = IMReleaseMarkdown(model).write()

@@ -8,23 +8,10 @@ import util.phonograph.output.FdroidChangelogTextOutput
 import util.phonograph.output.FdroidMetadataVersionInfoOutput
 import util.phonograph.releasenote.Language
 import util.phonograph.releasenote.ReleaseNote
-import util.phonograph.releasenote.parseReleaseNoteYaml
 import java.io.File
 
 
 private const val FDROID_METADATA_VERSION_INFO = "fdroid.properties"
-
-fun main(args: Array<String>) {
-    val rootPath = args[0]
-    val sourcePath = args[1]
-
-
-    val model = parseReleaseNoteYaml(File("$rootPath/$sourcePath"))
-
-    generateFdroidMetadata(model, rootPath)
-
-    println("Completed!")
-}
 
 fun generateFdroidMetadata(model: ReleaseNote, rootPath: String) {
     println("Processing...")
