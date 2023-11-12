@@ -5,6 +5,7 @@
 package util.phonograph
 
 import util.phonograph.output.VersionJsonOutput
+import util.phonograph.releasenote.ReleaseNote
 import util.phonograph.releasenote.parseReleaseNoteYaml
 import java.io.File
 
@@ -15,15 +16,14 @@ fun main(args: Array<String>) {
     val sourcePath = args[1]
     val outputPath = args[2]
 
-    println("Parse data...")
     val model = parseReleaseNoteYaml(File("$rootPath/$sourcePath"))
-    val versionJsonFile = File("$rootPath/$outputPath")
 
-    println("Process version json")
-    val str = VersionJsonOutput(versionJsonFile, model).write()
+    generateVersionJson(model, "$rootPath/$outputPath")
 
-    println("Output...")
-    writeToFile(str, "$rootPath/$outputPath")
+}
 
-    println("Completed")
+fun generateVersionJson(model: ReleaseNote, versionJsonFilePath: String) {
+    val versionJsonFile = File(versionJsonFilePath)
+    val output: String = VersionJsonOutput(versionJsonFile, model).write()
+    writeToFile(output, versionJsonFile)
 }

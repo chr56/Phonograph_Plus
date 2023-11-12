@@ -5,6 +5,7 @@
 package util.phonograph
 
 import util.phonograph.output.GitHubReleaseMarkdown
+import util.phonograph.releasenote.ReleaseNote
 import util.phonograph.releasenote.parseReleaseNoteYaml
 import java.io.File
 
@@ -16,8 +17,11 @@ fun main(args: Array<String>) {
 
     val model = parseReleaseNoteYaml(File("$rootPath/$sourcePath"))
 
-    val markdown = GitHubReleaseMarkdown(model).write()
-    writeToFile(markdown, "$rootPath/$targetPath")
+    generateGithubReleaseNote(model, "$rootPath/$targetPath")
+}
 
+fun generateGithubReleaseNote(model: ReleaseNote, target: String) {
+    val markdown = GitHubReleaseMarkdown(model).write()
+    writeToFile(markdown, target)
     println(markdown)
 }
