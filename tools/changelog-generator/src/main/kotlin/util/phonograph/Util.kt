@@ -4,8 +4,6 @@
 
 package util.phonograph
 
-import com.akuleshov7.ktoml.Toml
-import com.akuleshov7.ktoml.TomlInputConfig
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import kotlinx.serialization.json.Json
@@ -20,10 +18,6 @@ val jsonParser = Json {
     isLenient = true
     prettyPrint = true
 }
-
-val tomlParser = Toml(
-    TomlInputConfig(ignoreUnknownNames = true)
-)
 
 val yamlParser = Yaml(
     configuration = YamlConfiguration(
