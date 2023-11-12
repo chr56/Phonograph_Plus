@@ -7,19 +7,13 @@ package util.phonograph
 import util.phonograph.output.FdroidChangelogTextOutput
 import util.phonograph.output.FdroidMetadataVersionInfoOutput
 import util.phonograph.releasenote.Language
-import util.phonograph.releasenote.parseReleaseNoteToml
+import util.phonograph.releasenote.ReleaseNote
 import java.io.File
 
 
 private const val FDROID_METADATA_VERSION_INFO = "fdroid.properties"
 
-fun main(args: Array<String>) {
-    val rootPath = args[0]
-    val sourcePath = args[1]
-
-    println("Parse data...")
-    val model = parseReleaseNoteToml(File("$rootPath/$sourcePath"))
-
+fun generateFdroidMetadata(model: ReleaseNote, rootPath: String) {
     println("Processing...")
     for (lang in Language.ALL) {
         val output = FdroidChangelogTextOutput(model, lang)
@@ -29,8 +23,6 @@ fun main(args: Array<String>) {
     }
     val metadata = FdroidMetadataVersionInfoOutput(model).write()
     writeToFile(metadata, File(rootPath, FDROID_METADATA_VERSION_INFO).path)
-
-    println("Completed!")
 }
 
 private fun targetFile(rootPath: String, lang: Language, versionCode: Int): File {

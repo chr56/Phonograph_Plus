@@ -4,8 +4,8 @@
 
 package util.phonograph
 
-import com.akuleshov7.ktoml.Toml
-import com.akuleshov7.ktoml.TomlInputConfig
+import com.charleskorn.kaml.Yaml
+import com.charleskorn.kaml.YamlConfiguration
 import kotlinx.serialization.json.Json
 import java.io.BufferedWriter
 import java.io.File
@@ -19,8 +19,10 @@ val jsonParser = Json {
     prettyPrint = true
 }
 
-val tomlParser = Toml(
-    TomlInputConfig(ignoreUnknownNames = true)
+val yamlParser = Yaml(
+    configuration = YamlConfiguration(
+        breakScalarsAt = 148,
+    )
 )
 
 private val dateFormatter = SimpleDateFormat("yyyy.MM.dd", Locale.ENGLISH)
@@ -29,8 +31,8 @@ fun dateString(stamp: Long): String {
 }
 
 fun checkFile(file: File, override: Boolean) {
-    require(file.isFile) { "${file.path} is not a file!" }
     if (file.exists()) {
+        require(file.isFile) { "${file.path} is not a file!" }
         if (override) file.delete()
     } else {
         file.createNewFile()
