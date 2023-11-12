@@ -5,7 +5,7 @@
 package util.phonograph
 
 import util.phonograph.output.VersionJsonOutput
-import util.phonograph.releasenote.parseReleaseNoteToml
+import util.phonograph.releasenote.parseReleaseNoteYaml
 import java.io.File
 
 
@@ -16,7 +16,7 @@ fun main(args: Array<String>) {
     val outputPath = args[2]
 
     println("Parse data...")
-    val model = parseReleaseNoteToml(File("$rootPath/$sourcePath"))
+    val model = parseReleaseNoteYaml(File("$rootPath/$sourcePath"))
     val versionJsonFile = File("$rootPath/$outputPath")
 
     println("Process version json")

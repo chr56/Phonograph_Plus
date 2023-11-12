@@ -5,7 +5,7 @@
 package util.phonograph
 
 import util.phonograph.output.html.generateHTML
-import util.phonograph.releasenote.parseReleaseNoteToml
+import util.phonograph.releasenote.parseReleaseNoteYaml
 import java.io.File
 
 fun main(args: Array<String>) {
@@ -13,7 +13,7 @@ fun main(args: Array<String>) {
     val rootPath = args[0]
     val sourcePath = args[1]
 
-    val model = parseReleaseNoteToml(File("$rootPath/$sourcePath"))
+    val model = parseReleaseNoteYaml(File("$rootPath/$sourcePath"))
 
     val html = generateHTML(model)
     for ((lang, text) in html) {

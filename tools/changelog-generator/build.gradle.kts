@@ -17,7 +17,7 @@ sourceSets {
     }
 }
 
-val originalReleaseNotePath = "ReleaseNote.toml"
+val originalReleaseNotePath = "ReleaseNote.yaml"
 
 val outputGitHubReleaseNotePath = "GitHubReleaseNote.md"
 val outputEncodedUrlPath = "GitHubReleaseNote.url.txt"

@@ -5,7 +5,7 @@
 package util.phonograph
 
 import util.phonograph.output.IMReleaseMarkdown
-import util.phonograph.releasenote.parseReleaseNoteToml
+import util.phonograph.releasenote.parseReleaseNoteYaml
 import java.io.File
 import java.net.URLEncoder
 
@@ -16,7 +16,7 @@ fun main(args: Array<String>) {
     val sourcePath = args[1]
     val targetPath = args[2]
 
-    val model = parseReleaseNoteToml(File("$rootPath/$sourcePath"))
+    val model = parseReleaseNoteYaml(File("$rootPath/$sourcePath"))
 
     val markdown = IMReleaseMarkdown(model).write()
 

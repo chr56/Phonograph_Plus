@@ -7,7 +7,7 @@ package util.phonograph
 import util.phonograph.output.FdroidChangelogTextOutput
 import util.phonograph.output.FdroidMetadataVersionInfoOutput
 import util.phonograph.releasenote.Language
-import util.phonograph.releasenote.parseReleaseNoteToml
+import util.phonograph.releasenote.parseReleaseNoteYaml
 import java.io.File
 
 
@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
     val sourcePath = args[1]
 
     println("Parse data...")
-    val model = parseReleaseNoteToml(File("$rootPath/$sourcePath"))
+    val model = parseReleaseNoteYaml(File("$rootPath/$sourcePath"))
 
     println("Processing...")
     for (lang in Language.ALL) {
