@@ -1,0 +1,7 @@
+<b>1.4.0(1040) 2023.11.13</b>
+- New: customizable list item layout style with more options
+- Fix: spamming error notifications after device reboot
+- Fix: playback notification may be canceled if losing audio focus
+- Improvement: Dark/Light Mode would be switched after system dark mode changed instantly without closing and reopening the app
+- Improvement: add Shuffle Mode and Repeat Mode buttons in Notification and Android Auto
+...(Visit project homepage to see full changelogs)
