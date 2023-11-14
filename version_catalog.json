@@ -1,6 +1,22 @@
 {
   "versions": [
     {
+      "channel": "stable",
+      "versionName": "1.4.0",
+      "versionCode": 1040,
+      "date": 1699880000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.4.0"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>新增 可定制列表项样式</li><li>修复 设备重启后出现的大量错误通知(仅屏蔽)</li><li>修复 若音频焦点被剥夺(如其他媒体在播放)播放通知会被取消</li><li>改进 深色模式在系统深色模式改变后立即更改而无需重进</li><li>改进 在通知(Android T 及以上)和 Android Auto 中, 添加随机模式和重复模式按钮</li><li>改进 在 Android Auto 中, 显示专辑封面 (仅基本支持)</li><li>改进 改进 mediastore 刷新 (可能将修复某些设备中扫描媒体的问题)</li><li>改进 各种细小用户界面改进</li><li>修改 替换部分图标</li><li>修改 在 播放列表详情 中, 显示歌曲顺序而非图片</li><li>翻译 更新 芬兰语 (Latzze)</li><li>翻译 更新 阿拉伯语 (Yrando)</li><li>翻译 更新 巴西葡萄牙语 (EddieMattos)</li><li>翻译 更新 日语 (aorinngoDo)</li><li>翻译 更新 土耳其语 (evladifatihan)</li><li>修改 禁止从 v0.3.4 之前的版本升级至当前版本</li><li>修改 警告从 v0.7.1 之前的版本升级至当前版本</li><li>开发 使用 webp 和 svg 格式以减少大小</li><li>开发 更新依赖, 清理代码</li></ol>",
+        "en": "<ol><li>New: customizable list item layout style with more options</li><li>Fix: spamming error notifications after device reboot (merely mute)</li><li>Fix: playback notification may be canceled if losing audio focus (eg. other media player starts playing)</li><li>Improvement: Dark/Light Mode would be switched after system dark mode changed instantly without closing and reopening the app</li><li>Improvement: add Shuffle Mode and Repeat Mode buttons in Notification (since Android T) and Android Auto</li><li>Improvement: display album artwork in Android Auto (basic support)</li><li>Improvement: improve mediastore refresh (may fix the problem of scaning media in some devices)</li><li>Improvement: various minor miscellaneous ui refinements</li><li>Modify: replace some icons</li><li>Modify: show song order instead of images in Playlist Detail</li><li>Translation: update Finnish (by Latzze)</li><li>Translation: update Arabic (by Yrando)</li><li>Translation: update Portuguese, Brazilian (by EddieMattos)</li><li>Translation: update Japanese (by aorinngoDo)</li><li>Translation: update Turkish (by evladifatihan)</li><li>Modify: forbid upgrading from v0.3.4 and older</li><li>Modify: warn when upgrading from v0.7.1 and older</li><li>Development: use webp and svg formats in assets and resources to shrink artifacts size</li><li>Development: upgrade dependencies, cleanup code</li></ol>"
+      }
+    },
+    {
       "channel": "preview",
       "versionName": "1.4-beta2",
       "versionCode": 1036,
