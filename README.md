@@ -23,7 +23,7 @@ of [Phonograph](https://github.com/kabouzeid/Phonograph), and is currently under
 
 [<img src="https://img.shields.io/github/v/release/chr56/phonograph_plus?label=Github%20Release" alt="Github%20Release">](https://github.com/chr56/Phonograph_Plus/releases/latest)
 [<img src="https://img.shields.io/github/v/release/chr56/phonograph_plus?label=Github%20Release%20(Latest)&include_prereleases" alt="Github%20Release%20(Latest)">](https://github.com/chr56/Phonograph_Plus/releases/)
-[<img src="https://img.shields.io/github/v/release/chr56/phonograph_plus?label=F-droid" alt="F-droid">](https://f-droid.org/packages/player.phonograph.plus/)
+[<img src="https://img.shields.io/f-droid/v/player.phonograph.plus?label=F-droid" alt="F-droid">](https://f-droid.org/packages/player.phonograph.plus/)
 
 ## **Additional Features**
 
