@@ -22,6 +22,9 @@ import android.graphics.Matrix.ScaleToFit
 import android.graphics.Rect
 import android.util.Log
 import kotlin.math.min
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * resize Bitmap (crop and scale to [size] if ratio is not proper)
@@ -106,19 +109,37 @@ internal fun retrieveAudioFile(
     size: Size,
     rawImage: Boolean,
 ): FetchResult? {
+
+    val noImage = CacheStore.AudioFiles(context).isNoImage(audioFile)
+    if (noImage) return null // skipping
+
     for (retriever in retrievers) {
+        val cached = CacheStore.AudioFiles(context).get(audioFile, retriever.name)
+        if (cached != null) {
+            debug {
+                Log.v(TAG, "Image was read from cache of ${retriever.name} for file $audioFile")
+            }
+            return cached
+        }
+        val noSpecificImage = CacheStore.AudioFiles(context).isNoImage(audioFile, retriever.name)
+        if (noSpecificImage) continue
         val result = retriever.retrieve(audioFile.path, audioFile.albumId, context, size, rawImage)
         if (result == null) {
             debug {
                 Log.v(TAG, "Image not available from ${retriever.name} for file $audioFile")
             }
+            CacheStore.AudioFiles(context).markNoImage(audioFile, retriever.name)
             continue
         } else {
+            CoroutineScope(Dispatchers.IO).launch {
+                CacheStore.AudioFiles(context).set(audioFile, result, retriever.name)
+            }
             return result
         }
     }
     debug {
         Log.v(TAG, "No any cover for file $audioFile")
     }
+    CacheStore.AudioFiles(context).markNoImage(audioFile)
     return null
 }
