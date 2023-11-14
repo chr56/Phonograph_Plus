@@ -21,6 +21,19 @@ fun File.createOrOverrideFile(): File {
     return this
 }
 
+fun File.createOrOverrideFileRecursive(): File {
+    val parentFile = parentFile
+    if (parentFile != null) {
+        if (!parentFile.exists()) {
+            parentFile.mkdirs()
+        }
+    }
+
+    if (exists()) delete()
+    createNewFile()
+    return this
+}
+
 fun moveFile(from: File, to: File) {
     require(from.exists()) { "${from.path} doesn't exits!" }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
