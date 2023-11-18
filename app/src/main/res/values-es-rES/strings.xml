@@ -22,7 +22,7 @@
     <string name="action_delete_from_device">Eliminar del dispositivo</string>
     <string name="action_details">Detalles</string>
     <string name="action_scan">Escanear</string>
-    <string name="action_set_as_start_directory">Establecer como directorio de inicio</string>
+    <string name="action_set_as_start_directory">Establecer como carpeta de inicio</string>
     <string name="albums">Álbumes</string>
     <string name="artists">Artistas</string>
     <string name="genres">Géneros</string>
@@ -48,7 +48,7 @@
     <string name="label_file_size">Tamaño</string>
     <string name="label_file_format">Formato</string>
     <string name="label_track_length">Duración</string>
-    <string name="label_bit_rate">Velocidad de Bits</string>
+    <string name="label_bit_rate">Tasa de Bits</string>
     <string name="label_sampling_rate">Frecuencia de muestreo</string>
     <string name="action_go_to_artist">Ir al artista</string>
     <string name="action_go_to_album">Ir al álbum</string>
@@ -63,10 +63,10 @@
     <string name="inserted_x_songs_into_playlist_x">Añadidas %1$d canciones a la lista de reproducción %2$s.</string>
     <string name="created_playlist_x">Lista de reproducción %1$s creada.</string>
     <string name="playlist_exists">La lista de reproducción %1$s ya existe.</string>
-    <string name="could_not_create_playlist">No se pudo crear la playlist</string>
+    <string name="could_not_create_playlist">No se pudo crear la lista de reproducción</string>
     <string name="rename_playlist_title">Renombrar lista de reproducción</string>
     <string name="save_playlist_title">Guardar como archivo</string>
-    <string name="save_playlists_title">Español</string>
+    <string name="save_playlists_title">Guardar como archivos</string>
     <string name="add_playlist_title">Añadir a lista de reproducción</string>
     <string name="select_all_title">Seleccionar todo</string>
     <string name="action_shuffle_all">Modo aleatorio</string>
@@ -80,7 +80,7 @@
     <string name="black_theme_name">Negro (AMOLED)</string>
     <string name="auto_theme_name">Auto</string>
     <string name="always">Siempre</string>
-    <string name="only_on_wifi">Solo en Wi-Fi</string>
+    <string name="only_on_wifi">Solo mediante Wi-Fi</string>
     <string name="never">Nunca</string>
     <string name="today">Hoy</string>
     <string name="past_seven_days">Últimos 7 días</string>
@@ -115,7 +115,7 @@
     <string name="pref_title_remember_last_tab">Recordar la última pestaña</string>
     <string name="pref_title_remember_shuffle">Recordar aleatorio</string>
     <string name="no_equalizer">No se encontró ningún ecualizador</string>
-    <string name="no_audio_ID"></string>
+    <string name="no_audio_ID">Reproduce primero una canción y vuelve a intentarlo.</string>
     <string name="delete_action">Borrar</string>
     <string name="clear_action">Limpiar</string>
     <string name="remove_action">Eliminar</string>
@@ -218,7 +218,7 @@
     <string name="library_categories">Categorías de la biblioteca</string>
     <string name="pref_summary_library_categories">Configure la visibilidad y el orden de las categorías de la biblioteca.</string>
     <string name="you_have_to_select_at_least_one_category">Debes seleccionar al menos una categoría.</string>
-    <string name="action_scan_directory">Escanear directorio</string>
+    <string name="action_scan_directory">Explorar carpeta</string>
     <string name="scan_media">Escanear medios</string>
     <string name="action_sort_order">Orden de clasificación</string>
     <string name="sort_order_a_z">Ascendente</string>
@@ -288,8 +288,53 @@
     <string name="pref_title_reset_home_pages_tab_config">Restablecer todas las pestañas</string>
     <string name="pref_summary_reset_home_pages_tab_config">Todas las categorías de las librerías se restablecerían a los valores predeterminados.</string>
     <string name="are_you_sure">¿Estás seguro?</string>
+    <string name="original_author">Autor original</string>
+    <string name="plus_author">El autor de Phonograph Plus</string>
+    <string name="misc">Miscelánea</string>
+    <string name="comment">Comentario</string>
+    <string name="composer">Compositor</string>
+    <string name="lyricist">Letrista</string>
+    <string name="music_tags">Etiquetas</string>
+    <string name="file">Archivo</string>
+    <string name="pref_header_compatibility">Compatibilidad</string>
+    <string name="pref_summary_use_legacy_favorite_playlist_impl">Si lo activa, la aplicación guardará canciones favoritas en una lista de reproducción m3u en Storage en lugar de guardar canciones favoritas en la base de datos interna de la aplicación. Puedes exportar la lista manualmente..)</string>
+    <string name="databases">Bases de datos</string>
+    <string name="embedded_lyrics">letras insertadas</string>
+    <string name="external_lyrics">letras externas</string>
+    <string name="background_notification_name">Trabajo en segundo plano</string>
+    <string name="sort_order_song_count">Número de canciones</string>
+    <string name="sort_order_album_count">Número de álbumes</string>
     <string name="name">Nombre</string>
     <string name="preferences">Preferencias</string>
+    <string name="behaviour_auto">Automático</string>
+    <string name="behaviour_force_saf">Forzar el uso del framework de Acceso al almacenamiento</string>
+    <string name="reached_to_root">Has alcanzado la carpeta raíz de este volumen de almacenamiento</string>
     <string name="sort_order_size">Tamaño de Archivo</string>
+    <string name="sort_order_path">Ruta</string>
     <string name="use_legacy_list_Files">Usar la forma antigua de leer archivos</string>
+    <string name="change_now_playing_screen">Mostrar en pantalla de reproducción actual</string>
+    <string name="load_images_for_files">Cargar imágenes para archivos</string>
+    <string name="app_language">Idioma de la aplicación</string>
+    <string name="_default">Predeterminado</string>
+    <plurals name="item_albums">
+        <item quantity="one">%1$d Álbum</item>
+        <item quantity="other">%1$d Álbumes</item>
+    </plurals>
+    <plurals name="item_artists">
+        <item quantity="one">%1$d Artista</item>
+        <item quantity="other">%1$d Artistas</item>
+    </plurals>
+    <plurals name="item_playlists">
+        <item quantity="one">%1$d Lista de reproducción</item>
+        <item quantity="other">%1$d Listas de reproducción</item>
+    </plurals>
+    <plurals name="item_playlists_generated">
+        <item quantity="one">Lista de reproducción %1$d generada</item>
+        <item quantity="other">Listas de reproducción %1$d generadas</item>
+    </plurals>
+    <string name="warning_can_not_retract">¡Esta acción es irrevocable!</string>
+    <string name="delete_with_lyrics">Eliminar con letras</string>
+    <string name="excluded_paths">Rutas excluidas:</string>
+    <string name="included_paths">Rutas incluidas</string>
+    <string name="swith_mode">Cambiar modo</string>
 </resources>
