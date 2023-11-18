@@ -372,4 +372,6 @@
     <string name="target_track">Pista</string>
     <string name="alias">Alias</string>
     <string name="type">Tipo</string>
+    <string name="key_tags">Etiquetas</string>
+    <string name="key_date">Fecha</string>
 </resources>
