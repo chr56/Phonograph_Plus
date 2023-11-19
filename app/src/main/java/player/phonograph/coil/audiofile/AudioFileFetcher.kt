@@ -11,7 +11,6 @@ import coil.request.Options
 import coil.size.Size
 import player.phonograph.coil.retriever.ImageRetriever
 import player.phonograph.coil.retriever.raw
-import player.phonograph.coil.retriever.retrieveAudioFile
 import player.phonograph.coil.retriever.retrieverFromConfig
 import android.content.Context
 

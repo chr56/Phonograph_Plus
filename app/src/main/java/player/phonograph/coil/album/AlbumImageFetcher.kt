@@ -9,10 +9,10 @@ import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.request.Options
 import coil.size.Size
+import player.phonograph.coil.audiofile.retrieveAudioFile
 import player.phonograph.coil.retriever.CacheStore
 import player.phonograph.coil.retriever.ImageRetriever
 import player.phonograph.coil.retriever.raw
-import player.phonograph.coil.retriever.retrieveAudioFile
 import player.phonograph.coil.retriever.retrieverFromConfig
 import player.phonograph.util.debug
 import android.content.Context
