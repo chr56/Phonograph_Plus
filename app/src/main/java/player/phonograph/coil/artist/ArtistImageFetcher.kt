@@ -10,6 +10,7 @@ import coil.fetch.Fetcher
 import coil.request.Options
 import coil.size.Size
 import player.phonograph.coil.CustomArtistImageStore
+import player.phonograph.coil.retriever.CacheStore
 import player.phonograph.coil.retriever.ExternalFileRetriever
 import player.phonograph.coil.retriever.ImageRetriever
 import player.phonograph.coil.retriever.raw
@@ -19,6 +20,9 @@ import player.phonograph.coil.retriever.retrieverFromConfig
 import player.phonograph.util.debug
 import android.content.Context
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ArtistImageFetcher(
     val data: ArtistImage,
@@ -48,17 +52,37 @@ class ArtistImageFetcher(
 
     private fun retrieve(
         retrievers: List<ImageRetriever>,
-        data: ArtistImage,
+        artist: ArtistImage,
         context: Context,
         size: Size,
     ): FetchResult? {
-        for (file in data.files) {
+        val noImage = CacheStore.ArtistImages(context).isNoImage(artist)
+        if (noImage) return null // skipping
+
+        for (file in artist.files) {
+            val cached = CacheStore.ArtistImages(context).get(artist, file.songId.toString())
+            if (cached != null) {
+                debug {
+                    Log.v(TAG, "Image was read from cache of file($file) for artist $artist")
+                }
+                return cached
+            }
+            val noSpecificImage = CacheStore.ArtistImages(context).isNoImage(artist, file.songId.toString())
+            if (noSpecificImage) continue
             val result = retrieveAudioFile(retrievers, file, context, size, raw)
-            if (result != null) return result
+            if (result != null) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    CacheStore.ArtistImages(context).set(artist, result, file.songId.toString())
+                }
+                return result
+            } else {
+                CacheStore.ArtistImages(context).markNoImage(artist, file.songId.toString())
+            }
         }
         debug {
-            Log.v(TAG, "No any image for artist ${data.name}")
+            Log.v(TAG, "No any image for artist ${artist.name}")
         }
+        CacheStore.ArtistImages(context).markNoImage(artist)
         return null
     }
 
