@@ -27,9 +27,11 @@ import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.provider.MediaStore
 import android.widget.Toast
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
@@ -153,7 +155,16 @@ inline fun <T> List<T>.sort(
 //
 
 fun mediaStoreAlbumArtUri(albumId: Long): Uri =
-    ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        val uri = MediaStore.AUTHORITY_URI.buildUpon()
+            .appendPath(MediaStore.VOLUME_EXTERNAL)
+            .appendPath("audio")
+            .appendPath("albumart")
+            .build()
+        ContentUris.withAppendedId(uri, albumId)
+    } else {
+        ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId)
+    }
 
 fun shareFileIntent(context: Context, song: Song): Intent {
     return try {
