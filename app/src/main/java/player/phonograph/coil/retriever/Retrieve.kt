@@ -20,15 +20,22 @@ import okio.source
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import player.phonograph.util.mediaStoreAlbumArtUri
-import android.content.ContentResolver
+import player.phonograph.util.recordThrowable
+import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Point
 import android.media.MediaMetadataRetriever
-import android.net.Uri
 import android.os.Build
-import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
+import android.util.Size as AndroidSize
+
+
 
 internal fun readFromMediaStore(
     albumId: Long,
@@ -36,8 +43,7 @@ internal fun readFromMediaStore(
     size: Size,
 ): SourceResult? =
     runCatching {
-        val uri = mediaStoreAlbumArtUri(albumId)
-        readFromMediaStore(uri, context, size)
+        retrieveFromAlbumUri(albumId, context, size)
     }.getOrNull()
 
 internal fun retrieveFromMediaMetadataRetriever(
@@ -89,43 +95,60 @@ internal fun retrieveFromExternalFile(
 }
 
 @OptIn(ExperimentalCoilApi::class)
-internal fun readFromMediaStore(
-    uri: Uri,
+internal fun retrieveFromAlbumUri(
+    albumId: Long,
     context: Context,
     size: Size,
 ): SourceResult? {
     val contentResolver = context.contentResolver
-    val source =
-        if (Build.VERSION.SDK_INT >= 29) {
-            val width = size.width.pxOrElse { -1 }
-            val height = size.height.pxOrElse { -1 }
-            val bundle: Bundle? =
-                if (width >= 0 && height >= 0) {
-                    Bundle(1).apply {
-                        putParcelable(
-                            ContentResolver.EXTRA_SIZE, Point(width, height)
-                        )
-                    }
-                } else null
-            contentResolver.openTypedAssetFile(uri, "image/*", bundle, null)?.use {
-                it.createInputStream().use { inputStream ->
-                    inputStream.source().buffer()
-                }
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        val uri = ContentUris.withAppendedId(
+            MediaStore.Audio.Albums.getContentUri(MediaStore.VOLUME_EXTERNAL),
+            albumId
+        )
+        val width = size.width.pxOrElse { -1 }
+        val height = size.height.pxOrElse { -1 }
+        try {
+            val bitmap = contentResolver.loadThumbnail(uri, AndroidSize(width, height), null)
+            val outputStream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream).let { if (!it) throw IOException("Failed!") }
+            val inputStream = ByteArrayInputStream(outputStream.toByteArray())
+            val source = inputStream.source().buffer()
+            SourceResult(
+                source = ImageSource(
+                    source = source,
+                    context = context,
+                    metadata = ContentMetadata(uri)
+                ),
+                mimeType = "image/png",
+                dataSource = DataSource.DISK
+            )
+        } catch (e: IOException) {
+            if (e is FileNotFoundException) {
+                Log.v("loadThumbnail", "File not available ($uri)!")
+            } else {
+                recordThrowable(context, "loadThumbnail", e)
             }
-        } else {
-            contentResolver.openInputStream(uri)?.use { inputStream ->
-                inputStream.source().buffer()
-            }
+            null
         }
-    return if (source != null) SourceResult(
-        source = ImageSource(
-            source = source,
-            context = context,
-            metadata = ContentMetadata(uri)
-        ),
-        mimeType = contentResolver.getType(uri),
-        dataSource = DataSource.DISK
-    ) else null
+    } else {
+        val uri = mediaStoreAlbumArtUri(albumId)
+        val source = contentResolver.openInputStream(uri)?.use { inputStream ->
+            inputStream.source().buffer()
+        }
+        if (source != null)
+            SourceResult(
+                source = ImageSource(
+                    source = source,
+                    context = context,
+                    metadata = ContentMetadata(uri)
+                ),
+                mimeType = contentResolver.getType(uri),
+                dataSource = DataSource.DISK
+            )
+        else
+            null
+    }
 }
 
 internal fun readFromFile(
