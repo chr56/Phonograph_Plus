@@ -33,7 +33,7 @@ class MediaStoreRetriever : ImageRetriever {
         size: Size,
         raw: Boolean,
     ): FetchResult? {
-        return readFromMediaStore(id, context, size)
+        return retrieveFromMediaStore(id, context, size)
     }
 }
 

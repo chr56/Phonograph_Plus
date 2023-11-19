@@ -37,7 +37,7 @@ import android.util.Size as AndroidSize
 
 
 
-internal fun readFromMediaStore(
+internal fun retrieveFromMediaStore(
     albumId: Long,
     context: Context,
     size: Size,
