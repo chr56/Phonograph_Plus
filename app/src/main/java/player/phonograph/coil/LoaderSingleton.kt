@@ -35,7 +35,7 @@ fun createPhonographImageLoader(context: Context): ImageLoader {
             // artist
             add(ArtistKeyer())
             add(ArtistImageMapper())
-            add(ArtistImageFetcher.Factory())
+            add(ArtistImageFetcher.Factory(context))
             // last.fm
             add(LastFmImageBundleKeyer())
             add(LastFmImageBundleMapper())
