@@ -27,7 +27,7 @@ fun createPhonographImageLoader(context: Context): ImageLoader {
             add(AudioFileKeyer())
             add(AudioFileMapper())
             add(FileEntityMapper())
-            add(AudioFileFetcher.Factory())
+            add(AudioFileFetcher.Factory(context))
             // album
             add(AlbumKeyer())
             add(AlbumImageMapper())

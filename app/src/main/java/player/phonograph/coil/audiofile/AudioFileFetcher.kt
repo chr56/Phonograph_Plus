@@ -9,38 +9,53 @@ import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.request.Options
 import coil.size.Size
+import player.phonograph.coil.retriever.AudioFileImageFetcherDelegate
+import player.phonograph.coil.retriever.CacheStore
 import player.phonograph.coil.retriever.ImageRetriever
 import player.phonograph.coil.retriever.raw
 import player.phonograph.coil.retriever.retrieverFromConfig
+import player.phonograph.util.debug
 import android.content.Context
+import android.util.Log
 
 class AudioFileFetcher private constructor(
     private val audioFile: AudioFile,
     private val context: Context,
     private val size: Size,
     private val rawImage: Boolean,
+    private val delegates: List<AudioFileImageFetcherDelegate<ImageRetriever>>,
 ) : Fetcher {
 
-    class Factory : Fetcher.Factory<AudioFile> {
+    class Factory(context: Context) : Fetcher.Factory<AudioFile> {
         override fun create(data: AudioFile, options: Options, imageLoader: ImageLoader): Fetcher =
             AudioFileFetcher(
                 data,
                 options.context,
                 options.size,
                 options.raw(false),
+                delegates
             )
+
+        private val delegates: List<AudioFileImageFetcherDelegate<ImageRetriever>> =
+            retrieverFromConfig.map { AudioFileImageFetcherDelegate(context.applicationContext, it) }
     }
 
-    override suspend fun fetch(): FetchResult? =
-        retrieve(retriever, audioFile, context, size)
-
-    private fun retrieve(
-        retrievers: List<ImageRetriever>,
-        audioFile: AudioFile,
-        context: Context,
-        size: Size,
-    ): FetchResult? {
-        return retrieveAudioFile(retrievers, audioFile, context, size, rawImage)
+    override suspend fun fetch(): FetchResult? {
+        val noImage = CacheStore.AudioFiles(context).isNoImage(audioFile)
+        if (noImage) return null // skipping
+        for (delegate in delegates) {
+            val result = delegate.retrieve(audioFile, context, size, rawImage)
+            if (result != null) {
+                return result
+            } else {
+                continue
+            }
+        }
+        debug {
+            Log.v(TAG, "No any cover for file $audioFile")
+        }
+        CacheStore.AudioFiles(context).markNoImage(audioFile)
+        return null
     }
 
     companion object {
