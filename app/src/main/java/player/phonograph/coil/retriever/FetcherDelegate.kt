@@ -39,6 +39,7 @@ sealed class FetcherDelegate<T, R : ImageRetriever> {
         val noSpecificImage = isNoImage(target)
         if (noSpecificImage) return null
 
+        /*
         val cached = getCache(target)
         if (cached != null) {
             debug {
@@ -46,12 +47,15 @@ sealed class FetcherDelegate<T, R : ImageRetriever> {
             }
             return cached
         }
+        */
 
         val result = retrieveImpl(target, context, size, rawImage)
         return if (result != null) {
+            /*
             coroutineScope.launch {
                 setCache(target, result)
             }
+            */
             result
         } else {
             debug {
