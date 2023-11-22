@@ -7,8 +7,10 @@ package player.phonograph.mechanism.tag
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
+import org.jaudiotagger.logging.ErrorMessage
 import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.KeyNotFoundException
+import player.phonograph.R
 import player.phonograph.model.FilePropertyField
 import player.phonograph.model.LongFilePropertyField
 import player.phonograph.model.Song
@@ -21,12 +23,20 @@ import player.phonograph.model.TagField
 import player.phonograph.model.TagFormat
 import player.phonograph.model.allFieldKey
 import player.phonograph.util.reportError
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
+import android.widget.Toast
 import java.io.File
 
-fun loadSongInfo(song: Song): SongInfoModel = loadSongInfo(File(song.data))
-
-fun loadSongInfo(songFile: File): SongInfoModel {
-    require(songFile.exists()) { "${songFile.path} doesn't exist! please check file or permission of device storage." }
+fun loadSongInfo(context: Context, song: Song): SongInfoModel {
+    val songFile = File(song.data)
+    if (!songFile.exists()) {
+        Handler(Looper.getMainLooper()).post {
+            context.getString(R.string.file_not_found, songFile.path)
+        }
+        return readSongInfoFallback(song, songFile)
+    }
     val fileName = songFile.name
     val filePath = songFile.absolutePath
     val fileSize = songFile.length()
@@ -48,16 +58,16 @@ fun loadSongInfo(songFile: File): SongInfoModel {
             allTags,
         )
     } catch (e: Exception) {
-        reportError(e, TAG, String.format(ERR_MSG_FAILED_TO_READ, filePath, filePath.substringAfterLast('.')))
-        return SongInfoModel(
-            fileName = StringFilePropertyField(fileName),
-            filePath = StringFilePropertyField(filePath),
-            fileSize = LongFilePropertyField(fileSize),
-            audioPropertyFields = emptyMap(),
-            tagFields = mapOf(FieldKey.TITLE to TagField(FieldKey.TITLE, TextData("ERR"))),
-            tagFormat = TagFormat.Unknown,
-            allTags = emptyMap(),
-        )
+        val suffix = songFile.extension
+        if (ErrorMessage.NO_READER_FOR_THIS_FORMAT.getMsg(suffix) == e.message) {
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(context, context.getString(R.string.unsupported_format, suffix), Toast.LENGTH_SHORT)
+                    .show()
+            }
+        } else {
+            reportError(e, TAG, String.format(ERR_MSG_FAILED_TO_READ, filePath, suffix))
+        }
+        return readSongInfoFallback(song, songFile)
     }
 }
 
@@ -101,6 +111,28 @@ private fun readTagFieldsImpl(audioFile: AudioFile, keys: Set<FieldKey>): Map<Fi
         TagField(key, value)
     }
 
+
+private fun readSongInfoFallback(song: Song, songFile: File): SongInfoModel =
+    SongInfoModel(
+        fileName = StringFilePropertyField(songFile.name),
+        filePath = StringFilePropertyField(songFile.absolutePath),
+        fileSize = LongFilePropertyField(songFile.length()),
+        audioPropertyFields = mapOf(
+            FilePropertyField.Key.FILE_FORMAT to StringFilePropertyField(songFile.extension),
+            FilePropertyField.Key.TRACK_LENGTH to LongFilePropertyField(song.duration)
+        ),
+        tagFields = mapOf(
+            FieldKey.TITLE to TagField(FieldKey.TITLE, TextData(song.title)),
+            FieldKey.ARTIST to TagField(FieldKey.ARTIST, TextData(song.artistName.orEmpty())),
+            FieldKey.ALBUM to TagField(FieldKey.ALBUM, TextData(song.albumName.orEmpty())),
+            FieldKey.ALBUM_ARTIST to TagField(FieldKey.ALBUM_ARTIST, TextData(song.albumArtistName.orEmpty())),
+            FieldKey.COMPOSER to TagField(FieldKey.COMPOSER, TextData(song.composer.orEmpty())),
+            FieldKey.YEAR to TagField(FieldKey.YEAR, TextData(song.year.toString())),
+            FieldKey.TRACK to TagField(FieldKey.TRACK, TextData(song.trackNumber.toString())),
+        ),
+        tagFormat = TagFormat.Unknown,
+        allTags = emptyMap(),
+    )
 
 private const val TAG = "SongInfoReader"
 

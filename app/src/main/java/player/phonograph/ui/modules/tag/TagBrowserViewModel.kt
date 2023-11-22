@@ -46,7 +46,7 @@ class TagBrowserViewModel : ViewModel() {
         if (song != Song.EMPTY_SONG) {
             _song.update { song }
             viewModelScope.launch(Dispatchers.IO) {
-                val info = loadSongInfo(song)
+                val info = loadSongInfo(context, song)
                 val (bitmap, paletteColor) = loadCover(context, song)
                 _originalSongInfo.emit(info)
                 _currentSongInfo.emit(info)

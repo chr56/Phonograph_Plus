@@ -44,7 +44,7 @@ class MultiTagBrowserViewModel : ViewModel() {
             viewModelScope.launch(Dispatchers.IO) {
                 val infos = mutableListOf<SongInfoModel>()
                 for (song in songs) {
-                    val info = loadSongInfo(song)
+                    val info = loadSongInfo(context, song)
                     infos.add(info)
                 }
                 _originalSongInfos.emit(infos)
