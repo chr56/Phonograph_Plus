@@ -153,18 +153,17 @@ inline fun <T> List<T>.sort(
 //
 // Other
 //
-
-fun mediaStoreAlbumArtUri(albumId: Long): Uri =
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        val uri = MediaStore.AUTHORITY_URI.buildUpon()
+private val albumArtContentUri: Uri by lazy(LazyThreadSafetyMode.NONE) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+        MediaStore.AUTHORITY_URI.buildUpon()
             .appendPath(MediaStore.VOLUME_EXTERNAL)
             .appendPath("audio")
             .appendPath("albumart")
             .build()
-        ContentUris.withAppendedId(uri, albumId)
-    } else {
-        ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId)
-    }
+    else Uri.parse("content://media/external/audio/albumart")
+}
+
+fun mediaStoreAlbumArtUri(albumId: Long): Uri = ContentUris.withAppendedId(albumArtContentUri, albumId)
 
 fun shareFileIntent(context: Context, song: Song): Intent {
     return try {
