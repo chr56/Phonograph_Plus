@@ -480,4 +480,6 @@
     <string name="storage_volumes">储存卷</string>
     <string name="no_volume_found">找不到任何储存卷! 系统可能不支持!</string>
     <string name="action_select">选择</string>
+    <string name="unsupported_format">不支持的格式: %1$s</string>
+    <string name="file_not_found">“文件 %1$s 疑似不存在！请检查文件或访问存储的权限!”</string>
 </resources>

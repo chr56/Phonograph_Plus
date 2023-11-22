@@ -480,4 +480,6 @@
     <string name="storage_volumes">磁碟區</string>
     <string name="no_volume_found">找不到任何磁碟區! 作業系統可能不支援!</string>
     <string name="action_select">選擇</string>
+    <string name="unsupported_format">不支援的格式: %1$s</string>
+    <string name="file_not_found">“檔案 %1$s 疑似不存在！請檢查檔案或訪問儲存的許可權!”</string>
 </resources>
