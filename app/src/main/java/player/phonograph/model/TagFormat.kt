@@ -36,7 +36,7 @@ enum class TagFormat(val clazz: Class<out Tag>, val id: String) {
     Real(RealTag::class.java, "RealTag"),
     Wav(WavTag::class.java, "WavTag"),
     WavInfo(WavInfoTag::class.java, "WavInfoTag"),
-    Unknown(Tag::class.java, "")
+    Unknown(Tag::class.java, "N/A")
     ;
 
     companion object {
