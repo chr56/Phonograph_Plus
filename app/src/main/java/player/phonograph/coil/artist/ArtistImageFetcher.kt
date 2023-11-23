@@ -11,7 +11,6 @@ import coil.request.Options
 import coil.size.Size
 import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.coil.retriever.ArtistImageFetcherDelegate
-import player.phonograph.coil.retriever.CacheStore
 import player.phonograph.coil.retriever.ExternalFileRetriever
 import player.phonograph.coil.retriever.ImageRetriever
 import player.phonograph.coil.retriever.raw
@@ -50,8 +49,10 @@ class ArtistImageFetcher(
             return readFromFile(file, "#${data.id}#${data.name}", "image/jpeg")
         }
         // then try to receive from delegates
+        /*
         val noImage = CacheStore.ArtistImages(context).isNoImage(data)
         if (noImage) return null // skipping
+        */
         for (delegate in delegates) {
             val result = delegate.retrieve(data, context, size, raw)
             if (result != null) {
@@ -63,7 +64,9 @@ class ArtistImageFetcher(
         debug {
             Log.v(TAG, "No any cover for artist $data")
         }
+        /*
         CacheStore.ArtistImages(context).markNoImage(data)
+        */
         return null
     }
 

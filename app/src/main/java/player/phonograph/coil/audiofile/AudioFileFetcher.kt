@@ -10,7 +10,6 @@ import coil.fetch.Fetcher
 import coil.request.Options
 import coil.size.Size
 import player.phonograph.coil.retriever.AudioFileImageFetcherDelegate
-import player.phonograph.coil.retriever.CacheStore
 import player.phonograph.coil.retriever.ImageRetriever
 import player.phonograph.coil.retriever.raw
 import player.phonograph.coil.retriever.retrieverFromConfig
@@ -41,8 +40,10 @@ class AudioFileFetcher private constructor(
     }
 
     override suspend fun fetch(): FetchResult? {
+        /*
         val noImage = CacheStore.AudioFiles(context).isNoImage(audioFile)
         if (noImage) return null // skipping
+         */
         for (delegate in delegates) {
             val result = delegate.retrieve(audioFile, context, size, rawImage)
             if (result != null) {
@@ -54,7 +55,9 @@ class AudioFileFetcher private constructor(
         debug {
             Log.v(TAG, "No any cover for file $audioFile")
         }
+        /*
         CacheStore.AudioFiles(context).markNoImage(audioFile)
+        */
         return null
     }
 

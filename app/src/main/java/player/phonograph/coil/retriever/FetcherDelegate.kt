@@ -14,7 +14,6 @@ import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 sealed class FetcherDelegate<T, R : ImageRetriever> {
 
@@ -36,8 +35,10 @@ sealed class FetcherDelegate<T, R : ImageRetriever> {
         rawImage: Boolean,
     ): FetchResult? {
 
+        /*
         val noSpecificImage = isNoImage(target)
         if (noSpecificImage) return null
+        */
 
         /*
         val cached = getCache(target)
@@ -61,7 +62,9 @@ sealed class FetcherDelegate<T, R : ImageRetriever> {
             debug {
                 Log.v(TAG, "Image not available from ${retriever.name} for $target")
             }
+            /*
             markNoImage(target)
+            */
             null
         }
     }

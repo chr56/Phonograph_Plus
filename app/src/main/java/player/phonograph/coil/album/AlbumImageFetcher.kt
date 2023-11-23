@@ -10,7 +10,6 @@ import coil.fetch.Fetcher
 import coil.request.Options
 import coil.size.Size
 import player.phonograph.coil.retriever.AlbumImageFetcherDelegate
-import player.phonograph.coil.retriever.CacheStore
 import player.phonograph.coil.retriever.ImageRetriever
 import player.phonograph.coil.retriever.raw
 import player.phonograph.coil.retriever.retrieverFromConfig
@@ -39,8 +38,10 @@ class AlbumImageFetcher(
     }
 
     override suspend fun fetch(): FetchResult? {
+        /*
         val noImage = CacheStore.AlbumImages(context).isNoImage(data)
         if (noImage) return null // skipping
+        */
         for (delegate in delegates) {
             val result = delegate.retrieve(data, context, size, raw)
             if (result != null) {
@@ -52,7 +53,9 @@ class AlbumImageFetcher(
         debug {
             Log.v(TAG, "No any cover for album $data")
         }
+        /*
         CacheStore.AlbumImages(context).markNoImage(data)
+        */
         return null
     }
 
