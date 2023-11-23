@@ -4,23 +4,18 @@
 
 package player.phonograph.coil.retriever
 
-import coil.fetch.FetchResult
 import coil.size.Size
 import coil.size.isOriginal
 import coil.size.pxOrElse
-import player.phonograph.coil.audiofile.AudioFile
-import player.phonograph.util.debug
 import player.phonograph.util.reportError
 import androidx.core.graphics.BitmapCompat
 import androidx.core.graphics.toRectF
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Matrix.ScaleToFit
 import android.graphics.Rect
-import android.util.Log
 import kotlin.math.min
 
 /**
@@ -97,28 +92,3 @@ internal val folderCoverFiles = arrayOf(
     "album.png",
     "folder.png"
 )
-
-private const val TAG = "Coil"
-internal fun retrieveAudioFile(
-    retrievers: List<ImageRetriever>,
-    audioFile: AudioFile,
-    context: Context,
-    size: Size,
-    rawImage: Boolean,
-): FetchResult? {
-    for (retriever in retrievers) {
-        val result = retriever.retrieve(audioFile.path, audioFile.albumId, context, size, rawImage)
-        if (result == null) {
-            debug {
-                Log.v(TAG, "Image not available from ${retriever.name} for file $audioFile")
-            }
-            continue
-        } else {
-            return result
-        }
-    }
-    debug {
-        Log.v(TAG, "No any cover for file $audioFile")
-    }
-    return null
-}

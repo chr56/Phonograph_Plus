@@ -119,6 +119,8 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.* extends player.phonograph.mechanism.IFavorite { public <methods>; }
 -keep,allowoptimization,allowshrinking class player.phonograph.mechanism.UpdateKt { *** fetchVersionCatalog(...);}
 
+-keepclassmembernames,allowoptimization,allowshrinking interface player.phonograph.coil.retriever.CacheStore$Cache { public <methods>; }
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.coil.retriever.FetcherDelegate { abstract <methods>; }
 
 -keepclassmembernames class lib.phonograph.misc.RestResult { <methods>; }
 -keepclassmembernames class lib.phonograph.misc.RestResult$Success { <methods>; }
