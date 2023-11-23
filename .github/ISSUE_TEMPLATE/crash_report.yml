@@ -1,6 +1,6 @@
 name: Crash Report
 description: Report serious bugs, like app crashes
-title: "[Crash Report]: "
+title: "[Crash Report] "
 labels: [ "Bug", "Crash" ]
 
 body:
@@ -32,6 +32,14 @@ body:
     attributes:
       label: Steps to reproduce the bug
       description: (Optional) Steps to reproduce the bugs or unexpected behaviors, or when this happened.
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: What is your environment (such as OS version, ROM)? (Optional)
     validations:
       required: false
 

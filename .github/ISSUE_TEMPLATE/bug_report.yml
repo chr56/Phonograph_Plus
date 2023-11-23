@@ -1,6 +1,6 @@
 name: Bug Report
 description: Report bugs or unintended behaviors
-title: "[Bug]: "
+title: "[Bug] "
 labels: ["Bug"]
 
 body:
@@ -30,18 +30,18 @@ body:
       required: false
 
   - type: textarea
-    id: screenshots
+    id: environment
     attributes:
-      label: Screenshots or Screen recordings
-      description: (Optional)
+      label: Environment
+      description: What is your environment (such as Android OS version, ROM)? (Optional)
     validations:
       required: false
 
   - type: textarea
-    id: environment
+    id: screenshots
     attributes:
-      label: Environment
-      description: What is your environment (such as OS version, ROM)? (Optional)
+      label: Screenshots or Screen recordings
+      description: (Optional)
     validations:
       required: false
 
