@@ -1,0 +1,6 @@
+<b>1.4.1(1041) 2023.11.24</b>
+- Improvement: avoid showing error notifications if file format is unsupported in Song Detail
+- Improvement: use fallback method to read song tags if file format is unsupported
+- Improvement: image loading mechanism of Albums and Artists
+- Modify: use alternative means of gaining album art from MediaStore on Android Q and above
+- Translation: update Spanish (by guwsvnd5t)

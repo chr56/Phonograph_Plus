@@ -1,49 +1,21 @@
-version: "1.4.0"
-versionCode: 1040
-timestamp: 1699880000
+version: "1.4.1"
+versionCode: 1041
+timestamp: 1700800000
 channel: "STABLE"
 notes:
   en:
-    highlights: []
+    highlights: [ ]
     items:
-    - "New: customizable list item layout style with more options"
-    - "Fix: spamming error notifications after device reboot (merely mute)"
-    - "Fix: playback notification may be canceled if losing audio focus (eg. other media player starts playing)"
-    - "Improvement: Dark/Light Mode would be switched after system dark mode changed instantly without closing and reopening the app"
-    - "Improvement: add Shuffle Mode and Repeat Mode buttons in Notification (since Android T) and Android Auto"
-    - "Improvement: display album artwork in Android Auto (basic support)"
-    - "Improvement: improve mediastore refresh (may fix the problem of scaning media in some devices)"
-    - "Improvement: various minor miscellaneous ui refinements"
-    - "Modify: replace some icons"
-    - "Modify: show song order instead of images in Playlist Detail"
-    - "Translation: update Finnish (by Latzze)"
-    - "Translation: update Arabic (by Yrando)"
-    - "Translation: update Portuguese, Brazilian (by EddieMattos)"
-    - "Translation: update Japanese (by aorinngoDo)"
-    - "Translation: update Turkish (by evladifatihan)"
-    - "Modify: forbid upgrading from v0.3.4 and older"
-    - "Modify: warn when upgrading from v0.7.1 and older"
-    - "Development: use webp and svg formats in assets and resources to shrink artifacts size"
-    - "Development: upgrade dependencies, cleanup code"
+      - "Improvement: avoid showing error notifications if file format is unsupported in Song Detail"
+      - "Improvement: use fallback method to read song tags if file format is unsupported"
+      - "Improvement: image loading mechanism of Albums and Artists"
+      - "Modify: use alternative means of gaining album art from MediaStore on Android Q and above"
+      - "Translation: update Spanish (by guwsvnd5t)"
   zh:
-    highlights: []
+    highlights: [ ]
     items:
-    - "新增 可定制列表项样式"
-    - "修复 设备重启后出现的大量错误通知(仅屏蔽)"
-    - "修复 若音频焦点被剥夺(如其他媒体在播放)播放通知会被取消"
-    - "改进 深色模式在系统深色模式改变后立即更改而无需重进"
-    - "改进 在通知(Android T 及以上)和 Android Auto 中, 添加随机模式和重复模式按钮"
-    - "改进 在 Android Auto 中, 显示专辑封面 (仅基本支持)"
-    - "改进 改进 mediastore 刷新 (可能将修复某些设备中扫描媒体的问题)"
-    - "改进 各种细小用户界面改进"
-    - "修改 替换部分图标"
-    - "修改 在 播放列表详情 中, 显示歌曲顺序而非图片"
-    - "翻译 更新 芬兰语 (Latzze)"
-    - "翻译 更新 阿拉伯语 (Yrando)"
-    - "翻译 更新 巴西葡萄牙语 (EddieMattos)"
-    - "翻译 更新 日语 (aorinngoDo)"
-    - "翻译 更新 土耳其语 (evladifatihan)"
-    - "修改 禁止从 v0.3.4 之前的版本升级至当前版本"
-    - "修改 警告从 v0.7.1 之前的版本升级至当前版本"
-    - "开发 使用 webp 和 svg 格式以减少大小"
-    - "开发 更新依赖, 清理代码"
+      - "改进 歌曲详情中，若遇不支持的文件格式则避免显示错误通知"
+      - "改进 遇不支持的文件格式则使用后备方法读取歌曲标签"
+      - "改进 专辑和艺术家的图片加载机制"
+      - "修改 使用其他方法从 MediaStore 获取专辑封面 (在 Android Q 及更高版本上)"
+      - "翻译 更新 西班牙语 (guwsvnd5t)"
