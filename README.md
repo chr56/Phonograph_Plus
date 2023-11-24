@@ -17,7 +17,13 @@
 **An independent fork of Phonograph under maintenance and development**
 
 Phonograph is a material designed local music player for Android. And Phonograph Plus is an _independent_ fork
-of [Phonograph](https://github.com/kabouzeid/Phonograph), and is currently under my maintenance and development.
+of [Phonograph](https://github.com/kabouzeid/Phonograph), and is currently under my maintenance and ~~development~~.
+
+
+**🛠️ NOTICE: Development has been temporarily suspended, the project is currently in maintenance mode.**
+
+Development would be suspended for about one month or two, the project is maintaining only.
+No new features would be implemented during the maintenance period; only crucial and fatal bugs would be fixed if possible.
 
 ## **Downloads**
 

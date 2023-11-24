@@ -17,9 +17,12 @@
 
 **Phonograph 第三方维护版**
 
-正在维护和开发的 [Phonograph](https://github.com/kabouzeid/Phonograph) 独立分支
+正在维护和~~开发~~的 [Phonograph](https://github.com/kabouzeid/Phonograph) 独立分支
 
+**🛠️注意：开发暂停/项目仅维护**
 
+开发将暂缓约一两个月，项目仅维护。
+维护期间不会实现新功能，只会修复“重大”bug(若方便)。
 
 ## **下载**
 
