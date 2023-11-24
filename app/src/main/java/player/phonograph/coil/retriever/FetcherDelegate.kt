@@ -12,12 +12,10 @@ import player.phonograph.coil.audiofile.AudioFile
 import player.phonograph.util.debug
 import android.content.Context
 import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 sealed class FetcherDelegate<T, R : ImageRetriever> {
 
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    // private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     abstract val retriever: R
 
@@ -101,10 +99,12 @@ sealed class CompositeFetcherDelegate<T, R : ImageRetriever>(
     abstract fun iteratorDelegate(target: T): Collection<AudioFile>
 
     override fun retrieveImpl(target: T, context: Context, size: Size, rawImage: Boolean): FetchResult? {
-        val audioFilesCache = CacheStore.AudioFiles(context.applicationContext)
+        // val audioFilesCache = CacheStore.AudioFiles(context.applicationContext)
         for (file in iteratorDelegate(target)) {
+            /*
             val noImage = audioFilesCache.isNoImage(file)
             if (noImage) continue
+            */
             val result = retriever.retrieve(file.path, file.albumId, context, size, rawImage)
             if (result != null) {
                 return result
