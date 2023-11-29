@@ -234,11 +234,7 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         abstract fun updatePlayPauseColor(controlsColor: Int)
 
         fun updatePlayPauseDrawableState(animate: Boolean) {
-            if (MusicPlayerRemote.isPlaying) {
-                playPauseDrawable.setPause(animate)
-            } else {
-                playPauseDrawable.setPlay(animate)
-            }
+            playPauseDrawable.update(!MusicPlayerRemote.isPlaying, animate)
         }
 
         fun setUpPrevButton(onClickListener: View.OnClickListener) {
