@@ -2,6 +2,7 @@
 
 package player.phonograph.ui.views
 
+import player.phonograph.R
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
@@ -10,7 +11,6 @@ import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.util.Property
 import android.view.animation.DecelerateInterpolator
-import player.phonograph.R
 import kotlin.math.roundToInt
 
 class PlayPauseDrawable(context: Context) : Drawable() {
@@ -18,22 +18,28 @@ class PlayPauseDrawable(context: Context) : Drawable() {
     private val leftPauseBar = Path()
     private val rightPauseBar = Path()
 
-    private val paint = Paint()
+    private val paint =
+        Paint().apply {
+            isAntiAlias = true
+            style = Paint.Style.FILL
+            color = Color.WHITE
+        }
 
-    private val pauseBarWidth: Float
-    private val pauseBarHeight: Float
-
-    private val pauseBarDistance: Float
+    private val pauseBarWidth: Float = context.resources.getDimensionPixelSize(R.dimen.pause_bar_width).toFloat()
+    private val pauseBarHeight: Float = context.resources.getDimensionPixelSize(R.dimen.pause_bar_height).toFloat()
+    private val pauseBarDistance: Float = context.resources.getDimensionPixelSize(R.dimen.pause_bar_distance).toFloat()
 
     private var width = 0f
     private var height = 0f
 
-    private var progress = 0f
+    private var progress: Float = 0f
+        private set(value) {
+            field = value
+            invalidateSelf()
+        }
 
     private var isPlay = false
     private var isPlaySet = false
-
-    private var animator: Animator? = null
 
     override fun onBoundsChange(bounds: Rect) {
         super.onBoundsChange(bounds)
@@ -103,32 +109,6 @@ class PlayPauseDrawable(context: Context) : Drawable() {
         canvas.restoreToCount(saveCount)
     }
 
-    private val pausePlayAnimator: Animator
-        get() {
-            isPlaySet = !isPlaySet
-            val anim: Animator = ObjectAnimator.ofFloat(
-                this,
-                PROGRESS,
-                if (isPlay) 1f else 0f,
-                if (isPlay) 0f else 1f
-            )
-            anim.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    isPlay = !isPlay
-                }
-            })
-            return anim
-        }
-
-    private fun setProgress(progress: Float) {
-        this.progress = progress
-        invalidateSelf()
-    }
-
-    private fun getProgress(): Float {
-        return progress
-    }
-
     override fun setAlpha(alpha: Int) {
         paint.alpha = alpha
         invalidateSelf()
@@ -145,51 +125,77 @@ class PlayPauseDrawable(context: Context) : Drawable() {
     fun setPlay(animate: Boolean) {
         if (animate) {
             if (!isPlaySet) {
-                togglePlayPause()
+                playAnimation()
             }
         } else {
             isPlaySet = true
             isPlay = true
-            setProgress(1f)
+            progress = 1f
         }
     }
 
     fun setPause(animate: Boolean) {
         if (animate) {
             if (isPlaySet) {
-                togglePlayPause()
+                playAnimation()
             }
         } else {
             isPlaySet = false
             isPlay = false
-            setProgress(0f)
+            progress = 0f
         }
     }
 
-    fun togglePlayPause() {
-        if (animator != null) {
-            animator!!.cancel()
+    fun update(state: Boolean, animate: Boolean) {
+        if (animate) {
+            if (state xor isPlaySet) { // (state && !isPlaySet) || (!state && isPlaySet)
+                playAnimation()
+            }
+        } else {
+            isPlaySet = state
+            isPlay = state
+            progress = if (state) 1f else 0f
         }
-        animator = pausePlayAnimator
-        animator!!.interpolator = DecelerateInterpolator()
-        animator!!.duration = PLAY_PAUSE_ANIMATION_DURATION
-        animator!!.start()
     }
+
+
+
+    private var animator: Animator? = null
+
+    private fun playAnimation() {
+        animator?.cancel()
+        isPlaySet = !isPlaySet
+        animator = createPausePlayAnimator().also { it.start() }
+    }
+
+
+    private fun createPausePlayAnimator(): Animator =
+        ObjectAnimator.ofFloat(
+            this,
+            PROGRESS,
+            if (isPlay) 1f else 0f,
+            if (isPlay) 0f else 1f
+        ).also { animator ->
+            animator.interpolator = DecelerateInterpolator()
+            animator.addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    isPlay = !isPlay
+                }
+            })
+            animator.duration = PLAY_PAUSE_ANIMATION_DURATION
+        }
 
     companion object {
         private const val PLAY_PAUSE_ANIMATION_DURATION: Long = 250
-        private val PROGRESS: Property<PlayPauseDrawable, Float> = object : Property<PlayPauseDrawable, Float>(
-            Float::class.java,
-            "progress"
-        ) {
-            override fun get(d: PlayPauseDrawable): Float {
-                return d.getProgress()
-            }
 
-            override fun set(d: PlayPauseDrawable, value: Float) {
-                d.setProgress(value)
+        private val PROGRESS: Property<PlayPauseDrawable, Float> =
+            object : Property<PlayPauseDrawable, Float>(Float::class.java, "progress") {
+                override fun get(drawable: PlayPauseDrawable): Float = drawable.progress
+
+                override fun set(drawable: PlayPauseDrawable, value: Float) {
+                    drawable.progress = value
+                }
             }
-        }
 
         /**
          * Linear interpolate between a and b with parameter t.
@@ -197,15 +203,5 @@ class PlayPauseDrawable(context: Context) : Drawable() {
         private fun lerp(a: Float, b: Float, t: Float): Float {
             return a + (b - a) * t
         }
-    }
-
-    init {
-        val res = context.resources
-        paint.isAntiAlias = true
-        paint.style = Paint.Style.FILL
-        paint.color = Color.WHITE
-        pauseBarWidth = res.getDimensionPixelSize(R.dimen.pause_bar_width).toFloat()
-        pauseBarHeight = res.getDimensionPixelSize(R.dimen.pause_bar_height).toFloat()
-        pauseBarDistance = res.getDimensionPixelSize(R.dimen.pause_bar_distance).toFloat()
     }
 }
