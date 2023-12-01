@@ -6,8 +6,8 @@ import player.phonograph.mechanism.StatusBarLyric
 import player.phonograph.mechanism.lyrics.LyricsUpdater
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
-import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicService
+import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Keys
@@ -214,7 +214,9 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                     Toast.LENGTH_SHORT
                 ).show()
             }
-            jumpForwardImp(false)
+            if (queueManager.repeatMode != RepeatMode.REPEAT_SINGLE_SONG) {
+                jumpForwardImp(false)
+            }
         }
         log("playAtImp", "current: at $position song(${queueManager.currentSong.title})")
     }
