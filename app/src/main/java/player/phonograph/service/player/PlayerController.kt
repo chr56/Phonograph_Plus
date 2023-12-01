@@ -349,7 +349,12 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
 
     private fun jumpBackwardImp(force: Boolean) {
         if (force) {
-            playAtImp(queueManager.previousListPosition)
+            val previousListPosition = queueManager.previousListPosition
+            if (previousListPosition < 0) {
+                playAtImp(queueManager.currentSongPosition)
+            } else {
+                playAtImp(previousListPosition)
+            }
         } else {
             playAtImp(queueManager.previousSongPosition)
         }
@@ -379,7 +384,12 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
 
     private fun jumpForwardImp(force: Boolean) {
         if (force) {
-            playAtImp(queueManager.nextListPosition)
+            val nextListPosition = queueManager.nextListPosition
+            if (nextListPosition < 0) {
+                playAtImp(queueManager.currentSongPosition)
+            } else {
+                playAtImp(nextListPosition)
+            }
         } else {
             if (!queueManager.isLastTrack()) {
                 playAtImp(queueManager.nextSongPosition)
