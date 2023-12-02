@@ -77,24 +77,64 @@ class QueueManager(val context: Application) {
     val repeatMode: RepeatMode
         @Synchronized get() = queueHolder.repeatMode
 
+    /**
+     * get previous song position in CURRENT Repeat Mode behavior
+     */
     val previousSongPosition: Int
-        @Synchronized get() = queueHolder.previousSongPosition
+        @Synchronized get() {
+            val result = currentSongPosition - 1
+            return when (repeatMode) {
+                RepeatMode.NONE               -> if (result < 0) 0 else result
+                RepeatMode.REPEAT_QUEUE       -> if (result <= 0) playingQueue.size - 1 else result
+                RepeatMode.REPEAT_SINGLE_SONG -> currentSongPosition
+            }
+        }
+
+    /**
+     * get next song position in CURRENT Repeat mode behavior.
+     * returns -1 if ended
+     */
     val nextSongPosition: Int
-        @Synchronized get() = queueHolder.nextSongPosition
+        @Synchronized get() {
+            val result = currentSongPosition + 1
+            return when (repeatMode) {
+                RepeatMode.NONE               -> if (result >= playingQueue.size) -1 else result
+                RepeatMode.REPEAT_QUEUE       -> if (result >= playingQueue.size) 0 else result
+                RepeatMode.REPEAT_SINGLE_SONG -> currentSongPosition
+            }
+        }
 
+    /**
+     * get previous song position in order of list as a loop
+     */
     val previousLoopPosition: Int
-        @Synchronized get() = queueHolder.previousLoopPosition
+        @Synchronized get() = (currentSongPosition - 1 + playingQueue.size) % playingQueue.size
+    /**
+     * get next song position in order of list as a loop
+     */
     val nextLoopPosition: Int
-        @Synchronized get() = queueHolder.nextLoopPosition
+        @Synchronized get() = (currentSongPosition + 1) % playingQueue.size
 
+
+    /**
+     * get previous song position in order of list no mater what Repeat Mode is.
+     * returns -1 if out of index
+     */
     val previousListPosition: Int
-        @Synchronized get() = queueHolder.previousListPosition
+        @Synchronized get() = currentSongPosition - 1
+    /**
+     * get next song position in order of list no mater what Repeat Mode is.
+     * returns -1 if out of index
+     */
     val nextListPosition: Int
-        @Synchronized get() = queueHolder.nextListPosition
+        @Synchronized get() {
+            val result = currentSongPosition + 1
+            return if (result >= playingQueue.size) -1 else result
+        }
 
-    val currentSong: Song get() = queueHolder.currentSong
-    val previousSong: Song get() = queueHolder.previousSong
-    val nextSong: Song get() = queueHolder.nextSong
+    val currentSong: Song get() = queueHolder.getSongAt(currentSongPosition)
+    val previousSong: Song get() = queueHolder.getSongAt(previousSongPosition)
+    val nextSong: Song get() = queueHolder.getSongAt(nextSongPosition)
 
     fun modifyPosition(
         newPosition: Int,

@@ -68,88 +68,12 @@ class QueueHolder private constructor(
     }
 
 
-    /**
-     * get previous song position in CURRENT Repeat Mode behavior
-     */
-    val previousSongPosition: Int
-        get() {
-            val result = currentSongPosition - 1
-            return when (repeatMode) {
-                RepeatMode.NONE               -> {
-                    if (result < 0) 0 else result
-                }
-
-                RepeatMode.REPEAT_QUEUE       -> {
-                    if (result <= 0) playingQueue.size - 1 else result
-                }
-
-                RepeatMode.REPEAT_SINGLE_SONG -> {
-                    currentSongPosition
-                }
-            }
-        }
-
-    /**
-     * get previous song position in order of list as a loop
-     */
-    val previousLoopPosition: Int get() = (currentSongPosition - 1 + playingQueue.size) % playingQueue.size
-
-    /**
-     * get previous song position in order of list no mater what Repeat Mode is
-     */
-    val previousListPosition: Int
-        get() = currentSongPosition - 1
-
-    /**
-     * get next song position in CURRENT Repeat mode behavior
-     */
-    val nextSongPosition: Int
-        get() {
-            val result = currentSongPosition + 1
-            return when (repeatMode) {
-                RepeatMode.NONE               -> {
-                    if (result >= playingQueue.size) {
-                        -1
-                    } else {
-                        result
-                    }
-                }
-
-                RepeatMode.REPEAT_QUEUE       -> {
-                    if (result >= playingQueue.size) 0 else result
-                }
-
-                RepeatMode.REPEAT_SINGLE_SONG -> {
-                    currentSongPosition
-                }
-            }
-        }
-
-    /**
-     * get next song position in order of list as a loop
-     */
-    val nextLoopPosition: Int
-        get() = (currentSongPosition + 1) % playingQueue.size
-
-    /**
-     * get next song position in order of list no mater what Repeat Mode is
-     */
-    val nextListPosition: Int
-        get() {
-            val result = currentSongPosition + 1
-            return if (result >= playingQueue.size) -1 else result
-        }
-
     fun getSongAt(position: Int): Song =
         if (position >= 0 && position < playingQueue.size) {
             playingQueue[position]
         } else {
             Song.EMPTY_SONG
         }
-
-    val currentSong: Song get() = getSongAt(currentSongPosition)
-    val nextSong: Song get() = getSongAt(nextSongPosition)
-    val previousSong: Song get() = getSongAt(previousSongPosition)
 
     /**
      * synchronized
