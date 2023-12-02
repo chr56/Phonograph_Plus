@@ -85,7 +85,7 @@ class QueueManager(val context: Application) {
             val result = currentSongPosition - 1
             return when (repeatMode) {
                 RepeatMode.NONE               -> if (result < 0) 0 else result
-                RepeatMode.REPEAT_QUEUE       -> if (result <= 0) playingQueue.size - 1 else result
+                RepeatMode.REPEAT_QUEUE       -> if (result < 0) playingQueue.size - 1 else result
                 RepeatMode.REPEAT_SINGLE_SONG -> currentSongPosition
             }
         }
