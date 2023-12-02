@@ -82,6 +82,11 @@ class QueueManager(val context: Application) {
     val nextSongPosition: Int
         @Synchronized get() = queueHolder.nextSongPosition
 
+    val previousLoopPosition: Int
+        @Synchronized get() = queueHolder.previousLoopPosition
+    val nextLoopPosition: Int
+        @Synchronized get() = queueHolder.nextLoopPosition
+
     val previousListPosition: Int
         @Synchronized get() = queueHolder.previousListPosition
     val nextListPosition: Int

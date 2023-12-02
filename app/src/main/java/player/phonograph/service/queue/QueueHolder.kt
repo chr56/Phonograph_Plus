@@ -90,6 +90,11 @@ class QueueHolder private constructor(
         }
 
     /**
+     * get previous song position in order of list as a loop
+     */
+    val previousLoopPosition: Int get() = (currentSongPosition - 1 + playingQueue.size) % playingQueue.size
+
+    /**
      * get previous song position in order of list no mater what Repeat Mode is
      */
     val previousListPosition: Int
@@ -119,6 +124,12 @@ class QueueHolder private constructor(
                 }
             }
         }
+
+    /**
+     * get next song position in order of list as a loop
+     */
+    val nextLoopPosition: Int
+        get() = (currentSongPosition + 1) % playingQueue.size
 
     /**
      * get next song position in order of list no mater what Repeat Mode is
