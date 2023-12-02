@@ -1,0 +1,4 @@
+<b>1.4.2(1042) 2023.12.02</b>
+- Fix: frozen (and then crash) when skipping to previous or next if repeat mode is single-repeated and queue has only one song
+- Fix: reporting error at two ends of queue when skipping to previous or next
+- Fix: rarely incorrect previous song when skipping to previous if repeat mode is queue-repeated

@@ -1,21 +1,17 @@
-version: "1.4.1"
-versionCode: 1041
-timestamp: 1700800000
+version: "1.4.2"
+versionCode: 1042
+timestamp: 1701497000
 channel: "STABLE"
 notes:
   en:
     highlights: [ ]
     items:
-      - "Improvement: avoid showing error notifications if file format is unsupported in Song Detail"
-      - "Improvement: use fallback method to read song tags if file format is unsupported"
-      - "Improvement: image loading mechanism of Albums and Artists"
-      - "Modify: use alternative means of gaining album art from MediaStore on Android Q and above"
-      - "Translation: update Spanish (by guwsvnd5t)"
+      - "Fix: frozen (and then crash) when skipping to previous or next if repeat mode is single-repeated and queue has only one song"
+      - "Fix: reporting error at two ends of queue when skipping to previous or next"
+      - "Fix: rarely incorrect previous song when skipping to previous if repeat mode is queue-repeated"
   zh:
     highlights: [ ]
     items:
-      - "改进 歌曲详情中，若遇不支持的文件格式则避免显示错误通知"
-      - "改进 遇不支持的文件格式则使用后备方法读取歌曲标签"
-      - "改进 专辑和艺术家的图片加载机制"
-      - "修改 使用其他方法从 MediaStore 获取专辑封面 (在 Android Q 及更高版本上)"
-      - "翻译 更新 西班牙语 (guwsvnd5t)"
+      - "修复 使用单曲重复且队列仅有一首歌曲时在切歌时卡死(然后崩溃)"
+      - "修复 处在队列两端时切歌时误报错"
+      - "修复 使用队列重复时偶尔会出现不正确的上一首歌曲"
