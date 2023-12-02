@@ -348,16 +348,13 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     }
 
     private fun jumpBackwardImp(force: Boolean) {
-        if (force) {
-            val previousListPosition = queueManager.previousListPosition
-            if (previousListPosition < 0) {
-                playAtImp(queueManager.currentSongPosition)
+        val position =
+            if (force) {
+                queueManager.previousLoopPosition
             } else {
-                playAtImp(previousListPosition)
+                queueManager.previousSongPosition
             }
-        } else {
-            playAtImp(queueManager.previousSongPosition)
-        }
+        playAtImp(position)
     }
 
     /**
@@ -383,21 +380,22 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     }
 
     private fun jumpForwardImp(force: Boolean) {
-        if (force) {
-            val nextListPosition = queueManager.nextListPosition
-            if (nextListPosition < 0) {
-                playAtImp(queueManager.currentSongPosition)
+        val position =
+            if (force) {
+                queueManager.nextLoopPosition
             } else {
-                playAtImp(nextListPosition)
-            }
-        } else {
-            if (!queueManager.isLastTrack()) {
-                playAtImp(queueManager.nextSongPosition)
-            } else {
-                pauseImp(force = true, reason = PAUSE_FOR_QUEUE_ENDED)
-                observers.executeForEach {
-                    onReceivingMessage(MSG_NO_MORE_SONGS)
+                if (!queueManager.isLastTrack()) {
+                    queueManager.nextSongPosition
+                } else {
+                    -1
                 }
+            }
+        if (position >= 0) {
+            playAtImp(position)
+        } else {
+            pauseImp(force = true, reason = PAUSE_FOR_QUEUE_ENDED)
+            observers.executeForEach {
+                onReceivingMessage(MSG_NO_MORE_SONGS)
             }
         }
     }
