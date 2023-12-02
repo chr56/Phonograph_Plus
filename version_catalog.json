@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "stable",
+      "versionName": "1.4.2",
+      "versionCode": 1042,
+      "date": 1701497000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.4.2"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 使用单曲重复且队列仅有一首歌曲时在切歌时卡死(然后崩溃)</li><li>修复 处在队列两端时切歌时误报错</li><li>修复 使用队列重复时偶尔会出现不正确的上一首歌曲</li></ol>",
+        "en": "<ol><li>Fix: frozen (and then crash) when skipping to previous or next if repeat mode is single-repeated and queue has only one song</li><li>Fix: reporting error at two ends of queue when skipping to previous or next</li><li>Fix: rarely incorrect previous song when skipping to previous if repeat mode is queue-repeated</li></ol>"
+      }
+    },
+    {
+      "channel": "stable",
       "versionName": "1.4.1",
       "versionCode": 1041,
       "date": 1700800000,
