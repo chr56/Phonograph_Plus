@@ -152,7 +152,7 @@ fun shuffle(queueHolder: QueueHolder, newShuffleMode: ShuffleMode) {
                 queueHolder.modifyPosition(0)
             }
             ShuffleMode.NONE    -> {
-                val currentSongId = queueHolder.currentSong.id
+                val currentSongId = queueHolder.getSongAt(queueHolder.currentSongPosition).id
                 _playingQueue.clear()
                 _playingQueue.addAll(_originalPlayingQueue)
                 for (song in _playingQueue) {

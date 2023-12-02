@@ -6,8 +6,8 @@ import player.phonograph.mechanism.StatusBarLyric
 import player.phonograph.mechanism.lyrics.LyricsUpdater
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
-import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicService
+import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Keys
@@ -127,6 +127,10 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
      * @return true if it is ready
      */
     private fun prepareSongsImp(position: Int): Boolean {
+        if (position < 0) {
+            log("prepareSongsImp", "illegal position")
+            return false
+        }
         // todo: change STATE if possible
         broadcastStopLyric()
         log(
@@ -214,7 +218,9 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                     Toast.LENGTH_SHORT
                 ).show()
             }
-            jumpForwardImp(false)
+            if (queueManager.repeatMode != RepeatMode.REPEAT_SINGLE_SONG) {
+                jumpForwardImp(false)
+            }
         }
         log("playAtImp", "current: at $position song(${queueManager.currentSong.title})")
     }
@@ -342,11 +348,13 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     }
 
     private fun jumpBackwardImp(force: Boolean) {
-        if (force) {
-            playAtImp(queueManager.previousListPosition)
-        } else {
-            playAtImp(queueManager.previousSongPosition)
-        }
+        val position =
+            if (force) {
+                queueManager.previousLoopPosition
+            } else {
+                queueManager.previousSongPosition
+            }
+        playAtImp(position)
     }
 
     /**
@@ -372,16 +380,22 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     }
 
     private fun jumpForwardImp(force: Boolean) {
-        if (force) {
-            playAtImp(queueManager.nextListPosition)
-        } else {
-            if (!queueManager.isLastTrack()) {
-                playAtImp(queueManager.nextSongPosition)
+        val position =
+            if (force) {
+                queueManager.nextLoopPosition
             } else {
-                pauseImp(force = true, reason = PAUSE_FOR_QUEUE_ENDED)
-                observers.executeForEach {
-                    onReceivingMessage(MSG_NO_MORE_SONGS)
+                if (!queueManager.isLastTrack()) {
+                    queueManager.nextSongPosition
+                } else {
+                    -1
                 }
+            }
+        if (position >= 0) {
+            playAtImp(position)
+        } else {
+            pauseImp(force = true, reason = PAUSE_FOR_QUEUE_ENDED)
+            observers.executeForEach {
+                onReceivingMessage(MSG_NO_MORE_SONGS)
             }
         }
     }

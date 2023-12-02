@@ -186,11 +186,11 @@ class MusicService : MediaBrowserServiceCompat() {
         }
 
         override fun onSkipToNext() {
-            playNextSong(true)
+            playNextSong(false)
         }
 
         override fun onSkipToPrevious() {
-            back(true)
+            back(false)
         }
 
         override fun onStop() {
@@ -277,8 +277,8 @@ class MusicService : MediaBrowserServiceCompat() {
 
                     ACTION_PAUSE                 -> pause()
                     ACTION_PLAY                  -> play()
-                    ACTION_REWIND                -> back(true)
-                    ACTION_SKIP                  -> playNextSong(true)
+                    ACTION_REWIND                -> back(false)
+                    ACTION_SKIP                  -> playNextSong(false)
                     ACTION_STOP_AND_QUIT_NOW     -> {
                         stopSelf()
                     }
