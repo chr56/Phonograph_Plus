@@ -128,7 +128,7 @@ class StarterActivity : AppCompatActivity() {
         val uri = intent.data
         if (uri != null && uri.toString().isNotEmpty()) {
             val songs = parseUri(uri)
-            if (songs != null) return SongsRequest(songs, 0)
+            if (!songs.isNullOrEmpty()) return SongsRequest(songs, 0)
         }
         return null
     }
