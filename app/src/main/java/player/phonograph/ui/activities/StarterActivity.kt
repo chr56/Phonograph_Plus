@@ -45,6 +45,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.provider.DocumentsContractCompat.getDocumentId
 import androidx.core.view.setMargins
+import androidx.fragment.app.FragmentActivity
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -269,7 +270,7 @@ class StarterActivity : AppCompatActivity() {
     }
 
     class Dialog(
-        private val context: Context,
+        private val context: FragmentActivity,
         private val playRequest: SongsRequest,
         private val callback: () -> Unit,
     ) {
@@ -321,7 +322,11 @@ class StarterActivity : AppCompatActivity() {
 
             val dialogView = createDialogView(text, buttons, { selected = it }, ok)
             return AlertDialog.Builder(context, androidx.appcompat.R.style.ThemeOverlay_AppCompat_Dialog_Alert)
-                .setView(dialogView).create()
+                .setView(dialogView)
+                .setOnCancelListener {
+                    context.finish()
+                }
+                .create()
         }
 
 
