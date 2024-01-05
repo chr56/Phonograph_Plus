@@ -346,7 +346,7 @@ class StarterActivity : AppCompatActivity() {
                     LinearLayout(context).apply {
                         orientation = LinearLayout.VERTICAL
                         // Text
-                        TextView(context).apply {
+                        TextView(context, null, androidx.appcompat.R.style.Base_TextAppearance_AppCompat_Medium).apply {
                             text = hint
                         }.also {
                             addView(it)
