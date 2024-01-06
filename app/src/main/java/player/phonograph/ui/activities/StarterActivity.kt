@@ -15,6 +15,8 @@ import player.phonograph.appshortcuts.DynamicShortcutManager.Companion.reportSho
 import player.phonograph.appshortcuts.shortcuttype.LastAddedShortcutType
 import player.phonograph.appshortcuts.shortcuttype.ShuffleAllShortcutType
 import player.phonograph.appshortcuts.shortcuttype.TopTracksShortcutType
+import player.phonograph.model.PlayRequest
+import player.phonograph.model.PlayRequest.SongRequest
 import player.phonograph.model.PlayRequest.SongsRequest
 import player.phonograph.model.Song
 import player.phonograph.model.SongClickMode
@@ -103,8 +105,8 @@ class StarterActivity : AppCompatActivity() {
     }
 
 
-    private fun lookupSongsFromIntent(intent: Intent): SongsRequest? {
-        var playRequest: SongsRequest? = null
+    private fun lookupSongsFromIntent(intent: Intent): PlayRequest? {
+        var playRequest: PlayRequest? = null
         // uri first
         playRequest = handleUriPlayRequest(intent)
 
@@ -120,18 +122,16 @@ class StarterActivity : AppCompatActivity() {
         return playRequest
     }
 
-    private fun handleUriPlayRequest(intent: Intent): SongsRequest? {
+    private fun handleUriPlayRequest(intent: Intent): PlayRequest? {
         val uri = intent.data
         if (uri != null && uri.toString().isNotEmpty()) {
             val songs = parseUri(uri)
-            if (!songs.isNullOrEmpty()) return SongsRequest(songs, 0)
+            return PlayRequest.from(songs)
         }
         return null
     }
 
-    @Suppress("DEPRECATION")
-    private fun parseUri(uri: Uri): List<Song>? {
-        var songs: List<Song>? = null
+    private fun parseUri(uri: Uri): List<Song> {
 
         if (uri.scheme != null && uri.scheme == ContentResolver.SCHEME_CONTENT && uri.authority != null) {
             val songId =
@@ -141,45 +141,43 @@ class StarterActivity : AppCompatActivity() {
                     else                     -> null
                 }
             if (songId != null) {
-                songs = listOf(Songs.id(this, songId.toLong()))
+                return listOf(Songs.id(this, songId.toLong()))
             }
         }
 
-        if (songs == null) {
-            val file: File? =
-                if (uri.authority != null && uri.authority == AUTHORITY_DOCUMENTS_PROVIDER) {
-                    File(
-                        Environment.getExternalStorageDirectory(),
-                        uri.path!!.split(Regex("^.*:.*$"), 2)[1]
-                    )
-                } else {
-                    val path = getFilePathFromUri(this, uri)
-                    when {
-                        path != null     -> File(path)
-                        uri.path != null -> File(uri.path!!)
-                        else             -> null
-                    }
+        val file: File? =
+            if (uri.authority != null && uri.authority == AUTHORITY_DOCUMENTS_PROVIDER) {
+                File(
+                    Environment.getExternalStorageDirectory(),
+                    uri.path!!.split(Regex("^.*:.*$"), 2)[1]
+                )
+            } else {
+                val path = getFilePathFromUri(this, uri)
+                when {
+                    path != null     -> File(path)
+                    uri.path != null -> File(uri.path!!)
+                    else             -> null
                 }
-
-            if (file != null) {
-                songs = Songs.searchByPath(this, file.absolutePath, withoutPathFilter = true)
             }
+
+        if (file != null) {
+            return Songs.searchByPath(this, file.absolutePath, withoutPathFilter = true)
         }
 
-        return songs
+        return emptyList()
     }
 
-    private fun handleSearchRequest(intent: Intent): SongsRequest? {
+    private fun handleSearchRequest(intent: Intent): PlayRequest? {
         intent.action?.let {
             if (it == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH) {
                 val songs = processQuery(this, intent.extras!!)
-                if (songs.isNotEmpty()) return SongsRequest(songs, 0)
+                return PlayRequest.from(songs)
             }
         }
         return null
     }
 
-    private fun handleExtra(intent: Intent): SongsRequest? {
+    private fun handleExtra(intent: Intent): PlayRequest? {
         when (intent.type) {
             MediaStoreCompat.Audio.Playlists.CONTENT_TYPE -> {
                 val id = parseIdFromIntent(intent, "playlistId", "playlist")
@@ -266,7 +264,7 @@ class StarterActivity : AppCompatActivity() {
 
     class Dialog(
         private val context: FragmentActivity,
-        private val playRequest: SongsRequest,
+        private val playRequest: PlayRequest,
         private val callback: () -> Unit,
     ) {
         fun getString(id: Int) = context.getString(id)
@@ -280,40 +278,47 @@ class StarterActivity : AppCompatActivity() {
                 callback()
             }
 
-            val dialogView: View = if (playRequest.songs.size > 1) {
-                val text = buildString {
-                    append("${getString(R.string.action_play)}\n")
-                    val songs = playRequest.songs
-                    val count = songs.size
-                    append("${context.resources.getQuantityString(R.plurals.item_songs, count, count)}\n")
-                    songs.take(10).forEach {
-                        append("${it.title}\n")
+            val dialogView: View =
+                when (playRequest) {
+                    is SongsRequest -> {
+                        val text = buildString {
+                            append("${getString(R.string.action_play)}\n")
+                            val songs = playRequest.songs
+                            val count = songs.size
+                            append("${context.resources.getQuantityString(R.plurals.item_songs, count, count)}\n")
+                            songs.take(10).forEach {
+                                append("${it.title}\n")
+                            }
+                            if (count > 10) append("...")
+                        }
+
+                        val buttons = SongClickMode.baseModes
+
+                        createDialogView(text, buttons, { selected = it }, ok)
+
                     }
-                    if (count > 10) append("...")
+
+                    is SongRequest  -> {
+                        val text = buildString {
+                            append("${getString(R.string.action_play)}\n")
+                            append("${playRequest.song.title}\n")
+                        }
+
+                        val buttons = intArrayOf(
+                            SONG_PLAY_NEXT,
+                            SONG_PLAY_NOW,
+                            SONG_APPEND_QUEUE,
+                            SONG_SINGLE_PLAY
+                        )
+
+                        createDialogView(text, buttons, { selected = it }, ok)
+
+                    }
+
+                    else            -> {
+                        throw IllegalStateException("No song to play?!")
+                    }
                 }
-
-                val buttons = SongClickMode.baseModes
-
-                createDialogView(text, buttons, { selected = it }, ok)
-
-            } else if (playRequest.songs.size == 1) {
-                val text = buildString {
-                    append("${getString(R.string.action_play)}\n")
-                    append("${playRequest.songs[playRequest.position].title}\n")
-                }
-
-                val buttons = intArrayOf(
-                    SONG_PLAY_NEXT,
-                    SONG_PLAY_NOW,
-                    SONG_APPEND_QUEUE,
-                    SONG_SINGLE_PLAY
-                )
-
-                createDialogView(text, buttons, { selected = it }, ok)
-
-            } else {
-                throw IllegalStateException("No song to play?!")
-            }
 
 
             return AlertDialog.Builder(context, androidx.appcompat.R.style.ThemeOverlay_AppCompat_Dialog_Alert)

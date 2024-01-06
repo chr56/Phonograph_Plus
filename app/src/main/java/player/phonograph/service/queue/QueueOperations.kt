@@ -180,7 +180,15 @@ private fun shuffle(songs: MutableList<Song>, current: Int) {
 }
 
 
-fun executePlayRequest(queueManager: QueueManager, request: PlayRequest.SongsRequest, mode: Int) {
+fun executePlayRequest(queueManager: QueueManager, request: PlayRequest, mode: Int) {
+    when(request) {
+        is PlayRequest.SongRequest   -> executePlayRequest(queueManager, request, mode)
+        is PlayRequest.SongsRequest  -> executePlayRequest(queueManager, request, mode)
+        else                         -> {}
+    }
+}
+
+private fun executePlayRequest(queueManager: QueueManager, request: PlayRequest.SongsRequest, mode: Int) {
     val currentPosition = queueManager.currentSongPosition
     val songs = request.songs
     val position = request.position
@@ -199,6 +207,18 @@ fun executePlayRequest(queueManager: QueueManager, request: PlayRequest.SongsReq
             queueManager.modifyShuffleMode(ShuffleMode.SHUFFLE, false)
         }
 
+        else  /* invalided */     -> {}
+    }
+}
+
+private fun executePlayRequest(queueManager: QueueManager, request: PlayRequest.SongRequest, mode: Int) {
+    val currentPosition = queueManager.currentSongPosition
+    val song = request.song
+    when (mode) {
+        SongClickMode.SONG_PLAY_NEXT            -> queueManager.addSong(song, currentPosition + 1)
+        SongClickMode.SONG_PLAY_NOW             -> queueManager.addSong(song, currentPosition)
+        SongClickMode.SONG_APPEND_QUEUE         -> queueManager.addSong(song)
+        SongClickMode.SONG_SINGLE_PLAY          -> queueManager.swapQueue(listOf(song), 0, false)
         else  /* invalided */     -> {}
     }
 }
