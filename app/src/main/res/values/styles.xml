@@ -1,5 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.Phonograph.Auto" parent="Theme.Phonograph.Base.Auto"/>
+
+    <style name="Theme.Phonograph.Auto" parent="Theme.Phonograph.Base.Auto" />
 
     <style name="Theme.Phonograph.Dark" parent="Theme.Phonograph.Base.Dark" />
 
@@ -7,9 +8,9 @@
 
     <style name="Theme.Phonograph.Black" parent="Theme.Phonograph.Base.Black" />
 
-    <style name="Theme.Phonograph.Notification" parent="@android:style/TextAppearance.StatusBar.EventContent" />
+    <style name="Theme.Phonograph.Notification" parent="@android:style/TextAppearance.Material.Notification" />
 
-    <style name="Theme.Phonograph.Notification.Title" parent="@android:style/TextAppearance.StatusBar.EventContent.Title" />
+    <style name="Theme.Phonograph.Notification.Title" parent="@android:style/TextAppearance.Material.Notification.Title" />
 
     <style name="OverFlowButton" parent="Widget.AppCompat.PopupMenu.Overflow">
         <item name="srcCompat">@drawable/ic_more_vert_white_24dp</item>
@@ -22,10 +23,13 @@
         <item name="android:focusable">false</item>
     </style>
 
-    <style name="Fab" parent="FabParent" />
+    <style name="Fab" parent="FabParent">
+        <item name="android:transitionName">@string/transition_fab</item>
+    </style>
 
     <style name="MusicProgressSlider" parent="MusicProgressSliderParent">
         <item name="android:thumbOffset">0dp</item>
+        <item name="android:padding">0dp</item>
     </style>
 
     <style name="Toolbar">

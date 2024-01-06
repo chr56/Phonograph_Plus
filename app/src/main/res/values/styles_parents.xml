@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.Phonograph.Base.Auto" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSharedElementsUseOverlay">false</item>
+
         <item name="android:windowActionBarOverlay">true</item>
         <item name="windowActionBarOverlay">true</item>
 
@@ -28,6 +32,10 @@
     </style>
 
     <style name="Theme.Phonograph.Base.Dark" parent="Theme.MaterialComponents.NoActionBar.Bridge">
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSharedElementsUseOverlay">false</item>
+
         <item name="android:windowActionBarOverlay">true</item>
         <item name="windowActionBarOverlay">true</item>
 
@@ -58,6 +66,9 @@
     </style>
 
     <style name="Theme.Phonograph.Base.Light" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSharedElementsUseOverlay">false</item>
 
         <item name="android:windowActionBarOverlay">true</item>
         <item name="windowActionBarOverlay">true</item>
