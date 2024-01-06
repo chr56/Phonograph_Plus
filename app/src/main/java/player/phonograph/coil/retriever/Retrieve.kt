@@ -112,9 +112,7 @@ internal fun readFromMediaStore(
                 }
             }
         } else {
-            contentResolver.openInputStream(uri)?.use { inputStream ->
-                inputStream.source().buffer()
-            }
+            contentResolver.openInputStream(uri)?.source()?.buffer()
         }
     return if (source != null) SourceResult(
         source = ImageSource(
