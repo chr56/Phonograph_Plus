@@ -21,6 +21,7 @@ import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import player.phonograph.util.mediaStoreAlbumArtUri
 import player.phonograph.util.recordThrowable
+import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
@@ -133,9 +134,8 @@ internal fun retrieveFromAlbumUri(
         }
     } else {
         val uri = mediaStoreAlbumArtUri(albumId)
-        val source = contentResolver.openInputStream(uri)?.use { inputStream ->
-            inputStream.source().buffer()
-        }
+        @SuppressLint("Recycle")
+        val source = contentResolver.openInputStream(uri)?.source()?.buffer()
         if (source != null)
             SourceResult(
                 source = ImageSource(
