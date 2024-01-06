@@ -42,6 +42,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.provider.DocumentsContractCompat.getDocumentId
 import androidx.core.view.setMargins
+import androidx.core.view.setPadding
 import androidx.fragment.app.FragmentActivity
 import android.content.ContentResolver
 import android.content.Context
@@ -98,9 +99,9 @@ class StarterActivity : AppCompatActivity() {
             Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show()
             gotoMainActivity()
         } else {
-            Dialog(this, playRequest) {
+            makeActionDialog(this, playRequest) {
                 gotoMainActivity()
-            }.create().show()
+            }.show()
         }
     }
 
@@ -154,9 +155,9 @@ class StarterActivity : AppCompatActivity() {
             } else {
                 val path = getFilePathFromUri(this, uri)
                 when {
-                    path != null     -> File(path)
+                    path != null -> File(path)
                     uri.path != null -> File(uri.path!!)
-                    else             -> null
+                    else -> null
                 }
             }
 
@@ -262,79 +263,18 @@ class StarterActivity : AppCompatActivity() {
         finish()
     }
 
-    class Dialog(
-        private val context: FragmentActivity,
-        private val playRequest: PlayRequest,
-        private val callback: () -> Unit,
-    ) {
-        fun getString(id: Int) = context.getString(id)
+    private fun makeActionDialog(
+        context: FragmentActivity,
+        playRequest: PlayRequest,
+        callback: () -> Unit,
+    ): AlertDialog {
 
-        private var selected = -1
-        fun create(): AlertDialog {
+        var selected: Int = -1
 
-            val ok = { _: View ->
-                val queueManager: QueueManager = (context as? AppCompatActivity)?.get() ?: GlobalContext.get().get()
-                executePlayRequest(queueManager, playRequest, selected)
-                callback()
-            }
-
-            val dialogView: View =
-                when (playRequest) {
-                    is SongsRequest -> {
-                        val text = buildString {
-                            append("${getString(R.string.action_play)}\n")
-                            val songs = playRequest.songs
-                            val count = songs.size
-                            append("${context.resources.getQuantityString(R.plurals.item_songs, count, count)}\n")
-                            songs.take(10).forEach {
-                                append("${it.title}\n")
-                            }
-                            if (count > 10) append("...")
-                        }
-
-                        val buttons = SongClickMode.baseModes
-
-                        createDialogView(text, buttons, { selected = it }, ok)
-
-                    }
-
-                    is SongRequest  -> {
-                        val text = buildString {
-                            append("${getString(R.string.action_play)}\n")
-                            append("${playRequest.song.title}\n")
-                        }
-
-                        val buttons = intArrayOf(
-                            SONG_PLAY_NEXT,
-                            SONG_PLAY_NOW,
-                            SONG_APPEND_QUEUE,
-                            SONG_SINGLE_PLAY
-                        )
-
-                        createDialogView(text, buttons, { selected = it }, ok)
-
-                    }
-
-                    else            -> {
-                        throw IllegalStateException("No song to play?!")
-                    }
-                }
-
-
-            return AlertDialog.Builder(context, androidx.appcompat.R.style.ThemeOverlay_AppCompat_Dialog_Alert)
-                .setView(dialogView)
-                .setOnCancelListener {
-                    context.finish()
-                }
-                .create()
-        }
-
-
-        private fun createDialogView(
+        fun buildDialogView(
+            context: FragmentActivity,
             hint: String,
             modes: IntArray,
-            checkCallback: (Int) -> Unit,
-            okCallback: (View) -> Unit,
         ): View {
             val primaryColor = ThemeColor.primaryColor(context)
 
@@ -358,7 +298,7 @@ class StarterActivity : AppCompatActivity() {
                                     RadioButton(context).apply {
                                         this.text = modeName(context.resources, modes[i])
                                         this.setOnClickListener {
-                                            checkCallback(modes[i])
+                                            selected = modes[i]
                                         }
                                     },
                                     MATCH_PARENT, WRAP_CONTENT
@@ -374,12 +314,69 @@ class StarterActivity : AppCompatActivity() {
             val buttonPanel = buttonPanel(context) {
                 button(0, getString(android.R.string.cancel), primaryColor) {}
                 space(1)
-                button(2, getString(android.R.string.ok), primaryColor, okCallback)
+                button(2, getString(android.R.string.ok), primaryColor) {
+                    val queueManager: QueueManager = (context as? AppCompatActivity)?.get() ?: GlobalContext.get().get()
+                    executePlayRequest(queueManager, playRequest, selected)
+                    callback()
+                }
             }
             return buildDialogView(
                 context, titlePanel, contentPanel, buttonPanel
             )
         }
+
+        val dialogView: View =
+            when (playRequest) {
+                is SongsRequest -> {
+                    val text = buildString {
+                        append("${getString(R.string.action_play)}\n")
+                        val songs = playRequest.songs
+                        val count = songs.size
+                        append("${context.resources.getQuantityString(R.plurals.item_songs, count, count)}\n")
+                        songs.take(10).forEach {
+                            append("${it.title}\n")
+                        }
+                        if (count > 10) append("...")
+                    }
+
+                    val buttons = SongClickMode.baseModes
+
+                    buildDialogView(context, text, buttons)
+
+                }
+
+                is SongRequest  -> {
+                    val text = buildString {
+                        append("${getString(R.string.action_play)}\n")
+                        append("${playRequest.song.title}\n")
+                    }
+
+                    val buttons = intArrayOf(
+                        SONG_PLAY_NEXT,
+                        SONG_PLAY_NOW,
+                        SONG_APPEND_QUEUE,
+                        SONG_SINGLE_PLAY
+                    )
+
+                    buildDialogView(context, text, buttons)
+
+                }
+
+                else            -> {
+                    TextView(context).apply {
+                        setPadding(16)
+                        setText(R.string.empty)
+                    }
+                }
+            }
+
+
+        return AlertDialog.Builder(context, androidx.appcompat.R.style.ThemeOverlay_AppCompat_Dialog_Alert)
+            .setView(dialogView)
+            .setOnCancelListener {
+                context.finish()
+            }
+            .create()
     }
 
     companion object {
