@@ -4,7 +4,9 @@
 
 package player.phonograph.service.queue
 
+import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
+import player.phonograph.model.SongClickMode
 import player.phonograph.util.warning
 
 
@@ -174,6 +176,30 @@ private fun shuffle(songs: MutableList<Song>, current: Int) {
         songs.add(0, song)
     } else {
         songs.shuffle()
+    }
+}
+
+
+fun executePlayRequest(queueManager: QueueManager, request: PlayRequest.SongsRequest, mode: Int) {
+    val currentPosition = queueManager.currentSongPosition
+    val songs = request.songs
+    val position = request.position
+    when (mode) {
+        SongClickMode.SONG_PLAY_NEXT            -> queueManager.addSong(songs[position], currentPosition + 1)
+        SongClickMode.SONG_PLAY_NOW             -> queueManager.addSong(songs[position], currentPosition)
+        SongClickMode.SONG_APPEND_QUEUE         -> queueManager.addSong(songs[position])
+        SongClickMode.SONG_SINGLE_PLAY          -> queueManager.swapQueue(listOf(songs[position]), 0, false)
+        SongClickMode.QUEUE_PLAY_NOW            -> queueManager.addSongs(songs, currentPosition)
+        SongClickMode.QUEUE_PLAY_NEXT           -> queueManager.addSongs(songs, currentPosition + 1)
+        SongClickMode.QUEUE_APPEND_QUEUE        -> queueManager.addSongs(songs)
+        SongClickMode.QUEUE_SWITCH_TO_BEGINNING -> queueManager.swapQueue(songs, 0, false)
+        SongClickMode.QUEUE_SWITCH_TO_POSITION  -> queueManager.swapQueue(songs, position, false)
+        SongClickMode.QUEUE_SHUFFLE             -> {
+            queueManager.swapQueue(songs, 0, false)
+            queueManager.modifyShuffleMode(ShuffleMode.SHUFFLE, false)
+        }
+
+        else  /* invalided */     -> {}
     }
 }
 

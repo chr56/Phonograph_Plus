@@ -18,12 +18,6 @@ import player.phonograph.appshortcuts.shortcuttype.TopTracksShortcutType
 import player.phonograph.model.PlayRequest.SongsRequest
 import player.phonograph.model.Song
 import player.phonograph.model.SongClickMode
-import player.phonograph.model.SongClickMode.QUEUE_APPEND_QUEUE
-import player.phonograph.model.SongClickMode.QUEUE_PLAY_NEXT
-import player.phonograph.model.SongClickMode.QUEUE_PLAY_NOW
-import player.phonograph.model.SongClickMode.QUEUE_SHUFFLE
-import player.phonograph.model.SongClickMode.QUEUE_SWITCH_TO_BEGINNING
-import player.phonograph.model.SongClickMode.QUEUE_SWITCH_TO_POSITION
 import player.phonograph.model.SongClickMode.SONG_APPEND_QUEUE
 import player.phonograph.model.SongClickMode.SONG_PLAY_NEXT
 import player.phonograph.model.SongClickMode.SONG_PLAY_NOW
@@ -36,6 +30,7 @@ import player.phonograph.repo.mediastore.processQuery
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.ShuffleMode
+import player.phonograph.service.queue.executePlayRequest
 import player.phonograph.ui.components.viewcreater.buildDialogView
 import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
@@ -279,48 +274,48 @@ class StarterActivity : AppCompatActivity() {
         private var selected = -1
         fun create(): AlertDialog {
 
-            val text = buildString {
-                append("${getString(R.string.action_play)}\n")
-                val songs = playRequest.songs
-                val count = songs.size
-                append("${context.resources.getQuantityString(R.plurals.item_songs, count, count)}\n")
-                songs.take(10).forEach {
-                    append("${it.title}\n")
-                }
-                if (count > 10) append("...")
-            }
-
-            val buttons = SongClickMode.baseModes
-            val list = playRequest.songs
-            val targetPosition = playRequest.position
-
-            val song = list[targetPosition]
-
             val ok = { _: View ->
                 val queueManager: QueueManager = (context as? AppCompatActivity)?.get() ?: GlobalContext.get().get()
-                val currentPosition = queueManager.currentSongPosition
-                when (selected) {
-                    SONG_PLAY_NEXT            -> queueManager.addSong(song, currentPosition + 1)
-                    SONG_PLAY_NOW             -> queueManager.addSong(song, currentPosition)
-                    SONG_APPEND_QUEUE         -> queueManager.addSong(song)
-                    SONG_SINGLE_PLAY          -> queueManager.swapQueue(listOf(song), 0, false)
-                    QUEUE_PLAY_NOW            -> queueManager.addSongs(list, currentPosition)
-                    QUEUE_PLAY_NEXT           -> queueManager.addSongs(list, currentPosition + 1)
-                    QUEUE_APPEND_QUEUE        -> queueManager.addSongs(list)
-                    QUEUE_SWITCH_TO_BEGINNING -> queueManager.swapQueue(list, 0, false)
-                    QUEUE_SWITCH_TO_POSITION  -> queueManager.swapQueue(list, targetPosition, false)
-                    QUEUE_SHUFFLE             -> {
-                        queueManager.swapQueue(list, 0, false)
-                        queueManager.modifyShuffleMode(ShuffleMode.SHUFFLE, false)
-                    }
-
-                    else  /* invalided */     -> {}
-                }
-                queueManager.modifyPosition(0, false)
+                executePlayRequest(queueManager, playRequest, selected)
                 callback()
             }
 
-            val dialogView = createDialogView(text, buttons, { selected = it }, ok)
+            val dialogView: View = if (playRequest.songs.size > 1) {
+                val text = buildString {
+                    append("${getString(R.string.action_play)}\n")
+                    val songs = playRequest.songs
+                    val count = songs.size
+                    append("${context.resources.getQuantityString(R.plurals.item_songs, count, count)}\n")
+                    songs.take(10).forEach {
+                        append("${it.title}\n")
+                    }
+                    if (count > 10) append("...")
+                }
+
+                val buttons = SongClickMode.baseModes
+
+                createDialogView(text, buttons, { selected = it }, ok)
+
+            } else if (playRequest.songs.size == 1) {
+                val text = buildString {
+                    append("${getString(R.string.action_play)}\n")
+                    append("${playRequest.songs[playRequest.position].title}\n")
+                }
+
+                val buttons = intArrayOf(
+                    SONG_PLAY_NEXT,
+                    SONG_PLAY_NOW,
+                    SONG_APPEND_QUEUE,
+                    SONG_SINGLE_PLAY
+                )
+
+                createDialogView(text, buttons, { selected = it }, ok)
+
+            } else {
+                throw IllegalStateException("No song to play?!")
+            }
+
+
             return AlertDialog.Builder(context, androidx.appcompat.R.style.ThemeOverlay_AppCompat_Dialog_Alert)
                 .setView(dialogView)
                 .setOnCancelListener {
