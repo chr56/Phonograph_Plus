@@ -40,14 +40,14 @@ class CacheStore(val context: Context) {
 
         override fun isNoImage(target: T, type: Int): Boolean {
             val cacheDatabase = CacheDatabase.instance(context)
-            val result = cacheDatabase.isNoImage(table(), id(target), type)
+            val result = cacheDatabase.fetch(table(), id(target), type)
             // cacheDatabase.release()
-            return result
+            return result.isEmpty()
         }
 
         override fun markNoImage(target: T, type: Int) {
             val cacheDatabase = CacheDatabase.instance(context)
-            cacheDatabase.markNoImage(table(), id(target), type)
+            cacheDatabase.register(table(), id(target), type, null)
             // cacheDatabase.release()
         }
 
@@ -60,7 +60,7 @@ class CacheStore(val context: Context) {
 
             val cacheDatabase = CacheDatabase.instance(context)
 
-            val result = cacheDatabase.storeLocation(table(), id(target), type, uuid)
+            val result = cacheDatabase.register(table(), id(target), type, uuid)
 
             if (!result) {
                 Log.i(TAG, "Failed to insert cache database")
@@ -97,7 +97,7 @@ class CacheStore(val context: Context) {
 
             val cacheDatabase = CacheDatabase.instance(context)
 
-            val uuid = cacheDatabase.fetchLocation(table(), id(target), type) ?: return null
+            val uuid = cacheDatabase.fetch(table(), id(target), type).existedOrNull() ?: return null
 
             val targetFile = rootCacheDir(context).resolve(uuid)
 

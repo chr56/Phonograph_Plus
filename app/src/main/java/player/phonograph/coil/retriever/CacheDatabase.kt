@@ -14,14 +14,9 @@ class CacheDatabase private constructor(context: Context) : SQLiteOpenHelper(con
 
 
     override fun onCreate(db: SQLiteDatabase) {
-        for (tableName in TABLE_NAMES_NON_EXISTENT) {
+        for (tableName in TABLE_NAMES) {
             db.execSQL(
-                "CREATE TABLE IF NOT EXISTS $tableName ($ID LONG NOT NULL, $TYPE INT NOT NULL, $TIMESTAMP LONG NOT NULL, PRIMARY KEY ($ID, $TYPE))"
-            )
-        }
-        for (tableName in TABLE_NAMES_LOCATION) {
-            db.execSQL(
-                "CREATE TABLE IF NOT EXISTS $tableName ($ID LONG NOT NULL, $TYPE INT NOT NULL, $TIMESTAMP LONG NOT NULL, $FILENAME TEXT NOT NULL, PRIMARY KEY ($ID, $TYPE))"
+                "CREATE TABLE IF NOT EXISTS $tableName ($ID LONG NOT NULL, $TYPE INT NOT NULL, $TIMESTAMP LONG NOT NULL, $EMPTY BOOLEAN NOT NULL,$FILENAME TEXT, PRIMARY KEY ($ID, $TYPE))"
             )
         }
     }
@@ -32,100 +27,69 @@ class CacheDatabase private constructor(context: Context) : SQLiteOpenHelper(con
     }
 
 
-    fun isNoImage(target: Target, id: Long, @RetrieverId retriever: Int): Boolean {
-        val tableName = lookupNonExistentTableName(target)
-        val result = readableDatabase.query(
+    fun fetch(target: Target, id: Long, @RetrieverId retriever: Int): Result {
+        val tableName = lookupTableName(target)
+        return readableDatabase.query(
             tableName,
-            arrayOf(ID, TYPE, TIMESTAMP),
+            arrayOf(ID, TYPE, TIMESTAMP, EMPTY, FILENAME),
             "$ID = ? AND $TYPE = ?",
             arrayOf(id.toString(), retriever.toString()),
             null, null, TIMESTAMP
         ).use { cursor ->
             if (cursor.count > 0) {
                 cursor.moveToFirst()
+
                 // check timestamp
                 val timestamp = cursor.getLong(2)
                 val valid = (System.currentTimeMillis() - timestamp) < TIME_OUT
-                if (!valid) removeNoImageMark(target, id, retriever)
-                valid
+                if (!valid) remove(target, id, retriever)
+
+                // check empty
+                val empty = cursor.getInt(3)
+                if (empty == 0) {
+                    Result.Empty
+                } else {
+                    Result.Existed(cursor.getString(4))
+                }
             } else {
-                false
+                Result.Unknown
             }
         }
-
-        return result
     }
 
-    fun isNoImage(target: Target, id: Long): Boolean {
-        val tableName = lookupNonExistentTableName(target)
-        val result = readableDatabase.query(
-            tableName,
-            arrayOf(ID, TYPE, TIMESTAMP),
-            "$ID = ?",
-            arrayOf(id.toString()),
-            null, null, TIMESTAMP
-        ).use { cursor ->
-            cursor.count > 0
-        }
-
-        return result
-    }
-
-    private fun removeNoImageMark(target: Target, id: Long, @RetrieverId retriever: Int): Boolean {
-        val tableName = lookupNonExistentTableName(target)
+    fun remove(target: Target, id: Long, @RetrieverId retriever: Int): Boolean {
+        val tableName = lookupTableName(target)
         return writableDatabase.delete(
             tableName, "$ID = ? AND $TYPE = ?",
             arrayOf(id.toString(), retriever.toString()),
         ).let { it > 0 }
     }
 
-    fun markNoImage(target: Target, id: Long, @RetrieverId retriever: Int): Boolean {
-        val tableName = lookupNonExistentTableName(target)
-        return writableDatabase.insertWithOnConflict(
-            tableName,
-            null,
-            ContentValues(3).apply {
+    /**
+     * @param filename null if mark empty
+     */
+    fun register(target: Target, id: Long, @RetrieverId retriever: Int, filename: String?): Boolean {
+        val tableName = lookupTableName(target)
+        val contentValues = if (filename != null) {
+            ContentValues(5).apply {
                 put(ID, id)
                 put(TYPE, retriever)
                 put(TIMESTAMP, System.currentTimeMillis())
-            },
-            CONFLICT_REPLACE
-        ).let { it > 0 }
-    }
-
-
-    fun fetchLocation(target: Target, id: Long, @RetrieverId retriever: Int): String? {
-        val tableName = lookupLocationTableName(target)
-        return readableDatabase.query(
-            tableName,
-            arrayOf(ID, TYPE, TIMESTAMP, FILENAME),
-            "$ID = ? AND $TYPE = ?",
-            arrayOf(id.toString(), retriever.toString()),
-            null, null, TIMESTAMP
-        ).use { cursor ->
-            if (cursor.count > 0) {
-                cursor.moveToFirst()
-                // check timestamp
-                val timestamp = cursor.getLong(2)
-                val valid = (System.currentTimeMillis() - timestamp) < TIME_OUT
-                cursor.getString(3)
-            } else {
-                null
+                put(EMPTY, false)
+                put(FILENAME, filename)
+            }
+        } else {
+            ContentValues(5).apply {
+                put(ID, id)
+                put(TYPE, retriever)
+                put(TIMESTAMP, System.currentTimeMillis())
+                put(EMPTY, true)
             }
         }
-    }
-
-    fun storeLocation(target: Target, id: Long, @RetrieverId retriever: Int, filename: String): Boolean {
-        val tableName = lookupLocationTableName(target)
         return writableDatabase.insertWithOnConflict(
             tableName,
             null,
-            ContentValues(4).apply {
-                put(ID, id)
-                put(TYPE, retriever)
-                put(TIMESTAMP, System.currentTimeMillis())
-                put(FILENAME, filename)
-            },
+            contentValues,
             CONFLICT_REPLACE
         ).let { it > 0 }
     }
@@ -134,28 +98,18 @@ class CacheDatabase private constructor(context: Context) : SQLiteOpenHelper(con
     fun clear() = removeAll(writableDatabase)
 
     private fun removeAll(db: SQLiteDatabase) {
-        for (tableName in TABLE_NAMES_NON_EXISTENT) {
+        for (tableName in TABLE_NAMES) {
             db.execSQL(
                 "DROP TABLE IF EXISTS $tableName"
             )
         }
-        for (tableName in TABLE_NAMES_LOCATION) {
-            db.execSQL(
-                "DROP TABLE IF EXISTS $tableName"
-            )
-        }
+
     }
 
-    private fun lookupNonExistentTableName(target: Target): String = when (target) {
-        Target.SONG   -> TABLE_NAME_SONGS_NON_EXISTENT
-        Target.ALBUM  -> TABLE_NAME_ALBUMS_NON_EXISTENT
-        Target.ARTIST -> TABLE_NAME_ARTISTS_NON_EXISTENT
-    }
-
-    private fun lookupLocationTableName(target: Target): String = when (target) {
-        Target.SONG   -> TABLE_NAME_SONGS_LOCATION
-        Target.ALBUM  -> TABLE_NAME_ALBUMS_LOCATION
-        Target.ARTIST -> TABLE_NAME_ARTISTS_LOCATION
+    private fun lookupTableName(target: Target): String = when (target) {
+        Target.SONG   -> TABLE_NAME_SONGS
+        Target.ALBUM  -> TABLE_NAME_ALBUMS
+        Target.ARTIST -> TABLE_NAME_ARTISTS
     }
 
     fun release(): Boolean {
@@ -171,32 +125,22 @@ class CacheDatabase private constructor(context: Context) : SQLiteOpenHelper(con
     }
 
     companion object {
-        const val VERSION = 1
+        const val VERSION = 2
         const val DB_NAME = "_image_cache.db"
 
-        private const val TABLE_NAME_SONGS_NON_EXISTENT = "songs_non_existent"
-        private const val TABLE_NAME_ALBUMS_NON_EXISTENT = "albums_non_existent"
-        private const val TABLE_NAME_ARTISTS_NON_EXISTENT = "artists_non_existent"
+        private const val TABLE_NAME_SONGS = "songs"
+        private const val TABLE_NAME_ALBUMS = "albums"
+        private const val TABLE_NAME_ARTISTS = "artists"
 
-
-        private const val TABLE_NAME_SONGS_LOCATION = "songs_location"
-        private const val TABLE_NAME_ALBUMS_LOCATION = "albums_location"
-        private const val TABLE_NAME_ARTISTS_LOCATION = "artists_location"
-
-        private val TABLE_NAMES_NON_EXISTENT: Array<String> = arrayOf(
-            TABLE_NAME_SONGS_NON_EXISTENT,
-            TABLE_NAME_ALBUMS_NON_EXISTENT,
-            TABLE_NAME_ARTISTS_NON_EXISTENT,
+        private val TABLE_NAMES: Array<String> = arrayOf(
+            TABLE_NAME_SONGS,
+            TABLE_NAME_ALBUMS,
+            TABLE_NAME_ARTISTS,
         )
-        private val TABLE_NAMES_LOCATION: Array<String> = arrayOf(
-            TABLE_NAME_SONGS_LOCATION,
-            TABLE_NAME_ALBUMS_LOCATION,
-            TABLE_NAME_ARTISTS_LOCATION,
-        )
-
         private const val ID = "id"
         private const val TYPE = "type"
         private const val TIMESTAMP = "timestamp"
+        private const val EMPTY = "empty"
         private const val FILENAME = "filename"
 
 
@@ -222,5 +166,15 @@ class CacheDatabase private constructor(context: Context) : SQLiteOpenHelper(con
 
     enum class Target {
         SONG, ALBUM, ARTIST
+    }
+
+    sealed interface Result {
+        data object Empty : Result
+        data object Unknown : Result
+        class Existed(val path: String) : Result
+
+        fun isEmpty(): Boolean = this is Empty
+
+        fun existedOrNull(): String? = if (this is Existed) path else null
     }
 }
