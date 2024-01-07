@@ -63,6 +63,7 @@ open class AlbumDisplayAdapter(
                                 view.setImageResource(R.drawable.default_album_art)
                                 setPaletteColors(context.getColor(R.color.defaultFooterColor))
                             }
+                            .withConditionalYield { attached }
                             .onResourceReady { result, palette ->
                                 view.setImageDrawable(result)
                                 if (usePalette) setPaletteColors(palette)
