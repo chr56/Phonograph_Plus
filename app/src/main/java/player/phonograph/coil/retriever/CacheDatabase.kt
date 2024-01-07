@@ -14,9 +14,14 @@ class CacheDatabase private constructor(context: Context) : SQLiteOpenHelper(con
 
 
     override fun onCreate(db: SQLiteDatabase) {
-        for (tableName in TABLE_NAMES) {
+        for (tableName in TABLE_NAMES_NON_EXISTENT) {
             db.execSQL(
                 "CREATE TABLE IF NOT EXISTS $tableName ($ID LONG NOT NULL, $TYPE INT NOT NULL, $TIMESTAMP LONG NOT NULL, PRIMARY KEY ($ID, $TYPE))"
+            )
+        }
+        for (tableName in TABLE_NAMES_LOCATION) {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS $tableName ($ID LONG NOT NULL, $TYPE INT NOT NULL, $TIMESTAMP LONG NOT NULL, $FILENAME TEXT NOT NULL, PRIMARY KEY ($ID, $TYPE))"
             )
         }
     }
@@ -88,10 +93,53 @@ class CacheDatabase private constructor(context: Context) : SQLiteOpenHelper(con
         ).let { it > 0 }
     }
 
+
+    fun fetchLocation(target: Target, id: Long, @RetrieverId retriever: Int): String? {
+        val tableName = lookupLocationTableName(target)
+        return readableDatabase.query(
+            tableName,
+            arrayOf(ID, TYPE, TIMESTAMP, FILENAME),
+            "$ID = ? AND $TYPE = ?",
+            arrayOf(id.toString(), retriever.toString()),
+            null, null, TIMESTAMP
+        ).use { cursor ->
+            if (cursor.count > 0) {
+                cursor.moveToFirst()
+                // check timestamp
+                val timestamp = cursor.getLong(2)
+                val valid = (System.currentTimeMillis() - timestamp) < TIME_OUT
+                cursor.getString(3)
+            } else {
+                null
+            }
+        }
+    }
+
+    fun storeLocation(target: Target, id: Long, @RetrieverId retriever: Int, filename: String): Boolean {
+        val tableName = lookupLocationTableName(target)
+        return writableDatabase.insertWithOnConflict(
+            tableName,
+            null,
+            ContentValues(4).apply {
+                put(ID, id)
+                put(TYPE, retriever)
+                put(TIMESTAMP, System.currentTimeMillis())
+                put(FILENAME, filename)
+            },
+            CONFLICT_REPLACE
+        ).let { it > 0 }
+    }
+
+
     fun clear() = removeAll(writableDatabase)
 
     private fun removeAll(db: SQLiteDatabase) {
-        for (tableName in TABLE_NAMES) {
+        for (tableName in TABLE_NAMES_NON_EXISTENT) {
+            db.execSQL(
+                "DROP TABLE IF EXISTS $tableName"
+            )
+        }
+        for (tableName in TABLE_NAMES_LOCATION) {
             db.execSQL(
                 "DROP TABLE IF EXISTS $tableName"
             )
@@ -102,6 +150,12 @@ class CacheDatabase private constructor(context: Context) : SQLiteOpenHelper(con
         Target.SONG   -> TABLE_NAME_SONGS_NON_EXISTENT
         Target.ALBUM  -> TABLE_NAME_ALBUMS_NON_EXISTENT
         Target.ARTIST -> TABLE_NAME_ARTISTS_NON_EXISTENT
+    }
+
+    private fun lookupLocationTableName(target: Target): String = when (target) {
+        Target.SONG   -> TABLE_NAME_SONGS_LOCATION
+        Target.ALBUM  -> TABLE_NAME_ALBUMS_LOCATION
+        Target.ARTIST -> TABLE_NAME_ARTISTS_LOCATION
     }
 
     fun release(): Boolean {
@@ -124,15 +178,26 @@ class CacheDatabase private constructor(context: Context) : SQLiteOpenHelper(con
         private const val TABLE_NAME_ALBUMS_NON_EXISTENT = "albums_non_existent"
         private const val TABLE_NAME_ARTISTS_NON_EXISTENT = "artists_non_existent"
 
-        private val TABLE_NAMES: Array<String> = arrayOf(
+
+        private const val TABLE_NAME_SONGS_LOCATION = "songs_location"
+        private const val TABLE_NAME_ALBUMS_LOCATION = "albums_location"
+        private const val TABLE_NAME_ARTISTS_LOCATION = "artists_location"
+
+        private val TABLE_NAMES_NON_EXISTENT: Array<String> = arrayOf(
             TABLE_NAME_SONGS_NON_EXISTENT,
             TABLE_NAME_ALBUMS_NON_EXISTENT,
             TABLE_NAME_ARTISTS_NON_EXISTENT,
+        )
+        private val TABLE_NAMES_LOCATION: Array<String> = arrayOf(
+            TABLE_NAME_SONGS_LOCATION,
+            TABLE_NAME_ALBUMS_LOCATION,
+            TABLE_NAME_ARTISTS_LOCATION,
         )
 
         private const val ID = "id"
         private const val TYPE = "type"
         private const val TIMESTAMP = "timestamp"
+        private const val FILENAME = "filename"
 
 
         private const val TIME_OUT: Long = 7 * (24 * 60 * 60 * 1000)
