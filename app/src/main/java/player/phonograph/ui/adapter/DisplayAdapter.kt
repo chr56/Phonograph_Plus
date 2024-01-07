@@ -63,11 +63,21 @@ abstract class DisplayAdapter<I : Displayable>(
     override fun getSectionName(position: Int): String =
         if (config.showSectionName) getSectionNameImp(position) else ""
 
+    override fun onViewAttachedToWindow(holder: DisplayViewHolder<I>) {
+        holder.attached = true
+    }
+
+    override fun onViewDetachedFromWindow(holder: DisplayViewHolder<I>) {
+        holder.attached = false
+    }
+
     // for inheriting
     open fun getSectionNameImp(position: Int): String =
         dataset[position].defaultSortOrderReference()?.substring(0..1) ?: ""
 
     open class DisplayViewHolder<I : Displayable>(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
+
+        var attached = false
 
         open fun bind(
             item: I,
