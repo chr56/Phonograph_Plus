@@ -10,10 +10,10 @@ import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.repo.database.FavoritesStore
-import player.phonograph.repo.database.MusicPlaybackQueueStore
 import player.phonograph.repo.database.PathFilterStore
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.service.queue.MusicPlaybackQueueStore
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import androidx.annotation.Keep

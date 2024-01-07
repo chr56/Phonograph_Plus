@@ -6,7 +6,6 @@ package player.phonograph.service.queue
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.model.Song
-import player.phonograph.repo.database.MusicPlaybackQueueStore
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.util.text.currentTimestamp
 import android.content.Context

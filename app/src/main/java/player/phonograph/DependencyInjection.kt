@@ -16,7 +16,6 @@ import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.model.playlist.ShuffleAllPlaylist
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.database.HistoryStore
-import player.phonograph.repo.database.MusicPlaybackQueueStore
 import player.phonograph.repo.database.PathFilterStore
 import player.phonograph.repo.database.SongPlayCountStore
 import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
@@ -27,6 +26,7 @@ import player.phonograph.repo.mediastore.playlist.HistoryPlaylistImpl
 import player.phonograph.repo.mediastore.playlist.LastAddedPlaylistImpl
 import player.phonograph.repo.mediastore.playlist.MyTopTracksPlaylistImpl
 import player.phonograph.repo.mediastore.playlist.ShuffleAllPlaylistImpl
+import player.phonograph.service.queue.MusicPlaybackQueueStore
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
