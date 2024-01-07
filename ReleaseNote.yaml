@@ -1,17 +1,21 @@
-version: "1.4.2"
-versionCode: 1042
-timestamp: 1701497000
+version: "1.4.3"
+versionCode: 1043
+timestamp: 1704638000
 channel: "STABLE"
 notes:
   en:
     highlights: [ ]
     items:
-      - "Fix: frozen (and then crash) when skipping to previous or next if repeat mode is single-repeated and queue has only one song"
-      - "Fix: reporting error at two ends of queue when skipping to previous or next"
-      - "Fix: rarely incorrect previous song when skipping to previous if repeat mode is queue-repeated"
+      - "Fix: images can not be shown on some older devices"
+      - "Fix: some flaws of Open With action dialog"
+      - "Improve: image loading no longer causes serious latency when fast scrolling"
+      - "Translation: update Turkish (by volkspolizist), Spanish (by guwsvnd5t)"
+      - "Development: cleanup code"
   zh:
     highlights: [ ]
     items:
-      - "修复 使用单曲重复且队列仅有一首歌曲时在切歌时卡死(然后崩溃)"
-      - "修复 处在队列两端时切歌时误报错"
-      - "修复 使用队列重复时偶尔会出现不正确的上一首歌曲"
+      - "修复 部分旧设备上无法在显示任何图像"
+      - "修复 打开操作对话框的一些瑕疵"
+      - "改进 图像加载不再导致快速滚动时的严重延迟感"
+      - "翻译 更新土耳其语(volkspolizist), 西班牙语(guwsvnd5t)"
+      - "开发 清理代码"

@@ -1,21 +1,26 @@
-## **v1.4.2 2023.12.02**
+## **v1.4.3 2024.01.07**
 
 ### EN
 
-**NOTICE: Development has been temporarily suspended, the project is currently in maintenance mode.**
 
-1. Fix: frozen (and then crash) when skipping to previous or next if repeat mode is single-repeated and queue has only one song
-2. Fix: reporting error at two ends of queue when skipping to previous or next
-3. Fix: rarely incorrect previous song when skipping to previous if repeat mode is queue-repeated
+**Development will resume from now on**
+
+1. Fix: images can not be shown on some older devices
+2. Fix: some flaws of Open With action dialog
+3. Improve: image loading no longer causes serious latency when fast scrolling
+4. Translation: update Turkish (by volkspolizist), Spanish (by guwsvnd5t)
+5. Development: cleanup code
 
 
 ### ZH
 
-**注意：开发暂停/项目仅维护**
+**开发即日起恢复**
 
-1. 修复 使用单曲重复且队列仅有一首歌曲时在切歌时卡死(然后崩溃)
-2. 修复 处在队列两端时切歌时误报错
-3. 修复 使用队列重复时偶尔会出现不正确的上一首歌曲
+1. 修复 部分旧设备上无法在显示任何图像
+2. 修复 打开操作对话框的一些瑕疵
+3. 改进 图像加载不再导致快速滚动时的严重延迟感
+4. 翻译 更新土耳其语(volkspolizist), 西班牙语(guwsvnd5t)
+5. 开发 清理代码
 
 
 **Commit log**: 

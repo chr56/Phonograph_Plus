@@ -1,0 +1,6 @@
+<b>1.4.3(1043) 2024.01.07</b>
+- Fix: images can not be shown on some older devices
+- Fix: some flaws of Open With action dialog
+- Improve: image loading no longer causes serious latency when fast scrolling
+- Translation: update Turkish (by volkspolizist), Spanish (by guwsvnd5t)
+- Development: cleanup code
