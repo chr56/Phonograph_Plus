@@ -4,12 +4,19 @@
 
 package player.phonograph.coil.target
 
-import android.content.Context
-import android.graphics.drawable.Drawable
-import androidx.palette.graphics.Palette
-import kotlinx.coroutines.*
 import player.phonograph.R
 import player.phonograph.coil.target.PaletteUtil.getColor
+import androidx.palette.graphics.Palette
+import android.content.Context
+import android.graphics.drawable.Drawable
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 
 open class PaletteTargetBuilder(protected open val defaultColor: Int) {
 
@@ -33,6 +40,12 @@ open class PaletteTargetBuilder(protected open val defaultColor: Int) {
             onStart = block
         }
 
+    private var yieldCondition: () -> Boolean = { true }
+    fun withConditionalYield(condition: () -> Boolean): PaletteTargetBuilder =
+        this.apply {
+            yieldCondition = condition
+        }
+
     fun build(): BasePaletteTarget {
         return createBasePaletteTarget(
             onStart = onStart,
@@ -40,6 +53,7 @@ open class PaletteTargetBuilder(protected open val defaultColor: Int) {
             onSuccess = { result: Drawable, palette: Deferred<Palette>? ->
                 coroutineScope.launch {
                     val color = palette?.getColor(defaultColor) ?: defaultColor
+                    while (!yieldCondition()) yield()
                     withContext(Dispatchers.Main) {
                         onSuccess(result, color)
                     }
@@ -49,6 +63,7 @@ open class PaletteTargetBuilder(protected open val defaultColor: Int) {
     }
 
     companion object {
-        private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+        private val coroutineScope =
+            CoroutineScope(Dispatchers.Default + SupervisorJob() + CoroutineName("PaletteGenerator"))
     }
 }
