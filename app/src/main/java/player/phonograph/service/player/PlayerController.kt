@@ -325,11 +325,13 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         it.jumpBackwardImp(force)
     }
     private fun jumpBackwardImp(force: Boolean) {
-        if (force) {
-            playAtImp(queueManager.previousListPosition)
-        } else {
-            playAtImp(queueManager.previousSongPosition)
-        }
+        val position =
+            if (force) {
+                queueManager.previousLoopPosition
+            } else {
+                queueManager.previousSongPosition
+            }
+        playAtImp(position)
     }
 
     /**
@@ -353,16 +355,22 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         it.jumpForwardImp(force)
     }
     private fun jumpForwardImp(force: Boolean) {
-        if (force) {
-            playAtImp(queueManager.nextListPosition)
-        } else {
-            if (!queueManager.isLastTrack()) {
-                playAtImp(queueManager.nextSongPosition)
+        val position =
+            if (force) {
+                queueManager.nextLoopPosition
             } else {
-                pauseImp(true)
-                observers.executeForEach {
-                    onReceivingMessage(MSG_NO_MORE_SONGS)
+                if (!queueManager.isLastTrack()) {
+                    queueManager.nextSongPosition
+                } else {
+                    -1
                 }
+            }
+        if (position >= 0) {
+            playAtImp(position)
+        } else {
+            pauseImp(force = true)
+            observers.executeForEach {
+                onReceivingMessage(MSG_NO_MORE_SONGS)
             }
         }
     }
