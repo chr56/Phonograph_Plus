@@ -2,66 +2,18 @@
   "versions": [
     {
       "channel": "stable",
-      "versionName": "1.4.2",
-      "versionCode": 1042,
-      "date": 1701497000,
+      "versionName": "1.4.3",
+      "versionCode": 1043,
+      "date": 1704638000,
       "link": [
         {
           "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.4.2"
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.4.3"
         }
       ],
       "releaseNote": {
-        "zh-cn": "<ol><li>修复 使用单曲重复且队列仅有一首歌曲时在切歌时卡死(然后崩溃)</li><li>修复 处在队列两端时切歌时误报错</li><li>修复 使用队列重复时偶尔会出现不正确的上一首歌曲</li></ol>",
-        "en": "<ol><li>Fix: frozen (and then crash) when skipping to previous or next if repeat mode is single-repeated and queue has only one song</li><li>Fix: reporting error at two ends of queue when skipping to previous or next</li><li>Fix: rarely incorrect previous song when skipping to previous if repeat mode is queue-repeated</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "1.4.1",
-      "versionCode": 1041,
-      "date": 1700800000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.4.1"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>改进 歌曲详情中，若遇不支持的文件格式则避免显示错误通知</li><li>改进 遇不支持的文件格式则使用后备方法读取歌曲标签</li><li>改进 专辑和艺术家的图片加载机制</li><li>修改 使用其他方法从 MediaStore 获取专辑封面 (在 Android Q 及更高版本上)</li><li>翻译 更新 西班牙语 (guwsvnd5t)</li></ol>",
-        "en": "<ol><li>Improvement: avoid showing error notifications if file format is unsupported in Song Detail</li><li>Improvement: use fallback method to read song tags if file format is unsupported</li><li>Improvement: image loading mechanism of Albums and Artists</li><li>Modify: use alternative means of gaining album art from MediaStore on Android Q and above</li><li>Translation: update Spanish (by guwsvnd5t)</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "1.4.0",
-      "versionCode": 1040,
-      "date": 1699880000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.4.0"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>新增 可定制列表项样式</li><li>修复 设备重启后出现的大量错误通知(仅屏蔽)</li><li>修复 若音频焦点被剥夺(如其他媒体在播放)播放通知会被取消</li><li>改进 深色模式在系统深色模式改变后立即更改而无需重进</li><li>改进 在通知(Android T 及以上)和 Android Auto 中, 添加随机模式和重复模式按钮</li><li>改进 在 Android Auto 中, 显示专辑封面 (仅基本支持)</li><li>改进 改进 mediastore 刷新 (可能将修复某些设备中扫描媒体的问题)</li><li>改进 各种细小用户界面改进</li><li>修改 替换部分图标</li><li>修改 在 播放列表详情 中, 显示歌曲顺序而非图片</li><li>翻译 更新 芬兰语 (Latzze)</li><li>翻译 更新 阿拉伯语 (Yrando)</li><li>翻译 更新 巴西葡萄牙语 (EddieMattos)</li><li>翻译 更新 日语 (aorinngoDo)</li><li>翻译 更新 土耳其语 (evladifatihan)</li><li>修改 禁止从 v0.3.4 之前的版本升级至当前版本</li><li>修改 警告从 v0.7.1 之前的版本升级至当前版本</li><li>开发 使用 webp 和 svg 格式以减少大小</li><li>开发 更新依赖, 清理代码</li></ol>",
-        "en": "<ol><li>New: customizable list item layout style with more options</li><li>Fix: spamming error notifications after device reboot (merely mute)</li><li>Fix: playback notification may be canceled if losing audio focus (eg. other media player starts playing)</li><li>Improvement: Dark/Light Mode would be switched after system dark mode changed instantly without closing and reopening the app</li><li>Improvement: add Shuffle Mode and Repeat Mode buttons in Notification (since Android T) and Android Auto</li><li>Improvement: display album artwork in Android Auto (basic support)</li><li>Improvement: improve mediastore refresh (may fix the problem of scaning media in some devices)</li><li>Improvement: various minor miscellaneous ui refinements</li><li>Modify: replace some icons</li><li>Modify: show song order instead of images in Playlist Detail</li><li>Translation: update Finnish (by Latzze)</li><li>Translation: update Arabic (by Yrando)</li><li>Translation: update Portuguese, Brazilian (by EddieMattos)</li><li>Translation: update Japanese (by aorinngoDo)</li><li>Translation: update Turkish (by evladifatihan)</li><li>Modify: forbid upgrading from v0.3.4 and older</li><li>Modify: warn when upgrading from v0.7.1 and older</li><li>Development: use webp and svg formats in assets and resources to shrink artifacts size</li><li>Development: upgrade dependencies, cleanup code</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "1.3.2",
-      "versionCode": 1032,
-      "date": 1697775000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.3.2"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 主播放器内, 暂停播放按钮有时会卡住与动画异常</li><li>修复 主播放器内, 主色调无法正确更新若切歌过快</li><li>修复 主播放器内, \"即将播放\"文本颜色问题</li><li>修复 主播放器内, 有时控件和队列可能会消失不见或覆盖部分图片</li><li>修复 修复播放控件和队列在启动时冻结</li></ol>",
-        "en": "<ol><li>Fix: in Main Player, PlayPause button sometimes gets frozen and has glitchy animation</li><li>Fix: in Main Player, palette color is not correctly updated when changing current song too quickly</li><li>Fix: in Main Player, legibility of \"Up Next\" text (color)</li><li>Fix: in Main Player, sometimes controls and queue may disappear or cover the partial of images</li><li>Fix: playback and queue got frozen at startup</li></ol>"
+        "zh-cn": "<ol><li>修复 部分旧设备上无法在显示任何图像</li><li>修复 打开操作对话框的一些瑕疵</li><li>改进 图像加载不再导致快速滚动时的严重延迟感</li><li>翻译 更新土耳其语(volkspolizist), 西班牙语(guwsvnd5t)</li><li>开发 清理代码</li></ol>",
+        "en": "<ol><li>Fix: images can not be shown on some older devices</li><li>Fix: some flaws of Open With action dialog</li><li>Improve: image loading no longer causes serious latency when fast scrolling</li><li>Translation: update Turkish (by volkspolizist), Spanish (by guwsvnd5t)</li><li>Development: cleanup code</li></ol>"
       }
     },
     {
