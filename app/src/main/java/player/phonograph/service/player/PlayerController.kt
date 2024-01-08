@@ -24,6 +24,7 @@ import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Setting
 import player.phonograph.mechanism.StatusBarLyric
+import player.phonograph.service.queue.RepeatMode
 import android.content.ContentUris
 import android.provider.MediaStore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -199,7 +200,9 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                 service.resources.getString(R.string.unplayable_file),
                 Toast.LENGTH_SHORT
             ).show()
-            jumpForwardImp(false)
+            if (queueManager.repeatMode != RepeatMode.REPEAT_SINGLE_SONG) {
+                jumpForwardImp(false)
+            }
         }
         log("playAtImp", "current: at $position song(${queueManager.currentSong.title})")
     }
