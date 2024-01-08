@@ -123,6 +123,10 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
      * @return true if it is ready
      */
     private fun prepareSongsImp(position: Int): Boolean {
+        if (position < 0) {
+            log("prepareSongsImp", "illegal position")
+            return false
+        }
         // todo: change STATE if possible
         broadcastStopLyric()
         log(
