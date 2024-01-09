@@ -7,7 +7,6 @@ package player.phonograph.ui.modules.setting
 import com.alorma.compose.settings.storage.base.SettingValueState
 import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
 import com.alorma.compose.settings.storage.base.rememberIntSettingState
-import com.alorma.compose.settings.storage.datastore.rememberPreferenceDataStoreBooleanSettingState
 import com.alorma.compose.settings.ui.SettingsGroup
 import com.alorma.compose.settings.ui.SettingsListDropdown
 import com.alorma.compose.settings.ui.SettingsMenuLink
@@ -16,6 +15,7 @@ import lib.phonograph.localization.LanguageSettingDialog
 import lib.phonograph.localization.LocalizationStore
 import lib.phonograph.misc.ColorChooser
 import lib.phonograph.misc.ColorPalette
+import lib.phonograph.misc.rememberDataStoreBooleanState
 import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
@@ -69,6 +69,7 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.DialogFragment
@@ -629,8 +630,8 @@ private fun BooleanPref(
         if (LocalInspectionMode.current) {
             rememberBooleanSettingState(true)
         } else {
-            rememberPreferenceDataStoreBooleanSettingState(
-                key = key,
+            rememberDataStoreBooleanState(
+                key = booleanPreferencesKey(key),
                 dataStore = LocalContext.current.dataStore,
                 defaultValue = defaultValue
             )
@@ -833,7 +834,7 @@ private fun dependOn(key: String, required: Boolean = true): Boolean {
         false
     } else {
         val datastore = LocalContext.current.dataStore
-        rememberPreferenceDataStoreBooleanSettingState(key = key, dataStore = datastore).value == required
+        rememberDataStoreBooleanState(key = booleanPreferencesKey(key), dataStore = datastore).value == required
     }
 }
 
