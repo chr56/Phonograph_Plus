@@ -16,6 +16,7 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.DialogLyricsBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelper
+import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.DEFAULT_TITLE
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.lyrics.LyricsInfo
@@ -220,9 +221,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         val lyrics =
             lyricsInfo.activatedLyrics ?: lyricsInfo.getOrElse(0) { TextLyrics.from("NOT FOUND!?") }
         linearLayoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
-        lyricsAdapter = LyricsAdapter(
-            requireContext(), lyrics.getLyricsTimeArray(), lyrics.getLyricsLineArray()
-        ) { dialog?.dismiss() }
+        lyricsAdapter = LyricsAdapter(requireContext(), lyrics) { dialog?.dismiss() }
         binding.recyclerViewLyrics.apply {
             layoutManager = this@LyricsDialog.linearLayoutManager
             adapter = this@LyricsDialog.lyricsAdapter
@@ -231,7 +230,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
     private fun updateRecycleView(info: LyricsInfo) {
         val activated = info.activatedLyrics ?: info.first()
-        lyricsAdapter.update(activated.getLyricsTimeArray(), activated.getLyricsLineArray())
+        lyricsAdapter.update(activated)
     }
     //endregion
 
@@ -364,68 +363,86 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
 private class LyricsAdapter(
     private val context: Context,
-    stamps: IntArray,
-    lines: Array<String>,
+    private var lyric: AbsLyrics,
     private val dismiss: (() -> Unit)?,
 ) : RecyclerView.Adapter<LyricsAdapter.ViewHolder>() {
 
-    private var lyrics = lines
-    private var timeStamps = stamps
+    private var lyricLines: Array<String> = lyric.getLyricsLineArray()
+    private var lyricTimestamps: IntArray = lyric.getLyricsTimeArray()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun update(stamps: IntArray, lines: Array<String>) {
-        lyrics = lines
-        timeStamps = stamps
+    fun update(newLyric: AbsLyrics) {
+        lyric = newLyric
+        lyricLines = newLyric.getLyricsLineArray()
+        lyricTimestamps = newLyric.getLyricsTimeArray()
         notifyDataSetChanged()
     }
 
-    class ViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val line: TextView = itemView.findViewById(R.id.dialog_lyrics_line)
-        val time: TextView = itemView.findViewById(R.id.dialog_lyrics_times)
+    class ViewHolder private constructor(itemView: View, val enableTimestamp: Boolean) :
+            RecyclerView.ViewHolder(itemView) {
 
-        fun bind(context: Context, lyrics: Array<String>, timeStamps: IntArray, dismiss: (() -> Unit)?) {
+        val textLine: TextView = itemView.findViewById(R.id.dialog_lyrics_line)
+        val textTime: TextView = itemView.findViewById(R.id.dialog_lyrics_times)
+
+        fun bindImpl(line: String, showTimestamp: Boolean, timestamp: Int, dismiss: (() -> Unit)?) {
+
             // parse line feed
             val actual = StringBuffer()
-            lyrics[bindingAdapterPosition].split(Pattern.compile("\\\\[nNrR]")).forEach {
+            line.split(Pattern.compile("\\\\[nNrR]")).forEach {
                 actual.append(it).appendLine()
             }
 
-            time.text = lyricsTimestamp(timeStamps[bindingAdapterPosition])
-            time.setTextColor(context.getColor(R.color.dividerColor))
-            if (timeStamps[bindingAdapterPosition] < 0 || !Setting(context)[Keys.displaySynchronizedLyricsTimeAxis].data)
-                time.visibility = View.GONE
-
-            line.text = actual.trim().toString()
-
-            line.setOnLongClickListener {
-                val target = timeStamps[bindingAdapterPosition]
-                if (target >= 0) {
-                    MusicPlayerRemote.seekTo(target)
+            // Text Line
+            textLine.text = actual.trim().toString()
+            textLine.typeface = Typeface.DEFAULT
+            textLine.setOnLongClickListener {
+                if (timestamp >= 0) {
+                    MusicPlayerRemote.seekTo(timestamp)
                     dismiss?.invoke()
                 }
                 true
             }
-            line.typeface = Typeface.DEFAULT
-            time.typeface = Typeface.DEFAULT
+
+            // Text Timestamp
+            if (showTimestamp) {
+                textTime.text = lyricsTimestamp(timestamp)
+                textTime.typeface = Typeface.DEFAULT
+                textTime.visibility = View.VISIBLE
+            } else {
+                textTime.visibility = View.GONE
+            }
         }
 
+        fun bind(line: String, dismiss: (() -> Unit)?) =
+            bindImpl(line, false, -1, dismiss)
+
+        fun bind(line: String, timestamp: Int, dismiss: (() -> Unit)?) =
+            bindImpl(line, enableTimestamp, timestamp, dismiss)
+
         fun highlight(highlight: Boolean) {
-            line.typeface = if (highlight) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
-            time.typeface = if (highlight) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
+            textLine.typeface = if (highlight) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
+            textTime.typeface = if (highlight) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
         }
 
         companion object {
-            fun inflate(context: Context, parent: ViewGroup) =
-                ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_lyrics, parent, false))
+            fun inflate(context: Context, parent: ViewGroup, enableTimestamp: Boolean) =
+                ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_lyrics, parent, false), enableTimestamp)
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder.inflate(context, parent)
+    private val enableTimestamp: Boolean = Setting(context)[Keys.displaySynchronizedLyricsTimeAxis].data
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+        ViewHolder.inflate(context, parent, enableTimestamp)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(context, lyrics, timeStamps, dismiss)
+        if (lyric is LrcLyrics) {
+            holder.bind(lyricLines[position], lyricTimestamps[position], dismiss)
+        } else if (lyric is TextLyrics) {
+            holder.bind(lyricLines[position], dismiss)
+        }
     }
 
-    override fun getItemCount(): Int = lyrics.size
+    override fun getItemCount(): Int = lyric.getLength()
 
 }
