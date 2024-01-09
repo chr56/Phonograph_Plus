@@ -129,8 +129,8 @@ object LyricsLoader {
 
 
     private fun parse(raw: String, lyricsSource: LyricsSource = LyricsSource.Unknown()): AbsLyrics {
-        val lines = raw.take(80).lines()
-        val regex = Regex("""(\[.+])+.*""")
+        val lines = raw.take(120).lines()
+        val regex = Regex("""(\[.+\])+\s*.*""")
 
         for (line in lines) {
             if (regex.matches(line)) {
