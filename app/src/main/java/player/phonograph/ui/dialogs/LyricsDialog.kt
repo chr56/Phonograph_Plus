@@ -398,8 +398,11 @@ private class LyricsAdapter(
             line.text = actual.trim().toString()
 
             line.setOnLongClickListener {
-                MusicPlayerRemote.seekTo(timeStamps[bindingAdapterPosition])
-                dismiss?.invoke()
+                val target = timeStamps[bindingAdapterPosition]
+                if (target >= 0) {
+                    MusicPlayerRemote.seekTo(target)
+                    dismiss?.invoke()
+                }
                 true
             }
             line.typeface = Typeface.DEFAULT
