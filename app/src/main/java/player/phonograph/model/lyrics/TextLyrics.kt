@@ -40,6 +40,8 @@ class TextLyrics : AbsLyrics, Parcelable {
     override fun getRaw(): String =
         lines.joinToString(separator = "\r\n") { it.trim() }
 
+    override fun getLength(): Int = lines.size
+
     override fun getLyricsLineArray(): Array<String> = Array(lines.size) { lines[it] }
 
     override fun getLyricsTimeArray(): IntArray = IntArray(lines.size) { -1 }

@@ -12,6 +12,7 @@ sealed class AbsLyrics : Parcelable {
 
     abstract fun getTitle(): String
     abstract fun getRaw(): String
+    abstract fun getLength(): Int
     abstract fun getLyricsLineArray(): Array<String>
     abstract fun getLyricsTimeArray(): IntArray
 

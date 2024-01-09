@@ -58,6 +58,8 @@ class LrcLyrics : AbsLyrics, Parcelable {
         return stringBuilder.toString().trim()
     }
 
+    override fun getLength(): Int = lyrics.size()
+
     override fun getLyricsLineArray(): Array<String> {
         return Array(lyrics.size()) {
             lyrics.valueAt(it)
