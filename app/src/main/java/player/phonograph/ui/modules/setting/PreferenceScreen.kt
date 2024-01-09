@@ -286,7 +286,7 @@ fun PhonographPreferenceScreen() {
                 defaultValue = true,
             )
             BooleanPref(
-                key = DISPLAY_LYRICS_TIME_AXIS,
+                key = BROADCAST_SYNCHRONIZED_LYRICS,
                 titleRes = R.string.pref_title_send_lyrics,
                 summaryRes = R.string.pref_summary_send_lyrics,
                 defaultValue = false,
