@@ -38,9 +38,6 @@ android {
         minSdk = 24
         targetSdk = 34
 
-        renderscriptTargetApi = 29
-        vectorDrawables.useSupportLibrary = true
-
         applicationId = "player.phonograph.plus"
         versionCode = 1043
         versionName = "1.4.4-dev1"
