@@ -22,6 +22,7 @@ inline fun checkNightMode(config: Configuration, block: (present: Boolean, night
 }
 
 fun displayCurrentNightMode(mode: Int) {
+    @Suppress("DEPRECATION")
     val text = when (mode) {
         AppCompatDelegate.MODE_NIGHT_YES           -> "YES"
         AppCompatDelegate.MODE_NIGHT_NO            -> "NO"

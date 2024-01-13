@@ -17,6 +17,7 @@ fun Context.getScreenSize(): Point {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             windowManager.currentWindowMetrics.bounds.run { Point(width(), height()) }
         } else {
+            @Suppress("DEPRECATION")
             Point().also { windowManager.defaultDisplay.getSize(it) }
         }
     return size
