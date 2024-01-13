@@ -46,7 +46,7 @@ object DatabaseDataManger {
         return writeJson(sink, "PathFilter", exportPathFilter(context))
     }
 
-    private fun exportPathFilter(context: Context): JsonObject? {
+    private fun exportPathFilter(@Suppress("UNUSED_PARAMETER") context: Context): JsonObject? {
         val db = pathFilterStore
         val wl = db.whitelistPaths.map { JsonPrimitive(it) }
         val bl = db.blacklistPaths.map { JsonPrimitive(it) }
@@ -70,7 +70,11 @@ object DatabaseDataManger {
         }
     }
 
-    private fun importPathFilter(context: Context, json: JsonObject, override: Boolean): Boolean {
+    private fun importPathFilter(
+        @Suppress("UNUSED_PARAMETER") context: Context,
+        json: JsonObject,
+        @Suppress("SameParameterValue") override: Boolean,
+    ): Boolean {
 
         val wl = json[WHITE_LIST] as? JsonArray
         val bl = json[BLACK_LIST] as? JsonArray
@@ -104,7 +108,7 @@ object DatabaseDataManger {
         return writeJson(sink, "PlayingQueues", exportPlayingQueues(context))
     }
 
-    private fun exportPlayingQueues(context: Context): JsonObject? {
+    private fun exportPlayingQueues(@Suppress("UNUSED_PARAMETER") context: Context): JsonObject? {
         val db = playbackQueueStore
         val oq = db.savedOriginalPlayingQueue.map(DatabaseDataManger::persistentSong)
         val pq = db.savedPlayingQueue.map(DatabaseDataManger::persistentSong)

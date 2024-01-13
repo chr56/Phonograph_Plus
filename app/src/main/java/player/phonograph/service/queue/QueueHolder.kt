@@ -113,6 +113,7 @@ class QueueHolder private constructor(
         saveCfg(context)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun saveQueue(context: Context) = synchronized(persistenceLock) {
         GlobalContext.get().get<MusicPlaybackQueueStore>().saveQueues(playingQueue, originalPlayingQueue)
     }
