@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 object PageHome : Page(R.string.home)
 
 @Composable
+@Suppress("UNUSED_PARAMETER")
 fun Home(viewModel: WebSearchViewModel, pageState: Page) {
     Column(Modifier.fillMaxSize()) {
         HomeItem(PageSearch.LastFmSearch())

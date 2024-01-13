@@ -63,6 +63,7 @@ class JsonDeserializationRetrofitConverter<T : Any>(
 
     class JsonSerializerDelegate<T>(type: Type, private val _json: Json) {
 
+        @Suppress("UNCHECKED_CAST")
         private val serializer: KSerializer<T> = _json.serializersModule.serializer(type) as KSerializer<T>
 
         @OptIn(ExperimentalSerializationApi::class)

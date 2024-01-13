@@ -148,6 +148,7 @@ private fun BatchTagEditor(
 }
 
 @Composable
+@Suppress("UNUSED_PARAMETER")
 private fun RequestWebSearch(viewModel: MultiTagBrowserViewModel, webSearchTool: WebSearchTool) {
     val context = LocalContext.current
     fun search(source: Source) {

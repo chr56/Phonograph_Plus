@@ -107,7 +107,7 @@ class StarterActivity : AppCompatActivity() {
 
 
     private fun lookupSongsFromIntent(intent: Intent): PlayRequest? {
-        var playRequest: PlayRequest? = null
+        var playRequest: PlayRequest?
         // uri first
         playRequest = handleUriPlayRequest(intent)
 

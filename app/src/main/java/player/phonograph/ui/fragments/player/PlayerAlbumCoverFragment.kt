@@ -88,7 +88,7 @@ class PlayerAlbumCoverFragment :
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                lyricsViewModel.lyricsInfo.collect { lyricsList ->
+                lyricsViewModel.lyricsInfo.collect { _ ->
                     val lyricsShow = Setting(App.instance)[Keys.synchronizedLyricsShow].data
                     withContext(Dispatchers.Main) {
                         if (lyricsShow) {

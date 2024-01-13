@@ -151,6 +151,7 @@ private fun CoverUpdater(viewModel: MultiTagBrowserViewModel) {
 }
 
 @Composable
+@Suppress("UNUSED_PARAMETER")
 private fun FileList(viewModel: MultiTagBrowserViewModel, modifier: Modifier = Modifier) {
     val songs by viewModel.songs.collectAsState()
     CascadeVerticalItem(

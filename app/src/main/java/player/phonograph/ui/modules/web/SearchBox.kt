@@ -72,6 +72,7 @@ fun BaseSearchBox(
 }
 
 @Composable
+@Suppress("UNUSED_PARAMETER")
 fun SearchTextBox(current: String, modifier: Modifier = Modifier, hint: String? = null, onUpdate: (String) -> Unit) {
     TextField(
         value = current,

@@ -716,6 +716,7 @@ internal class DialogPreferenceModel(
 }
 
 @Composable
+@Suppress("UNUSED_PARAMETER")
 private fun ListPref(
     options: OptionGroupModel,
     @StringRes titleRes: Int,

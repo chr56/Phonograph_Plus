@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
+@Suppress("UNUSED_PARAMETER")
 fun DetailMusicBrainz(
     viewModel: WebSearchViewModel,
     musicBrainzDetail: PageDetail.MusicBrainzDetail,
@@ -230,6 +231,7 @@ fun MusicBrainzArtistCredits(artistCredits: List<MusicBrainzArtistCredit>?) {
 }
 
 @Composable
+@Suppress("UNUSED_PARAMETER")
 fun MusicBrainzArtistCredit(artistCredit: MusicBrainzArtistCredit, modifier: Modifier = Modifier) {
     MusicBrainzLinkableItem(Target.Artist, artistCredit.artist?.id) {
         Text(
@@ -349,6 +351,7 @@ private fun MusicBrainzDisambiguation(string: String?) {
 }
 
 @Composable
+@Suppress("UNUSED_PARAMETER")
 private fun EntityTitle(
     target: Target,
     mbid: String,
@@ -375,6 +378,7 @@ private fun EntityTitle(
 }
 
 @Composable
+@Suppress("UNUSED_PARAMETER")
 fun LinkIconMusicbrainz(target: Target, mbid: String, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val navigator = LocalPageNavigator.current
@@ -389,6 +393,7 @@ fun LinkIconMusicbrainz(target: Target, mbid: String, modifier: Modifier = Modif
 }
 
 @Composable
+@Suppress("UNUSED_PARAMETER")
 fun LinkIconMusicbrainzWebsite(target: Target, mbid: String, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     Icon(

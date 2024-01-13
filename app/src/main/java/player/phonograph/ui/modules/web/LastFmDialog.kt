@@ -152,7 +152,7 @@ class LastFmDialog : BridgeDialogFragment() {
         private val _response: MutableStateFlow<LastFmModel?> = MutableStateFlow(null)
         val response get() = _response.asStateFlow()
 
-        fun loadArtist(context: Context, lastFMService: LastFMService, artist: Artist) {
+        fun loadArtist(@Suppress("UNUSED_PARAMETER") context: Context, lastFMService: LastFMService, artist: Artist) {
             viewModelScope.launch(Dispatchers.IO) {
                 val response = execute(
                     listOf(
@@ -172,7 +172,7 @@ class LastFmDialog : BridgeDialogFragment() {
             }
         }
 
-        fun loadAlbum(context: Context, lastFMService: LastFMService, album: Album) {
+        fun loadAlbum(@Suppress("UNUSED_PARAMETER") context: Context, lastFMService: LastFMService, album: Album) {
             viewModelScope.launch(Dispatchers.IO) {
                 val response = execute(
                     listOf(
@@ -193,7 +193,7 @@ class LastFmDialog : BridgeDialogFragment() {
         }
 
 
-        fun loadSong(context: Context, lastFMService: LastFMService, song: Song) {
+        fun loadSong(@Suppress("UNUSED_PARAMETER") context: Context, lastFMService: LastFMService, song: Song) {
             viewModelScope.launch(Dispatchers.IO) {
                 val response = execute(
                     listOf(
