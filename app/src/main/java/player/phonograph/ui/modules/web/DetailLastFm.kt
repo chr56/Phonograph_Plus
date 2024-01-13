@@ -52,6 +52,7 @@ import android.text.Html
 
 
 @Composable
+@Suppress("UNUSED_PARAMETER")
 fun DetailLastFm(viewModel: WebSearchViewModel, lastFmDetail: PageDetail.LastFmDetail) {
     val detail by lastFmDetail.detail.collectAsState()
     Box(

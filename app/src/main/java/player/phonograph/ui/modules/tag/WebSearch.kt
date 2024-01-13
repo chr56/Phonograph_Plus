@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
+@Suppress("UNUSED_PARAMETER")
 internal fun RequestWebSearch(
     webSearchTool: WebSearchTool,
     onSearch: (Source) -> Unit,

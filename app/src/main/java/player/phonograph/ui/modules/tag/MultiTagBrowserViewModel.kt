@@ -90,7 +90,7 @@ class MultiTagBrowserViewModel : ViewModel() {
     private var _pendingEditRequests: MutableList<EditAction> = mutableListOf()
     val pendingEditRequests: List<EditAction> get() = _pendingEditRequests.toList()
 
-    fun process(context: Context, event: TagEditEvent) {
+    fun process(@Suppress("UNUSED_PARAMETER") context: Context, event: TagEditEvent) {
         viewModelScope.launch {
             when (event) {
                 is TagEditEvent.UpdateTag     -> {
