@@ -23,6 +23,7 @@ abstract class AbsPage : AbsMusicServiceFragment() {
             object : DefaultLifecycleObserver {
                 override fun onCreate(owner: LifecycleOwner) {
                     super.onCreate(owner)
+                    @Suppress("DEPRECATION") //todo: replace `setHasOptionsMenu` with MenuProvider
                     setHasOptionsMenu(true)
                 }
             }
