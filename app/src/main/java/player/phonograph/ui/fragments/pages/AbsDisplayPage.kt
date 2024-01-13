@@ -226,12 +226,12 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
     }
 
     private fun checkValidation(displayConfig: PageDisplayConfig) {
-        var warningLayout = false
-        warningLayout = when (displayConfig.layout) {
-            ItemLayoutStyle.GRID    -> displayConfig.gridSize <= 2
-            ItemLayoutStyle.LIST_3L -> displayConfig.gridSize > 3
-            else                    -> displayConfig.gridSize > 2
-        }
+        var warningLayout: Boolean =
+            when (displayConfig.layout) {
+                ItemLayoutStyle.GRID    -> displayConfig.gridSize <= 2
+                ItemLayoutStyle.LIST_3L -> displayConfig.gridSize > 3
+                else                    -> displayConfig.gridSize > 2
+            }
         if (warningLayout) {
             Toast.makeText(requireContext(), R.string.warning_inappropriate_config, Toast.LENGTH_SHORT).show()
         }

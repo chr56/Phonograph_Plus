@@ -109,7 +109,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         )
     }
     fun setupDefaultPhonographWidgetButtons(context: Context, view: RemoteViews) {
-        var pendingIntent: PendingIntent? = null
+        var pendingIntent: PendingIntent?
         val serviceName = ComponentName(context, MusicService::class.java)
 
         // Previous track
