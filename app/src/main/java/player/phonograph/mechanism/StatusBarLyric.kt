@@ -4,7 +4,8 @@
 
 package player.phonograph.mechanism
 
-import cn.lyric.getter.api.tools.EventTools
+import cn.lyric.getter.api.API
+import cn.lyric.getter.api.data.ExtraData
 import player.phonograph.App
 import player.phonograph.PACKAGE_NAME
 import player.phonograph.R
@@ -27,21 +28,23 @@ object StatusBarLyric {
     private val icon: Drawable? get() = AppCompatResources.getDrawable(App.instance, R.drawable.ic_notification)
     private val iconBase64: String? = icon?.toBase64()
 
+
+    private val extraData: ExtraData = ExtraData(
+        iconBase64 != null,
+        iconBase64 ?: "",
+        true,
+        musicServiceName,
+        0
+    )
+    private val API: API = API()
+
     fun updateLyric(lyric: String) {
         val setting = Setting(App.instance)
         if (setting[Keys.broadcastSynchronizedLyrics].data) {
             if (setting[Keys.useLegacyStatusBarLyricsApi].data) {
                 lyricsService.updateLyric(lyric)
             } else {
-                EventTools.sendLyric(
-                    context = App.instance,
-                    lyric = lyric,
-                    customIcon = iconBase64 != null,
-                    base64Icon = iconBase64!!,
-                    useOwnMusicController = true,
-                    serviceName = musicServiceName,
-                    packageName = musicServicePackageName
-                )
+                API.sendLyric(lyric = lyric, extra = extraData)
             }
         }
     }
@@ -52,7 +55,7 @@ object StatusBarLyric {
             if (setting[Keys.useLegacyStatusBarLyricsApi].data) {
                 lyricsService.stopLyric()
             } else {
-                EventTools.stopLyric(App.instance)
+                API.clearLyric()
             }
         }
     }

@@ -214,4 +214,5 @@ dependencies {
     implementation(libs.composeReorderable)
     implementation(libs.bundles.composeSettings)
     implementation(libs.statusBarLyricsApi)
+    implementation(libs.lyricsGetterAPi)
 }

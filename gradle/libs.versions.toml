@@ -105,6 +105,7 @@ appIntro = "com.github.AppIntro:AppIntro:6.2.0"
 advrecyclerview = "com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:1.0.0"
 composeReorderable = "org.burnoutcrew.composereorderable:reorderable:0.9.6"
 statusBarLyricsApi = "com.github.577fkj:StatusBarApiExample:v2.0"
+lyricsGetterAPi = "com.github.xiaowine:Lyric-Getter-Api:6.0.0"
 
 [bundles]
 
