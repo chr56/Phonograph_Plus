@@ -234,4 +234,5 @@
 # StatusBarLyric API
 ####################
 -keep class StatusBarLyric.API.StatusBarLyric {*;}
--keep class cn.lyric.getter.api.tools.EventTools{*;}
+-keep class cn.lyric.getter.api.API {*;}
+-keep class cn.lyric.getter.api.data.ExtraData {*;}
