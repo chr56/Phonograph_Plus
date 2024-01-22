@@ -86,6 +86,8 @@ class PlayingQueueAdapter(
             title?.ellipsize = TextUtils.TruncateAt.MIDDLE
             text?.ellipsize = TextUtils.TruncateAt.MIDDLE
             image?.visibility = GONE
+            imageText?.isSingleLine = false
+            imageText?.maxLines = 2
             imageText?.visibility = VISIBLE
             imageText?.text = (position - current).toString()
 
