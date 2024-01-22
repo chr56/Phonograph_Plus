@@ -44,18 +44,19 @@ open class AlbumDisplayAdapter(
         return AlbumViewHolder(inflatedView(parent, viewType))
     }
 
-    inner class AlbumViewHolder(itemView: View) : DisplayViewHolder<Album>(itemView) {
+    class AlbumViewHolder(itemView: View) : DisplayViewHolder<Album>(itemView) {
         init {
             setImageTransitionName(itemView.context.getString(R.string.transition_album_art))
         }
 
         override fun getRelativeOrdinalText(item: Album): String = item.songCount.toString()
 
-        override fun setImage(position: Int, dataset: List<Album>, usePalette: Boolean) {
+        override fun setImage(item: Album, usePalette: Boolean) {
             val context = itemView.context
             image?.let { view ->
+                view.visibility = View.VISIBLE
                 loadImage(context) {
-                    data(dataset[position])
+                    data(item)
                     size(ViewSizeResolver(view))
                     target(
                         PaletteTargetBuilder(context)

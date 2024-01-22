@@ -40,9 +40,9 @@ class SongCollectionDisplayAdapter(
             return true
         }
 
-        override fun setImage(position: Int, dataset: List<SongCollection>, usePalette: Boolean) {
-            super.setImage(position, dataset, usePalette)
+        override fun setImage(item: SongCollection, usePalette: Boolean) {
             val context = itemView.context
+            image?.visibility = View.VISIBLE
             image?.setImageDrawable(
                 context.getTintedDrawable(
                     R.drawable.ic_folder_white_24dp, resolveColor(

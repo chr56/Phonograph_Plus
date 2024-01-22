@@ -96,13 +96,13 @@ abstract class DisplayAdapter<I : Displayable>(
             if (useImageText) {
                 setImageText(getRelativeOrdinalText(item))
             } else {
-                setImage(position, dataset, usePalette)
+                setImage(item, usePalette)
             }
             controller.registerClicking(itemView, position) {
                 onClick(position, dataset, image)
             }
             menu?.let {
-                prepareMenu(dataset[position], it)
+                prepareMenu(item, it)
             }
         }
 
@@ -133,11 +133,7 @@ abstract class DisplayAdapter<I : Displayable>(
         protected open fun getDescription(item: I): CharSequence? =
             item.getDescription(context = itemView.context)
 
-        protected open fun setImage(
-            position: Int,
-            dataset: List<I>,
-            usePalette: Boolean,
-        ) {
+        protected open fun setImage(item: I, usePalette: Boolean) {
             image?.also {
                 it.visibility = View.VISIBLE
                 it.setImageDrawable(defaultIcon)
