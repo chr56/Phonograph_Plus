@@ -152,13 +152,8 @@ class PlayingQueueAdapter(
         }
     }
 
-    // Playing Queue might have multiple items of SAME song, so we have to avoid crash
-    override fun getItemId(position: Int): Long {
-        val id: Long = dataset[position].getItemID()
-        val cleared: Long = id and BITWISE_POSITION_MASK.inv()
-        val shifted: Long = (position.toLong() and BITWISE_POSITION_CUT_MASK) shl BITWISE_SHIFT
-        return cleared or shifted
-    }
+    override fun getItemId(position: Int): Long =
+        generateId(dataset[position].getItemID(), position)
 
 
     companion object {
@@ -169,6 +164,13 @@ class PlayingQueueAdapter(
         private const val BITWISE_POSITION_MASK: Long = 0x00ff_fff0_0000_0000
         private const val BITWISE_POSITION_CUT_MASK: Long = 0xf_ffff // 20 bits
         private const val BITWISE_SHIFT: Int = 36 // 4*9
+
+        // Playing Queue might have multiple items of SAME song, so we have to avoid crash
+        private fun generateId(id: Long, position: Int): Long {
+            val cleared: Long = id and BITWISE_POSITION_MASK.inv()
+            val shifted: Long = (position.toLong() and BITWISE_POSITION_CUT_MASK) shl BITWISE_SHIFT
+            return cleared or shifted
+        }
 
     }
 }
