@@ -100,7 +100,7 @@ class CacheDatabase private constructor(context: Context) : SQLiteOpenHelper(con
     private fun removeAll(db: SQLiteDatabase) {
         for (tableName in TABLE_NAMES) {
             db.execSQL(
-                "DROP TABLE IF EXISTS $tableName"
+                "DELETE FROM $tableName"
             )
         }
 

@@ -60,7 +60,7 @@ object CoilImageConfig {
             _enableImageCache = value
         }
 
-    fun clearImageCache(context: Context) = CacheStore(context).clear(context)
+    fun clearImageCache(context: Context) = CacheStore.clear(context)
 
     private fun writeToJson(config: ImageSourceConfig): JsonElement {
         val parser = Json {
