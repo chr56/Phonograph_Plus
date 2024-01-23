@@ -33,22 +33,22 @@ class CacheStore(val context: Context) {
         fun isNoImage(target: T, type: Int): Boolean
     }
 
-    sealed class DefaultCache<T>(protected val context: Context) : Cache<T> {
+    sealed class DefaultCache<T>(
+        protected val context: Context,
+        private val tableName: CacheDatabase.Target,
+    ) : Cache<T> {
 
-        protected abstract fun table(): CacheDatabase.Target
         protected abstract fun id(target: T): Long
 
         override fun isNoImage(target: T, type: Int): Boolean {
             val cacheDatabase = CacheDatabase.instance(context)
-            val result = cacheDatabase.fetch(table(), id(target), type)
-            // cacheDatabase.release()
+            val result = cacheDatabase.fetch(tableName, id(target), type)
             return result.isEmpty()
         }
 
         override fun markNoImage(target: T, type: Int) {
             val cacheDatabase = CacheDatabase.instance(context)
-            cacheDatabase.register(table(), id(target), type, null)
-            // cacheDatabase.release()
+            cacheDatabase.register(tableName, id(target), type, null)
         }
 
         override fun set(
@@ -60,7 +60,7 @@ class CacheStore(val context: Context) {
 
             val cacheDatabase = CacheDatabase.instance(context)
 
-            val result = cacheDatabase.register(table(), id(target), type, uuid)
+            val result = cacheDatabase.register(tableName, id(target), type, uuid)
 
             if (!result) {
                 Log.i(TAG, "Failed to insert cache database")
@@ -97,7 +97,7 @@ class CacheStore(val context: Context) {
 
             val cacheDatabase = CacheDatabase.instance(context)
 
-            val uuid = cacheDatabase.fetch(table(), id(target), type).existedOrNull() ?: return null
+            val uuid = cacheDatabase.fetch(tableName, id(target), type).existedOrNull() ?: return null
 
             val targetFile = rootCacheDir(context).resolve(uuid)
 
@@ -125,21 +125,18 @@ class CacheStore(val context: Context) {
     }
 
 
-    class AudioFiles(context: Context) : DefaultCache<AudioFile>(context) {
+    class AudioFiles(context: Context) : DefaultCache<AudioFile>(context, CacheDatabase.Target.SONG) {
 
-        override fun table(): CacheDatabase.Target = CacheDatabase.Target.SONG
         override fun id(target: AudioFile): Long = target.songId
     }
 
-    class AlbumImages(context: Context) : DefaultCache<AlbumImage>(context) {
+    class AlbumImages(context: Context) : DefaultCache<AlbumImage>(context, CacheDatabase.Target.ALBUM) {
 
-        override fun table(): CacheDatabase.Target = CacheDatabase.Target.ALBUM
         override fun id(target: AlbumImage): Long = target.id
     }
 
-    class ArtistImages(context: Context) : DefaultCache<ArtistImage>(context) {
+    class ArtistImages(context: Context) : DefaultCache<ArtistImage>(context, CacheDatabase.Target.ARTIST) {
 
-        override fun table(): CacheDatabase.Target = CacheDatabase.Target.ARTIST
         override fun id(target: ArtistImage): Long = target.id
     }
 
