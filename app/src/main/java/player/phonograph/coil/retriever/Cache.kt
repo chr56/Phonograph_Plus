@@ -14,6 +14,7 @@ import okio.sink
 import okio.source
 import player.phonograph.coil.model.AlbumImage
 import player.phonograph.coil.model.ArtistImage
+import player.phonograph.coil.model.LoaderTarget
 import player.phonograph.coil.model.SongImage
 import player.phonograph.util.file.createOrOverrideFileRecursive
 import player.phonograph.util.recordThrowable
@@ -26,29 +27,27 @@ import java.util.UUID
 
 class CacheStore(val context: Context) {
 
-    interface Cache<T> {
+    interface Cache<T : LoaderTarget> {
         fun set(target: T, data: FetchResult, type: Int)
         fun get(target: T, type: Int): FetchResult?
         fun markNoImage(target: T, type: Int)
         fun isNoImage(target: T, type: Int): Boolean
     }
 
-    sealed class DefaultCache<T>(
+    sealed class DefaultCache<T : LoaderTarget>(
         protected val context: Context,
         private val tableName: CacheDatabase.Target,
     ) : Cache<T> {
 
-        protected abstract fun id(target: T): Long
-
         override fun isNoImage(target: T, type: Int): Boolean {
             val cacheDatabase = CacheDatabase.instance(context)
-            val result = cacheDatabase.fetch(tableName, id(target), type)
+            val result = cacheDatabase.fetch(tableName, target.id, type)
             return result.isEmpty()
         }
 
         override fun markNoImage(target: T, type: Int) {
             val cacheDatabase = CacheDatabase.instance(context)
-            cacheDatabase.register(tableName, id(target), type, null)
+            cacheDatabase.register(tableName, target.id, type, null)
         }
 
         override fun set(
@@ -60,7 +59,7 @@ class CacheStore(val context: Context) {
 
             val cacheDatabase = CacheDatabase.instance(context)
 
-            val result = cacheDatabase.register(tableName, id(target), type, uuid)
+            val result = cacheDatabase.register(tableName, target.id, type, uuid)
 
             if (!result) {
                 Log.i(TAG, "Failed to insert cache database")
@@ -97,7 +96,7 @@ class CacheStore(val context: Context) {
 
             val cacheDatabase = CacheDatabase.instance(context)
 
-            val uuid = cacheDatabase.fetch(tableName, id(target), type).existedOrNull() ?: return null
+            val uuid = cacheDatabase.fetch(tableName, target.id, type).existedOrNull() ?: return null
 
             val targetFile = rootCacheDir(context).resolve(uuid)
 
@@ -125,20 +124,9 @@ class CacheStore(val context: Context) {
     }
 
 
-    class AudioFiles(context: Context) : DefaultCache<SongImage>(context, CacheDatabase.Target.SONG) {
-
-        override fun id(target: SongImage): Long = target.songId
-    }
-
-    class AlbumImages(context: Context) : DefaultCache<AlbumImage>(context, CacheDatabase.Target.ALBUM) {
-
-        override fun id(target: AlbumImage): Long = target.id
-    }
-
-    class ArtistImages(context: Context) : DefaultCache<ArtistImage>(context, CacheDatabase.Target.ARTIST) {
-
-        override fun id(target: ArtistImage): Long = target.id
-    }
+    class AudioFiles(context: Context) : DefaultCache<SongImage>(context, CacheDatabase.Target.SONG)
+    class AlbumImages(context: Context) : DefaultCache<AlbumImage>(context, CacheDatabase.Target.ALBUM)
+    class ArtistImages(context: Context) : DefaultCache<ArtistImage>(context, CacheDatabase.Target.ARTIST)
 
     fun clear(context: Context) {
         rootCacheDir(context).deleteRecursively()
