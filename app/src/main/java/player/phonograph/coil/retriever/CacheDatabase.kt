@@ -27,7 +27,7 @@ class CacheDatabase private constructor(context: Context) : SQLiteOpenHelper(con
     }
 
 
-    fun fetch(target: Target, id: Long, @RetrieverId retriever: Int): Result {
+    fun fetch(target: Target, id: Long, @RetrieverId retriever: Int): FetchedCache {
         val tableName = lookupTableName(target)
         return readableDatabase.query(
             tableName,
@@ -47,12 +47,12 @@ class CacheDatabase private constructor(context: Context) : SQLiteOpenHelper(con
                 // check empty
                 val empty = cursor.getInt(3)
                 if (empty == 0) {
-                    Result.Empty
+                    FetchedCache.Empty
                 } else {
-                    Result.Existed(cursor.getString(4))
+                    FetchedCache.Existed(cursor.getString(4))
                 }
             } else {
-                Result.Unknown
+                FetchedCache.Unknown
             }
         }
     }
@@ -153,10 +153,10 @@ class CacheDatabase private constructor(context: Context) : SQLiteOpenHelper(con
         SONG, ALBUM, ARTIST
     }
 
-    sealed interface Result {
-        data object Empty : Result
-        data object Unknown : Result
-        class Existed(val path: String) : Result
+    sealed interface FetchedCache {
+        data object Empty : FetchedCache
+        data object Unknown : FetchedCache
+        class Existed(val path: String) : FetchedCache
 
         fun isEmpty(): Boolean = this is Empty
 
