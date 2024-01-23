@@ -5,9 +5,11 @@
 package player.phonograph.mechanism.setting
 
 import player.phonograph.App
+import player.phonograph.coil.retriever.CacheStore
 import player.phonograph.model.config.ImageSourceConfig
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import android.content.Context
 import android.util.Log
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -44,6 +46,21 @@ object CoilImageConfig {
     fun resetImageSourceToDefault() {
         currentImageSourceConfig = ImageSourceConfig.DEFAULT
     }
+
+    private var _enableImageCache: Boolean? = null
+    var enableImageCache: Boolean
+        get() {
+            if (_enableImageCache == null) {
+                _enableImageCache = Setting(App.instance)[Keys.imageCache].data
+            }
+            return _enableImageCache ?: false
+        }
+        set(value) {
+            Setting(App.instance)[Keys.imageCache].data = value
+            _enableImageCache = value
+        }
+
+    fun clearImageCache(context: Context) = CacheStore(context).clear(context)
 
     private fun writeToJson(config: ImageSourceConfig): JsonElement {
         val parser = Json {
