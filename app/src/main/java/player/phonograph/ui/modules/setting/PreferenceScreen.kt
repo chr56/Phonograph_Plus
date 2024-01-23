@@ -21,6 +21,7 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.mechanism.StatusBarLyric
+import player.phonograph.mechanism.setting.CoilImageConfig
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.mechanism.setting.StyleConfig
@@ -213,6 +214,19 @@ fun PhonographPreferenceScreen() {
                 titleRes = R.string.pref_title_preload_images,
                 defaultValue = true
             )
+            BooleanPref(
+                key = IMAGE_CACHE,
+                summaryRes = R.string.pref_summary_image_cache,
+                titleRes = R.string.pref_title_image_cache,
+                defaultValue = false
+            ) {
+                CoilImageConfig.enableImageCache = it
+            }
+            SettingsMenuLink(
+                title = title(R.string.clear_image_cache)
+            ) {
+                CoilImageConfig.clearImageCache(App.instance)
+            }
         }
 
 

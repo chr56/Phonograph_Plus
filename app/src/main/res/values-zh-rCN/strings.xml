@@ -488,6 +488,9 @@
     <string name="file_not_found">“文件 %1$s 疑似不存在！请检查文件或访问存储的权限!”</string>
     <string name="pref_title_preload_images">图片预加载</string>
     <string name="pref_summary_preload_images">预加载图片以加快加载速度并减少卡顿，可能消耗更多内存</string>
+    <string name="pref_title_image_cache">图片缓存</string>
+    <string name="pref_summary_image_cache">使用图片缓存加快加载速度(在某些情况下也可能会导致卡顿)</string>
+    <string name="clear_image_cache">清空图片缓存</string>
     <string name="pref_title_persistent_playback_notification">播放通知驻留</string>
     <string name="pref_summary_persistent_playback_notification">播放通知将始终驻留且不可取消</string>
 </resources>

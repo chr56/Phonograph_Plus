@@ -501,6 +501,9 @@
     <string name="file_not_found">"It seems that %1$s doesn't exist! Please check the file or permission of access to storage."</string>
     <string name="pref_title_preload_images">Preload Images</string>
     <string name="pref_summary_preload_images">Preload images to accelerate loading and to avoid lag. This may cause more memory consuming.</string>
+    <string name="pref_title_image_cache">Image Cache</string>
+    <string name="pref_summary_image_cache">Enable Image Cache to accelerate image loading. (Yet this may also cause more lags in some circumstances.)</string>
+    <string name="clear_image_cache">Clear Image Cache</string>
     <string name="pref_title_persistent_playback_notification">Persistent Playback Notification</string>
     <string name="pref_summary_persistent_playback_notification">Playback Notification will always be ongoing and not cancelable.</string>
 </resources>
