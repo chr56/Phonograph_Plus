@@ -15,6 +15,7 @@ import player.phonograph.appshortcuts.DynamicShortcutManager.Companion.reportSho
 import player.phonograph.appshortcuts.shortcuttype.LastAddedShortcutType
 import player.phonograph.appshortcuts.shortcuttype.ShuffleAllShortcutType
 import player.phonograph.appshortcuts.shortcuttype.TopTracksShortcutType
+import player.phonograph.mechanism.SongUriParsers
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.PlayRequest.SongRequest
 import player.phonograph.model.PlayRequest.SongsRequest
@@ -37,22 +38,16 @@ import player.phonograph.ui.components.viewcreater.buildDialogView
 import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
 import player.phonograph.ui.components.viewcreater.titlePanel
-import player.phonograph.util.reportError
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.provider.DocumentsContractCompat.getDocumentId
 import androidx.core.view.setMargins
 import androidx.core.view.setPadding
 import androidx.fragment.app.FragmentActivity
-import android.content.ContentResolver
-import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.N_MR1
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
@@ -65,7 +60,6 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import kotlin.random.Random
-import java.io.File
 
 class StarterActivity : AppCompatActivity() {
 
@@ -133,38 +127,13 @@ class StarterActivity : AppCompatActivity() {
     }
 
     private fun parseUri(uri: Uri): List<Song> {
-
-        if (uri.scheme != null && uri.scheme == ContentResolver.SCHEME_CONTENT && uri.authority != null) {
-            val songId =
-                when (uri.authority) {
-                    AUTHORITY_MEDIA_PROVIDER -> getDocumentId(uri)!!.split(":")[1]
-                    AUTHORITY_MEDIA          -> uri.lastPathSegment
-                    else                     -> null
-                }
-            if (songId != null) {
-                return listOf(Songs.id(this, songId.toLong()))
+        for (parser in SongUriParsers) {
+            val taken = parser.check(uri.scheme, uri.authority)
+            if (taken) {
+                val result = parser.parse(this, uri)
+                if (result.isNotEmpty()) return result.toList()
             }
         }
-
-        val file: File? =
-            if (uri.authority != null && uri.authority == AUTHORITY_DOCUMENTS_PROVIDER) {
-                File(
-                    Environment.getExternalStorageDirectory(),
-                    uri.path!!.split(Regex("^.*:.*$"), 2)[1]
-                )
-            } else {
-                val path = getFilePathFromUri(this, uri)
-                when {
-                    path != null -> File(path)
-                    uri.path != null -> File(uri.path!!)
-                    else -> null
-                }
-            }
-
-        if (file != null) {
-            return Songs.searchByPath(this, file.absolutePath, withoutPathFilter = true)
-        }
-
         return emptyList()
     }
 
@@ -381,34 +350,6 @@ class StarterActivity : AppCompatActivity() {
 
     companion object {
         const val TAG = "Starter"
-        const val AUTHORITY_MEDIA_PROVIDER = "com.android.providers.media.documents"
-        const val AUTHORITY_DOCUMENTS_PROVIDER = "com.android.externalstorage.documents"
-        const val AUTHORITY_MEDIA = "media"
-
-        fun getFilePathFromUri(context: Context, uri: Uri): String? {
-            val column = "_data"
-            val projection = arrayOf(column)
-
-            val cursor: Cursor? =
-                context.contentResolver.query(
-                    uri,
-                    projection,
-                    null,
-                    null,
-                    null
-                )
-            try {
-                cursor?.use {
-                    if (it.moveToFirst()) {
-                        val columnIndex = it.getColumnIndexOrThrow(column)
-                        return it.getString(columnIndex)
-                    }
-                }
-            } catch (e: Exception) {
-                reportError(e, TAG, "Failed parse $uri")
-            }
-            return null
-        }
 
         fun parseIdFromIntent(intent: Intent, longKey: String, stringKey: String): Long {
             var id = intent.getLongExtra(longKey, -1)
