@@ -9,6 +9,7 @@ import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.request.Options
 import coil.size.Size
+import player.phonograph.coil.model.SongImage
 import player.phonograph.coil.retriever.AudioFileImageFetcherDelegate
 import player.phonograph.coil.retriever.ImageRetriever
 import player.phonograph.coil.retriever.raw
@@ -18,15 +19,15 @@ import android.content.Context
 import android.util.Log
 
 class AudioFileFetcher private constructor(
-    private val audioFile: AudioFile,
+    private val songImage: SongImage,
     private val context: Context,
     private val size: Size,
     private val rawImage: Boolean,
     private val delegates: List<AudioFileImageFetcherDelegate<ImageRetriever>>,
 ) : Fetcher {
 
-    class Factory(context: Context) : Fetcher.Factory<AudioFile> {
-        override fun create(data: AudioFile, options: Options, imageLoader: ImageLoader): Fetcher =
+    class Factory(context: Context) : Fetcher.Factory<SongImage> {
+        override fun create(data: SongImage, options: Options, imageLoader: ImageLoader): Fetcher =
             AudioFileFetcher(
                 data,
                 options.context,
@@ -45,7 +46,7 @@ class AudioFileFetcher private constructor(
         if (noImage) return null // skipping
          */
         for (delegate in delegates) {
-            val result = delegate.retrieve(audioFile, context, size, rawImage)
+            val result = delegate.retrieve(songImage, context, size, rawImage)
             if (result != null) {
                 return result
             } else {
@@ -53,7 +54,7 @@ class AudioFileFetcher private constructor(
             }
         }
         debug {
-            Log.v(TAG, "No any cover for file $audioFile")
+            Log.v(TAG, "No any cover for file $songImage")
         }
         /*
         CacheStore.AudioFiles(context).markNoImage(audioFile)

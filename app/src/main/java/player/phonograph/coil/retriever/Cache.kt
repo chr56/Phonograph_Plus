@@ -12,9 +12,9 @@ import coil.fetch.SourceResult
 import okio.buffer
 import okio.sink
 import okio.source
-import player.phonograph.coil.album.AlbumImage
-import player.phonograph.coil.artist.ArtistImage
-import player.phonograph.coil.audiofile.AudioFile
+import player.phonograph.coil.model.AlbumImage
+import player.phonograph.coil.model.ArtistImage
+import player.phonograph.coil.model.SongImage
 import player.phonograph.util.file.createOrOverrideFileRecursive
 import player.phonograph.util.recordThrowable
 import androidx.core.graphics.drawable.toBitmapOrNull
@@ -125,9 +125,9 @@ class CacheStore(val context: Context) {
     }
 
 
-    class AudioFiles(context: Context) : DefaultCache<AudioFile>(context, CacheDatabase.Target.SONG) {
+    class AudioFiles(context: Context) : DefaultCache<SongImage>(context, CacheDatabase.Target.SONG) {
 
-        override fun id(target: AudioFile): Long = target.songId
+        override fun id(target: SongImage): Long = target.songId
     }
 
     class AlbumImages(context: Context) : DefaultCache<AlbumImage>(context, CacheDatabase.Target.ALBUM) {

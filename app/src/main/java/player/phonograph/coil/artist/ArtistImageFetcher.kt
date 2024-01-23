@@ -10,6 +10,7 @@ import coil.fetch.Fetcher
 import coil.request.Options
 import coil.size.Size
 import player.phonograph.coil.CustomArtistImageStore
+import player.phonograph.coil.model.ArtistImage
 import player.phonograph.coil.retriever.ArtistImageFetcherDelegate
 import player.phonograph.coil.retriever.ExternalFileRetriever
 import player.phonograph.coil.retriever.ImageRetriever
