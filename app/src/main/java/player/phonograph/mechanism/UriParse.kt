@@ -4,6 +4,7 @@
 
 package player.phonograph.mechanism
 
+import lib.phonograph.storage.documentProviderUriAbsolutePath
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.activities.StarterActivity
@@ -13,7 +14,6 @@ import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import android.os.Environment
 import java.io.File
 
 interface IUriParser<O> {
@@ -65,10 +65,7 @@ private object DocumentsProviderUriParser : IUriParser<Song> {
                 && authority != null && authority == AUTHORITY_DOCUMENTS_PROVIDER
 
     override fun parse(context: Context, uri: Uri): Collection<Song> {
-        val file = File(
-            Environment.getExternalStorageDirectory(),
-            uri.path!!.split(Regex("^.*:.*$"), 2)[1]
-        )
+        val file = File(documentProviderUriAbsolutePath(uri, context) ?: return emptyList())
         return Songs.searchByPath(context, file.absolutePath, withoutPathFilter = true)
     }
 }
