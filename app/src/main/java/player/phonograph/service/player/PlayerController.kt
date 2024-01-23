@@ -184,11 +184,15 @@ class PlayerController : ServiceComponent, Controller {
         }
 
 
-    interface ControllerInternal : Controller, ServiceComponent
+    interface ControllerInternal : Controller, ServiceComponent {
+        val created: Boolean
+    }
 
     class VanillaAudioPlayerControllerImpl(
         val controller: PlayerController,
     ) : ControllerInternal, Playback.PlaybackCallbacks {
+
+        override var created: Boolean = false
 
         private var _service: MusicService? = null
         val service: MusicService get() = _service!!
@@ -209,12 +213,15 @@ class PlayerController : ServiceComponent, Controller {
 
             _queueManager = musicService.queueManager
 
+            created = true
             restore(musicService)
         }
 
         override fun onDestroy(musicService: MusicService) {
             unregisterBecomingNoisyReceiver(musicService)
             audioPlayer.release()
+
+            created = false
 
             _queueManager = null
             _audioPlayer = null
