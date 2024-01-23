@@ -11,6 +11,9 @@ import player.phonograph.coil.model.ArtistImage
 import player.phonograph.coil.model.CompositeLoaderTarget
 import player.phonograph.coil.model.LoaderTarget
 import player.phonograph.coil.model.SongImage
+import player.phonograph.mechanism.setting.CoilImageConfig
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import player.phonograph.util.debug
 import android.content.Context
 import android.util.Log
@@ -21,7 +24,7 @@ import kotlinx.coroutines.launch
 
 sealed class FetcherDelegate<T : LoaderTarget, R : ImageRetriever> {
 
-    protected fun enableCache(context: Context): Boolean = false
+    protected fun enableCache(context: Context): Boolean = CoilImageConfig.enableImageCache
 
     abstract val retriever: R
 
