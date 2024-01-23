@@ -141,9 +141,9 @@ class PlayerController : ServiceComponent, Controller {
             ignoreAudioFocus = value
         }
         collect(Keys.gaplessPlayback) { gaplessPlayback ->
-            val controllerImpl = impl
-            if (controllerImpl is VanillaAudioPlayerControllerImpl) {
-                handler.post {
+            handler.post {
+                val controllerImpl = _impl
+                if (controllerImpl is VanillaAudioPlayerControllerImpl && controllerImpl.created) {
                     controllerImpl.gaplessPlayback = gaplessPlayback
                     controllerImpl.prepareNextPlayer(
                         if (gaplessPlayback) queueManager.nextSong else null
