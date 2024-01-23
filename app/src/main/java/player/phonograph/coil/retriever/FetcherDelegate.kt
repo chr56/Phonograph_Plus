@@ -21,10 +21,10 @@ sealed class FetcherDelegate<T, R : ImageRetriever> {
 
     abstract val cacheStore: CacheStore.Cache<T>
 
-    private fun isNoImage(target: T): Boolean = cacheStore.isNoImage(target, retriever.name)
-    private fun markNoImage(target: T) = cacheStore.markNoImage(target, retriever.name)
-    private fun getCache(target: T): FetchResult? = cacheStore.get(target, retriever.name)
-    private fun setCache(target: T, result: FetchResult) = cacheStore.set(target, result, retriever.name)
+    private fun isNoImage(target: T): Boolean = cacheStore.isNoImage(target, retriever.id)
+    private fun markNoImage(target: T) = cacheStore.markNoImage(target, retriever.id)
+    private fun getCache(target: T): FetchResult? = cacheStore.get(target, retriever.id)
+    private fun setCache(target: T, result: FetchResult) = cacheStore.set(target, result, retriever.id)
 
     fun retrieve(
         target: T,

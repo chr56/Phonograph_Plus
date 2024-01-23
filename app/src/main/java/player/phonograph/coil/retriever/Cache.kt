@@ -21,53 +21,53 @@ import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
-import java.io.File
+import java.util.UUID
 
 
 class CacheStore(val context: Context) {
 
     interface Cache<T> {
-        val directory: File
-        fun item(target: T): File
-        fun set(target: T, data: FetchResult, type: String)
-        fun get(target: T, type: String): FetchResult?
-        fun markNoImage(target: T)
-        fun markNoImage(target: T, type: String)
-        fun isNoImage(target: T): Boolean
-        fun isNoImage(target: T, type: String): Boolean
+        fun set(target: T, data: FetchResult, type: Int)
+        fun get(target: T, type: Int): FetchResult?
+        fun markNoImage(target: T, type: Int)
+        fun isNoImage(target: T, type: Int): Boolean
     }
 
-    sealed class DefaultCache<T>(protected val context: Context) : Cache<T> {
+    sealed class DefaultCache<T>(
+        protected val context: Context,
+        private val tableName: CacheDatabase.Target,
+    ) : Cache<T> {
 
-        protected abstract fun emptyMarker(target: T, type: String): File
+        protected abstract fun id(target: T): Long
 
-
-        override fun markNoImage(target: T) {
-            val marker = emptyMarker(target, ALL)
-            marker.createOrOverrideFileRecursive()
+        override fun isNoImage(target: T, type: Int): Boolean {
+            val cacheDatabase = CacheDatabase.instance(context)
+            val result = cacheDatabase.fetch(tableName, id(target), type)
+            return result.isEmpty()
         }
 
-        override fun markNoImage(target: T, type: String) {
-            val marker = emptyMarker(target, type)
-            marker.createOrOverrideFileRecursive()
-        }
-
-        override fun isNoImage(target: T): Boolean {
-            val marker = emptyMarker(target, ALL)
-            return marker.exists()
-        }
-
-        override fun isNoImage(target: T, type: String): Boolean {
-            val marker = emptyMarker(target, type)
-            return marker.exists()
+        override fun markNoImage(target: T, type: Int) {
+            val cacheDatabase = CacheDatabase.instance(context)
+            cacheDatabase.register(tableName, id(target), type, null)
         }
 
         override fun set(
             target: T,
             data: FetchResult,
-            type: String,
+            type: Int,
         ) {
-            val targetFile = item(target).resolve(type).createOrOverrideFileRecursive()
+            val uuid = UUID.randomUUID().toString()
+
+            val cacheDatabase = CacheDatabase.instance(context)
+
+            val result = cacheDatabase.register(tableName, id(target), type, uuid)
+
+            if (!result) {
+                Log.i(TAG, "Failed to insert cache database")
+                return
+            }
+
+            val targetFile = rootCacheDir(context).resolve(uuid).createOrOverrideFileRecursive()
 
             try {
                 targetFile.sink().buffer().use { sink ->
@@ -93,8 +93,13 @@ class CacheStore(val context: Context) {
             }
         }
 
-        override fun get(target: T, type: String): FetchResult? {
-            val targetFile = item(target).resolve(type)
+        override fun get(target: T, type: Int): FetchResult? {
+
+            val cacheDatabase = CacheDatabase.instance(context)
+
+            val uuid = cacheDatabase.fetch(tableName, id(target), type).existedOrNull() ?: return null
+
+            val targetFile = rootCacheDir(context).resolve(uuid)
 
             return if (targetFile.exists() && targetFile.isFile) {
                 try {
@@ -117,38 +122,27 @@ class CacheStore(val context: Context) {
 
         }
 
-        companion object {
-            private const val ALL = "ALL"
-        }
     }
 
 
-    class AudioFiles(context: Context) : DefaultCache<AudioFile>(context) {
+    class AudioFiles(context: Context) : DefaultCache<AudioFile>(context, CacheDatabase.Target.SONG) {
 
-        override val directory: File = rootCacheDir(context).resolve(AUDIO_FILES_CACHE_DIR)
-        override fun item(target: AudioFile): File = directory.resolve(target.songId.toString())
-
-        override fun emptyMarker(target: AudioFile, type: String): File = item(target).resolve("$NO_IMAGES.$type")
+        override fun id(target: AudioFile): Long = target.songId
     }
 
-    class AlbumImages(context: Context) : DefaultCache<AlbumImage>(context) {
+    class AlbumImages(context: Context) : DefaultCache<AlbumImage>(context, CacheDatabase.Target.ALBUM) {
 
-        override val directory: File = rootCacheDir(context).resolve(ALBUMS_CACHE_DIR)
-        override fun item(target: AlbumImage): File = directory.resolve(target.id.toString())
-
-        override fun emptyMarker(target: AlbumImage, type: String): File = item(target).resolve("$NO_IMAGES.$type")
+        override fun id(target: AlbumImage): Long = target.id
     }
 
-    class ArtistImages(context: Context) : DefaultCache<ArtistImage>(context) {
+    class ArtistImages(context: Context) : DefaultCache<ArtistImage>(context, CacheDatabase.Target.ARTIST) {
 
-        override val directory: File = rootCacheDir(context).resolve(ARTISTS_CACHE_DIR)
-        override fun item(target: ArtistImage): File = directory.resolve(target.id.toString())
-
-        override fun emptyMarker(target: ArtistImage, type: String): File = item(target).resolve("$NO_IMAGES.$type")
+        override fun id(target: ArtistImage): Long = target.id
     }
 
     fun clear(context: Context) {
         rootCacheDir(context).deleteRecursively()
+        CacheDatabase.instance(context).clear()
     }
 
     companion object {
@@ -158,10 +152,5 @@ class CacheStore(val context: Context) {
 
         private fun rootCacheDir(context: Context) = context.cacheDir.resolve(CACHE_DIR)
 
-        private const val AUDIO_FILES_CACHE_DIR = "audio_files"
-        private const val ALBUMS_CACHE_DIR = "albums"
-        private const val ARTISTS_CACHE_DIR = "artists"
-
-        private const val NO_IMAGES = "EMPTY"
     }
 }
