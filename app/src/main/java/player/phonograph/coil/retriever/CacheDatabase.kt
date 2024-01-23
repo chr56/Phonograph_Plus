@@ -112,18 +112,6 @@ class CacheDatabase private constructor(context: Context) : SQLiteOpenHelper(con
         Target.ARTIST -> TABLE_NAME_ARTISTS
     }
 
-    fun release(): Boolean {
-        return synchronized(this) {
-            refCount -= 1
-            if (refCount <= 0) {
-                close()
-                true
-            } else {
-                false
-            }
-        }
-    }
-
     companion object {
         const val VERSION = 2
         const val DB_NAME = "_image_cache.db"
@@ -148,16 +136,13 @@ class CacheDatabase private constructor(context: Context) : SQLiteOpenHelper(con
 
 
         private var sInstance: CacheDatabase? = null
-        private var refCount = 0
         fun instance(context: Context): CacheDatabase {
             val cacheDatabase = sInstance
             return synchronized(this) {
                 if (cacheDatabase != null) {
-                    refCount += 1
                     cacheDatabase
                 } else {
                     sInstance = CacheDatabase(context)
-                    refCount = 1
                     sInstance!!
                 }
             }
