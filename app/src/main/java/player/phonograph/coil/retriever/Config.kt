@@ -9,11 +9,11 @@ import player.phonograph.model.IMAGE_SOURCE_J_AUDIO_TAGGER
 import player.phonograph.model.IMAGE_SOURCE_MEDIA_METADATA_RETRIEVER
 import player.phonograph.model.IMAGE_SOURCE_MEDIA_STORE
 import player.phonograph.model.ImageSource
-import player.phonograph.mechanism.setting.CoilImageSourceConfig
+import player.phonograph.mechanism.setting.CoilImageConfig
 
 internal val retrieverFromConfig: List<ImageRetriever>
     get() {
-        val config = CoilImageSourceConfig.currentConfig
+        val config = CoilImageConfig.currentImageSourceConfig
         return config.sources.filter { it.enabled }.map { it.imageSource.retriever() }
     }
 

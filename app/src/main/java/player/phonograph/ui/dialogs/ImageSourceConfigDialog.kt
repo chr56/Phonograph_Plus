@@ -14,7 +14,7 @@ import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.ui.adapter.SortableListAdapter
 import player.phonograph.model.config.ImageSourceConfig
-import player.phonograph.mechanism.setting.CoilImageSourceConfig
+import player.phonograph.mechanism.setting.CoilImageConfig
 import player.phonograph.model.ImageSource
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,7 +35,7 @@ class ImageSourceConfigDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = requireActivity().layoutInflater.inflate(R.layout.recycler_view_wrapped, null)
 
-        val config: ImageSourceConfig = CoilImageSourceConfig.currentConfig
+        val config: ImageSourceConfig = CoilImageConfig.currentImageSourceConfig
         adapter = ImageSourceConfigAdapter(config).also { it.init() }
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -46,12 +46,12 @@ class ImageSourceConfigDialog : DialogFragment() {
             .title(R.string.image_source_config)
             .customView(view = view, dialogWrapContent = false)
             .positiveButton(android.R.string.ok) {
-                CoilImageSourceConfig.currentConfig = adapter.currentConfig
+                CoilImageConfig.currentImageSourceConfig = adapter.currentConfig
                 dismiss()
             }
             .negativeButton(android.R.string.cancel) { dismiss(); }
             .neutralButton(R.string.reset_action) {
-                CoilImageSourceConfig.resetToDefault()
+                CoilImageConfig.resetImageSourceToDefault()
                 dismiss()
             }
             .apply {

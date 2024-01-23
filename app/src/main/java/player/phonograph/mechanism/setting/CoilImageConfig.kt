@@ -16,23 +16,23 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 
-object CoilImageSourceConfig {
+object CoilImageConfig {
 
-    var currentConfig: ImageSourceConfig
+    var currentImageSourceConfig: ImageSourceConfig
         get() {
             val rawString = Setting(App.instance)[Keys.imageSourceConfigJsonString].data
             val config: ImageSourceConfig = try {
                 readFromJson(rawString)
             } catch (e: SerializationException) {
                 Log.e(TAG, "Glitch ImageSourceConfig: $rawString", e)
-                resetToDefault()
+                resetImageSourceToDefault()
                 // return default
                 ImageSourceConfig.DEFAULT
             }
             return if (checkInvalid(config)) {
                 config
             } else {
-                resetToDefault()
+                resetImageSourceToDefault()
                 ImageSourceConfig.DEFAULT
             }
         }
@@ -41,8 +41,8 @@ object CoilImageSourceConfig {
             Setting(App.instance)[Keys.imageSourceConfigJsonString].data = json.toString()
         }
 
-    fun resetToDefault() {
-        currentConfig = ImageSourceConfig.DEFAULT
+    fun resetImageSourceToDefault() {
+        currentImageSourceConfig = ImageSourceConfig.DEFAULT
     }
 
     private fun writeToJson(config: ImageSourceConfig): JsonElement {
@@ -69,7 +69,7 @@ object CoilImageSourceConfig {
     /**
      * @return true if correct
      */
-    fun checkInvalid(config: ImageSourceConfig): Boolean {
+    private fun checkInvalid(config: ImageSourceConfig): Boolean {
         if (config.sources.isEmpty()) {
             Log.e(TAG, "Illegal ImageSourceConfig: $config")
             return false
