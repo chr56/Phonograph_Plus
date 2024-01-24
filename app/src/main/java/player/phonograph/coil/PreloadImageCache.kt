@@ -12,20 +12,22 @@ import android.graphics.Bitmap
 
 class PreloadImageCache(size: Int) {
 
-    private val imageCache: LruCache<Song, PaletteBitmap> = LruCache(size)
+    private val imageCache: LruCache<Long, PaletteBitmap> = LruCache(size) // SongId <-> PaletteBitmap
 
-    private fun putCache(song: Song, bitmap: Bitmap, color: Int) {
-        imageCache.put(song, PaletteBitmap(bitmap, color))
+    private fun putCache(songId: Long, bitmap: Bitmap, color: Int) {
+        imageCache.put(songId, PaletteBitmap(bitmap, color))
     }
 
-    private fun getPaletteColorFromCache(song: Song) = imageCache[song]?.paletteColor
-    private fun getImageFromCache(song: Song) = imageCache[song]?.bitmap
+    private suspend fun loadAndStore(context: Context, song: Song, timeout: Long): PaletteBitmap {
+        val loaded = loadImage(context, song, timeout)
+        putCache(song.id, loaded.bitmap, loaded.paletteColor)
+        return loaded
+    }
 
     suspend fun fetchPaletteColor(context: Context, song: Song): Int {
-        val cached = getPaletteColorFromCache(song)
+        val cached = imageCache[song.id]?.paletteColor
         return if (cached == null) {
-            val loaded = loadImage(context, song, timeout = 2000)
-            putCache(song, loaded.bitmap, loaded.paletteColor)
+            val loaded: PaletteBitmap = loadAndStore(context, song, timeout = 2000)
             loaded.paletteColor
         } else {
             cached
@@ -33,13 +35,16 @@ class PreloadImageCache(size: Int) {
     }
 
     suspend fun fetchBitmap(context: Context, song: Song): Bitmap {
-        val cached = getImageFromCache(song)
+        val cached = imageCache[song.id]?.bitmap
         return if (cached == null) {
-            val loaded = loadImage(context, song, timeout = 2000)
-            putCache(song, loaded.bitmap, loaded.paletteColor)
+            val loaded: PaletteBitmap = loadAndStore(context, song, timeout = 2000)
             loaded.bitmap
         } else {
             cached
         }
+    }
+
+    suspend fun preload(context: Context, song: Song, timeout: Long) {
+        loadAndStore(context, song, timeout)
     }
 }
