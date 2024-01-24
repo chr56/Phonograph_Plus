@@ -24,7 +24,7 @@ class PreloadImageCache(size: Int) {
     suspend fun fetchPaletteColor(context: Context, song: Song): Int {
         val cached = getPaletteColorFromCache(song)
         return if (cached == null) {
-            val loaded = loadImage(context, song)
+            val loaded = loadImage(context, song, timeout = 2000)
             putCache(song, loaded.bitmap, loaded.paletteColor)
             loaded.paletteColor
         } else {
@@ -35,7 +35,7 @@ class PreloadImageCache(size: Int) {
     suspend fun fetchBitmap(context: Context, song: Song): Bitmap {
         val cached = getImageFromCache(song)
         return if (cached == null) {
-            val loaded = loadImage(context, song)
+            val loaded = loadImage(context, song, timeout = 2000)
             putCache(song, loaded.bitmap, loaded.paletteColor)
             loaded.bitmap
         } else {

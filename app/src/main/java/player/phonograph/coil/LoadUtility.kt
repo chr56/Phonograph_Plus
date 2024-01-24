@@ -4,10 +4,6 @@
 
 package player.phonograph.coil
 
-import android.content.Context
-import android.graphics.drawable.Drawable
-import android.widget.ImageView
-import androidx.annotation.DrawableRes
 import coil.Coil
 import coil.request.ImageRequest
 import coil.size.Dimension
@@ -17,9 +13,13 @@ import player.phonograph.R
 import player.phonograph.coil.target.PaletteBitmap
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
+import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap
+import android.content.Context
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.widget.ImageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.TimeoutCancellationException
@@ -29,21 +29,25 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeout
 
 @OptIn(ExperimentalCoroutinesApi::class)
-suspend fun loadImage(context: Context, song: Song): PaletteBitmap = try {
-    withTimeout(2000) {
-        suspendCancellableCoroutine { continuation ->
-            loadImage(context, song) { _, drawable, color ->
-                require(drawable is BitmapDrawable)
-                continuation.resume(PaletteBitmap(drawable.bitmap, color)) { cancel() }
+suspend fun loadImage(context: Context, song: Song, timeout: Long): PaletteBitmap =
+    try {
+        withTimeout(timeout) {
+            suspendCancellableCoroutine { continuation ->
+                loadImage(context, song) { _, drawable, color ->
+                    if (drawable is BitmapDrawable) {
+                        continuation.resume(PaletteBitmap(drawable.bitmap, color)) { cancel() }
+                    } else {
+                        continuation.cancel()
+                    }
+                }
             }
         }
+    } catch (e: TimeoutCancellationException) {
+        PaletteBitmap(
+            AppCompatResources.getDrawable(context, R.drawable.default_album_art)!!.toBitmap(),
+            context.getColor(R.color.defaultFooterColor)
+        )
     }
-} catch (e: TimeoutCancellationException) {
-    PaletteBitmap(
-        AppCompatResources.getDrawable(context, R.drawable.default_album_art)!!.toBitmap(),
-        context.getColor(R.color.defaultFooterColor)
-    )
-}
 
 
 fun loadImage(
@@ -79,14 +83,17 @@ class ChainBuilder internal constructor(context: Context) {
         requestBuilder.data(data)
         return this
     }
+
     fun into(view: ImageView): ChainBuilder {
         requestBuilder.target(view)
         return this
     }
+
     fun into(target: Target): ChainBuilder {
         requestBuilder.target(target)
         return this
     }
+
     fun config(block: ImageRequest.Builder.() -> Unit): ChainBuilder {
         requestBuilder.apply(block)
         return this
@@ -96,6 +103,7 @@ class ChainBuilder internal constructor(context: Context) {
         requestBuilder.placeholder(res)
         return this
     }
+
     fun default(drawable: Drawable): ChainBuilder {
         requestBuilder.placeholder(drawable)
         return this
@@ -105,6 +113,7 @@ class ChainBuilder internal constructor(context: Context) {
         requestBuilder.size(size)
         return this
     }
+
     fun size(width: Dimension, height: Dimension): ChainBuilder {
         requestBuilder.size(Size(width, height))
         return this
@@ -114,9 +123,11 @@ class ChainBuilder internal constructor(context: Context) {
     fun enqueue() {
         loader.enqueue(request)
     }
+
     suspend fun execute() {
         loader.execute(request)
     }
+
     fun execute(coroutineScope: CoroutineScope) {
         coroutineScope.launch {
             loader.execute(request)
