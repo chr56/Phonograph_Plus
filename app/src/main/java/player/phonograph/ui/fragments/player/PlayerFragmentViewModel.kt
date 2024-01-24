@@ -7,15 +7,13 @@ package player.phonograph.ui.fragments.player
 import org.koin.core.context.GlobalContext
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.coil.loadImage
-import player.phonograph.coil.target.PaletteBitmap
+import player.phonograph.coil.PreloadImageCache
 import player.phonograph.mechanism.IFavorite
 import player.phonograph.model.Song
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.service.MusicPlayerRemote
 import androidx.annotation.ColorInt
-import androidx.collection.LruCache
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -82,7 +80,7 @@ class PlayerFragmentViewModel : ViewModel() {
     fun refreshPaletteColor(context: Context, song: Song) {
         fetcherDeferred?.cancel()
         fetcherDeferred = viewModelScope.async {
-            fetchPaletteColor(context, song = song)
+            preloadImageCache.fetchPaletteColor(context, song = song)
         }
         viewModelScope.launch {
             val current = fetcherDeferred
@@ -101,36 +99,9 @@ class PlayerFragmentViewModel : ViewModel() {
         }
     }
 
-    private val imageCache: LruCache<Song, PaletteBitmap> = LruCache(6)
+    private val preloadImageCache: PreloadImageCache = PreloadImageCache(6)
 
-    private fun putCache(song: Song, bitmap: Bitmap, color: Int) {
-        imageCache.put(song, PaletteBitmap(bitmap, color))
-    }
-
-    private fun getPaletteColorFromCache(song: Song) = imageCache[song]?.paletteColor
-    private fun getImageFromCache(song: Song) = imageCache[song]?.bitmap
-
-    private suspend fun fetchPaletteColor(context: Context, song: Song): Int {
-        val cached = getPaletteColorFromCache(song)
-        return if (cached == null) {
-            val loaded = loadImage(context, song)
-            putCache(song, loaded.bitmap, loaded.paletteColor)
-            loaded.paletteColor
-        } else {
-            cached
-        }
-    }
-
-    suspend fun fetchBitmap(context: Context, song: Song): Bitmap {
-        val cached = getImageFromCache(song)
-        return if (cached == null) {
-            val loaded = loadImage(context, song)
-            putCache(song, loaded.bitmap, loaded.paletteColor)
-            loaded.bitmap
-        } else {
-            cached
-        }
-    }
+    suspend fun fetchBitmap(context: Context, song: Song): Bitmap = preloadImageCache.fetchBitmap(context, song)
     //endregion
 
 }
