@@ -5,6 +5,7 @@
 package player.phonograph.ui.activities
 
 import legacy.phonograph.MediaStoreCompat
+import lib.phonograph.storage.documentProviderUriAbsolutePath
 import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.BuildConfig
@@ -57,7 +58,6 @@ import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.N_MR1
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
@@ -156,10 +156,8 @@ class StarterActivity : AppCompatActivity() {
         if (songs == null) {
             val file: File? =
                 if (uri.authority != null && uri.authority == AUTHORITY_DOCUMENTS_PROVIDER) {
-                    File(
-                        Environment.getExternalStorageDirectory(),
-                        uri.path!!.split(Regex("^.*:.*$"), 2)[1]
-                    )
+                    val path = documentProviderUriAbsolutePath(uri, this)
+                    if (path != null) File(path) else null
                 } else {
                     val path = getFilePathFromUri(this, uri)
                     when {
