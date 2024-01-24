@@ -13,6 +13,7 @@ import player.phonograph.R
 import player.phonograph.coil.target.PaletteBitmap
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
+import player.phonograph.util.withTimeoutOrNot
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap
@@ -21,17 +22,17 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withTimeout
 
 @OptIn(ExperimentalCoroutinesApi::class)
 suspend fun loadImage(context: Context, song: Song, timeout: Long): PaletteBitmap =
     try {
-        withTimeout(timeout) {
+        withTimeoutOrNot(timeout, Dispatchers.IO) {
             suspendCancellableCoroutine { continuation ->
                 loadImage(context, song) { _, drawable, color ->
                     if (drawable is BitmapDrawable) {
