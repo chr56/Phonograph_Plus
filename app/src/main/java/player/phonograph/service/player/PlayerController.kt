@@ -23,7 +23,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.net.Uri
-import android.os.*
+import android.os.Handler
+import android.os.HandlerThread
+import android.os.Looper
+import android.os.Message
+import android.os.PowerManager
 import android.os.PowerManager.WakeLock
 import android.provider.MediaStore
 import android.util.ArrayMap
@@ -384,11 +388,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
             if (force) {
                 queueManager.nextLoopPosition
             } else {
-                if (!queueManager.isLastTrack()) {
-                    queueManager.nextSongPosition
-                } else {
-                    -1
-                }
+                queueManager.nextSongPosition
             }
         if (position >= 0) {
             playAtImp(position)
