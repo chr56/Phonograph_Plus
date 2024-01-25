@@ -1,7 +1,7 @@
-version: "1.4.4-dev1"
-versionCode: 1043
-timestamp: 1706173000
-channel: "PREVIEW"
+version: "1.4.4"
+versionCode: 1044
+timestamp: 1706173001
+channel: "Stable"
 notes:
   en:
     highlights: [ ]
@@ -19,7 +19,7 @@ notes:
       - "修复 从部分文件管理器中，无法打开播放位于外部(物理) SD 卡中的音频文件"
       - "修复 从播放通知或蓝牙设备等中跳过最后一首歌曲时也会异常暂停，即便在队列重复模式下"
       - "修复 在某些罕见情况下，对播放队列重新排序时崩溃"
-      - "改进 LRC歌词检测与歌词显示"
-      - "改进 使用LyricsGetterAPi v6"
+      - "改进 LRC 歌词检测与歌词显示"
+      - "改进 使用 LyricsGetterAPi v6"
       - "翻译 更新波兰语(cookie)"
       - "开发 更新依赖，清理代码"
