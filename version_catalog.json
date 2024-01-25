@@ -1,6 +1,22 @@
 {
   "versions": [
     {
+      "channel": "preview",
+      "versionName": "1.4.4-dev1",
+      "versionCode": 1043,
+      "date": 1706173000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.4.4-dev1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 从部分文件管理器中，无法打开播放位于外部(物理) SD 卡中的音频文件</li><li>修复 从播放通知或蓝牙设备等中跳过最后一首歌曲时也会异常暂停，即便在队列重复模式下</li><li>修复 在某些罕见情况下，对播放队列重新排序时崩溃</li><li>改进 LRC歌词检测与歌词显示</li><li>改进 使用LyricsGetterAPi v6</li><li>翻译 更新波兰语(cookie)</li><li>开发 更新依赖，清理代码</li></ol>",
+        "en": "<ol><li>Fix: problems when opening and playing audio files in physical external SD card from some file managers</li><li>Fix: abnormally pause when skipping final song from playback notification or connected Bluetooth devices etc., even if in Queue Repeat mode</li><li>Fix: crash when reordering in Playing Queue on some rare circumstances</li><li>Improve: LRC lyrics detections and lyrics display</li><li>Improve: use LyricsGetterAPi v6</li><li>Translation: update Polish (by cooky)</li><li>Development: update dependencies and cleanup code</li></ol>"
+      }
+    },
+    {
       "channel": "stable",
       "versionName": "1.4.3",
       "versionCode": 1043,
