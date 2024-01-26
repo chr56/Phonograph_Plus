@@ -4,12 +4,8 @@
 
 package player.phonograph.ui.fragments.pages.adapter
 
-import coil.size.ViewSizeResolver
-import player.phonograph.R
 import player.phonograph.actions.ClickActionProviders
 import player.phonograph.actions.menu.ActionMenuProviders
-import player.phonograph.coil.loadImage
-import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
@@ -53,29 +49,6 @@ open class SongDisplayAdapter(
         SongViewHolder(inflatedView(parent, viewType))
 
     class SongViewHolder(itemView: View) : DisplayViewHolder<Song>(itemView) {
-        override fun loadImage(item: Song, usePalette: Boolean) {
-            val context = itemView.context
-            image?.let { view ->
-                view.visibility = View.VISIBLE
-                loadImage(context) {
-                    data(item)
-                    size(ViewSizeResolver(view))
-                    target(
-                        PaletteTargetBuilder(context)
-                            .onStart {
-                                view.setImageResource(R.drawable.default_album_art)
-                                setPaletteColors(context.getColor(R.color.defaultFooterColor))
-                            }
-                            .withConditionalYield { attached }
-                            .onResourceReady { result, palette ->
-                                view.setImageDrawable(result)
-                                if (usePalette) setPaletteColors(palette)
-                            }
-                            .build()
-                    )
-                }
-            }
-        }
 
         override val clickActionProvider: ClickActionProviders.ClickActionProvider<Song>
             get() = ClickActionProviders.SongClickActionProvider()

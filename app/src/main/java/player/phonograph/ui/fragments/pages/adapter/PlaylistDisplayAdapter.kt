@@ -76,13 +76,6 @@ class PlaylistDisplayAdapter(
         override val defaultIcon: Drawable?
             get() = AppCompatResources.getDrawable(itemView.context, R.drawable.ic_queue_music_white_24dp)
 
-        override fun loadImage(item: Playlist, usePalette: Boolean) {
-            image?.also {
-                it.visibility = View.VISIBLE
-                it.setImageResource(getIconRes(item))
-            }
-        }
-
         fun putImage(item: Playlist) {
             image?.also {
                 it.visibility = View.VISIBLE

@@ -79,13 +79,10 @@ abstract class DisplayAdapter<I : Displayable>(
         if (config.showSectionName) getSectionNameImp(position) else ""
 
     override fun onViewAttachedToWindow(holder: DisplayViewHolder<I>) {
-        holder.attached = true
         setImage(holder)
     }
 
-    override fun onViewDetachedFromWindow(holder: DisplayViewHolder<I>) {
-        holder.attached = false
-    }
+    // override fun onViewDetachedFromWindow(holder: DisplayViewHolder<I>) {}
 
     protected var imageCache: DisplayPreloadImageCache<I> = DisplayPreloadImageCache(80)
         private set
@@ -116,8 +113,6 @@ abstract class DisplayAdapter<I : Displayable>(
 
     open class DisplayViewHolder<I : Displayable>(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
 
-        var attached = false
-
         open fun bind(
             item: I,
             position: Int,
@@ -138,7 +133,6 @@ abstract class DisplayAdapter<I : Displayable>(
             } else {
                 image?.visibility = View.VISIBLE
                 image?.setImageDrawable(defaultIcon)
-                // loadImage(item, usePalette)
             }
             controller.registerClicking(itemView, position) {
                 onClick(position, dataset, image)
@@ -174,10 +168,6 @@ abstract class DisplayAdapter<I : Displayable>(
         protected open fun getRelativeOrdinalText(item: I): String = "-"
         protected open fun getDescription(item: I): CharSequence? =
             item.getDescription(context = itemView.context)
-
-        protected open fun loadImage(item: I, usePalette: Boolean) {
-            image?.setImageDrawable(defaultIcon)
-        }
 
         open fun setImage(bitmap: Bitmap) {
             image?.setImageBitmap(bitmap)

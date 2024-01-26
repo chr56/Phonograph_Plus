@@ -44,19 +44,6 @@ class SongCollectionDisplayAdapter(
             return true
         }
 
-        override fun loadImage(item: SongCollection, usePalette: Boolean) {
-            val context = itemView.context
-            image?.visibility = View.VISIBLE
-            image?.setImageDrawable(
-                context.getTintedDrawable(
-                    R.drawable.ic_folder_white_24dp, resolveColor(
-                        context,
-                        R.attr.iconColor,
-                        context.primaryTextColor(context.nightMode)
-                    )
-                )
-            )
-        }
         fun putImage() {
             image?.also {
                 val context = itemView.context
