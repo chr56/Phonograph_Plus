@@ -54,7 +54,7 @@ class ArtistDisplayAdapter(
         override val defaultIcon: Drawable?
             get() = AppCompatResources.getDrawable(itemView.context, R.drawable.default_artist_image)
 
-        override fun setImage(item: Artist, usePalette: Boolean) {
+        override fun loadImage(item: Artist, usePalette: Boolean) {
             val context = itemView.context
             image?.let { view ->
                 view.visibility = View.VISIBLE

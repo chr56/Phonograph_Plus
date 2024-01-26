@@ -51,7 +51,7 @@ open class AlbumDisplayAdapter(
 
         override fun getRelativeOrdinalText(item: Album): String = item.songCount.toString()
 
-        override fun setImage(item: Album, usePalette: Boolean) {
+        override fun loadImage(item: Album, usePalette: Boolean) {
             val context = itemView.context
             image?.let { view ->
                 view.visibility = View.VISIBLE

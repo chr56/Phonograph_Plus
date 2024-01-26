@@ -68,7 +68,7 @@ class HorizontalAlbumDisplayAdapter(
             (itemView as CardView).setCardBackgroundColor(color)
         }
 
-        override fun setImage(item: Album, usePalette: Boolean) {
+        override fun loadImage(item: Album, usePalette: Boolean) {
             val context = itemView.context
             image?.let { view ->
                 loadImage(context) {

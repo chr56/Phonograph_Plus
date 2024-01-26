@@ -40,7 +40,7 @@ class SongCollectionDisplayAdapter(
             return true
         }
 
-        override fun setImage(item: SongCollection, usePalette: Boolean) {
+        override fun loadImage(item: SongCollection, usePalette: Boolean) {
             val context = itemView.context
             image?.visibility = View.VISIBLE
             image?.setImageDrawable(

@@ -53,7 +53,7 @@ open class SongDisplayAdapter(
         SongViewHolder(inflatedView(parent, viewType))
 
     class SongViewHolder(itemView: View) : DisplayViewHolder<Song>(itemView) {
-        override fun setImage(item: Song, usePalette: Boolean) {
+        override fun loadImage(item: Song, usePalette: Boolean) {
             val context = itemView.context
             image?.let { view ->
                 view.visibility = View.VISIBLE

@@ -15,6 +15,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -94,9 +95,11 @@ abstract class DisplayAdapter<I : Displayable>(
             textSecondary?.text = item.getSecondaryText(itemView.context)
             textTertiary?.text = item.getTertiaryText(itemView.context)
             if (useImageText) {
+                imageText?.visibility = View.VISIBLE
                 setImageText(getRelativeOrdinalText(item))
             } else {
-                setImage(item, usePalette)
+                image?.visibility = View.VISIBLE
+                loadImage(item, usePalette)
             }
             controller.registerClicking(itemView, position) {
                 onClick(position, dataset, image)
@@ -133,24 +136,22 @@ abstract class DisplayAdapter<I : Displayable>(
         protected open fun getDescription(item: I): CharSequence? =
             item.getDescription(context = itemView.context)
 
-        protected open fun setImage(item: I, usePalette: Boolean) {
-            image?.also {
-                it.visibility = View.VISIBLE
-                it.setImageDrawable(defaultIcon)
-            }
+        protected open fun loadImage(item: I, usePalette: Boolean) {
+            image?.setImageDrawable(defaultIcon)
+        }
+
+        open fun setImage(drawable: Drawable) {
+            image?.setImageDrawable(drawable)
         }
 
         protected open fun setImageText(text: String) {
-            imageText?.also {
-                it.visibility = View.VISIBLE
-                it.text = text
-            }
+            imageText?.text = text
         }
 
         protected open val defaultIcon =
             AppCompatResources.getDrawable(itemView.context, R.drawable.default_album_art)
 
-        protected open fun setPaletteColors(color: Int) {
+        open fun setPaletteColors(color: Int) {
             paletteColorContainer?.let { paletteColorContainer ->
                 val context = itemView.context
                 paletteColorContainer.setBackgroundColor(color)
@@ -161,4 +162,6 @@ abstract class DisplayAdapter<I : Displayable>(
             }
         }
     }
+
+
 }
