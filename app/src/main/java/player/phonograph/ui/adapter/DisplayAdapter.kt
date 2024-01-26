@@ -10,16 +10,25 @@ import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.ClickActionProviders
 import player.phonograph.actions.menu.ActionMenuProviders
+import player.phonograph.coil.AbsPreloadImageCache
+import player.phonograph.coil.loadImage
+import player.phonograph.coil.target.PaletteBitmap
+import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Displayable
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 abstract class DisplayAdapter<I : Displayable>(
     protected val activity: FragmentActivity,
@@ -140,8 +149,8 @@ abstract class DisplayAdapter<I : Displayable>(
             image?.setImageDrawable(defaultIcon)
         }
 
-        open fun setImage(drawable: Drawable) {
-            image?.setImageDrawable(drawable)
+        open fun setImage(bitmap: Bitmap) {
+            image?.setImageBitmap(bitmap)
         }
 
         protected open fun setImageText(text: String) {
@@ -163,5 +172,27 @@ abstract class DisplayAdapter<I : Displayable>(
         }
     }
 
+    class DisplayPreloadImageCache<I : Displayable>(size: Int) : AbsPreloadImageCache<I, PaletteBitmap>(size) {
+        @OptIn(ExperimentalCoroutinesApi::class)
+        override suspend fun load(context: Context, key: I): PaletteBitmap =
+            suspendCancellableCoroutine { continuation ->
+                loadImage(context)
+                    .from(key)
+                    .into(
+                        PaletteTargetBuilder(context)
+                            .onResourceReady { result, palette ->
+                                if (result is BitmapDrawable) {
+                                    continuation.resume(PaletteBitmap(result.bitmap, palette)) { continuation.cancel() }
+                                } else {
+                                    continuation.cancel()
+                                }
+                            }
+                            .build()
+                    )
+                    .enqueue()
+            }
+
+        override fun id(key: I): Long = key.getItemID()
+    }
 
 }
