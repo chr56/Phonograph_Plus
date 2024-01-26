@@ -50,6 +50,7 @@ import android.os.Build.VERSION_CODES.N_MR1
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout.LayoutParams
 import android.widget.FrameLayout.LayoutParams.MATCH_PARENT
@@ -93,7 +94,7 @@ class StarterActivity : AppCompatActivity() {
             Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show()
             gotoMainActivity()
         } else {
-            makeActionDialog(this, playRequest) {
+            makeActionDialog(this, playRequest, intent) {
                 gotoMainActivity()
             }.show()
         }
@@ -235,6 +236,7 @@ class StarterActivity : AppCompatActivity() {
     private fun makeActionDialog(
         context: FragmentActivity,
         playRequest: PlayRequest,
+        originalIntent: Intent,
         callback: () -> Unit,
     ): AlertDialog {
 
@@ -332,9 +334,22 @@ class StarterActivity : AppCompatActivity() {
                 }
 
                 else            -> {
-                    TextView(context).apply {
-                        setPadding(16)
-                        setText(R.string.empty)
+                    LinearLayout(context).apply {
+                        orientation = LinearLayout.VERTICAL
+                        addView(
+                            TextView(context).apply {
+                                setPadding(32)
+                                setTextAppearance(androidx.appcompat.R.style.TextAppearance_AppCompat_Medium)
+                                gravity = Gravity.CENTER
+                                setText(R.string.unplayable_file)
+                            }
+                        )
+                        addView(
+                            TextView(context).apply {
+                                setPadding(32, 32, 32, 64)
+                                text = intent.data.toString()
+                            }
+                        )
                     }
                 }
             }
