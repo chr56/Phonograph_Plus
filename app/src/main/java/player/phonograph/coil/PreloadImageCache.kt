@@ -4,47 +4,34 @@
 
 package player.phonograph.coil
 
-import player.phonograph.coil.target.PaletteBitmap
-import player.phonograph.model.Song
 import androidx.collection.LruCache
 import android.content.Context
-import android.graphics.Bitmap
 
-class PreloadImageCache(size: Int) {
+abstract class AbsPreloadImageCache<K, G : Any>(size: Int) {
 
-    private val imageCache: LruCache<Long, PaletteBitmap> = LruCache(size) // SongId <-> PaletteBitmap
+    private val cache: LruCache<Long, G> = LruCache(size)
 
-    private fun putCache(songId: Long, bitmap: Bitmap, color: Int) {
-        imageCache.put(songId, PaletteBitmap(bitmap, color))
-    }
-
-    private suspend fun loadAndStore(context: Context, song: Song, timeout: Long): PaletteBitmap {
-        val loaded = loadImage(context, song, timeout)
-        putCache(song.id, loaded.bitmap, loaded.paletteColor)
+    private suspend fun loadAndStore(context: Context, key: K): G {
+        val loaded: G = load(context, key)
+        cache.put(id(key), loaded)
         return loaded
     }
 
-    suspend fun fetchPaletteColor(context: Context, song: Song): Int {
-        val cached = imageCache[song.id]?.paletteColor
+    protected abstract suspend fun load(context: Context, key: K): G
+
+    protected abstract fun id(key: K): Long
+
+    suspend fun fetch(context: Context, key: K): G {
+        val cached: G? = cache[id(key)]
         return if (cached == null) {
-            val loaded: PaletteBitmap = loadAndStore(context, song, timeout = 2000)
-            loaded.paletteColor
+            val loaded: G = loadAndStore(context, key)
+            loaded
         } else {
             cached
         }
     }
 
-    suspend fun fetchBitmap(context: Context, song: Song): Bitmap {
-        val cached = imageCache[song.id]?.bitmap
-        return if (cached == null) {
-            val loaded: PaletteBitmap = loadAndStore(context, song, timeout = 2000)
-            loaded.bitmap
-        } else {
-            cached
-        }
-    }
-
-    suspend fun preload(context: Context, song: Song, timeout: Long) {
-        loadAndStore(context, song, timeout)
+    suspend fun preload(context: Context, key: K) {
+        loadAndStore(context, key)
     }
 }
