@@ -22,13 +22,17 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 
 abstract class DisplayAdapter<I : Displayable>(
     protected val activity: FragmentActivity,
@@ -41,6 +45,7 @@ abstract class DisplayAdapter<I : Displayable>(
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
+            preloadImages(value)
             notifyDataSetChanged()
         }
 
@@ -75,10 +80,34 @@ abstract class DisplayAdapter<I : Displayable>(
 
     override fun onViewAttachedToWindow(holder: DisplayViewHolder<I>) {
         holder.attached = true
+        setImage(holder)
     }
 
     override fun onViewDetachedFromWindow(holder: DisplayViewHolder<I>) {
         holder.attached = false
+    }
+
+    protected var imageCache: DisplayPreloadImageCache<I> = DisplayPreloadImageCache(80)
+        private set
+
+    private fun preloadImages(items: Collection<I>) {
+        imageCache = DisplayPreloadImageCache(items.size.coerceAtLeast(1))
+        imageCache.imageLoaderScope.launch {
+            for (item: I in items) {
+                imageCache.preload(activity, item)
+            }
+        }
+    }
+
+    protected open fun setImage(holder: DisplayViewHolder<I>) {
+        imageCache.imageLoaderScope.launch {
+            val loaded = imageCache.fetch(activity, dataset[holder.bindingAdapterPosition])
+            val usePalette = config.usePalette
+            withContext(Dispatchers.Main) {
+                holder.setImage(loaded.bitmap)
+                if (usePalette) holder.setPaletteColors(loaded.paletteColor)
+            }
+        }
     }
 
     // for inheriting
@@ -108,7 +137,8 @@ abstract class DisplayAdapter<I : Displayable>(
                 setImageText(getRelativeOrdinalText(item))
             } else {
                 image?.visibility = View.VISIBLE
-                loadImage(item, usePalette)
+                image?.setImageDrawable(defaultIcon)
+                // loadImage(item, usePalette)
             }
             controller.registerClicking(itemView, position) {
                 onClick(position, dataset, image)
@@ -193,6 +223,8 @@ abstract class DisplayAdapter<I : Displayable>(
             }
 
         override fun id(key: I): Long = key.getItemID()
+
+        val imageLoaderScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     }
 
 }

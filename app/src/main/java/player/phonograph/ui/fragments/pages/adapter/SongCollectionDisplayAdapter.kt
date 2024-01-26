@@ -27,6 +27,10 @@ class SongCollectionDisplayAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<SongCollection> =
         SongCollectionViewHolder(inflatedView(parent, viewType), onClick)
 
+    override fun setImage(holder: DisplayViewHolder<SongCollection>) {
+        (holder as SongCollectionViewHolder).putImage()
+    }
+
     class SongCollectionViewHolder(
         itemView: View,
         private val onClick: (bindingAdapterPosition: Int) -> Unit,
@@ -52,6 +56,21 @@ class SongCollectionDisplayAdapter(
                     )
                 )
             )
+        }
+        fun putImage() {
+            image?.also {
+                val context = itemView.context
+                it.visibility = View.VISIBLE
+                it.setImageDrawable(
+                    context.getTintedDrawable(
+                        R.drawable.ic_folder_white_24dp, resolveColor(
+                            context,
+                            R.attr.iconColor,
+                            context.primaryTextColor(context.nightMode)
+                        )
+                    )
+                )
+            }
         }
     }
 }
