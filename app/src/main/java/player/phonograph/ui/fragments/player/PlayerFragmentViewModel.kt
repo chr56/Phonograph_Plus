@@ -103,7 +103,9 @@ class PlayerFragmentViewModel : ViewModel() {
 
     private val preloadImageCache: PaletteBitmapPreloadImageCache = PaletteBitmapPreloadImageCache(6)
 
-    class PaletteBitmapPreloadImageCache(size: Int) : AbsPreloadImageCache<Song, PaletteBitmap>(size) {
+    class PaletteBitmapPreloadImageCache(size: Int) :
+            AbsPreloadImageCache<Song, PaletteBitmap>(size, IMPL_SPARSE_ARRAY) {
+
         override suspend fun load(context: Context, key: Song): PaletteBitmap =
             loadImage(context, key, 2000)
 

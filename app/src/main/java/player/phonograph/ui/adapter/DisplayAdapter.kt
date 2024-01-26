@@ -192,7 +192,9 @@ abstract class DisplayAdapter<I : Displayable>(
         }
     }
 
-    class DisplayPreloadImageCache<I : Displayable>(size: Int) : AbsPreloadImageCache<I, PaletteBitmap>(size) {
+    class DisplayPreloadImageCache<I : Displayable>(size: Int) :
+            AbsPreloadImageCache<I, PaletteBitmap>(size, IMPL_LRU) {
+
         @OptIn(ExperimentalCoroutinesApi::class)
         override suspend fun load(context: Context, key: I): PaletteBitmap =
             suspendCancellableCoroutine { continuation ->
