@@ -40,10 +40,6 @@ class PlaylistDisplayAdapter(
         }
     }
 
-    override fun setImage(holder: DisplayViewHolder<Playlist>) {
-        (holder as CommonPlaylistViewHolder).putImage(dataset[holder.bindingAdapterPosition])
-    }
-
     override fun getItemViewType(position: Int): Int =
         if (dataset[position] is SmartPlaylist) SMART_PLAYLIST else DEFAULT_PLAYLIST
 
@@ -76,12 +72,8 @@ class PlaylistDisplayAdapter(
         override val defaultIcon: Drawable?
             get() = AppCompatResources.getDrawable(itemView.context, R.drawable.ic_queue_music_white_24dp)
 
-        fun putImage(item: Playlist) {
-            image?.also {
-                it.visibility = View.VISIBLE
-                it.setImageResource(getIconRes(item))
-            }
-        }
+        override fun getIcon(item: Playlist): Drawable? =
+            AppCompatResources.getDrawable(itemView.context, getIconRes(item))
 
         private fun getIconRes(playlist: Playlist): Int = when {
             playlist is SmartPlaylist                      -> playlist.iconRes

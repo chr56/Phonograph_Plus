@@ -26,6 +26,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,7 +50,7 @@ abstract class DisplayAdapter<I : Displayable>(
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
-            preloadImages(value)
+            if (config.imageType == IMAGE_TYPE_IMAGE) preloadImages(value)
             notifyDataSetChanged()
         }
 
@@ -83,7 +84,8 @@ abstract class DisplayAdapter<I : Displayable>(
         if (config.showSectionName) getSectionNameImp(position) else ""
 
     override fun onViewAttachedToWindow(holder: DisplayViewHolder<I>) {
-        if (config.imageType == IMAGE_TYPE_IMAGE) setImage(holder)
+        if (config.imageType == IMAGE_TYPE_IMAGE)
+            holder.updateImage(imageCache, dataset[holder.bindingAdapterPosition], config.usePalette)
     }
 
     // override fun onViewDetachedFromWindow(holder: DisplayViewHolder<I>) {}
@@ -96,17 +98,6 @@ abstract class DisplayAdapter<I : Displayable>(
         imageCache.imageLoaderScope.launch {
             for (item: I in items) {
                 imageCache.preload(activity, item)
-            }
-        }
-    }
-
-    protected open fun setImage(holder: DisplayViewHolder<I>) {
-        imageCache.imageLoaderScope.launch {
-            val loaded = imageCache.fetch(activity, dataset[holder.bindingAdapterPosition])
-            val usePalette = config.usePalette
-            withContext(Dispatchers.Main) {
-                holder.setImage(loaded.bitmap)
-                if (usePalette) holder.setPaletteColors(loaded.paletteColor)
             }
         }
     }
@@ -173,7 +164,7 @@ abstract class DisplayAdapter<I : Displayable>(
             when (imageType) {
                 IMAGE_TYPE_FIXED_ICON -> {
                     image?.visibility = View.VISIBLE
-                    image?.setImageDrawable(defaultIcon)
+                    image?.setImageDrawable(getIcon(item))
                 }
 
                 IMAGE_TYPE_IMAGE      -> {
@@ -184,6 +175,18 @@ abstract class DisplayAdapter<I : Displayable>(
                 IMAGE_TYPE_TEXT       -> {
                     imageText?.visibility = View.VISIBLE
                     setImageText(getRelativeOrdinalText(item))
+                }
+            }
+        }
+
+        protected open fun getIcon(item: I): Drawable? = defaultIcon
+
+        fun updateImage(imageCache: DisplayPreloadImageCache<I>, item: I, usePalette: Boolean) {
+            imageCache.imageLoaderScope.launch {
+                val loaded = imageCache.fetch(itemView.context, item)
+                withContext(Dispatchers.Main) {
+                    image?.setImageBitmap(loaded.bitmap)
+                    if (usePalette) setPaletteColors(loaded.paletteColor)
                 }
             }
         }
