@@ -227,7 +227,7 @@ abstract class DisplayAdapter<I : Displayable>(
     }
 
     class DisplayPreloadImageCache<I : Displayable>(size: Int) :
-            AbsPreloadImageCache<I, PaletteBitmap>(size, IMPL_LRU) {
+            AbsPreloadImageCache<I, PaletteBitmap>(size, IMPL_SPARSE_ARRAY) {
 
         @OptIn(ExperimentalCoroutinesApi::class)
         override suspend fun load(context: Context, key: I): PaletteBitmap =
