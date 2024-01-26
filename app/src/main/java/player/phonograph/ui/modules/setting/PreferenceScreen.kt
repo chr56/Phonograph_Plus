@@ -207,6 +207,12 @@ fun PhonographPreferenceScreen() {
                     titleRes = R.string.image_source_config,
                 )
             )
+            BooleanPref(
+                key = PRELOAD_IMAGES,
+                summaryRes = R.string.pref_summary_preload_images,
+                titleRes = R.string.pref_title_preload_images,
+                defaultValue = true
+            )
         }
 
 
