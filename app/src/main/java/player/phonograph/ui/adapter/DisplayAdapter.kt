@@ -15,6 +15,10 @@ import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteBitmap
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Displayable
+import player.phonograph.ui.adapter.DisplayConfig.Companion.IMAGE_TYPE_FIXED_ICON
+import player.phonograph.ui.adapter.DisplayConfig.Companion.IMAGE_TYPE_IMAGE
+import player.phonograph.ui.adapter.DisplayConfig.Companion.IMAGE_TYPE_TEXT
+import player.phonograph.ui.adapter.DisplayConfig.Companion.ImageType
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -70,7 +74,7 @@ abstract class DisplayAdapter<I : Displayable>(
 
     override fun onBindViewHolder(holder: DisplayViewHolder<I>, position: Int) {
         val item: I = dataset[position]
-        holder.bind(item, position, dataset, controller, config.useImageText, config.usePalette)
+        holder.bind(item, position, dataset, controller, config.imageType, config.usePalette)
     }
 
     override fun getItemCount(): Int = dataset.size
@@ -118,7 +122,7 @@ abstract class DisplayAdapter<I : Displayable>(
             position: Int,
             dataset: List<I>,
             controller: MultiSelectionController<I>,
-            useImageText: Boolean,
+            @ImageType imageType: Int,
             usePalette: Boolean,
         ) {
             shortSeparator?.visibility = View.VISIBLE
@@ -127,13 +131,9 @@ abstract class DisplayAdapter<I : Displayable>(
             text?.text = getDescription(item)
             textSecondary?.text = item.getSecondaryText(itemView.context)
             textTertiary?.text = item.getTertiaryText(itemView.context)
-            if (useImageText) {
-                imageText?.visibility = View.VISIBLE
-                setImageText(getRelativeOrdinalText(item))
-            } else {
-                image?.visibility = View.VISIBLE
-                image?.setImageDrawable(defaultIcon)
-            }
+
+            prepareImage(imageType, item)
+
             controller.registerClicking(itemView, position) {
                 onClick(position, dataset, image)
             }
@@ -168,6 +168,25 @@ abstract class DisplayAdapter<I : Displayable>(
         protected open fun getRelativeOrdinalText(item: I): String = "-"
         protected open fun getDescription(item: I): CharSequence? =
             item.getDescription(context = itemView.context)
+
+        protected open fun prepareImage(@ImageType imageType: Int, item: I) {
+            when (imageType) {
+                IMAGE_TYPE_FIXED_ICON -> {
+                    image?.visibility = View.VISIBLE
+                    image?.setImageDrawable(defaultIcon)
+                }
+
+                IMAGE_TYPE_IMAGE      -> {
+                    image?.visibility = View.VISIBLE
+                    image?.setImageDrawable(defaultIcon)
+                }
+
+                IMAGE_TYPE_TEXT       -> {
+                    imageText?.visibility = View.VISIBLE
+                    setImageText(getRelativeOrdinalText(item))
+                }
+            }
+        }
 
         open fun setImage(bitmap: Bitmap) {
             image?.setImageBitmap(bitmap)

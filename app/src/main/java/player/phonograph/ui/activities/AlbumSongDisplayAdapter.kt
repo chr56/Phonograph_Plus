@@ -9,6 +9,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.ui.adapter.ConstDisplayConfig
+import player.phonograph.ui.adapter.DisplayConfig.Companion.IMAGE_TYPE_TEXT
 import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +18,7 @@ import android.view.ViewGroup
 
 class AlbumSongDisplayAdapter(
     activity: AppCompatActivity,
-) : SongDisplayAdapter(activity, ConstDisplayConfig(ItemLayoutStyle.LIST, usePalette = false, useImageText = true)) {
+) : SongDisplayAdapter(activity, ConstDisplayConfig(ItemLayoutStyle.LIST, imageType = IMAGE_TYPE_TEXT, usePalette = false)) {
 
     override fun getSectionNameImp(position: Int): String = getTrackNumber(dataset[position])
 
