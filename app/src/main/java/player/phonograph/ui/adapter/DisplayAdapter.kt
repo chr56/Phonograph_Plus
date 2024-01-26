@@ -83,7 +83,7 @@ abstract class DisplayAdapter<I : Displayable>(
         if (config.showSectionName) getSectionNameImp(position) else ""
 
     override fun onViewAttachedToWindow(holder: DisplayViewHolder<I>) {
-        setImage(holder)
+        if (config.imageType == IMAGE_TYPE_IMAGE) setImage(holder)
     }
 
     // override fun onViewDetachedFromWindow(holder: DisplayViewHolder<I>) {}
