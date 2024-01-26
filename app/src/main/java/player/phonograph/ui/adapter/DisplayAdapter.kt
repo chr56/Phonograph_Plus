@@ -24,7 +24,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -50,7 +49,7 @@ abstract class DisplayAdapter<I : Displayable>(
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
-            if (config.imageType == IMAGE_TYPE_IMAGE) preloadImages(value)
+            imageCacheDelegate.preloadImages(activity, value)
             notifyDataSetChanged()
         }
 
@@ -58,6 +57,8 @@ abstract class DisplayAdapter<I : Displayable>(
         @Suppress("LeakingThis")
         setHasStableIds(true)
     }
+
+    private val imageCacheDelegate: ImageCacheDelegate<I> = ImageCacheDelegate(config)
 
     protected val controller: MultiSelectionController<I>
             by lazy { MultiSelectionController(this, activity, allowMultiSelection) }
@@ -84,23 +85,10 @@ abstract class DisplayAdapter<I : Displayable>(
         if (config.showSectionName) getSectionNameImp(position) else ""
 
     override fun onViewAttachedToWindow(holder: DisplayViewHolder<I>) {
-        if (config.imageType == IMAGE_TYPE_IMAGE)
-            holder.updateImage(imageCache, dataset[holder.bindingAdapterPosition], config.usePalette)
+        imageCacheDelegate.updateImage(activity, holder, dataset[holder.bindingAdapterPosition], config.usePalette)
     }
 
     // override fun onViewDetachedFromWindow(holder: DisplayViewHolder<I>) {}
-
-    protected var imageCache: DisplayPreloadImageCache<I> = DisplayPreloadImageCache(80)
-        private set
-
-    private fun preloadImages(items: Collection<I>) {
-        imageCache = DisplayPreloadImageCache(items.size.coerceAtLeast(1))
-        imageCache.imageLoaderScope.launch {
-            for (item: I in items) {
-                imageCache.preload(activity, item)
-            }
-        }
-    }
 
     // for inheriting
     open fun getSectionNameImp(position: Int): String =
@@ -181,20 +169,6 @@ abstract class DisplayAdapter<I : Displayable>(
 
         protected open fun getIcon(item: I): Drawable? = defaultIcon
 
-        fun updateImage(imageCache: DisplayPreloadImageCache<I>, item: I, usePalette: Boolean) {
-            imageCache.imageLoaderScope.launch {
-                val loaded = imageCache.fetch(itemView.context, item)
-                withContext(Dispatchers.Main) {
-                    image?.setImageBitmap(loaded.bitmap)
-                    if (usePalette) setPaletteColors(loaded.paletteColor)
-                }
-            }
-        }
-
-        open fun setImage(bitmap: Bitmap) {
-            image?.setImageBitmap(bitmap)
-        }
-
         protected open fun setImageText(text: String) {
             imageText?.text = text
         }
@@ -210,6 +184,44 @@ abstract class DisplayAdapter<I : Displayable>(
                 text?.setTextColor(context.secondaryTextColor(color))
                 textSecondary?.setTextColor(context.secondaryTextColor(color))
                 textTertiary?.setTextColor(context.secondaryTextColor(color))
+            }
+        }
+    }
+
+    class ImageCacheDelegate<I : Displayable>(val config: DisplayConfig) {
+
+        private var _imageCache: DisplayPreloadImageCache<I>? = null
+        private var imageCache: DisplayPreloadImageCache<I>
+            get() {
+                if (_imageCache == null) {
+                    _imageCache = DisplayPreloadImageCache(1)
+                }
+                return _imageCache!!
+            }
+            set(value) {
+                _imageCache = value
+            }
+
+        fun preloadImages(context: Context, items: Collection<I>) {
+            if (config.imageType != IMAGE_TYPE_IMAGE) return
+
+            imageCache = DisplayPreloadImageCache(items.size.coerceAtLeast(1))
+            imageCache.imageLoaderScope.launch {
+                for (item: I in items) {
+                    imageCache.preload(context, item)
+                }
+            }
+        }
+
+        fun updateImage(context: Context, viewHolder: DisplayViewHolder<I>, item: I, usePalette: Boolean) {
+            if (config.imageType != IMAGE_TYPE_IMAGE) return
+
+            imageCache.imageLoaderScope.launch {
+                val loaded = imageCache.fetch(context, item)
+                withContext(Dispatchers.Main) {
+                    viewHolder.image?.setImageBitmap(loaded.bitmap)
+                    if (usePalette) viewHolder.setPaletteColors(loaded.paletteColor)
+                }
             }
         }
     }
