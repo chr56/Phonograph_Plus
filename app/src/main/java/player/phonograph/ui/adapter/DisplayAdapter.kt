@@ -7,6 +7,7 @@ package player.phonograph.ui.adapter
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.actions.ClickActionProviders
 import player.phonograph.actions.menu.ActionMenuProviders
@@ -15,6 +16,8 @@ import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteBitmap
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Displayable
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayConfig.Companion.IMAGE_TYPE_FIXED_ICON
 import player.phonograph.ui.adapter.DisplayConfig.Companion.IMAGE_TYPE_IMAGE
 import player.phonograph.ui.adapter.DisplayConfig.Companion.IMAGE_TYPE_TEXT
@@ -203,7 +206,7 @@ abstract class DisplayAdapter<I : Displayable>(
             }
 
         fun preloadImages(context: Context, items: Collection<I>) {
-            if (config.imageType != IMAGE_TYPE_IMAGE) return
+            if (config.imageType != IMAGE_TYPE_IMAGE && enabledPreload) return
 
             imageCache = DisplayPreloadImageCache(items.size.coerceAtLeast(1))
             imageCache.imageLoaderScope.launch {
@@ -217,17 +220,22 @@ abstract class DisplayAdapter<I : Displayable>(
             if (config.imageType != IMAGE_TYPE_IMAGE) return
 
             imageCache.imageLoaderScope.launch {
-                val loaded = imageCache.fetch(context, item)
+                val loaded =
+                    if (enabledPreload) imageCache.fetch(context, item) else imageCache.read(context, item)
                 withContext(Dispatchers.Main) {
                     viewHolder.image?.setImageBitmap(loaded.bitmap)
                     if (usePalette) viewHolder.setPaletteColors(loaded.paletteColor)
                 }
             }
         }
+
+        private val enabledPreload: Boolean = Setting(App.instance)[Keys.preloadImages].data
     }
 
     class DisplayPreloadImageCache<I : Displayable>(size: Int) :
             AbsPreloadImageCache<I, PaletteBitmap>(size, IMPL_SPARSE_ARRAY) {
+
+        suspend fun read(context: Context, key: I): PaletteBitmap = load(context, key)
 
         @OptIn(ExperimentalCoroutinesApi::class)
         override suspend fun load(context: Context, key: I): PaletteBitmap =
