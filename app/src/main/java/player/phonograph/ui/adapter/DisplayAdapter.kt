@@ -161,6 +161,7 @@ abstract class DisplayAdapter<I : Displayable>(
                 IMAGE_TYPE_IMAGE      -> {
                     image?.visibility = View.VISIBLE
                     image?.setImageDrawable(defaultIcon)
+                    setPaletteColors(itemView.context.getColor(R.color.defaultFooterColor))
                 }
 
                 IMAGE_TYPE_TEXT       -> {
