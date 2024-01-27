@@ -323,8 +323,8 @@ class QueueManager(val context: Application) {
 
     private inner class ObserverManager {
         private val observers: MutableList<QueueObserver> = ArrayList()
-        fun addObserver(observer: QueueObserver) = observers.add(observer)
-        fun removeObserver(observer: QueueObserver): Boolean = observers.remove(observer)
+        fun addObserver(observer: QueueObserver) = synchronized(observers) { observers.add(observer) }
+        fun removeObserver(observer: QueueObserver): Boolean = synchronized(observers) { observers.remove(observer) }
 
         fun notifyQueueChanged(newPlayingQueue: List<Song>, newOriginalQueue: List<Song>) =
             notifyAllObservers {
@@ -347,8 +347,10 @@ class QueueManager(val context: Application) {
             }
 
         private inline fun notifyAllObservers(block: QueueObserver.() -> Unit) {
-            for (observer in observers) {
-                block(observer)
+            synchronized(observers) {
+                for (observer in observers) {
+                    block(observer)
+                }
             }
         }
     }
