@@ -487,4 +487,11 @@
     <string name="item_layout_grid">Grade</string>
     <string name="warning_inappropriate_config">A sua configuração atual é considerada \"Inapropriada\".</string>
     <string name="internal_error">Erro Interno</string>
+    <string name="storage_volumes">Volumes de Armazenamento</string>
+    <string name="no_volume_found">Nenhum Volume encontrado! Seu sistema pode não ser suportado!</string>
+    <string name="action_select">Selecionar</string>
+    <string name="unsupported_format">Formato não suportado: %1$s</string>
+    <string name="file_not_found">"Parece que %1$s não existe! Por favor, verifique o arquivo ou a permissão de acesso ao armazenamento."</string>
+    <string name="pref_title_preload_images">Pré-carregar Imagens</string>
+    <string name="pref_summary_preload_images">Pré-carregar imagens para acelerar o carregamento e evitar atrasos. Isso pode causar mais consumo de memória.</string>
 </resources>
