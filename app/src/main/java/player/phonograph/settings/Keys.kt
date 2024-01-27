@@ -53,6 +53,9 @@ object Keys {
     // Database
 
     // Behavior-File
+    data object preloadImages :
+            PrimitiveKey<Boolean>(booleanPK(PRELOAD_IMAGES), { true })
+
     data object imageSourceConfigJsonString :
             PrimitiveKey<String>(stringPK(IMAGE_SOURCE_CONFIG), { "{}" })
 

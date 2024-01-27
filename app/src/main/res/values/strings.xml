@@ -495,4 +495,6 @@
     <string name="action_select">Select</string>
     <string name="unsupported_format">Unsupported format: %1$s</string>
     <string name="file_not_found">"It seems that %1$s doesn't exist! Please check the file or permission of access to storage."</string>
+    <string name="pref_title_preload_images">Preload Images</string>
+    <string name="pref_summary_preload_images">Preload images to accelerate loading and to avoid lag. This may cause more memory consuming.</string>
 </resources>

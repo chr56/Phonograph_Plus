@@ -8,5 +8,5 @@ data class ConstDisplayConfig(
     @ViewHolderType override var layoutStyle: ItemLayoutStyle,
     override val usePalette: Boolean = false,
     override val showSectionName: Boolean = true,
-    override val useImageText: Boolean = false,
+    override val imageType: Int = DisplayConfig.IMAGE_TYPE_IMAGE
 ) : DisplayConfig

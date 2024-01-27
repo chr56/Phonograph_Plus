@@ -208,7 +208,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
             if (displayConfig.colorFooter != coloredFootersSelected) {
                 displayConfig.colorFooter = coloredFootersSelected
                 update = true
-                adapterDisplayConfig = adapterDisplayConfig.copy(useImageText = coloredFootersSelected)
+                adapterDisplayConfig = adapterDisplayConfig.copy(usePalette = coloredFootersSelected)
             }
         }
 

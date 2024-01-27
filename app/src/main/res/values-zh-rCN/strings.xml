@@ -482,4 +482,6 @@
     <string name="action_select">选择</string>
     <string name="unsupported_format">不支持的格式: %1$s</string>
     <string name="file_not_found">“文件 %1$s 疑似不存在！请检查文件或访问存储的权限!”</string>
+    <string name="pref_title_preload_images">图片预加载</string>
+    <string name="pref_summary_preload_images">预加载图片以加快加载速度并减少卡顿，可能消耗更多内存</string>
 </resources>

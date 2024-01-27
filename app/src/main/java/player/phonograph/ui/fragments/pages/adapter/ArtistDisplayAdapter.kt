@@ -4,11 +4,8 @@
 
 package player.phonograph.ui.fragments.pages.adapter
 
-import coil.size.ViewSizeResolver
 import player.phonograph.R
 import player.phonograph.actions.ClickActionProviders
-import player.phonograph.coil.loadImage
-import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Artist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
@@ -53,30 +50,6 @@ class ArtistDisplayAdapter(
 
         override val defaultIcon: Drawable?
             get() = AppCompatResources.getDrawable(itemView.context, R.drawable.default_artist_image)
-
-        override fun setImage(item: Artist, usePalette: Boolean) {
-            val context = itemView.context
-            image?.let { view ->
-                view.visibility = View.VISIBLE
-                loadImage(itemView.context) {
-                    data(item)
-                    size(ViewSizeResolver(view))
-                    target(
-                        PaletteTargetBuilder(context)
-                            .onStart {
-                                view.setImageResource(R.drawable.default_album_art)
-                                setPaletteColors(context.getColor(R.color.defaultFooterColor))
-                            }
-                            .withConditionalYield { attached }
-                            .onResourceReady { result, palette ->
-                                view.setImageDrawable(result)
-                                if (usePalette) setPaletteColors(palette)
-                            }
-                            .build()
-                    )
-                }
-            }
-        }
 
         override val clickActionProvider: ClickActionProviders.ClickActionProvider<Artist>
             get() = ClickActionProviders.ArtistClickActionProvider()

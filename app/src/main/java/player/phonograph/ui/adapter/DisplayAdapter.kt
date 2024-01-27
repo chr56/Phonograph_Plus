@@ -7,18 +7,39 @@ package player.phonograph.ui.adapter
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.actions.ClickActionProviders
 import player.phonograph.actions.menu.ActionMenuProviders
+import player.phonograph.coil.AbsPreloadImageCache
+import player.phonograph.coil.loadImage
+import player.phonograph.coil.target.PaletteBitmap
+import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Displayable
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
+import player.phonograph.ui.adapter.DisplayConfig.Companion.IMAGE_TYPE_FIXED_ICON
+import player.phonograph.ui.adapter.DisplayConfig.Companion.IMAGE_TYPE_IMAGE
+import player.phonograph.ui.adapter.DisplayConfig.Companion.IMAGE_TYPE_TEXT
+import player.phonograph.ui.adapter.DisplayConfig.Companion.ImageType
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 
 abstract class DisplayAdapter<I : Displayable>(
     protected val activity: FragmentActivity,
@@ -31,6 +52,7 @@ abstract class DisplayAdapter<I : Displayable>(
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
+            imageCacheDelegate.preloadImages(activity, value)
             notifyDataSetChanged()
         }
 
@@ -38,6 +60,8 @@ abstract class DisplayAdapter<I : Displayable>(
         @Suppress("LeakingThis")
         setHasStableIds(true)
     }
+
+    private val imageCacheDelegate: ImageCacheDelegate<I> = ImageCacheDelegate(config)
 
     protected val controller: MultiSelectionController<I>
             by lazy { MultiSelectionController(this, activity, allowMultiSelection) }
@@ -55,7 +79,7 @@ abstract class DisplayAdapter<I : Displayable>(
 
     override fun onBindViewHolder(holder: DisplayViewHolder<I>, position: Int) {
         val item: I = dataset[position]
-        holder.bind(item, position, dataset, controller, config.useImageText, config.usePalette)
+        holder.bind(item, position, dataset, controller, config.imageType, config.usePalette)
     }
 
     override fun getItemCount(): Int = dataset.size
@@ -64,12 +88,10 @@ abstract class DisplayAdapter<I : Displayable>(
         if (config.showSectionName) getSectionNameImp(position) else ""
 
     override fun onViewAttachedToWindow(holder: DisplayViewHolder<I>) {
-        holder.attached = true
+        imageCacheDelegate.updateImage(activity, holder, dataset[holder.bindingAdapterPosition], config.usePalette)
     }
 
-    override fun onViewDetachedFromWindow(holder: DisplayViewHolder<I>) {
-        holder.attached = false
-    }
+    // override fun onViewDetachedFromWindow(holder: DisplayViewHolder<I>) {}
 
     // for inheriting
     open fun getSectionNameImp(position: Int): String =
@@ -77,14 +99,12 @@ abstract class DisplayAdapter<I : Displayable>(
 
     open class DisplayViewHolder<I : Displayable>(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
 
-        var attached = false
-
         open fun bind(
             item: I,
             position: Int,
             dataset: List<I>,
             controller: MultiSelectionController<I>,
-            useImageText: Boolean,
+            @ImageType imageType: Int,
             usePalette: Boolean,
         ) {
             shortSeparator?.visibility = View.VISIBLE
@@ -93,11 +113,9 @@ abstract class DisplayAdapter<I : Displayable>(
             text?.text = getDescription(item)
             textSecondary?.text = item.getSecondaryText(itemView.context)
             textTertiary?.text = item.getTertiaryText(itemView.context)
-            if (useImageText) {
-                setImageText(getRelativeOrdinalText(item))
-            } else {
-                setImage(item, usePalette)
-            }
+
+            prepareImage(imageType, item)
+
             controller.registerClicking(itemView, position) {
                 onClick(position, dataset, image)
             }
@@ -133,24 +151,36 @@ abstract class DisplayAdapter<I : Displayable>(
         protected open fun getDescription(item: I): CharSequence? =
             item.getDescription(context = itemView.context)
 
-        protected open fun setImage(item: I, usePalette: Boolean) {
-            image?.also {
-                it.visibility = View.VISIBLE
-                it.setImageDrawable(defaultIcon)
+        protected open fun prepareImage(@ImageType imageType: Int, item: I) {
+            when (imageType) {
+                IMAGE_TYPE_FIXED_ICON -> {
+                    image?.visibility = View.VISIBLE
+                    image?.setImageDrawable(getIcon(item))
+                }
+
+                IMAGE_TYPE_IMAGE      -> {
+                    image?.visibility = View.VISIBLE
+                    image?.setImageDrawable(defaultIcon)
+                    setPaletteColors(itemView.context.getColor(R.color.defaultFooterColor))
+                }
+
+                IMAGE_TYPE_TEXT       -> {
+                    imageText?.visibility = View.VISIBLE
+                    setImageText(getRelativeOrdinalText(item))
+                }
             }
         }
 
+        protected open fun getIcon(item: I): Drawable? = defaultIcon
+
         protected open fun setImageText(text: String) {
-            imageText?.also {
-                it.visibility = View.VISIBLE
-                it.text = text
-            }
+            imageText?.text = text
         }
 
         protected open val defaultIcon =
             AppCompatResources.getDrawable(itemView.context, R.drawable.default_album_art)
 
-        protected open fun setPaletteColors(color: Int) {
+        open fun setPaletteColors(color: Int) {
             paletteColorContainer?.let { paletteColorContainer ->
                 val context = itemView.context
                 paletteColorContainer.setBackgroundColor(color)
@@ -161,4 +191,75 @@ abstract class DisplayAdapter<I : Displayable>(
             }
         }
     }
+
+    class ImageCacheDelegate<I : Displayable>(val config: DisplayConfig) {
+
+        private var _imageCache: DisplayPreloadImageCache<I>? = null
+        private var imageCache: DisplayPreloadImageCache<I>
+            get() {
+                if (_imageCache == null) {
+                    _imageCache = DisplayPreloadImageCache(1)
+                }
+                return _imageCache!!
+            }
+            set(value) {
+                _imageCache = value
+            }
+
+        fun preloadImages(context: Context, items: Collection<I>) {
+            if (config.imageType != IMAGE_TYPE_IMAGE && enabledPreload) return
+
+            imageCache = DisplayPreloadImageCache(items.size.coerceAtLeast(1))
+            imageCache.imageLoaderScope.launch {
+                for (item: I in items) {
+                    imageCache.preload(context, item)
+                }
+            }
+        }
+
+        fun updateImage(context: Context, viewHolder: DisplayViewHolder<I>, item: I, usePalette: Boolean) {
+            if (config.imageType != IMAGE_TYPE_IMAGE) return
+
+            imageCache.imageLoaderScope.launch {
+                val loaded =
+                    if (enabledPreload) imageCache.fetch(context, item) else imageCache.read(context, item)
+                withContext(Dispatchers.Main) {
+                    viewHolder.image?.setImageBitmap(loaded.bitmap)
+                    if (usePalette) viewHolder.setPaletteColors(loaded.paletteColor)
+                }
+            }
+        }
+
+        private val enabledPreload: Boolean = Setting(App.instance)[Keys.preloadImages].data
+    }
+
+    class DisplayPreloadImageCache<I : Displayable>(size: Int) :
+            AbsPreloadImageCache<I, PaletteBitmap>(size, IMPL_SPARSE_ARRAY) {
+
+        suspend fun read(context: Context, key: I): PaletteBitmap = load(context, key)
+
+        @OptIn(ExperimentalCoroutinesApi::class)
+        override suspend fun load(context: Context, key: I): PaletteBitmap =
+            suspendCancellableCoroutine { continuation ->
+                loadImage(context)
+                    .from(key)
+                    .into(
+                        PaletteTargetBuilder(context)
+                            .onResourceReady { result, palette ->
+                                if (result is BitmapDrawable) {
+                                    continuation.resume(PaletteBitmap(result.bitmap, palette)) { continuation.cancel() }
+                                } else {
+                                    continuation.cancel()
+                                }
+                            }
+                            .build()
+                    )
+                    .enqueue()
+            }
+
+        override fun id(key: I): Long = key.getItemID()
+
+        val imageLoaderScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    }
+
 }

@@ -15,6 +15,7 @@ import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.appcompat.app.AppCompatActivity
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -40,18 +41,16 @@ class SongCollectionDisplayAdapter(
             return true
         }
 
-        override fun setImage(item: SongCollection, usePalette: Boolean) {
+        override fun getIcon(item: SongCollection): Drawable? {
             val context = itemView.context
-            image?.visibility = View.VISIBLE
-            image?.setImageDrawable(
-                context.getTintedDrawable(
-                    R.drawable.ic_folder_white_24dp, resolveColor(
-                        context,
-                        R.attr.iconColor,
-                        context.primaryTextColor(context.nightMode)
-                    )
+            return context.getTintedDrawable(
+                R.drawable.ic_folder_white_24dp, resolveColor(
+                    context,
+                    R.attr.iconColor,
+                    context.primaryTextColor(context.nightMode)
                 )
             )
         }
+
     }
 }

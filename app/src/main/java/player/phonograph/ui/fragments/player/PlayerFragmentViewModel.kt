@@ -7,7 +7,9 @@ package player.phonograph.ui.fragments.player
 import org.koin.core.context.GlobalContext
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.coil.PreloadImageCache
+import player.phonograph.coil.AbsPreloadImageCache
+import player.phonograph.coil.loadImage
+import player.phonograph.coil.target.PaletteBitmap
 import player.phonograph.mechanism.IFavorite
 import player.phonograph.model.Song
 import player.phonograph.model.buildInfoString
@@ -80,7 +82,7 @@ class PlayerFragmentViewModel : ViewModel() {
     fun refreshPaletteColor(context: Context, song: Song) {
         fetcherDeferred?.cancel()
         fetcherDeferred = viewModelScope.async {
-            preloadImageCache.fetchPaletteColor(context, song = song)
+            preloadImageCache.fetch(context, song).paletteColor
         }
         viewModelScope.launch {
             val current = fetcherDeferred
@@ -99,9 +101,19 @@ class PlayerFragmentViewModel : ViewModel() {
         }
     }
 
-    private val preloadImageCache: PreloadImageCache = PreloadImageCache(6)
+    private val preloadImageCache: PaletteBitmapPreloadImageCache = PaletteBitmapPreloadImageCache(6)
 
-    suspend fun fetchBitmap(context: Context, song: Song): Bitmap = preloadImageCache.fetchBitmap(context, song)
+    class PaletteBitmapPreloadImageCache(size: Int) :
+            AbsPreloadImageCache<Song, PaletteBitmap>(size, IMPL_LRU) {
+
+        override suspend fun load(context: Context, key: Song): PaletteBitmap =
+            loadImage(context, key, 2000)
+
+        override fun id(key: Song): Long = key.id
+    }
+
+    suspend fun fetchBitmap(context: Context, song: Song): Bitmap =
+        preloadImageCache.fetch(context, song).bitmap
     //endregion
 
 }

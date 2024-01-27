@@ -4,47 +4,70 @@
 
 package player.phonograph.coil
 
-import player.phonograph.coil.target.PaletteBitmap
-import player.phonograph.model.Song
+import androidx.annotation.IntDef
 import androidx.collection.LruCache
 import android.content.Context
-import android.graphics.Bitmap
+import android.util.LongSparseArray
 
-class PreloadImageCache(size: Int) {
+abstract class AbsPreloadImageCache<K, G : Any>(size: Int, @CacheImplementation type: Int) {
 
-    private val imageCache: LruCache<Long, PaletteBitmap> = LruCache(size) // SongId <-> PaletteBitmap
-
-    private fun putCache(songId: Long, bitmap: Bitmap, color: Int) {
-        imageCache.put(songId, PaletteBitmap(bitmap, color))
+    private val cache: Cache<G> = when (type) {
+        IMPL_LRU          -> Cache.LruCacheImpl(size)
+        IMPL_SPARSE_ARRAY -> Cache.SparseArrayCacheImpl(size)
+        else              -> throw IllegalArgumentException("Unknown cache type: $type")
     }
 
-    private suspend fun loadAndStore(context: Context, song: Song, timeout: Long): PaletteBitmap {
-        val loaded = loadImage(context, song, timeout)
-        putCache(song.id, loaded.bitmap, loaded.paletteColor)
+    private suspend fun loadAndStore(context: Context, key: K): G {
+        val loaded: G = load(context, key)
+        cache[id(key)] = loaded
         return loaded
     }
 
-    suspend fun fetchPaletteColor(context: Context, song: Song): Int {
-        val cached = imageCache[song.id]?.paletteColor
+    protected abstract suspend fun load(context: Context, key: K): G
+
+    protected abstract fun id(key: K): Long
+
+    suspend fun fetch(context: Context, key: K): G {
+        val cached: G? = cache[id(key)]
         return if (cached == null) {
-            val loaded: PaletteBitmap = loadAndStore(context, song, timeout = 2000)
-            loaded.paletteColor
+            val loaded: G = loadAndStore(context, key)
+            loaded
         } else {
             cached
         }
     }
 
-    suspend fun fetchBitmap(context: Context, song: Song): Bitmap {
-        val cached = imageCache[song.id]?.bitmap
-        return if (cached == null) {
-            val loaded: PaletteBitmap = loadAndStore(context, song, timeout = 2000)
-            loaded.bitmap
-        } else {
-            cached
+    suspend fun preload(context: Context, key: K) {
+        loadAndStore(context, key)
+    }
+
+    private sealed interface Cache<V> {
+        operator fun get(key: Long): V?
+        operator fun set(key: Long, value: V)
+
+        class LruCacheImpl<V : Any>(cacheSize: Int) : Cache<V> {
+            private val cache: LruCache<Long, V> = LruCache(cacheSize)
+            override fun get(key: Long): V? = cache[key]
+            override fun set(key: Long, value: V) {
+                cache.put(key, value)
+            }
+
+        }
+
+        class SparseArrayCacheImpl<V>(initialCapacity: Int) : Cache<V> {
+            private val cache: LongSparseArray<V> = LongSparseArray<V>(initialCapacity)
+            override fun get(key: Long): V = cache[key]
+            override fun set(key: Long, value: V) = cache.put(key, value)
         }
     }
 
-    suspend fun preload(context: Context, song: Song, timeout: Long) {
-        loadAndStore(context, song, timeout)
+    companion object {
+        const val IMPL_LRU = 0
+        const val IMPL_SPARSE_ARRAY = 1
+
+        @IntDef(IMPL_LRU, IMPL_SPARSE_ARRAY)
+        @Retention(AnnotationRetention.SOURCE)
+        @Target(AnnotationTarget.VALUE_PARAMETER)
+        annotation class CacheImplementation
     }
 }
