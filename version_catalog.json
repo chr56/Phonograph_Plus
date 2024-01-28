@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "1.4.4-dev2",
+      "versionCode": 1043,
+      "date": 1706453000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.4.4-dev2"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>新增 预加载图像，以避免在某些情况下滚动时卡顿</li><li>修复 在播放队列为空的情况下，从外部播放时的异样</li><li>翻译 更新波兰语(cookie)，巴西葡萄牙语 (EddieMattos)</li><li>开发 更新 AGP 至 8.2.2，更新 kotlin 至 1.9.22，更新依赖</li></ol>",
+        "en": "<ol><li>New: preload images to avoid lags when scroll in some circumstance</li><li>Fix: some glitch when playing from outside if playing queue is empty</li><li>Translation: update Polish (by cooky), Portuguese, Brazilian (by EddieMattos)</li><li>Development: upgrade AGP to 8.2.2, upgrade kotlin to 1.9.22, update dependencies</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.4.4-dev1",
       "versionCode": 1043,
       "date": 1706173000,
