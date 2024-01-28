@@ -3,7 +3,7 @@ activity = "1.8.0"
 datastore = { strictly = "1.0.0" }
 compose = "1.6.0"
 composeCompiler = "1.5.8"
-composeSetting = "1.0.1"
+composeSetting = "1.0.3"
 coil = "2.5.0"
 materialDialogs = "3.3.0"
 materialTools = "0.2.0"
