@@ -26,7 +26,7 @@ androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
 androidx-percentlayout = "androidx.percentlayout:percentlayout:1.0.0"
 androidx-swiperefreshlayout = "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
-androidx-media = "androidx.media:media:1.6.0"
+androidx-media = "androidx.media:media:1.7.0"
 androidx-cardview = "androidx.cardview:cardview:1.0.0"
 androidx-palette = "androidx.palette:palette-ktx:1.0.0"
 
