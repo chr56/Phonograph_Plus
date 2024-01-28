@@ -22,8 +22,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -114,7 +114,7 @@ fun CascadeItem(
         ) {
             if (collapsible) {
                 Icon(
-                    if (collapseState) Icons.Default.KeyboardArrowRight else Icons.Default.KeyboardArrowDown,
+                    if (collapseState) Icons.AutoMirrored.Default.KeyboardArrowRight else Icons.Default.KeyboardArrowDown,
                     "Collapse",
                     Modifier.align(Alignment.CenterVertically)
                 )

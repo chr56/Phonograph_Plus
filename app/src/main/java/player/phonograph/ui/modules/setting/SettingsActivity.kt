@@ -34,7 +34,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -78,7 +78,7 @@ class SettingsActivity : ComposeThemeActivity(), ICreateFileStorageAccess, IOpen
                             },
                             navigationIcon = {
                                 Icon(
-                                    Icons.Default.ArrowBack, null,
+                                    Icons.AutoMirrored.Default.ArrowBack, null,
                                     Modifier
                                         .clickable {
                                             onBackPressedDispatcher.onBackPressed()

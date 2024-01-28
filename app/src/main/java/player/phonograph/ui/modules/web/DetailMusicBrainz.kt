@@ -33,7 +33,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowForward
+import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -383,7 +383,7 @@ fun LinkIconMusicbrainz(target: Target, mbid: String, modifier: Modifier = Modif
     val context = LocalContext.current
     val navigator = LocalPageNavigator.current
     Icon(
-        Icons.Outlined.ArrowForward, stringResource(R.string.search_online),
+        Icons.AutoMirrored.Outlined.ArrowForward, stringResource(R.string.search_online),
         Modifier
             .clickable {
                 jumpMusicbrainz(context, navigator, target, mbid)

@@ -23,7 +23,7 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
@@ -107,7 +107,7 @@ fun NavigateButton(drawerState: DrawerState, navigator: Navigator<Page>) {
         )
     } else {
         Icon(
-            Icons.Default.ArrowBack, null,
+            Icons.AutoMirrored.Default.ArrowBack, null,
             Modifier.clickable {
                 navigator.navigateUp()
             }
