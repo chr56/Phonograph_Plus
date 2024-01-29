@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="disable">wyłącz</string>
+    <string name="disable">Wyłącz</string>
     <string name="choose_at_least_one">Wybierz przynajmniej jeden</string>
     <string name="action_set_as_ringtone">Ustaw jako dzwonek</string>
     <string name="action_share">Udostępnij</string>
@@ -78,7 +78,7 @@
     <string name="light_theme_name">Jasny</string>
     <string name="dark_theme_name">Ciemny</string>
     <string name="black_theme_name">Czarny (AMOLED)</string>
-    <string name="auto_theme_name">Automatyczna</string>
+    <string name="auto_theme_name">Automatyczny</string>
     <string name="always">Zawsze</string>
     <string name="only_on_wifi">Tylko na WiFi</string>
     <string name="never">Nigdy</string>
@@ -103,7 +103,7 @@
     <string name="pref_header_playlists">Lista odtwarzania</string>
     <string name="pref_header_notification">Powiadomienie</string>
     <string name="pref_title_player_style">Styl głównego odtwarzacza</string>
-    <string name="pref_title_navigation_bar">Kolorowy pasek nawigacyjny</string>
+    <string name="pref_title_navigation_bar">Kolorowy pasek nawigacji</string>
     <string name="pref_title_app_shortcuts">Kolorowe skróty aplikacji</string>
     <string name="pref_title_auto_download_metadata">Automatycznie pobieraj dane</string>
     <string name="pref_title_colored_notification">Kolorowy odtwarzacz w pasku powiadomień</string>
@@ -134,13 +134,13 @@
     <string name="playlist_name_empty">Nazwa listy odtwarzania</string>
     <string name="song">Utwór</string>
     <string name="pref_summary_classic_notification">Używaj klasycznego stylu powiadomienia.</string>
-    <string name="pref_summary_colored_notification">Odtwarzacz w pasku powiadomie\u0144 ma tonacj\u0119 ok\u0142adki albumu</string>
-    <string name="pref_summary_gapless_playback">Na niektórych urządzeniach mogą wystąpić problemy z odtwarzaniem</string>
-    <string name="pref_summary_colored_navigation_bar">Kolory paska nawigacyjnego będą odpowiadały kolorowi podstawowemu</string>
-    <string name="pref_summary_colored_app_shortcuts">Kolory skrótów aplikacji w kolorze podstawowym</string>
+    <string name="pref_summary_colored_notification">Odtwarzacz w pasku powiadomie\u0144 ma tonacj\u0119 ok\u0142adki albumu.</string>
+    <string name="pref_summary_gapless_playback">Na niektórych urządzeniach mogą wystąpić problemy z odtwarzaniem.</string>
+    <string name="pref_summary_colored_navigation_bar">Kolory paska nawigacyjnego będą odpowiadały kolorowi podstawowemu.</string>
+    <string name="pref_summary_colored_app_shortcuts">Kolory skrótów aplikacji w kolorze podstawowym.</string>
     <string name="pref_summary_audio_ducking">Notyfikacje, nawigacja, itp.</string>
     <string name="pref_summary_synchronized_lyrics_show">Obecnie wspierane są tylko napisy w formacie LRC oraz te osadzone w osobnym pliku.</string>
-    <string name="pref_summary_remember_last_tab">Idź do ostatniej otwartej zakładki przy starcie</string>
+    <string name="pref_summary_remember_last_tab">Idź do ostatniej otwartej zakładki przy starcie.</string>
     <string name="search_hint">Szukaj w bibliotece...</string>
     <string name="favorites">Ulubione</string>
     <string name="last_added">Ostatnio dodane</string>
@@ -203,7 +203,7 @@
     <string name="device_info">Informacje o urządzeniu</string>
     <string name="bug_report_manual">Wyślij ręcznie</string>
     <string name="copied_device_info_to_clipboard">Kopiowanie informacji o urządzeniu do schowka</string>
-    <string name="you_will_be_forwarded_to_the_issue_tracker_website">Zostaniesz przekierowany do strony umożliwiającej śledzenie błędów</string>
+    <string name="you_will_be_forwarded_to_the_issue_tracker_website">Nastąpi przekierowanie do strony umożliwiającej śledzenie błędów</string>
     <string name="app_shortcut_shuffle_all_short">Losowo</string>
     <string name="app_shortcut_top_tracks_short">Najlepsze utwory</string>
     <string name="app_shortcut_last_added_short">Ostatnio dodane</string>
@@ -216,7 +216,7 @@
     <string name="reset_artist_image">Wyczyść obraz artysty</string>
     <string name="set_artist_image">Zaktualizuj zdjęcie wykonawcy</string>
     <string name="library_categories">Kategorie biblioteki</string>
-    <string name="pref_summary_library_categories">Ustawia widoczność i kolejność kategorii biblioteki</string>
+    <string name="pref_summary_library_categories">Ustawia widoczność i kolejność kategorii biblioteki.</string>
     <string name="you_have_to_select_at_least_one_category">Musisz wybrać co najmniej jedną kategorię</string>
     <string name="action_scan_directory">Skanuj ścieżkę</string>
     <string name="scan_media">Skanuj media</string>
@@ -258,7 +258,7 @@
     <string name="ignore_once">Ignoruj ten</string>
     <string name="upgrade_ignored">Aktualizacja została zignorowana.</string>
     <string name="tg_channel">Kanał Telegram</string>
-    <string name="auto_check_upgrade">Sprawdź aktualizację automatycznie</string>
+    <string name="auto_check_upgrade">Sprawdzaj dostępne aktualizacje automatycznie</string>
     <string name="auto_check_upgrade_summary">Wyświetlaj powiadomienie jeśli dostępna jest nowsza wersja.</string>
     <string name="auto_check_upgrade_extra_description">Aplikacja sprawdzałaby nowsze wersje z publicznego zasobu statycznego w repozytorium GitHub i innych witrynach lustrzanych.</string>
     <string name="edit">Edytuj…</string>
@@ -268,7 +268,7 @@
     <string name="move_down">Przesuń w dół</string>
     <string name="refresh">Odśwież</string>
     <string name="pref_title_send_lyrics">Prześlij zsynchronizowane teksty</string>
-    <string name="pref_summary_send_lyrics">Przesyłaj zsynchronizowane teksty piosenek do modułu Xposed \"StatusBar Lyrics\"</string>
+    <string name="pref_summary_send_lyrics">Przesyłaj zsynchronizowane teksty piosenek do modułu Xposed \"StatusBar Lyrics\".</string>
     <string name="pref_title_broadcast_current_player_state">Udostępniaj publicznie bieżący status odtwarzacza</string>
     <string name="pref_summary_broadcast_current_player_state">Udostępniaj publicznie bieżący status innym aplikacjom np. Musixmatch.</string>
     <string name="pref_title_display_lyrics_time_axis">Wyświetlaj oś czasu tekstów</string>
@@ -293,7 +293,7 @@
     <string name="misc">Różne</string>
     <string name="comment">Komentarz</string>
     <string name="pref_title_use_legacy_detail_dialog">Używaj starszego okna dialogowego szczegółów</string>
-    <string name="pref_summary_use_legacy_detail_dialog">Używaj starszego okna dialogowego szczegółów utworu zamiast strony</string>
+    <string name="pref_summary_use_legacy_detail_dialog">Używaj starszego okna dialogowego szczegółów utworu zamiast strony.</string>
     <string name="composer">Twórca</string>
     <string name="lyricist">Autor tekstu utworu</string>
     <string name="music_tags">Znaczniki muzyczne</string>
@@ -396,7 +396,7 @@
     <string name="pref_summary_path_filter_excluded_mode">Zawartość wykluczonych folderów jest ukryta w bibliotece.</string>
     <string name="pref_summary_path_filter_included_mode">W bibliotece wyświetlana jest tylko zawartość z uwzględnionych folderów.</string>
     <string name="pref_title_load_lyrics">Wczytaj teksty</string>
-    <string name="pref_summary_load_lyrics">Ogólny przełącznik tekstów, wyłącz, aby wyłączyć funkcję wszystkich tekstów</string>
+    <string name="pref_summary_load_lyrics">Ogólny przełącznik tekstów, wyłącz, aby wyłączyć funkcję wszystkich tekstów.</string>
     <string name="mode_song_play_next">Odtwórz następny utwór</string>
     <string name="mode_song_play_now">Odtwórz utwór teraz (u góry)</string>
     <string name="mode_song_append_queue">Dodaj utwór do kolejki odtwarzania</string>
@@ -424,7 +424,7 @@
     <string name="permission_name_read_media_audio">Odczytuj muzykę i dźwięk</string>
     <string name="permission_desc_read_media_audio">Od Androida T (13) aplikacja z tym uprawnieniem może odczytywać pliki audio z urządzenia.</string>
     <string name="permission_name_read_external_storage">Odczyt pamięci zewnętrznej</string>
-    <string name="permission_desc_read_external_storage">Uprawnienie odczytu pamięci wewnętrznej jest wymagane do odczytu pliku muzycznego w urządzeniu.</string>
+    <string name="permission_desc_read_external_storage">Uprawnienie odczytu pamięci zewnętrznej jest wymagane do odczytu pliku muzycznego w urządzeniu.</string>
     <string name="completed">Zakończono</string>
     <string name="dynamic_colors">Kolory dynamiczne</string>
     <string name="pref_title_enable_monet">Włącz Monet</string>
