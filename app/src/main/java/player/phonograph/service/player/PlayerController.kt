@@ -359,11 +359,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
             if (force) {
                 queueManager.nextLoopPosition
             } else {
-                if (!queueManager.isLastTrack()) {
-                    queueManager.nextSongPosition
-                } else {
-                    -1
-                }
+                queueManager.nextSongPosition
             }
         if (position >= 0) {
             playAtImp(position)
