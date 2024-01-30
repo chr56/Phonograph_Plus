@@ -1,0 +1,101 @@
+name: lts_release
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "LTS*"
+
+jobs:
+  build:
+    name: Build & Release LTS
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+          cache: gradle
+
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v2.4.2
+
+      - name: Generate Sign Config
+        env:
+          SECRETS_KEY: ${{ secrets.KEY }}
+          SECRETS_STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          SECRETS_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          SECRETS_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEYSTORE_FILE: ${{ github.workspace }}/key.jdk
+          CONFIG_FILE: ${{ github.workspace }}/signing.properties
+        run: |
+          bash ${{ github.workspace }}/scripts/generate_signing_key.sh
+
+      - name: Prepare Gradlew
+        # just download gradle wrapper, start gradle daemon and prepare composing builds, make actual build logs clean
+        run: |
+          ./gradlew
+
+      - name: Build with Gradle (Assemble StableRelease)
+        run: |
+          ./gradlew assembleStableRelease --stacktrace
+
+      - name: Collect Files
+        run: |
+          # collect files
+          mkdir products
+          ./gradlew PublishStableRelease --stacktrace
+          tree -aF ./products
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: lts_release
+          path: products/StableRelease/*.apk
+          retention-days: 30
+
+      - name: Upload mapping.txt
+        uses: actions/upload-artifact@v3
+        with:
+          name: mapping
+          path: products/StableRelease/PhonographPlus*.txt.gz
+
+      - name: Release New Version
+        uses: softprops/action-gh-release@v1
+        id: release_github
+        with:
+          name: "${{ github.ref_name }}"
+          files: |
+            products/StableRelease/PhonographPlus_*.apk
+            products/StableRelease/PhonographPlus*.txt.gz
+          prerelease: false
+          draft: true
+          tag_name: ${{ github.ref }}
+          body: LTS Release - ${{ github.ref }}
+          body_path: ${{ github.workspace }}/GitHubReleaseNote.md
+          token: ${{ secrets.TOKEN }}
+
+#      - name: Upload to Channel
+#        env:
+#          REPO_ROOT: ${{ github.workspace }}
+#          GIT_REF_NAME: ${{ github.ref_name }}
+#          GIT_COMMIT_SHA: ${{ github.sha }}
+#          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+#          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+#        run: |
+#          # generate changelog
+#          ./gradlew tools:changelog-generator:GenerateEncodedUrl
+#          # upload
+#           bash ${{ github.workspace }}/scripts/upload_apk_with_changelog.sh
+
+      - name: Cleanup
+        run: |
+          rm -r -v ./products/StableRelease
