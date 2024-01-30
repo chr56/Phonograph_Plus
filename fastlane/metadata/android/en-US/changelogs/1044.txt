@@ -1,0 +1,6 @@
+<b>1.4.4(1044) 2024.01.30</b>
+- Fix: problems when opening and playing audio files in physical external SD card from some file managers
+- Fix: abnormally pause when skipping final song from playback notification or connected Bluetooth devices etc., even if in Queue Repeat mode
+- Fix: crash when reordering in Playing Queue on some rare circumstances
+- Fix: some glitch when playing from outside if playing queue is empty
+...(Visit project homepage to see full changelogs)
