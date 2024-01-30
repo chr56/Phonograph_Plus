@@ -31,7 +31,7 @@ fun swapQueue(queueHolder: QueueHolder, newQueue: List<Song>, newPosition: Int) 
 
 fun addSong(queueHolder: QueueHolder, song: Song, position: Int = -1) {
     queueHolder.modifyQueue { _playingQueue, _originalPlayingQueue ->
-        if (position < 0) {
+        if (position < 0 || position >= _playingQueue.size || position >= _originalPlayingQueue.size) {
             _playingQueue.add(song)
             _originalPlayingQueue.add(song)
         } else {
@@ -43,7 +43,7 @@ fun addSong(queueHolder: QueueHolder, song: Song, position: Int = -1) {
 
 fun addSongs(queueHolder: QueueHolder, songs: List<Song>, position: Int = -1) {
     queueHolder.modifyQueue { _playingQueue, _originalPlayingQueue ->
-        if (position < 0) {
+        if (position < 0 || position >= _playingQueue.size || position >= _originalPlayingQueue.size) {
             _playingQueue.addAll(songs)
             _originalPlayingQueue.addAll(songs)
         } else {
