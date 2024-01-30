@@ -69,6 +69,9 @@
     <string name="save_playlists_title">Als Dateien speichern</string>
     <string name="add_playlist_title">Zu Wiedergabeliste hinzufügen</string>
     <string name="select_all_title">Alles auswählen</string>
+    <string name="unselect_all_title">Auswahl aufheben</string>
+    <string name="invert_selection">Auswahl invertieren</string>
+    <string name="action_play_all">Alle wiedergeben</string>
     <string name="action_shuffle_all">Zufällige Wiedergabe</string>
     <string name="action_shuffle_album">Album zufällig wiedergeben</string>
     <string name="action_shuffle_artist">Interpret zufällig wiedergeben</string>
@@ -425,4 +428,6 @@
     <string name="action_speed">Geschwindigkeit</string>
     <string name="pref_title_resume_after_audio_focus_gain">Wiedergabe nach Unterbrechungen automatisch fortsetzen</string>
     <string name="pref_summary_resume_after_audio_focus_gain">Wiedergabe nach Unterbrechungen immer fortsetzen (bspw. Anruf oder Alarm).</string>
+    <string name="tag_format">Tag-Format</string>
+    <string name="pref_title_check_upgrade_interval">Intervall der Aktualisierungsprüfung</string>
 </resources>
