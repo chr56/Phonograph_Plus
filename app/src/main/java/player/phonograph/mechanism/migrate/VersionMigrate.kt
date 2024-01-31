@@ -22,6 +22,7 @@ fun migrate(context: Context, from: Int, to: Int) {
         in 1 until 313   -> {
             throw IllegalStateException("You are upgrading from a very old version (version $from)! Please Wipe app data!")
         }
+
         in 313 until 611 -> {
             reportError(
                 IllegalStateException(), TAG,
@@ -35,6 +36,7 @@ fun migrate(context: Context, from: Int, to: Int) {
 
         MigrateOperator(context, from, to).apply {
             migrate(QueuePreferenceMigration())
+            migrate(LegacyClickPreferencesMigration())
             migrate(PagesMigration())
             migrate(LockScreenCoverMigration())
         }
@@ -115,6 +117,13 @@ private class QueuePreferenceMigration : Migration(introduced = 460, deprecated 
     }
 }
 
+private class LegacyClickPreferencesMigration : Migration(introduced = 402) {
+    override fun doMigrate(context: Context) {
+        removePreference(context, keyName = DeprecatedPreference.LegacyClickPreference.REMEMBER_SHUFFLE)
+        removePreference(context, keyName = DeprecatedPreference.LegacyClickPreference.KEEP_PLAYING_QUEUE_INTACT)
+    }
+}
+
 private class PagesMigration : Migration(introduced = 460) {
     override fun doMigrate(context: Context) {
         HomeTabConfig.append(Pages.FOLDER)
@@ -169,6 +178,12 @@ object DeprecatedPreference {
         const val ALBUM_SONG_SORT_ORDER = "album_song_sort_order"
         const val SONG_SORT_ORDER = "song_sort_order"
         const val GENRE_SORT_ORDER = "genre_sort_order"
+    }
+
+    // "removed since version code 402"
+    object LegacyClickPreference {
+        const val REMEMBER_SHUFFLE = "remember_shuffle"
+        const val KEEP_PLAYING_QUEUE_INTACT = "keep_playing_queue_intact"
     }
 
     // "move to a separate preference since 460"
