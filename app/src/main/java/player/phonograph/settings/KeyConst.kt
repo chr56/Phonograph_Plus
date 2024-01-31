@@ -122,7 +122,6 @@ const val DOWNLOAD_IMAGES_POLICY_NEVER = "never"
 const val INITIALIZED_BLACKLIST = "initialized_blacklist"
 const val PREVIOUS_VERSION = "last_changelog_version"
 const val FORCE_SQUARE_ALBUM_COVER = "force_square_album_art"
-const val LAST_MUSIC_CHOOSER = "last_music_chooser"
 const val IGNORE_UPGRADE_VERSION_CODE = "ignore_upgrade_version_code"
 const val IGNORE_MEDIA_STORE_ARTWORK = "ignore_media_store_artwork"
 //endregion

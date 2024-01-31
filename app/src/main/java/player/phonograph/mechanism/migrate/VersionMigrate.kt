@@ -180,6 +180,11 @@ object DeprecatedPreference {
         const val GENRE_SORT_ORDER = "genre_sort_order"
     }
 
+    // "removed since version code 262"
+    object MusicChooserPreference {
+        const val LAST_MUSIC_CHOOSER = "last_music_chooser"
+    }
+
     // "removed since version code 402"
     object LegacyClickPreference {
         const val REMEMBER_SHUFFLE = "remember_shuffle"
