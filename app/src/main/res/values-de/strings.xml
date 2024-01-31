@@ -430,4 +430,13 @@
     <string name="pref_summary_resume_after_audio_focus_gain">Wiedergabe nach Unterbrechungen immer fortsetzen (bspw. Anruf oder Alarm).</string>
     <string name="tag_format">Tag-Format</string>
     <string name="pref_title_check_upgrade_interval">Intervall der Aktualisierungsprüfung</string>
+    <string name="timeunit_second">Sekunde</string>
+    <string name="timeunit_minute">Minute</string>
+    <string name="timeunit_hour">Stunde</string>
+    <string name="timeunit_day">Tag</string>
+    <string name="timeunit_week">Woche</string>
+    <string name="timeunit_month">Monat</string>
+    <string name="timeunit_year">Jahr</string>
+    <string name="time_interval_text">%1$s %2$d %3$s</string>
+    <string name="preview_text_next_upgrade_check">Die nächste Aktualisierungsüberprüfung  erfolgt nach: \n %1$s \n(%2$s)</string>
 </resources>
