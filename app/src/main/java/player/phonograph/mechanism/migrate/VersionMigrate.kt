@@ -39,6 +39,7 @@ fun migrate(context: Context, from: Int, to: Int) {
             migrate(LegacyClickPreferencesMigration())
             migrate(PagesMigration())
             migrate(LockScreenCoverMigration())
+            migrate(AutoDownloadMetadataMigration())
         }
 
         Log.i(TAG, "End Migration")
@@ -137,6 +138,12 @@ private class LockScreenCoverMigration : Migration(introduced = 522, deprecated 
     }
 }
 
+private class AutoDownloadMetadataMigration : Migration(introduced = 1011) {
+    override fun doMigrate(context: Context) {
+        removePreference(context, keyName = DeprecatedPreference.AutoDownloadMetadata.AUTO_DOWNLOAD_IMAGES_POLICY)
+    }
+}
+
 private fun moveIntPreference(
     oldPreference: SharedPreferences,
     oldKeyName: String,
@@ -203,5 +210,14 @@ object DeprecatedPreference {
     object LockScreenCover {
         const val ALBUM_ART_ON_LOCKSCREEN = "album_art_on_lockscreen"
         const val BLURRED_ALBUM_ART = "blurred_album_art"
+    }
+
+
+    // "removed Auto Download Metadata from last.fm since version code 1011"
+    object AutoDownloadMetadata {
+        const val AUTO_DOWNLOAD_IMAGES_POLICY = "auto_download_images_policy"
+        const val DOWNLOAD_IMAGES_POLICY_ALWAYS = "always"
+        const val DOWNLOAD_IMAGES_POLICY_ONLY_WIFI = "only_wifi"
+        const val DOWNLOAD_IMAGES_POLICY_NEVER = "never"
     }
 }
