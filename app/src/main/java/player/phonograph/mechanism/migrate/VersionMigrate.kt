@@ -40,6 +40,7 @@ fun migrate(context: Context, from: Int, to: Int) {
             migrate(PagesMigration())
             migrate(LockScreenCoverMigration())
             migrate(AutoDownloadMetadataMigration())
+            migrate(LegacyLastAddedCutoffIntervalMigration())
         }
 
         Log.i(TAG, "End Migration")
@@ -144,6 +145,12 @@ private class AutoDownloadMetadataMigration : Migration(introduced = 1011) {
     }
 }
 
+private class LegacyLastAddedCutoffIntervalMigration : Migration(introduced = 1011) {
+    override fun doMigrate(context: Context) {
+        removePreference(context, keyName = DeprecatedPreference.LegacyLastAddedCutoffInterval.LEGACY_LAST_ADDED_CUTOFF)
+    }
+}
+
 private fun moveIntPreference(
     oldPreference: SharedPreferences,
     oldKeyName: String,
@@ -219,5 +226,18 @@ object DeprecatedPreference {
         const val DOWNLOAD_IMAGES_POLICY_ALWAYS = "always"
         const val DOWNLOAD_IMAGES_POLICY_ONLY_WIFI = "only_wifi"
         const val DOWNLOAD_IMAGES_POLICY_NEVER = "never"
+    }
+
+    // "replaced with the flexible one since version code 1011"
+    object LegacyLastAddedCutoffInterval {
+        const val LEGACY_LAST_ADDED_CUTOFF = "last_added_interval"
+        const val INTERVAL_TODAY = "today"
+        const val INTERVAL_PAST_SEVEN_DAYS = "past_seven_days"
+        const val INTERVAL_PAST_FOURTEEN_DAYS = "past_fourteen_days"
+        const val INTERVAL_PAST_ONE_MONTH = "past_one_month"
+        const val INTERVAL_PAST_THREE_MONTHS = "past_three_months"
+        const val INTERVAL_THIS_WEEK = "this_week"
+        const val INTERVAL_THIS_MONTH = "this_month"
+        const val INTERVAL_THIS_YEAR = "this_year"
     }
 }

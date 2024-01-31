@@ -106,15 +106,6 @@ const val DISABLE_REAL_TIME_SEARCH = "disable_real_time_search"
 
 // unused & deprecated
 
-const val LEGACY_LAST_ADDED_CUTOFF = "last_added_interval"
-const val INTERVAL_TODAY = "today"
-const val INTERVAL_PAST_SEVEN_DAYS = "past_seven_days"
-const val INTERVAL_PAST_FOURTEEN_DAYS = "past_fourteen_days"
-const val INTERVAL_PAST_ONE_MONTH = "past_one_month"
-const val INTERVAL_PAST_THREE_MONTHS = "past_three_months"
-const val INTERVAL_THIS_WEEK = "this_week"
-const val INTERVAL_THIS_MONTH = "this_month"
-const val INTERVAL_THIS_YEAR = "this_year"
 const val INITIALIZED_BLACKLIST = "initialized_blacklist"
 const val PREVIOUS_VERSION = "last_changelog_version"
 const val FORCE_SQUARE_ALBUM_COVER = "force_square_album_art"
