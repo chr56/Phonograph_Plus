@@ -17,7 +17,6 @@ const val FIXED_TAB_LAYOUT = "fixed_tab_layout"
 // Behavior-Retention
 const val REMEMBER_LAST_TAB = "remember_last_tab"
 const val LAST_PAGE = "last_start_page"
-const val LAST_MUSIC_CHOOSER = "last_music_chooser"
 const val NOW_PLAYING_SCREEN_ID = "now_playing_screen_id"
 
 // Database
@@ -29,8 +28,6 @@ const val IMAGE_SOURCE_CONFIG = "image_source_config"
 // Behavior-Playing
 const val SONG_ITEM_CLICK_MODE = "song_item_click_extra_flag"
 const val SONG_ITEM_CLICK_EXTRA_FLAG = "song_item_click_extra_mode"
-const val KEEP_PLAYING_QUEUE_INTACT = "keep_playing_queue_intact"
-const val REMEMBER_SHUFFLE = "remember_shuffle"
 const val AUDIO_DUCKING = "audio_ducking"
 const val RESUME_AFTER_AUDIO_FOCUS_GAIN = "resume_after_audio_focus_gain"
 const val GAPLESS_PLAYBACK = "gapless_playback"
@@ -125,6 +122,9 @@ const val DOWNLOAD_IMAGES_POLICY_NEVER = "never"
 const val INITIALIZED_BLACKLIST = "initialized_blacklist"
 const val PREVIOUS_VERSION = "last_changelog_version"
 const val FORCE_SQUARE_ALBUM_COVER = "force_square_album_art"
+const val LAST_MUSIC_CHOOSER = "last_music_chooser"
+const val KEEP_PLAYING_QUEUE_INTACT = "keep_playing_queue_intact"
+const val REMEMBER_SHUFFLE = "remember_shuffle"
 const val IGNORE_UPGRADE_VERSION_CODE = "ignore_upgrade_version_code"
 const val IGNORE_MEDIA_STORE_ARTWORK = "ignore_media_store_artwork"
 //endregion

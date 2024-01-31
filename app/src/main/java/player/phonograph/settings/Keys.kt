@@ -44,9 +44,6 @@ object Keys {
     data object lastPage :
             PrimitiveKey<Int>(intPK(LAST_PAGE), { 0 })
 
-    data object lastMusicChooser :
-            PrimitiveKey<Int>(intPK(LAST_MUSIC_CHOOSER), { 0 })
-
     data object nowPlayingScreenIndex :
             PrimitiveKey<Int>(intPK(NOW_PLAYING_SCREEN_ID), { 0 })
 
@@ -65,12 +62,6 @@ object Keys {
 
     data object songItemClickExtraFlag :
             PrimitiveKey<Int>(intPK(SONG_ITEM_CLICK_EXTRA_FLAG), { SongClickMode.FLAG_MASK_PLAY_QUEUE_IF_EMPTY })
-
-    data object keepPlayingQueueIntact :
-            PrimitiveKey<Boolean>(booleanPK(KEEP_PLAYING_QUEUE_INTACT), { true })
-
-    data object rememberShuffle :
-            PrimitiveKey<Boolean>(booleanPK(REMEMBER_SHUFFLE), { true })
 
     data object gaplessPlayback :
             PrimitiveKey<Boolean>(booleanPK(GAPLESS_PLAYBACK), { false })
