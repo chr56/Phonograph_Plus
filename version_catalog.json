@@ -1,35 +1,19 @@
 {
   "versions": [
     {
-      "channel": "preview",
-      "versionName": "1.4.4-dev2",
-      "versionCode": 1043,
-      "date": 1706453000,
+      "channel": "stable",
+      "versionName": "1.4.4",
+      "versionCode": 1044,
+      "date": 1706587600,
       "link": [
         {
           "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.4.4-dev2"
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.4.4"
         }
       ],
       "releaseNote": {
-        "zh-cn": "<ol><li>新增 预加载图像，以避免在某些情况下滚动时卡顿</li><li>修复 在播放队列为空的情况下，从外部播放时的异样</li><li>翻译 更新波兰语(cookie)，巴西葡萄牙语 (EddieMattos)</li><li>开发 更新 AGP 至 8.2.2，更新 kotlin 至 1.9.22，更新依赖</li></ol>",
-        "en": "<ol><li>New: preload images to avoid lags when scroll in some circumstance</li><li>Fix: some glitch when playing from outside if playing queue is empty</li><li>Translation: update Polish (by cooky), Portuguese, Brazilian (by EddieMattos)</li><li>Development: upgrade AGP to 8.2.2, upgrade kotlin to 1.9.22, update dependencies</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.4.4-dev1",
-      "versionCode": 1043,
-      "date": 1706173000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.4.4-dev1"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 从部分文件管理器中，无法打开播放位于外部(物理) SD 卡中的音频文件</li><li>修复 从播放通知或蓝牙设备等中跳过最后一首歌曲时也会异常暂停，即便在队列重复模式下</li><li>修复 在某些罕见情况下，对播放队列重新排序时崩溃</li><li>改进 LRC歌词检测与歌词显示</li><li>改进 使用LyricsGetterAPi v6</li><li>翻译 更新波兰语(cookie)</li><li>开发 更新依赖，清理代码</li></ol>",
-        "en": "<ol><li>Fix: problems when opening and playing audio files in physical external SD card from some file managers</li><li>Fix: abnormally pause when skipping final song from playback notification or connected Bluetooth devices etc., even if in Queue Repeat mode</li><li>Fix: crash when reordering in Playing Queue on some rare circumstances</li><li>Improve: LRC lyrics detections and lyrics display</li><li>Improve: use LyricsGetterAPi v6</li><li>Translation: update Polish (by cooky)</li><li>Development: update dependencies and cleanup code</li></ol>"
+        "zh-cn": "<ol><li>修复 从部分文件管理器中，无法打开播放位于外部(物理) SD 卡中的音频文件</li><li>修复 从播放通知或蓝牙设备等中跳过最后一首歌曲时也会异常暂停，即便在队列重复模式下</li><li>修复 在某些罕见情况下，对播放队列重新排序时崩溃</li><li>修复 在播放队列为空的情况下，从外部播放时的异样</li><li>新增 预加载图像，以避免在某些情况下滚动时卡顿</li><li>改进 LRC 歌词检测与歌词显示</li><li>改进 使用 LyricsGetterAPi v6</li><li>翻译 更新波兰语(cookie)，巴西葡萄牙语 (EddieMattos)</li><li>开发 更新 AGP 至 8.2.2，更新 kotlin 至 1.9.22，更新依赖</li></ol>",
+        "en": "<ol><li>Fix: problems when opening and playing audio files in physical external SD card from some file managers</li><li>Fix: abnormally pause when skipping final song from playback notification or connected Bluetooth devices etc., even if in Queue Repeat mode</li><li>Fix: crash when reordering in Playing Queue on some rare circumstances</li><li>Fix: some glitch when playing from outside if playing queue is empty</li><li>New: preload images to avoid lags when scroll in some circumstance</li><li>Improve: LRC lyrics detections and lyrics display</li><li>Improve: use LyricsGetterAPi v6</li><li>Translation: update Polish (by cooky), Portuguese Brazilian (by EddieMattos)</li><li>Development: upgrade AGP to 8.2.2, upgrade kotlin to 1.9.22, update dependencies</li></ol>"
       }
     },
     {
@@ -50,18 +34,18 @@
     },
     {
       "channel": "lts",
-      "versionName": "0.7.2.3",
-      "versionCode": 623,
-      "date": 1691486000,
+      "versionName": "0.7.2.4",
+      "versionCode": 624,
+      "date": 1706583000,
       "link": [
         {
           "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.7.2.3"
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.7.2.4"
         }
       ],
       "releaseNote": {
-        "zh-cn": "<ol><li>修复 从外部（如文件浏览器）播放被屏蔽的文件时崩溃</li><li>改进 当前播放队列中的长文本显示</li></ol>",
-        "en": "<ol><li>Fix: crashes when playing a blocked file from the external (e.g. file explorer)</li><li>Improve: long texts display in Playing Queue</li></ol>"
+        "zh-cn": "<ol><li>修复 部分旧设备上无法在显示任何图像</li><li>修复 从部分文件管理器中，无法打开播放位于外部(物理) SD 卡中的音频文件</li><li>修复 使用单曲重复且队列仅有一首歌曲时在切歌时卡死(然后崩溃)</li><li>修复 处在队列两端时切换时误报错</li><li>修复 使用队列重复时偶尔会出现不正确的上一首歌曲</li><li>翻译 土耳其语 (TolDYuThad 和 volkspolizist), 俄语 (Evgeniy Khramov), 葡萄牙语、巴西语 (EddieMattos), 西班牙语 (Leonardo Albarracín 和 guwsvnd5t), 阿拉伯语 (Yrando), 芬兰语(Latzze), 波兰语(cookies), </li></ol>",
+        "en": "<ol><li>Fix: images can not be shown on some older devices</li><li>Fix: problems when opening and playing audio files in physical external SD cards from some file managers</li><li>Fix: frozen (and then crash) when skipping to previous or next if repeat mode is single-repeated and queue has only one song</li><li>Fix: reporting error at two ends of queue when skipping to previous or next</li><li>Fix: rarely incorrect previous song when skipping to previous if repeat mode is queue-repeated</li><li>Translation: update Turkish (by TolDYuThad and volkspolizist), Russian (by Evgeniy Khramov), Portuguese, Brazilian (by EddieMattos), Spanish (by Leonardo Albarracín and guwsvnd5t), Arabic (by Yrando), Finnish (by Latzze) Polish (by cooky)</li></ol>"
       }
     }
   ]
