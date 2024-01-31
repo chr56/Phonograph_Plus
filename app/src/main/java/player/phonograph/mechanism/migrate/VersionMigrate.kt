@@ -8,13 +8,22 @@ import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.model.pages.Pages
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.settings.PrerequisiteSetting
+import player.phonograph.settings.dataStore
 import player.phonograph.util.debug
 import player.phonograph.util.reportError
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.preference.PreferenceManager
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 fun migrate(context: Context, from: Int, to: Int) {
 
@@ -22,6 +31,7 @@ fun migrate(context: Context, from: Int, to: Int) {
         in 1 until 313   -> {
             throw IllegalStateException("You are upgrading from a very old version (version $from)! Please Wipe app data!")
         }
+
         in 313 until 611 -> {
             reportError(
                 IllegalStateException(), TAG,
@@ -35,8 +45,11 @@ fun migrate(context: Context, from: Int, to: Int) {
 
         MigrateOperator(context, from, to).apply {
             migrate(QueuePreferenceMigration())
+            migrate(LegacyClickPreferencesMigration())
             migrate(PagesMigration())
             migrate(LockScreenCoverMigration())
+            migrate(AutoDownloadMetadataMigration())
+            migrate(LegacyLastAddedCutoffIntervalMigration())
         }
 
         Log.i(TAG, "End Migration")
@@ -66,7 +79,7 @@ private abstract class Migration(
      * check condition of migrate
      */
     fun check(from: Int, to: Int): Boolean {
-        return from <= to && introduced in from + 1..to
+        return from <= to && from != -1 && introduced in from + 1..to
     }
 
     fun tryMigrate(context: Context, from: Int, to: Int) {
@@ -115,6 +128,13 @@ private class QueuePreferenceMigration : Migration(introduced = 460, deprecated 
     }
 }
 
+private class LegacyClickPreferencesMigration : Migration(introduced = 402) {
+    override fun doMigrate(context: Context) {
+        removePreference(context, keyName = DeprecatedPreference.LegacyClickPreference.REMEMBER_SHUFFLE)
+        removePreference(context, keyName = DeprecatedPreference.LegacyClickPreference.KEEP_PLAYING_QUEUE_INTACT)
+    }
+}
+
 private class PagesMigration : Migration(introduced = 460) {
     override fun doMigrate(context: Context) {
         HomeTabConfig.append(Pages.FOLDER)
@@ -125,6 +145,18 @@ private class LockScreenCoverMigration : Migration(introduced = 522, deprecated 
     override fun doMigrate(context: Context) {
         removePreference(context, keyName = DeprecatedPreference.LockScreenCover.ALBUM_ART_ON_LOCKSCREEN)
         removePreference(context, keyName = DeprecatedPreference.LockScreenCover.BLURRED_ALBUM_ART)
+    }
+}
+
+private class AutoDownloadMetadataMigration : Migration(introduced = 1011) {
+    override fun doMigrate(context: Context) {
+        removePreference(context, keyName = DeprecatedPreference.AutoDownloadMetadata.AUTO_DOWNLOAD_IMAGES_POLICY)
+    }
+}
+
+private class LegacyLastAddedCutoffIntervalMigration : Migration(introduced = 1011) {
+    override fun doMigrate(context: Context) {
+        removePreference(context, keyName = DeprecatedPreference.LegacyLastAddedCutoffInterval.LEGACY_LAST_ADDED_CUTOFF)
     }
 }
 
@@ -146,13 +178,46 @@ private fun moveIntPreference(
 
 
 private fun removePreference(context: Context, keyName: String) {
+    var type: Int = -1
+    var exception: Exception? = null
+    try {
+        CoroutineScope(SupervisorJob()).launch {
+            context.dataStore.edit {
+                val booleanKey = booleanPreferencesKey(keyName)
+                val stringKey = stringPreferencesKey(keyName)
+                val intKey = intPreferencesKey(keyName)
+                val longKey = intPreferencesKey(keyName)
+                val keys: List<Preferences.Key<*>> = listOf(booleanKey, stringKey, intKey, longKey)
+                for (key in keys) {
+                    if (it.contains(key)) {
+                        it.remove(key)
+                        break
+                    }
+                }
+            }
+        }
+    } catch (e: Exception) {
+        exception = e
+        type = DATASTORE
+    }
     try {
         val pref = PreferenceManager.getDefaultSharedPreferences(context)
         pref.edit().remove(keyName).apply()
     } catch (e: Exception) {
-        reportError(e, TAG, " failed: removing old Preference item `$keyName`")
+        exception = e
+        type = PREFERENCE
+    }
+    if (exception != null) {
+        reportError(
+            exception,
+            TAG,
+            "Failed to remove legacy preference item `$keyName` via ${if (type == DATASTORE) "datastore" else "preference"}"
+        )
     }
 }
+
+private const val PREFERENCE = 1
+private const val DATASTORE = 2
 
 private const val TAG = "VersionMigrate"
 
@@ -171,6 +236,17 @@ object DeprecatedPreference {
         const val GENRE_SORT_ORDER = "genre_sort_order"
     }
 
+    // "removed since version code 262"
+    object MusicChooserPreference {
+        const val LAST_MUSIC_CHOOSER = "last_music_chooser"
+    }
+
+    // "removed since version code 402"
+    object LegacyClickPreference {
+        const val REMEMBER_SHUFFLE = "remember_shuffle"
+        const val KEEP_PLAYING_QUEUE_INTACT = "keep_playing_queue_intact"
+    }
+
     // "move to a separate preference since 460"
     object QueueCfg {
         const val PREF_POSITION = "POSITION"
@@ -183,5 +259,27 @@ object DeprecatedPreference {
     object LockScreenCover {
         const val ALBUM_ART_ON_LOCKSCREEN = "album_art_on_lockscreen"
         const val BLURRED_ALBUM_ART = "blurred_album_art"
+    }
+
+
+    // "removed Auto Download Metadata from last.fm since version code 1011"
+    object AutoDownloadMetadata {
+        const val AUTO_DOWNLOAD_IMAGES_POLICY = "auto_download_images_policy"
+        const val DOWNLOAD_IMAGES_POLICY_ALWAYS = "always"
+        const val DOWNLOAD_IMAGES_POLICY_ONLY_WIFI = "only_wifi"
+        const val DOWNLOAD_IMAGES_POLICY_NEVER = "never"
+    }
+
+    // "replaced with the flexible one since version code 1011"
+    object LegacyLastAddedCutoffInterval {
+        const val LEGACY_LAST_ADDED_CUTOFF = "last_added_interval"
+        const val INTERVAL_TODAY = "today"
+        const val INTERVAL_PAST_SEVEN_DAYS = "past_seven_days"
+        const val INTERVAL_PAST_FOURTEEN_DAYS = "past_fourteen_days"
+        const val INTERVAL_PAST_ONE_MONTH = "past_one_month"
+        const val INTERVAL_PAST_THREE_MONTHS = "past_three_months"
+        const val INTERVAL_THIS_WEEK = "this_week"
+        const val INTERVAL_THIS_MONTH = "this_month"
+        const val INTERVAL_THIS_YEAR = "this_year"
     }
 }
