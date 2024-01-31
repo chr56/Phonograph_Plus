@@ -12,6 +12,7 @@ import lib.phonograph.misc.Reboot
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.mechanism.backup.Backup
+import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.util.reportError
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -78,6 +79,7 @@ class BackupImportDialog : DialogFragment() {
                     val result =
                         try {
                             Backup.Import.executeImport(host, sessionId, selected, onUpdateProgress)
+                            PrerequisiteSetting.instance(host).introShown = true // no more intro if imported
                             true
                         } catch (e: Exception) {
                             reportError(e, TAG, host.getString(R.string.failed))
