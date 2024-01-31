@@ -237,6 +237,7 @@
     <string name="dialog_ringtone_title">Zil sesi olarak ayarla</string>
     <string name="dialog_ringtone_message">Phonograph\'ın ses ayarlarını değiştirmesine izin ver</string>
     <string name="perf_title_fixed_tab_layout">Bütün sekmeleri sabitle</string>
+    <string name="pref_summary_fixed_tab_layout">Yukarıdaki sekmeler kaydırılabilir olmayacak, ancak boşluk olmadan bölünebilecekler.</string>
     <string name="auto_mode_on">Otomatik Mod açık, lütfen kapatın ve tekrar deneyin!</string>
     <string name="add_blacklist">Bunu kara listeye eklemek ister misin?</string>
     <string name="minutes_short">%1$d dk</string>
@@ -247,6 +248,7 @@
     <string name="success">Başarılı!</string>
     <string name="failed">Başarısız!</string>
     <string name="clear_all_preference">tüm uygulama ayarlarını temizle</string>
+    <string name="clear_all_preference_msg"><b>Dikkat</b>: bu eylem <b>BÜTÜN</b> uygulama ayarlarını sıfırlayacak! \n\nBu eylem uygulama açılışta çöküyorsa yardımcı olabilir. \nEmin misin?</string>
     <string name="failed_to_delete">Silinemedi</string>
     <string name="grant_permission">İzin Ver</string>
     <string name="retry">Yeniden dene</string>
@@ -262,6 +264,7 @@
     <string name="tg_channel">Telegram Kanalı</string>
     <string name="auto_check_upgrade">Güncellemeyi otomatik kontrol et</string>
     <string name="auto_check_upgrade_summary">Daha yeni bir sürüm mevcutsa anında bir yükseltme iletişim kutusu açılır.</string>
+    <string name="auto_check_upgrade_extra_description">Uygulama yeni versiyonlarını, GitHub Deposundaki açık kaynaklardan ve diğer kaynaklardan kontrol eder.</string>
     <string name="edit">Düzenle…</string>
     <string name="move_to_top">En üste çık</string>
     <string name="move_to_bottom">En aşağıya taşı</string>
@@ -272,6 +275,7 @@
     <string name="pref_summary_send_lyrics">Senkronize şarkı sözlerini  Xposed Module \"StatusBar Lyrics\" \'e yayınla</string>
     <string name="pref_title_broadcast_current_player_state">Anlık oynatıcı durumunu herkese açık şekilde yayınla</string>
     <string name="pref_summary_broadcast_current_player_state">Oynatıcının anlık durumunu Musixmatch gibi uygulamalara yayınla.</string>
+    <string name="pref_title_display_lyrics_time_axis">Şarkı sözü zamanlamasını göster</string>
     <string name="upgrade_notification_name">Yükselt</string>
     <string name="action_add_to_black_list">Kara listeye ekle</string>
     <string name="sort_order_song">Şarkı</string>
@@ -286,7 +290,10 @@
     <string name="are_you_sure">Emin misin?</string>
     <string name="original_author">Orijinal Yazar</string>
     <string name="databases">Veritabanları</string>
+    <string name="change_now_playing_screen">Şimdi Oynatılıyor ekranını değiştir</string>
+    <string name="load_images_for_files">Dosyalar için görsel yükle</string>
     <string name="app_language">Uygulama Dili</string>
+    <string name="_default">Varsayılan</string>
     <plurals name="item_songs">
         <item quantity="one">%1$d Şarkı</item>
         <item quantity="other">%1$d Şarkılar</item>
@@ -294,6 +301,14 @@
     <plurals name="item_files">
         <item quantity="one">%1$d dosya</item>
         <item quantity="other">%1$d dosyalar</item>
+    </plurals>
+    <plurals name="item_albums">
+        <item quantity="one">%1$d Albüm</item>
+        <item quantity="other">%1$d Albüm</item>
+    </plurals>
+    <plurals name="item_artists">
+        <item quantity="one">%1$d Sanatçı</item>
+        <item quantity="other">%1$d Sanatçı</item>
     </plurals>
     <plurals name="item_playlists">
         <item quantity="one">%1$d Çalma Listesi</item>
@@ -303,5 +318,112 @@
         <item quantity="one">%1$d Oluşturulan Çalma Listesi</item>
         <item quantity="other">%1$d Oluşturulan Çalma Listeleri</item>
     </plurals>
+    <plurals name="item_genres">
+        <item quantity="one">%1$d Tür</item>
+        <item quantity="other">%1$d Tür</item>
+    </plurals>
+    <plurals name="msg_header_delete_items">
+        <item quantity="one">%1$d parça silinecek:</item>
+        <item quantity="other">%1$d parça silinecek:</item>
+    </plurals>
+    <plurals name="msg_header_remove_items">
+        <!-- %1$s: where -->
+        <item quantity="one">%1$s parçadan %2$d kadarı kaldırılacak:</item>
+        <item quantity="other">%1$s parçadan %2$d kadarı kaldırılacak:</item>
+    </plurals>
+    <plurals name="msg_deletion_result">
+        <item quantity="one">%1$d / %2$d parça başarıyla kaldırıldı.</item>
+        <item quantity="other">%1$d / %2$d parça başarıyla kaldırıldı.</item>
+    </plurals>
+    <string name="warning_can_not_retract">Bu eylem geri alınamaz!</string>
     <string name="delete_with_lyrics">Şarkı sözleriyle birlikte sil</string>
+    <string name="excluded_paths">Hariç Tutulan Yollar</string>
+    <string name="included_paths">Kapsanan Yollar</string>
+    <string name="swith_mode">Mod değiştir</string>
+    <string name="path_filter">Kaynak Filtresi</string>
+    <string name="mode_flag_goto_position_first">Eğer anlık sıralamayla aynıysa, seçilen şarkının yerini değiştir</string>
+    <string name="mode_flag_play_queue_if_empty">Eğer anlık sıralama boş ise doğrudan sıralamayı oynat</string>
+    <string name="pref_title_click_behavior">Şarkıya tıklandığında istenen davranış</string>
+    <string name="pref_summary_click_behavior">Oynatıcının listedeki bir şarkıya tıkladığında ne yapması gerektiğini tanımla</string>
+    <string name="playing_queue_history">Sıralama Geçmişi Oynatılıyor</string>
+    <string name="exit_without_saving">Kaydetmeden çık</string>
+    <string name="save">Kaydet</string>
+    <string name="no_changes">Değişiklik yok</string>
+    <string name="image_source_external_file">Harici Dosya</string>
+    <string name="image_source_config">Görsel Kaynağı Yapılandırması</string>
+    <string name="action_backup">Yedek</string>
+    <string name="grant_permission_description">Bazı izinler doğru işleyiş için gereklidir.</string>
+    <string name="permission_name_post_notifications">Bildirim Gönder</string>
+    <string name="permission_desc_post_notifications">Android T (13)\'den beri uygulamalar bildirim göndermek için bu izine ihtiyaç duyar.</string>
+    <string name="permission_name_read_media_audio">Ses Medyalarını Oku</string>
+    <string name="permission_desc_read_media_audio">Android T (13)\'den beri uygulamalar bu izinle cihazdaki ses dosyalarını görebiliyor.</string>
+    <string name="permission_name_read_external_storage">Harici Depolamayı Oku</string>
+    <string name="permission_desc_read_external_storage">Harici Depolama izni cihazdaki müzik dosyalarını okumak için gereklidir.</string>
+    <string name="completed">Tamamlandı</string>
+    <string name="dynamic_colors">Dinamik Renkler</string>
+    <string name="pref_title_enable_monet">Monet\'i Etkinleştir</string>
+    <string name="pref_summary_enable_monet">\"Material You\" temelli duvarkağıdı tema sistemi kullan. (deneysel, tam Material You desteği yok)</string>
+    <string name="action_import">İçeri Aktar %1$s</string>
+    <string name="action_export">Dışarı Aktar %1$s</string>
+    <string name="action_reboot">Uygulamayı yeniden başlat.</string>
+    <string name="process">İşlem...</string>
+    <string name="action_choose_lyrics">Şarkı Sözü Seç...</string>
+    <string name="loaded">yüklendi</string>
+    <string name="action_load">Yükle</string>
+    <string name="app_info">Uygulama Bilgisi</string>
+    <string name="action_grant_storage_permission">Harici Depolama İznini Ver</string>
+    <string name="action_pin">Sabitle</string>
+    <string name="action_unpin">Sabitleme</string>
+    <string name="pref_title_use_legacy_status_bar_lyrics_api">Eski StatusBar Lyrics API\'ını kullan</string>
+    <string name="pref_summary_use_legacy_status_bar_lyrics_api">Devre dışı ise StatusBarLyricAPI yerine LyricGetter API kullanılır. LyricGetter API, Xposed Module StatusBar Lyrics versiyon 6.x ve üstü için kullanılır; eğer StatusBar Lyrcis\'in eski bir versiyonunu kullanıyorsan etkinleştir.</string>
+    <string name="action_speed">Hız</string>
+    <string name="pref_title_resume_after_audio_focus_gain">Kesintilerden sonra otomatik olarak oynatmaya devam et</string>
+    <string name="pref_summary_resume_after_audio_focus_gain">Her zaman kesintilerden sonra oynatmaya devam et (telefon çalması, alarm gibi..)</string>
+    <string name="tag_format">Etiket formatı</string>
+    <string name="raw_tags">Formatlanmamış Etiketler</string>
+    <string name="disk_number">Disk Sayısı</string>
+    <string name="disk_number_total">Toplam Disk Sayısı</string>
+    <string name="rating">Derecelendirme</string>
+    <string name="pref_title_check_upgrade_interval">Güncelleme kontrol aralığı</string>
+    <string name="interval_past">Geçmiş</string>
+    <string name="interval_recent">En son</string>
+    <string name="interval_every">Her</string>
+    <string name="timeunit_second">İkinci</string>
+    <string name="timeunit_minute">Dakika</string>
+    <string name="timeunit_hour">Saat</string>
+    <string name="timeunit_day">Gün</string>
+    <string name="timeunit_week">Hafta</string>
+    <string name="timeunit_month">Ay</string>
+    <string name="timeunit_year">Yıl</string>
+    <string name="time_interval_text">%1$s %2$d %3$s</string>
+    <string name="home">Ev</string>
+    <string name="search_online">İnternette Ara</string>
+    <string name="target">Hedef</string>
+    <string name="key_mbid">MusicBrainz Tanımlayıcısı</string>
+    <string name="query">Arama</string>
+    <string name="hint_lucene_query_syntax">Lucence arama kuralları destekli!</string>
+    <string name="target_release_group">Yayın Grubu</string>
+    <string name="target_release">Yayın</string>
+    <string name="target_album">Albüm</string>
+    <string name="target_artist">Sanatçı</string>
+    <string name="target_recording">Kayıt</string>
+    <string name="target_track">Parça</string>
+    <string name="alias">Rumuz</string>
+    <string name="type">Tür</string>
+    <string name="key_tags">Etiketler</string>
+    <string name="key_date">Tarih</string>
+    <string name="key_country">Ülke</string>
+    <string name="key_area">Bölge</string>
+    <string name="key_gender">Cins</string>
+    <string name="key_lifespan">Ömür</string>
+    <string name="key_media">Medya</string>
+    <string name="count">Sayı</string>
+    <string name="format">Format</string>
+    <string name="status">Durum</string>
+    <string name="key_barcode">Barkod</string>
+    <string name="key_record_label">Kayıt Etiketi</string>
+    <string name="pref_title_disable_real_time_search">Gerçek zamanlı yerel aramayı devre dışı bırak</string>
+    <string name="file_not_found">"Görünüşe göre %1$s bulunamadı! Lütfen dosyayı veya uygulama izinlerini kontrol edin. "</string>
+    <string name="pref_title_preload_images">Göreselleri önyükle</string>
+    <string name="pref_summary_preload_images">Görselleri uygulamayı hızlandırmak ve gecikmelerden kaçınmak için önyükle. Bu seçenek daha fazla geçici bellek kullanımı ile sonuçlanabilir.</string>
 </resources>
