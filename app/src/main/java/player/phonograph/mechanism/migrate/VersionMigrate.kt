@@ -79,7 +79,7 @@ private abstract class Migration(
      * check condition of migrate
      */
     fun check(from: Int, to: Int): Boolean {
-        return from <= to && introduced in from + 1..to
+        return from <= to && from != -1 && introduced in from + 1..to
     }
 
     fun tryMigrate(context: Context, from: Int, to: Int) {
