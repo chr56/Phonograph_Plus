@@ -8,13 +8,22 @@ import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.model.pages.Pages
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.settings.PrerequisiteSetting
+import player.phonograph.settings.dataStore
 import player.phonograph.util.debug
 import player.phonograph.util.reportError
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.preference.PreferenceManager
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 fun migrate(context: Context, from: Int, to: Int) {
 
@@ -169,13 +178,46 @@ private fun moveIntPreference(
 
 
 private fun removePreference(context: Context, keyName: String) {
+    var type: Int = -1
+    var exception: Exception? = null
+    try {
+        CoroutineScope(SupervisorJob()).launch {
+            context.dataStore.edit {
+                val booleanKey = booleanPreferencesKey(keyName)
+                val stringKey = stringPreferencesKey(keyName)
+                val intKey = intPreferencesKey(keyName)
+                val longKey = intPreferencesKey(keyName)
+                val keys: List<Preferences.Key<*>> = listOf(booleanKey, stringKey, intKey, longKey)
+                for (key in keys) {
+                    if (it.contains(key)) {
+                        it.remove(key)
+                        break
+                    }
+                }
+            }
+        }
+    } catch (e: Exception) {
+        exception = e
+        type = DATASTORE
+    }
     try {
         val pref = PreferenceManager.getDefaultSharedPreferences(context)
         pref.edit().remove(keyName).apply()
     } catch (e: Exception) {
-        reportError(e, TAG, " failed: removing old Preference item `$keyName`")
+        exception = e
+        type = PREFERENCE
+    }
+    if (exception != null) {
+        reportError(
+            exception,
+            TAG,
+            "Failed to remove legacy preference item `$keyName` via ${if (type == DATASTORE) "datastore" else "preference"}"
+        )
     }
 }
+
+private const val PREFERENCE = 1
+private const val DATASTORE = 2
 
 private const val TAG = "VersionMigrate"
 
