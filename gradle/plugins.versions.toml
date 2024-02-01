@@ -2,7 +2,7 @@
 kotlin = "1.9.22"
 agp = "8.2.2"
 ksp = "1.9.22-1.0.17"
-versionChecker = "0.49.0"
+versionChecker = "0.51.0"
 
 [plugins]
 
