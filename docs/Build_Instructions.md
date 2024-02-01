@@ -11,12 +11,12 @@ See also [Developer Guide](./Developer_Guide.md).
 
 1. a PC : any desktop operate system platform (only `Windows` and `Ubuntu 20.04` are tested), I am not sure if it works
    on `Android(Termux)` because jvm version.
-2. JDK 17 (we are using AGP 8.1.1 with gradle 8.3).
+2. JDK 17 (we are using AGP 8.2.2 with gradle 8.3).
 3. The connected and fast network.
 
 **Development**:
 
-Plus `Android Studio` with correspond `Android Gradle Plugin` (currently `Giraffe (Patch 1)`). 
+Plus `Android Studio` with correspond `Android Gradle Plugin` (currently `Hedgehog (Patch 2)`). 
 (`IDEA` might be not compatible because `Android Gradle Plugin` is too new)
 
 ## **Instructions (Build with commandline)**
@@ -96,19 +96,11 @@ See more in section Build Variant.
  ./gradlew assembleStableRelease --parallel
 ```
 
-if your version is before 0.4, replace `stable` with `common` (matching letter case), using:
-
-```shell
-./gradlew assembleCommonRelease --parallel
-```
-
 ### 7) pick up file
 
-_Note: if the version is before 0.4, replace `stable` with `common` (matching letter case)_
+Built apk is in `./app/build/outputs/apk/stable/release/` with name `PhonographPlus_<VERSION>-stable-release.apk`
 
-built apk is in `./app/build/outputs/apk/stable/release/` with name `PhonographPlus_<VERSION>-stable-release.apk`
-
-you can run
+You can run
 
 ```shell
 ./gradlew PublishStableRelease

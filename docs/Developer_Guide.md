@@ -4,7 +4,7 @@ This document describes the overview of this project for developers.
 
 See also [Build Instruction](./Build_Instructions.md).
 
-_Last Update: 2023.09.16_
+_Last Update: 2024.02.01_
 
 ## Toolchain & Dependencies
 
@@ -19,13 +19,13 @@ see [plugins.versions.toml](../gradle/plugins.versions.toml) for all gradle plug
 **Platform**
 
 -   Gradlew `8.3`, requiring JDK `17`
--   `Android Gradle Plugin` `8.1.1`
+-   `Android Gradle Plugin` `8.2.2`
 -   Android SDK `34`
--   kotlin for JVM(Android) `1.9.10`
+-   kotlin for JVM(Android) `1.9.22`
 
 **Libraries**
 
--   `Jetpack Compose` 1.5.1 (Since 0.4, only few ui are written in Compose)
+-   `Jetpack Compose` 1.6.0
 -   `kotlinx.serialization`,`kotlinx.parcelize`
 -   `koin` as a lightweight Dependency Injection solution
 -   most popular `androidx`(`Jetpack`) components (most of them are latest)
@@ -36,14 +36,13 @@ see [plugins.versions.toml](../gradle/plugins.versions.toml) for all gradle plug
 
 only one flavor `purpose` and two default `BuildType` (`debug`/`release`), and all `release` shrinks and minifies.
 
-|       Build Variant        |                                        Note                                        |
-| :------------------------: | :--------------------------------------------------------------------------------: |
-|          `stable`          |                             for stable and LTS release                             |
-| ~`common` (before v0.4.0)~ |                     for stable and LTS release (before v0.4.0)                     |
-|         `preview`          |                for preview release, package name suffix `.preview`                 |
-|         `checkout`         | for bug-locate and `dev` build of `Github Action`, package name suffix `.checkout` |
+| Build Variant |                                        Note                                        |
+|:-------------:|:----------------------------------------------------------------------------------:|
+|   `stable`    |                             for stable and LTS release                             |
+|   `preview`   |                for preview release, package name suffix `.preview`                 |
+|  `checkout`   | for bug-locate and `dev` build of `Github Action`, package name suffix `.checkout` |
 
-before v4.0, we have more (like `ci` for `Github Action`).
+before v4.0, we have more (like `common` as `stable`, `ci` for `Github Action`).
 
 ## Project Structure
 
