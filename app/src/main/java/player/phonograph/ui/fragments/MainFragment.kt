@@ -60,16 +60,6 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainActivity.lifecycle.addObserver(
-            object : DefaultLifecycleObserver {
-                override fun onCreate(owner: LifecycleOwner) {
-                    super.onCreate(owner)
-                    @Suppress("DEPRECATION")
-                    setHasOptionsMenu(true)
-                    //todo: replace `setHasOptionsMenu` with MenuProvider
-                }
-            }
-        )
         val store = Setting(requireContext())
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
