@@ -1,7 +1,7 @@
 version: "1.4.5-dev1"
-versionCode: 1044
-timestamp: 1706857000
-channel: "PREVIEW"
+versionCode: 1045
+timestamp: 0
+channel: "STABLE"
 notes:
   en:
     highlights: [ ]
