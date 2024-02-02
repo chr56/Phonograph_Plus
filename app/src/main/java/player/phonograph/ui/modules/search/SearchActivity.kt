@@ -11,6 +11,7 @@ import mt.tint.setActivityToolbarColor
 import mt.tint.viewtint.setSearchViewContentColor
 import mt.tint.viewtint.tintCollapseIcon
 import mt.util.color.primaryTextColor
+import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.ActivitySearchBinding
 import player.phonograph.databinding.PopupWindowSearchBinding
@@ -88,6 +89,8 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
             }
             with(tabs) {
                 tabMode = TabLayout.MODE_SCROLLABLE
+                setTabTextColors(secondaryTextColor(primaryColor), primaryTextColor(primaryColor))
+                setSelectedTabIndicatorColor(accentColor)
             }
             with(actionBarContainer) {
                 setBackgroundColor(primaryColor)
@@ -98,7 +101,7 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
         }
         mediator.attach()
         with(binding.config) {
-            setImageDrawable(getTintedDrawable(R.drawable.ic_settings_white_24dp, textColorPrimary))
+            setImageDrawable(getTintedDrawable(R.drawable.ic_settings_white_24dp, primaryTextColor(primaryColor)))
             setBackgroundDrawable(null)
             setOnClickListener {
                 if (popup == null) {
