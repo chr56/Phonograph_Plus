@@ -32,6 +32,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
@@ -162,6 +163,16 @@ inline fun <T> List<T>.sort(
 ): List<T> {
     return if (revert) this.sortedWith(compareByDescending(selector))
     else this.sortedWith(compareBy(selector))
+}
+
+//
+// Metrics
+
+fun logMetrics(stage: String) {
+    Log.v(
+        "Metrics",
+        "[${System.currentTimeMillis().mod(100000)}] $stage"
+    )
 }
 
 //

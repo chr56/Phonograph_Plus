@@ -20,6 +20,7 @@ import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.ItemLayoutStyle
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.util.debug
+import player.phonograph.util.logMetrics
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
@@ -267,6 +268,6 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
 
     override fun onResume() {
         super.onResume()
-        debug { Log.v("Metrics", "${System.currentTimeMillis().mod(10000000)} AbsDisplayPage.onResume()") }
+        debug { logMetrics("AbsDisplayPage.onResume()") }
     }
 }

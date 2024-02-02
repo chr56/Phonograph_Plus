@@ -25,6 +25,8 @@ import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.AbsPage
 import player.phonograph.ui.modules.search.SearchActivity
+import player.phonograph.util.debug
+import player.phonograph.util.logMetrics
 import player.phonograph.util.reportError
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.annotation.DrawableRes
@@ -100,10 +102,7 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        if (DEBUG) Log.v(
-            "Metrics",
-            "${System.currentTimeMillis().mod(10000000)} HomeFragment.onCreateView()"
-        )
+        debug { logMetrics("MainFragment.onCreateView()") }
         _viewBinding = FragmentHomeBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
@@ -114,10 +113,7 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
         setupToolbar()
         setUpViewPager()
 
-        if (DEBUG) Log.v(
-            "Metrics",
-            "${System.currentTimeMillis().mod(10000000)} HomeFragment.onViewCreated()"
-        )
+        debug { logMetrics("MainFragment.onViewCreated()") }
     }
 
     override fun onDestroyView() {

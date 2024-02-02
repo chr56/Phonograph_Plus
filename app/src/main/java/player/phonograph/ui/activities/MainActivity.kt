@@ -48,6 +48,7 @@ import player.phonograph.ui.modules.setting.SettingsActivity
 import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.debug
+import player.phonograph.util.logMetrics
 import player.phonograph.util.parcelableExtra
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.navigateToStorageSetting
@@ -142,20 +143,12 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         lifecycleScope.launch(Dispatchers.Default) {
             latelySetup()
         }
-
-        if (DEBUG) {
-            Log.v("Metrics", "${System.currentTimeMillis().mod(10000000)} MainActivity.onCreate()")
-        }
+        debug { logMetrics("MainActivity.onCreate()") }
     }
 
     override fun onResume() {
         super.onResume()
-        debug {
-            Log.v(
-                "Metrics",
-                "${System.currentTimeMillis().mod(10000000)} MainActivity.onResume()"
-            )
-        }
+        debug { logMetrics("MainActivity.onResume()") }
     }
 
     override fun createContentView(): View {

@@ -23,6 +23,7 @@ import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.CrashActivity
 import player.phonograph.ui.moduleViewModels
 import player.phonograph.util.debug
+import player.phonograph.util.logMetrics
 import player.phonograph.util.postDelayedOnceHandlerCallback
 import player.phonograph.util.theme.changeGlobalNightMode
 import player.phonograph.util.theme.checkNightMode
@@ -70,12 +71,7 @@ class App : Application(), ImageLoaderFactory {
 
     override fun onCreate() {
         if (Reboot.isRebootingProcess(this)) return
-        debug {
-            Log.v(
-                "Metrics",
-                "${System.currentTimeMillis().mod(10000000)} App.onCreate()"
-            )
-        }
+        debug { logMetrics("App.onCreate()") }
         super.onCreate()
         instance = this
 
