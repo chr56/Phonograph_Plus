@@ -7,8 +7,8 @@ package player.phonograph.mechanism.tag
 import lib.phonograph.misc.ICreateFileStorageAccess
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.retriever.PARAMETERS_RAW
+import player.phonograph.coil.target.PaletteBitmap
 import player.phonograph.coil.target.PaletteTargetBuilder
-import player.phonograph.model.BitmapPaletteWrapper
 import player.phonograph.util.warning
 import androidx.core.graphics.drawable.toBitmap
 import android.content.Context
@@ -25,7 +25,7 @@ import java.io.OutputStream
 
 fun loadArtwork(
     context: Context,
-    container: MutableStateFlow<BitmapPaletteWrapper?>,
+    container: MutableStateFlow<PaletteBitmap?>,
     data: Any,
 ) {
     loadImage(context) {
@@ -36,7 +36,7 @@ fun loadArtwork(
                 .onResourceReady { result: Drawable, paletteColor: Int ->
                     val success =
                         container.tryEmit(
-                            BitmapPaletteWrapper(result.toBitmap(), paletteColor)
+                            PaletteBitmap(result.toBitmap(), paletteColor)
                         )
                     if (!success) warning("LoadArtwork", "Failed to load artwork!")
                 }
@@ -48,7 +48,7 @@ fun loadArtwork(
 fun saveArtwork(
     coroutineScope: CoroutineScope,
     activity: Context,
-    wrapper: BitmapPaletteWrapper,
+    wrapper: PaletteBitmap,
     fileName: String,
 ) {
     if (activity is ICreateFileStorageAccess) {
@@ -70,7 +70,7 @@ private fun saveArtworkImpl(
     coroutineScope: CoroutineScope,
     context: Context,
     uri: Uri,
-    wrapper: BitmapPaletteWrapper,
+    wrapper: PaletteBitmap,
 ) {
     val stream = context.contentResolver.openOutputStream(uri, "wt")
         ?: throw IOException("can't open uri $uri")
@@ -80,7 +80,7 @@ private fun saveArtworkImpl(
 private fun writeArtwork(
     coroutineScope: CoroutineScope,
     outputStream: OutputStream,
-    wrapper: BitmapPaletteWrapper,
+    wrapper: PaletteBitmap,
 ) {
     // write
     coroutineScope.launch(Dispatchers.IO) {
