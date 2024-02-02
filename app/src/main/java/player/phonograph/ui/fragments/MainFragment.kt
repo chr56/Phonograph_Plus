@@ -60,8 +60,42 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
 
     val mainActivity: MainActivity get() = requireActivity() as MainActivity
 
+    private var _viewBinding: FragmentHomeBinding? = null
+    private val binding: FragmentHomeBinding get() = _viewBinding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
+        debug { logMetrics("MainFragment.onCreateView()") }
+        _viewBinding = FragmentHomeBinding.inflate(layoutInflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupToolbar()
+
+        binding.pager.registerOnPageChangeCallback(pageChangeListener)
+
+        debug { logMetrics("MainFragment.onViewCreated()") }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.pager.unregisterOnPageChangeCallback(pageChangeListener)
+        _viewBinding = null
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        readSettings()
+    }
+
+    //region Settings
+    private fun readSettings() {
         val store = Setting(requireContext())
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -98,35 +132,9 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
             }
         }
     }
+    //endregion
 
-    private var _viewBinding: FragmentHomeBinding? = null
-    private val binding: FragmentHomeBinding get() = _viewBinding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        debug { logMetrics("MainFragment.onCreateView()") }
-        _viewBinding = FragmentHomeBinding.inflate(layoutInflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        setupToolbar()
-
-        binding.pager.registerOnPageChangeCallback(pageChangeListener)
-
-        debug { logMetrics("MainFragment.onViewCreated()") }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding.pager.unregisterOnPageChangeCallback(pageChangeListener)
-        _viewBinding = null
-    }
+    //region Toolbar
 
     private fun setupToolbar() {
         binding.appbar.setBackgroundColor(primaryColor)
@@ -164,9 +172,9 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
             }
         }
     }
+    //endregion
 
-
-
+    //region Pages
     private var pagerAdapter: HomePagerAdapter? = null
 
     private fun loadPages(pageConfig: PageConfig) {
@@ -215,12 +223,9 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
             super.onPageSelected(position)
         }
     }
+    //endregion
 
-    val totalAppBarScrollingRange: Int get() = binding.appbar.totalScrollRange
-
-    val totalHeaderHeight: Int
-        get() = totalAppBarScrollingRange + if (binding.tabs.visibility == View.VISIBLE) binding.tabs.height else 0
-
+    //region Popup & AppBar
 
     /**
      *  the popup window for [AbsPage]
@@ -235,7 +240,13 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
         binding.appbar.removeOnOffsetChangedListener(onOffsetChangedListener)
     }
 
+    val totalAppBarScrollingRange: Int get() = binding.appbar.totalScrollRange
 
+    val totalHeaderHeight: Int
+        get() = totalAppBarScrollingRange + if (binding.tabs.visibility == View.VISIBLE) binding.tabs.height else 0
+    //endregion
+
+    //region Interactivity
     override fun requestSelectPage(page: Int) {
         try {
             binding.pager.currentItem = page
@@ -245,7 +256,9 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
     }
 
     override fun handleBackPress(): Boolean = pagerAdapter?.fetch(binding.pager.currentItem)?.onBackPress() ?: false
+    //endregion
 
+    //region Utils
     private fun getDrawable(@DrawableRes resId: Int): Drawable? {
         return AppCompatResources.getDrawable(mainActivity, resId)?.also {
             it.colorFilter =
@@ -257,6 +270,7 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
     private val accentColor by lazy(LazyThreadSafetyMode.NONE) { mainActivity.accentColor() }
     private val primaryTextColor by lazy(LazyThreadSafetyMode.NONE) { mainActivity.primaryTextColor(primaryColor) }
     private val secondaryTextColor by lazy(LazyThreadSafetyMode.NONE) { mainActivity.primaryTextColor(primaryColor) }
+    //endregion
 
     companion object {
         fun newInstance(): MainFragment = MainFragment()
