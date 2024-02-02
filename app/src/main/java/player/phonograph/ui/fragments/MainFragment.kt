@@ -50,13 +50,13 @@ import android.view.MenuItem.SHOW_AS_ACTION_ALWAYS
 import android.view.View
 import android.view.ViewGroup
 import kotlin.math.min
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
 class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
-
-    private lateinit var pagerAdapter: HomePagerAdapter
 
     val mainActivity: MainActivity get() = requireActivity() as MainActivity
 
@@ -65,19 +65,24 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
         val store = Setting(requireContext())
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                store[Keys.homeTabConfigJsonString].flow.distinctUntilChanged().collect {
-                    withStarted { reloadPages() }
+                store[Keys.homeTabConfigJsonString].flow.distinctUntilChanged().collect { raw ->
+                    val config: PageConfig = HomeTabConfig.parseHomeTabConfig(raw)
+                    withStarted {
+                        loadPages(config)
+                    }
                 }
             }
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 store[Keys.rememberLastTab].flow.distinctUntilChanged().collect { rememberLastTab ->
+                    val lastPage = lifecycleScope.async(Dispatchers.IO) {
+                        Setting(requireContext())[Keys.lastPage].flowData()
+                    }.await()
                     withStarted {
                         if (rememberLastTab) {
-                            val last = Setting(requireContext())[Keys.lastPage].data
-                            binding.pager.currentItem = last
-                            mainActivity.switchPageChooserTo(last)
+                            binding.pager.currentItem = lastPage
+                            mainActivity.switchPageChooserTo(lastPage)
                         }
                     }
                 }
@@ -111,7 +116,6 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
         super.onViewCreated(view, savedInstanceState)
 
         setupToolbar()
-        setupViewPager(HomeTabConfig.homeTabConfig)
 
         binding.pager.registerOnPageChangeCallback(pageChangeListener)
 
@@ -161,47 +165,55 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
         }
     }
 
+
+
+    private var pagerAdapter: HomePagerAdapter? = null
+
+    private fun loadPages(pageConfig: PageConfig) {
+
+        var newPosition = -1
+
+        val oldAdapter = pagerAdapter
+        if (oldAdapter != null) {
+            val oldPosition = binding.pager.currentItem.coerceAtLeast(0)
+            val currentPage = oldAdapter.pageConfig[oldPosition]
+            pageConfig.tabs.forEachIndexed { index, page ->
+                if (page == currentPage) {
+                    newPosition = index
+                }
+            }
+        }
+
+        setupViewPager(pageConfig)
+        if (newPosition < 0) newPosition = 0
+        binding.pager.currentItem = newPosition
+    }
+
     private fun setupViewPager(homeTabConfig: PageConfig) {
         // Adapter
-        pagerAdapter = HomePagerAdapter(this, homeTabConfig)
+        val homePagerAdapter = HomePagerAdapter(this, homeTabConfig)
         binding.pager.apply {
-            adapter = pagerAdapter
-            offscreenPageLimit = min(pagerAdapter.itemCount, 3)
+            adapter = homePagerAdapter
+            offscreenPageLimit = min(homePagerAdapter.itemCount, 3)
         }
+        pagerAdapter = homePagerAdapter
 
         // TabLayout
         TabLayoutMediator(binding.tabs, binding.pager) { tab: TabLayout.Tab, index: Int ->
             tab.text = Pages.getDisplayName(homeTabConfig[index], requireContext())
         }.attach()
-        binding.tabs.visibility = if (pagerAdapter.itemCount == 1) View.GONE else View.VISIBLE
+        binding.tabs.visibility = if (homePagerAdapter.itemCount == 1) View.GONE else View.VISIBLE
     }
 
 
     private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
-            Setting(App.instance)[Keys.lastPage].data = position
             mainActivity.switchPageChooserTo(position)
+            mainActivity.lifecycleScope.launch(Dispatchers.IO) {
+                Setting(App.instance)[Keys.lastPage].edit { position }
+            }
             super.onPageSelected(position)
         }
-    }
-
-    private fun reloadPages() {
-        var oldPosition = binding.pager.currentItem
-        if (oldPosition < 0) oldPosition = 0
-
-        val current = pagerAdapter.pageConfig[oldPosition]
-
-        var newPosition = -1
-
-        HomeTabConfig.homeTabConfig.tabs.forEachIndexed { index, page ->
-            if (page == current) {
-                newPosition = index
-            }
-        }
-        if (newPosition < 0) newPosition = 0
-
-        setupViewPager(HomeTabConfig.homeTabConfig)
-        binding.pager.currentItem = newPosition
     }
 
     val totalAppBarScrollingRange: Int get() = binding.appbar.totalScrollRange
@@ -232,7 +244,7 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
         }
     }
 
-    override fun handleBackPress(): Boolean = pagerAdapter.fetch(binding.pager.currentItem)?.onBackPress() ?: false
+    override fun handleBackPress(): Boolean = pagerAdapter?.fetch(binding.pager.currentItem)?.onBackPress() ?: false
 
     private fun getDrawable(@DrawableRes resId: Int): Drawable? {
         return AppCompatResources.getDrawable(mainActivity, resId)?.also {
