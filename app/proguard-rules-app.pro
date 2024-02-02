@@ -109,7 +109,6 @@
 -keepnames,allowoptimization,allowshrinking class player.phonograph.mechanism.tag.edit.CommonKt { public <methods>; }
 -keepnames,allowoptimization,allowshrinking class player.phonograph.mechanism.tag.edit.SingleKt { public <methods>; }
 -keepnames,allowoptimization,allowshrinking class player.phonograph.mechanism.tag.edit.MultipleKt { public <methods>; }
--keepnames,allowoptimization,allowshrinking class player.phonograph.mechanism.tag.ArtworkKt { public <methods>; }
 -keepnames,allowoptimization,allowshrinking class player.phonograph.mechanism.tag.SongInfoReaderKt { public <methods>; }
 -keepnames,allowoptimization,allowshrinking class player.phonograph.mechanism.tag.TagParserKt { public <methods>; }
 -keepnames,allowoptimization,allowshrinking class player.phonograph.mechanism.tag.** extends player.phonograph.mechanism.tag.TagReader { public *** read(...); }
