@@ -56,7 +56,7 @@ abstract class AbsPreloadImageCache<K, G : Any>(size: Int, @CacheImplementation 
 
         class SparseArrayCacheImpl<V>(initialCapacity: Int) : Cache<V> {
             private val cache: LongSparseArray<V> = LongSparseArray<V>(initialCapacity)
-            override fun get(key: Long): V = cache[key]
+            override fun get(key: Long): V? = cache[key]
             override fun set(key: Long, value: V) = cache.put(key, value)
         }
     }
