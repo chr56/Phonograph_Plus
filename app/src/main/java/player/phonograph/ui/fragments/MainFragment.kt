@@ -6,14 +6,14 @@ package player.phonograph.ui.fragments
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
-import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import lib.phonograph.misc.menuProvider
-import mt.pref.ThemeColor
+import mt.pref.accentColor
+import mt.pref.primaryColor
 import mt.util.color.primaryTextColor
 import player.phonograph.App
-import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.mechanism.setting.HomeTabConfig
@@ -34,9 +34,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withStarted
@@ -46,7 +44,6 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.ArrayMap
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem.SHOW_AS_ACTION_ALWAYS
@@ -57,6 +54,8 @@ import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
 class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
+
+    private lateinit var pagerAdapter: HomePagerAdapter
 
     val mainActivity: MainActivity get() = requireActivity() as MainActivity
 
@@ -111,7 +110,9 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
         super.onViewCreated(view, savedInstanceState)
 
         setupToolbar()
-        setUpViewPager()
+        setupViewPager(HomeTabConfig.homeTabConfig)
+
+        binding.pager.registerOnPageChangeCallback(pageChangeListener)
 
         debug { logMetrics("MainFragment.onViewCreated()") }
     }
@@ -144,55 +145,6 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
         )
     }
 
-    private fun readConfig(): PageConfig = HomeTabConfig.homeTabConfig
-
-    private val cfg: PageConfig get() = readConfig()
-
-    private lateinit var pagerAdapter: HomePagerAdapter
-
-    private fun setUpViewPager() {
-        pagerAdapter = HomePagerAdapter(this, cfg)
-
-        binding.pager.apply {
-            orientation = ViewPager2.ORIENTATION_HORIZONTAL
-            adapter = pagerAdapter
-            offscreenPageLimit = if (pagerAdapter.itemCount > 1) pagerAdapter.itemCount - 1 else 1
-            registerOnPageChangeCallback(pageChangeListener)
-        }
-
-        TabLayoutMediator(binding.tabs, binding.pager) { tab: TabLayout.Tab, i: Int ->
-            tab.text = Pages.getDisplayName(cfg.get(i), requireContext())
-        }.attach()
-        updateTabVisibility()
-    }
-
-    private val currentPage: AbsPage?
-        get() = pagerAdapter.map[binding.pager.currentItem]?.get()
-
-    private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
-        override fun onPageSelected(position: Int) {
-            Setting(App.instance)[Keys.lastPage].data = position
-            mainActivity.switchPageChooserTo(position)
-            super.onPageSelected(position)
-        }
-    }
-
-    override fun handleBackPress(): Boolean = currentPage?.onBackPress() ?: false
-
-    override fun requestSelectPage(page: Int) {
-        try {
-            binding.pager.currentItem = page
-        } catch (e: Exception) {
-            reportError(e, "HomeFragment", "Failed to select page $page")
-        }
-    }
-
-    /**
-     *     the popup window for [AbsDisplayPage]
-     */
-
-    val popup: ListOptionsPopup by lazy { ListOptionsPopup(mainActivity) }
-
     private fun setupMenu(menu: Menu) {
         attach(requireContext(), menu) {
             menuItem {
@@ -208,76 +160,104 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
         }
     }
 
-    fun addOnAppBarOffsetChangedListener(
-        onOffsetChangedListener: AppBarLayout.OnOffsetChangedListener,
-    ) {
-        binding.appbar.addOnOffsetChangedListener(onOffsetChangedListener)
+    private fun setupViewPager(homeTabConfig: PageConfig) {
+        // Adapter
+        pagerAdapter = HomePagerAdapter(this, homeTabConfig)
+        binding.pager.apply {
+            adapter = pagerAdapter
+            offscreenPageLimit = if (pagerAdapter.itemCount > 1) pagerAdapter.itemCount - 1 else 1
+        }
+
+        // TabLayout
+        TabLayoutMediator(binding.tabs, binding.pager) { tab: TabLayout.Tab, index: Int ->
+            tab.text = Pages.getDisplayName(homeTabConfig[index], requireContext())
+        }.attach()
+        binding.tabs.visibility = if (pagerAdapter.itemCount == 1) View.GONE else View.VISIBLE
     }
 
-    fun removeOnAppBarOffsetChangedListener(
-        onOffsetChangedListener: AppBarLayout.OnOffsetChangedListener,
-    ) {
-        binding.appbar.removeOnOffsetChangedListener(onOffsetChangedListener)
-    }
 
+    private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            Setting(App.instance)[Keys.lastPage].data = position
+            mainActivity.switchPageChooserTo(position)
+            super.onPageSelected(position)
+        }
+    }
 
     private fun reloadPages() {
         var oldPosition = binding.pager.currentItem
         if (oldPosition < 0) oldPosition = 0
 
-        val current = pagerAdapter.cfg.get(oldPosition)
+        val current = pagerAdapter.pageConfig[oldPosition]
 
         var newPosition = -1
 
-        readConfig().tabList.forEachIndexed { index, page ->
+        HomeTabConfig.homeTabConfig.tabs.forEachIndexed { index, page ->
             if (page == current) {
                 newPosition = index
             }
         }
         if (newPosition < 0) newPosition = 0
 
-        setUpViewPager()
+        setupViewPager(HomeTabConfig.homeTabConfig)
         binding.pager.currentItem = newPosition
     }
 
     val totalAppBarScrollingRange: Int get() = binding.appbar.totalScrollRange
 
     val totalHeaderHeight: Int
-        get() =
-            totalAppBarScrollingRange + if (binding.tabs.visibility == View.VISIBLE) binding.tabs.height else 0
+        get() = totalAppBarScrollingRange + if (binding.tabs.visibility == View.VISIBLE) binding.tabs.height else 0
 
-    private fun updateTabVisibility() {
-        // hide the tab bar when only a single tab is visible
-        binding.tabs.visibility = if (pagerAdapter.itemCount == 1) View.GONE else View.VISIBLE
+
+    /**
+     *  the popup window for [AbsPage]
+     */
+    val popup: ListOptionsPopup by lazy { ListOptionsPopup(mainActivity) }
+
+    fun addOnAppBarOffsetChangedListener(onOffsetChangedListener: OnOffsetChangedListener) {
+        binding.appbar.addOnOffsetChangedListener(onOffsetChangedListener)
     }
 
-    private fun getDrawable(@DrawableRes resId: Int): Drawable? {
-        return AppCompatResources.getDrawable(mainActivity, resId)?.also {
-            it.colorFilter = BlendModeColorFilterCompat
-                .createBlendModeColorFilterCompat(primaryTextColor, BlendModeCompat.SRC_IN)
+    fun removeOnAppBarOffsetChangedListener(onOffsetChangedListener: OnOffsetChangedListener) {
+        binding.appbar.removeOnOffsetChangedListener(onOffsetChangedListener)
+    }
+
+
+    override fun requestSelectPage(page: Int) {
+        try {
+            binding.pager.currentItem = page
+        } catch (e: Exception) {
+            reportError(e, "HomeFragment", "Failed to select page $page")
         }
     }
 
-    private val primaryColor by lazy(LazyThreadSafetyMode.NONE) { ThemeColor.primaryColor(requireActivity()) }
-    private val accentColor by lazy(LazyThreadSafetyMode.NONE) { ThemeColor.accentColor(requireActivity()) }
-    private val primaryTextColor by lazy(LazyThreadSafetyMode.NONE) {
-        mainActivity.primaryTextColor(primaryColor)
+    override fun handleBackPress(): Boolean = pagerAdapter.fetch(binding.pager.currentItem)?.onBackPress() ?: false
+
+    private fun getDrawable(@DrawableRes resId: Int): Drawable? {
+        return AppCompatResources.getDrawable(mainActivity, resId)?.also {
+            it.colorFilter =
+                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(primaryTextColor, BlendModeCompat.SRC_IN)
+        }
     }
-    private val secondaryTextColor by lazy(LazyThreadSafetyMode.NONE) {
-        mainActivity.primaryTextColor(primaryColor)
-    }
+
+    private val primaryColor by lazy(LazyThreadSafetyMode.NONE) { mainActivity.primaryColor() }
+    private val accentColor by lazy(LazyThreadSafetyMode.NONE) { mainActivity.accentColor() }
+    private val primaryTextColor by lazy(LazyThreadSafetyMode.NONE) { mainActivity.primaryTextColor(primaryColor) }
+    private val secondaryTextColor by lazy(LazyThreadSafetyMode.NONE) { mainActivity.primaryTextColor(primaryColor) }
 
     companion object {
         fun newInstance(): MainFragment = MainFragment()
     }
 
-    private class HomePagerAdapter(fragment: Fragment, var cfg: PageConfig) : FragmentStateAdapter(fragment) {
-        val map: MutableMap<Int, WeakReference<AbsPage>> = ArrayMap(cfg.getSize())
+    private class HomePagerAdapter(fragment: Fragment, var pageConfig: PageConfig) : FragmentStateAdapter(fragment) {
 
-        override fun getItemCount(): Int = cfg.getSize()
+        private val current: MutableMap<Int, WeakReference<AbsPage>> = ArrayMap(pageConfig.size)
+
+        override fun getItemCount(): Int = pageConfig.size
 
         override fun createFragment(position: Int): Fragment =
-            cfg.getAsPage(position)
-                .also { fragment -> map[position] = WeakReference(fragment) } // registry
+            pageConfig.initiate(position).also { fragment -> current[position] = WeakReference(fragment) } // registry
+
+        fun fetch(index: Int): AbsPage? = current[index]?.get()
     }
 }

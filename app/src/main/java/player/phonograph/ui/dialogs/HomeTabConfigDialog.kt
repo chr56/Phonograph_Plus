@@ -79,7 +79,7 @@ class HomeTabConfigDialog : DialogFragment() {
 
         override fun fetchDataset(): SortableList<String> {
             val all = PageConfig.DEFAULT_CONFIG.toMutableSet()
-            all.removeAll(pageConfig.tabList.toSet()).report("Strange PageConfig: $pageConfig")
+            all.removeAll(pageConfig.tabs.toSet()).report("Strange PageConfig: $pageConfig")
             val visible = pageConfig.map { SortableList.Item(it, true) }
             val invisible = all.toList().map { SortableList.Item(it, false) }
             return SortableList(visible + invisible)

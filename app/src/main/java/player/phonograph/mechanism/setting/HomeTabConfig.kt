@@ -5,7 +5,6 @@
 package player.phonograph.mechanism.setting
 
 import player.phonograph.App
-import player.phonograph.mechanism.setting.HomeTabConfig.PageConfigUtil.fromJson
 import player.phonograph.mechanism.setting.HomeTabConfig.PageConfigUtil.toJson
 import player.phonograph.model.pages.Pages
 import player.phonograph.settings.Keys
@@ -24,11 +23,12 @@ import android.util.Log
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 
 object HomeTabConfig {
-    private val parser = Json { ignoreUnknownKeys = true;isLenient = true }
+    private val parser = Json { ignoreUnknownKeys = true; isLenient = true }
 
     private var cachedPageConfig: PageConfig? = null
     private var cachedRawPageConfig: String? = null
@@ -37,35 +37,17 @@ object HomeTabConfig {
         @Synchronized get() {
             val rawString = Setting(App.instance)[Keys.homeTabConfigJsonString].data
 
-            if (rawString.isEmpty()) {
-                resetHomeTabConfig()
-                return PageConfig.DEFAULT_CONFIG
-            }
-
-
-            val cached = cachedPageConfig
+            // Fetch Cache
+            val cached: PageConfig? = cachedPageConfig
             if (rawString == cachedRawPageConfig && cached != null) {
-                return cached // return the cached instead
+                return cached
             }
 
-
-            val config: PageConfig = try {
-                val json = parser.parseToJsonElement(rawString)
-                fromJson(json as JsonObject)
-            } catch (e: Exception) {
-                reportError(e, "Preference", "Fail to parse home tab config string $rawString")
-                // return default
-                resetHomeTabConfig()
-                PageConfig.DEFAULT_CONFIG
-            }
-
-
-            // update cache
+            // Then Parse
+            val config: PageConfig = parseHomeTabConfig(rawString)
             cachedPageConfig = config
             cachedRawPageConfig = rawString
 
-
-            // valid // TODO
             return config
         }
         set(value) {
@@ -83,11 +65,21 @@ object HomeTabConfig {
             }
         }
 
+    fun parseHomeTabConfig(raw: String): PageConfig {
+        val config: PageConfig? = PageConfigUtil.from(raw)
+        return if (config == null) {
+            resetHomeTabConfig()
+            PageConfig.DEFAULT_CONFIG
+        } else {
+            config
+        }
+    }
+
     /**
      * add a new [page] at the end of setting
      */
     fun append(page: String) {
-        val list = homeTabConfig.tabList.toMutableList()
+        val list = homeTabConfig.tabs.toMutableList()
         list.add(page)
         homeTabConfig = PageConfig.from(list)
     }
@@ -100,12 +92,34 @@ object HomeTabConfig {
     object PageConfigUtil {
 
         fun PageConfig.toJson(): JsonObject = JsonObject(
-            mapOf(
-                KEY to JsonArray(tabList.map { JsonPrimitive(it) })
-            )
+            mapOf(KEY to JsonArray(tabs.map { JsonPrimitive(it) }))
         )
 
+        /**
+         * Parse from raw json
+         * @return null if failed
+         */
+        fun from(raw: String): PageConfig? {
+            if (raw.isEmpty()) return null
 
+            val config: PageConfig? = try {
+                val json: JsonElement = parser.parseToJsonElement(raw)
+                fromJson(json as JsonObject)
+            } catch (e: Exception) {
+                reportError(e, "Preference", "Fail to parse home tab config string $raw")
+                null
+            }
+
+            // valid
+            // TODO
+
+            return config
+        }
+
+        /**
+         * Parse from [JsonObject]
+         */
+        @Throws(IllegalStateException::class)
         fun fromJson(json: JsonObject): PageConfig {
             val array = (json[KEY] as? JsonArray)
                 ?: throw IllegalStateException("KEY(\"PageCfg\") doesn't exist")
@@ -122,14 +136,25 @@ object HomeTabConfig {
     }
 }
 
-class PageConfig private constructor(private val tabs: MutableList<String>) : Iterable<String> {
+class PageConfig private constructor(pages: List<String>) : Iterable<String> {
 
-    val tabList get() = tabs.toList()
+    private val _tabs: MutableList<String> = pages.toMutableList()
+    val tabs: List<String> get() = _tabs.toList()
 
-    fun getSize(): Int = tabs.size
-    fun get(index: Int): String = tabs[index]
+    /**
+     * total count of tabs
+     */
+    val size: Int get() = _tabs.size
 
-    fun getAsPage(index: Int): AbsPage =
+    /**
+     * get page identifier by [index]
+     */
+    operator fun get(index: Int): String = _tabs[index]
+
+    /**
+     * create instance of AbsPage by [index]
+     */
+    fun initiate(index: Int): AbsPage =
         when (get(index)) {
             Pages.SONG     -> SongPage()
             Pages.ALBUM    -> AlbumPage()
@@ -143,7 +168,7 @@ class PageConfig private constructor(private val tabs: MutableList<String>) : It
 
     companion object {
 
-        fun from(init: List<String>) = PageConfig(init.toMutableList())
+        fun from(tabs: List<String>) = PageConfig(tabs)
 
         val DEFAULT_CONFIG = PageConfig(
             mutableListOf(
@@ -161,9 +186,9 @@ class PageConfig private constructor(private val tabs: MutableList<String>) : It
     override fun iterator(): Iterator<String> =
         object : Iterator<String> {
             var current = 0
-            override fun hasNext(): Boolean = current < tabs.size
-            override fun next(): String = tabs[current++]
+            override fun hasNext(): Boolean = current < _tabs.size
+            override fun next(): String = _tabs[current++]
         }
 
-    override fun toString(): String = tabs.fold("PagerConfig:") { acc, i -> "$acc,$i" }
+    override fun toString(): String = _tabs.fold("PagerConfig:") { acc, i -> "$acc, $i" }
 }
