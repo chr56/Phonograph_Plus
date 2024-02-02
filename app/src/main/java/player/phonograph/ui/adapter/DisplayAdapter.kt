@@ -29,6 +29,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.Q
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -234,7 +236,7 @@ abstract class DisplayAdapter<I : Displayable>(
     }
 
     class DisplayPreloadImageCache<I : Displayable>(size: Int) :
-            AbsPreloadImageCache<I, PaletteBitmap>(size, IMPL_SPARSE_ARRAY) {
+            AbsPreloadImageCache<I, PaletteBitmap>(size, if (SDK_INT >= Q) IMPL_SPARSE_ARRAY else IMPL_SCATTER_MAP) {
 
         suspend fun read(context: Context, key: I): PaletteBitmap = load(context, key)
 
