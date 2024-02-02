@@ -49,6 +49,7 @@ import android.view.Menu
 import android.view.MenuItem.SHOW_AS_ACTION_ALWAYS
 import android.view.View
 import android.view.ViewGroup
+import kotlin.math.min
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
@@ -165,7 +166,7 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
         pagerAdapter = HomePagerAdapter(this, homeTabConfig)
         binding.pager.apply {
             adapter = pagerAdapter
-            offscreenPageLimit = if (pagerAdapter.itemCount > 1) pagerAdapter.itemCount - 1 else 1
+            offscreenPageLimit = min(pagerAdapter.itemCount, 3)
         }
 
         // TabLayout
