@@ -8,13 +8,13 @@ import android.os.Bundle
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
-import player.phonograph.ui.fragments.HomeFragment
+import player.phonograph.ui.fragments.MainFragment
 
 // todo no more AbsMusicServiceFragment
 abstract class AbsPage : AbsMusicServiceFragment() {
 
-    protected val hostFragment: HomeFragment
-        get() = parentFragment?.let { it as HomeFragment } ?: throw IllegalStateException("${this::class.simpleName} hasn't attach to HomeFragment")
+    protected val hostFragment: MainFragment
+        get() = parentFragment?.let { it as MainFragment } ?: throw IllegalStateException("${this::class.simpleName} hasn't attach to MainFragment")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

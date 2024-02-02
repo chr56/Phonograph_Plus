@@ -32,7 +32,9 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withStarted
@@ -52,10 +54,22 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
-class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks {
+class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
+
+    val mainActivity: MainActivity get() = requireActivity() as MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mainActivity.lifecycle.addObserver(
+            object : DefaultLifecycleObserver {
+                override fun onCreate(owner: LifecycleOwner) {
+                    super.onCreate(owner)
+                    @Suppress("DEPRECATION")
+                    setHasOptionsMenu(true)
+                    //todo: replace `setHasOptionsMenu` with MenuProvider
+                }
+            }
+        )
         val store = Setting(requireContext())
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -268,7 +282,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     }
 
     companion object {
-        fun newInstance(): HomeFragment = HomeFragment()
+        fun newInstance(): MainFragment = MainFragment()
     }
 
     private class HomePagerAdapter(fragment: Fragment, var cfg: PageConfig) : FragmentStateAdapter(fragment) {

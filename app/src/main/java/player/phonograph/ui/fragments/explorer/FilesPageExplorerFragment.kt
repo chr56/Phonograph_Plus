@@ -13,7 +13,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.components.popup.ListOptionsPopup
-import player.phonograph.ui.fragments.HomeFragment
+import player.phonograph.ui.fragments.MainFragment
 import player.phonograph.ui.views.StatusBarView
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,11 +34,11 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel>()
         adapter.dataSet = model.currentFiles.value.toMutableList()
     }
 
-    private var _homeFragment: SoftReference<HomeFragment?> = SoftReference(null)
-    var homeFragment: HomeFragment?
-        get() = _homeFragment.get()
+    private var _mainFragment: SoftReference<MainFragment?> = SoftReference(null)
+    var mainFragment: MainFragment?
+        get() = _mainFragment.get()
         set(value) {
-            _homeFragment = SoftReference(value)
+            _mainFragment = SoftReference(value)
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -139,7 +139,7 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel>()
 
     private fun calculateHeight(): Int {
         val statusBarHeight = requireActivity().findViewById<StatusBarView>(R.id.status_bar)?.height ?: 8
-        val appbarHeight = homeFragment?.totalHeaderHeight ?: 0
+        val appbarHeight = mainFragment?.totalHeaderHeight ?: 0
         val innerAppBarHeight = binding.innerAppBar.height
         return statusBarHeight + innerAppBarHeight + appbarHeight // + homeFragment.totalHeaderHeight //todo
     }

@@ -20,7 +20,6 @@
 -keepnames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.pages.PlaylistPage {<methods>;}
 -keepnames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.pages.**Page extends player.phonograph.ui.fragments.pages.AbsDisplayPage
 -keepnames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.player.** extends androidx.fragment.app.Fragment {public <methods>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.HomeFragment {public <methods>;}
 
 -keepclassmembernames class player.phonograph.ui.components.popup.ListOptionsPopup {public <methods>;}
 
@@ -46,7 +45,6 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.search.SearchResultPageFragment {abstract <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.dialogs.HomeTabConfigDialog$PageTabConfigAdapter {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.dialogs.ImageSourceConfigDialog$ImageSourceConfigAdapter {public <methods>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.HomeFragment$HomePagerAdapter {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.player.AlbumCoverPagerAdapter {public <methods>;}
 
 -keep, allowoptimization, allowshrinking class player.phonograph.util.permissions.CheckKt { *; }
