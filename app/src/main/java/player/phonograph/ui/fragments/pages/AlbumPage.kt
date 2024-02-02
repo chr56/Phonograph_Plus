@@ -32,7 +32,7 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
     override fun initAdapter(): DisplayAdapter<Album> {
         val displayConfig = displayConfig()
         return AlbumDisplayAdapter(
-            hostFragment.mainActivity,
+            mainActivity,
             adapterDisplayConfig.copy(layoutStyle = displayConfig.layout, usePalette = displayConfig.colorFooter),
         )
     }

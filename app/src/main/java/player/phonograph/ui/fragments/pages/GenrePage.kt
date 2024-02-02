@@ -30,7 +30,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
     override fun displayConfig(): PageDisplayConfig = GenrePageDisplayConfig(requireContext())
 
     override fun initAdapter(): DisplayAdapter<Genre> {
-        return GenreDisplayAdapter(hostFragment.mainActivity)
+        return GenreDisplayAdapter(mainActivity)
     }
 
     companion object {

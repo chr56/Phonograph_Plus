@@ -29,7 +29,7 @@ class FilesPage : AbsPage() {
         super.onViewCreated(view, savedInstanceState)
 
         explorer = FilesPageExplorerFragment()
-        explorer.mainFragment = hostFragment
+        explorer.mainFragment = mainFragment
         explorer.initModel(model)
 
         childFragmentManager.commitNow {

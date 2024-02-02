@@ -87,9 +87,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
     override fun displayConfig(): PageDisplayConfig = PlaylistPageDisplayConfig(requireContext())
 
     override fun initAdapter(): DisplayAdapter<Playlist> {
-        return PlaylistDisplayAdapter(
-            hostFragment.mainActivity,
-        )
+        return PlaylistDisplayAdapter(mainActivity)
     }
 
     private fun setUpFloatingActionButton() {

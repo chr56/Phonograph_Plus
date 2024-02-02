@@ -45,13 +45,13 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
     override fun initAdapter(): DisplayAdapter<Song> {
         val displayConfig = displayConfig()
         return SongDisplayAdapter(
-            hostFragment.mainActivity,
+            mainActivity,
             adapterDisplayConfig.copy(layoutStyle = displayConfig.layout, usePalette = displayConfig.colorFooter),
         )
     }
 
     override fun configAppBar(panelToolbar: Toolbar) {
-        val context = hostFragment.mainActivity
+        val context = mainActivity
         attach(context, panelToolbar.menu) {
             rootMenu.add(this, NONE, NONE, 1, getString(R.string.action_play)) {
                 icon = context

@@ -4,13 +4,18 @@
 
 package player.phonograph.ui.fragments.pages
 
+import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.MainFragment
 
-// todo no more AbsMusicServiceFragment
+// todo: remove AbsMusicServiceFragment
 abstract class AbsPage : AbsMusicServiceFragment() {
 
-    protected val hostFragment: MainFragment
-        get() = parentFragment?.let { it as MainFragment } ?: throw IllegalStateException("${this::class.simpleName} hasn't attach to MainFragment")
+    protected val mainFragment: MainFragment
+        get() = (parentFragment as? MainFragment)
+            ?: throw IllegalStateException("${this::class.simpleName} hasn't attach to MainFragment")
+
+    protected val mainActivity: MainActivity get() = mainFragment.mainActivity
+
     open fun onBackPress(): Boolean = false
 }

@@ -33,7 +33,6 @@ import androidx.lifecycle.withResumed
 import androidx.recyclerview.widget.GridLayoutManager
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu.NONE
@@ -73,7 +72,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
                 binding.container.paddingLeft,
                 binding.container.paddingTop,
                 binding.container.paddingRight,
-                hostFragment.totalAppBarScrollingRange + verticalOffset
+                mainFragment.totalAppBarScrollingRange + verticalOffset
             )
         }
 
@@ -132,11 +131,11 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
 
     private fun initRecyclerView() {
 
-        layoutManager = GridLayoutManager(hostFragment.requireContext(), displayConfig().gridSize)
+        layoutManager = GridLayoutManager(mainActivity, displayConfig().gridSize)
         adapter = initAdapter()
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(
-            hostFragment.mainActivity,
+            mainActivity,
             ThemeColor.accentColor(App.instance.applicationContext)
         )
         binding.recyclerView.also {
@@ -150,7 +149,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         binding.panel.setExpanded(false)
         binding.panel.addOnOffsetChangedListener(innerAppbarOffsetListener)
 
-        val context = hostFragment.mainActivity
+        val context = mainActivity
         context.attach(binding.panelToolbar.menu) {
             menuItem(NONE, NONE, 999, getString(R.string.action_settings)) {
                 icon = context.getTintedDrawable(
@@ -159,11 +158,11 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
                 )
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
-                    hostFragment.popup.onShow = ::configPopup
-                    hostFragment.popup.onDismiss = ::dismissPopup
-                    hostFragment.popup.showAtLocation(
+                    mainFragment.popup.onShow = ::configPopup
+                    mainFragment.popup.onDismiss = ::dismissPopup
+                    mainFragment.popup.showAtLocation(
                         binding.root, Gravity.TOP or Gravity.END, 0,
-                        8 + hostFragment.totalHeaderHeight + binding.panel.height
+                        8 + mainFragment.totalHeaderHeight + binding.panel.height
                     )
                     true
                 }
@@ -175,7 +174,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
 
         configAppBar(binding.panelToolbar)
 
-        hostFragment.addOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
+        mainFragment.addOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
     }
 
     protected open fun configAppBar(panelToolbar: Toolbar) {}
@@ -242,7 +241,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         super.onDestroyView()
 
         binding.panel.removeOnOffsetChangedListener(innerAppbarOffsetListener)
-        hostFragment.removeOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
+        mainFragment.removeOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
         _viewBinding = null
     }
 

@@ -61,7 +61,7 @@ class FlattenFolderPage : AbsPage() {
                 binding.container.paddingLeft,
                 binding.container.paddingTop,
                 binding.container.paddingRight,
-                hostFragment.totalAppBarScrollingRange + verticalOffset
+                mainFragment.totalAppBarScrollingRange + verticalOffset
             )
         }
 
@@ -96,7 +96,7 @@ class FlattenFolderPage : AbsPage() {
         binding.panel.setExpanded(false)
         binding.panel.addOnOffsetChangedListener(innerAppbarOffsetListener)
 
-        val context = hostFragment.mainActivity
+        val context = mainActivity
         context.attach(binding.panelToolbar.menu) {
             menuItem(Menu.NONE, Menu.NONE, 999, getString(R.string.action_settings)) {
                 icon = context.getTintedDrawable(
@@ -105,11 +105,11 @@ class FlattenFolderPage : AbsPage() {
                 )
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
-                    hostFragment.popup.onShow = ::configPopup
-                    hostFragment.popup.onDismiss = ::dismissPopup
-                    hostFragment.popup.showAtLocation(
+                    mainFragment.popup.onShow = ::configPopup
+                    mainFragment.popup.onDismiss = ::dismissPopup
+                    mainFragment.popup.showAtLocation(
                         binding.root, Gravity.TOP or Gravity.END, 0,
-                        8 + hostFragment.totalHeaderHeight + binding.panel.height
+                        8 + mainFragment.totalHeaderHeight + binding.panel.height
                     )
                     true
                 }
@@ -117,7 +117,7 @@ class FlattenFolderPage : AbsPage() {
         }
         binding.panelToolbar.setTitleTextColor(requireContext().primaryTextColor(requireContext().nightMode))
 
-        hostFragment.addOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
+        mainFragment.addOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
     }
 
     private fun configPopup(popup: ListOptionsPopup) {
@@ -189,17 +189,17 @@ class FlattenFolderPage : AbsPage() {
         linearLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         songCollectionDisplayAdapter = SongCollectionDisplayAdapter(
-            hostFragment.mainActivity,
+            mainFragment.mainActivity,
             ::onFolderClick
         )
 
         songAdapter = SongDisplayAdapter(
-            hostFragment.mainActivity,
+            mainFragment.mainActivity,
             ConstDisplayConfig(ItemLayoutStyle.LIST, false)
         )
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(
-            hostFragment.mainActivity,
+            mainFragment.mainActivity,
             ThemeColor.accentColor(App.instance.applicationContext)
         )
         binding.recyclerView.layoutManager = linearLayoutManager
@@ -253,6 +253,6 @@ class FlattenFolderPage : AbsPage() {
     override fun onDestroyView() {
         super.onDestroyView()
         binding.panel.removeOnOffsetChangedListener(innerAppbarOffsetListener)
-        hostFragment.removeOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
+        mainFragment.removeOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
     }
 }

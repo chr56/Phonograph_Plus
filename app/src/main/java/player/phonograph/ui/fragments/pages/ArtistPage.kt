@@ -33,7 +33,7 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>>() {
     override fun initAdapter(): DisplayAdapter<Artist> {
         val displayConfig = displayConfig()
         return ArtistDisplayAdapter(
-            hostFragment.mainActivity,
+            mainActivity,
             adapterDisplayConfig.copy(layoutStyle = displayConfig.layout, usePalette = displayConfig.colorFooter),
         )
     }
