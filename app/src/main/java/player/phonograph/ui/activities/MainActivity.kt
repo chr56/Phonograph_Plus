@@ -16,7 +16,6 @@ import mt.tint.viewtint.setItemTextColors
 import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.BuildConfig
-import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.UPGRADABLE
 import player.phonograph.VERSION_INFO
@@ -27,6 +26,7 @@ import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.mechanism.Update
 import player.phonograph.mechanism.setting.HomeTabConfig
+import player.phonograph.mechanism.setting.PageConfig
 import player.phonograph.mechanism.setting.StyleConfig
 import player.phonograph.model.infoString
 import player.phonograph.model.pages.Pages
@@ -122,9 +122,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 val setting = Setting(this)
                 lifecycleScope.launch(Dispatchers.Main) {
                     lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                        setting[Keys.homeTabConfigJsonString].flow.distinctUntilChanged().collect {
+                        setting[Keys.homeTabConfigJsonString].flow.distinctUntilChanged().collect { raw ->
+                            val pageConfig: PageConfig = HomeTabConfig.parseHomeTabConfig(raw)
                             withStarted {
-                                setupDrawerMenu(drawerBinding.navigationView.menu)
+                                setupDrawerMenu(drawerBinding.navigationView.menu, pageConfig)
                             }
                         }
                     }
@@ -161,14 +162,14 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
     override fun requestPermissions() {} // not allow
 
-    private fun setupDrawerMenu(menu: Menu) {
+    private fun setupDrawerMenu(menu: Menu, pageConfig: PageConfig) {
         menu.clear()
         attach(this, menu) {
             val activity = this@MainActivity
 
             // page chooser
             val mainGroup = 999999
-            for ((page, tab) in HomeTabConfig.homeTabConfig.withIndex()) {
+            for ((page, tab) in pageConfig.withIndex()) {
                 menuItem {
                     groupId = mainGroup
                     icon = context.getTintedDrawable(Pages.getTintedIconRes(tab), textColorPrimary)
