@@ -6,6 +6,7 @@ package player.phonograph.coil
 
 import androidx.annotation.IntDef
 import androidx.collection.LruCache
+import androidx.collection.MutableScatterMap
 import android.content.Context
 import android.util.LongSparseArray
 
@@ -14,6 +15,7 @@ abstract class AbsPreloadImageCache<K, G : Any>(size: Int, @CacheImplementation 
     private val cache: Cache<G> = when (type) {
         IMPL_LRU          -> Cache.LruCacheImpl(size)
         IMPL_SPARSE_ARRAY -> Cache.SparseArrayCacheImpl(size)
+        IMPL_SCATTER_MAP  -> Cache.ScatterMapCacheImpl(size)
         else              -> throw IllegalArgumentException("Unknown cache type: $type")
     }
 
@@ -59,13 +61,22 @@ abstract class AbsPreloadImageCache<K, G : Any>(size: Int, @CacheImplementation 
             override fun get(key: Long): V? = cache[key]
             override fun set(key: Long, value: V) = cache.put(key, value)
         }
+
+        class ScatterMapCacheImpl<V>(initialCapacity: Int) : Cache<V> {
+            private val cache: MutableScatterMap<Long, V> = MutableScatterMap(initialCapacity)
+            override fun get(key: Long): V? = cache[key]
+            override fun set(key: Long, value: V) {
+                cache.put(key, value)
+            }
+        }
     }
 
     companion object {
         const val IMPL_LRU = 0
         const val IMPL_SPARSE_ARRAY = 1
+        const val IMPL_SCATTER_MAP = 2
 
-        @IntDef(IMPL_LRU, IMPL_SPARSE_ARRAY)
+        @IntDef(IMPL_LRU, IMPL_SPARSE_ARRAY, IMPL_SCATTER_MAP)
         @Retention(AnnotationRetention.SOURCE)
         @Target(AnnotationTarget.VALUE_PARAMETER)
         annotation class CacheImplementation
