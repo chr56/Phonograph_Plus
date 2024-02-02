@@ -9,6 +9,7 @@ import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.size.Size
 import player.phonograph.R
+import player.phonograph.coil.target.PaletteBitmap
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
 import androidx.core.graphics.drawable.toBitmapOrNull
@@ -25,11 +26,11 @@ import android.util.LruCache
  */
 class CoverLoader(private val context: Context) {
 
-    private val cache = LruCache<Long, Image>(4)
+    private val cache = LruCache<Long, PaletteBitmap>(4)
     private val loader = Coil.imageLoader(context)
 
     fun load(song: Song, callback: (Bitmap?, Int) -> Unit): Disposable? {
-        val cachedImage = cache[song.id]
+        val cachedImage: PaletteBitmap? = cache[song.id]
         if (cachedImage != null) {
             // cache hit
             callback(cachedImage.bitmap, cachedImage.paletteColor)
@@ -46,7 +47,7 @@ class CoverLoader(private val context: Context) {
                                 val bitmap =
                                     if (result is BitmapDrawable) result.bitmap else result.toBitmapOrNull()
                                 if (bitmap != null) {
-                                    cache.put(song.id, Image(bitmap, paletteColor))
+                                    cache.put(song.id, PaletteBitmap(bitmap, paletteColor))
                                 }
                                 callback(bitmap, paletteColor)
                             }
@@ -94,6 +95,4 @@ class CoverLoader(private val context: Context) {
     fun terminate() {
         cache.evictAll()
     }
-
-    private data class Image(val bitmap: Bitmap, val paletteColor: Int)
 }
