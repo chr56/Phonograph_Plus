@@ -99,25 +99,21 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
         val store = Setting(requireContext())
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                store[Keys.homeTabConfigJsonString].flow.distinctUntilChanged().collect { raw ->
-                    val config: PageConfig = HomeTabConfig.parseHomeTabConfig(raw)
-                    withStarted {
-                        loadPages(config)
-                    }
-                }
-            }
-        }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                store[Keys.rememberLastTab].flow.distinctUntilChanged().collect { rememberLastTab ->
+
+                val homeTabConfigFlow = store[Keys.homeTabConfigJsonString].flow.distinctUntilChanged()
+
+                homeTabConfigFlow.collect { raw ->
+                    val pageConfig: PageConfig = HomeTabConfig.parseHomeTabConfig(raw)
+
+                    val rememberLastTab = lifecycleScope.async(Dispatchers.IO) {
+                        Setting(requireContext())[Keys.rememberLastTab].flowData()
+                    }.await()
                     val lastPage = lifecycleScope.async(Dispatchers.IO) {
                         Setting(requireContext())[Keys.lastPage].flowData()
                     }.await()
+
                     withStarted {
-                        if (rememberLastTab) {
-                            binding.pager.currentItem = lastPage
-                            mainActivity.switchPageChooserTo(lastPage)
-                        }
+                        loadPages(pageConfig, if (rememberLastTab) lastPage else -1)
                     }
                 }
             }
@@ -177,24 +173,27 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
     //region Pages
     private var pagerAdapter: HomePagerAdapter? = null
 
-    private fun loadPages(pageConfig: PageConfig) {
+    private fun loadPages(pageConfig: PageConfig, preferredPosition: Int) {
 
-        var newPosition = -1
+        val oldAdapter: HomePagerAdapter? = pagerAdapter
 
-        val oldAdapter = pagerAdapter
-        if (oldAdapter != null) {
+        val targetPosition = if (oldAdapter != null) {
+            // from old adapter
             val oldPosition = binding.pager.currentItem.coerceAtLeast(0)
             val currentPage = oldAdapter.pageConfig[oldPosition]
-            pageConfig.tabs.forEachIndexed { index, page ->
-                if (page == currentPage) {
-                    newPosition = index
-                }
-            }
+            val newPosition = pageConfig.tabs.indexOf(currentPage)
+            newPosition.coerceIn(0, pageConfig.size - 1)
+        } else if (preferredPosition > -1) {
+            // from Argument
+            preferredPosition.coerceIn(0, pageConfig.size - 1)
+        } else {
+            // first page by default
+            0
         }
 
         setupViewPager(pageConfig)
-        if (newPosition < 0) newPosition = 0
-        binding.pager.currentItem = newPosition
+        binding.pager.setCurrentItem(targetPosition, false)
+        mainActivity.switchPageChooserTo(targetPosition)
     }
 
     private fun setupViewPager(homeTabConfig: PageConfig) {
