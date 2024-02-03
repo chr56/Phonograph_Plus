@@ -491,24 +491,6 @@ class MusicService : MediaBrowserServiceCompat() {
         collect(Keys.broadcastCurrentPlayerState) { broadcastCurrentPlayerState ->
             throttledTimer.broadcastCurrentPlayerState = broadcastCurrentPlayerState
         }
-        collect(Keys.resumeAfterAudioFocusGain) {resumeAfterAudioFocusGain ->
-            controller.resumeAfterAudioFocusGain = resumeAfterAudioFocusGain
-        }
-        collect(Keys.audioDucking) {audioDucking ->
-            controller.audioDucking = audioDucking
-        }
-        collect(Keys.gaplessPlayback) { gaplessPlayback ->
-            controller.switchGaplessPlayback(gaplessPlayback)
-            controller.handler.apply {
-                if (gaplessPlayback) {
-                    removeMessages(RE_PREPARE_NEXT_PLAYER)
-                    sendEmptyMessage(RE_PREPARE_NEXT_PLAYER)
-                } else {
-                    removeMessages(CLEAN_NEXT_PLAYER)
-                    sendEmptyMessage(CLEAN_NEXT_PLAYER)
-                }
-            }
-        }
     }
 
     fun replaceLyrics(lyrics: LrcLyrics?) = controller.replaceLyrics(lyrics)

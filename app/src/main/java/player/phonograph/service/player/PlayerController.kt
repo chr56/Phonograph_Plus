@@ -13,6 +13,7 @@ import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Keys
+import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
 import player.phonograph.util.registerReceiverCompat
 import player.phonograph.util.warning
@@ -35,10 +36,14 @@ import android.provider.MediaStore
 import android.util.ArrayMap
 import android.util.Log
 import android.widget.Toast
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.io.File
 import java.lang.ref.WeakReference
 
@@ -75,7 +80,8 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
 
     override fun onCreate(musicService: MusicService) {
         _service = musicService
-        _audioPlayer = AudioPlayer(service, Setting(service)[Keys.gaplessPlayback].data, this)
+
+        _audioPlayer = AudioPlayer(service, false /* default */, this)
 
         _wakeLock =
             (service.getSystemService(Context.POWER_SERVICE) as PowerManager)
@@ -93,6 +99,8 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
         _handler = ControllerHandler(this, thread.looper)
 
         _lyricsUpdater = LyricsUpdater(queueManager.currentSong)
+
+        observeSettings(musicService)
     }
 
     override fun onDestroy(musicService: MusicService) {
@@ -118,6 +126,38 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
 
         _service = null
     }
+
+
+    private fun observeSettings(service: MusicService) {
+        fun <T> collect(key: PrimitiveKey<T>, collector: FlowCollector<T>) {
+            service.coroutineScope.launch(SupervisorJob()) {
+                Setting(service)[key].flow.distinctUntilChanged().collect(collector)
+            }
+        }
+        collect(Keys.audioDucking) { value ->
+            audioDucking = value
+        }
+        collect(Keys.resumeAfterAudioFocusGain) { value ->
+            resumeAfterAudioFocusGain = value
+        }
+        collect(Keys.gaplessPlayback) { gaplessPlayback ->
+            audioPlayer.gaplessPlayback = gaplessPlayback
+            handler.apply {
+                if (gaplessPlayback) {
+                    removeMessages(ControllerHandler.RE_PREPARE_NEXT_PLAYER)
+                    sendEmptyMessage(ControllerHandler.RE_PREPARE_NEXT_PLAYER)
+                } else {
+                    removeMessages(ControllerHandler.CLEAN_NEXT_PLAYER)
+                    sendEmptyMessage(ControllerHandler.CLEAN_NEXT_PLAYER)
+                }
+            }
+        }
+        collect(Keys.broadcastSynchronizedLyrics) { value ->
+            broadcastSynchronizedLyrics = value
+        }
+    }
+
+    private var broadcastSynchronizedLyrics: Boolean = false
 
     /**
      * release taken resources but not vitals
@@ -349,12 +389,13 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
 
     fun isPlaying() = audioPlayer.isInitialized && audioPlayer.isPlaying()
 
-    val positionInTrack: Int get() =
-        if (audioPlayer.isInitialized) {
-            audioPlayer.position()
-        } else {
-            -1
-        }
+    val positionInTrack: Int
+        get() =
+            if (audioPlayer.isInitialized) {
+                audioPlayer.position()
+            } else {
+                -1
+            }
 
     /**
      * Jump to beginning of this song
@@ -626,8 +667,8 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
                 }
 
                 DUCK                    -> {
-                    controllerRef.get()?.let {
-                        if (Setting(it.service)[Keys.audioDucking].data) {
+                    controllerRef.get()?.let { controller ->
+                        if (controller.audioDucking) {
                             currentDuckVolume -= .05f
                             if (currentDuckVolume > .2f) {
                                 sendEmptyMessageDelayed(DUCK, 10)
@@ -637,13 +678,13 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
                         } else {
                             currentDuckVolume = 1f
                         }
-                        it.audioPlayer.setVolume(currentDuckVolume)
+                        controller.audioPlayer.setVolume(currentDuckVolume)
                     }
                 }
 
                 UNDUCK                  -> {
-                    controllerRef.get()?.let {
-                        if (Setting(it.service)[Keys.audioDucking].data) {
+                    controllerRef.get()?.let { controller ->
+                        if (controller.audioDucking) {
                             currentDuckVolume += .03f
                             if (currentDuckVolume < 1f) {
                                 sendEmptyMessageDelayed(UNDUCK, 10)
@@ -653,7 +694,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
                         } else {
                             currentDuckVolume = 1f
                         }
-                        it.audioPlayer.setVolume(currentDuckVolume)
+                        controller.audioPlayer.setVolume(currentDuckVolume)
                     }
                 }
 
@@ -678,9 +719,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
          */
         private fun broadcastLyrics(): Boolean {
             val controller = controllerRef.get() ?: return false
-            if (controller.playerState != PlayerState.PLAYING ||
-                !Setting(controller.service)[Keys.broadcastSynchronizedLyrics].data
-            ) {
+            if (controller.playerState != PlayerState.PLAYING || controller.broadcastSynchronizedLyrics) {
                 controller.broadcastStopLyric()
                 return false
             }
@@ -721,10 +760,6 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
 
     private fun setPlayerSpeedImpl(speed: Float) {
         audioPlayer.speed = speed
-    }
-
-    fun switchGaplessPlayback(gaplessPlayback: Boolean) {
-        audioPlayer.gaplessPlayback = gaplessPlayback
     }
 
     private fun broadcastStopLyric() = StatusBarLyric.stopLyric()
