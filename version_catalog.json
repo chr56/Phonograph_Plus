@@ -1,6 +1,22 @@
 {
   "versions": [
     {
+      "channel": "preview",
+      "versionName": "1.4.5-dev1",
+      "versionCode": 1044,
+      "date": 1706857000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.4.5-dev1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>改进 加快启动</li><li>改进 介绍页中备份导入成功后不再次显示介绍页</li><li>修复 文件夹页面中的图标不正确</li><li>修复 两个文件夹选项卡</li><li>修复 搜索中选项卡文本颜色的异常</li><li>翻译 更新土耳其语(volkspolizist)，德语 (conk)</li><li>开发 清理代码，更新依赖</li></ol>",
+        "en": "<ol><li>Improve: App Start-up Performance</li><li>Improve: do not show Intro again after successful backup import in Intro</li><li>Fix: incorrect folder icon in Folder Page</li><li>Fix: duplicated Folder tabs for new users</li><li>Fix: issue of tab text color in Search</li><li>Translation: update Turkish (by volkspolizist), German (by conk)</li><li>Development: cleanup code, update dependencies</li></ol>"
+      }
+    },
+    {
       "channel": "stable",
       "versionName": "1.4.4",
       "versionCode": 1044,
@@ -14,22 +30,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>修复 从部分文件管理器中，无法打开播放位于外部(物理) SD 卡中的音频文件</li><li>修复 从播放通知或蓝牙设备等中跳过最后一首歌曲时也会异常暂停，即便在队列重复模式下</li><li>修复 在某些罕见情况下，对播放队列重新排序时崩溃</li><li>修复 在播放队列为空的情况下，从外部播放时的异样</li><li>新增 预加载图像，以避免在某些情况下滚动时卡顿</li><li>改进 LRC 歌词检测与歌词显示</li><li>改进 使用 LyricsGetterAPi v6</li><li>翻译 更新波兰语(cookie)，巴西葡萄牙语 (EddieMattos)</li><li>开发 更新 AGP 至 8.2.2，更新 kotlin 至 1.9.22，更新依赖</li></ol>",
         "en": "<ol><li>Fix: problems when opening and playing audio files in physical external SD card from some file managers</li><li>Fix: abnormally pause when skipping final song from playback notification or connected Bluetooth devices etc., even if in Queue Repeat mode</li><li>Fix: crash when reordering in Playing Queue on some rare circumstances</li><li>Fix: some glitch when playing from outside if playing queue is empty</li><li>New: preload images to avoid lags when scroll in some circumstance</li><li>Improve: LRC lyrics detections and lyrics display</li><li>Improve: use LyricsGetterAPi v6</li><li>Translation: update Polish (by cooky), Portuguese Brazilian (by EddieMattos)</li><li>Development: upgrade AGP to 8.2.2, upgrade kotlin to 1.9.22, update dependencies</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "1.4.3",
-      "versionCode": 1043,
-      "date": 1704638000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.4.3"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 部分旧设备上无法在显示任何图像</li><li>修复 打开操作对话框的一些瑕疵</li><li>改进 图像加载不再导致快速滚动时的严重延迟感</li><li>翻译 更新土耳其语(volkspolizist), 西班牙语(guwsvnd5t)</li><li>开发 清理代码</li></ol>",
-        "en": "<ol><li>Fix: images can not be shown on some older devices</li><li>Fix: some flaws of Open With action dialog</li><li>Improve: image loading no longer causes serious latency when fast scrolling</li><li>Translation: update Turkish (by volkspolizist), Spanish (by guwsvnd5t)</li><li>Development: cleanup code</li></ol>"
       }
     },
     {
