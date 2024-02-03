@@ -7,6 +7,8 @@ import player.phonograph.mechanism.lyrics.LyricsUpdater
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicService
+import player.phonograph.service.ServiceComponent
+import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
@@ -44,25 +46,38 @@ import java.lang.ref.WeakReference
 /**
  * @author chr_56 & Abou Zeid (kabouzeid) (original author)
  */
-class PlayerController(internal val service: MusicService) : Playback.PlaybackCallbacks {
+class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
 
-    private val queueManager = service.queueManager
+    private var _service: MusicService? = null
+    internal val service: MusicService get() = _service!!
 
-    private val audioPlayer: AudioPlayer
 
-    private val wakeLock: WakeLock
-    private val audioFocusManager: AudioFocusManager =
-        AudioFocusManager(this)
+    private var _audioPlayer: AudioPlayer? = null
+    private val audioPlayer: AudioPlayer get() = _audioPlayer!!
 
-    val handler: ControllerHandler
-    private var thread: HandlerThread
+    private var _wakeLock: WakeLock? = null
+    private val wakeLock: WakeLock get() = _wakeLock!!
 
-    private var lyricsUpdater: LyricsUpdater
 
-    init {
-        audioPlayer = AudioPlayer(service, Setting(service)[Keys.gaplessPlayback].data, this)
+    private var _handler: ControllerHandler? = null
+    val handler: ControllerHandler get() = _handler!!
 
-        wakeLock =
+    private var _thread: HandlerThread? = null
+    private val thread: HandlerThread get() = _thread!!
+
+    private val queueManager: QueueManager get() = service.queueManager
+
+    private var _lyricsUpdater: LyricsUpdater? = null
+    private val lyricsUpdater: LyricsUpdater get() = _lyricsUpdater!!
+
+    private var _audioFocusManager: AudioFocusManager? = null
+    private val audioFocusManager: AudioFocusManager get() = _audioFocusManager!!
+
+    override fun onCreate(musicService: MusicService) {
+        _service = musicService
+        _audioPlayer = AudioPlayer(service, Setting(service)[Keys.gaplessPlayback].data, this)
+
+        _wakeLock =
             (service.getSystemService(Context.POWER_SERVICE) as PowerManager)
                 .newWakeLock(
                     PowerManager.PARTIAL_WAKE_LOCK,
@@ -70,44 +85,53 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                 ).apply {
                     setReferenceCounted(false)
                 }
+        _audioFocusManager = AudioFocusManager(this)
 
         // setup handler
-        thread = HandlerThread("player_controller_handler_thread")
+        _thread = HandlerThread("player_controller_handler_thread")
         thread.start()
-        handler = ControllerHandler(this, thread.looper)
+        _handler = ControllerHandler(this, thread.looper)
 
-        lyricsUpdater = LyricsUpdater(queueManager.currentSong)
+        _lyricsUpdater = LyricsUpdater(queueManager.currentSong)
+    }
+
+    override fun onDestroy(musicService: MusicService) {
+
+        stopImp()
+        unregisterBecomingNoisyReceiver(service)
+
+        lyricsUpdater.clear()
+        _lyricsUpdater = null
+
+        thread.quitSafely()
+        handler.looper.quitSafely()
+        _thread = null
+        _handler = null
+
+
+        releaseWakeLock()
+        audioFocusManager.abandonAudioFocus()
+        audioPlayer.release()
+        _wakeLock = null
+        _audioFocusManager = null
+        _audioPlayer = null
+
+        _service = null
     }
 
     /**
      * release taken resources but not vitals
      */
-    fun releaseTakenResources() {
+    private fun releaseTakenResources() {
         releaseWakeLock()
         audioFocusManager.abandonAudioFocus()
     }
 
-    /**
-     * release vital resources
-     */
-    fun destroy() {
-        unregisterBecomingNoisyReceiver(service)
-        audioPlayer.release()
-        thread.quitSafely()
-        handler.looper.quitSafely()
-        lyricsUpdater.clear()
-    }
-
-    fun stopAndDestroy() {
-        stopImp()
-        destroy()
-    }
-
-    fun acquireWakeLock(milli: Long) {
+    private fun acquireWakeLock(milli: Long) {
         wakeLock.acquire(milli)
     }
 
-    fun releaseWakeLock() {
+    private fun releaseWakeLock() {
         if (wakeLock.isHeld) {
             wakeLock.release()
         }
@@ -187,7 +211,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         )
     }
 
-    var restored = false
+    private var restored = false
     fun restoreIfNecessary() {
         if (!restored) {
             val restoredPositionInTrack =
@@ -325,7 +349,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
 
     fun isPlaying() = audioPlayer.isInitialized && audioPlayer.isPlaying()
 
-    val positionInTrack: Int =
+    val positionInTrack: Int get() =
         if (audioPlayer.isInitialized) {
             audioPlayer.position()
         } else {
@@ -545,7 +569,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         QueuePreferenceManager(service).currentMillisecond = audioPlayer.position()
     }
 
-    val audioSessionId: Int = audioPlayer.audioSessionId
+    val audioSessionId: Int get() = audioPlayer.audioSessionId
 
     fun setVolume(vol: Float) = handler.request { playerController ->
         playerController.audioPlayer.setVolume(vol)

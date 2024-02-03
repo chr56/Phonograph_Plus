@@ -81,7 +81,7 @@ class MusicService : MediaBrowserServiceCompat() {
     val queueManager: QueueManager = get()
     private val queueChangeObserver: QueueObserver = initQueueChangeObserver()
 
-    private lateinit var controller: PlayerController
+    private val controller: PlayerController = PlayerController()
     private var playerStateObserver: PlayerStateObserver = initPlayerStateObserver()
 
     private val playNotificationManager: PlayingNotificationManger = PlayingNotificationManger()
@@ -103,7 +103,7 @@ class MusicService : MediaBrowserServiceCompat() {
         super.onCreate()
 
         // controller
-        controller = PlayerController(this)
+        controller.onCreate(this)
         controller.restoreIfNecessary()
 
         // observers & messages
@@ -271,29 +271,15 @@ class MusicService : MediaBrowserServiceCompat() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null) {
             if (intent.action != null) {
-                controller.restoreIfNecessary()
                 when (intent.action) {
-                    ACTION_TOGGLE_PAUSE          -> if (isPlaying) {
-                        pause()
-                    } else {
-                        play()
-                    }
-
+                    ACTION_TOGGLE_PAUSE          -> if (isPlaying) pause() else play()
                     ACTION_PAUSE                 -> pause()
                     ACTION_PLAY                  -> play()
                     ACTION_REWIND                -> back(false)
                     ACTION_SKIP                  -> playNextSong(false)
-                    ACTION_STOP_AND_QUIT_NOW     -> {
-                        stopSelf()
-                    }
-
-                    ACTION_STOP_AND_QUIT_PENDING -> {
-                        controller.quitAfterFinishCurrentSong = true
-                    }
-
-                    ACTION_CANCEL_PENDING_QUIT   -> {
-                        controller.quitAfterFinishCurrentSong = false
-                    }
+                    ACTION_STOP_AND_QUIT_NOW     -> stopSelf()
+                    ACTION_STOP_AND_QUIT_PENDING -> controller.quitAfterFinishCurrentSong = true
+                    ACTION_CANCEL_PENDING_QUIT   -> controller.quitAfterFinishCurrentSong = false
                 }
             }
         }
@@ -316,8 +302,8 @@ class MusicService : MediaBrowserServiceCompat() {
         mediaSessionController.mediaSession.release()
         unregisterReceiver(widgetIntentReceiver)
         mediaStoreObserverUtil.unregisterMediaStoreObserver(this)
-        controller.stopAndDestroy()
         controller.removeObserver(playerStateObserver)
+        controller.onDestroy(this)
         queueManager.removeObserver(queueChangeObserver)
         queueManager.apply {
             // todo
