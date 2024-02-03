@@ -7,12 +7,15 @@ package player.phonograph.service.player
 import coil.request.Disposable
 import player.phonograph.BuildConfig
 import player.phonograph.R
+import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
+import player.phonograph.repo.browser.MediaBrowserDelegate
 import player.phonograph.service.MusicService
 import player.phonograph.service.MusicService.Companion.MEDIA_SESSION_ACTION_TOGGLE_REPEAT
 import player.phonograph.service.MusicService.Companion.MEDIA_SESSION_ACTION_TOGGLE_SHUFFLE
 import player.phonograph.service.ServiceComponent
 import player.phonograph.service.notification.PlayingNotificationManger
+import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.service.util.MediaButtonIntentReceiver
@@ -21,6 +24,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
+import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART
@@ -70,15 +74,13 @@ class MediaSessionController : ServiceComponent {
                 mediaButtonReceiverPendingIntent
             )
         mediaSession.setMediaButtonReceiver(mediaButtonReceiverPendingIntent)
+
+        mediaSession.setCallback(mediaSessionCallback)
     }
 
     override fun onDestroy(musicService: MusicService) {
         _mediaSession = null
         _service = null
-    }
-
-    fun setMediaSessionCallback(mediaSessionCallback: MediaSessionCompat.Callback) {
-        mediaSession.setCallback(mediaSessionCallback)
     }
 
 
@@ -98,6 +100,94 @@ class MediaSessionController : ServiceComponent {
                     PlaybackStateCompat.ACTION_SEEK_TO
         )
 
+    private val mediaSessionCallback: MediaSessionCompat.Callback =
+        object : MediaSessionCompat.Callback() {
+            override fun onPlay() {
+                service.play()
+            }
+
+            override fun onPause() {
+                service.pause()
+            }
+
+            override fun onSkipToNext() {
+                service.playNextSong(false)
+            }
+
+            override fun onSkipToPrevious() {
+                service.back(false)
+            }
+
+            override fun onStop() {
+                service.stopSelf()
+            }
+
+            override fun onSeekTo(pos: Long) {
+                service.seek(pos.toInt())
+            }
+
+            val queueManager: QueueManager get() = service.queueManager
+
+            override fun onSetShuffleMode(shuffleMode: Int) {
+                when (shuffleMode) {
+                    PlaybackStateCompat.SHUFFLE_MODE_INVALID -> {}
+                    PlaybackStateCompat.SHUFFLE_MODE_NONE    -> queueManager.modifyShuffleMode(ShuffleMode.NONE)
+                    PlaybackStateCompat.SHUFFLE_MODE_ALL     -> queueManager.modifyShuffleMode(ShuffleMode.SHUFFLE)
+                    PlaybackStateCompat.SHUFFLE_MODE_GROUP   -> queueManager.modifyShuffleMode(ShuffleMode.SHUFFLE)
+                }
+            }
+
+            override fun onSetRepeatMode(repeatMode: Int) {
+                when (repeatMode) {
+                    PlaybackStateCompat.REPEAT_MODE_INVALID -> {}
+                    PlaybackStateCompat.REPEAT_MODE_ALL     -> queueManager.modifyRepeatMode(RepeatMode.REPEAT_QUEUE)
+                    PlaybackStateCompat.REPEAT_MODE_GROUP   -> queueManager.modifyRepeatMode(RepeatMode.REPEAT_QUEUE)
+                    PlaybackStateCompat.REPEAT_MODE_NONE    -> queueManager.modifyRepeatMode(RepeatMode.NONE)
+                    PlaybackStateCompat.REPEAT_MODE_ONE     -> queueManager.modifyRepeatMode(RepeatMode.REPEAT_SINGLE_SONG)
+                }
+            }
+
+            override fun onSetPlaybackSpeed(speed: Float) {
+                service.speed = speed
+            }
+
+            override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
+                return MediaButtonIntentReceiver.handleIntent(service, mediaButtonEvent)
+            }
+
+            override fun onCustomAction(action: String?, extras: Bundle?) {
+                when (action) {
+                    MEDIA_SESSION_ACTION_TOGGLE_SHUFFLE -> queueManager.toggleShuffle()
+                    MEDIA_SESSION_ACTION_TOGGLE_REPEAT  -> queueManager.cycleRepeatMode()
+                }
+            }
+
+            override fun onPlayFromMediaId(mediaId: String, extras: Bundle?) {
+                val request = MediaBrowserDelegate.playFromMediaId(service, mediaId, extras)
+                processRequest(request)
+            }
+
+            override fun onPlayFromSearch(query: String?, extras: Bundle?) {
+                val request = MediaBrowserDelegate.playFromSearch(service, query, extras)
+                processRequest(request)
+            }
+
+            private fun processRequest(request: PlayRequest) {
+                when (request) {
+                    PlayRequest.EmptyRequest     -> {}
+                    is PlayRequest.PlayAtRequest -> service.playSongAt(request.position)
+                    is PlayRequest.SongRequest   -> {
+                        queueManager.addSong(request.song, queueManager.currentSongPosition, false)
+                        service.playSongAt(queueManager.currentSongPosition)
+                    }
+
+                    is PlayRequest.SongsRequest  -> {
+                        queueManager.swapQueue(request.songs, request.position, false)
+                        service.playSongAt(0)
+                    }
+                }
+            }
+        }
 
     fun updatePlaybackState(isPlaying: Boolean, songProgressMillis: Long) {
         mediaSession.setPlaybackState(

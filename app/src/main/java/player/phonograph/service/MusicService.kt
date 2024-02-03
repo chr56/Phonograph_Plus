@@ -17,7 +17,6 @@ import player.phonograph.appwidgets.AppWidgetBig
 import player.phonograph.appwidgets.AppWidgetCard
 import player.phonograph.appwidgets.AppWidgetClassic
 import player.phonograph.appwidgets.AppWidgetSmall
-import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.repo.browser.MediaBrowserDelegate
@@ -27,7 +26,6 @@ import player.phonograph.service.notification.PlayingNotificationManger
 import player.phonograph.service.player.MSG_NOW_PLAYING_CHANGED
 import player.phonograph.service.player.MediaSessionController
 import player.phonograph.service.player.PlayerController
-import player.phonograph.service.player.PlayerController.ControllerHandler.Companion.CLEAN_NEXT_PLAYER
 import player.phonograph.service.player.PlayerController.ControllerHandler.Companion.RE_PREPARE_NEXT_PLAYER
 import player.phonograph.service.player.PlayerState
 import player.phonograph.service.player.PlayerStateObserver
@@ -37,7 +35,6 @@ import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_QUEUE
 import player.phonograph.service.queue.QueueObserver
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.service.util.MediaButtonIntentReceiver
 import player.phonograph.service.util.MediaStoreObserverUtil
 import player.phonograph.service.util.MusicServiceUtil
 import player.phonograph.service.util.SongPlayCountHelper
@@ -60,8 +57,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -115,7 +110,6 @@ class MusicService : MediaBrowserServiceCompat() {
         // notifications & media session
         coverLoader = CoverLoader(this)
         mediaSessionController.onCreate(this)
-        mediaSessionController.setMediaSessionCallback(initMediaSessionCallback())
         playNotificationManager.onCreate(this)
         sessionToken = mediaSessionController.mediaSession.sessionToken // MediaBrowserService
 
@@ -175,95 +169,6 @@ class MusicService : MediaBrowserServiceCompat() {
         override fun onReceivingMessage(msg: Int) {
             when (msg) {
                 MSG_NOW_PLAYING_CHANGED -> notifyChange(META_CHANGED)
-            }
-        }
-    }
-
-    private fun initMediaSessionCallback() = object : MediaSessionCompat.Callback() {
-        override fun onPlay() {
-            play()
-        }
-
-        override fun onPause() {
-            pause()
-        }
-
-        override fun onSkipToNext() {
-            playNextSong(false)
-        }
-
-        override fun onSkipToPrevious() {
-            back(false)
-        }
-
-        override fun onStop() {
-            stopSelf()
-        }
-
-        override fun onSeekTo(pos: Long) {
-            seek(pos.toInt())
-        }
-
-        override fun onSetShuffleMode(shuffleMode: Int) {
-            when (shuffleMode) {
-                PlaybackStateCompat.SHUFFLE_MODE_INVALID -> {}
-                PlaybackStateCompat.SHUFFLE_MODE_NONE    -> queueManager.modifyShuffleMode(ShuffleMode.NONE)
-                PlaybackStateCompat.SHUFFLE_MODE_ALL     -> queueManager.modifyShuffleMode(ShuffleMode.SHUFFLE)
-                PlaybackStateCompat.SHUFFLE_MODE_GROUP   -> queueManager.modifyShuffleMode(ShuffleMode.SHUFFLE)
-            }
-        }
-
-        override fun onSetRepeatMode(repeatMode: Int) {
-            when (repeatMode) {
-                PlaybackStateCompat.REPEAT_MODE_INVALID -> {}
-                PlaybackStateCompat.REPEAT_MODE_ALL     -> queueManager.modifyRepeatMode(RepeatMode.REPEAT_QUEUE)
-                PlaybackStateCompat.REPEAT_MODE_GROUP   -> queueManager.modifyRepeatMode(RepeatMode.REPEAT_QUEUE)
-                PlaybackStateCompat.REPEAT_MODE_NONE    -> queueManager.modifyRepeatMode(RepeatMode.NONE)
-                PlaybackStateCompat.REPEAT_MODE_ONE     -> queueManager.modifyRepeatMode(RepeatMode.REPEAT_SINGLE_SONG)
-            }
-        }
-
-        override fun onSetPlaybackSpeed(speed: Float) {
-            controller.setPlayerSpeed(speed)
-        }
-
-        override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
-            return MediaButtonIntentReceiver.handleIntent(this@MusicService, mediaButtonEvent)
-        }
-
-        override fun onCustomAction(action: String?, extras: Bundle?) {
-            when (action) {
-                MEDIA_SESSION_ACTION_TOGGLE_SHUFFLE -> queueManager.toggleShuffle()
-                MEDIA_SESSION_ACTION_TOGGLE_REPEAT  -> queueManager.cycleRepeatMode()
-            }
-            handleAndSendChangeInternal(PLAY_STATE_CHANGED)
-        }
-
-        override fun onPlayFromMediaId(mediaId: String, extras: Bundle?) {
-            val musicService = this@MusicService
-            val request = MediaBrowserDelegate.playFromMediaId(musicService, mediaId, extras)
-            processRequest(request)
-        }
-
-        override fun onPlayFromSearch(query: String?, extras: Bundle?) {
-            val musicService = this@MusicService
-            val request = MediaBrowserDelegate.playFromSearch(musicService, query, extras)
-            processRequest(request)
-        }
-
-        private fun processRequest(request: PlayRequest) {
-            when (request) {
-                PlayRequest.EmptyRequest     -> {}
-                is PlayRequest.PlayAtRequest -> playSongAt(request.position)
-                is PlayRequest.SongRequest   -> {
-                    queueManager.addSong(request.song, queueManager.currentSongPosition, false)
-                    playSongAt(queueManager.currentSongPosition)
-                }
-
-                is PlayRequest.SongsRequest  -> {
-                    queueManager.swapQueue(request.songs, request.position, false)
-                    playSongAt(0)
-                }
             }
         }
     }
@@ -369,7 +274,8 @@ class MusicService : MediaBrowserServiceCompat() {
 
     private fun handleChangeInternal(what: String) {
         when (what) {
-            PLAY_STATE_CHANGED -> {
+
+            PLAY_STATE_CHANGED                        -> {
                 // update playing notification
                 playNotificationManager.updateNotification(queueManager.currentSong)
                 mediaSessionController.updateMetaData(
@@ -393,7 +299,21 @@ class MusicService : MediaBrowserServiceCompat() {
                 throttledTimer.setCancelableNotificationTimer(5_000)
             }
 
-            META_CHANGED       -> {
+            REPEAT_MODE_CHANGED, SHUFFLE_MODE_CHANGED -> {
+                // just update playing notification
+                playNotificationManager.updateNotification(queueManager.currentSong)
+                mediaSessionController.updateMetaData(
+                    queueManager.currentSong,
+                    (queueManager.currentSongPosition + 1).toLong(),
+                    queueManager.playingQueue.size.toLong(),
+                    false
+                )
+                mediaSessionController.updatePlaybackState(
+                    controller.isPlaying(), controller.getSongProgressMillis().toLong()
+                )
+            }
+
+            META_CHANGED                              -> {
                 // update playing notification
                 playNotificationManager.updateNotification(queueManager.currentSong)
                 mediaSessionController.updateMetaData(
@@ -418,7 +338,7 @@ class MusicService : MediaBrowserServiceCompat() {
                 songPlayCountHelper.songMonitored = queueManager.currentSong // new
             }
 
-            QUEUE_CHANGED      -> {
+            QUEUE_CHANGED                             -> {
                 // update playing notification
                 mediaSessionController.updateMetaData(
                     queueManager.currentSong,
