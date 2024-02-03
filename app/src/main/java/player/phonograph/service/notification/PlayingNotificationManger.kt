@@ -11,7 +11,10 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.service.MusicService
-import player.phonograph.service.player.PlayerState
+import player.phonograph.service.player.PlayerState.PAUSED
+import player.phonograph.service.player.PlayerState.PLAYING
+import player.phonograph.service.player.PlayerState.PREPARING
+import player.phonograph.service.player.PlayerState.STOPPED
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
@@ -19,7 +22,6 @@ import player.phonograph.util.theme.createTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
 import androidx.annotation.RequiresApi
 import androidx.media.app.NotificationCompat
-import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -30,10 +32,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.media.MediaMetadata.*
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.N
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
@@ -47,6 +47,8 @@ class PlayingNotificationManger(private val service: MusicService) {
     private var notificationBuilder: XNotificationCompat.Builder
 
     init {
+        if (SDK_INT >= Build.VERSION_CODES.O) createNotificationChannel()
+
         notificationBuilder = XNotificationCompat.Builder(service, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(clickPendingIntent)
@@ -55,23 +57,15 @@ class PlayingNotificationManger(private val service: MusicService) {
             .setShowWhen(false)
             .setPriority(XNotificationCompat.PRIORITY_MAX)
             .setCategory(XNotificationCompat.CATEGORY_TRANSPORT)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) createNotificationChannel()
     }
 
     private lateinit var impl: Impl
 
-    @SuppressLint("ObsoleteSdkInt")
-    fun setUpNotification() {
-        impl = if (!Setting(service)[Keys.classicNotification].data && SDK_INT >= N) {
-            Impl24()
-        } else {
-            Impl0()
-        }
+    fun setUpNotification(classicStyle: Boolean) {
+        impl = if (classicStyle) Impl0() else Impl24()
     }
 
-    fun updateNotification() {
-        val song = service.queueManager.currentSong
+    fun updateNotification(song: Song) {
         if (song.id != -1L) {
             impl.update(song)
         } else {
@@ -86,35 +80,25 @@ class PlayingNotificationManger(private val service: MusicService) {
     }
 
     private fun postNotification(notification: OSNotification) {
-        when (service.isDestroyed) {
-            true  -> {
-                // service stopped
-                removeNotification()
-            }
-
-            false -> {
-                when (service.playerState) {
-                    PlayerState.PLAYING, PlayerState.PAUSED    -> {
-                        // playing
-                        notificationManager.notify(NOTIFICATION_ID, notification)
-                        service.startForeground(NOTIFICATION_ID, notification)
-                    }
-
-                    PlayerState.STOPPED, PlayerState.PREPARING -> {
-                        // pause
-                        notificationManager.notify(NOTIFICATION_ID, notification)
-                        service.stopForeground(STOP_FOREGROUND_DETACH)
-                    }
-                }
+        if (service.isDestroyed) {
+            // service stopped
+            removeNotification()
+        } else {
+            notificationManager.notify(NOTIFICATION_ID, notification)
+            when (service.playerState) {
+                PLAYING, PAUSED    -> service.startForeground(NOTIFICATION_ID, notification)
+                STOPPED, PREPARING -> service.stopForeground(STOP_FOREGROUND_DETACH)
             }
         }
     }
+
+    //region Impl
 
     internal interface Impl {
         fun update(song: Song)
     }
 
-    // Disposable ImageRequest for Cover Art
+    /** Disposable ImageRequest for Cover Art **/
     private var request: Disposable? = null
 
     inner class Impl24 : Impl {
@@ -161,14 +145,14 @@ class PlayingNotificationManger(private val service: MusicService) {
 
             postNotification(notificationBuilder.build())
 
-            if (Build.VERSION.SDK_INT < VERSION_SET_COVER_USING_METADATA) {
+            if (SDK_INT < VERSION_SET_COVER_USING_METADATA) {
                 request?.dispose()
                 request = service.coverLoader.load(song) { bitmap: Bitmap?, paletteColor: Int ->
                     if (bitmap != null) {
                         notificationBuilder
                             .setLargeIcon(bitmap)
                             .also { builder ->
-                                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O &&
+                                if (SDK_INT <= Build.VERSION_CODES.O &&
                                     Setting(service)[Keys.coloredNotification].data
                                 ) {
                                     builder.color = paletteColor
@@ -199,9 +183,7 @@ class PlayingNotificationManger(private val service: MusicService) {
                 notificationLayout.setTextViewText(R.id.text, song.artistName)
             }
 
-            if (TextUtils.isEmpty(song.title) && TextUtils.isEmpty(song.artistName) && TextUtils.isEmpty(
-                    song.albumName
-                )
+            if (TextUtils.isEmpty(song.title) && TextUtils.isEmpty(song.artistName) && TextUtils.isEmpty(song.albumName)
             ) {
                 notificationLayoutBig.setViewVisibility(R.id.media_titles, View.INVISIBLE)
             } else {
@@ -317,6 +299,7 @@ class PlayingNotificationManger(private val service: MusicService) {
         }
 
     }
+    //endregion
 
     @RequiresApi(26)
     private fun createNotificationChannel() {
@@ -339,11 +322,7 @@ class PlayingNotificationManger(private val service: MusicService) {
         }
     }
 
-
-    /*
-     * Misc
-     */
-
+    //region Misc Util
     /**
      * PendingIntent for Playback control buttons
      * @param action actions in [MusicService]
@@ -373,14 +352,14 @@ class PlayingNotificationManger(private val service: MusicService) {
     /**
      * PendingIntent to quit/stop
      */
-    private val deletePendingIntent
-        get() = buildPlaybackPendingIntent(
-            MusicService.ACTION_STOP_AND_QUIT_NOW
-        )
+    private val deletePendingIntent: PendingIntent
+        get() = buildPlaybackPendingIntent(MusicService.ACTION_STOP_AND_QUIT_NOW)
+    //endregion
 
     companion object {
-        const val NOTIFICATION_CHANNEL_ID = "playing_notification"
+        private const val NOTIFICATION_CHANNEL_ID = "playing_notification"
         private const val NOTIFICATION_ID = 1
+
         const val VERSION_SET_COVER_USING_METADATA = Build.VERSION_CODES.R
     }
 }

@@ -123,7 +123,7 @@ class MusicService : MediaBrowserServiceCompat() {
         // notifications & media session
         coverLoader = CoverLoader(this)
         mediaSessionController.setupMediaSession(initMediaSessionCallback())
-        playNotificationManager.setUpNotification()
+        playNotificationManager.setUpNotification(false)
         sessionToken = mediaSessionController.mediaSession.sessionToken // MediaBrowserService
 
         mediaSessionController.mediaSession.isActive = true
@@ -393,7 +393,7 @@ class MusicService : MediaBrowserServiceCompat() {
         when (what) {
             PLAY_STATE_CHANGED -> {
                 // update playing notification
-                playNotificationManager.updateNotification()
+                playNotificationManager.updateNotification(queueManager.currentSong)
                 mediaSessionController.updateMetaData(
                     queueManager.currentSong,
                     (queueManager.currentSongPosition + 1).toLong(),
@@ -417,7 +417,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
             META_CHANGED       -> {
                 // update playing notification
-                playNotificationManager.updateNotification()
+                playNotificationManager.updateNotification(queueManager.currentSong)
                 mediaSessionController.updateMetaData(
                     queueManager.currentSong,
                     (queueManager.currentSongPosition + 1).toLong(),
@@ -520,11 +520,11 @@ class MusicService : MediaBrowserServiceCompat() {
             controller.audioDucking = audioDucking
         }
         collect(Keys.coloredNotification) {
-            playNotificationManager.updateNotification()
+            playNotificationManager.updateNotification(queueManager.currentSong)
         }
-        collect(Keys.classicNotification) {
-            playNotificationManager.setUpNotification()
-            playNotificationManager.updateNotification()
+        collect(Keys.classicNotification) { classicNotification ->
+            playNotificationManager.setUpNotification(classicNotification)
+            playNotificationManager.updateNotification(queueManager.currentSong)
         }
         collect(Keys.gaplessPlayback) { gaplessPlayback ->
             controller.switchGaplessPlayback(gaplessPlayback)
