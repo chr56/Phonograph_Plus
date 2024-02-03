@@ -17,7 +17,6 @@ import player.phonograph.appwidgets.AppWidgetBig
 import player.phonograph.appwidgets.AppWidgetCard
 import player.phonograph.appwidgets.AppWidgetClassic
 import player.phonograph.appwidgets.AppWidgetSmall
-import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.repo.browser.MediaBrowserDelegate
@@ -27,7 +26,6 @@ import player.phonograph.service.notification.PlayingNotificationManger
 import player.phonograph.service.player.MSG_NOW_PLAYING_CHANGED
 import player.phonograph.service.player.MediaSessionController
 import player.phonograph.service.player.PlayerController
-import player.phonograph.service.player.PlayerController.ControllerHandler.Companion.CLEAN_NEXT_PLAYER
 import player.phonograph.service.player.PlayerController.ControllerHandler.Companion.RE_PREPARE_NEXT_PLAYER
 import player.phonograph.service.player.PlayerState
 import player.phonograph.service.player.PlayerStateObserver
@@ -37,14 +35,12 @@ import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_QUEUE
 import player.phonograph.service.queue.QueueObserver
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.service.util.MediaButtonIntentReceiver
 import player.phonograph.service.util.MediaStoreObserverUtil
 import player.phonograph.service.util.MusicServiceUtil
 import player.phonograph.service.util.SongPlayCountHelper
-import player.phonograph.settings.BROADCAST_CURRENT_PLAYER_STATE
-import player.phonograph.settings.CLASSIC_NOTIFICATION
-import player.phonograph.settings.COLORED_NOTIFICATION
-import player.phonograph.settings.GAPLESS_PLAYBACK
+import player.phonograph.settings.Keys
+import player.phonograph.settings.PrimitiveKey
+import player.phonograph.settings.Setting
 import player.phonograph.util.recordThrowable
 import player.phonograph.util.registerReceiverCompat
 import androidx.core.content.ContextCompat
@@ -61,9 +57,14 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Andrew Neal
@@ -75,22 +76,12 @@ class MusicService : MediaBrowserServiceCompat() {
     val queueManager: QueueManager = get()
     private val queueChangeObserver: QueueObserver = initQueueChangeObserver()
 
-    private lateinit var controller: PlayerController
+    private val controller: PlayerController = PlayerController()
     private var playerStateObserver: PlayerStateObserver = initPlayerStateObserver()
 
-    private val playNotificationManager: PlayingNotificationManger
-        get() {
-            if (_playNotificationManager == null) _playNotificationManager = PlayingNotificationManger(this)
-            return _playNotificationManager!!
-        }
-    private var _playNotificationManager: PlayingNotificationManger? = null
+    private val playNotificationManager: PlayingNotificationManger = PlayingNotificationManger()
 
-    private val mediaSessionController: MediaSessionController
-        get() {
-            if (_mediaSessionController == null) _mediaSessionController = MediaSessionController(this)
-            return _mediaSessionController!!
-        }
-    private var _mediaSessionController: MediaSessionController? = null
+    private val mediaSessionController: MediaSessionController = MediaSessionController()
 
     private lateinit var throttledTimer: ThrottledTimer
 
@@ -98,11 +89,16 @@ class MusicService : MediaBrowserServiceCompat() {
 
     lateinit var coverLoader: CoverLoader
 
+    val coroutineScope get() = _coroutineScope!!
+    private var _coroutineScope: CoroutineScope? = null
+
     override fun onCreate() {
+
+        _coroutineScope = CoroutineScope(Dispatchers.IO)
         super.onCreate()
 
         // controller
-        controller = PlayerController(this)
+        controller.onCreate(this)
         controller.restoreIfNecessary()
 
         // observers & messages
@@ -113,8 +109,8 @@ class MusicService : MediaBrowserServiceCompat() {
 
         // notifications & media session
         coverLoader = CoverLoader(this)
-        mediaSessionController.setupMediaSession(initMediaSessionCallback())
-        playNotificationManager.setUpNotification()
+        mediaSessionController.onCreate(this)
+        playNotificationManager.onCreate(this)
         sessionToken = mediaSessionController.mediaSession.sessionToken // MediaBrowserService
 
         mediaSessionController.mediaSession.isActive = true
@@ -123,6 +119,7 @@ class MusicService : MediaBrowserServiceCompat() {
         throttledTimer = ThrottledTimer(controller.handler)
 
         // misc
+        observeSettings()
         mediaStoreObserverUtil.setUpMediaStoreObserver(
             this,
             controller.handler, // todo use other handler
@@ -176,120 +173,18 @@ class MusicService : MediaBrowserServiceCompat() {
         }
     }
 
-    private fun initMediaSessionCallback() = object : MediaSessionCompat.Callback() {
-        override fun onPlay() {
-            play()
-        }
-
-        override fun onPause() {
-            pause()
-        }
-
-        override fun onSkipToNext() {
-            playNextSong(false)
-        }
-
-        override fun onSkipToPrevious() {
-            back(false)
-        }
-
-        override fun onStop() {
-            stopSelf()
-        }
-
-        override fun onSeekTo(pos: Long) {
-            seek(pos.toInt())
-        }
-
-        override fun onSetShuffleMode(shuffleMode: Int) {
-            when (shuffleMode) {
-                PlaybackStateCompat.SHUFFLE_MODE_INVALID -> {}
-                PlaybackStateCompat.SHUFFLE_MODE_NONE    -> queueManager.modifyShuffleMode(ShuffleMode.NONE)
-                PlaybackStateCompat.SHUFFLE_MODE_ALL     -> queueManager.modifyShuffleMode(ShuffleMode.SHUFFLE)
-                PlaybackStateCompat.SHUFFLE_MODE_GROUP   -> queueManager.modifyShuffleMode(ShuffleMode.SHUFFLE)
-            }
-        }
-
-        override fun onSetRepeatMode(repeatMode: Int) {
-            when (repeatMode) {
-                PlaybackStateCompat.REPEAT_MODE_INVALID -> {}
-                PlaybackStateCompat.REPEAT_MODE_ALL     -> queueManager.modifyRepeatMode(RepeatMode.REPEAT_QUEUE)
-                PlaybackStateCompat.REPEAT_MODE_GROUP   -> queueManager.modifyRepeatMode(RepeatMode.REPEAT_QUEUE)
-                PlaybackStateCompat.REPEAT_MODE_NONE    -> queueManager.modifyRepeatMode(RepeatMode.NONE)
-                PlaybackStateCompat.REPEAT_MODE_ONE     -> queueManager.modifyRepeatMode(RepeatMode.REPEAT_SINGLE_SONG)
-            }
-        }
-
-        override fun onSetPlaybackSpeed(speed: Float) {
-            controller.setPlayerSpeed(speed)
-        }
-
-        override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
-            return MediaButtonIntentReceiver.handleIntent(this@MusicService, mediaButtonEvent)
-        }
-
-        override fun onCustomAction(action: String?, extras: Bundle?) {
-            when (action) {
-                MEDIA_SESSION_ACTION_TOGGLE_SHUFFLE -> queueManager.toggleShuffle()
-                MEDIA_SESSION_ACTION_TOGGLE_REPEAT  -> queueManager.cycleRepeatMode()
-            }
-            handleAndSendChangeInternal(PLAY_STATE_CHANGED)
-        }
-
-        override fun onPlayFromMediaId(mediaId: String, extras: Bundle?) {
-            val musicService = this@MusicService
-            val request = MediaBrowserDelegate.playFromMediaId(musicService, mediaId, extras)
-            processRequest(request)
-        }
-
-        override fun onPlayFromSearch(query: String?, extras: Bundle?) {
-            val musicService = this@MusicService
-            val request = MediaBrowserDelegate.playFromSearch(musicService, query, extras)
-            processRequest(request)
-        }
-
-        private fun processRequest(request: PlayRequest) {
-            when (request) {
-                PlayRequest.EmptyRequest     -> {}
-                is PlayRequest.PlayAtRequest -> playSongAt(request.position)
-                is PlayRequest.SongRequest   -> {
-                    queueManager.addSong(request.song, queueManager.currentSongPosition, false)
-                    playSongAt(queueManager.currentSongPosition)
-                }
-                is PlayRequest.SongsRequest  -> {
-                    queueManager.swapQueue(request.songs, request.position, false)
-                    playSongAt(0)
-                }
-            }
-        }
-    }
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null) {
             if (intent.action != null) {
-                controller.restoreIfNecessary()
                 when (intent.action) {
-                    ACTION_TOGGLE_PAUSE          -> if (isPlaying) {
-                        pause()
-                    } else {
-                        play()
-                    }
-
+                    ACTION_TOGGLE_PAUSE          -> if (isPlaying) pause() else play()
                     ACTION_PAUSE                 -> pause()
                     ACTION_PLAY                  -> play()
                     ACTION_REWIND                -> back(false)
                     ACTION_SKIP                  -> playNextSong(false)
-                    ACTION_STOP_AND_QUIT_NOW     -> {
-                        stopSelf()
-                    }
-
-                    ACTION_STOP_AND_QUIT_PENDING -> {
-                        controller.quitAfterFinishCurrentSong = true
-                    }
-
-                    ACTION_CANCEL_PENDING_QUIT   -> {
-                        controller.quitAfterFinishCurrentSong = false
-                    }
+                    ACTION_STOP_AND_QUIT_NOW     -> stopSelf()
+                    ACTION_STOP_AND_QUIT_PENDING -> controller.quitAfterFinishCurrentSong = true
+                    ACTION_CANCEL_PENDING_QUIT   -> controller.quitAfterFinishCurrentSong = false
                 }
             }
         }
@@ -306,21 +201,24 @@ class MusicService : MediaBrowserServiceCompat() {
     override fun onDestroy() {
         isDestroyed = true
         mediaSessionController.mediaSession.isActive = false
-        playNotificationManager.removeNotification()
+        playNotificationManager.onDestroy(this)
         coverLoader.terminate()
         closeAudioEffectSession()
         mediaSessionController.mediaSession.release()
         unregisterReceiver(widgetIntentReceiver)
         mediaStoreObserverUtil.unregisterMediaStoreObserver(this)
-        controller.stopAndDestroy()
         controller.removeObserver(playerStateObserver)
+        controller.onDestroy(this)
         queueManager.removeObserver(queueChangeObserver)
         queueManager.apply {
             // todo
             post(MSG_SAVE_QUEUE)
             post(MSG_SAVE_CFG)
         }
+        coroutineScope.cancel()
+        _coroutineScope = null
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_DESTROYED"))
+        super.onDestroy()
     }
 
     private fun closeAudioEffectSession() {
@@ -376,9 +274,10 @@ class MusicService : MediaBrowserServiceCompat() {
 
     private fun handleChangeInternal(what: String) {
         when (what) {
-            PLAY_STATE_CHANGED -> {
+
+            PLAY_STATE_CHANGED                        -> {
                 // update playing notification
-                playNotificationManager.updateNotification()
+                playNotificationManager.updateNotification(queueManager.currentSong)
                 mediaSessionController.updateMetaData(
                     queueManager.currentSong,
                     (queueManager.currentSongPosition + 1).toLong(),
@@ -400,9 +299,23 @@ class MusicService : MediaBrowserServiceCompat() {
                 throttledTimer.setCancelableNotificationTimer(5_000)
             }
 
-            META_CHANGED       -> {
+            REPEAT_MODE_CHANGED, SHUFFLE_MODE_CHANGED -> {
+                // just update playing notification
+                playNotificationManager.updateNotification(queueManager.currentSong)
+                mediaSessionController.updateMetaData(
+                    queueManager.currentSong,
+                    (queueManager.currentSongPosition + 1).toLong(),
+                    queueManager.playingQueue.size.toLong(),
+                    false
+                )
+                mediaSessionController.updatePlaybackState(
+                    controller.isPlaying(), controller.getSongProgressMillis().toLong()
+                )
+            }
+
+            META_CHANGED                              -> {
                 // update playing notification
-                playNotificationManager.updateNotification()
+                playNotificationManager.updateNotification(queueManager.currentSong)
                 mediaSessionController.updateMetaData(
                     queueManager.currentSong,
                     (queueManager.currentSongPosition + 1).toLong(),
@@ -425,7 +338,7 @@ class MusicService : MediaBrowserServiceCompat() {
                 songPlayCountHelper.songMonitored = queueManager.currentSong // new
             }
 
-            QUEUE_CHANGED      -> {
+            QUEUE_CHANGED                             -> {
                 // update playing notification
                 mediaSessionController.updateMetaData(
                     queueManager.currentSong,
@@ -487,31 +400,16 @@ class MusicService : MediaBrowserServiceCompat() {
         AppWidgetCard.instance.notifyChange(this, what)
     }
 
-    fun updateSetting(key: String, value: Any) {
-        when (key) {
-            GAPLESS_PLAYBACK               -> {
-                val gaplessPlayback = (value as? Boolean) ?: false
-                controller.switchGaplessPlayback(gaplessPlayback)
-                controller.handler.apply {
-                    if (gaplessPlayback) {
-                        removeMessages(RE_PREPARE_NEXT_PLAYER)
-                        sendEmptyMessage(RE_PREPARE_NEXT_PLAYER)
-                    } else {
-                        removeMessages(CLEAN_NEXT_PLAYER)
-                        sendEmptyMessage(CLEAN_NEXT_PLAYER)
-                    }
-                }
-            }
 
-            COLORED_NOTIFICATION           -> playNotificationManager.updateNotification()
-            CLASSIC_NOTIFICATION           -> {
-                playNotificationManager.setUpNotification()
-                playNotificationManager.updateNotification()
+    private fun observeSettings() {
+        val setting = Setting(this)
+        fun <T> collect(key: PrimitiveKey<T>, collector: FlowCollector<T>) {
+            coroutineScope.launch(SupervisorJob()) {
+                setting[key].flow.distinctUntilChanged().collect(collector)
             }
-
-            BROADCAST_CURRENT_PLAYER_STATE -> {
-                throttledTimer.broadcastCurrentPlayerState = (value as? Boolean) ?: false
-            }
+        }
+        collect(Keys.broadcastCurrentPlayerState) { broadcastCurrentPlayerState ->
+            throttledTimer.broadcastCurrentPlayerState = broadcastCurrentPlayerState
         }
     }
 

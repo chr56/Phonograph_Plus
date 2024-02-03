@@ -7,10 +7,13 @@ import player.phonograph.mechanism.lyrics.LyricsUpdater
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicService
+import player.phonograph.service.ServiceComponent
+import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Keys
+import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
 import player.phonograph.util.registerReceiverCompat
 import player.phonograph.util.warning
@@ -33,10 +36,14 @@ import android.provider.MediaStore
 import android.util.ArrayMap
 import android.util.Log
 import android.widget.Toast
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.io.File
 import java.lang.ref.WeakReference
 
@@ -44,25 +51,39 @@ import java.lang.ref.WeakReference
 /**
  * @author chr_56 & Abou Zeid (kabouzeid) (original author)
  */
-class PlayerController(internal val service: MusicService) : Playback.PlaybackCallbacks {
+class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
 
-    private val queueManager = service.queueManager
+    private var _service: MusicService? = null
+    internal val service: MusicService get() = _service!!
 
-    private val audioPlayer: AudioPlayer
 
-    private val wakeLock: WakeLock
-    private val audioFocusManager: AudioFocusManager =
-        AudioFocusManager(this)
+    private var _audioPlayer: AudioPlayer? = null
+    private val audioPlayer: AudioPlayer get() = _audioPlayer!!
 
-    val handler: ControllerHandler
-    private var thread: HandlerThread
+    private var _wakeLock: WakeLock? = null
+    private val wakeLock: WakeLock get() = _wakeLock!!
 
-    private var lyricsUpdater: LyricsUpdater
 
-    init {
-        audioPlayer = AudioPlayer(service, Setting(service)[Keys.gaplessPlayback].data, this)
+    private var _handler: ControllerHandler? = null
+    val handler: ControllerHandler get() = _handler!!
 
-        wakeLock =
+    private var _thread: HandlerThread? = null
+    private val thread: HandlerThread get() = _thread!!
+
+    private val queueManager: QueueManager get() = service.queueManager
+
+    private var _lyricsUpdater: LyricsUpdater? = null
+    private val lyricsUpdater: LyricsUpdater get() = _lyricsUpdater!!
+
+    private var _audioFocusManager: AudioFocusManager? = null
+    private val audioFocusManager: AudioFocusManager get() = _audioFocusManager!!
+
+    override fun onCreate(musicService: MusicService) {
+        _service = musicService
+
+        _audioPlayer = AudioPlayer(service, false /* default */, this)
+
+        _wakeLock =
             (service.getSystemService(Context.POWER_SERVICE) as PowerManager)
                 .newWakeLock(
                     PowerManager.PARTIAL_WAKE_LOCK,
@@ -70,44 +91,87 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                 ).apply {
                     setReferenceCounted(false)
                 }
+        _audioFocusManager = AudioFocusManager(this)
 
         // setup handler
-        thread = HandlerThread("player_controller_handler_thread")
+        _thread = HandlerThread("player_controller_handler_thread")
         thread.start()
-        handler = ControllerHandler(this, thread.looper)
+        _handler = ControllerHandler(this, thread.looper)
 
-        lyricsUpdater = LyricsUpdater(queueManager.currentSong)
+        _lyricsUpdater = LyricsUpdater(queueManager.currentSong)
+
+        observeSettings(musicService)
     }
+
+    override fun onDestroy(musicService: MusicService) {
+
+        stopImp()
+        unregisterBecomingNoisyReceiver(service)
+
+        lyricsUpdater.clear()
+        _lyricsUpdater = null
+
+        thread.quitSafely()
+        handler.looper.quitSafely()
+        _thread = null
+        _handler = null
+
+
+        releaseWakeLock()
+        audioFocusManager.abandonAudioFocus()
+        audioPlayer.release()
+        _wakeLock = null
+        _audioFocusManager = null
+        _audioPlayer = null
+
+        _service = null
+    }
+
+
+    private fun observeSettings(service: MusicService) {
+        fun <T> collect(key: PrimitiveKey<T>, collector: FlowCollector<T>) {
+            service.coroutineScope.launch(SupervisorJob()) {
+                Setting(service)[key].flow.distinctUntilChanged().collect(collector)
+            }
+        }
+        collect(Keys.audioDucking) { value ->
+            audioDucking = value
+        }
+        collect(Keys.resumeAfterAudioFocusGain) { value ->
+            resumeAfterAudioFocusGain = value
+        }
+        collect(Keys.gaplessPlayback) { gaplessPlayback ->
+            audioPlayer.gaplessPlayback = gaplessPlayback
+            handler.apply {
+                if (gaplessPlayback) {
+                    removeMessages(ControllerHandler.RE_PREPARE_NEXT_PLAYER)
+                    sendEmptyMessage(ControllerHandler.RE_PREPARE_NEXT_PLAYER)
+                } else {
+                    removeMessages(ControllerHandler.CLEAN_NEXT_PLAYER)
+                    sendEmptyMessage(ControllerHandler.CLEAN_NEXT_PLAYER)
+                }
+            }
+        }
+        collect(Keys.broadcastSynchronizedLyrics) { value ->
+            broadcastSynchronizedLyrics = value
+        }
+    }
+
+    private var broadcastSynchronizedLyrics: Boolean = false
 
     /**
      * release taken resources but not vitals
      */
-    fun releaseTakenResources() {
+    private fun releaseTakenResources() {
         releaseWakeLock()
         audioFocusManager.abandonAudioFocus()
     }
 
-    /**
-     * release vital resources
-     */
-    fun destroy() {
-        unregisterBecomingNoisyReceiver(service)
-        audioPlayer.release()
-        thread.quitSafely()
-        handler.looper.quitSafely()
-        lyricsUpdater.clear()
-    }
-
-    fun stopAndDestroy() {
-        stopImp()
-        destroy()
-    }
-
-    fun acquireWakeLock(milli: Long) {
+    private fun acquireWakeLock(milli: Long) {
         wakeLock.acquire(milli)
     }
 
-    fun releaseWakeLock() {
+    private fun releaseWakeLock() {
         if (wakeLock.isHeld) {
             wakeLock.release()
         }
@@ -187,7 +251,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         )
     }
 
-    var restored = false
+    private var restored = false
     fun restoreIfNecessary() {
         if (!restored) {
             val restoredPositionInTrack =
@@ -325,12 +389,13 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
 
     fun isPlaying() = audioPlayer.isInitialized && audioPlayer.isPlaying()
 
-    val positionInTrack: Int =
-        if (audioPlayer.isInitialized) {
-            audioPlayer.position()
-        } else {
-            -1
-        }
+    val positionInTrack: Int
+        get() =
+            if (audioPlayer.isInitialized) {
+                audioPlayer.position()
+            } else {
+                -1
+            }
 
     /**
      * Jump to beginning of this song
@@ -437,7 +502,9 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
             }
         }
 
-    internal val resumeAfterAudioFocusGain: Boolean get() = Setting(service)[Keys.resumeAfterAudioFocusGain].data
+    internal var resumeAfterAudioFocusGain: Boolean = false
+
+    internal var audioDucking: Boolean = true
 
     override fun onTrackWentToNext() {
         handler.request {
@@ -543,7 +610,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         QueuePreferenceManager(service).currentMillisecond = audioPlayer.position()
     }
 
-    val audioSessionId: Int = audioPlayer.audioSessionId
+    val audioSessionId: Int get() = audioPlayer.audioSessionId
 
     fun setVolume(vol: Float) = handler.request { playerController ->
         playerController.audioPlayer.setVolume(vol)
@@ -600,8 +667,8 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                 }
 
                 DUCK                    -> {
-                    controllerRef.get()?.let {
-                        if (Setting(it.service)[Keys.audioDucking].data) {
+                    controllerRef.get()?.let { controller ->
+                        if (controller.audioDucking) {
                             currentDuckVolume -= .05f
                             if (currentDuckVolume > .2f) {
                                 sendEmptyMessageDelayed(DUCK, 10)
@@ -611,13 +678,13 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                         } else {
                             currentDuckVolume = 1f
                         }
-                        it.audioPlayer.setVolume(currentDuckVolume)
+                        controller.audioPlayer.setVolume(currentDuckVolume)
                     }
                 }
 
                 UNDUCK                  -> {
-                    controllerRef.get()?.let {
-                        if (Setting(it.service)[Keys.audioDucking].data) {
+                    controllerRef.get()?.let { controller ->
+                        if (controller.audioDucking) {
                             currentDuckVolume += .03f
                             if (currentDuckVolume < 1f) {
                                 sendEmptyMessageDelayed(UNDUCK, 10)
@@ -627,7 +694,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                         } else {
                             currentDuckVolume = 1f
                         }
-                        it.audioPlayer.setVolume(currentDuckVolume)
+                        controller.audioPlayer.setVolume(currentDuckVolume)
                     }
                 }
 
@@ -652,9 +719,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
          */
         private fun broadcastLyrics(): Boolean {
             val controller = controllerRef.get() ?: return false
-            if (controller.playerState != PlayerState.PLAYING ||
-                !Setting(controller.service)[Keys.broadcastSynchronizedLyrics].data
-            ) {
+            if (controller.playerState != PlayerState.PLAYING || controller.broadcastSynchronizedLyrics) {
                 controller.broadcastStopLyric()
                 return false
             }
@@ -695,10 +760,6 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
 
     private fun setPlayerSpeedImpl(speed: Float) {
         audioPlayer.speed = speed
-    }
-
-    fun switchGaplessPlayback(gaplessPlayback: Boolean) {
-        audioPlayer.gaplessPlayback = gaplessPlayback
     }
 
     private fun broadcastStopLyric() = StatusBarLyric.stopLyric()
