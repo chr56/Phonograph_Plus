@@ -86,12 +86,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
     private val playNotificationManager: PlayingNotificationManger = PlayingNotificationManger()
 
-    private val mediaSessionController: MediaSessionController
-        get() {
-            if (_mediaSessionController == null) _mediaSessionController = MediaSessionController(this)
-            return _mediaSessionController!!
-        }
-    private var _mediaSessionController: MediaSessionController? = null
+    private val mediaSessionController: MediaSessionController = MediaSessionController()
 
     private lateinit var throttledTimer: ThrottledTimer
 
@@ -119,7 +114,8 @@ class MusicService : MediaBrowserServiceCompat() {
 
         // notifications & media session
         coverLoader = CoverLoader(this)
-        mediaSessionController.setupMediaSession(initMediaSessionCallback())
+        mediaSessionController.onCreate(this)
+        mediaSessionController.setMediaSessionCallback(initMediaSessionCallback())
         playNotificationManager.onCreate(this)
         sessionToken = mediaSessionController.mediaSession.sessionToken // MediaBrowserService
 

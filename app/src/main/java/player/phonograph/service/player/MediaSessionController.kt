@@ -11,6 +11,7 @@ import player.phonograph.model.Song
 import player.phonograph.service.MusicService
 import player.phonograph.service.MusicService.Companion.MEDIA_SESSION_ACTION_TOGGLE_REPEAT
 import player.phonograph.service.MusicService.Companion.MEDIA_SESSION_ACTION_TOGGLE_SHUFFLE
+import player.phonograph.service.ServiceComponent
 import player.phonograph.service.notification.PlayingNotificationManger
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
@@ -35,13 +36,18 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 
-class MediaSessionController(
-    private val musicService: MusicService,
-) {
-    lateinit var mediaSession: MediaSessionCompat
-        private set
+class MediaSessionController : ServiceComponent {
 
-    fun setupMediaSession(callback: MediaSessionCompat.Callback) {
+    private var _service: MusicService? = null
+    private val service: MusicService get() = _service!!
+
+
+    private var _mediaSession: MediaSessionCompat? = null
+    val mediaSession: MediaSessionCompat get() = _mediaSession!!
+
+    override fun onCreate(musicService: MusicService) {
+        _service = musicService
+
         val mediaButtonReceiverComponentName = ComponentName(
             musicService.applicationContext,
             MediaButtonIntentReceiver::class.java
@@ -56,38 +62,50 @@ class MediaSessionController(
                 PendingIntent.FLAG_IMMUTABLE
             )
 
-        mediaSession =
+        _mediaSession =
             MediaSessionCompat(
                 musicService,
                 BuildConfig.APPLICATION_ID,
                 mediaButtonReceiverComponentName,
                 mediaButtonReceiverPendingIntent
             )
-
-        mediaSession.setCallback(callback)
-
-        // fixme remove deprecation
-        @Suppress("DEPRECATION")
-        mediaSession.setFlags(
-            MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS or MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
-        )
         mediaSession.setMediaButtonReceiver(mediaButtonReceiverPendingIntent)
+    }
+
+    override fun onDestroy(musicService: MusicService) {
+        _mediaSession = null
+        _service = null
+    }
+
+    fun setMediaSessionCallback(mediaSessionCallback: MediaSessionCompat.Callback) {
+        mediaSession.setCallback(mediaSessionCallback)
     }
 
 
     private val sessionPlaybackStateBuilder
-        get() =
-            PlaybackStateCompat.Builder().setActions(availableActions)
+        get() = PlaybackStateCompat.Builder().setActions(
+            PlaybackStateCompat.ACTION_PLAY or
+                    PlaybackStateCompat.ACTION_PAUSE or
+                    PlaybackStateCompat.ACTION_PLAY_PAUSE or
+                    PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                    PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                    PlaybackStateCompat.ACTION_STOP or
+                    PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
+                    PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE or
+                    PlaybackStateCompat.ACTION_SET_PLAYBACK_SPEED or
+                    PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID or
+                    PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH or
+                    PlaybackStateCompat.ACTION_SEEK_TO
+        )
 
 
     fun updatePlaybackState(isPlaying: Boolean, songProgressMillis: Long) {
         mediaSession.setPlaybackState(
-            sessionPlaybackStateBuilder.setCustomActions(musicService)
-                .setState(if (isPlaying) STATE_PLAYING else STATE_PAUSED, songProgressMillis, musicService.speed)
+            sessionPlaybackStateBuilder.setCustomActions(service)
+                .setState(if (isPlaying) STATE_PLAYING else STATE_PAUSED, songProgressMillis, service.speed)
                 .build()
         )
     }
-
 
     private fun PlaybackStateCompat.Builder.setCustomActions(musicService: MusicService): PlaybackStateCompat.Builder {
         addCustomAction(
@@ -124,6 +142,7 @@ class MediaSessionController(
             putLong(METADATA_KEY_NUM_TRACKS, total)
         }
 
+    private var disposable: Disposable? = null
     fun updateMetaData(song: Song, pos: Long, total: Long, loadCover: Boolean) {
         if (song.id == -1L) {
             mediaSession.setMetadata(null)
@@ -132,7 +151,7 @@ class MediaSessionController(
             mediaSession.setMetadata(metadata.build())
             if (loadCover || Build.VERSION.SDK_INT >= PlayingNotificationManger.VERSION_SET_COVER_USING_METADATA) {
                 disposable?.dispose()
-                disposable = musicService.coverLoader.load(song) { bitmap, _ ->
+                disposable = service.coverLoader.load(song) { bitmap, _ ->
                     metadata.putBitmap(METADATA_KEY_ALBUM_ART, bitmap)
                     mediaSession.setMetadata(metadata.build())
                 }
@@ -140,20 +159,5 @@ class MediaSessionController(
         }
     }
 
-    private var disposable: Disposable? = null
-
-    companion object {
-        const val availableActions = PlaybackStateCompat.ACTION_PLAY or
-                PlaybackStateCompat.ACTION_PAUSE or
-                PlaybackStateCompat.ACTION_PLAY_PAUSE or
-                PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                PlaybackStateCompat.ACTION_STOP or
-                PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
-                PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE or
-                PlaybackStateCompat.ACTION_SET_PLAYBACK_SPEED or
-                PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID or
-                PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH or
-                PlaybackStateCompat.ACTION_SEEK_TO
-    }
+    companion object
 }
