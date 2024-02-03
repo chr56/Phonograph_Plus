@@ -321,6 +321,7 @@ class MusicService : MediaBrowserServiceCompat() {
             post(MSG_SAVE_CFG)
         }
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_DESTROYED"))
+        super.onDestroy()
     }
 
     private fun closeAudioEffectSession() {
