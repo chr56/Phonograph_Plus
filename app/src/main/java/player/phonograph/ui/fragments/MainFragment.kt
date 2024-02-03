@@ -201,7 +201,7 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
         val homePagerAdapter = HomePagerAdapter(this, homeTabConfig)
         binding.pager.apply {
             adapter = homePagerAdapter
-            offscreenPageLimit = min(homePagerAdapter.itemCount, 3)
+            offscreenPageLimit = 1
         }
         pagerAdapter = homePagerAdapter
 
