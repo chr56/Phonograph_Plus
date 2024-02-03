@@ -84,12 +84,7 @@ class MusicService : MediaBrowserServiceCompat() {
     private lateinit var controller: PlayerController
     private var playerStateObserver: PlayerStateObserver = initPlayerStateObserver()
 
-    private val playNotificationManager: PlayingNotificationManger
-        get() {
-            if (_playNotificationManager == null) _playNotificationManager = PlayingNotificationManger(this)
-            return _playNotificationManager!!
-        }
-    private var _playNotificationManager: PlayingNotificationManger? = null
+    private val playNotificationManager: PlayingNotificationManger = PlayingNotificationManger()
 
     private val mediaSessionController: MediaSessionController
         get() {
@@ -104,10 +99,12 @@ class MusicService : MediaBrowserServiceCompat() {
 
     lateinit var coverLoader: CoverLoader
 
-    private val coroutineScope get() = _coroutineScope!!
+    val coroutineScope get() = _coroutineScope!!
     private var _coroutineScope: CoroutineScope? = null
 
     override fun onCreate() {
+
+        _coroutineScope = CoroutineScope(Dispatchers.IO)
         super.onCreate()
 
         // controller
@@ -123,7 +120,7 @@ class MusicService : MediaBrowserServiceCompat() {
         // notifications & media session
         coverLoader = CoverLoader(this)
         mediaSessionController.setupMediaSession(initMediaSessionCallback())
-        playNotificationManager.setUpNotification(false)
+        playNotificationManager.onCreate(this)
         sessionToken = mediaSessionController.mediaSession.sessionToken // MediaBrowserService
 
         mediaSessionController.mediaSession.isActive = true
@@ -132,7 +129,6 @@ class MusicService : MediaBrowserServiceCompat() {
         throttledTimer = ThrottledTimer(controller.handler)
 
         // misc
-        _coroutineScope = CoroutineScope(Dispatchers.IO)
         observeSettings()
         mediaStoreObserverUtil.setUpMediaStoreObserver(
             this,
@@ -318,7 +314,7 @@ class MusicService : MediaBrowserServiceCompat() {
     override fun onDestroy() {
         isDestroyed = true
         mediaSessionController.mediaSession.isActive = false
-        playNotificationManager.removeNotification()
+        playNotificationManager.onDestroy(this)
         coverLoader.terminate()
         closeAudioEffectSession()
         mediaSessionController.mediaSession.release()
@@ -518,13 +514,6 @@ class MusicService : MediaBrowserServiceCompat() {
         }
         collect(Keys.audioDucking) {audioDucking ->
             controller.audioDucking = audioDucking
-        }
-        collect(Keys.coloredNotification) {
-            playNotificationManager.updateNotification(queueManager.currentSong)
-        }
-        collect(Keys.classicNotification) { classicNotification ->
-            playNotificationManager.setUpNotification(classicNotification)
-            playNotificationManager.updateNotification(queueManager.currentSong)
         }
         collect(Keys.gaplessPlayback) { gaplessPlayback ->
             controller.switchGaplessPlayback(gaplessPlayback)

@@ -11,11 +11,13 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.service.MusicService
+import player.phonograph.service.ServiceComponent
 import player.phonograph.service.player.PlayerState.PAUSED
 import player.phonograph.service.player.PlayerState.PLAYING
 import player.phonograph.service.player.PlayerState.PREPARING
 import player.phonograph.service.player.PlayerState.STOPPED
 import player.phonograph.settings.Keys
+import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.theme.createTintedDrawable
@@ -37,19 +39,33 @@ import android.os.Build.VERSION.SDK_INT
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import androidx.core.app.NotificationCompat as XNotificationCompat
 import android.app.Notification as OSNotification
 
-class PlayingNotificationManger(private val service: MusicService) {
+class PlayingNotificationManger : ServiceComponent {
 
-    private var notificationManager: NotificationManager =
-        service.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    private var notificationBuilder: XNotificationCompat.Builder
+    private var _service: MusicService? = null
+    private val service: MusicService get() = _service!!
 
-    init {
-        if (SDK_INT >= Build.VERSION_CODES.O) createNotificationChannel()
+    private lateinit var notificationManager: NotificationManager
+    private lateinit var notificationBuilder: XNotificationCompat.Builder
 
-        notificationBuilder = XNotificationCompat.Builder(service, NOTIFICATION_CHANNEL_ID)
+    private var classicNotification: Boolean = false
+    private var coloredNotification: Boolean = true
+
+    private var impl: Impl? = null
+
+    override fun onCreate(musicService: MusicService) {
+        _service = musicService
+
+
+        notificationManager =
+            musicService.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationBuilder = XNotificationCompat.Builder(musicService, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(clickPendingIntent)
             .setDeleteIntent(deletePendingIntent)
@@ -57,17 +73,48 @@ class PlayingNotificationManger(private val service: MusicService) {
             .setShowWhen(false)
             .setPriority(XNotificationCompat.PRIORITY_MAX)
             .setCategory(XNotificationCompat.CATEGORY_TRANSPORT)
+
+        if (SDK_INT >= Build.VERSION_CODES.O) {
+            val channel: NotificationChannel? = notificationManager.getNotificationChannel(NOTIFICATION_CHANNEL_ID)
+            if (channel == null) {
+                notificationManager.createNotificationChannel(
+                    NotificationChannel(
+                        NOTIFICATION_CHANNEL_ID,
+                        musicService.getString(R.string.playing_notification_name),
+                        NotificationManager.IMPORTANCE_LOW
+                    ).apply {
+                        description = musicService.getString(R.string.playing_notification_description)
+                        enableLights(false)
+                        enableVibration(false)
+                    }
+                )
+            }
+        }
+
+        fun <T> collect(key: PrimitiveKey<T>, collector: FlowCollector<T>) {
+            service.coroutineScope.launch(SupervisorJob()) {
+                Setting(musicService)[key].flow.distinctUntilChanged().collect(collector)
+            }
+        }
+        collect(Keys.classicNotification) { value ->
+            classicNotification = value
+        }
+        collect(Keys.coloredNotification) { value ->
+            coloredNotification = value
+        }
+
+        impl = if (classicNotification) Impl0() else Impl24()
     }
 
-    private lateinit var impl: Impl
-
-    fun setUpNotification(classicStyle: Boolean) {
-        impl = if (classicStyle) Impl0() else Impl24()
+    override fun onDestroy(musicService: MusicService) {
+        removeNotification()
+        impl = null
+        _service = null
     }
 
     fun updateNotification(song: Song) {
         if (song.id != -1L) {
-            impl.update(song)
+            impl?.update(song)
         } else {
             removeNotification()
         }
@@ -86,7 +133,7 @@ class PlayingNotificationManger(private val service: MusicService) {
         } else {
             notificationManager.notify(NOTIFICATION_ID, notification)
             when (service.playerState) {
-                PLAYING, PAUSED    -> service.startForeground(NOTIFICATION_ID, notification)
+                PLAYING, PAUSED -> service.startForeground(NOTIFICATION_ID, notification)
                 STOPPED, PREPARING -> service.stopForeground(STOP_FOREGROUND_DETACH)
             }
         }
@@ -152,9 +199,7 @@ class PlayingNotificationManger(private val service: MusicService) {
                         notificationBuilder
                             .setLargeIcon(bitmap)
                             .also { builder ->
-                                if (SDK_INT <= Build.VERSION_CODES.O &&
-                                    Setting(service)[Keys.coloredNotification].data
-                                ) {
+                                if (SDK_INT <= Build.VERSION_CODES.O && coloredNotification) {
                                     builder.color = paletteColor
                                 }
                             }
