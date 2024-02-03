@@ -437,7 +437,9 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
             }
         }
 
-    internal val resumeAfterAudioFocusGain: Boolean get() = Setting(service)[Keys.resumeAfterAudioFocusGain].data
+    internal var resumeAfterAudioFocusGain: Boolean = false
+
+    internal var audioDucking: Boolean = true
 
     override fun onTrackWentToNext() {
         handler.request {

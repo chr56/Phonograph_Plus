@@ -76,33 +76,6 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
             }
         }
         lifecycle.addObserver(LifeCycleObserver())
-        observeSetting()
-    }
-
-    private fun observeSetting() {
-        fun observe(block: suspend CoroutineScope.() -> Unit) {
-            lifecycleScope.launch {
-                lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED, block)
-            }
-        }
-
-        val store = Setting(this)
-        observe {
-            store[Keys.gaplessPlayback].flow.distinctUntilChanged()
-                .collect { MusicPlayerRemote.musicService?.updateSetting(GAPLESS_PLAYBACK, it) }
-        }
-        observe {
-            store[Keys.coloredNotification].flow.distinctUntilChanged()
-                .collect { MusicPlayerRemote.musicService?.updateSetting(COLORED_NOTIFICATION, it) }
-        }
-        observe {
-            store[Keys.broadcastCurrentPlayerState].flow.distinctUntilChanged()
-                .collect { MusicPlayerRemote.musicService?.updateSetting(BROADCAST_CURRENT_PLAYER_STATE, it) }
-        }
-        observe {
-            store[Keys.classicNotification].flow.distinctUntilChanged()
-                .collect { MusicPlayerRemote.musicService?.updateSetting(CLASSIC_NOTIFICATION, it) }
-        }
     }
 
     override fun onDestroy() {

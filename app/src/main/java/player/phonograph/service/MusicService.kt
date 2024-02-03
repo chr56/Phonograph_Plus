@@ -41,10 +41,9 @@ import player.phonograph.service.util.MediaButtonIntentReceiver
 import player.phonograph.service.util.MediaStoreObserverUtil
 import player.phonograph.service.util.MusicServiceUtil
 import player.phonograph.service.util.SongPlayCountHelper
-import player.phonograph.settings.BROADCAST_CURRENT_PLAYER_STATE
-import player.phonograph.settings.CLASSIC_NOTIFICATION
-import player.phonograph.settings.COLORED_NOTIFICATION
-import player.phonograph.settings.GAPLESS_PLAYBACK
+import player.phonograph.settings.Keys
+import player.phonograph.settings.PrimitiveKey
+import player.phonograph.settings.Setting
 import player.phonograph.util.recordThrowable
 import player.phonograph.util.registerReceiverCompat
 import androidx.core.content.ContextCompat
@@ -64,6 +63,13 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Andrew Neal
@@ -98,6 +104,9 @@ class MusicService : MediaBrowserServiceCompat() {
 
     lateinit var coverLoader: CoverLoader
 
+    private val coroutineScope get() = _coroutineScope!!
+    private var _coroutineScope: CoroutineScope? = null
+
     override fun onCreate() {
         super.onCreate()
 
@@ -123,6 +132,8 @@ class MusicService : MediaBrowserServiceCompat() {
         throttledTimer = ThrottledTimer(controller.handler)
 
         // misc
+        _coroutineScope = CoroutineScope(Dispatchers.IO)
+        observeSettings()
         mediaStoreObserverUtil.setUpMediaStoreObserver(
             this,
             controller.handler, // todo use other handler
@@ -256,6 +267,7 @@ class MusicService : MediaBrowserServiceCompat() {
                     queueManager.addSong(request.song, queueManager.currentSongPosition, false)
                     playSongAt(queueManager.currentSongPosition)
                 }
+
                 is PlayRequest.SongsRequest  -> {
                     queueManager.swapQueue(request.songs, request.position, false)
                     playSongAt(0)
@@ -320,6 +332,8 @@ class MusicService : MediaBrowserServiceCompat() {
             post(MSG_SAVE_QUEUE)
             post(MSG_SAVE_CFG)
         }
+        coroutineScope.cancel()
+        _coroutineScope = null
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_DESTROYED"))
         super.onDestroy()
     }
@@ -488,30 +502,40 @@ class MusicService : MediaBrowserServiceCompat() {
         AppWidgetCard.instance.notifyChange(this, what)
     }
 
-    fun updateSetting(key: String, value: Any) {
-        when (key) {
-            GAPLESS_PLAYBACK               -> {
-                val gaplessPlayback = (value as? Boolean) ?: false
-                controller.switchGaplessPlayback(gaplessPlayback)
-                controller.handler.apply {
-                    if (gaplessPlayback) {
-                        removeMessages(RE_PREPARE_NEXT_PLAYER)
-                        sendEmptyMessage(RE_PREPARE_NEXT_PLAYER)
-                    } else {
-                        removeMessages(CLEAN_NEXT_PLAYER)
-                        sendEmptyMessage(CLEAN_NEXT_PLAYER)
-                    }
+
+    private fun observeSettings() {
+        val setting = Setting(this)
+        fun <T> collect(key: PrimitiveKey<T>, collector: FlowCollector<T>) {
+            coroutineScope.launch(SupervisorJob()) {
+                setting[key].flow.distinctUntilChanged().collect(collector)
+            }
+        }
+        collect(Keys.broadcastCurrentPlayerState) { broadcastCurrentPlayerState ->
+            throttledTimer.broadcastCurrentPlayerState = broadcastCurrentPlayerState
+        }
+        collect(Keys.resumeAfterAudioFocusGain) {resumeAfterAudioFocusGain ->
+            controller.resumeAfterAudioFocusGain = resumeAfterAudioFocusGain
+        }
+        collect(Keys.audioDucking) {audioDucking ->
+            controller.audioDucking = audioDucking
+        }
+        collect(Keys.coloredNotification) {
+            playNotificationManager.updateNotification()
+        }
+        collect(Keys.classicNotification) {
+            playNotificationManager.setUpNotification()
+            playNotificationManager.updateNotification()
+        }
+        collect(Keys.gaplessPlayback) { gaplessPlayback ->
+            controller.switchGaplessPlayback(gaplessPlayback)
+            controller.handler.apply {
+                if (gaplessPlayback) {
+                    removeMessages(RE_PREPARE_NEXT_PLAYER)
+                    sendEmptyMessage(RE_PREPARE_NEXT_PLAYER)
+                } else {
+                    removeMessages(CLEAN_NEXT_PLAYER)
+                    sendEmptyMessage(CLEAN_NEXT_PLAYER)
                 }
-            }
-
-            COLORED_NOTIFICATION           -> playNotificationManager.updateNotification()
-            CLASSIC_NOTIFICATION           -> {
-                playNotificationManager.setUpNotification()
-                playNotificationManager.updateNotification()
-            }
-
-            BROADCAST_CURRENT_PLAYER_STATE -> {
-                throttledTimer.broadcastCurrentPlayerState = (value as? Boolean) ?: false
             }
         }
     }
