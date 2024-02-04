@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.fragments.pages
 
+import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
 import player.phonograph.model.sort.SortRef
@@ -35,24 +36,43 @@ class FlattenFolderPageViewModel : ViewModel() {
     private var _currentPosition: Int = -1
     val currentFolder get() = _folders.value.getOrNull(_currentPosition)
 
+    private var _bannerText: MutableStateFlow<String> = MutableStateFlow("")
+    val bannerText = _bannerText.asStateFlow()
+
+
+    fun updateBannerText(context: Context, mode: Boolean) {
+        _bannerText.tryEmit(
+            if (mode) {
+                context.resources.getQuantityString(
+                    R.plurals.item_files, folders.value.size, folders.value.size
+                )
+            } else {
+                context.resources.getQuantityString(
+                    R.plurals.item_songs, currentSongs.value.size, currentSongs.value.size
+                )
+            }
+        )
+    }
+
     /**
      * update folders
      */
-    fun loadFolders(context: Context) {
+    fun loadFolders(context: Context, updateBanner: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             _folders.emit(
                 SongCollectionLoader.all(context = context).toMutableList().sort(context)
             )
+            if (updateBanner) updateBannerText(context, true)
         }
     }
 
     /**
      * browse folder at [position]
      */
-    fun browseFolder(position: Int) {
+    fun browseFolder(context: Context, position: Int, updateBanner: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             _currentPosition = position
-            loadSongs()
+            loadSongs(context, updateBanner)
             _mainViewMode.emit(false)
         }
     }
@@ -60,9 +80,10 @@ class FlattenFolderPageViewModel : ViewModel() {
     /**
      * update Songs
      */
-    fun loadSongs() {
+    fun loadSongs(context: Context, updateBanner: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             _currentSongs.emit(currentFolder?.songs ?: emptyList())
+            if (updateBanner) updateBannerText(context, false)
         }
     }
 
@@ -70,13 +91,14 @@ class FlattenFolderPageViewModel : ViewModel() {
      * try to get back to upper level
      * @return reached top
      */
-    fun navigateUp(): Boolean =
+    fun navigateUp(context: Context): Boolean =
         if (mainViewMode.value) {
             true
         } else {
             _mainViewMode.value = true
             _currentPosition = -1
             _currentSongs.tryEmit(emptyList())
+            updateBannerText(context, true)
             false
         }
 

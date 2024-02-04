@@ -49,7 +49,7 @@ class FlattenFolderPage : AbsPage() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        viewModel.loadFolders(requireContext())
+        viewModel.loadFolders(requireContext(), true)
         _viewBinding = FragmentDisplayPageBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -165,7 +165,7 @@ class FlattenFolderPage : AbsPage() {
         val preference = Setting(popup.contentView.context).Composites[Keys.collectionSortMode]
         if (preference.data != selected) {
             preference.data = selected
-            viewModel.loadFolders(requireContext())
+            viewModel.loadFolders(requireContext(), false)
         }
     }
 
@@ -175,8 +175,10 @@ class FlattenFolderPage : AbsPage() {
         val selected = SortMode(popup.sortRef, popup.revert)
         if (displayConfig.sortMode != selected) {
             displayConfig.sortMode = selected
-            viewModel.loadFolders(requireContext())
-            viewModel.loadSongs()
+            viewModel.loadFolders(requireContext(), false)
+            if (!viewModel.mainViewMode.value) {
+                viewModel.loadSongs(requireContext(), true)
+            }
         }
     }
 
@@ -208,7 +210,7 @@ class FlattenFolderPage : AbsPage() {
     }
 
 
-    private fun onFolderClick(position: Int) = viewModel.browseFolder(position)
+    private fun onFolderClick(position: Int) = viewModel.browseFolder(requireContext(), position, true)
 
     private fun observeRecyclerView() {
         lifecycleScope.launch {
@@ -225,21 +227,16 @@ class FlattenFolderPage : AbsPage() {
         lifecycleScope.launch {
             viewModel.mainViewMode.collect { mode ->
                 binding.recyclerView.adapter = if (mode) songCollectionDisplayAdapter else songAdapter
-
-                val size =
-                    if (mode) songCollectionDisplayAdapter.dataset.size else songAdapter.dataset.size
-                binding.panelText.text = if (mode)
-                    requireContext().resources.getQuantityString(
-                        R.plurals.item_files, size, size
-                    ) else
-                    requireContext().resources.getQuantityString(
-                        R.plurals.item_songs, size, size
-                    )
+            }
+        }
+        lifecycleScope.launch {
+            viewModel.bannerText.collect { text ->
+                binding.panelText.text = text
             }
         }
     }
 
-    override fun onBackPress(): Boolean = !viewModel.navigateUp()
+    override fun onBackPress(): Boolean = !viewModel.navigateUp(requireContext())
 
     override fun onDestroyView() {
         super.onDestroyView()
