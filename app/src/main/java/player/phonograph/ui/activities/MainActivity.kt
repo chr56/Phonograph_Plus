@@ -186,22 +186,20 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
             // normal items
             val groupIds = intArrayOf(0, 1, 2, 3)
-            menuItem {
-                groupId = groupIds[1]
-                itemId = R.id.action_theme_toggle
-                icon = getTintedDrawable(R.drawable.ic_theme_switch_white_24dp, textColorPrimary)
-                titleRes(R.string.theme_switch)
-                onClick {
-                    Handler(Looper.getMainLooper()).postDelayed(
-                        {
-                            val result = StyleConfig.toggleTheme(this@MainActivity)
-                            if (!result) {
-                                Toast.makeText(activity, R.string.auto_mode_on, Toast.LENGTH_SHORT).show()
-                            } else {
-                                recreate()
-                            }
-                        }, 200
-                    )
+            if (StyleConfig.generalTheme(this@MainActivity) != StyleConfig.THEME_AUTO) {
+                menuItem {
+                    groupId = groupIds[1]
+                    itemId = R.id.action_theme_toggle
+                    icon = getTintedDrawable(R.drawable.ic_theme_switch_white_24dp, textColorPrimary)
+                    titleRes(R.string.theme_switch)
+                    onClick {
+                        Handler(Looper.getMainLooper()).postDelayed(
+                            {
+                                val result = StyleConfig.toggleTheme(this@MainActivity)
+                                if (result) recreate()
+                            }, 150
+                        )
+                    }
                 }
             }
 
