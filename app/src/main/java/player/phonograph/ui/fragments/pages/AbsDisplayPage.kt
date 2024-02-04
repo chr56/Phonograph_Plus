@@ -6,6 +6,7 @@ package player.phonograph.ui.fragments.pages
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
+import com.github.chr56.android.menu_model.MenuContext
 import com.google.android.material.appbar.AppBarLayout
 import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
@@ -25,7 +26,6 @@ import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.annotation.StringRes
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -167,21 +167,21 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
                     true
                 }
             }
+            configAppBarActionButton(this)
         }
 
         binding.panelText.setTextColor(context.primaryTextColor(context.nightMode))
         binding.panelToolbar.setTitleTextColor(requireContext().primaryTextColor(requireContext().nightMode))
 
-        configAppBar(binding.panelToolbar)
-
         mainFragment.addOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
     }
 
-    protected open fun configAppBar(panelToolbar: Toolbar) {}
 
     private fun configPopup(popup: ListOptionsPopup) {
         popup.setup(displayConfig())
     }
+
+    protected open fun configAppBarActionButton(menuContext: MenuContext) {}
 
     @SuppressLint("NotifyDataSetChanged")
     protected fun dismissPopup(popup: ListOptionsPopup) {
