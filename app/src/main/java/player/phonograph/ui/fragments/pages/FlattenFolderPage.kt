@@ -11,9 +11,12 @@ import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.actions.actionPlay
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
+import player.phonograph.repo.loader.Songs
+import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.ConstDisplayConfig
@@ -34,6 +37,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import kotlin.random.Random
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FlattenFolderPage : AbsPage() {
@@ -111,6 +116,44 @@ class FlattenFolderPage : AbsPage() {
                         binding.root, Gravity.TOP or Gravity.END, 0,
                         8 + mainFragment.totalHeaderHeight + binding.panel.height
                     )
+                    true
+                }
+            }
+            menuItem(getString(R.string.action_play)) {
+                icon = context
+                    .getTintedDrawable(
+                        R.drawable.ic_play_arrow_white_24dp,
+                        context.primaryTextColor(context.nightMode)
+                    )
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+                onClick {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        if (!viewModel.mainViewMode.value) {
+                            val allSongs = viewModel.currentSongs.value
+                            if (allSongs.isNotEmpty()) {
+                                allSongs.actionPlay(ShuffleMode.NONE, 0)
+                            }
+                        }
+                    }
+                    true
+                }
+            }
+            menuItem(getString(R.string.action_shuffle_all)) {
+                icon = context
+                    .getTintedDrawable(
+                        R.drawable.ic_shuffle_white_24dp,
+                        context.primaryTextColor(context.nightMode)
+                    )
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+                onClick {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        if (!viewModel.mainViewMode.value) {
+                            val allSongs = viewModel.currentSongs.value
+                            if (allSongs.isNotEmpty()) {
+                                allSongs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(allSongs.size))
+                            }
+                        }
+                    }
                     true
                 }
             }
