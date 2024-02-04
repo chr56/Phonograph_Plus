@@ -43,15 +43,21 @@
             android:text="@string/empty"
             android:textColor="?android:textColorSecondary" />
 
-        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-            android:id="@+id/recycler_view"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/refresh_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:scrollbars="none"
-            app:layout_anchor="@+id/container"
-            app:layout_anchorGravity="center"
-            tools:ignore="SpeakableTextPresentCheck" />
+            android:layout_height="match_parent">
+
+            <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:scrollbars="none"
+                app:layout_anchor="@+id/container"
+                app:layout_anchorGravity="center"
+                tools:ignore="SpeakableTextPresentCheck" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </FrameLayout>
 

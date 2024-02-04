@@ -112,6 +112,13 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
                 }
             }
         }
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.loading.collect {
+                    binding.refreshContainer.isRefreshing = it
+                }
+            }
+        }
     }
 
 
@@ -146,6 +153,14 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         binding.recyclerView.also {
             it.adapter = adapter
             it.layoutManager = layoutManager
+        }
+
+        binding.refreshContainer.apply {
+            setColorSchemeColors(ThemeColor.accentColor(requireContext()))
+            setProgressViewOffset(false, 0, 180)
+            setOnRefreshListener {
+                viewModel.loadDataset(requireContext())
+            }
         }
     }
 

@@ -93,6 +93,15 @@ class FlattenFolderPage : AbsPage() {
             it.adapter = songCollectionDisplayAdapter
             it.layoutManager = linearLayoutManager
         }
+        binding.refreshContainer.apply {
+            setColorSchemeColors(ThemeColor.accentColor(requireContext()))
+            setProgressViewOffset(false, 0, 180)
+            setOnRefreshListener {
+                viewModel.loadSongs(requireContext(), false)
+                viewModel.loadFolders(requireContext(), false)
+                isRefreshing = false
+            }
+        }
     }
 
 

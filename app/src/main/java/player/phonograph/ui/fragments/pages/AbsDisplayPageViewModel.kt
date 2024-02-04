@@ -24,6 +24,8 @@ abstract class AbsDisplayPageViewModel<IT> : ViewModel() {
     private val _dataSet: MutableStateFlow<Collection<IT>> = MutableStateFlow(emptyList())
     val dataSet: StateFlow<Collection<IT>> get() = _dataSet.asStateFlow()
 
+    private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val loading get() = _loading.asStateFlow()
 
     val isEmpty get() = dataSet.value.isEmpty()
     // val isEmptyFlow: Flow<Boolean> = _dataSet.map { it.isEmpty() }
@@ -32,9 +34,10 @@ abstract class AbsDisplayPageViewModel<IT> : ViewModel() {
     fun loadDataset(context: Context) {
         job?.cancel()
         job = viewModelScope.launch(Dispatchers.IO) {
-            _dataSet.emit(
-                loadDataSetImpl(context, this)
-            )
+            _loading.value = true
+            val items = loadDataSetImpl(context, this)
+            _dataSet.emit(items)
+            _loading.value = false
         }
     }
 
