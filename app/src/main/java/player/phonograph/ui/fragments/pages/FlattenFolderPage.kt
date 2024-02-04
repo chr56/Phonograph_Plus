@@ -95,7 +95,8 @@ class FlattenFolderPage : AbsPage() {
         }
         binding.refreshContainer.apply {
             setColorSchemeColors(ThemeColor.accentColor(requireContext()))
-            setProgressViewOffset(false, 0, 180)
+            setDistanceToTriggerSync(480)
+            setProgressViewOffset(false, 10, 120)
             setOnRefreshListener {
                 viewModel.loadSongs(requireContext(), false)
                 viewModel.loadFolders(requireContext(), false)

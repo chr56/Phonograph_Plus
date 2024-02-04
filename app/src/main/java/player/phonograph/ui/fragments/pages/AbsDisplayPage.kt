@@ -157,7 +157,8 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
 
         binding.refreshContainer.apply {
             setColorSchemeColors(ThemeColor.accentColor(requireContext()))
-            setProgressViewOffset(false, 0, 180)
+            setDistanceToTriggerSync(480)
+            setProgressViewOffset(false, 10, 120)
             setOnRefreshListener {
                 viewModel.loadDataset(requireContext())
             }
