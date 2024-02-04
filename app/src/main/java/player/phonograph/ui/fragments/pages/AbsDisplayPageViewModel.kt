@@ -4,17 +4,16 @@
 
 package player.phonograph.ui.fragments.pages
 
+import player.phonograph.model.Song
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 /**
@@ -41,6 +40,10 @@ abstract class AbsDisplayPageViewModel<IT> : ViewModel() {
 
     abstract suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<IT>
 
+    /**
+     * @return all songs on this page
+     */
+    abstract fun collectAllSongs(context: Context): List<Song>
 
     abstract val headerTextRes: Int
     fun headerText(context: Context): CharSequence? {

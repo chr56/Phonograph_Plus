@@ -6,6 +6,7 @@ package player.phonograph.ui.fragments.pages
 
 import player.phonograph.R
 import player.phonograph.model.Genre
+import player.phonograph.model.Song
 import player.phonograph.repo.loader.Genres
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.GenreDisplayAdapter
@@ -23,6 +24,9 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
         override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Genre> {
             return Genres.all(context)
         }
+
+        override fun collectAllSongs(context: Context): List<Song> =
+            dataSet.value.toList().flatMap { Genres.songs(context, it.id) }
 
         override val headerTextRes: Int get() = R.plurals.item_genres
     }

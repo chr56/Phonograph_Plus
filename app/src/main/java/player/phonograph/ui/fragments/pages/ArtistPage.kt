@@ -7,7 +7,9 @@ package player.phonograph.ui.fragments.pages
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.Artist
+import player.phonograph.model.Song
 import player.phonograph.repo.loader.Artists
+import player.phonograph.repo.mediastore.loaders.ArtistSongLoader.allSongs
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.ArtistDisplayAdapter
 import androidx.fragment.app.viewModels
@@ -24,6 +26,8 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>>() {
         override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Artist> {
             return Artists.all(App.instance)
         }
+
+        override fun collectAllSongs(context: Context): List<Song> = dataSet.value.toList().allSongs(context)
 
         override val headerTextRes: Int get() = R.plurals.item_artists
     }

@@ -12,10 +12,13 @@ import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.actions.actionPlay
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Displayable
 import player.phonograph.model.sort.SortMode
+import player.phonograph.repo.loader.Songs
+import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.ItemLayoutStyle
@@ -40,6 +43,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import kotlin.random.Random
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -181,7 +186,39 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         popup.setup(displayConfig())
     }
 
-    protected open fun configAppBarActionButton(menuContext: MenuContext) {}
+    protected open fun configAppBarActionButton(menuContext: MenuContext) = with(menuContext) {
+        menuItem(getString(R.string.action_play)) {
+            icon = context
+                .getTintedDrawable(
+                    R.drawable.ic_play_arrow_white_24dp,
+                    context.primaryTextColor(context.nightMode)
+                )
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+            onClick {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val allSongs = viewModel.collectAllSongs(context)
+                    allSongs.actionPlay(ShuffleMode.NONE, 0)
+                }
+                true
+            }
+        }
+        menuItem(getString(R.string.action_shuffle_all)) {
+            icon = context
+                .getTintedDrawable(
+                    R.drawable.ic_shuffle_white_24dp,
+                    context.primaryTextColor(context.nightMode)
+                )
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+            onClick {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val allSongs = viewModel.collectAllSongs(context)
+                    allSongs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(allSongs.size))
+                }
+                true
+            }
+        }
+        Unit
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     protected fun dismissPopup(popup: ListOptionsPopup) {

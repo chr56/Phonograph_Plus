@@ -12,6 +12,7 @@ import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
 import player.phonograph.misc.PlaylistsModifiedReceiver
+import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.repo.database.FavoritesStore
@@ -57,6 +58,9 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
             }
         }
 
+        override fun collectAllSongs(context: Context): List<Song> =
+            PlaylistLoader.all(context).flatMap { it.getSongs(context) }
+
         override val headerTextRes: Int get() = R.plurals.item_playlists
     }
 
@@ -89,6 +93,8 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
     override fun initAdapter(): DisplayAdapter<Playlist> {
         return PlaylistDisplayAdapter(mainActivity)
     }
+
+    // override fun configAppBarActionButton(menuContext: MenuContext) {}
 
     private fun setUpFloatingActionButton() {
         val primaryColor = addNewItemButton.context.primaryColor()
