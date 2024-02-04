@@ -239,16 +239,7 @@ class FlattenFolderPage : AbsPage() {
         }
     }
 
-    override fun onBackPress(): Boolean {
-        with(viewModel.mainViewMode) {
-            if (value) {
-                return false
-            } else {
-                value = true
-                return true
-            }
-        }
-    }
+    override fun onBackPress(): Boolean = !viewModel.navigateUp()
 
     override fun onDestroyView() {
         super.onDestroyView()

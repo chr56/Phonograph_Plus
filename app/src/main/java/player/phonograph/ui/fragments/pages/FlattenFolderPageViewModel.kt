@@ -23,7 +23,8 @@ class FlattenFolderPageViewModel : ViewModel() {
     /**
      * true if browsing folders
      */
-    val mainViewMode: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    private val _mainViewMode: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    val mainViewMode = _mainViewMode.asStateFlow()
 
     private val _folders: MutableStateFlow<List<SongCollection>> = MutableStateFlow(emptyList())
     val folders = _folders.asStateFlow()
@@ -34,7 +35,9 @@ class FlattenFolderPageViewModel : ViewModel() {
     private var _currentPosition: Int = -1
     val currentFolder get() = _folders.value.getOrNull(_currentPosition)
 
-
+    /**
+     * update folders
+     */
     fun loadFolders(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             _folders.emit(
@@ -43,19 +46,39 @@ class FlattenFolderPageViewModel : ViewModel() {
         }
     }
 
+    /**
+     * browse folder at [position]
+     */
     fun browseFolder(position: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             _currentPosition = position
             loadSongs()
-            mainViewMode.emit(false)
+            _mainViewMode.emit(false)
         }
     }
 
+    /**
+     * update Songs
+     */
     fun loadSongs() {
         viewModelScope.launch(Dispatchers.IO) {
             _currentSongs.emit(currentFolder?.songs ?: emptyList())
         }
     }
+
+    /**
+     * try to get back to upper level
+     * @return reached top
+     */
+    fun navigateUp(): Boolean =
+        if (mainViewMode.value) {
+            true
+        } else {
+            _mainViewMode.value = true
+            _currentPosition = -1
+            _currentSongs.tryEmit(emptyList())
+            false
+        }
 
     private fun MutableList<SongCollection>.sort(context: Context): List<SongCollection> {
         val mode = Setting(context).Composites[Keys.collectionSortMode].data
