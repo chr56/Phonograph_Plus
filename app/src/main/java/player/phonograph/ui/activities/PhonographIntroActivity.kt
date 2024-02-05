@@ -9,11 +9,11 @@ import com.github.appintro.AppIntroFragment
 import com.github.appintro.SlideBackgroundColorHolder
 import com.github.appintro.SlidePolicy
 import com.google.android.material.snackbar.Snackbar
-import lib.phonograph.misc.IOpenFileStorageAccess
-import lib.phonograph.misc.IRequestPermission
-import lib.phonograph.misc.OpenDocumentContract
-import lib.phonograph.misc.OpenFileStorageAccessTool
-import lib.phonograph.misc.RequestPermissionTool
+import lib.activityresultcontract.IOpenFileStorageAccess
+import lib.activityresultcontract.IRequestPermission
+import lib.activityresultcontract.OpenDocumentContract
+import lib.activityresultcontract.OpenFileStorageAccessTool
+import lib.activityresultcontract.RequestPermissionTool
 import player.phonograph.R
 import player.phonograph.databinding.FragmentIntroBinding
 import player.phonograph.databinding.FragmentIntroSlideSettingBinding

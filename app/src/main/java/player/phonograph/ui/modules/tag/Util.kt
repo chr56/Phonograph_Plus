@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.modules.tag
 
-import lib.phonograph.misc.ICreateFileStorageAccess
+import lib.activityresultcontract.ICreateFileStorageAccess
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.retriever.PARAMETERS_RAW
 import player.phonograph.coil.target.PaletteTargetBuilder

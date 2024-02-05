@@ -186,6 +186,7 @@ dependencies {
 
     implementation(libs.bundles.materialTools)
 
+    implementation(libs.storageUtilities)
     implementation(libs.menuDsl)
     implementation(libs.seekArc)
     implementation(libs.slidingUpPanel)
@@ -215,4 +216,5 @@ dependencies {
     }
     implementation(libs.statusBarLyricsApi)
     implementation(libs.lyricsGetterAPi)
+
 }

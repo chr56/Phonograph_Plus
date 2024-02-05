@@ -5,9 +5,9 @@
 package player.phonograph.ui.dialogs
 
 import com.google.android.material.chip.Chip
+import lib.activityresultcontract.IOpenFileStorageAccess
+import lib.activityresultcontract.OpenDocumentContract
 import lib.phonograph.dialog.LargeDialog
-import lib.phonograph.misc.IOpenFileStorageAccess
-import lib.phonograph.misc.OpenDocumentContract
 import mt.pref.ThemeColor
 import mt.util.color.lightenColor
 import mt.util.color.primaryTextColor

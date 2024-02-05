@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.fragments.player
 
-import lib.phonograph.storage.getBasePath
+import lib.storage.getBasePath
 import player.phonograph.mechanism.lyrics.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics

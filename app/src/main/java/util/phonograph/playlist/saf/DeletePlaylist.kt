@@ -4,7 +4,7 @@
 
 package util.phonograph.playlist.saf
 
-import lib.phonograph.uri.isTreeDocumentFileSafe
+import lib.storage.isTreeDocumentFileSafe
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.util.debug
 import player.phonograph.util.warning
