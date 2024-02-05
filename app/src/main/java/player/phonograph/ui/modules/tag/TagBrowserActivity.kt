@@ -4,10 +4,10 @@
 
 package player.phonograph.ui.modules.tag
 
-import lib.phonograph.misc.CreateFileStorageAccessTool
-import lib.phonograph.misc.ICreateFileStorageAccess
-import lib.phonograph.misc.IOpenFileStorageAccess
-import lib.phonograph.misc.OpenFileStorageAccessTool
+import lib.activityresultcontract.CreateFileStorageAccessTool
+import lib.activityresultcontract.ICreateFileStorageAccess
+import lib.activityresultcontract.IOpenFileStorageAccess
+import lib.activityresultcontract.OpenFileStorageAccessTool
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs

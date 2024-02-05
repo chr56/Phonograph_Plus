@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.modules.web
 
-import lib.phonograph.misc.ActivityResultContractTool
+import lib.activityresultcontract.ActivityResultContractTool
 import player.phonograph.ui.modules.web.WebSearchLauncher.selectable
 import util.phonograph.tagsources.lastfm.LastFmAlbum
 import util.phonograph.tagsources.lastfm.LastFmArtist

@@ -6,9 +6,9 @@ package util.phonograph.playlist.saf
 
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists.CONTENT_TYPE
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists.ENTRY_CONTENT_TYPE
-import lib.phonograph.misc.ActivityResultContractUtil.chooseFileViaSAF
-import lib.phonograph.misc.IOpenFileStorageAccess
-import lib.phonograph.storage.getAbsolutePath
+import lib.activityresultcontract.ActivityResultContractUtil.chooseFileViaSAF
+import lib.activityresultcontract.IOpenFileStorageAccess
+import lib.storage.getAbsolutePath
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist

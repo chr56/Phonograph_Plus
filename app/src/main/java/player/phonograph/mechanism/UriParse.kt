@@ -4,7 +4,7 @@
 
 package player.phonograph.mechanism
 
-import lib.phonograph.storage.documentProviderUriAbsolutePath
+import lib.storage.documentProviderUriAbsolutePath
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
 import player.phonograph.util.reportError

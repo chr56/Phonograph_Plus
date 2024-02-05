@@ -94,6 +94,8 @@ mt-tint = { group = "com.github.chr56.material-tools", name = "mdTint", version.
 
 composeSettingsUi = { group = "com.github.alorma", name = "compose-settings-ui", version.ref = "composeSetting" }
 
+
+storageUtilities = "com.github.chr56:AndroidStorageUtilities:0.1.0"
 menuDsl = "io.github.chr56:android-menu-dsl:0.1.3"
 seekArc = "com.github.chr56:SeekArc:1.0"
 slidingUpPanel = "com.github.kabouzeid:AndroidSlidingUpPanel:6"

@@ -5,7 +5,7 @@
 package player.phonograph.ui.modules.tag
 
 import com.vanpra.composematerialdialogs.MaterialDialogState
-import lib.phonograph.misc.IOpenFileStorageAccess
+import lib.activityresultcontract.IOpenFileStorageAccess
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.mechanism.tag.edit.selectImage

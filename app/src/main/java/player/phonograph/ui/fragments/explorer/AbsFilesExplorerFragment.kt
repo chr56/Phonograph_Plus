@@ -6,7 +6,7 @@ package player.phonograph.ui.fragments.explorer
 
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
-import lib.phonograph.storage.root
+import lib.storage.root
 import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.FragmentFolderPageBinding

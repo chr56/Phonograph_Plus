@@ -4,7 +4,7 @@
 
 package player.phonograph.model
 
-import lib.phonograph.storage.root
+import lib.storage.root
 import player.phonograph.App
 import androidx.core.content.getSystemService
 import android.content.Context

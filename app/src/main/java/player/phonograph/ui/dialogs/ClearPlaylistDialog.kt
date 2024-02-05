@@ -7,8 +7,8 @@ package player.phonograph.ui.dialogs
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
-import lib.phonograph.misc.IOpenDirStorageAccess
-import lib.phonograph.storage.getAbsolutePath
+import lib.activityresultcontract.IOpenDirStorageAccess
+import lib.storage.getAbsolutePath
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.model.playlist.FilePlaylist

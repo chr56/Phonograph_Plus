@@ -6,9 +6,9 @@
 
 package util.phonograph.playlist
 
-import lib.phonograph.misc.ICreateFileStorageAccess
-import lib.phonograph.misc.IOpenDirStorageAccess
-import lib.phonograph.misc.IOpenFileStorageAccess
+import lib.activityresultcontract.ICreateFileStorageAccess
+import lib.activityresultcontract.IOpenDirStorageAccess
+import lib.activityresultcontract.IOpenFileStorageAccess
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.Song

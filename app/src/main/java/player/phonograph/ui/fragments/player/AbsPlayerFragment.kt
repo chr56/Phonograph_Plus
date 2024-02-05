@@ -7,8 +7,8 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemA
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-import lib.phonograph.misc.IOpenFileStorageAccess
-import lib.phonograph.misc.OpenDocumentContract
+import lib.activityresultcontract.IOpenFileStorageAccess
+import lib.activityresultcontract.OpenDocumentContract
 import mt.color.MaterialColor
 import mt.tint.viewtint.setMenuColor
 import mt.util.color.toolbarIconColor
