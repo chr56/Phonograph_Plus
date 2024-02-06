@@ -27,9 +27,22 @@ sealed interface LastFmAction : Action {
         val track: String = "",
     ) : LastFmAction, Parcelable
 
-    sealed interface View : LastFmAction {
-        data class ViewArtist(val item: ArtistResult.Artist) : View
-        data class ViewAlbum(val item: AlbumResult.Album) : View
-        data class ViewTrack(val item: TrackResult.Track) : View
+    sealed class View(val language: String?) : LastFmAction {
+        abstract val item: LastFmSearchResultItem
+
+        class ViewArtist(override val item: ArtistResult.Artist, language: String? = null) : View(language)
+        class ViewAlbum(override val item: AlbumResult.Album, language: String? = null) : View(language)
+        class ViewTrack(override val item: TrackResult.Track, language: String? = null) : View(language)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is View) return false
+            if (language != other.language) return false
+            return item == other.item
+        }
+
+        override fun hashCode(): Int = 31 * item.hashCode() + (language?.hashCode() ?: 0)
+
+
     }
 }

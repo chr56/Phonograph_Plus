@@ -327,14 +327,14 @@ data class LastFmSearchResults(
 }
 
 
-
+sealed interface LastFmSearchResult
 sealed interface LastFmSearchResultItem
 
 @Keep
 @Serializable
 class AlbumResult(
     val album: List<Album>?,
-) {
+) : LastFmSearchResult {
     @Keep
     @Serializable
     data class Album(
@@ -350,7 +350,7 @@ class AlbumResult(
 @Serializable
 class ArtistResult(
     val artist: List<Artist>?,
-) {
+) : LastFmSearchResult {
     @Keep
     @Serializable
     data class Artist(
@@ -366,7 +366,7 @@ class ArtistResult(
 @Serializable
 class TrackResult(
     val track: List<Track>?,
-) {
+) : LastFmSearchResult {
     @Keep
     @Serializable
     data class Track(

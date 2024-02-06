@@ -31,9 +31,9 @@ class LastFmClientDelegate(
                     LastFmAction.Target.Track  -> api.searchTrack(action.track, action.artist, 1).process()
                 }
 
-                is View.ViewAlbum  -> api.getAlbumInfo(action.item.name, action.item.artist, null).process()
-                is View.ViewArtist -> api.getArtistInfo(action.item.name, null, null).process()
-                is View.ViewTrack  -> api.getTrackInfo(action.item.name, action.item.artist, null).process()
+                is View.ViewAlbum  -> api.getAlbumInfo(action.item.name, action.item.artist, action.language).process()
+                is View.ViewArtist -> api.getArtistInfo(action.item.name, action.language, null).process()
+                is View.ViewTrack  -> api.getTrackInfo(action.item.name, action.item.artist, action.language).process()
             }
         }
     }
