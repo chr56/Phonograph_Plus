@@ -26,7 +26,7 @@ fun LastFmSearchBox(
         target = {
             Target(
                 all = listOf(LastFmAction.Target.Album, LastFmAction.Target.Artist, LastFmAction.Target.Track),
-                text = { stringResource(it.displayTextRes) },
+                text = { stringResource(it.displayTextRes()) },
                 current = queryParameter.target
             ) {
                 updateQueryParameter { old -> old.copy(target = it) }

@@ -361,7 +361,7 @@ private fun EntityTitle(
 ) {
     MusicBrainzLinkableItem(target, mbid) {
         Text(
-            stringResource(target.displayTextRes),
+            stringResource(target.displayTextRes()),
             Modifier,
             fontSize = if (titleMode) 17.sp else 14.sp,
             fontWeight = if (titleMode) FontWeight.Bold else FontWeight.Normal,

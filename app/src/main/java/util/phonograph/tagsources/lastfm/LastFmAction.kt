@@ -4,18 +4,16 @@
 
 package util.phonograph.tagsources.lastfm
 
-import player.phonograph.R
 import util.phonograph.tagsources.Action
-import androidx.annotation.StringRes
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 sealed interface LastFmAction : Action {
 
-    enum class Target(@StringRes val displayTextRes: Int) {
-        Artist(R.string.target_artist),
-        Album(R.string.target_album),
-        Track(R.string.target_track),
+    enum class Target {
+        Artist,
+        Album,
+        Track,
         ;
     }
 
