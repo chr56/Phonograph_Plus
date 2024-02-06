@@ -4,11 +4,11 @@
 
 package player.phonograph.coil.lastfm
 
-import util.phonograph.tagsources.lastfm.AlbumResult
-import util.phonograph.tagsources.lastfm.ArtistResult
-import util.phonograph.tagsources.lastfm.LastFmAlbum
-import util.phonograph.tagsources.lastfm.LastFmArtist
-import util.phonograph.tagsources.lastfm.LastFmImage
+import mms.lastfm.AlbumResult
+import mms.lastfm.ArtistResult
+import mms.lastfm.LastFmAlbum
+import mms.lastfm.LastFmArtist
+import mms.lastfm.LastFmImage
 
 data class LastFmImageBundle(
     val owner: String,

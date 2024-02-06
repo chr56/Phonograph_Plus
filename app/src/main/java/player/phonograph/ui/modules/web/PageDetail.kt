@@ -4,9 +4,9 @@
 
 package player.phonograph.ui.modules.web
 
+import mms.lastfm.LastFmModel
+import mms.musicbrainz.MusicBrainzModel
 import player.phonograph.R
-import util.phonograph.tagsources.lastfm.LastFmModel
-import util.phonograph.tagsources.musicbrainz.MusicBrainzModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 

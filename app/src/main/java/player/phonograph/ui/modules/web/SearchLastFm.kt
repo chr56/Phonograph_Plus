@@ -4,11 +4,11 @@
 
 package player.phonograph.ui.modules.web
 
-import util.phonograph.tagsources.lastfm.LastFmAlbumResponse
-import util.phonograph.tagsources.lastfm.LastFmArtistResponse
-import util.phonograph.tagsources.lastfm.LastFmSearchResultResponse
-import util.phonograph.tagsources.lastfm.LastFmSearchResults
-import util.phonograph.tagsources.lastfm.LastFmTrackResponse
+import mms.lastfm.LastFmAlbumResponse
+import mms.lastfm.LastFmArtistResponse
+import mms.lastfm.LastFmSearchResultResponse
+import mms.lastfm.LastFmSearchResults
+import mms.lastfm.LastFmTrackResponse
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable

@@ -4,10 +4,10 @@
 
 package player.phonograph.ui.modules.web
 
+import mms.musicbrainz.MusicBrainzAction
+import mms.musicbrainz.MusicBrainzSearchResult
 import player.phonograph.R
 import player.phonograph.ui.compose.components.ListItem
-import util.phonograph.tagsources.musicbrainz.MusicBrainzAction
-import util.phonograph.tagsources.musicbrainz.MusicBrainzSearchResult
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,10 +19,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import util.phonograph.tagsources.musicbrainz.MusicBrainzSearchResultArtists as SearchResultArtists
-import util.phonograph.tagsources.musicbrainz.MusicBrainzSearchResultRecording as SearchResultRecording
-import util.phonograph.tagsources.musicbrainz.MusicBrainzSearchResultReleases as SearchResultReleases
-import util.phonograph.tagsources.musicbrainz.MusicBrainzSearchResultReleasesGroup as SearchResultReleasesGroup
+import mms.musicbrainz.MusicBrainzSearchResultArtists as SearchResultArtists
+import mms.musicbrainz.MusicBrainzSearchResultRecording as SearchResultRecording
+import mms.musicbrainz.MusicBrainzSearchResultReleases as SearchResultReleases
+import mms.musicbrainz.MusicBrainzSearchResultReleasesGroup as SearchResultReleasesGroup
 
 @Composable
 fun MusicBrainzSearchResult(

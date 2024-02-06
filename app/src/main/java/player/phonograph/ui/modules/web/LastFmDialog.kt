@@ -9,6 +9,16 @@ package player.phonograph.ui.modules.web
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import mms.AbsClientDelegate
+import mms.lastfm.AlbumResult
+import mms.lastfm.ArtistResult
+import mms.lastfm.LastFmAction
+import mms.lastfm.LastFmAlbumResponse
+import mms.lastfm.LastFmArtistResponse
+import mms.lastfm.LastFmClientDelegate
+import mms.lastfm.LastFmModel
+import mms.lastfm.LastFmTrackResponse
+import mms.lastfm.TrackResult
 import player.phonograph.R
 import player.phonograph.USER_AGENT
 import player.phonograph.model.Album
@@ -17,16 +27,6 @@ import player.phonograph.model.Song
 import player.phonograph.ui.compose.BridgeDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.util.parcelable
-import util.phonograph.tagsources.AbsClientDelegate
-import util.phonograph.tagsources.lastfm.AlbumResult
-import util.phonograph.tagsources.lastfm.ArtistResult
-import util.phonograph.tagsources.lastfm.LastFmAction
-import util.phonograph.tagsources.lastfm.LastFmAlbumResponse
-import util.phonograph.tagsources.lastfm.LastFmArtistResponse
-import util.phonograph.tagsources.lastfm.LastFmClientDelegate
-import util.phonograph.tagsources.lastfm.LastFmModel
-import util.phonograph.tagsources.lastfm.LastFmTrackResponse
-import util.phonograph.tagsources.lastfm.TrackResult
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,9 +53,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
-import util.phonograph.tagsources.lastfm.LastFmAlbum as LastFmAlbumModel
-import util.phonograph.tagsources.lastfm.LastFmArtist as LastFmArtistModel
-import util.phonograph.tagsources.lastfm.LastFmTrack as LastFmTrackModel
+import mms.lastfm.LastFmAlbum as LastFmAlbumModel
+import mms.lastfm.LastFmArtist as LastFmArtistModel
+import mms.lastfm.LastFmTrack as LastFmTrackModel
 
 class LastFmDialog : BridgeDialogFragment() {
 

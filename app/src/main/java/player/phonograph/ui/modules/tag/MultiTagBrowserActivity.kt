@@ -8,6 +8,7 @@ import lib.activityresultcontract.CreateFileStorageAccessTool
 import lib.activityresultcontract.ICreateFileStorageAccess
 import lib.activityresultcontract.IOpenFileStorageAccess
 import lib.activityresultcontract.OpenFileStorageAccessTool
+import mms.Source
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
@@ -16,7 +17,6 @@ import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.modules.web.IWebSearchRequester
 import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.ui.modules.web.WebSearchTool
-import util.phonograph.tagsources.Source
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
@@ -153,7 +153,7 @@ private fun RequestWebSearch(viewModel: MultiTagBrowserViewModel, webSearchTool:
     val context = LocalContext.current
     fun search(source: Source) {
         val intent = when (source) {
-            Source.LastFm -> WebSearchLauncher.searchLastFmSong(context, null)
+            Source.LastFm      -> WebSearchLauncher.searchLastFmSong(context, null)
             Source.MusicBrainz -> WebSearchLauncher.searchMusicBrainzSong(context, null)
         }
         webSearchTool.launch(intent) {

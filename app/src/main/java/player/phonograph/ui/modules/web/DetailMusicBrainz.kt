@@ -4,22 +4,22 @@
 
 package player.phonograph.ui.modules.web
 
+import mms.musicbrainz.MusicBrainzAction.Target
+import mms.musicbrainz.MusicBrainzArtist
+import mms.musicbrainz.MusicBrainzArtistCredit
+import mms.musicbrainz.MusicBrainzGenre
+import mms.musicbrainz.MusicBrainzMedia
+import mms.musicbrainz.MusicBrainzRecording
+import mms.musicbrainz.MusicBrainzRelease
+import mms.musicbrainz.MusicBrainzReleaseGroup
+import mms.musicbrainz.MusicBrainzTag
+import mms.musicbrainz.MusicBrainzTrack
 import player.phonograph.R
 import player.phonograph.ui.compose.components.CascadeFlowRow
 import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.Chip
 import player.phonograph.ui.compose.components.Item
 import player.phonograph.util.text.bracketedIfAny
-import util.phonograph.tagsources.musicbrainz.MusicBrainzAction.Target
-import util.phonograph.tagsources.musicbrainz.MusicBrainzArtist
-import util.phonograph.tagsources.musicbrainz.MusicBrainzArtistCredit
-import util.phonograph.tagsources.musicbrainz.MusicBrainzGenre
-import util.phonograph.tagsources.musicbrainz.MusicBrainzMedia
-import util.phonograph.tagsources.musicbrainz.MusicBrainzRecording
-import util.phonograph.tagsources.musicbrainz.MusicBrainzRelease
-import util.phonograph.tagsources.musicbrainz.MusicBrainzReleaseGroup
-import util.phonograph.tagsources.musicbrainz.MusicBrainzTag
-import util.phonograph.tagsources.musicbrainz.MusicBrainzTrack
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -92,7 +92,7 @@ fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup, e
         MusicBrainzTags(releaseGroup.tags)
         if (!releaseGroup.releases.isNullOrEmpty()) {
             CascadeVerticalItem("Releases") {
-                for (release in releaseGroup.releases) {
+                for (release in releaseGroup.releases!!) {
                     EntityTitle(Target.Release, release.id, release.title)
                 }
             }
@@ -109,14 +109,14 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease, embed: Boolean) 
     MusicBrainzArtistCredits(release.artistCredit)
     if (release.releaseGroup != null) {
         CascadeVerticalItem("Release Group") {
-            MusicBrainzLinkableItem(Target.ReleaseGroup, release.releaseGroup.id, Modifier.padding(vertical = 4.dp)) {
+            MusicBrainzLinkableItem(Target.ReleaseGroup, release.releaseGroup!!.id, Modifier.padding(vertical = 4.dp)) {
                 Text(
-                    release.releaseGroup.title,
+                    release.releaseGroup!!.title,
                     Modifier,
                     fontSize = 14.sp,
                     textAlign = TextAlign.Start
                 )
-                Text(release.releaseGroup.id, fontSize = 8.sp, fontWeight = FontWeight.Thin)
+                Text(release.releaseGroup!!.id, fontSize = 8.sp, fontWeight = FontWeight.Thin)
             }
         }
     }
@@ -130,7 +130,7 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease, embed: Boolean) 
             CascadeVerticalItem(stringResource(R.string.key_record_label)) {
                 for (labelInfo in release.labelInfo) {
                     if (labelInfo.label != null) {
-                        Text(labelInfo.label.name)
+                        Text(labelInfo.label!!.name)
                     }
                 }
             }
@@ -189,7 +189,7 @@ fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording?) {
         MusicBrainzTags(recording.tags)
         if (!recording.releases.isNullOrEmpty()) {
             CascadeVerticalItem("Related Releases") {
-                for ((index, release) in recording.releases.withIndex()) {
+                for ((index, release) in recording.releases!!.withIndex()) {
                     CascadeVerticalItem("Related Release ${index + 1}") {
                         MusicBrainzRelease(release, embed = true)
                     }
@@ -212,7 +212,7 @@ fun ColumnScope.MusicBrainzTrack(track: MusicBrainzTrack) {
     }
     if (track.media != null) {
         CascadeVerticalItem(stringResource(R.string.key_media)) {
-            MusicBrainzMedia(track.media)
+            MusicBrainzMedia(track.media!!)
         }
     }
 }
@@ -242,13 +242,13 @@ fun MusicBrainzArtistCredit(artistCredit: MusicBrainzArtistCredit, modifier: Mod
         )
         if (artistCredit.artist != null) {
             Text(
-                artistCredit.artist.name,
+                artistCredit.artist!!.name,
                 Modifier,
                 fontSize = 10.sp,
                 textAlign = TextAlign.Start
             )
             Text(
-                artistCredit.artist.id,
+                artistCredit.artist!!.id,
                 fontSize = 8.sp,
                 fontWeight = FontWeight.Thin
             )
@@ -275,7 +275,7 @@ private fun MusicBrainzMedia(media: MusicBrainzMedia) {
             Item(stringResource(R.string.count), "${media.discCount} * ${media.trackCount}")
             if (!media.tracks.isNullOrEmpty()) {
                 CascadeVerticalItem("Tracks", collapsible = true, collapsed = true) {
-                    for (track in media.tracks) {
+                    for (track in media.tracks!!) {
                         CascadeVerticalItem(
                             "Track ${track.number}: ${track.title}",
                             collapsible = true,

@@ -187,6 +187,7 @@ dependencies {
     implementation(libs.bundles.materialTools)
 
     implementation(libs.storageUtilities)
+    implementation(libs.musicMetadataSource)
     implementation(libs.menuDsl)
     implementation(libs.seekArc)
     implementation(libs.slidingUpPanel)

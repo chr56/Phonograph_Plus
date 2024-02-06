@@ -4,16 +4,16 @@
 
 package player.phonograph.ui.modules.web
 
-import util.phonograph.tagsources.musicbrainz.MusicBrainzArtist
-import util.phonograph.tagsources.musicbrainz.MusicBrainzRecording
-import util.phonograph.tagsources.musicbrainz.MusicBrainzRelease
-import util.phonograph.tagsources.musicbrainz.MusicBrainzReleaseGroup
-import util.phonograph.tagsources.musicbrainz.MusicBrainzSearchResult
-import util.phonograph.tagsources.musicbrainz.MusicBrainzSearchResultArtists
-import util.phonograph.tagsources.musicbrainz.MusicBrainzSearchResultRecording
-import util.phonograph.tagsources.musicbrainz.MusicBrainzSearchResultReleases
-import util.phonograph.tagsources.musicbrainz.MusicBrainzSearchResultReleasesGroup
-import util.phonograph.tagsources.musicbrainz.MusicBrainzTrack
+import mms.musicbrainz.MusicBrainzArtist
+import mms.musicbrainz.MusicBrainzRecording
+import mms.musicbrainz.MusicBrainzRelease
+import mms.musicbrainz.MusicBrainzReleaseGroup
+import mms.musicbrainz.MusicBrainzSearchResult
+import mms.musicbrainz.MusicBrainzSearchResultArtists
+import mms.musicbrainz.MusicBrainzSearchResultRecording
+import mms.musicbrainz.MusicBrainzSearchResultReleases
+import mms.musicbrainz.MusicBrainzSearchResultReleasesGroup
+import mms.musicbrainz.MusicBrainzTrack
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable

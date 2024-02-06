@@ -4,12 +4,12 @@
 
 package player.phonograph.ui.modules.tag
 
+import mms.Source
+import mms.lastfm.LastFmTrack
+import mms.musicbrainz.MusicBrainzRecording
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.ui.modules.web.WebSearchTool
-import util.phonograph.tagsources.Source
-import util.phonograph.tagsources.lastfm.LastFmTrack
-import util.phonograph.tagsources.musicbrainz.MusicBrainzRecording
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem

@@ -6,7 +6,7 @@ package player.phonograph.coil.lastfm
 
 import coil.map.Mapper
 import coil.request.Options
-import util.phonograph.tagsources.lastfm.largestUrl
+import mms.lastfm.largestUrl
 
 class LastFmImageBundleMapper : Mapper<LastFmImageBundle, String> {
     override fun map(data: LastFmImageBundle, options: Options): String? {

@@ -6,15 +6,15 @@ package player.phonograph.ui.modules.web
 
 import coil.Coil
 import coil.compose.rememberAsyncImagePainter
+import mms.lastfm.AlbumResult
+import mms.lastfm.ArtistResult
+import mms.lastfm.LastFmAction
+import mms.lastfm.LastFmImage
+import mms.lastfm.LastFmSearchResults
+import mms.lastfm.TrackResult
 import player.phonograph.R
 import player.phonograph.coil.lastfm.LastFmImageBundle
 import player.phonograph.ui.compose.components.ListItem
-import util.phonograph.tagsources.lastfm.AlbumResult
-import util.phonograph.tagsources.lastfm.ArtistResult
-import util.phonograph.tagsources.lastfm.LastFmAction
-import util.phonograph.tagsources.lastfm.LastFmImage
-import util.phonograph.tagsources.lastfm.LastFmSearchResults
-import util.phonograph.tagsources.lastfm.TrackResult
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -63,7 +63,7 @@ private fun AlbumResult(albumResult: AlbumResult?, getDetail: (AlbumResult.Album
     if (albumResult != null && !albumResult.album.isNullOrEmpty()) {
         val context = LocalContext.current
         LazyColumn {
-            items(albumResult.album) { album ->
+            items(albumResult.album!!) { album ->
                 val painter =
                     rememberAsyncImagePainter(
                         LastFmImageBundle.from(album, LastFmImage.ImageSize.LARGE),
@@ -80,7 +80,7 @@ private fun ArtistResult(artistResult: ArtistResult?, getDetail: (ArtistResult.A
     if (artistResult != null && !artistResult.artist.isNullOrEmpty()) {
         val context = LocalContext.current
         LazyColumn {
-            items(artistResult.artist) { artist ->
+            items(artistResult.artist!!) { artist ->
                 val painter =
                     rememberAsyncImagePainter(
                         LastFmImageBundle.from(artist, LastFmImage.ImageSize.LARGE),
@@ -95,7 +95,7 @@ private fun ArtistResult(artistResult: ArtistResult?, getDetail: (ArtistResult.A
 private fun TrackResult(trackResult: TrackResult?, getDetail: (TrackResult.Track) -> Unit) {
     if (trackResult != null && !trackResult.track.isNullOrEmpty()) {
         LazyColumn {
-            items(trackResult.track) { track ->
+            items(trackResult.track!!) { track ->
                 ListItem(Modifier, track.name, track.artist, { getDetail(track) }, {})
             }
         }

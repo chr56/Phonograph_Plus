@@ -5,14 +5,14 @@
 package player.phonograph.ui.modules.web
 
 import lib.activityresultcontract.ActivityResultContractTool
+import mms.lastfm.LastFmAlbum
+import mms.lastfm.LastFmArtist
+import mms.lastfm.LastFmTrack
+import mms.musicbrainz.MusicBrainzArtist
+import mms.musicbrainz.MusicBrainzRecording
+import mms.musicbrainz.MusicBrainzRelease
+import mms.musicbrainz.MusicBrainzReleaseGroup
 import player.phonograph.ui.modules.web.WebSearchLauncher.selectable
-import util.phonograph.tagsources.lastfm.LastFmAlbum
-import util.phonograph.tagsources.lastfm.LastFmArtist
-import util.phonograph.tagsources.lastfm.LastFmTrack
-import util.phonograph.tagsources.musicbrainz.MusicBrainzArtist
-import util.phonograph.tagsources.musicbrainz.MusicBrainzRecording
-import util.phonograph.tagsources.musicbrainz.MusicBrainzRelease
-import util.phonograph.tagsources.musicbrainz.MusicBrainzReleaseGroup
 import androidx.activity.result.contract.ActivityResultContract
 import android.app.Activity.RESULT_OK
 import android.content.Context

@@ -4,16 +4,16 @@
 
 package player.phonograph.ui.modules.web
 
+import mms.lastfm.LastFmAction
+import mms.musicbrainz.MusicBrainzAction
 import player.phonograph.R
-import util.phonograph.tagsources.lastfm.LastFmAction
-import util.phonograph.tagsources.musicbrainz.MusicBrainzAction
-import util.phonograph.tagsources.lastfm.LastFmAction.Target.Album as LastFmAlbum
-import util.phonograph.tagsources.lastfm.LastFmAction.Target.Artist as LastFmArtist
-import util.phonograph.tagsources.lastfm.LastFmAction.Target.Track as LastFmTrack
-import util.phonograph.tagsources.musicbrainz.MusicBrainzAction.Target.Artist as MusicbrainzArtist
-import util.phonograph.tagsources.musicbrainz.MusicBrainzAction.Target.Recording as MusicbrainzRecording
-import util.phonograph.tagsources.musicbrainz.MusicBrainzAction.Target.Release as MusicbrainzRelease
-import util.phonograph.tagsources.musicbrainz.MusicBrainzAction.Target.ReleaseGroup as MusicbrainzReleaseGroup
+import mms.lastfm.LastFmAction.Target.Album as LastFmAlbum
+import mms.lastfm.LastFmAction.Target.Artist as LastFmArtist
+import mms.lastfm.LastFmAction.Target.Track as LastFmTrack
+import mms.musicbrainz.MusicBrainzAction.Target.Artist as MusicbrainzArtist
+import mms.musicbrainz.MusicBrainzAction.Target.Recording as MusicbrainzRecording
+import mms.musicbrainz.MusicBrainzAction.Target.Release as MusicbrainzRelease
+import mms.musicbrainz.MusicBrainzAction.Target.ReleaseGroup as MusicbrainzReleaseGroup
 
 fun LastFmAction.Target.displayTextRes(): Int = when (this) {
     LastFmArtist -> R.string.target_artist

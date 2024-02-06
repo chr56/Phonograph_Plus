@@ -6,17 +6,17 @@ package player.phonograph.ui.modules.web
 
 import coil.Coil
 import coil.compose.rememberAsyncImagePainter
+import mms.lastfm.LastFmAlbum
+import mms.lastfm.LastFmArtist
+import mms.lastfm.LastFmTrack
+import mms.lastfm.LastFmWikiData
+import mms.lastfm.Tags
+import mms.musicbrainz.MusicBrainzAction
 import player.phonograph.R
 import player.phonograph.coil.lastfm.LastFmImageBundle
 import player.phonograph.ui.compose.components.Chip
 import player.phonograph.ui.compose.components.HorizontalTextItem
 import player.phonograph.ui.compose.components.VerticalTextItem
-import util.phonograph.tagsources.lastfm.LastFmAlbum
-import util.phonograph.tagsources.lastfm.LastFmArtist
-import util.phonograph.tagsources.lastfm.LastFmTrack
-import util.phonograph.tagsources.lastfm.LastFmWikiData
-import util.phonograph.tagsources.lastfm.Tags
-import util.phonograph.tagsources.musicbrainz.MusicBrainzAction
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -61,10 +61,10 @@ fun DetailLastFm(viewModel: WebSearchViewModel, lastFmDetail: PageDetail.LastFmD
             .padding(horizontal = 24.dp, vertical = 8.dp)
     ) {
         when (val item = detail) {
-            is LastFmAlbum -> LastFmAlbum(item)
+            is LastFmAlbum  -> LastFmAlbum(item)
             is LastFmArtist -> LastFmArtist(item)
-            is LastFmTrack -> LastFmTrack(item)
-            else -> Text(
+            is LastFmTrack  -> LastFmTrack(item)
+            else            -> Text(
                 stringResource(R.string.empty), modifier = Modifier.align(Alignment.TopCenter)
             )
         }
@@ -137,7 +137,7 @@ private fun Wiki(wikiData: LastFmWikiData?, isBio: Boolean) {
     Box(modifier = Modifier.padding(24.dp, 12.dp)) {
         if (wikiData != null
             && (wikiData.content != null && wikiData.summary != null)
-            && !wikiData.summary.startsWith(" <a href=\"https://")
+            && !wikiData.summary!!.startsWith(" <a href=\"https://")
         ) {
             var clicked by remember(wikiData) { mutableStateOf(false) }
             val text = Html.fromHtml(if (clicked) wikiData.content else wikiData.summary, Html.FROM_HTML_MODE_COMPACT)
@@ -164,7 +164,6 @@ private fun MusicBrainzIdentifier(string: String?) {
     if (!string.isNullOrEmpty()) VerticalTextItem(stringResource(R.string.key_mbid), string)
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Tags(tags: Tags?) {
     if (tags != null && tags.tag.isNotEmpty())
@@ -205,7 +204,7 @@ private fun Tag(tag: Tags.Tag, context: Context) {
                 modifier = Modifier
                     .padding(horizontal = 2.dp)
                     .clickable {
-                        if (tag.url != null) clickLink(context, tag.url)
+                        if (tag.url != null) clickLink(context, tag.url!!)
                     }
             )
         }
@@ -215,10 +214,10 @@ private fun Tag(tag: Tags.Tag, context: Context) {
 
 @Composable
 private fun ColumnScope.Tracks(tracks: LastFmAlbum.Tracks?) {
-    if (tracks != null && !tracks.track.isNullOrEmpty() && tracks.track.isNotEmpty()) {
+    if (tracks != null && !tracks.track.isNullOrEmpty() && !tracks.track.isNullOrEmpty()) {
         Text(stringResource(id = R.string.songs), fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(6.dp))
-        for (track in tracks.track) {
+        for (track in tracks.track!!) {
             Track(track)
         }
     }

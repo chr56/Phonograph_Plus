@@ -4,11 +4,11 @@
 
 package player.phonograph.ui.modules.web
 
+import mms.musicbrainz.MusicBrainzAction
+import mms.musicbrainz.MusicBrainzAction.Target
+import mms.musicbrainz.MusicbrainzQueryParameter
 import player.phonograph.R
 import player.phonograph.ui.compose.components.HorizontalTextItem
-import util.phonograph.tagsources.musicbrainz.MusicBrainzAction
-import util.phonograph.tagsources.musicbrainz.MusicBrainzAction.Target
-import util.phonograph.tagsources.musicbrainz.MusicbrainzQueryParameter
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource

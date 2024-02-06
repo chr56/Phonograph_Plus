@@ -4,16 +4,16 @@
 
 package player.phonograph.ui.modules.web
 
+import mms.musicbrainz.MusicBrainzAction
+import mms.musicbrainz.MusicBrainzAction.Target
+import mms.musicbrainz.MusicBrainzClientDelegate
+import mms.musicbrainz.MusicBrainzModel
 import player.phonograph.R
 import player.phonograph.ui.compose.Navigator
 import player.phonograph.ui.modules.web.WebSearchLauncher.launchIntent
 import player.phonograph.ui.modules.web.WebSearchLauncher.viewIntentMusicBrainzArtist
 import player.phonograph.ui.modules.web.WebSearchLauncher.viewIntentMusicBrainzRecording
 import player.phonograph.ui.modules.web.WebSearchLauncher.viewIntentMusicBrainzRelease
-import util.phonograph.tagsources.musicbrainz.MusicBrainzAction
-import util.phonograph.tagsources.musicbrainz.MusicBrainzAction.Target
-import util.phonograph.tagsources.musicbrainz.MusicBrainzClientDelegate
-import util.phonograph.tagsources.musicbrainz.MusicBrainzModel
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
