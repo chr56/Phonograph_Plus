@@ -24,7 +24,6 @@ import util.phonograph.tagsources.lastfm.LastFMService
 import util.phonograph.tagsources.lastfm.LastFmModel
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -122,7 +121,7 @@ class LastFmDialog : BridgeDialogFragment() {
                         style = MaterialTheme.typography.h5
                     )
                 }
-                BoxWithConstraints(
+                Box(
                     Modifier
                         .fillMaxSize(0.97f)
                         .padding(12.dp),
