@@ -199,7 +199,7 @@ class PlaylistPageDisplayConfig(context: Context) : PageDisplayConfig(context) {
         )
 
     override var layout: ItemLayoutStyle = ItemLayoutStyle.LIST_SINGLE_ROW
-    override val availableLayouts: Array<ItemLayoutStyle> get() = emptyArray()
+    override val availableLayouts: Array<ItemLayoutStyle> get() = arrayOf(ItemLayoutStyle.LIST_SINGLE_ROW)
 
     override val maxGridSize: Int get() = if (isLandscape) 4 else 2
 
@@ -228,8 +228,8 @@ class GenrePageDisplayConfig(context: Context) : PageDisplayConfig(context) {
             SortRef.SONG_COUNT,
         )
 
-    override var layout: ItemLayoutStyle = ItemLayoutStyle.LIST_SINGLE_ROW
-    override val availableLayouts: Array<ItemLayoutStyle> get() = emptyArray()
+    override var layout: ItemLayoutStyle = ItemLayoutStyle.LIST_NO_IMAGE
+    override val availableLayouts: Array<ItemLayoutStyle> get() = arrayOf(ItemLayoutStyle.LIST_NO_IMAGE)
 
     override val maxGridSize: Int get() = if (isLandscape) 6 else 4
 
