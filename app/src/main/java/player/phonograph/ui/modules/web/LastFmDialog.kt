@@ -2,6 +2,8 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
+@file:Suppress("VARIABLE_WITH_REDUNDANT_INITIALIZER")
+
 package player.phonograph.ui.modules.web
 
 import com.vanpra.composematerialdialogs.MaterialDialog
