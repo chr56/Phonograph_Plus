@@ -4,7 +4,7 @@
 
 package util.phonograph.tagsources.lastfm
 
-import lib.phonograph.misc.JsonDeserializationRetrofitConverter
+import util.phonograph.tagsources.util.JsonDeserializationRetrofitConverter
 import okhttp3.internal.format
 import util.phonograph.tagsources.AbsRestClient
 import android.content.Context

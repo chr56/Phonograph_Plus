@@ -6,7 +6,7 @@
 
 package util.phonograph.tagsources.lastfm
 
-import lib.phonograph.misc.RestResult
+import util.phonograph.tagsources.util.RestResult
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header

@@ -4,11 +4,11 @@
 
 package util.phonograph.tagsources
 
-import lib.phonograph.misc.RestResult
-import lib.phonograph.misc.emit
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import retrofit2.Call
+import util.phonograph.tagsources.util.RestResult
+import util.phonograph.tagsources.util.emit
 import android.content.Context
 import kotlinx.coroutines.Deferred
 

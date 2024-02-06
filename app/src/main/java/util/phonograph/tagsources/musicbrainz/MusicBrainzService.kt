@@ -4,7 +4,7 @@
 
 package util.phonograph.tagsources.musicbrainz
 
-import lib.phonograph.misc.RestResult
+import util.phonograph.tagsources.util.RestResult
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

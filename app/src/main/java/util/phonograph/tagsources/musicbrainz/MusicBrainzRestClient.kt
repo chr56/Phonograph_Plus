@@ -4,7 +4,7 @@
 
 package util.phonograph.tagsources.musicbrainz
 
-import lib.phonograph.misc.JsonDeserializationRetrofitConverter
+import util.phonograph.tagsources.util.JsonDeserializationRetrofitConverter
 import util.phonograph.tagsources.AbsRestClient
 import android.content.Context
 

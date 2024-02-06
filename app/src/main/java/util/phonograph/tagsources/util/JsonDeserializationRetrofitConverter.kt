@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package lib.phonograph.misc
+package util.phonograph.tagsources.util
 
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -10,7 +10,6 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Converter
 import retrofit2.Retrofit
-import androidx.annotation.Keep
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.MissingFieldException
@@ -21,20 +20,6 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.serializer
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
-
-
-@Keep
-sealed class RestResult<T>(val isSuccess: Boolean) {
-
-    fun dataOrNull() = (this as? Success)?.data
-    fun messageOrNull() = (this as? RemoteError)?.message
-    fun exceptionOrNull() = (this as? ParseError)?.exception
-
-    class Success<T>(val data: T) : RestResult<T>(true)
-    class RemoteError<T>(val message: String) : RestResult<T>(false)
-    class ParseError<T>(val exception: Throwable) : RestResult<T>(false)
-    class NetworkError<T>(val exception: Throwable) : RestResult<T>(false)
-}
 
 class JsonDeserializationRetrofitConverter<T : Any>(
     private val serializer: JsonSerializerDelegate<T>,
