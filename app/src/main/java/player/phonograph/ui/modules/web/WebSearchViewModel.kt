@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.modules.web
 
+import player.phonograph.USER_AGENT
 import player.phonograph.ui.compose.Navigator
 import util.phonograph.tagsources.lastfm.LastFmAlbum
 import util.phonograph.tagsources.lastfm.LastFmArtist
@@ -32,7 +33,7 @@ class WebSearchViewModel : ViewModel() {
         return if (clientDelegateLastFm != null) {
             clientDelegateLastFm!!
         } else {
-            LastFmClientDelegate(context, viewModelScope).also { clientDelegateLastFm = it }
+            LastFmClientDelegate(context, USER_AGENT, viewModelScope).also { clientDelegateLastFm = it }
         }
     }
 
@@ -41,7 +42,7 @@ class WebSearchViewModel : ViewModel() {
         return if (clientDelegateMusicBrainz != null) {
             clientDelegateMusicBrainz!!
         } else {
-            MusicBrainzClientDelegate(context, viewModelScope).also { clientDelegateMusicBrainz = it }
+            MusicBrainzClientDelegate(context, USER_AGENT, viewModelScope).also { clientDelegateMusicBrainz = it }
         }
     }
 

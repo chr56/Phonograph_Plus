@@ -10,6 +10,7 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import lib.phonograph.misc.RestResult
 import lib.phonograph.misc.emit
 import player.phonograph.R
+import player.phonograph.USER_AGENT
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
@@ -60,7 +61,7 @@ class LastFmDialog : BridgeDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lastFMRestClient = LastFMRestClient(requireContext())
+        lastFMRestClient = LastFMRestClient(requireContext(), USER_AGENT)
 
         viewModel.mode = requireArguments().getString(EXTRA_TYPE)
 

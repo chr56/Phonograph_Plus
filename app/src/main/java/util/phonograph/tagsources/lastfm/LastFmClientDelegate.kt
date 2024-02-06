@@ -15,10 +15,11 @@ import kotlinx.coroutines.async
 
 class LastFmClientDelegate(
     context: Context,
+    userAgent: String,
     val scope: CoroutineScope,
 ) : AbsClientDelegate<LastFmAction, LastFmResponse>() {
 
-    private val musicBrainzRestClient: LastFMRestClient = LastFMRestClient(context)
+    private val musicBrainzRestClient: LastFMRestClient = LastFMRestClient(context, userAgent)
 
     override fun request(context: Context, action: LastFmAction): Deferred<LastFmResponse?> {
         return scope.async(Dispatchers.IO) {

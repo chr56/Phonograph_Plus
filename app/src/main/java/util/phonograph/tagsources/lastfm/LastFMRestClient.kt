@@ -9,7 +9,7 @@ import okhttp3.internal.format
 import util.phonograph.tagsources.AbsRestClient
 import android.content.Context
 
-class LastFMRestClient(context: Context) : AbsRestClient<LastFMService>(
+class LastFMRestClient(context: Context, userAgent: String) : AbsRestClient<LastFMService>(
     okHttpClientConfig = {
         defaultCache(context, "/okhttp-lastfm/")
     },
@@ -20,7 +20,8 @@ class LastFMRestClient(context: Context) : AbsRestClient<LastFMService>(
         baseUrl(BASE_URL)
         addConverterFactory(JsonDeserializationRetrofitConverter.Factory())
     },
-    apiServiceClazz = LastFMService::class.java
+    apiServiceClazz = LastFMService::class.java,
+    customUserAgent = userAgent
 ) {
     companion object {
         const val BASE_URL = "https://ws.audioscrobbler.com/2.0/"

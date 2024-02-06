@@ -9,8 +9,6 @@ import okhttp3.Call
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.internal.userAgent
-import player.phonograph.BuildConfig
 import retrofit2.Retrofit
 import android.content.Context
 import java.io.File
@@ -23,8 +21,9 @@ abstract class AbsRestClient<T> private constructor(val apiService: T) {
         headerConfig: Request.Builder.() -> Unit,
         retrofitConfig: Retrofit.Builder.() -> Unit,
         apiServiceClazz: Class<T>,
+        customUserAgent: String,
     ) : this(
-        defaultRetrofitAdapter(defaultOkHttpClient(okHttpClientConfig, headerConfig), retrofitConfig),
+        defaultRetrofitAdapter(defaultOkHttpClient(okHttpClientConfig, headerConfig, customUserAgent), retrofitConfig),
         apiServiceClazz
     )
 
@@ -44,7 +43,6 @@ abstract class AbsRestClient<T> private constructor(val apiService: T) {
     ) : this(retrofit.create(apiServiceClazz))
 
     companion object {
-        private const val USER_AGENT = "PhonographPlus/${BuildConfig.VERSION_NAME} (Android) $userAgent"
 
         private fun defaultRetrofitAdapter(
             client: Call.Factory,
@@ -58,11 +56,12 @@ abstract class AbsRestClient<T> private constructor(val apiService: T) {
         private fun defaultOkHttpClient(
             clientConfig: OkHttpClient.Builder.() -> Unit,
             headerConfig: Request.Builder.() -> Unit,
+            customUserAgent: String,
         ): OkHttpClient = OkHttpClient.Builder()
             .addInterceptor { chain: Interceptor.Chain ->
                 val modifiedRequest = chain.request().newBuilder()
                     .removeHeader("User-Agent")
-                    .addHeader("User-Agent", USER_AGENT)
+                    .addHeader("User-Agent", customUserAgent)
                     .apply(headerConfig)
                     .build()
                 chain.proceed(modifiedRequest)

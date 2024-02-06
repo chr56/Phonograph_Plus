@@ -14,10 +14,11 @@ import kotlinx.coroutines.async
 
 class MusicBrainzClientDelegate(
     context: Context,
+    userAgent: String,
     val scope: CoroutineScope,
 ) : AbsClientDelegate<MusicBrainzAction, MusicBrainzResponse>() {
 
-    private val musicBrainzRestClient: MusicBrainzRestClient = MusicBrainzRestClient(context)
+    private val musicBrainzRestClient: MusicBrainzRestClient = MusicBrainzRestClient(context, userAgent)
 
     override fun request(context: Context, action: MusicBrainzAction): Deferred<MusicBrainzResponse?> {
         return scope.async(Dispatchers.IO) {
