@@ -15,6 +15,7 @@ import player.phonograph.model.Song
 import player.phonograph.ui.compose.BridgeDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.util.parcelable
+import util.phonograph.tagsources.AbsClientDelegate
 import util.phonograph.tagsources.lastfm.AlbumResult
 import util.phonograph.tagsources.lastfm.ArtistResult
 import util.phonograph.tagsources.lastfm.LastFmAction
@@ -129,10 +130,10 @@ class LastFmDialog : BridgeDialogFragment() {
                 ) {
                     val result by viewModel.response.collectAsState()
                     when (val item = result) {
-                        is LastFmAlbumModel  -> LastFmAlbum(item)
+                        is LastFmAlbumModel -> LastFmAlbum(item)
                         is LastFmArtistModel -> LastFmArtist(item)
-                        is LastFmTrackModel  -> LastFmTrack(item)
-                        null                 -> Text(stringResource(R.string.wiki_unavailable))
+                        is LastFmTrackModel -> LastFmTrack(item)
+                        null -> Text(stringResource(R.string.wiki_unavailable))
                     }
                 }
             }
@@ -154,7 +155,7 @@ class LastFmDialog : BridgeDialogFragment() {
         val response get() = _response.asStateFlow()
 
         fun prepareDelegate(context: Context) {
-            delgate = LastFmClientDelegate(context, USER_AGENT, viewModelScope)
+            delgate = LastFmClientDelegate(context, USER_AGENT, errorReporter, viewModelScope)
         }
 
 
@@ -212,6 +213,17 @@ class LastFmDialog : BridgeDialogFragment() {
                 }
 
                 _response.update { response?.track }
+            }
+        }
+
+        companion object {
+            private val errorReporter = object : AbsClientDelegate.ExceptionHandler {
+                override fun reportError(e: Throwable, tag: String, message: String) =
+                    player.phonograph.util.reportError(e, tag, message)
+
+                override fun warning(tag: String, message: String) =
+                    player.phonograph.util.warning(tag, message)
+
             }
         }
 

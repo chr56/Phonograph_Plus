@@ -16,8 +16,9 @@ import kotlinx.coroutines.async
 class LastFmClientDelegate(
     context: Context,
     userAgent: String,
+    exceptionHandler: ExceptionHandler,
     val scope: CoroutineScope,
-) : AbsClientDelegate<LastFmAction, LastFmResponse>() {
+) : AbsClientDelegate<LastFmAction, LastFmResponse>(exceptionHandler) {
 
     private val musicBrainzRestClient: LastFMRestClient = LastFMRestClient(context, userAgent)
 

@@ -6,6 +6,7 @@ package player.phonograph.ui.modules.web
 
 import player.phonograph.USER_AGENT
 import player.phonograph.ui.compose.Navigator
+import util.phonograph.tagsources.AbsClientDelegate.ExceptionHandler
 import util.phonograph.tagsources.lastfm.LastFmAlbum
 import util.phonograph.tagsources.lastfm.LastFmArtist
 import util.phonograph.tagsources.lastfm.LastFmClientDelegate
@@ -28,12 +29,23 @@ class WebSearchViewModel : ViewModel() {
 
     val navigator = Navigator<Page>(PageHome)
 
+    private val errorReporter = object : ExceptionHandler {
+        override fun reportError(e: Throwable, tag: String, message: String) =
+            player.phonograph.util.reportError(e, tag, message)
+
+        override fun warning(tag: String, message: String) =
+            player.phonograph.util.warning(tag, message)
+
+    }
+
     private var clientDelegateLastFm: LastFmClientDelegate? = null
     fun clientDelegateLastFm(context: Context): LastFmClientDelegate {
         return if (clientDelegateLastFm != null) {
             clientDelegateLastFm!!
         } else {
-            LastFmClientDelegate(context, USER_AGENT, viewModelScope).also { clientDelegateLastFm = it }
+            val delegate = LastFmClientDelegate(context, USER_AGENT, errorReporter, viewModelScope)
+            clientDelegateLastFm = delegate
+            delegate
         }
     }
 
@@ -42,7 +54,9 @@ class WebSearchViewModel : ViewModel() {
         return if (clientDelegateMusicBrainz != null) {
             clientDelegateMusicBrainz!!
         } else {
-            MusicBrainzClientDelegate(context, USER_AGENT, viewModelScope).also { clientDelegateMusicBrainz = it }
+            val delegate = MusicBrainzClientDelegate(context, USER_AGENT, errorReporter, viewModelScope)
+            clientDelegateMusicBrainz = delegate
+            delegate
         }
     }
 

@@ -15,8 +15,9 @@ import kotlinx.coroutines.async
 class MusicBrainzClientDelegate(
     context: Context,
     userAgent: String,
+    exceptionHandler: ExceptionHandler,
     val scope: CoroutineScope,
-) : AbsClientDelegate<MusicBrainzAction, MusicBrainzResponse>() {
+) : AbsClientDelegate<MusicBrainzAction, MusicBrainzResponse>(exceptionHandler) {
 
     private val musicBrainzRestClient: MusicBrainzRestClient = MusicBrainzRestClient(context, userAgent)
 

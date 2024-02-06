@@ -4,15 +4,13 @@
 
 package util.phonograph.tagsources
 
-import player.phonograph.util.reportError
-import player.phonograph.util.warning
 import retrofit2.Call
 import util.phonograph.tagsources.util.RestResult
 import util.phonograph.tagsources.util.emit
 import android.content.Context
 import kotlinx.coroutines.Deferred
 
-abstract class AbsClientDelegate<A : Action, R> {
+abstract class AbsClientDelegate<A : Action, R>(var exceptionHandler: ExceptionHandler) {
 
     abstract fun request(context: Context, action: A): Deferred<R?>
 
@@ -21,12 +19,17 @@ abstract class AbsClientDelegate<A : Action, R> {
      */
     protected suspend fun <T> Call<RestResult<T>?>.process(): T? {
         when (val result = emit<T>()) {
-            is RestResult.ParseError   -> reportError(result.exception, TAG, "Parse error!")
-            is RestResult.NetworkError -> reportError(result.exception, TAG, "Network error!")
-            is RestResult.RemoteError  -> warning(TAG, result.message)
+            is RestResult.ParseError   -> exceptionHandler.reportError(result.exception, TAG, "Parse error!")
+            is RestResult.NetworkError -> exceptionHandler.reportError(result.exception, TAG, "Network error!")
+            is RestResult.RemoteError  -> exceptionHandler.warning(TAG, result.message)
             is RestResult.Success      -> return result.data
         }
         return null
+    }
+
+    interface ExceptionHandler {
+        fun reportError(e: Throwable, tag: String, message: String)
+        fun warning(tag: String, message: String)
     }
 
     protected companion object {
