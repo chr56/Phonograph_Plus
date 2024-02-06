@@ -187,6 +187,22 @@
             android:layout_height="wrap_content">
 
             <RadioButton
+                android:id="@+id/item_layout_list_no_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="32dp"
+                android:text="@string/_default"
+                android:visibility="gone" />
+
+            <RadioButton
+                android:id="@+id/item_layout_list_single_row"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="32dp"
+                android:text="@string/_default"
+                android:visibility="gone" />
+
+            <RadioButton
                 android:id="@+id/item_layout_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

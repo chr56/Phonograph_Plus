@@ -332,6 +332,8 @@ class ListOptionsPopup private constructor(
             R.id.item_layout_list_extended    -> ItemLayoutStyle.LIST_EXTENDED
             R.id.item_layout_list_3l          -> ItemLayoutStyle.LIST_3L
             R.id.item_layout_list_3l_extended -> ItemLayoutStyle.LIST_3L_EXTENDED
+            R.id.item_layout_list_no_image    -> ItemLayoutStyle.LIST_NO_IMAGE
+            R.id.item_layout_list_single_row  -> ItemLayoutStyle.LIST_SINGLE_ROW
             R.id.item_layout_grid             -> ItemLayoutStyle.GRID
             else                              -> ItemLayoutStyle.LIST
         }
@@ -342,6 +344,8 @@ class ListOptionsPopup private constructor(
             ItemLayoutStyle.LIST_EXTENDED    -> viewBinding.itemLayoutListExtended
             ItemLayoutStyle.LIST_3L          -> viewBinding.itemLayoutList3l
             ItemLayoutStyle.LIST_3L_EXTENDED -> viewBinding.itemLayoutList3lExtended
+            ItemLayoutStyle.LIST_NO_IMAGE    -> viewBinding.itemLayoutListNoImage
+            ItemLayoutStyle.LIST_SINGLE_ROW  -> viewBinding.itemLayoutListSingleRow
             ItemLayoutStyle.GRID             -> viewBinding.itemLayoutGrid
             else                             -> null
         }
