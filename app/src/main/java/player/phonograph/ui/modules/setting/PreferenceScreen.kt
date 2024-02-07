@@ -250,6 +250,12 @@ fun PhonographPreferenceScreen() {
         SettingsGroup(
             title = header(R.string.pref_header_notification)
         ) {
+            BooleanPref(
+                key = PERSISTENT_PLAYBACK_NOTIFICATION,
+                titleRes = R.string.pref_title_persistent_playback_notification,
+                summaryRes = R.string.pref_summary_persistent_playback_notification,
+                defaultValue = false
+            )
             // noinspection ObsoleteSdkInt
             if (SDK_INT >= N) BooleanPref(
                 key = CLASSIC_NOTIFICATION,
