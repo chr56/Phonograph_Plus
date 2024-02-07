@@ -57,6 +57,9 @@ class PlayingNotificationManger : ServiceComponent {
     private var classicNotification: Boolean = false
     private var coloredNotification: Boolean = true
 
+    var persistent: Boolean = false
+        private set
+
     private var impl: Impl? = null
 
     override fun onCreate(musicService: MusicService) {
@@ -102,6 +105,9 @@ class PlayingNotificationManger : ServiceComponent {
         collect(Keys.coloredNotification) { value ->
             coloredNotification = value
         }
+        collect(Keys.persistentPlaybackNotification) { value ->
+            persistent = value
+        }
 
         impl = if (classicNotification) Impl0() else Impl24()
     }
@@ -116,27 +122,44 @@ class PlayingNotificationManger : ServiceComponent {
         if (song.id != -1L) {
             impl?.update(song)
         } else {
-            removeNotification()
+            if (persistent) {
+                impl?.empty()
+            } else {
+                removeNotification()
+            }
         }
-    }
-
-    @Synchronized
-    fun removeNotification() {
-        service.stopForeground(STOP_FOREGROUND_REMOVE)
-        notificationManager.cancel(NOTIFICATION_ID)
     }
 
     private fun postNotification(notification: OSNotification) {
-        if (service.isDestroyed) {
-            // service stopped
-            removeNotification()
-        } else {
-            notificationManager.notify(NOTIFICATION_ID, notification)
-            when (service.playerState) {
-                PLAYING, PAUSED -> service.startForeground(NOTIFICATION_ID, notification)
-                STOPPED, PREPARING -> service.stopForeground(STOP_FOREGROUND_DETACH)
+        when (persistent) {
+            true  -> {
+                notificationManager.notify(NOTIFICATION_ID, notification)
+                service.startForeground(NOTIFICATION_ID, notification)
+            }
+
+            false -> {
+                if (service.isDestroyed) {
+                    // service stopped
+                    removeNotification()
+                } else {
+                    notificationManager.notify(NOTIFICATION_ID, notification)
+                    when (service.playerState) {
+                        PLAYING, PAUSED    -> service.startForeground(NOTIFICATION_ID, notification)
+                        STOPPED, PREPARING -> service.stopForeground(STOP_FOREGROUND_DETACH)
+                    }
+                }
             }
         }
+    }
+
+    fun cancelNotification() {
+        if (!persistent) removeNotification()
+    }
+
+    @Synchronized
+    private fun removeNotification() {
+        service.stopForeground(STOP_FOREGROUND_REMOVE)
+        notificationManager.cancel(NOTIFICATION_ID)
     }
 
     //region Impl
@@ -240,8 +263,7 @@ class PlayingNotificationManger : ServiceComponent {
             )
 
         override fun empty() {
-            emptyNotification()
-            postNotification(notificationBuilder.build())
+            postNotification(emptyNotification().build())
         }
     }
 
@@ -303,7 +325,7 @@ class PlayingNotificationManger : ServiceComponent {
             title: String?,
             text1: String?,
             @Suppress("UNUSED_PARAMETER") text2: String?,
-            backgroundColor: Int
+            backgroundColor: Int,
         ): RemoteViews {
             //region Collapsed Notification
             val notificationLayout: RemoteViews =
@@ -335,7 +357,7 @@ class PlayingNotificationManger : ServiceComponent {
             title: String?,
             text1: String?,
             text2: String?,
-            backgroundColor: Int
+            backgroundColor: Int,
         ): RemoteViews {
             //region Expanded Notification
             val notificationLayoutBig: RemoteViews =

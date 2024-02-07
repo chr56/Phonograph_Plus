@@ -112,6 +112,7 @@ class MusicService : MediaBrowserServiceCompat() {
         mediaSessionController.onCreate(this)
         playNotificationManager.onCreate(this)
         sessionToken = mediaSessionController.mediaSession.sessionToken // MediaBrowserService
+        if (playNotificationManager.persistent) playNotificationManager.updateNotification(queueManager.currentSong)
 
         mediaSessionController.mediaSession.isActive = true
 
@@ -295,8 +296,10 @@ class MusicService : MediaBrowserServiceCompat() {
 
                 songPlayCountHelper.notifyPlayStateChanged(isPlaying)
 
-                // wait for seconds and try to stop foreground notification
-                throttledTimer.setCancelableNotificationTimer(5_000)
+                if (!playNotificationManager.persistent) {
+                    // wait for seconds and try to stop foreground notification
+                    throttledTimer.setCancelableNotificationTimer(5_000)
+                }
             }
 
             REPEAT_MODE_CHANGED, SHUFFLE_MODE_CHANGED -> {
@@ -362,7 +365,7 @@ class MusicService : MediaBrowserServiceCompat() {
                     )
                 } else {
                     controller.stop()
-                    playNotificationManager.removeNotification()
+                    playNotificationManager.cancelNotification()
                 }
             }
         }
