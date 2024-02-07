@@ -35,6 +35,7 @@ const val ENABLE_LYRICS = "enable_lyrics"
 const val BROADCAST_SYNCHRONIZED_LYRICS = "synchronized_lyrics_send"
 const val USE_LEGACY_STATUS_BAR_LYRICS_API = "use_legacy_status_bar_lyrics_api"
 const val BROADCAST_CURRENT_PLAYER_STATE = "broadcast_current_player_state"
+const val PERSISTENT_PLAYBACK_NOTIFICATION = "persistent_playback_notification"
 
 // Behavior-Lyrics
 const val SYNCHRONIZED_LYRICS_SHOW = "synchronized_lyrics_show"

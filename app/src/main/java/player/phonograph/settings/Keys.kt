@@ -84,6 +84,9 @@ object Keys {
     object broadcastCurrentPlayerState :
             PrimitiveKey<Boolean>(booleanPK(BROADCAST_CURRENT_PLAYER_STATE), { true })
 
+    object persistentPlaybackNotification :
+            PrimitiveKey<Boolean>(booleanPK(PERSISTENT_PLAYBACK_NOTIFICATION), { false })
+
     // Behavior-Lyrics
     object synchronizedLyricsShow :
             PrimitiveKey<Boolean>(booleanPK(SYNCHRONIZED_LYRICS_SHOW), { true })
