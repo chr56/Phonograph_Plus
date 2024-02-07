@@ -149,46 +149,40 @@ class PlayingNotificationManger : ServiceComponent {
     private var request: Disposable? = null
 
     inner class Impl24 : Impl {
+
+        private fun playPauseAction(isPlaying: Boolean): XNotificationCompat.Action = XNotificationCompat.Action(
+            if (isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp,
+            service.getString(R.string.action_play_pause),
+            buildPlaybackPendingIntent(MusicService.ACTION_TOGGLE_PAUSE)
+        )
+
+        private fun previousAction(): XNotificationCompat.Action = XNotificationCompat.Action(
+            R.drawable.ic_skip_previous_white_24dp,
+            service.getString(R.string.action_previous),
+            buildPlaybackPendingIntent(MusicService.ACTION_REWIND)
+        )
+
+        private fun nextAction(): XNotificationCompat.Action = XNotificationCompat.Action(
+            R.drawable.ic_skip_next_white_24dp,
+            service.getString(R.string.action_next),
+            buildPlaybackPendingIntent(MusicService.ACTION_SKIP)
+        )
+
+        private fun mediaStyle(): NotificationCompat.MediaStyle =
+            NotificationCompat.MediaStyle().setMediaSession(service.mediaSession.sessionToken)
+
         @Synchronized
         override fun update(song: Song) {
             val isPlaying = service.isPlaying
 
-
-            val playPauseAction = XNotificationCompat.Action(
-                if (isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp,
-                service.getString(R.string.action_play_pause),
-                buildPlaybackPendingIntent(MusicService.ACTION_TOGGLE_PAUSE)
+            prepareNotification(
+                title = song.title,
+                content = song.artistName,
+                subText = song.albumName,
+                ongoing = isPlaying,
+                style = mediaStyle().setShowActionsInCompactView(0, 1, 2),
+                previousAction(), playPauseAction(isPlaying), nextAction()
             )
-            val previousAction = XNotificationCompat.Action(
-                R.drawable.ic_skip_previous_white_24dp,
-                service.getString(R.string.action_previous),
-                buildPlaybackPendingIntent(MusicService.ACTION_REWIND)
-            )
-            val nextAction = XNotificationCompat.Action(
-                R.drawable.ic_skip_next_white_24dp,
-                service.getString(R.string.action_next),
-                buildPlaybackPendingIntent(MusicService.ACTION_SKIP)
-            )
-
-            notificationBuilder
-                .setContentTitle(song.title)
-                .setContentText(song.artistName)
-                .setSubText(song.albumName)
-                .setOngoing(isPlaying)
-                .setLargeIcon(service.coverLoader.defaultCover)
-                .clearActions()
-                .addAction(previousAction)
-                .addAction(playPauseAction)
-                .addAction(nextAction)
-                .also { builder ->
-                    builder
-                        .setStyle(
-                            NotificationCompat.MediaStyle()
-                                .setMediaSession(service.mediaSession.sessionToken)
-                                .setShowActionsInCompactView(0, 1, 2)
-                        )
-
-                }
 
             postNotification(notificationBuilder.build())
 
@@ -208,48 +202,50 @@ class PlayingNotificationManger : ServiceComponent {
                 }
             }
         }
+
+        /**
+         * prepare notification
+         */
+        private fun prepareNotification(
+            title: String,
+            content: String?,
+            subText: String?,
+            ongoing: Boolean,
+            style: XNotificationCompat.Style,
+            vararg actions: XNotificationCompat.Action,
+        ): XNotificationCompat.Builder =
+            notificationBuilder
+                .setContentTitle(title)
+                .setContentText(content)
+                .setSubText(subText)
+                .setOngoing(ongoing)
+                .setLargeIcon(service.coverLoader.defaultCover)
+                .clearActions()
+                .apply {
+                    for (action in actions) {
+                        addAction(action)
+                    }
+                }
+                .setStyle(style)
     }
 
     inner class Impl0 : Impl {
+
         @Synchronized
         override fun update(song: Song) {
-            val isPlaying = service.isPlaying
-            val notificationLayout = RemoteViews(service.packageName, R.layout.notification)
-            val notificationLayoutBig = RemoteViews(
-                service.packageName,
-                R.layout.notification_big
-            )
 
-            if (TextUtils.isEmpty(song.title) && TextUtils.isEmpty(song.artistName)) {
-                notificationLayout.setViewVisibility(R.id.media_titles, View.INVISIBLE)
-            } else {
-                notificationLayout.setViewVisibility(R.id.media_titles, View.VISIBLE)
-                notificationLayout.setTextViewText(R.id.title, song.title)
-                notificationLayout.setTextViewText(R.id.text, song.artistName)
-            }
+            val notificationLayout: RemoteViews =
+                prepareNotificationLayout(song.title, song.artistName, song.albumName, Color.WHITE)
 
-            if (TextUtils.isEmpty(song.title) && TextUtils.isEmpty(song.artistName) && TextUtils.isEmpty(song.albumName)
-            ) {
-                notificationLayoutBig.setViewVisibility(R.id.media_titles, View.INVISIBLE)
-            } else {
-                notificationLayoutBig.setViewVisibility(R.id.media_titles, View.VISIBLE)
-                notificationLayoutBig.setTextViewText(R.id.title, song.title)
-                notificationLayoutBig.setTextViewText(R.id.text, song.artistName)
-                notificationLayoutBig.setTextViewText(R.id.text2, song.albumName)
-            }
+            val notificationLayoutBig: RemoteViews =
+                prepareNotificationLayoutBig(song.title, song.artistName, song.albumName, Color.WHITE)
 
-            linkButtons(notificationLayout, notificationLayoutBig)
-
-            // set default cover
-            notificationLayout.setImageViewResource(R.id.image, R.drawable.default_album_art)
-            notificationLayoutBig.setImageViewResource(R.id.image, R.drawable.default_album_art)
-            setBackgroundColor(Color.WHITE, notificationLayout, notificationLayoutBig)
-            setNotificationContent(Color.WHITE, notificationLayout, notificationLayoutBig)
+            updateNotificationContent(Color.WHITE, notificationLayout, notificationLayoutBig)
 
             notificationBuilder
                 .setContent(notificationLayout)
                 .setCustomBigContentView(notificationLayoutBig)
-                .setOngoing(isPlaying)
+                .setOngoing(service.isPlaying)
 
             postNotification(notificationBuilder.build())
 
@@ -259,31 +255,130 @@ class PlayingNotificationManger : ServiceComponent {
                 if (bitmap != null) {
                     notificationLayout.setImageViewBitmap(R.id.image, bitmap)
                     notificationLayoutBig.setImageViewBitmap(R.id.image, bitmap)
-                    if (Setting(service)[Keys.coloredNotification].data) {
-                        setBackgroundColor(backgroundColor, notificationLayout, notificationLayoutBig)
-                        setNotificationContent(backgroundColor, notificationLayout, notificationLayoutBig)
+                    if (coloredNotification) {
+                        notificationLayout.setBackgroundColor(backgroundColor)
+                        notificationLayoutBig.setBackgroundColor(backgroundColor)
+                        updateNotificationContent(backgroundColor, notificationLayout, notificationLayoutBig)
                     }
                     postNotification(notificationBuilder.build())
                 }
             }
         }
 
-        private fun setBackgroundColor(
-            color: Int,
-            notificationLayout: RemoteViews,
-            notificationLayoutBig: RemoteViews,
-        ) {
-            notificationLayout.setInt(R.id.root, "setBackgroundColor", color)
-            notificationLayoutBig.setInt(R.id.root, "setBackgroundColor", color)
+
+        private fun prepareNotificationLayout(
+            title: String?,
+            text1: String?,
+            @Suppress("UNUSED_PARAMETER") text2: String?,
+            backgroundColor: Int
+        ): RemoteViews {
+            //region Collapsed Notification
+            val notificationLayout: RemoteViews =
+                RemoteViews(service.packageName, R.layout.notification).apply {
+                    //region Text
+                    if (TextUtils.isEmpty(title) && TextUtils.isEmpty(text1)) {
+                        setViewVisibility(R.id.media_titles, View.INVISIBLE)
+                    } else {
+                        setViewVisibility(R.id.media_titles, View.VISIBLE)
+                        setTextViewText(R.id.title, title)
+                        setTextViewText(R.id.text, text1)
+                    }
+                    //endregion
+                    //region Default Artwork
+                    setImageViewResource(R.id.image, R.drawable.default_album_art)
+                    //endregion
+                    //region Color
+                    setBackgroundColor(backgroundColor)
+                    //endregion
+                    //region Actions
+                    setupActionButtons()
+                    //endregion
+                }
+            //endregion
+            return notificationLayout
         }
 
-        private fun setNotificationContent(
-            bgColor: Int,
+        private fun prepareNotificationLayoutBig(
+            title: String?,
+            text1: String?,
+            text2: String?,
+            backgroundColor: Int
+        ): RemoteViews {
+            //region Expanded Notification
+            val notificationLayoutBig: RemoteViews =
+                RemoteViews(service.packageName, R.layout.notification_big).apply {
+                    //region Text
+                    if (TextUtils.isEmpty(title) && TextUtils.isEmpty(text1) && TextUtils.isEmpty(text2)) {
+                        setViewVisibility(R.id.media_titles, View.INVISIBLE)
+                    } else {
+                        setViewVisibility(R.id.media_titles, View.VISIBLE)
+                        setTextViewText(R.id.title, title)
+                        setTextViewText(R.id.text, text1)
+                        setTextViewText(R.id.text2, text2)
+                    }
+                    //endregion
+                    //region Default Artwork
+                    setImageViewResource(R.id.image, R.drawable.default_album_art)
+                    //endregion
+                    //region Color
+                    setBackgroundColor(backgroundColor)
+                    //endregion
+                    //region Actions
+                    setupActionButtons()
+                    //endregion
+                }
+            //endregion
+            return notificationLayoutBig
+        }
+
+        private fun RemoteViews.setBackgroundColor(color: Int) =
+            setInt(R.id.root, "setBackgroundColor", color)
+
+        private fun RemoteViews.setupActionButtons() {
+            @Suppress("JoinDeclarationAndAssignment")
+            var pendingIntent: PendingIntent
+
+            // Previous track
+            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_REWIND)
+            setOnClickPendingIntent(R.id.action_prev, pendingIntent)
+
+            // Play and pause
+            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_TOGGLE_PAUSE)
+            setOnClickPendingIntent(R.id.action_play_pause, pendingIntent)
+
+            // Next track
+            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_SKIP)
+            setOnClickPendingIntent(R.id.action_next, pendingIntent)
+        }
+
+        private fun linkButtons(notificationLayout: RemoteViews, notificationLayoutBig: RemoteViews) {
+            @Suppress("JoinDeclarationAndAssignment")
+            var pendingIntent: PendingIntent
+
+            // Previous track
+            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_REWIND)
+            notificationLayout.setOnClickPendingIntent(R.id.action_prev, pendingIntent)
+            notificationLayoutBig.setOnClickPendingIntent(R.id.action_prev, pendingIntent)
+
+            // Play and pause
+            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_TOGGLE_PAUSE)
+            notificationLayout.setOnClickPendingIntent(R.id.action_play_pause, pendingIntent)
+            notificationLayoutBig.setOnClickPendingIntent(R.id.action_play_pause, pendingIntent)
+
+            // Next track
+            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_SKIP)
+            notificationLayout.setOnClickPendingIntent(R.id.action_next, pendingIntent)
+            notificationLayoutBig.setOnClickPendingIntent(R.id.action_next, pendingIntent)
+        }
+
+
+        private fun updateNotificationContent(
+            backgroundColor: Int,
             notificationLayout: RemoteViews,
             notificationLayoutBig: RemoteViews,
         ) {
-            val primary = service.primaryTextColor(bgColor)
-            val secondary = service.secondaryTextColor(bgColor)
+            val primary = service.primaryTextColor(backgroundColor)
+            val secondary = service.secondaryTextColor(backgroundColor)
 
             val prev = BitmapUtil.createBitmap(
                 service.createTintedDrawable(
@@ -321,26 +416,6 @@ class PlayingNotificationManger : ServiceComponent {
             notificationLayoutBig.setImageViewBitmap(R.id.action_prev, prev)
             notificationLayoutBig.setImageViewBitmap(R.id.action_next, next)
             notificationLayoutBig.setImageViewBitmap(R.id.action_play_pause, playPause)
-        }
-
-        private fun linkButtons(notificationLayout: RemoteViews, notificationLayoutBig: RemoteViews) {
-            @Suppress("JoinDeclarationAndAssignment")
-            var pendingIntent: PendingIntent
-
-            // Previous track
-            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_REWIND)
-            notificationLayout.setOnClickPendingIntent(R.id.action_prev, pendingIntent)
-            notificationLayoutBig.setOnClickPendingIntent(R.id.action_prev, pendingIntent)
-
-            // Play and pause
-            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_TOGGLE_PAUSE)
-            notificationLayout.setOnClickPendingIntent(R.id.action_play_pause, pendingIntent)
-            notificationLayoutBig.setOnClickPendingIntent(R.id.action_play_pause, pendingIntent)
-
-            // Next track
-            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_SKIP)
-            notificationLayout.setOnClickPendingIntent(R.id.action_next, pendingIntent)
-            notificationLayoutBig.setOnClickPendingIntent(R.id.action_next, pendingIntent)
         }
 
     }
