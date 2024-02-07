@@ -143,6 +143,7 @@ class PlayingNotificationManger : ServiceComponent {
 
     internal interface Impl {
         fun update(song: Song)
+        fun empty()
     }
 
     /** Disposable ImageRequest for Cover Art **/
@@ -227,9 +228,41 @@ class PlayingNotificationManger : ServiceComponent {
                     }
                 }
                 .setStyle(style)
+
+
+        private fun emptyNotification() =
+            prepareNotification(
+                title = service.getString(R.string.empty),
+                content = null,
+                subText = null,
+                ongoing = true,
+                style = mediaStyle(),
+            )
+
+        override fun empty() {
+            emptyNotification()
+            postNotification(notificationBuilder.build())
+        }
     }
 
     inner class Impl0 : Impl {
+
+        override fun empty() {
+            val notificationLayout: RemoteViews =
+                prepareNotificationLayout(service.getString(R.string.empty), null, null, Color.LTGRAY)
+
+            val notificationLayoutBig: RemoteViews =
+                prepareNotificationLayoutBig(service.getString(R.string.empty), null, null, Color.LTGRAY)
+
+            updateNotificationContent(Color.LTGRAY, notificationLayout, notificationLayoutBig)
+
+            notificationBuilder
+                .setContent(notificationLayout)
+                .setCustomBigContentView(notificationLayoutBig)
+                .setOngoing(true)
+
+            postNotification(notificationBuilder.build())
+        }
 
         @Synchronized
         override fun update(song: Song) {
