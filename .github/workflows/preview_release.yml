@@ -16,9 +16,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
@@ -28,6 +25,9 @@ jobs:
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v3
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
       - name: Generate Sign Config
         env:
@@ -47,26 +47,27 @@ jobs:
 
       - name: Build with Gradle (Assemble PreviewRelease)
         run: |
-          ./gradlew assemblePreviewRelease --parallel --stacktrace
+          ./gradlew assemblePreviewRelease --stacktrace
 
       - name: Collect Files
         run: |
           # collect files
           mkdir products
           ./gradlew PublishPreviewRelease --stacktrace
+          echo "Artifacts:"
           tree -aF ./products
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: preview_release
+          name: preview_release_build
           path: products/PreviewRelease/*.apk
           retention-days: 30
 
       - name: Upload mapping.txt
         uses: actions/upload-artifact@v3
         with:
-          name: mapping
+          name: preview_mapping
           path: products/PreviewRelease/PhonographPlus*.txt.gz
 
       - name: Release New Version
@@ -99,6 +100,6 @@ jobs:
           # upload 
            bash ${{ github.workspace }}/scripts/upload_apk_with_changelog.sh
 
-      - name: Cleanup
+      - name: Clean up
         run: |
           rm -r -v ./products/PreviewRelease
