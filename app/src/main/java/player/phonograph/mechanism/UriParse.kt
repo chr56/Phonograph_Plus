@@ -7,7 +7,6 @@ package player.phonograph.mechanism
 import lib.storage.documentProviderUriAbsolutePath
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
-import player.phonograph.ui.activities.StarterActivity
 import player.phonograph.util.reportError
 import androidx.core.provider.DocumentsContractCompat
 import android.content.ContentResolver
@@ -88,23 +87,27 @@ private fun queryFilePath(context: Context, uri: Uri): String? {
     val column = "_data"
     val projection = arrayOf(column)
 
-    val cursor: Cursor? =
-        context.contentResolver.query(
-            uri,
-            projection,
-            null,
-            null,
-            null
-        )
     try {
+        val cursor: Cursor? =
+            context.contentResolver.query(
+                uri,
+                projection,
+                null,
+                null,
+                null
+            )
         cursor?.use {
             if (it.moveToFirst()) {
                 val columnIndex = it.getColumnIndexOrThrow(column)
                 return it.getString(columnIndex)
             }
         }
+    } catch (e: SecurityException) {
+        reportError(e, TAG, "Permission issue, can not locate $uri, please check storage access permissions")
     } catch (e: Exception) {
-        reportError(e, StarterActivity.TAG, "Failed parse $uri")
+        reportError(e, TAG, "Failed parse $uri")
     }
     return null
 }
+
+private const val TAG = "UriParse"
