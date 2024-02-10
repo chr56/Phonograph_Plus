@@ -201,10 +201,10 @@ class MusicService : MediaBrowserServiceCompat() {
     override fun onDestroy() {
         isDestroyed = true
         mediaSessionController.mediaSession.isActive = false
-        playNotificationManager.onDestroy(this)
-        coverLoader.terminate()
         closeAudioEffectSession()
-        mediaSessionController.mediaSession.release()
+        playNotificationManager.onDestroy(this)
+        mediaSessionController.onDestroy(this)
+        coverLoader.terminate()
         unregisterReceiver(widgetIntentReceiver)
         mediaStoreObserverUtil.unregisterMediaStoreObserver(this)
         controller.removeObserver(playerStateObserver)
