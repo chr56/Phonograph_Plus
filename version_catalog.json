@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "1.5-dev1",
+      "versionCode": 1045,
+      "date": 1707545000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.5-dev1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>新增 为所有页面添加播放和随机播放按钮</li><li>新增 为所有页面添加下拉刷新</li><li>修复 不正确 opus 格式的编码信息</li><li>修复 文件夹页中显示横幅文本异常</li><li>修复 主播放器中的关闭按钮将退出应用程序</li><li>修复 流派页和播放列表页内，调整设置后样式改变</li><li>改进 加快启动</li><li>开发 清理代码，重构服务</li></ol>",
+        "en": "<ol><li>New: play and shuffle buttons for all pages</li><li>New: swipe down refresh for all pages</li><li>Fix: incorrect encoding info for opus format in Detail</li><li>Fix: banner text displaying in Folders</li><li>Fix: close button in Main Player would exit app</li><li>Fix: fix item style changed after dismissing popup in Genres and Playlists</li><li>Improve: App Start-up Performance</li><li>Development: cleanup code, refactor music service</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.4.5-dev1",
       "versionCode": 1044,
       "date": 1706857000,
