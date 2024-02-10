@@ -101,6 +101,7 @@ class PlayingNotificationManger : ServiceComponent {
         }
         collect(Keys.classicNotification) { value ->
             classicNotification = value
+            impl = if (value) Impl0() else Impl24()
         }
         collect(Keys.coloredNotification) { value ->
             coloredNotification = value
