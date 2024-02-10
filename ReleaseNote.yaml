@@ -1,25 +1,30 @@
-version: "1.4.5-dev1"
-versionCode: 1044
-timestamp: 1706857000
+version: "1.5-dev1"
+versionCode: 1045
+timestamp: 1707545000
 channel: "PREVIEW"
 notes:
   en:
-    highlights: [ ]
+    highlights: [
+      "Based on 1.4.5-dev1"
+    ]
     items:
+      - "New: play and shuffle buttons for all pages"
+      - "New: swipe down refresh for all pages"
+      - "Fix: incorrect encoding info for opus format in Detail"
+      - "Fix: banner text displaying in Folders"
+      - "Fix: close button in Main Player would exit app"
+      - "Fix: fix item style changed after dismissing popup in Genres and Playlists"
       - "Improve: App Start-up Performance"
-      - "Improve: do not show Intro again after successful backup import in Intro"
-      - "Fix: incorrect folder icon in Folder Page"
-      - "Fix: duplicated Folder tabs for new users"
-      - "Fix: issue of tab text color in Search"
-      - "Translation: update Turkish (by volkspolizist), German (by conk)"
-      - "Development: cleanup code, update dependencies"
+      - "Development: cleanup code, refactor music service"
   zh:
-    highlights: [ ]
+    highlights: [
+      "基于 1.4.5-dev1"
+    ]
     items:
+      - "新增 为所有页面添加播放和随机播放按钮"
+      - "新增 为所有页面添加下拉刷新"
+      - "修复 不正确 opus 格式的编码信息"
+      - "修复 文件夹页中显示横幅文本异常"
+      - "修复 主播放器中的关闭按钮将退出应用程序"
       - "改进 加快启动"
-      - "改进 介绍页中备份导入成功后不再次显示介绍页"
-      - "修复 文件夹页面中的图标不正确"
-      - "修复 两个文件夹选项卡"
-      - "修复 搜索中选项卡文本颜色的异常"
-      - "翻译 更新土耳其语(volkspolizist)，德语 (conk)"
-      - "开发 清理代码，更新依赖"
+      - "开发 清理代码，重构服务"
