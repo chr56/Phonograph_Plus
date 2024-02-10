@@ -100,7 +100,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
 
         _lyricsUpdater = LyricsUpdater(queueManager.currentSong)
 
-        restoreIfNecessary()
+        restorePosition()
 
         observeSettings(musicService)
     }
@@ -156,6 +156,15 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
         }
         collect(Keys.broadcastSynchronizedLyrics) { value ->
             broadcastSynchronizedLyrics = value
+        }
+    }
+
+    private fun restorePosition() {
+        prepareCurrentPlayer(queueManager.currentSong).let { success ->
+            if (success) {
+                val restoredPositionInTrack = QueuePreferenceManager(service).currentMillisecond
+                if (restoredPositionInTrack > 0) seekTo(restoredPositionInTrack.toLong())
+            }
         }
     }
 
@@ -251,17 +260,6 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
         audioPlayer.setNextDataSource(
             if (song != null && song != Song.EMPTY_SONG) getTrackUri(song.id).toString() else null
         )
-    }
-
-    private var restored = false
-    private fun restoreIfNecessary() {
-        if (!restored) {
-            val restoredPositionInTrack =
-                QueuePreferenceManager(service).currentMillisecond
-            prepareSongsImp(queueManager.currentSongPosition)
-            if (restoredPositionInTrack > 0) seekTo(restoredPositionInTrack.toLong())
-            restored = true
-        }
     }
 
     /**
