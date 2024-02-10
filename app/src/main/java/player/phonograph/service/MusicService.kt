@@ -99,7 +99,6 @@ class MusicService : MediaBrowserServiceCompat() {
 
         // controller
         controller.onCreate(this)
-        controller.restoreIfNecessary()
 
         // observers & messages
         sendChangeInternal(META_CHANGED) // notify manually for first setting up queueManager
