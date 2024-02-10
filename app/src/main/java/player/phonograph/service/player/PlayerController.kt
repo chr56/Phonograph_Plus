@@ -100,6 +100,8 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
 
         _lyricsUpdater = LyricsUpdater(queueManager.currentSong)
 
+        restoreIfNecessary()
+
         observeSettings(musicService)
     }
 
@@ -252,7 +254,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
     }
 
     private var restored = false
-    fun restoreIfNecessary() {
+    private fun restoreIfNecessary() {
         if (!restored) {
             val restoredPositionInTrack =
                 QueuePreferenceManager(service).currentMillisecond
