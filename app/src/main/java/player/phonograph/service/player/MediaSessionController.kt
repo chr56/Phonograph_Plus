@@ -79,6 +79,7 @@ class MediaSessionController : ServiceComponent {
     }
 
     override fun onDestroy(musicService: MusicService) {
+        mediaSession.release()
         _mediaSession = null
         _service = null
     }
