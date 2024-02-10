@@ -43,6 +43,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import androidx.core.app.NotificationCompat as XNotificationCompat
 import android.app.Notification as OSNotification
 
@@ -108,6 +109,10 @@ class PlayingNotificationManger : ServiceComponent {
         }
         collect(Keys.persistentPlaybackNotification) { value ->
             persistent = value
+            while (impl == null) yield()
+            if (value) {
+                updateNotification(service.queueManager.currentSong)
+            }
         }
 
         impl = if (classicNotification) Impl0() else Impl24()

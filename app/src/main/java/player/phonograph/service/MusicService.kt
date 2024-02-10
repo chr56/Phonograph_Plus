@@ -112,7 +112,6 @@ class MusicService : MediaBrowserServiceCompat() {
         mediaSessionController.onCreate(this)
         playNotificationManager.onCreate(this)
         sessionToken = mediaSessionController.mediaSession.sessionToken // MediaBrowserService
-        if (playNotificationManager.persistent) playNotificationManager.updateNotification(queueManager.currentSong)
 
         mediaSessionController.mediaSession.isActive = true
 
