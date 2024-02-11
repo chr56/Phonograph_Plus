@@ -18,7 +18,9 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStateAtLeast
 import androidx.recyclerview.widget.RecyclerView
@@ -65,6 +67,16 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
+
+        lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onPause(owner: LifecycleOwner) {
+                navigateUpBackPressedCallback.remove()
+            }
+
+            override fun onResume(owner: LifecycleOwner) {
+                updateBackPressedDispatcher(model.currentLocation.value)
+            }
+        })
     }
 
     open fun setupObservers() {
@@ -91,14 +103,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
                             )
                         )
                     }
-                    val root = newLocation.parent == null
-                    if (root) {
-                        navigateUpBackPressedCallback.remove()
-                    } else {
-                        requireActivity().onBackPressedDispatcher.addCallback(
-                            viewLifecycleOwner, navigateUpBackPressedCallback
-                        )
-                    }
+                    updateBackPressedDispatcher(newLocation)
                 }
             }
         }
@@ -191,6 +196,18 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
             } else {
                 requireChangeVolume()
             }
+        }
+    }
+
+    private fun updateBackPressedDispatcher(location: Location) {
+        val hostActivity = requireActivity()
+        val root = location.parent == null
+        if (!root && isVisible) {
+            hostActivity.onBackPressedDispatcher.addCallback(
+                viewLifecycleOwner, navigateUpBackPressedCallback
+            )
+        } else {
+            navigateUpBackPressedCallback.remove()
         }
     }
 
