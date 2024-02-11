@@ -25,6 +25,7 @@ import player.phonograph.util.ui.backgroundColorTransitionAnimator
 import player.phonograph.util.ui.convertDpToPixel
 import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.ui.textColorTransitionAnimator
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
 import androidx.appcompat.widget.Toolbar
@@ -138,12 +139,6 @@ class CardPlayerFragment :
 
     override fun getImplToolbar(): Toolbar = viewBinding.playerToolbar
 
-    override fun onBackPressed(): Boolean {
-        val wasExpanded = viewBinding.playerSlidingLayout.panelState == PanelState.EXPANDED
-        viewBinding.playerSlidingLayout.panelState = PanelState.COLLAPSED
-        return wasExpanded
-    }
-
     @SuppressLint("ObsoleteSdkInt")
     override fun onPanelSlide(view: View, slide: Float) {
         if (SDK_INT >= LOLLIPOP) {
@@ -164,16 +159,26 @@ class CardPlayerFragment :
 
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
         when (newState) {
-            PanelState.COLLAPSED -> onPanelCollapsed(panel)
-            PanelState.ANCHORED  ->
-                viewBinding.playerSlidingLayout.panelState =
-                    PanelState.COLLAPSED // this fixes a bug where the panel would get stuck for some reason
+            PanelState.EXPANDED  -> {
+                requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, collapseBackPressedCallback)
+            }
+
+            PanelState.COLLAPSED -> {
+                resetToCurrentPosition()
+                collapseBackPressedCallback.remove()
+            }
+
+            PanelState.ANCHORED  -> {
+                // this fixes a bug where the panel would get stuck for some reason
+                collapseToNormal()
+            }
+
             else                 -> Unit
         }
     }
 
-    private fun onPanelCollapsed(@Suppress("UNUSED_PARAMETER") panel: View) {
-        resetToCurrentPosition()
+    override fun collapseToNormal() {
+        viewBinding.playerSlidingLayout.panelState = PanelState.COLLAPSED
     }
 
     private fun resetToCurrentPosition() {

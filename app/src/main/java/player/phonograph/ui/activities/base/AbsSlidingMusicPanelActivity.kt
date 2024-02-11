@@ -229,10 +229,6 @@ abstract class AbsSlidingMusicPanelActivity :
         }
     }
 
-    override fun onBackPressed() {
-        if (slidingUpPanelLayout!!.panelHeight == 0 || playerFragment?.onBackPressed() == false) onBackPressedDispatcher.onBackPressed()
-    }
-
     override fun onServiceConnected() {
         super.onServiceConnected()
         if (MusicPlayerRemote.playingQueue.isNotEmpty()) {

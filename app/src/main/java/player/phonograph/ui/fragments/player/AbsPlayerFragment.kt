@@ -32,6 +32,7 @@ import player.phonograph.util.NavigationUtil
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.warning
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
 import androidx.appcompat.widget.Toolbar
@@ -271,7 +272,7 @@ abstract class AbsPlayerFragment :
             .withEndAction { toolbar.visibility = View.GONE }
     }
 
-   protected abstract fun getToolBarContainer(): View?
+    protected abstract fun getToolBarContainer(): View?
 
     var favoriteMenuItem: MenuItem? = null
 
@@ -286,7 +287,7 @@ abstract class AbsPlayerFragment :
 
     open fun onHide() {
         playbackControlsFragment.hide()
-        onBackPressed()
+        collapseToNormal()
     }
 
     private lateinit var listener: MediaStoreListener
@@ -303,7 +304,15 @@ abstract class AbsPlayerFragment :
         }
     }
 
-    abstract fun onBackPressed(): Boolean
+    protected val collapseBackPressedCallback: OnBackPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                collapseToNormal()
+            }
+        }
+
+    protected abstract fun collapseToNormal()
+
 
     @MainThread
     protected open suspend fun updateAdapter() {
