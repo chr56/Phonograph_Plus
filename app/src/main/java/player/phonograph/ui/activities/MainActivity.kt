@@ -55,7 +55,9 @@ import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.warning
+import androidx.activity.OnBackPressedCallback
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.drawerlayout.widget.DrawerLayout.SimpleDrawerListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -322,6 +324,23 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
             setItemIconColors(iconColor, accentColor)
             setItemTextColors(textColorPrimary, accentColor)
         }
+
+        // listener
+        drawerBinding.drawerLayout.addDrawerListener(object : SimpleDrawerListener() {
+            override fun onDrawerOpened(drawerView: View) {
+                onBackPressedDispatcher.addCallback(this@MainActivity, drawerBackPressedCallback)
+            }
+
+            override fun onDrawerClosed(drawerView: View) {
+                drawerBackPressedCallback.remove()
+            }
+        })
+    }
+
+    private val drawerBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            drawerBinding.drawerLayout.closeDrawers()
+        }
     }
 
     fun switchPageChooserTo(page: Int) {
@@ -378,10 +397,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
     }
 
     override fun handleBackPress(): Boolean {
-        if (drawerBinding.drawerLayout.isDrawerOpen(drawerBinding.navigationView)) {
-            drawerBinding.drawerLayout.closeDrawers()
-            return true
-        }
         return super.handleBackPress() || currentFragment.handleBackPress()
     }
 
