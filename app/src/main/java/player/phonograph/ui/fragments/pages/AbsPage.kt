@@ -19,7 +19,6 @@ abstract class AbsPage : AbsMusicServiceFragment() {
 
     protected val mainActivity: MainActivity get() = mainFragment.mainActivity
 
-    open fun onBackPress(): Boolean = false
     override fun onResume() {
         super.onResume()
         debug { logMetrics("AbsDisplayPage.onResume()") }
