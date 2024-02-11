@@ -13,7 +13,6 @@ import lib.phonograph.misc.menuProvider
 import mt.pref.accentColor
 import mt.pref.primaryColor
 import mt.util.color.primaryTextColor
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.mechanism.setting.HomeTabConfig
@@ -22,6 +21,7 @@ import player.phonograph.model.pages.Pages
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
+import player.phonograph.ui.activities.MainDrawerViewModel
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.AbsPage
 import player.phonograph.ui.modules.search.SearchActivity
@@ -34,6 +34,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -49,7 +50,6 @@ import android.view.Menu
 import android.view.MenuItem.SHOW_AS_ACTION_ALWAYS
 import android.view.View
 import android.view.ViewGroup
-import kotlin.math.min
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -59,6 +59,8 @@ import java.lang.ref.WeakReference
 class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
 
     val mainActivity: MainActivity get() = requireActivity() as MainActivity
+
+    private val drawerViewModel: MainDrawerViewModel by viewModels({ mainActivity })
 
     private var _viewBinding: FragmentHomeBinding? = null
     private val binding: FragmentHomeBinding get() = _viewBinding!!
@@ -193,10 +195,23 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
 
         setupViewPager(pageConfig)
         binding.pager.setCurrentItem(targetPosition, false)
-        mainActivity.switchPageChooserTo(targetPosition)
+        drawerViewModel.switchPageTo(targetPosition)
     }
 
     private fun setupViewPager(homeTabConfig: PageConfig) {
+
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                drawerViewModel.selectedPage.collect { page ->
+                    try {
+                        binding.pager.currentItem = page
+                    } catch (e: Exception) {
+                        reportError(e, "MainFragment", "Failed to select page $page")
+                    }
+                }
+            }
+        }
+
         // Adapter
         val homePagerAdapter = HomePagerAdapter(this, homeTabConfig)
         binding.pager.apply {
@@ -215,11 +230,7 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
 
     private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
-            mainActivity.switchPageChooserTo(position)
-            mainActivity.lifecycleScope.launch(Dispatchers.IO) {
-                Setting(App.instance)[Keys.lastPage].edit { position }
-            }
-            super.onPageSelected(position)
+            drawerViewModel.switchPageTo(position)
         }
     }
     //endregion

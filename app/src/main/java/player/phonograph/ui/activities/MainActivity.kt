@@ -56,6 +56,7 @@ import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.warning
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.drawerlayout.widget.DrawerLayout.SimpleDrawerListener
 import androidx.lifecycle.Lifecycle
@@ -86,6 +87,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
     private lateinit var currentFragment: MainActivityFragmentCallbacks
     private var navigationDrawerHeader: View? = null
+
+    private val drawerViewModel: MainDrawerViewModel by viewModels()
 
     override val openFileStorageAccessTool: OpenFileStorageAccessTool =
         OpenFileStorageAccessTool()
@@ -141,6 +144,13 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 }
             }
         }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                drawerViewModel.selectedPage.collect { page ->
+                    drawerBinding.navigationView.setCheckedItem(1000 + page)
+                }
+            }
+        }
 
         lifecycleScope.launch(Dispatchers.Default) {
             latelySetup()
@@ -178,9 +188,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                     itemId = 1000 + page
                     onClick {
                         drawerBinding.drawerLayout.closeDrawers()
-                        Handler(Looper.getMainLooper()).postDelayed(
-                            { currentFragment.requestSelectPage(page) }, 150
-                        )
+                        drawerViewModel.switchPageTo(page)
+                        true
                     }
                 }
             }
@@ -341,10 +350,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         override fun handleOnBackPressed() {
             drawerBinding.drawerLayout.closeDrawers()
         }
-    }
-
-    fun switchPageChooserTo(page: Int) {
-        drawerBinding.navigationView.setCheckedItem(1000 + page)
     }
 
     private fun updateNavigationDrawerHeader() {
