@@ -13,6 +13,7 @@ import player.phonograph.databinding.FragmentFolderPageBinding
 import player.phonograph.model.file.Location
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.getSystemService
@@ -88,6 +89,14 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
                                     com.afollestad.materialdialogs.color.R.drawable.icon_back_white
                                 }
                             )
+                        )
+                    }
+                    val root = newLocation.parent == null
+                    if (root) {
+                        navigateUpBackPressedCallback.remove()
+                    } else {
+                        requireActivity().onBackPressedDispatcher.addCallback(
+                            viewLifecycleOwner, navigateUpBackPressedCallback
                         )
                     }
                 }
@@ -185,6 +194,12 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
         }
     }
 
+    private val navigateUpBackPressedCallback: OnBackPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                gotoTopLevel(false)
+            }
+        }
 
     companion object {
         private const val TAG = "FilesExplorer"
