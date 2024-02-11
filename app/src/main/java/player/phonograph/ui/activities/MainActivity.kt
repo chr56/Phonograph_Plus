@@ -396,10 +396,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         }
     }
 
-    override fun handleBackPress(): Boolean {
-        return super.handleBackPress() || currentFragment.handleBackPress()
-    }
-
     override fun onPanelExpanded(panel: View?) {
         super.onPanelExpanded(panel)
         drawerBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)

@@ -230,11 +230,7 @@ abstract class AbsSlidingMusicPanelActivity :
     }
 
     override fun onBackPressed() {
-        if (!handleBackPress()) onBackPressedDispatcher.onBackPressed()
-    }
-
-    open fun handleBackPress(): Boolean {
-        return slidingUpPanelLayout!!.panelHeight != 0 && playerFragment?.onBackPressed() != false
+        if (slidingUpPanelLayout!!.panelHeight == 0 || playerFragment?.onBackPressed() == false) onBackPressedDispatcher.onBackPressed()
     }
 
     override fun onServiceConnected() {
