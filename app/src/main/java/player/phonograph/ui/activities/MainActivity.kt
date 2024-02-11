@@ -85,7 +85,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
     private lateinit var mainBinding: ActivityMainBinding
     private lateinit var drawerBinding: LayoutDrawerBinding
 
-    private lateinit var currentFragment: MainActivityFragmentCallbacks
     private var navigationDrawerHeader: View? = null
 
     private val drawerViewModel: MainDrawerViewModel by viewModels()
@@ -104,16 +103,11 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         openDirStorageAccessTool.register(lifecycle, activityResultRegistry)
         createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
 
-        currentFragment =
-            if (savedInstanceState == null) {
-                MainFragment.newInstance().apply {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, this, "home")
-                        .commit()
-                }
-            } else {
-                supportFragmentManager.findFragmentById(R.id.fragment_container) as MainActivityFragmentCallbacks
-            }
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, MainFragment.newInstance(), "home")
+                .commit()
+        }
 
         setUpDrawer()
 
@@ -481,8 +475,4 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         private const val TAG = "MainActivity"
     }
 
-    interface MainActivityFragmentCallbacks {
-        fun handleBackPress(): Boolean
-        fun requestSelectPage(page: Int)
-    }
 }

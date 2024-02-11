@@ -56,7 +56,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
-class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
+class MainFragment : Fragment() {
 
     val mainActivity: MainActivity get() = requireActivity() as MainActivity
 
@@ -254,18 +254,6 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
 
     val totalHeaderHeight: Int
         get() = totalAppBarScrollingRange + if (binding.tabs.visibility == View.VISIBLE) binding.tabs.height else 0
-    //endregion
-
-    //region Interactivity
-    override fun requestSelectPage(page: Int) {
-        try {
-            binding.pager.currentItem = page
-        } catch (e: Exception) {
-            reportError(e, "HomeFragment", "Failed to select page $page")
-        }
-    }
-
-    override fun handleBackPress(): Boolean = false
     //endregion
 
     //region Utils
