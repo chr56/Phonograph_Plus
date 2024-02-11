@@ -16,6 +16,7 @@ import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.MiniPlayerFragment
 import player.phonograph.ui.fragments.player.card.CardPlayerFragment
 import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.lifecycle.Lifecycle
@@ -191,6 +192,7 @@ abstract class AbsSlidingMusicPanelActivity :
         playerFragment?.setMenuVisibility(false)
         playerFragment?.userVisibleHint = false
         playerFragment?.onHide()
+        panelBackPressedCallback.remove()
     }
 
     open fun onPanelExpanded(panel: View?) {
@@ -198,6 +200,13 @@ abstract class AbsSlidingMusicPanelActivity :
         playerFragment?.setMenuVisibility(true)
         playerFragment?.userVisibleHint = true
         playerFragment?.onShow()
+        onBackPressedDispatcher.addCallback(this, panelBackPressedCallback)
+    }
+
+    private val panelBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            collapsePanel()
+        }
     }
 
     val panelState: PanelState?
@@ -218,19 +227,6 @@ abstract class AbsSlidingMusicPanelActivity :
         } else {
             slidingUpPanelLayout?.panelHeight = resources.getDimensionPixelSize(R.dimen.mini_player_height)
         }
-    }
-
-    override fun onBackPressed() {
-        if (!handleBackPress()) onBackPressedDispatcher.onBackPressed()
-    }
-
-    open fun handleBackPress(): Boolean {
-        if (slidingUpPanelLayout!!.panelHeight != 0 && playerFragment?.onBackPressed() != false) return true
-        if (panelState == PanelState.EXPANDED) {
-            collapsePanel()
-            return true
-        }
-        return false
     }
 
     override fun onServiceConnected() {

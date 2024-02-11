@@ -254,7 +254,7 @@ class MainFragment : Fragment(), MainActivity.MainActivityFragmentCallbacks {
         }
     }
 
-    override fun handleBackPress(): Boolean = pagerAdapter?.fetch(binding.pager.currentItem)?.onBackPress() ?: false
+    override fun handleBackPress(): Boolean = false
     //endregion
 
     //region Utils

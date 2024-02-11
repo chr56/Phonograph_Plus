@@ -38,7 +38,4 @@ class FilesPage : AbsPage() {
 
     }
 
-    override fun onBackPress(): Boolean {
-        return explorer.gotoTopLevel(false)
-    }
 }

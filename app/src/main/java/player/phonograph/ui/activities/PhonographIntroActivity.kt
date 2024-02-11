@@ -120,6 +120,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
             val permission: String,
             val title: String,
             val description: String,
+            val required: Boolean = true,
         )
 
         val permissions: List<PermissionDetail>
@@ -209,7 +210,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
                 val context = requireContext()
                 for (permission in permissions) {
                     val result = context.checkSelfPermission(permission.permission)
-                    if (result == PackageManager.PERMISSION_DENIED) {
+                    if (result == PackageManager.PERMISSION_DENIED && permission.required) {
                         Snackbar.make(binding.container, R.string.permissions_denied, Snackbar.LENGTH_SHORT).show()
                         return false
                     }
