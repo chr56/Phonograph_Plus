@@ -27,6 +27,7 @@ import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -280,6 +281,12 @@ class FlattenFolderPage : AbsPage() {
         lifecycleScope.launch {
             viewModel.mainViewMode.collect { mode ->
                 binding.recyclerView.adapter = if (mode) songCollectionDisplayAdapter else songAdapter
+                val onBackPressedDispatcher = requireActivity().onBackPressedDispatcher
+                if (mode) {
+                    navigateUpBackPressedCallback.remove()
+                } else {
+                    onBackPressedDispatcher.addCallback(viewLifecycleOwner, navigateUpBackPressedCallback)
+                }
             }
         }
         lifecycleScope.launch {
@@ -289,7 +296,11 @@ class FlattenFolderPage : AbsPage() {
         }
     }
 
-    override fun onBackPress(): Boolean = !viewModel.navigateUp(requireContext())
+    private val navigateUpBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            viewModel.navigateUp(requireContext())
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
