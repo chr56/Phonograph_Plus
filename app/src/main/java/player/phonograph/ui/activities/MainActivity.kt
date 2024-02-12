@@ -1,8 +1,5 @@
 package player.phonograph.ui.activities
 
-import com.github.chr56.android.menu_dsl.attach
-import com.github.chr56.android.menu_dsl.menuItem
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import lib.activityresultcontract.CreateFileStorageAccessTool
 import lib.activityresultcontract.ICreateFileStorageAccess
@@ -10,7 +7,6 @@ import lib.activityresultcontract.IOpenDirStorageAccess
 import lib.activityresultcontract.IOpenFileStorageAccess
 import lib.activityresultcontract.OpenDirStorageAccessTool
 import lib.activityresultcontract.OpenFileStorageAccessTool
-import lib.phonograph.misc.Reboot
 import mt.tint.viewtint.setItemIconColors
 import mt.tint.viewtint.setItemTextColors
 import mt.util.color.resolveColor
@@ -19,7 +15,6 @@ import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.UPGRADABLE
 import player.phonograph.VERSION_INFO
-import player.phonograph.actions.actionPlay
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ActivityMainBinding
@@ -27,32 +22,22 @@ import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.mechanism.Update
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.PageConfig
-import player.phonograph.mechanism.setting.StyleConfig
 import player.phonograph.model.infoString
-import player.phonograph.model.pages.Pages
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.notification.UpgradeNotification
-import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
-import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.dialogs.ChangelogDialog
-import player.phonograph.ui.dialogs.ScanMediaFolderDialog
 import player.phonograph.ui.dialogs.UpgradeDialog
 import player.phonograph.ui.fragments.MainFragment
-import player.phonograph.ui.modules.setting.SettingsActivity
-import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
 import player.phonograph.util.parcelableExtra
-import player.phonograph.util.permissions.navigateToAppDetailSetting
-import player.phonograph.util.permissions.navigateToStorageSetting
-import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.warning
 import androidx.activity.OnBackPressedCallback
@@ -63,17 +48,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withStarted
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.Menu
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -123,7 +105,13 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                         setting[Keys.homeTabConfigJsonString].flow.distinctUntilChanged().collect { raw ->
                             val pageConfig: PageConfig = HomeTabConfig.parseHomeTabConfig(raw)
                             withStarted {
-                                setupDrawerMenu(drawerBinding.navigationView.menu, pageConfig)
+                                setupDrawerMenu(
+                                    activity = this@MainActivity,
+                                    menu = drawerBinding.navigationView.menu,
+                                    switchPageTo = { drawerViewModel.switchPageTo(it) },
+                                    closeDrawer = { drawerBinding.drawerLayout.closeDrawers() },
+                                    pageConfig = pageConfig
+                                )
                             }
                         }
                     }
@@ -167,147 +155,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
     override fun requestPermissions() {} // not allow
 
-    private fun setupDrawerMenu(menu: Menu, pageConfig: PageConfig) {
-        menu.clear()
-        attach(this, menu) {
-            val activity = this@MainActivity
-
-            // page chooser
-            val mainGroup = 999999
-            for ((page, tab) in pageConfig.withIndex()) {
-                menuItem {
-                    groupId = mainGroup
-                    icon = context.getTintedDrawable(Pages.getTintedIconRes(tab), textColorPrimary)
-                    title = Pages.getDisplayName(tab, activity)
-                    itemId = 1000 + page
-                    onClick {
-                        drawerBinding.drawerLayout.closeDrawers()
-                        drawerViewModel.switchPageTo(page)
-                        true
-                    }
-                }
-            }
-
-            // normal items
-            val groupIds = intArrayOf(0, 1, 2, 3)
-            if (StyleConfig.generalTheme(this@MainActivity) != StyleConfig.THEME_AUTO) {
-                menuItem {
-                    groupId = groupIds[1]
-                    itemId = R.id.action_theme_toggle
-                    icon = getTintedDrawable(R.drawable.ic_theme_switch_white_24dp, textColorPrimary)
-                    titleRes(R.string.theme_switch)
-                    onClick {
-                        Handler(Looper.getMainLooper()).postDelayed(
-                            {
-                                val result = StyleConfig.toggleTheme(this@MainActivity)
-                                if (result) recreate()
-                            }, 150
-                        )
-                    }
-                }
-            }
-
-            menuItem {
-                groupId = groupIds[2]
-                itemId = R.id.action_shuffle_all
-                icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, textColorPrimary)
-                titleRes(R.string.action_shuffle_all)
-                onClick {
-                    drawerBinding.drawerLayout.closeDrawers()
-                    Handler(Looper.getMainLooper()).postDelayed(
-                        {
-                            val songs = Songs.all(activity)
-                            if (songs.isNotEmpty())
-                                songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
-                        }, 350
-                    )
-                }
-            }
-            menuItem {
-                groupId = groupIds[2]
-                itemId = R.id.action_scan
-                icon = getTintedDrawable(R.drawable.ic_scan_white_24dp, textColorPrimary)
-                titleRes(R.string.scan_media)
-                onClick {
-                    drawerBinding.drawerLayout.closeDrawers()
-                    Handler(Looper.getMainLooper()).postDelayed(
-                        {
-                            ScanMediaFolderDialog().show(supportFragmentManager, "scan_media")
-                        }, 200
-                    )
-                }
-            }
-
-            menuItem {
-                groupId = groupIds[3]
-                itemId = R.id.nav_settings
-                icon = getTintedDrawable(R.drawable.ic_settings_white_24dp, textColorPrimary)
-                titleRes(R.string.action_settings)
-                onClick {
-                    Handler(Looper.getMainLooper()).postDelayed(
-                        {
-                            startActivity(
-                                Intent(activity, SettingsActivity::class.java)
-                            )
-                        }, 200
-                    )
-                }
-            }
-            menuItem {
-                groupId = groupIds[3]
-                itemId = R.id.nav_about
-                icon = getTintedDrawable(R.drawable.ic_help_white_24dp, textColorPrimary)
-                titleRes(R.string.action_about)
-                onClick {
-                    Handler(Looper.getMainLooper()).postDelayed(
-                        {
-                            startActivity(
-                                Intent(activity, AboutActivity::class.java)
-                            )
-                        }, 200
-                    )
-                }
-            }
-
-
-            menuItem {
-                groupId = groupIds[3]
-                icon = getTintedDrawable(R.drawable.ic_more_vert_white_24dp, textColorPrimary)
-                titleRes(R.string.more_actions)
-                onClick {
-                    val items = listOf(
-                        context.getString(R.string.action_grant_storage_permission) to {
-                            navigateToStorageSetting(context)
-                        },
-                        context.getString(R.string.app_info) to {
-                            navigateToAppDetailSetting(context)
-                        },
-                        context.getString(R.string.action_reboot) to {
-                            Reboot.reboot(context)
-                        },
-                        context.getString(R.string.search_online) to {
-                            context.startActivity(WebSearchLauncher.launchIntent(context))
-                        },
-                    )
-                    MaterialAlertDialogBuilder(context)
-                        .setTitle(R.string.more_actions)
-                        .setItems(items.map { it.first }.toTypedArray()) { dialog, index ->
-                            dialog.dismiss()
-                            items[index].second.invoke()
-                        }
-                        .show()
-                    true
-                }
-            }
-
-            for (id in groupIds) {
-                rootMenu.setGroupEnabled(id, true)
-                rootMenu.setGroupCheckable(id, false, false)
-            }
-            rootMenu.setGroupCheckable(mainGroup, true, true)
-        }
-    }
-
     private fun setUpDrawer() {
 
         // padding
@@ -319,6 +166,15 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 paddingBottom
             )
         }
+
+        // Preparation
+        setupDrawerMenu(
+            activity = this@MainActivity,
+            menu = drawerBinding.navigationView.menu,
+            switchPageTo = { drawerViewModel.switchPageTo(it) },
+            closeDrawer = { drawerBinding.drawerLayout.closeDrawers() },
+            pageConfig = null
+        )
 
         // color
         val iconColor =
