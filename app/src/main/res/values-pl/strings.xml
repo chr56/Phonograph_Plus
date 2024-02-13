@@ -514,4 +514,6 @@
     <string name="file_not_found">"Wygląda na to, że %1$s nie istnieje! Sprawdź plik lub uprawnienia dostępu do pamięci."</string>
     <string name="pref_title_preload_images">Wstępne ładowanie obrazów</string>
     <string name="pref_summary_preload_images">Wstępne ładowanie obrazów w celu przyspieszenia ładowania i uniknięcia opóźnień. Może to spowodować większe zużycie pamięci.</string>
+    <string name="pref_title_persistent_playback_notification">Stałe powiadomienie o odtwarzaniu</string>
+    <string name="pref_summary_persistent_playback_notification">Powiadomienie o odtwarzaniu będzie zawsze aktywne i nie będzie go można anulować.</string>
 </resources>
