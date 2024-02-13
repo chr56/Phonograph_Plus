@@ -252,7 +252,7 @@
     <string name="failed_to_delete">Usuwanie nie powiodło się</string>
     <string name="grant_permission">Przyznaj uprawnienie</string>
     <string name="retry">Ponów</string>
-    <string name="permission_manage_external_storage_denied">Wygląda na to, że Phonograph nie ma uprawnień \"zarządzaj zewnętrzną pamięcią\"!</string>
+    <string name="permission_manage_external_storage_denied">Wygląda na to, że Phonograph nie ma uprawnień do \"zarządzania pamięcią zewnętrzną\"!</string>
     <string name="not_available_now">Obecnie niedostępne</string>
     <string name="check_upgrade">Sprawdź aktualizację</string>
     <string name="no_newer_version">Brak aktualizacji!</string>
