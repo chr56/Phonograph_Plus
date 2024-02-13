@@ -24,16 +24,23 @@ fun checkPermission(context: Context, permissionId: String): Permission {
     }
 }
 
+fun hasPermission(context: Context, permissionId: String): Boolean =
+    PermissionChecker.checkSelfPermission(context, permissionId) == PermissionChecker.PERMISSION_GRANTED
+
+fun hasPermissions(context: Context, permissionIds: Array<String>): Map<String, Boolean> {
+    return permissionIds.associateWith { hasPermission(context, it) }
+}
 
 fun checkPermissions(context: Context, permissionIds: Array<String>): List<Permission> =
     permissionIds.map { permissionId ->
         checkPermission(context, permissionId)
     }
 
+fun necessaryStorageReadPermission(): String =
+    if (SDK_INT >= TIRAMISU) READ_MEDIA_AUDIO else READ_EXTERNAL_STORAGE
+
 fun checkStorageReadPermission(context: Context): Permission =
-    checkPermission(
-        context, if (SDK_INT >= TIRAMISU) READ_MEDIA_AUDIO else READ_EXTERNAL_STORAGE
-    )
+    checkPermission(context, necessaryStorageReadPermission())
 
 fun hasStorageReadPermission(context: Context): Boolean =
     checkStorageReadPermission(context) is GrantedPermission
@@ -41,5 +48,5 @@ fun hasStorageReadPermission(context: Context): Boolean =
 fun hasStorageWritePermission(context: Context): Boolean = when {
     /** check [MANAGE_EXTERNAL_STORAGE] on Android R and above **/
     SDK_INT >= Build.VERSION_CODES.R -> Environment.isExternalStorageManager()
-    else                             -> checkPermission(context, WRITE_EXTERNAL_STORAGE) is GrantedPermission
+    else                             -> hasPermission(context, WRITE_EXTERNAL_STORAGE)
 }

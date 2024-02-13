@@ -88,6 +88,13 @@ inline fun withLooper(crossinline block: () -> Unit) {
 }
 
 /**
+ * run [block] in main thread via Handler
+ */
+inline fun runOnMainHandler(crossinline block: () -> Unit) =
+    Handler(Looper.getMainLooper()).post { block() }
+
+
+/**
  * post a delayed message with callback which can only be called for _ONCE_ (without dither due to multiple call in a short time)
  * @param handler target handler
  * @param id `what` of the message

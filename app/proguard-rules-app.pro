@@ -52,9 +52,6 @@
 -keepnames,allowoptimization,allowshrinking class player.phonograph.util.permissions.PermissionDelegate {
     public void grant(...);
 }
--keepnames,allowoptimization,allowshrinking class player.phonograph.util.permissions.UIKt {
-    public void notifyUser(...);
-}
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.theme.ThemeKt {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.theme.DrawableTintKt {public <methods>;}

@@ -4,6 +4,8 @@
 
 package lib.phonograph.activity
 
+import com.google.android.material.snackbar.Snackbar
+import player.phonograph.R
 import player.phonograph.util.permissions.GrantedPermission
 import player.phonograph.util.permissions.NonGrantedPermission
 import player.phonograph.util.permissions.Permission
@@ -11,15 +13,17 @@ import player.phonograph.util.permissions.PermissionDelegate
 import player.phonograph.util.permissions.RequestCallback
 import player.phonograph.util.permissions.checkPermissions
 import player.phonograph.util.permissions.convertPermissionsResult
-import player.phonograph.util.permissions.notifyUser
+import player.phonograph.util.permissions.navigateToAppDetailSetting
+import player.phonograph.util.runOnMainHandler
 import android.os.Bundle
-import android.os.PersistableBundle
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 open class PermissionActivity : ThemeActivity() {
+
     private val permissionDelegate: PermissionDelegate = PermissionDelegate()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         permissionDelegate.attach(this)
         super.onCreate(savedInstanceState)
@@ -28,11 +32,6 @@ open class PermissionActivity : ThemeActivity() {
     protected fun requestPermissionImpl(permissions: Array<String>, callback: RequestCallback) {
         permissionDelegate.grant(permissions, callback)
     }
-
-    protected fun notifyPermissionDeniedUser(
-        missingPermissions: List<Permission>,
-        retryCallback: (() -> Unit)?
-    ) = notifyUser(this, missingPermissions, snackBarContainer, retryCallback)
 
     protected open fun runtimePermissionsToRequest(): Array<String>? = null
 
@@ -52,8 +51,8 @@ open class PermissionActivity : ThemeActivity() {
     private fun notifyResult(result: List<Permission>): Boolean {
         val allGranted = result.fold(true) { acc, i -> if (!acc) false else i is GrantedPermission }
         if (!allGranted) {
-            val other = result.filterIsInstance<NonGrantedPermission>()
-            notifyPermissionDeniedUser(other, ::requestPermissions)
+            val nonGranted = result.filterIsInstance<NonGrantedPermission>()
+            notifyPermissionDeniedUser(nonGranted, ::requestPermissions)
         }
         return allGranted
     }
@@ -64,4 +63,28 @@ open class PermissionActivity : ThemeActivity() {
     }
 
     protected open fun missingPermissionCallback() {}
+
+    protected fun notifyPermissionDeniedUser(
+        missingPermissions: List<Permission>,
+        retryCallback: (() -> Unit)?
+    ) {
+        if (missingPermissions.isEmpty()) return
+
+        val message = StringBuffer(getString(R.string.permissions_denied)).append('\n')
+        var requireGotoSetting = false
+        for (permission in missingPermissions) {
+            message.append(permission.permissionName(this)).append('\n')
+            if (permission is NonGrantedPermission.PermanentlyDeniedPermission)
+                requireGotoSetting = true
+        }
+
+        val snackBar = Snackbar.make(snackBarContainer, message, Snackbar.LENGTH_INDEFINITE)
+        if (requireGotoSetting) {
+            snackBar.setAction(R.string.action_settings) { navigateToAppDetailSetting(this) }
+        } else {
+            snackBar.setAction(R.string.action_grant) { retryCallback?.invoke() }
+        }
+        snackBar.setActionTextColor(accentColor).setTextMaxLines(Int.MAX_VALUE)
+        runOnMainHandler { snackBar.show() }
+    }
 }

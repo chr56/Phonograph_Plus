@@ -8,19 +8,24 @@ import android.content.Context
 import android.content.pm.PermissionInfo
 
 
+fun permissionInfo(context: Context, permissionId: String): PermissionInfo =
+    context.packageManager.getPermissionInfo(permissionId, 0)
+
+fun permissionName(context: Context, permissionId: String): CharSequence {
+    val info = permissionInfo(context, permissionId)
+    return info.loadLabel(context.packageManager)
+}
+
+fun permissionDescription(context: Context, permissionId: String): CharSequence? {
+    val info = permissionInfo(context, permissionId)
+    return info.loadDescription(context.packageManager)
+}
+
+
 sealed class Permission(val permissionId: String) {
-    fun permissionInfo(context: Context): PermissionInfo =
-        context.packageManager.getPermissionInfo(permissionId, 0)
-
-    fun permissionName(context: Context): CharSequence {
-        val info = permissionInfo(context)
-        return info.loadLabel(context.packageManager)
-    }
-
-    fun permissionDescription(context: Context): CharSequence? {
-        val info = permissionInfo(context)
-        return info.loadDescription(context.packageManager)
-    }
+    fun permissionInfo(context: Context): PermissionInfo = permissionInfo(context, permissionId)
+    fun permissionName(context: Context): CharSequence = permissionName(context, permissionId)
+    fun permissionDescription(context: Context): CharSequence? = permissionDescription(context, permissionId)
 }
 
 
