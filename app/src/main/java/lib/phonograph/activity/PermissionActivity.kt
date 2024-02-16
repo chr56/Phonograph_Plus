@@ -6,55 +6,30 @@ package lib.phonograph.activity
 
 import com.google.android.material.snackbar.Snackbar
 import player.phonograph.R
-import player.phonograph.util.permissions.GrantedPermission
-import player.phonograph.util.permissions.NonGrantedPermission
-import player.phonograph.util.permissions.Permission
+import player.phonograph.util.permissions.GrantResult
 import player.phonograph.util.permissions.PermissionDelegate
-import player.phonograph.util.permissions.RequestCallback
-import player.phonograph.util.permissions.checkPermissions
-import player.phonograph.util.permissions.convertPermissionsResult
+import player.phonograph.util.permissions.hasPermissions
 import player.phonograph.util.permissions.navigateToAppDetailSetting
+import player.phonograph.util.permissions.permissionDescription
+import player.phonograph.util.permissions.permissionName
 import player.phonograph.util.runOnMainHandler
 import android.os.Bundle
 
 /**
- * @author Karim Abou Zeid (kabouzeid)
+ * @author chr_56, Karim Abou Zeid (kabouzeid)
  */
 open class PermissionActivity : ThemeActivity() {
 
     private val permissionDelegate: PermissionDelegate = PermissionDelegate()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        permissionDelegate.attach(this)
-        super.onCreate(savedInstanceState)
-    }
-
-    protected fun requestPermissionImpl(permissions: Array<String>, callback: RequestCallback) {
-        permissionDelegate.grant(permissions, callback)
-    }
-
+    /**
+     * Runtime Permissions to request
+     */
     protected open fun runtimePermissionsToRequest(): Array<String>? = null
 
-    protected open fun requestPermissions() {
-        val permissions = runtimePermissionsToRequest() ?: return
-        requestPermissionImpl(permissions) { result ->
-            notifyResult(convertPermissionsResult(result))
-        }
-    }
-
-    protected open fun checkPermissions(): Boolean {
-        val permissions = runtimePermissionsToRequest() ?: return true
-        val result = checkPermissions(this, permissions)
-        return notifyResult(result)
-    }
-
-    private fun notifyResult(result: List<Permission>): Boolean {
-        val allGranted = result.fold(true) { acc, i -> if (!acc) false else i is GrantedPermission }
-        if (!allGranted) {
-            val nonGranted = result.filterIsInstance<NonGrantedPermission>()
-            notifyPermissionDeniedUser(nonGranted, ::requestPermissions)
-        }
-        return allGranted
+    override fun onCreate(savedInstanceState: Bundle?) {
+        permissionDelegate.register(lifecycle, activityResultRegistry)
+        super.onCreate(savedInstanceState)
     }
 
     override fun onResume() {
@@ -62,20 +37,57 @@ open class PermissionActivity : ThemeActivity() {
         checkPermissions()
     }
 
-    protected open fun missingPermissionCallback() {}
+    /**
+     * Check permissions from [runtimePermissionsToRequest]
+     * @return true if all granted
+     */
+    protected fun checkPermissions(): Boolean {
+        val permissions = runtimePermissionsToRequest() ?: return true
+        val result = hasPermissions(this, permissions)
+        return checkResult(result)
+    }
 
+    /**
+     * Request permissions from [runtimePermissionsToRequest]
+     */
+    protected fun requestPermissions() {
+        val permissions = runtimePermissionsToRequest() ?: return
+        permissionDelegate.grant(permissions) { result: GrantResult ->
+            checkResult(result)
+        }
+    }
+
+    /**
+     * check and notify permission grant result to user if denied
+     * @param result All result
+     */
+    private fun checkResult(result: GrantResult): Boolean {
+        val denied = result.filterValues { !it }
+        return if (denied.isNotEmpty()) {
+            notifyPermissionDeniedUser(denied.keys.toList(), ::requestPermissions)
+            false
+        } else {
+            true
+        }
+    }
+
+    /**
+     * Show SnackBar message if permission denied
+     * @param retryCallback callback of SnackBar
+     */
     protected fun notifyPermissionDeniedUser(
-        missingPermissions: List<Permission>,
-        retryCallback: (() -> Unit)?
+        missingPermissions: List<String>,
+        retryCallback: (() -> Unit)?,
     ) {
         if (missingPermissions.isEmpty()) return
 
         val message = StringBuffer(getString(R.string.permissions_denied)).append('\n')
         var requireGotoSetting = false
         for (permission in missingPermissions) {
-            message.append(permission.permissionName(this)).append('\n')
-            if (permission is NonGrantedPermission.PermanentlyDeniedPermission)
-                requireGotoSetting = true
+            message
+                .append(permissionName(this, permission)).append('\n')
+                .append(permissionDescription(this, permission)).append('\n')
+            if (shouldShowRequestPermissionRationale(permission)) requireGotoSetting = true
         }
 
         val snackBar = Snackbar.make(snackBarContainer, message, Snackbar.LENGTH_INDEFINITE)

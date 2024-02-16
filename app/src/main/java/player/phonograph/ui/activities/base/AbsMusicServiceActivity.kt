@@ -6,33 +6,22 @@ package player.phonograph.ui.activities.base
 
 import lib.phonograph.activity.ToolbarActivity
 import org.koin.android.ext.android.inject
-import org.koin.core.context.GlobalContext
-import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.settings.BROADCAST_CURRENT_PLAYER_STATE
-import player.phonograph.settings.CLASSIC_NOTIFICATION
-import player.phonograph.settings.COLORED_NOTIFICATION
-import player.phonograph.settings.GAPLESS_PLAYBACK
-import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
-import player.phonograph.util.permissions.NonGrantedPermission
-import player.phonograph.util.permissions.checkStorageReadPermission
+import player.phonograph.util.permissions.hasStorageReadPermission
+import player.phonograph.util.permissions.navigateToAppDetailSetting
+import player.phonograph.util.permissions.necessaryStorageReadPermission
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withResumed
 import android.content.ComponentName
 import android.content.ServiceConnection
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.IBinder
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 /**
@@ -62,15 +51,11 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
                     }
                 )
             volumeControlStream = AudioManager.STREAM_MUSIC
-            val permission = checkStorageReadPermission(this@AbsMusicServiceActivity)
-            if (permission is NonGrantedPermission) {
+            val result = hasStorageReadPermission(this@AbsMusicServiceActivity)
+            if (!result) {
                 withResumed {
-                    notifyPermissionDeniedUser(listOf(permission)) {
-                        requestPermissionImpl(arrayOf(permission.permissionId)) { result ->
-                            if (result.entries.first().value) {
-                                GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
-                            }
-                        }
+                    notifyPermissionDeniedUser(listOf(necessaryStorageReadPermission())) {
+                        navigateToAppDetailSetting(this@AbsMusicServiceActivity)
                     }
                 }
             }
