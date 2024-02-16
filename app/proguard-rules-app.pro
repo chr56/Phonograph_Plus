@@ -47,11 +47,7 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.dialogs.ImageSourceConfigDialog$ImageSourceConfigAdapter {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.player.AlbumCoverPagerAdapter {public <methods>;}
 
--keep, allowoptimization, allowshrinking class player.phonograph.util.permissions.CheckKt { *; }
--keepnames,allowoptimization,allowshrinking class player.phonograph.util.permissions.** extends player.phonograph.util.permissions.Permission
--keepnames,allowoptimization,allowshrinking class player.phonograph.util.permissions.PermissionDelegate {
-    public void grant(...);
-}
+-keepclassmembernames, allowoptimization, allowshrinking class player.phonograph.util.permissions.CheckerKt { *; }
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.theme.ThemeKt {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.theme.DrawableTintKt {public <methods>;}

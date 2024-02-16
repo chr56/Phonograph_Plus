@@ -23,8 +23,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.Setting
 import player.phonograph.ui.dialogs.BackupImportDialog
-import player.phonograph.util.permissions.GrantedPermission
-import player.phonograph.util.permissions.checkPermission
+import player.phonograph.util.permissions.hasPermission
 import androidx.annotation.StringRes
 import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
@@ -196,11 +195,10 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
         }
 
         private fun updateItemBackgroundColor(view: View, permission: String) {
-            val permissionResult = checkPermission(requireContext(), permission)
+            val granted = hasPermission(requireContext(), permission)
             view.setBackgroundColor(
                 resources.getColor(
-                    if (permissionResult is GrantedPermission) MR.color.md_green_600
-                    else MR.color.md_red_600, null
+                    if (granted) MR.color.md_green_600 else MR.color.md_red_600, null
                 )
             )
         }

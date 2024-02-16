@@ -54,7 +54,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
             val result = hasStorageReadPermission(this@AbsMusicServiceActivity)
             if (!result) {
                 withResumed {
-                    notifyPermissionDeniedUser(listOf(necessaryStorageReadPermission())) {
+                    notifyPermissionDeniedUser(listOf(necessaryStorageReadPermission)) {
                         navigateToAppDetailSetting(this@AbsMusicServiceActivity)
                     }
                 }
