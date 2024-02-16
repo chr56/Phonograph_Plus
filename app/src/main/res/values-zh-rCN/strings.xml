@@ -399,6 +399,10 @@
     <string name="permission_desc_read_media_audio">自 Android T (13) 起，具有此权限的应用程序可读取设备内音频</string>
     <string name="permission_name_read_external_storage">读取外部存储</string>
     <string name="permission_desc_read_external_storage">读取设备中的音乐文件必须读取外部存储权限</string>
+    <string name="permission_name_write_external_storage">写入外部存储</string>
+    <string name="permission_desc_write_external_storage">删除或编辑设备中的播放列表或音乐文件(标签)必须写入外部存储权限</string>
+    <string name="permission_name_manage_external_storage">管理外部存储</string>
+    <string name="permission_desc_manage_external_storage">自 Android R (11) 起，授予此权限以便在管理设备上音乐时方便读写外部存储</string>
     <string name="completed">完成</string>
     <string name="dynamic_colors">动态颜色</string>
     <string name="pref_title_enable_monet">启用 Monet 取色</string>
