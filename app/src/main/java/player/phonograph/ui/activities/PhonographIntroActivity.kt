@@ -24,6 +24,8 @@ import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.Setting
 import player.phonograph.ui.dialogs.BackupImportDialog
 import player.phonograph.util.permissions.hasPermission
+import player.phonograph.util.permissions.permissionDescription
+import player.phonograph.util.permissions.permissionName
 import androidx.annotation.StringRes
 import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
@@ -117,8 +119,6 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
 
         class PermissionDetail(
             val permission: String,
-            val title: String,
-            val description: String,
             val required: Boolean = true,
         )
 
@@ -126,25 +126,13 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
             get() = when {
                 SDK_INT >= TIRAMISU ->
                     listOf(
-                        PermissionDetail(
-                            Manifest.permission.POST_NOTIFICATIONS,
-                            getString(R.string.permission_name_post_notifications),
-                            getString(R.string.permission_desc_post_notifications)
-                        ),
-                        PermissionDetail(
-                            Manifest.permission.READ_MEDIA_AUDIO,
-                            getString(R.string.permission_name_read_media_audio),
-                            getString(R.string.permission_desc_read_media_audio)
-                        ),
+                        PermissionDetail(Manifest.permission.POST_NOTIFICATIONS),
+                        PermissionDetail(Manifest.permission.READ_MEDIA_AUDIO),
                     )
 
                 else                ->
                     listOf(
-                        PermissionDetail(
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            getString(R.string.permission_name_read_external_storage),
-                            getString(R.string.permission_desc_read_external_storage),
-                        )
+                        PermissionDetail(Manifest.permission.READ_EXTERNAL_STORAGE)
                     )
             }
 
@@ -186,8 +174,9 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
             onClick: OnClickListener,
         ): ItemSimpleBinding {
             return ItemSimpleBinding.inflate(layoutInflater).also { itemBinding ->
-                itemBinding.title.text = detail.title
-                itemBinding.text.text = detail.description
+                val context = itemBinding.root.context
+                itemBinding.title.text = permissionName(context, detail.permission)
+                itemBinding.text.text = permissionDescription(context, detail.permission)
                 itemBinding.root.setOnClickListener(onClick)
                 itemBinding.menu.visibility = GONE
                 updateItemBackgroundColor(itemBinding.root, detail.permission)
