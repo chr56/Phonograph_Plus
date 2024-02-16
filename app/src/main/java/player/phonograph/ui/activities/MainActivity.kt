@@ -153,8 +153,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         return drawerBinding.root
     }
 
-    override fun requestPermissions() {} // not allow
-
     private fun setUpDrawer() {
 
         // padding
