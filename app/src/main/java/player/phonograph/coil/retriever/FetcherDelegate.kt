@@ -11,22 +11,24 @@ import player.phonograph.coil.model.ArtistImage
 import player.phonograph.coil.model.CompositeLoaderTarget
 import player.phonograph.coil.model.LoaderTarget
 import player.phonograph.coil.model.SongImage
+import player.phonograph.mechanism.setting.CoilImageConfig
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import player.phonograph.util.debug
 import android.content.Context
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
 
 sealed class FetcherDelegate<T : LoaderTarget, R : ImageRetriever> {
 
-    // private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    protected fun enableCache(context: Context): Boolean = CoilImageConfig.enableImageCache
 
     abstract val retriever: R
 
     abstract val cacheStore: CacheStore.Cache<T>
-
-    private fun isNoImage(target: T): Boolean = cacheStore.isNoImage(target, retriever.id)
-    private fun markNoImage(target: T) = cacheStore.markNoImage(target, retriever.id)
-    private fun getCache(target: T): FetchResult? = cacheStore.get(target, retriever.id)
-    private fun setCache(target: T, result: FetchResult) = cacheStore.set(target, result, retriever.id)
 
     fun retrieve(
         target: T,
@@ -35,36 +37,39 @@ sealed class FetcherDelegate<T : LoaderTarget, R : ImageRetriever> {
         rawImage: Boolean,
     ): FetchResult? {
 
-        /*
-        val noSpecificImage = isNoImage(target)
-        if (noSpecificImage) return null
-        */
+        if (enableCache(context)) {
+            val noSpecificImage = cacheStore.isNoImage(target, retriever.id)
+            if (noSpecificImage) return null
 
-        /*
-        val cached = getCache(target)
-        if (cached != null) {
-            debug {
-                Log.v(TAG, "Image was read from cache of ${retriever.name} for file $target")
+            val cached = cacheStore.get(target, retriever.id)
+            if (cached != null) {
+                debug {
+                    Log.v(TAG, "Image was read from cache of ${retriever.name} for file $target")
+                }
+                return cached
             }
-            return cached
         }
-        */
+
 
         val result = retrieveImpl(target, context, size, rawImage)
         return if (result != null) {
-            /*
-            coroutineScope.launch {
-                setCache(target, result)
+
+            if (enableCache(context)) {
+                CacherCoroutineScope.launch {
+                    cacheStore.set(target, result, retriever.id)
+                }
             }
-            */
+
             result
         } else {
             debug {
                 Log.v(TAG, "Image not available from ${retriever.name} for $target")
             }
-            /*
-            markNoImage(target)
-            */
+
+            if (enableCache(context)) {
+                cacheStore.markNoImage(target, retriever.id)
+            }
+
             null
         }
     }
@@ -99,19 +104,45 @@ sealed class CompositeFetcherDelegate<T : CompositeLoaderTarget<SongImage>, R : 
 ) : FetcherDelegate<T, R>() {
 
     override fun retrieveImpl(target: T, context: Context, size: Size, rawImage: Boolean): FetchResult? {
-        // val audioFilesCache = CacheStore.AudioFiles(context.applicationContext)
+
+        if (enableCache(context)) {
+            val noImage = cacheStore.isNoImage(target, retriever.id)
+            if (noImage) return null
+
+            val cached = cacheStore.get(target, retriever.id)
+            if (cached != null) {
+                return cached
+            }
+        }
+
+        val audioFilesCache = CacheStore.AudioFiles(context.applicationContext)
+
         for (file in target.disassemble()) {
-            /*
-            val noImage = audioFilesCache.isNoImage(file)
-            if (noImage) continue
-            */
+
+            if (enableCache(context)) {
+                val noSpecificImage = audioFilesCache.isNoImage(file, retriever.id)
+                if (noSpecificImage) continue
+            }
+
             val result = retriever.retrieve(file.path, file.albumId, context, size, rawImage)
             if (result != null) {
+
+                if (enableCache(context)) {
+                    CacherCoroutineScope.launch {
+                        cacheStore.set(target, result, retriever.id)
+                    }
+                }
+
                 return result
             } else {
                 continue
             }
         }
+
+        if (enableCache(context)) {
+            cacheStore.markNoImage(target, retriever.id)
+        }
+
         return null
     }
 }
@@ -130,3 +161,6 @@ class ArtistImageFetcherDelegate<R : ImageRetriever>(
     override val cacheStore: CacheStore.Cache<ArtistImage> = CacheStore.ArtistImages(context.applicationContext)
 }
 
+
+
+private val CacherCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)

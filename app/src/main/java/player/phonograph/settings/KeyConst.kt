@@ -24,6 +24,7 @@ const val NOW_PLAYING_SCREEN_ID = "now_playing_screen_id"
 // Behavior-File
 const val PRELOAD_IMAGES = "preload_images"
 const val IMAGE_SOURCE_CONFIG = "image_source_config"
+const val IMAGE_CACHE = "image_cache"
 
 // Behavior-Playing
 const val SONG_ITEM_CLICK_MODE = "song_item_click_extra_flag"

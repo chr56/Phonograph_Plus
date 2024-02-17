@@ -56,6 +56,9 @@ object Keys {
     object imageSourceConfigJsonString :
             PrimitiveKey<String>(stringPK(IMAGE_SOURCE_CONFIG), { "{}" })
 
+    object imageCache :
+            PrimitiveKey<Boolean>(booleanPK(IMAGE_CACHE), { false })
+
     // Behavior-Playing
     object songItemClickMode :
             PrimitiveKey<Int>(intPK(SONG_ITEM_CLICK_MODE), { SongClickMode.SONG_PLAY_NOW })

@@ -128,12 +128,14 @@ class CacheStore(val context: Context) {
     class AlbumImages(context: Context) : DefaultCache<AlbumImage>(context, CacheDatabase.Target.ALBUM)
     class ArtistImages(context: Context) : DefaultCache<ArtistImage>(context, CacheDatabase.Target.ARTIST)
 
-    fun clear(context: Context) {
-        rootCacheDir(context).deleteRecursively()
-        CacheDatabase.instance(context).clear()
-    }
 
     companion object {
+
+        fun clear(context: Context) {
+            CacheDatabase.instance(context).clear()
+            rootCacheDir(context).deleteRecursively()
+        }
+
         private const val TAG = "CacheStore"
 
         const val CACHE_DIR = "images"
