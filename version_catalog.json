@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "1.5-dev2",
+      "versionCode": 1046,
+      "date": 1708148000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.5-dev2"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 主播放器的关闭按钮将直接关闭应用程序</li><li>修复 切换随机播放模式后主色调意外改变</li><li>新增 可选的图片缓存</li><li>改进 加快启动</li><li>开发 清理代码</li></ol>",
+        "en": "<ol><li>Fix: close button in main sliding player closes app directly</li><li>Fix: palette color would unexpected changed after switch shuffle mode</li><li>New: opted-in Image Cache</li><li>Improve: App Start-up Performance</li><li>Development: cleanup code</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.5-dev1",
       "versionCode": 1045,
       "date": 1707545000,
