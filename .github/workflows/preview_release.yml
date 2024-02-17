@@ -70,6 +70,11 @@ jobs:
           name: preview_mapping
           path: products/PreviewRelease/PhonographPlus*.txt.gz
 
+      - name: Generate Changelog
+        run: |
+          # generate changelog
+          ./gradlew tools:changelog-generator:GenerateEncodedUrl
+
       - name: Release New Version
         uses: softprops/action-gh-release@v1
         id: release_github
@@ -95,10 +100,7 @@ jobs:
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
         run: |
-          # generate changelog
-          ./gradlew tools:changelog-generator:GenerateEncodedUrl
-          # upload 
-           bash ${{ github.workspace }}/scripts/upload_apk_with_changelog.sh
+          bash ${{ github.workspace }}/scripts/upload_apk_with_changelog.sh
 
       - name: Clean up
         run: |
