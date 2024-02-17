@@ -43,7 +43,7 @@ curl -v \
 -X POST \
 -H "Content-Type:multipart/form-data"  \
 -F "document=@${REPO_ROOT}/${APK_FILE}"  \
-"https://api.telegram.org/bot${TG_BOT_TOKEN}/sendDocument?chat_id=${TG_CHAT_ID}&disable_notification=true&disable_web_page_preview=true&parse_mode=HTML&caption=%3Cb%3ENew%20Preview%20Version%3C%2Fb%3E%3A%20%3Ca%20href%3D%22https%3A%2F%2Fgithub.com%2Fchr56%2FPhonograph_Plus%2Freleases%2Ftag%2F${GIT_REF_NAME}%22%3E%3Cb%3E${GIT_REF_NAME}%3C%2Fb%3E%3C%2Fa%3E%20%0D%0APreview%20versions%20might%20have%20potential%20bugs.%20%0D%0APreview%20%E7%89%88%E6%9C%AC%E5%8F%AF%E8%83%BD%E5%AD%98%E5%9C%A8%E6%BD%9C%E5%9C%A8%E9%97%AE%E9%A2%98!%20%0D%0A(%3Cpre%3E${GIT_COMMIT_SHA}%3C%2Fpre%3E)%20"
+"https://api.telegram.org/bot${TG_BOT_TOKEN}/sendDocument?chat_id=${TG_CHAT_ID}&disable_notification=true&disable_web_page_preview=true&parse_mode=HTML&caption=%3Ca%20href%3D%22https%3A%2F%2Fgithub.com%2Fchr56%2FPhonograph_Plus%2Freleases%2Ftag${GIT_REF_NAME}%22%3E%3Cb%3EPreview%20Version%20${GIT_REF_NAME}%3C%2Fb%3E%3C%2Fa%3E%0APreview%20versions%20might%20have%20potential%20bugs.%20%0D%0APreview%20%E7%89%88%E6%9C%AC%E5%8F%AF%E8%83%BD%E5%AD%98%E5%9C%A8%E6%BD%9C%E5%9C%A8%E9%97%AE%E9%A2%98!%20%0D%0A(%3Ci%3E${GIT_COMMIT_SHA}%3C%2Fi%3E)%20"
 
 # upload changelog
 RELEASE_NOTE=$(cat "${REPO_ROOT}/GitHubReleaseNote.url.txt")
