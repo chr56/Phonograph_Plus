@@ -68,21 +68,29 @@ class PlayerAlbumCoverFragment :
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 CurrentQueueState.queue.collect {
-                    updateAdapter()
+                    val queue = it.get() ?: MusicPlayerRemote.playingQueue
+                    val position = MusicPlayerRemote.position
+                    refreshAdapter(queue, position)
                 }
             }
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 CurrentQueueState.shuffleMode.collect {
-                    updateAdapter()
+                    val queue = MusicPlayerRemote.playingQueue
+                    val position = MusicPlayerRemote.position
+                    refreshAdapter(queue, position)
                 }
             }
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 CurrentQueueState.position.collect { position ->
-                    refreshCurrentPosition(position)
+                    val songs = albumCoverPagerAdapter?.dataSet
+                    if (songs != null && position >= 0) {
+                        updateCurrentItemPosition(position)
+                        updateCurrentPaletteColor(songs[position])
+                    }
                 }
             }
         }
@@ -182,32 +190,27 @@ class PlayerAlbumCoverFragment :
         _viewBinding = null
     }
 
-    private suspend fun updateAdapter() {
+    private suspend fun refreshAdapter(queue: List<Song>, position: Int) {
         lifecycle.withCreated {
-            val queue = MusicPlayerRemote.playingQueue
-            val position = CurrentQueueState.position.value
-            albumCoverPagerAdapter = AlbumCoverPagerAdapter(this@PlayerAlbumCoverFragment, queue)
-            binding.playerCoverViewpager.adapter = albumCoverPagerAdapter
-            refreshCurrentPosition(position)
-        }
-    }
-
-    private fun refreshCurrentPosition(position: Int) {
-        if (position >= 0) {
-            binding.playerCoverViewpager.setCurrentItem(MusicPlayerRemote.position, false)
-            refreshPaletteColor(position)
-        }
-    }
-
-    private fun refreshPaletteColor(position: Int) {
-        val adapter = albumCoverPagerAdapter ?: return
-        lifecycleScope.launch(Dispatchers.Default) {
-            val song = adapter.dataSet.getOrNull(position)
-            if (song != null && song != Song.EMPTY_SONG) {
-                playerViewModel.refreshPaletteColor(requireContext(), song)
-            } else {
-                playerViewModel.refreshPaletteColor(requireContext().getColor(R.color.defaultFooterColor))
+            val adapter = AlbumCoverPagerAdapter(this@PlayerAlbumCoverFragment, queue)
+            albumCoverPagerAdapter = adapter
+            binding.playerCoverViewpager.adapter = adapter
+            if (position >= 0) {
+                updateCurrentItemPosition(position)
+                updateCurrentPaletteColor(queue[position])
             }
+        }
+    }
+
+    private fun updateCurrentItemPosition(position: Int) {
+        binding.playerCoverViewpager.setCurrentItem(position, false)
+    }
+
+    private fun updateCurrentPaletteColor(song: Song?) {
+        if (song != null && song != Song.EMPTY_SONG) {
+            playerViewModel.refreshPaletteColor(requireContext(), song)
+        } else {
+            playerViewModel.refreshPaletteColor(requireContext().getColor(R.color.defaultFooterColor))
         }
     }
 
