@@ -429,6 +429,10 @@
     <string name="permission_desc_read_media_audio">Od Androida T (13) aplikacja z tym uprawnieniem może odczytywać pliki audio z urządzenia.</string>
     <string name="permission_name_read_external_storage">Odczyt pamięci zewnętrznej</string>
     <string name="permission_desc_read_external_storage">Uprawnienie odczytu pamięci zewnętrznej jest wymagane do odczytu pliku muzycznego w urządzeniu.</string>
+    <string name="permission_name_write_external_storage">Zapis w pamięci zewnętrznej</string>
+    <string name="permission_desc_write_external_storage">Uprawnienie do zapisu w pamięci zewnętrznej jest wymagane w celu usuwania lub edytowania list odtwarzania albo plików muzycznych (znaczników) w urządzeniu.</string>
+    <string name="permission_name_manage_external_storage">Zarządzaj pamięcią zewnętrzną</string>
+    <string name="permission_desc_manage_external_storage">Od Androida R (11) można przyznać to uprawnienie do odczytu lub zapisu pamięci masowej, co znacznie ułatwia zarządzanie biblioteką muzyczną urządzenia.</string>
     <string name="completed">Zakończono</string>
     <string name="dynamic_colors">Kolory dynamiczne</string>
     <string name="pref_title_enable_monet">Włącz Monet</string>
@@ -514,6 +518,9 @@
     <string name="file_not_found">"Wygląda na to, że %1$s nie istnieje! Sprawdź plik lub uprawnienia dostępu do pamięci."</string>
     <string name="pref_title_preload_images">Wstępne ładowanie obrazów</string>
     <string name="pref_summary_preload_images">Wstępne ładowanie obrazów w celu przyspieszenia ładowania i uniknięcia opóźnień. Może to spowodować większe zużycie pamięci.</string>
+    <string name="pref_title_image_cache">Pamięć podręczna obrazów</string>
+    <string name="pref_summary_image_cache">Włącz pamięć podręczną obrazów, aby przyspieszyć ładowanie obrazów. (W niektórych przypadkach może to jednak powodować większe opóźnienia).</string>
+    <string name="clear_image_cache">Wyczyść pamięć podręczną obrazów</string>
     <string name="pref_title_persistent_playback_notification">Stałe powiadomienie o odtwarzaniu</string>
     <string name="pref_summary_persistent_playback_notification">Powiadomienie o odtwarzaniu będzie zawsze aktywne i nie będzie go można anulować.</string>
 </resources>
