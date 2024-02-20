@@ -409,6 +409,10 @@
     <string name="permission_desc_read_media_audio">Desde o Android T (13) aplicativos com essa permissão podem ler os áudios do dispositivo.</string>
     <string name="permission_name_read_external_storage">Ler do Armazenamento Externo</string>
     <string name="permission_desc_read_external_storage">A permissão para Ler o Armazenamento Externo é necessária para ler músicas do dispositivo.</string>
+    <string name="permission_name_write_external_storage">Gravar no armazenamento externo</string>
+    <string name="permission_desc_write_external_storage">É necessária a permissão de Gravação de Armazenamento Externo, com o objetivo de excluir ou editar listas de reprodução ou arquivos de música (tags) no dispositivo.</string>
+    <string name="permission_name_manage_external_storage">Gerenciar o armazenamento externo</string>
+    <string name="permission_desc_manage_external_storage">Desde o Android R (11), você pode conceder essa permissão para ler ou escrever seu armazenamento muito mais facilmente quando estiver gerenciando sua biblioteca de música em seu dispositivo.</string>
     <string name="completed">Completo</string>
     <string name="dynamic_colors">Cores Dinâmicas</string>
     <string name="pref_title_enable_monet">Habilitar Monetização</string>
@@ -494,4 +498,9 @@
     <string name="file_not_found">"Parece que %1$s não existe! Por favor, verifique o arquivo ou a permissão de acesso ao armazenamento."</string>
     <string name="pref_title_preload_images">Pré-carregar Imagens</string>
     <string name="pref_summary_preload_images">Pré-carregar imagens para acelerar o carregamento e evitar atrasos. Isso pode causar mais consumo de memória.</string>
+    <string name="pref_title_image_cache">Cache de Imagens</string>
+    <string name="pref_summary_image_cache">Permitir que o Cache de Imagens acelere o carregamento de imagens. (No entanto, isso também poderá causar mais lags em algumas circunstâncias.)</string>
+    <string name="clear_image_cache">Limpar Cache de imagem</string>
+    <string name="pref_title_persistent_playback_notification">Notificação de reprodução permanente</string>
+    <string name="pref_summary_persistent_playback_notification">A notificação de reprodução estará sempre em curso e não será cancelada.</string>
 </resources>
