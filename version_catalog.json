@@ -1,51 +1,19 @@
 {
   "versions": [
     {
-      "channel": "preview",
-      "versionName": "1.5-dev2",
-      "versionCode": 1046,
-      "date": 1708148000,
+      "channel": "stable",
+      "versionName": "1.5.0",
+      "versionCode": 1050,
+      "date": 1708410000,
       "link": [
         {
           "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.5-dev2"
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.5.0"
         }
       ],
       "releaseNote": {
-        "zh-cn": "<ol><li>修复 主播放器的关闭按钮将直接关闭应用程序</li><li>修复 切换随机播放模式后主色调意外改变</li><li>新增 可选的图片缓存</li><li>改进 加快启动</li><li>开发 清理代码</li></ol>",
-        "en": "<ol><li>Fix: close button in main sliding player closes app directly</li><li>Fix: palette color would unexpected changed after switch shuffle mode</li><li>New: opted-in Image Cache</li><li>Improve: App Start-up Performance</li><li>Development: cleanup code</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.5-dev1",
-      "versionCode": 1045,
-      "date": 1707545000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.5-dev1"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>新增 为所有页面添加播放和随机播放按钮</li><li>新增 为所有页面添加下拉刷新</li><li>修复 不正确 opus 格式的编码信息</li><li>修复 文件夹页中显示横幅文本异常</li><li>修复 主播放器中的关闭按钮将退出应用程序</li><li>修复 流派页和播放列表页内，调整设置后样式改变</li><li>改进 加快启动</li><li>开发 清理代码，重构服务</li></ol>",
-        "en": "<ol><li>New: play and shuffle buttons for all pages</li><li>New: swipe down refresh for all pages</li><li>Fix: incorrect encoding info for opus format in Detail</li><li>Fix: banner text displaying in Folders</li><li>Fix: close button in Main Player would exit app</li><li>Fix: fix item style changed after dismissing popup in Genres and Playlists</li><li>Improve: App Start-up Performance</li><li>Development: cleanup code, refactor music service</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.4.5-dev1",
-      "versionCode": 1044,
-      "date": 1706857000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.4.5-dev1"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>改进 加快启动</li><li>改进 介绍页中备份导入成功后不再次显示介绍页</li><li>修复 文件夹页面中的图标不正确</li><li>修复 两个文件夹选项卡</li><li>修复 搜索中选项卡文本颜色的异常</li><li>翻译 更新土耳其语(volkspolizist)，德语 (conk)</li><li>开发 清理代码，更新依赖</li></ol>",
-        "en": "<ol><li>Improve: App Start-up Performance</li><li>Improve: do not show Intro again after successful backup import in Intro</li><li>Fix: incorrect folder icon in Folder Page</li><li>Fix: duplicated Folder tabs for new users</li><li>Fix: issue of tab text color in Search</li><li>Translation: update Turkish (by volkspolizist), German (by conk)</li><li>Development: cleanup code, update dependencies</li></ol>"
+        "zh-cn": "<ol><li>新增 为所有页面添加播放和随机播放按钮</li><li>新增 为所有页面添加下拉刷新</li><li>新增 可选的图片缓存</li><li>改进 加快启动</li><li>改进 介绍页中备份导入成功后不再次显示介绍页</li><li>修复 切换随机播放模式后主色调意外改变</li><li>修复 主播放器的关闭按钮将直接关闭应用程序</li><li>修复 不正确 opus 格式的编码信息</li><li>修复 文件夹页中显示横幅文本异常</li><li>修复 流派页和播放列表页内，调整设置后样式改变</li><li>修复 文件夹页面中的图标不正确</li><li>修复 两个文件夹选项卡</li><li>修复 搜索中选项卡文本颜色的异常</li><li>翻译 更新土耳其语(volkspolizist)，德语 (conk), 波兰语 (cooky), 葡萄牙语 (nemapps)</li><li>开发 清理代码，更新依赖</li></ol>",
+        "en": "<ol><li>New: play and shuffle buttons for all pages</li><li>New: swipe down refresh for all pages</li><li>New: opted-in Image Cache</li><li>Improve: App Start-up Performance</li><li>Improve: do not show Intro again after successful backup import in Intro</li><li>Fix: palette color would unexpected changed after switch shuffle mode</li><li>Fix: close button in main sliding player closes app directly</li><li>Fix: incorrect encoding info for opus format in Detail</li><li>Fix: banner text displaying in Folders</li><li>Fix: fix item style changed after dismissing popup in Genres and Playlists</li><li>Fix: incorrect folder icon in Folder Page</li><li>Fix: duplicated Folder tabs for new users</li><li>Fix: issue of tab text color in Search</li><li>Translation: update Turkish (by volkspolizist), German (by conk), Polish (by cooky), Portuguese (by nemapps)</li><li>Development: cleanup code, update dependencies</li></ol>"
       }
     },
     {
