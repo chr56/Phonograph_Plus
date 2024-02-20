@@ -1,0 +1,9 @@
+<b>1.5.0(1050) 2024.02.20</b>
+- New: play and shuffle buttons for all pages
+- New: swipe down refresh for all pages
+- Improve: App Start-up Performance
+- Improve: do not show Intro again after successful backup import in Intro
+- Fix: palette color would unexpected changed after switch shuffle mode
+- Fix: close button in main sliding player closes app directly
+- Fix: incorrect encoding info for opus format in Detail
+...(Visit project homepage to see full changelogs)
