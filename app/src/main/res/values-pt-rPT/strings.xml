@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="disable">desativar</string>
     <string name="choose_at_least_one">Por favor, selecione pelo menos um</string>
     <string name="action_set_as_ringtone">Definir como toque de telemóvel</string>
     <string name="action_share">Partilhar</string>
@@ -29,6 +30,7 @@
     <string name="playlists">Listas de reprodução</string>
     <string name="unplayable_file">Ocorreu um erro ao tentar reproduzir esta faixa.</string>
     <string name="biography_unavailable">N\u00e3o foi poss\u00edvel encontrar a biografia deste artista.</string>
+    <string name="wiki_unavailable">Não foi possível encontrar o registro wiki deste álbum.</string>
     <string name="biography">Biografia</string>
     <string name="audio_focus_denied">Foco de áudio negado.</string>
     <string name="album">Álbum</string>
@@ -103,12 +105,17 @@
     <string name="pref_header_images">Imagens</string>
     <string name="pref_header_playlists">Listas de reprodução</string>
     <string name="pref_header_notification">Notificação</string>
+    <string name="pref_title_player_style">Estilo Principal do Player</string>
     <string name="pref_title_navigation_bar">Barra de navegação colorida</string>
+    <string name="pref_title_app_shortcuts">Atalhos coloridos do app</string>
     <string name="pref_title_auto_download_metadata">Baixar automaticamente os metadados</string>
     <string name="pref_title_colored_notification">Notificação colorida</string>
     <string name="pref_title_classic_notification">Design clássico de notificação</string>
     <string name="pref_title_gapless_playback">Reprodução contínua</string>
+    <string name="pref_title_audio_ducking">Reduzir o volume na perda de foco</string>
     <string name="pref_title_last_added_interval">Intervalo da última lista de reprodução adicionada</string>
+    <string name="pref_title_synchronized_lyrics_show">Mostrar letra sincronizada</string>
+    <string name="pref_title_remember_last_tab">Lembrar da última aba</string>
     <string name="pref_title_remember_shuffle">Lembrar modo aleatório</string>
     <string name="no_equalizer">Nenhum equalizador encontrado.</string>
     <string name="no_audio_ID">Reproduza uma faixa primeiro, e tente outra vez.</string>
@@ -129,10 +136,14 @@
     <string name="empty">Vazio</string>
     <string name="playlist_name_empty">Nome de lista de reprodução</string>
     <string name="song">Música</string>
+    <string name="pref_summary_classic_notification">Usar o modelo de notificação clássico.</string>
     <string name="pref_summary_colored_notification">Colorir a notifica\u00e7\u00e3o na cor viva da capa de \u00e1lbum.</string>
     <string name="pref_summary_gapless_playback">Pode causar problemas na reprodução em alguns dispositivos.</string>
     <string name="pref_summary_colored_navigation_bar">Colorir a barra de navegação na cor primária.</string>
+    <string name="pref_summary_colored_app_shortcuts">Colorir os atalhos do app com a cor primária.</string>
     <string name="pref_summary_audio_ducking">Notificações, navegação etc.</string>
+    <string name="pref_summary_synchronized_lyrics_show">Atualmente são suportadas apenas letras sincronizadas no formato LRC. Tanto incorporadas quanto em um arquivo separado.</string>
+    <string name="pref_summary_remember_last_tab">Ir para a última guia aberta ao iniciar</string>
     <string name="search_hint">Procurar na biblioteca...</string>
     <string name="favorites">Favoritos</string>
     <string name="last_added">Últimas adições</string>
@@ -151,6 +162,7 @@
     <string name="new_playlist_title">Nova lista de reprodução</string>
     <string name="colored_footers">Rodapés coloridos</string>
     <string name="special_thanks_to">Agradecimentos especiais a</string>
+    <string name="changelog">Registo de alterações</string>
     <string name="licenses">Licenças </string>
     <string name="permissions_denied">Permissões negadas.</string>
     <string name="permission_external_storage_denied">Permissão para aceder a armazenamento externo negada.</string>
@@ -193,15 +205,24 @@
     <string name="description">Descrição</string>
     <string name="device_info">Informações do dispositivo</string>
     <string name="bug_report_manual">Enviar manualmente</string>
+    <string name="copied_device_info_to_clipboard">Informações do dispositivo copiados para área de transferência.</string>
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">Vai ser reencaminhado para o site do rastreador de problemas.</string>
     <string name="app_shortcut_shuffle_all_short">Aleatorizar</string>
+    <string name="app_shortcut_top_tracks_short">Top faixas</string>
+    <string name="app_shortcut_last_added_short">Adicionado recentemente</string>
     <string name="playing_notification_description">A notificação de reprodução fornece ações para reproduzir/pausar, etc.</string>
     <string name="playing_notification_name">Notificação de reprodução</string>
+    <string name="eugene_cheung_summary">Pela sua contribuição com o código-fonte.</string>
+    <string name="adrian_summary">Por criar o design da página do álbum.</string>
     <string name="add_action">Adicionar</string>
     <string name="blacklist">Lista de bloqueio</string>
     <string name="reset_artist_image">Repor imagem do artista</string>
     <string name="set_artist_image">Definir imagem do artista</string>
     <string name="library_categories">Categorias da biblioteca</string>
+    <string name="pref_summary_library_categories">Configure a visibilidade e a ordem das categorias da biblioteca.</string>
+    <string name="you_have_to_select_at_least_one_category">Você deve selecionar pelo menos uma categoria.</string>
+    <string name="action_scan_directory">Verificar pasta</string>
+    <string name="scan_media">Escanear mídia</string>
     <string name="action_sort_order">Sentido da ordenação</string>
     <string name="sort_order_a_z">Ascendente</string>
     <string name="sort_order_z_a">Descendente</string>
