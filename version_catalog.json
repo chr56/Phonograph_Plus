@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "stable",
+      "versionName": "1.5.1",
+      "versionCode": 1051,
+      "date": 1708567000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.5.1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 首次安装后立即崩溃</li></ol>",
+        "en": "<ol><li>Fix: immediately crash after Intro for first time installing</li></ol>"
+      }
+    },
+    {
+      "channel": "stable",
       "versionName": "1.5.0",
       "versionCode": 1050,
       "date": 1708410000,
