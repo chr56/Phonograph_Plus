@@ -1,0 +1,2 @@
+<b>1.5.1(1051) 2024.02.22</b>
+- Fix: immediately crash after Intro for first time installing
