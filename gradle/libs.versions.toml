@@ -73,7 +73,7 @@ kotlinx-serialization-kaml = "com.charleskorn.kaml:kaml:0.57.0"
 coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt:coil-compose-base", version.ref = "coil" }
 koin = "io.insert-koin:koin-android:3.5.3"
-kotlinx-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
+kotlinx-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0"
 
 #
 # other
