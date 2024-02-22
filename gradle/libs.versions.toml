@@ -67,7 +67,7 @@ compose-activity = { group = "androidx.activity", name = "activity-compose", ver
 
 okhttp3 = "com.squareup.okhttp3:okhttp:4.12.0"
 retrofit2 = "com.squareup.retrofit2:retrofit:2.9.0"
-kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
+kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3"
 kotlinx-serialization-ktoml = "com.akuleshov7:ktoml-core:0.5.0"
 kotlinx-serialization-kaml = "com.charleskorn.kaml:kaml:0.57.0"
 coil = { module = "io.coil-kt:coil", version.ref = "coil" }
