@@ -30,9 +30,13 @@ See branch `room` or `database`
 
 Integrate with native decoder like `ffmpeg` or `Symphonia`.
 
+- [x] Test for Cross Compile
+
 - [ ] Player support in JVM side.
 
 - [ ] Glue and logical code in Native side.
+
+- [ ] Reproducible Builds
 
 ### Refactor Main Player UI
 

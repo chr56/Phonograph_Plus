@@ -11,7 +11,7 @@ See also [Developer Guide](./Developer_Guide.md).
 
 1. a PC : any desktop operate system platform (only `Windows` and `Ubuntu 20.04` are tested), I am not sure if it works
    on `Android(Termux)` because jvm version.
-2. JDK 17 (we are using AGP 8.2.2 with gradle 8.3).
+2. JDK 17 (we are using AGP 8.2.2 with gradle 8.5).
 3. The connected and fast network.
 
 **Development**:

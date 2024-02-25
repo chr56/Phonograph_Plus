@@ -4,7 +4,7 @@ This document describes the overview of this project for developers.
 
 See also [Build Instruction](./Build_Instructions.md).
 
-_Last Update: 2024.02.01_
+_Last Update: 2024.02.25_
 
 ## Toolchain & Dependencies
 
@@ -12,25 +12,25 @@ This is a pure kotlin Android Application.
 
 Gradle Version Catalogs is used in this project:
 
-see [libs.versions.toml](../gradle/libs.versions.toml) for all the libraries.
+see [libs.versions.toml](../gradle/libs.versions.toml) for all the libraries and all gradle plugins.
 
-see [plugins.versions.toml](../gradle/plugins.versions.toml) for all gradle plugins.
+**Toolchain**
 
-**Platform**
-
--   Gradlew `8.3`, requiring JDK `17`
+-   Gradlew `8.5`, requiring JDK `17`
 -   `Android Gradle Plugin` `8.2.2`
 -   Android SDK `34`
 -   kotlin for JVM(Android) `1.9.22`
 
 **Libraries**
 
--   `Jetpack Compose` 1.6.0
--   `kotlinx.serialization`,`kotlinx.parcelize`
+Highlight:
+-   `Jetpack Compose` 1.6.1
+-   `Jetpack Datastore` 1.0.0
+-   `kotlinx.serialization`
+-   `kotlinx.parcelize`
 -   `koin` as a lightweight Dependency Injection solution
--   most popular `androidx`(`Jetpack`) components (most of them are latest)
--   many 3rd-party libraries available on (`MavenCentral` and `jitpack.io`), some might kind of old and unmaintained
-    including some modified libraries by me
+
+See [List of Libraries and Gradle Plugins in Use](./List_of_Libraries.md) for details
 
 ## Build Variant
 
@@ -52,8 +52,6 @@ Currently:
 
 -   _app_(`app/`): all actual code of the Phonograph Plus
 -   _changelog-generator_(`tools/changelog-generator`): for generating changelog from
--   _release-tool_(`tools/release-tool/`): (composite build) store libraries dependencies meta (versions etc) and some util for gradle build
-    script
 
 #### Repository Structure
 
@@ -61,7 +59,7 @@ Except gradle's file ():
 
 - `.github/`: `Github Action` and templates
 - `.idea/`: Android Studio's config including code style config and run config
-- `app/`, `tools/release-tool/`, `tools/changelog-generator`: Gradle Module
+- `app/`, `tools/changelog-generator`: Gradle Module
 - `docs/`: documents
 - `scripts/`: bash scripts for ci
 - `fastlane/metadata/android/`: F-droid metadata, like summary, screenshot, changelogs
