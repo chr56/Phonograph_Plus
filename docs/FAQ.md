@@ -59,3 +59,13 @@ And Phonograph Plus is currently relaying on OS to decode media.
    But this is temporarily planning on late 2024 or early 2025.
 
 _See Also Issue: #112_
+
+## Problems with uninstalling?
+
+Installer(uninstaller) crashed on Android 10 with physical SD card.
+
+(This is currently unsolved for now.)
+
+Use _adb_ to uninstall as a workaround.  
+
+_See Also Issue: #151_

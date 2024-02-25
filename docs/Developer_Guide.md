@@ -4,7 +4,7 @@ This document describes the overview of this project for developers.
 
 See also [Build Instruction](./Build_Instructions.md).
 
-_Last Update: 2024.02.01_
+_Last Update: 2024.02.25_
 
 ## Toolchain & Dependencies
 
@@ -16,7 +16,7 @@ see [libs.versions.toml](../gradle/libs.versions.toml) for all the libraries.
 
 see [plugins.versions.toml](../gradle/plugins.versions.toml) for all gradle plugins.
 
-**Platform**
+**Toolchain**
 
 -   Gradlew `8.3`, requiring JDK `17`
 -   `Android Gradle Plugin` `8.2.2`
@@ -25,12 +25,14 @@ see [plugins.versions.toml](../gradle/plugins.versions.toml) for all gradle plug
 
 **Libraries**
 
--   `Jetpack Compose` 1.6.0
--   `kotlinx.serialization`,`kotlinx.parcelize`
+Highlight:
+-   `Jetpack Compose` 1.6.1
+-   `Jetpack Datastore` 1.0.0
+-   `kotlinx.serialization`
+-   `kotlinx.parcelize`
 -   `koin` as a lightweight Dependency Injection solution
--   most popular `androidx`(`Jetpack`) components (most of them are latest)
--   many 3rd-party libraries available on (`MavenCentral` and `jitpack.io`), some might kind of old and unmaintained
-    including some modified libraries by me
+
+See [List of Libraries and Gradle Plugins in Use](./List_of_Libraries.md) for details
 
 ## Build Variant
 
