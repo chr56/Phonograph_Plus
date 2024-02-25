@@ -40,6 +40,7 @@
     <string name="album_artist">Album-Interpret</string>
     <string name="year">Jahr</string>
     <string name="track">Titelnummer</string>
+    <string name="track_total">Gesamtzahl der Stücke</string>
     <string name="lyrics">Songtext</string>
     <string name="saving_changes">Speichere Änderungen…</string>
     <string name="label_details">Details</string>
@@ -408,6 +409,9 @@
     <string name="permission_desc_read_media_audio">Seit Android 13 (T) benötigen Apps diese Berechtigung um Audiomedien auf dem Gerät zu lesen.</string>
     <string name="permission_name_read_external_storage">Externen Speicher lesen</string>
     <string name="permission_desc_read_external_storage">Zum Lesen der Musikdateien auf dem Gerät ist die Berechtigung zum Lesen des externen Speichers erforderlich.</string>
+    <string name="permission_name_write_external_storage">Beschreibe externen Speicher</string>
+    <string name="permission_desc_write_external_storage">Schreibberechtigung für externen Speicher wird benötigt, um Playlists oder Musikstücke (Tags) auf dem Gerät zu löschen oder zu bearbeiten.</string>
+    <string name="permission_name_manage_external_storage">Verwalte externen Speicher</string>
     <string name="completed">vollständig</string>
     <string name="dynamic_colors">Dynamische Farben</string>
     <string name="pref_title_enable_monet">Monet aktivieren</string>
@@ -439,4 +443,17 @@
     <string name="timeunit_year">Jahr</string>
     <string name="time_interval_text">%1$s %2$d %3$s</string>
     <string name="preview_text_next_upgrade_check">Die nächste Aktualisierungsüberprüfung  erfolgt nach: \n %1$s \n(%2$s)</string>
+    <string name="search_online">Suche online</string>
+    <string name="target_release">Veröffentlichung</string>
+    <string name="target_album">Album</string>
+    <string name="target_artist">Künstler</string>
+    <string name="target_recording">Aufnahme</string>
+    <string name="target_track">Spur</string>
+    <string name="alias">Alias</string>
+    <string name="type">Typ</string>
+    <string name="key_date">Datum</string>
+    <string name="key_country">Land</string>
+    <string name="key_gender">Geschlecht</string>
+    <string name="key_lifespan">Lebensdauer</string>
+    <string name="key_media">Medien</string>
 </resources>
