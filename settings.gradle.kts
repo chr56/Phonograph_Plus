@@ -6,12 +6,6 @@ dependencyResolutionManagement {
         google()
         maven(url = "https://jitpack.io")
     }
-
-    versionCatalogs {
-        create("plugins") {
-            from(files("./gradle/plugins.versions.toml"))
-        }
-    }
 }
 
 pluginManagement {

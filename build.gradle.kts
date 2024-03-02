@@ -1,5 +1,5 @@
 plugins {
-    // alias(plugins.plugins.versionChecker)// enable if needed
+    // alias(libs.plugins.versionChecker)// enable if needed
 }
 repositories {
     gradlePluginPortal()
