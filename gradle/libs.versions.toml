@@ -1,4 +1,14 @@
 [versions]
+
+## Plugins
+
+kotlin = "1.9.22"
+agp = "8.2.2"
+ksp = "1.9.22-1.0.17"
+versionChecker = "0.51.0"
+
+## Libraries
+
 activity = "1.8.2"
 datastore = { strictly = "1.0.0" }
 compose = "1.6.2"
@@ -79,6 +89,8 @@ kotlinx-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0"
 # other
 #
 
+androidGradlePluginAPI = { module = "com.android.tools.build:gradle-api", version.ref = "agp" } # for Plugin development
+
 materialDialogs-core = { group = "com.afollestad.material-dialogs", name = "core", version.ref = "materialDialogs" }
 materialDialogs-input = { group = "com.afollestad.material-dialogs", name = "input", version.ref = "materialDialogs" }
 materialDialogs-color = { group = "com.afollestad.material-dialogs", name = "color", version.ref = "materialDialogs" }
@@ -150,3 +162,17 @@ materialTools = [
     "mt-pref",
     "mt-tint",
 ]
+
+[plugins]
+
+androidGradlePlugin = { id = "com.android.application", version.ref = "agp" }
+#androidGradlePluginLibrary = { id = "com.android.library", version.ref = "agp" }
+
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
+versionChecker = { id = "com.github.ben-manes.versions", version.ref = "versionChecker" }

@@ -7,8 +7,8 @@ repositories {
 }
 
 plugins {
-    alias(plugins.plugins.kotlin.jvm)
-    alias(plugins.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 sourceSets {
