@@ -4,6 +4,7 @@
 
 package tools.release.zip
 
+import tools.release.file.assureFile
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -15,7 +16,7 @@ fun File.gzip(target: File? = null): File = gzipImpl(this, target)
 fun gzipImpl(file: File, target: File? = null): File {
     require(file.exists()) { "File(${file.absolutePath}) is not available" }
     require(file.isFile) { "File(${file.absolutePath}) is not a file!" }
-    val zippedFile = (target ?: File("${file.absolutePath}.gz")).assure()
+    val zippedFile = (target ?: File("${file.absolutePath}.gz")).assureFile()
     FileOutputStream(zippedFile).use { outputStream ->
         GZIPOutputStream(outputStream, 4096).use { gzipOutputStream ->
             FileInputStream(file).use { inputStream ->
@@ -31,10 +32,3 @@ fun gzipImpl(file: File, target: File? = null): File {
     return zippedFile
 }
 
-private fun File.assure(): File {
-    if (!this.exists()) {
-        createNewFile()
-    }
-    require(this.isFile) { "File($absolutePath) is not a file" }
-    return this
-}

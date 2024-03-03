@@ -6,18 +6,19 @@ package tools.release
 
 import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.variant.ApplicationVariant
+import com.android.build.api.variant.BuiltArtifact
 import com.android.build.api.variant.BuiltArtifacts
 import com.android.build.api.variant.BuiltArtifactsLoader
 import org.gradle.api.DefaultTask
-import org.gradle.api.Project
 import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile
 import org.gradle.api.tasks.TaskAction
-import tools.release.filecopy.NameStyle
-import tools.release.filecopy.assureDir
-import tools.release.filecopy.exportArtifact
+import tools.release.Plugin.Companion.productDir
+import tools.release.file.assureDir
+import tools.release.text.NameStyle
 import tools.release.git.getGitHash
 import tools.release.text.canonicalName
+import tools.release.zip.gzip
 import java.io.File
 import javax.inject.Inject
 
@@ -61,12 +62,50 @@ open class PublishArtifactsTask @Inject constructor(
             mappingFile,
             name,
             nameStyle,
-            destinationDir
+            destinationDir,
         )
     }
 
     companion object {
-        const val PRODUCTS_DIR = "products"
-        internal fun Project.productDir() = File(rootDir, PRODUCTS_DIR).also { it.mkdirs() }
+        private fun exportArtifact(
+            variant: ApplicationVariant,
+            artifacts: Collection<BuiltArtifact>,
+            mappingFile: RegularFile?,
+            name: String,
+            nameStyle: NameStyle,
+            destinationDir: File,
+            overwrite: Boolean = true,
+        ) {
+
+            for (artifact in artifacts) {
+                val apkName = nameStyle.generateApkName(name, variant, artifact)
+                val destination = File(destinationDir, "$apkName.apk")
+                val file = File(artifact.outputFile)
+                file.copyTo(destination, overwrite)
+                notify(destination)
+            }
+
+            val mapping: File? = mappingFile?.asFile
+            if (mapping != null && mapping.exists()) {
+                val mappingName = nameStyle.generateMappingName(name, variant)
+                val destination = File(destinationDir, "$mappingName.txt.gz")
+                val file = mapping.gzip()
+                file.copyTo(destination, overwrite)
+                notify(destination)
+            }
+        }
+
+        private fun notify(file: File) {
+            val osName = System.getProperty("os.name").lowercase()
+            val location =
+                if (osName.contains("windows")) {
+                    file.toURI().toString().replace("file:/", "file:///")
+                } else {
+                    file.toURI().toString()
+                }
+            println("Copied! $location")
+        }
     }
+
+
 }
