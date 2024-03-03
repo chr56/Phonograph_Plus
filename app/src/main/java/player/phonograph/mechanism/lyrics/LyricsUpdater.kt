@@ -7,13 +7,15 @@ package player.phonograph.mechanism.lyrics
 import player.phonograph.mechanism.StatusBarLyric
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
-import player.phonograph.util.reportError
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 
 class LyricsUpdater(song: Song?) {
     private var fetcher: LyricsFetcher? = null
+
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     /**
      * lyrics would be loaded after set
@@ -21,19 +23,25 @@ class LyricsUpdater(song: Song?) {
     var currentSong: Song? = song
         @Synchronized set(value) {
             field = value
-            updateLyrics()
+            updateLyrics(value)
         }
 
-    private fun updateLyrics() {
-        val song: Song = currentSong ?: return
+    private fun updateLyrics(song: Song?) {
         // fetch lyrics
-        File(song.data).also { file ->
-            if (!file.exists()) return@also
-            runBlocking(exceptionHandler) {
-                LyricsLoader.loadLyrics(file, song).let {
-                    fetcher = LyricsFetcher(it.firstLrcLyrics())
+        coroutineScope.launch(Dispatchers.IO) {
+            fetcher =
+                if (song != null) {
+                    File(song.data).let { file ->
+                        if (file.exists()) {
+                            val lyrics = LyricsLoader.loadLyrics(file, song)
+                            LyricsFetcher(lyrics.firstLrcLyrics())
+                        } else {
+                            LyricsFetcher(null)
+                        }
+                    }
+                } else {
+                    LyricsFetcher(null)
                 }
-            }
         }
     }
 
@@ -46,17 +54,18 @@ class LyricsUpdater(song: Song?) {
      * broadcase lyrics
      */
     fun broadcast(processInMills: Int) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val newLine = fetcher?.getLine(processInMills)
 
-        val newLine = fetcher?.getLine(processInMills)
-
-        if (newLine != null) {
-            if (newLine != cache) {
-                cache = newLine // update cache
-                StatusBarLyric.updateLyric(newLine)
+            if (newLine != null) {
+                if (newLine != cache) {
+                    cache = newLine // update cache
+                    StatusBarLyric.updateLyric(newLine)
+                }
+            } else {
+                cache = ""
+                StatusBarLyric.stopLyric()
             }
-        } else {
-            cache = ""
-            StatusBarLyric.stopLyric()
         }
     }
 
@@ -68,12 +77,6 @@ class LyricsUpdater(song: Song?) {
     fun clear() {
         cache = ""
         currentSong = null
-    }
-
-    private val exceptionHandler by lazy {
-        CoroutineExceptionHandler { _, throwable ->
-            reportError(throwable, "LyricsFetcher", "Exception while fetching lyrics!")
-        }
     }
 
     class LyricsFetcher(private val lyrics: LrcLyrics?) {
