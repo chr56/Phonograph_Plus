@@ -7,11 +7,11 @@ package tools.release
 import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.BuiltArtifact
-import com.android.build.api.variant.VariantOutput
+import com.android.build.api.variant.BuiltArtifacts
+import com.android.build.api.variant.BuiltArtifactsLoader
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
-import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskAction
 import tools.release.filecopy.ApkInfo
@@ -31,40 +31,32 @@ open class PublishArtifactsTask @Inject constructor(
         description = "Publish Artifacts to target directory"
     }
 
-    private val variantCanonicalName: String =
-        variant.name.shiftFirstLetter()
+    private val variantCanonicalName: String = variant.name.shiftFirstLetter()
 
-    private val outputs: List<VariantOutput> = variant.outputs
-
-    private val appVersionName: Provider<String?> = outputs.first().versionName
-
-    private val apksDirectoryProvider: Provider<Directory> =
-        variant.artifacts.get(SingleArtifact.APK)
-    private val mappingFileProvider: Provider<RegularFile> =
-        variant.artifacts.get(SingleArtifact.OBFUSCATION_MAPPING_FILE)
-
+    private val appVersionName: Provider<String?> get() = variant.outputs.first().versionName
 
     @TaskAction
     fun publish() {
-        collectApks()
-        collectMappingFile()
+        collect()
     }
 
+    private fun collect() {
+        val loader: BuiltArtifactsLoader = variant.artifacts.getBuiltArtifactsLoader()
+        val apkDirectory: Directory = variant.artifacts.get(SingleArtifact.APK).get()
+        val mappingFile = variant.artifacts.get(SingleArtifact.OBFUSCATION_MAPPING_FILE).get().asFile
 
-    private fun collectApks() {
-        val loader = variant.artifacts.getBuiltArtifactsLoader()
-        val apkDirectory = apksDirectoryProvider.get()
-        val apks = loader.load(apkDirectory)?.let { builtArtifacts ->
-            builtArtifacts.elements
+        val builtApkArtifacts: BuiltArtifacts? = loader.load(apkDirectory)
+        if (builtApkArtifacts == null) {
+            println("No apks generated!")
+            return
         }
-        collectApksImpl(apks)
-    }
 
-    private fun collectMappingFile() {
-        val mappingFile =
-            mappingFileProvider.orNull?.asFile
+        val apks: Collection<BuiltArtifact> = builtApkArtifacts.elements
+        collectApksImpl(apks)
+
         collectMappingImpl(mappingFile)
     }
+
 
     private fun collectApksImpl(apks: Collection<BuiltArtifact>?) {
         if (!apks.isNullOrEmpty()) {
@@ -99,6 +91,7 @@ open class PublishArtifactsTask @Inject constructor(
     }
 
     companion object {
-        internal fun Project.productDir() = File(rootDir, "products").also { it.mkdirs() }
+        const val PRODUCTS_DIR = "products"
+        internal fun Project.productDir() = File(rootDir, PRODUCTS_DIR).also { it.mkdirs() }
     }
 }
