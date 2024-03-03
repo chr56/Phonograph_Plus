@@ -122,8 +122,7 @@ android {
 
         val name = appName.replace(Regex("\\s"), "") //remove white space
         onVariants(selector().withBuildType("release")) { variant ->
-            val version = (android.defaultConfig as ApplicationBaseFlavor).versionName ?: "N/A"
-            tasks.registerPublishTask(name, version, variant)
+            tasks.registerPublishTask(name, variant)
         }
     }
 

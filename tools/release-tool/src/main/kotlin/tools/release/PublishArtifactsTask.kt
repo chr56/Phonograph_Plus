@@ -7,6 +7,7 @@ package tools.release
 import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.BuiltArtifact
+import com.android.build.api.variant.VariantOutput
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
@@ -23,8 +24,7 @@ import javax.inject.Inject
 
 open class PublishArtifactsTask @Inject constructor(
     private val appName: String,
-    private val appVersionName: String,
-    private val variant: ApplicationVariant
+    private val variant: ApplicationVariant,
 ) : DefaultTask() {
 
     init {
@@ -33,6 +33,10 @@ open class PublishArtifactsTask @Inject constructor(
 
     private val variantCanonicalName: String =
         variant.name.shiftFirstLetter()
+
+    private val outputs: List<VariantOutput> = variant.outputs
+
+    private val appVersionName: Provider<String?> = outputs.first().versionName
 
     private val apksDirectoryProvider: Provider<Directory> =
         variant.artifacts.get(SingleArtifact.APK)
@@ -68,7 +72,7 @@ open class PublishArtifactsTask @Inject constructor(
                 val info = ApkInfo(
                     variantName = variantCanonicalName,
                     appName = appName,
-                    version = apk.versionName ?: appVersionName,
+                    version = apk.versionName ?: appVersionName.orNull ?: "NA",
                     gitHash = project.getGitHash(true),
                     releaseMode = variant.buildType == "release"
                 )
@@ -84,7 +88,7 @@ open class PublishArtifactsTask @Inject constructor(
             val info = ApkInfo(
                 variantName = variantCanonicalName,
                 appName = appName,
-                version = appVersionName,
+                version = appVersionName.orNull ?: "NA",
                 gitHash = project.getGitHash(true),
                 releaseMode = variant.buildType == "release"
             )
