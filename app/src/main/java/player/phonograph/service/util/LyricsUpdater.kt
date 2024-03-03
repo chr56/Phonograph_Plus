@@ -1,10 +1,11 @@
 /*
- * Copyright (c) 2022~2023 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.mechanism.lyrics
+package player.phonograph.service.util
 
 import player.phonograph.mechanism.StatusBarLyric
+import player.phonograph.mechanism.lyrics.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicService
