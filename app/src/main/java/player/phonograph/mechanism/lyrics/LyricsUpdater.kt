@@ -13,7 +13,7 @@ import kotlinx.coroutines.runBlocking
 import java.io.File
 
 class LyricsUpdater(song: Song?) {
-    private lateinit var fetcher: LyricsFetcher
+    private var fetcher: LyricsFetcher? = null
 
     /**
      * lyrics would be loaded after set
@@ -47,7 +47,7 @@ class LyricsUpdater(song: Song?) {
      */
     fun broadcast(processInMills: Int) {
 
-        val newLine = fetcher.getLine(processInMills)
+        val newLine = fetcher?.getLine(processInMills)
 
         if (newLine != null) {
             if (newLine != cache) {
