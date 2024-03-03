@@ -6,34 +6,29 @@ package tools.release
 
 import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.variant.ApplicationVariant
-import com.android.build.api.variant.BuiltArtifact
 import com.android.build.api.variant.BuiltArtifacts
 import com.android.build.api.variant.BuiltArtifactsLoader
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
-import org.gradle.api.provider.Provider
+import org.gradle.api.file.RegularFile
 import org.gradle.api.tasks.TaskAction
-import tools.release.filecopy.ApkInfo
-import tools.release.filecopy.copyApk
-import tools.release.filecopy.zipAndCopyMapping
+import tools.release.filecopy.NameStyle
+import tools.release.filecopy.assureDir
+import tools.release.filecopy.exportArtifact
 import tools.release.git.getGitHash
-import tools.release.text.shiftFirstLetter
+import tools.release.text.canonicalName
 import java.io.File
 import javax.inject.Inject
 
 open class PublishArtifactsTask @Inject constructor(
-    private val appName: String,
+    private val name: String,
     private val variant: ApplicationVariant,
 ) : DefaultTask() {
 
     init {
         description = "Publish Artifacts to target directory"
     }
-
-    private val variantCanonicalName: String = variant.name.shiftFirstLetter()
-
-    private val appVersionName: Provider<String?> get() = variant.outputs.first().versionName
 
     @TaskAction
     fun publish() {
@@ -43,7 +38,7 @@ open class PublishArtifactsTask @Inject constructor(
     private fun collect() {
         val loader: BuiltArtifactsLoader = variant.artifacts.getBuiltArtifactsLoader()
         val apkDirectory: Directory = variant.artifacts.get(SingleArtifact.APK).get()
-        val mappingFile = variant.artifacts.get(SingleArtifact.OBFUSCATION_MAPPING_FILE).get().asFile
+        val mappingFile: RegularFile? = variant.artifacts.get(SingleArtifact.OBFUSCATION_MAPPING_FILE).orNull
 
         val builtApkArtifacts: BuiltArtifacts? = loader.load(apkDirectory)
         if (builtApkArtifacts == null) {
@@ -51,43 +46,23 @@ open class PublishArtifactsTask @Inject constructor(
             return
         }
 
-        val apks: Collection<BuiltArtifact> = builtApkArtifacts.elements
-        collectApksImpl(apks)
-
-        collectMappingImpl(mappingFile)
-    }
-
-
-    private fun collectApksImpl(apks: Collection<BuiltArtifact>?) {
-        if (!apks.isNullOrEmpty()) {
-            for (apk in apks) {
-                val info = ApkInfo(
-                    variantName = variantCanonicalName,
-                    appName = appName,
-                    version = apk.versionName ?: appVersionName.orNull ?: "NA",
-                    gitHash = project.getGitHash(true),
-                    releaseMode = variant.buildType == "release"
-                )
-                copyApk(apk, info, project.productDir())
+        val nameStyle =
+            if (variant.buildType != "debug") {
+                NameStyle.Version
+            } else {
+                NameStyle.VersionGitHashTime(project.getGitHash(true))
             }
-        } else {
-            println("No apks generated!")
-        }
-    }
 
-    private fun collectMappingImpl(mappingFile: File?) {
-        if (mappingFile != null) {
-            val info = ApkInfo(
-                variantName = variantCanonicalName,
-                appName = appName,
-                version = appVersionName.orNull ?: "NA",
-                gitHash = project.getGitHash(true),
-                releaseMode = variant.buildType == "release"
-            )
-            zipAndCopyMapping(mappingFile, info, project.productDir())
-        } else {
-            println("No mapping files generated!")
-        }
+        val destinationDir: File = File(project.productDir(), variant.canonicalName).assureDir()
+
+        exportArtifact(
+            variant,
+            builtApkArtifacts.elements,
+            mappingFile,
+            name,
+            nameStyle,
+            destinationDir
+        )
     }
 
     companion object {

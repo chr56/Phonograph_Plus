@@ -4,83 +4,105 @@
 
 package tools.release.filecopy
 
+import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.BuiltArtifact
+import com.android.build.api.variant.FilterConfiguration
+import org.gradle.api.file.RegularFile
 import tools.release.text.currentTimeString
 import tools.release.zip.gzip
 import java.io.File
 
-data class ApkInfo(
-    val variantName: String,
-    val appName: String,
-    val version: String,
-    val gitHash: String,
-    val releaseMode: Boolean = false,
-)
+sealed interface NameStyle {
 
-internal fun apkName(
-    appName: String,
-    version: String,
-    gitHash: String,
-    releaseMode: Boolean = false,
-): String {
-    return if (releaseMode) {
-        "${appName}_${version}"
-    } else {
-        "${appName}_${version}_${gitHash}_$currentTimeString"
+    fun generateApkName(
+        name: String,
+        variant: ApplicationVariant,
+        artifact: BuiltArtifact,
+    ): String
+
+
+
+    fun generateMappingName(
+        name: String,
+        variant: ApplicationVariant,
+    ): String
+
+
+    data object Version : NameStyle {
+        override fun generateApkName(name: String, variant: ApplicationVariant, artifact: BuiltArtifact): String {
+            val version = artifact.versionName ?: "NA"
+            return "${name}_${version}"
+        }
+
+        override fun generateMappingName(name: String, variant: ApplicationVariant): String {
+            return "mapping_${name}"
+        }
+    }
+
+    data object VersionAbi : NameStyle {
+        override fun generateApkName(name: String, variant: ApplicationVariant, artifact: BuiltArtifact): String {
+            val version = artifact.versionName ?: "NA"
+            val abiList =
+                artifact.filters
+                    .filter { it.filterType == FilterConfiguration.FilterType.ABI }
+                    .takeIf { it.isNotEmpty() }
+            val abi = abiList?.joinToString(separator = "-") ?: "universal"
+            return "${name}_${version}_${abi}"
+        }
+
+        override fun generateMappingName(name: String, variant: ApplicationVariant): String {
+            return "mapping_${name}"
+        }
+    }
+
+    class VersionGitHashTime(val gitHash: String) : NameStyle {
+        override fun generateApkName(name: String, variant: ApplicationVariant, artifact: BuiltArtifact): String {
+            val version = artifact.versionName ?: "NA"
+            return "${name}_${version}_${gitHash}_${currentTimeString}"
+        }
+
+        override fun generateMappingName(name: String, variant: ApplicationVariant): String {
+            return "mapping_${name}_${gitHash}"
+        }
     }
 }
 
-internal fun copyApk(
-    apkArtifact: BuiltArtifact,
-    apkInfo: ApkInfo,
-    productDir: File,
-    overwrite: Boolean = true
-) {
-    val newName = apkName(apkInfo.appName, apkInfo.version, apkInfo.gitHash, apkInfo.releaseMode)
-    val destinationDir = File(productDir, apkInfo.variantName).also { it.mkdir() }
-    copyApkImpl(apkArtifact, destinationDir, newName, overwrite)
-}
-
-private fun copyApkImpl(
-    artifact: BuiltArtifact,
+internal fun exportArtifact(
+    variant: ApplicationVariant,
+    artifacts: Collection<BuiltArtifact>,
+    mappingFile: RegularFile?,
+    name: String,
+    nameStyle: NameStyle,
     destinationDir: File,
-    apkName: String,
-    overwrite: Boolean = true
+    overwrite: Boolean = true,
 ) {
-    val name = "$apkName.apk"
-    copyFile(File(artifact.outputFile), destinationDir, name, overwrite)
-    println("copied! apk     $name")
+
+    for (artifact in artifacts) {
+        val apkName = nameStyle.generateApkName(name, variant, artifact)
+        copyFile(File(artifact.outputFile), destinationDir, "$apkName.apk", overwrite)
+        println("copied! apk     file:///$destinationDir/$apkName.apk")
+    }
+
+    val mapping: File? = mappingFile?.asFile
+    if (mapping != null && mapping.exists()) {
+        val mappingName = nameStyle.generateMappingName(name, variant)
+        copyFile(mapping.gzip(), destinationDir, "$mappingName.txt.gz", overwrite)
+        println("copied! mapping file:///$destinationDir/$mappingName.txt.gz")
+    }
 }
 
-
-internal fun zipAndCopyMapping(
-    mappingFile: File,
-    apkInfo: ApkInfo,
-    productDir: File,
-    overwrite: Boolean = true
-) {
-    val destinationDir = File(productDir, apkInfo.variantName)
-    val apkName = apkName(apkInfo.appName, apkInfo.version, apkInfo.gitHash, apkInfo.releaseMode)
-    zipAndCopyMappingImpl(mappingFile, destinationDir, apkName, apkInfo.gitHash, overwrite)
-}
-
-private fun zipAndCopyMappingImpl(
-    mappingFile: File,
-    destinationDir: File,
-    apkName: String,
-    gitHash: String,
-    overwrite: Boolean = true
-) {
-    val name = "${apkName}_mapping_${gitHash}.txt.gz"
-    copyFile(mappingFile.gzip(), destinationDir, name, overwrite)
-    println("copied! mapping $name")
-}
 
 private fun copyFile(
     file: File,
     destinationDir: File,
     newName: String,
-    overwrite: Boolean = true
+    overwrite: Boolean = true,
 ) {
     file.copyTo(File(destinationDir, newName), overwrite)
+}
+
+fun File.assureDir(): File {
+    require(isDirectory) { "$name not a directory!" }
+    if (!exists()) mkdirs()
+    return this
 }
