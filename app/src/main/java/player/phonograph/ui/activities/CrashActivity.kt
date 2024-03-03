@@ -50,12 +50,14 @@ class CrashActivity : ToolbarActivity() {
 
     private var crashReportMode = true
 
-    private val colorPrimaryDeep get() =  resources.getColor(
-        if (crashReportMode) MR.color.md_deep_orange_900 else MR.color.md_grey_800, theme
-    )
-    private val colorPrimary get() =  resources.getColor(
-        if (crashReportMode) MR.color.md_deep_orange_700 else MR.color.md_grey_700, theme
-    )
+    private val colorPrimaryDeep
+        get() = resources.getColor(
+            if (crashReportMode) MR.color.md_deep_orange_900 else MR.color.md_grey_800, theme
+        )
+    private val colorPrimary
+        get() = resources.getColor(
+            if (crashReportMode) MR.color.md_deep_orange_700 else MR.color.md_grey_700, theme
+        )
 
 
     private fun setupTheme() {
@@ -124,12 +126,19 @@ class CrashActivity : ToolbarActivity() {
         displayText = buildString {
             append("${if (crashReportMode) "Crash Report" else "Internal Error"}:\n\n")
             append("$deviceInfo\n")
-            if (note.isNotEmpty()) {
+            val isNoteEmpty = note.isEmpty()
+            val isStacktraceEmpty = stackTraceText.isEmpty()
+            if (!isNoteEmpty) {
+                append("\nNote:\n")
                 append("$note\n")
             }
-            if (stackTraceText.isNotEmpty()) {
+            if (!isStacktraceEmpty) {
                 append("\nStacktrace:\n")
                 append("$stackTraceText\n")
+            }
+            if (isNoteEmpty && isStacktraceEmpty) {
+                append("\n\nNo message or stacktrace?\n")
+                append("This should not happened. Please cat log manually!")
             }
         }
 
@@ -142,9 +151,11 @@ class CrashActivity : ToolbarActivity() {
             val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clipData = ClipData.newPlainText("CRASH", displayText)
             clipboardManager.setPrimaryClip(clipData)
-            Toast.makeText(this,
-                           "${getString(R.string.copy_to_clipboard)}:\n${getString(R.string.success)}",
-                           Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                "${getString(R.string.copy_to_clipboard)}:\n${getString(R.string.success)}",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
         // save crash report
