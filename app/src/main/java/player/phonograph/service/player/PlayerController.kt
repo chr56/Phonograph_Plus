@@ -98,7 +98,10 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
         thread.start()
         _handler = ControllerHandler(this, thread.looper)
 
-        _lyricsUpdater = LyricsUpdater(queueManager.currentSong)
+
+        _lyricsUpdater = LyricsUpdater()
+        lyricsUpdater.onCreate(service)
+
 
         restorePosition()
 
@@ -110,7 +113,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
         stopImp()
         unregisterBecomingNoisyReceiver(service)
 
-        lyricsUpdater.clear()
+        lyricsUpdater.onDestroy(musicService)
         _lyricsUpdater = null
 
         thread.quitSafely()
@@ -234,8 +237,8 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
         observers.executeForEach {
             onReceivingMessage(MSG_NOW_PLAYING_CHANGED)
         }
-        handler.post {
-            lyricsUpdater.currentSong = queueManager.currentSong
+        service.coroutineScope.launch(SupervisorJob()) {
+            lyricsUpdater.updateViaSong(queueManager.currentSong)
         }
     }
 
@@ -724,6 +727,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
                 return false
             }
 
+
             controller.lyricsUpdater.broadcast(controller.getSongProgressMillis())
             return true
         }
@@ -765,7 +769,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
     private fun broadcastStopLyric() = StatusBarLyric.stopLyric()
     fun replaceLyrics(lyrics: LrcLyrics?) {
         if (lyrics != null) {
-            lyricsUpdater.forceReplaceLyrics(lyrics)
+            lyricsUpdater.updateViaLyrics(lyrics)
         } else {
             lyricsUpdater.clear()
         }
