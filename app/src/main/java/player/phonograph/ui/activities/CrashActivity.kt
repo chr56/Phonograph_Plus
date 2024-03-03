@@ -128,7 +128,7 @@ class CrashActivity : ToolbarActivity() {
                 append("$note\n")
             }
             if (stackTraceText.isNotEmpty()) {
-                append("\nStack Track:\n")
+                append("\nStacktrace:\n")
                 append("$stackTraceText\n")
             }
         }
