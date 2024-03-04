@@ -61,7 +61,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: preview_release_build
-          path: products/PreviewRelease/*.apk
+          path: |
+            products/PreviewRelease/*.apk
+            products/PreviewRelease/*.sha*
           retention-days: 30
 
       - name: Upload mapping.txt
@@ -83,6 +85,8 @@ jobs:
           name: "${{ github.ref_name }}"
           files: |
             products/PreviewRelease/PhonographPlus_*.apk
+            products/PreviewRelease/PhonographPlus_*.apk.sha1
+            products/PreviewRelease/PhonographPlus_*.apk.sha256
             products/PreviewRelease/PhonographPlus*.txt.gz
           prerelease: true
           draft: false

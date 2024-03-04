@@ -75,6 +75,8 @@ jobs:
           name: "${{ github.ref_name }}"
           files: |
             products/StableRelease/PhonographPlus_*.apk
+            products/PreviewRelease/PhonographPlus_*.apk.sha1
+            products/PreviewRelease/PhonographPlus_*.apk.sha256
             products/StableRelease/PhonographPlus*.txt.gz
           prerelease: false
           draft: true
