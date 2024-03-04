@@ -52,8 +52,6 @@ Currently:
 
 -   _app_(`app/`): all actual code of the Phonograph Plus
 -   _changelog-generator_(`tools/changelog-generator`): for generating changelog from
--   _release-tool_(`tools/release-tool/`): (composite build) store libraries dependencies meta (versions etc) and some util for gradle build
-    script
 
 #### Repository Structure
 
@@ -61,7 +59,7 @@ Except gradle's file ():
 
 - `.github/`: `Github Action` and templates
 - `.idea/`: Android Studio's config including code style config and run config
-- `app/`, `tools/release-tool/`, `tools/changelog-generator`: Gradle Module
+- `app/`, `tools/changelog-generator`: Gradle Module
 - `docs/`: documents
 - `scripts/`: bash scripts for ci
 - `fastlane/metadata/android/`: F-droid metadata, like summary, screenshot, changelogs
