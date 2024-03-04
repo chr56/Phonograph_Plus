@@ -1,6 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-import com.android.build.api.dsl.ApplicationBaseFlavor
 import tools.release.git.getGitHash
 import tools.release.registerPublishTask
 import java.util.Properties
@@ -10,7 +9,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
-    id("tools.release")
+    alias(libs.plugins.artifactsRelease)
 }
 
 val isSigningFileExist: Boolean = rootProject.file("signing.properties").exists()
@@ -122,8 +121,7 @@ android {
 
         val name = appName.replace(Regex("\\s"), "") //remove white space
         onVariants(selector().withBuildType("release")) { variant ->
-            val version = (android.defaultConfig as ApplicationBaseFlavor).versionName ?: "N/A"
-            tasks.registerPublishTask(name, version, variant)
+            tasks.registerPublishTask(name, variant)
         }
     }
 

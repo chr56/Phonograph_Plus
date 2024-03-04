@@ -175,3 +175,5 @@ kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref =
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 versionChecker = { id = "com.github.ben-manes.versions", version.ref = "versionChecker" }
+
+artifactsRelease = { id = "io.github.chr56.tools.release", version = "0.0.2" }
