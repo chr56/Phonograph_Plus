@@ -9,7 +9,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
-    alias(libs.plugins.artifactsRelease)
+    // alias(libs.plugins.artifactsRelease)
+    id("io.github.chr56.tools.release")
 }
 
 val isSigningFileExist: Boolean = rootProject.file("signing.properties").exists()
@@ -120,7 +121,7 @@ android {
         }
 
         val name = appName.replace(Regex("\\s"), "") //remove white space
-        onVariants(selector().withBuildType("release")) { variant ->
+        onVariants(selector().all()) { variant ->
             tasks.registerPublishTask(name, variant)
         }
     }
