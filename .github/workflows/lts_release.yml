@@ -40,10 +40,9 @@ jobs:
           bash ${{ github.workspace }}/scripts/generate_signing_key.sh
 
       - name: Prepare Gradlew
-        # just download gradle wrapper, start gradle daemon and prepare composing builds, make actual build logs clean
+        # just download gradle wrapper, start gradle daemon, make actual build logs clean
         run: |
-          ./gradlew
-
+          ./gradlew clean
       - name: Build with Gradle (Assemble StableRelease)
         run: |
           ./gradlew assembleStableRelease --stacktrace
