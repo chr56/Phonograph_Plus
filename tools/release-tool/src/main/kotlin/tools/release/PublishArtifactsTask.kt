@@ -15,8 +15,9 @@ import org.gradle.api.file.RegularFile
 import org.gradle.api.tasks.TaskAction
 import tools.release.Plugin.Companion.productDir
 import tools.release.file.assureDir
-import tools.release.text.NameStyle
+import tools.release.file.hashValidationFile
 import tools.release.git.getGitHash
+import tools.release.text.NameStyle
 import tools.release.text.canonicalName
 import tools.release.zip.gzip
 import java.io.File
@@ -82,6 +83,8 @@ open class PublishArtifactsTask @Inject constructor(
                 val destination = File(destinationDir, "$apkName.apk")
                 val file = File(artifact.outputFile)
                 file.copyTo(destination, overwrite)
+                destination.hashValidationFile("SHA-1")
+                destination.hashValidationFile("SHA-256")
                 notify(destination)
             }
 
