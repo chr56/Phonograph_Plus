@@ -10,13 +10,12 @@ import tools.release.text.canonicalName
 
 fun TaskContainer.registerPublishTask(
     appName: String,
-    appVersionName: String,
     variant: ApplicationVariant
 ) {
     val name: String = variant.canonicalName
     register(
         "publish$name", PublishArtifactsTask::class.java,
-        appName, appVersionName, variant
+        appName, variant
     ).configure {
         it.dependsOn("assemble$name")
     }
