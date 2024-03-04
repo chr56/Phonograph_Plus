@@ -1,6 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-import com.android.build.api.dsl.ApplicationBaseFlavor
 import tools.release.git.getGitHash
 import tools.release.registerPublishTask
 import java.util.Properties
@@ -10,7 +9,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
-    id("tools.release")
+    alias(libs.plugins.artifactsRelease)
 }
 
 val isSigningFileExist: Boolean = rootProject.file("signing.properties").exists()
