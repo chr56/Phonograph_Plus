@@ -31,7 +31,13 @@ sealed interface NameStyle {
         }
 
         override fun generateMappingName(name: String, variant: ApplicationVariant): String {
-            return "mapping_${name}"
+            val variantOutputs = variant.outputs
+            val version = variantOutputs.mapNotNull { it.versionName.orNull }.commonPrefix()
+            return if (version == null) {
+                "${name}_mapping"
+            } else {
+                "${name}_mapping_${version}"
+            }
         }
     }
 
@@ -47,7 +53,17 @@ sealed interface NameStyle {
         }
 
         override fun generateMappingName(name: String, variant: ApplicationVariant): String {
-            return "mapping_${name}"
+            val variantOutputs = variant.outputs
+            val version = when (variantOutputs.size) {
+                0    -> null
+                1    -> variantOutputs.first().versionName.orNull
+                else -> variantOutputs.mapNotNull { it.versionName.orNull }.toSet().joinToString("-")
+            }
+            return if (version == null) {
+                "${name}_mapping"
+            } else {
+                "${name}_mapping_${version}"
+            }
         }
     }
 
@@ -58,7 +74,31 @@ sealed interface NameStyle {
         }
 
         override fun generateMappingName(name: String, variant: ApplicationVariant): String {
-            return "mapping_${name}_${gitHash}"
+            val version = variant.outputs.mapNotNull { it.versionName.orNull }.commonPrefix()
+            return if (version == null) {
+                "${name}_mapping_${gitHash}"
+            } else {
+                "${name}_mapping_${version}_${gitHash}"
+            }
         }
     }
+}
+
+private fun Collection<String>.commonPrefix(): String? {
+    if (isEmpty()) return null
+    if (size == 1) return first()
+
+    var index = -1
+    while (true) {
+        index++
+        val chars = mapNotNull { it.getOrNull(index) }.takeIf { it.size == this.size }?.toSet()
+        if (chars != null && chars.size == this.size) {
+            continue
+        } else {
+            index--
+            break
+        }
+    }
+
+    return if (index >= 0) first().substring(index) else null
 }
