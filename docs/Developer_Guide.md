@@ -12,13 +12,11 @@ This is a pure kotlin Android Application.
 
 Gradle Version Catalogs is used in this project:
 
-see [libs.versions.toml](../gradle/libs.versions.toml) for all the libraries.
-
-see [plugins.versions.toml](../gradle/plugins.versions.toml) for all gradle plugins.
+see [libs.versions.toml](../gradle/libs.versions.toml) for all the libraries and all gradle plugins.
 
 **Toolchain**
 
--   Gradlew `8.3`, requiring JDK `17`
+-   Gradlew `8.5`, requiring JDK `17`
 -   `Android Gradle Plugin` `8.2.2`
 -   Android SDK `34`
 -   kotlin for JVM(Android) `1.9.22`
