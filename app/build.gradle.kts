@@ -2,6 +2,7 @@
 
 import tools.release.git.getGitHash
 import tools.release.registerPublishTask
+import tools.release.text.NameSegment
 import java.util.Properties
 
 plugins {
@@ -124,6 +125,12 @@ android {
         onVariants(selector().all()) { variant ->
             tasks.registerPublishTask(name, variant)
         }
+    }
+
+    androidPublish {
+        // outputDir = "output"
+        hashAlgorithm = setOf("MD5", "SHA-1")
+        nameStyle = listOf(NameSegment.VersionName, NameSegment.Abi, NameSegment.GitHash(getGitHash(true)))
     }
 
     lint {
