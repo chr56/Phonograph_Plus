@@ -16,7 +16,7 @@
     <string name="action_previous">Vorheriges</string>
     <string name="action_next">Nächstes</string>
     <string name="action_add_to_playing_queue">Zur Warteschlange hinzufügen</string>
-    <string name="action_remove_from_playing_queue">Von Warteschlange entfernen</string>
+    <string name="action_remove_from_playing_queue">Aus Warteschlange entfernen</string>
     <string name="action_add_to_playlist">Zu Wiedergabeliste hinzufügen…</string>
     <string name="action_tag_editor">Tags ändern</string>
     <string name="action_delete_from_device">Vom Gerät löschen</string>
@@ -412,6 +412,7 @@
     <string name="permission_name_write_external_storage">Beschreibe externen Speicher</string>
     <string name="permission_desc_write_external_storage">Schreibberechtigung für externen Speicher wird benötigt, um Playlists oder Musikstücke (Tags) auf dem Gerät zu löschen oder zu bearbeiten.</string>
     <string name="permission_name_manage_external_storage">Verwalte externen Speicher</string>
+    <string name="permission_desc_manage_external_storage">Seit Android R (11) können Sie diese Berechtigung zum Lesen oder Schreiben Ihres Speichers viel leichter erteilen, wenn Sie Ihre Musikbibliothek auf Ihrem Gerät verwalten.</string>
     <string name="completed">vollständig</string>
     <string name="dynamic_colors">Dynamische Farben</string>
     <string name="pref_title_enable_monet">Monet aktivieren</string>
@@ -433,7 +434,9 @@
     <string name="pref_title_resume_after_audio_focus_gain">Wiedergabe nach Unterbrechungen automatisch fortsetzen</string>
     <string name="pref_summary_resume_after_audio_focus_gain">Wiedergabe nach Unterbrechungen immer fortsetzen (bspw. Anruf oder Alarm).</string>
     <string name="tag_format">Tag-Format</string>
+    <string name="rating">Bewertung</string>
     <string name="pref_title_check_upgrade_interval">Intervall der Aktualisierungsprüfung</string>
+    <string name="interval_every">jede(r/s)</string>
     <string name="timeunit_second">Sekunde</string>
     <string name="timeunit_minute">Minute</string>
     <string name="timeunit_hour">Stunde</string>
@@ -444,6 +447,8 @@
     <string name="time_interval_text">%1$s %2$d %3$s</string>
     <string name="preview_text_next_upgrade_check">Die nächste Aktualisierungsüberprüfung  erfolgt nach: \n %1$s \n(%2$s)</string>
     <string name="search_online">Suche online</string>
+    <string name="target">Ziel</string>
+    <string name="query">Abfrage</string>
     <string name="target_release">Veröffentlichung</string>
     <string name="target_album">Album</string>
     <string name="target_artist">Künstler</string>
@@ -456,4 +461,28 @@
     <string name="key_gender">Geschlecht</string>
     <string name="key_lifespan">Lebensdauer</string>
     <string name="key_media">Medien</string>
+    <string name="status">Status</string>
+    <string name="key_barcode">Strichcode</string>
+    <string name="key_record_label">Plattenlabel</string>
+    <string name="pref_title_disable_real_time_search">Lokale Suche in Echtzeit deaktivieren</string>
+    <string name="deleted">gelöscht</string>
+    <string name="action_shuffle_mode">Zufallsmodus</string>
+    <string name="action_repeat_mode">Wiederholungsmodus</string>
+    <string name="item_layout_list">Liste (2 Zeilen)</string>
+    <string name="item_layout_list_extended">Liste (2 Zeilen, erweitert)</string>
+    <string name="item_layout_list_3l">Liste (3 Zeilen)</string>
+    <string name="item_layout_list_3l_extended">Liste (3 Zeilen, erweitert)</string>
+    <string name="item_layout_grid">Raster</string>
+    <string name="warning_inappropriate_config">Ihre aktuelle Konfiguration wird als „unangemessen“ betrachtet.</string>
+    <string name="internal_error">Interner Fehler</string>
+    <string name="storage_volumes">Speichermedien</string>
+    <string name="no_volume_found">Kein Speichermedium gefunden! Ihr System wird möglicherweise nicht unterstützt.</string>
+    <string name="action_select">Auswählen</string>
+    <string name="file_not_found">"%1$s scheint nicht zu existieren! Bitte überprüfen Sie die Datei oder die Speicherzugriffsberechtigung."</string>
+    <string name="pref_title_preload_images">Bilder vorab laden</string>
+    <string name="pref_summary_preload_images">Bilder vorab laden, um das Laden zu beschleunigen und Verzögerungen zu vermeiden. Dies kann zu einem höheren Speicherverbrauch führen.</string>
+    <string name="pref_summary_image_cache">Bildzwischenspeicher aktivieren, um das Laden des Bildes zu beschleunigen. (Dies kann jedoch unter bestimmten Umständen zu weiteren Verzögerungen führen.)</string>
+    <string name="clear_image_cache">Bildzwischenspeicher löschen</string>
+    <string name="pref_title_persistent_playback_notification">Dauerhafte Wiedergabe-Benachrichtigung</string>
+    <string name="pref_summary_persistent_playback_notification">Die Wiedergabe-Benachrichtigung ist immer aktiv und kann nicht abgebrochen werden.</string>
 </resources>
