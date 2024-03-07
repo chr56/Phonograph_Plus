@@ -4,9 +4,9 @@
 
 package player.phonograph.ui.adapter
 
+import lib.phonograph.misc.SwipeAndDragHelper
+import lib.phonograph.misc.SwipeAndDragHelper.ActionCompletionContract
 import player.phonograph.R
-import util.phonograph.misc.SwipeAndDragHelper
-import util.phonograph.misc.SwipeAndDragHelper.ActionCompletionContract
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
@@ -74,6 +74,7 @@ abstract class SortableListAdapter<C> :
                         dataset.toggle(holder.bindingAdapterPosition)
                     }
                 }
+
                 false -> {
                     checkBox.isChecked = true
                     dataset.toggle(holder.bindingAdapterPosition)
@@ -120,7 +121,7 @@ abstract class SortableListAdapter<C> :
 
         data class Item<C>(
             val content: C,
-            var visible: Boolean
+            var visible: Boolean,
         )
     }
 
