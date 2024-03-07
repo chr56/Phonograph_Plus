@@ -121,7 +121,7 @@ object PlaylistsManager {
         filePlaylists: List<Playlist>,
     ) = withContext(Dispatchers.IO) {
         if (context is IOpenDirStorageAccess) {
-            createPlaylistsViaSAF(context, filePlaylists, Environment.DIRECTORY_MUSIC)
+            createPlaylistsViaSAF(context, filePlaylists, defaultDirectory.absolutePath)
         } else {
             legacySavePlaylists(context, filePlaylists) // legacy ways
         }
@@ -165,4 +165,6 @@ object PlaylistsManager {
             )
         coroutineToast(context, msg)
     }
+
+    private val defaultDirectory: File get() = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
 }
