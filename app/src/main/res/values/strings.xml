@@ -506,4 +506,6 @@
     <string name="clear_image_cache">Clear Image Cache</string>
     <string name="pref_title_persistent_playback_notification">Persistent Playback Notification</string>
     <string name="pref_summary_persistent_playback_notification">Playback Notification will always be ongoing and not cancelable.</string>
+    <string name="pref_title_always_play">Always Play</string>
+    <string name="pref_summary_always_play">Ignore any interruptions and continue to play, no matter what else is being played.</string>
 </resources>

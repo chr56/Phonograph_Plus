@@ -493,4 +493,6 @@
     <string name="clear_image_cache">清空圖片快取</string>
     <string name="pref_title_persistent_playback_notification">播放通知駐留</string>
     <string name="pref_summary_persistent_playback_notification">播放通知將始終駐留且不可取消</string>
+    <string name="pref_title_always_play">持續播放</string>
+    <string name="pref_summary_always_play">忽略任何打斷並繼續背景播放，無論當前正在播放什麼其他內容</string>
 </resources>

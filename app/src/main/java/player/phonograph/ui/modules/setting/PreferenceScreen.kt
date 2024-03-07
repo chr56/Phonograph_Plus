@@ -246,6 +246,12 @@ fun PhonographPreferenceScreen() {
                 defaultValue = false,
             )
             BooleanPref(
+                key = ALWAYS_PLAY,
+                summaryRes = R.string.pref_summary_always_play,
+                titleRes = R.string.pref_title_always_play,
+                defaultValue = false,
+            )
+            BooleanPref(
                 key = GAPLESS_PLAYBACK,
                 summaryRes = R.string.pref_summary_gapless_playback,
                 titleRes = R.string.pref_title_gapless_playback,
