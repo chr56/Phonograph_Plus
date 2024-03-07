@@ -145,6 +145,9 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
         collect(Keys.resumeAfterAudioFocusGain) { value ->
             resumeAfterAudioFocusGain = value
         }
+        collect(Keys.alwaysPlay) { value ->
+            ignoreAudioFocus = value
+        }
         collect(Keys.gaplessPlayback) { gaplessPlayback ->
             audioPlayer.gaplessPlayback = gaplessPlayback
             handler.apply {
@@ -506,6 +509,8 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
         }
 
     internal var resumeAfterAudioFocusGain: Boolean = false
+
+    internal var ignoreAudioFocus: Boolean = false
 
     internal var audioDucking: Boolean = true
 

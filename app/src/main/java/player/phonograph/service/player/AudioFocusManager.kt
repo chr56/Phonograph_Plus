@@ -19,7 +19,11 @@ class AudioFocusManager(private val controller: PlayerController) : AudioManager
     private val audioManager: AudioManager = controller.service.getSystemService(AUDIO_SERVICE) as AudioManager
 
     fun requestAudioFocus(): Boolean {
-        return AudioManagerCompat.requestAudioFocus(audioManager, audioFocusRequest) == AudioManager.AUDIOFOCUS_GAIN
+        return if (!controller.ignoreAudioFocus) {
+            AudioManagerCompat.requestAudioFocus(audioManager, audioFocusRequest) == AudioManager.AUDIOFOCUS_GAIN
+        } else {
+            true
+        }
     }
 
     fun abandonAudioFocus() {
