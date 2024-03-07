@@ -4,6 +4,7 @@
 
 package player.phonograph.actions
 
+import player.phonograph.mechanism.PlaylistEdit
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.MusicPlayerRemote
@@ -11,7 +12,6 @@ import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.dialogs.AddToPlaylistDialog
 import player.phonograph.ui.dialogs.ClearPlaylistDialog
 import player.phonograph.ui.dialogs.RenamePlaylistDialog
-import util.phonograph.playlist.PlaylistsManager
 import androidx.fragment.app.FragmentActivity
 import android.content.Context
 import kotlin.random.Random
@@ -65,16 +65,12 @@ fun List<Playlist>.actionDeletePlaylists(activity: Context): Boolean =
 
 fun Playlist.actionSavePlaylist(activity: FragmentActivity) {
     CoroutineScope(Dispatchers.Default).launch {
-        PlaylistsManager.duplicatePlaylistViaSaf(
-            activity, this@actionSavePlaylist
-        )
+        PlaylistEdit.duplicate(activity, this@actionSavePlaylist)
     }
 }
 
 fun List<Playlist>.actionSavePlaylists(activity: Context) {
     CoroutineScope(Dispatchers.Default).launch {
-        PlaylistsManager.duplicatePlaylistsViaSaf(
-            activity, this@actionSavePlaylists
-        )
+        PlaylistEdit.duplicate(activity, this@actionSavePlaylists)
     }
 }

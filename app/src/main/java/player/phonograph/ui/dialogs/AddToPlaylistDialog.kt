@@ -5,10 +5,10 @@
 package player.phonograph.ui.dialogs
 
 import player.phonograph.R
+import player.phonograph.mechanism.PlaylistEdit
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.util.parcelableArrayList
-import util.phonograph.playlist.PlaylistsManager
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
@@ -35,7 +35,7 @@ class AddToPlaylistDialog : DialogFragment() {
                         CreatePlaylistDialog.create(songs)
                             .show(fragmentActivity.supportFragmentManager, "ADD_TO_PLAYLIST")
                     } else {
-                        PlaylistsManager.appendPlaylist(
+                        PlaylistEdit.append(
                             context = fragmentActivity,
                             songs = songs,
                             filePlaylist = playlists[index - 1]
