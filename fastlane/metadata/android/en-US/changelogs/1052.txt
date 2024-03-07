@@ -1,0 +1,5 @@
+<b>1.5.2(1052) 2024.03.07</b>
+- Fix: crash on some devices when playing as long as force-stop once before
+- Translation: update German (by jande75)
+- Development: update dependencies, upgrade Gradle to 8.6, optimize release process
+- Other: add checksums for release artifacts
