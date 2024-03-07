@@ -5,11 +5,6 @@
 package util.phonograph.playlist.m3u
 
 import player.phonograph.model.Song
-import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.playlist.SmartPlaylist
-import player.phonograph.util.text.currentDate
-import player.phonograph.util.text.dateTimeSuffix
-import android.content.Context
 import kotlin.text.Charsets.UTF_8
 import java.io.BufferedWriter
 import java.io.File
@@ -19,24 +14,16 @@ import java.io.OutputStream
 object M3UWriter {
 
     @Throws(IOException::class)
-    fun write(context: Context, targetDir: File, playlist: Playlist): File {
-        val songs = playlist.getSongs(context)
-        val filename: String =
-            if (playlist is SmartPlaylist) {
-                // Since AbsCustomPlaylists are dynamic, we add a timestamp after their names.
-                playlist.name + dateTimeSuffix(currentDate())
-            } else {
-                playlist.name
-            }
-        return write(targetDir, songs, filename)
-    }
-
-    @Throws(IOException::class)
-    fun write(targetDir: File, songs: List<Song>, filename: String): File {
+    fun write(targetDir: File, songs: List<Song>, filename: String, addHeader: Boolean = true): File {
         if (!targetDir.exists()) targetDir.mkdirs()
-        val file = File(targetDir, "$filename.$EXTENSION")
+        val file = File(targetDir, "$filename.$FILE_EXTENSION")
+        if (!file.exists()) {
+            file.createNewFile()
+        } else {
+            throw IOException("File(${file.path}) already existed!")
+        }
         file.bufferedWriter(UTF_8).use { writer ->
-            writeImpl(writer, songs, addHeader = true)
+            writeImpl(writer, songs, addHeader)
         }
         return file
     }
@@ -50,18 +37,19 @@ object M3UWriter {
     }
 
     private fun songLine(song: Song): String =
-        "\n$ENTRY${song.duration}$DURATION_SEPARATOR${song.artistName} - ${song.title}\n${song.data}"
+        "\n$ENTRY_HEADER${song.duration}$SEPARATOR_COMMA${song.artistName}$SEPARATOR_HYPHEN${song.title}\n${song.data}"
 
     private fun writeImpl(writer: BufferedWriter, songs: List<Song>, addHeader: Boolean) {
-        if (addHeader) writer.write(HEADER)
+        if (addHeader) writer.write(FILE_HEADER)
         for (song in songs) {
             writer.write(songLine(song))
         }
     }
 
 
-    private const val EXTENSION = "m3u"
-    private const val HEADER = "#EXTM3U"
-    private const val ENTRY = "#EXTINF:"
-    private const val DURATION_SEPARATOR = ","
+    private const val FILE_EXTENSION = "m3u"
+    private const val FILE_HEADER = "#EXTM3U"
+    private const val ENTRY_HEADER = "#EXTINF:"
+    private const val SEPARATOR_COMMA = ","
+    private const val SEPARATOR_HYPHEN = " - "
 }

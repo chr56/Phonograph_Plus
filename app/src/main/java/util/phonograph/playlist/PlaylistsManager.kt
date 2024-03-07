@@ -14,6 +14,7 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_AUTO
@@ -35,7 +36,12 @@ import android.content.Context
 import android.os.Build
 import android.os.Environment
 import android.util.Log
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 
@@ -133,7 +139,15 @@ object PlaylistsManager {
         val failureList = StringBuffer()
         for (playlist in filePlaylists) {
             try {
-                dir = M3UWriter.write(context, File(Environment.DIRECTORY_DOWNLOADS), playlist).parent
+                val filename: String =
+                    if (playlist is SmartPlaylist) {
+                        // Since AbsCustomPlaylists are dynamic, we add a timestamp after their names.
+                        playlist.name + dateTimeSuffix(currentDate())
+                    } else {
+                        playlist.name
+                    }
+                val songs = playlist.getSongs(context)
+                dir = M3UWriter.write(File(Environment.DIRECTORY_DOWNLOADS), songs, filename).parent
                 successes++
             } catch (e: IOException) {
                 failures++
