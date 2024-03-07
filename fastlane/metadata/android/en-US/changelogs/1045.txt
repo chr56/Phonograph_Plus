@@ -1,0 +1,10 @@
+<b>1.4.5.LTS(1045) 2024.03.07</b>
+- Improve: App Start-up Performance
+- Improve: do not show Intro again after successful backup import in Intro
+- Fix: incorrect folder icon in Folder Page
+- Fix: duplicated Folder tabs for new users
+- Fix: issue of tab text color in Search
+- Fix: palette color would unexpected changed after switch shuffle mode
+- Fix: incorrect encoding info for opus format in Detail
+- Fix: banner text displaying in Folders
+...(Visit project homepage to see full changelogs)
