@@ -75,6 +75,9 @@ object Keys {
     object resumeAfterAudioFocusGain :
             PrimitiveKey<Boolean>(booleanPK(RESUME_AFTER_AUDIO_FOCUS_GAIN), { false })
 
+    object alwaysPlay :
+            PrimitiveKey<Boolean>(booleanPK(ALWAYS_PLAY), { false })
+
     object enableLyrics :
             PrimitiveKey<Boolean>(booleanPK(ENABLE_LYRICS), { true })
 
