@@ -79,23 +79,21 @@ fun Song.actionGotoAlbum(context: Context, transitionView: View?): Boolean =
     }
 
 
-fun Song.actionGotoArtist(context: Context, transitionView: View?): Boolean =
-    if (transitionView != null) {
-        NavigationUtil.goToArtist(
-            context,
-            artistId,
-            Pair(transitionView, context.resources.getString(R.string.transition_artist_image))
-        )
-        true
+fun Song.actionGotoArtist(context: Context, transitionView: View?): Boolean {
+    val sharedElements: Array<Pair<View, String>>? =
+        transitionView?.let { arrayOf(Pair(it, context.resources.getString(R.string.transition_artist_image))) }
+    if (artistName != null) {
+        NavigationUtil.goToArtist(context, artistName, sharedElements)
     } else {
-        NavigationUtil.goToArtist(context, artistId)
-        true
+        NavigationUtil.goToArtist(context, artistId, sharedElements)
     }
+    return true
+}
 
 fun Song.actionShare(context: Context): Boolean {
     context.startActivity(
         Intent.createChooser(
-            shareFileIntent(context,this), null
+            shareFileIntent(context, this), null
         )
     )
     return true

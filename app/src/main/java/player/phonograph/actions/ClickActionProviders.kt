@@ -34,6 +34,7 @@ import player.phonograph.util.NavigationUtil
 import player.phonograph.util.testBit
 import androidx.core.util.Pair
 import android.content.Context
+import android.view.View
 import android.widget.ImageView
 import kotlin.random.Random
 
@@ -146,18 +147,10 @@ object ClickActionProviders {
             context: Context,
             imageView: ImageView?,
         ): Boolean {
-            if (imageView != null) {
-                NavigationUtil.goToArtist(
-                    context,
-                    list[position].id,
-                    Pair(
-                        imageView,
-                        imageView.resources.getString(R.string.transition_artist_image)
-                    )
-                )
-            } else {
-                NavigationUtil.goToArtist(context, list[position].id)
-            }
+            val artist = list[position]
+            val sharedElements: Array<Pair<View, String>>? =
+                imageView?.let { arrayOf(Pair(it, context.resources.getString(R.string.transition_artist_image))) }
+            NavigationUtil.goToArtist(context, artist.name, sharedElements)
             return true
         }
 

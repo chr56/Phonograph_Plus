@@ -3,13 +3,17 @@ package player.phonograph.util
 import player.phonograph.R
 import player.phonograph.model.Genre
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.repo.loader.Artists
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.activities.AlbumDetailActivity
 import player.phonograph.ui.activities.ArtistDetailActivity
 import player.phonograph.ui.activities.GenreDetailActivity
 import player.phonograph.ui.modules.playlist.PlaylistDetailActivity
+import player.phonograph.util.text.splitMultiTag
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
+import androidx.fragment.app.FragmentActivity
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -23,12 +27,33 @@ import android.widget.Toast
  */
 object NavigationUtil {
 
-    fun goToArtist(context: Context, artistId: Long) =
-        context.startActivity(ArtistDetailActivity.launchIntent(context.applicationContext, artistId))
+    fun goToArtist(context: Context, artistName: String, sharedElements: Array<Pair<View, String>>? = null) {
+        val artists = splitMultiTag(artistName).flatMap { Artists.searchByName(context, it) }.toSet().toList()
+        when (artists.size) {
+            0    -> Toast.makeText(context, R.string.empty, Toast.LENGTH_SHORT).show()
+            1    -> goToArtist(context, artists.first().id, sharedElements)
+            else -> {
+                if (context is FragmentActivity) {
+                    AlertDialog.Builder(context)
+                        .setTitle(R.string.artists)
+                        .setNegativeButton(android.R.string.cancel) { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .setSingleChoiceItems(artists.map { it.name }.toTypedArray(), -1) { dialog, selected ->
+                            goToArtist(context, artists[selected].id, sharedElements)
+                            dialog.dismiss()
+                        }
+                        .show()
+                } else {
+                    goToArtist(context, artists.first().id, sharedElements)
+                }
+            }
+        }
+    }
 
-    fun goToArtist(context: Context, artistId: Long, vararg sharedElements: Pair<View, String>) {
+    fun goToArtist(context: Context, artistId: Long, sharedElements: Array<Pair<View, String>>? = null) {
         val intent = ArtistDetailActivity.launchIntent(context.applicationContext, artistId)
-        if (sharedElements.isNotEmpty() && context is Activity) {
+        if (!sharedElements.isNullOrEmpty() && context is Activity) {
             context.startActivity(
                 intent,
                 ActivityOptionsCompat

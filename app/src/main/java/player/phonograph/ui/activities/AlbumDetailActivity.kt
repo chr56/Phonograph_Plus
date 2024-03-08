@@ -108,7 +108,12 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         model.isRecyclerViewPrepared = true
         // jump
         viewBinding.artistText.setOnClickListener {
-            goToArtist(this, model.album.value.artistId)
+            val album = model.album.value
+            if (album.artistName != null) {
+                goToArtist(this, album.artistName, null)
+            } else {
+                goToArtist(this, album.artistId, null)
+            }
         }
         // paletteColor
         lifecycleScope.launch {
