@@ -37,10 +37,10 @@ class FilePlaylistImpl : FilePlaylist {
     override val mediastoreUri: Uri
         get() = Playlists.Members.getContentUri(if (SDK_INT >= Q) VOLUME_EXTERNAL else "external", id)
 
-    override fun getSongs(context: Context): List<Song> =
+    override suspend fun getSongs(context: Context): List<Song> =
         PlaylistSongLoader.getPlaylistSongList(context, id).map { it.song }
 
-    override fun containsSong(context: Context, songId: Long): Boolean =
+    override suspend fun containsSong(context: Context, songId: Long): Boolean =
         PlaylistSongLoader.doesPlaylistContain(context, id, songId)
 
 

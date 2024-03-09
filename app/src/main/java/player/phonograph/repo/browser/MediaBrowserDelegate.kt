@@ -35,13 +35,13 @@ object MediaBrowserDelegate {
             null
         }
 
-    fun listChildren(path: String, context: Context): List<MediaBrowserCompat.MediaItem> =
+    suspend fun listChildren(path: String, context: Context): List<MediaBrowserCompat.MediaItem> =
         MediaItemProviders.of(path).browser(context)
 
-    fun playFromMediaId(context: Context, mediaId: String, @Suppress("UNUSED_PARAMETER") extras: Bundle?): PlayRequest =
+    suspend fun playFromMediaId(context: Context, mediaId: String, @Suppress("UNUSED_PARAMETER") extras: Bundle?): PlayRequest =
         MediaItemProviders.of(mediaId).play(context)
 
-    fun playFromSearch(context: Context, query: String?, extras: Bundle?): PlayRequest.SongsRequest =
+    suspend fun playFromSearch(context: Context, query: String?, extras: Bundle?): PlayRequest.SongsRequest =
         if (query.isNullOrEmpty()) {
             PlayRequest.SongsRequest(Songs.all(context), 0)
         } else {

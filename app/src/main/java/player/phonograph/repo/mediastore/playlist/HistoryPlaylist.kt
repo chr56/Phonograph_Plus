@@ -17,10 +17,10 @@ class HistoryPlaylistImpl : HistoryPlaylist {
 
     constructor(context: Context) : super(context)
 
-    override fun getSongs(context: Context): List<Song> =
+    override suspend fun getSongs(context: Context): List<Song> =
         RecentlyPlayedTracksLoader.get().tracks(context)
 
-    override fun containsSong(context: Context, songId: Long): Boolean = false // todo
+    override suspend fun containsSong(context: Context, songId: Long): Boolean = false // todo
 
     override fun clear(context: Context) {
         HistoryStore.get().clear()

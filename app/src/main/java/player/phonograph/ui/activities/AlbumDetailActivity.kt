@@ -164,7 +164,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
 
     override val paletteColor: StateFlow<Int> get() = model.paletteColor
 
-    private fun updateAlbumsInfo(album: Album) {
+    private suspend fun updateAlbumsInfo(album: Album) {
         supportActionBar!!.title = album.title
         viewBinding.artistText.text = album.artistName
         viewBinding.songCountText.text = songCountString(this, album.songCount)

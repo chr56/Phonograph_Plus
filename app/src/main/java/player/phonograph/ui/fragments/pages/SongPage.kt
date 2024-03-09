@@ -25,7 +25,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
             return Songs.all(App.instance)
         }
 
-        override fun collectAllSongs(context: Context): List<Song> = dataSet.value.toList()
+        override suspend fun collectAllSongs(context: Context): List<Song> = dataSet.value.toList()
 
         override val headerTextRes: Int get() = R.plurals.item_songs
     }

@@ -9,6 +9,7 @@ import coil.request.Options
 import player.phonograph.coil.model.SongImage
 import player.phonograph.model.file.FileEntity
 import player.phonograph.repo.loader.Songs
+import kotlinx.coroutines.runBlocking
 import java.io.File
 
 class FileEntityMapper : Mapper<FileEntity.File, SongImage> {
@@ -16,7 +17,7 @@ class FileEntityMapper : Mapper<FileEntity.File, SongImage> {
         val available =
             runCatching { File(data.location.absolutePath).exists() }.getOrElse { false } // if file is  available
         return if (available) {
-            SongImage.from(Songs.searchByFileEntity(options.context, data))
+            runBlocking { SongImage.from(Songs.searchByFileEntity(options.context, data)) }
         } else {
             null
         }

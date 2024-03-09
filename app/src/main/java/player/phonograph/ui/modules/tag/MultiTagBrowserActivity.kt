@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import kotlinx.coroutines.runBlocking
 
 class MultiTagBrowserActivity :
         ComposeThemeActivity(),
@@ -82,7 +83,7 @@ class MultiTagBrowserActivity :
         private const val PATHS = "PATHS"
         private fun parseIntent(context: Context, intent: Intent): List<Song> {
             val paths = intent.extras?.getStringArrayList(PATHS) ?: return emptyList()
-            return paths.mapNotNull { Songs.path(context, it) }
+            return paths.mapNotNull { runBlocking { Songs.path(context, it) } }
         }
 
         fun launch(context: Context, paths: ArrayList<String>) {
@@ -153,7 +154,7 @@ private fun RequestWebSearch(viewModel: MultiTagBrowserViewModel, webSearchTool:
     val context = LocalContext.current
     fun search(source: Source) {
         val intent = when (source) {
-            Source.LastFm      -> WebSearchLauncher.searchLastFmSong(context, null)
+            Source.LastFm -> WebSearchLauncher.searchLastFmSong(context, null)
             Source.MusicBrainz -> WebSearchLauncher.searchMusicBrainzSong(context, null)
         }
         webSearchTool.launch(intent) {

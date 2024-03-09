@@ -12,10 +12,10 @@ import android.content.Context
 
 object MediaStoreGenres : IGenres {
 
-    override fun all(context: Context): List<Genre> = GenreLoader.all(context)
+    override suspend fun all(context: Context): List<Genre> = GenreLoader.all(context)
 
-    override fun id(context: Context, id: Long): Genre? = GenreLoader.id(context, id)
+    override suspend fun id(context: Context, id: Long): Genre? = GenreLoader.id(context, id)
 
-    override fun songs(context: Context, genreId: Long): List<Song> = GenreLoader.genreSongs(context, genreId)
+    override suspend fun songs(context: Context, genreId: Long): List<Song> = GenreLoader.genreSongs(context, genreId)
 
 }

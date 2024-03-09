@@ -56,6 +56,7 @@ import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class TagBrowserActivity :
         ComposeThemeActivity(),
@@ -100,8 +101,14 @@ class TagBrowserActivity :
     companion object {
 
         private const val PATH = "PATH"
-        private fun parseIntent(context: Context, intent: Intent): Song =
-            Songs.path(context, intent.extras?.getString(PATH).orEmpty())
+        private fun parseIntent(context: Context, intent: Intent): Song {
+            val path = intent.extras?.getString(PATH)
+            return if (path != null) {
+                runBlocking { Songs.path(context, path) }
+            } else {
+                Song.EMPTY_SONG
+            }
+        }
 
         fun launch(context: Context, path: String) {
             context.startActivity(
@@ -170,7 +177,7 @@ private fun RequestWebSearch(viewModel: TagBrowserViewModel, webSearchTool: WebS
     val context = LocalContext.current
     fun search(source: Source) {
         val intent = when (source) {
-            Source.LastFm      -> WebSearchLauncher.searchLastFmSong(context, viewModel.song.value)
+            Source.LastFm -> WebSearchLauncher.searchLastFmSong(context, viewModel.song.value)
             Source.MusicBrainz -> WebSearchLauncher.searchMusicBrainzSong(context, viewModel.song.value)
         }
         webSearchTool.launch(intent) {

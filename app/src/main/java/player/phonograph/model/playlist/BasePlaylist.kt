@@ -37,8 +37,8 @@ sealed class Playlist : Parcelable, Displayable {
     abstract val type: Int
     abstract val iconRes: Int
 
-    abstract fun getSongs(context: Context): List<Song>
-    abstract fun containsSong(context: Context, songId: Long): Boolean
+    abstract suspend fun getSongs(context: Context): List<Song>
+    abstract suspend fun containsSong(context: Context, songId: Long): Boolean
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -50,7 +50,7 @@ sealed class Playlist : Parcelable, Displayable {
     override fun hashCode(): Int = 31 * id.toInt() + name.hashCode()
     override fun toString(): String = "Playlist{id=$id, name='$name'}"
 
-    fun infoString(context: Context): String {
+    suspend fun infoString(context: Context): String {
         val songs = getSongs(context)
         val duration = songs.totalDuration()
         return buildInfoString(

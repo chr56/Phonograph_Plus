@@ -65,6 +65,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Andrew Neal
@@ -473,13 +474,16 @@ class MusicService : MediaBrowserServiceCompat() {
 
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         log("onLoadChildren(): parentId $parentId", false)
-        val mediaItems = try {
-            MediaBrowserDelegate.listChildren(parentId, this)
-        } catch (e: Throwable) {
-            recordThrowable(this, javaClass.name, e)
-            MediaBrowserDelegate.error(this)
+        runBlocking {
+            val context = this@MusicService
+            val mediaItems = try {
+                MediaBrowserDelegate.listChildren(parentId, context)
+            } catch (e: Throwable) {
+                recordThrowable(context, javaClass.name, e)
+                MediaBrowserDelegate.error(context)
+            }
+            result.sendResult(ArrayList(mediaItems))
         }
-        result.sendResult(ArrayList(mediaItems))
     }
 
 

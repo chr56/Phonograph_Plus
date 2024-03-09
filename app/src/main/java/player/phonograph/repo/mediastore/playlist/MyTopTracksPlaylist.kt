@@ -18,9 +18,9 @@ class MyTopTracksPlaylistImpl : MyTopTracksPlaylist {
 
     constructor(context: Context) : super(context)
 
-    override fun getSongs(context: Context): List<Song> = TopTracksLoader.get().tracks(context)
+    override suspend fun getSongs(context: Context): List<Song> = TopTracksLoader.get().tracks(context)
 
-    override fun containsSong(context: Context, songId: Long): Boolean = false // todo
+    override suspend fun containsSong(context: Context, songId: Long): Boolean = false // todo
 
     override fun clear(context: Context) {
         songPlayCountStore.clear()

@@ -115,7 +115,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 model.artist.collect {
-                    setUpArtist(it ?: Artist())
+                    updateArtistInfo(it ?: Artist())
                 }
             }
         }
@@ -228,7 +228,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         requireLightStatusbar(false)
     }
 
-    private fun setUpArtist(artist: Artist) {
+    private suspend fun updateArtistInfo(artist: Artist) {
         model.loadArtistImage(this, artist, viewBinding.image)
         supportActionBar!!.title = artist.name
         viewBinding.songCountText.text = songCountString(this, artist.songCount)

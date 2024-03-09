@@ -61,6 +61,7 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import kotlin.random.Random
+import kotlinx.coroutines.runBlocking
 
 class StarterActivity : AppCompatActivity() {
 
@@ -89,7 +90,7 @@ class StarterActivity : AppCompatActivity() {
     }
 
     private fun processFrontGroundMode(intent: Intent) {
-        val playRequest = lookupSongsFromIntent(intent)
+        val playRequest = runBlocking { lookupSongsFromIntent(intent) }
         if (playRequest == null) {
             Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show()
             gotoMainActivity()
@@ -101,7 +102,7 @@ class StarterActivity : AppCompatActivity() {
     }
 
 
-    private fun lookupSongsFromIntent(intent: Intent): PlayRequest? {
+    private suspend fun lookupSongsFromIntent(intent: Intent): PlayRequest? {
         var playRequest: PlayRequest?
         // uri first
         playRequest = handleUriPlayRequest(intent)
@@ -118,7 +119,7 @@ class StarterActivity : AppCompatActivity() {
         return playRequest
     }
 
-    private fun handleUriPlayRequest(intent: Intent): PlayRequest? {
+    private suspend fun handleUriPlayRequest(intent: Intent): PlayRequest? {
         val uri = intent.data
         if (uri != null && uri.toString().isNotEmpty()) {
             val songs = parseUri(uri)
@@ -127,7 +128,7 @@ class StarterActivity : AppCompatActivity() {
         return null
     }
 
-    private fun parseUri(uri: Uri): List<Song> {
+    private suspend fun parseUri(uri: Uri): List<Song> {
         for (parser in SongUriParsers) {
             val taken = parser.check(uri.scheme, uri.authority)
             if (taken) {
@@ -138,7 +139,7 @@ class StarterActivity : AppCompatActivity() {
         return emptyList()
     }
 
-    private fun handleSearchRequest(intent: Intent): PlayRequest? {
+    private suspend fun handleSearchRequest(intent: Intent): PlayRequest? {
         intent.action?.let {
             if (it == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH) {
                 val songs = processQuery(this, intent.extras!!)
@@ -148,7 +149,7 @@ class StarterActivity : AppCompatActivity() {
         return null
     }
 
-    private fun handleExtra(intent: Intent): PlayRequest? {
+    private suspend fun handleExtra(intent: Intent): PlayRequest? {
         when (intent.type) {
             MediaStoreCompat.Audio.Playlists.CONTENT_TYPE -> {
                 val id = parseIdFromIntent(intent, "playlistId", "playlist")
@@ -203,7 +204,7 @@ class StarterActivity : AppCompatActivity() {
 
             else                      -> null
         }
-        val songs = playlist?.getSongs(applicationContext)
+        val songs = runBlocking { playlist?.getSongs(applicationContext) }
 
         if (!songs.isNullOrEmpty()) {
             val queueManager: QueueManager = get()

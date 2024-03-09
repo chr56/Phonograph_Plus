@@ -27,6 +27,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.File
 
 fun fileEntityPopupMenu(
@@ -64,13 +65,20 @@ fun fileEntityPopupMenu(
                 menuItem(title = getString(R.string.action_details)) { // id = R.id.action_details
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
-                        fragmentActivity(context) { Songs.searchByFileEntity(context, file).actionGotoDetail(it) }
-                        true
+                        fragmentActivity(context) {
+                            lifecycleScopeOrNewOne().launch {
+                                Songs.searchByFileEntity(context, file).actionGotoDetail(it)
+                            }
+                            true
+                        }
                     }
                 }
                 menuItem(title = getString(R.string.action_share)) { // id = R.id.action_share
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                    onClick { Songs.searchByFileEntity(context, file).actionShare(context) }
+                    onClick {
+                        lifecycleScopeOrNewOne().launch { Songs.searchByFileEntity(context, file).actionShare(context) }
+                        true
+                    }
                 }
                 menuItem(title = getString(R.string.action_tag_editor)) { //id = R.id.action_tag_editor
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
@@ -117,14 +125,17 @@ fun fileEntityPopupMenu(
 private inline fun action(
     context: Context,
     fileItem: FileEntity,
-    block: (List<Song>) -> Boolean,
+    crossinline block: (List<Song>) -> Boolean,
 ): Boolean =
-    block(
-        when (fileItem) {
-            is FileEntity.File   -> listOf(Songs.searchByFileEntity(context, fileItem))
-            is FileEntity.Folder -> Songs.searchByPath(context, fileItem.location.sqlPattern, false)
-        }
-    )
+    runBlocking {
+        block(
+            when (fileItem) {
+                is FileEntity.File   -> listOf(Songs.searchByFileEntity(context, fileItem))
+                is FileEntity.Folder -> Songs.searchByPath(context, fileItem.location.sqlPattern, false)
+            }
+        )
+    }
+
 
 private fun scan(context: Context, dir: FileEntity.Folder) {
     context.lifecycleScopeOrNewOne().launch(Dispatchers.IO) {

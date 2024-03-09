@@ -46,7 +46,7 @@ abstract class AbsDisplayPageViewModel<IT> : ViewModel() {
     /**
      * @return all songs on this page
      */
-    abstract fun collectAllSongs(context: Context): List<Song>
+    abstract suspend fun collectAllSongs(context: Context): List<Song>
 
     abstract val headerTextRes: Int
     fun headerText(context: Context): CharSequence? {

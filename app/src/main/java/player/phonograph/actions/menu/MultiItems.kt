@@ -21,10 +21,12 @@ import player.phonograph.service.queue.ShuffleMode.SHUFFLE
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.ui.modules.tag.TagBrowserActivity
+import player.phonograph.util.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.getTintedDrawable
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
+import kotlinx.coroutines.launch
 import java.util.Random
 
 fun <I> multiItemsToolbar(
@@ -38,29 +40,40 @@ fun <I> multiItemsToolbar(
                 icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, controller.textColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    convertToSongs(controller.selected, context).actionPlay(NONE, 0)
+                    context.lifecycleScopeOrNewOne().launch {
+                        convertToSongs(controller.selected, context).actionPlay(NONE, 0)
+                    }
+                    true
                 }
             }
             menuItem(getString(R.string.action_play_next)) {
                 icon = getTintedDrawable(R.drawable.ic_redo_white_24dp, controller.textColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    convertToSongs(controller.selected, context).actionPlayNext()
+                    context.lifecycleScopeOrNewOne().launch {
+                        convertToSongs(controller.selected, context).actionPlayNext()
+                    }
+                    true
                 }
             }
             menuItem(title = getString(R.string.action_shuffle_all)) {
                 icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, controller.textColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    convertToSongs(controller.selected, context)
-                        .actionPlay(SHUFFLE, Random().nextInt(controller.selected.size))
+                    context.lifecycleScopeOrNewOne().launch {
+                        convertToSongs(controller.selected, context)
+                            .actionPlay(SHUFFLE, Random().nextInt(controller.selected.size))
+                    }
+                    true
                 }
             }
             menuItem(getString(R.string.action_add_to_playing_queue)) {
                 icon = getTintedDrawable(R.drawable.ic_library_add_white_24dp, controller.textColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    convertToSongs(controller.selected, context).actionEnqueue()
+                    context.lifecycleScopeOrNewOne().launch {
+                        convertToSongs(controller.selected, context).actionEnqueue()
+                    }
                     true
                 }
             }
@@ -68,7 +81,10 @@ fun <I> multiItemsToolbar(
                 icon = getTintedDrawable(R.drawable.ic_playlist_add_white_24dp, controller.textColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    convertToSongs(controller.selected, context).actionAddToPlaylist(context)
+                    context.lifecycleScopeOrNewOne().launch {
+                        convertToSongs(controller.selected, context).actionAddToPlaylist(context)
+                    }
+                    true
                 }
             }
 
@@ -76,11 +92,13 @@ fun <I> multiItemsToolbar(
                 icon = getTintedDrawable(R.drawable.ic_library_music_white_24dp, controller.textColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    val songs = convertToSongs(controller.selected, context)
-                    if (songs.size > 1)
-                        MultiTagBrowserActivity.launch(context, ArrayList(songs.map { it.data }))
-                    else
-                        TagBrowserActivity.launch(context, songs.first().data)
+                    context.lifecycleScopeOrNewOne().launch {
+                        val songs = convertToSongs(controller.selected, context)
+                        if (songs.size > 1)
+                            MultiTagBrowserActivity.launch(context, ArrayList(songs.map { it.data }))
+                        else
+                            TagBrowserActivity.launch(context, songs.first().data)
+                    }
                     true
                 }
             }
@@ -91,13 +109,16 @@ fun <I> multiItemsToolbar(
                 icon = getTintedDrawable(R.drawable.ic_delete_white_24dp, controller.textColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    // check playlist to avoid accidentally deleting song but playlist
-                    if (playlists.isEmpty()) {
-                        convertToSongs(controller.selected, context).actionDelete(context)
-                    } else {
-                        // todo
-                        playlists.actionDeletePlaylists(context)
+                    context.lifecycleScopeOrNewOne().launch {
+                        // check playlist to avoid accidentally deleting song but playlist
+                        if (playlists.isEmpty()) {
+                            convertToSongs(controller.selected, context).actionDelete(context)
+                        } else {
+                            // todo
+                            playlists.actionDeletePlaylists(context)
+                        }
                     }
+                    true
                 }
             }
 

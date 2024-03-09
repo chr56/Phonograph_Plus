@@ -18,30 +18,35 @@ import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
-fun Playlist.actionPlay(context: Context): Boolean =
+fun Playlist.actionPlay(context: Context): Boolean = runBlocking {
     getSongs(context).let { songs ->
         if (songs.isNotEmpty())
             songs.actionPlay(ShuffleMode.NONE, 0)
         else
             false
     }
+}
 
-fun Playlist.actionShuffleAndPlay(context: Context) =
+fun Playlist.actionShuffleAndPlay(context: Context) = runBlocking {
     getSongs(context).let { songs ->
         if (songs.isNotEmpty())
             songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
         else
             false
     }
+}
 
-fun Playlist.actionPlayNext(context: Context): Boolean =
+fun Playlist.actionPlayNext(context: Context): Boolean = runBlocking {
     MusicPlayerRemote.playNext(ArrayList(getSongs(context)))
+}
 
-fun Playlist.actionAddToCurrentQueue(context: Context): Boolean =
+fun Playlist.actionAddToCurrentQueue(context: Context): Boolean = runBlocking {
     MusicPlayerRemote.enqueue(ArrayList(getSongs(context)))
+}
 
-fun Playlist.actionAddToPlaylist(activity: FragmentActivity) {
+fun Playlist.actionAddToPlaylist(activity: FragmentActivity) = runBlocking {
     AddToPlaylistDialog.create(getSongs(activity))
         .show(activity.supportFragmentManager, "ADD_PLAYLIST")
 }

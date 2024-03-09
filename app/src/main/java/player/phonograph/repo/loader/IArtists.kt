@@ -9,10 +9,10 @@ import android.content.Context
 
 interface IArtists {
 
-    fun all(context: Context): List<Artist>
+    suspend fun all(context: Context): List<Artist>
 
-    fun id(context: Context, id: Long): Artist
+    suspend fun id(context: Context, id: Long): Artist
 
-    fun searchByName(context: Context, query: String): List<Artist>
+    suspend fun searchByName(context: Context, query: String): List<Artist>
 
 }
