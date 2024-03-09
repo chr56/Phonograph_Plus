@@ -58,7 +58,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
             }
         }
 
-        override fun collectAllSongs(context: Context): List<Song> =
+        override suspend fun collectAllSongs(context: Context): List<Song> =
             PlaylistLoader.all(context).flatMap { it.getSongs(context) }
 
         override val headerTextRes: Int get() = R.plurals.item_playlists
