@@ -4,6 +4,13 @@
 
 package player.phonograph.coil
 
+import coil.Coil
+import coil.request.ImageRequest
+import coil.target.Target
+import player.phonograph.util.reportError
+import player.phonograph.util.ui.BitmapUtil.restraintBitmapSize
+import player.phonograph.util.warning
+import androidx.core.graphics.drawable.toBitmap
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
@@ -11,19 +18,13 @@ import android.graphics.Bitmap.CompressFormat.JPEG
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI
-import androidx.core.graphics.drawable.toBitmapOrNull
-import coil.Coil
-import coil.request.ImageRequest
-import coil.target.Target
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import player.phonograph.util.createDefaultExceptionHandler
-import player.phonograph.util.ui.BitmapUtil.restraintBitmapSize
-import player.phonograph.util.warning
 
 /**
  * Class that manage custom artist image
@@ -35,10 +36,6 @@ class CustomArtistImageStore private constructor(context: Context) {
         private const val TAG = "CustomArtistImageStore"
         private const val SUB_FOLDER_NAME: String = "/custom_artist_images/"
         private const val CUSTOM_ARTIST_IMAGE_PREFS: String = "custom_artist_image"
-
-        private fun sendErrorInfo(targetArtistName: String) {
-            warning(TAG, "Can not save custom image for $targetArtistName")
-        }
 
         private var sInstance: CustomArtistImageStore? = null
         fun instance(context: Context): CustomArtistImageStore {
@@ -88,16 +85,12 @@ class CustomArtistImageStore private constructor(context: Context) {
                         private val name = artistName
 
                         override fun onError(error: Drawable?) {
-                            sendErrorInfo(name)
+                            warning(TAG, "Failed to load this image $source for $artistName")
                         }
 
                         override fun onSuccess(result: Drawable) {
-                            val bitmap = result.toBitmapOrNull()
-                            if (bitmap != null) {
-                                setCustomArtistImage(context, id, name, bitmap)
-                            } else {
-                                sendErrorInfo(name)
-                            }
+                            val bitmap = result.toBitmap()
+                            setCustomArtistImage(context, id, name, bitmap)
                         }
                     }
                 )
@@ -109,22 +102,30 @@ class CustomArtistImageStore private constructor(context: Context) {
      * set a custom artist image
      */
     fun setCustomArtistImage(context: Context, artistId: Long, artistName: String, bitmap: Bitmap) {
-        CoroutineScope(createDefaultExceptionHandler(TAG, "Fail to save $artistName image"))
+        CoroutineScope(SupervisorJob())
             .launch(Dispatchers.IO) {
                 val file = File(storeDir, getArtistFileName(artistId, artistName))
-                val result = runCatching {
+                val success = try {
                     BufferedOutputStream(FileOutputStream(file)).use { outputStream ->
                         bitmap.restraintBitmapSize(2048, true)
                             .compress(JPEG, 100, outputStream)
                     }
+                    true
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    reportError(e, TAG, "Can not save custom image for $artistName")
+                    false
                 }
-                if (result.isFailure) {
-                    sendErrorInfo(artistName)
-                } else {
-                    preferences.edit()
-                        .putBoolean(getArtistFileName(artistId, artistName), true)
-                        .apply()
-                    context.contentResolver.notifyChange(EXTERNAL_CONTENT_URI, null)
+                if (success) {
+                    try {
+                        preferences.edit()
+                            .putBoolean(getArtistFileName(artistId, artistName), true)
+                            .apply()
+                        context.contentResolver.notifyChange(EXTERNAL_CONTENT_URI, null)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        reportError(e, TAG, "Failed to update custom image $artistName")
+                    }
                 }
             }
     }
@@ -133,12 +134,16 @@ class CustomArtistImageStore private constructor(context: Context) {
      * remove a custom artist image if exist
      */
     fun resetCustomArtistImage(context: Context, artistId: Long, artistName: String) {
-        CoroutineScope(createDefaultExceptionHandler(TAG, "Fail to save $artistName image"))
-            .launch {
+        CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
+            try {
+                File(storeDir, getArtistFileName(artistId, artistName)).delete()
                 preferences.edit().putBoolean(getArtistFileName(artistId, artistName), false).apply()
                 context.contentResolver.notifyChange(EXTERNAL_CONTENT_URI, null)
                 // trigger media store changed to force artist image reload
-                File(storeDir, getArtistFileName(artistId, artistName)).delete()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                reportError(e, TAG, "Failed to reset xustom artist image of$artistName")
             }
+        }
     }
 }
