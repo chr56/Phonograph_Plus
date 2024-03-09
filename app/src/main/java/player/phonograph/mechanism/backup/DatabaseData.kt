@@ -169,8 +169,10 @@ object DatabaseDataManger {
 
     private fun exportFavorites(context: Context): JsonObject? {
         val db = favoritesStore
-        val songs = db.getAllSongs(context).map(DatabaseDataManger::persistentSong)
-        val playlists = db.getAllPlaylists(context).map(DatabaseDataManger::persistentPlaylist)
+        val songs =
+            runBlocking { db.getAllSongs(context).map(DatabaseDataManger::persistentSong) }
+        val playlists =
+            runBlocking { db.getAllPlaylists(context).map(DatabaseDataManger::persistentPlaylist) }
         return if (songs.isNotEmpty()) {
             JsonObject(
                 mapOf(
@@ -225,7 +227,7 @@ object DatabaseDataManger {
 
     private fun recoverSongs(context: Context, array: JsonArray?): List<Song>? =
         array?.map { parser.decodeFromJsonElement(PersistentSong.serializer(), it) }
-            ?.mapNotNull { runBlocking{ it.getMatchingSong(context) } }
+            ?.mapNotNull { runBlocking { it.getMatchingSong(context) } }
 
     private fun persistentPlaylist(playlist: FilePlaylist): JsonElement =
         parser.encodeToJsonElement(PersistentPlaylist.serializer(), PersistentPlaylist.from(playlist))

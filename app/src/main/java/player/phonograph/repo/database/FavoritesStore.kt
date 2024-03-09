@@ -53,30 +53,30 @@ class FavoritesStore constructor(context: Context) :
         mediaStoreTracker.notifyAllListeners()
     }
 
-    fun getAllSongs(context: Context): List<Song> = getAllSongsImpl(context)
+    suspend fun getAllSongs(context: Context): List<Song> = getAllSongsImpl(context)
 
-    fun getAllPlaylists(context: Context): List<FilePlaylist> = getAllPlaylistsImpl(context)
+    suspend fun getAllPlaylists(context: Context): List<FilePlaylist> = getAllPlaylistsImpl(context)
 
 
-    private fun getAllSongsImpl(context: Context): List<Song> {
+    private suspend fun getAllSongsImpl(context: Context): List<Song> {
         return parseCursorImpl(TABLE_NAME_SONGS) { cursor ->
             Songs.path(context, cursor.getString(1))
         }
     }
 
-    private fun getAllPlaylistsImpl(context: Context): List<FilePlaylist> {
+    private suspend fun getAllPlaylistsImpl(context: Context): List<FilePlaylist> {
         return parseCursorImpl(TABLE_NAME_PLAYLISTS) { cursor ->
             PlaylistLoader.searchByPath(context, cursor.getString(1))
         }
     }
 
-    private fun <T> parseCursorImpl(tableName: String, ops: (Cursor) -> T?): List<T> {
+    private suspend fun <T> parseCursorImpl(tableName: String, operation: suspend (Cursor) -> T?): List<T> {
         return query(tableName).use { cursor ->
             val notEmpty = cursor.moveToFirst()
             if (notEmpty) {
                 val result = mutableListOf<T>()
                 do {
-                    val item = ops(cursor)
+                    val item = operation(cursor)
                     if (item != null) result.add(item)
                 } while (cursor.moveToNext())
                 result

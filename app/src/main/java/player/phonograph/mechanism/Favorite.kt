@@ -38,7 +38,7 @@ class FavoriteDatabaseImpl : IFavorite {
     private val favoritesStore by GlobalContext.get().inject<FavoritesStore>()
 
     override fun allSongs(context: Context): List<Song> =
-        favoritesStore.getAllSongs(context)
+        runBlocking { favoritesStore.getAllSongs(context) }
 
     override fun isFavorite(context: Context, song: Song): Boolean =
         favoritesStore.containsSong(song.id, song.data)
@@ -59,9 +59,9 @@ class FavoriteDatabaseImpl : IFavorite {
 class FavoritePlaylistImpl : IFavorite {
 
 
-    override fun allSongs(context: Context): List<Song> {
+    override fun allSongs(context: Context): List<Song> = runBlocking {
         val favoritesPlaylist = getFavoritesPlaylist(context)
-        return favoritesPlaylist?.getSongs(context) ?: emptyList()
+        favoritesPlaylist?.getSongs(context) ?: emptyList()
     }
 
     override fun isFavorite(context: Context, song: Song): Boolean {
