@@ -37,7 +37,7 @@ fun File.createOrOverrideFileRecursive(): File {
 fun moveFile(from: File, to: File) {
     require(from.exists()) { "${from.path} doesn't exits!" }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        Files.copy(from.toPath(), to.toPath(), StandardCopyOption.REPLACE_EXISTING)
+        Files.move(from.toPath(), to.toPath(), StandardCopyOption.REPLACE_EXISTING)
     } else {
         if (from.canWrite()) {
             if (to.exists()) {
