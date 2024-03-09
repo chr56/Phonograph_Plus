@@ -28,6 +28,7 @@ import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import android.content.Intent
 import android.os.Handler
@@ -114,13 +115,12 @@ fun setupDrawerMenu(
             titleRes(R.string.action_shuffle_all)
             onClick {
                 closeDrawer()
-                Handler(Looper.getMainLooper()).postDelayed(
-                    {
-                        val songs = Songs.all(activity)
-                        if (songs.isNotEmpty())
-                            songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
-                    }, 350
-                )
+                lifecycleScope.launch {
+                    val songs = Songs.all(activity)
+                    if (songs.isNotEmpty())
+                        songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
+                }
+                true
             }
         }
         menuItem {
