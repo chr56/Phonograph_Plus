@@ -38,6 +38,9 @@ class CustomArtistImageStore private constructor(context: Context) {
         private const val SUB_FOLDER_NAME: String = "/custom_artist_images/"
         private const val CUSTOM_ARTIST_IMAGE_PREFS: String = "custom_artist_image"
 
+        fun directory(context: Context): File? = context.getExternalFilesDir(SUB_FOLDER_NAME)
+        fun directoryFallback(context: Context): File = File(context.filesDir, SUB_FOLDER_NAME)
+
         private var sInstance: CustomArtistImageStore? = null
         fun instance(context: Context): CustomArtistImageStore {
             return sInstance ?: CustomArtistImageStore(context).apply { sInstance = this }
@@ -50,7 +53,7 @@ class CustomArtistImageStore private constructor(context: Context) {
             Context.MODE_PRIVATE
         )
 
-    private val storeDir: File = File(context.filesDir, SUB_FOLDER_NAME)
+    private val storeDir: File = directory(context) ?: directoryFallback(context)
 
     /**
      * @return the unique file name of a artist
