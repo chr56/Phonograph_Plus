@@ -19,6 +19,7 @@ import player.phonograph.util.warning
 import androidx.annotation.Keep
 import android.content.Context
 import kotlin.LazyThreadSafetyMode.NONE
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -224,7 +225,7 @@ object DatabaseDataManger {
 
     private fun recoverSongs(context: Context, array: JsonArray?): List<Song>? =
         array?.map { parser.decodeFromJsonElement(PersistentSong.serializer(), it) }
-            ?.mapNotNull { it.getMatchingSong(context) }
+            ?.mapNotNull { runBlocking{ it.getMatchingSong(context) } }
 
     private fun persistentPlaylist(playlist: FilePlaylist): JsonElement =
         parser.encodeToJsonElement(PersistentPlaylist.serializer(), PersistentPlaylist.from(playlist))
@@ -247,7 +248,7 @@ object DatabaseDataManger {
                 PersistentSong(song.data, song.title, song.albumName, song.artistName)
         }
 
-        fun getMatchingSong(context: Context): Song? =
+        suspend fun getMatchingSong(context: Context): Song? =
             Songs.searchByPath(context, path, withoutPathFilter = true).firstOrNull()
     }
     @Keep
