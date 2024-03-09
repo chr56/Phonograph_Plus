@@ -39,6 +39,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
+import kotlinx.coroutines.launch
 
 class MediaSessionController : ServiceComponent {
 
@@ -164,13 +165,17 @@ class MediaSessionController : ServiceComponent {
             }
 
             override fun onPlayFromMediaId(mediaId: String, extras: Bundle?) {
-                val request = MediaBrowserDelegate.playFromMediaId(service, mediaId, extras)
-                processRequest(request)
+                service.coroutineScope.launch {
+                    val request = MediaBrowserDelegate.playFromMediaId(service, mediaId, extras)
+                    processRequest(request)
+                }
             }
 
             override fun onPlayFromSearch(query: String?, extras: Bundle?) {
-                val request = MediaBrowserDelegate.playFromSearch(service, query, extras)
-                processRequest(request)
+                service.coroutineScope.launch {
+                    val request = MediaBrowserDelegate.playFromSearch(service, query, extras)
+                    processRequest(request)
+                }
             }
 
             private fun processRequest(request: PlayRequest) {
