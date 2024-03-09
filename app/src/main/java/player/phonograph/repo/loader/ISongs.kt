@@ -10,27 +10,27 @@ import android.content.Context
 
 interface ISongs {
 
-    fun all(context: Context): List<Song>
+    suspend fun all(context: Context): List<Song>
 
-    fun id(context: Context, id: Long): Song
+    suspend fun id(context: Context, id: Long): Song
 
-    fun path(context: Context, path: String): Song
+    suspend fun path(context: Context, path: String): Song
 
-    fun artist(context: Context, artistId: Long): List<Song>
+    suspend fun artist(context: Context, artistId: Long): List<Song>
 
-    fun album(context: Context, albumId: Long): List<Song>
+    suspend fun album(context: Context, albumId: Long): List<Song>
 
-    fun genres(context: Context, genreId: Long): List<Song>
+    suspend fun genres(context: Context, genreId: Long): List<Song>
 
     /**
      * @param withoutPathFilter true if disable path filter
      */
-    fun searchByPath(context: Context, path: String, withoutPathFilter: Boolean): List<Song>
+    suspend fun searchByPath(context: Context, path: String, withoutPathFilter: Boolean): List<Song>
 
-    fun searchByTitle(context: Context, title: String): List<Song>
+    suspend fun searchByTitle(context: Context, title: String): List<Song>
 
-    fun searchByFileEntity(context: Context, file: FileEntity.File): Song
+    suspend fun searchByFileEntity(context: Context, file: FileEntity.File): Song
 
-    fun since(context: Context, timestamp: Long, useModifiedDate: Boolean = false): List<Song>
+    suspend fun since(context: Context, timestamp: Long, useModifiedDate: Boolean = false): List<Song>
 
 }

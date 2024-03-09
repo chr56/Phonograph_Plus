@@ -11,12 +11,12 @@ import android.content.Context
 
 object MediaStoreAlbums : IAlbums {
 
-    override fun all(context: Context) = AlbumLoader.all(context)
+    override suspend fun all(context: Context) = AlbumLoader.all(context)
 
-    override fun id(context: Context, id: Long) = AlbumLoader.id(context, id)
+    override suspend fun id(context: Context, id: Long) = AlbumLoader.id(context, id)
 
-    override fun searchByName(context: Context, query: String) = AlbumLoader.searchByName(context, query)
+    override suspend fun searchByName(context: Context, query: String) = AlbumLoader.searchByName(context, query)
 
-    override fun artist(context: Context, artistId: Long) = ArtistAlbumLoader.id(context, artistId)
+    override suspend fun artist(context: Context, artistId: Long) = ArtistAlbumLoader.id(context, artistId)
 
 }
