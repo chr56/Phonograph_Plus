@@ -21,6 +21,7 @@ import android.content.Intent
 import android.media.audiofx.AudioEffect
 import android.view.View
 import android.widget.Toast
+import kotlinx.coroutines.runBlocking
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -28,7 +29,9 @@ import android.widget.Toast
 object NavigationUtil {
 
     fun goToArtist(context: Context, artistName: String, sharedElements: Array<Pair<View, String>>? = null) {
-        val artists = splitMultiTag(artistName).flatMap { Artists.searchByName(context, it) }.toSet().toList()
+        val artists = runBlocking {
+            splitMultiTag(artistName).flatMap { Artists.searchByName(context, it) }.toSet().toList()
+        }
         when (artists.size) {
             0    -> Toast.makeText(context, R.string.empty, Toast.LENGTH_SHORT).show()
             1    -> goToArtist(context, artists.first().id, sharedElements)
