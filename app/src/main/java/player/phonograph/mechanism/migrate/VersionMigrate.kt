@@ -4,12 +4,14 @@
 
 package player.phonograph.mechanism.migrate
 
+import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.model.pages.Pages
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.dataStore
 import player.phonograph.util.debug
+import player.phonograph.util.file.moveFile
 import player.phonograph.util.reportError
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -24,6 +26,8 @@ import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FilenameFilter
 
 fun migrate(context: Context, from: Int, to: Int) {
 
@@ -50,6 +54,7 @@ fun migrate(context: Context, from: Int, to: Int) {
             migrate(LockScreenCoverMigration())
             migrate(AutoDownloadMetadataMigration())
             migrate(LegacyLastAddedCutoffIntervalMigration())
+            migrate(CustomArtistImageStoreMigration())
         }
 
         Log.i(TAG, "End Migration")
@@ -159,6 +164,28 @@ private class LegacyLastAddedCutoffIntervalMigration : Migration(introduced = 10
         removePreference(context, keyName = DeprecatedPreference.LegacyLastAddedCutoffInterval.LEGACY_LAST_ADDED_CUTOFF)
     }
 }
+
+/**
+ * Custom Artist images have been moved to external storage from internal storage
+ */
+private class CustomArtistImageStoreMigration : Migration(introduced = 1053) {
+    override fun doMigrate(context: Context) {
+        val newLocation = CustomArtistImageStore.directory(context) ?: return // no external storage
+        val oldLocation = CustomArtistImageStore.directoryFallback(context)
+        if (!oldLocation.exists()) oldLocation.mkdirs()
+        try {
+            val files: Array<File> = oldLocation.listFiles(imageNameFilter) ?: return // empty
+            for (file in files) {
+                moveFile(file, File(newLocation, file.name))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private val imageNameFilter = FilenameFilter { _, name -> name.endsWith("jpeg") }
+}
+
 
 private fun moveIntPreference(
     oldPreference: SharedPreferences,
