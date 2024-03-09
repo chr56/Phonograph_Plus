@@ -9,7 +9,7 @@ import player.phonograph.mechanism.IFavorite
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FavoriteSongsPlaylist
-import player.phonograph.repo.mediastore.loaders.SongLoader
+import player.phonograph.repo.loader.Songs
 import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
@@ -26,7 +26,7 @@ class FavoriteSongsPlaylistImpl : FavoriteSongsPlaylist {
         favorite.allSongs(context)
 
     override fun containsSong(context: Context, songId: Long): Boolean =
-        favorite.isFavorite(context, SongLoader.id(context, songId))
+        favorite.isFavorite(context, Songs.id(context, songId))
 
     override fun removeSong(context: Context, song: Song) {
         favorite.toggleFavorite(context, song)

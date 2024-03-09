@@ -6,7 +6,7 @@ package player.phonograph.repo.mediastore.playlist
 
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.ShuffleAllPlaylist
-import player.phonograph.repo.mediastore.loaders.SongLoader
+import player.phonograph.repo.loader.Songs
 import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
@@ -16,7 +16,7 @@ class ShuffleAllPlaylistImpl : ShuffleAllPlaylist {
 
     constructor(context: Context) : super(context)
 
-    override fun getSongs(context: Context): List<Song> = SongLoader.all(context)
+    override fun getSongs(context: Context): List<Song> = Songs.all(context)
 
     override fun containsSong(context: Context, songId: Long): Boolean = true
 
