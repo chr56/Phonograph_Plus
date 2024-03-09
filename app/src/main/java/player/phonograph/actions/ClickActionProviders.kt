@@ -151,7 +151,7 @@ object ClickActionProviders {
             val artist = list[position]
             val sharedElements: Array<Pair<View, String>>? =
                 imageView?.let { arrayOf(Pair(it, context.resources.getString(R.string.transition_artist_image))) }
-            NavigationUtil.goToArtist(context, artist.name, sharedElements)
+            NavigationUtil.goToArtist(context, artist.id, sharedElements)
             return true
         }
 
