@@ -7,6 +7,7 @@ package player.phonograph.coil
 import coil.Coil
 import coil.request.ImageRequest
 import coil.target.Target
+import player.phonograph.util.file.createOrOverrideFileRecursive
 import player.phonograph.util.reportError
 import player.phonograph.util.ui.BitmapUtil.restraintBitmapSize
 import player.phonograph.util.warning
@@ -104,7 +105,7 @@ class CustomArtistImageStore private constructor(context: Context) {
     fun setCustomArtistImage(context: Context, artistId: Long, artistName: String, bitmap: Bitmap) {
         CoroutineScope(SupervisorJob())
             .launch(Dispatchers.IO) {
-                val file = File(storeDir, getArtistFileName(artistId, artistName))
+                val file = File(storeDir, getArtistFileName(artistId, artistName)).createOrOverrideFileRecursive()
                 val success = try {
                     BufferedOutputStream(FileOutputStream(file)).use { outputStream ->
                         bitmap.restraintBitmapSize(2048, true)
