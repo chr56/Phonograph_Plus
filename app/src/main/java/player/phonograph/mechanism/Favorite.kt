@@ -20,9 +20,9 @@ import kotlinx.coroutines.runBlocking
 
 interface IFavorite {
 
-    fun allSongs(context: Context): List<Song>
+    suspend fun allSongs(context: Context): List<Song>
 
-    fun isFavorite(context: Context, song: Song): Boolean
+    suspend fun isFavorite(context: Context, song: Song): Boolean
 
     /**
      * @return new favorite state
@@ -37,14 +37,14 @@ class FavoriteDatabaseImpl : IFavorite {
 
     private val favoritesStore by GlobalContext.get().inject<FavoritesStore>()
 
-    override fun allSongs(context: Context): List<Song> =
-        runBlocking { favoritesStore.getAllSongs(context) }
+    override suspend fun allSongs(context: Context): List<Song> =
+        favoritesStore.getAllSongs(context)
 
-    override fun isFavorite(context: Context, song: Song): Boolean =
+    override suspend fun isFavorite(context: Context, song: Song): Boolean =
         favoritesStore.containsSong(song.id, song.data)
 
-    override fun toggleFavorite(context: Context, song: Song): Boolean {
-        return if (isFavorite(context, song)) {
+    override fun toggleFavorite(context: Context, song: Song): Boolean = runBlocking {
+        if (isFavorite(context, song)) {
             !favoritesStore.removeSong(song)
         } else {
             favoritesStore.addSong(song)
@@ -59,12 +59,12 @@ class FavoriteDatabaseImpl : IFavorite {
 class FavoritePlaylistImpl : IFavorite {
 
 
-    override fun allSongs(context: Context): List<Song> = runBlocking {
+    override suspend fun allSongs(context: Context): List<Song> = runBlocking {
         val favoritesPlaylist = getFavoritesPlaylist(context)
         favoritesPlaylist?.getSongs(context) ?: emptyList()
     }
 
-    override fun isFavorite(context: Context, song: Song): Boolean {
+    override suspend fun isFavorite(context: Context, song: Song): Boolean {
         val favoritesPlaylist = getFavoritesPlaylist(context)
         return if (favoritesPlaylist != null) {
             PlaylistSongLoader.doesPlaylistContain(context, favoritesPlaylist.id, song.id)

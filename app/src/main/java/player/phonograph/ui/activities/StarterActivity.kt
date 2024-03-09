@@ -90,7 +90,7 @@ class StarterActivity : AppCompatActivity() {
     }
 
     private fun processFrontGroundMode(intent: Intent) {
-        val playRequest = runBlocking{ lookupSongsFromIntent(intent) }
+        val playRequest = runBlocking { lookupSongsFromIntent(intent) }
         if (playRequest == null) {
             Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show()
             gotoMainActivity()
@@ -204,7 +204,7 @@ class StarterActivity : AppCompatActivity() {
 
             else                      -> null
         }
-        val songs = playlist?.getSongs(applicationContext)
+        val songs = runBlocking { playlist?.getSongs(applicationContext) }
 
         if (!songs.isNullOrEmpty()) {
             val queueManager: QueueManager = get()

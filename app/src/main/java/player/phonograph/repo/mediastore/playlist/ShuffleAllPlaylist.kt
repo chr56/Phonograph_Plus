@@ -16,9 +16,9 @@ class ShuffleAllPlaylistImpl : ShuffleAllPlaylist {
 
     constructor(context: Context) : super(context)
 
-    override fun getSongs(context: Context): List<Song> = Songs.all(context)
+    override suspend fun getSongs(context: Context): List<Song> = Songs.all(context)
 
-    override fun containsSong(context: Context, songId: Long): Boolean = true
+    override suspend fun containsSong(context: Context, songId: Long): Boolean = true
 
     constructor(parcel: Parcel) : super(parcel)
 

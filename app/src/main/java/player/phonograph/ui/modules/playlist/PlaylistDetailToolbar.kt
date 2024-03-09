@@ -30,6 +30,7 @@ import androidx.lifecycle.LifecycleOwner
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
+import kotlinx.coroutines.runBlocking
 
 fun playlistDetailToolbar(
     menu: Menu,
@@ -127,7 +128,9 @@ fun playlistDetailToolbar(
             menuItem(title = getString(R.string.action_tag_editor)) { //id = R.id.action_tag_editor
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    MultiTagBrowserActivity.launch(context, ArrayList(playlist.getSongs(context).map { it.data }))
+                    runBlocking {
+                        MultiTagBrowserActivity.launch(context, ArrayList(playlist.getSongs(context).map { it.data }))
+                    }
                     true
                 }
             }

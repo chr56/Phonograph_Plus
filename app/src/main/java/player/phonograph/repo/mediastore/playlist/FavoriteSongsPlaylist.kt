@@ -22,10 +22,10 @@ class FavoriteSongsPlaylistImpl : FavoriteSongsPlaylist {
     constructor(context: Context) : super(context)
 
 
-    override fun getSongs(context: Context): List<Song> =
+    override suspend fun getSongs(context: Context): List<Song> =
         favorite.allSongs(context)
 
-    override fun containsSong(context: Context, songId: Long): Boolean =
+    override suspend fun containsSong(context: Context, songId: Long): Boolean =
         favorite.isFavorite(context, Songs.id(context, songId))
 
     override fun removeSong(context: Context, song: Song) {
@@ -62,6 +62,7 @@ class FavoriteSongsPlaylistImpl : FavoriteSongsPlaylist {
                     return arrayOfNulls(size)
                 }
             }
+
         private fun notifyMediaStoreChanged() = GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
     }
 }
