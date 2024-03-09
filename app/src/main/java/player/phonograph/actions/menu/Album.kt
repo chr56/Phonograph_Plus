@@ -20,6 +20,7 @@ import player.phonograph.service.queue.ShuffleMode.SHUFFLE
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.ui.modules.web.LastFmDialog
 import player.phonograph.util.NavigationUtil.goToArtist
+import player.phonograph.util.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.annotation.ColorInt
 import androidx.fragment.app.FragmentActivity
@@ -27,6 +28,7 @@ import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
 import kotlin.random.Random
+import kotlinx.coroutines.launch
 
 fun albumDetailToolbar(
     menu: Menu,
@@ -36,20 +38,26 @@ fun albumDetailToolbar(
 ): Boolean = with(context) {
     attach(menu) {
 
-        fun songs() = Songs.album(context, album.id)
-
         menuItem(title = getString(R.string.action_play)) { //id = R.id.action_shuffle_album
             icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick { songs().actionPlay(NONE, 0) }
+            onClick {
+                context.lifecycleScopeOrNewOne().launch {
+                    album.allSongs(context).actionPlay(NONE, 0)
+                }
+                true
+            }
         }
 
         menuItem(title = getString(R.string.action_shuffle_album)) { //id = R.id.action_shuffle_album
             icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                val songs = songs()
-                songs.actionPlay(SHUFFLE, Random.nextInt(songs.size))
+                context.lifecycleScopeOrNewOne().launch {
+                    val songs = album.allSongs(context)
+                    songs.actionPlay(SHUFFLE, Random.nextInt(songs.size))
+                }
+                true
             }
         }
 
@@ -57,20 +65,35 @@ fun albumDetailToolbar(
         menuItem(title = getString(R.string.action_play_next)) { //id = R.id.action_play_next
             icon = getTintedDrawable(R.drawable.ic_redo_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick { songs().actionPlayNext() }
+            onClick {
+                context.lifecycleScopeOrNewOne().launch {
+                    album.allSongs(context).actionPlayNext()
+                }
+                true
+            }
         }
 
 
         menuItem(title = getString(R.string.action_add_to_playing_queue)) { //id = R.id.action_add_to_current_playing
             icon = getTintedDrawable(R.drawable.ic_library_add_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick { songs().actionEnqueue() }
+            onClick {
+                context.lifecycleScopeOrNewOne().launch {
+                    album.allSongs(context).actionEnqueue()
+                }
+                true
+            }
         }
 
         menuItem(title = getString(R.string.action_add_to_playlist)) { //id = R.id.action_add_to_playlist
             icon = getTintedDrawable(R.drawable.ic_playlist_add_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick { songs().actionAddToPlaylist(context) }
+            onClick {
+                context.lifecycleScopeOrNewOne().launch {
+                    album.allSongs(context).actionAddToPlaylist(context)
+                }
+                true
+            }
         }
 
         menuItem(title = getString(R.string.action_go_to_artist)) { //id = R.id.action_go_to_artist
@@ -91,7 +114,10 @@ fun albumDetailToolbar(
             icon = getTintedDrawable(R.drawable.ic_library_music_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                MultiTagBrowserActivity.launch(context, ArrayList(songs().map { it.data }))
+                context.lifecycleScopeOrNewOne().launch {
+                    val songs = album.allSongs(context)
+                    MultiTagBrowserActivity.launch(context, ArrayList(songs.map { it.data }))
+                }
                 true
             }
         }
@@ -102,7 +128,10 @@ fun albumDetailToolbar(
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
                 fragmentActivity(context) {
-                    songs().actionDelete(it)
+                    context.lifecycleScopeOrNewOne().launch {
+                        album.allSongs(context).actionDelete(it)
+                    }
+                    true
                 }
             }
         }
@@ -120,3 +149,5 @@ fun albumDetailToolbar(
     }
     true
 }
+
+private suspend fun Album.allSongs(context: Context) = Songs.album(context, id)

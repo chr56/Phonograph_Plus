@@ -37,6 +37,7 @@ import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import kotlin.random.Random
+import kotlinx.coroutines.runBlocking
 
 object ClickActionProviders {
 
@@ -192,14 +193,14 @@ object ClickActionProviders {
             val setting = Setting(context)
             val base = setting[Keys.songItemClickMode].data
             val extra = setting[Keys.songItemClickExtraFlag].data
-            return fileClick(context, list, position, base, extra)
+            return runBlocking { fileClick(context, list, position, base, extra) }
         }
 
         /**
          * @param list entire list including folder
          * @param position in-list position
          */
-        private fun fileClick(
+        private suspend fun fileClick(
             context: Context,
             list: List<FileEntity>,
             position: Int,
@@ -207,7 +208,7 @@ object ClickActionProviders {
             extraFlag: Int,
         ): Boolean {
             var base = baseMode
-            val songRequest by lazy(LazyThreadSafetyMode.NONE) { filter(list, position, context) }
+            val songRequest = filter(list, position, context)
 
             // pre-process extra mode
             if (MusicPlayerRemote.playingQueue.isEmpty() && extraFlag.testBit(FLAG_MASK_PLAY_QUEUE_IF_EMPTY)) {
@@ -272,7 +273,7 @@ object ClickActionProviders {
         /**
          * filter folders and relocate position
          */
-        private fun filter(list: List<FileEntity>, position: Int, context: Context): PlayRequest.SongsRequest {
+        private suspend fun filter(list: List<FileEntity>, position: Int, context: Context): PlayRequest.SongsRequest {
             var actualPosition: Int = position
             val actualFileList = ArrayList<Song>(position)
             for ((index, item) in list.withIndex()) {

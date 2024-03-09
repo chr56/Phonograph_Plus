@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentActivity
 import android.app.Activity
 import android.content.Context
 
-internal fun convertToSongs(selections: Iterable<*>, context: Context): List<Song> = selections.flatMap {
+internal suspend fun convertToSongs(selections: Iterable<*>, context: Context): List<Song> = selections.flatMap {
     when (it) {
         is Song -> listOf(it)
         is Album -> Songs.album(context, it.id)
@@ -27,6 +27,7 @@ internal fun convertToSongs(selections: Iterable<*>, context: Context): List<Son
         else -> emptyList()
     }
 }
+
 
 
 inline fun activity(context: Context, block: (Activity) -> Boolean): Boolean =
