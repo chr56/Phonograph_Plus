@@ -4,7 +4,6 @@
 
 package player.phonograph.repo.room
 
-import player.phonograph.App
 import player.phonograph.repo.room.dao.MediaStoreSongDao
 import player.phonograph.repo.room.dao.PlaylistDao
 import player.phonograph.repo.room.dao.PlaylistSongDao
@@ -15,6 +14,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import android.content.Context
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.Closeable
 
 
 @Database(
@@ -22,30 +25,26 @@ import android.content.Context
     version = MusicDatabase.DATABASE_VERSION,
     exportSchema = true,
 )
-abstract class SongDatabase : RoomDatabase() {
+abstract class SongDatabase : RoomDatabase(), Closeable {
     abstract fun MediaStoreSongDao(): MediaStoreSongDao
     abstract fun PlaylistDao(): PlaylistDao
     abstract fun PlaylistSongDao(): PlaylistSongDao
+    override fun close() {
+        super.close()
+    }
 }
 
 object MusicDatabase {
 
-    private var _songDatabase: SongDatabase? = null
-    val songDatabase: SongDatabase
-        get() {
-            if (_songDatabase == null) {
-                _songDatabase = Room.databaseBuilder(
-                    App.instance,
-                    SongDatabase::class.java,
-                    DATABASE_NAME
-                ).build()
+    fun database(context: Context): SongDatabase =
+        Room.databaseBuilder(context, SongDatabase::class.java, DATABASE_NAME)
+            .enableMultiInstanceInvalidation()
+            .build()
+            .also { it ->
+                CoroutineScope(Dispatchers.IO).launch {
+                    DatabaseUpdater.checkAndRefresh(context.applicationContext, it)
+                }
             }
-            return _songDatabase!!
-        }
-
-    suspend fun checkUpdate(context: Context) {
-        DatabaseUpdater.checkAndRefresh(context.applicationContext, songDatabase)
-    }
 
 
     /*
