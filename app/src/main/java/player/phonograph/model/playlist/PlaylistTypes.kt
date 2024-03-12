@@ -15,6 +15,7 @@ object PlaylistType {
     const val HISTORY = 8
     const val MY_TOP_TRACK = 16
     const val RANDOM = 32
+    const val DATABASE = 128
 }
 
 interface EditablePlaylist : ResettablePlaylist {
