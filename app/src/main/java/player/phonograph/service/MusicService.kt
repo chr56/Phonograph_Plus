@@ -180,8 +180,8 @@ class MusicService : MediaBrowserServiceCompat() {
                     ACTION_TOGGLE_PAUSE          -> if (isPlaying) pause() else play()
                     ACTION_PAUSE                 -> pause()
                     ACTION_PLAY                  -> play()
-                    ACTION_REWIND                -> back(false)
-                    ACTION_SKIP                  -> playNextSong(false)
+                    ACTION_REWIND                -> back(true)
+                    ACTION_SKIP                  -> playNextSong(true)
                     ACTION_STOP_AND_QUIT_NOW     -> stopSelf()
                     ACTION_STOP_AND_QUIT_PENDING -> controller.quitAfterFinishCurrentSong = true
                     ACTION_CANCEL_PENDING_QUIT   -> controller.quitAfterFinishCurrentSong = false

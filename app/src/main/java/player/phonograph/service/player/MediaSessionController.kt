@@ -113,11 +113,11 @@ class MediaSessionController : ServiceComponent {
             }
 
             override fun onSkipToNext() {
-                service.playNextSong(false)
+                service.playNextSong(true)
             }
 
             override fun onSkipToPrevious() {
-                service.back(false)
+                service.back(true)
             }
 
             override fun onStop() {
