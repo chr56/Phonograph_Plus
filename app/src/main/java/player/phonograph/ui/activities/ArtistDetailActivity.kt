@@ -3,6 +3,7 @@ package player.phonograph.ui.activities
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import lib.phonograph.misc.menuProvider
+import mt.pref.ThemeColor
 import mt.tint.requireLightStatusbar
 import mt.tint.setActivityToolbarColor
 import mt.tint.setActivityToolbarColorAuto
@@ -160,7 +161,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
 
     private fun setColors(color: Int) {
         viewBinding.header.setBackgroundColor(color)
-        setNavigationBarColor(color)
+        if (ThemeColor.coloredNavigationBar(this)) setNavigationBarColor(color)
         setTaskDescriptionColor(color)
 
         setSupportActionBar(viewBinding.toolbar) // needed to auto readjust the toolbar content color

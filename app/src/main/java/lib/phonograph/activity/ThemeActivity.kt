@@ -156,7 +156,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     protected fun animateThemeColorChange(oldColor: Int, newColor: Int) {
         animateThemeColorChange(oldColor, newColor) { animation: ValueAnimator ->
             setStatusbarColor(animation.animatedValue as Int)
-            setNavigationBarColor(animation.animatedValue as Int)
+            if (ThemeColor.coloredNavigationBar(this)) setNavigationBarColor(animation.animatedValue as Int)
         }
     }
 

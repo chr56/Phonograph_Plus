@@ -43,7 +43,7 @@ abstract class ComposeThemeActivity : MultiLanguageActivity() {
         val darkenPrimaryColor = darkenColor(newPrimaryColor)
         setStatusbarColor(darkenPrimaryColor, R.id.status_bar)
         requireLightStatusbarAuto(darkenPrimaryColor)
-        setNavigationBarColor(newPrimaryColor)
+        if (ThemeColor.coloredNavigationBar(this)) setNavigationBarColor(newPrimaryColor)
     }
 
     private val listener = object : ThemeColor.ThemePreferenceChangeListener {

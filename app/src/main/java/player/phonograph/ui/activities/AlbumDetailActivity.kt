@@ -1,6 +1,7 @@
 package player.phonograph.ui.activities
 
 import lib.phonograph.misc.menuProvider
+import mt.pref.ThemeColor
 import mt.tint.requireLightStatusbar
 import mt.tint.setActivityToolbarColor
 import mt.tint.setActivityToolbarColorAuto
@@ -123,7 +124,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
     private fun updateColors(color: Int) {
         viewBinding.recyclerView.setUpFastScrollRecyclerViewColor(this, color)
         viewBinding.header.setBackgroundColor(color)
-        setNavigationBarColor(color)
+        if (ThemeColor.coloredNavigationBar(this)) setNavigationBarColor(color)
         setTaskDescriptionColor(color)
 
 
