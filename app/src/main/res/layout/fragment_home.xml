@@ -36,6 +36,9 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/tab_height"
             app:tabContentStart="72dp"
+            app:tabPaddingStart="8dp"
+            app:tabPaddingEnd="8dp"
+            app:tabMinWidth="80dp"
             tools:ignore="SpeakableTextPresentCheck" />
 
     </com.google.android.material.appbar.AppBarLayout>
