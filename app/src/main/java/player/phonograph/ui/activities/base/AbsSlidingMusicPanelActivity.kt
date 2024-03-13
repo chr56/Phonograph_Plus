@@ -2,6 +2,7 @@ package player.phonograph.ui.activities.base
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
+import mt.pref.ThemeColor
 import mt.tint.setNavigationBarColor
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -117,10 +118,11 @@ abstract class AbsSlidingMusicPanelActivity :
                 viewModel.highlightColor.collect { color ->
                     if (panelState == PanelState.EXPANDED) {
                         animateThemeColorChange(viewModel.previewHighlightColor.value, color) { animation ->
-                            setNavigationBarColor(animation.animatedValue as Int)
                             setStatusbarColor(
                                 if (viewModel.transparentStatusbar) Color.TRANSPARENT else animation.animatedValue as Int
                             )
+                            if (ThemeColor.coloredNavigationBar(this@AbsSlidingMusicPanelActivity))
+                                setNavigationBarColor(animation.animatedValue as Int)
                         }
                     }
                 }
@@ -175,7 +177,8 @@ abstract class AbsSlidingMusicPanelActivity :
                 if (viewModel.transparentStatusbar) Color.TRANSPARENT else viewModel.highlightColor.value
             ) as Int
         setStatusbarColor(color)
-        setNavigationBarColor(color)
+        if (ThemeColor.coloredNavigationBar(this@AbsSlidingMusicPanelActivity))
+            setNavigationBarColor(color)
     }
 
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
