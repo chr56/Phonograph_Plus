@@ -495,4 +495,5 @@
     <string name="pref_summary_persistent_playback_notification">播放通知将始终驻留且不可取消</string>
     <string name="pref_title_always_play">持续播放</string>
     <string name="pref_summary_always_play">忽略任何打断并继续背景播放，无论当前正在播放什么其他内容</string>
+    <string name="action_view_external_files">浏览外部文件</string>
 </resources>

@@ -9,6 +9,7 @@ import com.github.chr56.android.menu_dsl.menuItem
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import lib.phonograph.misc.Reboot
 import mt.util.color.primaryTextColor
+import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.actions.actionPlay
@@ -24,13 +25,16 @@ import player.phonograph.ui.modules.setting.SettingsActivity
 import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.navigateToStorageSetting
+import player.phonograph.util.reportError
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import android.content.ComponentName
 import android.content.Intent
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.view.Menu
@@ -188,6 +192,43 @@ fun setupDrawerMenu(
                     activity.getString(R.string.search_online) to {
                         activity.startActivity(WebSearchLauncher.launchIntent(activity))
                     },
+                    context.getString(R.string.action_view_external_files) to {
+                        val uri =
+                            Uri.parse("content://com.android.externalstorage.documents/document/primary%3AAndroid%2Fdata%2F$ACTUAL_PACKAGE_NAME")
+                        val activityName = "com.android.documentsui.files.FilesActivity"
+                        try {
+                            activity.startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    uri
+                                ).apply {
+                                    flags = Intent.FLAG_ACTIVITY_NEW_DOCUMENT
+                                    component = ComponentName(
+                                        "com.android.documentsui",
+                                        activityName,
+                                    )
+                                }
+                            )
+                        } catch (e: Exception) {
+                            try {
+                                activity.startActivity(
+                                    Intent(
+                                        Intent.ACTION_VIEW,
+                                        uri
+                                    ).apply {
+                                        flags = Intent.FLAG_ACTIVITY_NEW_DOCUMENT
+                                        component = ComponentName(
+                                            "com.google.android.documentsui",
+                                            activityName,
+                                        )
+                                    }
+                                )
+                            } catch (e: Exception) {
+                                reportError(e, "OpenDocumentsUi", "Failed to open Documents UI")
+                            }
+                        }
+
+                    }
                 )
                 MaterialAlertDialogBuilder(activity)
                     .setTitle(R.string.more_actions)
