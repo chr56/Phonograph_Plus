@@ -1,7 +1,7 @@
 version: "1.6.0-dev1"
-versionCode: 1052
-timestamp: 1709790001
-channel: "PREVIEW"
+versionCode: 1060
+timestamp: 1709840000
+channel: "STABLE"
 notes:
   en:
     highlights: [ ]
