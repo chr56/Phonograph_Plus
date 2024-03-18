@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="exit">exit</string>
     <string name="disable">disable</string>
     <string name="choose_at_least_one">Please choose at least one</string>
     <string name="action_set_as_ringtone">Set as ringtone</string>
