@@ -489,9 +489,10 @@
     <string name="action_item_layout">Item Layout</string>
     <string name="item_layout_list">List (2 lines)</string>
     <string name="item_layout_list_extended">List (2 lines, extended)</string>
+    <string name="item_layout_list_no_image">List (2 lines, no image)</string>
     <string name="item_layout_list_3l">List (3 lines)</string>
     <string name="item_layout_list_3l_extended">List (3 lines, extended)</string>
-    <string name="item_layout_list_no_image">List (no image)</string>
+    <string name="item_layout_list_3l_no_image">List (3 lines, no image)</string>
     <string name="item_layout_grid">Grid</string>
     <string name="warning_inappropriate_config">Your current configuration is considered as \"Inappropriate\".</string>
     <string name="internal_error">Internal Error</string>

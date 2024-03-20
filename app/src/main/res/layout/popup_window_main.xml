@@ -211,6 +211,14 @@
                 android:visibility="gone" />
 
             <RadioButton
+                android:id="@+id/item_layout_list_no_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="32dp"
+                android:text="@string/item_layout_list_no_image"
+                android:visibility="gone" />
+
+            <RadioButton
                 android:id="@+id/item_layout_list_3l"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -227,11 +235,11 @@
                 android:visibility="gone" />
 
             <RadioButton
-                android:id="@+id/item_layout_list_no_image"
+                android:id="@+id/item_layout_list_3l_no_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="32dp"
-                android:text="@string/item_layout_list_no_image"
+                android:text="@string/item_layout_list_3l_no_image"
                 android:visibility="gone" />
 
             <RadioButton
