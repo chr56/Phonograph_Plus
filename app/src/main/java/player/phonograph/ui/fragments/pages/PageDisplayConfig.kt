@@ -67,9 +67,10 @@ sealed class ImagePageDisplayConfig(context: Context) : PageDisplayConfig(contex
         get() = arrayOf(
             ItemLayoutStyle.LIST,
             ItemLayoutStyle.LIST_EXTENDED,
+            ItemLayoutStyle.LIST_NO_IMAGE,
             ItemLayoutStyle.LIST_3L,
             ItemLayoutStyle.LIST_3L_EXTENDED,
-            ItemLayoutStyle.LIST_NO_IMAGE,
+            ItemLayoutStyle.LIST_3L_NO_IMAGE,
             ItemLayoutStyle.GRID,
         )
     override val maxGridSize: Int
