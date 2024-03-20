@@ -49,6 +49,13 @@ value class ItemLayoutStyle private constructor(@ViewHolderType val ordinal: Int
         else                      -> R.layout.item_list //default
     }
 
+    val hasImage: Boolean
+        get() = when (ordinal) {
+            TYPE_LIST_NO_IMAGE    -> false
+            TYPE_LIST_3L_NO_IMAGE -> false
+            else                  -> true
+        }
+
     companion object {
 
 

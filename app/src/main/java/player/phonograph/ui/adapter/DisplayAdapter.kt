@@ -54,7 +54,7 @@ abstract class DisplayAdapter<I : Displayable>(
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
-            imageCacheDelegate.preloadImages(activity, value)
+            if (config.layoutStyle.hasImage) imageCacheDelegate.preloadImages(activity, value)
             notifyDataSetChanged()
         }
 
