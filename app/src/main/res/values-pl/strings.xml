@@ -506,8 +506,10 @@
     <string name="action_item_layout">Układ elementów</string>
     <string name="item_layout_list">Lista (2 wiersze)</string>
     <string name="item_layout_list_extended">Lista (2 wiersze, rozszerzone)</string>
+    <string name="item_layout_list_no_image">Lista (2 linie, bez obrazka)</string>
     <string name="item_layout_list_3l">Lista (3 wiersze)</string>
     <string name="item_layout_list_3l_extended">Lista (3 wiersze, rozszerzone)</string>
+    <string name="item_layout_list_3l_no_image">Lista (3 linie, bez obrazka)</string>
     <string name="item_layout_grid">Siatka</string>
     <string name="warning_inappropriate_config">Twoja aktualna konfiguracja jest uważana za \"nieodpowiednią\".</string>
     <string name="internal_error">Błąd wewnętrzny</string>
@@ -523,4 +525,7 @@
     <string name="clear_image_cache">Wyczyść pamięć podręczną obrazów</string>
     <string name="pref_title_persistent_playback_notification">Stałe powiadomienie o odtwarzaniu</string>
     <string name="pref_summary_persistent_playback_notification">Powiadomienie o odtwarzaniu będzie zawsze aktywne i nie będzie go można anulować.</string>
+    <string name="pref_title_always_play">Odtwarzaj zawsze</string>
+    <string name="pref_summary_always_play">Ignoruje wszelkie zakłócenia i kontynuuje odtwarzanie bez względu na to, co jest odtwarzane. (W niektórych okolicznościach może to spowodować \"ciszę\").</string>
+    <string name="action_view_external_files">Wyświetlaj pliki zewnętrzne</string>
 </resources>
