@@ -5,56 +5,107 @@
 package player.phonograph.mechanism.setting
 
 import player.phonograph.R
+import androidx.annotation.Keep
 import androidx.annotation.StringDef
 import androidx.annotation.StringRes
+import android.os.Parcelable
+import android.util.Log
+import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
-object NotificationActionsConfig {
+object NotificationConfig {
 
-    var compat: List<NotificationAction>
-        get() = emptyList()
+    var actions: NotificationActionsConfig
+        get() {
+            return NotificationActionsConfig.DEFAULT
+        }
         set(value) {}
 
-    var expanded: List<NotificationAction>
-        get() = emptyList()
-        set(value) {}
+    fun resetActions(): NotificationActionsConfig = NotificationActionsConfig.DEFAULT
 
-    fun resetCompat(): List<NotificationAction> = DEFAULT_CONFIG_COMPAT
-    fun resetExpanded(): List<NotificationAction> = DEFAULT_CONFIG_EXPANDED
-
-    private fun readImpl(
+    private fun readFromJson(
         raw: String,
-        resetToDefault: () -> List<NotificationAction>,
-    ): List<NotificationAction> {
-        val actionList = raw.split(SEPARATOR).mapNotNull { NotificationAction.from(it) }
-        return actionList.ifEmpty { resetToDefault() }
+        resetToDefault: () -> NotificationActionsConfig,
+    ): NotificationActionsConfig = try {
+        parser.decodeFromString<NotificationActionsConfig>(raw)
+            .takeIf { it.actions.isNotEmpty() } ?: resetToDefault()
+    } catch (e: SerializationException) {
+        Log.e(TAG, "Glitch Config: $raw", e)
+        resetToDefault()
     }
 
-    private fun writeImpl(
-        action: List<NotificationAction>,
+    private fun writeToJson(
+        config: NotificationActionsConfig,
     ): String {
-        return action.joinToString(separator = SEPARATOR.toString())
+        return try {
+            parser.encodeToString(config)
+        } catch (e: SerializationException) {
+            Log.e(TAG, "Failed to serialize", e)
+            return "{}"
+        }
     }
 
-    val DEFAULT_CONFIG_EXPANDED: List<NotificationAction>
-        get() = listOf(
-            NotificationAction.Repeat,
-            NotificationAction.Prev,
-            NotificationAction.PlayPause,
-            NotificationAction.Next,
-            NotificationAction.Shuffle,
-        )
+    private val parser
+        get() = Json {
+            ignoreUnknownKeys = true
+        }
 
-
-    val DEFAULT_CONFIG_COMPAT: List<NotificationAction>
-        get() = listOf(
-            NotificationAction.Prev,
-            NotificationAction.PlayPause,
-            NotificationAction.Next,
-        )
-
-    private const val SEPARATOR = ','
+    private const val TAG = "NotificationConfig"
 }
 
+@Keep
+@Parcelize
+@Serializable
+data class NotificationActionsConfig(
+    @SerialName("actions") val actions: List<Item>,
+    @SerialName("version") val version: Int = VERSION,
+) : Parcelable {
+
+    constructor(vararg sources: Item) : this(sources.asList(), VERSION)
+
+    @Keep
+    @Parcelize
+    @Serializable
+    data class Item(
+        @SerialName("key") @NotificationActionName val key: String,
+        @SerialName("expanded") val displayInExpanded: Boolean,
+        @SerialName("compat") val displayInCompat: Boolean,
+    ) : Parcelable {
+        val notificationAction: NotificationAction?
+            get() = NotificationAction.from(key)
+    }
+
+    companion object {
+        val DEFAULT: NotificationActionsConfig
+            get() = NotificationActionsConfig(
+                Item(
+                    ACTION_KEY_REPEAT,
+                    displayInExpanded = true, displayInCompat = false
+                ),
+                Item(
+                    ACTION_KEY_PREV,
+                    displayInExpanded = true, displayInCompat = true
+                ),
+                Item(
+                    ACTION_KEY_PLAY_PAUSE,
+                    displayInExpanded = true, displayInCompat = true
+                ),
+                Item(
+                    ACTION_KEY_NEXT,
+                    displayInExpanded = true, displayInCompat = true
+                ),
+                Item(
+                    ACTION_KEY_SHUFFLE,
+                    displayInExpanded = true, displayInCompat = false
+                ),
+            )
+        const val VERSION = 1
+    }
+}
 
 @Suppress("ConvertObjectToDataObject")
 sealed class NotificationAction(
