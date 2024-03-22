@@ -4,6 +4,7 @@
 
 package player.phonograph.service.util
 
+import lib.storage.externalFileBashPath
 import player.phonograph.R
 import android.content.res.Resources
 import android.media.MediaPlayer.MEDIA_ERROR_IO
@@ -27,13 +28,24 @@ internal fun makeErrorMessage(resources: Resources, what: Int, extra: Int, path:
         MEDIA_ERROR_TIMED_OUT   -> "(Time out)"
         else                    -> extra.toString()
     }
-    val msg = "${makeErrorMessage(resources, path)} ($generic - $detail)"
-    Log.w("MediaPlayer", msg)
+    val msg = "${makeErrorMessage(resources, path)}: $generic - $detail"
+    Log.w("AudioPlayer", msg)
     return msg
 }
 
 internal fun makeErrorMessage(resources: Resources, path: String, exist: Boolean) =
-    "${makeErrorMessage(resources, path)} (${if (!exist) resources.getString(R.string.deleted) else resources.getString(R.string.permissions_denied)})"
+    "${makeErrorMessage(resources, path)} (${
+        if (!exist) resources.getString(R.string.deleted) else resources.getString(
+            R.string.permissions_denied
+        )
+    })"
 
-private fun makeErrorMessage(resources: Resources, path: String): String =
-    "${resources.getString(R.string.unplayable_file)} ${path.removePrefix("/storage")}"
+private fun makeErrorMessage(resources: Resources, path: String): String {
+    val head = resources.getString(R.string.unplayable_file)
+    val path = try {
+        externalFileBashPath(path)
+    } catch (e: Exception) {
+        path
+    }
+    return "$head [$path]"
+}
