@@ -16,7 +16,6 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
 import player.phonograph.util.registerReceiverCompat
-import player.phonograph.util.warning
 import androidx.annotation.IntDef
 import androidx.core.content.ContextCompat
 import android.content.BroadcastReceiver
@@ -33,7 +32,6 @@ import android.os.Message
 import android.os.PowerManager
 import android.os.PowerManager.WakeLock
 import android.provider.MediaStore
-import android.util.ArrayMap
 import android.util.Log
 import android.widget.Toast
 import kotlinx.coroutines.SupervisorJob
@@ -45,7 +43,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
-import java.lang.ref.WeakReference
 
 // todo cleanup queueManager.setQueueCursor
 /**
@@ -628,24 +625,13 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
     fun addObserver(observer: PlayerStateObserver) = observers.add(observer)
     fun removeObserver(observer: PlayerStateObserver): Boolean = observers.remove(observer)
 
-    class ControllerHandler(playerController: PlayerController, looper: Looper) : Handler(looper) {
-        private val controllerRef: WeakReference<PlayerController> = WeakReference(playerController)
-
-        private var requestIdCumulator = 0
-        private val requestList: ArrayMap<Int, RunnableRequest> = ArrayMap(1)
-
+    class ControllerHandler(private val playerController: PlayerController, looper: Looper) : Handler(looper) {
         /**
          * Request running in the handler thread
          * @param request RunnableRequest: (PlayerController) -> Unit
          */
         fun request(request: RunnableRequest) {
-            val requestId = requestIdCumulator++
-            synchronized(requestList) {
-                requestList[requestId] = request
-                sendMessage(
-                    Message.obtain(this, HANDLER_EXECUTE_REQUEST, requestId, 0)
-                )
-            }
+            post { request(playerController) }
         }
 
         fun command(what: Int, arg1: Int, arg2: Int) {
@@ -656,67 +642,46 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
 
         override fun handleMessage(msg: Message) {
             when (msg.what) {
-                HANDLER_EXECUTE_REQUEST -> {
-                    val requestId = msg.arg1
-                    val controller = controllerRef.get()
-                    if (controller == null) {
-                        warning(
-                            this::class.java.simpleName,
-                            "ControllerHandler: weak reference for PlayerController is missing!\n${Thread.currentThread().stackTrace}"
-                        )
-                        return
-                    }
-                    requestList[requestId]?.let { runnableRequest ->
-                        runnableRequest.invoke(controller)
-                        synchronized(requestList) {
-                            requestList.remove(requestId)
+
+                DUCK                   -> {
+                    if (playerController.audioDucking) {
+                        currentDuckVolume -= .05f
+                        if (currentDuckVolume > .2f) {
+                            sendEmptyMessageDelayed(DUCK, 10)
+                        } else {
+                            currentDuckVolume = .2f
                         }
+                    } else {
+                        currentDuckVolume = 1f
                     }
+                    playerController.audioPlayer.setVolume(currentDuckVolume)
+
                 }
 
-                DUCK                    -> {
-                    controllerRef.get()?.let { controller ->
-                        if (controller.audioDucking) {
-                            currentDuckVolume -= .05f
-                            if (currentDuckVolume > .2f) {
-                                sendEmptyMessageDelayed(DUCK, 10)
-                            } else {
-                                currentDuckVolume = .2f
-                            }
+                UNDUCK                 -> {
+                    if (playerController.audioDucking) {
+                        currentDuckVolume += .03f
+                        if (currentDuckVolume < 1f) {
+                            sendEmptyMessageDelayed(UNDUCK, 10)
                         } else {
                             currentDuckVolume = 1f
                         }
-                        controller.audioPlayer.setVolume(currentDuckVolume)
+                    } else {
+                        currentDuckVolume = 1f
                     }
+                    playerController.audioPlayer.setVolume(currentDuckVolume)
+
                 }
 
-                UNDUCK                  -> {
-                    controllerRef.get()?.let { controller ->
-                        if (controller.audioDucking) {
-                            currentDuckVolume += .03f
-                            if (currentDuckVolume < 1f) {
-                                sendEmptyMessageDelayed(UNDUCK, 10)
-                            } else {
-                                currentDuckVolume = 1f
-                            }
-                        } else {
-                            currentDuckVolume = 1f
-                        }
-                        controller.audioPlayer.setVolume(currentDuckVolume)
-                    }
+                RE_PREPARE_NEXT_PLAYER -> synchronized(playerController.audioPlayer) {
+                    playerController.prepareNextPlayer(playerController.queueManager.nextSong)
                 }
 
-                RE_PREPARE_NEXT_PLAYER  -> controllerRef.get()?.let {
-                    synchronized(it.audioPlayer) {
-                        it.prepareNextPlayer(it.queueManager.nextSong)
-                    }
+
+                CLEAN_NEXT_PLAYER      -> synchronized(playerController.audioPlayer) {
+                    playerController.prepareNextPlayer(null)
                 }
 
-                CLEAN_NEXT_PLAYER       -> controllerRef.get()?.let {
-                    synchronized(it.audioPlayer) {
-                        it.prepareNextPlayer(null)
-                    }
-                }
             }
         }
 
@@ -726,14 +691,11 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
          * @return true if continue
          */
         private fun broadcastLyrics(): Boolean {
-            val controller = controllerRef.get() ?: return false
-            if (controller.playerState != PlayerState.PLAYING || controller.broadcastSynchronizedLyrics) {
-                controller.broadcastStopLyric()
+            if (playerController.playerState != PlayerState.PLAYING || playerController.broadcastSynchronizedLyrics) {
+                playerController.broadcastStopLyric()
                 return false
             }
-
-
-            controller.lyricsUpdater.broadcast(controller.getSongProgressMillis())
+            playerController.lyricsUpdater.broadcast(playerController.getSongProgressMillis())
             return true
         }
 
@@ -747,8 +709,6 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
         }
 
         companion object {
-            // MSG WHAT
-            private const val HANDLER_EXECUTE_REQUEST = 10
 
             const val DUCK = 20
             const val UNDUCK = 30
