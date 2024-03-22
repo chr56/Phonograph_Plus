@@ -219,17 +219,18 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
             "prepareSongsImp:Before",
             "current:${queueManager.currentSong.title} ,next:${queueManager.nextSong.title}"
         )
-        queueManager.modifyPosition(position, false)
-        return prepareCurrentPlayer(queueManager.currentSong).also { setCurrentSuccess ->
-            if (setCurrentSuccess) prepareNextPlayer(queueManager.nextSong)
-            else prepareNextPlayer(null)
+        return synchronized(this) {
+            queueManager.modifyPosition(position, false)
+            prepareCurrentPlayer(queueManager.currentSong).also { setCurrentSuccess ->
+                prepareNextPlayer(if (setCurrentSuccess) queueManager.nextSong else null)
 
-            notifyNowPlayingChanged()
+                notifyNowPlayingChanged()
 
-            log(
-                "prepareSongsImp:After",
-                "current:${queueManager.currentSong.title} ,next:${queueManager.nextSong.title}"
-            )
+                log(
+                    "prepareSongsImp:After",
+                    "current:${queueManager.currentSong.title}, next:${queueManager.nextSong.title}"
+                )
+            }
         }
     }
 
