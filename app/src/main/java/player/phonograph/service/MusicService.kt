@@ -182,6 +182,8 @@ class MusicService : MediaBrowserServiceCompat() {
                     ACTION_PLAY                  -> play()
                     ACTION_REWIND                -> back(true)
                     ACTION_SKIP                  -> playNextSong(true)
+                    ACTION_SHUFFLE               -> queueManager.toggleShuffle()
+                    ACTION_REPEAT                -> queueManager.cycleRepeatMode()
                     ACTION_STOP_AND_QUIT_NOW     -> stopSelf()
                     ACTION_STOP_AND_QUIT_PENDING -> controller.quitAfterFinishCurrentSong = true
                     ACTION_CANCEL_PENDING_QUIT   -> controller.quitAfterFinishCurrentSong = false
@@ -508,6 +510,8 @@ class MusicService : MediaBrowserServiceCompat() {
         const val ACTION_PAUSE = "$ACTUAL_PACKAGE_NAME.pause"
         const val ACTION_SKIP = "$ACTUAL_PACKAGE_NAME.skip"
         const val ACTION_REWIND = "$ACTUAL_PACKAGE_NAME.rewind"
+        const val ACTION_SHUFFLE = "$ACTUAL_PACKAGE_NAME.shuffle"
+        const val ACTION_REPEAT = "$ACTUAL_PACKAGE_NAME.repeat"
         const val ACTION_STOP_AND_QUIT_NOW = "$ACTUAL_PACKAGE_NAME.stop_and_quit_now"
         const val ACTION_STOP_AND_QUIT_PENDING = "$ACTUAL_PACKAGE_NAME.stop_and_quit_pending"
         const val ACTION_CANCEL_PENDING_QUIT = "$ACTUAL_PACKAGE_NAME.cancel_pending_quit"
