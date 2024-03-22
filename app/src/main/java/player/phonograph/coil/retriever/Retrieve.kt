@@ -19,6 +19,7 @@ import okio.buffer
 import okio.source
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
+import player.phonograph.util.debug
 import player.phonograph.util.mediaStoreAlbumArtUri
 import player.phonograph.util.recordThrowable
 import android.annotation.SuppressLint
@@ -126,7 +127,7 @@ internal fun retrieveFromAlbumUri(
             )
         } catch (e: IOException) {
             if (e is FileNotFoundException) {
-                Log.v("loadThumbnail", "File not available ($uri)!")
+                debug { Log.v("loadThumbnail", "File not available ($uri)!") }
             } else {
                 recordThrowable(context, "loadThumbnail", e)
             }
