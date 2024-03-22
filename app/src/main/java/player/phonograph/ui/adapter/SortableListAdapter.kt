@@ -63,7 +63,7 @@ abstract class SortableListAdapter<C> :
             val checkBox = view.findViewById<CheckBox>(R.id.checkbox)
             when (checkBox.isChecked) {
                 true  -> {
-                    if (isLastCheckedOne()) {
+                    if (checkRequirement()) {
                         Toast.makeText(
                             holder.itemView.context,
                             R.string.you_have_to_select_at_least_one_category,
@@ -125,7 +125,12 @@ abstract class SortableListAdapter<C> :
         )
     }
 
-    private fun isLastCheckedOne(): Boolean = dataset.visibleItems().size <= 1
+    open val minimalRequiredItems: Int = 1
+
+    /**
+     * check whether the selected items match the requirement of quantity
+     */
+    private fun checkRequirement(): Boolean = dataset.visibleItems().size <= minimalRequiredItems
 
     fun attachToRecyclerView(recyclerView: RecyclerView?) =
         touchHelper.attachToRecyclerView(recyclerView)
