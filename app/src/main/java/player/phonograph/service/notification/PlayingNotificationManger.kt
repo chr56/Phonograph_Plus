@@ -222,8 +222,8 @@ class PlayingNotificationManger : ServiceComponent {
                 content = song.artistName,
                 subText = song.albumName,
                 ongoing = isPlaying,
-                style = mediaStyle().setShowActionsInCompactView(0, 1, 2),
-                previousAction(), playPauseAction(isPlaying), nextAction(), repeat(), shuffle()
+                style = mediaStyle().setShowActionsInCompactView(1, 2, 3),
+                repeat(), previousAction(), playPauseAction(isPlaying), nextAction(), shuffle()
             )
 
             postNotification(notificationBuilder.build())
