@@ -198,6 +198,18 @@ class PlayingNotificationManger : ServiceComponent {
             buildPlaybackPendingIntent(MusicService.ACTION_SKIP)
         )
 
+        private fun shuffle(): XNotificationCompat.Action = XNotificationCompat.Action(
+            R.drawable.ic_shuffle_white_24dp,
+            service.getString(R.string.action_shuffle_mode),
+            buildPlaybackPendingIntent(MusicService.ACTION_SHUFFLE)
+        )
+
+        private fun repeat(): XNotificationCompat.Action = XNotificationCompat.Action(
+            R.drawable.ic_repeat_white_24dp,
+            service.getString(R.string.action_repeat_mode),
+            buildPlaybackPendingIntent(MusicService.ACTION_REPEAT)
+        )
+
         private fun mediaStyle(): NotificationCompat.MediaStyle =
             NotificationCompat.MediaStyle().setMediaSession(service.mediaSession.sessionToken)
 
@@ -211,7 +223,7 @@ class PlayingNotificationManger : ServiceComponent {
                 subText = song.albumName,
                 ongoing = isPlaying,
                 style = mediaStyle().setShowActionsInCompactView(0, 1, 2),
-                previousAction(), playPauseAction(isPlaying), nextAction()
+                previousAction(), playPauseAction(isPlaying), nextAction(), repeat(), shuffle()
             )
 
             postNotification(notificationBuilder.build())
