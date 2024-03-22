@@ -7,7 +7,6 @@ package player.phonograph.service.notification
 import coil.request.Disposable
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.service.MusicService
@@ -22,7 +21,6 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.theme.createTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
-import androidx.annotation.RequiresApi
 import androidx.media.app.NotificationCompat
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -411,37 +409,55 @@ class PlayingNotificationManger : ServiceComponent {
             @Suppress("JoinDeclarationAndAssignment")
             var pendingIntent: PendingIntent
 
+            // Repeat Mode
+            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_REPEAT)
+            setOnClickPendingIntent(R.id.action_placeholder1, pendingIntent)
+
             // Previous track
             pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_REWIND)
-            setOnClickPendingIntent(R.id.action_prev, pendingIntent)
+            setOnClickPendingIntent(R.id.action_placeholder2, pendingIntent)
 
             // Play and pause
             pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_TOGGLE_PAUSE)
-            setOnClickPendingIntent(R.id.action_play_pause, pendingIntent)
+            setOnClickPendingIntent(R.id.action_placeholder3, pendingIntent)
 
             // Next track
             pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_SKIP)
-            setOnClickPendingIntent(R.id.action_next, pendingIntent)
+            setOnClickPendingIntent(R.id.action_placeholder4, pendingIntent)
+
+            // Shuffle Mode
+            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_SHUFFLE)
+            setOnClickPendingIntent(R.id.action_placeholder5, pendingIntent)
         }
 
         private fun linkButtons(notificationLayout: RemoteViews, notificationLayoutBig: RemoteViews) {
             @Suppress("JoinDeclarationAndAssignment")
             var pendingIntent: PendingIntent
 
+            // Repeat Mode
+            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_REPEAT)
+            notificationLayout.setOnClickPendingIntent(R.id.action_placeholder1, pendingIntent)
+            notificationLayoutBig.setOnClickPendingIntent(R.id.action_placeholder1, pendingIntent)
+
             // Previous track
             pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_REWIND)
-            notificationLayout.setOnClickPendingIntent(R.id.action_prev, pendingIntent)
-            notificationLayoutBig.setOnClickPendingIntent(R.id.action_prev, pendingIntent)
+            notificationLayout.setOnClickPendingIntent(R.id.action_placeholder2, pendingIntent)
+            notificationLayoutBig.setOnClickPendingIntent(R.id.action_placeholder2, pendingIntent)
 
             // Play and pause
             pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_TOGGLE_PAUSE)
-            notificationLayout.setOnClickPendingIntent(R.id.action_play_pause, pendingIntent)
-            notificationLayoutBig.setOnClickPendingIntent(R.id.action_play_pause, pendingIntent)
+            notificationLayout.setOnClickPendingIntent(R.id.action_placeholder3, pendingIntent)
+            notificationLayoutBig.setOnClickPendingIntent(R.id.action_placeholder3, pendingIntent)
 
             // Next track
             pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_SKIP)
-            notificationLayout.setOnClickPendingIntent(R.id.action_next, pendingIntent)
-            notificationLayoutBig.setOnClickPendingIntent(R.id.action_next, pendingIntent)
+            notificationLayout.setOnClickPendingIntent(R.id.action_placeholder4, pendingIntent)
+            notificationLayoutBig.setOnClickPendingIntent(R.id.action_placeholder4, pendingIntent)
+
+            // Shuffle Mode
+            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_SHUFFLE)
+            notificationLayout.setOnClickPendingIntent(R.id.action_placeholder5, pendingIntent)
+            notificationLayoutBig.setOnClickPendingIntent(R.id.action_placeholder5, pendingIntent)
         }
 
 
@@ -474,46 +490,43 @@ class PlayingNotificationManger : ServiceComponent {
                 )!!,
                 1.5f
             )
+            val repeat = BitmapUtil.createBitmap(
+                service.createTintedDrawable(
+                    R.drawable.ic_repeat_white_24dp,
+                    primary
+                )!!,
+                1.5f
+            )
+            val shuffle = BitmapUtil.createBitmap(
+                service.createTintedDrawable(
+                    R.drawable.ic_shuffle_white_24dp,
+                    primary
+                )!!,
+                1.5f
+            )
 
             notificationLayout.setTextColor(R.id.title, primary)
             notificationLayout.setTextColor(R.id.text, secondary)
 
-            notificationLayout.setImageViewBitmap(R.id.action_prev, prev)
-            notificationLayout.setImageViewBitmap(R.id.action_next, next)
-            notificationLayout.setImageViewBitmap(R.id.action_play_pause, playPause)
+            notificationLayout.setImageViewBitmap(R.id.action_placeholder1, repeat)
+            notificationLayout.setImageViewBitmap(R.id.action_placeholder2, prev)
+            notificationLayout.setImageViewBitmap(R.id.action_placeholder3, playPause)
+            notificationLayout.setImageViewBitmap(R.id.action_placeholder4, next)
+            notificationLayout.setImageViewBitmap(R.id.action_placeholder5, shuffle)
 
             notificationLayoutBig.setTextColor(R.id.title, primary)
             notificationLayoutBig.setTextColor(R.id.text, secondary)
             notificationLayoutBig.setTextColor(R.id.text2, secondary)
 
-            notificationLayoutBig.setImageViewBitmap(R.id.action_prev, prev)
-            notificationLayoutBig.setImageViewBitmap(R.id.action_next, next)
-            notificationLayoutBig.setImageViewBitmap(R.id.action_play_pause, playPause)
+            notificationLayoutBig.setImageViewBitmap(R.id.action_placeholder1, repeat)
+            notificationLayoutBig.setImageViewBitmap(R.id.action_placeholder2, prev)
+            notificationLayoutBig.setImageViewBitmap(R.id.action_placeholder3, playPause)
+            notificationLayoutBig.setImageViewBitmap(R.id.action_placeholder4, next)
+            notificationLayoutBig.setImageViewBitmap(R.id.action_placeholder5, shuffle)
         }
 
     }
     //endregion
-
-    @RequiresApi(26)
-    private fun createNotificationChannel() {
-        notificationManager.getNotificationChannel(NOTIFICATION_CHANNEL_ID).also { exist ->
-            if (exist == null) {
-                notificationManager.createNotificationChannel(
-                    NotificationChannel(
-                        NOTIFICATION_CHANNEL_ID,
-                        App.instance.getString(R.string.playing_notification_name),
-                        NotificationManager.IMPORTANCE_LOW
-                    ).apply {
-                        description = App.instance.getString(
-                            R.string.playing_notification_description
-                        )
-                        enableLights(false)
-                        enableVibration(false)
-                    }
-                )
-            }
-        }
-    }
 
     //region Misc Util
     /**

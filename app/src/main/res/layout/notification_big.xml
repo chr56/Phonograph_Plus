@@ -96,8 +96,8 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_below="@+id/media_titles"
-        android:layout_marginEnd="12dp"
-        android:layout_marginStart="12dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginStart="3dp"
         android:layout_toEndOf="@id/image"
         android:layout_toRightOf="@id/image"
         android:layoutDirection="ltr"
@@ -106,7 +106,7 @@
 
         <!-- media buttons will be added here -->
         <ImageButton
-            android:id="@+id/action_prev"
+            android:id="@+id/action_placeholder1"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="48dp"
             android:layout_height="match_parent"
@@ -115,12 +115,12 @@
             android:layout_weight="1"
             android:background="@drawable/notification_selector"
             android:gravity="center"
-            android:padding="8dp"
+            android:padding="4dp"
             android:scaleType="fitCenter"
             tools:ignore="ContentDescription" />
 
         <ImageButton
-            android:id="@+id/action_play_pause"
+            android:id="@+id/action_placeholder2"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="48dp"
             android:layout_height="match_parent"
@@ -129,12 +129,12 @@
             android:layout_weight="1"
             android:background="@drawable/notification_selector"
             android:gravity="center"
-            android:padding="8dp"
+            android:padding="4dp"
             android:scaleType="fitCenter"
             tools:ignore="ContentDescription" />
 
         <ImageButton
-            android:id="@+id/action_next"
+            android:id="@+id/action_placeholder3"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="48dp"
             android:layout_height="match_parent"
@@ -143,7 +143,35 @@
             android:layout_weight="1"
             android:background="@drawable/notification_selector"
             android:gravity="center"
-            android:padding="8dp"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            tools:ignore="ContentDescription" />
+
+        <ImageButton
+            android:id="@+id/action_placeholder4"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/notification_selector"
+            android:gravity="center"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            tools:ignore="ContentDescription" />
+
+        <ImageButton
+            android:id="@+id/action_placeholder5"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/notification_selector"
+            android:gravity="center"
+            android:padding="4dp"
             android:scaleType="fitCenter"
             tools:ignore="ContentDescription" />
 
