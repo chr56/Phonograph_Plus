@@ -68,8 +68,8 @@ class MediaButtonIntentReceiver : BroadcastReceiver() {
                                 msg.obj as Context,
                                 when (clickCount) {
                                     1 -> MusicService.ACTION_TOGGLE_PAUSE
-                                    2 -> MusicService.ACTION_SKIP
-                                    3 -> MusicService.ACTION_REWIND
+                                    2 -> MusicService.ACTION_NEXT
+                                    3 -> MusicService.ACTION_PREVIOUS
                                     else -> MusicService.ACTION_TOGGLE_PAUSE // impossible
                                 }
                             )
@@ -91,8 +91,8 @@ class MediaButtonIntentReceiver : BroadcastReceiver() {
                     KeyEvent.KEYCODE_MEDIA_STOP -> command = MusicService.ACTION_STOP_AND_QUIT_NOW
                     KeyEvent.KEYCODE_HEADSETHOOK, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE ->
                         command = MusicService.ACTION_TOGGLE_PAUSE
-                    KeyEvent.KEYCODE_MEDIA_NEXT -> command = MusicService.ACTION_SKIP
-                    KeyEvent.KEYCODE_MEDIA_PREVIOUS -> command = MusicService.ACTION_REWIND
+                    KeyEvent.KEYCODE_MEDIA_NEXT -> command = MusicService.ACTION_NEXT
+                    KeyEvent.KEYCODE_MEDIA_PREVIOUS -> command = MusicService.ACTION_PREVIOUS
                     KeyEvent.KEYCODE_MEDIA_PAUSE -> command = MusicService.ACTION_PAUSE
                     KeyEvent.KEYCODE_MEDIA_PLAY -> command = MusicService.ACTION_PLAY
                 }

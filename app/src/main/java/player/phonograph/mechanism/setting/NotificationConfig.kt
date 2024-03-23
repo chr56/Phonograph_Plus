@@ -140,11 +140,11 @@ sealed class NotificationAction(
             if (status.isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp
     }
 
-    object Prev : NotificationAction(ACTION_KEY_PREV, R.string.action_previous, MusicService.ACTION_REWIND) {
+    object Prev : NotificationAction(ACTION_KEY_PREV, R.string.action_previous, MusicService.ACTION_PREVIOUS) {
         override fun icon(status: ServiceStatus): Int = R.drawable.ic_skip_previous_white_24dp
     }
 
-    object Next : NotificationAction(ACTION_KEY_NEXT, R.string.action_next, MusicService.ACTION_SKIP) {
+    object Next : NotificationAction(ACTION_KEY_NEXT, R.string.action_next, MusicService.ACTION_NEXT) {
         override fun icon(status: ServiceStatus): Int = R.drawable.ic_skip_next_white_24dp
     }
 

@@ -189,8 +189,8 @@ class MusicService : MediaBrowserServiceCompat() {
             ACTION_TOGGLE_PAUSE          -> if (isPlaying) pause() else play()
             ACTION_PLAY                  -> play()
             ACTION_PAUSE                 -> pause()
-            ACTION_SKIP                  -> playNextSong(true)
-            ACTION_REWIND                -> back(true)
+            ACTION_NEXT                  -> playNextSong(true)
+            ACTION_PREVIOUS              -> back(true)
             ACTION_SHUFFLE               -> queueManager.toggleShuffle()
             ACTION_REPEAT                -> queueManager.cycleRepeatMode()
             ACTION_FAV                   -> toggleFavorite(queueManager.currentSong)
@@ -534,8 +534,8 @@ class MusicService : MediaBrowserServiceCompat() {
         const val ACTION_TOGGLE_PAUSE = "$ACTUAL_PACKAGE_NAME.togglepause"
         const val ACTION_PLAY = "$ACTUAL_PACKAGE_NAME.play"
         const val ACTION_PAUSE = "$ACTUAL_PACKAGE_NAME.pause"
-        const val ACTION_SKIP = "$ACTUAL_PACKAGE_NAME.skip"
-        const val ACTION_REWIND = "$ACTUAL_PACKAGE_NAME.rewind"
+        const val ACTION_NEXT = "$ACTUAL_PACKAGE_NAME.skip_to_next"
+        const val ACTION_PREVIOUS = "$ACTUAL_PACKAGE_NAME.skip_to_previous"
         const val ACTION_SHUFFLE = "$ACTUAL_PACKAGE_NAME.toggle_shuffle"
         const val ACTION_REPEAT = "$ACTUAL_PACKAGE_NAME.toggle_repeat"
         const val ACTION_FAV = "$ACTUAL_PACKAGE_NAME.fav"

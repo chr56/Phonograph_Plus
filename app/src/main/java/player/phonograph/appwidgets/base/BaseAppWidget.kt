@@ -113,7 +113,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         val serviceName = ComponentName(context, MusicService::class.java)
 
         // Previous track
-        pendingIntent = buildPendingIntent(context, MusicService.ACTION_REWIND, serviceName)
+        pendingIntent = buildPendingIntent(context, MusicService.ACTION_PREVIOUS, serviceName)
         view.setOnClickPendingIntent(R.id.button_prev, pendingIntent)
 
         // Play and pause
@@ -121,7 +121,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         view.setOnClickPendingIntent(R.id.button_toggle_play_pause, pendingIntent)
 
         // Next track
-        pendingIntent = buildPendingIntent(context, MusicService.ACTION_SKIP, serviceName)
+        pendingIntent = buildPendingIntent(context, MusicService.ACTION_NEXT, serviceName)
         view.setOnClickPendingIntent(R.id.button_next, pendingIntent)
     }
 
