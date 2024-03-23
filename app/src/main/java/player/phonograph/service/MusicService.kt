@@ -191,6 +191,8 @@ class MusicService : MediaBrowserServiceCompat() {
             ACTION_PAUSE                 -> pause()
             ACTION_NEXT                  -> playNextSong(true)
             ACTION_PREVIOUS              -> back(true)
+            ACTION_FAST_FORWARD          -> fastForward()
+            ACTION_FAST_REWIND           -> fastRewind()
             ACTION_SHUFFLE               -> queueManager.toggleShuffle()
             ACTION_REPEAT                -> queueManager.cycleRepeatMode()
             ACTION_FAV                   -> toggleFavorite(queueManager.currentSong)
@@ -198,6 +200,19 @@ class MusicService : MediaBrowserServiceCompat() {
             ACTION_STOP_AND_QUIT_NOW     -> stopSelf()
             ACTION_STOP_AND_QUIT_PENDING -> controller.quitAfterFinishCurrentSong = true
             ACTION_CANCEL_PENDING_QUIT   -> controller.quitAfterFinishCurrentSong = false
+        }
+    }
+
+    private fun fastForward(millis: Int = 10_000) = seekSafely(millis)
+
+    private fun fastRewind(millis: Int = 10_000) = seekSafely(-millis)
+
+    private fun seekSafely(offset: Int): Boolean {
+        val targetMilli = songProgressMillis + offset
+        return if (targetMilli in 0..songDurationMillis) {
+            seek(targetMilli) > 0
+        } else {
+            false
         }
     }
 
@@ -536,6 +551,8 @@ class MusicService : MediaBrowserServiceCompat() {
         const val ACTION_PAUSE = "$ACTUAL_PACKAGE_NAME.pause"
         const val ACTION_NEXT = "$ACTUAL_PACKAGE_NAME.skip_to_next"
         const val ACTION_PREVIOUS = "$ACTUAL_PACKAGE_NAME.skip_to_previous"
+        const val ACTION_FAST_REWIND = "$ACTUAL_PACKAGE_NAME.fast_rewind"
+        const val ACTION_FAST_FORWARD = "$ACTUAL_PACKAGE_NAME.fast_forward"
         const val ACTION_SHUFFLE = "$ACTUAL_PACKAGE_NAME.toggle_shuffle"
         const val ACTION_REPEAT = "$ACTUAL_PACKAGE_NAME.toggle_repeat"
         const val ACTION_FAV = "$ACTUAL_PACKAGE_NAME.fav"
