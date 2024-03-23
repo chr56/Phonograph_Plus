@@ -512,4 +512,6 @@
     <string name="pref_title_always_play">Always Play</string>
     <string name="pref_summary_always_play">Ignore any interruptions and continue to play, no matter what else is being played. (This may cause silent output in some circumstances.)</string>
     <string name="action_view_external_files">View external files</string>
+    <string name="pref_title_notification_actions">Playback Notification Actions</string>
+    <string name="pref_summary_notification_actions">Custom playback notification action buttons</string>
 </resources>
