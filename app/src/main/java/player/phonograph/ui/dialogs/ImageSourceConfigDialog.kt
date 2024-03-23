@@ -12,10 +12,10 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import mt.pref.ThemeColor
 import player.phonograph.R
-import player.phonograph.ui.adapter.SortableListAdapter
-import player.phonograph.model.config.ImageSourceConfig
 import player.phonograph.mechanism.setting.CoilImageConfig
 import player.phonograph.model.ImageSource
+import player.phonograph.model.config.ImageSourceConfig
+import player.phonograph.ui.adapter.SortableListAdapter
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +25,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 
 class ImageSourceConfigDialog : DialogFragment() {
 
@@ -44,9 +45,18 @@ class ImageSourceConfigDialog : DialogFragment() {
 
         val dialog = MaterialDialog(requireContext())
             .title(R.string.image_source_config)
+            .noAutoDismiss()
             .customView(view = view, dialogWrapContent = false)
             .positiveButton(android.R.string.ok) {
-                CoilImageConfig.currentImageSourceConfig = adapter.currentConfig
+                val sourceConfig = adapter.currentConfig
+                if (sourceConfig.sources.none { it.enabled }) {
+                    Toast.makeText(
+                        requireActivity(),
+                        R.string.choose_at_least_one,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                CoilImageConfig.currentImageSourceConfig = sourceConfig
                 dismiss()
             }
             .negativeButton(android.R.string.cancel) { dismiss(); }
@@ -65,6 +75,7 @@ class ImageSourceConfigDialog : DialogFragment() {
 
         return dialog
     }
+
     class ImageSourceConfigAdapter(private val sourceConfig: ImageSourceConfig) :
             SortableListAdapter<ImageSource>() {
 

@@ -23,7 +23,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 
 class NotificationActionsConfigDialog : DialogFragment() {
     private lateinit var adapter: ActionConfigAdapter
@@ -93,12 +92,12 @@ class NotificationActionsConfigDialog : DialogFragment() {
             val action = item.notificationAction
             binding.textview.text = if (action != null) contentView.resources.getText(action.stringRes) else item.key
             binding.checkbox.isChecked = item.displayInCompat
-            binding.checkbox.setOnCheckedChangeListener { _, valve ->
-                item.displayInCompat = valve
+            binding.checkbox.setOnClickListener { view ->
+                item.displayInCompat = !item.displayInCompat
             }
         }
 
-        override fun checkRequirement(): Boolean = dataset.checkedItems.size in 3..5
+        override val clickByCheckboxOnly: Boolean get() = true
 
         val currentConfig: NotificationActionsConfig
             get() = NotificationActionsConfig(

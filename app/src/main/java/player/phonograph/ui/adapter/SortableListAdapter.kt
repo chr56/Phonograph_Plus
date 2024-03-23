@@ -15,7 +15,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.FrameLayout
-import android.widget.Toast
 
 abstract class SortableListAdapter<C> :
         RecyclerView.Adapter<SortableListAdapter.ViewHolder>(),
@@ -59,32 +58,22 @@ abstract class SortableListAdapter<C> :
 
         holder.checkBox.isChecked = dataset[position].checked
 
-        holder.itemView.setOnClickListener { view ->
-            val checkBox = view.findViewById<CheckBox>(R.id.checkbox)
-            when (checkBox.isChecked) {
-                true  -> {
-                    if (checkRequirement()) {
-                        checkBox.isChecked = false
-                        dataset.toggle(holder.bindingAdapterPosition)
-                    } else {
-                        Toast.makeText(
-                            holder.itemView.context,
-                            R.string.illegal_operation,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-
-                false -> {
-                    checkBox.isChecked = true
-                    dataset.toggle(holder.bindingAdapterPosition)
-                }
+        if (clickByCheckboxOnly) {
+            holder.checkBox.setOnClickListener {
+                dataset.toggle(holder.bindingAdapterPosition)
+            }
+        } else {
+            holder.itemView.setOnClickListener {
+                dataset.toggle(holder.bindingAdapterPosition)
+                val checkBox = it.findViewById<CheckBox>(R.id.checkbox)
+                checkBox.isChecked = !checkBox.isChecked
             }
         }
 
-
         onBindContentView(holder.contentView, position)
     }
+
+    protected open val clickByCheckboxOnly: Boolean = false
 
     protected abstract fun onBindContentView(contentView: View, position: Int)
 
@@ -121,11 +110,6 @@ abstract class SortableListAdapter<C> :
             var checked: Boolean,
         )
     }
-
-    /**
-     * check whether the selected items match the requirement of quantity
-     */
-    protected open fun checkRequirement(): Boolean = dataset.checkedItems.isNotEmpty()
 
     fun attachToRecyclerView(recyclerView: RecyclerView?) =
         touchHelper.attachToRecyclerView(recyclerView)
