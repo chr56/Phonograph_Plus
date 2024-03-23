@@ -324,8 +324,8 @@ class PlayingNotificationManger : ServiceComponent {
             layoutCompat.updateNotificationTextColor(primaryTextColor, secondaryTextColor, false)
             layoutExpanded.updateNotificationTextColor(primaryTextColor, secondaryTextColor, true)
 
-            layoutCompat.updateNotificationAction(backgroundColor, config)
-            layoutExpanded.updateNotificationAction(backgroundColor, config)
+            layoutCompat.updateNotificationAction(backgroundColor, config, true)
+            layoutExpanded.updateNotificationAction(backgroundColor, config, false)
 
             notificationBuilder
                 .setContent(layoutCompat)
@@ -344,8 +344,8 @@ class PlayingNotificationManger : ServiceComponent {
                             layoutCompat.setBackgroundColor(color)
                             layoutExpanded.setBackgroundColor(color)
 
-                            layoutCompat.updateNotificationAction(color, config)
-                            layoutExpanded.updateNotificationAction(color, config)
+                            layoutCompat.updateNotificationAction(color, config, true)
+                            layoutExpanded.updateNotificationAction(color, config, false)
                         }
                         postNotification(notificationBuilder.build())
                     }
@@ -450,8 +450,14 @@ class PlayingNotificationManger : ServiceComponent {
         private fun RemoteViews.updateNotificationAction(
             backgroundColor: Int,
             config: NotificationActionsConfig,
+            compatMode: Boolean
         ) {
-            val actions = config.actions.map { it.notificationAction }
+            val actions =
+                if (compatMode)
+                    config.actions.filter { it.displayInCompat }.map { it.notificationAction }
+                else
+                    config.actions.map { it.notificationAction }
+
             val status =
                 ServiceStatus(service.isPlaying, service.queueManager.shuffleMode, service.queueManager.repeatMode)
 
