@@ -23,6 +23,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.Toast
 
 class NotificationActionsConfigDialog : DialogFragment() {
     private lateinit var adapter: ActionConfigAdapter
@@ -43,9 +45,19 @@ class NotificationActionsConfigDialog : DialogFragment() {
         val dialog = MaterialDialog(requireContext())
             .title(text = "NotificationConfig")
             .customView(view = view, dialogWrapContent = false)
+            .noAutoDismiss()
             .positiveButton(android.R.string.ok) {
-                NotificationConfig.actions = adapter.currentConfig
-                dismiss()
+                val actionsConfig = adapter.currentConfig
+                if (actionsConfig != null) {
+                    NotificationConfig.actions = actionsConfig
+                    dismiss()
+                } else {
+                    Toast.makeText(
+                        it.context,
+                        R.string.illegal_operation,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
             .negativeButton(android.R.string.cancel) { dismiss() }
             .neutralButton(R.string.reset_action) {
@@ -93,16 +105,31 @@ class NotificationActionsConfigDialog : DialogFragment() {
             binding.textview.text = if (action != null) contentView.resources.getText(action.stringRes) else item.key
             binding.checkbox.isChecked = item.displayInCompat
             binding.checkbox.setOnClickListener { view ->
-                item.displayInCompat = !item.displayInCompat
+                if (dataset[position].checked) {
+                    item.displayInCompat = !item.displayInCompat
+                } else {
+                    Toast.makeText(
+                        view.context,
+                        R.string.illegal_operation,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    (view as CheckBox).toggle()
+                }
             }
         }
 
         override val clickByCheckboxOnly: Boolean get() = true
 
-        val currentConfig: NotificationActionsConfig
+        val currentConfig: NotificationActionsConfig?
             get() = NotificationActionsConfig(
                 dataset.checkedItems.map { it.content }
-            )
+            ).let(::validate)
+
+        private fun validate(raw: NotificationActionsConfig): NotificationActionsConfig? {
+            if (raw.actions.size !in 1..5) return null
+            if (raw.actions.filter { it.displayInCompat }.size !in 1..3) return null
+            return raw
+        }
 
     }
 }
