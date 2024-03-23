@@ -1,27 +1,23 @@
-## **v1.6.0-dev1 2024.03.07**
+## **v1.6.0-dev2 2024.03.23**
 
 ### EN
 
-1. New: option 'Always Play' - ignore any Audio Focus interruptions and continue to play
-2. New: search artists if it has multiple artists on Go To Artist
-3. Fix: failed to duplicate multiple playlists
-4. Fix: preference Colored Navigation Bar failed
-5. Improve: slightly adjust tab width
-6. Modify: notification (or from connected device) playback control behaviors now are identical to graphical ones
-7. Modify: move custom artist images to external storage (/Android/data/) from internal storage
+1. New: support hiding images for list items
+2. New: customisable Media Notification Actions (up to 3 actions in Compacted and up to 5 actions in Expanded)
+3. New: support fast-forward and rewind some seconds from Notification
+4. New: support quiting background playback totally from Notification
+5. Modify: Allow users to select none of Image Source (i.e. disable all image loading)
 
 
 
 
 ### ZH
 
-1. 新增 ‘始终播放’选项--忽略任何音频焦点中断并继续播放
-2. 新增 ‘查看艺术家’时若有多个艺术家则进行搜索
-3. 修复 复制多个播放列表失败
-4. 修复 导航栏着色选项失效
-5. 改进 微调标签宽度
-6. 修改 通知中(或通过连接的设备)的播放控制行为现与其图形界面版本行为一致
-7. 修改 将自定义艺术家图片从内部存储移至外部存储(/Android/data/)
+1. 新增 支持隐藏列表中的图像
+2. 新增 可自定义媒体通知中的动作（紧凑通知中至多 3 个动作，展开通知中至多 5 个动作）
+3. 新增 支持从通知中快进和快退几秒
+4. 新增 支持从通知中退出后台播放
+5. 修改 允许用户不选择任何图像来源（即禁用所有图像加载）
 
 
 
