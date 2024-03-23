@@ -19,9 +19,7 @@
         android:ellipsize="end"
         android:gravity="center|start"
         android:paddingStart="@dimen/md_listitem_control_margin"
-        android:paddingTop="@dimen/md_listitem_vertical_margin_choice"
         android:paddingEnd="@dimen/md_listitem_control_margin"
-        android:paddingBottom="@dimen/md_listitem_vertical_margin_choice"
         tools:text="Item" />
 
     <lib.phonograph.view.CheckBoxX
@@ -31,6 +29,7 @@
         android:background="@null"
         android:clickable="false"
         android:focusable="false"
+        android:paddingVertical="0dp"
         android:gravity="center_vertical" />
 
 </LinearLayout>
