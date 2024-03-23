@@ -7,11 +7,14 @@ package player.phonograph.service.notification
 import coil.request.Disposable
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
-import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.mechanism.setting.NotificationAction
+import player.phonograph.mechanism.setting.NotificationActionsConfig
+import player.phonograph.mechanism.setting.NotificationConfig
 import player.phonograph.model.Song
 import player.phonograph.service.MusicService
 import player.phonograph.service.ServiceComponent
+import player.phonograph.service.ServiceStatus
 import player.phonograph.service.player.PlayerState.PAUSED
 import player.phonograph.service.player.PlayerState.PLAYING
 import player.phonograph.service.player.PlayerState.PREPARING
@@ -22,7 +25,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.theme.createTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
-import androidx.annotation.RequiresApi
+import androidx.annotation.LayoutRes
 import androidx.media.app.NotificationCompat
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -57,6 +60,8 @@ class PlayingNotificationManger : ServiceComponent {
 
     private var classicNotification: Boolean = false
     private var coloredNotification: Boolean = true
+
+    private lateinit var actionsConfig: NotificationActionsConfig
 
     var persistent: Boolean = false
         private set
@@ -95,6 +100,8 @@ class PlayingNotificationManger : ServiceComponent {
             }
         }
 
+        actionsConfig = NotificationConfig.actions
+
         fun <T> collect(key: PrimitiveKey<T>, collector: FlowCollector<T>) {
             service.coroutineScope.launch(SupervisorJob()) {
                 Setting(musicService)[key].flow.distinctUntilChanged().collect(collector)
@@ -106,6 +113,9 @@ class PlayingNotificationManger : ServiceComponent {
         }
         collect(Keys.coloredNotification) { value ->
             coloredNotification = value
+        }
+        collect(Keys.notificationActionsJsonString) { _ ->
+            actionsConfig = NotificationConfig.actions
         }
         collect(Keys.persistentPlaybackNotification) { value ->
             persistent = value
@@ -126,10 +136,10 @@ class PlayingNotificationManger : ServiceComponent {
 
     fun updateNotification(song: Song) {
         if (song.id != -1L) {
-            impl?.update(song)
+            impl?.update(song, actionsConfig)
         } else {
             if (persistent) {
-                impl?.empty()
+                impl?.empty(actionsConfig)
             } else {
                 removeNotification()
             }
@@ -171,8 +181,8 @@ class PlayingNotificationManger : ServiceComponent {
     //region Impl
 
     internal interface Impl {
-        fun update(song: Song)
-        fun empty()
+        fun update(song: Song, config: NotificationActionsConfig)
+        fun empty(config: NotificationActionsConfig)
     }
 
     /** Disposable ImageRequest for Cover Art **/
@@ -180,29 +190,11 @@ class PlayingNotificationManger : ServiceComponent {
 
     inner class Impl24 : Impl {
 
-        private fun playPauseAction(isPlaying: Boolean): XNotificationCompat.Action = XNotificationCompat.Action(
-            if (isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp,
-            service.getString(R.string.action_play_pause),
-            buildPlaybackPendingIntent(MusicService.ACTION_TOGGLE_PAUSE)
-        )
-
-        private fun previousAction(): XNotificationCompat.Action = XNotificationCompat.Action(
-            R.drawable.ic_skip_previous_white_24dp,
-            service.getString(R.string.action_previous),
-            buildPlaybackPendingIntent(MusicService.ACTION_REWIND)
-        )
-
-        private fun nextAction(): XNotificationCompat.Action = XNotificationCompat.Action(
-            R.drawable.ic_skip_next_white_24dp,
-            service.getString(R.string.action_next),
-            buildPlaybackPendingIntent(MusicService.ACTION_SKIP)
-        )
-
         private fun mediaStyle(): NotificationCompat.MediaStyle =
             NotificationCompat.MediaStyle().setMediaSession(service.mediaSession.sessionToken)
 
         @Synchronized
-        override fun update(song: Song) {
+        override fun update(song: Song, config: NotificationActionsConfig) {
             val isPlaying = service.isPlaying
 
             prepareNotification(
@@ -210,8 +202,7 @@ class PlayingNotificationManger : ServiceComponent {
                 content = song.artistName,
                 subText = song.albumName,
                 ongoing = isPlaying,
-                style = mediaStyle().setShowActionsInCompactView(0, 1, 2),
-                previousAction(), playPauseAction(isPlaying), nextAction()
+                config = config,
             )
 
             postNotification(notificationBuilder.build())
@@ -241,267 +232,261 @@ class PlayingNotificationManger : ServiceComponent {
             content: String?,
             subText: String?,
             ongoing: Boolean,
-            style: XNotificationCompat.Style,
-            vararg actions: XNotificationCompat.Action,
-        ): XNotificationCompat.Builder =
-            notificationBuilder
+            config: NotificationActionsConfig,
+        ): XNotificationCompat.Builder {
+
+            val base = notificationBuilder
                 .setContentTitle(title)
                 .setContentText(content)
                 .setSubText(subText)
                 .setOngoing(ongoing)
                 .setLargeIcon(service.coverLoader.defaultCover)
                 .clearActions()
+
+
+            val status =
+                ServiceStatus(service.isPlaying, service.queueManager.shuffleMode, service.queueManager.repeatMode)
+
+            val actions =
+                config.actions.map { processActions(it.notificationAction, status) }
+
+
+            val positions =
+                config.actions.mapIndexed { index, item ->
+                    if (item.displayInCompat) index else -1
+                }.filter { it > 0 }.toIntArray()
+
+            return base
                 .apply {
-                    for (action in actions) {
-                        addAction(action)
-                    }
+                    for (action in actions) addAction(action)
                 }
-                .setStyle(style)
+                .setStyle(mediaStyle().setShowActionsInCompactView(*positions))
+        }
+
+        private fun processActions(action: NotificationAction?, status: ServiceStatus): XNotificationCompat.Action {
+            return if (action != null)
+                XNotificationCompat.Action(
+                    action.icon(status),
+                    service.getString(action.stringRes),
+                    buildPlaybackPendingIntent(action.action)
+                )
+            else {
+                XNotificationCompat.Action(R.drawable.ic_notification, null, null)
+            }
+        }
 
 
-        private fun emptyNotification() =
+        private fun emptyNotification(config: NotificationActionsConfig) =
             prepareNotification(
                 title = service.getString(R.string.empty),
                 content = null,
                 subText = null,
                 ongoing = true,
-                style = mediaStyle(),
+                config = config
             )
 
-        override fun empty() {
-            postNotification(emptyNotification().build())
+        override fun empty(config: NotificationActionsConfig) {
+            postNotification(emptyNotification(config).build())
         }
     }
 
     inner class Impl0 : Impl {
 
-        override fun empty() {
-            val notificationLayout: RemoteViews =
-                prepareNotificationLayout(service.getString(R.string.empty), null, null, Color.LTGRAY)
-
-            val notificationLayoutBig: RemoteViews =
-                prepareNotificationLayoutBig(service.getString(R.string.empty), null, null, Color.LTGRAY)
-
-            updateNotificationContent(Color.LTGRAY, notificationLayout, notificationLayoutBig)
-
-            notificationBuilder
-                .setContent(notificationLayout)
-                .setCustomBigContentView(notificationLayoutBig)
-                .setOngoing(true)
-
-            postNotification(notificationBuilder.build())
-        }
-
-        @Synchronized
-        override fun update(song: Song) {
-
-            val notificationLayout: RemoteViews =
-                prepareNotificationLayout(song.title, song.artistName, song.albumName, Color.WHITE)
-
-            val notificationLayoutBig: RemoteViews =
-                prepareNotificationLayoutBig(song.title, song.artistName, song.albumName, Color.WHITE)
-
-            updateNotificationContent(Color.WHITE, notificationLayout, notificationLayoutBig)
-
-            notificationBuilder
-                .setContent(notificationLayout)
-                .setCustomBigContentView(notificationLayoutBig)
-                .setOngoing(service.isPlaying)
-
-            postNotification(notificationBuilder.build())
-
-            // then try to load cover image
-            request?.dispose()
-            request = service.coverLoader.load(song) { bitmap: Bitmap?, backgroundColor: Int ->
-                if (bitmap != null) {
-                    notificationLayout.setImageViewBitmap(R.id.image, bitmap)
-                    notificationLayoutBig.setImageViewBitmap(R.id.image, bitmap)
-                    if (coloredNotification) {
-                        notificationLayout.setBackgroundColor(backgroundColor)
-                        notificationLayoutBig.setBackgroundColor(backgroundColor)
-                        updateNotificationContent(backgroundColor, notificationLayout, notificationLayoutBig)
-                    }
-                    postNotification(notificationBuilder.build())
-                }
-            }
-        }
-
-
-        private fun prepareNotificationLayout(
-            title: String?,
-            text1: String?,
-            @Suppress("UNUSED_PARAMETER") text2: String?,
-            backgroundColor: Int,
-        ): RemoteViews {
-            //region Collapsed Notification
-            val notificationLayout: RemoteViews =
-                RemoteViews(service.packageName, R.layout.notification).apply {
-                    //region Text
-                    if (TextUtils.isEmpty(title) && TextUtils.isEmpty(text1)) {
-                        setViewVisibility(R.id.media_titles, View.INVISIBLE)
-                    } else {
-                        setViewVisibility(R.id.media_titles, View.VISIBLE)
-                        setTextViewText(R.id.title, title)
-                        setTextViewText(R.id.text, text1)
-                    }
-                    //endregion
-                    //region Default Artwork
-                    setImageViewResource(R.id.image, R.drawable.default_album_art)
-                    //endregion
-                    //region Color
-                    setBackgroundColor(backgroundColor)
-                    //endregion
-                    //region Actions
-                    setupActionButtons()
-                    //endregion
-                }
-            //endregion
-            return notificationLayout
-        }
-
-        private fun prepareNotificationLayoutBig(
+        private fun common(
+            builder: XNotificationCompat.Builder,
             title: String?,
             text1: String?,
             text2: String?,
             backgroundColor: Int,
-        ): RemoteViews {
-            //region Expanded Notification
-            val notificationLayoutBig: RemoteViews =
-                RemoteViews(service.packageName, R.layout.notification_big).apply {
-                    //region Text
-                    if (TextUtils.isEmpty(title) && TextUtils.isEmpty(text1) && TextUtils.isEmpty(text2)) {
-                        setViewVisibility(R.id.media_titles, View.INVISIBLE)
-                    } else {
-                        setViewVisibility(R.id.media_titles, View.VISIBLE)
-                        setTextViewText(R.id.title, title)
-                        setTextViewText(R.id.text, text1)
-                        setTextViewText(R.id.text2, text2)
+            ongoing: Boolean,
+            loadImage: Boolean,
+            song: Song?,
+            config: NotificationActionsConfig,
+        ) {
+
+            val layoutCompat: RemoteViews =
+                buildRemoteViews(
+                    R.layout.notification,
+                    title, text1, text2, backgroundColor,
+                    hasText2 = false, config
+                )
+
+            val layoutExpanded: RemoteViews =
+                buildRemoteViews(
+                    R.layout.notification_big,
+                    title, text1, text2, backgroundColor,
+                    hasText2 = true, config
+                )
+
+            val primaryTextColor = service.primaryTextColor(backgroundColor)
+            val secondaryTextColor = service.secondaryTextColor(backgroundColor)
+
+            layoutCompat.updateNotificationTextColor(primaryTextColor, secondaryTextColor, false)
+            layoutExpanded.updateNotificationTextColor(primaryTextColor, secondaryTextColor, true)
+
+            layoutCompat.updateNotificationAction(backgroundColor, config, true)
+            layoutExpanded.updateNotificationAction(backgroundColor, config, false)
+
+            notificationBuilder
+                .setContent(layoutCompat)
+                .setCustomBigContentView(layoutExpanded)
+                .setOngoing(ongoing)
+
+            postNotification(builder.build())
+
+            if (loadImage && song != null) {
+                request?.dispose()
+                request = service.coverLoader.load(song) { bitmap: Bitmap?, color: Int ->
+                    if (bitmap != null) {
+                        layoutCompat.setImageViewBitmap(R.id.image, bitmap)
+                        layoutExpanded.setImageViewBitmap(R.id.image, bitmap)
+                        if (coloredNotification) {
+                            layoutCompat.setBackgroundColor(color)
+                            layoutExpanded.setBackgroundColor(color)
+
+                            layoutCompat.updateNotificationAction(color, config, true)
+                            layoutExpanded.updateNotificationAction(color, config, false)
+                        }
+                        postNotification(notificationBuilder.build())
                     }
-                    //endregion
-                    //region Default Artwork
-                    setImageViewResource(R.id.image, R.drawable.default_album_art)
-                    //endregion
-                    //region Color
-                    setBackgroundColor(backgroundColor)
-                    //endregion
-                    //region Actions
-                    setupActionButtons()
-                    //endregion
                 }
+            }
+        }
+
+        override fun empty(config: NotificationActionsConfig) {
+            common(
+                builder = notificationBuilder,
+                title = service.getString(R.string.empty), text1 = null, text2 = null,
+                backgroundColor = Color.LTGRAY,
+                ongoing = true,
+                loadImage = false, song = null,
+                config = config
+            )
+        }
+
+        @Synchronized
+        override fun update(song: Song, config: NotificationActionsConfig) {
+            common(
+                builder = notificationBuilder,
+                title = song.title, text1 = song.artistName, text2 = song.albumName,
+                backgroundColor = Color.WHITE,
+                ongoing = service.isPlaying,
+                loadImage = true, song = song,
+                config = config
+            )
+        }
+
+        private fun buildRemoteViews(
+            @LayoutRes layout: Int,
+            title: String?,
+            text1: String?,
+            text2: String?,
+            backgroundColor: Int,
+            hasText2: Boolean,
+            actionsConfig: NotificationActionsConfig,
+        ): RemoteViews = RemoteViews(service.packageName, layout).apply {
+            //region Text
+            val hideTitle =
+                if (hasText2) TextUtils.isEmpty(title) && TextUtils.isEmpty(text1) && TextUtils.isEmpty(text2)
+                else TextUtils.isEmpty(title) && TextUtils.isEmpty(text1)
+
+            if (hideTitle) {
+                setViewVisibility(R.id.media_titles, View.INVISIBLE)
+            } else {
+                setViewVisibility(R.id.media_titles, View.VISIBLE)
+                setTextViewText(R.id.title, title)
+                setTextViewText(R.id.text, text1)
+                if (hasText2) setTextViewText(R.id.text2, text2)
+            }
             //endregion
-            return notificationLayoutBig
+            //region Default Artwork
+            setImageViewResource(R.id.image, R.drawable.default_album_art)
+            //endregion
+            //region Color
+            setBackgroundColor(backgroundColor)
+            //endregion
+            //region Actions
+            setupActionButtons(actionsConfig)
+            //endregion
         }
 
         private fun RemoteViews.setBackgroundColor(color: Int) =
             setInt(R.id.root, "setBackgroundColor", color)
 
-        private fun RemoteViews.setupActionButtons() {
-            @Suppress("JoinDeclarationAndAssignment")
-            var pendingIntent: PendingIntent
-
-            // Previous track
-            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_REWIND)
-            setOnClickPendingIntent(R.id.action_prev, pendingIntent)
-
-            // Play and pause
-            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_TOGGLE_PAUSE)
-            setOnClickPendingIntent(R.id.action_play_pause, pendingIntent)
-
-            // Next track
-            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_SKIP)
-            setOnClickPendingIntent(R.id.action_next, pendingIntent)
-        }
-
-        private fun linkButtons(notificationLayout: RemoteViews, notificationLayoutBig: RemoteViews) {
-            @Suppress("JoinDeclarationAndAssignment")
-            var pendingIntent: PendingIntent
-
-            // Previous track
-            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_REWIND)
-            notificationLayout.setOnClickPendingIntent(R.id.action_prev, pendingIntent)
-            notificationLayoutBig.setOnClickPendingIntent(R.id.action_prev, pendingIntent)
-
-            // Play and pause
-            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_TOGGLE_PAUSE)
-            notificationLayout.setOnClickPendingIntent(R.id.action_play_pause, pendingIntent)
-            notificationLayoutBig.setOnClickPendingIntent(R.id.action_play_pause, pendingIntent)
-
-            // Next track
-            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_SKIP)
-            notificationLayout.setOnClickPendingIntent(R.id.action_next, pendingIntent)
-            notificationLayoutBig.setOnClickPendingIntent(R.id.action_next, pendingIntent)
-        }
-
-
-        private fun updateNotificationContent(
-            backgroundColor: Int,
-            notificationLayout: RemoteViews,
-            notificationLayoutBig: RemoteViews,
+        private fun RemoteViews.updateNotificationTextColor(
+            primaryTextColor: Int,
+            secondaryTextColor: Int,
+            hasText2: Boolean,
         ) {
-            val primary = service.primaryTextColor(backgroundColor)
-            val secondary = service.secondaryTextColor(backgroundColor)
-
-            val prev = BitmapUtil.createBitmap(
-                service.createTintedDrawable(
-                    R.drawable.ic_skip_previous_white_24dp,
-                    primary
-                )!!,
-                1.5f
-            )
-            val next = BitmapUtil.createBitmap(
-                service.createTintedDrawable(
-                    R.drawable.ic_skip_next_white_24dp,
-                    primary
-                )!!,
-                1.5f
-            )
-            val playPause = BitmapUtil.createBitmap(
-                service.createTintedDrawable(
-                    if (service.isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp,
-                    primary
-                )!!,
-                1.5f
-            )
-
-            notificationLayout.setTextColor(R.id.title, primary)
-            notificationLayout.setTextColor(R.id.text, secondary)
-
-            notificationLayout.setImageViewBitmap(R.id.action_prev, prev)
-            notificationLayout.setImageViewBitmap(R.id.action_next, next)
-            notificationLayout.setImageViewBitmap(R.id.action_play_pause, playPause)
-
-            notificationLayoutBig.setTextColor(R.id.title, primary)
-            notificationLayoutBig.setTextColor(R.id.text, secondary)
-            notificationLayoutBig.setTextColor(R.id.text2, secondary)
-
-            notificationLayoutBig.setImageViewBitmap(R.id.action_prev, prev)
-            notificationLayoutBig.setImageViewBitmap(R.id.action_next, next)
-            notificationLayoutBig.setImageViewBitmap(R.id.action_play_pause, playPause)
+            setTextColor(R.id.title, primaryTextColor)
+            setTextColor(R.id.text, secondaryTextColor)
+            if (hasText2) {
+                setTextColor(R.id.text2, secondaryTextColor)
+            }
         }
 
-    }
-    //endregion
+        private val actionPlaceholders: List<Int> = listOf(
+            R.id.action_placeholder1,
+            R.id.action_placeholder2,
+            R.id.action_placeholder3,
+            R.id.action_placeholder4,
+            R.id.action_placeholder5,
+        )
 
-    @RequiresApi(26)
-    private fun createNotificationChannel() {
-        notificationManager.getNotificationChannel(NOTIFICATION_CHANNEL_ID).also { exist ->
-            if (exist == null) {
-                notificationManager.createNotificationChannel(
-                    NotificationChannel(
-                        NOTIFICATION_CHANNEL_ID,
-                        App.instance.getString(R.string.playing_notification_name),
-                        NotificationManager.IMPORTANCE_LOW
-                    ).apply {
-                        description = App.instance.getString(
-                            R.string.playing_notification_description
-                        )
-                        enableLights(false)
-                        enableVibration(false)
-                    }
+        /**
+         * Link intent with action buttons
+         */
+        private fun RemoteViews.setupActionButtons(config: NotificationActionsConfig) {
+            val actions = config.actions.map { it.notificationAction }
+            for (i in actionPlaceholders.indices) {
+                val notificationAction = actions.getOrNull(i) ?: continue
+                setOnClickPendingIntent(
+                    actionPlaceholders[i],
+                    buildPlaybackPendingIntent(notificationAction.action)
                 )
             }
         }
+
+        private fun RemoteViews.updateNotificationAction(
+            backgroundColor: Int,
+            config: NotificationActionsConfig,
+            compatMode: Boolean
+        ) {
+            val actions =
+                if (compatMode)
+                    config.actions.filter { it.displayInCompat }.map { it.notificationAction }
+                else
+                    config.actions.map { it.notificationAction }
+
+            val status =
+                ServiceStatus(service.isPlaying, service.queueManager.shuffleMode, service.queueManager.repeatMode)
+
+            for (i in actionPlaceholders.indices) {
+                val notificationAction = actions.getOrNull(i)
+                if (notificationAction != null) {
+                    setViewVisibility(actionPlaceholders[i], View.VISIBLE)
+                    setImageViewBitmap(
+                        actionPlaceholders[i],
+                        icon(notificationAction, status, backgroundColor)
+                    )
+                } else {
+                    // hide
+                    setViewVisibility(actionPlaceholders[i], View.GONE)
+                }
+            }
+
+        }
+
+        /**
+         * @return Icon Bitmap of this [action]
+         */
+        private fun icon(action: NotificationAction, status: ServiceStatus, backgroundColor: Int): Bitmap =
+            BitmapUtil.createBitmap(
+                service.createTintedDrawable(action.icon(status), service.primaryTextColor(backgroundColor))!!, 1.5f
+            )
+
     }
+    //endregion
 
     //region Misc Util
     /**

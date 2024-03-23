@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="exit">退出</string>
     <string name="disable">关闭</string>
     <string name="choose_at_least_one">至少选一个</string>
     <string name="action_set_as_ringtone">设为铃声</string>
@@ -498,4 +499,12 @@
     <string name="pref_title_always_play">持续播放</string>
     <string name="pref_summary_always_play">忽略任何打断并继续背景播放，无论当前正在播放什么其他内容（可能导致某些情况下输出无声）</string>
     <string name="action_view_external_files">浏览外部文件</string>
+    <string name="pref_title_notification_actions">播放通知动作按钮</string>
+    <string name="pref_summary_notification_actions">自定义播放通知动作按钮</string>
+    <string name="help_notification_actions">可以在此处自定义播放通知动作：可以在展开通知中设置至多 5 个动作，在紧凑通知中设置至多 3 个动作。（左侧复选框用于紧凑通知；右侧复选框用于紧凑通知。）</string>
+    <string name="help_unmatched_notification_actions">紧凑通知中的动作必须同时存在于扩展通知。</string>
+    <string name="illegal_operation">操作不满足要求</string>
+    <string name="error_unstoppable_service">无法退出前台或正在使用的音乐服务</string>
+    <string name="action_fast_rewind">快退</string>
+    <string name="action_fast_forward">快进</string>
 </resources>

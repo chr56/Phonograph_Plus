@@ -6,19 +6,22 @@ package player.phonograph.service.player
 
 import coil.request.Disposable
 import player.phonograph.BuildConfig
-import player.phonograph.R
+import player.phonograph.mechanism.setting.NotificationAction
+import player.phonograph.mechanism.setting.NotificationActionsConfig
+import player.phonograph.mechanism.setting.NotificationConfig
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
 import player.phonograph.repo.browser.MediaBrowserDelegate
 import player.phonograph.service.MusicService
-import player.phonograph.service.MusicService.Companion.MEDIA_SESSION_ACTION_TOGGLE_REPEAT
-import player.phonograph.service.MusicService.Companion.MEDIA_SESSION_ACTION_TOGGLE_SHUFFLE
 import player.phonograph.service.ServiceComponent
+import player.phonograph.service.ServiceStatus
 import player.phonograph.service.notification.PlayingNotificationManger
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.service.util.MediaButtonIntentReceiver
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Intent
@@ -39,6 +42,8 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 class MediaSessionController : ServiceComponent {
@@ -52,6 +57,8 @@ class MediaSessionController : ServiceComponent {
 
     override fun onCreate(musicService: MusicService) {
         _service = musicService
+
+        updateCustomActions(NotificationConfig.actions)
 
         val mediaButtonReceiverComponentName = ComponentName(
             musicService.applicationContext,
@@ -77,6 +84,12 @@ class MediaSessionController : ServiceComponent {
         mediaSession.setMediaButtonReceiver(mediaButtonReceiverPendingIntent)
 
         mediaSession.setCallback(mediaSessionCallback)
+
+        service.coroutineScope.launch(SupervisorJob()) {
+            Setting(musicService)[Keys.notificationActionsJsonString].flow.distinctUntilChanged().collect {
+                updateCustomActions(NotificationConfig.actions)
+            }
+        }
     }
 
     override fun onDestroy(musicService: MusicService) {
@@ -158,10 +171,7 @@ class MediaSessionController : ServiceComponent {
             }
 
             override fun onCustomAction(action: String?, extras: Bundle?) {
-                when (action) {
-                    MEDIA_SESSION_ACTION_TOGGLE_SHUFFLE -> queueManager.toggleShuffle()
-                    MEDIA_SESSION_ACTION_TOGGLE_REPEAT  -> queueManager.cycleRepeatMode()
-                }
+                service.processCommand(action)
             }
 
             override fun onPlayFromMediaId(mediaId: String, extras: Bundle?) {
@@ -204,24 +214,22 @@ class MediaSessionController : ServiceComponent {
     }
 
     private fun PlaybackStateCompat.Builder.setCustomActions(musicService: MusicService): PlaybackStateCompat.Builder {
-        addCustomAction(
-            MEDIA_SESSION_ACTION_TOGGLE_SHUFFLE,
-            musicService.getString(R.string.action_shuffle_mode),
-            when (musicService.queueManager.shuffleMode) {
-                ShuffleMode.SHUFFLE -> R.drawable.ic_shuffle_white_24dp
-                ShuffleMode.NONE    -> R.drawable.ic_shuffle_disabled_white_24dp
-            }
-        )
-        addCustomAction(
-            MEDIA_SESSION_ACTION_TOGGLE_REPEAT,
-            musicService.getString(R.string.action_repeat_mode),
-            when (musicService.queueManager.repeatMode) {
-                RepeatMode.REPEAT_QUEUE       -> R.drawable.ic_repeat_white_24dp
-                RepeatMode.REPEAT_SINGLE_SONG -> R.drawable.ic_repeat_one_white_24dp
-                RepeatMode.NONE               -> R.drawable.ic_repeat_off_white_24dp
-            }
-        )
+        val status =
+            ServiceStatus(service.isPlaying, service.queueManager.shuffleMode, service.queueManager.repeatMode)
+        for (action in customActions) {
+            addCustomAction(
+                action.action,
+                musicService.getString(action.stringRes),
+                action.icon(status)
+            )
+        }
         return this
+    }
+
+    private lateinit var customActions: List<NotificationAction>
+    private fun updateCustomActions(config: NotificationActionsConfig) {
+        customActions = config.actions.sortedBy { it.displayInCompat }.map { it.notificationAction }
+            .filterNot { it in NotificationAction.COMMON_ACTIONS }
     }
 
     @Suppress("SameParameterValue")

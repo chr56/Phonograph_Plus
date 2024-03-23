@@ -25,17 +25,21 @@ object Keys {
     object homeTabConfigJsonString :
             PrimitiveKey<String>(stringPK(HOME_TAB_CONFIG), { "" })
 
+    object coloredAppShortcuts :
+            PrimitiveKey<Boolean>(booleanPK(COLORED_APP_SHORTCUTS), { true })
+
+    object fixedTabLayout :
+            PrimitiveKey<Boolean>(booleanPK(FIXED_TAB_LAYOUT), { false })
+
+    // Appearance - Notification
     object coloredNotification :
             PrimitiveKey<Boolean>(booleanPK(COLORED_NOTIFICATION), { true })
 
     object classicNotification :
             PrimitiveKey<Boolean>(booleanPK(CLASSIC_NOTIFICATION), { false })
 
-    object coloredAppShortcuts :
-            PrimitiveKey<Boolean>(booleanPK(COLORED_APP_SHORTCUTS), { true })
-
-    object fixedTabLayout :
-            PrimitiveKey<Boolean>(booleanPK(FIXED_TAB_LAYOUT), { false })
+    object notificationActionsJsonString :
+            PrimitiveKey<String>(stringPK(NOTIFICATION_ACTIONS), { "{}" })
 
     // Behavior-Retention
     object rememberLastTab :

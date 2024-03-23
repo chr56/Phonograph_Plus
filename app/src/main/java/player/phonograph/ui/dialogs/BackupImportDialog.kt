@@ -59,9 +59,13 @@ class BackupImportDialog : DialogFragment() {
         val dialog = MaterialDialog(requireActivity())
             .title(text = getString(R.string.action_import, getString(R.string.action_backup)))
             .customView(view = view, dialogWrapContent = false)
+            .noAutoDismiss()
             .positiveButton(android.R.string.ok) { dialog ->
                 val selected = adapter.currentConfig
                 val host = activity.get() ?: return@positiveButton
+
+                if (selected.isEmpty()) return@positiveButton
+
                 val processDialog = ProgressDialog.newInstance(getString(R.string.action_backup))
                 dialog.dismiss()
                 processDialog.show(host.supportFragmentManager, "ProgressDialog")

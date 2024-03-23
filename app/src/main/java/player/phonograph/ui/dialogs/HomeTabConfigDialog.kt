@@ -25,6 +25,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 
 class HomeTabConfigDialog : DialogFragment() {
     private lateinit var adapter: PageTabConfigAdapter
@@ -47,10 +48,20 @@ class HomeTabConfigDialog : DialogFragment() {
         val dialog = MaterialDialog(requireContext())
             .title(R.string.library_categories)
             .customView(view = view, dialogWrapContent = false)
+            .noAutoDismiss()
             .positiveButton(android.R.string.ok) {
-                HomeTabConfig.homeTabConfig = adapter.currentConfig
                 Log.v(TAG, adapter.getState())
-                dismiss()
+                val pageConfig = adapter.currentConfig
+                if (pageConfig != null) {
+                    HomeTabConfig.homeTabConfig = pageConfig
+                    dismiss()
+                } else {
+                    Toast.makeText(
+                        it.context,
+                        R.string.you_have_to_select_at_least_one_category,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
             .negativeButton(android.R.string.cancel) { dismiss(); Log.i(TAG, adapter.getState()) }
             .neutralButton(R.string.reset_action) {
@@ -93,15 +104,13 @@ class HomeTabConfigDialog : DialogFragment() {
             }
         }
 
-        override fun onBindContentView(contentView: View, position: Int) {
+        override fun onBindContentView(contentView: View, holder: ViewHolder) {
             require(contentView is TextView) { "Receive ${contentView.javaClass.name}" }
-            contentView.text = Pages.getDisplayName(dataset[position].content, contentView.context)
+            contentView.text = Pages.getDisplayName(dataset[holder.bindingAdapterPosition].content, contentView.context)
         }
 
-        val currentConfig: PageConfig
-            get() = PageConfig.from(
-                dataset.visibleItems().map { it.content }
-            )
+        val currentConfig: PageConfig?
+            get() = PageConfig.from(dataset.checkedItems.map { it.content }.ifEmpty { return null })
 
         companion object {
             private const val TAG = "PageTabConfigAdapter"

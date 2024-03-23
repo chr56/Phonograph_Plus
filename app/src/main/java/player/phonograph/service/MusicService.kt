@@ -6,6 +6,7 @@ package player.phonograph.service
 
 import lib.phonograph.localization.ContextLocaleDelegate
 import org.koin.android.ext.android.get
+import org.koin.core.context.GlobalContext
 import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.BuildConfig
 import player.phonograph.MusicServiceMsgConst.META_CHANGED
@@ -13,10 +14,12 @@ import player.phonograph.MusicServiceMsgConst.PLAY_STATE_CHANGED
 import player.phonograph.MusicServiceMsgConst.QUEUE_CHANGED
 import player.phonograph.MusicServiceMsgConst.REPEAT_MODE_CHANGED
 import player.phonograph.MusicServiceMsgConst.SHUFFLE_MODE_CHANGED
+import player.phonograph.R
 import player.phonograph.appwidgets.AppWidgetBig
 import player.phonograph.appwidgets.AppWidgetCard
 import player.phonograph.appwidgets.AppWidgetClassic
 import player.phonograph.appwidgets.AppWidgetSmall
+import player.phonograph.mechanism.IFavorite
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.repo.browser.MediaBrowserDelegate
@@ -58,6 +61,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.support.v4.media.MediaBrowserCompat
 import android.util.Log
+import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -175,20 +179,59 @@ class MusicService : MediaBrowserServiceCompat() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null) {
-            if (intent.action != null) {
-                when (intent.action) {
-                    ACTION_TOGGLE_PAUSE          -> if (isPlaying) pause() else play()
-                    ACTION_PAUSE                 -> pause()
-                    ACTION_PLAY                  -> play()
-                    ACTION_REWIND                -> back(true)
-                    ACTION_SKIP                  -> playNextSong(true)
-                    ACTION_STOP_AND_QUIT_NOW     -> stopSelf()
-                    ACTION_STOP_AND_QUIT_PENDING -> controller.quitAfterFinishCurrentSong = true
-                    ACTION_CANCEL_PENDING_QUIT   -> controller.quitAfterFinishCurrentSong = false
-                }
-            }
+            if (intent.action != null) processCommand(intent.action)
         }
         return START_NOT_STICKY
+    }
+
+    fun processCommand(action: String?) {
+        when (action) {
+            ACTION_TOGGLE_PAUSE          -> if (isPlaying) pause() else play()
+            ACTION_PLAY                  -> play()
+            ACTION_PAUSE                 -> pause()
+            ACTION_NEXT                  -> playNextSong(true)
+            ACTION_PREVIOUS              -> back(true)
+            ACTION_FAST_FORWARD          -> fastForward()
+            ACTION_FAST_REWIND           -> fastRewind()
+            ACTION_SHUFFLE               -> queueManager.toggleShuffle()
+            ACTION_REPEAT                -> queueManager.cycleRepeatMode()
+            ACTION_FAV                   -> toggleFavorite(queueManager.currentSong)
+            ACTION_EXIT_OR_STOP          -> exitOrStop()
+            ACTION_STOP_AND_QUIT_NOW     -> stopSelf()
+            ACTION_STOP_AND_QUIT_PENDING -> controller.quitAfterFinishCurrentSong = true
+            ACTION_CANCEL_PENDING_QUIT   -> controller.quitAfterFinishCurrentSong = false
+        }
+    }
+
+    private fun fastForward(millis: Int = 10_000) = seekSafely(millis)
+
+    private fun fastRewind(millis: Int = 10_000) = seekSafely(-millis)
+
+    private fun seekSafely(offset: Int): Boolean {
+        val targetMilli = songProgressMillis + offset
+        return if (targetMilli in 0..songDurationMillis) {
+            seek(targetMilli) > 0
+        } else {
+            false
+        }
+    }
+
+    private fun exitOrStop() {
+        log("serviceUsedInForeground: $serviceUsedInForeground", false)
+        if (serviceUsedInForeground > 0) {
+            pause()
+            log("Can not exit foreground service!", false)
+            try {
+                Toast.makeText(this, R.string.error_unstoppable_service, Toast.LENGTH_SHORT).show()
+            } catch (_: Exception) {
+            }
+        } else {
+            stopSelf()
+        }
+    }
+
+    private fun toggleFavorite(song: Song) {
+        GlobalContext.get().inject<IFavorite>().value.toggleFavorite(this, song)
     }
 
     val playerState get() = controller.playerState
@@ -506,14 +549,17 @@ class MusicService : MediaBrowserServiceCompat() {
         const val ACTION_TOGGLE_PAUSE = "$ACTUAL_PACKAGE_NAME.togglepause"
         const val ACTION_PLAY = "$ACTUAL_PACKAGE_NAME.play"
         const val ACTION_PAUSE = "$ACTUAL_PACKAGE_NAME.pause"
-        const val ACTION_SKIP = "$ACTUAL_PACKAGE_NAME.skip"
-        const val ACTION_REWIND = "$ACTUAL_PACKAGE_NAME.rewind"
+        const val ACTION_NEXT = "$ACTUAL_PACKAGE_NAME.skip_to_next"
+        const val ACTION_PREVIOUS = "$ACTUAL_PACKAGE_NAME.skip_to_previous"
+        const val ACTION_FAST_REWIND = "$ACTUAL_PACKAGE_NAME.fast_rewind"
+        const val ACTION_FAST_FORWARD = "$ACTUAL_PACKAGE_NAME.fast_forward"
+        const val ACTION_SHUFFLE = "$ACTUAL_PACKAGE_NAME.toggle_shuffle"
+        const val ACTION_REPEAT = "$ACTUAL_PACKAGE_NAME.toggle_repeat"
+        const val ACTION_FAV = "$ACTUAL_PACKAGE_NAME.fav"
+        const val ACTION_EXIT_OR_STOP = "$ACTUAL_PACKAGE_NAME.exit_or_stop"
         const val ACTION_STOP_AND_QUIT_NOW = "$ACTUAL_PACKAGE_NAME.stop_and_quit_now"
         const val ACTION_STOP_AND_QUIT_PENDING = "$ACTUAL_PACKAGE_NAME.stop_and_quit_pending"
         const val ACTION_CANCEL_PENDING_QUIT = "$ACTUAL_PACKAGE_NAME.cancel_pending_quit"
-
-        const val MEDIA_SESSION_ACTION_TOGGLE_SHUFFLE = "$ACTUAL_PACKAGE_NAME.toggle_shuffle"
-        const val MEDIA_SESSION_ACTION_TOGGLE_REPEAT = "$ACTUAL_PACKAGE_NAME.toggle_repeat"
 
         const val APP_WIDGET_UPDATE = "$ACTUAL_PACKAGE_NAME.appwidgetupdate"
         const val EXTRA_APP_WIDGET_NAME = ACTUAL_PACKAGE_NAME + "app_widget_name"
@@ -526,7 +572,9 @@ class MusicService : MediaBrowserServiceCompat() {
 
     }
 
+    private var serviceUsedInForeground: Int = 0
     override fun onBind(intent: Intent): IBinder {
+        serviceUsedInForeground++
         return if (SERVICE_INTERFACE == intent.action) {
             log("onBind(): bind to $SERVICE_INTERFACE", true)
             super.onBind(intent) ?: musicBind
@@ -534,6 +582,12 @@ class MusicService : MediaBrowserServiceCompat() {
             log("onBind(): bind to common MusicBinder", true)
             musicBind
         }
+    }
+
+    override fun onUnbind(intent: Intent?): Boolean {
+        serviceUsedInForeground--
+        log("onUnbind()", true)
+        return super.onUnbind(intent)
     }
 
     private val musicBind: IBinder = MusicBinder()

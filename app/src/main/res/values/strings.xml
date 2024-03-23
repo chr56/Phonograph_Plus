@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="exit">Exit</string>
     <string name="disable">disable</string>
     <string name="choose_at_least_one">Please choose at least one</string>
     <string name="action_set_as_ringtone">Set as ringtone</string>
@@ -511,4 +512,12 @@
     <string name="pref_title_always_play">Always Play</string>
     <string name="pref_summary_always_play">Ignore any interruptions and continue to play, no matter what else is being played. (This may cause silent output in some circumstances.)</string>
     <string name="action_view_external_files">View external files</string>
+    <string name="pref_title_notification_actions">Playback Notification Actions</string>
+    <string name="pref_summary_notification_actions">Custom playback notification action buttons</string>
+    <string name="help_notification_actions">You could set up to 5 actions in expanded notification, and up to 3 actions in compact notification. (Left checkboxes are for expanded ones; Right checkboxes are for compact ones.)</string>
+    <string name="help_unmatched_notification_actions">Actions in compact notification must be in expanded notification as well.</string>
+    <string name="illegal_operation">The operation does not match its requirement.</string>
+    <string name="error_unstoppable_service">Can not exit music service in foreground or in use.</string>
+    <string name="action_fast_rewind">Fast Rewind</string>
+    <string name="action_fast_forward">Fast Forward</string>
 </resources>

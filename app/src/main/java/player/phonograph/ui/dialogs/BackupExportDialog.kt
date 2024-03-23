@@ -54,6 +54,7 @@ class BackupExportDialog : DialogFragment() {
             .positiveButton(android.R.string.ok) { dialog ->
                 val selected = adapter.currentConfig
                 val host = activity.get() ?: return@positiveButton
+                if (selected.isEmpty()) return@positiveButton
                 require(host is ICreateFileStorageAccess)
                 host.createFileStorageAccessTool.launch(
                     "phonograph_plus_backup_${dateTimeSuffixCompat(currentDate())}.zip"
