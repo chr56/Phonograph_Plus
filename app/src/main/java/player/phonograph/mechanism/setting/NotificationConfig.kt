@@ -4,7 +4,10 @@
 
 package player.phonograph.mechanism.setting
 
+import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import androidx.annotation.Keep
 import androidx.annotation.StringDef
 import androidx.annotation.StringRes
@@ -21,11 +24,19 @@ object NotificationConfig {
 
     var actions: NotificationActionsConfig
         get() {
-            return NotificationActionsConfig.DEFAULT
+            val rawString = Setting(App.instance)[Keys.notificationActionsJsonString].data
+            return readFromJson(rawString, ::resetActions)
         }
-        set(value) {}
+        set(value) {
+            val jsonString = writeToJson(value)
+            Setting(App.instance)[Keys.notificationActionsJsonString].data = jsonString
+        }
 
-    fun resetActions(): NotificationActionsConfig = NotificationActionsConfig.DEFAULT
+    fun resetActions(): NotificationActionsConfig {
+        return NotificationActionsConfig.DEFAULT.also { default ->
+            actions = default
+        }
+    }
 
     private fun readFromJson(
         raw: String,
