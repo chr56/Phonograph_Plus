@@ -6,6 +6,7 @@ package player.phonograph.service
 
 import lib.phonograph.localization.ContextLocaleDelegate
 import org.koin.android.ext.android.get
+import org.koin.core.context.GlobalContext
 import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.BuildConfig
 import player.phonograph.MusicServiceMsgConst.META_CHANGED
@@ -17,6 +18,7 @@ import player.phonograph.appwidgets.AppWidgetBig
 import player.phonograph.appwidgets.AppWidgetCard
 import player.phonograph.appwidgets.AppWidgetClassic
 import player.phonograph.appwidgets.AppWidgetSmall
+import player.phonograph.mechanism.IFavorite
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.repo.browser.MediaBrowserDelegate
@@ -184,6 +186,7 @@ class MusicService : MediaBrowserServiceCompat() {
                     ACTION_SKIP                  -> playNextSong(true)
                     ACTION_SHUFFLE               -> queueManager.toggleShuffle()
                     ACTION_REPEAT                -> queueManager.cycleRepeatMode()
+                    ACTION_FAV                   -> toggleFavorite(queueManager.currentSong)
                     ACTION_STOP_AND_QUIT_NOW     -> stopSelf()
                     ACTION_STOP_AND_QUIT_PENDING -> controller.quitAfterFinishCurrentSong = true
                     ACTION_CANCEL_PENDING_QUIT   -> controller.quitAfterFinishCurrentSong = false
@@ -191,6 +194,10 @@ class MusicService : MediaBrowserServiceCompat() {
             }
         }
         return START_NOT_STICKY
+    }
+
+    private fun toggleFavorite(song: Song) {
+        GlobalContext.get().inject<IFavorite>().value.toggleFavorite(this, song)
     }
 
     val playerState get() = controller.playerState
@@ -512,6 +519,7 @@ class MusicService : MediaBrowserServiceCompat() {
         const val ACTION_REWIND = "$ACTUAL_PACKAGE_NAME.rewind"
         const val ACTION_SHUFFLE = "$ACTUAL_PACKAGE_NAME.shuffle"
         const val ACTION_REPEAT = "$ACTUAL_PACKAGE_NAME.repeat"
+        const val ACTION_FAV = "$ACTUAL_PACKAGE_NAME.fav"
         const val ACTION_STOP_AND_QUIT_NOW = "$ACTUAL_PACKAGE_NAME.stop_and_quit_now"
         const val ACTION_STOP_AND_QUIT_PENDING = "$ACTUAL_PACKAGE_NAME.stop_and_quit_pending"
         const val ACTION_CANCEL_PENDING_QUIT = "$ACTUAL_PACKAGE_NAME.cancel_pending_quit"
