@@ -70,12 +70,12 @@ abstract class SortableListAdapter<C> :
             }
         }
 
-        onBindContentView(holder.contentView, position)
+        onBindContentView(holder.contentView, holder)
     }
 
     protected open val clickByCheckboxOnly: Boolean = false
 
-    protected abstract fun onBindContentView(contentView: View, position: Int)
+    protected abstract fun onBindContentView(contentView: View, holder: ViewHolder)
 
     class ViewHolder(rootView: View, val contentView: View) : RecyclerView.ViewHolder(rootView) {
         val checkBox: CheckBox = rootView.findViewById(R.id.checkbox)

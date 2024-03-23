@@ -96,9 +96,9 @@ class ImageSourceConfigDialog : DialogFragment() {
             }
         }
 
-        override fun onBindContentView(contentView: View, position: Int) {
+        override fun onBindContentView(contentView: View, holder: ViewHolder) {
             require(contentView is TextView) { "Receive ${contentView.javaClass.name}" }
-            contentView.text = dataset[position].content.displayString(contentView.context)
+            contentView.text = dataset[holder.bindingAdapterPosition].content.displayString(contentView.context)
         }
 
         val currentConfig: ImageSourceConfig

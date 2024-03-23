@@ -104,9 +104,9 @@ class HomeTabConfigDialog : DialogFragment() {
             }
         }
 
-        override fun onBindContentView(contentView: View, position: Int) {
+        override fun onBindContentView(contentView: View, holder: ViewHolder) {
             require(contentView is TextView) { "Receive ${contentView.javaClass.name}" }
-            contentView.text = Pages.getDisplayName(dataset[position].content, contentView.context)
+            contentView.text = Pages.getDisplayName(dataset[holder.bindingAdapterPosition].content, contentView.context)
         }
 
         val currentConfig: PageConfig?

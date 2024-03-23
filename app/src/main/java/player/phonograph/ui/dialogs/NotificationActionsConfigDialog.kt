@@ -104,12 +104,13 @@ class NotificationActionsConfigDialog : DialogFragment() {
             return LayoutInflater.from(parent.context).inflate(R.layout.item_right_checkbox, parent, false)
         }
 
-        override fun onBindContentView(contentView: View, position: Int) {
+        override fun onBindContentView(contentView: View, holder: ViewHolder) {
             val binding = ItemRightCheckboxBinding.bind(contentView)
-            val item = dataset[position].content
+            val item = dataset[holder.bindingAdapterPosition].content
             binding.textview.text = contentView.resources.getText(item.notificationAction.stringRes)
             binding.checkbox.isChecked = item.displayInCompat
             binding.checkbox.setOnClickListener { view ->
+                val position = holder.bindingAdapterPosition
                 if (dataset[position].checked) {
                     item.displayInCompat = !item.displayInCompat
                 } else {
