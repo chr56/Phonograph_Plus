@@ -14,6 +14,7 @@ import player.phonograph.MusicServiceMsgConst.PLAY_STATE_CHANGED
 import player.phonograph.MusicServiceMsgConst.QUEUE_CHANGED
 import player.phonograph.MusicServiceMsgConst.REPEAT_MODE_CHANGED
 import player.phonograph.MusicServiceMsgConst.SHUFFLE_MODE_CHANGED
+import player.phonograph.R
 import player.phonograph.appwidgets.AppWidgetBig
 import player.phonograph.appwidgets.AppWidgetCard
 import player.phonograph.appwidgets.AppWidgetClassic
@@ -60,6 +61,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.support.v4.media.MediaBrowserCompat
 import android.util.Log
+import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -192,9 +194,24 @@ class MusicService : MediaBrowserServiceCompat() {
             ACTION_SHUFFLE               -> queueManager.toggleShuffle()
             ACTION_REPEAT                -> queueManager.cycleRepeatMode()
             ACTION_FAV                   -> toggleFavorite(queueManager.currentSong)
+            ACTION_EXIT_OR_STOP          -> exitOrStop()
             ACTION_STOP_AND_QUIT_NOW     -> stopSelf()
             ACTION_STOP_AND_QUIT_PENDING -> controller.quitAfterFinishCurrentSong = true
             ACTION_CANCEL_PENDING_QUIT   -> controller.quitAfterFinishCurrentSong = false
+        }
+    }
+
+    private fun exitOrStop() {
+        log("serviceUsedInForeground: $serviceUsedInForeground", false)
+        if (serviceUsedInForeground > 0) {
+            pause()
+            log("Can not exit foreground service!", false)
+            try {
+                Toast.makeText(this, R.string.error_unstoppable_service, Toast.LENGTH_SHORT).show()
+            } catch (_: Exception) {
+            }
+        } else {
+            stopSelf()
         }
     }
 
@@ -522,6 +539,7 @@ class MusicService : MediaBrowserServiceCompat() {
         const val ACTION_SHUFFLE = "$ACTUAL_PACKAGE_NAME.toggle_shuffle"
         const val ACTION_REPEAT = "$ACTUAL_PACKAGE_NAME.toggle_repeat"
         const val ACTION_FAV = "$ACTUAL_PACKAGE_NAME.fav"
+        const val ACTION_EXIT_OR_STOP = "$ACTUAL_PACKAGE_NAME.exit_or_stop"
         const val ACTION_STOP_AND_QUIT_NOW = "$ACTUAL_PACKAGE_NAME.stop_and_quit_now"
         const val ACTION_STOP_AND_QUIT_PENDING = "$ACTUAL_PACKAGE_NAME.stop_and_quit_pending"
         const val ACTION_CANCEL_PENDING_QUIT = "$ACTUAL_PACKAGE_NAME.cancel_pending_quit"
@@ -537,7 +555,9 @@ class MusicService : MediaBrowserServiceCompat() {
 
     }
 
+    private var serviceUsedInForeground: Int = 0
     override fun onBind(intent: Intent): IBinder {
+        serviceUsedInForeground++
         return if (SERVICE_INTERFACE == intent.action) {
             log("onBind(): bind to $SERVICE_INTERFACE", true)
             super.onBind(intent) ?: musicBind
@@ -545,6 +565,12 @@ class MusicService : MediaBrowserServiceCompat() {
             log("onBind(): bind to common MusicBinder", true)
             musicBind
         }
+    }
+
+    override fun onUnbind(intent: Intent?): Boolean {
+        serviceUsedInForeground--
+        log("onUnbind()", true)
+        return super.onUnbind(intent)
     }
 
     private val musicBind: IBinder = MusicBinder()

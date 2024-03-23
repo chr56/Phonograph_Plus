@@ -157,7 +157,7 @@ sealed class NotificationAction(
         override fun icon(status: ServiceStatus): Int = R.drawable.ic_favorite_border_white_24dp
     }
 
-    object Close : NotificationAction(ACTION_KEY_CLOSE, R.string.exit, MusicService.ACTION_STOP_AND_QUIT_NOW) {
+    object Close : NotificationAction(ACTION_KEY_CLOSE, R.string.exit, MusicService.ACTION_EXIT_OR_STOP) {
         override fun icon(status: ServiceStatus): Int = R.drawable.ic_close_white_24dp
     }
 
