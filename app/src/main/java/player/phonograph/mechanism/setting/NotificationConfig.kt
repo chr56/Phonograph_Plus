@@ -109,7 +109,7 @@ data class NotificationActionsConfig(
 
 @Suppress("ConvertObjectToDataObject")
 sealed class NotificationAction(
-    @NotificationActionName private val key: String,
+    @NotificationActionName val key: String,
     @get:StringRes val stringRes: Int,
     val action: String,
 ) {
@@ -153,7 +153,7 @@ sealed class NotificationAction(
         override fun icon(status: ServiceStatus): Int = R.drawable.ic_favorite_border_white_24dp
     }
 
-    object Close : NotificationAction(ACTION_KEY_CLOSE, R.string.exit, MusicService.ACTION_CANCEL_PENDING_QUIT) {
+    object Close : NotificationAction(ACTION_KEY_CLOSE, R.string.exit, MusicService.ACTION_STOP_AND_QUIT_NOW) {
         override fun icon(status: ServiceStatus): Int = R.drawable.ic_close_white_24dp
     }
 
