@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
+    android:focusable="true"
+    android:foreground="@drawable/rect_selector_auto"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/md_listitem_vertical_margin_choice"
+    tools:gravity="start|center_vertical">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textview"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:gravity="center|start"
+        android:paddingStart="@dimen/md_listitem_control_margin"
+        android:paddingTop="@dimen/md_listitem_vertical_margin_choice"
+        android:paddingEnd="@dimen/md_listitem_control_margin"
+        android:paddingBottom="@dimen/md_listitem_vertical_margin_choice"
+        tools:text="Item" />
+
+    <lib.phonograph.view.CheckBoxX
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@null"
+        android:clickable="false"
+        android:focusable="false"
+        android:gravity="center_vertical" />
+
+</LinearLayout>
