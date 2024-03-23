@@ -111,15 +111,25 @@ data class NotificationActionsConfig(
     }
 }
 
-@Suppress("ConvertObjectToDataObject")
 sealed class NotificationAction(
     @NotificationActionName val key: String,
     @get:StringRes val stringRes: Int,
     val action: String,
 ) {
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        if (other !is NotificationAction) return false
+        return key == other.key
+    }
+
+    override fun hashCode(): Int {
+        return key.hashCode()
+    }
+
     @DrawableRes
-    open fun icon(status: ServiceStatus): Int = 0
+    abstract fun icon(status: ServiceStatus): Int
 
     object PlayPause : NotificationAction(
         ACTION_KEY_PLAY_PAUSE,
