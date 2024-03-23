@@ -9,7 +9,7 @@ notes:
       - "New: support hiding images for list items"
       - "New: customisable Media Notification Actions (up to 3 actions in Compacted and up to 5 actions in Expanded)"
       - "New: support fast-forward and rewind some seconds from Notification"
-      - "New: support quiting background playback totally from Notification"
+      - "New: support quitting background playback totally from Notification"
       - "Modify: Allow users to select none of Image Source (i.e. disable all image loading)"
   zh:
     highlights: [ ]
