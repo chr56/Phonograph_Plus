@@ -14,30 +14,73 @@
 ![DownloadsStatistics](https://img.shields.io/github/downloads/chr56/Phonograph_Plus/total)
 
 
-**An independent fork of Phonograph under maintenance and development**
+**A revived classic material designed music player for Android**
 
-Phonograph is a material designed local music player for Android. And Phonograph Plus is an _independent_ fork
-of [Phonograph](https://github.com/kabouzeid/Phonograph), and is currently under my maintenance and development.
+Phonograph is a light-weighted material designed local music player for Android. And Phonograph Plus currently is an _independent_ fork
+of [Phonograph](https://github.com/kabouzeid/Phonograph) since it is no longer maintained, and has been in maintenance and development since 2021.
 
 ## **Downloads**
 
-[<img src="https://img.shields.io/github/v/release/chr56/phonograph_plus?label=Github%20Release" alt="Github%20Release">](https://github.com/chr56/Phonograph_Plus/releases/latest)
-[<img src="https://img.shields.io/github/v/release/chr56/phonograph_plus?label=Github%20Release%20(Latest)&include_prereleases" alt="Github%20Release%20(Latest)">](https://github.com/chr56/Phonograph_Plus/releases/)
+[<img src="https://img.shields.io/github/v/release/chr56/phonograph_plus?label=Github%20Releases" alt="Github%20Release">](https://github.com/chr56/Phonograph_Plus/releases/latest)
+[<img src="https://img.shields.io/github/v/release/chr56/phonograph_plus?label=Github%20Releases%20(Latest)&include_prereleases" alt="Github%20Release%20(Latest)">](https://github.com/chr56/Phonograph_Plus/releases/)
 [<img src="https://img.shields.io/f-droid/v/player.phonograph.plus?label=F-droid" alt="F-droid">](https://f-droid.org/packages/player.phonograph.plus/)
+
+Phonograph Plus is available on GitHub Releases (Stable Channel and Preview Channel) and F-droid (Stable Channel).
+
+<small> * Reproducible Builds are enabled on F-droid, Apks from F-droid shall be exactly equivalent to ones from GitHub Releases, byte by byte.</small>
+
 
 ## **Additional Features**
 
-All listed features are compared with the original Phonograph.
+Here are a list of _notable_ changes or enhancements compared with the original Phonograph.
 
-- Unlock pro.
+### User Interface
 
 - Automatic & adaptive dark mode.
 
-- Plenty of user interface changes.
+- Unlock pro, support all themes.
+
+- <del>Poor</del> support of Monet.
+
+- Brand-new File tab with new design.
+
+- Brand-new App Intro with new design.
+
+- Improve "Library" pages user experience.
+
+... and more user interface changes.
+
+### Improvements
 
 - Change language in application manually.
 
+- Show Time Axis in "Lyrics" Dialog and allow seeking basing lyric's time axis and support lyrics following.
+
+- Support more sort orders.
+
+- Path filter, support "exclude mode" (blacklist) and "include mode" (whitelist).
+
+- Add song menu shortcuts to add new items to excluded-list (blacklist).
+
 - Better Notification Image Quality for Android T and above.
+
+- Improved experience of storage management for Android 11 and above.
+
+- Allow deleting songs file along with its external lyrics file.
+
+- Increase history played tracks and top played tracks entries capacity (100->150).
+
+- Enhance multi-selecting.
+
+- Better Playlist support.
+
+- Improve menu experience, collapse less frequently used options.
+
+- Allow tabs fixed.
+
+### Enhancements
+
+- Playback speed control.
 
 - User-defined click behavior for songs.
 
@@ -47,52 +90,22 @@ All listed features are compared with the original Phonograph.
 
 - Brand-new Tag Editor supporting more tags.
 
-- Show Time Axis in "Lyrics" Dialog and allow seeking basing lyric's time axis and support lyrics following.
-
-- Playback speed control.
-
-- Basic support for Android Auto.
-
-- Support more sort orders.
-
-- Partially Fix Android 11 Scope Storage.
+- Support for Android Auto.
 
 - Resume playing after interruptions.
 
-- Improve "Library" pages user experience.
-
 - Allow collecting app crash report.
-
-- Path filter, support "exclude mode" (blacklist) and "include mode" (whitelist).
-
-- Add song menu shortcuts to add new items to excluded-list (blacklist).
 
 - Co-work-with/Support [StatusBar Lyric Xposed Module (api)](https://github.com/Block-Network/StatusBarLyric).
 
-- Allow deleting songs file along with its external lyrics file.
+- Export internal databases and settings for backups.
 
-- Brand-new File tab.
+...
 
-- Brand-new App Intro.
-
-- Enhance multi-selecting.
-
-- Increase history played tracks and top played tracks entries capacity (100->150).
-
-- Export internal databases and settings for the need of backup.
-
-- Allow tabs fixed.
-
-- Better Playlist support.
-
-- <del>Poor</del> support of Monet.
-
-- Improve menu experience.
-
-- and more small features/fixes.
+and more small features/fixes.
 
 It is suggested to browser the [Changelog](https://phonographplus.github.io/changelogs/changeslogs/changelog.html) to
-view all features completely
+view all changes, improvements and new features completely.
 
 ## **Translation**
 
