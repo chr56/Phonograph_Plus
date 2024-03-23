@@ -402,61 +402,41 @@ class PlayingNotificationManger : ServiceComponent {
         private fun RemoteViews.setBackgroundColor(color: Int) =
             setInt(R.id.root, "setBackgroundColor", color)
 
+        private val actionPlaceholders: List<Int> = listOf(
+            R.id.action_placeholder1,
+            R.id.action_placeholder2,
+            R.id.action_placeholder3,
+            R.id.action_placeholder4,
+            R.id.action_placeholder5,
+        )
+
+        /**
+         * Link intent with action buttons
+         */
         private fun RemoteViews.setupActionButtons() {
-            @Suppress("JoinDeclarationAndAssignment")
-            var pendingIntent: PendingIntent
 
-            // Repeat Mode
-            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_REPEAT)
-            setOnClickPendingIntent(R.id.action_placeholder1, pendingIntent)
+            val config = NotificationConfig.actions
+            val actions = config.actions.map { it.notificationAction }
 
-            // Previous track
-            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_REWIND)
-            setOnClickPendingIntent(R.id.action_placeholder2, pendingIntent)
-
-            // Play and pause
-            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_TOGGLE_PAUSE)
-            setOnClickPendingIntent(R.id.action_placeholder3, pendingIntent)
-
-            // Next track
-            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_SKIP)
-            setOnClickPendingIntent(R.id.action_placeholder4, pendingIntent)
-
-            // Shuffle Mode
-            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_SHUFFLE)
-            setOnClickPendingIntent(R.id.action_placeholder5, pendingIntent)
+            for (i in actions.indices) {
+                val notificationAction = actions[i] ?: continue
+                setOnClickPendingIntent(
+                    actionPlaceholders[i],
+                    buildPlaybackPendingIntent(notificationAction.action)
+                )
+            }
         }
 
-        private fun linkButtons(notificationLayout: RemoteViews, notificationLayoutBig: RemoteViews) {
-            @Suppress("JoinDeclarationAndAssignment")
-            var pendingIntent: PendingIntent
-
-            // Repeat Mode
-            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_REPEAT)
-            notificationLayout.setOnClickPendingIntent(R.id.action_placeholder1, pendingIntent)
-            notificationLayoutBig.setOnClickPendingIntent(R.id.action_placeholder1, pendingIntent)
-
-            // Previous track
-            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_REWIND)
-            notificationLayout.setOnClickPendingIntent(R.id.action_placeholder2, pendingIntent)
-            notificationLayoutBig.setOnClickPendingIntent(R.id.action_placeholder2, pendingIntent)
-
-            // Play and pause
-            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_TOGGLE_PAUSE)
-            notificationLayout.setOnClickPendingIntent(R.id.action_placeholder3, pendingIntent)
-            notificationLayoutBig.setOnClickPendingIntent(R.id.action_placeholder3, pendingIntent)
-
-            // Next track
-            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_SKIP)
-            notificationLayout.setOnClickPendingIntent(R.id.action_placeholder4, pendingIntent)
-            notificationLayoutBig.setOnClickPendingIntent(R.id.action_placeholder4, pendingIntent)
-
-            // Shuffle Mode
-            pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_SHUFFLE)
-            notificationLayout.setOnClickPendingIntent(R.id.action_placeholder5, pendingIntent)
-            notificationLayoutBig.setOnClickPendingIntent(R.id.action_placeholder5, pendingIntent)
-        }
-
+        /**
+         * @return Icon Bitmap of this [action]
+         */
+        private fun icon(action: NotificationAction?, status: ServiceStatus, backgroundColor: Int): Bitmap =
+            BitmapUtil.createBitmap(
+                service.createTintedDrawable(
+                    action?.icon(status) ?: R.drawable.ic_notification,
+                    service.primaryTextColor(backgroundColor)
+                )!!, 1.5f
+            )
 
         private fun updateNotificationContent(
             backgroundColor: Int,
@@ -466,60 +446,38 @@ class PlayingNotificationManger : ServiceComponent {
             val primary = service.primaryTextColor(backgroundColor)
             val secondary = service.secondaryTextColor(backgroundColor)
 
-            val prev = BitmapUtil.createBitmap(
-                service.createTintedDrawable(
-                    R.drawable.ic_skip_previous_white_24dp,
-                    primary
-                )!!,
-                1.5f
-            )
-            val next = BitmapUtil.createBitmap(
-                service.createTintedDrawable(
-                    R.drawable.ic_skip_next_white_24dp,
-                    primary
-                )!!,
-                1.5f
-            )
-            val playPause = BitmapUtil.createBitmap(
-                service.createTintedDrawable(
-                    if (service.isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp,
-                    primary
-                )!!,
-                1.5f
-            )
-            val repeat = BitmapUtil.createBitmap(
-                service.createTintedDrawable(
-                    R.drawable.ic_repeat_white_24dp,
-                    primary
-                )!!,
-                1.5f
-            )
-            val shuffle = BitmapUtil.createBitmap(
-                service.createTintedDrawable(
-                    R.drawable.ic_shuffle_white_24dp,
-                    primary
-                )!!,
-                1.5f
-            )
-
             notificationLayout.setTextColor(R.id.title, primary)
             notificationLayout.setTextColor(R.id.text, secondary)
-
-            notificationLayout.setImageViewBitmap(R.id.action_placeholder1, repeat)
-            notificationLayout.setImageViewBitmap(R.id.action_placeholder2, prev)
-            notificationLayout.setImageViewBitmap(R.id.action_placeholder3, playPause)
-            notificationLayout.setImageViewBitmap(R.id.action_placeholder4, next)
-            notificationLayout.setImageViewBitmap(R.id.action_placeholder5, shuffle)
 
             notificationLayoutBig.setTextColor(R.id.title, primary)
             notificationLayoutBig.setTextColor(R.id.text, secondary)
             notificationLayoutBig.setTextColor(R.id.text2, secondary)
 
-            notificationLayoutBig.setImageViewBitmap(R.id.action_placeholder1, repeat)
-            notificationLayoutBig.setImageViewBitmap(R.id.action_placeholder2, prev)
-            notificationLayoutBig.setImageViewBitmap(R.id.action_placeholder3, playPause)
-            notificationLayoutBig.setImageViewBitmap(R.id.action_placeholder4, next)
-            notificationLayoutBig.setImageViewBitmap(R.id.action_placeholder5, shuffle)
+            val config = NotificationConfig.actions
+            val actions = config.actions.map { it.notificationAction }
+            val status =
+                ServiceStatus(service.isPlaying, service.queueManager.shuffleMode, service.queueManager.repeatMode)
+
+            for (i in actionPlaceholders.indices) {
+                val notificationAction = actions.getOrNull(i)
+                if (notificationAction != null) {
+                    notificationLayout.setViewVisibility(actionPlaceholders[i], View.VISIBLE)
+                    notificationLayout.setImageViewBitmap(
+                        actionPlaceholders[i],
+                        icon(notificationAction, status, backgroundColor)
+                    )
+                    notificationLayoutBig.setViewVisibility(actionPlaceholders[i], View.VISIBLE)
+                    notificationLayoutBig.setImageViewBitmap(
+                        actionPlaceholders[i],
+                        icon(notificationAction, status, backgroundColor)
+                    )
+                } else{
+                    // hide
+                    notificationLayout.setViewVisibility(actionPlaceholders[i], View.GONE)
+                    notificationLayoutBig.setViewVisibility(actionPlaceholders[i], View.GONE)
+                }
+            }
+
         }
 
     }
