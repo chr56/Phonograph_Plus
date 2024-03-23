@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "1.6.0-dev2",
+      "versionCode": 1053,
+      "date": 1711207289,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.6.0-dev2"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>新增 支持隐藏列表中的图像</li><li>新增 可自定义媒体通知中的动作（紧凑通知中至多 3 个动作，展开通知中至多 5 个动作）</li><li>新增 支持从通知中快进和快退几秒</li><li>新增 支持从通知中退出后台播放</li><li>修改 允许用户不选择任何图像来源（即禁用所有图像加载）</li></ol>",
+        "en": "<ol><li>New: support hiding images for list items</li><li>New: customisable Media Notification Actions (up to 3 actions in Compacted and up to 5 actions in Expanded)</li><li>New: support fast-forward and rewind some seconds from Notification</li><li>New: support quiting background playback totally from Notification</li><li>Modify: Allow users to select none of Image Source (i.e. disable all image loading)</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.6.0-dev1",
       "versionCode": 1052,
       "date": 1709790001,
