@@ -177,23 +177,25 @@ class MusicService : MediaBrowserServiceCompat() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null) {
-            if (intent.action != null) {
-                when (intent.action) {
-                    ACTION_TOGGLE_PAUSE          -> if (isPlaying) pause() else play()
-                    ACTION_PAUSE                 -> pause()
-                    ACTION_PLAY                  -> play()
-                    ACTION_REWIND                -> back(true)
-                    ACTION_SKIP                  -> playNextSong(true)
-                    ACTION_SHUFFLE               -> queueManager.toggleShuffle()
-                    ACTION_REPEAT                -> queueManager.cycleRepeatMode()
-                    ACTION_FAV                   -> toggleFavorite(queueManager.currentSong)
-                    ACTION_STOP_AND_QUIT_NOW     -> stopSelf()
-                    ACTION_STOP_AND_QUIT_PENDING -> controller.quitAfterFinishCurrentSong = true
-                    ACTION_CANCEL_PENDING_QUIT   -> controller.quitAfterFinishCurrentSong = false
-                }
-            }
+            if (intent.action != null) processCommand(intent.action)
         }
         return START_NOT_STICKY
+    }
+
+    fun processCommand(action: String?) {
+        when (action) {
+            ACTION_TOGGLE_PAUSE          -> if (isPlaying) pause() else play()
+            ACTION_PLAY                  -> play()
+            ACTION_PAUSE                 -> pause()
+            ACTION_SKIP                  -> playNextSong(true)
+            ACTION_REWIND                -> back(true)
+            ACTION_SHUFFLE               -> queueManager.toggleShuffle()
+            ACTION_REPEAT                -> queueManager.cycleRepeatMode()
+            ACTION_FAV                   -> toggleFavorite(queueManager.currentSong)
+            ACTION_STOP_AND_QUIT_NOW     -> stopSelf()
+            ACTION_STOP_AND_QUIT_PENDING -> controller.quitAfterFinishCurrentSong = true
+            ACTION_CANCEL_PENDING_QUIT   -> controller.quitAfterFinishCurrentSong = false
+        }
     }
 
     private fun toggleFavorite(song: Song) {
@@ -517,15 +519,12 @@ class MusicService : MediaBrowserServiceCompat() {
         const val ACTION_PAUSE = "$ACTUAL_PACKAGE_NAME.pause"
         const val ACTION_SKIP = "$ACTUAL_PACKAGE_NAME.skip"
         const val ACTION_REWIND = "$ACTUAL_PACKAGE_NAME.rewind"
-        const val ACTION_SHUFFLE = "$ACTUAL_PACKAGE_NAME.shuffle"
-        const val ACTION_REPEAT = "$ACTUAL_PACKAGE_NAME.repeat"
+        const val ACTION_SHUFFLE = "$ACTUAL_PACKAGE_NAME.toggle_shuffle"
+        const val ACTION_REPEAT = "$ACTUAL_PACKAGE_NAME.toggle_repeat"
         const val ACTION_FAV = "$ACTUAL_PACKAGE_NAME.fav"
         const val ACTION_STOP_AND_QUIT_NOW = "$ACTUAL_PACKAGE_NAME.stop_and_quit_now"
         const val ACTION_STOP_AND_QUIT_PENDING = "$ACTUAL_PACKAGE_NAME.stop_and_quit_pending"
         const val ACTION_CANCEL_PENDING_QUIT = "$ACTUAL_PACKAGE_NAME.cancel_pending_quit"
-
-        const val MEDIA_SESSION_ACTION_TOGGLE_SHUFFLE = "$ACTUAL_PACKAGE_NAME.toggle_shuffle"
-        const val MEDIA_SESSION_ACTION_TOGGLE_REPEAT = "$ACTUAL_PACKAGE_NAME.toggle_repeat"
 
         const val APP_WIDGET_UPDATE = "$ACTUAL_PACKAGE_NAME.appwidgetupdate"
         const val EXTRA_APP_WIDGET_NAME = ACTUAL_PACKAGE_NAME + "app_widget_name"
