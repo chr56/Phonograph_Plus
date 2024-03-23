@@ -61,6 +61,8 @@ class PlayingNotificationManger : ServiceComponent {
     private var classicNotification: Boolean = false
     private var coloredNotification: Boolean = true
 
+    private lateinit var actionsConfig: NotificationActionsConfig
+
     var persistent: Boolean = false
         private set
 
@@ -98,6 +100,8 @@ class PlayingNotificationManger : ServiceComponent {
             }
         }
 
+        actionsConfig = NotificationConfig.actions
+
         fun <T> collect(key: PrimitiveKey<T>, collector: FlowCollector<T>) {
             service.coroutineScope.launch(SupervisorJob()) {
                 Setting(musicService)[key].flow.distinctUntilChanged().collect(collector)
@@ -109,6 +113,9 @@ class PlayingNotificationManger : ServiceComponent {
         }
         collect(Keys.coloredNotification) { value ->
             coloredNotification = value
+        }
+        collect(Keys.notificationActionsJsonString) { _ ->
+            actionsConfig = NotificationConfig.actions
         }
         collect(Keys.persistentPlaybackNotification) { value ->
             persistent = value
@@ -129,10 +136,10 @@ class PlayingNotificationManger : ServiceComponent {
 
     fun updateNotification(song: Song) {
         if (song.id != -1L) {
-            impl?.update(song)
+            impl?.update(song, actionsConfig)
         } else {
             if (persistent) {
-                impl?.empty()
+                impl?.empty(actionsConfig)
             } else {
                 removeNotification()
             }
@@ -174,8 +181,8 @@ class PlayingNotificationManger : ServiceComponent {
     //region Impl
 
     internal interface Impl {
-        fun update(song: Song)
-        fun empty()
+        fun update(song: Song, config: NotificationActionsConfig)
+        fun empty(config: NotificationActionsConfig)
     }
 
     /** Disposable ImageRequest for Cover Art **/
@@ -187,7 +194,7 @@ class PlayingNotificationManger : ServiceComponent {
             NotificationCompat.MediaStyle().setMediaSession(service.mediaSession.sessionToken)
 
         @Synchronized
-        override fun update(song: Song) {
+        override fun update(song: Song, config: NotificationActionsConfig) {
             val isPlaying = service.isPlaying
 
             prepareNotification(
@@ -195,6 +202,7 @@ class PlayingNotificationManger : ServiceComponent {
                 content = song.artistName,
                 subText = song.albumName,
                 ongoing = isPlaying,
+                config = config,
             )
 
             postNotification(notificationBuilder.build())
@@ -224,6 +232,7 @@ class PlayingNotificationManger : ServiceComponent {
             content: String?,
             subText: String?,
             ongoing: Boolean,
+            config: NotificationActionsConfig,
         ): XNotificationCompat.Builder {
 
             val base = notificationBuilder
@@ -238,7 +247,6 @@ class PlayingNotificationManger : ServiceComponent {
             val status =
                 ServiceStatus(service.isPlaying, service.queueManager.shuffleMode, service.queueManager.repeatMode)
 
-            val config: NotificationActionsConfig = NotificationConfig.actions
             val actions =
                 config.actions.map { processActions(it.notificationAction, status) }
 
@@ -268,16 +276,17 @@ class PlayingNotificationManger : ServiceComponent {
         }
 
 
-        private fun emptyNotification() =
+        private fun emptyNotification(config: NotificationActionsConfig) =
             prepareNotification(
                 title = service.getString(R.string.empty),
                 content = null,
                 subText = null,
                 ongoing = true,
+                config = config
             )
 
-        override fun empty() {
-            postNotification(emptyNotification().build())
+        override fun empty(config: NotificationActionsConfig) {
+            postNotification(emptyNotification(config).build())
         }
     }
 
@@ -292,9 +301,8 @@ class PlayingNotificationManger : ServiceComponent {
             ongoing: Boolean,
             loadImage: Boolean,
             song: Song?,
+            config: NotificationActionsConfig,
         ) {
-
-            val config = NotificationConfig.actions
 
             val layoutCompat: RemoteViews =
                 buildRemoteViews(
@@ -345,24 +353,26 @@ class PlayingNotificationManger : ServiceComponent {
             }
         }
 
-        override fun empty() {
+        override fun empty(config: NotificationActionsConfig) {
             common(
                 builder = notificationBuilder,
                 title = service.getString(R.string.empty), text1 = null, text2 = null,
                 backgroundColor = Color.LTGRAY,
                 ongoing = true,
-                loadImage = false, song = null
+                loadImage = false, song = null,
+                config = config
             )
         }
 
         @Synchronized
-        override fun update(song: Song) {
+        override fun update(song: Song, config: NotificationActionsConfig) {
             common(
                 builder = notificationBuilder,
                 title = song.title, text1 = song.artistName, text2 = song.albumName,
                 backgroundColor = Color.WHITE,
                 ongoing = service.isPlaying,
-                loadImage = true, song = song
+                loadImage = true, song = song,
+                config = config
             )
         }
 
