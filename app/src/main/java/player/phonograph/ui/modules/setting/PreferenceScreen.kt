@@ -37,6 +37,7 @@ import player.phonograph.ui.dialogs.HomeTabConfigDialog
 import player.phonograph.ui.dialogs.ImageSourceConfigDialog
 import player.phonograph.ui.dialogs.LastAddedPlaylistIntervalDialog
 import player.phonograph.ui.dialogs.MonetColorPickerDialog
+import player.phonograph.ui.dialogs.NotificationActionsConfigDialog
 import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
 import player.phonograph.ui.dialogs.PathFilterDialog
 import player.phonograph.util.NavigationUtil
@@ -289,6 +290,13 @@ fun PhonographPreferenceScreen() {
                 summaryRes = R.string.pref_summary_colored_notification,
                 defaultValue = true,
                 enabled = dependOn(CLASSIC_NOTIFICATION),
+            )
+            DialogPref(
+                model = DialogPreferenceModel(
+                    dialog = NotificationActionsConfigDialog::class.java,
+                    titleRes = R.string.pref_title_notification_actions,
+                    summaryRes = R.string.pref_summary_notification_actions,
+                )
             )
         }
 
