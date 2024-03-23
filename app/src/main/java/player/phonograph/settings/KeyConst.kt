@@ -9,10 +9,13 @@ package player.phonograph.settings
 
 // Appearance
 const val HOME_TAB_CONFIG = "home_tab_config"
-const val COLORED_NOTIFICATION = "colored_notification"
-const val CLASSIC_NOTIFICATION = "classic_notification"
 const val COLORED_APP_SHORTCUTS = "colored_app_shortcuts"
 const val FIXED_TAB_LAYOUT = "fixed_tab_layout"
+
+// Appearance - Notification
+const val COLORED_NOTIFICATION = "colored_notification"
+const val CLASSIC_NOTIFICATION = "classic_notification"
+const val NOTIFICATION_ACTIONS = "notification_actions"
 
 // Behavior-Retention
 const val REMEMBER_LAST_TAB = "remember_last_tab"
