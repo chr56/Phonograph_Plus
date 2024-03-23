@@ -6,8 +6,13 @@ package player.phonograph.mechanism.setting
 
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.service.MusicService
+import player.phonograph.service.ServiceStatus
+import player.phonograph.service.queue.RepeatMode
+import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import androidx.annotation.DrawableRes
 import androidx.annotation.Keep
 import androidx.annotation.StringDef
 import androidx.annotation.StringRes
@@ -106,14 +111,51 @@ data class NotificationActionsConfig(
 sealed class NotificationAction(
     @NotificationActionName private val key: String,
     @get:StringRes val stringRes: Int,
+    val action: String,
 ) {
-    object PlayPause : NotificationAction(ACTION_KEY_PLAY_PAUSE, R.string.action_play_pause)
-    object Prev : NotificationAction(ACTION_KEY_PREV, R.string.action_previous)
-    object Next : NotificationAction(ACTION_KEY_NEXT, R.string.action_next)
-    object Repeat : NotificationAction(ACTION_KEY_REPEAT, R.string.action_repeat_mode)
-    object Shuffle : NotificationAction(ACTION_KEY_SHUFFLE, R.string.action_shuffle_mode)
-    object Fav : NotificationAction(ACTION_KEY_FAV, R.string.favorites)
-    object Close : NotificationAction(ACTION_KEY_CLOSE, R.string.exit)
+
+    @DrawableRes
+    open fun icon(status: ServiceStatus): Int = 0
+
+    object PlayPause : NotificationAction(
+        ACTION_KEY_PLAY_PAUSE,
+        R.string.action_play_pause,
+        MusicService.ACTION_TOGGLE_PAUSE
+    ) {
+        override fun icon(status: ServiceStatus): Int =
+            if (status.isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp
+    }
+
+    object Prev : NotificationAction(ACTION_KEY_PREV, R.string.action_previous, MusicService.ACTION_REWIND) {
+        override fun icon(status: ServiceStatus): Int = R.drawable.ic_skip_previous_white_24dp
+    }
+
+    object Next : NotificationAction(ACTION_KEY_NEXT, R.string.action_next, MusicService.ACTION_SKIP) {
+        override fun icon(status: ServiceStatus): Int = R.drawable.ic_skip_next_white_24dp
+    }
+
+    object Repeat : NotificationAction(ACTION_KEY_REPEAT, R.string.action_repeat_mode, MusicService.ACTION_REPEAT) {
+        override fun icon(status: ServiceStatus): Int = when (status.repeatMode) {
+            RepeatMode.NONE               -> R.drawable.ic_repeat_off_white_24dp
+            RepeatMode.REPEAT_QUEUE       -> R.drawable.ic_repeat_white_24dp
+            RepeatMode.REPEAT_SINGLE_SONG -> R.drawable.ic_repeat_one_white_24dp
+        }
+    }
+
+    object Shuffle : NotificationAction(ACTION_KEY_SHUFFLE, R.string.action_shuffle_mode, MusicService.ACTION_SHUFFLE) {
+        override fun icon(status: ServiceStatus): Int =when (status.shuffleMode){
+            ShuffleMode.NONE    -> R.drawable.ic_shuffle_disabled_white_24dp
+            ShuffleMode.SHUFFLE -> R.drawable.ic_shuffle_white_24dp
+        }
+    }
+
+    object Fav : NotificationAction(ACTION_KEY_FAV, R.string.favorites, MusicService.ACTION_FAV) {
+        override fun icon(status: ServiceStatus): Int = R.drawable.ic_favorite_border_white_24dp
+    }
+
+    object Close : NotificationAction(ACTION_KEY_CLOSE, R.string.exit, MusicService.ACTION_CANCEL_PENDING_QUIT) {
+        override fun icon(status: ServiceStatus): Int = R.drawable.ic_close_white_24dp
+    }
 
     companion object {
         @JvmStatic
@@ -128,6 +170,7 @@ sealed class NotificationAction(
             else                  -> null
         }
 
+        @JvmStatic
         val ALL_ACTIONS: List<NotificationAction> = listOf(
             PlayPause,
             Prev,
