@@ -474,12 +474,9 @@ class PlayingNotificationManger : ServiceComponent {
         /**
          * @return Icon Bitmap of this [action]
          */
-        private fun icon(action: NotificationAction?, status: ServiceStatus, backgroundColor: Int): Bitmap =
+        private fun icon(action: NotificationAction, status: ServiceStatus, backgroundColor: Int): Bitmap =
             BitmapUtil.createBitmap(
-                service.createTintedDrawable(
-                    action?.icon(status) ?: R.drawable.ic_notification,
-                    service.primaryTextColor(backgroundColor)
-                )!!, 1.5f
+                service.createTintedDrawable(action.icon(status), service.primaryTextColor(backgroundColor))!!, 1.5f
             )
 
     }

@@ -107,8 +107,7 @@ class NotificationActionsConfigDialog : DialogFragment() {
         override fun onBindContentView(contentView: View, position: Int) {
             val binding = ItemRightCheckboxBinding.bind(contentView)
             val item = dataset[position].content
-            val action = item.notificationAction
-            binding.textview.text = if (action != null) contentView.resources.getText(action.stringRes) else item.key
+            binding.textview.text = contentView.resources.getText(item.notificationAction.stringRes)
             binding.checkbox.isChecked = item.displayInCompat
             binding.checkbox.setOnClickListener { view ->
                 if (dataset[position].checked) {

@@ -18,7 +18,9 @@ import androidx.annotation.StringDef
 import androidx.annotation.StringRes
 import android.os.Parcelable
 import android.util.Log
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
@@ -90,8 +92,10 @@ data class NotificationActionsConfig(
         @SerialName("key") @NotificationActionName val key: String,
         @SerialName("compat") var displayInCompat: Boolean = false,
     ) : Parcelable {
-        val notificationAction: NotificationAction?
-            get() = NotificationAction.from(key)
+
+        @Contextual
+        @IgnoredOnParcel
+        val notificationAction: NotificationAction = NotificationAction.from(key)
     }
 
     companion object {
@@ -143,7 +147,7 @@ sealed class NotificationAction(
     }
 
     object Shuffle : NotificationAction(ACTION_KEY_SHUFFLE, R.string.action_shuffle_mode, MusicService.ACTION_SHUFFLE) {
-        override fun icon(status: ServiceStatus): Int =when (status.shuffleMode){
+        override fun icon(status: ServiceStatus): Int = when (status.shuffleMode) {
             ShuffleMode.NONE    -> R.drawable.ic_shuffle_disabled_white_24dp
             ShuffleMode.SHUFFLE -> R.drawable.ic_shuffle_white_24dp
         }
@@ -157,9 +161,13 @@ sealed class NotificationAction(
         override fun icon(status: ServiceStatus): Int = R.drawable.ic_close_white_24dp
     }
 
+    private object Invalid : NotificationAction(ACTION_KEY_UNKNOWN, R.string.empty, ".") {
+        override fun icon(status: ServiceStatus): Int = R.drawable.ic_notification
+    }
+
     companion object {
         @JvmStatic
-        fun from(@NotificationActionName name: String): NotificationAction? = when (name) {
+        fun from(@NotificationActionName name: String): NotificationAction = when (name) {
             ACTION_KEY_PLAY_PAUSE -> PlayPause
             ACTION_KEY_PREV       -> Prev
             ACTION_KEY_NEXT       -> Next
@@ -167,7 +175,7 @@ sealed class NotificationAction(
             ACTION_KEY_SHUFFLE    -> Shuffle
             ACTION_KEY_FAV        -> Fav
             ACTION_KEY_CLOSE      -> Close
-            else                  -> null
+            else                  -> Invalid
         }
 
         @JvmStatic
@@ -191,6 +199,7 @@ sealed class NotificationAction(
     ACTION_KEY_SHUFFLE,
     ACTION_KEY_FAV,
     ACTION_KEY_CLOSE,
+    ACTION_KEY_UNKNOWN,
 )
 @Retention(AnnotationRetention.SOURCE)
 annotation class NotificationActionName
@@ -202,3 +211,4 @@ private const val ACTION_KEY_REPEAT = "REPEAT"
 private const val ACTION_KEY_SHUFFLE = "SHUFFLE"
 private const val ACTION_KEY_FAV = "FAV"
 private const val ACTION_KEY_CLOSE = "CLOSE"
+private const val ACTION_KEY_UNKNOWN = "UNKNOWN"
