@@ -518,4 +518,6 @@
     <string name="help_unmatched_notification_actions">Actions in compact notification must be in expanded notification as well.</string>
     <string name="illegal_operation">The operation does not match its requirement.</string>
     <string name="error_unstoppable_service">Can not exit music service in foreground or in use.</string>
+    <string name="action_fast_rewind">Fast Rewind</string>
+    <string name="action_fast_forward">Fast Forward</string>
 </resources>

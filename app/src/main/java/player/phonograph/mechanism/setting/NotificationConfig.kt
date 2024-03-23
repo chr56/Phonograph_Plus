@@ -163,6 +163,22 @@ sealed class NotificationAction(
         }
     }
 
+    object FastRewind : NotificationAction(
+        ACTION_KEY_FAST_REWIND,
+        R.string.action_fast_rewind,
+        MusicService.ACTION_FAST_REWIND
+    ) {
+        override fun icon(status: ServiceStatus): Int = R.drawable.ic_fast_rewind_white_24dp
+    }
+
+    object FastForward : NotificationAction(
+        ACTION_KEY_FAST_FORWARD,
+        R.string.action_fast_forward,
+        MusicService.ACTION_FAST_FORWARD
+    ) {
+        override fun icon(status: ServiceStatus): Int = R.drawable.ic_fast_forward_white_24dp
+    }
+
     object Fav : NotificationAction(ACTION_KEY_FAV, R.string.favorites, MusicService.ACTION_FAV) {
         override fun icon(status: ServiceStatus): Int = R.drawable.ic_favorite_border_white_24dp
     }
@@ -178,14 +194,16 @@ sealed class NotificationAction(
     companion object {
         @JvmStatic
         fun from(@NotificationActionName name: String): NotificationAction = when (name) {
-            ACTION_KEY_PLAY_PAUSE -> PlayPause
-            ACTION_KEY_PREV       -> Prev
-            ACTION_KEY_NEXT       -> Next
-            ACTION_KEY_REPEAT     -> Repeat
-            ACTION_KEY_SHUFFLE    -> Shuffle
-            ACTION_KEY_FAV        -> Fav
-            ACTION_KEY_CLOSE      -> Close
-            else                  -> Invalid
+            ACTION_KEY_PLAY_PAUSE   -> PlayPause
+            ACTION_KEY_PREV         -> Prev
+            ACTION_KEY_NEXT         -> Next
+            ACTION_KEY_REPEAT       -> Repeat
+            ACTION_KEY_SHUFFLE      -> Shuffle
+            ACTION_KEY_FAST_REWIND  -> FastRewind
+            ACTION_KEY_FAST_FORWARD -> FastForward
+            ACTION_KEY_FAV          -> Fav
+            ACTION_KEY_CLOSE        -> Close
+            else                    -> Invalid
         }
 
         @JvmStatic
@@ -195,6 +213,8 @@ sealed class NotificationAction(
             Next,
             Repeat,
             Shuffle,
+            FastForward,
+            FastRewind,
             Fav,
             Close,
         )
@@ -210,6 +230,8 @@ sealed class NotificationAction(
     ACTION_KEY_NEXT,
     ACTION_KEY_REPEAT,
     ACTION_KEY_SHUFFLE,
+    ACTION_KEY_FAST_REWIND,
+    ACTION_KEY_FAST_FORWARD,
     ACTION_KEY_FAV,
     ACTION_KEY_CLOSE,
     ACTION_KEY_UNKNOWN,
@@ -222,6 +244,8 @@ private const val ACTION_KEY_PREV = "PREV"
 private const val ACTION_KEY_NEXT = "NEXT"
 private const val ACTION_KEY_REPEAT = "REPEAT"
 private const val ACTION_KEY_SHUFFLE = "SHUFFLE"
+private const val ACTION_KEY_FAST_REWIND = "FAST_REWIND"
+private const val ACTION_KEY_FAST_FORWARD = "FAST_FORWARD"
 private const val ACTION_KEY_FAV = "FAV"
 private const val ACTION_KEY_CLOSE = "CLOSE"
 private const val ACTION_KEY_UNKNOWN = "UNKNOWN"

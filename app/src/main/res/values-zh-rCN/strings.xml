@@ -505,4 +505,6 @@
     <string name="help_unmatched_notification_actions">紧凑通知中的动作必须同时存在于扩展通知。</string>
     <string name="illegal_operation">操作不满足要求</string>
     <string name="error_unstoppable_service">无法退出前台或正在使用的音乐服务</string>
+    <string name="action_fast_rewind">快退</string>
+    <string name="action_fast_forward">快进</string>
 </resources>
