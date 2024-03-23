@@ -8,9 +8,13 @@ import coil.request.Disposable
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
+import player.phonograph.mechanism.setting.NotificationAction
+import player.phonograph.mechanism.setting.NotificationActionsConfig
+import player.phonograph.mechanism.setting.NotificationConfig
 import player.phonograph.model.Song
 import player.phonograph.service.MusicService
 import player.phonograph.service.ServiceComponent
+import player.phonograph.service.ServiceStatus
 import player.phonograph.service.player.PlayerState.PAUSED
 import player.phonograph.service.player.PlayerState.PLAYING
 import player.phonograph.service.player.PlayerState.PREPARING
@@ -178,36 +182,6 @@ class PlayingNotificationManger : ServiceComponent {
 
     inner class Impl24 : Impl {
 
-        private fun playPauseAction(isPlaying: Boolean): XNotificationCompat.Action = XNotificationCompat.Action(
-            if (isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp,
-            service.getString(R.string.action_play_pause),
-            buildPlaybackPendingIntent(MusicService.ACTION_TOGGLE_PAUSE)
-        )
-
-        private fun previousAction(): XNotificationCompat.Action = XNotificationCompat.Action(
-            R.drawable.ic_skip_previous_white_24dp,
-            service.getString(R.string.action_previous),
-            buildPlaybackPendingIntent(MusicService.ACTION_REWIND)
-        )
-
-        private fun nextAction(): XNotificationCompat.Action = XNotificationCompat.Action(
-            R.drawable.ic_skip_next_white_24dp,
-            service.getString(R.string.action_next),
-            buildPlaybackPendingIntent(MusicService.ACTION_SKIP)
-        )
-
-        private fun shuffle(): XNotificationCompat.Action = XNotificationCompat.Action(
-            R.drawable.ic_shuffle_white_24dp,
-            service.getString(R.string.action_shuffle_mode),
-            buildPlaybackPendingIntent(MusicService.ACTION_SHUFFLE)
-        )
-
-        private fun repeat(): XNotificationCompat.Action = XNotificationCompat.Action(
-            R.drawable.ic_repeat_white_24dp,
-            service.getString(R.string.action_repeat_mode),
-            buildPlaybackPendingIntent(MusicService.ACTION_REPEAT)
-        )
-
         private fun mediaStyle(): NotificationCompat.MediaStyle =
             NotificationCompat.MediaStyle().setMediaSession(service.mediaSession.sessionToken)
 
@@ -220,8 +194,6 @@ class PlayingNotificationManger : ServiceComponent {
                 content = song.artistName,
                 subText = song.albumName,
                 ongoing = isPlaying,
-                style = mediaStyle().setShowActionsInCompactView(1, 2, 3),
-                repeat(), previousAction(), playPauseAction(isPlaying), nextAction(), shuffle()
             )
 
             postNotification(notificationBuilder.build())
@@ -251,22 +223,48 @@ class PlayingNotificationManger : ServiceComponent {
             content: String?,
             subText: String?,
             ongoing: Boolean,
-            style: XNotificationCompat.Style,
-            vararg actions: XNotificationCompat.Action,
-        ): XNotificationCompat.Builder =
-            notificationBuilder
+        ): XNotificationCompat.Builder {
+
+            val base = notificationBuilder
                 .setContentTitle(title)
                 .setContentText(content)
                 .setSubText(subText)
                 .setOngoing(ongoing)
                 .setLargeIcon(service.coverLoader.defaultCover)
                 .clearActions()
+
+
+            val status =
+                ServiceStatus(service.isPlaying, service.queueManager.shuffleMode, service.queueManager.repeatMode)
+
+            val config: NotificationActionsConfig = NotificationConfig.actions
+            val actions =
+                config.actions.map { processActions(it.notificationAction, status) }
+
+
+            val positions =
+                config.actions.mapIndexed { index, item ->
+                    if (item.displayInCompat) index else -1
+                }.filter { it > 0 }.toIntArray()
+
+            return base
                 .apply {
-                    for (action in actions) {
-                        addAction(action)
-                    }
+                    for (action in actions) addAction(action)
                 }
-                .setStyle(style)
+                .setStyle(mediaStyle().setShowActionsInCompactView(*positions))
+        }
+
+        private fun processActions(action: NotificationAction?, status: ServiceStatus): XNotificationCompat.Action {
+            return if (action != null)
+                XNotificationCompat.Action(
+                    action.icon(status),
+                    service.getString(action.stringRes),
+                    buildPlaybackPendingIntent(action.action)
+                )
+            else {
+                XNotificationCompat.Action(R.drawable.ic_notification, null, null)
+            }
+        }
 
 
         private fun emptyNotification() =
@@ -275,7 +273,6 @@ class PlayingNotificationManger : ServiceComponent {
                 content = null,
                 subText = null,
                 ongoing = true,
-                style = mediaStyle(),
             )
 
         override fun empty() {
