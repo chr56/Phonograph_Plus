@@ -72,8 +72,7 @@ data class NotificationActionsConfig(
     @Serializable
     data class Item(
         @SerialName("key") @NotificationActionName val key: String,
-        @SerialName("expanded") val displayInExpanded: Boolean,
-        @SerialName("compat") val displayInCompat: Boolean,
+        @SerialName("compat") val displayInCompat: Boolean = false,
     ) : Parcelable {
         val notificationAction: NotificationAction?
             get() = NotificationAction.from(key)
@@ -82,26 +81,11 @@ data class NotificationActionsConfig(
     companion object {
         val DEFAULT: NotificationActionsConfig
             get() = NotificationActionsConfig(
-                Item(
-                    ACTION_KEY_REPEAT,
-                    displayInExpanded = true, displayInCompat = false
-                ),
-                Item(
-                    ACTION_KEY_PREV,
-                    displayInExpanded = true, displayInCompat = true
-                ),
-                Item(
-                    ACTION_KEY_PLAY_PAUSE,
-                    displayInExpanded = true, displayInCompat = true
-                ),
-                Item(
-                    ACTION_KEY_NEXT,
-                    displayInExpanded = true, displayInCompat = true
-                ),
-                Item(
-                    ACTION_KEY_SHUFFLE,
-                    displayInExpanded = true, displayInCompat = false
-                ),
+                Item(ACTION_KEY_REPEAT),
+                Item(ACTION_KEY_PREV, displayInCompat = true),
+                Item(ACTION_KEY_PLAY_PAUSE, displayInCompat = true),
+                Item(ACTION_KEY_NEXT, displayInCompat = true),
+                Item(ACTION_KEY_SHUFFLE),
             )
         const val VERSION = 1
     }
