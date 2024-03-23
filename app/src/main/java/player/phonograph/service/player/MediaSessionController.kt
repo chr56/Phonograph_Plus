@@ -55,12 +55,10 @@ class MediaSessionController : ServiceComponent {
     private var _mediaSession: MediaSessionCompat? = null
     val mediaSession: MediaSessionCompat get() = _mediaSession!!
 
-    private lateinit var actionsConfig: NotificationActionsConfig
-
     override fun onCreate(musicService: MusicService) {
         _service = musicService
 
-        actionsConfig = NotificationConfig.actions
+        updateCustomActions(NotificationConfig.actions)
 
         val mediaButtonReceiverComponentName = ComponentName(
             musicService.applicationContext,
@@ -89,7 +87,7 @@ class MediaSessionController : ServiceComponent {
 
         service.coroutineScope.launch(SupervisorJob()) {
             Setting(musicService)[Keys.notificationActionsJsonString].flow.distinctUntilChanged().collect {
-                actionsConfig = NotificationConfig.actions
+                updateCustomActions(NotificationConfig.actions)
             }
         }
     }
@@ -228,9 +226,11 @@ class MediaSessionController : ServiceComponent {
         return this
     }
 
-    private val customActions: List<NotificationAction>
-        get() = actionsConfig.actions.filterNot { it.displayInCompat }.map { it.notificationAction }
-
+    private lateinit var customActions: List<NotificationAction>
+    private fun updateCustomActions(config: NotificationActionsConfig) {
+        customActions = config.actions.sortedBy { it.displayInCompat }.map { it.notificationAction }
+            .filterNot { it in NotificationAction.COMMON_ACTIONS }
+    }
 
     @Suppress("SameParameterValue")
     private fun fillMetadata(song: Song, pos: Long, total: Long, bitmap: Bitmap?) =

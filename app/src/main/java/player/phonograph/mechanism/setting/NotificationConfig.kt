@@ -198,6 +198,9 @@ sealed class NotificationAction(
             Fav,
             Close,
         )
+
+        @JvmStatic
+        val COMMON_ACTIONS: List<NotificationAction> = listOf(PlayPause, Prev, Next)
     }
 }
 
