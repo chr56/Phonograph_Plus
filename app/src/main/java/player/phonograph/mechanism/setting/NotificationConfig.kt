@@ -88,7 +88,7 @@ data class NotificationActionsConfig(
     @Serializable
     data class Item(
         @SerialName("key") @NotificationActionName val key: String,
-        @SerialName("compat") val displayInCompat: Boolean = false,
+        @SerialName("compat") var displayInCompat: Boolean = false,
     ) : Parcelable {
         val notificationAction: NotificationAction?
             get() = NotificationAction.from(key)
