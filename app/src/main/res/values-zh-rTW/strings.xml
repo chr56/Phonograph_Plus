@@ -501,5 +501,7 @@
     <string name="action_view_external_files">瀏覽外部檔案</string>
     <string name="pref_title_notification_actions">播放通知動作按鈕</string>
     <string name="pref_summary_notification_actions">自訂播放通知動作按鈕</string>
+    <string name="help_notification_actions">可以在此自訂播放通知動作：可在展開通知中設定至多 5 個動作，在緊湊通知中設定至多 3 個動作。 （左側複選框用於緊湊通知；右側複選框用於緊湊通知。）</string>
+    <string name="help_unmatched_notification_actions">緊湊通知中的動作必須同時存在於擴充通知。 </string>
     <string name="illegal_operation">操作不滿足要求</string>
 </resources>

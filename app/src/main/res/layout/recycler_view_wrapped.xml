@@ -9,7 +9,7 @@
         android:id="@+id/description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:paddingHorizontal="32dp"
         android:visibility="gone"
         style="@style/TextAppearance.AppCompat.Caption"
         app:layout_constraintBottom_toTopOf="@id/recycler_view"

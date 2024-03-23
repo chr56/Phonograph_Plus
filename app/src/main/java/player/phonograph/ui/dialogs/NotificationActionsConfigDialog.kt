@@ -24,6 +24,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.TextView
 import android.widget.Toast
 
 class NotificationActionsConfigDialog : DialogFragment() {
@@ -41,9 +42,14 @@ class NotificationActionsConfigDialog : DialogFragment() {
         recyclerView.adapter = adapter
         adapter.attachToRecyclerView(recyclerView)
 
+        view.findViewById<TextView>(R.id.description).apply {
+            setText(R.string.help_notification_actions)
+            visibility = View.VISIBLE
+        }
+
         @Suppress("DEPRECATION")
         val dialog = MaterialDialog(requireContext())
-            .title(text = "NotificationConfig")
+            .title(R.string.pref_title_notification_actions)
             .customView(view = view, dialogWrapContent = false)
             .noAutoDismiss()
             .positiveButton(android.R.string.ok) {
@@ -110,7 +116,7 @@ class NotificationActionsConfigDialog : DialogFragment() {
                 } else {
                     Toast.makeText(
                         view.context,
-                        R.string.illegal_operation,
+                        R.string.help_unmatched_notification_actions,
                         Toast.LENGTH_SHORT
                     ).show()
                     (view as CheckBox).toggle()
