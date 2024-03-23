@@ -23,6 +23,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 
 class NotificationActionsConfigDialog : DialogFragment() {
     private lateinit var adapter: ActionConfigAdapter
@@ -97,11 +98,11 @@ class NotificationActionsConfigDialog : DialogFragment() {
             }
         }
 
-        override val minimalRequiredItems: Int get() = 3
+        override fun checkRequirement(): Boolean = dataset.checkedItems.size in 3..5
 
         val currentConfig: NotificationActionsConfig
             get() = NotificationActionsConfig(
-                dataset.visibleItems().map { it.content }
+                dataset.checkedItems.map { it.content }
             )
 
     }

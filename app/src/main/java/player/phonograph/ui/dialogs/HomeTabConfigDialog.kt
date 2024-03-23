@@ -100,7 +100,7 @@ class HomeTabConfigDialog : DialogFragment() {
 
         val currentConfig: PageConfig
             get() = PageConfig.from(
-                dataset.visibleItems().map { it.content }
+                dataset.checkedItems.map { it.content }
             )
 
         companion object {

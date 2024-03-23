@@ -57,21 +57,21 @@ abstract class SortableListAdapter<C> :
             false
         }
 
-        holder.checkBox.isChecked = dataset[position].visible
+        holder.checkBox.isChecked = dataset[position].checked
 
         holder.itemView.setOnClickListener { view ->
             val checkBox = view.findViewById<CheckBox>(R.id.checkbox)
             when (checkBox.isChecked) {
                 true  -> {
                     if (checkRequirement()) {
-                        Toast.makeText(
-                            holder.itemView.context,
-                            R.string.you_have_to_select_at_least_one_category,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
                         checkBox.isChecked = false
                         dataset.toggle(holder.bindingAdapterPosition)
+                    } else {
+                        Toast.makeText(
+                            holder.itemView.context,
+                            R.string.illegal_operation,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
 
@@ -93,44 +93,39 @@ abstract class SortableListAdapter<C> :
         val dragView: View = rootView.findViewById(R.id.drag_view)
     }
 
-    class SortableList<C>(init: List<Item<C>>) {
+    class SortableList<C>(private val _items: MutableList<Item<C>>) : List<SortableList.Item<C>> by _items {
 
-        private val items: MutableList<Item<C>> = init.toMutableList()
-        val allItems get() = items.toList()
+        constructor(from: Collection<Item<C>>) : this(from.toMutableList())
 
-        operator fun get(position: Int) = items[position]
+        val items get() = _items.toList()
 
-        val size get() = items.size
-
-        fun visibleItems() = items.filter { it.visible }
+        val checkedItems get() = _items.filter { it.checked }
 
         fun toggle(position: Int) {
-            get(position).apply { visible = !visible }
+            get(position).apply { checked = !checked }
         }
 
         fun move(oldPosition: Int, newPosition: Int) {
             if (oldPosition == newPosition) return // do nothing
             val item = get(oldPosition)
-            items.remove(item)
-            items.add(newPosition, item)
+            _items.remove(item)
+            _items.add(newPosition, item)
         }
 
-        fun dump(): String = items.fold("TabItems:") { acc, item ->
-            "$acc,[${item.content}(${if (item.visible) "visible" else "invisible"} )]"
+        fun dump(): String = _items.joinToString(prefix = "TabItems:") { item ->
+            "[${item.content}(${if (item.checked) "checked" else "unchecked"})]"
         }
 
         data class Item<C>(
             val content: C,
-            var visible: Boolean,
+            var checked: Boolean,
         )
     }
-
-    open val minimalRequiredItems: Int = 1
 
     /**
      * check whether the selected items match the requirement of quantity
      */
-    private fun checkRequirement(): Boolean = dataset.visibleItems().size <= minimalRequiredItems
+    protected open fun checkRequirement(): Boolean = dataset.checkedItems.isNotEmpty()
 
     fun attachToRecyclerView(recyclerView: RecyclerView?) =
         touchHelper.attachToRecyclerView(recyclerView)

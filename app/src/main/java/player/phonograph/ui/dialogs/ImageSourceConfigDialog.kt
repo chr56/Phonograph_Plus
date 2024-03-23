@@ -92,7 +92,7 @@ class ImageSourceConfigDialog : DialogFragment() {
 
         val currentConfig: ImageSourceConfig
             get() = ImageSourceConfig.from(
-                dataset.allItems.map { ImageSourceConfig.Item(it.content.key, it.visible) }
+                dataset.items.map { ImageSourceConfig.Item(it.content.key, it.checked) }
             )
 
         companion object {

@@ -34,10 +34,10 @@ class BackupChooserAdapter(
 
     override fun onBindContentView(contentView: View, position: Int) {
         require(contentView is TextView) { "Receive ${contentView.javaClass.name}" }
-        contentView.text = dataset.allItems[position].content.displayName(contentView.resources)
+        contentView.text = dataset.items[position].content.displayName(contentView.resources)
     }
 
     val currentConfig: List<BackupItem>
-        get() = dataset.allItems.filter { it.visible }.map { it.content }
+        get() = dataset.items.filter { it.checked }.map { it.content }
 
 }
