@@ -438,8 +438,8 @@ class PlayingNotificationManger : ServiceComponent {
          */
         private fun RemoteViews.setupActionButtons(config: NotificationActionsConfig) {
             val actions = config.actions.map { it.notificationAction }
-            for (i in actions.indices) {
-                val notificationAction = actions[i] ?: continue
+            for (i in actionPlaceholders.indices) {
+                val notificationAction = actions.getOrNull(i) ?: continue
                 setOnClickPendingIntent(
                     actionPlaceholders[i],
                     buildPlaybackPendingIntent(notificationAction.action)
