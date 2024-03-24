@@ -133,9 +133,17 @@ class PlayingNotificationManger : ServiceComponent {
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_TRANSPORT)
 
+    private var lastSong: Song? = null
+    private var lastServiceStatus: ServiceStatus? = null
+
     fun updateNotification(song: Song, status: ServiceStatus) {
         if (song.id != -1L) {
-            impl?.update(song, status, actionsConfig)
+            if (song != lastSong || status != lastServiceStatus) {
+                // Only update notification for actual changes
+                lastSong = song
+                lastServiceStatus = status
+                impl?.update(song, status, actionsConfig)
+            }
         } else {
             if (persistent) {
                 impl?.empty(status, actionsConfig)
