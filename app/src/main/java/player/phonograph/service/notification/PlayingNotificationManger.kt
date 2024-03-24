@@ -67,7 +67,7 @@ class PlayingNotificationManger : ServiceComponent {
     var persistent: Boolean = false
         private set
 
-    private var impl: Impl? = null
+    private var implementation: Implementation? = null
 
     override fun onCreate(musicService: MusicService) {
         _service = musicService
@@ -97,7 +97,7 @@ class PlayingNotificationManger : ServiceComponent {
         }
         collect(Keys.classicNotification) { value ->
             classicNotification = value
-            impl = if (value) Impl0() else Impl24()
+            implementation = if (value) ClassicNotification() else MediaStyleNotification()
         }
         collect(Keys.coloredNotification) { value ->
             coloredNotification = value
@@ -107,18 +107,18 @@ class PlayingNotificationManger : ServiceComponent {
         }
         collect(Keys.persistentPlaybackNotification) { value ->
             persistent = value
-            while (impl == null) yield()
+            while (implementation == null) yield()
             if (value) { //todo
                 updateNotification(service.queueManager.currentSong, service.statusForNotification)
             }
         }
 
-        impl = if (classicNotification) Impl0() else Impl24()
+        implementation = if (classicNotification) ClassicNotification() else MediaStyleNotification()
     }
 
     override fun onDestroy(musicService: MusicService) {
         removeNotification()
-        impl = null
+        implementation = null
         _service = null
     }
 
@@ -142,11 +142,11 @@ class PlayingNotificationManger : ServiceComponent {
                 // Only update notification for actual changes
                 lastSong = song
                 lastServiceStatus = status
-                impl?.update(song, status, actionsConfig)
+                implementation?.update(song, status, actionsConfig)
             }
         } else {
             if (persistent) {
-                impl?.empty(status, actionsConfig)
+                implementation?.empty(status, actionsConfig)
             } else {
                 removeNotification()
             }
@@ -189,7 +189,7 @@ class PlayingNotificationManger : ServiceComponent {
 
     //region Impl
 
-    internal interface Impl {
+    internal interface Implementation {
         fun update(song: Song, status: ServiceStatus, config: NotificationActionsConfig)
         fun empty(status: ServiceStatus, config: NotificationActionsConfig)
     }
@@ -197,7 +197,10 @@ class PlayingNotificationManger : ServiceComponent {
     /** Disposable ImageRequest for Cover Art **/
     private var request: Disposable? = null
 
-    inner class Impl24 : Impl {
+    /**
+     * Modern Notification with [MediaStyle], requiring API 24
+     */
+    inner class MediaStyleNotification : Implementation {
 
         private fun mediaStyle(): MediaStyle =
             MediaStyle().setMediaSession(service.mediaSession.sessionToken)
@@ -320,7 +323,10 @@ class PlayingNotificationManger : ServiceComponent {
         }
     }
 
-    inner class Impl0 : Impl {
+    /**
+     * Classic Notification using [RemoteViews]
+     */
+    inner class ClassicNotification : Implementation {
 
         private var cachedSong: Song? = null
         private var cachedBitmap: Bitmap? = null
