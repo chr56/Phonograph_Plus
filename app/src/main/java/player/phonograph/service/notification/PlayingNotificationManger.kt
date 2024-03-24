@@ -23,6 +23,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
+import player.phonograph.util.permissions.checkNotificationPermission
 import player.phonograph.util.theme.createTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
 import androidx.annotation.LayoutRes
@@ -150,6 +151,7 @@ class PlayingNotificationManger : ServiceComponent {
 
     @Synchronized
     private fun postNotification(notification: OSNotification) {
+        checkNotificationPermission(service)
         when (persistent) {
             true  -> {
                 notificationManager.notify(NOTIFICATION_ID, notification)

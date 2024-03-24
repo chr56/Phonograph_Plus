@@ -6,15 +6,19 @@ package player.phonograph.util.permissions
 
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PermissionResult
+import android.Manifest
 import android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.READ_MEDIA_AUDIO
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Environment
+import android.util.Log
+import android.widget.Toast
 
 fun hasPermission(context: Context, permissionId: String): Boolean =
     PermissionChecker.checkSelfPermission(context, permissionId) == PermissionChecker.PERMISSION_GRANTED
@@ -42,4 +46,18 @@ fun hasStorageWritePermission(context: Context): Boolean = when {
     /** check [MANAGE_EXTERNAL_STORAGE] on Android R and above **/
     SDK_INT >= VERSION_CODES.R -> Environment.isExternalStorageManager()
     else                       -> hasPermission(context, WRITE_EXTERNAL_STORAGE)
+}
+
+fun checkNotificationPermission(context: Context) {
+    if (SDK_INT > TIRAMISU) {
+        val result = context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+        if (result != PackageManager.PERMISSION_GRANTED) {
+            val message = "Notification is disabled!"
+            Log.e("Phonograph", message)
+            try {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            } catch (_: Exception) {
+            }
+        }
+    }
 }
