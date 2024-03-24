@@ -397,6 +397,7 @@
     <string name="no_changes">Nessuna modifica</string>
     <string name="image_source_external_file">File esterno</string>
     <string name="image_source_config">Configurazione origine immagine</string>
+    <string name="action_backup">Backup</string>
     <string name="grant_permission_description">Alcuni permessi necessari sono richiesti per assicurare un corretto funzionamento dell\'app.</string>
     <string name="permission_name_post_notifications">Pubblica notifiche</string>
     <string name="permission_desc_post_notifications">A partire da Android T (13), le app richiedono questa autorizzazione per pubblicare notifiche.</string>

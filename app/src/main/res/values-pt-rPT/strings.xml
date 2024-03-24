@@ -32,6 +32,7 @@
     <string name="biography_unavailable">N\u00e3o foi poss\u00edvel encontrar a biografia deste artista.</string>
     <string name="wiki_unavailable">Não foi possível encontrar o registro wiki deste álbum.</string>
     <string name="biography">Biografia</string>
+    <string name="wiki">Wiki</string>
     <string name="audio_focus_denied">Foco de áudio negado.</string>
     <string name="album">Álbum</string>
     <string name="artist">Artista</string>
