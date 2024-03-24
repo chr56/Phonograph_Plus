@@ -13,8 +13,8 @@ import player.phonograph.mechanism.setting.NotificationActionsConfig
 import player.phonograph.mechanism.setting.NotificationConfig
 import player.phonograph.model.Song
 import player.phonograph.service.MusicService
-import player.phonograph.service.ServiceComponent
 import player.phonograph.service.MusicService.ServiceStatus
+import player.phonograph.service.ServiceComponent
 import player.phonograph.service.player.PlayerState.PAUSED
 import player.phonograph.service.player.PlayerState.PLAYING
 import player.phonograph.service.player.PlayerState.PREPARING
@@ -108,8 +108,8 @@ class PlayingNotificationManger : ServiceComponent {
         collect(Keys.persistentPlaybackNotification) { value ->
             persistent = value
             while (impl == null) yield()
-            if (value) {
-                updateNotification(service.queueManager.currentSong)
+            if (value) { //todo
+                updateNotification(service.queueManager.currentSong, service.statusForNotification)
             }
         }
 
@@ -133,12 +133,12 @@ class PlayingNotificationManger : ServiceComponent {
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_TRANSPORT)
 
-    fun updateNotification(song: Song) {
+    fun updateNotification(song: Song, status: ServiceStatus) {
         if (song.id != -1L) {
-            impl?.update(song, actionsConfig)
+            impl?.update(song, status, actionsConfig)
         } else {
             if (persistent) {
-                impl?.empty(actionsConfig)
+                impl?.empty(status, actionsConfig)
             } else {
                 removeNotification()
             }
@@ -182,8 +182,8 @@ class PlayingNotificationManger : ServiceComponent {
     //region Impl
 
     internal interface Impl {
-        fun update(song: Song, config: NotificationActionsConfig)
-        fun empty(config: NotificationActionsConfig)
+        fun update(song: Song, status: ServiceStatus, config: NotificationActionsConfig)
+        fun empty(status: ServiceStatus, config: NotificationActionsConfig)
     }
 
     /** Disposable ImageRequest for Cover Art **/
@@ -198,13 +198,14 @@ class PlayingNotificationManger : ServiceComponent {
         private var cachedBitmap: Bitmap? = null
         private var cachedPaletteColor: Int = -1
 
-        override fun update(song: Song, config: NotificationActionsConfig) {
+        override fun update(song: Song, status: ServiceStatus, config: NotificationActionsConfig) {
             val notificationBuilder = prepareNotification(
                 builder = notificationBuilder(service),
                 title = song.title,
                 content = song.artistName,
                 subText = song.albumName,
                 config = config,
+                status = status,
             )
 
             if (SDK_INT < VERSION_SET_COVER_USING_METADATA && cachedSong == song) {
@@ -237,18 +238,19 @@ class PlayingNotificationManger : ServiceComponent {
             content: String?,
             subText: String?,
             config: NotificationActionsConfig,
+            status: ServiceStatus,
         ): NotificationCompat.Builder {
 
             val base = builder
                 .setContentTitle(title)
                 .setContentText(content)
                 .setSubText(subText)
-                .setOngoing(service.isPlaying)
+                .setOngoing(status.isPlaying)
                 .setLargeIcon(service.coverLoader.defaultCover)
                 .clearActions()
 
             val actions =
-                config.actions.map { processActions(it.notificationAction, service.statusForNotification) }
+                config.actions.map { processActions(it.notificationAction, status) }
 
             val positions =
                 config.actions.mapIndexed { index, item ->
@@ -292,17 +294,21 @@ class PlayingNotificationManger : ServiceComponent {
             }
         }
 
-        private fun emptyNotification(config: NotificationActionsConfig): NotificationCompat.Builder =
+        private fun emptyNotification(
+            status: ServiceStatus,
+            config: NotificationActionsConfig,
+        ): NotificationCompat.Builder =
             prepareNotification(
                 builder = notificationBuilder(service),
                 title = service.getString(R.string.empty),
                 content = null,
                 subText = null,
-                config = config
+                config = config,
+                status = status
             )
 
-        override fun empty(config: NotificationActionsConfig) {
-            postNotification(emptyNotification(config).build())
+        override fun empty(status: ServiceStatus, config: NotificationActionsConfig) {
+            postNotification(emptyNotification(status, config).build())
         }
     }
 
@@ -318,8 +324,8 @@ class PlayingNotificationManger : ServiceComponent {
             text1: String?,
             text2: String?,
             backgroundColor: Int,
-            ongoing: Boolean,
             song: Song?,
+            status: ServiceStatus,
             config: NotificationActionsConfig,
         ) {
 
@@ -343,20 +349,20 @@ class PlayingNotificationManger : ServiceComponent {
             layoutCompat.updateNotificationTextColor(primaryTextColor, secondaryTextColor, false)
             layoutExpanded.updateNotificationTextColor(primaryTextColor, secondaryTextColor, true)
 
-            layoutCompat.updateNotificationAction(backgroundColor, config, true)
-            layoutExpanded.updateNotificationAction(backgroundColor, config, false)
+            layoutCompat.updateNotificationAction(backgroundColor, status, config, true)
+            layoutExpanded.updateNotificationAction(backgroundColor, status, config, false)
 
             notificationBuilder
                 .setContent(layoutCompat)
                 .setCustomBigContentView(layoutExpanded)
-                .setOngoing(ongoing)
+                .setOngoing(status.isPlaying)
 
             if (song != null && cachedSong == song) {
 
                 val bitmap = cachedBitmap
                 if (bitmap != null) {
-                    layoutCompat.updateNotificationImages(bitmap, cachedPaletteColor, config, true)
-                    layoutExpanded.updateNotificationImages(bitmap, cachedPaletteColor, config, false)
+                    layoutCompat.updateNotificationImages(bitmap, cachedPaletteColor, status, config, true)
+                    layoutExpanded.updateNotificationImages(bitmap, cachedPaletteColor, status, config, false)
                 }
             }
 
@@ -366,8 +372,8 @@ class PlayingNotificationManger : ServiceComponent {
             if (song != null && cachedSong != song) {
                 request = service.coverLoader.load(song) { bitmap: Bitmap?, color: Int ->
                     if (bitmap != null) {
-                        layoutCompat.updateNotificationImages(bitmap, color, config, true)
-                        layoutExpanded.updateNotificationImages(bitmap, color, config, false)
+                        layoutCompat.updateNotificationImages(bitmap, color, status, config, true)
+                        layoutExpanded.updateNotificationImages(bitmap, color, status, config, false)
                         postNotification(notificationBuilder.build())
 
                         this.cachedSong = song
@@ -379,24 +385,22 @@ class PlayingNotificationManger : ServiceComponent {
             }
         }
 
-        override fun empty(config: NotificationActionsConfig) {
+        override fun empty(status: ServiceStatus, config: NotificationActionsConfig) {
             common(
                 notificationBuilder = notificationBuilder(service),
                 title = service.getString(R.string.empty), text1 = null, text2 = null,
                 backgroundColor = Color.LTGRAY,
-                ongoing = true,
-                song = null,
+                song = null, status = status,
                 config = config
             )
         }
 
-        override fun update(song: Song, config: NotificationActionsConfig) {
+        override fun update(song: Song, status: ServiceStatus, config: NotificationActionsConfig) {
             common(
                 notificationBuilder = notificationBuilder(service),
                 title = song.title, text1 = song.artistName, text2 = song.albumName,
                 backgroundColor = Color.WHITE,
-                ongoing = service.isPlaying,
-                song = song,
+                song = song, status = status,
                 config = config
             )
         }
@@ -454,13 +458,14 @@ class PlayingNotificationManger : ServiceComponent {
         private fun RemoteViews.updateNotificationImages(
             bitmap: Bitmap,
             color: Int,
+            status: ServiceStatus,
             config: NotificationActionsConfig,
             compatMode: Boolean,
         ) {
             setImageViewBitmap(R.id.image, bitmap)
             if (coloredNotification && color > 0) {
                 setBackgroundColor(color)
-                updateNotificationAction(color, config, compatMode)
+                updateNotificationAction(color, status, config, compatMode)
             }
         }
 
@@ -488,6 +493,7 @@ class PlayingNotificationManger : ServiceComponent {
 
         private fun RemoteViews.updateNotificationAction(
             backgroundColor: Int,
+            status: ServiceStatus,
             config: NotificationActionsConfig,
             compatMode: Boolean,
         ) {
@@ -496,8 +502,6 @@ class PlayingNotificationManger : ServiceComponent {
                     config.actions.filter { it.displayInCompat }.map { it.notificationAction }
                 else
                     config.actions.map { it.notificationAction }
-
-            val status = service.statusForNotification
 
             for (i in actionPlaceholders.indices) {
                 val notificationAction = actions.getOrNull(i)

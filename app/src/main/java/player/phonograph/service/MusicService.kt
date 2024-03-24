@@ -320,7 +320,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
             PLAY_STATE_CHANGED                        -> {
                 // update playing notification
-                playNotificationManager.updateNotification(queueManager.currentSong)
+                playNotificationManager.updateNotification(queueManager.currentSong, statusForNotification)
                 mediaSessionController.updateMetaData(
                     queueManager.currentSong,
                     (queueManager.currentSongPosition + 1).toLong(),
@@ -346,7 +346,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
             REPEAT_MODE_CHANGED, SHUFFLE_MODE_CHANGED -> {
                 // just update playing notification
-                playNotificationManager.updateNotification(queueManager.currentSong)
+                playNotificationManager.updateNotification(queueManager.currentSong, statusForNotification)
                 mediaSessionController.updateMetaData(
                     queueManager.currentSong,
                     (queueManager.currentSongPosition + 1).toLong(),
@@ -360,7 +360,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
             META_CHANGED                              -> {
                 // update playing notification
-                playNotificationManager.updateNotification(queueManager.currentSong)
+                playNotificationManager.updateNotification(queueManager.currentSong, statusForNotification)
                 mediaSessionController.updateMetaData(
                     queueManager.currentSong,
                     (queueManager.currentSongPosition + 1).toLong(),
