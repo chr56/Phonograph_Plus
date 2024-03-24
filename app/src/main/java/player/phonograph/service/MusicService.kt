@@ -327,9 +327,7 @@ class MusicService : MediaBrowserServiceCompat() {
                     queueManager.playingQueue.size.toLong(),
                     false
                 )
-                mediaSessionController.updatePlaybackState(
-                    controller.isPlaying(), controller.getSongProgressMillis().toLong()
-                )
+                mediaSessionController.updatePlaybackState(statusForNotification)
 
                 // save state
                 if (!isPlaying && songProgressMillis > 0) {
@@ -353,9 +351,7 @@ class MusicService : MediaBrowserServiceCompat() {
                     queueManager.playingQueue.size.toLong(),
                     false
                 )
-                mediaSessionController.updatePlaybackState(
-                    controller.isPlaying(), controller.getSongProgressMillis().toLong()
-                )
+                mediaSessionController.updatePlaybackState(statusForNotification)
             }
 
             META_CHANGED                              -> {
@@ -367,9 +363,7 @@ class MusicService : MediaBrowserServiceCompat() {
                     queueManager.playingQueue.size.toLong(),
                     true
                 )
-                mediaSessionController.updatePlaybackState(
-                    controller.isPlaying(), controller.getSongProgressMillis().toLong()
-                )
+                mediaSessionController.updatePlaybackState(statusForNotification)
 
                 // save state
                 queueManager.post(MSG_SAVE_CFG)
@@ -469,9 +463,7 @@ class MusicService : MediaBrowserServiceCompat() {
                 queueManager.playingQueue.size.toLong(),
                 false
             )
-            mediaSessionController.updatePlaybackState(
-                controller.isPlaying(), controller.getSongProgressMillis().toLong()
-            )
+            mediaSessionController.updatePlaybackState(statusForNotification)
             mHandler.removeCallbacks(this)
             mHandler.postDelayed(this, THROTTLE)
         }
@@ -512,9 +504,7 @@ class MusicService : MediaBrowserServiceCompat() {
     )
 
     internal fun requireRefreshMediaSessionState() {
-        mediaSessionController.updatePlaybackState(
-            controller.isPlaying(), controller.getSongProgressMillis().toLong()
-        )
+        mediaSessionController.updatePlaybackState(statusForNotification)
     }
 
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {

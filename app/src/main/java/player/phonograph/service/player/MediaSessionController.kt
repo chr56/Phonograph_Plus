@@ -204,20 +204,27 @@ class MediaSessionController : ServiceComponent {
             }
         }
 
-    fun updatePlaybackState(isPlaying: Boolean, songProgressMillis: Long) {
+    fun updatePlaybackState(status: MusicService.ServiceStatus) {
         mediaSession.setPlaybackState(
-            sessionPlaybackStateBuilder.setCustomActions(service)
-                .setState(if (isPlaying) STATE_PLAYING else STATE_PAUSED, songProgressMillis, service.speed)
+            sessionPlaybackStateBuilder.setCustomActions(service, status)
+                .setState(
+                    if (status.isPlaying) STATE_PLAYING else STATE_PAUSED,
+                    service.songProgressMillis.toLong(),
+                    service.speed
+                )
                 .build()
         )
     }
 
-    private fun PlaybackStateCompat.Builder.setCustomActions(musicService: MusicService): PlaybackStateCompat.Builder {
+    private fun PlaybackStateCompat.Builder.setCustomActions(
+        musicService: MusicService,
+        status: MusicService.ServiceStatus,
+    ): PlaybackStateCompat.Builder {
         for (action in customActions) {
             addCustomAction(
                 action.action,
                 musicService.getString(action.stringRes),
-                action.icon(musicService.statusForNotification)
+                action.icon(status)
             )
         }
         return this
