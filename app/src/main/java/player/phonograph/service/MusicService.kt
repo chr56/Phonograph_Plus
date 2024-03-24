@@ -320,14 +320,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
             PLAY_STATE_CHANGED                        -> {
                 // update playing notification
-                playNotificationManager.updateNotification(queueManager.currentSong, statusForNotification)
-                mediaSessionController.updateMetaData(
-                    queueManager.currentSong,
-                    (queueManager.currentSongPosition + 1).toLong(),
-                    queueManager.playingQueue.size.toLong(),
-                    false
-                )
-                mediaSessionController.updatePlaybackState(statusForNotification)
+                updateNotificationAndMediaSession(false)
 
                 // save state
                 if (!isPlaying && songProgressMillis > 0) {
@@ -344,26 +337,12 @@ class MusicService : MediaBrowserServiceCompat() {
 
             REPEAT_MODE_CHANGED, SHUFFLE_MODE_CHANGED -> {
                 // just update playing notification
-                playNotificationManager.updateNotification(queueManager.currentSong, statusForNotification)
-                mediaSessionController.updateMetaData(
-                    queueManager.currentSong,
-                    (queueManager.currentSongPosition + 1).toLong(),
-                    queueManager.playingQueue.size.toLong(),
-                    false
-                )
-                mediaSessionController.updatePlaybackState(statusForNotification)
+                updateNotificationAndMediaSession(false)
             }
 
             META_CHANGED                              -> {
                 // update playing notification
-                playNotificationManager.updateNotification(queueManager.currentSong, statusForNotification)
-                mediaSessionController.updateMetaData(
-                    queueManager.currentSong,
-                    (queueManager.currentSongPosition + 1).toLong(),
-                    queueManager.playingQueue.size.toLong(),
-                    true
-                )
-                mediaSessionController.updatePlaybackState(statusForNotification)
+                updateNotificationAndMediaSession(true)
 
                 // save state
                 queueManager.post(MSG_SAVE_CFG)
@@ -393,12 +372,8 @@ class MusicService : MediaBrowserServiceCompat() {
 
                 // notify controller
                 if (queueManager.playingQueue.isNotEmpty()) {
-                    controller.handler.removeMessages(
-                        RE_PREPARE_NEXT_PLAYER
-                    )
-                    controller.handler.sendEmptyMessage(
-                        RE_PREPARE_NEXT_PLAYER
-                    )
+                    controller.handler.removeMessages(RE_PREPARE_NEXT_PLAYER)
+                    controller.handler.sendEmptyMessage(RE_PREPARE_NEXT_PLAYER)
                 } else {
                     controller.stop()
                     playNotificationManager.cancelNotification()
@@ -407,27 +382,29 @@ class MusicService : MediaBrowserServiceCompat() {
         }
     }
 
+    private fun updateNotificationAndMediaSession(loadCover: Boolean) {
+        val currentSong = queueManager.currentSong
+        val serviceStatus = statusForNotification
+        playNotificationManager.updateNotification(currentSong, serviceStatus)
+        mediaSessionController.updateMetaData(
+            currentSong,
+            (queueManager.currentSongPosition + 1).toLong(),
+            queueManager.playingQueue.size.toLong(),
+            loadCover
+        )
+        mediaSessionController.updatePlaybackState(serviceStatus)
+    }
+
     private val widgetIntentReceiver: BroadcastReceiver =
         object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 val command = intent.getStringExtra(EXTRA_APP_WIDGET_NAME)
                 val ids = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
                 when (command) {
-                    AppWidgetClassic.NAME -> {
-                        AppWidgetClassic.instance.performUpdate(this@MusicService, ids)
-                    }
-
-                    AppWidgetSmall.NAME   -> {
-                        AppWidgetSmall.instance.performUpdate(this@MusicService, ids)
-                    }
-
-                    AppWidgetBig.NAME     -> {
-                        AppWidgetBig.instance.performUpdate(this@MusicService, ids)
-                    }
-
-                    AppWidgetCard.NAME    -> {
-                        AppWidgetCard.instance.performUpdate(this@MusicService, ids)
-                    }
+                    AppWidgetClassic.NAME -> AppWidgetClassic.instance.performUpdate(this@MusicService, ids)
+                    AppWidgetSmall.NAME   -> AppWidgetSmall.instance.performUpdate(this@MusicService, ids)
+                    AppWidgetBig.NAME     -> AppWidgetBig.instance.performUpdate(this@MusicService, ids)
+                    AppWidgetCard.NAME    -> AppWidgetCard.instance.performUpdate(this@MusicService, ids)
                 }
             }
         }
