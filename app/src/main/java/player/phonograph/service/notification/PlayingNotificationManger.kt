@@ -27,9 +27,12 @@ import player.phonograph.util.permissions.checkNotificationPermission
 import player.phonograph.util.theme.createTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
 import androidx.annotation.LayoutRes
-import androidx.media.app.NotificationCompat
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import androidx.core.app.NotificationChannelCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.Action
+import androidx.core.app.NotificationManagerCompat
+import androidx.media.app.NotificationCompat.MediaStyle
+import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service.STOP_FOREGROUND_DETACH
 import android.app.Service.STOP_FOREGROUND_REMOVE
@@ -48,15 +51,13 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
-import androidx.core.app.NotificationCompat as XNotificationCompat
-import android.app.Notification as OSNotification
 
 class PlayingNotificationManger : ServiceComponent {
 
     private var _service: MusicService? = null
     private val service: MusicService get() = _service!!
 
-    private lateinit var notificationManager: NotificationManager
+    private lateinit var notificationManager: NotificationManagerCompat
 
     private var classicNotification: Boolean = false
     private var coloredNotification: Boolean = true
@@ -72,24 +73,19 @@ class PlayingNotificationManger : ServiceComponent {
         _service = musicService
 
 
-        notificationManager =
-            musicService.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager = NotificationManagerCompat.from(musicService)
 
-        if (SDK_INT >= Build.VERSION_CODES.O) {
-            val channel: NotificationChannel? = notificationManager.getNotificationChannel(NOTIFICATION_CHANNEL_ID)
-            if (channel == null) {
-                notificationManager.createNotificationChannel(
-                    NotificationChannel(
-                        NOTIFICATION_CHANNEL_ID,
-                        musicService.getString(R.string.playing_notification_name),
-                        NotificationManager.IMPORTANCE_LOW
-                    ).apply {
-                        description = musicService.getString(R.string.playing_notification_description)
-                        enableLights(false)
-                        enableVibration(false)
-                    }
-                )
-            }
+        val channel: NotificationChannelCompat? =
+            notificationManager.getNotificationChannelCompat(NOTIFICATION_CHANNEL_ID)
+        if (channel == null) {
+            notificationManager.createNotificationChannel(
+                NotificationChannelCompat.Builder(NOTIFICATION_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_LOW)
+                    .setName(musicService.getString(R.string.playing_notification_name))
+                    .setDescription(musicService.getString(R.string.playing_notification_description))
+                    .setLightsEnabled(false)
+                    .setVibrationEnabled(false)
+                    .build()
+            )
         }
 
         actionsConfig = NotificationConfig.actions
@@ -127,15 +123,15 @@ class PlayingNotificationManger : ServiceComponent {
     }
 
 
-    private fun notificationBuilder(context: Context): XNotificationCompat.Builder =
-        XNotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
+    private fun notificationBuilder(context: Context): NotificationCompat.Builder =
+        NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(clickPendingIntent)
             .setDeleteIntent(deletePendingIntent)
-            .setVisibility(XNotificationCompat.VISIBILITY_PUBLIC)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setShowWhen(false)
-            .setPriority(XNotificationCompat.PRIORITY_MAX)
-            .setCategory(XNotificationCompat.CATEGORY_TRANSPORT)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setCategory(NotificationCompat.CATEGORY_TRANSPORT)
 
     fun updateNotification(song: Song) {
         if (song.id != -1L) {
@@ -150,7 +146,7 @@ class PlayingNotificationManger : ServiceComponent {
     }
 
     @Synchronized
-    private fun postNotification(notification: OSNotification) {
+    private fun postNotification(notification: Notification) {
         checkNotificationPermission(service)
         when (persistent) {
             true  -> {
@@ -195,8 +191,8 @@ class PlayingNotificationManger : ServiceComponent {
 
     inner class Impl24 : Impl {
 
-        private fun mediaStyle(): NotificationCompat.MediaStyle =
-            NotificationCompat.MediaStyle().setMediaSession(service.mediaSession.sessionToken)
+        private fun mediaStyle(): MediaStyle =
+            MediaStyle().setMediaSession(service.mediaSession.sessionToken)
 
         private var cachedSong: Song? = null
         private var cachedBitmap: Bitmap? = null
@@ -236,12 +232,12 @@ class PlayingNotificationManger : ServiceComponent {
          * prepare notification
          */
         private fun prepareNotification(
-            builder: XNotificationCompat.Builder,
+            builder: NotificationCompat.Builder,
             title: String,
             content: String?,
             subText: String?,
             config: NotificationActionsConfig,
-        ): XNotificationCompat.Builder {
+        ): NotificationCompat.Builder {
 
             val status =
                 ServiceStatus(service.isPlaying, service.queueManager.shuffleMode, service.queueManager.repeatMode)
@@ -269,23 +265,23 @@ class PlayingNotificationManger : ServiceComponent {
                 .setStyle(mediaStyle().setShowActionsInCompactView(*positions))
         }
 
-        private fun processActions(action: NotificationAction?, status: ServiceStatus): XNotificationCompat.Action {
+        private fun processActions(action: NotificationAction?, status: ServiceStatus): Action {
             return if (action != null)
-                XNotificationCompat.Action(
+                Action(
                     action.icon(status),
                     service.getString(action.stringRes),
                     buildPlaybackPendingIntent(action.action)
                 )
             else {
-                XNotificationCompat.Action(R.drawable.ic_notification, null, null)
+                Action(R.drawable.ic_notification, null, null)
             }
         }
 
         private fun prepareNotificationImages(
-            notificationBuilder: XNotificationCompat.Builder,
+            notificationBuilder: NotificationCompat.Builder,
             bitmap: Bitmap?,
             paletteColor: Int,
-        ): XNotificationCompat.Builder {
+        ): NotificationCompat.Builder {
             return if (bitmap != null) {
                 notificationBuilder
                     .setLargeIcon(bitmap)
@@ -299,7 +295,7 @@ class PlayingNotificationManger : ServiceComponent {
             }
         }
 
-        private fun emptyNotification(config: NotificationActionsConfig): XNotificationCompat.Builder =
+        private fun emptyNotification(config: NotificationActionsConfig): NotificationCompat.Builder =
             prepareNotification(
                 builder = notificationBuilder(service),
                 title = service.getString(R.string.empty),
@@ -320,7 +316,7 @@ class PlayingNotificationManger : ServiceComponent {
         private var cachedPaletteColor: Int = -1
 
         private fun common(
-            notificationBuilder: XNotificationCompat.Builder,
+            notificationBuilder: NotificationCompat.Builder,
             title: String?,
             text1: String?,
             text2: String?,
