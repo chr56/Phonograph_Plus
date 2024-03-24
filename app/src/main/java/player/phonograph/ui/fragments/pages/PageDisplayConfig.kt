@@ -9,7 +9,7 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.ui.adapter.ItemLayoutStyle
+import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.util.debug
 import player.phonograph.util.ui.isLandscape
 import android.content.Context

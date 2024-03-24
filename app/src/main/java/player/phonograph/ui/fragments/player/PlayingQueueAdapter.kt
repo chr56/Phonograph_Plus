@@ -14,7 +14,7 @@ import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.ui.adapter.ItemLayoutStyle
+import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.adapter.OrderedItemAdapter
 import player.phonograph.util.ui.hitTest

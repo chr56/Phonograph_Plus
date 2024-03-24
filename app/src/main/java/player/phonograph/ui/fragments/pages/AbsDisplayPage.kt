@@ -17,11 +17,10 @@ import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Displayable
 import player.phonograph.model.sort.SortMode
-import player.phonograph.repo.loader.Songs
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.adapter.ItemLayoutStyle
+import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics

@@ -4,6 +4,9 @@
 
 package player.phonograph.ui.adapter
 
+import player.phonograph.model.ItemLayoutStyle
+import player.phonograph.model.ViewHolderType
+
 data class ConstDisplayConfig(
     @ViewHolderType override var layoutStyle: ItemLayoutStyle,
     override val usePalette: Boolean = false,

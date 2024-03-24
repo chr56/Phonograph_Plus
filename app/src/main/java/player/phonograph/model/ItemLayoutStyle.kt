@@ -1,11 +1,10 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.ui.adapter
+package player.phonograph.model
 
 import player.phonograph.R
-import player.phonograph.ui.adapter.ItemLayoutStyle.Companion.from
 import androidx.annotation.IntDef
 import androidx.annotation.LayoutRes
 
@@ -27,7 +26,7 @@ annotation class ViewHolderType
 /**
  * value class for ViewHolder's layout
  *
- * use [from] or static value to create
+ * use [ItemLayoutStyle.Companion.from] or static value to create
  */
 @JvmInline
 value class ItemLayoutStyle private constructor(@ViewHolderType val ordinal: Int) {

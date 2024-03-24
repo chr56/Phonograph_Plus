@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.adapter
 
+import player.phonograph.model.ItemLayoutStyle
 import androidx.annotation.IntDef
 
 interface DisplayConfig {
