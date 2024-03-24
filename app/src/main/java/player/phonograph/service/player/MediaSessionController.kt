@@ -14,8 +14,7 @@ import player.phonograph.model.Song
 import player.phonograph.repo.browser.MediaBrowserDelegate
 import player.phonograph.service.MusicService
 import player.phonograph.service.ServiceComponent
-import player.phonograph.service.ServiceStatus
-import player.phonograph.service.notification.PlayingNotificationManger
+import player.phonograph.service.notification.PlayingNotificationManager
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
@@ -26,7 +25,7 @@ import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Bitmap
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
@@ -205,17 +204,22 @@ class MediaSessionController : ServiceComponent {
             }
         }
 
-    fun updatePlaybackState(isPlaying: Boolean, songProgressMillis: Long) {
+    fun updatePlaybackState(status: MusicService.ServiceStatus) {
         mediaSession.setPlaybackState(
-            sessionPlaybackStateBuilder.setCustomActions(service)
-                .setState(if (isPlaying) STATE_PLAYING else STATE_PAUSED, songProgressMillis, service.speed)
+            sessionPlaybackStateBuilder.setCustomActions(service, status)
+                .setState(
+                    if (status.isPlaying) STATE_PLAYING else STATE_PAUSED,
+                    service.songProgressMillis.toLong(),
+                    service.speed
+                )
                 .build()
         )
     }
 
-    private fun PlaybackStateCompat.Builder.setCustomActions(musicService: MusicService): PlaybackStateCompat.Builder {
-        val status =
-            ServiceStatus(service.isPlaying, service.queueManager.shuffleMode, service.queueManager.repeatMode)
+    private fun PlaybackStateCompat.Builder.setCustomActions(
+        musicService: MusicService,
+        status: MusicService.ServiceStatus,
+    ): PlaybackStateCompat.Builder {
         for (action in customActions) {
             addCustomAction(
                 action.action,
@@ -247,17 +251,29 @@ class MediaSessionController : ServiceComponent {
         }
 
     private var disposable: Disposable? = null
+    private var cachedBitmap: Bitmap? = null
+    private var cachedSong: Song? = null
     fun updateMetaData(song: Song, pos: Long, total: Long, loadCover: Boolean) {
         if (song.id == -1L) {
             mediaSession.setMetadata(null)
         } else {
+
+            val shouldPutCover = loadCover || SDK_INT >= PlayingNotificationManager.VERSION_SET_COVER_USING_METADATA
+
             val metadata = fillMetadata(song, pos, total, null)
+            if (shouldPutCover && cachedSong == song && cachedBitmap != null) {
+                metadata.putBitmap(METADATA_KEY_ALBUM_ART, cachedBitmap)
+            }
+
             mediaSession.setMetadata(metadata.build())
-            if (loadCover || Build.VERSION.SDK_INT >= PlayingNotificationManger.VERSION_SET_COVER_USING_METADATA) {
-                disposable?.dispose()
+
+            disposable?.dispose()
+            if (shouldPutCover && cachedSong != song) {
                 disposable = service.coverLoader.load(song) { bitmap, _ ->
                     metadata.putBitmap(METADATA_KEY_ALBUM_ART, bitmap)
                     mediaSession.setMetadata(metadata.build())
+                    this.cachedBitmap = bitmap
+                    this.cachedSong = song
                 }
             }
         }
