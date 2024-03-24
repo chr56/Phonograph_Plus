@@ -193,6 +193,10 @@ class PlayingNotificationManger : ServiceComponent {
         private fun mediaStyle(): NotificationCompat.MediaStyle =
             NotificationCompat.MediaStyle().setMediaSession(service.mediaSession.sessionToken)
 
+        private var cachedSong: Song? = null
+        private var cachedBitmap: Bitmap? = null
+        private var cachedPaletteColor: Int = -1
+
         @Synchronized
         override fun update(song: Song, config: NotificationActionsConfig) {
             val isPlaying = service.isPlaying
@@ -205,20 +209,22 @@ class PlayingNotificationManger : ServiceComponent {
                 config = config,
             )
 
+            if (SDK_INT < VERSION_SET_COVER_USING_METADATA && cachedSong == song) {
+                prepareNotificationImages(cachedBitmap, cachedPaletteColor)
+            }
+
             postNotification(notificationBuilder.build())
 
-            if (SDK_INT < VERSION_SET_COVER_USING_METADATA) {
-                request?.dispose()
+            request?.dispose()
+            if (SDK_INT < VERSION_SET_COVER_USING_METADATA && cachedSong != song) {
                 request = service.coverLoader.load(song) { bitmap: Bitmap?, paletteColor: Int ->
                     if (bitmap != null) {
-                        notificationBuilder
-                            .setLargeIcon(bitmap)
-                            .also { builder ->
-                                if (SDK_INT <= Build.VERSION_CODES.O && coloredNotification) {
-                                    builder.color = paletteColor
-                                }
-                            }
+                        prepareNotificationImages(bitmap, paletteColor)
                         postNotification(notificationBuilder.build())
+
+                        this.cachedSong = song
+                        this.cachedBitmap = bitmap
+                        this.cachedPaletteColor = paletteColor
                     }
                 }
             }
@@ -275,6 +281,19 @@ class PlayingNotificationManger : ServiceComponent {
             }
         }
 
+        private fun prepareNotificationImages(bitmap: Bitmap?, paletteColor: Int) {
+            if (bitmap != null) {
+                notificationBuilder
+                    .setLargeIcon(bitmap)
+                    .also { builder ->
+                        if (SDK_INT <= Build.VERSION_CODES.O && coloredNotification) {
+                            if (paletteColor > 0) builder.color = paletteColor
+                        }
+                    }
+            }
+        }
+
+
 
         private fun emptyNotification(config: NotificationActionsConfig) =
             prepareNotification(
@@ -291,6 +310,10 @@ class PlayingNotificationManger : ServiceComponent {
     }
 
     inner class Impl0 : Impl {
+
+        private var cachedSong: Song? = null
+        private var cachedBitmap: Bitmap? = null
+        private var cachedPaletteColor: Int = -1
 
         private fun common(
             builder: XNotificationCompat.Builder,
@@ -332,22 +355,29 @@ class PlayingNotificationManger : ServiceComponent {
                 .setCustomBigContentView(layoutExpanded)
                 .setOngoing(ongoing)
 
+            if (loadImage && song != null && cachedSong == song) {
+
+                val bitmap = cachedBitmap
+                if (bitmap != null) {
+                    layoutCompat.updateNotificationImages(bitmap, cachedPaletteColor, config, true)
+                    layoutExpanded.updateNotificationImages(bitmap, cachedPaletteColor, config, false)
+                }
+            }
+
             postNotification(builder.build())
 
-            if (loadImage && song != null) {
-                request?.dispose()
+            request?.dispose()
+            if (loadImage && song != null && cachedSong != song) {
                 request = service.coverLoader.load(song) { bitmap: Bitmap?, color: Int ->
                     if (bitmap != null) {
-                        layoutCompat.setImageViewBitmap(R.id.image, bitmap)
-                        layoutExpanded.setImageViewBitmap(R.id.image, bitmap)
-                        if (coloredNotification) {
-                            layoutCompat.setBackgroundColor(color)
-                            layoutExpanded.setBackgroundColor(color)
-
-                            layoutCompat.updateNotificationAction(color, config, true)
-                            layoutExpanded.updateNotificationAction(color, config, false)
-                        }
+                        layoutCompat.updateNotificationImages(bitmap, color, config, true)
+                        layoutExpanded.updateNotificationImages(bitmap, color, config, false)
                         postNotification(notificationBuilder.build())
+
+                        this.cachedSong = song
+                        this.cachedBitmap = bitmap
+                        this.cachedPaletteColor = color
+
                     }
                 }
             }
@@ -422,6 +452,20 @@ class PlayingNotificationManger : ServiceComponent {
             setTextColor(R.id.text, secondaryTextColor)
             if (hasText2) {
                 setTextColor(R.id.text2, secondaryTextColor)
+            }
+        }
+
+
+        private fun RemoteViews.updateNotificationImages(
+            bitmap: Bitmap,
+            color: Int,
+            config: NotificationActionsConfig,
+            compatMode: Boolean,
+        ) {
+            setImageViewBitmap(R.id.image, bitmap)
+            if (coloredNotification && color > 0) {
+                setBackgroundColor(color)
+                updateNotificationAction(color, config, compatMode)
             }
         }
 
