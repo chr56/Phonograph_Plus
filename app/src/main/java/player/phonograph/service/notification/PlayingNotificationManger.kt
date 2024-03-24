@@ -199,13 +199,11 @@ class PlayingNotificationManger : ServiceComponent {
 
         @Synchronized
         override fun update(song: Song, config: NotificationActionsConfig) {
-            val isPlaying = service.isPlaying
 
             prepareNotification(
                 title = song.title,
                 content = song.artistName,
                 subText = song.albumName,
-                ongoing = isPlaying,
                 config = config,
             )
 
@@ -237,25 +235,22 @@ class PlayingNotificationManger : ServiceComponent {
             title: String,
             content: String?,
             subText: String?,
-            ongoing: Boolean,
             config: NotificationActionsConfig,
         ): XNotificationCompat.Builder {
+
+            val status =
+                ServiceStatus(service.isPlaying, service.queueManager.shuffleMode, service.queueManager.repeatMode)
 
             val base = notificationBuilder
                 .setContentTitle(title)
                 .setContentText(content)
                 .setSubText(subText)
-                .setOngoing(ongoing)
+                .setOngoing(service.isPlaying)
                 .setLargeIcon(service.coverLoader.defaultCover)
                 .clearActions()
 
-
-            val status =
-                ServiceStatus(service.isPlaying, service.queueManager.shuffleMode, service.queueManager.repeatMode)
-
             val actions =
                 config.actions.map { processActions(it.notificationAction, status) }
-
 
             val positions =
                 config.actions.mapIndexed { index, item ->
@@ -286,7 +281,7 @@ class PlayingNotificationManger : ServiceComponent {
                 notificationBuilder
                     .setLargeIcon(bitmap)
                     .also { builder ->
-                        if (SDK_INT <= Build.VERSION_CODES.O && coloredNotification) {
+                        if (coloredNotification) {
                             if (paletteColor > 0) builder.color = paletteColor
                         }
                     }
@@ -300,7 +295,6 @@ class PlayingNotificationManger : ServiceComponent {
                 title = service.getString(R.string.empty),
                 content = null,
                 subText = null,
-                ongoing = true,
                 config = config
             )
 
@@ -322,7 +316,6 @@ class PlayingNotificationManger : ServiceComponent {
             text2: String?,
             backgroundColor: Int,
             ongoing: Boolean,
-            loadImage: Boolean,
             song: Song?,
             config: NotificationActionsConfig,
         ) {
@@ -355,7 +348,7 @@ class PlayingNotificationManger : ServiceComponent {
                 .setCustomBigContentView(layoutExpanded)
                 .setOngoing(ongoing)
 
-            if (loadImage && song != null && cachedSong == song) {
+            if (song != null && cachedSong == song) {
 
                 val bitmap = cachedBitmap
                 if (bitmap != null) {
@@ -367,7 +360,7 @@ class PlayingNotificationManger : ServiceComponent {
             postNotification(builder.build())
 
             request?.dispose()
-            if (loadImage && song != null && cachedSong != song) {
+            if (song != null && cachedSong != song) {
                 request = service.coverLoader.load(song) { bitmap: Bitmap?, color: Int ->
                     if (bitmap != null) {
                         layoutCompat.updateNotificationImages(bitmap, color, config, true)
@@ -389,7 +382,7 @@ class PlayingNotificationManger : ServiceComponent {
                 title = service.getString(R.string.empty), text1 = null, text2 = null,
                 backgroundColor = Color.LTGRAY,
                 ongoing = true,
-                loadImage = false, song = null,
+                song = null,
                 config = config
             )
         }
@@ -401,7 +394,7 @@ class PlayingNotificationManger : ServiceComponent {
                 title = song.title, text1 = song.artistName, text2 = song.albumName,
                 backgroundColor = Color.WHITE,
                 ongoing = service.isPlaying,
-                loadImage = true, song = song,
+                song = song,
                 config = config
             )
         }
