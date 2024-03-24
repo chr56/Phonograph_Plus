@@ -26,7 +26,7 @@ import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Bitmap
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
@@ -247,17 +247,29 @@ class MediaSessionController : ServiceComponent {
         }
 
     private var disposable: Disposable? = null
+    private var cachedBitmap: Bitmap? = null
+    private var cachedSong: Song? = null
     fun updateMetaData(song: Song, pos: Long, total: Long, loadCover: Boolean) {
         if (song.id == -1L) {
             mediaSession.setMetadata(null)
         } else {
+
+            val shouldPutCover = loadCover || SDK_INT >= PlayingNotificationManger.VERSION_SET_COVER_USING_METADATA
+
             val metadata = fillMetadata(song, pos, total, null)
+            if (shouldPutCover && cachedSong == song && cachedBitmap != null) {
+                metadata.putBitmap(METADATA_KEY_ALBUM_ART, cachedBitmap)
+            }
+
             mediaSession.setMetadata(metadata.build())
-            if (loadCover || Build.VERSION.SDK_INT >= PlayingNotificationManger.VERSION_SET_COVER_USING_METADATA) {
-                disposable?.dispose()
+
+            disposable?.dispose()
+            if (shouldPutCover && cachedSong != song) {
                 disposable = service.coverLoader.load(song) { bitmap, _ ->
                     metadata.putBitmap(METADATA_KEY_ALBUM_ART, bitmap)
                     mediaSession.setMetadata(metadata.build())
+                    this.cachedBitmap = bitmap
+                    this.cachedSong = song
                 }
             }
         }
