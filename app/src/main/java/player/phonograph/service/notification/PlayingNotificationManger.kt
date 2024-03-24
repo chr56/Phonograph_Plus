@@ -14,7 +14,7 @@ import player.phonograph.mechanism.setting.NotificationConfig
 import player.phonograph.model.Song
 import player.phonograph.service.MusicService
 import player.phonograph.service.ServiceComponent
-import player.phonograph.service.ServiceStatus
+import player.phonograph.service.MusicService.ServiceStatus
 import player.phonograph.service.player.PlayerState.PAUSED
 import player.phonograph.service.player.PlayerState.PLAYING
 import player.phonograph.service.player.PlayerState.PREPARING
@@ -239,9 +239,6 @@ class PlayingNotificationManger : ServiceComponent {
             config: NotificationActionsConfig,
         ): NotificationCompat.Builder {
 
-            val status =
-                ServiceStatus(service.isPlaying, service.queueManager.shuffleMode, service.queueManager.repeatMode)
-
             val base = builder
                 .setContentTitle(title)
                 .setContentText(content)
@@ -251,7 +248,7 @@ class PlayingNotificationManger : ServiceComponent {
                 .clearActions()
 
             val actions =
-                config.actions.map { processActions(it.notificationAction, status) }
+                config.actions.map { processActions(it.notificationAction, service.statusForNotification) }
 
             val positions =
                 config.actions.mapIndexed { index, item ->
@@ -500,8 +497,7 @@ class PlayingNotificationManger : ServiceComponent {
                 else
                     config.actions.map { it.notificationAction }
 
-            val status =
-                ServiceStatus(service.isPlaying, service.queueManager.shuffleMode, service.queueManager.repeatMode)
+            val status = service.statusForNotification
 
             for (i in actionPlaceholders.indices) {
                 val notificationAction = actions.getOrNull(i)

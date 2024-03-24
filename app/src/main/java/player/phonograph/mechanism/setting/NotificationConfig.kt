@@ -7,7 +7,7 @@ package player.phonograph.mechanism.setting
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.service.MusicService
-import player.phonograph.service.ServiceStatus
+import player.phonograph.service.MusicService.ServiceStatus
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Keys

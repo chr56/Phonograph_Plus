@@ -14,7 +14,6 @@ import player.phonograph.model.Song
 import player.phonograph.repo.browser.MediaBrowserDelegate
 import player.phonograph.service.MusicService
 import player.phonograph.service.ServiceComponent
-import player.phonograph.service.ServiceStatus
 import player.phonograph.service.notification.PlayingNotificationManger
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.RepeatMode
@@ -214,13 +213,11 @@ class MediaSessionController : ServiceComponent {
     }
 
     private fun PlaybackStateCompat.Builder.setCustomActions(musicService: MusicService): PlaybackStateCompat.Builder {
-        val status =
-            ServiceStatus(service.isPlaying, service.queueManager.shuffleMode, service.queueManager.repeatMode)
         for (action in customActions) {
             addCustomAction(
                 action.action,
                 musicService.getString(action.stringRes),
-                action.icon(status)
+                action.icon(musicService.statusForNotification)
             )
         }
         return this

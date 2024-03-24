@@ -498,6 +498,19 @@ class MusicService : MediaBrowserServiceCompat() {
         }
     }
 
+    val statusForNotification: ServiceStatus
+        get() = ServiceStatus(
+            isPlaying,
+            queueManager.shuffleMode,
+            queueManager.repeatMode
+        )
+
+    data class ServiceStatus(
+        val isPlaying: Boolean,
+        val shuffleMode: ShuffleMode,
+        val repeatMode: RepeatMode,
+    )
+
     internal fun requireRefreshMediaSessionState() {
         mediaSessionController.updatePlaybackState(
             controller.isPlaying(), controller.getSongProgressMillis().toLong()
