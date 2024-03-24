@@ -25,7 +25,7 @@ import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.repo.browser.MediaBrowserDelegate
 import player.phonograph.repo.database.HistoryStore
 import player.phonograph.service.notification.CoverLoader
-import player.phonograph.service.notification.PlayingNotificationManger
+import player.phonograph.service.notification.PlayingNotificationManager
 import player.phonograph.service.player.MSG_NOW_PLAYING_CHANGED
 import player.phonograph.service.player.MediaSessionController
 import player.phonograph.service.player.PlayerController
@@ -84,7 +84,7 @@ class MusicService : MediaBrowserServiceCompat() {
     private val controller: PlayerController = PlayerController()
     private var playerStateObserver: PlayerStateObserver = initPlayerStateObserver()
 
-    private val playNotificationManager: PlayingNotificationManger = PlayingNotificationManger()
+    private val playNotificationManager: PlayingNotificationManager = PlayingNotificationManager()
 
     private val mediaSessionController: MediaSessionController = MediaSessionController()
 

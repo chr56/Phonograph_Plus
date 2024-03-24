@@ -52,7 +52,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 
-class PlayingNotificationManger : ServiceComponent {
+class PlayingNotificationManager : ServiceComponent {
 
     private var _service: MusicService? = null
     private val service: MusicService get() = _service!!

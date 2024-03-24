@@ -14,7 +14,7 @@ import player.phonograph.model.Song
 import player.phonograph.repo.browser.MediaBrowserDelegate
 import player.phonograph.service.MusicService
 import player.phonograph.service.ServiceComponent
-import player.phonograph.service.notification.PlayingNotificationManger
+import player.phonograph.service.notification.PlayingNotificationManager
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
@@ -258,7 +258,7 @@ class MediaSessionController : ServiceComponent {
             mediaSession.setMetadata(null)
         } else {
 
-            val shouldPutCover = loadCover || SDK_INT >= PlayingNotificationManger.VERSION_SET_COVER_USING_METADATA
+            val shouldPutCover = loadCover || SDK_INT >= PlayingNotificationManager.VERSION_SET_COVER_USING_METADATA
 
             val metadata = fillMetadata(song, pos, total, null)
             if (shouldPutCover && cachedSong == song && cachedBitmap != null) {
