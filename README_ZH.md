@@ -26,9 +26,11 @@ Phonograph 原为一款 Android 质感设计的本地音乐播放器。Phonograp
 [<img src="https://img.shields.io/github/v/release/chr56/phonograph_plus?label=Github%20Releases%20(Latest)&include_prereleases" alt="Github%20Release%20(Latest)">](https://github.com/chr56/Phonograph_Plus/releases/)
 [<img src="https://img.shields.io/f-droid/v/player.phonograph.plus?label=F-droid" alt="F-droid">](https://f-droid.org/packages/player.phonograph.plus/)
 
-Phonograph Plus 可从 GitHub Release (稳定版通道和预览版通道) 和 F-droid (稳定版通道) 上获取。
+Phonograph Plus 可从 GitHub Release (稳定版通道和预览版通道[^1]) 和 F-droid[^2] (稳定版通道) 上获取。
 
-<small> * 在 F-droid 上启用了可重复构建，从 F-droid 上获取的 APK 应与 GitHub Release 上获取的 APK 完全相同。</small>
+[^1]: 预览版包名存在后缀 `preview`
+
+[^2]: 在 F-droid 上启用了可重复构建，从 F-droid 上获取的 APK 应与 GitHub Release 上获取的 APK 完全相同
 
 
 ## **新增特性**
