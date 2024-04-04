@@ -34,11 +34,6 @@ Phonograph Plus is available on GitHub Releases (Stable Channel and Preview Chan
 
 ## **Additional Features**
 
-> [!IMPORTANT]
-> ️ **NOTICE: Development has been temporarily suspended for about 2 weeks.**
-> 
-> Development would be suspended for about one week or two, the project is maintaining only.
-
 Here is a list of _notable_ changes or enhancements compared with the original Phonograph.
 
 ### User Interface
