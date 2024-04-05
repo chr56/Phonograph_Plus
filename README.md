@@ -25,7 +25,7 @@ of [Phonograph](https://github.com/kabouzeid/Phonograph) since it is no longer m
 [<img src="https://img.shields.io/github/v/release/chr56/phonograph_plus?label=Github%20Releases%20(Latest)&include_prereleases" alt="Github%20Release%20(Latest)">](https://github.com/chr56/Phonograph_Plus/releases/)
 [<img src="https://img.shields.io/f-droid/v/player.phonograph.plus?label=F-droid" alt="F-droid">](https://f-droid.org/packages/player.phonograph.plus/)
 
-Phonograph Plus is available on GitHub Releases (Stable Channel and Preview Channel[^1]) and F-droid[^2] (Stable Channel).
+Phonograph Plus is available on GitHub Releases (Stable Channel and Preview Channel[^1]) and F-Droid[^2] (Stable Channel).
 
 [^1]: Package name of Preview version has suffix of `preview`. 
 

@@ -30,7 +30,7 @@ Phonograph Plus 可从 GitHub Release (稳定版通道和预览版通道[^1]) �
 
 [^1]: 预览版包名存在后缀 `preview`
 
-[^2]: 在 F-droid 上启用了可重复构建，从 F-droid 上获取的 APK 应与 GitHub Release 上获取的 APK 完全相同
+[^2]: 在 F-droid 上启用了可重复构建，从 F-Droid 上获取的 APK 应与 GitHub Release 上获取的 APK 完全相同
 
 
 ## **新增特性**
