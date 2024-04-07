@@ -15,26 +15,28 @@ import android.view.ViewGroup
 /**
  * a ComposeView dialog
  */
-abstract class BridgeDialogFragment : DialogFragment() {
+abstract class ComposeViewDialogFragment : DialogFragment() {
 
-    private lateinit var ui: ComposeView
+    private lateinit var composeView: ComposeView
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View {
-        ui = ComposeView(requireContext())
-        return ui
+    ): View = ComposeView(requireContext()).also {
+        composeView = it
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ui.setContent {
+        composeView.setContent {
             Content()
         }
     }
 
+    /**
+     * Composable content of dialog
+     */
     @Composable
     protected abstract fun Content()
 }

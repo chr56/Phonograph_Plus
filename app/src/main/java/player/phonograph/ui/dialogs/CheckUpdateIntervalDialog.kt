@@ -15,7 +15,7 @@ import player.phonograph.model.time.TimeUnit
 import player.phonograph.model.time.displayText
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.ui.compose.BridgeDialogFragment
+import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.WheelPicker
 import player.phonograph.util.debug
@@ -40,7 +40,7 @@ import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class CheckUpdateIntervalDialog : BridgeDialogFragment() {
+class CheckUpdateIntervalDialog : ComposeViewDialogFragment() {
     @Composable
     override fun Content() {
         val context = LocalContext.current

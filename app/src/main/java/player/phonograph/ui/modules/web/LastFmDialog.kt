@@ -24,7 +24,7 @@ import player.phonograph.USER_AGENT
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
-import player.phonograph.ui.compose.BridgeDialogFragment
+import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.util.parcelable
 import androidx.compose.foundation.clickable
@@ -57,7 +57,7 @@ import mms.lastfm.LastFmAlbum as LastFmAlbumModel
 import mms.lastfm.LastFmArtist as LastFmArtistModel
 import mms.lastfm.LastFmTrack as LastFmTrackModel
 
-class LastFmDialog : BridgeDialogFragment() {
+class LastFmDialog : ComposeViewDialogFragment() {
 
     private val viewModel: LastFmViewModel by viewModels()
 
@@ -281,6 +281,7 @@ class LastFmDialog : BridgeDialogFragment() {
         dismiss()
     }
 
+    @Suppress("ConvertObjectToDataObject")
     private sealed class Source(val name: String) {
         object MusicBrainz : Source("MusicBrainz")
         object LastFm : Source("last.fm")

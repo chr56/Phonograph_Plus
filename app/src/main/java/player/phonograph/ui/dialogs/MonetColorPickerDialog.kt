@@ -11,7 +11,7 @@ import com.vanpra.composematerialdialogs.title
 import lib.phonograph.misc.ColorPalette
 import mt.pref.ThemeColor
 import player.phonograph.R
-import player.phonograph.ui.compose.BridgeDialogFragment
+import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.MonetColorPicker
 import player.phonograph.util.lifecycleScopeOrNewOne
@@ -28,7 +28,7 @@ import android.os.Build
 import android.os.Bundle
 import kotlinx.coroutines.launch
 
-class MonetColorPickerDialog : BridgeDialogFragment() {
+class MonetColorPickerDialog : ComposeViewDialogFragment() {
     private var mode: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {

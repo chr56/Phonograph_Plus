@@ -15,7 +15,7 @@ import player.phonograph.model.time.TimeUnit
 import player.phonograph.model.time.displayText
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.ui.compose.BridgeDialogFragment
+import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.WheelPicker
 import player.phonograph.util.debug
@@ -30,6 +30,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -42,7 +43,7 @@ import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class LastAddedPlaylistIntervalDialog : BridgeDialogFragment() {
+class LastAddedPlaylistIntervalDialog : ComposeViewDialogFragment() {
     @Composable
     override fun Content() {
         val dialogState = rememberMaterialDialogState(true)
@@ -137,7 +138,7 @@ class LastAddedPlaylistIntervalDialog : BridgeDialogFragment() {
 }
 
 @Composable
-fun PastTimeIntervalPicker(
+private fun PastTimeIntervalPicker(
     selectedMode: TimeIntervalCalculationMode,
     selected: Duration,
     onChangeMode: (TimeIntervalCalculationMode) -> Unit,
@@ -151,7 +152,7 @@ fun PastTimeIntervalPicker(
     val units = remember { TimeUnit.values() }
     val numbers = remember { (1..30).toList() }
 
-    var currentNumber by remember { mutableStateOf(selected.value) }
+    var currentNumber by remember { mutableLongStateOf(selected.value) }
     var currentUnit by remember { mutableStateOf(selected.unit) }
 
     Row(

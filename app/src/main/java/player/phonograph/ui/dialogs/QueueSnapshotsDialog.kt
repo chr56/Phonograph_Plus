@@ -15,7 +15,7 @@ import player.phonograph.service.queue.QueueHolder
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.ui.compose.BridgeDialogFragment
+import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.util.text.timeText
 import androidx.compose.foundation.clickable
@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import android.content.Context
 
-class QueueSnapshotsDialog : BridgeDialogFragment() {
+class QueueSnapshotsDialog : ComposeViewDialogFragment() {
 
     private val queueManager: QueueManager by inject()
 
@@ -71,7 +71,7 @@ class QueueSnapshotsDialog : BridgeDialogFragment() {
 
 
 @Composable
-fun QueueSnapshotsDialogContent(
+private fun QueueSnapshotsDialogContent(
     context: Context,
     queueManager: QueueManager,
     onDismiss: () -> Unit

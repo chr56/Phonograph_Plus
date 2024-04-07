@@ -12,7 +12,7 @@ import player.phonograph.R
 import player.phonograph.model.SongClickMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.ui.compose.BridgeDialogFragment
+import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.DialogContent
 import player.phonograph.ui.compose.components.FlagCheckBox
@@ -31,7 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import android.content.Context
 
-class ClickModeSettingDialog : BridgeDialogFragment() {
+class ClickModeSettingDialog : ComposeViewDialogFragment() {
     @Composable
     override fun Content() {
         val dialogState = rememberMaterialDialogState(true)
