@@ -17,7 +17,7 @@
 
 **维护中和开发中的 [Phonograph](https://github.com/kabouzeid/Phonograph) 独立分支**
 
-Phonograph 原为一款 Android 质感设计的本地音乐播放器。Phonograph Plus 是 Phonograph 的独立分支，自2021年起一直在维护和开发中。
+Phonograph 原为一款 Android 质感设计的本地音乐播放器。Phonograph Plus 是 Phonograph 的独立分支，自2021年起一直在维护和开发中（原项目自2020起不再活跃并于2023归档）。
 
 
 ## **下载**

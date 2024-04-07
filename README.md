@@ -16,8 +16,7 @@
 
 **A revived classic material designed music player for Android**
 
-Phonograph is a light-weighted material designed local music player for Android. And Phonograph Plus currently is an _independent_ fork
-of [Phonograph](https://github.com/kabouzeid/Phonograph) since it is no longer maintained, and has been in maintenance and development since 2021.
+Phonograph is a light-weighted material designed local music player for Android. And Phonograph Plus currently is an _independent_ fork of [Phonograph](https://github.com/kabouzeid/Phonograph) since it is no longer maintained (which has been no longer active after 2020 and has been archived in 2023), and has been in maintenance and development since 2021.
 
 ## **Downloads**
 
