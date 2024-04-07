@@ -19,14 +19,19 @@ import java.io.File
 
 class PathFilterFolderChooserDialog : FileChooserDialog() {
 
+    private val mode get() = Setting(App.instance)[Keys.pathFilterExcludeMode].data
+
     override fun affirmative(view: View, currentLocation: Location) {
         val file = File(currentLocation.absolutePath)
         MaterialDialog(requireContext())
-            .title(R.string.add_blacklist)
+            .title(
+                text = getString(
+                    R.string.path_filter_confirmation, getString(if (mode) R.string.excluded_paths else R.string.included_paths)
+                )
+            )
             .message(text = file.absolutePath)
             .positiveButton(android.R.string.ok) {
                 with(PathFilterStore.get()) {
-                    val mode = Setting(App.instance)[Keys.pathFilterExcludeMode].data
                     if (mode) addBlacklistPath(file) else addWhitelistPath(file)
                 }
 

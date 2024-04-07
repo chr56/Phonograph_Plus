@@ -368,6 +368,7 @@
     <string name="path_filter">路徑過濾器</string>
     <string name="path_filter_excluded_mode">排除模式</string>
     <string name="path_filter_included_mode">包含模式</string>
+    <string name="path_filter_confirmation">你確定要將其加入 %s 嗎？</string>
     <string name="pref_summary_path_filter_excluded_mode">列入排除路徑的文件夾將不會顯示在音樂庫中</string>
     <string name="pref_summary_path_filter_included_mode">音樂庫中只展示屬於包含路徑的</string>
     <string name="pref_title_load_lyrics">開啟歌詞</string>
