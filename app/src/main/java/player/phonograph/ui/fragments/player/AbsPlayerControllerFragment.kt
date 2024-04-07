@@ -126,6 +126,11 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         }
     }
 
+    override fun onServiceConnected() {
+        super.onServiceConnected()
+        binding.updatePlayPauseDrawableState(true)
+    }
+
     private val _backgroundColor: MutableStateFlow<Int> = MutableStateFlow(0)
     protected val backgroundColor get() = _backgroundColor.asStateFlow()
 
