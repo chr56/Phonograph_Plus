@@ -36,32 +36,39 @@ fun buildDialogView(
     buttonPanel: ButtonPanel,
 ): ViewGroup {
 
-    val defaultLayoutParams =
+    fun panelLayoutParams(horizontal: Int = 36, vertical: Int = 48) =
         ViewGroup.MarginLayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
-            setMargins(16, 8, 16, 8)
+            setMargins(horizontal, vertical, horizontal, vertical)
         }
 
     val frameLayout = FrameLayout(context).also { frameLayout ->
 
-        val contetScrollView = ScrollView(context).also { scrollView ->
-            scrollView.addView(contentPanel.panel, defaultLayoutParams)
+        val contentScrollView = ScrollView(context).also { scrollView ->
+            scrollView.addView(contentPanel.panel, panelLayoutParams())
         }
 
-        frameLayout.addView(contetScrollView, FrameLayoutLayoutParams(defaultLayoutParams).also {
-            it.gravity = Gravity.CENTER
-            it.setMargins(8, if (titlePanel != null) 160 else 48, 8, 160)
-        })
+        frameLayout.addView(contentScrollView,
+            FrameLayoutLayoutParams(panelLayoutParams()).also {
+                it.gravity = Gravity.CENTER
+                it.setMargins(
+                    48,
+                    if (titlePanel != null) 160 else 64,
+                    48,
+                    160
+                )
+            }
+        )
 
         if (titlePanel != null) frameLayout.addView(
             titlePanel.panel,
-            FrameLayoutLayoutParams(defaultLayoutParams).also {
+            FrameLayoutLayoutParams(panelLayoutParams()).also {
                 it.gravity = Gravity.TOP
             }
         )
 
         frameLayout.addView(
             buttonPanel.panel,
-            FrameLayoutLayoutParams(defaultLayoutParams).also {
+            FrameLayoutLayoutParams(panelLayoutParams(vertical = 16)).also {
                 it.gravity = Gravity.BOTTOM
             }
         )
@@ -80,7 +87,6 @@ internal fun titlePanel(context: Context): TitlePanel {
     }
 
     val titlePanel = FrameLayout(context).apply {
-        setPadding(24, 36, 24, 36)
         addView(titleView)
     }
     return TitlePanel(titlePanel, titleView)
@@ -131,10 +137,7 @@ internal fun buttonPanel(context: Context, constructor: ButtonPanel.Builder.() -
 class ContentPanel(val panel: FrameLayout)
 
 internal fun contentPanel(context: Context, constructor: FrameLayout.() -> Unit): ContentPanel {
-    val contentPanel = FrameLayout(context)
-        .apply {
-            setPadding(24, 16, 24, 16)
-        }.apply(constructor)
+    val contentPanel = FrameLayout(context).apply(constructor)
     return ContentPanel(contentPanel)
 }
 
