@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -83,8 +84,14 @@ class LastAddedPlaylistIntervalDialog : ComposeViewDialogFragment() {
                 dialogState = dialogState,
                 onCloseRequest = { dismiss() },
                 buttons = {
-                    negativeButton(res = android.R.string.cancel) { dismiss() }
-                    positiveButton(res = android.R.string.ok) {
+                    negativeButton(
+                        res = android.R.string.cancel,
+                        textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
+                    ) { dismiss() }
+                    positiveButton(
+                        res = android.R.string.ok,
+                        textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
+                    ) {
                         dismiss()
                         synchronized(this) {
                             Setting(context)[Keys._lastAddedCutOffMode].data = currentlySelectedMode.value

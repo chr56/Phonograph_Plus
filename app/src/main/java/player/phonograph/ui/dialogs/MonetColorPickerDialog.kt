@@ -45,7 +45,7 @@ class MonetColorPickerDialog : ComposeViewDialogFragment() {
                 elevation = 0.dp,
                 onCloseRequest = { dismiss() },
                 buttons = {
-                    button(
+                    positiveButton(
                         res = android.R.string.ok,
                         textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
                     ) {
