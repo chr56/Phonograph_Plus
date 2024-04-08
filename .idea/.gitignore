@@ -5,7 +5,6 @@
 #
 /modules/
 /libraries/
-/copyright/
 
 gradle.xml
 jarRepositories.xml

@@ -1,0 +1,11 @@
+<component name="CopyrightManager">
+  <settings default="Empty chr56">
+    <module2copyright>
+      <element module="Project Files" copyright="Empty chr56" />
+    </module2copyright>
+    <LanguageOptions name="XML">
+      <option name="fileTypeOverride" value="1" />
+      <option name="prefixLines" value="false" />
+    </LanguageOptions>
+  </settings>
+</component>
