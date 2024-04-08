@@ -16,6 +16,7 @@ import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.util.parcelableArrayList
 import player.phonograph.util.permissions.hasStorageWritePermission
 import player.phonograph.util.permissions.navigateToStorageSetting
+import player.phonograph.util.runOnMainHandler
 import player.phonograph.util.withLooper
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -53,8 +54,6 @@ import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.MediaStore
 import android.widget.Toast
 import java.io.File
@@ -166,7 +165,7 @@ private fun MainContent(context: Context, songs: List<Song>, dismiss: () -> Unit
                         TextButton(
                             onClick = {
                                 dismiss()
-                                executeDeletion(context as Activity, songs, withLyrics)
+                                executeDeletion(context, songs, withLyrics)
                             },
                             Modifier.align(Alignment.CenterVertically)
                         ) {
@@ -206,30 +205,30 @@ private fun NoPermissionTips(navigateToStorageSetting: () -> Unit) {
     }
 }
 
-private fun executeDeletion(activity: Activity, songs: List<Song>, withLyrics: Boolean) {
-    if (withLyrics) deleteLyrics(activity, songs)
-    delete(activity, songs)
+private fun executeDeletion(context: Context, songs: List<Song>, withLyrics: Boolean) {
+    if (withLyrics) deleteLyrics(context, songs)
+    delete(context, songs)
 }
 
-private fun delete(activity: Activity, songs: List<Song>) {
+private fun delete(context: Context, songs: List<Song>) {
     val total = songs.size
-    val fails = deleteSongsViaMediaStore(activity, songs)
+    val fails = deleteSongsViaMediaStore(context, songs)
 
-    val msg: String = activity.resources.getQuantityString(
+    val msg: String = context.resources.getQuantityString(
         R.plurals.msg_deletion_result,
         total,
         total - fails.size,
         total
     )
 
-    if (fails.isNotEmpty()) Handler(Looper.getMainLooper()).post {
+    if (fails.isNotEmpty()) runOnMainHandler {
         // handle fail , report and try again
-        showFailDialog(activity, msg, fails)
-        Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show()
+        showFailDialog(context, msg, fails)
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
     }
 }
 
-private fun deleteLyrics(activity: Activity, songs: Collection<Song>) {
+private fun deleteLyrics(activity: Context, songs: Collection<Song>) {
     for (song in songs) {
         val file = File(song.data)
         val preciseFiles = LyricsLoader.getExternalPreciseLyricsFile(file)
@@ -250,7 +249,7 @@ private fun deleteLyrics(activity: Activity, songs: Collection<Song>) {
     }
 }
 
-private fun showFailDialog(context: Activity, msg: String, failList: List<Song>) {
+private fun showFailDialog(context: Context, msg: String, failList: Collection<Song>) {
     alertDialog(context) {
         val t = context.getString(R.string.failed_to_delete)
         title(t)
@@ -267,7 +266,7 @@ private fun showFailDialog(context: Activity, msg: String, failList: List<Song>)
         positiveButton(android.R.string.ok) { dialog ->
             dialog.dismiss()
         }
-        if (SDK_INT >= VERSION_CODES.R) {
+        if (SDK_INT >= VERSION_CODES.R && context is Activity) {
             negativeButton(R.string.retry) {
                 val uris = failList.map { song ->
                     Uri.withAppendedPath(

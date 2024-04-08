@@ -6,7 +6,6 @@ package player.phonograph.repo.mediastore
 
 import player.phonograph.model.Song
 import player.phonograph.util.debug
-import android.app.Activity
 import android.content.Context
 import android.provider.MediaStore.Audio
 import android.util.Log
@@ -15,22 +14,16 @@ import android.util.Log
  * delete songs by path via MediaStore
  * @return failed-to-delete list
  */
-fun deleteSongsViaMediaStore(context: Activity, songs: List<Song>): List<Song> {
+fun deleteSongsViaMediaStore(context: Context, songs: Collection<Song>): List<Song> {
+    return songs.filter { song -> !deleteViaMediaStoreImpl(context, song) }
+}
 
-    var sucesss = 0
-    val failList = mutableListOf<Song>()
-
-    // try to delete
-    for (index in songs.indices) {
-        val song = songs[index]
-        val result = deleteViaMediaStoreImpl(context, song)
-        if (result) {
-            sucesss += 1
-        } else {
-            failList.add(song)
-        }
-    }
-    return failList
+/**
+ * delete song by path via MediaStore
+ * @return success or not
+ */
+fun deleteSongViaMediaStore(context: Context, song: Song): Boolean {
+    return deleteViaMediaStoreImpl(context, song)
 }
 
 /**
