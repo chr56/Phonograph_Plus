@@ -147,11 +147,22 @@ private fun MainContent(context: Context, model: PathFilterPreferenceModel, dism
                         .clickable { switchMode() }
                         .padding(vertical = 16.dp)
                 ) {
-                    Text(
-                        if (mode) stringResource(R.string.excluded_paths) else stringResource(R.string.included_paths),
-                        Modifier.weight(4f)
+                    Column(Modifier.weight(4f)) {
+                        Text(modeText)
+                        Text(
+                            stringResource(
+                                if (mode) R.string.pref_summary_path_filter_excluded_mode
+                                else R.string.pref_summary_path_filter_included_mode
+                            ),
+                            fontSize = 14.sp,
+                            color = Color.Gray
+                        )
+                    }
+                    Switch(
+                        mode,
+                        null,
+                        Modifier.weight(1f).align(Alignment.CenterVertically)
                     )
-                    Switch(mode, null, Modifier.weight(1f))
                 }
                 Row {
                     ActionButton(

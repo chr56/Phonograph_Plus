@@ -162,11 +162,9 @@ fun PhonographPreferenceScreen() {
                     currentValueForHint = { context ->
                         with(context) {
                             val preference = Setting(context)[Keys.pathFilterExcludeMode]
-                            if (preference.data) {
-                                "${getString(R.string.path_filter_excluded_mode)} - \n${getString(R.string.pref_summary_path_filter_excluded_mode)}"
-                            } else {
-                                "${getString(R.string.path_filter_included_mode)} - \n${getString(R.string.pref_summary_path_filter_included_mode)}"
-                            }
+                            getString(
+                                if (preference.data) R.string.path_filter_excluded_mode else R.string.path_filter_included_mode
+                            )
                         }
                     }
                 )
