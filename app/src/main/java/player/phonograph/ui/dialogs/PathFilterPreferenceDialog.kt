@@ -34,6 +34,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -56,8 +57,8 @@ import android.os.Bundle
 import android.view.View
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class PathFilterPreferenceDialog : ComposeViewDialogFragment() {
@@ -66,6 +67,7 @@ class PathFilterPreferenceDialog : ComposeViewDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         model = PathFilterPreferenceModel(requireContext())
+        model.refresh()
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -80,16 +82,21 @@ private class PathFilterPreferenceModel(context: Context) {
 
     val mode: PrimitivePreference<Boolean> = Setting(context)[Keys.pathFilterExcludeMode]
 
-    val paths = readImpl(mode.flow)
+    private val _paths: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
+    val paths = _paths.asStateFlow()
 
-    fun add(path: String) = addImpl(mode.data, path)
-    fun remove(path: String) = removeImpl(mode.data, path)
-    fun clear() = clearImpl(mode.data)
+    fun add(path: String) = addImpl(mode.data, path).also { update(mode) }
+    fun remove(path: String) = removeImpl(mode.data, path).also { update(mode) }
+    fun clear() = clearImpl(mode.data).also { update(mode) }
+    fun refresh() {
+        update(mode)
+    }
 
     private val pathFilterStore: PathFilterStore by GlobalContext.get().inject()
 
-    private fun readImpl(flow: Flow<Boolean>): Flow<List<String>> =
-        flow.map { mode -> with(pathFilterStore) { if (mode) blacklistPaths else whitelistPaths } }
+    private fun update(preference: PrimitivePreference<Boolean>) {
+        _paths.tryEmit(with(pathFilterStore) { if (preference.data) blacklistPaths else whitelistPaths })
+    }
 
     private fun addImpl(mode: Boolean, path: String) =
         with(pathFilterStore) { if (mode) addBlacklistPath(path) else addWhitelistPath(path) }
@@ -108,7 +115,12 @@ private fun MainContent(context: Context, model: PathFilterPreferenceModel, dism
         val mode: Boolean by model.mode.flow.collectAsState(false)
         val paths: List<String> by model.paths.collectAsState(emptyList())
         val coroutineScope = rememberCoroutineScope { Dispatchers.IO }
-        val switchMode: () -> Job = { coroutineScope.launch { model.mode.edit { !mode } } }
+        val switchMode: () -> Job = {
+            coroutineScope.launch {
+                model.mode.edit { !mode }
+                model.refresh()
+            }
+        }
         val modeText: String = stringResource(if (mode) R.string.excluded_paths else R.string.included_paths)
         MaterialDialog(
             dialogState = rememberMaterialDialogState(true),
@@ -126,6 +138,7 @@ private fun MainContent(context: Context, model: PathFilterPreferenceModel, dism
                         "FOLDER_CHOOSER"
                     )
                 }
+                val actionRefresh = { model.refresh() }
                 val actionClear = { model.clear() }
                 Row(
                     Modifier
@@ -144,6 +157,12 @@ private fun MainContent(context: Context, model: PathFilterPreferenceModel, dism
                         icon = Icons.Default.Add,
                         modifier = Modifier.weight(2f),
                         onClick = actionAdd
+                    )
+                    ActionButton(
+                        contentDescription = R.string.refresh,
+                        icon = Icons.Default.Refresh,
+                        modifier = Modifier.weight(2f),
+                        onClick = actionRefresh
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     ActionButton(
@@ -214,12 +233,12 @@ private fun ActionButton(
                     text = confirmationText?.invoke() ?: stringResource(contentDescription),
                     Modifier
                         .padding(horizontal = 6.dp, vertical = 12.dp)
-                        // .weight(3f)
+                    // .weight(3f)
                 )
                 Row(
                     Modifier
                         .padding(horizontal = 6.dp, vertical = 12.dp)
-                        // .weight(1f)
+                    // .weight(1f)
                 ) {
                     TextButton(dismissPopup) {
                         Text(stringResource(android.R.string.cancel))
