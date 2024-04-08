@@ -38,8 +38,6 @@ class PathFilterFolderChooserDialog : FileChooserDialog() {
                 it.dismiss() // dismiss this alert dialog
                 this.dismiss() // dismiss Folder Chooser
 
-                PathFilterDialog()
-                    .show(parentFragmentManager, "Blacklist_Preference_Dialog") // then reopen BlacklistPreferenceDialog
             }
             .negativeButton(android.R.string.cancel) {
                 it.dismiss() // dismiss this alert dialog

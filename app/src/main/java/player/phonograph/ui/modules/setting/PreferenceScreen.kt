@@ -39,7 +39,7 @@ import player.phonograph.ui.dialogs.LastAddedPlaylistIntervalDialog
 import player.phonograph.ui.dialogs.MonetColorPickerDialog
 import player.phonograph.ui.dialogs.NotificationActionsConfigDialog
 import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
-import player.phonograph.ui.dialogs.PathFilterDialog
+import player.phonograph.ui.dialogs.PathFilterPreferenceDialog
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
@@ -157,7 +157,7 @@ fun PhonographPreferenceScreen() {
         SettingsGroup(title = header(R.string.pref_header_content)) {
             DialogPref(
                 model = DialogPreferenceModel(
-                    dialog = PathFilterDialog::class.java,
+                    dialog = PathFilterPreferenceDialog::class.java,
                     titleRes = R.string.path_filter,
                     currentValueForHint = { context ->
                         with(context) {
