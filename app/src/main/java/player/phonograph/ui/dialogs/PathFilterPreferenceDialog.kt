@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
@@ -130,7 +131,7 @@ private fun MainContent(context: Context, model: PathFilterPreferenceModel, dism
             Column(
                 Modifier
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 24.dp)
             ) {
                 val actionAdd = {
                     PathFilterFolderChooserDialog().show(
@@ -165,7 +166,7 @@ private fun MainContent(context: Context, model: PathFilterPreferenceModel, dism
                         modifier = Modifier.weight(2f),
                         onClick = actionRefresh
                     )
-                    Spacer(modifier = Modifier.weight(1f))
+                    Spacer(modifier = Modifier.weight(3f))
                     ActionButton(
                         contentDescription = R.string.clear_action,
                         icon = Icons.Default.Delete,
@@ -200,7 +201,7 @@ private fun MainContent(context: Context, model: PathFilterPreferenceModel, dism
                         }
                     }
                 }
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(24.dp))
             } // Column
         } // Dialog
     }
@@ -225,28 +226,33 @@ private fun ActionButton(
         },
         modifier
     ) {
-        Icon(icon, stringResource(contentDescription))
+        Icon(icon, stringResource(contentDescription), tint = MaterialTheme.colors.secondary)
     }
     if (showPopup) Popup(onDismissRequest = dismissPopup) {
-        Surface {
+        Surface(elevation = 2.dp) {
             Column(Modifier.width(IntrinsicSize.Max)) {
                 Text(
                     text = confirmationText?.invoke() ?: stringResource(contentDescription),
-                    Modifier
-                        .padding(horizontal = 6.dp, vertical = 12.dp)
-                    // .weight(3f)
+                    modifier = Modifier
+                        .padding(horizontal = 12.dp, vertical = 12.dp),
+                    style = MaterialTheme.typography.button,
                 )
                 Row(
                     Modifier
-                        .padding(horizontal = 6.dp, vertical = 12.dp)
-                    // .weight(1f)
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
                     TextButton(dismissPopup) {
-                        Text(stringResource(android.R.string.cancel))
+                        Text(
+                            stringResource(android.R.string.cancel),
+                            style = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
+                        )
                     }
                     Spacer(Modifier.weight(1f))
                     TextButton({ dismissPopup(); onClick() }) {
-                        Text(stringResource(android.R.string.ok))
+                        Text(
+                            stringResource(android.R.string.ok),
+                            style = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
+                        )
                     }
                 }
             }
