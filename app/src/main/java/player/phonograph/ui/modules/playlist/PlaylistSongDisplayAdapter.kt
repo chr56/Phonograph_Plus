@@ -18,7 +18,7 @@ import player.phonograph.actions.actionGotoDetail
 import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.model.Song
 import player.phonograph.ui.adapter.OrderedItemAdapter
-import player.phonograph.ui.dialogs.DeleteSongsDialog
+import player.phonograph.ui.dialogs.DeletionDialog
 import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.util.ui.hitTest
 import androidx.appcompat.app.AppCompatActivity
@@ -166,7 +166,7 @@ class PlaylistSongDisplayAdapter(
                 menuItem {
                     titleRes(R.string.action_delete_from_device)
                     onClick {
-                        DeleteSongsDialog.create(arrayListOf(song))
+                        DeletionDialog.create(arrayListOf(song))
                             .show(activity.supportFragmentManager, "DELETE_SONGS")
                         true
                     }
