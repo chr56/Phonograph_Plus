@@ -38,6 +38,7 @@ class PathFilterFolderChooserDialog : FileChooserDialog() {
                 it.dismiss() // dismiss this alert dialog
                 this.dismiss() // dismiss Folder Chooser
 
+                PathFilterPreferenceDialog().show(parentFragmentManager, PathFilterPreferenceDialog::class.simpleName)
             }
             .negativeButton(android.R.string.cancel) {
                 it.dismiss() // dismiss this alert dialog

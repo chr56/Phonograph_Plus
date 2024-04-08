@@ -137,6 +137,7 @@ private fun MainContent(context: Context, model: PathFilterPreferenceModel, dism
                         (context as FragmentActivity).supportFragmentManager,
                         "FOLDER_CHOOSER"
                     )
+                    dismiss()
                 }
                 val actionRefresh = { model.refresh() }
                 val actionClear = { model.clear() }
