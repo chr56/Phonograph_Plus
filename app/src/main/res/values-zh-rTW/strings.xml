@@ -251,7 +251,8 @@
     <string name="clear_all_preference">清除全部設置</string>
     <string name="clear_all_preference_msg"><b>警告</b>: 這將清除應用的<b>所有設定</b>! \n\n若應用在啟動時立刻崩潰, 請嘗試使用該選項! \n<b>確定?</b></string>
     <string name="failed_to_delete">無法刪除</string>
-    <string name="grant_permission">授予權限</string>
+    <string name="grant_permission">授予許可權</string>
+    <string name="tips_no_storage_write_permission">Phonograph 未能獲取讀寫儲存許可權!</string>
     <string name="retry">重試</string>
     <string name="permission_manage_external_storage_denied"> Phonograph 疑似無\"所有檔案訪問\"許可權! </string>
     <string name="not_available_now">現在不可用</string>

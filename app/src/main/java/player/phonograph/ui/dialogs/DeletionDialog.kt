@@ -188,7 +188,7 @@ private fun MainContent(context: Context, songs: List<Song>, dismiss: () -> Unit
 private fun NoPermissionTips(navigateToStorageSetting: () -> Unit) {
     Column {
         Text(
-            stringResource(R.string.permission_manage_external_storage_denied),
+            stringResource(R.string.tips_no_storage_write_permission),
             Modifier.padding(16.dp),
             fontWeight = FontWeight.Bold,
         )
