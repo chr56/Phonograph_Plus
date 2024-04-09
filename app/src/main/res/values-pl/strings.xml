@@ -251,8 +251,9 @@
     <string name="clear_all_preference_msg"><b>Ostrzeżenie</b>: spowoduje to zresetowanie <b>WSZYSTKICH</b> ustawień aplikacji! \n\nMoże to być bardzo pomocne w przypadku awarii aplikacji przy uruchomieniu. \nJesteś pewien?</string>
     <string name="failed_to_delete">Usuwanie nie powiodło się</string>
     <string name="grant_permission">Przyznaj uprawnienie</string>
+    <string name="tips_no_storage_write_permission">Phonograph nie ma uprawnień do zapisu, edycji lub usuwania plików!</string>
     <string name="retry">Ponów</string>
-    <string name="permission_manage_external_storage_denied">Wygląda na to, że Phonograph nie ma uprawnień \"zarządzaj zewnętrzną pamięcią\"!</string>
+    <string name="permission_manage_external_storage_denied">Wygląda na to, że Phonograph nie ma uprawnień do \"zarządzania pamięcią zewnętrzną\"!</string>
     <string name="not_available_now">Obecnie niedostępne</string>
     <string name="check_upgrade">Sprawdź aktualizację</string>
     <string name="no_newer_version">Brak aktualizacji!</string>
@@ -397,6 +398,7 @@
     <string name="path_filter">Filtr ścieżki</string>
     <string name="path_filter_excluded_mode">Wyklucz tryb</string>
     <string name="path_filter_included_mode">Uwzględnij tryb</string>
+    <string name="path_filter_confirmation">Czy chcesz to dodać do %s?</string>
     <string name="pref_summary_path_filter_excluded_mode">Zawartość wykluczonych folderów jest ukryta w bibliotece.</string>
     <string name="pref_summary_path_filter_included_mode">W bibliotece wyświetlana jest tylko zawartość z uwzględnionych folderów.</string>
     <string name="pref_title_load_lyrics">Wczytaj teksty</string>
