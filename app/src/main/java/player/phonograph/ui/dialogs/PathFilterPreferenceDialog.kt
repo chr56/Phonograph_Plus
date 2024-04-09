@@ -15,6 +15,7 @@ import player.phonograph.settings.PrimitivePreference
 import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
+import player.phonograph.ui.compose.components.TempPopupContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -161,7 +162,9 @@ private fun MainContent(context: Context, model: PathFilterPreferenceModel, dism
                     Switch(
                         mode,
                         null,
-                        Modifier.weight(1f).align(Alignment.CenterVertically)
+                        Modifier
+                            .weight(1f)
+                            .align(Alignment.CenterVertically)
                     )
                 }
                 Row {
@@ -240,33 +243,11 @@ private fun ActionButton(
         Icon(icon, stringResource(contentDescription), tint = MaterialTheme.colors.secondary)
     }
     if (showPopup) Popup(onDismissRequest = dismissPopup) {
-        Surface(elevation = 2.dp) {
-            Column(Modifier.width(IntrinsicSize.Max)) {
-                Text(
-                    text = confirmationText?.invoke() ?: stringResource(contentDescription),
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp, vertical = 12.dp),
-                    style = MaterialTheme.typography.button,
-                )
-                Row(
-                    Modifier
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
-                ) {
-                    TextButton(dismissPopup) {
-                        Text(
-                            stringResource(android.R.string.cancel),
-                            style = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
-                        )
-                    }
-                    Spacer(Modifier.weight(1f))
-                    TextButton({ dismissPopup(); onClick() }) {
-                        Text(
-                            stringResource(android.R.string.ok),
-                            style = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
-                        )
-                    }
-                }
-            }
+        TempPopupContent(dismissPopup = dismissPopup, onClick = onClick) {
+            Text(
+                text = confirmationText?.invoke() ?: stringResource(contentDescription),
+                style = MaterialTheme.typography.button,
+            )
         }
     }
 }
