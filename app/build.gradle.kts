@@ -82,17 +82,17 @@ android {
         }
     }
 
-    flavorDimensions += listOf("purpose")
+    flavorDimensions += listOf("channel")
     productFlavors {
         // Stable or LTS release
         create("stable") {
-            dimension = "purpose"
+            dimension = "channel"
 
             resValue("string", "app_name", appName)
         }
         // Preview release
         create("preview") {
-            dimension = "purpose"
+            dimension = "channel"
             matchingFallbacks.add("stable")
 
             resValue("string", "app_name", "$appName Preview")
@@ -100,7 +100,7 @@ android {
         }
         // for checkout to locate a bug and ci etc.
         create("checkout") {
-            dimension = "purpose"
+            dimension = "channel"
             matchingFallbacks.add("stable")
 
             resValue("string", "app_name", "$appName Checkout")
@@ -114,7 +114,7 @@ android {
         beforeVariants(selector().withBuildType("release")) { variantBuilder ->
             val favors = variantBuilder.productFlavors
             // no "release" type
-            if (favors.contains("purpose" to "checkout")) {
+            if (favors.contains("channel" to "checkout")) {
                 variantBuilder.enable = false
             }
         }
