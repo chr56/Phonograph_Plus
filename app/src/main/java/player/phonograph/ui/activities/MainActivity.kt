@@ -32,7 +32,7 @@ import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.dialogs.ChangelogDialog
-import player.phonograph.ui.dialogs.UpgradeDialog
+import player.phonograph.ui.dialogs.UpgradeInfoDialog
 import player.phonograph.ui.fragments.MainFragment
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.debug
@@ -289,7 +289,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
     private fun showUpgradeDialog(versionCatalog: VersionCatalog?) {
         versionCatalog?.let {
-            UpgradeDialog.create(versionCatalog).show(supportFragmentManager, "UpgradeDialog")
+            UpgradeInfoDialog.create(versionCatalog).show(supportFragmentManager, "UpgradeDialog")
         }
     }
 

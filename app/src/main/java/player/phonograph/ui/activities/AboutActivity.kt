@@ -14,7 +14,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.DebugDialog
 import player.phonograph.ui.dialogs.ReportIssueDialog
-import player.phonograph.ui.dialogs.UpgradeDialog
+import player.phonograph.ui.dialogs.UpgradeInfoDialog
 import player.phonograph.util.currentVersionName
 import player.phonograph.util.gitRevisionHash
 import player.phonograph.util.reportError
@@ -167,7 +167,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
                 lifecycleScope.launch(Dispatchers.Unconfined) {
                     Update.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
                         if (upgradable) {
-                            UpgradeDialog.create(versionCatalog).show(supportFragmentManager, "UPGRADE_DIALOG")
+                            UpgradeInfoDialog.create(versionCatalog).show(supportFragmentManager, "UPGRADE_DIALOG")
                             if (Setting(App.instance)[Keys.ignoreUpgradeDate].data
                                 >= versionCatalog.currentLatestChannelVersionBy { it.date }.date
                             ) {

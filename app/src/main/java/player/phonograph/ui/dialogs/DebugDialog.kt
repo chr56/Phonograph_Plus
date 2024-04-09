@@ -44,7 +44,7 @@ class DebugDialog : DialogFragment() {
             CoroutineScope(Dispatchers.Unconfined).launch {
                 Update.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
                     try {
-                        UpgradeDialog.create(versionCatalog)
+                        UpgradeInfoDialog.create(versionCatalog)
                             .show(hostActivity.get()?.supportFragmentManager!!, "DebugDialog")
                         if (!upgradable) {
                             coroutineToast(App.instance, "not upgradable")
