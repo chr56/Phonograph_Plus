@@ -97,6 +97,8 @@ android {
 
             resValue("string", "app_name", "$appName Preview")
             applicationIdSuffix = ".preview"
+
+            isDefault = true
         }
         // for checkout to locate a bug and ci etc.
         create("checkout") {
