@@ -119,6 +119,7 @@ observablescrollview = "com.github.chr56:Android-ObservableScrollView-Retro:0.0.
 appIntro = "com.github.AppIntro:AppIntro:6.3.1"
 advrecyclerview = "com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:1.0.0"
 composeReorderable = "org.burnoutcrew.composereorderable:reorderable:0.9.6"
+composeAnnotatedText = "io.github.aghajari:AnnotatedText:1.0.3"
 statusBarLyricsApi = "com.github.577fkj:StatusBarApiExample:v2.0"
 lyricsGetterAPi = "com.github.xiaowine:Lyric-Getter-Api:6.0.0"
 

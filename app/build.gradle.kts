@@ -209,6 +209,7 @@ dependencies {
     implementation(libs.advrecyclerview)
     implementation(libs.recyclerviewFastscroll)
     implementation(libs.composeReorderable)
+    implementation(libs.composeAnnotatedText)
     implementation(libs.bundles.composeSettings) {
         val uiTooling = libs.compose.ui.tooling.get().module
         exclude(group = uiTooling.group, module = uiTooling.name)
