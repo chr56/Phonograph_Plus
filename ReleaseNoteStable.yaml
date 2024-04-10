@@ -22,7 +22,8 @@ notes:
       - "Fix: sometimes abnormal PlayPause button on going back from background"
       - "Improve: unnecessary Media Images blinking in the playback notification no longer occurs on switching songs"
       - "Improve: avoid unresponsive playback notification by system due to updating notification too quick exceeding rate limit when switching songs too fast"
-      - "Improve: deletion dialog"
+      - "Improve: redesign Delete Songs Dialog, PathFilter Preference Dialog, Upgrade Dialog"
+      - "Modify: forbid upgrading from prior to v0.5.4.1 & warn upgrading from prior to v1.0.0"
       - "Translation: update Polish (by cooky)"
   zh:
     highlights: [ ]
@@ -43,5 +44,6 @@ notes:
       - "修复 从后台返回前台后有时播放暂停按钮异常"
       - "改进 切换歌曲时，通知媒体图片不必要的闪烁不再发生"
       - "改进 切换歌曲过快时，避免正在播放通知由于刷新速度超过系统速率限制而失去响应"
-      - "改进 删除对话框"
+      - "改进 重新设计 歌曲删除对话框，文件过滤器设置对话框，更新对话框"
+      - "修改 禁止从 v0.5.4.1 之前的版本升级至当前版本, 警告从 v1.0.0 之前的版本升级至当前版本"
       - "翻译 更新波兰语(cooky)"
