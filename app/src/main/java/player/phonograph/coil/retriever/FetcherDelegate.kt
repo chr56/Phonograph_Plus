@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 
 sealed class FetcherDelegate<T : LoaderTarget, R : ImageRetriever> {
 
+    @Suppress("UNUSED_PARAMETER")
     protected fun enableCache(context: Context): Boolean = CoilImageConfig.enableImageCache
 
     abstract val retriever: R
