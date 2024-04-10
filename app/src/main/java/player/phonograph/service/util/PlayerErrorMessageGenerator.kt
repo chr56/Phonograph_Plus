@@ -40,6 +40,7 @@ internal fun makeErrorMessage(resources: Resources, path: String, exist: Boolean
         )
     })"
 
+@Suppress("NAME_SHADOWING")
 private fun makeErrorMessage(resources: Resources, path: String): String {
     val head = resources.getString(R.string.unplayable_file)
     val path = try {
