@@ -1,0 +1,7 @@
+<b>1.6.0(1060) 2024.04.11</b>
+- New: customisable Media Notification Actions (up to 3 actions in Compacted and up to 5 actions in Expanded)
+- New: option 'Always Play' - ignore any Audio Focus interruptions and continue to play
+- New: search artists if it has multiple artists on Go To Artist
+- New: support hiding images for list items
+- Fix: sometimes abnormal PlayPause button on going back from background
+...(Visit project homepage to see full changelogs)
