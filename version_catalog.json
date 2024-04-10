@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "1.6.0-beta1",
+      "versionCode": 1056,
+      "date": 1712746000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.6-beta1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>改进 重新设计 歌曲删除对话框，文件过滤器设置对话框，更新对话框</li><li>修改 禁止从 v0.5.4.1 之前的版本升级至当前版本, 警告从 v1.0.0 之前的版本升级至当前版本</li><li>翻译 更新波兰语(cooky)</li></ol>",
+        "en": "<ol><li>Improve: redesign Delete Songs Dialog, PathFilter Preference Dialog, Upgrade Dialog</li><li>Modify: forbid upgrading from prior to v0.5.4.1 & warn upgrading from prior to v1.0.0</li><li>Translation: update Polish (by cooky)</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.6.0-dev3",
       "versionCode": 1055,
       "date": 1712554000,
