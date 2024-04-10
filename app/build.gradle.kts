@@ -38,8 +38,8 @@ android {
         targetSdk = 34
 
         applicationId = "player.phonograph.plus"
-        versionCode = 1055
-        versionName = "1.6-dev3"
+        versionCode = 1056
+        versionName = "1.6-beta1"
 
 
         setProperty("archivesBaseName", "PhonographPlus_$versionName")
