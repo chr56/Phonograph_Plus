@@ -36,7 +36,7 @@ fun migrate(context: Context, from: Int, to: Int) {
             throw IllegalStateException("You are upgrading from a very old version (version $from)! Please Wipe app data!")
         }
 
-        in 313 until 1000 -> { // v1.0.0
+        in 454 until 1000 -> { // v1.0.0
             reportError(
                 IllegalStateException(), TAG,
                 "You are upgrading from a very old version (version $from)! Try to wipe app data!"
@@ -49,7 +49,6 @@ fun migrate(context: Context, from: Int, to: Int) {
 
         MigrateOperator(context, from, to).apply {
             migrate(QueuePreferenceMigration())
-            migrate(LegacyClickPreferencesMigration())
             migrate(PagesMigration())
             migrate(LockScreenCoverMigration())
             migrate(AutoDownloadMetadataMigration())
@@ -130,13 +129,6 @@ private class QueuePreferenceMigration : Migration(introduced = 460, deprecated 
             DeprecatedPreference.QueueCfg.PREF_POSITION_IN_TRACK,
             QueuePreferenceManager.KEY_CURRENT_MILLISECOND
         )
-    }
-}
-
-private class LegacyClickPreferencesMigration : Migration(introduced = 402) {
-    override fun doMigrate(context: Context) {
-        removePreference(context, keyName = DeprecatedPreference.LegacyClickPreference.REMEMBER_SHUFFLE)
-        removePreference(context, keyName = DeprecatedPreference.LegacyClickPreference.KEEP_PLAYING_QUEUE_INTACT)
     }
 }
 
