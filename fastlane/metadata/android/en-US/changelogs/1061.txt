@@ -1,0 +1,9 @@
+<b>1.6.1(1061) 2024.04.18</b>
+- Fix: crash after adding a same track multiple times in a same playlist
+- Fix: removing a track in a playlist would remove all same songs
+- Fix: possible random crash after selecting multiple items
+- Modify: reorder menu items of Playlist Detail
+- Improve: simplify user interactions when modifying a playlist via SAF
+- Improve: speed of deleting multiple playlists
+- Translation: update Polish (by cooky), Spanish (by Dderfla_53)
+...
