@@ -1,8 +1,24 @@
 {
   "versions": [
     {
+      "channel": "stable",
+      "versionName": "1.6.0",
+      "versionCode": 1060,
+      "date": 1712825000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.6.0"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>新增 可自定义媒体通知中的动作（紧凑通知中至多 3 个动作，展开通知中至多 5 个动作）</li><li>新增 ‘始终播放’选项--忽略任何音频焦点中断并继续播放</li><li>新增 ‘查看艺术家’时若有多个艺术家则进行搜索</li><li>新增 支持隐藏列表中的图像</li><li>新增 支持从通知中快进和快退几秒</li><li>新增 支持从通知中退出后台播放</li><li>改进 切换歌曲时，通知媒体图片不必要的闪烁不再发生</li><li>改进 切换歌曲过快时，避免正在播放通知由于刷新速度超过系统速率限制而失去响应</li><li>改进 重新设计 歌曲删除对话框，文件过滤器设置对话框，更新对话框</li><li>改进 微调标签宽度</li><li>修复 复制多个播放列表失败</li><li>修复 导航栏着色选项失效</li><li>修复 关于文本或按钮颜色的小错误</li><li>修复 从后台返回前台后有时播放暂停按钮异常</li><li>修改 通知中(或通过连接的设备)的播放控制行为现与其图形界面版本行为一致</li><li>修改 将自定义艺术家图片从内部存储移至外部存储(/Android/data/)</li><li>修改 允许用户不选择任何图像来源（即禁用所有图像加载）</li><li>修改 禁止从 v0.5.4.1 之前的版本升级至当前版本, 警告从 v1.0.0 之前的版本升级至当前版本</li><li>翻译 更新波兰语(cooky)</li></ol>",
+        "en": "<ol><li>New: customisable Media Notification Actions (up to 3 actions in Compacted and up to 5 actions in Expanded)</li><li>New: option 'Always Play' - ignore any Audio Focus interruptions and continue to play</li><li>New: search artists if it has multiple artists on Go To Artist</li><li>New: support hiding images for list items</li><li>New: support fast-forward and rewind some seconds from Notification</li><li>New: support quitting background playback totally from Notification</li><li>Improve: unnecessary Media Images blinking in the playback notification no longer occurs on switching songs</li><li>Improve: avoid unresponsive playback notification by system due to updating notification too quick exceeding rate limit when switching songs too fast</li><li>Improve: redesign Delete Songs Dialog, PathFilter Preference Dialog, Upgrade Dialog</li><li>Improve: slightly adjust tab width</li><li>Fix: failed to duplicate multiple playlists</li><li>Fix: preference Colored Navigation Bar failed</li><li>Fix: minor text or button color glitches</li><li>Fix: sometimes abnormal PlayPause button on going back from background</li><li>Modify: notification (or from connected device) playback control behaviors now are identical to graphical ones</li><li>Modify: move custom artist images to external storage (/Android/data/) from internal storage</li><li>Modify: Allow users to select none of Image Source (i.e. disable all image loading)</li><li>Modify: forbid upgrading from prior to v0.5.4.1 & warn upgrading from prior to v1.0.0</li><li>Translation: update Polish (by cooky)</li></ol>"
+      }
+    },
+    {
       "channel": "preview",
-      "versionName": "1.6.0-beta1",
+      "versionName": "1.6-beta1",
       "versionCode": 1056,
       "date": 1712746000,
       "link": [
@@ -12,56 +28,8 @@
         }
       ],
       "releaseNote": {
-        "zh-cn": "<ol><li>改进 重新设计 歌曲删除对话框，文件过滤器设置对话框，更新对话框</li><li>修改 禁止从 v0.5.4.1 之前的版本升级至当前版本, 警告从 v1.0.0 之前的版本升级至当前版本</li><li>翻译 更新波兰语(cooky)</li></ol>",
-        "en": "<ol><li>Improve: redesign Delete Songs Dialog, PathFilter Preference Dialog, Upgrade Dialog</li><li>Modify: forbid upgrading from prior to v0.5.4.1 & warn upgrading from prior to v1.0.0</li><li>Translation: update Polish (by cooky)</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.6.0-dev3",
-      "versionCode": 1055,
-      "date": 1712554000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.6-dev3"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 关于文本或按钮颜色的小错误</li><li>修复 从后台返回前台后有时播放暂停按钮异常</li><li>改进 切换歌曲时，通知媒体图片不必要的闪烁不再发生</li><li>改进 切换歌曲过快时，避免正在播放通知由于刷新速度超过系统速率限制而失去响应</li><li>改进 删除对话框</li><li>翻译 更新波兰语(cooky)</li></ol>",
-        "en": "<ol><li>Fix: minor text or button color glitches</li><li>Fix: sometimes abnormal PlayPause button on going back from background</li><li>Improve: unnecessary Media Images blinking in the playback notification no longer occurs on switching songs</li><li>Improve: avoid unresponsive playback notification by system due to updating notification too quick exceeding rate limit when switching songs too fast</li><li>Improve: deletion dialog</li><li>Translation: update Polish (by cooky)</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.6.0-dev2",
-      "versionCode": 1053,
-      "date": 1711207289,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.6-dev2"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>新增 支持隐藏列表中的图像</li><li>新增 可自定义媒体通知中的动作（紧凑通知中至多 3 个动作，展开通知中至多 5 个动作）</li><li>新增 支持从通知中快进和快退几秒</li><li>新增 支持从通知中退出后台播放</li><li>修改 允许用户不选择任何图像来源（即禁用所有图像加载）</li></ol>",
-        "en": "<ol><li>New: support hiding images for list items</li><li>New: customisable Media Notification Actions (up to 3 actions in Compacted and up to 5 actions in Expanded)</li><li>New: support fast-forward and rewind some seconds from Notification</li><li>New: support quiting background playback totally from Notification</li><li>Modify: Allow users to select none of Image Source (i.e. disable all image loading)</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.6.0-dev1",
-      "versionCode": 1052,
-      "date": 1709790001,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.6-dev1"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>新增 ‘始终播放’选项--忽略任何音频焦点中断并继续播放</li><li>新增 ‘查看艺术家’时若有多个艺术家则进行搜索</li><li>修复 复制多个播放列表失败</li><li>修复 导航栏着色选项失效</li><li>改进 微调标签宽度</li><li>修改 通知中(或通过连接的设备)的播放控制行为现与其图形界面版本行为一致</li><li>修改 将自定义艺术家图片从内部存储移至外部存储(/Android/data/)</li></ol>",
-        "en": "<ol><li>New: option 'Always Play' - ignore any Audio Focus interruptions and continue to play</li><li>New: search artists if it has multiple artists on Go To Artist</li><li>Fix: failed to duplicate multiple playlists</li><li>Fix: preference Colored Navigation Bar failed</li><li>Improve: slightly adjust tab width</li><li>Modify: notification (or from connected device) playback control behaviors now are identical to graphical ones</li><li>Modify: move custom artist images to external storage (/Android/data/) from internal storage</li></ol>"
+        "zh-cn": "见v1.6.0",
+        "en": "See v1.6.0"
       }
     },
     {
@@ -81,38 +49,6 @@
       }
     },
     {
-      "channel": "stable",
-      "versionName": "1.5.1",
-      "versionCode": 1051,
-      "date": 1708567000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.5.1"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 首次安装后立即崩溃</li></ol>",
-        "en": "<ol><li>Fix: immediately crash after Intro for first time installing</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "1.5.0",
-      "versionCode": 1050,
-      "date": 1708410000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.5.0"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>新增 为所有页面添加播放和随机播放按钮</li><li>新增 为所有页面添加下拉刷新</li><li>新增 可选的图片缓存</li><li>改进 加快启动</li><li>改进 介绍页中备份导入成功后不再次显示介绍页</li><li>修复 切换随机播放模式后主色调意外改变</li><li>修复 主播放器的关闭按钮将直接关闭应用程序</li><li>修复 不正确 opus 格式的编码信息</li><li>修复 文件夹页中显示横幅文本异常</li><li>修复 流派页和播放列表页内，调整设置后样式改变</li><li>修复 文件夹页面中的图标不正确</li><li>修复 两个文件夹选项卡</li><li>修复 搜索中选项卡文本颜色的异常</li><li>翻译 更新土耳其语(volkspolizist)，德语 (conk), 波兰语 (cooky), 葡萄牙语 (nemapps)</li><li>开发 清理代码，更新依赖</li></ol>",
-        "en": "<ol><li>New: play and shuffle buttons for all pages</li><li>New: swipe down refresh for all pages</li><li>New: opted-in Image Cache</li><li>Improve: App Start-up Performance</li><li>Improve: do not show Intro again after successful backup import in Intro</li><li>Fix: palette color would unexpected changed after switch shuffle mode</li><li>Fix: close button in main sliding player closes app directly</li><li>Fix: incorrect encoding info for opus format in Detail</li><li>Fix: banner text displaying in Folders</li><li>Fix: fix item style changed after dismissing popup in Genres and Playlists</li><li>Fix: incorrect folder icon in Folder Page</li><li>Fix: duplicated Folder tabs for new users</li><li>Fix: issue of tab text color in Search</li><li>Translation: update Turkish (by volkspolizist), German (by conk), Polish (by cooky), Portuguese (by nemapps)</li><li>Development: cleanup code, update dependencies</li></ol>"
-      }
-    },
-    {
       "channel": "lts",
       "versionName": "1.4.5",
       "versionCode": 1045,
@@ -126,22 +62,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>改进 加快启动</li><li>改进 介绍页中备份导入成功后不再次显示介绍页</li><li>修复 文件夹页面中的图标不正确</li><li>修复 两个文件夹选项卡</li><li>修复 搜索中选项卡文本颜色的异常</li><li>修复 切换随机播放模式后主色调意外改变</li><li>修复 不正确 opus 格式的编码信息</li><li>修复 文件夹页中显示横幅文本异常</li><li>修复 流派页和播放列表页内，调整设置后样式改变</li><li>修复 某些情况下的崩溃</li><li>翻译 更新土耳其语(volkspolizist)，德语 (conk, jande75), 波兰语 (cooky), 葡萄牙语 (nemapps)</li><li>开发 清理代码，更新依赖，更新 Gradle 至 8.6，优化发版流程</li></ol>",
         "en": "<ol><li>Improve: App Start-up Performance</li><li>Improve: do not show Intro again after successful backup import in Intro</li><li>Fix: incorrect folder icon in Folder Page</li><li>Fix: duplicated Folder tabs for new users</li><li>Fix: issue of tab text color in Search</li><li>Fix: palette color would unexpected changed after switch shuffle mode</li><li>Fix: incorrect encoding info for opus format in Detail</li><li>Fix: banner text displaying in Folders</li><li>Fix: fix item style changed after dismissing popup in Genres and Playlists</li><li>Fix: crashes on some situations</li><li>Translation: update Turkish (by volkspolizist), German (by conk, jande75), Polish (by cooky), Portuguese (by nemapps)</li><li>Development: cleanup code, update dependencies, upgrade Gradle to 8.6, optimize release process</li></ol>"
-      }
-    },
-    {
-      "channel": "lts",
-      "versionName": "0.7.2.4",
-      "versionCode": 624,
-      "date": 1706583000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.7.2.4"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 部分旧设备上无法在显示任何图像</li><li>修复 从部分文件管理器中，无法打开播放位于外部(物理) SD 卡中的音频文件</li><li>修复 使用单曲重复且队列仅有一首歌曲时在切歌时卡死(然后崩溃)</li><li>修复 处在队列两端时切换时误报错</li><li>修复 使用队列重复时偶尔会出现不正确的上一首歌曲</li><li>翻译 土耳其语 (TolDYuThad 和 volkspolizist), 俄语 (Evgeniy Khramov), 葡萄牙语、巴西语 (EddieMattos), 西班牙语 (Leonardo Albarracín 和 guwsvnd5t), 阿拉伯语 (Yrando), 芬兰语(Latzze), 波兰语(cookies), </li></ol>",
-        "en": "<ol><li>Fix: images can not be shown on some older devices</li><li>Fix: problems when opening and playing audio files in physical external SD cards from some file managers</li><li>Fix: frozen (and then crash) when skipping to previous or next if repeat mode is single-repeated and queue has only one song</li><li>Fix: reporting error at two ends of queue when skipping to previous or next</li><li>Fix: rarely incorrect previous song when skipping to previous if repeat mode is queue-repeated</li><li>Translation: update Turkish (by TolDYuThad and volkspolizist), Russian (by Evgeniy Khramov), Portuguese, Brazilian (by EddieMattos), Spanish (by Leonardo Albarracín and guwsvnd5t), Arabic (by Yrando), Finnish (by Latzze) Polish (by cooky)</li></ol>"
       }
     }
   ]
