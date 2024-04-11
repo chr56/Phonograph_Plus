@@ -227,7 +227,6 @@
     <string name="failed_to_delete">Échec de la suppression</string>
     <string name="grant_permission">Accorder la permission</string>
     <string name="retry">Réessayer</string>
-    <string name="permission_manage_external_storage_denied">il semble que Phonograph n\'a pas la permission \"gérer le stockage externe\"!</string>
     <string name="not_available_now">actuellement indisponible</string>
     <string name="check_upgrade">Vérifier la mise à jour</string>
     <string name="no_newer_version">Aucune mise à jour!</string>

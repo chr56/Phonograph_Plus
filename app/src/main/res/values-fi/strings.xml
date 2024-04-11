@@ -251,7 +251,6 @@
     <string name="failed_to_delete">Poistaminen epäonnistui</string>
     <string name="grant_permission">Myönnä käyttöoikeus</string>
     <string name="retry">Yritä uudelleen</string>
-    <string name="permission_manage_external_storage_denied">Näyttää siltä, että Phonographilla ei ole lupaa \"hallitse ulkoista tallennustilaa\".</string>
     <string name="not_available_now">Ei saatavilla nyt</string>
     <string name="check_upgrade">Tarkista päivitykset</string>
     <string name="no_newer_version">Ei päivitystä!</string>

@@ -32,6 +32,7 @@
     <string name="biography_unavailable">このアーティストのバイオグラフィーの登録を見つけられません</string>
     <string name="wiki_unavailable">このアーティストのWikiページを見つけられません</string>
     <string name="biography">バイオグラフィー</string>
+    <string name="wiki">Wiki</string>
     <string name="audio_focus_denied">オーディオフォーカスが禁止されています</string>
     <string name="album">アルバム</string>
     <string name="artist">アーティスト</string>
@@ -251,7 +252,6 @@
     <string name="failed_to_delete">削除できませんでした</string>
     <string name="grant_permission">権限を許可</string>
     <string name="retry">再試行</string>
-    <string name="permission_manage_external_storage_denied">Phonograph に「外部ストレージ管理」の権限が許可されていないようです!</string>
     <string name="not_available_now">現在利用できません</string>
     <string name="check_upgrade">アップデートを確認</string>
     <string name="no_newer_version">アップデートはありません!</string>

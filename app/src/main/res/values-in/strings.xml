@@ -236,7 +236,6 @@
     <string name="failed_to_delete">Gagal menghapus</string>
     <string name="grant_permission">Beri Perizinan</string>
     <string name="retry">Coba Lagi</string>
-    <string name="permission_manage_external_storage_denied">sepertinya Phonograph tidak mempunyai izin \"mengelola penyimpanan external\"!</string>
     <string name="not_available_now">tidak tersedia saat ini </string>
     <string name="check_upgrade">Cek pembaruan</string>
     <string name="no_newer_version">Tidak ada pembaruan!</string>
