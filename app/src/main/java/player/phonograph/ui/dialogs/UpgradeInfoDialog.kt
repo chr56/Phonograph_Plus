@@ -4,8 +4,6 @@
 
 package player.phonograph.ui.dialogs
 
-import com.aghajari.compose.text.AnnotatedText
-import com.aghajari.compose.text.asAnnotatedString
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
@@ -50,14 +48,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.Spanned
 import android.widget.Toast
 
 class UpgradeInfoDialog : ComposeViewDialogFragment() {
@@ -132,7 +137,7 @@ private fun MainContent(versionCatalog: VersionCatalog, dismiss: () -> Unit) {
 private fun Version(version: Version) {
     var showPopup: Boolean by remember { mutableStateOf(false) }
     val dismissPopup = { showPopup = false }
-    Box(Modifier.padding(8.dp)) {
+    Box(Modifier.padding(horizontal = 8.dp, vertical = 16.dp)) {
         VersionInfo(version) { showPopup = true }
         if (showPopup) Popup(Alignment.Center, onDismissRequest = dismissPopup) {
             VersionPopupContent(version, dismissPopup)
@@ -143,12 +148,8 @@ private fun Version(version: Version) {
 @Composable
 private fun VersionInfo(version: Version, onClick: () -> Unit) {
     Column(Modifier.clickable(onClick = onClick)) {
-        val context = LocalContext.current
         VersionTitle(version)
-        AnnotatedText(
-            version.releaseNote.parsed(context.resources).asAnnotatedString(),
-            Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
-        )
+        VersionNote(version)
     }
 }
 
@@ -174,9 +175,12 @@ private fun VersionTitle(version: Version, modifier: Modifier = Modifier) {
         Spacer(Modifier.weight(1f))
         Text(
             dateText(version.date),
-            Modifier.weight(5f),
+            Modifier
+                .weight(5f)
+                .padding(horizontal = 8.dp),
             fontWeight = FontWeight.Bold,
-            maxLines = 1
+            maxLines = 1,
+            textAlign = TextAlign.End,
         )
     }
 }
@@ -191,6 +195,35 @@ private fun channelColor(channel: String) =
         }
     )
 
+@Composable
+private fun VersionNote(version: Version) {
+    val context = LocalContext.current
+    Box(
+        Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+    ) {
+        val note = remember { noteAnnotationString(version.releaseNote.parsed(context.resources)) }
+        Text(note, fontSize = 14.sp)
+    }
+}
+
+private fun noteAnnotationString(spanned: Spanned): AnnotatedString = buildAnnotatedString {
+    for (line in spanned.toString().lines().filter { it.isNotEmpty() }) {
+        append('\n')
+        val items = line.split(Regex("\\s|:\\s"), limit = 2)
+        if (items.size == 2) {
+            withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
+                append(items[0])
+                append("\t ")
+            }
+            withStyle(SpanStyle(fontWeight = FontWeight.Normal)) {
+                append(items[1])
+            }
+        } else {
+            append(line)
+        }
+        append('\n')
+    }
+}
 
 @Composable
 private fun VersionPopupContent(version: Version, dismissPopup: () -> Unit) {
