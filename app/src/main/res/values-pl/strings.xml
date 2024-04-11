@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="exit">Wyjdź</string>
     <string name="disable">Wyłącz</string>
     <string name="choose_at_least_one">Wybierz przynajmniej jeden</string>
     <string name="action_set_as_ringtone">Ustaw jako dzwonek</string>
@@ -530,4 +531,12 @@
     <string name="pref_title_always_play">Odtwarzaj zawsze</string>
     <string name="pref_summary_always_play">Ignoruje wszelkie zakłócenia i kontynuuje odtwarzanie bez względu na to, co jest odtwarzane. (W niektórych okolicznościach może to spowodować \"ciszę\").</string>
     <string name="action_view_external_files">Wyświetlaj pliki zewnętrzne</string>
+    <string name="pref_title_notification_actions">Akcje powiadomień odtwarzania</string>
+    <string name="pref_summary_notification_actions">Własne przyciski akcji powiadomień odtwarzania</string>
+    <string name="help_notification_actions">Możesz ustawić do 5 akcji w powiadomieniu rozszerzonym i do 3 akcji w powiadomieniu kompaktowym. (Lewe pola wyboru dotyczą powiadomień rozszerzonych; prawe pola wyboru dotyczą powiadomień kompaktowych).</string>
+    <string name="help_unmatched_notification_actions">Działania w powiadomieniu kompaktowym muszą być również dostępne w powiadomieniu rozszerzonym.</string>
+    <string name="illegal_operation">Operacja nie spełnia wymagań.</string>
+    <string name="error_unstoppable_service">Nie można zamknąć usługi muzycznej na pierwszym planie lub w użyciu.</string>
+    <string name="action_fast_rewind">Szybkie przewijanie do tyłu</string>
+    <string name="action_fast_forward">Szybkie przewijanie do przodu</string>
 </resources>
