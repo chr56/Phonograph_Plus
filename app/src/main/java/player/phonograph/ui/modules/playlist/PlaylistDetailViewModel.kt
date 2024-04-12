@@ -65,14 +65,15 @@ class PlaylistDetailViewModel(_playlist: Playlist) : ViewModel() {
     private val _currentMode: MutableStateFlow<UIMode> = MutableStateFlow(UIMode.Common)
     val currentMode get() = _currentMode.asStateFlow()
 
-    var previousMode: UIMode = UIMode.Common
-        private set
-
-    fun updateCurrentMode(newMode: UIMode) {
-        previousMode = _currentMode.value
+    fun updateCurrentMode(context: Context, newMode: UIMode) {
+        // todo
+        when (newMode) {
+            UIMode.Search -> searchSongs(context, keyword.value)
+            UIMode.Common -> fetchAllSongs(context)
+            UIMode.Editor -> fetchAllSongs(context)
+        }
         _currentMode.value = newMode
     }
-
 
     fun moveItem(context: Context, fromPosition: Int, toPosition: Int): Deferred<Boolean> =
         viewModelScope.async(Dispatchers.IO) {
