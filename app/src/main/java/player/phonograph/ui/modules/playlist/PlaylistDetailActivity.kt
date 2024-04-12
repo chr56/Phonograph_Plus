@@ -407,8 +407,10 @@ class PlaylistDetailActivity :
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
-            adapter.dataset = emptyList()
-            model.refreshPlaylist(this@PlaylistDetailActivity)
+            if (model.currentMode.value != UIMode.Editor) {
+                adapter.dataset = emptyList()
+                model.refreshPlaylist(this@PlaylistDetailActivity)
+            }
         }
     }
 

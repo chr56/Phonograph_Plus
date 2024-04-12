@@ -72,10 +72,10 @@ class PlaylistSongDisplayAdapter(
                 newSongs.add(toPosition, song)
                 dataset = newSongs
             }
-            if (fromPosition > toPosition)
-                notifyItemRangeChanged(toPosition, fromPosition)
-            else
-                notifyItemRangeChanged(fromPosition, toPosition)
+            // if (fromPosition > toPosition)
+            //     notifyItemRangeChanged(toPosition, fromPosition)
+            // else
+            //     notifyItemRangeChanged(fromPosition, toPosition)
         }
     }
 
