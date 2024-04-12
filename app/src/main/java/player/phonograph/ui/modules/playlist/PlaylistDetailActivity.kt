@@ -37,8 +37,6 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
-import util.phonograph.playlist.mediastore.moveItemViaMediastore
-import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
@@ -53,7 +51,6 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class PlaylistDetailActivity :
         AbsSlidingMusicPanelActivity(),
@@ -170,22 +167,16 @@ class PlaylistDetailActivity :
             }
         )
         // adapter
-        adapter = PlaylistSongDisplayAdapter(this)
+        adapter = PlaylistSongDisplayAdapter(this, model)
     }
 
     private fun updateRecyclerView(editMode: Boolean) {
-
         if (!editMode) {
-            adapter.editMode = false
             binding.recyclerView.also { rv ->
                 rv.layoutManager = LinearLayoutManager(this)
                 rv.adapter = adapter
             }
-            adapter.onMove = { _, _ -> true }
-            adapter.onDelete = {}
         } else {
-            val playlist = model.playlist.value
-            adapter.editMode = true
             binding.recyclerView.also { rv ->
                 recyclerViewDragDropManager = RecyclerViewDragDropManager()
                 recyclerViewDragDropManager!!.attachRecyclerView(rv)
@@ -194,16 +185,6 @@ class PlaylistDetailActivity :
                 rv.adapter = wrappedAdapter
                 rv.layoutManager = LinearLayoutManager(this)
                 rv.itemAnimator = RefactoredDefaultItemAnimator()
-            }
-            adapter.onMove = { fromPosition: Int, toPosition: Int ->
-                runBlocking {
-                    moveItemViaMediastore(this@PlaylistDetailActivity, playlist.id, fromPosition, toPosition)
-                }
-            }
-            adapter.onDelete = {
-                runBlocking {
-                    removeFromPlaylistViaMediastore(this@PlaylistDetailActivity, adapter.dataset[it], playlist.id)
-                }
             }
         }
     }

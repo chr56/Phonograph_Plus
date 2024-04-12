@@ -8,16 +8,20 @@ import player.phonograph.model.Song
 import player.phonograph.model.UIMode
 import player.phonograph.model.playlist.GeneratedPlaylist
 import player.phonograph.model.playlist.Playlist
+import util.phonograph.playlist.mediastore.moveItemViaMediastore
+import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @Suppress("LocalVariableName")
-class PlaylistDetailViewModel( _playlist: Playlist) : ViewModel() {
+class PlaylistDetailViewModel(_playlist: Playlist) : ViewModel() {
 
 
     private val _playlist: MutableStateFlow<Playlist> = MutableStateFlow(_playlist)
@@ -68,4 +72,20 @@ class PlaylistDetailViewModel( _playlist: Playlist) : ViewModel() {
         previousMode = _currentMode.value
         _currentMode.value = newMode
     }
+
+
+    fun moveItem(context: Context, fromPosition: Int, toPosition: Int): Deferred<Boolean> =
+        viewModelScope.async(Dispatchers.IO) {
+            if (fromPosition != toPosition) {
+                moveItemViaMediastore(context, playlist.value.id, fromPosition, toPosition)
+            } else {
+                false
+            }
+        }
+
+    fun deleteItem(context: Context, song: Song): Deferred<Boolean> =
+        viewModelScope.async(Dispatchers.IO) {
+            removeFromPlaylistViaMediastore(context, song, playlist.value.id)
+        }
+
 }
