@@ -103,12 +103,13 @@ class PlaylistDetailActivity :
     private fun observeData() {
         lifecycleScope.launch {
             model.songs.collect { songs ->
-                adapter.dataset = songs
-                binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
-                updateDashboard(model.playlist.value, songs)
+                if (model.currentMode.value != UIMode.Search) {
+                    adapter.dataset = songs
+                    binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
+                    updateDashboard(model.playlist.value, songs)
+                }
             }
         }
-
         lifecycleScope.launch {
             model.currentMode.collect { mode ->
                 supportActionBar!!.title =
@@ -118,6 +119,9 @@ class PlaylistDetailActivity :
                         model.playlist.value.name
                 updateSearchBarVisibility(mode == UIMode.Search)
                 adapter.notifyDataSetChanged()
+                if (mode == UIMode.Search) {
+                    model.searchSongs(model.keyword.value)
+                }
             }
         }
         lifecycleScope.launch {
@@ -136,7 +140,15 @@ class PlaylistDetailActivity :
         lifecycleScope.launch {
             model.keyword.collect { word ->
                 if (model.currentMode.value == UIMode.Search) {
-                    model.searchSongs(this@PlaylistDetailActivity, word)
+                    model.searchSongs(word)
+                }
+            }
+        }
+        lifecycleScope.launch {
+            model.searchResults.collect { songs ->
+                if (model.currentMode.value == UIMode.Search) {
+                    adapter.dataset = songs
+                    binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
                 }
             }
         }
@@ -245,7 +257,7 @@ class PlaylistDetailActivity :
                 close.setOnClickListener {
                     val editable = editQuery.editableText
                     if (editable.isEmpty()) {
-                        model.updateCurrentMode(this@PlaylistDetailActivity, UIMode.Common)
+                        model.updateCurrentMode(UIMode.Common)
                     } else {
                         editable.clear()
                     }
@@ -318,7 +330,7 @@ class PlaylistDetailActivity :
     override fun onBackPressed() {
         when {
             model.currentMode.value == UIMode.Common -> super.onBackPressed()
-            else                                     -> model.updateCurrentMode(this, UIMode.Common)
+            else                                     -> model.updateCurrentMode(UIMode.Common)
         }
     }
 

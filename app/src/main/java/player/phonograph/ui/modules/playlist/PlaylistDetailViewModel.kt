@@ -47,11 +47,13 @@ class PlaylistDetailViewModel(_playlist: Playlist) : ViewModel() {
         }
     }
 
-    fun searchSongs(context: Context, keyword: String) { // todo better implement
+    private val _searchResults: MutableStateFlow<List<Song>> = MutableStateFlow(emptyList())
+    val searchResults get() = _searchResults.asStateFlow()
+
+    fun searchSongs(keyword: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val allSongs = playlist.value.getSongs(context)
-            val result = allSongs.filter { it.title.contains(keyword) }
-            _songs.emit(result)
+            val result = _songs.value.filter { it.title.contains(keyword) }
+            _searchResults.emit(result)
         }
     }
 
@@ -65,13 +67,7 @@ class PlaylistDetailViewModel(_playlist: Playlist) : ViewModel() {
     private val _currentMode: MutableStateFlow<UIMode> = MutableStateFlow(UIMode.Common)
     val currentMode get() = _currentMode.asStateFlow()
 
-    fun updateCurrentMode(context: Context, newMode: UIMode) {
-        // todo
-        when (newMode) {
-            UIMode.Search -> searchSongs(context, keyword.value)
-            UIMode.Common -> fetchAllSongs(context)
-            UIMode.Editor -> fetchAllSongs(context)
-        }
+    fun updateCurrentMode(newMode: UIMode) {
         _currentMode.value = newMode
     }
 

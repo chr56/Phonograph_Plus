@@ -59,9 +59,9 @@ fun playlistDetailToolbar(
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
                     if (model.currentMode.value != UIMode.Search) {
-                        model.updateCurrentMode(context, UIMode.Search)
+                        model.updateCurrentMode(UIMode.Search)
                     } else { // exit
-                        model.updateCurrentMode(context, UIMode.Common)
+                        model.updateCurrentMode(UIMode.Common)
                     }
                     true
                 }
@@ -106,7 +106,7 @@ fun playlistDetailToolbar(
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
                         if (playlist is FilePlaylist) {
-                            model.updateCurrentMode(context, UIMode.Editor)
+                            model.updateCurrentMode(UIMode.Editor)
                             true
                         } else {
                             false
