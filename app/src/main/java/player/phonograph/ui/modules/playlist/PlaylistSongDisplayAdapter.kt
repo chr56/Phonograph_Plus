@@ -200,7 +200,7 @@ class PlaylistSongDisplayAdapter(
                         injectPlaylistEditor(menu, activity, position)
                     }.show()
                 } else {
-                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = position)
+                    ActionMenuProviders.SongActionMenuProvider(showPlay = false)
                         .prepareMenu(menuButtonView, item)
                 }
             }
