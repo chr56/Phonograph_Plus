@@ -20,6 +20,7 @@ import player.phonograph.model.Song
 import player.phonograph.ui.adapter.OrderedItemAdapter
 import player.phonograph.ui.dialogs.DeletionDialog
 import player.phonograph.ui.modules.tag.TagBrowserActivity
+import player.phonograph.util.produceSafeId
 import player.phonograph.util.ui.hitTest
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Context
@@ -33,6 +34,9 @@ class PlaylistSongDisplayAdapter(
     activity: AppCompatActivity,
 ) : OrderedItemAdapter<Song>(activity, R.layout.item_list, showSectionName = true),
     DraggableItemAdapter<PlaylistSongDisplayAdapter.PlaylistSongViewHolder> {
+
+    override fun getItemId(position: Int): Long =
+        produceSafeId(dataset[position].getItemID(), position)
 
     override fun getSectionNameImp(position: Int): String = (position + 1).toString()
 
