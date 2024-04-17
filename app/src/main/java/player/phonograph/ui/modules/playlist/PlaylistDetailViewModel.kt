@@ -80,9 +80,9 @@ class PlaylistDetailViewModel(_playlist: Playlist) : ViewModel() {
             }
         }
 
-    fun deleteItem(context: Context, song: Song): Deferred<Boolean> =
+    fun deleteItem(context: Context, songId: Long, index: Int): Deferred<Boolean> =
         viewModelScope.async(Dispatchers.IO) {
-            removeFromPlaylistViaMediastore(context, song, playlist.value.id)
+            removeFromPlaylistViaMediastore(context, playlist.value.id, songId, index.toLong()) > 0
         }
 
 }

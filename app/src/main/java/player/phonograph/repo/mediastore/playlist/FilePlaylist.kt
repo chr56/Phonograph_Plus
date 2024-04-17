@@ -45,7 +45,7 @@ class FilePlaylistImpl : FilePlaylist {
 
 
     override fun removeSong(context: Context, song: Song) = runBlocking {
-        removeFromPlaylistViaMediastore(context, song, id)
+        removeFromPlaylistViaMediastore(context, id, song.id)
         Unit
     }
 

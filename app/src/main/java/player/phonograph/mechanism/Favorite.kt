@@ -78,7 +78,7 @@ class FavoritePlaylistImpl : IFavorite {
             if (isFavorite(context, song)) {
                 val favoritesPlaylist = getFavoritesPlaylist(context)
                 if (favoritesPlaylist != null)
-                    removeFromPlaylistViaMediastore(context, song, favoritesPlaylist.id)
+                    removeFromPlaylistViaMediastore(context, favoritesPlaylist.id, song.id)
                 false
             } else {
                 addToPlaylistViaMediastore(context, song, getOrCreateFavoritesPlaylist(context).id, false)

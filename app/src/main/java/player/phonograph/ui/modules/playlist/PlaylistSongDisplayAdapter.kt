@@ -80,7 +80,8 @@ class PlaylistSongDisplayAdapter(
     }
 
     private suspend fun deleteSong(position: Int) {
-        if (viewModel.deleteItem(activity, dataset[position]).await()) {
+        val song = dataset[position]
+        if (viewModel.deleteItem(activity, song.id, position).await()) {
             synchronized(dataset) {
                 dataset = dataset.toMutableList().also { it.removeAt(position) }
             }
