@@ -33,10 +33,6 @@ internal fun openOutputStreamSafe(context: Context, uri: Uri, mode: String): Out
     }
 
 
-internal fun checkUri(context: Context, target: FilePlaylist, uri: Uri): Boolean =
-    uri.getAbsolutePath(context) == target.associatedFilePath
-
-
 /**
  * open SAF at the common directory of [paths]
  * @param context must be [IOpenDirStorageAccess]

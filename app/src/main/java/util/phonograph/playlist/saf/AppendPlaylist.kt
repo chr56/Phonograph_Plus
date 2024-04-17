@@ -16,6 +16,7 @@ import player.phonograph.util.coroutineToast
 import player.phonograph.util.reportError
 import util.phonograph.playlist.m3u.M3UWriter
 import android.content.Context
+import android.net.Uri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
@@ -66,5 +67,8 @@ suspend fun appendToPlaylistViaSAF(
         )
     }
 }
+
+private fun checkUri(context: Context, target: FilePlaylist, uri: Uri): Boolean =
+    uri.getAbsolutePath(context) == target.associatedFilePath
 
 private const val TAG = "PlaylistAppend"
