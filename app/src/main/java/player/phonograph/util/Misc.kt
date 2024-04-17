@@ -206,3 +206,19 @@ fun shareFileIntent(context: Context, song: Song): Intent {
         Intent()
     }
 }
+
+private const val BITWISE_POSITION_MASK: Long = 0x00ff_fff0_0000_0000
+private const val BITWISE_POSITION_CUT_MASK: Long = 0xf_ffff // 20 bits
+private const val BITWISE_SHIFT: Int = 36 // 4*9
+
+/**
+ * Generate a new ID associated with a position, making it safe to used in some lists allowing duplicated item
+ * @param id original id
+ * @param position related position
+ * @return new id which is safe to used in a list allowing duplicated item
+ */
+fun produceSafeId(id: Long, position: Int): Long {
+    val cleared: Long = id and BITWISE_POSITION_MASK.inv()
+    val shifted: Long = (position.toLong() and BITWISE_POSITION_CUT_MASK) shl BITWISE_SHIFT
+    return cleared or shifted
+}
