@@ -2,7 +2,7 @@
  * Copyright (c) 2022~2023 chr_56
  */
 
-package util.phonograph.playlist.m3u
+package player.phonograph.mechanism.playlist.m3u
 
 import java.io.InputStream
 import java.nio.charset.StandardCharsets

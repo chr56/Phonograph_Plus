@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.mechanism
+package player.phonograph.mechanism.playlist
 
 import lib.activityresultcontract.ICreateFileStorageAccess
 import lib.activityresultcontract.IOpenFileStorageAccess
@@ -23,12 +23,12 @@ import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffix
 import player.phonograph.util.warning
-import util.phonograph.playlist.m3u.M3UWriter
-import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore
-import util.phonograph.playlist.mediastore.createOrFindPlaylistViaMediastore
-import util.phonograph.playlist.saf.appendToPlaylistViaSAF
-import util.phonograph.playlist.saf.createPlaylistViaSAF
-import util.phonograph.playlist.saf.createPlaylistsViaSAF
+import player.phonograph.mechanism.playlist.m3u.M3UWriter
+import player.phonograph.mechanism.playlist.mediastore.addToPlaylistViaMediastore
+import player.phonograph.mechanism.playlist.mediastore.createOrFindPlaylistViaMediastore
+import player.phonograph.mechanism.playlist.saf.appendToPlaylistViaSAF
+import player.phonograph.mechanism.playlist.saf.createPlaylistViaSAF
+import player.phonograph.mechanism.playlist.saf.createPlaylistsViaSAF
 import android.content.Context
 import android.os.Build
 import android.os.Environment

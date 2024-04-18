@@ -23,7 +23,7 @@ import player.phonograph.util.reportError
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.text.ItemGroup
 import player.phonograph.util.text.buildDeletionMessage
-import util.phonograph.playlist.mediastore.deletePlaylistsViaMediastore
+import player.phonograph.mechanism.playlist.mediastore.deletePlaylistsViaMediastore
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import android.app.Activity

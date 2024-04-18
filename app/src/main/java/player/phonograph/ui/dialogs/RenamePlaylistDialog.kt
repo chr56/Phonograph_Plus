@@ -12,7 +12,7 @@ import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.util.parcelable
-import util.phonograph.playlist.mediastore.renamePlaylistViaMediastore
+import player.phonograph.mechanism.playlist.mediastore.renamePlaylistViaMediastore
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import android.app.Dialog

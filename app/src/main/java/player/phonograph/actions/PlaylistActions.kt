@@ -4,7 +4,7 @@
 
 package player.phonograph.actions
 
-import player.phonograph.mechanism.PlaylistEdit
+import player.phonograph.mechanism.playlist.PlaylistEdit
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.MusicPlayerRemote

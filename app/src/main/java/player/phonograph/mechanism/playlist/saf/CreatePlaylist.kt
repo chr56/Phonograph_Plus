@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package util.phonograph.playlist.saf
+package player.phonograph.mechanism.playlist.saf
 
 import lib.activityresultcontract.ActivityResultContractUtil.chooseDirViaSAF
 import lib.activityresultcontract.ActivityResultContractUtil.createFileViaSAF
@@ -18,7 +18,7 @@ import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffix
 import player.phonograph.util.warning
-import util.phonograph.playlist.m3u.M3UWriter
+import player.phonograph.mechanism.playlist.m3u.M3UWriter
 import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract

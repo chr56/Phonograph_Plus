@@ -8,8 +8,8 @@ import player.phonograph.model.Song
 import player.phonograph.model.UIMode
 import player.phonograph.model.playlist.GeneratedPlaylist
 import player.phonograph.model.playlist.Playlist
-import util.phonograph.playlist.mediastore.moveItemViaMediastore
-import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
+import player.phonograph.mechanism.playlist.mediastore.moveItemViaMediastore
+import player.phonograph.mechanism.playlist.mediastore.removeFromPlaylistViaMediastore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context

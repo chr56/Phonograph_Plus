@@ -11,9 +11,9 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
-import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore
-import util.phonograph.playlist.mediastore.createOrFindPlaylistViaMediastore
-import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
+import player.phonograph.mechanism.playlist.mediastore.addToPlaylistViaMediastore
+import player.phonograph.mechanism.playlist.mediastore.createOrFindPlaylistViaMediastore
+import player.phonograph.mechanism.playlist.mediastore.removeFromPlaylistViaMediastore
 import android.content.Context
 import kotlinx.coroutines.runBlocking
 

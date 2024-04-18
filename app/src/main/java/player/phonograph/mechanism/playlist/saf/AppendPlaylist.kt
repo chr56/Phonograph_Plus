@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package util.phonograph.playlist.saf
+package player.phonograph.mechanism.playlist.saf
 
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
 import lib.activityresultcontract.IOpenFileStorageAccess
@@ -14,7 +14,7 @@ import player.phonograph.util.coroutineToast
 import player.phonograph.util.file.selectContentUri
 import player.phonograph.util.openOutputStreamSafe
 import player.phonograph.util.warning
-import util.phonograph.playlist.m3u.M3UWriter
+import player.phonograph.mechanism.playlist.m3u.M3UWriter
 import android.content.Context
 import android.net.Uri
 import kotlinx.coroutines.Dispatchers
