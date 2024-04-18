@@ -22,6 +22,28 @@ import android.provider.DocumentsContract
 import android.util.Log
 import java.io.File
 
+
+/**
+ * select document tree content Uri from [filePaths] via SAF
+ * @param filePaths absolute POSIX paths of target file
+ * @return document tree content Uri (`content://<EXTERNAL_STORAGE_AUTHORITY>/tree...`)
+ */
+suspend fun selectContentUris(
+    context: Context,
+    filePaths: List<String>,
+): List<Uri> {
+    val treeUri = selectContentUri(context, filePaths) ?: return emptyList()
+    return filePaths.map { filePath ->
+        val documentId = run {
+            val file = File(filePath)
+            val storageId = file.getStorageId(context)
+            val basePath = file.getBasePath()
+            "$storageId:$basePath"
+        }
+        DocumentsContract.buildDocumentUriUsingTree(treeUri, documentId)
+    }
+}
+
 /**
  * select document tree content Uri from [filePaths] via SAF
  * @param filePaths absolute POSIX paths of target file
