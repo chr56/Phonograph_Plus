@@ -4,12 +4,12 @@
 
 package player.phonograph.ui.modules.playlist
 
+import player.phonograph.mechanism.playlist.PlaylistEdit
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
+import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.GeneratedPlaylist
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.mechanism.playlist.mediastore.moveItemViaMediastore
-import player.phonograph.mechanism.playlist.mediastore.removeFromPlaylistViaMediastore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -74,7 +74,7 @@ class PlaylistDetailViewModel(_playlist: Playlist) : ViewModel() {
     fun moveItem(context: Context, fromPosition: Int, toPosition: Int): Deferred<Boolean> =
         viewModelScope.async(Dispatchers.IO) {
             if (fromPosition != toPosition) {
-                moveItemViaMediastore(context, playlist.value.id, fromPosition, toPosition)
+                PlaylistEdit.moveItem(context, playlist.value as FilePlaylist, fromPosition, toPosition)
             } else {
                 false
             }
@@ -82,7 +82,7 @@ class PlaylistDetailViewModel(_playlist: Playlist) : ViewModel() {
 
     fun deleteItem(context: Context, songId: Long, index: Int): Deferred<Boolean> =
         viewModelScope.async(Dispatchers.IO) {
-            removeFromPlaylistViaMediastore(context, playlist.value.id, songId, index.toLong()) > 0
+            PlaylistEdit.removeItem(context, playlist.value as FilePlaylist, songId, index.toLong()) > 0
         }
 
 }

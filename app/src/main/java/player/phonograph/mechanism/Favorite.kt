@@ -5,15 +5,15 @@ package player.phonograph.mechanism
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
+import player.phonograph.mechanism.playlist.PlaylistEdit
+import player.phonograph.mechanism.playlist.mediastore.addToPlaylistViaMediastore
+import player.phonograph.mechanism.playlist.mediastore.createOrFindPlaylistViaMediastore
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
-import player.phonograph.mechanism.playlist.mediastore.addToPlaylistViaMediastore
-import player.phonograph.mechanism.playlist.mediastore.createOrFindPlaylistViaMediastore
-import player.phonograph.mechanism.playlist.mediastore.removeFromPlaylistViaMediastore
 import android.content.Context
 import kotlinx.coroutines.runBlocking
 
@@ -78,7 +78,7 @@ class FavoritePlaylistImpl : IFavorite {
             if (isFavorite(context, song)) {
                 val favoritesPlaylist = getFavoritesPlaylist(context)
                 if (favoritesPlaylist != null)
-                    removeFromPlaylistViaMediastore(context, favoritesPlaylist.id, song.id)
+                    PlaylistEdit.removeItem(context, favoritesPlaylist, song.id)
                 false
             } else {
                 addToPlaylistViaMediastore(context, song, getOrCreateFavoritesPlaylist(context).id, false)

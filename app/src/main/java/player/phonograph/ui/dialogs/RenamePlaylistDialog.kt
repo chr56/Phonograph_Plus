@@ -10,9 +10,9 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
 import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
+import player.phonograph.mechanism.playlist.PlaylistEdit
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.util.parcelable
-import player.phonograph.mechanism.playlist.mediastore.renamePlaylistViaMediastore
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import android.app.Dialog
@@ -38,7 +38,7 @@ class RenamePlaylistDialog : DialogFragment() {
                 val name: String = charSequence.toString().trim()
                 if (name.isNotEmpty()) {
                     lifecycleScope.launch {
-                        renamePlaylistViaMediastore(requireActivity(), playlist.id, name)
+                        PlaylistEdit.renamePlaylist(requireContext(), playlist, name)
                     }
                 }
             }.apply {
