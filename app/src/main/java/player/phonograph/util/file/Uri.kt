@@ -69,9 +69,16 @@ private suspend fun selectContentUriViaDocumentTree(
         val basePath = file.getBasePath()
         "$storageId:$basePath"
     }
-    val childUri: Uri? = DocumentsContract.buildDocumentUriUsingTree(treeUri, documentId)
+    val childUri: Uri = DocumentsContract.buildDocumentUriUsingTree(treeUri, documentId)
+    val segments = childUri.pathSegments
     debug { Log.i(TAG, "Access ChildUri: $childUri") }
-    return childUri
+    return if (segments[3].startsWith(segments[1])) {
+        childUri
+    } else {
+        coroutineToast(context, context.getString(R.string.file_incorrect))
+        warning(TAG, "File is out of reach: $childUri")
+        null
+    }
 }
 
 /**
