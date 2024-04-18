@@ -7,6 +7,7 @@ package util.phonograph.playlist.saf
 import lib.storage.isTreeDocumentFileSafe
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.util.debug
+import player.phonograph.util.file.selectContentUri
 import player.phonograph.util.warning
 import androidx.documentfile.provider.DocumentFile
 import android.content.Context
@@ -26,7 +27,7 @@ suspend fun searchPlaylistsForDeletionViaSAF(
     if (filePlaylists.isEmpty()) return emptyList()
     // open with SAF to get tree uri
     val playlistPaths = filePlaylists.map { it.associatedFilePath }
-    val treeUri = chooseCommonDirViaSAF(context, playlistPaths) ?: return emptyList()
+    val treeUri = selectContentUri(context, playlistPaths) ?: return emptyList()
     val folder = if (treeUri.isTreeDocumentFileSafe()) DocumentFile.fromTreeUri(context, treeUri) else null
     // valid
     if (folder == null) {

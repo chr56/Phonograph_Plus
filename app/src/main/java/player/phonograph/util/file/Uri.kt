@@ -23,6 +23,23 @@ import android.util.Log
 import java.io.File
 
 /**
+ * select document tree content Uri from [filePaths] via SAF
+ * @param filePaths absolute POSIX paths of target file
+ * @return document tree content Uri (`content://<EXTERNAL_STORAGE_AUTHORITY>/tree...`)
+ */
+suspend fun selectContentUri(
+    context: Context,
+    filePaths: List<String>,
+): Uri? {
+    if (filePaths.isEmpty()) return null
+    val commonRoot = commonPathRoot(filePaths).ifEmpty { Environment.getExternalStorageDirectory().absolutePath }
+    val treeUri = chooseDirViaSAF(context, commonRoot)
+    Log.v(TAG, "Select shared Document Tree Content Uri: $treeUri")
+    return treeUri
+}
+
+
+/**
  * select document content Uri of [filePath] via SAF
  * @param filePath absolute POSIX path of target file
  * @return content uri (`content://<EXTERNAL_STORAGE_AUTHORITY>/...`)
@@ -124,6 +141,31 @@ private suspend fun notifyErrorChildDocumentUri(context: Context, childDocumentU
     }
     coroutineToast(context, context.getString(R.string.file_incorrect))
     warning(TAG, message)
+}
+
+
+/**
+ * common path root of a list of paths
+ * @param paths list of path separating by '/'
+ * @return common root path of these [paths], **empty** if no common
+ */
+private fun commonPathRoot(paths: Collection<String>): String {
+
+    val fragments = paths.map { path -> path.split('/').filter { it.isNotEmpty() } }
+    val result = mutableListOf<String>()
+
+    var index = 0
+    while (true) {
+        val col = fragments.mapNotNull { it.getOrNull(index) }.toSet()
+        if (col.size == 1) {
+            result.add(col.first())
+            index++
+        } else {// size > 1 or size == 0
+            break
+        }
+    }
+
+    return result.fold("") { acc, s -> "$acc/$s" }
 }
 
 private const val TAG = "UriUtil"
