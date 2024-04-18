@@ -54,6 +54,12 @@ fun playlistDetailToolbar(
                 onClick { playlist.actionShuffleAndPlay(context) }
             }
             menuItem {
+                title = getString(R.string.action_play_next)
+                icon = getTintedDrawable(R.drawable.ic_redo_white_24dp, iconColor)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                onClick { playlist.actionPlayNext(context) }
+            }
+            menuItem {
                 title = getString(R.string.action_search)
                 icon = getTintedDrawable(R.drawable.ic_search_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
@@ -66,13 +72,6 @@ fun playlistDetailToolbar(
                     true
                 }
             }
-            menuItem {
-                title = getString(R.string.action_play_next)
-                icon = getTintedDrawable(R.drawable.ic_redo_white_24dp, iconColor)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-                onClick { playlist.actionPlayNext(context) }
-            }
-
             menuItem {
                 title = getString(R.string.refresh)
                 icon = getTintedDrawable(R.drawable.ic_refresh_white_24dp, iconColor)
@@ -125,16 +124,6 @@ fun playlistDetailToolbar(
                 }
             }
 
-            menuItem(title = getString(R.string.action_tag_editor)) { //id = R.id.action_tag_editor
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-                onClick {
-                    runBlocking {
-                        MultiTagBrowserActivity.launch(context, ArrayList(playlist.getSongs(context).map { it.data }))
-                    }
-                    true
-                }
-            }
-
             // Resettable
             if (playlist is ResettablePlaylist) {
                 menuItem {
@@ -148,6 +137,17 @@ fun playlistDetailToolbar(
                             true
                         }
                     }
+                }
+            }
+
+
+            menuItem(title = getString(R.string.action_tag_editor)) { //id = R.id.action_tag_editor
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                onClick {
+                    runBlocking {
+                        MultiTagBrowserActivity.launch(context, ArrayList(playlist.getSongs(context).map { it.data }))
+                    }
+                    true
                 }
             }
 
