@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package util.phonograph.playlist.mediastore
+package player.phonograph.mechanism.playlist.mediastore
 
 import legacy.phonograph.MediaStoreCompat
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
@@ -16,6 +16,7 @@ import android.content.Context
 import android.database.Cursor
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -144,29 +145,63 @@ suspend fun moveItemViaMediastore(
     res
 }
 
+
 /**
  * @return success or not
  */
 suspend fun removeFromPlaylistViaMediastore(
     context: Context,
-    song: Song,
     playlistId: Long,
-): Boolean = withContext(Dispatchers.IO) {
+    songId: Long,
+    index: Long,
+): Int = withContext(Dispatchers.IO) {
     try {
-        context.contentResolver.delete(
-            /* url = */ if (Build.VERSION.SDK_INT >= 29) {
-                Playlists.Members.getContentUri(
-                    MediaStore.getExternalVolumeNames(context).firstOrNull(), playlistId
-                )
-            } else {
-                PlaylistLoader.idToMediastoreUri(playlistId)
-            },
-            /* where = */ Playlists.Members.AUDIO_ID + " =?",
-            /* selectionArgs = */ arrayOf(song.id.toString())
+        val playlistUri = if (Build.VERSION.SDK_INT >= 29) {
+            Playlists.Members.getContentUri(MediaStore.getExternalVolumeNames(context).first(), playlistId)
+        } else {
+            PlaylistLoader.idToMediastoreUri(playlistId)
+        }
+        val deleted = context.contentResolver.delete(
+            playlistUri,
+            "${Playlists.Members.AUDIO_ID} = ? AND ${Playlists.Members.PLAY_ORDER} = ?",
+            arrayOf(songId.toString(), (index + 1).toString()) // start with 1
         )
         // Necessary because somehow the MediaStoreObserver doesn't work for playlists
         context.contentResolver.notifyChange(PlaylistLoader.idToMediastoreUri(playlistId), null)
-        true
+        if (deleted > 1) {
+            Log.e("Playlist", "More items have been deleted!")
+        }
+        deleted
+    } catch (ignored: SecurityException) {
+        0
+    }
+}
+
+/**
+ * @return success or not
+ */
+suspend fun removeFromPlaylistViaMediastore(
+    context: Context,
+    playlistId: Long,
+    songId: Long,
+): Boolean = withContext(Dispatchers.IO) {
+    try {
+        val playlistUri = if (Build.VERSION.SDK_INT >= 29) {
+            Playlists.Members.getContentUri(MediaStore.getExternalVolumeNames(context).first(), playlistId)
+        } else {
+            PlaylistLoader.idToMediastoreUri(playlistId)
+        }
+        val deleted = context.contentResolver.delete(
+            playlistUri,
+            "${Playlists.Members.AUDIO_ID} = ?",
+            arrayOf(songId.toString())
+        )
+        // Necessary because somehow the MediaStoreObserver doesn't work for playlists
+        context.contentResolver.notifyChange(PlaylistLoader.idToMediastoreUri(playlistId), null)
+        if (deleted > 1) {
+            Log.e("Playlist", "More items have been deleted!")
+        }
+        deleted > 0
     } catch (ignored: SecurityException) {
         false
     }

@@ -2,12 +2,21 @@
  *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.mechanism
+package player.phonograph.mechanism.playlist
 
 import lib.activityresultcontract.ICreateFileStorageAccess
 import lib.activityresultcontract.IOpenFileStorageAccess
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.mechanism.playlist.m3u.M3UWriter
+import player.phonograph.mechanism.playlist.mediastore.addToPlaylistViaMediastore
+import player.phonograph.mechanism.playlist.mediastore.createOrFindPlaylistViaMediastore
+import player.phonograph.mechanism.playlist.mediastore.moveItemViaMediastore
+import player.phonograph.mechanism.playlist.mediastore.removeFromPlaylistViaMediastore
+import player.phonograph.mechanism.playlist.mediastore.renamePlaylistViaMediastore
+import player.phonograph.mechanism.playlist.saf.appendToPlaylistViaSAF
+import player.phonograph.mechanism.playlist.saf.createPlaylistViaSAF
+import player.phonograph.mechanism.playlist.saf.createPlaylistsViaSAF
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
@@ -23,12 +32,6 @@ import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffix
 import player.phonograph.util.warning
-import util.phonograph.playlist.m3u.M3UWriter
-import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore
-import util.phonograph.playlist.mediastore.createOrFindPlaylistViaMediastore
-import util.phonograph.playlist.saf.appendToPlaylistViaSAF
-import util.phonograph.playlist.saf.createPlaylistViaSAF
-import util.phonograph.playlist.saf.createPlaylistsViaSAF
 import android.content.Context
 import android.os.Build
 import android.os.Environment
@@ -70,12 +73,51 @@ object PlaylistEdit {
     suspend fun duplicate(
         context: Context,
         playlists: List<Playlist>,
-    ) =  if (shouldUseSAF(context) && context is ICreateFileStorageAccess) {
+    ) = if (shouldUseSAF(context) && context is ICreateFileStorageAccess) {
         PlaylistEditImpl.SAF.duplicate(context, playlists)
     } else {
         PlaylistEditImpl.MediaStore.duplicate(context, playlists)
     }
 
+    //region MediaStore Only Actions
+    suspend fun moveItem(
+        context: Context,
+        filePlaylist: FilePlaylist,
+        from: Int,
+        to: Int,
+    ): Boolean {
+        val playlistId = filePlaylist.id
+        return moveItemViaMediastore(context, playlistId, from, to)
+    }
+
+    suspend fun removeItem(
+        context: Context,
+        filePlaylist: FilePlaylist,
+        songId: Long,
+        index: Long,
+    ): Int {
+        val playlistId = filePlaylist.id
+        return removeFromPlaylistViaMediastore(context, playlistId, songId, index)
+    }
+
+    suspend fun removeItem(
+        context: Context,
+        filePlaylist: FilePlaylist,
+        songId: Long,
+    ): Boolean {
+        val playlistId = filePlaylist.id
+        return removeFromPlaylistViaMediastore(context, playlistId, songId)
+    }
+
+    suspend fun renamePlaylist(
+        context: Context,
+        filePlaylist: FilePlaylist,
+        newName: String,
+    ): Boolean {
+        val playlistId = filePlaylist.id
+        return renamePlaylistViaMediastore(context, playlistId, newName)
+    }
+    //endregion
 
     private fun shouldUseSAF(context: Context): Boolean {
         val preference = Setting(context)[Keys.playlistFilesOperationBehaviour]

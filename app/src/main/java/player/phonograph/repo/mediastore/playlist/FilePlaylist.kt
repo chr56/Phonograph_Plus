@@ -6,14 +6,12 @@ package player.phonograph.repo.mediastore.playlist
 
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
 import player.phonograph.R
-import player.phonograph.mechanism.PlaylistEdit
+import player.phonograph.mechanism.playlist.PlaylistEdit
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
 import player.phonograph.ui.dialogs.ClearPlaylistDialog
 import player.phonograph.util.warning
-import util.phonograph.playlist.mediastore.moveItemViaMediastore
-import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
 import androidx.annotation.Keep
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
@@ -45,7 +43,7 @@ class FilePlaylistImpl : FilePlaylist {
 
 
     override fun removeSong(context: Context, song: Song) = runBlocking {
-        removeFromPlaylistViaMediastore(context, song, id)
+        PlaylistEdit.removeItem(context, this@FilePlaylistImpl, song.id)
         Unit
     }
 
@@ -59,7 +57,7 @@ class FilePlaylistImpl : FilePlaylist {
 
     override fun moveSong(context: Context, song: Song, from: Int, to: Int) {
         runBlocking {
-            moveItemViaMediastore(context, id, from, to)
+            PlaylistEdit.moveItem(context, this@FilePlaylistImpl, from, to)
         }
     }
 

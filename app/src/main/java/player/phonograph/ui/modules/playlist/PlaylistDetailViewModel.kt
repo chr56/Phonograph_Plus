@@ -4,20 +4,24 @@
 
 package player.phonograph.ui.modules.playlist
 
+import player.phonograph.mechanism.playlist.PlaylistEdit
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
+import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.GeneratedPlaylist
 import player.phonograph.model.playlist.Playlist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @Suppress("LocalVariableName")
-class PlaylistDetailViewModel( _playlist: Playlist) : ViewModel() {
+class PlaylistDetailViewModel(_playlist: Playlist) : ViewModel() {
 
 
     private val _playlist: MutableStateFlow<Playlist> = MutableStateFlow(_playlist)
@@ -43,11 +47,13 @@ class PlaylistDetailViewModel( _playlist: Playlist) : ViewModel() {
         }
     }
 
-    fun searchSongs(context: Context, keyword: String) { // todo better implement
+    private val _searchResults: MutableStateFlow<List<Song>> = MutableStateFlow(emptyList())
+    val searchResults get() = _searchResults.asStateFlow()
+
+    fun searchSongs(keyword: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val allSongs = playlist.value.getSongs(context)
-            val result = allSongs.filter { it.title.contains(keyword) }
-            _songs.emit(result)
+            val result = _songs.value.filter { it.title.contains(keyword) }
+            _searchResults.emit(result)
         }
     }
 
@@ -61,11 +67,22 @@ class PlaylistDetailViewModel( _playlist: Playlist) : ViewModel() {
     private val _currentMode: MutableStateFlow<UIMode> = MutableStateFlow(UIMode.Common)
     val currentMode get() = _currentMode.asStateFlow()
 
-    var previousMode: UIMode = UIMode.Common
-        private set
-
     fun updateCurrentMode(newMode: UIMode) {
-        previousMode = _currentMode.value
         _currentMode.value = newMode
     }
+
+    fun moveItem(context: Context, fromPosition: Int, toPosition: Int): Deferred<Boolean> =
+        viewModelScope.async(Dispatchers.IO) {
+            if (fromPosition != toPosition) {
+                PlaylistEdit.moveItem(context, playlist.value as FilePlaylist, fromPosition, toPosition)
+            } else {
+                false
+            }
+        }
+
+    fun deleteItem(context: Context, songId: Long, index: Int): Deferred<Boolean> =
+        viewModelScope.async(Dispatchers.IO) {
+            PlaylistEdit.removeItem(context, playlist.value as FilePlaylist, songId, index.toLong()) > 0
+        }
+
 }

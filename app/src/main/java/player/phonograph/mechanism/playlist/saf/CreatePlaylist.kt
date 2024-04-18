@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package util.phonograph.playlist.saf
+package player.phonograph.mechanism.playlist.saf
 
 import lib.activityresultcontract.ActivityResultContractUtil.chooseDirViaSAF
 import lib.activityresultcontract.ActivityResultContractUtil.createFileViaSAF
@@ -10,15 +10,18 @@ import lib.activityresultcontract.IOpenFileStorageAccess
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.util.PLAYLIST_MIME_TYPE
 import player.phonograph.util.coroutineToast
+import player.phonograph.util.openOutputStreamSafe
 import player.phonograph.util.reportError
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffix
 import player.phonograph.util.warning
-import util.phonograph.playlist.m3u.M3UWriter
-import androidx.documentfile.provider.DocumentFile
+import player.phonograph.mechanism.playlist.m3u.M3UWriter
 import android.content.Context
+import android.net.Uri
+import android.provider.DocumentsContract
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -65,40 +68,56 @@ suspend fun createPlaylistsViaSAF(
     require(context is IOpenFileStorageAccess)
     while (context.openFileStorageAccessTool.busy) yield()
     // launch
-    coroutineToast(
-        context,
-        context.getString(R.string.direction_open_folder_with_saf),
-        true
-    )
     val treeUri = chooseDirViaSAF(context, initialPosition)
-    val dir = DocumentFile.fromTreeUri(context, treeUri)
-    if (dir != null && dir.isDirectory) {
-        for (playlist in playlists) {
-            val file = dir.createFile(PLAYLIST_MIME_TYPE, playlist.name + dateTimeSuffix(currentDate()))
-            if (file != null) {
-                openOutputStreamSafe(context, file.uri, "rwt")?.use { outputStream ->
-                    val songs: List<Song> = playlist.getSongs(context)
-                    try {
-                        M3UWriter.write(outputStream, songs, true)
-                    } catch (e: IOException) {
-                        reportError(e, TAG, "")
-                        coroutineToast(context, R.string.failed)
-                    }
-                }
-            } else {
-                warning(
-                    TAG, context.getString(
-                        R.string.failed_to_save_playlist,
-                        playlist.name
-                    )
+
+    val parentDocumentUri =
+        DocumentsContract.buildDocumentUriUsingTree(treeUri, DocumentsContract.getTreeDocumentId(treeUri))
+
+    val failedToCreate: MutableList<Playlist> = mutableListOf()
+    val failedToWrite: MutableList<Playlist> = mutableListOf()
+
+    for (playlist in playlists) {
+        val childUri: Uri? =
+            try {
+                DocumentsContract.createDocument(
+                    context.contentResolver,
+                    parentDocumentUri,
+                    PLAYLIST_MIME_TYPE,
+                    "${playlist.name}${dateTimeSuffix(currentDate())}"
                 )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                failedToCreate.add(playlist)
+                null
+            }
+        if (childUri != null) {
+            openOutputStreamSafe(context, childUri, "rwt")?.use { outputStream ->
+                val songs: List<Song> = playlist.getSongs(context)
+                try {
+                    M3UWriter.write(outputStream, songs, true)
+                } catch (e: IOException) {
+                    failedToWrite.add(playlist)
+                    e.printStackTrace()
+                }
             }
         }
-        coroutineToast(context, R.string.success)
+    }
+
+    if (failedToCreate.isNotEmpty() || failedToWrite.isNotEmpty()) {
+        coroutineToast(context, R.string.failed)
+        val message = buildString {
+            append("Tree     Uri: ${treeUri.path} \n")
+            append("Document Uri: ${parentDocumentUri.path} \n")
+            for (playlist in failedToCreate) {
+                append("Failed to create playlist ${playlist.name}\n")
+            }
+            for (playlist in failedToWrite) {
+                append("Failed to write playlist ${playlist.name}\n")
+            }
+        }
+        warning(TAG, message)
     } else {
-        warning(
-            TAG, "${context.getString(R.string.failed)}: uri $treeUri"
-        )
+        coroutineToast(context, R.string.success)
     }
 }
 

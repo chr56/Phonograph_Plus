@@ -32,6 +32,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.Q
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -91,7 +92,11 @@ abstract class DisplayAdapter<I : Displayable>(
         if (config.showSectionName) getSectionNameImp(position) else ""
 
     override fun onViewAttachedToWindow(holder: DisplayViewHolder<I>) {
-        imageCacheDelegate.updateImage(activity, holder, dataset[holder.bindingAdapterPosition], config.usePalette)
+        if (holder.bindingAdapterPosition in dataset.indices) {
+            imageCacheDelegate.updateImage(activity, holder, dataset[holder.bindingAdapterPosition], config.usePalette)
+        } else{
+            Log.v("ImageCacheDelegate", "Holder has already detached?")
+        }
     }
 
     // override fun onViewDetachedFromWindow(holder: DisplayViewHolder<I>) {}

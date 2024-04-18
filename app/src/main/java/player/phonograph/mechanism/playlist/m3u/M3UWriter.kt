@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package util.phonograph.playlist.m3u
+package player.phonograph.mechanism.playlist.m3u
 
 import player.phonograph.model.Song
 import kotlin.text.Charsets.UTF_8

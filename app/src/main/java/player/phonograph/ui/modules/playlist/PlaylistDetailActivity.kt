@@ -37,8 +37,6 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
-import util.phonograph.playlist.mediastore.moveItemViaMediastore
-import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
@@ -53,7 +51,6 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class PlaylistDetailActivity :
         AbsSlidingMusicPanelActivity(),
@@ -98,7 +95,6 @@ class PlaylistDetailActivity :
         setUpToolbar()
 
         prepareRecyclerView()
-        updateRecyclerView(editMode = false)
         setUpDashBroad()
 
         observeData()
@@ -107,20 +103,25 @@ class PlaylistDetailActivity :
     private fun observeData() {
         lifecycleScope.launch {
             model.songs.collect { songs ->
-                adapter.dataset = songs
-                binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
-                updateDashboard(model.playlist.value, songs)
+                if (model.currentMode.value != UIMode.Search) {
+                    adapter.dataset = songs
+                    binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
+                    updateDashboard(model.playlist.value, songs)
+                }
             }
         }
-
         lifecycleScope.launch {
             model.currentMode.collect { mode ->
-                switchMode(model.previousMode, mode)
                 supportActionBar!!.title =
                     if (mode == UIMode.Editor)
                         "${model.playlist.value.name} [${getString(R.string.edit)}]"
                     else
                         model.playlist.value.name
+                updateSearchBarVisibility(mode == UIMode.Search)
+                adapter.notifyDataSetChanged()
+                if (mode == UIMode.Search) {
+                    model.searchSongs(model.keyword.value)
+                }
             }
         }
         lifecycleScope.launch {
@@ -139,7 +140,15 @@ class PlaylistDetailActivity :
         lifecycleScope.launch {
             model.keyword.collect { word ->
                 if (model.currentMode.value == UIMode.Search) {
-                    model.searchSongs(this@PlaylistDetailActivity, word)
+                    model.searchSongs(word)
+                }
+            }
+        }
+        lifecycleScope.launch {
+            model.searchResults.collect { songs ->
+                if (model.currentMode.value == UIMode.Search) {
+                    adapter.dataset = songs
+                    binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
                 }
             }
         }
@@ -169,42 +178,17 @@ class PlaylistDetailActivity :
                 override fun onFastScrollStop() {}
             }
         )
-        // adapter
-        adapter = PlaylistSongDisplayAdapter(this)
-    }
+        // Adapter
+        adapter = PlaylistSongDisplayAdapter(this, model)
+        // DragDropAdapter
+        binding.recyclerView.also { recyclerView ->
+            recyclerViewDragDropManager = RecyclerViewDragDropManager()
+            recyclerViewDragDropManager!!.attachRecyclerView(recyclerView)
+            wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(adapter)
 
-    private fun updateRecyclerView(editMode: Boolean) {
-
-        if (!editMode) {
-            adapter.editMode = false
-            binding.recyclerView.also { rv ->
-                rv.layoutManager = LinearLayoutManager(this)
-                rv.adapter = adapter
-            }
-            adapter.onMove = { _, _ -> true }
-            adapter.onDelete = {}
-        } else {
-            val playlist = model.playlist.value
-            adapter.editMode = true
-            binding.recyclerView.also { rv ->
-                recyclerViewDragDropManager = RecyclerViewDragDropManager()
-                recyclerViewDragDropManager!!.attachRecyclerView(rv)
-                wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(adapter)
-
-                rv.adapter = wrappedAdapter
-                rv.layoutManager = LinearLayoutManager(this)
-                rv.itemAnimator = RefactoredDefaultItemAnimator()
-            }
-            adapter.onMove = { fromPosition: Int, toPosition: Int ->
-                runBlocking {
-                    moveItemViaMediastore(this@PlaylistDetailActivity, playlist.id, fromPosition, toPosition)
-                }
-            }
-            adapter.onDelete = {
-                runBlocking {
-                    removeFromPlaylistViaMediastore(this@PlaylistDetailActivity, adapter.dataset[it], playlist.id)
-                }
-            }
+            recyclerView.adapter = wrappedAdapter
+            recyclerView.layoutManager = LinearLayoutManager(this)
+            recyclerView.itemAnimator = RefactoredDefaultItemAnimator()
         }
     }
 
@@ -304,19 +288,11 @@ class PlaylistDetailActivity :
         }
     }
 
-    private fun showSearchBar() {
+    private fun updateSearchBarVisibility(visibility: Boolean) {
         with(binding) {
-            searchBar.visibility = VISIBLE
-            searchBox.editQuery.setText(model.keyword.value)
-            updateRecyclerviewPadding(0)
-        }
-    }
-
-    private fun hideSearchBar() {
-        with(binding) {
-            searchBar.visibility = GONE
-            searchBox.editQuery.setText("")
-            updateRecyclerviewPadding(searchBar.height)
+            searchBar.visibility = if (visibility) VISIBLE else GONE
+            searchBox.editQuery.setText(if (visibility) model.keyword.value else "")
+            updateRecyclerviewPadding(if (visibility) 0 else searchBar.height)
         }
     }
 
@@ -351,52 +327,6 @@ class PlaylistDetailActivity :
     }
 
 
-    @Synchronized
-    fun switchMode(oldMode: UIMode, newMode: UIMode) {
-
-        when (oldMode) {
-            UIMode.Common -> when (newMode) {
-                UIMode.Common -> {}
-                UIMode.Editor -> {
-                    updateRecyclerView(editMode = true)
-                }
-
-                UIMode.Search -> {
-                    model.searchSongs(this, model.keyword.value)
-                    showSearchBar()
-                }
-            }
-
-            UIMode.Editor -> when (newMode) {
-                UIMode.Common -> {
-                    updateRecyclerView(editMode = false)
-                }
-
-                UIMode.Editor -> {}
-                UIMode.Search -> {
-                    updateRecyclerView(editMode = false)
-                    model.searchSongs(this, model.keyword.value)
-                    showSearchBar()
-                }
-            }
-
-            UIMode.Search -> when (newMode) {
-                UIMode.Common -> {
-                    model.fetchAllSongs(this)
-                    hideSearchBar()
-                }
-
-                UIMode.Editor -> {
-                    model.fetchAllSongs(this)
-                    updateRecyclerView(editMode = true)
-                    hideSearchBar()
-                }
-
-                UIMode.Search -> {}
-            }
-        }
-    }
-
     override fun onBackPressed() {
         when {
             model.currentMode.value == UIMode.Common -> super.onBackPressed()
@@ -426,8 +356,10 @@ class PlaylistDetailActivity :
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
-            adapter.dataset = emptyList()
-            model.refreshPlaylist(this@PlaylistDetailActivity)
+            if (model.currentMode.value != UIMode.Editor) {
+                adapter.dataset = emptyList()
+                model.refreshPlaylist(this@PlaylistDetailActivity)
+            }
         }
     }
 

@@ -8,7 +8,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import lib.activityresultcontract.IOpenDirStorageAccess
-import lib.storage.getAbsolutePath
+import lib.storage.documentProviderUriAbsolutePath
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.model.playlist.FilePlaylist
@@ -16,16 +16,15 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.util.coroutineToast
+import player.phonograph.util.file.selectDocumentUris
 import player.phonograph.util.parcelableArrayList
 import player.phonograph.util.permissions.hasStorageWritePermission
 import player.phonograph.util.reportError
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.text.ItemGroup
 import player.phonograph.util.text.buildDeletionMessage
-import util.phonograph.playlist.mediastore.deletePlaylistsViaMediastore
-import util.phonograph.playlist.saf.searchPlaylistsForDeletionViaSAF
+import player.phonograph.mechanism.playlist.mediastore.deletePlaylistsViaMediastore
 import androidx.appcompat.app.AlertDialog
-import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.DialogFragment
 import android.app.Activity
 import android.app.Dialog
@@ -35,6 +34,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.DocumentsContract
 import android.provider.Settings
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
@@ -202,33 +202,41 @@ class ClearPlaylistDialog : DialogFragment() {
          * @param activity must be [IOpenDirStorageAccess]
          * @param filePlaylists playlists to delete
          */
-        suspend fun deletePlaylistsViaSAF(
+        private suspend fun deletePlaylistsViaSAF(
             activity: Activity,
             filePlaylists: List<FilePlaylist>,
         ) {
             require(activity is IOpenDirStorageAccess)
-            val files = searchPlaylistsForDeletionViaSAF(activity, filePlaylists)
 
-            val message = buildDeletionMessage(
+            val uris = selectDocumentUris(activity, filePlaylists.map { it.associatedFilePath })
+            val warnings = buildDeletionMessage(
                 context = activity,
-                itemSize = files.size,
+                itemSize = uris.size,
                 "",
                 ItemGroup(
                     activity.resources.getQuantityString(R.plurals.item_files, filePlaylists.size, filePlaylists.size),
-                    files.mapNotNull { file ->
-                        Log.v("FileDelete", "${file.name}@${file.uri}")
-                        file.getAbsolutePath(activity) ?: file.uri.path
+                    uris.mapNotNull { uri ->
+                        val absolutePath = documentProviderUriAbsolutePath(uri, activity) ?: uri.path
+                        Log.v("FileDelete", "FilePath: $absolutePath")
+                        absolutePath
                     }
                 )
             )
             withContext(Dispatchers.Main) {
                 val dialog = AlertDialog.Builder(activity)
                     .setTitle(R.string.delete_action)
-                    .setMessage(message)
+                    .setMessage(warnings)
                     .setPositiveButton(R.string.delete_action) { dialog, _ ->
-                        deleteFile(files)
+                        val failed = deleteUri(activity, uris)
                         sentPlaylistChangedLocalBoardCast()
                         dialog.dismiss()
+                        if (failed.isNotEmpty()) {
+                            val msg = failed.fold("Failed to delete: ") { acc, uri ->
+                                val absolutePath = documentProviderUriAbsolutePath(uri, activity) ?: uri.path
+                                "$acc, $absolutePath"
+                            }
+                            reportError(Exception(msg), TAG, msg)
+                        }
                     }
                     .setNegativeButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
                     .create()
@@ -242,19 +250,20 @@ class ClearPlaylistDialog : DialogFragment() {
 
                 dialog.show()
             }
-
         }
 
-        private fun deleteFile(files: Collection<DocumentFile>) {
-            val failed = mutableListOf<DocumentFile>()
-            for (file in files) {
-                val result = file.delete()
-                if (!result) failed.add(file)
+        /**
+         * Delete Document Uri
+         * @return failed list
+         */
+        private fun deleteUri(context: Context, uris: Collection<Uri>): List<Uri> {
+            val failed = mutableListOf<Uri>()
+            for (uri in uris) {
+                val result = DocumentsContract.deleteDocument(context.contentResolver, uri)
+                if (!result) failed.add(uri)
             }
-            if (failed.isNotEmpty()) {
-                val msg = failed.fold("Failed to delete: ") { acc, s -> "$acc, ${s.uri.path}" }
-                reportError(Exception(msg), TAG, msg)
-            }
+            return failed
         }
+
     }
 }
