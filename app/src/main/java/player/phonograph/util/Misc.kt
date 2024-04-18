@@ -23,6 +23,7 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
@@ -41,6 +42,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import java.io.File
+import java.io.FileNotFoundException
+import java.io.OutputStream
 
 
 //
@@ -196,6 +199,20 @@ private val albumArtContentUri: Uri by lazy(LazyThreadSafetyMode.NONE) {
 }
 
 fun mediaStoreAlbumArtUri(albumId: Long): Uri = ContentUris.withAppendedId(albumArtContentUri, albumId)
+
+
+fun openOutputStreamSafe(context: Context, uri: Uri, mode: String): OutputStream? =
+    try {
+        @SuppressLint("Recycle")
+        val outputStream = context.contentResolver.openOutputStream(uri, mode)
+        if (outputStream == null) warning("UriUtil", "Failed to open ${uri.path}")
+        outputStream
+    } catch (e: FileNotFoundException) {
+        reportError(e, "UriUtil", "File Not found (${uri.path})")
+        null
+    }
+
+internal const val PLAYLIST_MIME_TYPE = "audio/x-mpegurl"
 
 fun shareFileIntent(context: Context, song: Song): Intent {
     return try {

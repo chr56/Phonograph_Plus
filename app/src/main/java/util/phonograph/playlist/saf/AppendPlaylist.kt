@@ -9,8 +9,10 @@ import lib.activityresultcontract.IOpenFileStorageAccess
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.util.PLAYLIST_MIME_TYPE
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.file.selectContentUri
+import player.phonograph.util.openOutputStreamSafe
 import player.phonograph.util.warning
 import util.phonograph.playlist.m3u.M3UWriter
 import android.content.Context
