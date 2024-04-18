@@ -16,7 +16,7 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.util.coroutineToast
-import player.phonograph.util.file.selectContentUris
+import player.phonograph.util.file.selectDocumentUris
 import player.phonograph.util.parcelableArrayList
 import player.phonograph.util.permissions.hasStorageWritePermission
 import player.phonograph.util.reportError
@@ -208,7 +208,7 @@ class ClearPlaylistDialog : DialogFragment() {
         ) {
             require(activity is IOpenDirStorageAccess)
 
-            val uris = selectContentUris(activity, filePlaylists.map { it.associatedFilePath })
+            val uris = selectDocumentUris(activity, filePlaylists.map { it.associatedFilePath })
             val warnings = buildDeletionMessage(
                 context = activity,
                 itemSize = uris.size,

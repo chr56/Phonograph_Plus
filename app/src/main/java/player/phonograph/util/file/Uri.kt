@@ -6,8 +6,8 @@ package player.phonograph.util.file
 
 import lib.activityresultcontract.ActivityResultContractUtil.chooseDirViaSAF
 import lib.activityresultcontract.ActivityResultContractUtil.chooseFileViaSAF
+import lib.storage.documentProviderUriAbsolutePath
 import lib.storage.externalFileBashPath
-import lib.storage.getAbsolutePath
 import lib.storage.getBasePath
 import lib.storage.getStorageId
 import player.phonograph.R
@@ -24,32 +24,24 @@ import java.io.File
 
 
 /**
- * select document tree content Uri from [filePaths] via SAF
+ * select document content Uri from [filePaths] via SAF
  * @param filePaths absolute POSIX paths of target file
- * @return document tree content Uri (`content://<EXTERNAL_STORAGE_AUTHORITY>/tree...`)
+ * @return list of document content Uri (`<EXTERNAL_STORAGE_AUTHORITY>/tree/.../child/...`)
  */
-suspend fun selectContentUris(
+suspend fun selectDocumentUris(
     context: Context,
     filePaths: List<String>,
 ): List<Uri> {
-    val treeUri = selectContentUri(context, filePaths) ?: return emptyList()
-    return filePaths.map { filePath ->
-        val documentId = run {
-            val file = File(filePath)
-            val storageId = file.getStorageId(context)
-            val basePath = file.getBasePath()
-            "$storageId:$basePath"
-        }
-        DocumentsContract.buildDocumentUriUsingTree(treeUri, documentId)
-    }
+    val treeUri = selectDocumentTreeUri(context, filePaths) ?: return emptyList()
+    return filePaths.map { filePath -> childDocumentUriWithinTree(context, treeUri, filePath) }
 }
 
 /**
  * select document tree content Uri from [filePaths] via SAF
  * @param filePaths absolute POSIX paths of target file
- * @return document tree content Uri (`content://<EXTERNAL_STORAGE_AUTHORITY>/tree...`)
+ * @return document tree content Uri (`content://<EXTERNAL_STORAGE_AUTHORITY>/tree/...`)
  */
-suspend fun selectContentUri(
+suspend fun selectDocumentTreeUri(
     context: Context,
     filePaths: List<String>,
 ): Uri? {
@@ -64,7 +56,8 @@ suspend fun selectContentUri(
 /**
  * select document content Uri of [filePath] via SAF
  * @param filePath absolute POSIX path of target file
- * @return content uri (`content://<EXTERNAL_STORAGE_AUTHORITY>/...`)
+ * @return content uri (`content://<EXTERNAL_STORAGE_AUTHORITY>/...`);
+ *          maybe a normal Document Uri or Child Document Uri inside Document Tree Uri
  */
 suspend fun selectContentUri(
     context: Context,
@@ -95,22 +88,15 @@ suspend fun selectContentUri(
 /**
  * select document content Uri of [filePath] via SAF using Intent.ACTION_OPEN_DOCUMENT_TREE
  * @param filePath absolute POSIX path of target file
- * @return content uri (`content://<EXTERNAL_STORAGE_AUTHORITY>/...`)
+ * @return content uri (`content://<EXTERNAL_STORAGE_AUTHORITY>/tree/.../child/...`)
  */
 private suspend fun selectContentUriViaDocumentTree(
     context: Context,
     filePath: String,
 ): Uri? {
     val treeUri = chooseDirViaSAF(context, filePath)
-    val documentId = run {
-        val file = File(filePath)
-        val storageId = file.getStorageId(context)
-        val basePath = file.getBasePath()
-        "$storageId:$basePath"
-    }
-    val childUri: Uri = DocumentsContract.buildDocumentUriUsingTree(treeUri, documentId)
+    val childUri: Uri = childDocumentUriWithinTree(context, treeUri, filePath)
     val segments = childUri.pathSegments
-    debug { Log.i(TAG, "Access ChildUri: $childUri") }
     return if (segments.size >= 4 && segments[3].startsWith(segments[1])) {
         childUri
     } else {
@@ -123,7 +109,7 @@ private suspend fun selectContentUriViaDocumentTree(
  * select document content Uri of [filePath] via SAF using Intent.ACTION_OPEN_DOCUMENT
  * @param filePath absolute POSIX path of target file
  * @param mimeTypes desired MIME Types
- * @return content uri (`content://<EXTERNAL_STORAGE_AUTHORITY>/...`)
+ * @return content uri (`content://<EXTERNAL_STORAGE_AUTHORITY>/document/...`)
  */
 private suspend fun selectContentUriViaDocument(
     context: Context,
@@ -131,7 +117,7 @@ private suspend fun selectContentUriViaDocument(
     mimeTypes: Array<String>,
 ): Uri? {
     val documentUri = chooseFileViaSAF(context, filePath, mimeTypes)
-    if (documentUri.getAbsolutePath(context) != filePath) {
+    if (filePath != documentProviderUriAbsolutePath(documentUri, context)) {
         notifyErrorDocumentUri(context, filePath, documentUri)
         return null
     }
@@ -139,7 +125,7 @@ private suspend fun selectContentUriViaDocument(
 }
 
 private suspend fun notifyErrorDocumentUri(context: Context, filePath: String, documentUri: Uri) {
-    val actualPath = documentUri.getAbsolutePath(context)
+    val actualPath = documentProviderUriAbsolutePath(documentUri, context)
     val message = buildString {
         append(context.getString(R.string.file_incorrect)).append('\n')
         append("Target:$filePath\n")
@@ -163,6 +149,25 @@ private suspend fun notifyErrorChildDocumentUri(context: Context, childDocumentU
     }
     coroutineToast(context, context.getString(R.string.file_incorrect))
     warning(TAG, message)
+}
+
+
+/**
+ * Use [treeUri] to build document content uri of file [filePath]
+ * @param treeUri Document Tree Uri (`content://<EXTERNAL_STORAGE_AUTHORITY>/tree/...`)
+ * @param filePath absolute POSIX paths of target file
+ * @return document content uri (`content://<EXTERNAL_STORAGE_AUTHORITY>/tree/.../child/...`)
+ */
+private fun childDocumentUriWithinTree(context: Context, treeUri: Uri, filePath: String): Uri {
+    val documentId = run {
+        val file = File(filePath)
+        val storageId = file.getStorageId(context)
+        val basePath = file.getBasePath()
+        "$storageId:$basePath"
+    }
+    val childUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, documentId)
+    debug { Log.i(TAG, "Access ChildUri: ${childUri.path}") }
+    return childUri
 }
 
 
