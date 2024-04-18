@@ -72,11 +72,10 @@ private suspend fun selectContentUriViaDocumentTree(
     val childUri: Uri = DocumentsContract.buildDocumentUriUsingTree(treeUri, documentId)
     val segments = childUri.pathSegments
     debug { Log.i(TAG, "Access ChildUri: $childUri") }
-    return if (segments[3].startsWith(segments[1])) {
+    return if (segments.size >= 4 && segments[3].startsWith(segments[1])) {
         childUri
     } else {
-        coroutineToast(context, context.getString(R.string.file_incorrect))
-        warning(TAG, "File is out of reach: $childUri")
+        notifyErrorChildDocumentUri(context, childUri)
         null
     }
 }
@@ -94,16 +93,37 @@ private suspend fun selectContentUriViaDocument(
 ): Uri? {
     val documentUri = chooseFileViaSAF(context, filePath, mimeTypes)
     if (documentUri.getAbsolutePath(context) != filePath) {
-        val actualPath = documentUri.getAbsolutePath(context)
-        val message = buildString {
-            append(context.getString(R.string.file_incorrect)).append('\n')
-            append("Target:$filePath \nActual$actualPath\n")
-        }
-        coroutineToast(context, context.getString(R.string.file_incorrect))
-        warning(TAG, message)
+        notifyErrorDocumentUri(context, filePath, documentUri)
         return null
     }
     return documentUri
+}
+
+private suspend fun notifyErrorDocumentUri(context: Context, filePath: String, documentUri: Uri) {
+    val actualPath = documentUri.getAbsolutePath(context)
+    val message = buildString {
+        append(context.getString(R.string.file_incorrect)).append('\n')
+        append("Target:$filePath\n")
+        append("Actual:$actualPath\n")
+    }
+    coroutineToast(context, context.getString(R.string.file_incorrect))
+    warning(TAG, message)
+}
+
+private suspend fun notifyErrorChildDocumentUri(context: Context, childDocumentUri: Uri) {
+    val message = buildString {
+        append(context.getString(R.string.file_incorrect)).append('\n')
+        val segments: List<String> = childDocumentUri.pathSegments
+        if (segments.size == 4) {
+            append("File is out of reach:\n")
+            append("Document: ${segments[3]}\n")
+            append("Tree    : ${segments[1]}\n")
+        } else {
+            append("File is out of reach: $childDocumentUri\n")
+        }
+    }
+    coroutineToast(context, context.getString(R.string.file_incorrect))
+    warning(TAG, message)
 }
 
 private const val TAG = "UriUtil"
