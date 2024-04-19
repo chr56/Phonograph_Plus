@@ -9,7 +9,7 @@ versionChecker = "0.51.0"
 
 ## Libraries
 
-activity = "1.8.2"
+activity = "1.9.0"
 datastore = { strictly = "1.0.0" }
 compose = "1.6.2"
 composeCompiler = "1.5.10"
