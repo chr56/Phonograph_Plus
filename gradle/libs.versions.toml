@@ -9,19 +9,20 @@ versionChecker = "0.51.0"
 
 ## Libraries
 
-activity = "1.8.2"
+activity = "1.9.0"
 datastore = { strictly = "1.0.0" }
-compose = "1.6.2"
+compose = "1.6.6"
 composeCompiler = "1.5.10"
 composeSetting = "1.0.3"
-coil = "2.5.0"
+coil = "2.6.0"
+koin = "3.5.6"
 materialDialogs = "3.3.0"
-materialTools = "0.2.0"
+materialTools = "0.2.1"
 room = "2.6.1"
 
 [libraries]
 
-androidx-core = "androidx.core:core-ktx:1.12.0"
+androidx-core = "androidx.core:core-ktx:1.13.0"
 androidx-appcompat = "androidx.appcompat:appcompat:1.6.1"
 androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
 androidx-fragment = "androidx.fragment:fragment-ktx:1.6.2"
@@ -76,13 +77,13 @@ compose-activity = { group = "androidx.activity", name = "activity-compose", ver
 #
 
 okhttp3 = "com.squareup.okhttp3:okhttp:4.12.0"
-retrofit2 = "com.squareup.retrofit2:retrofit:2.9.0"
+retrofit2 = "com.squareup.retrofit2:retrofit:2.11.0"
 kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3"
 kotlinx-serialization-ktoml = "com.akuleshov7:ktoml-core:0.5.0"
 kotlinx-serialization-kaml = "com.charleskorn.kaml:kaml:0.57.0"
 coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt:coil-compose-base", version.ref = "coil" }
-koin = "io.insert-koin:koin-android:3.5.3"
+koin = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 kotlinx-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0"
 
 #
