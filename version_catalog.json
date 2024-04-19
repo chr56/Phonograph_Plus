@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "stable",
+      "versionName": "1.6.1",
+      "versionCode": 1061,
+      "date": 1713450000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.6.1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 向某播放列表中重复添加相同曲目后崩溃</li><li>修复 删除播放列表中的曲目会删除所有相同歌曲</li><li>修复 在选择多个项目后可能随机崩溃</li><li>修改 改进播放列表详情的菜单项</li><li>改进 使用 SAF 修改播放列表时的，简化用户交互</li><li>改进 加快删除多个播放列表的速度</li><li>翻译 更新波兰语(cooky)</li><li>翻译 更新西班牙语(Dderfla_53)</li><li>开发 更新 AGP 至 8.3.3</li></ol>",
+        "en": "<ol><li>Fix: crash after adding a same track multiple times in a same playlist</li><li>Fix: removing a track in a playlist would remove all same songs</li><li>Fix: possible random crash after selecting multiple items</li><li>Modify: reorder menu items of Playlist Detail</li><li>Improve: simplify user interactions when modifying a playlist via SAF</li><li>Improve: speed of deleting multiple playlists</li><li>Translation: update Polish (by cooky)</li><li>Translation: update Spanish (by Dderfla_53)</li><li>Development: upgrade AGP to 8.3.3</li></ol>"
+      }
+    },
+    {
+      "channel": "stable",
       "versionName": "1.6.0",
       "versionCode": 1060,
       "date": 1712825000,
@@ -30,22 +46,6 @@
       "releaseNote": {
         "zh-cn": "见v1.6.0",
         "en": "See v1.6.0"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "1.5.2",
-      "versionCode": 1052,
-      "date": 1709790001,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.5.2"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 某些设备上，只要曾强行停止后在播放时崩溃</li><li>翻译 更新德语 (jande75)</li><li>开发 更新依赖，更新依赖，更新 Gradle 至 8.6，优化发版流程</li><li>其他 发布时添加校验和</li></ol>",
-        "en": "<ol><li>Fix: crash on some devices when playing as long as force-stop once before</li><li>Translation: update German (by jande75)</li><li>Development: update dependencies, upgrade Gradle to 8.6, optimize release process</li><li>Other: add checksums for release artifacts</li></ol>"
       }
     },
     {
