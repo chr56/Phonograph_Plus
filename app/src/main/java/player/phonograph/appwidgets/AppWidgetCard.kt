@@ -5,7 +5,6 @@ import player.phonograph.R
 import player.phonograph.appwidgets.Util.createRoundedBitmap
 import player.phonograph.appwidgets.base.BaseAppWidget
 import player.phonograph.coil.target.PaletteTargetBuilder
-import player.phonograph.service.MusicService
 import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
 import android.graphics.Bitmap
@@ -23,9 +22,8 @@ class AppWidgetCard : BaseAppWidget() {
     /**
      * Update all active widget instances by pushing changes
      */
-    override fun performUpdate(service: MusicService, appWidgetIds: IntArray?) {
-        val appWidgetView = RemoteViews(service.packageName, R.layout.app_widget_card)
-        val isPlaying = service.isPlaying
+    override fun performUpdate(context: Context, isPlaying: Boolean, appWidgetIds: IntArray?) {
+        val appWidgetView = RemoteViews(context.packageName, R.layout.app_widget_card)
         val song = queueManager.currentSong
 
         // Set the titles and artwork
@@ -37,25 +35,25 @@ class AppWidgetCard : BaseAppWidget() {
             appWidgetView.setTextViewText(R.id.text, getSongArtistAndAlbum(song))
         }
 
-        val color = service.secondaryTextColor(false)
-        appWidgetView.bindDrawable(service, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
-        appWidgetView.bindDrawable(service, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
-        appWidgetView.bindDrawable(service, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
+        val color = context.secondaryTextColor(false)
+        appWidgetView.bindDrawable(context, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
+        appWidgetView.bindDrawable(context, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
+        appWidgetView.bindDrawable(context, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
 
         // Link actions buttons to intents
-        setupDefaultPhonographWidgetButtons(service, appWidgetView)
-        setupLaunchingClick(service, appWidgetView)
-        if (imageSize == 0) imageSize = service.resources.getDimensionPixelSize(
+        setupDefaultPhonographWidgetButtons(context, appWidgetView)
+        setupLaunchingClick(context, appWidgetView)
+        if (imageSize == 0) imageSize = context.resources.getDimensionPixelSize(
             R.dimen.app_widget_card_image_size
         )
-        if (cardRadius == 0f) cardRadius = service.resources.getDimension(
+        if (cardRadius == 0f) cardRadius = context.resources.getDimension(
             R.dimen.app_widget_card_radius
         )
-        val fallbackColor = service.secondaryTextColor(true)
+        val fallbackColor = context.secondaryTextColor(true)
 
         // Load the album cover async and push the update on completion
         loadImage(
-            context = service.applicationContext,
+            context = context.applicationContext,
             song = song,
             widgetImageSize = imageSize,
             target = PaletteTargetBuilder(fallbackColor)
@@ -63,12 +61,12 @@ class AppWidgetCard : BaseAppWidget() {
                     appWidgetView.setImageViewResource(R.id.image, R.drawable.default_album_art)
                 }
                 .onResourceReady { result, paletteColor ->
-                    updateWidget(appWidgetView, service, isPlaying, result.toBitmapOrNull(), paletteColor)
-                    pushUpdate(service, appWidgetIds, appWidgetView)
+                    updateWidget(appWidgetView, context, isPlaying, result.toBitmapOrNull(), paletteColor)
+                    pushUpdate(context, appWidgetIds, appWidgetView)
                 }
                 .onFail {
-                    updateWidget(appWidgetView, service, isPlaying, null, fallbackColor)
-                    pushUpdate(service, appWidgetIds, appWidgetView)
+                    updateWidget(appWidgetView, context, isPlaying, null, fallbackColor)
+                    pushUpdate(context, appWidgetIds, appWidgetView)
                 }
                 .build()
         )
@@ -76,20 +74,20 @@ class AppWidgetCard : BaseAppWidget() {
 
     private fun updateWidget(
         appWidgetView: RemoteViews,
-        service: Context,
+        context: Context,
         isPlaying: Boolean,
         bitmap: Bitmap?,
         color: Int,
     ) {
 
-        appWidgetView.bindDrawable(service, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
-        appWidgetView.bindDrawable(service, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
-        appWidgetView.bindDrawable(service, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
+        appWidgetView.bindDrawable(context, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
+        appWidgetView.bindDrawable(context, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
+        appWidgetView.bindDrawable(context, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
 
         appWidgetView.setImageViewBitmap(
             R.id.image,
             createRoundedBitmap(
-                getAlbumArtDrawable(service.resources, bitmap),
+                getAlbumArtDrawable(context.resources, bitmap),
                 imageSize,
                 imageSize,
                 cardRadius,

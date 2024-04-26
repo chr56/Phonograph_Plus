@@ -5,7 +5,6 @@ import coil.target.Target
 import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.appwidgets.base.BaseAppWidget
-import player.phonograph.service.MusicService
 import player.phonograph.util.ui.getScreenSize
 import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
@@ -27,9 +26,8 @@ class AppWidgetBig : BaseAppWidget() {
     /**
      * Update all active widget instances by pushing changes
      */
-    override fun performUpdate(service: MusicService, appWidgetIds: IntArray?) {
-        val appWidgetView = RemoteViews(service.packageName, R.layout.app_widget_big)
-        val isPlaying = service.isPlaying
+    override fun performUpdate(context: Context, isPlaying: Boolean, appWidgetIds: IntArray?) {
+        val appWidgetView = RemoteViews(context.packageName, R.layout.app_widget_big)
         val song = queueManager.currentSong
 
         // Set the titles and artwork
@@ -41,20 +39,20 @@ class AppWidgetBig : BaseAppWidget() {
             appWidgetView.setTextViewText(R.id.text, getSongArtistAndAlbum(song))
         }
 
-        val color = service.primaryTextColor(true)
-        appWidgetView.bindDrawable(service, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
-        appWidgetView.bindDrawable(service, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
-        appWidgetView.bindDrawable(service, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
+        val color = context.primaryTextColor(true)
+        appWidgetView.bindDrawable(context, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
+        appWidgetView.bindDrawable(context, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
+        appWidgetView.bindDrawable(context, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
 
         // Link actions buttons to intents
-        setupDefaultPhonographWidgetButtons(service, appWidgetView)
-        setupLaunchingClick(service, appWidgetView)
+        setupDefaultPhonographWidgetButtons(context, appWidgetView)
+        setupLaunchingClick(context, appWidgetView)
 
         // Load the album cover async and push the update on completion
-        val p = service.getScreenSize()
+        val p = context.getScreenSize()
         val widgetImageSize = p.x.coerceAtMost(p.y)
         loadImage(
-            context = service.applicationContext,
+            context = context.applicationContext,
             song = song,
             widgetImageSize = widgetImageSize,
             target =
@@ -78,7 +76,7 @@ class AppWidgetBig : BaseAppWidget() {
                     } else {
                         appWidgetView.setImageViewBitmap(R.id.image, bitmap)
                     }
-                    pushUpdate(service.applicationContext, appWidgetIds, appWidgetView)
+                    pushUpdate(context.applicationContext, appWidgetIds, appWidgetView)
                 }
             }
         )

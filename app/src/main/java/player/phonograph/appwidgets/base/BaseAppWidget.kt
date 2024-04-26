@@ -62,28 +62,21 @@ abstract class BaseAppWidget : AppWidgetProvider() {
     }
 
     /**
-     * Handle a change notification coming over from
-     * [MusicService]
+     * Handle a change notification coming over from [MusicService]
      */
-    fun notifyChange(service: MusicService, what: String) {
-        if (hasInstances(service)) {
+    fun notifyChange(context: Context, isPlaying: Boolean, what: String) {
+        val hasInstances = AppWidgetManager.getInstance(context)
+            .getAppWidgetIds(ComponentName(context, javaClass)).isNotEmpty()
+        if (hasInstances) { // update only having widgets
             if (MusicServiceMsgConst.META_CHANGED == what || MusicServiceMsgConst.PLAY_STATE_CHANGED == what) {
-                performUpdate(service, null)
+                performUpdate(context, isPlaying, null)
             }
         }
     }
 
     /**
-     * Check against [AppWidgetManager] if there are any instances of this
-     * widget.
+     * Update App Widget with [AppWidgetManager]
      */
-    protected fun hasInstances(context: Context): Boolean {
-        val mAppWidgetIds =
-            AppWidgetManager.getInstance(context)
-                .getAppWidgetIds(ComponentName(context, javaClass))
-        return mAppWidgetIds.isNotEmpty()
-    }
-
     protected fun pushUpdate(context: Context, appWidgetIds: IntArray?, views: RemoteViews) {
         val appWidgetManager = AppWidgetManager.getInstance(context)
         if (appWidgetIds != null) {
@@ -93,7 +86,10 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         }
     }
 
-    abstract fun performUpdate(service: MusicService, appWidgetIds: IntArray?)
+    /**
+     * actual actions in updating
+     */
+    abstract fun performUpdate(context: Context, isPlaying: Boolean, appWidgetIds: IntArray?)
 
     private fun setupDefaultPhonographWidgetAppearance(context: Context, view: RemoteViews) {
 
