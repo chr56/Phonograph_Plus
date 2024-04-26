@@ -6,6 +6,7 @@ package player.phonograph.notification
 
 import android.content.Context
 import player.phonograph.App
+import player.phonograph.model.version.ReleaseChannel
 import player.phonograph.model.version.VersionCatalog
 
 object UpgradeNotification {
@@ -13,7 +14,7 @@ object UpgradeNotification {
     private fun getImpl(context: Context): UpgradeNotificationImpl =
         impl ?: UpgradeNotificationImpl(context).also { impl = it }
 
-    fun sendUpgradeNotification(versionCatalog: VersionCatalog, channel: String, context: Context = App.instance) {
+    fun sendUpgradeNotification(versionCatalog: VersionCatalog, channel: ReleaseChannel, context: Context = App.instance) {
         getImpl(context).sendUpgradeNotification(context, versionCatalog, channel)
     }
 }

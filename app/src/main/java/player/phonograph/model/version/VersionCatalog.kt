@@ -4,15 +4,14 @@
 
 package player.phonograph.model.version
 
+import player.phonograph.BuildConfig
+import androidx.annotation.Keep
 import android.content.res.Resources
 import android.os.Parcelable
 import android.text.Html
 import android.text.Spanned
-import androidx.annotation.Keep
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
-import player.phonograph.BuildConfig
-import java.util.*
 
 
 @Keep
@@ -22,7 +21,7 @@ class VersionCatalog(
     val versions: List<Version> = emptyList(),
 ) : Parcelable {
     val channelVersions: List<Version>
-        get() = versions.filter { version -> version.channel == currentChannel }
+        get() = versions.filter { version -> version.channel == ReleaseChannel.currentChannel.determiner }
 
     fun <R : Comparable<R>> currentLatestChannelVersionBy(selector: (Version) -> R): Version =
         with(channelVersions) {
@@ -34,7 +33,7 @@ class VersionCatalog(
 @Parcelize
 @kotlinx.serialization.Serializable
 data class Version(
-    val channel: String = currentChannel,
+    val channel: String = ReleaseChannel.currentChannel.determiner,
     val link: List<Link> = emptyList(),
     val releaseNote: ReleaseNote = ReleaseNote(),
     val versionName: String = "unknown",
@@ -65,11 +64,21 @@ data class Version(
     }
 }
 
+enum class ReleaseChannel(val determiner: String) {
+    Preview("preview"),
+    Stable("stable"),
+    LTS("lts"),
+    ;
 
-val currentChannel: String by lazy {
-    val flavor = BuildConfig.FLAVOR.lowercase()
-    when {
-        flavor.contains("preview") -> "preview"
-        else -> "stable"
+    companion object {
+        val currentChannel: ReleaseChannel
+            get() {
+                val flavor = BuildConfig.FLAVOR.lowercase()
+                return when {
+                    flavor.contains(Preview.determiner) -> Preview
+                    flavor.contains(Stable.determiner)  -> Stable
+                    else                                -> Stable
+                }
+            }
     }
 }

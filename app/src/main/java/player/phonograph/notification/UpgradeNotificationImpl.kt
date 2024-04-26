@@ -15,6 +15,7 @@ import androidx.core.app.NotificationCompat
 import player.phonograph.R
 import player.phonograph.UPGRADABLE
 import player.phonograph.VERSION_INFO
+import player.phonograph.model.version.ReleaseChannel
 import player.phonograph.model.version.Version
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.ui.activities.MainActivity
@@ -26,9 +27,9 @@ class UpgradeNotificationImpl(context: Context) : AbsNotificationImpl() {
     override val channelName: CharSequence = context.getString(R.string.upgrade_notification_name)
     override val importance: Int = NotificationManager.IMPORTANCE_HIGH
 
-    fun sendUpgradeNotification(context: Context, versionCatalog: VersionCatalog, channel: String) {
+    fun sendUpgradeNotification(context: Context, versionCatalog: VersionCatalog, channel: ReleaseChannel) {
         execute(context) {
-            val version = versionCatalog.versions.filter { it.channel == channel }.maxByOrNull { it.versionCode } ?: return
+            val version = versionCatalog.versions.filter { it.channel == channel.determiner }.maxByOrNull { it.versionCode } ?: return
             val action = Intent(context, MainActivity::class.java).apply {
                 this.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                 this.putExtra(UPGRADABLE, true)

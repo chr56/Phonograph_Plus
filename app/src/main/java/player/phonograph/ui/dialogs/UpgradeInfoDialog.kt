@@ -15,6 +15,7 @@ import player.phonograph.UpdateConfig.DOMAIN_GITHUB
 import player.phonograph.UpdateConfig.DOMAIN_TG_LINK
 import player.phonograph.UpdateConfig.GITHUB_REPO
 import player.phonograph.mechanism.canAccessGitHub
+import player.phonograph.model.version.ReleaseChannel
 import player.phonograph.model.version.Version
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
@@ -188,9 +189,9 @@ private fun VersionTitle(version: Version, modifier: Modifier = Modifier) {
 private fun channelColor(channel: String) =
     Color(
         when (channel.lowercase()) {
-            "stable" -> MaterialColor.Blue._A200.asColor
-            "preview" -> MaterialColor.DeepOrange._A200.asColor
-            "lts" -> MaterialColor.Lime._A700.asColor
+            ReleaseChannel.Stable.determiner -> MaterialColor.Blue._A200.asColor
+            ReleaseChannel.Preview.determiner -> MaterialColor.DeepOrange._A200.asColor
+            ReleaseChannel.LTS.determiner -> MaterialColor.Lime._A700.asColor
             else -> MaterialColor.BlueGrey._700.asColor
         }
     )

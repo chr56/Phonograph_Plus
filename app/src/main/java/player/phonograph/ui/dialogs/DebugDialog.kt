@@ -6,8 +6,8 @@ package player.phonograph.ui.dialogs
 
 import player.phonograph.App
 import player.phonograph.mechanism.Update
+import player.phonograph.model.version.ReleaseChannel
 import player.phonograph.model.version.VersionCatalog
-import player.phonograph.model.version.currentChannel
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.util.coroutineToast
@@ -58,7 +58,7 @@ class DebugDialog : DialogFragment() {
         "Check Upgrade (Notification)" to {
             CoroutineScope(Dispatchers.Unconfined).launch {
                 Update.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
-                    UpgradeNotification.sendUpgradeNotification(versionCatalog, currentChannel)
+                    UpgradeNotification.sendUpgradeNotification(versionCatalog, ReleaseChannel.currentChannel)
                     if (!upgradable) {
                         coroutineToast(App.instance, "not upgradable")
                     }

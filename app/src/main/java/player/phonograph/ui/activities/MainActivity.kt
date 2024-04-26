@@ -11,7 +11,6 @@ import mt.tint.viewtint.setItemIconColors
 import mt.tint.viewtint.setItemTextColors
 import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
-import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.UPGRADABLE
 import player.phonograph.VERSION_INFO
@@ -23,8 +22,8 @@ import player.phonograph.mechanism.Update
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.PageConfig
 import player.phonograph.model.infoString
+import player.phonograph.model.version.ReleaseChannel
 import player.phonograph.model.version.VersionCatalog
-import player.phonograph.model.version.currentChannel
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
@@ -268,7 +267,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         lifecycleScope.launch(SupervisorJob()) {
             Update.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
                 if (upgradable) {
-                    UpgradeNotification.sendUpgradeNotification(versionCatalog, currentChannel)
+                    UpgradeNotification.sendUpgradeNotification(versionCatalog, ReleaseChannel.currentChannel)
                 }
             }
             Setting(this@MainActivity)[Keys.lastCheckUpgradeTimeStamp].data = System.currentTimeMillis()
