@@ -23,6 +23,8 @@ class AppWidgetBig : BaseAppWidget() {
 
     override val name: String = NAME
 
+    override val darkBackground: Boolean get() = true
+
     /**
      * Update all active widget instances by pushing changes
      */

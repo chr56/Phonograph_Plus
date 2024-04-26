@@ -18,6 +18,7 @@ class AppWidgetCard : BaseAppWidget() {
 
     override val name: String = NAME
 
+    override val darkBackground: Boolean get() = false
 
     /**
      * Update all active widget instances by pushing changes

@@ -39,6 +39,8 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
     protected abstract val name: String
 
+    protected abstract val darkBackground: Boolean
+
     /**
      * @see android.appwidget.AppWidgetProvider.onUpdate
      */
@@ -46,7 +48,9 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
         val appWidgetView = RemoteViews(context.packageName, layoutId)
 
-        setupDefaultPhonographWidgetAppearance(context, appWidgetView)
+        val textColor = context.primaryTextColor(darkBackground)
+
+        setupDefaultPhonographWidgetAppearance(context, appWidgetView, textColor)
         setupDefaultPhonographWidgetButtons(context, appWidgetView)
         setupLaunchingClick(context, appWidgetView)
 
@@ -91,9 +95,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
      */
     abstract fun performUpdate(context: Context, isPlaying: Boolean, appWidgetIds: IntArray?)
 
-    private fun setupDefaultPhonographWidgetAppearance(context: Context, view: RemoteViews) {
-
-        val textColor = context.primaryTextColor(true)
+    private fun setupDefaultPhonographWidgetAppearance(context: Context, view: RemoteViews, @ColorInt textColor: Int) {
 
         view.bindDrawable(context, R.id.button_next, R.drawable.ic_skip_next_white_24dp, textColor)
         view.bindDrawable(context, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, textColor)
