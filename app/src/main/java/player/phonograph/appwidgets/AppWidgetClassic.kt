@@ -51,7 +51,6 @@ class AppWidgetClassic : BaseAppWidget() {
     override fun performUpdate(service: MusicService, appWidgetIds: IntArray?) {
         val appWidgetView = RemoteViews(service.packageName, R.layout.app_widget_classic)
         val isPlaying = service.isPlaying
-        val queueManager = service.get<QueueManager>()
         val song = queueManager.currentSong
 
         // Set the titles and artwork
