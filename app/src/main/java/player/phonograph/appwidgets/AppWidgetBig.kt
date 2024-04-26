@@ -41,18 +41,13 @@ class AppWidgetBig : BaseAppWidget() {
      */
     override fun performUpdate(context: Context, isPlaying: Boolean, appWidgetIds: IntArray?) {
         isServiceStarted = true
-        val color = context.primaryTextColor(true)
-        val appWidgetView = RemoteViews(context.packageName, R.layout.app_widget_big)
+        val appWidgetView = RemoteViews(context.packageName, layoutId)
         val song = queueManager.currentSong
+        val color = context.primaryTextColor(darkBackground)
 
-        // Set the titles and artwork
-        updateText(context, appWidgetView, song)
-
-        appWidgetView.bindDrawable(context, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
-
-        // Link actions buttons to intents
         setupDefaultPhonographWidgetButtons(context, appWidgetView)
         setupLaunchingClick(context, appWidgetView)
+        updateSong(context, appWidgetView, song, isPlaying, color)
 
         // Load the album cover async and push the update on completion
         val p = context.getScreenSize()

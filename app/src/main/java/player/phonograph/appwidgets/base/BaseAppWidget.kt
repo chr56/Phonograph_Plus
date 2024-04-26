@@ -5,6 +5,7 @@ import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.target.Target
 import mt.util.color.primaryTextColor
+import mt.util.color.secondaryTextColor
 import org.koin.core.context.GlobalContext
 import player.phonograph.MusicServiceMsgConst
 import player.phonograph.R
@@ -54,6 +55,8 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         setupDefaultPhonographWidgetButtons(context, appWidgetView)
         setupLaunchingClick(context, appWidgetView)
 
+        updateSong(context, appWidgetView, queueManager.currentSong, false, textColor)
+
         pushUpdate(context, appWidgetIds, appWidgetView)
 
         context.sendBroadcast(
@@ -96,6 +99,16 @@ abstract class BaseAppWidget : AppWidgetProvider() {
     abstract fun performUpdate(context: Context, isPlaying: Boolean, appWidgetIds: IntArray?)
 
     abstract fun updateText(context: Context, view: RemoteViews, song: Song)
+
+    protected fun updateSong(
+        context: Context, view: RemoteViews,
+        song: Song, isPlaying: Boolean,@ColorInt color: Int,
+    ) {
+        updateText(context, view, song)
+        view.bindDrawable(context, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
+        view.bindDrawable(context, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
+        view.bindDrawable(context, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
+    }
 
     private fun setupDefaultPhonographWidgetAppearance(context: Context, view: RemoteViews, @ColorInt textColor: Int) {
 

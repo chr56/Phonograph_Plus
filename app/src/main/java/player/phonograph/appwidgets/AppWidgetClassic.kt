@@ -38,17 +38,13 @@ class AppWidgetClassic : BaseAppWidget() {
      */
     override fun performUpdate(context: Context, isPlaying: Boolean, appWidgetIds: IntArray?) {
         isServiceStarted = true
-        val appWidgetView = RemoteViews(context.packageName, R.layout.app_widget_classic)
+        val appWidgetView = RemoteViews(context.packageName, layoutId)
         val song = queueManager.currentSong
-
-        // Set the titles and artwork
         val color = context.secondaryTextColor(false)
-        updateText(context, appWidgetView, song)
-        appWidgetView.bindDrawable(context, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
 
-        // Link actions buttons to intents
         setupDefaultPhonographWidgetButtons(context, appWidgetView)
         setupLaunchingClick(context, appWidgetView)
+        updateSong(context, appWidgetView, song, isPlaying, color)
 
         if (imageSize == 0) imageSize = context.resources.getDimensionPixelSize(
             R.dimen.app_widget_classic_image_size
