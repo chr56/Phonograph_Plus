@@ -1,9 +1,6 @@
 package player.phonograph.appwidgets
 
 
-import coil.Coil
-import coil.request.Disposable
-import coil.request.ImageRequest
 import coil.target.Target
 import mt.util.color.primaryTextColor
 import player.phonograph.R
@@ -26,8 +23,6 @@ import android.widget.RemoteViews
 class AppWidgetBig : BaseAppWidget() {
 
     override val layoutId: Int get() = R.layout.app_widget_big
-
-    private var task: Disposable? = null
 
     /**
      * Update all active widget instances by pushing changes
@@ -85,50 +80,42 @@ class AppWidgetBig : BaseAppWidget() {
         // Load the album cover async and push the update on completion
         val p = service.getScreenSize()
         val widgetImageSize = p.x.coerceAtMost(p.y)
-        uiHandler.post {
-            val appContext = service.applicationContext
-            val loader = Coil.imageLoader(appContext)
-            task?.dispose() // cancel last
-            task = loader.enqueue(
-                ImageRequest.Builder(appContext)
-                    .data(song)
-                    .size(widgetImageSize, widgetImageSize)
-                    .target(
-                        object : Target {
+        loadImage(
+            context = service.applicationContext,
+            song = song,
+            widgetImageSize = widgetImageSize,
+            target =
+            object : Target {
+                val mainHandler: Handler = Handler(Looper.getMainLooper())
+                override fun onStart(placeholder: Drawable?) {
+                    mainHandler.post { onUpdate(null) }
+                }
 
-                            override fun onStart(placeholder: Drawable?) {
-                                appWidgetView.setImageViewResource(R.id.image, R.drawable.default_album_art)
-                            }
+                override fun onError(error: Drawable?) {
+                    mainHandler.post { onUpdate(null) }
+                }
 
-                            override fun onSuccess(result: Drawable) {
-                                update(result.toBitmapOrNull())
-                            }
+                override fun onSuccess(result: Drawable) {
+                    mainHandler.post { onUpdate(result.toBitmapOrNull()) }
+                }
 
-                            override fun onError(error: Drawable?) {
-                                update(null)
-                            }
+                private fun onUpdate(bitmap: Bitmap?) {
+                    if (bitmap == null) {
+                        appWidgetView.setImageViewResource(R.id.image, R.drawable.default_album_art)
+                    } else {
+                        appWidgetView.setImageViewBitmap(R.id.image, bitmap)
+                    }
+                    pushUpdate(service.applicationContext, appWidgetIds, appWidgetView)
+                }
+            }
+        )
 
-                            private fun update(bitmap: Bitmap?) {
-                                if (bitmap == null) {
-                                    appWidgetView
-                                        .setImageViewResource(R.id.image, R.drawable.default_album_art)
-                                } else {
-                                    appWidgetView.setImageViewBitmap(R.id.image, bitmap)
-                                }
-                                pushUpdate(appContext, appWidgetIds, appWidgetView)
-                            }
-                        }
-                    )
-                    .build()
-            )
-        }
+
     }
 
     override fun setupLaunchingClick(context: Context, view: RemoteViews) {
         view.setOnClickPendingIntent(R.id.clickable_area, launchPendingIntent(context))
     }
-
-    private val uiHandler: Handler by lazy { Handler(Looper.getMainLooper()) }
 
     companion object {
         const val NAME = "app_widget_big"

@@ -1,5 +1,9 @@
 package player.phonograph.appwidgets.base
 
+import coil.Coil
+import coil.request.Disposable
+import coil.request.ImageRequest
+import coil.target.Target
 import mt.util.color.primaryTextColor
 import org.koin.core.context.GlobalContext
 import player.phonograph.MusicServiceMsgConst
@@ -159,6 +163,24 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
     protected val queueManager: QueueManager get() = GlobalContext.get().get()
 
+
+    private var task: Disposable? = null
+    protected fun loadImage(
+        context: Context,
+        song: Song,
+        widgetImageSize: Int,
+        target: Target,
+    ) {
+        val loader = Coil.imageLoader(context)
+        task?.dispose()
+        task = loader.enqueue(
+            ImageRequest.Builder(context)
+                .data(song)
+                .size(widgetImageSize)
+                .target(target)
+                .build()
+        )
+    }
 
     companion object {
         const val NAME = "app_widget"

@@ -1,8 +1,5 @@
 package player.phonograph.appwidgets
 
-import coil.Coil
-import coil.request.Disposable
-import coil.request.ImageRequest
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.appwidgets.Util.createRoundedBitmap
@@ -15,8 +12,6 @@ import player.phonograph.util.ui.BitmapUtil
 import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
 import android.graphics.Bitmap
-import android.os.Handler
-import android.os.Looper
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
@@ -24,8 +19,6 @@ import android.widget.RemoteViews
 class AppWidgetCard : BaseAppWidget() {
 
     override val layoutId: Int get() = R.layout.app_widget_card
-
-    private var task: Disposable? = null
 
     /**
      * Update all active widget instances by pushing changes
@@ -82,32 +75,24 @@ class AppWidgetCard : BaseAppWidget() {
         val fallbackColor = service.secondaryTextColor(true)
 
         // Load the album cover async and push the update on completion
-        uiHandler.post {
-            val appContext = service.applicationContext
-            val loader = Coil.imageLoader(appContext)
-            task?.dispose() // cancel last
-            task = loader.enqueue(
-                ImageRequest.Builder(appContext)
-                    .data(song)
-                    .size(imageSize, imageSize)
-                    .target(
-                        PaletteTargetBuilder(fallbackColor)
-                            .onStart {
-                                appWidgetView.setImageViewResource(R.id.image, R.drawable.default_album_art)
-                            }
-                            .onResourceReady { result, paletteColor ->
-                                updateWidget(appWidgetView, service, isPlaying, result.toBitmapOrNull(), paletteColor)
-                                pushUpdate(service, appWidgetIds, appWidgetView)
-                            }
-                            .onFail {
-                                updateWidget(appWidgetView, service, isPlaying, null, fallbackColor)
-                                pushUpdate(service, appWidgetIds, appWidgetView)
-                            }
-                            .build()
-                    )
-                    .build()
-            )
-        }
+        loadImage(
+            context = service.applicationContext,
+            song = song,
+            widgetImageSize = imageSize,
+            target = PaletteTargetBuilder(fallbackColor)
+                .onStart {
+                    appWidgetView.setImageViewResource(R.id.image, R.drawable.default_album_art)
+                }
+                .onResourceReady { result, paletteColor ->
+                    updateWidget(appWidgetView, service, isPlaying, result.toBitmapOrNull(), paletteColor)
+                    pushUpdate(service, appWidgetIds, appWidgetView)
+                }
+                .onFail {
+                    updateWidget(appWidgetView, service, isPlaying, null, fallbackColor)
+                    pushUpdate(service, appWidgetIds, appWidgetView)
+                }
+                .build()
+        )
     }
 
     private fun updateWidget(
@@ -171,9 +156,5 @@ class AppWidgetCard : BaseAppWidget() {
 
         private fun playPauseRes(isPlaying: Boolean) =
             if (isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp
-
-        private val uiHandler: Handler by lazy { Handler(Looper.getMainLooper()) }
-
-
     }
 }
