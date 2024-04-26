@@ -29,6 +29,7 @@ class AppWidgetBig : BaseAppWidget() {
      * Update all active widget instances by pushing changes
      */
     override fun performUpdate(context: Context, isPlaying: Boolean, appWidgetIds: IntArray?) {
+        isServiceStarted = true
         val appWidgetView = RemoteViews(context.packageName, R.layout.app_widget_big)
         val song = queueManager.currentSong
 
@@ -87,7 +88,7 @@ class AppWidgetBig : BaseAppWidget() {
     }
 
     override fun setupLaunchingClick(context: Context, view: RemoteViews) {
-        view.setOnClickPendingIntent(R.id.clickable_area, launchPendingIntent(context))
+        view.setOnClickPendingIntent(R.id.clickable_area, clickingPendingIntent(context))
     }
 
     companion object {

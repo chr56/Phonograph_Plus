@@ -144,16 +144,20 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
 
     /**
-     * PendingIntent for launching [LauncherActivity]
+     * PendingIntent for launching [MusicService] or [LauncherActivity]
      */
-    protected fun launchPendingIntent(context: Context): PendingIntent = PendingIntent.getActivity(
-        context,
-        0,
-        Intent(context, LauncherActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        },
-        PendingIntent.FLAG_IMMUTABLE
-    )
+    protected fun clickingPendingIntent(context: Context): PendingIntent =
+        if (isServiceStarted)
+            PendingIntent.getActivity(
+                context,
+                0,
+                Intent(context, LauncherActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                },
+                PendingIntent.FLAG_IMMUTABLE
+            )
+        else
+            buildPendingIntent(context, "", ComponentName(context, MusicService::class.java))
 
     protected fun getAlbumArtDrawable(resources: Resources?, bitmap: Bitmap?) =
         bitmap?.let { BitmapDrawable(resources, it) }
@@ -185,4 +189,6 @@ abstract class BaseAppWidget : AppWidgetProvider() {
                 .build()
         )
     }
+
+    protected var isServiceStarted: Boolean = false
 }
