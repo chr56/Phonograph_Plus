@@ -24,21 +24,8 @@ import android.widget.RemoteViews
 
 
 class AppWidgetBig : BaseAppWidget() {
-    /**
-     * Initialize given widgets to default state, where we launch Music on
-     * default click and hide actions if service not running.
-     */
-    override fun defaultAppWidget(context: Context, appWidgetIds: IntArray) {
-        val appWidgetView = RemoteViews(context.packageName, R.layout.app_widget_big)
 
-        setupDefaultPhonographWidgetAppearance(context, appWidgetView)
-        setupDefaultPhonographWidgetButtons(context, appWidgetView)
-
-        setupAdditionalWidgetAppearance(context, appWidgetView)
-        setupAdditionalWidgetButtons(context, appWidgetView)
-
-        pushUpdate(context, appWidgetIds, appWidgetView)
-    }
+    override val layoutId: Int get() = R.layout.app_widget_big
 
     private var task: Disposable? = null
 
@@ -66,7 +53,7 @@ class AppWidgetBig : BaseAppWidget() {
             BitmapUtil.createBitmap(
                 service.createTintedDrawable(
                     playPauseRes,
-                    service.primaryTextColor( true)
+                    service.primaryTextColor(true)
                 )!!
             )
         )
@@ -77,7 +64,7 @@ class AppWidgetBig : BaseAppWidget() {
             BitmapUtil.createBitmap(
                 service.createTintedDrawable(
                     R.drawable.ic_skip_next_white_24dp,
-                    service.primaryTextColor( true)
+                    service.primaryTextColor(true)
                 )!!
             )
         )
@@ -86,14 +73,14 @@ class AppWidgetBig : BaseAppWidget() {
             BitmapUtil.createBitmap(
                 service.createTintedDrawable(
                     R.drawable.ic_skip_previous_white_24dp,
-                    service.primaryTextColor( true)
+                    service.primaryTextColor(true)
                 )!!
             )
         )
 
         // Link actions buttons to intents
         setupDefaultPhonographWidgetButtons(service, appWidgetView)
-        setupAdditionalWidgetButtons(service, appWidgetView)
+        setupLaunchingClick(service, appWidgetView)
 
         // Load the album cover async and push the update on completion
         val p = service.getScreenSize()
@@ -137,8 +124,8 @@ class AppWidgetBig : BaseAppWidget() {
         }
     }
 
-    override fun setupAdditionalWidgetButtons(context: Context, view: RemoteViews) {
-        view.setOnClickPendingIntent(R.id.clickable_area, launchIntent(context))
+    override fun setupLaunchingClick(context: Context, view: RemoteViews) {
+        view.setOnClickPendingIntent(R.id.clickable_area, launchPendingIntent(context))
     }
 
     private val uiHandler: Handler by lazy { Handler(Looper.getMainLooper()) }

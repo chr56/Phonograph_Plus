@@ -22,21 +22,7 @@ import android.widget.RemoteViews
 
 class AppWidgetClassic : BaseAppWidget() {
 
-    /**
-     * Initialize given widgets to default state, where we launch Music on
-     * default click and hide actions if service not running.
-     */
-    override fun defaultAppWidget(context: Context, appWidgetIds: IntArray) {
-        val appWidgetView = RemoteViews(context.packageName, R.layout.app_widget_classic)
-
-        setupDefaultPhonographWidgetAppearance(context, appWidgetView)
-        setupDefaultPhonographWidgetButtons(context, appWidgetView)
-
-        setupAdditionalWidgetAppearance(context, appWidgetView)
-        setupAdditionalWidgetButtons(context, appWidgetView)
-
-        pushUpdate(context, appWidgetIds, appWidgetView)
-    }
+    override val layoutId: Int get() = R.layout.app_widget_classic
 
     private var task: Disposable? = null
 
@@ -59,7 +45,7 @@ class AppWidgetClassic : BaseAppWidget() {
 
         // Link actions buttons to intents
         setupDefaultPhonographWidgetButtons(service, appWidgetView)
-        setupAdditionalWidgetButtons(service, appWidgetView)
+        setupLaunchingClick(service, appWidgetView)
 
         if (imageSize == 0) imageSize = service.resources.getDimensionPixelSize(
             R.dimen.app_widget_classic_image_size
@@ -143,9 +129,9 @@ class AppWidgetClassic : BaseAppWidget() {
     }
 
 
-    override fun setupAdditionalWidgetButtons(context: Context, view: RemoteViews) {
-        view.setOnClickPendingIntent(R.id.image, launchIntent(context))
-        view.setOnClickPendingIntent(R.id.media_titles, launchIntent(context))
+    override fun setupLaunchingClick(context: Context, view: RemoteViews) {
+        view.setOnClickPendingIntent(R.id.image, launchPendingIntent(context))
+        view.setOnClickPendingIntent(R.id.media_titles, launchPendingIntent(context))
     }
 
     private val uiHandler: Handler by lazy { Handler(Looper.getMainLooper()) }
