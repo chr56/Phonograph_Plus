@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     name: Build & Release Preview
+    env:
+      PRODUCT_VARIANT: PreviewRelease
     runs-on: ubuntu-22.04
     permissions:
       contents: write
@@ -45,15 +47,15 @@ jobs:
         run: |
           ./gradlew clean
 
-      - name: Build with Gradle (Assemble PreviewRelease)
+      - name: Build with Gradle
         run: |
-          ./gradlew assemblePreviewRelease --stacktrace
+          ./gradlew assemble${{ env.PRODUCT_VARIANT }} --stacktrace
 
       - name: Collect Files
         run: |
           # collect files
           mkdir products
-          ./gradlew PublishPreviewRelease --stacktrace
+          ./gradlew Publish${{ env.PRODUCT_VARIANT }} --stacktrace
           echo "Artifacts:"
           tree -aF ./products
 
@@ -62,15 +64,15 @@ jobs:
         with:
           name: preview_release_build
           path: |
-            products/PreviewRelease/*.apk
-            products/PreviewRelease/*.sha*
+            products/${{ env.PRODUCT_VARIANT }}/*.apk
+            products/${{ env.PRODUCT_VARIANT }}/*.sha*
           retention-days: 30
 
       - name: Upload mapping.txt
         uses: actions/upload-artifact@v4
         with:
           name: preview_mapping
-          path: products/PreviewRelease/PhonographPlus*.txt.gz
+          path: products/${{ env.PRODUCT_VARIANT }}/PhonographPlus*.txt.gz
 
       - name: Generate Changelog
         run: |
@@ -82,12 +84,12 @@ jobs:
         id: release_github
         if: startsWith(github.ref, 'refs/tags/preview_')
         with:
-          name: "${{ github.ref_name }}"
+          name: "${{ env.PRODUCT_VARIANT }} ${{ github.ref_name }}"
           files: |
-            products/PreviewRelease/PhonographPlus_*.apk
-            products/PreviewRelease/PhonographPlus_*.apk.sha1
-            products/PreviewRelease/PhonographPlus_*.apk.sha256
-            products/PreviewRelease/PhonographPlus*.txt.gz
+            products/${{ env.PRODUCT_VARIANT }}/PhonographPlus_*.apk
+            products/${{ env.PRODUCT_VARIANT }}/PhonographPlus_*.apk.sha1
+            products/${{ env.PRODUCT_VARIANT }}/PhonographPlus_*.apk.sha256
+            products/${{ env.PRODUCT_VARIANT }}/PhonographPlus*.txt.gz
           prerelease: true
           draft: false
           tag_name: ${{ github.ref }}
@@ -108,4 +110,4 @@ jobs:
 
       - name: Clean up
         run: |
-          rm -r -v ./products/PreviewRelease
+          rm -r -v ./products/${{ env.PRODUCT_VARIANT }}

@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     name: Build & Release LTS
+    env:
+      PRODUCT_VARIANT: StableRelease
     runs-on: ubuntu-22.04
     permissions:
       contents: write
@@ -43,40 +45,40 @@ jobs:
         # just download gradle wrapper, start gradle daemon, make actual build logs clean
         run: |
           ./gradlew clean
-      - name: Build with Gradle (Assemble StableRelease)
+      - name: Build with Gradle
         run: |
-          ./gradlew assembleStableRelease --stacktrace
+          ./gradlew assemble${{ env.PRODUCT_VARIANT }} --stacktrace
 
       - name: Collect Files
         run: |
           # collect files
           mkdir products
-          ./gradlew PublishStableRelease --stacktrace
+          ./gradlew Publish${{ env.PRODUCT_VARIANT }} --stacktrace
           tree -aF ./products
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: lts_release
-          path: products/StableRelease/*.apk
+          path: products/${{ env.PRODUCT_VARIANT }}/*.apk
           retention-days: 30
 
       - name: Upload mapping.txt
         uses: actions/upload-artifact@v4
         with:
           name: mapping
-          path: products/StableRelease/PhonographPlus*.txt.gz
+          path: products/${{ env.PRODUCT_VARIANT }}/PhonographPlus*.txt.gz
 
       - name: Release New Version
         uses: softprops/action-gh-release@v1
         id: release_github
         with:
-          name: "${{ github.ref_name }}"
+          name: "LTS Release ${{ github.ref_name }}"
           files: |
-            products/StableRelease/PhonographPlus_*.apk
-            products/PreviewRelease/PhonographPlus_*.apk.sha1
-            products/PreviewRelease/PhonographPlus_*.apk.sha256
-            products/StableRelease/PhonographPlus*.txt.gz
+            products/${{ env.PRODUCT_VARIANT }}/PhonographPlus_*.apk
+            products/${{ env.PRODUCT_VARIANT }}/PhonographPlus_*.apk.sha1
+            products/${{ env.PRODUCT_VARIANT }}/PhonographPlus_*.apk.sha256
+            products/${{ env.PRODUCT_VARIANT }}/PhonographPlus*.txt.gz
           prerelease: false
           draft: true
           tag_name: ${{ github.ref }}
@@ -99,4 +101,4 @@ jobs:
 
       - name: Cleanup
         run: |
-          rm -r -v ./products/StableRelease
+          rm -r -v ./products/${{ env.PRODUCT_VARIANT }}
