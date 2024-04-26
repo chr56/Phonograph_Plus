@@ -87,9 +87,11 @@ class PlayerAlbumCoverFragment :
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 CurrentQueueState.position.collect { position ->
                     val songs = albumCoverPagerAdapter?.dataSet
-                    if (!songs.isNullOrEmpty() && position >= 0) {
-                        updateCurrentItemPosition(position)
-                        updateCurrentPaletteColor(songs[position])
+                    if (songs != null) {
+                        if (position in songs.indices) {
+                            updateCurrentItemPosition(position)
+                            updateCurrentPaletteColor(songs[position])
+                        }
                     }
                 }
             }
@@ -195,7 +197,7 @@ class PlayerAlbumCoverFragment :
             val adapter = AlbumCoverPagerAdapter(this@PlayerAlbumCoverFragment, queue)
             albumCoverPagerAdapter = adapter
             binding.playerCoverViewpager.adapter = adapter
-            if (position >= 0 && queue.isNotEmpty()) {
+            if (position >= 0 && position in queue.indices) {
                 updateCurrentItemPosition(position)
                 updateCurrentPaletteColor(queue[position])
             }
