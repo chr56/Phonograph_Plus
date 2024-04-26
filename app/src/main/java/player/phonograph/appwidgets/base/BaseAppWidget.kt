@@ -107,7 +107,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         view.setImageViewResource(R.id.image, R.drawable.default_album_art)
     }
 
-    private fun RemoteViews.bindDrawable(
+    protected fun RemoteViews.bindDrawable(
         context: Context,
         @IdRes id: Int,
         @DrawableRes drawable: Int,
@@ -160,6 +160,10 @@ abstract class BaseAppWidget : AppWidgetProvider() {
     protected fun getAlbumArtDrawable(resources: Resources?, bitmap: Bitmap?) =
         bitmap?.let { BitmapDrawable(resources, it) }
             ?: ResourcesCompat.getDrawable(resources!!, R.drawable.default_album_art, null)
+
+    protected fun playPauseRes(isPlaying: Boolean): Int =
+        if (isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp
+
 
     protected fun getSongArtistAndAlbum(song: Song): String = song.infoString()
 

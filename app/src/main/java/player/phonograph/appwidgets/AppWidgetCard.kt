@@ -6,9 +6,6 @@ import player.phonograph.appwidgets.Util.createRoundedBitmap
 import player.phonograph.appwidgets.base.BaseAppWidget
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.service.MusicService
-import player.phonograph.util.theme.createTintedDrawable
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.ui.BitmapUtil
 import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
 import android.graphics.Bitmap
@@ -41,30 +38,9 @@ class AppWidgetCard : BaseAppWidget() {
         }
 
         val color = service.secondaryTextColor(false)
-        // Set correct drawable for pause state
-        appWidgetView.setImageViewBitmap(
-            R.id.button_toggle_play_pause,
-            BitmapUtil.createBitmap(
-                service.createTintedDrawable(
-                    playPauseRes(isPlaying),
-                    color
-                )!!
-            )
-        )
-
-        // Set prev/next button drawables
-        appWidgetView.setImageViewBitmap(
-            R.id.button_next,
-            BitmapUtil.createBitmap(
-                service.createTintedDrawable(R.drawable.ic_skip_next_white_24dp, color)!!
-            )
-        )
-        appWidgetView.setImageViewBitmap(
-            R.id.button_prev,
-            BitmapUtil.createBitmap(
-                service.createTintedDrawable(R.drawable.ic_skip_previous_white_24dp, color)!!
-            )
-        )
+        appWidgetView.bindDrawable(service, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
+        appWidgetView.bindDrawable(service, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
+        appWidgetView.bindDrawable(service, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
 
         // Link actions buttons to intents
         setupDefaultPhonographWidgetButtons(service, appWidgetView)
@@ -105,26 +81,15 @@ class AppWidgetCard : BaseAppWidget() {
         bitmap: Bitmap?,
         color: Int,
     ) {
-        // Set correct drawable for pause state
-        appWidgetView.setImageViewBitmap(
-            R.id.button_toggle_play_pause,
-            BitmapUtil.createBitmap(service.getTintedDrawable(playPauseRes(isPlaying), color)!!)
-        )
 
-        // Set prev/next button drawables
-        appWidgetView.setImageViewBitmap(
-            R.id.button_next,
-            BitmapUtil.createBitmap(service.getTintedDrawable(R.drawable.ic_skip_next_white_24dp, color)!!)
-        )
-        appWidgetView.setImageViewBitmap(
-            R.id.button_prev,
-            BitmapUtil.createBitmap(service.getTintedDrawable(R.drawable.ic_skip_previous_white_24dp, color)!!)
-        )
+        appWidgetView.bindDrawable(service, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
+        appWidgetView.bindDrawable(service, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
+        appWidgetView.bindDrawable(service, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
 
-        val image = getAlbumArtDrawable(service.resources, bitmap)
-        val roundedBitmap =
+        appWidgetView.setImageViewBitmap(
+            R.id.image,
             createRoundedBitmap(
-                image,
+                getAlbumArtDrawable(service.resources, bitmap),
                 imageSize,
                 imageSize,
                 cardRadius,
@@ -132,7 +97,7 @@ class AppWidgetCard : BaseAppWidget() {
                 cardRadius,
                 0f
             )
-        appWidgetView.setImageViewBitmap(R.id.image, roundedBitmap)
+        )
     }
 
     override fun setupLaunchingClick(context: Context, view: RemoteViews) {
@@ -156,8 +121,5 @@ class AppWidgetCard : BaseAppWidget() {
                 }
                 return mInstance!!
             }
-
-        private fun playPauseRes(isPlaying: Boolean) =
-            if (isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp
     }
 }
