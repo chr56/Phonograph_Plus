@@ -9,14 +9,11 @@ import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.appwidgets.base.BaseAppWidget
 import player.phonograph.service.MusicService
-import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.theme.createTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
 import player.phonograph.util.ui.getScreenSize
 import androidx.core.graphics.drawable.toBitmapOrNull
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Handler
@@ -141,16 +138,7 @@ class AppWidgetBig : BaseAppWidget() {
     }
 
     override fun setupAdditionalWidgetButtons(context: Context, view: RemoteViews) {
-        // Home
-        val action = Intent(context, MainActivity::class.java)
-            .apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP }
-        val pendingIntent = PendingIntent.getActivity(
-            context,
-            0,
-            action,
-            PendingIntent.FLAG_IMMUTABLE
-        )
-        view.setOnClickPendingIntent(R.id.clickable_area, pendingIntent)
+        view.setOnClickPendingIntent(R.id.clickable_area, launchIntent(context))
     }
 
     private val uiHandler: Handler by lazy { Handler(Looper.getMainLooper()) }

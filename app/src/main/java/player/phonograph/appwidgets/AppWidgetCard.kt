@@ -9,14 +9,11 @@ import player.phonograph.appwidgets.Util.createRoundedBitmap
 import player.phonograph.appwidgets.base.BaseAppWidget
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.service.MusicService
-import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.theme.createTintedDrawable
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
 import androidx.core.graphics.drawable.toBitmapOrNull
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Handler
 import android.os.Looper
@@ -165,17 +162,8 @@ class AppWidgetCard : BaseAppWidget() {
     }
 
     override fun setupAdditionalWidgetButtons(context: Context, view: RemoteViews) {
-        // Home
-        val action = Intent(context, MainActivity::class.java)
-            .apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP }
-        val pendingIntent = PendingIntent.getActivity(
-            context,
-            0,
-            action,
-            PendingIntent.FLAG_IMMUTABLE
-        )
-        view.setOnClickPendingIntent(R.id.image, pendingIntent)
-        view.setOnClickPendingIntent(R.id.media_titles, pendingIntent)
+        view.setOnClickPendingIntent(R.id.image, launchIntent(context))
+        view.setOnClickPendingIntent(R.id.media_titles, launchIntent(context))
     }
 
 

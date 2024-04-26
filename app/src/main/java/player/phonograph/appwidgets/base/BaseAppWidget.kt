@@ -8,6 +8,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
+import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
 import androidx.core.content.res.ResourcesCompat
@@ -128,7 +129,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
     }
 
     open fun setupAdditionalWidgetAppearance(context: Context, view: RemoteViews) {}
-    open fun setupAdditionalWidgetButtons(context: Context, view: RemoteViews) {}
+    abstract fun setupAdditionalWidgetButtons(context: Context, view: RemoteViews)
 
     protected fun getAlbumArtDrawable(resources: Resources?, bitmap: Bitmap?) =
         bitmap?.let { BitmapDrawable(resources, it) }
@@ -137,6 +138,18 @@ abstract class BaseAppWidget : AppWidgetProvider() {
     protected fun getSongArtistAndAlbum(song: Song): String = song.infoString()
 
     protected val queueManager: QueueManager get() = GlobalContext.get().get()
+
+    /**
+     * PendingIntent for launching [MainActivity]
+     */
+    protected fun launchIntent(context: Context): PendingIntent = PendingIntent.getActivity(
+        context,
+        0,
+        Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        },
+        PendingIntent.FLAG_IMMUTABLE
+    )
 
     companion object {
         const val NAME = "app_widget"
