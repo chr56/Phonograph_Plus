@@ -8,7 +8,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.ui.activities.MainActivity
+import player.phonograph.ui.activities.StarterActivity
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
 import androidx.core.content.res.ResourcesCompat
@@ -140,12 +140,12 @@ abstract class BaseAppWidget : AppWidgetProvider() {
     protected val queueManager: QueueManager get() = GlobalContext.get().get()
 
     /**
-     * PendingIntent for launching [MainActivity]
+     * PendingIntent for launching [StarterActivity]
      */
     protected fun launchIntent(context: Context): PendingIntent = PendingIntent.getActivity(
         context,
         0,
-        Intent(context, MainActivity::class.java).apply {
+        Intent(context, StarterActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         },
         PendingIntent.FLAG_IMMUTABLE
