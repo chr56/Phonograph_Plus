@@ -49,7 +49,7 @@ class AppWidgetCard : BaseAppWidget() {
         if (cardRadius == 0f) cardRadius = context.resources.getDimension(
             R.dimen.app_widget_card_radius
         )
-        val fallbackColor = context.secondaryTextColor(true)
+        val fallbackColor = context.secondaryTextColor(false)
 
         // Load the album cover async and push the update on completion
         loadImage(
