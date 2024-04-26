@@ -2,7 +2,6 @@ package player.phonograph.appwidgets
 
 
 import coil.target.Target
-import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.appwidgets.base.BaseAppWidget
 import player.phonograph.model.Song
@@ -78,9 +77,7 @@ class AppWidgetBig : BaseAppWidget() {
 
     }
 
-    override fun setupLaunchingClick(context: Context, view: RemoteViews) {
-        view.setOnClickPendingIntent(R.id.clickable_area, clickingPendingIntent(context))
-    }
+    override val clickableAreas: IntArray = intArrayOf(R.id.clickable_area)
 
     companion object {
         const val NAME = "app_widget_big"

@@ -1,6 +1,5 @@
 package player.phonograph.appwidgets
 
-import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.appwidgets.Util.createRoundedBitmap
@@ -39,7 +38,7 @@ class AppWidgetCard : BaseAppWidget() {
         view: RemoteViews,
         song: Song,
         isPlaying: Boolean,
-        appWidgetIds: IntArray?
+        appWidgetIds: IntArray?,
     ) {
         if (imageSize == 0) imageSize = context.resources.getDimensionPixelSize(
             R.dimen.app_widget_card_image_size
@@ -96,11 +95,7 @@ class AppWidgetCard : BaseAppWidget() {
         )
     }
 
-    override fun setupLaunchingClick(context: Context, view: RemoteViews) {
-        view.setOnClickPendingIntent(R.id.image, clickingPendingIntent(context))
-        view.setOnClickPendingIntent(R.id.media_titles, clickingPendingIntent(context))
-    }
-
+    override val clickableAreas: IntArray = intArrayOf(R.id.image, R.id.media_titles)
 
     companion object {
         const val NAME = "app_widget_card"

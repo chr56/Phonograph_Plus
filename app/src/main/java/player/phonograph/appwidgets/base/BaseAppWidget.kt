@@ -40,6 +40,35 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
     protected abstract val darkBackground: Boolean
 
+    protected abstract val clickableAreas: IntArray
+
+    protected abstract fun updateText(
+        context: Context,
+        view: RemoteViews,
+        song: Song,
+    )
+
+    protected abstract fun startUpdateCover(
+        context: Context,
+        view: RemoteViews,
+        song: Song,
+        isPlaying: Boolean,
+        appWidgetIds: IntArray?,
+    )
+
+
+    /**
+     * Update App Widget with [AppWidgetManager]
+     */
+    protected fun pushUpdate(context: Context, appWidgetIds: IntArray?, views: RemoteViews) {
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        if (appWidgetIds != null) {
+            appWidgetManager.updateAppWidget(appWidgetIds, views)
+        } else {
+            appWidgetManager.updateAppWidget(ComponentName(context, javaClass), views)
+        }
+    }
+
     /**
      * @see android.appwidget.AppWidgetProvider.onUpdate
      */
@@ -67,21 +96,15 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         )
     }
 
-
-    protected fun buildRemoteViews(
+    private fun buildRemoteViews(
         context: Context,
         isPlaying: Boolean,
         song: Song,
         @ColorInt color: Int,
-    ): RemoteViews {
-        val remoteViews = RemoteViews(context.packageName, layoutId)
-
-        setupDefaultPhonographWidgetButtons(context, remoteViews)
-        setupLaunchingClick(context, remoteViews)
-
-        updateSong(context, remoteViews, song, isPlaying, color)
-
-        return remoteViews
+    ): RemoteViews = RemoteViews(context.packageName, layoutId).apply {
+        updateSong(context, song, isPlaying, color)
+        setupButtonsClick(context)
+        setupLaunchingClick(context)
     }
 
     /**
@@ -94,18 +117,6 @@ abstract class BaseAppWidget : AppWidgetProvider() {
             if (MusicServiceMsgConst.META_CHANGED == what || MusicServiceMsgConst.PLAY_STATE_CHANGED == what) {
                 performUpdate(context, isPlaying, null)
             }
-        }
-    }
-
-    /**
-     * Update App Widget with [AppWidgetManager]
-     */
-    protected fun pushUpdate(context: Context, appWidgetIds: IntArray?, views: RemoteViews) {
-        val appWidgetManager = AppWidgetManager.getInstance(context)
-        if (appWidgetIds != null) {
-            appWidgetManager.updateAppWidget(appWidgetIds, views)
-        } else {
-            appWidgetManager.updateAppWidget(ComponentName(context, javaClass), views)
         }
     }
 
@@ -125,24 +136,14 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         startUpdateCover(context, remoteViews, song, isPlaying, appWidgetIds)
     }
 
-    abstract fun updateText(context: Context, view: RemoteViews, song: Song)
-
-    abstract fun startUpdateCover(
+    private fun RemoteViews.updateSong(
         context: Context,
-        view: RemoteViews,
-        song: Song,
-        isPlaying: Boolean,
-        appWidgetIds: IntArray?,
-    )
-
-    private fun updateSong(
-        context: Context, view: RemoteViews,
         song: Song, isPlaying: Boolean, @ColorInt color: Int,
     ) {
-        updateText(context, view, song)
-        view.bindDrawable(context, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
-        view.bindDrawable(context, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
-        view.bindDrawable(context, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
+        updateText(context, this, song)
+        bindDrawable(context, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
+        bindDrawable(context, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
+        bindDrawable(context, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
     }
 
     protected fun RemoteViews.bindDrawable(
@@ -154,24 +155,28 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         id, BitmapUtil.createBitmap(context.getTintedDrawable(drawable, textColor)!!)
     )
 
-    private fun setupDefaultPhonographWidgetButtons(context: Context, view: RemoteViews) {
+    private fun RemoteViews.setupButtonsClick(context: Context) {
         var pendingIntent: PendingIntent?
         val serviceName = ComponentName(context, MusicService::class.java)
 
         // Previous track
         pendingIntent = buildPendingIntent(context, MusicService.ACTION_PREVIOUS, serviceName)
-        view.setOnClickPendingIntent(R.id.button_prev, pendingIntent)
+        setOnClickPendingIntent(R.id.button_prev, pendingIntent)
 
         // Play and pause
         pendingIntent = buildPendingIntent(context, MusicService.ACTION_TOGGLE_PAUSE, serviceName)
-        view.setOnClickPendingIntent(R.id.button_toggle_play_pause, pendingIntent)
+        setOnClickPendingIntent(R.id.button_toggle_play_pause, pendingIntent)
 
         // Next track
         pendingIntent = buildPendingIntent(context, MusicService.ACTION_NEXT, serviceName)
-        view.setOnClickPendingIntent(R.id.button_next, pendingIntent)
+        setOnClickPendingIntent(R.id.button_next, pendingIntent)
     }
 
-    abstract fun setupLaunchingClick(context: Context, view: RemoteViews)
+    private fun RemoteViews.setupLaunchingClick(context: Context) {
+        for (id in clickableAreas) {
+            setOnClickPendingIntent(id, clickingPendingIntent(context))
+        }
+    }
 
     private fun buildPendingIntent(context: Context, action: String, serviceName: ComponentName): PendingIntent {
         val intent = Intent(action).apply { component = serviceName }
@@ -182,11 +187,10 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         }
     }
 
-
     /**
      * PendingIntent for launching [MusicService] or [LauncherActivity]
      */
-    protected fun clickingPendingIntent(context: Context): PendingIntent =
+    private fun clickingPendingIntent(context: Context): PendingIntent =
         if (isServiceStarted)
             PendingIntent.getActivity(
                 context,
@@ -209,9 +213,6 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
     protected fun getSongArtistAndAlbum(song: Song): String = song.infoString()
 
-    protected val queueManager: QueueManager get() = GlobalContext.get().get()
-
-
     private var task: Disposable? = null
     protected fun loadImage(
         context: Context,
@@ -229,6 +230,8 @@ abstract class BaseAppWidget : AppWidgetProvider() {
                 .build()
         )
     }
+
+    protected val queueManager: QueueManager get() = GlobalContext.get().get()
 
     private var isServiceStarted: Boolean = false
 }

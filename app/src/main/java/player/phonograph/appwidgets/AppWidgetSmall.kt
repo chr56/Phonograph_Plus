@@ -1,6 +1,5 @@
 package player.phonograph.appwidgets
 
-import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.appwidgets.Util.createRoundedBitmap
@@ -100,10 +99,7 @@ class AppWidgetSmall : BaseAppWidget() {
         )
     }
 
-    override fun setupLaunchingClick(context: Context, view: RemoteViews) {
-        view.setOnClickPendingIntent(R.id.image, clickingPendingIntent(context))
-        view.setOnClickPendingIntent(R.id.media_titles, clickingPendingIntent(context))
-    }
+    override val clickableAreas: IntArray = intArrayOf(R.id.image, R.id.media_titles)
 
     companion object {
         const val NAME = "app_widget_small"
