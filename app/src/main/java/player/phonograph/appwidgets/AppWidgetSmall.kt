@@ -5,6 +5,7 @@ import player.phonograph.R
 import player.phonograph.appwidgets.Util.createRoundedBitmap
 import player.phonograph.appwidgets.base.BaseAppWidget
 import player.phonograph.coil.target.PaletteTargetBuilder
+import player.phonograph.model.Song
 import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
 import android.graphics.Bitmap
@@ -20,6 +21,21 @@ class AppWidgetSmall : BaseAppWidget() {
 
     override val darkBackground: Boolean get() = false
 
+    override fun updateText(context: Context, view: RemoteViews, song: Song) {
+        if (TextUtils.isEmpty(song.title) && TextUtils.isEmpty(song.artistName)) {
+            view.setViewVisibility(R.id.media_titles, View.INVISIBLE)
+        } else {
+            if (TextUtils.isEmpty(song.title) || TextUtils.isEmpty(song.artistName)) {
+                view.setTextViewText(R.id.text_separator, "")
+            } else {
+                view.setTextViewText(R.id.text_separator, "•")
+            }
+            view.setViewVisibility(R.id.media_titles, View.VISIBLE)
+            view.setTextViewText(R.id.title, song.title)
+            view.setTextViewText(R.id.text, song.artistName)
+        }
+    }
+
     /**
      * Update all active widget instances by pushing changes
      */
@@ -29,18 +45,9 @@ class AppWidgetSmall : BaseAppWidget() {
         val song = queueManager.currentSong
 
         // Set the titles and artwork
-        if (TextUtils.isEmpty(song.title) && TextUtils.isEmpty(song.artistName)) {
-            appWidgetView.setViewVisibility(R.id.media_titles, View.INVISIBLE)
-        } else {
-            if (TextUtils.isEmpty(song.title) || TextUtils.isEmpty(song.artistName)) {
-                appWidgetView.setTextViewText(R.id.text_separator, "")
-            } else {
-                appWidgetView.setTextViewText(R.id.text_separator, "•")
-            }
-            appWidgetView.setViewVisibility(R.id.media_titles, View.VISIBLE)
-            appWidgetView.setTextViewText(R.id.title, song.title)
-            appWidgetView.setTextViewText(R.id.text, song.artistName)
-        }
+        val color = context.secondaryTextColor(false)
+        updateText(context, appWidgetView, song)
+        appWidgetView.bindDrawable(context, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
 
         // Link actions buttons to intents
         setupDefaultPhonographWidgetButtons(context, appWidgetView)

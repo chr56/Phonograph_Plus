@@ -95,6 +95,8 @@ abstract class BaseAppWidget : AppWidgetProvider() {
      */
     abstract fun performUpdate(context: Context, isPlaying: Boolean, appWidgetIds: IntArray?)
 
+    abstract fun updateText(context: Context, view: RemoteViews, song: Song)
+
     private fun setupDefaultPhonographWidgetAppearance(context: Context, view: RemoteViews, @ColorInt textColor: Int) {
 
         view.bindDrawable(context, R.id.button_next, R.drawable.ic_skip_next_white_24dp, textColor)
