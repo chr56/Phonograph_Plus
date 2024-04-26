@@ -5,7 +5,6 @@ import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.target.Target
 import mt.util.color.primaryTextColor
-import mt.util.color.secondaryTextColor
 import org.koin.core.context.GlobalContext
 import player.phonograph.MusicServiceMsgConst
 import player.phonograph.R
@@ -31,7 +30,6 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
-import android.view.View
 import android.widget.RemoteViews
 
 abstract class BaseAppWidget : AppWidgetProvider() {
@@ -47,17 +45,18 @@ abstract class BaseAppWidget : AppWidgetProvider() {
      */
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
 
-        val appWidgetView = RemoteViews(context.packageName, layoutId)
+        val color = context.primaryTextColor(darkBackground)
 
-        val textColor = context.primaryTextColor(darkBackground)
+        val remoteViews = buildRemoteViews(
+            context,
+            isPlaying = false,
+            queueManager.currentSong,
+            color
+        )
 
-        setupDefaultPhonographWidgetAppearance(context, appWidgetView, textColor)
-        setupDefaultPhonographWidgetButtons(context, appWidgetView)
-        setupLaunchingClick(context, appWidgetView)
+        remoteViews.setImageViewResource(R.id.image, R.drawable.default_album_art)
 
-        updateSong(context, appWidgetView, queueManager.currentSong, false, textColor)
-
-        pushUpdate(context, appWidgetIds, appWidgetView)
+        pushUpdate(context, appWidgetIds, remoteViews)
 
         context.sendBroadcast(
             Intent(MusicService.APP_WIDGET_UPDATE).apply {
@@ -66,6 +65,23 @@ abstract class BaseAppWidget : AppWidgetProvider() {
                 addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY)
             }
         )
+    }
+
+
+    protected fun buildRemoteViews(
+        context: Context,
+        isPlaying: Boolean,
+        song: Song,
+        @ColorInt color: Int,
+    ): RemoteViews {
+        val remoteViews = RemoteViews(context.packageName, layoutId)
+
+        setupDefaultPhonographWidgetButtons(context, remoteViews)
+        setupLaunchingClick(context, remoteViews)
+
+        updateSong(context, remoteViews, song, isPlaying, color)
+
+        return remoteViews
     }
 
     /**
@@ -100,24 +116,14 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
     abstract fun updateText(context: Context, view: RemoteViews, song: Song)
 
-    protected fun updateSong(
+    private fun updateSong(
         context: Context, view: RemoteViews,
-        song: Song, isPlaying: Boolean,@ColorInt color: Int,
+        song: Song, isPlaying: Boolean, @ColorInt color: Int,
     ) {
         updateText(context, view, song)
         view.bindDrawable(context, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
         view.bindDrawable(context, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
         view.bindDrawable(context, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
-    }
-
-    private fun setupDefaultPhonographWidgetAppearance(context: Context, view: RemoteViews, @ColorInt textColor: Int) {
-
-        view.bindDrawable(context, R.id.button_next, R.drawable.ic_skip_next_white_24dp, textColor)
-        view.bindDrawable(context, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, textColor)
-        view.bindDrawable(context, R.id.button_toggle_play_pause, R.drawable.ic_play_arrow_white_24dp, textColor)
-
-        view.setViewVisibility(R.id.media_titles, View.INVISIBLE)
-        view.setImageViewResource(R.id.image, R.drawable.default_album_art)
     }
 
     protected fun RemoteViews.bindDrawable(
@@ -129,7 +135,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         id, BitmapUtil.createBitmap(context.getTintedDrawable(drawable, textColor)!!)
     )
 
-    fun setupDefaultPhonographWidgetButtons(context: Context, view: RemoteViews) {
+    private fun setupDefaultPhonographWidgetButtons(context: Context, view: RemoteViews) {
         var pendingIntent: PendingIntent?
         val serviceName = ComponentName(context, MusicService::class.java)
 

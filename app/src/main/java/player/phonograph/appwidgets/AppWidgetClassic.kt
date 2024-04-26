@@ -1,5 +1,6 @@
 package player.phonograph.appwidgets
 
+import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.appwidgets.Util.createRoundedBitmap
@@ -38,13 +39,13 @@ class AppWidgetClassic : BaseAppWidget() {
      */
     override fun performUpdate(context: Context, isPlaying: Boolean, appWidgetIds: IntArray?) {
         isServiceStarted = true
-        val appWidgetView = RemoteViews(context.packageName, layoutId)
-        val song = queueManager.currentSong
-        val color = context.secondaryTextColor(false)
 
-        setupDefaultPhonographWidgetButtons(context, appWidgetView)
-        setupLaunchingClick(context, appWidgetView)
-        updateSong(context, appWidgetView, song, isPlaying, color)
+        val textColor = context.primaryTextColor(darkBackground)
+        val song = queueManager.currentSong
+
+        val remoteViews = buildRemoteViews(context, isPlaying, song, textColor)
+
+        pushUpdate(context, appWidgetIds, remoteViews)
 
         if (imageSize == 0) imageSize = context.resources.getDimensionPixelSize(
             R.dimen.app_widget_classic_image_size
@@ -61,15 +62,15 @@ class AppWidgetClassic : BaseAppWidget() {
             target =
             PaletteTargetBuilder(fallbackColor)
                 .onStart {
-                    appWidgetView.setImageViewResource(R.id.image, R.drawable.default_album_art)
+                    remoteViews.setImageViewResource(R.id.image, R.drawable.default_album_art)
                 }
                 .onResourceReady { result, paletteColor ->
-                    updateWidget(appWidgetView, context, isPlaying, result.toBitmapOrNull(), paletteColor)
-                    pushUpdate(context, appWidgetIds, appWidgetView)
+                    updateWidget(remoteViews, context, isPlaying, result.toBitmapOrNull(), paletteColor)
+                    pushUpdate(context, appWidgetIds, remoteViews)
                 }
                 .onFail {
-                    updateWidget(appWidgetView, context, isPlaying, null, fallbackColor)
-                    pushUpdate(context, appWidgetIds, appWidgetView)
+                    updateWidget(remoteViews, context, isPlaying, null, fallbackColor)
+                    pushUpdate(context, appWidgetIds, remoteViews)
                 }
                 .build()
         )

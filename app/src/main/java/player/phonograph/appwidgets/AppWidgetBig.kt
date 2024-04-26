@@ -41,13 +41,13 @@ class AppWidgetBig : BaseAppWidget() {
      */
     override fun performUpdate(context: Context, isPlaying: Boolean, appWidgetIds: IntArray?) {
         isServiceStarted = true
-        val appWidgetView = RemoteViews(context.packageName, layoutId)
-        val song = queueManager.currentSong
-        val color = context.primaryTextColor(darkBackground)
 
-        setupDefaultPhonographWidgetButtons(context, appWidgetView)
-        setupLaunchingClick(context, appWidgetView)
-        updateSong(context, appWidgetView, song, isPlaying, color)
+        val textColor = context.primaryTextColor(darkBackground)
+        val song = queueManager.currentSong
+
+        val remoteViews = buildRemoteViews(context, isPlaying, song, textColor)
+
+        pushUpdate(context, appWidgetIds, remoteViews)
 
         // Load the album cover async and push the update on completion
         val p = context.getScreenSize()
@@ -73,11 +73,11 @@ class AppWidgetBig : BaseAppWidget() {
 
                 private fun onUpdate(bitmap: Bitmap?) {
                     if (bitmap == null) {
-                        appWidgetView.setImageViewResource(R.id.image, R.drawable.default_album_art)
+                        remoteViews.setImageViewResource(R.id.image, R.drawable.default_album_art)
                     } else {
-                        appWidgetView.setImageViewBitmap(R.id.image, bitmap)
+                        remoteViews.setImageViewBitmap(R.id.image, bitmap)
                     }
-                    pushUpdate(context.applicationContext, appWidgetIds, appWidgetView)
+                    pushUpdate(context.applicationContext, appWidgetIds, remoteViews)
                 }
             }
         )
