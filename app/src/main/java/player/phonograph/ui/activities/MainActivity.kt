@@ -24,6 +24,7 @@ import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.PageConfig
 import player.phonograph.model.infoString
 import player.phonograph.model.version.VersionCatalog
+import player.phonograph.model.version.currentChannel
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
@@ -267,11 +268,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         lifecycleScope.launch(SupervisorJob()) {
             Update.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
                 if (upgradable) {
-                    val channel = when (BuildConfig.FLAVOR) {
-                        "preview" -> "preview"
-                        else      -> "stable"
-                    }
-                    UpgradeNotification.sendUpgradeNotification(versionCatalog, channel)
+                    UpgradeNotification.sendUpgradeNotification(versionCatalog, currentChannel)
                 }
             }
             Setting(this@MainActivity)[Keys.lastCheckUpgradeTimeStamp].data = System.currentTimeMillis()
