@@ -34,23 +34,7 @@ class AppWidgetCard : BaseAppWidget() {
         }
     }
 
-    /**
-     * Update all active widget instances by pushing changes
-     */
-    override fun performUpdate(context: Context, isPlaying: Boolean, appWidgetIds: IntArray?) {
-        isServiceStarted = true
-
-        val textColor = context.primaryTextColor(darkBackground)
-        val song = queueManager.currentSong
-
-        val remoteViews = buildRemoteViews(context, isPlaying, song, textColor)
-
-        pushUpdate(context, appWidgetIds, remoteViews)
-
-        updateCover(context, remoteViews, song, isPlaying, appWidgetIds)
-    }
-
-    override fun updateCover(
+    override fun startUpdateCover(
         context: Context,
         view: RemoteViews,
         song: Song,

@@ -110,13 +110,24 @@ abstract class BaseAppWidget : AppWidgetProvider() {
     }
 
     /**
-     * actual actions in updating
+     * Update all active widget instances by pushing changes
      */
-    abstract fun performUpdate(context: Context, isPlaying: Boolean, appWidgetIds: IntArray?)
+    fun performUpdate(context: Context, isPlaying: Boolean, appWidgetIds: IntArray?) {
+        isServiceStarted = true
+
+        val textColor = context.primaryTextColor(darkBackground)
+        val song = queueManager.currentSong
+
+        val remoteViews = buildRemoteViews(context, isPlaying, song, textColor)
+
+        pushUpdate(context, appWidgetIds, remoteViews)
+
+        startUpdateCover(context, remoteViews, song, isPlaying, appWidgetIds)
+    }
 
     abstract fun updateText(context: Context, view: RemoteViews, song: Song)
 
-    abstract fun updateCover(
+    abstract fun startUpdateCover(
         context: Context,
         view: RemoteViews,
         song: Song,
@@ -219,5 +230,5 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         )
     }
 
-    protected var isServiceStarted: Boolean = false
+    private var isServiceStarted: Boolean = false
 }
