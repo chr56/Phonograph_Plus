@@ -19,6 +19,8 @@ class AppWidgetSmall : BaseAppWidget() {
 
     override val layoutId: Int get() = R.layout.app_widget_small
 
+    override val name: String = NAME
+
     /**
      * Update all active widget instances by pushing changes
      */

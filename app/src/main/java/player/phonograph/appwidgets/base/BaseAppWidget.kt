@@ -37,6 +37,8 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
     protected abstract val layoutId: Int
 
+    protected abstract val name: String
+
     /**
      * @see android.appwidget.AppWidgetProvider.onUpdate
      */
@@ -52,7 +54,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
         context.sendBroadcast(
             Intent(MusicService.APP_WIDGET_UPDATE).apply {
-                putExtra(MusicService.EXTRA_APP_WIDGET_NAME, NAME)
+                putExtra(MusicService.EXTRA_APP_WIDGET_NAME, name)
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
                 addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY)
             }
@@ -180,9 +182,5 @@ abstract class BaseAppWidget : AppWidgetProvider() {
                 .target(target)
                 .build()
         )
-    }
-
-    companion object {
-        const val NAME = "app_widget"
     }
 }

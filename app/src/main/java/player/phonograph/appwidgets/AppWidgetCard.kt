@@ -20,6 +20,9 @@ class AppWidgetCard : BaseAppWidget() {
 
     override val layoutId: Int get() = R.layout.app_widget_card
 
+    override val name: String = NAME
+
+
     /**
      * Update all active widget instances by pushing changes
      */

@@ -19,6 +19,8 @@ class AppWidgetClassic : BaseAppWidget() {
 
     override val layoutId: Int get() = R.layout.app_widget_classic
 
+    override val name: String = NAME
+
     /**
      * Update all active widget instances by pushing changes
      */
