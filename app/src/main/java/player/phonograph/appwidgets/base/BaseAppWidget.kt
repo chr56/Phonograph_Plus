@@ -1,5 +1,16 @@
 package player.phonograph.appwidgets.base
 
+import mt.util.color.primaryTextColor
+import org.koin.core.context.GlobalContext
+import player.phonograph.MusicServiceMsgConst
+import player.phonograph.R
+import player.phonograph.model.Song
+import player.phonograph.model.infoString
+import player.phonograph.service.MusicService
+import player.phonograph.service.queue.QueueManager
+import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.ui.BitmapUtil
+import androidx.core.content.res.ResourcesCompat
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
@@ -12,17 +23,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.view.View
 import android.widget.RemoteViews
-import androidx.core.content.res.ResourcesCompat
-import mt.util.color.primaryTextColor
-import org.koin.core.context.GlobalContext
-import player.phonograph.MusicServiceMsgConst
-import player.phonograph.R
-import player.phonograph.model.Song
-import player.phonograph.model.infoString
-import player.phonograph.service.MusicService
-import player.phonograph.service.queue.QueueManager
-import player.phonograph.util.ui.BitmapUtil
-import player.phonograph.util.theme.getTintedDrawable
 
 abstract class BaseAppWidget : AppWidgetProvider() {
 

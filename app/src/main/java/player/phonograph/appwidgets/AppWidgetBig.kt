@@ -1,6 +1,19 @@
 package player.phonograph.appwidgets
 
 
+import coil.Coil
+import coil.request.Disposable
+import coil.request.ImageRequest
+import coil.target.Target
+import mt.util.color.primaryTextColor
+import player.phonograph.R
+import player.phonograph.appwidgets.base.BaseAppWidget
+import player.phonograph.service.MusicService
+import player.phonograph.ui.activities.MainActivity
+import player.phonograph.util.theme.createTintedDrawable
+import player.phonograph.util.ui.BitmapUtil
+import player.phonograph.util.ui.getScreenSize
+import androidx.core.graphics.drawable.toBitmapOrNull
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -11,21 +24,6 @@ import android.os.Looper
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
-import androidx.core.graphics.drawable.toBitmapOrNull
-import coil.Coil
-import coil.request.Disposable
-import coil.request.ImageRequest
-import coil.target.Target
-import mt.util.color.primaryTextColor
-import org.koin.android.ext.android.get
-import player.phonograph.R
-import player.phonograph.appwidgets.base.BaseAppWidget
-import player.phonograph.service.MusicService
-import player.phonograph.service.queue.QueueManager
-import player.phonograph.ui.activities.MainActivity
-import player.phonograph.util.ui.BitmapUtil
-import player.phonograph.util.ui.getScreenSize
-import player.phonograph.util.theme.createTintedDrawable
 
 
 class AppWidgetBig : BaseAppWidget() {

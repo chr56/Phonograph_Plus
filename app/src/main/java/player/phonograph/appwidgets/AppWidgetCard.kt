@@ -1,5 +1,19 @@
 package player.phonograph.appwidgets
 
+import coil.Coil
+import coil.request.Disposable
+import coil.request.ImageRequest
+import mt.util.color.secondaryTextColor
+import player.phonograph.R
+import player.phonograph.appwidgets.Util.createRoundedBitmap
+import player.phonograph.appwidgets.base.BaseAppWidget
+import player.phonograph.coil.target.PaletteTargetBuilder
+import player.phonograph.service.MusicService
+import player.phonograph.ui.activities.MainActivity
+import player.phonograph.util.theme.createTintedDrawable
+import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.ui.BitmapUtil
+import androidx.core.graphics.drawable.toBitmapOrNull
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -9,22 +23,6 @@ import android.os.Looper
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
-import androidx.core.graphics.drawable.toBitmapOrNull
-import coil.Coil
-import coil.request.Disposable
-import coil.request.ImageRequest
-import mt.util.color.secondaryTextColor
-import org.koin.android.ext.android.get
-import player.phonograph.R
-import player.phonograph.appwidgets.Util.createRoundedBitmap
-import player.phonograph.appwidgets.base.BaseAppWidget
-import player.phonograph.coil.target.PaletteTargetBuilder
-import player.phonograph.service.MusicService
-import player.phonograph.service.queue.QueueManager
-import player.phonograph.ui.activities.MainActivity
-import player.phonograph.util.ui.BitmapUtil
-import player.phonograph.util.theme.createTintedDrawable
-import player.phonograph.util.theme.getTintedDrawable
 
 class AppWidgetCard : BaseAppWidget() {
 
@@ -79,13 +77,13 @@ class AppWidgetCard : BaseAppWidget() {
         appWidgetView.setImageViewBitmap(
             R.id.button_next,
             BitmapUtil.createBitmap(
-                service.createTintedDrawable(R.drawable.ic_skip_next_white_24dp,color)!!
+                service.createTintedDrawable(R.drawable.ic_skip_next_white_24dp, color)!!
             )
         )
         appWidgetView.setImageViewBitmap(
             R.id.button_prev,
             BitmapUtil.createBitmap(
-                service.createTintedDrawable(R.drawable.ic_skip_previous_white_24dp,color)!!
+                service.createTintedDrawable(R.drawable.ic_skip_previous_white_24dp, color)!!
             )
         )
 
@@ -98,7 +96,7 @@ class AppWidgetCard : BaseAppWidget() {
         if (cardRadius == 0f) cardRadius = service.resources.getDimension(
             R.dimen.app_widget_card_radius
         )
-        val fallbackColor = service.secondaryTextColor( true)
+        val fallbackColor = service.secondaryTextColor(true)
 
         // Load the album cover async and push the update on completion
         uiHandler.post {
@@ -129,7 +127,13 @@ class AppWidgetCard : BaseAppWidget() {
         }
     }
 
-    private fun updateWidget(appWidgetView: RemoteViews, service: Context, isPlaying: Boolean, bitmap: Bitmap?, color: Int) {
+    private fun updateWidget(
+        appWidgetView: RemoteViews,
+        service: Context,
+        isPlaying: Boolean,
+        bitmap: Bitmap?,
+        color: Int,
+    ) {
         // Set correct drawable for pause state
         appWidgetView.setImageViewBitmap(
             R.id.button_toggle_play_pause,

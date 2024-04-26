@@ -4,7 +4,13 @@
 
 package player.phonograph.appwidgets
 
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BitmapShader
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.RectF
+import android.graphics.Shader
 import android.graphics.drawable.Drawable
 
 object Util {
