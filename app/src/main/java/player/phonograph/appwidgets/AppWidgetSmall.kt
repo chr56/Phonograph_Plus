@@ -50,6 +50,16 @@ class AppWidgetSmall : BaseAppWidget() {
 
         pushUpdate(context, appWidgetIds, remoteViews)
 
+        updateCover(context, remoteViews, song, isPlaying, appWidgetIds)
+    }
+
+    override fun updateCover(
+        context: Context,
+        view: RemoteViews,
+        song: Song,
+        isPlaying: Boolean,
+        appWidgetIds: IntArray?,
+    ) {
         if (imageSize == 0) imageSize = context.resources.getDimensionPixelSize(
             R.dimen.app_widget_small_image_size
         )
@@ -66,15 +76,15 @@ class AppWidgetSmall : BaseAppWidget() {
             target =
             PaletteTargetBuilder(fallbackColor)
                 .onStart {
-                    remoteViews.setImageViewResource(R.id.image, R.drawable.default_album_art)
+                    view.setImageViewResource(R.id.image, R.drawable.default_album_art)
                 }
                 .onResourceReady { result, paletteColor ->
-                    updateWidget(remoteViews, context, isPlaying, result.toBitmapOrNull(), paletteColor)
-                    pushUpdate(context, appWidgetIds, remoteViews)
+                    updateWidget(view, context, isPlaying, result.toBitmapOrNull(), paletteColor)
+                    pushUpdate(context, appWidgetIds, view)
                 }
                 .onFail {
-                    updateWidget(remoteViews, context, isPlaying, null, fallbackColor)
-                    pushUpdate(context, appWidgetIds, remoteViews)
+                    updateWidget(view, context, isPlaying, null, fallbackColor)
+                    pushUpdate(context, appWidgetIds, view)
                 }
                 .build()
         )

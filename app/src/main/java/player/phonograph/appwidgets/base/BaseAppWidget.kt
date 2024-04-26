@@ -116,6 +116,14 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
     abstract fun updateText(context: Context, view: RemoteViews, song: Song)
 
+    abstract fun updateCover(
+        context: Context,
+        view: RemoteViews,
+        song: Song,
+        isPlaying: Boolean,
+        appWidgetIds: IntArray?,
+    )
+
     private fun updateSong(
         context: Context, view: RemoteViews,
         song: Song, isPlaying: Boolean, @ColorInt color: Int,

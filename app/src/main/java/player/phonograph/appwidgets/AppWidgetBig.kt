@@ -49,6 +49,16 @@ class AppWidgetBig : BaseAppWidget() {
 
         pushUpdate(context, appWidgetIds, remoteViews)
 
+        updateCover(context, remoteViews, song, isPlaying, appWidgetIds)
+    }
+
+    override fun updateCover(
+        context: Context,
+        view: RemoteViews,
+        song: Song,
+        isPlaying: Boolean,
+        appWidgetIds: IntArray?,
+    ) {
         // Load the album cover async and push the update on completion
         val p = context.getScreenSize()
         val widgetImageSize = p.x.coerceAtMost(p.y)
@@ -73,15 +83,14 @@ class AppWidgetBig : BaseAppWidget() {
 
                 private fun onUpdate(bitmap: Bitmap?) {
                     if (bitmap == null) {
-                        remoteViews.setImageViewResource(R.id.image, R.drawable.default_album_art)
+                        view.setImageViewResource(R.id.image, R.drawable.default_album_art)
                     } else {
-                        remoteViews.setImageViewBitmap(R.id.image, bitmap)
+                        view.setImageViewBitmap(R.id.image, bitmap)
                     }
-                    pushUpdate(context.applicationContext, appWidgetIds, remoteViews)
+                    pushUpdate(context.applicationContext, appWidgetIds, view)
                 }
             }
         )
-
 
     }
 
