@@ -12,7 +12,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.ui.activities.StarterActivity
+import player.phonograph.ui.activities.LauncherActivity
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
 import androidx.annotation.ColorInt
@@ -144,12 +144,12 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
 
     /**
-     * PendingIntent for launching [StarterActivity]
+     * PendingIntent for launching [LauncherActivity]
      */
     protected fun launchPendingIntent(context: Context): PendingIntent = PendingIntent.getActivity(
         context,
         0,
-        Intent(context, StarterActivity::class.java).apply {
+        Intent(context, LauncherActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         },
         PendingIntent.FLAG_IMMUTABLE
