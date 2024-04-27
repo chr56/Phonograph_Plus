@@ -1,12 +1,12 @@
 package player.phonograph.appwidgets
 
+import player.phonograph.service.MusicService
 import android.appwidget.AppWidgetManager
 import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import player.phonograph.service.MusicService
 
 class BootReceiver : BroadcastReceiver() {
 

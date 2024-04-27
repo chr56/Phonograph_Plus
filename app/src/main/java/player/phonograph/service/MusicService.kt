@@ -400,20 +400,21 @@ class MusicService : MediaBrowserServiceCompat() {
             override fun onReceive(context: Context, intent: Intent) {
                 val command = intent.getStringExtra(EXTRA_APP_WIDGET_NAME)
                 val ids = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
+                val service = this@MusicService
                 when (command) {
-                    AppWidgetClassic.NAME -> AppWidgetClassic.instance.performUpdate(this@MusicService, ids)
-                    AppWidgetSmall.NAME   -> AppWidgetSmall.instance.performUpdate(this@MusicService, ids)
-                    AppWidgetBig.NAME     -> AppWidgetBig.instance.performUpdate(this@MusicService, ids)
-                    AppWidgetCard.NAME    -> AppWidgetCard.instance.performUpdate(this@MusicService, ids)
+                    AppWidgetClassic.NAME -> AppWidgetClassic.instance.performUpdate(service, isPlaying, ids)
+                    AppWidgetSmall.NAME   -> AppWidgetSmall.instance.performUpdate(service, isPlaying, ids)
+                    AppWidgetBig.NAME     -> AppWidgetBig.instance.performUpdate(service, isPlaying, ids)
+                    AppWidgetCard.NAME    -> AppWidgetCard.instance.performUpdate(service, isPlaying, ids)
                 }
             }
         }
 
     private fun notifyWidget(what: String) {
-        AppWidgetBig.instance.notifyChange(this, what)
-        AppWidgetClassic.instance.notifyChange(this, what)
-        AppWidgetSmall.instance.notifyChange(this, what)
-        AppWidgetCard.instance.notifyChange(this, what)
+        AppWidgetBig.instance.notifyChange(this, isPlaying, what)
+        AppWidgetClassic.instance.notifyChange(this, isPlaying, what)
+        AppWidgetSmall.instance.notifyChange(this, isPlaying, what)
+        AppWidgetCard.instance.notifyChange(this, isPlaying, what)
     }
 
 
