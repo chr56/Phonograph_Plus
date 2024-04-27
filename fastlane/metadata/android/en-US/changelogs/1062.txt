@@ -1,0 +1,6 @@
+<b>1.6.2(1062) 2024.04.27</b>
+- Fix: rare random crash due to cover artwork in Main Player
+- Fix: blank App Widget if app is not running (especially after device booting)
+- Modify: start service when clicking App Widget if app is not running instead of launching app
+- Improve: performance of App Widget
+- Development: upgrade dependencies

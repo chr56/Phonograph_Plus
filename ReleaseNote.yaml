@@ -1,29 +1,21 @@
-version: "1.6.1"
-versionCode: 1061
-timestamp: 1713449989
+version: "1.6.2"
+versionCode: 1062
+timestamp: 1714191671
 channel: "STABLE"
 notes:
   en:
     highlights: [ ]
     items:
-      - "Fix: crash after adding a same track multiple times in a same playlist"
-      - "Fix: removing a track in a playlist would remove all same songs"
-      - "Fix: possible random crash after selecting multiple items"
-      - "Modify: reorder menu items of Playlist Detail"
-      - "Improve: simplify user interactions when modifying a playlist via SAF"
-      - "Improve: speed of deleting multiple playlists"
-      - "Translation: update Polish (by cooky)"
-      - "Translation: update Spanish (by Dderfla_53)"
-      - "Development: upgrade AGP to 8.3.3"
+      - "Fix: rare random crash due to cover artwork in Main Player"
+      - "Fix: blank App Widget if app is not running (especially after device booting)"
+      - "Modify: start service when clicking App Widget if app is not running instead of launching app"
+      - "Improve: performance of App Widget"
+      - "Development: upgrade dependencies"
   zh:
     highlights: [ ]
     items:
-      - "修复 向某播放列表中重复添加相同曲目后崩溃"
-      - "修复 删除播放列表中的曲目会删除所有相同歌曲"
-      - "修复 在选择多个项目后可能随机崩溃"
-      - "修改 改进播放列表详情的菜单项"
-      - "改进 使用 SAF 修改播放列表时的，简化用户交互"
-      - "改进 加快删除多个播放列表的速度"
-      - "翻译 更新波兰语(cooky)"
-      - "翻译 更新西班牙语(Dderfla_53)"
-      - "开发 更新 AGP 至 8.3.3"
+      - "修复 罕见随机崩溃 （由主播放器图片而导致）"
+      - "修复 微件白屏，若应用未运行（特别是在开机后）"
+      - "修改 若应用未运行，则点击微件时启动服务，而不是打开应用"
+      - "改进 微件性能"
+      - "开发 更新依赖"
