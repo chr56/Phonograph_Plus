@@ -7,8 +7,12 @@
       "date": 1713450000,
       "link": [
         {
-          "name": "Github Release",
+          "name": "Github Release (Website)",
           "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.6.1"
+        },
+        {
+          "name": "Github Release (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.6.1/PhonographPlus_1.6.1.apk"
         }
       ],
       "releaseNote": {
@@ -23,8 +27,12 @@
       "date": 1712825000,
       "link": [
         {
-          "name": "Github Release",
+          "name": "Github Release (Website)",
           "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.6.0"
+        },
+        {
+          "name": "Github Release (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.6.0/PhonographPlus_1.6.0.apk"
         }
       ],
       "releaseNote": {
@@ -39,8 +47,12 @@
       "date": 1712746000,
       "link": [
         {
-          "name": "Github Release",
+          "name": "Github Release (Website)",
           "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.6-beta1"
+        },
+        {
+          "name": "Github Release (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.6-beta1/PhonographPlus_1.6-beta1.apk"
         }
       ],
       "releaseNote": {
@@ -55,8 +67,12 @@
       "date": 1709790000,
       "link": [
         {
-          "name": "Github Release",
+          "name": "Github Release (Website)",
           "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.4.5"
+        },
+        {
+          "name": "Github Release (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.4.5.LTS/PhonographPlus_1.4.5.LTS.apk"
         }
       ],
       "releaseNote": {
