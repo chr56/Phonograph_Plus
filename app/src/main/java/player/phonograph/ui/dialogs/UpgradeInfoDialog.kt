@@ -25,9 +25,9 @@ import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.TempPopupContent
 import player.phonograph.util.parcelable
 import player.phonograph.util.text.dateText
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -39,7 +39,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -136,21 +137,12 @@ private fun MainContent(versionCatalog: VersionCatalog, dismiss: () -> Unit) {
 
 @Composable
 private fun Version(version: Version) {
-    var showPopup: Boolean by remember { mutableStateOf(false) }
-    val dismissPopup = { showPopup = false }
     Box(Modifier.padding(horizontal = 8.dp, vertical = 16.dp)) {
-        VersionInfo(version) { showPopup = true }
-        if (showPopup) Popup(Alignment.Center, onDismissRequest = dismissPopup) {
-            VersionPopupContent(version, dismissPopup)
+        Column(Modifier) {
+            VersionTitle(version)
+            VersionNote(version)
+            DownloadLink(version)
         }
-    }
-}
-
-@Composable
-private fun VersionInfo(version: Version, onClick: () -> Unit) {
-    Column(Modifier.clickable(onClick = onClick)) {
-        VersionTitle(version)
-        VersionNote(version)
     }
 }
 
@@ -207,6 +199,23 @@ private fun VersionNote(version: Version) {
     }
 }
 
+@Composable
+private fun ColumnScope.DownloadLink(version: Version) {
+    Row(Modifier.align(Alignment.End)) {
+        var showPopup: Boolean by remember { mutableStateOf(false) }
+        val dismissPopup = { showPopup = false }
+        TextButton(onClick = { showPopup = true }) {
+            Text(
+                stringResource(R.string.download),
+                style = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
+            )
+        }
+        if (showPopup) Popup(Alignment.BottomEnd, onDismissRequest = dismissPopup) {
+            VersionPopupContent(version, dismissPopup)
+        }
+    }
+}
+
 private fun noteAnnotationString(spanned: Spanned): AnnotatedString = buildAnnotatedString {
     for (line in spanned.toString().lines().filter { it.isNotEmpty() }) {
         append('\n')
@@ -234,7 +243,7 @@ private fun VersionPopupContent(version: Version, dismissPopup: () -> Unit) {
             for (link in version.link) {
                 TextButton(onClick = { context.open(link.uri) }) {
                     Icon(
-                        Icons.Default.Home,
+                        Icons.AutoMirrored.Filled.ArrowForward,
                         null,
                         Modifier
                             .padding(4.dp)
