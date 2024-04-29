@@ -30,22 +30,20 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewMo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val accentColor = ThemeColor.accentColor(requireContext())
         super.onViewCreated(view, savedInstanceState)
-
+        // Layout Manager
+        layoutManager = LinearLayoutManager(activity)
+        // Header
         binding.buttonPageHeader.visibility = View.GONE
         binding.buttonBack.setImageDrawable(requireContext().getThemedDrawable(MDR.drawable.md_nav_back))
         binding.buttonBack.setOnClickListener { gotoTopLevel(true) }
         binding.buttonBack.setOnLongClickListener {
-            val position = layoutManager.findFirstVisibleItemPosition()
-            model.changeLocation(it.context, position, Location.HOME)
+            onSwitch(Location.HOME)
             true
         }
         // bread crumb
         binding.header.apply {
             location = model.currentLocation.value
-            callBack = {
-                val position = layoutManager.findFirstVisibleItemPosition()
-                model.changeLocation(context, position, it)
-            }
+            callBack = ::onSwitch
         }
 
         binding.container.apply {
@@ -57,11 +55,9 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewMo
         }
 
         // recycle view
-        layoutManager = LinearLayoutManager(requireContext())
         adapter = FilesChooserAdapter(requireActivity(), model.currentFiles.value) {
-            val position = layoutManager.findFirstVisibleItemPosition()
             when (it) {
-                is FileEntity.Folder -> model.changeLocation(requireContext(), position, it.location)
+                is FileEntity.Folder -> onSwitch(it.location)
                 is FileEntity.File   -> {}
             }
         }

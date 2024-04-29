@@ -172,9 +172,8 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
                 val path = volumes[choice].root()?.absolutePath
                 if (path == null) {
                     Toast.makeText(context, R.string.not_available_now, Toast.LENGTH_SHORT).show()
-                } else { // todo
-                    val position = layoutManager.findFirstVisibleItemPosition()
-                    model.changeLocation(requireContext(), position, Location.fromAbsolutePath("$path/"))
+                } else {
+                    onSwitch(Location.fromAbsolutePath("$path/")) // todo
                 }
             }
             .show()
@@ -185,12 +184,11 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
      * @param allowToChangeVolume false if do not intend to change volume
      * @return success or not
      */
-    internal fun gotoTopLevel(allowToChangeVolume: Boolean): Boolean {
+    protected fun gotoTopLevel(allowToChangeVolume: Boolean): Boolean {
         if (context == null) return false
         val parent = model.currentLocation.value.parent
         return if (parent != null) {
-            val position = layoutManager.findFirstVisibleItemPosition()
-            model.changeLocation(requireContext(), position, parent)
+            onSwitch(parent)
             true
         } else {
             Snackbar.make(binding.root, getString(R.string.reached_to_root), Snackbar.LENGTH_SHORT).show()
@@ -200,6 +198,11 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
                 requireChangeVolume()
             }
         }
+    }
+
+    protected fun onSwitch(location: Location) {
+        val position = layoutManager.findLastVisibleItemPosition()
+        model.changeLocation(requireContext(), position, location)
     }
 
     private fun updateBackPressedDispatcher(location: Location) {

@@ -46,7 +46,9 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel, F
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val accentColor = ThemeColor.accentColor(requireContext())
         super.onViewCreated(view, savedInstanceState)
-        // header
+        // Layout Manager
+        layoutManager = LinearLayoutManager(activity)
+        // Header
         binding.buttonPageHeader.setImageDrawable(requireContext().getThemedDrawable(R.drawable.ic_sort_variant_white_24dp))
         binding.buttonPageHeader.setOnClickListener {
             popup.showAtLocation(
@@ -56,17 +58,13 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel, F
         binding.buttonBack.setImageDrawable(requireContext().getThemedDrawable(MDR.drawable.md_nav_back))
         binding.buttonBack.setOnClickListener { gotoTopLevel(true) }
         binding.buttonBack.setOnLongClickListener {
-            val position = layoutManager.findFirstVisibleItemPosition()
-            model.changeLocation(requireContext(), position, Location.HOME)
+            onSwitch(Location.HOME)
             true
         }
         // bread crumb
         binding.header.apply {
             location = model.currentLocation.value
-            callBack = {
-                val position = layoutManager.findFirstVisibleItemPosition()
-                model.changeLocation(context, position, it)
-            }
+            callBack = ::onSwitch
         }
 
         binding.container.apply {
@@ -78,11 +76,10 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel, F
         }
 
         // recycle view
-        layoutManager = LinearLayoutManager(activity)
         adapter = FilesPageAdapter(requireActivity(), model.currentFiles.value) { fileEntities, position ->
             when (val item = fileEntities[position]) {
                 is FileEntity.Folder -> {
-                    model.changeLocation(requireContext(), layoutManager.findFirstVisibleItemPosition(), item.location)
+                    onSwitch(item.location)
                 }
 
                 is FileEntity.File   -> {
