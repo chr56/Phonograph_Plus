@@ -42,11 +42,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
     private var _viewBinding: FragmentFolderPageBinding? = null
     protected val binding get() = _viewBinding!!
     // view model
-    protected lateinit var model: M
-
-    fun initModel(model: M) {
-        this.model = model
-    }
+    protected abstract val model: M
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _viewBinding = FragmentFolderPageBinding.inflate(
@@ -134,7 +130,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
      * reload all files (determined by [AbsFileViewModel.currentLocation])
      */
     protected fun refreshFiles() {
-        context?.let { model.refreshFiles(it) }
+        model.refreshFiles(requireContext())
     }
 
 

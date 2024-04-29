@@ -5,18 +5,19 @@
 package player.phonograph.ui.fragments.explorer
 
 import mt.pref.ThemeColor
-import player.phonograph.App
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.os.Bundle
 import android.view.View
+import com.afollestad.materialdialogs.R as MDR
 
 class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewModel>() {
 
-    private lateinit var fileModel: FilesChooserViewModel
+    override val model: FilesChooserViewModel by viewModels({ requireActivity() })
 
     private lateinit var adapter: FilesChooserAdapter
     private lateinit var layoutManager: RecyclerView.LayoutManager
@@ -28,12 +29,11 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewMo
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val accentColor = ThemeColor.accentColor(requireContext())
         super.onViewCreated(view, savedInstanceState)
-        val activity = requireActivity()
 
-        fileModel = model
         binding.buttonPageHeader.visibility = View.GONE
-        binding.buttonBack.setImageDrawable(requireContext().getThemedDrawable(com.afollestad.materialdialogs.R.drawable.md_nav_back))
+        binding.buttonBack.setImageDrawable(requireContext().getThemedDrawable(MDR.drawable.md_nav_back))
         binding.buttonBack.setOnClickListener { gotoTopLevel(true) }
         binding.buttonBack.setOnLongClickListener {
             model.changeLocation(it.context, Location.HOME)
@@ -48,7 +48,7 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewMo
         }
 
         binding.container.apply {
-            setColorSchemeColors(ThemeColor.accentColor(activity))
+            setColorSchemeColors(accentColor)
             setProgressViewOffset(false, 0, 180)
             setOnRefreshListener {
                 refreshFiles()
@@ -56,23 +56,20 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewMo
         }
 
         // recycle view
-        layoutManager = LinearLayoutManager(activity)
-        adapter = FilesChooserAdapter(activity, model.currentFiles.value) {
+        layoutManager = LinearLayoutManager(requireContext())
+        adapter = FilesChooserAdapter(requireActivity(), model.currentFiles.value) {
             when (it) {
                 is FileEntity.Folder -> model.changeLocation(requireContext(), it.location)
                 is FileEntity.File   -> {}
             }
         }
 
-        binding.recyclerView.setUpFastScrollRecyclerViewColor(
-            activity,
-            ThemeColor.accentColor(App.instance)
-        )
+        binding.recyclerView.setUpFastScrollRecyclerViewColor(requireActivity(), accentColor)
         binding.recyclerView.apply {
             layoutManager = this@FilesChooserExplorerFragment.layoutManager
             adapter = this@FilesChooserExplorerFragment.adapter
         }
-        model.refreshFiles(activity)
+        model.refreshFiles(requireContext())
 
         binding.innerAppBar.setExpanded(true)
     }
