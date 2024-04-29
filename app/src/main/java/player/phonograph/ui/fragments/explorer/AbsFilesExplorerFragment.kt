@@ -23,6 +23,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStateAtLeast
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -36,7 +37,7 @@ import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
+sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<*>> : Fragment() {
 
     // view binding
     private var _viewBinding: FragmentFolderPageBinding? = null
@@ -44,7 +45,8 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
     // view model
     protected abstract val model: M
     // adapter
-    protected abstract var layoutManager: RecyclerView.LayoutManager
+    protected abstract var adapter: A
+    protected abstract var layoutManager: LinearLayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _viewBinding = FragmentFolderPageBinding.inflate(

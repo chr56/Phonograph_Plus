@@ -10,17 +10,16 @@ import player.phonograph.model.file.Location
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.os.Bundle
 import android.view.View
 import com.afollestad.materialdialogs.R as MDR
 
-class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewModel>() {
+class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewModel, FilesChooserAdapter>() {
 
     override val model: FilesChooserViewModel by viewModels({ requireActivity() })
 
-    private lateinit var adapter: FilesChooserAdapter
-    override lateinit var layoutManager: RecyclerView.LayoutManager
+    override lateinit var adapter: FilesChooserAdapter
+    override lateinit var layoutManager: LinearLayoutManager
 
 
     override fun updateFilesDisplayed() {

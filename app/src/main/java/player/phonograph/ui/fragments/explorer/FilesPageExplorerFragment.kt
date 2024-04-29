@@ -18,7 +18,6 @@ import player.phonograph.ui.views.StatusBarView
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Gravity
@@ -26,12 +25,12 @@ import android.view.View
 import java.lang.ref.SoftReference
 import com.afollestad.materialdialogs.R as MDR
 
-class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel>() {
+class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel, FilesPageAdapter>() {
 
     override val model: FilesPageViewModel by viewModels({ requireActivity() })
 
-    private lateinit var adapter: FilesPageAdapter
-    override lateinit var layoutManager: RecyclerView.LayoutManager
+    override lateinit var adapter: FilesPageAdapter
+    override lateinit var layoutManager: LinearLayoutManager
 
     override fun updateFilesDisplayed() {
         adapter.dataSet = model.currentFiles.value.toMutableList()
