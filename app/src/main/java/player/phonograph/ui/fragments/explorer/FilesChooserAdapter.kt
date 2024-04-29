@@ -24,7 +24,7 @@ class FilesChooserAdapter(
     activity: ComponentActivity,
     dataset: Collection<FileEntity>,
     private val callback: (FileEntity) -> Unit,
-) : AbsFilesAdapter<AbsFilesAdapter.ViewHolder>(activity, dataset) {
+) : AbsFilesAdapter<AbsFilesAdapter.ViewHolder>(activity, dataset, allowMultiSelection = false) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -58,5 +58,4 @@ class FilesChooserAdapter(
         }
     }
 
-    override val allowMultiSelection: Boolean get() = false
 }

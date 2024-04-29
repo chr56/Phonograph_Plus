@@ -30,7 +30,6 @@ class FilesPage : AbsPage() {
 
         explorer = FilesPageExplorerFragment()
         explorer.mainFragment = mainFragment
-        explorer.initModel(model)
 
         childFragmentManager.commitNow {
             replace(R.id.container, explorer, "FilesPageExplorer")

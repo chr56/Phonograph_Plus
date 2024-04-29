@@ -36,7 +36,6 @@ abstract class FileChooserDialog : LargeDialog() {
         savedInstanceState: Bundle?,
     ): View {
         explorer = FilesChooserExplorerFragment()
-        explorer.initModel(model)
         return setupView(inflater, explorer)
     }
 

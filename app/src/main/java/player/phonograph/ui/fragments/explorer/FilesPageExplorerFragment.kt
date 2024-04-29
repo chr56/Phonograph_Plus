@@ -16,19 +16,21 @@ import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.MainFragment
 import player.phonograph.ui.views.StatusBarView
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import java.lang.ref.SoftReference
+import com.afollestad.materialdialogs.R as MDR
 
-class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel>() {
+class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel, FilesPageAdapter>() {
 
-    private lateinit var fileModel: FilesPageViewModel
+    override val model: FilesPageViewModel by viewModels({ requireActivity() })
 
-    private lateinit var adapter: FilesPageAdapter
-    private lateinit var layoutManager: RecyclerView.LayoutManager
+    override lateinit var adapter: FilesPageAdapter
+    override lateinit var layoutManager: LinearLayoutManager
 
     override fun updateFilesDisplayed() {
         adapter.dataSet = model.currentFiles.value.toMutableList()
@@ -42,32 +44,31 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel>()
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val accentColor = ThemeColor.accentColor(requireContext())
         super.onViewCreated(view, savedInstanceState)
-        val activity = requireActivity()
-        fileModel = model
-        // header
-        binding.buttonPageHeader.setImageDrawable(activity.getThemedDrawable(R.drawable.ic_sort_variant_white_24dp))
+        // Layout Manager
+        layoutManager = LinearLayoutManager(activity)
+        // Header
+        binding.buttonPageHeader.setImageDrawable(requireContext().getThemedDrawable(R.drawable.ic_sort_variant_white_24dp))
         binding.buttonPageHeader.setOnClickListener {
             popup.showAtLocation(
                 binding.root, Gravity.TOP or Gravity.END, 0, calculateHeight()
             )
         }
-        binding.buttonBack.setImageDrawable(activity.getThemedDrawable(com.afollestad.materialdialogs.R.drawable.md_nav_back))
+        binding.buttonBack.setImageDrawable(requireContext().getThemedDrawable(MDR.drawable.md_nav_back))
         binding.buttonBack.setOnClickListener { gotoTopLevel(true) }
         binding.buttonBack.setOnLongClickListener {
-            model.changeLocation(requireContext(), Location.HOME)
+            onSwitch(Location.HOME)
             true
         }
         // bread crumb
         binding.header.apply {
             location = model.currentLocation.value
-            callBack = {
-                model.changeLocation(context, it)
-            }
+            callBack = ::onSwitch
         }
 
         binding.container.apply {
-            setColorSchemeColors(ThemeColor.accentColor(activity))
+            setColorSchemeColors(accentColor)
             setProgressViewOffset(false, 0, 180)
             setOnRefreshListener {
                 refreshFiles()
@@ -75,33 +76,29 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel>()
         }
 
         // recycle view
-        layoutManager = LinearLayoutManager(activity)
-        adapter = FilesPageAdapter(activity, model.currentFiles.value) { fileEntities, position ->
+        adapter = FilesPageAdapter(requireActivity(), model.currentFiles.value) { fileEntities, position ->
             when (val item = fileEntities[position]) {
                 is FileEntity.Folder -> {
-                    model.changeLocation(requireContext(), item.location)
+                    onSwitch(item.location)
                 }
 
                 is FileEntity.File   -> {
                     ClickActionProviders.FileEntityClickActionProvider().listClick(
                         fileEntities,
                         position,
-                        activity,
+                        requireContext(),
                         null
                     )
                 }
             }
         }//todo
 
-        binding.recyclerView.setUpFastScrollRecyclerViewColor(
-            activity,
-            ThemeColor.accentColor(requireContext())
-        )
+        binding.recyclerView.setUpFastScrollRecyclerViewColor(requireContext(), accentColor)
         binding.recyclerView.apply {
             layoutManager = this@FilesPageExplorerFragment.layoutManager
             adapter = this@FilesPageExplorerFragment.adapter
         }
-        model.refreshFiles(activity)
+        model.refreshFiles(requireContext())
     }
 
     private val popup: ListOptionsPopup by lazy(LazyThreadSafetyMode.NONE) {
@@ -121,17 +118,18 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel>()
             arrayOf(SortRef.DISPLAY_NAME, SortRef.ADDED_DATE, SortRef.MODIFIED_DATE, SortRef.SIZE)
 
         popup.showFileOption = true
-        popup.useLegacyListFiles = fileModel.useLegacyListFile
-        popup.showFilesImages = fileModel.showFilesImages
+        popup.useLegacyListFiles = model.useLegacyListFile
+        popup.showFilesImages = model.showFilesImages
     }
 
     private fun dismissPopup(popup: ListOptionsPopup) {
         Setting(popup.contentView.context).Composites[Keys.fileSortMode].data =
             SortMode(popup.sortRef, popup.revert)
-        fileModel.useLegacyListFile = popup.useLegacyListFiles
-        if (fileModel.showFilesImages != popup.showFilesImages) {
-            fileModel.showFilesImages = popup.showFilesImages
-            adapter.loadCover = fileModel.showFilesImages
+        model.useLegacyListFile = popup.useLegacyListFiles
+        @SuppressLint("NotifyDataSetChanged")
+        if (model.showFilesImages != popup.showFilesImages) {
+            model.showFilesImages = popup.showFilesImages
+            adapter.loadCover = model.showFilesImages
             adapter.notifyDataSetChanged()
         }
         refreshFiles()

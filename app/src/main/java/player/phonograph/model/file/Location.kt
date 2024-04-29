@@ -100,6 +100,7 @@ class Location private constructor(val basePath: String, val storageVolume: Stor
 
         return true
     }
+    override fun toString(): String = "${storageVolume.uuid}:$basePath"
 
     val sqlPattern get() = "%${absolutePath}%"
 }

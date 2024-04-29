@@ -16,7 +16,8 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.activity.ComponentActivity
-import android.graphics.PorterDuff
+import android.content.Context
+import android.graphics.drawable.Drawable
 import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +29,7 @@ class FilesPageAdapter(
     activity: ComponentActivity,
     dataset: Collection<FileEntity>,
     private val callback: (List<FileEntity>, Int) -> Unit,
-) : AbsFilesAdapter<FilesPageAdapter.ViewHolder>(activity, dataset) {
+) : AbsFilesAdapter<FilesPageAdapter.ViewHolder>(activity, dataset, allowMultiSelection = true) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -44,7 +45,7 @@ class FilesPageAdapter(
             with(binding) {
                 title.text = item.name
                 text.text = when (item) {
-                    is FileEntity.File -> Formatter.formatFileSize(context, item.size)
+                    is FileEntity.File   -> Formatter.formatFileSize(context, item.size)
                     is FileEntity.Folder -> context.resources.getQuantityString(
                         R.plurals.item_songs, item.songCount, item.songCount
                     )
@@ -68,43 +69,34 @@ class FilesPageAdapter(
         }
 
         private fun setImage(image: ImageView, item: FileEntity) {
-            val context = image.context
-            if (item is FileEntity.File) {
-                if (loadCover) {
-                    loadImage(image.context) {
-                        data(item)
-                        size(ViewSizeResolver(image))
-                        target(
-                            onStart = {
-                                image.setImageDrawable(
-                                    image.context.getTintedDrawable(
-                                        R.drawable.ic_file_music_white_24dp,
-                                        resolveColor(context, R.attr.iconColor)
-                                    )
-                                )
-                            },
-                            onSuccess = { image.setImageDrawable(it) }
-                        )
+            when (item) {
+                is FileEntity.File   -> {
+                    if (loadCover) {
+                        loadImage(image.context) {
+                            data(item)
+                            size(ViewSizeResolver(image))
+                            target(
+                                onStart = { image.setImageDrawable(iconFile(image.context)) },
+                                onSuccess = { image.setImageDrawable(it) }
+                            )
+                        }
+                    } else {
+                        image.setImageDrawable(iconFile(image.context))
                     }
-                } else {
-                    image.setImageDrawable(
-                        image.context.getTintedDrawable(
-                            R.drawable.ic_file_music_white_24dp,
-                            resolveColor(context, R.attr.iconColor)
-                        )
-                    )
                 }
-            } else {
-                image.setImageResource(
-                    R.drawable.ic_folder_white_24dp
-                )
-                val iconColor = resolveColor(context, R.attr.iconColor)
-                image.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+
+                is FileEntity.Folder -> {
+                    image.setImageDrawable(iconFolder(image.context))
+                }
             }
         }
-    }
 
-    override val allowMultiSelection: Boolean get() = true
+        private fun iconFile(context: Context): Drawable? =
+            context.getTintedDrawable(R.drawable.ic_file_music_white_24dp, resolveColor(context, R.attr.iconColor))
+
+        private fun iconFolder(context: Context): Drawable? =
+            context.getTintedDrawable(R.drawable.ic_folder_white_24dp, resolveColor(context, R.attr.iconColor))
+    }
 
     var loadCover: Boolean = Setting(activity)[Keys.showFileImages].data
 

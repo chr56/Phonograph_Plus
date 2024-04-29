@@ -23,6 +23,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStateAtLeast
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -36,17 +37,16 @@ import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
+sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<*>> : Fragment() {
 
     // view binding
     private var _viewBinding: FragmentFolderPageBinding? = null
     protected val binding get() = _viewBinding!!
     // view model
-    protected lateinit var model: M
-
-    fun initModel(model: M) {
-        this.model = model
-    }
+    protected abstract val model: M
+    // adapter
+    protected abstract var adapter: A
+    protected abstract var layoutManager: LinearLayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _viewBinding = FragmentFolderPageBinding.inflate(
@@ -112,6 +112,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
                 lifecycle.withStateAtLeast(Lifecycle.State.STARTED) {
                     lifecycleScope.launch(Dispatchers.Main) {
                         updateFilesDisplayed()
+                        layoutManager.scrollToPosition(model.historyPosition)
                     }
                 }
             }
@@ -134,7 +135,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
      * reload all files (determined by [AbsFileViewModel.currentLocation])
      */
     protected fun refreshFiles() {
-        context?.let { model.refreshFiles(it) }
+        model.refreshFiles(requireContext())
     }
 
 
@@ -171,8 +172,8 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
                 val path = volumes[choice].root()?.absolutePath
                 if (path == null) {
                     Toast.makeText(context, R.string.not_available_now, Toast.LENGTH_SHORT).show()
-                } else { // todo
-                    model.changeLocation(requireContext(), Location.fromAbsolutePath("$path/"))
+                } else {
+                    onSwitch(Location.fromAbsolutePath("$path/")) // todo
                 }
             }
             .show()
@@ -183,11 +184,11 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
      * @param allowToChangeVolume false if do not intend to change volume
      * @return success or not
      */
-    internal fun gotoTopLevel(allowToChangeVolume: Boolean): Boolean {
+    protected fun gotoTopLevel(allowToChangeVolume: Boolean): Boolean {
         if (context == null) return false
         val parent = model.currentLocation.value.parent
         return if (parent != null) {
-            model.changeLocation(requireContext(), parent)
+            onSwitch(parent)
             true
         } else {
             Snackbar.make(binding.root, getString(R.string.reached_to_root), Snackbar.LENGTH_SHORT).show()
@@ -197,6 +198,11 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
                 requireChangeVolume()
             }
         }
+    }
+
+    protected fun onSwitch(location: Location) {
+        val position = layoutManager.findLastVisibleItemPosition()
+        model.changeLocation(requireContext(), position, location)
     }
 
     private fun updateBackPressedDispatcher(location: Location) {
