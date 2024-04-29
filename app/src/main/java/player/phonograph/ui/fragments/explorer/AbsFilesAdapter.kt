@@ -16,6 +16,7 @@ import android.annotation.SuppressLint
 abstract class AbsFilesAdapter<VH : AbsFilesAdapter.ViewHolder>(
     val activity: ComponentActivity,
     dataset: Collection<FileEntity>,
+    allowMultiSelection: Boolean,
 ) : RecyclerView.Adapter<VH>(),
     SectionedAdapter,
     IMultiSelectableAdapter<FileEntity> {
@@ -34,8 +35,6 @@ abstract class AbsFilesAdapter<VH : AbsFilesAdapter.ViewHolder>(
             activity,
             allowMultiSelection
         )
-
-    abstract val allowMultiSelection: Boolean
 
     override fun getItem(datasetPosition: Int): FileEntity = dataSet[datasetPosition]
 

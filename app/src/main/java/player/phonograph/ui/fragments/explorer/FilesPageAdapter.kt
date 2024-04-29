@@ -28,7 +28,7 @@ class FilesPageAdapter(
     activity: ComponentActivity,
     dataset: Collection<FileEntity>,
     private val callback: (List<FileEntity>, Int) -> Unit,
-) : AbsFilesAdapter<FilesPageAdapter.ViewHolder>(activity, dataset) {
+) : AbsFilesAdapter<FilesPageAdapter.ViewHolder>(activity, dataset, allowMultiSelection = true) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -103,8 +103,6 @@ class FilesPageAdapter(
             }
         }
     }
-
-    override val allowMultiSelection: Boolean get() = true
 
     var loadCover: Boolean = Setting(activity)[Keys.showFileImages].data
 
