@@ -112,6 +112,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
                 lifecycle.withStateAtLeast(Lifecycle.State.STARTED) {
                     lifecycleScope.launch(Dispatchers.Main) {
                         updateFilesDisplayed()
+                        layoutManager.scrollToPosition(model.historyPosition)
                     }
                 }
             }
@@ -172,7 +173,8 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
                 if (path == null) {
                     Toast.makeText(context, R.string.not_available_now, Toast.LENGTH_SHORT).show()
                 } else { // todo
-                    model.changeLocation(requireContext(), Location.fromAbsolutePath("$path/"))
+                    val position = layoutManager.findFirstVisibleItemPosition()
+                    model.changeLocation(requireContext(), position, Location.fromAbsolutePath("$path/"))
                 }
             }
             .show()
@@ -187,7 +189,8 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
         if (context == null) return false
         val parent = model.currentLocation.value.parent
         return if (parent != null) {
-            model.changeLocation(requireContext(), parent)
+            val position = layoutManager.findFirstVisibleItemPosition()
+            model.changeLocation(requireContext(), position, parent)
             true
         } else {
             Snackbar.make(binding.root, getString(R.string.reached_to_root), Snackbar.LENGTH_SHORT).show()

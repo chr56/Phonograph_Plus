@@ -35,14 +35,16 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewMo
         binding.buttonBack.setImageDrawable(requireContext().getThemedDrawable(MDR.drawable.md_nav_back))
         binding.buttonBack.setOnClickListener { gotoTopLevel(true) }
         binding.buttonBack.setOnLongClickListener {
-            model.changeLocation(it.context, Location.HOME)
+            val position = layoutManager.findFirstVisibleItemPosition()
+            model.changeLocation(it.context, position, Location.HOME)
             true
         }
         // bread crumb
         binding.header.apply {
             location = model.currentLocation.value
             callBack = {
-                model.changeLocation(context, it)
+                val position = layoutManager.findFirstVisibleItemPosition()
+                model.changeLocation(context, position, it)
             }
         }
 
@@ -57,8 +59,9 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewMo
         // recycle view
         layoutManager = LinearLayoutManager(requireContext())
         adapter = FilesChooserAdapter(requireActivity(), model.currentFiles.value) {
+            val position = layoutManager.findFirstVisibleItemPosition()
             when (it) {
-                is FileEntity.Folder -> model.changeLocation(requireContext(), it.location)
+                is FileEntity.Folder -> model.changeLocation(requireContext(), position, it.location)
                 is FileEntity.File   -> {}
             }
         }

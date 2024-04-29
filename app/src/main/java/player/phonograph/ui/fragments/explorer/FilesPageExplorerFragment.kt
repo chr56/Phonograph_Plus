@@ -56,14 +56,16 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel, F
         binding.buttonBack.setImageDrawable(requireContext().getThemedDrawable(MDR.drawable.md_nav_back))
         binding.buttonBack.setOnClickListener { gotoTopLevel(true) }
         binding.buttonBack.setOnLongClickListener {
-            model.changeLocation(requireContext(), Location.HOME)
+            val position = layoutManager.findFirstVisibleItemPosition()
+            model.changeLocation(requireContext(), position, Location.HOME)
             true
         }
         // bread crumb
         binding.header.apply {
             location = model.currentLocation.value
             callBack = {
-                model.changeLocation(context, it)
+                val position = layoutManager.findFirstVisibleItemPosition()
+                model.changeLocation(context, position, it)
             }
         }
 
@@ -80,7 +82,7 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel, F
         adapter = FilesPageAdapter(requireActivity(), model.currentFiles.value) { fileEntities, position ->
             when (val item = fileEntities[position]) {
                 is FileEntity.Folder -> {
-                    model.changeLocation(requireContext(), item.location)
+                    model.changeLocation(requireContext(), layoutManager.findFirstVisibleItemPosition(), item.location)
                 }
 
                 is FileEntity.File   -> {

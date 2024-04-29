@@ -25,7 +25,13 @@ sealed class AbsFileViewModel : ViewModel() {
         MutableStateFlow(Location.from(FileConfig.startDirectory))
     val currentLocation = _currentLocation.asStateFlow()
 
-    fun changeLocation(context: Context, newLocation: Location) {
+
+    // adapter position history
+    private val history: MutableMap<Location, Int> = mutableMapOf()
+    val historyPosition: Int get() = history[_currentLocation.value] ?: 0
+    fun changeLocation(context: Context, position: Int, newLocation: Location) {
+        val oldLocation = _currentLocation.value
+        history[oldLocation] = position
         _currentLocation.value = newLocation
         refreshFiles(context, newLocation)
     }
