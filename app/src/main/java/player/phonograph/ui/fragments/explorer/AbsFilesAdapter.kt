@@ -13,7 +13,7 @@ import androidx.activity.ComponentActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
 
-abstract class AbsFilesAdapter<VH : AbsFilesAdapter.ViewHolder>(
+sealed class AbsFilesAdapter<VH : AbsFilesAdapter.ViewHolder>(
     val activity: ComponentActivity,
     dataset: Collection<FileEntity>,
     allowMultiSelection: Boolean,
@@ -46,7 +46,7 @@ abstract class AbsFilesAdapter<VH : AbsFilesAdapter.ViewHolder>(
 
     override fun getSectionName(position: Int): String = dataSet[position].name.take(2)
 
-    abstract class ViewHolder(var binding: ItemListBinding) : RecyclerView.ViewHolder(binding.root) {
+    sealed class ViewHolder(var binding: ItemListBinding) : RecyclerView.ViewHolder(binding.root) {
         abstract fun bind(item: FileEntity, position: Int, controller: MultiSelectionController<FileEntity>)
     }
 
