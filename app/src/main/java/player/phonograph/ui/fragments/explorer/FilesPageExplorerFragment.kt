@@ -31,7 +31,7 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel>()
     override val model: FilesPageViewModel by viewModels({ requireActivity() })
 
     private lateinit var adapter: FilesPageAdapter
-    private lateinit var layoutManager: RecyclerView.LayoutManager
+    override lateinit var layoutManager: RecyclerView.LayoutManager
 
     override fun updateFilesDisplayed() {
         adapter.dataSet = model.currentFiles.value.toMutableList()

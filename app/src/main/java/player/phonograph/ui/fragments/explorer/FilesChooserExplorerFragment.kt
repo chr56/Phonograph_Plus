@@ -20,7 +20,7 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewMo
     override val model: FilesChooserViewModel by viewModels({ requireActivity() })
 
     private lateinit var adapter: FilesChooserAdapter
-    private lateinit var layoutManager: RecyclerView.LayoutManager
+    override lateinit var layoutManager: RecyclerView.LayoutManager
 
 
     override fun updateFilesDisplayed() {

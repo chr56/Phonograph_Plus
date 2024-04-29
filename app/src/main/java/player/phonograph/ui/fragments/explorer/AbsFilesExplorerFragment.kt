@@ -43,6 +43,8 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel> : Fragment() {
     protected val binding get() = _viewBinding!!
     // view model
     protected abstract val model: M
+    // adapter
+    protected abstract var layoutManager: RecyclerView.LayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _viewBinding = FragmentFolderPageBinding.inflate(
