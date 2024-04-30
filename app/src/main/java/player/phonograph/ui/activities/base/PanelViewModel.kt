@@ -32,7 +32,7 @@ class PanelViewModel(
     val highlightColor get() = _highlightColor.asStateFlow()
 
     private val _previousHighlightColor: MutableStateFlow<Int> = MutableStateFlow(initialHighlightColor)
-    val previewHighlightColor get() = _previousHighlightColor.asStateFlow()
+    val previousHighlightColor get() = _previousHighlightColor.asStateFlow()
 
     fun updateHighlightColor(newColor: Int) {
         viewModelScope.launch {

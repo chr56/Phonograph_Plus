@@ -117,7 +117,7 @@ abstract class AbsSlidingMusicPanelActivity :
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.highlightColor.collect { color ->
                     if (panelState == PanelState.EXPANDED) {
-                        animateThemeColorChange(viewModel.previewHighlightColor.value, color) { animation ->
+                        animateThemeColorChange(viewModel.previousHighlightColor.value, color) { animation ->
                             setStatusbarColor(
                                 if (viewModel.transparentStatusbar) Color.TRANSPARENT else animation.animatedValue as Int
                             )
