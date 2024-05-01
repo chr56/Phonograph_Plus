@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.fragments.explorer
 
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import lib.storage.root
 import mt.pref.ThemeColor
@@ -57,13 +56,11 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
             container,
             false
         )
-        binding.navigationHeader.addOnOffsetChangedListener(innerAppbarOffsetListener)
         return binding.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding.navigationHeader.removeOnOffsetChangedListener(innerAppbarOffsetListener)
         _viewBinding = null
     }
 
@@ -187,17 +184,6 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
     protected fun refreshFiles() {
         model.refreshFiles(requireContext())
     }
-
-
-    private val innerAppbarOffsetListener =
-        AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-            binding.container.setPadding(
-                binding.container.paddingLeft,
-                binding.navigationHeader.totalScrollRange + verticalOffset,
-                binding.container.paddingRight,
-                binding.container.paddingBottom
-            )
-        }
 
     /**
      * open a dialog to ask change storage volume (disk)

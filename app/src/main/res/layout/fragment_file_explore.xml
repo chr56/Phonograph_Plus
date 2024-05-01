@@ -5,55 +5,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/navigation_header"
+        android:elevation="2dp"
+        android:background="@color/cardBackgroundColor"
+        android:layout_gravity="top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="42dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            app:layout_scrollFlags="scroll|enterAlways">
+        <ImageButton
+            android:id="@+id/button_back"
+            android:layout_width="36dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="@+id/button_options"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/button_options"
+            tools:ignore="SpeakableTextPresentCheck" />
 
-            <ImageButton
-                android:id="@+id/button_back"
-                android:layout_width="48dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:background="@android:color/transparent"
-                app:layout_constraintBottom_toBottomOf="@+id/button_options"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/button_options"
-                tools:ignore="SpeakableTextPresentCheck" />
+        <player.phonograph.ui.views.BreadCrumbView
+            android:id="@+id/bread_crumb"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toStartOf="@id/button_options"
+            app:layout_constraintStart_toEndOf="@id/button_back">
 
-            <player.phonograph.ui.views.BreadCrumbView
-                android:id="@+id/bread_crumb"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toStartOf="@id/button_options"
-                app:layout_constraintStart_toEndOf="@id/button_back">
-
-            </player.phonograph.ui.views.BreadCrumbView>
+        </player.phonograph.ui.views.BreadCrumbView>
 
 
-            <ImageButton
-                android:id="@+id/button_options"
-                android:layout_width="48dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="8dp"
-                android:background="@android:color/transparent"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:ignore="SpeakableTextPresentCheck" />
+        <ImageButton
+            android:id="@+id/button_options"
+            android:layout_width="36dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="16dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="SpeakableTextPresentCheck" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/container"
+        android:layout_marginTop="42dp"
+        android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

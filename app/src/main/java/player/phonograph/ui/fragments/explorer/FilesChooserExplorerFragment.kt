@@ -28,9 +28,4 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewMo
                 is FileEntity.File   -> {}
             }
         }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.navigationHeader.setExpanded(true)
-    }
 }
