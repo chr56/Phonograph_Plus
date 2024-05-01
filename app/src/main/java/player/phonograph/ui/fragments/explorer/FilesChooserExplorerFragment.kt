@@ -6,8 +6,6 @@ package player.phonograph.ui.fragments.explorer
 
 import player.phonograph.model.file.FileEntity
 import androidx.fragment.app.viewModels
-import android.os.Bundle
-import android.view.View
 
 class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewModel, FilesChooserAdapter>() {
 
@@ -17,10 +15,6 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewMo
         adapter.dataSet = model.currentFiles.value.toMutableList()
     }
 
-    override fun onPrepareHeader() {
-        binding.buttonOptions.visibility = View.GONE
-    }
-
     override fun createAdapter(): FilesChooserAdapter =
         FilesChooserAdapter(requireActivity(), model.currentFiles.value) {
             when (it) {
@@ -28,4 +22,5 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewMo
                 is FileEntity.File   -> {}
             }
         }
+
 }

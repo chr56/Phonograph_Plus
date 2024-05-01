@@ -92,8 +92,6 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
             }
         }
 
-        onPrepareHeader()
-
         // Bread Crumb
         binding.breadCrumb.apply {
             location = model.currentLocation.value
@@ -123,8 +121,6 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
     }
 
     abstract fun createAdapter(): A
-
-    abstract fun onPrepareHeader()
 
     protected open fun setupObservers() {
         lifecycleScope.launch {

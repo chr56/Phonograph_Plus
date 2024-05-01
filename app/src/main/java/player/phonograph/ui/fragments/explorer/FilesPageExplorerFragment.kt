@@ -4,22 +4,9 @@
 
 package player.phonograph.ui.fragments.explorer
 
-import player.phonograph.R
 import player.phonograph.actions.ClickActionProviders
 import player.phonograph.model.file.FileEntity
-import player.phonograph.model.sort.SortMode
-import player.phonograph.model.sort.SortRef
-import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
-import player.phonograph.ui.components.popup.ListOptionsPopup
-import player.phonograph.ui.fragments.MainFragment
-import player.phonograph.ui.views.StatusBarView
 import androidx.fragment.app.viewModels
-import android.annotation.SuppressLint
-import android.os.Bundle
-import android.view.Gravity
-import android.view.View
-import java.lang.ref.SoftReference
 
 class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel, FilesPageAdapter>() {
 
@@ -27,10 +14,6 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel, F
 
     override fun updateFilesDisplayed() {
         adapter.dataSet = model.currentFiles.value.toMutableList()
-    }
-
-    override fun onPrepareHeader() {
-        binding.buttonOptions.visibility = View.GONE
     }
 
     override fun createAdapter(): FilesPageAdapter =
