@@ -18,7 +18,7 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewMo
     }
 
     override fun onPrepareHeader() {
-        binding.buttonPageHeader.visibility = View.GONE
+        binding.buttonOptions.visibility = View.GONE
     }
 
     override fun createAdapter(): FilesChooserAdapter =
@@ -31,6 +31,6 @@ class FilesChooserExplorerFragment : AbsFilesExplorerFragment<FilesChooserViewMo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.innerAppBar.setExpanded(true)
+        binding.navigationHeader.setExpanded(true)
     }
 }

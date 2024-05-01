@@ -30,8 +30,8 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel, F
     }
 
     override fun onPrepareHeader() {
-        binding.buttonPageHeader.setImageDrawable(requireContext().getThemedDrawable(R.drawable.ic_sort_variant_white_24dp))
-        binding.buttonPageHeader.setOnClickListener {
+        binding.buttonOptions.setImageDrawable(requireContext().getThemedDrawable(R.drawable.ic_sort_variant_white_24dp))
+        binding.buttonOptions.setOnClickListener {
             popup.showAtLocation(
                 binding.root, Gravity.TOP or Gravity.END, 0, calculateHeight()
             )
@@ -101,7 +101,7 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel, F
     private fun calculateHeight(): Int {
         val statusBarHeight = requireActivity().findViewById<StatusBarView>(R.id.status_bar)?.height ?: 8
         val appbarHeight = mainFragment?.totalHeaderHeight ?: 0
-        val innerAppBarHeight = binding.innerAppBar.height
+        val innerAppBarHeight = binding.navigationHeader.height
         return statusBarHeight + innerAppBarHeight + appbarHeight // + homeFragment.totalHeaderHeight //todo
     }
     //endregion

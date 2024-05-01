@@ -10,7 +10,7 @@ import lib.storage.root
 import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.R
-import player.phonograph.databinding.FragmentFolderPageBinding
+import player.phonograph.databinding.FragmentFileExploreBinding
 import player.phonograph.model.file.Location
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
@@ -43,7 +43,7 @@ import com.afollestad.materialdialogs.R as MDR
 sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<*>> : Fragment() {
 
     // view binding
-    private var _viewBinding: FragmentFolderPageBinding? = null
+    private var _viewBinding: FragmentFileExploreBinding? = null
     protected val binding get() = _viewBinding!!
     // view model
     protected abstract val model: M
@@ -52,18 +52,18 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
     protected lateinit var layoutManager: LinearLayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        _viewBinding = FragmentFolderPageBinding.inflate(
+        _viewBinding = FragmentFileExploreBinding.inflate(
             layoutInflater,
             container,
             false
         )
-        binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
+        binding.navigationHeader.addOnOffsetChangedListener(innerAppbarOffsetListener)
         return binding.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding.innerAppBar.removeOnOffsetChangedListener(innerAppbarOffsetListener)
+        binding.navigationHeader.removeOnOffsetChangedListener(innerAppbarOffsetListener)
         _viewBinding = null
     }
 
@@ -86,17 +86,19 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
         })
 
         // Back Button
-        binding.buttonBack.setImageDrawable(requireContext().getThemedDrawable(MDR.drawable.md_nav_back))
-        binding.buttonBack.setOnClickListener { gotoTopLevel(true) }
-        binding.buttonBack.setOnLongClickListener {
-            onSwitch(Location.HOME)
-            true
+        binding.buttonBack.apply {
+            setImageDrawable(requireContext().getThemedDrawable(MDR.drawable.md_nav_back))
+            setOnClickListener { gotoTopLevel(true) }
+            setOnLongClickListener {
+                onSwitch(Location.HOME)
+                true
+            }
         }
 
         onPrepareHeader()
 
         // Bread Crumb
-        binding.header.apply {
+        binding.breadCrumb.apply {
             location = model.currentLocation.value
             callBack = ::onSwitch
         }
@@ -132,11 +134,11 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
             model.currentLocation.collect { newLocation ->
                 lifecycle.withStateAtLeast(Lifecycle.State.STARTED) {
                     lifecycleScope.launch(Dispatchers.Main) {
-                        // header
-                        binding.header.apply {
+                        // Bread Crumb
+                        binding.breadCrumb.apply {
                             location = newLocation
                             layoutManager.scrollHorizontallyBy(
-                                binding.header.width / 4,
+                                binding.breadCrumb.width / 4,
                                 recyclerView.Recycler(),
                                 RecyclerView.State()
                             )
@@ -146,7 +148,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
                                 if (newLocation.parent == null) {
                                     R.drawable.ic_sdcard_white_24dp
                                 } else {
-                                    com.afollestad.materialdialogs.color.R.drawable.icon_back_white
+                                    MDR.drawable.md_nav_back
                                 }
                             )
                         )
@@ -191,7 +193,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
         AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             binding.container.setPadding(
                 binding.container.paddingLeft,
-                binding.innerAppBar.totalScrollRange + verticalOffset,
+                binding.navigationHeader.totalScrollRange + verticalOffset,
                 binding.container.paddingRight,
                 binding.container.paddingBottom
             )
