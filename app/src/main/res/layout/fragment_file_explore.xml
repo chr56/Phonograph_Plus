@@ -11,7 +11,7 @@
         android:background="@color/cardBackgroundColor"
         android:layout_gravity="top"
         android:layout_width="match_parent"
-        android:layout_height="42dp">
+        android:layout_height="@dimen/path_navigation_header_height">
 
         <ImageButton
             android:id="@+id/button_back"
@@ -51,7 +51,7 @@
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/container"
-        android:layout_marginTop="42dp"
+        android:layout_marginTop="@dimen/path_navigation_header_height"
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
