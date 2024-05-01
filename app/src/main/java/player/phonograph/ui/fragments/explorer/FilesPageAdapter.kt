@@ -16,6 +16,8 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.activity.ComponentActivity
+import androidx.lifecycle.lifecycleScope
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.text.format.Formatter
@@ -24,6 +26,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class FilesPageAdapter(
     activity: ComponentActivity,
@@ -98,6 +102,19 @@ class FilesPageAdapter(
             context.getTintedDrawable(R.drawable.ic_folder_white_24dp, resolveColor(context, R.attr.iconColor))
     }
 
-    var loadCover: Boolean = Setting(activity)[Keys.showFileImages].data
+    private var loadCover: Boolean = false
 
+    init {
+        activity.lifecycleScope.launch(Dispatchers.IO) {
+            Setting(activity)[Keys.showFileImages].flow.collect {
+                @SuppressLint("NotifyDataSetChanged")
+                if (loadCover != it) {
+                    loadCover = it
+                    launch(Dispatchers.Main) {
+                        notifyDataSetChanged()
+                    }
+                }
+            }
+        }
+    }
 }
