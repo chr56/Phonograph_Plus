@@ -1,13 +1,12 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
+
 package player.phonograph.ui.fragments.explorer
 
-import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.actions.ClickActionProviders
 import player.phonograph.model.file.FileEntity
-import player.phonograph.model.file.Location
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
@@ -15,68 +14,32 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.MainFragment
 import player.phonograph.ui.views.StatusBarView
-import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import java.lang.ref.SoftReference
-import com.afollestad.materialdialogs.R as MDR
 
 class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel, FilesPageAdapter>() {
 
     override val model: FilesPageViewModel by viewModels({ requireActivity() })
 
-    override lateinit var adapter: FilesPageAdapter
-    override lateinit var layoutManager: LinearLayoutManager
-
     override fun updateFilesDisplayed() {
         adapter.dataSet = model.currentFiles.value.toMutableList()
     }
 
-    private var _mainFragment: SoftReference<MainFragment?> = SoftReference(null)
-    var mainFragment: MainFragment?
-        get() = _mainFragment.get()
-        set(value) {
-            _mainFragment = SoftReference(value)
-        }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val accentColor = ThemeColor.accentColor(requireContext())
-        super.onViewCreated(view, savedInstanceState)
-        // Layout Manager
-        layoutManager = LinearLayoutManager(activity)
-        // Header
+    override fun onPrepareHeader() {
         binding.buttonPageHeader.setImageDrawable(requireContext().getThemedDrawable(R.drawable.ic_sort_variant_white_24dp))
         binding.buttonPageHeader.setOnClickListener {
             popup.showAtLocation(
                 binding.root, Gravity.TOP or Gravity.END, 0, calculateHeight()
             )
         }
-        binding.buttonBack.setImageDrawable(requireContext().getThemedDrawable(MDR.drawable.md_nav_back))
-        binding.buttonBack.setOnClickListener { gotoTopLevel(true) }
-        binding.buttonBack.setOnLongClickListener {
-            onSwitch(Location.HOME)
-            true
-        }
-        // bread crumb
-        binding.header.apply {
-            location = model.currentLocation.value
-            callBack = ::onSwitch
-        }
+    }
 
-        binding.container.apply {
-            setColorSchemeColors(accentColor)
-            setProgressViewOffset(false, 0, 180)
-            setOnRefreshListener {
-                refreshFiles()
-            }
-        }
-
-        // recycle view
-        adapter = FilesPageAdapter(requireActivity(), model.currentFiles.value) { fileEntities, position ->
+    override fun createAdapter(): FilesPageAdapter =
+        FilesPageAdapter(requireActivity(), model.currentFiles.value) { fileEntities, position ->
             when (val item = fileEntities[position]) {
                 is FileEntity.Folder -> {
                     onSwitch(item.location)
@@ -93,13 +56,13 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel, F
             }
         }//todo
 
-        binding.recyclerView.setUpFastScrollRecyclerViewColor(requireContext(), accentColor)
-        binding.recyclerView.apply {
-            layoutManager = this@FilesPageExplorerFragment.layoutManager
-            adapter = this@FilesPageExplorerFragment.adapter
+    // region Popup
+    private var _mainFragment: SoftReference<MainFragment?> = SoftReference(null)
+    var mainFragment: MainFragment?
+        get() = _mainFragment.get()
+        set(value) {
+            _mainFragment = SoftReference(value)
         }
-        model.refreshFiles(requireContext())
-    }
 
     private val popup: ListOptionsPopup by lazy(LazyThreadSafetyMode.NONE) {
         ListOptionsPopup(requireContext()).also {
@@ -141,4 +104,5 @@ class FilesPageExplorerFragment : AbsFilesExplorerFragment<FilesPageViewModel, F
         val innerAppBarHeight = binding.innerAppBar.height
         return statusBarHeight + innerAppBarHeight + appbarHeight // + homeFragment.totalHeaderHeight //todo
     }
+    //endregion
 }
