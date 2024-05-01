@@ -14,6 +14,7 @@ import player.phonograph.settings.Setting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
+import android.util.SparseIntArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,12 +34,16 @@ class FlattenFolderPageViewModel : ViewModel() {
     private val _currentSongs: MutableStateFlow<List<Song>> = MutableStateFlow(emptyList())
     val currentSongs = _currentSongs.asStateFlow()
 
-    private var _currentPosition: Int = -1
-    val currentFolder get() = _folders.value.getOrNull(_currentPosition)
+    private var _currentFolderIndex: Int = -1
+    val currentFolder get() = _folders.value.getOrNull(_currentFolderIndex)
 
     private var _bannerText: MutableStateFlow<String> = MutableStateFlow("")
     val bannerText = _bannerText.asStateFlow()
 
+    var historyFolderPosition: Int = 0
+        private set
+    private val historyPositions: SparseIntArray = SparseIntArray()
+    val historyPosition: Int get() = historyPositions[_currentFolderIndex]
 
     fun updateBannerText(context: Context, mode: Boolean) {
         _bannerText.tryEmit(
@@ -67,11 +72,12 @@ class FlattenFolderPageViewModel : ViewModel() {
     }
 
     /**
-     * browse folder at [position]
+     * browse folder at [folderIndex]
      */
-    fun browseFolder(context: Context, position: Int, updateBanner: Boolean) {
+    fun browseFolder(context: Context, folderIndex: Int, updateBanner: Boolean, lastScrollPosition: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            _currentPosition = position
+            historyFolderPosition = lastScrollPosition
+            _currentFolderIndex = folderIndex
             loadSongs(context, updateBanner)
             _mainViewMode.emit(false)
         }
@@ -91,12 +97,13 @@ class FlattenFolderPageViewModel : ViewModel() {
      * try to get back to upper level
      * @return reached top
      */
-    fun navigateUp(context: Context): Boolean =
+    fun navigateUp(context: Context, lastScrollPosition: Int): Boolean =
         if (mainViewMode.value) {
             true
         } else {
             _mainViewMode.value = true
-            _currentPosition = -1
+            historyPositions.put(_currentFolderIndex, lastScrollPosition)
+            _currentFolderIndex = -1
             _currentSongs.tryEmit(emptyList())
             updateBannerText(context, true)
             false

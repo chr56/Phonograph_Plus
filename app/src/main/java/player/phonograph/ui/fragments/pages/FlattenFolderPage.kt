@@ -263,7 +263,9 @@ class FlattenFolderPage : AbsPage() {
     }
 
 
-    private fun onFolderClick(position: Int) = viewModel.browseFolder(requireContext(), position, true)
+    private fun onFolderClick(position: Int) = viewModel.browseFolder(
+        requireContext(), position, true, linearLayoutManager.findLastVisibleItemPosition()
+    )
 
     private fun observeRecyclerView() {
         lifecycleScope.launch {
@@ -283,8 +285,10 @@ class FlattenFolderPage : AbsPage() {
                 val onBackPressedDispatcher = requireActivity().onBackPressedDispatcher
                 if (mode) {
                     navigateUpBackPressedCallback.remove()
+                    linearLayoutManager.scrollToPosition(viewModel.historyFolderPosition)
                 } else {
                     onBackPressedDispatcher.addCallback(viewLifecycleOwner, navigateUpBackPressedCallback)
+                    linearLayoutManager.scrollToPosition(viewModel.historyPosition)
                 }
             }
         }
@@ -297,7 +301,7 @@ class FlattenFolderPage : AbsPage() {
 
     private val navigateUpBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            viewModel.navigateUp(requireContext())
+            viewModel.navigateUp(requireContext(), linearLayoutManager.findFirstVisibleItemPosition())
         }
     }
 
