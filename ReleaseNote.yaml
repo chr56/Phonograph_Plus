@@ -1,21 +1,17 @@
-version: "1.6.2"
-versionCode: 1062
+version: "1.6.3-dev"
+versionCode: 1063
 timestamp: 1714191671
 channel: "STABLE"
 notes:
   en:
     highlights: [ ]
     items:
-      - "Fix: rare random crash due to cover artwork in Main Player"
-      - "Fix: blank App Widget if app is not running (especially after device booting)"
-      - "Modify: start service when clicking App Widget if app is not running instead of launching app"
-      - "Improve: performance of App Widget"
-      - "Development: upgrade dependencies"
+      - "New: remember last scroll position in Folders or Files tab till next start"
+      - "Modify: forbid upgrading from prior to v0.6.3 & warn upgrading from prior to v1.2.0"
+      - "Development: remove some compatibility support of legacy version"
   zh:
     highlights: [ ]
     items:
-      - "修复 罕见随机崩溃 （由主播放器图片而导致）"
-      - "修复 微件白屏，若应用未运行（特别是在开机后）"
-      - "修改 若应用未运行，则点击微件时启动服务，而不是打开应用"
-      - "改进 微件性能"
-      - "开发 更新依赖"
+      - "新增 记住文件或文件夹页的上次滚动位置直至重启"
+      - "修改 禁止从 v0.6.3 之前的版本升级至当前版本, 警告从 v1.2.0 之前的版本升级至当前版本"
+      - "开发 清理部分旧版兼容性支持"
