@@ -59,8 +59,6 @@ class FilesPage : AbsPage() {
     ): View {
 
         explorer = FilesPageExplorerFragment()
-        explorer.mainFragment = mainFragment
-
         _viewBinding = FragmentFilePageBinding.inflate(inflater, container, false)
 
         childFragmentManager.commitNow {
@@ -204,7 +202,6 @@ class FilesPage : AbsPage() {
         if (model.showFilesImages != popup.showFilesImages) {
             model.showFilesImages = popup.showFilesImages
             Setting(context)[Keys.showFileImages].data = model.showFilesImages
-            // adapter.notifyDataSetChanged() //todo
         }
         model.refreshFiles(context)
     }
