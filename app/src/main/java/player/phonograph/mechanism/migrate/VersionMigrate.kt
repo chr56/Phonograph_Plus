@@ -5,9 +5,6 @@
 package player.phonograph.mechanism.migrate
 
 import player.phonograph.coil.CustomArtistImageStore
-import player.phonograph.mechanism.setting.HomeTabConfig
-import player.phonograph.model.pages.Pages
-import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.dataStore
 import player.phonograph.util.debug
@@ -20,7 +17,6 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.preference.PreferenceManager
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
@@ -48,9 +44,6 @@ fun migrate(context: Context, from: Int, to: Int) {
         Log.i(TAG, "Start Migration: $from -> $to")
 
         MigrateOperator(context, from, to).apply {
-            migrate(QueuePreferenceMigration())
-            migrate(PagesMigration())
-            migrate(LockScreenCoverMigration())
             migrate(AutoDownloadMetadataMigration())
             migrate(LegacyLastAddedCutoffIntervalMigration())
             migrate(CustomArtistImageStoreMigration())
@@ -102,47 +95,6 @@ private class MigrateOperator(
 ) {
     fun migrate(migration: Migration) =
         migration.tryMigrate(context, from, to)
-}
-
-private class QueuePreferenceMigration : Migration(introduced = 460, deprecated = 532) {
-    override fun doMigrate(context: Context) {
-        fun moveTargetPreference(oldKeyName: String, newKeyName: String) =
-            moveIntPreference(
-                PreferenceManager.getDefaultSharedPreferences(context),
-                oldKeyName,
-                context.getSharedPreferences(QueuePreferenceManager.NAME, MODE_PRIVATE),
-                newKeyName
-            )
-        moveTargetPreference(
-            DeprecatedPreference.QueueCfg.PREF_REPEAT_MODE,
-            QueuePreferenceManager.KEY_REPEAT_MODE
-        )
-        moveTargetPreference(
-            DeprecatedPreference.QueueCfg.PREF_SHUFFLE_MODE,
-            QueuePreferenceManager.KEY_SHUFFLE_MODE
-        )
-        moveTargetPreference(
-            DeprecatedPreference.QueueCfg.PREF_POSITION,
-            QueuePreferenceManager.KEY_CURRENT_POSITION
-        )
-        moveTargetPreference(
-            DeprecatedPreference.QueueCfg.PREF_POSITION_IN_TRACK,
-            QueuePreferenceManager.KEY_CURRENT_MILLISECOND
-        )
-    }
-}
-
-private class PagesMigration : Migration(introduced = 460) {
-    override fun doMigrate(context: Context) {
-        HomeTabConfig.append(Pages.FOLDER)
-    }
-}
-
-private class LockScreenCoverMigration : Migration(introduced = 522, deprecated = 531) {
-    override fun doMigrate(context: Context) {
-        removePreference(context, keyName = DeprecatedPreference.LockScreenCover.ALBUM_ART_ON_LOCKSCREEN)
-        removePreference(context, keyName = DeprecatedPreference.LockScreenCover.BLURRED_ALBUM_ART)
-    }
 }
 
 private class AutoDownloadMetadataMigration : Migration(introduced = 1011) {
