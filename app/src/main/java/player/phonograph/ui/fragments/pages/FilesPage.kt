@@ -20,6 +20,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.explorer.FilesPageExplorerFragment
 import player.phonograph.ui.fragments.explorer.FilesPageViewModel
+import player.phonograph.util.coroutineToast
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.fragment.app.commitNow
@@ -28,6 +29,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
 import android.view.Gravity
@@ -142,8 +144,7 @@ class FilesPage : AbsPage() {
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
             onClick {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val allSongs = model.currentSongs(menuContext.context)
-                    if (allSongs.isNotEmpty()) allSongs.actionPlay(ShuffleMode.NONE, 0)
+                    play(menuContext.context, false)
                 }
                 true
             }
@@ -157,13 +158,34 @@ class FilesPage : AbsPage() {
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
             onClick {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val allSongs = model.currentSongs(menuContext.context)
-                    if (allSongs.isNotEmpty()) allSongs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(allSongs.size))
+                    play(menuContext.context, true)
                 }
                 true
             }
         }
         Unit
+    }
+
+    private suspend fun play(context: Context, shuffle: Boolean) {
+        coroutineToast(context, R.string.process)
+        val allSongs = model.currentSongs(context)
+        val size = allSongs.size
+        if (size > 0) {
+            coroutineToast(
+                context,
+                context.resources.getQuantityString(R.plurals.item_songs, size, size)
+            )
+            if (shuffle) {
+                allSongs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(size))
+            } else {
+                allSongs.actionPlay(ShuffleMode.NONE, 0)
+            }
+        } else {
+            coroutineToast(
+                context,
+                R.string.empty
+            )
+        }
     }
 
     private fun headerText(resources: Resources, size: Int): CharSequence =
