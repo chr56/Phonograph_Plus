@@ -1,18 +1,19 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
 
 package player.phonograph.ui.fragments.explorer
 
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import lib.storage.root
+import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.R
-import player.phonograph.databinding.FragmentFolderPageBinding
+import player.phonograph.databinding.FragmentFileExploreBinding
 import player.phonograph.model.file.Location
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
+import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
@@ -36,38 +37,41 @@ import android.view.ViewGroup
 import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import com.afollestad.materialdialogs.R as MDR
 
 sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<*>> : Fragment() {
 
     // view binding
-    private var _viewBinding: FragmentFolderPageBinding? = null
+    private var _viewBinding: FragmentFileExploreBinding? = null
     protected val binding get() = _viewBinding!!
     // view model
     protected abstract val model: M
     // adapter
-    protected abstract var adapter: A
-    protected abstract var layoutManager: LinearLayoutManager
+    protected lateinit var adapter: A
+    protected lateinit var layoutManager: LinearLayoutManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        _viewBinding = FragmentFolderPageBinding.inflate(
+        _viewBinding = FragmentFileExploreBinding.inflate(
             layoutInflater,
             container,
             false
         )
-        binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
         return binding.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding.innerAppBar.removeOnOffsetChangedListener(innerAppbarOffsetListener)
         _viewBinding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val accentColor = ThemeColor.accentColor(requireContext())
+
         setupObservers()
 
+        // Back press
         lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onPause(owner: LifecycleOwner) {
                 navigateUpBackPressedCallback.remove()
@@ -77,18 +81,57 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
                 updateBackPressedDispatcher(model.currentLocation.value)
             }
         })
+
+        // Back Button
+        binding.buttonBack.apply {
+            setImageDrawable(requireContext().getThemedDrawable(MDR.drawable.md_nav_back))
+            setOnClickListener { gotoTopLevel(true) }
+            setOnLongClickListener {
+                onSwitch(Location.HOME)
+                true
+            }
+        }
+
+        // Bread Crumb
+        binding.breadCrumb.apply {
+            location = model.currentLocation.value
+            callBack = ::onSwitch
+        }
+
+        binding.container.apply {
+            setColorSchemeColors(accentColor)
+            setProgressViewOffset(false, 0, 180)
+            setOnRefreshListener {
+                refreshFiles()
+            }
+        }
+
+        // Recycle View
+        adapter = createAdapter()
+        layoutManager = LinearLayoutManager(activity)
+        binding.recyclerView.setUpFastScrollRecyclerViewColor(requireContext(), accentColor)
+
+        binding.recyclerView.apply {
+            layoutManager = this@AbsFilesExplorerFragment.layoutManager
+            adapter = this@AbsFilesExplorerFragment.adapter
+        }
+
+        // Data
+        model.refreshFiles(requireContext())
     }
 
-    open fun setupObservers() {
+    abstract fun createAdapter(): A
+
+    protected open fun setupObservers() {
         lifecycleScope.launch {
             model.currentLocation.collect { newLocation ->
                 lifecycle.withStateAtLeast(Lifecycle.State.STARTED) {
                     lifecycleScope.launch(Dispatchers.Main) {
-                        // header
-                        binding.header.apply {
+                        // Bread Crumb
+                        binding.breadCrumb.apply {
                             location = newLocation
                             layoutManager.scrollHorizontallyBy(
-                                binding.header.width / 4,
+                                binding.breadCrumb.width / 4,
                                 recyclerView.Recycler(),
                                 RecyclerView.State()
                             )
@@ -98,7 +141,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
                                 if (newLocation.parent == null) {
                                     R.drawable.ic_sdcard_white_24dp
                                 } else {
-                                    com.afollestad.materialdialogs.color.R.drawable.icon_back_white
+                                    MDR.drawable.md_nav_back
                                 }
                             )
                         )
@@ -138,22 +181,11 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
         model.refreshFiles(requireContext())
     }
 
-
-    private val innerAppbarOffsetListener =
-        AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-            binding.container.setPadding(
-                binding.container.paddingLeft,
-                binding.innerAppBar.totalScrollRange + verticalOffset,
-                binding.container.paddingRight,
-                binding.container.paddingBottom
-            )
-        }
-
     /**
      * open a dialog to ask change storage volume (disk)
      * @return true if dialog created
      */
-    protected fun requireChangeVolume(): Boolean {
+    private fun requireChangeVolume(): Boolean {
         if (context == null) return false
         val storageManager = requireContext().getSystemService<StorageManager>()
         val volumes = storageManager?.storageVolumes
@@ -181,7 +213,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
     }
 
     /**
-     * @param allowToChangeVolume false if do not intend to change volume
+     * @param allowToChangeVolume false if not intend to change volume
      * @return success or not
      */
     protected fun gotoTopLevel(allowToChangeVolume: Boolean): Boolean {

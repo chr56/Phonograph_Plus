@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/navigation_header"
+        android:elevation="2dp"
+        android:background="@color/cardBackgroundColor"
+        android:layout_gravity="top"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/path_navigation_header_height">
+
+        <ImageButton
+            android:id="@+id/button_back"
+            android:layout_width="36dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="@+id/button_options"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/button_options"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <player.phonograph.ui.views.BreadCrumbView
+            android:id="@+id/bread_crumb"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toStartOf="@id/button_options"
+            app:layout_constraintStart_toEndOf="@id/button_back">
+
+        </player.phonograph.ui.views.BreadCrumbView>
+
+
+        <ImageButton
+            android:id="@+id/button_options"
+            android:layout_width="36dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="16dp"
+            android:visibility="gone"
+            android:background="@android:color/transparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/container"
+        android:layout_marginTop="@dimen/path_navigation_header_height"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:scrollbars="none"
+            app:layout_anchor="@+id/container"
+            app:layout_anchorGravity="center"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
