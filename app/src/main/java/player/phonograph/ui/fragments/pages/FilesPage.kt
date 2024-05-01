@@ -12,11 +12,8 @@ import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.actionPlay
 import player.phonograph.databinding.FragmentFilePageBinding
-import player.phonograph.model.Song
-import player.phonograph.model.file.FileEntity
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.repo.loader.Songs
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
@@ -31,7 +28,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
 import android.view.Gravity
@@ -146,7 +142,7 @@ class FilesPage : AbsPage() {
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
             onClick {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val allSongs = currentSongs(menuContext.context)
+                    val allSongs = model.currentSongs(menuContext.context)
                     if (allSongs.isNotEmpty()) allSongs.actionPlay(ShuffleMode.NONE, 0)
                 }
                 true
@@ -161,18 +157,13 @@ class FilesPage : AbsPage() {
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
             onClick {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val allSongs = currentSongs(menuContext.context)
+                    val allSongs = model.currentSongs(menuContext.context)
                     if (allSongs.isNotEmpty()) allSongs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(allSongs.size))
                 }
                 true
             }
         }
         Unit
-    }
-
-    private suspend fun currentSongs(context: Context): List<Song> {
-        val entities = model.currentFiles.value.filterIsInstance<FileEntity.File>()
-        return entities.map { Songs.searchByFileEntity(context, it) }
     }
 
     private fun headerText(resources: Resources, size: Int): CharSequence =
