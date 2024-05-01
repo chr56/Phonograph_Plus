@@ -147,7 +147,7 @@ class FilesPage : AbsPage() {
             onClick {
                 lifecycleScope.launch(Dispatchers.IO) {
                     val allSongs = currentSongs(menuContext.context)
-                    allSongs.actionPlay(ShuffleMode.NONE, 0)
+                    if (allSongs.isNotEmpty()) allSongs.actionPlay(ShuffleMode.NONE, 0)
                 }
                 true
             }
@@ -162,7 +162,7 @@ class FilesPage : AbsPage() {
             onClick {
                 lifecycleScope.launch(Dispatchers.IO) {
                     val allSongs = currentSongs(menuContext.context)
-                    allSongs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(allSongs.size))
+                    if (allSongs.isNotEmpty()) allSongs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(allSongs.size))
                 }
                 true
             }
