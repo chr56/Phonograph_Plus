@@ -147,7 +147,7 @@
             android:exported="false"
             android:label="@string/path_selector"
             android:launchMode="singleInstance"
-            android:theme="@style/FileChooserDialogActivity" />
+            android:theme="@style/Theme.Phonograph.Base.Auto.DialogActivity" />
         <activity
             android:name=".ui.modules.web.WebSearchActivity"
             android:exported="true"

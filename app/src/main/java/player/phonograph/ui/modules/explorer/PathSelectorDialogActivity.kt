@@ -66,7 +66,6 @@ class PathSelectorDialogActivity : AppCompatActivity() {
             supportFragmentManager.commit {
                 replace(R.id.container, explorerFragment, "FilesChooserExplorer")
             }
-            setBackgroundColor(Color.WHITE)
         }
         return rootContainer
     }
