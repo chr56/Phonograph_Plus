@@ -3,6 +3,14 @@
     <dimen name="detail_header_image_height">112dp</dimen>
     <dimen name="detail_header_small_image_height">80dp</dimen>
 
+    <dimen name="page_panel_height">48dp</dimen>
     <dimen name="path_navigation_header_height">40dp</dimen>
+
+    <dimen name="fab_media_controller_container_height">88dp</dimen>
+    <dimen name="media_controller_container_height">72dp</dimen>
+
+    <dimen name="player_queue_sub_header_height">32dp</dimen>
+
+    <dimen name="tab_height">36dp</dimen>
 
 </resources>

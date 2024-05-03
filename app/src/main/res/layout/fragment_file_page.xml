@@ -13,7 +13,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/panel_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="@dimen/page_panel_height"
             app:layout_scrollFlags="scroll|enterAlways">
 
             <androidx.appcompat.widget.AppCompatTextView
