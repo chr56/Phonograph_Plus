@@ -5,6 +5,8 @@
 package player.phonograph.ui.dialogs
 
 import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.MaterialDialogState
+import com.vanpra.composematerialdialogs.message
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import org.koin.core.context.GlobalContext
@@ -13,22 +15,20 @@ import player.phonograph.repo.database.PathFilterStore
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrimitivePreference
 import player.phonograph.settings.Setting
+import player.phonograph.ui.activities.FileChooserRequester
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.TempPopupContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -38,6 +38,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,10 +54,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
-import androidx.fragment.app.FragmentActivity
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -124,6 +125,8 @@ private fun MainContent(context: Context, model: PathFilterPreferenceModel, dism
             }
         }
         val modeText: String = stringResource(if (mode) R.string.excluded_paths else R.string.included_paths)
+        val confirmDialogState = rememberMaterialDialogState(false)
+        val selectedPath = remember { mutableStateOf("") }
         MaterialDialog(
             dialogState = rememberMaterialDialogState(true),
             onCloseRequest = { dismiss() },
@@ -135,11 +138,10 @@ private fun MainContent(context: Context, model: PathFilterPreferenceModel, dism
                     .padding(horizontal = 24.dp)
             ) {
                 val actionAdd = {
-                    PathFilterFolderChooserDialog().show(
-                        (context as FragmentActivity).supportFragmentManager,
-                        "FOLDER_CHOOSER"
-                    )
-                    dismiss()
+                    chooseFile(context) { path ->
+                        selectedPath.value = path
+                        confirmDialogState.show()
+                    }
                 }
                 val actionRefresh = { model.refresh() }
                 val actionClear = { model.clear() }
@@ -218,8 +220,10 @@ private fun MainContent(context: Context, model: PathFilterPreferenceModel, dism
                 Spacer(Modifier.height(24.dp))
             } // Column
         } // Dialog
+        ConfirmDialog(confirmDialogState, mode, modeText, selectedPath)
     }
 }
+
 
 /**
  * @param confirmationText tips for confirmation, null if disable
@@ -249,5 +253,45 @@ private fun ActionButton(
                 style = MaterialTheme.typography.button,
             )
         }
+    }
+}
+
+@Composable
+private fun ConfirmDialog(dialogState: MaterialDialogState, mode: Boolean, modeText: String, selected: State<String>) {
+    MaterialDialog(
+        dialogState = dialogState,
+        onCloseRequest = { dialogState.hide() },
+        buttons = {
+            val style = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
+            positiveButton(stringResource(android.R.string.ok), textStyle = style) {
+                val path = selected.value
+                if (path.isNotEmpty()) with(PathFilterStore.get()) {
+                    if (mode) addBlacklistPath(path) else addWhitelistPath(path)
+                }
+            }
+            negativeButton(stringResource(android.R.string.cancel), textStyle = style)
+        }
+    ) {
+        title(stringResource(R.string.path_filter_confirmation, modeText))
+        message(selected.value)
+    }
+}
+
+
+private fun chooseFile(
+    context: Context,
+    onSelect: (String) -> Unit,
+) {
+    val contractTool = (context as? FileChooserRequester)?.fileChooserContractTool
+    if (contractTool != null) {
+        contractTool.launch(null) {
+            if (it != null) {
+                onSelect(it)
+            } else {
+                Toast.makeText(context, R.string.empty, Toast.LENGTH_SHORT).show()
+            }
+        }
+    } else {
+        Toast.makeText(context, R.string.failed, Toast.LENGTH_SHORT).show()
     }
 }
