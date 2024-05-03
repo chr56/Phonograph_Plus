@@ -142,7 +142,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.modules.search.SearchActivity" />
         <activity
-            android:name=".ui.activities.FileChooserDialogActivity"
+            android:name=".ui.modules.explorer.FileChooserDialogActivity"
             android:excludeFromRecents="true"
             android:exported="true"
             android:label="@string/file_selector"

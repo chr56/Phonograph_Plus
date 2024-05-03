@@ -2,15 +2,12 @@
  *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.ui.activities
+package player.phonograph.ui.modules.explorer
 
-import lib.activityresultcontract.ActivityResultContractTool
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
-import player.phonograph.ui.fragments.explorer.FilesChooserExplorerFragment
-import player.phonograph.ui.fragments.explorer.FilesChooserViewModel
 import player.phonograph.util.permissions.navigateToStorageSetting
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
@@ -87,29 +84,18 @@ class FileChooserDialogActivity : AppCompatActivity() {
 
     private val accentColor by lazy { ThemeColor.accentColor(this) }
 
-}
+    class FileChooserActivityResultContract : ActivityResultContract<String?, String?>() {
+        override fun createIntent(context: Context, input: String?): Intent =
+            Intent(context, FileChooserDialogActivity::class.java)
 
-
-class FileChooserContract : ActivityResultContract<String?, String?>() {
-    override fun createIntent(context: Context, input: String?): Intent =
-        Intent(context, FileChooserDialogActivity::class.java)
-
-    override fun parseResult(resultCode: Int, intent: Intent?): String? =
-        if (resultCode == RESULT_CODE_SUCCESS && intent != null) {
-            intent.getStringExtra(EXTRA_KEY_PATH)
-        } else {
-            Log.w(TAG, "Not selected")
-            null
-        }
-}
-
-class FileChooserContractTool : ActivityResultContractTool<String?, String?>() {
-    override fun key(): String = TAG
-    override fun contract(): ActivityResultContract<String?, String?> = FileChooserContract()
-}
-
-interface FileChooserRequester {
-    val fileChooserContractTool: FileChooserContractTool
+        override fun parseResult(resultCode: Int, intent: Intent?): String? =
+            if (resultCode == RESULT_CODE_SUCCESS && intent != null) {
+                intent.getStringExtra(EXTRA_KEY_PATH)
+            } else {
+                Log.w(TAG, "Not selected")
+                null
+            }
+    }
 }
 
 private const val TAG = "FileChooser"

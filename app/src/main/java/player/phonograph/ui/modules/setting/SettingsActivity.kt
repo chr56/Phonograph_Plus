@@ -17,13 +17,13 @@ import lib.phonograph.misc.Reboot
 import player.phonograph.R
 import player.phonograph.mechanism.SettingDataManager
 import player.phonograph.mechanism.backup.Backup
-import player.phonograph.ui.activities.FileChooserContractTool
-import player.phonograph.ui.activities.FileChooserRequester
 import player.phonograph.ui.compose.ComposeThemeActivity
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.DropDownMenuContent
 import player.phonograph.ui.dialogs.BackupExportDialog
 import player.phonograph.ui.dialogs.BackupImportDialog
+import player.phonograph.ui.modules.explorer.FileChooserContractTool
+import player.phonograph.ui.modules.explorer.FileChooserRequester
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

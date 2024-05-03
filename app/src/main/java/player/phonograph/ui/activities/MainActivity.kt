@@ -34,6 +34,8 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.UpgradeInfoDialog
 import player.phonograph.ui.fragments.MainFragment
+import player.phonograph.ui.modules.explorer.FileChooserContractTool
+import player.phonograph.ui.modules.explorer.FileChooserRequester
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics

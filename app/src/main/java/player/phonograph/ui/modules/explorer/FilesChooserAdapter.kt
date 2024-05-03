@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.ui.fragments.explorer
+package player.phonograph.ui.modules.explorer
 
 import mt.util.color.primaryTextColor
 import mt.util.color.resolveColor

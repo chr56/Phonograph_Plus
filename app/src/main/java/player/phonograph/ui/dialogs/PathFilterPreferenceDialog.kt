@@ -15,10 +15,10 @@ import player.phonograph.repo.database.PathFilterStore
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrimitivePreference
 import player.phonograph.settings.Setting
-import player.phonograph.ui.activities.FileChooserRequester
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.TempPopupContent
+import player.phonograph.ui.modules.explorer.FileChooserRequester
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

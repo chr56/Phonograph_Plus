@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.ui.fragments.explorer
+package player.phonograph.ui.modules.explorer
 
 import player.phonograph.mechanism.setting.FileConfig
 import player.phonograph.model.file.FileEntity
