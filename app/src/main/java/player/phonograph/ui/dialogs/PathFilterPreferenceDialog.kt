@@ -220,7 +220,7 @@ private fun MainContent(context: Context, model: PathFilterPreferenceModel, dism
                 Spacer(Modifier.height(24.dp))
             } // Column
         } // Dialog
-        ConfirmDialog(confirmDialogState, mode, modeText, selectedPath)
+        ConfirmDialog(confirmDialogState, modeText, model, selectedPath)
     }
 }
 
@@ -257,7 +257,12 @@ private fun ActionButton(
 }
 
 @Composable
-private fun ConfirmDialog(dialogState: MaterialDialogState, mode: Boolean, modeText: String, selected: State<String>) {
+private fun ConfirmDialog(
+    dialogState: MaterialDialogState,
+    modeText: String,
+    model: PathFilterPreferenceModel,
+    selected: State<String>,
+) {
     MaterialDialog(
         dialogState = dialogState,
         onCloseRequest = { dialogState.hide() },
@@ -265,9 +270,7 @@ private fun ConfirmDialog(dialogState: MaterialDialogState, mode: Boolean, modeT
             val style = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
             positiveButton(stringResource(android.R.string.ok), textStyle = style) {
                 val path = selected.value
-                if (path.isNotEmpty()) with(PathFilterStore.get()) {
-                    if (mode) addBlacklistPath(path) else addWhitelistPath(path)
-                }
+                if (path.isNotEmpty()) model.add(path)
             }
             negativeButton(stringResource(android.R.string.cancel), textStyle = style)
         }
