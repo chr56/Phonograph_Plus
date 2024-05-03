@@ -62,7 +62,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 class MainActivity : AbsSlidingMusicPanelActivity(),
-                     IOpenFileStorageAccess, ICreateFileStorageAccess, IOpenDirStorageAccess {
+                     IOpenFileStorageAccess, ICreateFileStorageAccess, IOpenDirStorageAccess,
+                     FileChooserRequester {
 
     private lateinit var mainBinding: ActivityMainBinding
     private lateinit var drawerBinding: LayoutDrawerBinding
@@ -78,12 +79,15 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
     override val createFileStorageAccessTool: CreateFileStorageAccessTool =
         CreateFileStorageAccessTool()
 
+    override val fileChooserContractTool: FileChooserContractTool = FileChooserContractTool()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
         openDirStorageAccessTool.register(lifecycle, activityResultRegistry)
         createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
+        fileChooserContractTool.register(lifecycle, activityResultRegistry)
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
