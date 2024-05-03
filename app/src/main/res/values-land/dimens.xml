@@ -9,6 +9,8 @@
     <dimen name="fab_media_controller_container_height">88dp</dimen>
     <dimen name="media_controller_container_height">72dp</dimen>
 
+    <dimen name="player_queue_sub_header_height">32dp</dimen>
+
     <dimen name="tab_height">36dp</dimen>
 
 </resources>
