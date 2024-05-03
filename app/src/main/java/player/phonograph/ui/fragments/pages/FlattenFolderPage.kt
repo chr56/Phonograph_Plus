@@ -28,6 +28,8 @@ import player.phonograph.util.theme.nightMode
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.os.Bundle
@@ -103,6 +105,16 @@ class FlattenFolderPage : AbsPage() {
                 isRefreshing = false
             }
         }
+
+        lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onPause(owner: LifecycleOwner) {
+                navigateUpBackPressedCallback.remove()
+            }
+
+            override fun onResume(owner: LifecycleOwner) {
+                updateNavigateUpBackPressedCallback(viewModel.mainViewMode.value)
+            }
+        })
     }
 
 
@@ -281,15 +293,9 @@ class FlattenFolderPage : AbsPage() {
         }
         lifecycleScope.launch {
             viewModel.mainViewMode.collect { mode ->
+                updateNavigateUpBackPressedCallback(mode)
                 binding.recyclerView.adapter = if (mode) songCollectionDisplayAdapter else songAdapter
-                val onBackPressedDispatcher = requireActivity().onBackPressedDispatcher
-                if (mode) {
-                    navigateUpBackPressedCallback.remove()
-                    linearLayoutManager.scrollToPosition(viewModel.historyFolderPosition)
-                } else {
-                    onBackPressedDispatcher.addCallback(viewLifecycleOwner, navigateUpBackPressedCallback)
-                    linearLayoutManager.scrollToPosition(viewModel.historyPosition)
-                }
+                linearLayoutManager.scrollToPosition(if (mode) viewModel.historyFolderPosition else viewModel.historyPosition)
             }
         }
         lifecycleScope.launch {
@@ -299,11 +305,26 @@ class FlattenFolderPage : AbsPage() {
         }
     }
 
-    private val navigateUpBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            viewModel.navigateUp(requireContext(), linearLayoutManager.findFirstVisibleItemPosition())
+
+    private fun updateNavigateUpBackPressedCallback(mainViewMode: Boolean) {
+        if (mainViewMode || !isVisible) {
+            navigateUpBackPressedCallback.remove()
+        } else {
+            requireActivity().onBackPressedDispatcher.addCallback(
+                viewLifecycleOwner,
+                navigateUpBackPressedCallback
+            )
         }
     }
+
+    private val navigateUpBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            navigateUp()
+        }
+    }
+
+    private fun navigateUp(): Boolean =
+        viewModel.navigateUp(requireContext(), linearLayoutManager.findFirstVisibleItemPosition())
 
     override fun onDestroyView() {
         super.onDestroyView()
