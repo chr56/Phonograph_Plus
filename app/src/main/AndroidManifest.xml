@@ -142,6 +142,12 @@
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.modules.search.SearchActivity" />
         <activity
+            android:name=".ui.activities.FileChooserDialogActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:theme="@style/FileChooserDialogActivity" />
+        <activity
             android:name=".ui.modules.web.WebSearchActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
