@@ -12,8 +12,8 @@
     <dimen name="toolbar_scrim_height">168dp</dimen>
 
     <dimen name="progress_container_height">20dp</dimen>
-    <dimen name="fab_media_controller_container_height">120dp</dimen>
-    <dimen name="media_controller_container_height">104dp</dimen>
+    <dimen name="fab_media_controller_container_height">100dp</dimen>
+    <dimen name="media_controller_container_height">84dp</dimen>
 
     <dimen name="status_bar_padding">24dp</dimen>
 
