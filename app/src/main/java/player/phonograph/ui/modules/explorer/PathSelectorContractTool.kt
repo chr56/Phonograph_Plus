@@ -7,12 +7,12 @@ package player.phonograph.ui.modules.explorer
 import lib.activityresultcontract.ActivityResultContractTool
 import androidx.activity.result.contract.ActivityResultContract
 
-class FileChooserContractTool : ActivityResultContractTool<String?, String?>() {
+class PathSelectorContractTool : ActivityResultContractTool<String?, String?>() {
     override fun key(): String = "FileChooserContractTool"
     override fun contract(): ActivityResultContract<String?, String?> =
-        FileChooserDialogActivity.FileChooserActivityResultContract()
+        PathSelectorDialogActivity.PathSelectorActivityResultContract()
 }
 
-interface FileChooserRequester {
-    val fileChooserContractTool: FileChooserContractTool
+interface PathSelectorRequester {
+    val pathSelectorContractTool: PathSelectorContractTool
 }

@@ -18,7 +18,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.TempPopupContent
-import player.phonograph.ui.modules.explorer.FileChooserRequester
+import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -291,7 +291,7 @@ private fun chooseFile(
     context: Context,
     onSelect: (String) -> Unit,
 ) {
-    val contractTool = (context as? FileChooserRequester)?.fileChooserContractTool
+    val contractTool = (context as? PathSelectorRequester)?.pathSelectorContractTool
     if (contractTool != null) {
         contractTool.launch(null) {
             if (it != null) {

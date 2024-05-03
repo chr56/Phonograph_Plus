@@ -23,8 +23,7 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.FrameLayout
 
-class FileChooserDialogActivity : AppCompatActivity() {
-
+class PathSelectorDialogActivity : AppCompatActivity() {
 
     private val model: FilesChooserViewModel by viewModels()
 
@@ -45,7 +44,7 @@ class FileChooserDialogActivity : AppCompatActivity() {
 
         val buttonPanel = buttonPanel(this) {
             button(0, getString(R.string.grant_permission), accentColor) {
-                navigateToStorageSetting(this@FileChooserDialogActivity)
+                navigateToStorageSetting(this@PathSelectorDialogActivity)
             }
             space(1)
             button(2, getString(R.string.action_select), accentColor) {
@@ -84,9 +83,9 @@ class FileChooserDialogActivity : AppCompatActivity() {
 
     private val accentColor by lazy { ThemeColor.accentColor(this) }
 
-    class FileChooserActivityResultContract : ActivityResultContract<String?, String?>() {
+    class PathSelectorActivityResultContract : ActivityResultContract<String?, String?>() {
         override fun createIntent(context: Context, input: String?): Intent =
-            Intent(context, FileChooserDialogActivity::class.java)
+            Intent(context, PathSelectorDialogActivity::class.java)
 
         override fun parseResult(resultCode: Int, intent: Intent?): String? =
             if (resultCode == RESULT_CODE_SUCCESS && intent != null) {
@@ -98,7 +97,7 @@ class FileChooserDialogActivity : AppCompatActivity() {
     }
 }
 
-private const val TAG = "FileChooser"
+private const val TAG = "PathSelector"
 
 private const val RESULT_CODE_SUCCESS = 0
 private const val RESULT_CODE_CANCELED = -1

@@ -23,8 +23,8 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.ui.modules.explorer.FileChooserContractTool
-import player.phonograph.ui.modules.explorer.FileChooserRequester
+import player.phonograph.ui.modules.explorer.PathSelectorContractTool
+import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import player.phonograph.ui.modules.setting.SettingsActivity
 import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.util.coroutineToast
@@ -257,8 +257,8 @@ fun setupDrawerMenu(
 }
 
 private fun onScanMedia(fragmentActivity: FragmentActivity) {
-    val contractTool: FileChooserContractTool? =
-        (fragmentActivity as? FileChooserRequester)?.fileChooserContractTool
+    val contractTool: PathSelectorContractTool? =
+        (fragmentActivity as? PathSelectorRequester)?.pathSelectorContractTool
     contractTool?.launch(null) { path ->
         if (path != null) {
             fragmentActivity.lifecycleScope.launch {

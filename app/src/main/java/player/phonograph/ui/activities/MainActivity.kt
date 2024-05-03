@@ -34,8 +34,8 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.UpgradeInfoDialog
 import player.phonograph.ui.fragments.MainFragment
-import player.phonograph.ui.modules.explorer.FileChooserContractTool
-import player.phonograph.ui.modules.explorer.FileChooserRequester
+import player.phonograph.ui.modules.explorer.PathSelectorContractTool
+import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
@@ -65,7 +65,7 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AbsSlidingMusicPanelActivity(),
                      IOpenFileStorageAccess, ICreateFileStorageAccess, IOpenDirStorageAccess,
-                     FileChooserRequester {
+                     PathSelectorRequester {
 
     private lateinit var mainBinding: ActivityMainBinding
     private lateinit var drawerBinding: LayoutDrawerBinding
@@ -81,7 +81,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
     override val createFileStorageAccessTool: CreateFileStorageAccessTool =
         CreateFileStorageAccessTool()
 
-    override val fileChooserContractTool: FileChooserContractTool = FileChooserContractTool()
+    override val pathSelectorContractTool: PathSelectorContractTool = PathSelectorContractTool()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,7 +89,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
         openDirStorageAccessTool.register(lifecycle, activityResultRegistry)
         createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
-        fileChooserContractTool.register(lifecycle, activityResultRegistry)
+        pathSelectorContractTool.register(lifecycle, activityResultRegistry)
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
