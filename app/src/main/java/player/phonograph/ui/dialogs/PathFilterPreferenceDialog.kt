@@ -38,7 +38,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -95,6 +94,14 @@ private class PathFilterPreferenceModel(context: Context) {
         update(mode)
     }
 
+    private val _selectedPath: MutableStateFlow<String?> = MutableStateFlow(null)
+    val selectedPath = _selectedPath.asStateFlow()
+
+    fun select(path: String) {
+        _selectedPath.value = path
+    }
+
+
     private val pathFilterStore: PathFilterStore by GlobalContext.get().inject()
 
     private fun update(preference: PrimitivePreference<Boolean>) {
@@ -126,7 +133,6 @@ private fun MainContent(context: Context, model: PathFilterPreferenceModel, dism
         }
         val modeText: String = stringResource(if (mode) R.string.excluded_paths else R.string.included_paths)
         val confirmDialogState = rememberMaterialDialogState(false)
-        val selectedPath = remember { mutableStateOf("") }
         MaterialDialog(
             dialogState = rememberMaterialDialogState(true),
             onCloseRequest = { dismiss() },
@@ -139,7 +145,7 @@ private fun MainContent(context: Context, model: PathFilterPreferenceModel, dism
             ) {
                 val actionAdd = {
                     chooseFile(context) { path ->
-                        selectedPath.value = path
+                        model.select(path)
                         confirmDialogState.show()
                     }
                 }
@@ -220,7 +226,7 @@ private fun MainContent(context: Context, model: PathFilterPreferenceModel, dism
                 Spacer(Modifier.height(24.dp))
             } // Column
         } // Dialog
-        ConfirmDialog(confirmDialogState, modeText, model, selectedPath)
+        ConfirmDialog(confirmDialogState, modeText, model)
     }
 }
 
@@ -261,22 +267,22 @@ private fun ConfirmDialog(
     dialogState: MaterialDialogState,
     modeText: String,
     model: PathFilterPreferenceModel,
-    selected: State<String>,
 ) {
+    val selectedPath by model.selectedPath.collectAsState()
     MaterialDialog(
         dialogState = dialogState,
         onCloseRequest = { dialogState.hide() },
         buttons = {
             val style = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
             positiveButton(stringResource(android.R.string.ok), textStyle = style) {
-                val path = selected.value
-                if (path.isNotEmpty()) model.add(path)
+                val path = selectedPath
+                if (!path.isNullOrEmpty()) model.add(path)
             }
             negativeButton(stringResource(android.R.string.cancel), textStyle = style)
         }
     ) {
         title(stringResource(R.string.path_filter_confirmation, modeText))
-        message(selected.value)
+        message(selectedPath)
     }
 }
 
