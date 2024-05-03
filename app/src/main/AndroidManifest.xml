@@ -142,6 +142,13 @@
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.modules.search.SearchActivity" />
         <activity
+            android:name=".ui.modules.explorer.PathSelectorDialogActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:label="@string/path_selector"
+            android:launchMode="singleInstance"
+            android:theme="@style/FileChooserDialogActivity" />
+        <activity
             android:name=".ui.modules.web.WebSearchActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />

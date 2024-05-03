@@ -13,16 +13,21 @@ import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.actions.actionPlay
+import player.phonograph.mechanism.scanner.FileScanner
+import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.mechanism.setting.PageConfig
 import player.phonograph.mechanism.setting.StyleConfig
+import player.phonograph.model.DirectoryInfo
 import player.phonograph.model.pages.Pages
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.ui.dialogs.ScanMediaFolderDialog
+import player.phonograph.ui.modules.explorer.PathSelectorContractTool
+import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import player.phonograph.ui.modules.setting.SettingsActivity
 import player.phonograph.ui.modules.web.WebSearchLauncher
+import player.phonograph.util.coroutineToast
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.reportError
@@ -33,6 +38,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Handler
@@ -44,6 +50,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 
 class MainDrawerViewModel : ViewModel() {
 
@@ -136,7 +143,7 @@ fun setupDrawerMenu(
                 closeDrawer()
                 Handler(Looper.getMainLooper()).postDelayed(
                     {
-                        ScanMediaFolderDialog().show(supportFragmentManager, "scan_media")
+                        onScanMedia(activity)
                     }, 200
                 )
             }
@@ -247,4 +254,36 @@ fun setupDrawerMenu(
         }
     }
 
+}
+
+private fun onScanMedia(fragmentActivity: FragmentActivity) {
+    val contractTool: PathSelectorContractTool? =
+        (fragmentActivity as? PathSelectorRequester)?.pathSelectorContractTool
+    contractTool?.launch(null) { path ->
+        if (path != null) {
+            fragmentActivity.lifecycleScope.launch {
+                scanMedia(path, fragmentActivity)
+            }
+        }
+    }
+}
+
+private suspend fun scanMedia(
+    path: String,
+    context: Context,
+) {
+    val mediaStoreScanner = MediaStoreScanner(context)
+    try {
+        val paths = FileScanner.listPaths(
+            DirectoryInfo(File(path), FileScanner.audioFileFilter)
+        )
+        coroutineToast(context.applicationContext, R.string.scan_media)
+        if (!paths.isNullOrEmpty()) {
+            mediaStoreScanner.scan(paths)
+        } else {
+            coroutineToast(context.applicationContext, R.string.nothing_to_scan)
+        }
+    } catch (e: Exception) {
+        reportError(e, "ScanMedia", context.getString(R.string.failed))
+    }
 }

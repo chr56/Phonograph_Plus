@@ -22,6 +22,8 @@ import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.DropDownMenuContent
 import player.phonograph.ui.dialogs.BackupExportDialog
 import player.phonograph.ui.dialogs.BackupImportDialog
+import player.phonograph.ui.modules.explorer.PathSelectorContractTool
+import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -53,7 +55,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.FileInputStream
 
-class SettingsActivity : ComposeThemeActivity(), ICreateFileStorageAccess, IOpenFileStorageAccess {
+class SettingsActivity : ComposeThemeActivity(),
+                         ICreateFileStorageAccess, IOpenFileStorageAccess,
+                         PathSelectorRequester {
 
     private val dropMenuState = mutableStateOf(false)
 
@@ -61,6 +65,7 @@ class SettingsActivity : ComposeThemeActivity(), ICreateFileStorageAccess, IOpen
     override fun onCreate(savedInstanceState: Bundle?) {
         openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
         createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
+        pathSelectorContractTool.register(lifecycle, activityResultRegistry)
         super.onCreate(savedInstanceState)
 
 
@@ -156,5 +161,5 @@ class SettingsActivity : ComposeThemeActivity(), ICreateFileStorageAccess, IOpen
 
     override val openFileStorageAccessTool: OpenFileStorageAccessTool = OpenFileStorageAccessTool()
     override val createFileStorageAccessTool: CreateFileStorageAccessTool = CreateFileStorageAccessTool()
-
+    override val pathSelectorContractTool: PathSelectorContractTool = PathSelectorContractTool()
 }
