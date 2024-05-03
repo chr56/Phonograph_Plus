@@ -7,11 +7,21 @@ notes:
     highlights: [ ]
     items:
       - "New: remember last scroll position in Folders or Files tab till next start"
+      - "New: brand-new ui or Files tab supporting play or shuffle current folder"
+      - "Fix: Main Player text color legibility in landscape"
+      - "Modify: shrink height of some ui widgets especially in landscape"
       - "Modify: forbid upgrading from prior to v0.6.3 & warn upgrading from prior to v1.2.0"
       - "Development: remove some compatibility support of legacy version"
+      - "Translation: update Spanish (by Dino RTX (rtxdino36))"
+      - "Translation: update Turkish (by volkspolizist)"
   zh:
     highlights: [ ]
     items:
       - "新增 记住文件或文件夹页的上次滚动位置直至重启"
+      - "新增 重新设计的文件页，支持顺序或随机播放当前文件夹"
+      - "修复 横屏下主播放器某些文本颜色可读性"
+      - "修改 缩小某些界面组件（特别是在横屏下）"
       - "修改 禁止从 v0.6.3 之前的版本升级至当前版本, 警告从 v1.2.0 之前的版本升级至当前版本"
       - "开发 清理部分旧版兼容性支持"
+      - "翻译 更新 西班牙语 (Dino RTX (rtxdino36))"
+      - "翻译 更新 土耳其语 (volkspolizist)"
