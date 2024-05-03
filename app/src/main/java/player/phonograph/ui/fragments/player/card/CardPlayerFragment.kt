@@ -3,11 +3,14 @@ package player.phonograph.ui.fragments.player.card
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
+import mt.tint.viewtint.applyOverflowMenuTint
+import mt.tint.viewtint.setToolbarTextColor
+import mt.tint.viewtint.tintMenuActionIcons
 import mt.util.color.darkenColor
 import mt.util.color.lightenColor
+import mt.util.color.primaryTextColor
 import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.databinding.FragmentCardPlayerBinding
@@ -28,6 +31,7 @@ import player.phonograph.util.ui.textColorTransitionAnimator
 import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
 import androidx.appcompat.widget.Toolbar
+import androidx.core.animation.doOnEnd
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -193,7 +197,12 @@ class CardPlayerFragment :
 
 
         @SuppressLint("ObsoleteSdkInt")
-        fun defaultColorChangeAnimatorSet(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet {
+        fun defaultColorChangeAnimatorSet(
+            @ColorInt oldColor: Int,
+            @ColorInt newColor: Int,
+            vararg animators: Animator,
+            onEnd: ((animator: Animator) -> Unit)? = null,
+        ): AnimatorSet {
             val controllerFragment =
                 (fragment.playbackControlsFragment as CardPlayerControllerFragment)
             val fab = controllerFragment.playerPlayPauseFab
@@ -228,8 +237,13 @@ class CardPlayerFragment :
             return AnimatorSet()
                 .apply {
                     duration = PHONOGRAPH_ANIM_TIME / 2
-                    play(backgroundAnimator).apply {
-                        with(subHeaderAnimator)
+                    play(backgroundAnimator).with(subHeaderAnimator).apply {
+                        for (animator in animators) {
+                            with(animator)
+                        }
+                    }
+                    if (onEnd != null) {
+                        doOnEnd(onEnd)
                     }
                 }
         }
@@ -261,7 +275,7 @@ class CardPlayerFragment :
                     resolveColor(
                         fragment.requireContext(),
                         R.attr.iconColor,
-                        fragment.requireContext().secondaryTextColor(App.instance.nightMode)
+                        fragment.requireContext().secondaryTextColor(fragment.requireContext().nightMode)
                     ),
                     PorterDuff.Mode.SRC_IN
                 )
@@ -332,14 +346,32 @@ class CardPlayerFragment :
         }
 
 
-        override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet {
-            return defaultColorChangeAnimatorSet(oldColor, newColor).also {
-                it.play(
-                    fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(oldColor, newColor)
-                ).with(
-                    fragment.requireView().findViewById<View>(R.id.status_bar)
-                        .backgroundColorTransitionAnimator(darkenColor(oldColor), darkenColor(newColor))
-                )
+        override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
+            defaultColorChangeAnimatorSet(
+                oldColor, newColor,
+                fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(oldColor, newColor),
+                fragment.requireView().findViewById<View>(R.id.status_bar)
+                    .backgroundColorTransitionAnimator(darkenColor(oldColor), darkenColor(newColor))
+            ) {
+                setToolbarWidgetColor(newColor)
+            }
+
+        override fun forceChangeColor(newColor: Int) {
+            super.forceChangeColor(newColor)
+            with(fragment.viewBinding) {
+                playerToolbar.setBackgroundColor(newColor)
+                setToolbarWidgetColor(newColor)
+            }
+        }
+
+        private fun setToolbarWidgetColor(newColor: Int) {
+            with(fragment.viewBinding) {
+                val context = root.context
+                val titleTextColor = context.primaryTextColor(newColor)
+                val subtitleTextColor = context.secondaryTextColor(newColor)
+                playerToolbar.setToolbarTextColor(titleTextColor, titleTextColor, subtitleTextColor)
+                tintMenuActionIcons(playerToolbar, playerToolbar.menu, titleTextColor)
+                applyOverflowMenuTint(context, playerToolbar, titleTextColor)
             }
         }
     }

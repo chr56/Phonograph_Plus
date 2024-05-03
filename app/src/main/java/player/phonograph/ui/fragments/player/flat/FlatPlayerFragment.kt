@@ -3,8 +3,12 @@ package player.phonograph.ui.fragments.player.flat
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
+import mt.tint.viewtint.applyOverflowMenuTint
+import mt.tint.viewtint.setToolbarTextColor
+import mt.tint.viewtint.tintMenuActionIcons
 import mt.util.color.darkenColor
 import mt.util.color.lightenColor
+import mt.util.color.primaryTextColor
 import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
@@ -28,11 +32,13 @@ import player.phonograph.util.ui.textColorTransitionAnimator
 import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
 import androidx.appcompat.widget.Toolbar
+import androidx.core.animation.doOnEnd
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withCreated
 import androidx.lifecycle.withStarted
+import android.animation.Animator
 import android.animation.AnimatorSet
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -172,7 +178,12 @@ class FlatPlayerFragment :
             else if (nightMode) lightenColor(color) else darkenColor(color)
         }
 
-        fun defaultColorChangeAnimatorSet(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet {
+        fun defaultColorChangeAnimatorSet(
+            @ColorInt oldColor: Int,
+            @ColorInt newColor: Int,
+            vararg animators: Animator,
+            onEnd: ((animator: Animator) -> Unit)? = null,
+        ): AnimatorSet {
             val backgroundAnimator =
                 fragment.playbackControlsFragment.requireView().backgroundColorTransitionAnimator(oldColor, newColor)
             val statusBarAnimator =
@@ -183,8 +194,14 @@ class FlatPlayerFragment :
                 fragment.viewBinding.playerQueueSubHeader.textColorTransitionAnimator(oldTextColor, newTextColor)
             return AnimatorSet().apply {
                 duration = PHONOGRAPH_ANIM_TIME / 2
-                play(backgroundAnimator).with(statusBarAnimator).apply {
-                    with(subHeaderAnimator)
+                play(backgroundAnimator).with(statusBarAnimator).with(subHeaderAnimator).apply {
+                    for (animator in animators) {
+                        with(animator)
+                    }
+                }
+
+                if (onEnd != null) {
+                    doOnEnd(onEnd)
                 }
             }
         }
@@ -194,7 +211,6 @@ class FlatPlayerFragment :
             with(fragment.viewBinding) {
                 playerStatusBar.setBackgroundColor(newColor)
                 playerQueueSubHeader.setTextColor(requireDarkenColor(newColor))
-                playerToolbar.setBackgroundColor(newColor)
             }
         }
 
@@ -288,10 +304,30 @@ class FlatPlayerFragment :
         }
 
         override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
-            defaultColorChangeAnimatorSet(oldColor, newColor).also {
-                it.play(
-                    fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(oldColor, newColor)
-                )
+            defaultColorChangeAnimatorSet(
+                oldColor, newColor,
+                fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(oldColor, newColor)
+            ) {
+                setToolbarWidgetColor(newColor)
             }
+
+        override fun forceChangeColor(newColor: Int) {
+            super.forceChangeColor(newColor)
+            with(fragment.viewBinding) {
+                playerToolbar.setBackgroundColor(newColor)
+                setToolbarWidgetColor(newColor)
+            }
+        }
+
+        private fun setToolbarWidgetColor(newColor: Int) {
+            with(fragment.viewBinding) {
+                val context = root.context
+                val titleTextColor = context.primaryTextColor(newColor)
+                val subtitleTextColor = context.secondaryTextColor(newColor)
+                playerToolbar.setToolbarTextColor(titleTextColor, titleTextColor, subtitleTextColor)
+                tintMenuActionIcons(playerToolbar, playerToolbar.menu, titleTextColor)
+                applyOverflowMenuTint(context, playerToolbar, titleTextColor)
+            }
+        }
     }
 }
