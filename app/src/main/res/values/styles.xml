@@ -64,7 +64,7 @@
     </style>
 
 
-    <style name="FileChooserDialogActivity" parent="Theme.AppCompat.DayNight.Dialog">
+    <style name="FileChooserDialogActivity" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:windowNoTitle">true</item>
         <item name="android:title">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
