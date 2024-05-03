@@ -509,4 +509,5 @@
     <string name="error_unstoppable_service">無法退出前台或正在使用中的音樂服務</string>
     <string name="action_fast_rewind">快退</string>
     <string name="action_fast_forward">快進</string>
+    <string name="file_selector">檔案選擇器</string>
 </resources>

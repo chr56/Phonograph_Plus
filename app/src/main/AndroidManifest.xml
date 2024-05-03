@@ -145,6 +145,7 @@
             android:name=".ui.activities.FileChooserDialogActivity"
             android:excludeFromRecents="true"
             android:exported="true"
+            android:label="@string/file_selector"
             android:launchMode="singleInstance"
             android:theme="@style/FileChooserDialogActivity" />
         <activity

@@ -522,4 +522,5 @@
     <string name="error_unstoppable_service">Can not exit music service in foreground or in use.</string>
     <string name="action_fast_rewind">Fast Rewind</string>
     <string name="action_fast_forward">Fast Forward</string>
+    <string name="file_selector">File Selector</string>
 </resources>
