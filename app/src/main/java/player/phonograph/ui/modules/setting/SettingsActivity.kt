@@ -63,9 +63,9 @@ class SettingsActivity : ComposeThemeActivity(),
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
-        createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
-        pathSelectorContractTool.register(lifecycle, activityResultRegistry)
+        openFileStorageAccessTool.register(this)
+        createFileStorageAccessTool.register(this)
+        pathSelectorContractTool.register(this)
         super.onCreate(savedInstanceState)
 
 

@@ -86,9 +86,9 @@ class PlaylistDetailActivity :
 
         binding = ActivityPlaylistDetailBinding.inflate(layoutInflater)
 
-        openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
-        openDirStorageAccessTool.register(lifecycle, activityResultRegistry)
-        createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
+        openFileStorageAccessTool.register(this)
+        openDirStorageAccessTool.register(this)
+        createFileStorageAccessTool.register(this)
         lifecycle.addObserver(MediaStoreListener())
 
         super.onCreate(savedInstanceState)

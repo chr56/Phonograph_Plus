@@ -5,10 +5,9 @@
 package player.phonograph.util.permissions
 
 import lib.activityresultcontract.ActivityResultContractTool
-import androidx.activity.result.ActivityResultRegistry
+import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.lifecycle.Lifecycle
 
 typealias GrantResult = Map<String, Boolean>
 
@@ -24,8 +23,8 @@ class PermissionDelegate {
 
     private val requestPermissionsTool: RequestPermissionsTool = RequestPermissionsTool()
 
-    fun register(lifeCycle: Lifecycle, registry: ActivityResultRegistry) {
-        requestPermissionsTool.register(lifeCycle, registry)
+    fun register(activity: ComponentActivity) {
+        requestPermissionsTool.register(activity)
     }
 
     fun grant(permissions: Array<String>, callback: (GrantResult) -> Unit) {

@@ -68,8 +68,8 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
         super.onCreate(savedInstanceState)
 
         config()
-        openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
-        requestPermissionTool.register(lifecycle, activityResultRegistry)
+        openFileStorageAccessTool.register(this)
+        requestPermissionTool.register(this)
 
         addSlide(
             AppIntroFragment.createInstance(

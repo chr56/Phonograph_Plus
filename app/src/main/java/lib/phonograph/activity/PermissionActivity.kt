@@ -28,7 +28,7 @@ open class PermissionActivity : ThemeActivity() {
     protected open fun runtimePermissionsToRequest(): Array<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        permissionDelegate.register(lifecycle, activityResultRegistry)
+        permissionDelegate.register(this)
         super.onCreate(savedInstanceState)
     }
 

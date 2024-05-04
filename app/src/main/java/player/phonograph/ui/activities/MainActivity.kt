@@ -86,10 +86,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
-        openDirStorageAccessTool.register(lifecycle, activityResultRegistry)
-        createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
-        pathSelectorContractTool.register(lifecycle, activityResultRegistry)
+        openFileStorageAccessTool.register(this)
+        openDirStorageAccessTool.register(this)
+        createFileStorageAccessTool.register(this)
+        pathSelectorContractTool.register(this)
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()

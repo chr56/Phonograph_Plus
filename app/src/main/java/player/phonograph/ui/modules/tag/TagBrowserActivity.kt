@@ -67,9 +67,9 @@ class TagBrowserActivity :
     private val viewModel: TagBrowserViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
-        openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
-        webSearchTool.register(lifecycle, activityResultRegistry)
+        createFileStorageAccessTool.register(this)
+        openFileStorageAccessTool.register(this)
+        webSearchTool.register(this)
         val song = parseIntent(this, intent)
         viewModel.updateSong(this, song)
         super.onCreate(savedInstanceState)
