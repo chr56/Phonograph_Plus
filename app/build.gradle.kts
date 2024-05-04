@@ -184,7 +184,6 @@ dependencies {
     implementation(libs.bundles.compose)
     debugImplementation(libs.compose.ui.tooling)
 
-    implementation(libs.mt.pref)
     implementation(libs.bundles.themeUtil)
 
     implementation(libs.storageUtilities)
