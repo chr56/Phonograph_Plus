@@ -328,7 +328,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
     private fun correctChipBackgroundColor(checked: Boolean) = ColorStateList.valueOf(
         if (checked) lightenColor(primaryColor)
-        else resources.getColor(R.color.defaultFooterColor, requireContext().theme)
+        else resources.getColor(R.color.footer_background, requireContext().theme)
     )
 
     private fun correctChipTextColor(checked: Boolean) = ColorStateList.valueOf(
@@ -345,7 +345,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
             ), intArrayOf(
                 lightenColor(primaryColor),
                 lightenColor(primaryColor),
-                resources.getColor(R.color.defaultFooterColor, requireContext().theme)
+                resources.getColor(R.color.footer_background, requireContext().theme)
             )
         )
     }

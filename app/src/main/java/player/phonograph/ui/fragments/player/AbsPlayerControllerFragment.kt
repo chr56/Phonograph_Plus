@@ -75,8 +75,8 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         binding.setUpShuffleButton { MusicPlayerRemote.toggleShuffleMode() }
         binding.setUpRepeatButton { MusicPlayerRemote.cycleRepeatMode() }
 
-        _backgroundColor.value = context.getColor(R.color.defaultFooterColor)
-        calculateColor(context, context.getColor(R.color.defaultFooterColor))
+        _backgroundColor.value = context.getColor(R.color.footer_background)
+        calculateColor(context, context.getColor(R.color.footer_background))
         lightColor = context.primaryTextColor(true)
 
         binding.setUpPlayPauseButton(context)

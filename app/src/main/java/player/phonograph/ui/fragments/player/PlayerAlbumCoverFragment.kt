@@ -61,7 +61,7 @@ class PlayerAlbumCoverFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycle.addObserver(progressViewUpdateHelperDelegate)
-        playerViewModel.refreshPaletteColor(requireContext().getColor(R.color.defaultFooterColor))
+        playerViewModel.refreshPaletteColor(requireContext().getColor(R.color.footer_background))
     }
 
     private fun observeState() {
@@ -212,7 +212,7 @@ class PlayerAlbumCoverFragment :
         if (song != null && song != Song.EMPTY_SONG) {
             playerViewModel.refreshPaletteColor(requireContext(), song)
         } else {
-            playerViewModel.refreshPaletteColor(requireContext().getColor(R.color.defaultFooterColor))
+            playerViewModel.refreshPaletteColor(requireContext().getColor(R.color.footer_background))
         }
     }
 

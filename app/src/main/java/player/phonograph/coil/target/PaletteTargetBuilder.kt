@@ -20,7 +20,7 @@ import kotlinx.coroutines.yield
 
 open class PaletteTargetBuilder(protected open val defaultColor: Int) {
 
-    constructor(context: Context) : this(context.getColor(R.color.defaultFooterColor))
+    constructor(context: Context) : this(context.getColor(R.color.footer_background))
 
     private var onSuccess: (result: Drawable, paletteColor: Int) -> Unit = { _, _ -> }
     fun onResourceReady(block: (result: Drawable, paletteColor: Int) -> Unit): PaletteTargetBuilder =

@@ -5,10 +5,10 @@
     <color name="app_shortcut_default_foreground">@color/md_blue_grey_500</color>
     <color name="app_shortcut_default_background">@color/md_grey_50</color>
 
-    <color name="cardBackgroundColor">@color/md_white_1000</color>
-    <color name="defaultFooterColor">@color/md_grey_300</color>
-    <color name="dividerColor">@color/divider_light</color>
-    <color name="iconColor">@color/secondary_text_light</color>
+    <color name="card_background">@color/md_white_1000</color>
+    <color name="footer_background">@color/md_grey_300</color>
+    <color name="divider">@color/divider_light</color>
+    <color name="icon">@color/secondary_text_light</color>
 
     <color name="grey_highlight">@color/md_grey_700</color>
 

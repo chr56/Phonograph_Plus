@@ -12,11 +12,11 @@
         <item name="rectSelector">@drawable/rect_selector_auto</item>
         <item name="rectSelectorStrong">@drawable/rect_selector_strong_auto</item>
 
-        <item name="cardBackgroundColor">@color/cardBackgroundColor</item>
-        <item name="colorBackgroundFloating">@color/cardBackgroundColor</item>
-        <item name="defaultFooterColor">@color/defaultFooterColor</item>
-        <item name="dividerColor">@color/dividerColor</item>
-        <item name="iconColor">@color/iconColor</item>
+        <item name="cardBackgroundColor">@color/card_background</item>
+        <item name="colorBackgroundFloating">@color/card_background</item>
+        <item name="defaultFooterColor">@color/footer_background</item>
+        <item name="dividerColor">@color/divider</item>
+        <item name="iconColor">@color/icon</item>
         <item name="colorControlActivated">@color/grey_highlight</item>
         <!-- just in case-->
         <item name="colorAccent">@color/grey_highlight</item>

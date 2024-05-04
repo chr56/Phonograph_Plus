@@ -44,7 +44,7 @@ abstract class OptionsPopup protected constructor(
     protected fun backgroundColor(context: Context): Int =
         context.resolveColor(
             R.attr.colorBackgroundFloating,
-            context.getColor(player.phonograph.R.color.cardBackgroundColor)
+            context.getColor(player.phonograph.R.color.card_background)
         )
 
 
