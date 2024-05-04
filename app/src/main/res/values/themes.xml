@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Phonograph.Base.Auto" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
+
+    <style name="Theme.Phonograph.Auto" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
 
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
@@ -12,11 +13,11 @@
         <item name="rectSelector">@drawable/rect_selector_auto</item>
         <item name="rectSelectorStrong">@drawable/rect_selector_strong_auto</item>
 
-        <item name="cardBackgroundColor">@color/cardBackgroundColor</item>
-        <item name="colorBackgroundFloating">@color/cardBackgroundColor</item>
-        <item name="defaultFooterColor">@color/defaultFooterColor</item>
-        <item name="dividerColor">@color/dividerColor</item>
-        <item name="iconColor">@color/iconColor</item>
+        <item name="cardBackgroundColor">@color/card_background</item>
+        <item name="colorBackgroundFloating">@color/card_background</item>
+        <item name="defaultFooterColor">@color/footer_background</item>
+        <item name="dividerColor">@color/divider</item>
+        <item name="iconColor">@color/icon</item>
         <item name="colorControlActivated">@color/grey_highlight</item>
         <!-- just in case-->
         <item name="colorAccent">@color/grey_highlight</item>
@@ -31,7 +32,7 @@
 
     </style>
 
-    <style name="Theme.Phonograph.Base.Dark" parent="Theme.MaterialComponents.NoActionBar.Bridge">
+    <style name="Theme.Phonograph.Dark" parent="Theme.MaterialComponents.NoActionBar.Bridge">
 
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
@@ -47,7 +48,7 @@
         <item name="cardBackgroundColor">@color/md_grey_800</item>
         <item name="colorBackgroundFloating">@color/md_grey_800</item>
         <item name="defaultFooterColor">@color/md_grey_900</item>
-        <item name="dividerColor">@color/md_divider_white</item>
+        <item name="dividerColor">@color/divider_dark</item>
         <item name="iconColor">@color/secondary_text_dark</item>
         <item name="colorControlActivated">@color/md_grey_200</item>
         <!-- just in case-->
@@ -65,7 +66,7 @@
         <item name="md_corner_radius">0dp</item>
     </style>
 
-    <style name="Theme.Phonograph.Base.Light" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+    <style name="Theme.Phonograph.Light" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
 
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
@@ -81,7 +82,7 @@
         <item name="cardBackgroundColor">@color/md_white_1000</item>
         <item name="colorBackgroundFloating">@color/md_white_1000</item>
         <item name="defaultFooterColor">@color/md_grey_300</item>
-        <item name="dividerColor">@color/md_divider_black</item>
+        <item name="dividerColor">@color/divider_light</item>
         <item name="iconColor">@color/secondary_text_light</item>
         <item name="colorControlActivated">@color/md_grey_700</item>
         <!-- just in case-->
@@ -100,7 +101,7 @@
         <item name="md_corner_radius">0dp</item>
     </style>
 
-    <style name="Theme.Phonograph.Base.Black" parent="@style/Theme.Phonograph.Base.Dark">
+    <style name="Theme.Phonograph.Black" parent="@style/Theme.Phonograph.Dark">
         <item name="android:windowBackground">@android:color/black</item>
         <item name="dividerColor">@color/md_grey_700</item>
         <item name="colorBackgroundFloating">@color/md_grey_900</item>
@@ -109,21 +110,38 @@
         <item name="md_background_color">@color/md_grey_900</item>
     </style>
 
-    <style name="FabParent">
-        <item name="borderWidth">0dp</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="Theme.AppIntro" parent="Theme.AppCompat.NoActionBar">
+        <!-- Theme for app intro -->
+        <item name="colorPrimary">@color/md_blue_A400</item>
+        <item name="colorPrimaryDark">@color/md_blue_800</item>
+        <item name="colorAccent">@color/md_orange_500</item>
     </style>
 
-    <style name="MusicProgressSliderParent">
-        <item name="android:progressDrawable">@android:color/transparent</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:thumb">@drawable/slider_thumb</item>
+    <style name="Theme.Phonograph.StarterActivity" parent="Theme.AppCompat.DayNight.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:title">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:background">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:dialogTitle">@null</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
 
-    <!-- content description is necessary to find the overflow button later in the layout-->
-    <style name="Widget.ActionButton.Overflow" parent="Widget.AppCompat.ActionButton.Overflow">
-        <item name="android:contentDescription">@string/abc_action_menu_overflow_description</item>
+
+    <style name="Theme.Phonograph.DialogActivity.Auto" parent="Theme.Phonograph.Auto">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:title">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:dialogTitle">@null</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
+
 </resources>

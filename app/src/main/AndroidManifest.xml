@@ -57,7 +57,7 @@
             android:excludeFromRecents="true"
             android:exported="true"
             android:label="@string/action_play"
-            android:theme="@style/DialogActivity">
+            android:theme="@style/Theme.Phonograph.StarterActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.APP_MUSIC" />
@@ -124,7 +124,7 @@
         <activity
             android:name=".ui.activities.PhonographIntroActivity"
             android:label="@string/intro_label"
-            android:theme="@style/Theme.AppIntroTheme"
+            android:theme="@style/Theme.AppIntro"
             android:exported="true"/>
         <activity android:name=".ui.activities.AlbumDetailActivity" />
         <activity android:name=".ui.activities.ArtistDetailActivity" />
@@ -147,7 +147,7 @@
             android:exported="false"
             android:label="@string/path_selector"
             android:launchMode="singleInstance"
-            android:theme="@style/Theme.Phonograph.Base.Auto.DialogActivity" />
+            android:theme="@style/Theme.Phonograph.DialogActivity.Auto" />
         <activity
             android:name=".ui.modules.web.WebSearchActivity"
             android:exported="true"

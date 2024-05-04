@@ -2,31 +2,17 @@
 <resources>
     <color name="ic_launcher_background">#E0E0E0</color>
 
-    <color name="twenty_percent_black_overlay">#34000000</color>
-    <color name="fifty_percent_black_overlay">#88000000</color>
-
     <color name="app_shortcut_default_foreground">@color/md_blue_grey_500</color>
     <color name="app_shortcut_default_background">@color/md_grey_50</color>
 
-    <color name="cardBackgroundColor">@color/md_white_1000</color>
-    <color name="defaultFooterColor">@color/md_grey_300</color>
-    <color name="dividerColor">@color/md_divider_black</color>
-    <color name="iconColor">@color/secondary_text_light</color>
+    <color name="card_background">@color/md_white_1000</color>
+    <color name="footer_background">@color/md_grey_300</color>
+    <color name="divider">@color/divider_light</color>
+    <color name="icon">@color/secondary_text_light</color>
 
     <color name="grey_highlight">@color/md_grey_700</color>
-
-    <color name="md_divider_black">#1F3E3E3E</color>
-    <color name="md_divider_white">#1FD6D6D6</color>
 
     <color name="seek_arc_text">@color/md_black_1000</color>
 
     <color name="dialog_button_color">@color/md_black_1000</color>
-
-    <color name="secondary_text_light">#8A000000</color>
-    <color name="control_normal_light">#8A000000</color>
-    <color name="primary_text_light">#DE000000</color>
-
-    <color name="secondary_text_dark">#B3FFFFFF</color>
-    <color name="control_normal_dark">#B3FFFFFF</color>
-    <color name="primary_text_dark">#FFFFFFFF</color>
 </resources>

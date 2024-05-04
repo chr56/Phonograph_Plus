@@ -26,7 +26,7 @@ class IconImageView : AppCompatImageView {
 
     private fun init(context: Context) {
         setColorFilter(
-            context.resolveColor(R.attr.iconColor, context.getColor(R.color.iconColor)),
+            context.resolveColor(R.attr.iconColor, context.getColor(R.color.icon)),
             PorterDuff.Mode.SRC_IN
         )
     }
