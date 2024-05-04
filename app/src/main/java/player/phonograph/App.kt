@@ -8,8 +8,6 @@ import coil.ImageLoader
 import coil.ImageLoaderFactory
 import lib.phonograph.localization.ContextLocaleDelegate
 import lib.phonograph.misc.Reboot
-import lib.phonograph.theme.ThemeColor
-import lib.phonograph.theme.internal.ThemeStore
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext
@@ -91,13 +89,6 @@ class App : Application(), ImageLoaderFactory {
 
         if (CrashActivity.isCrashProcess(this)) return
 
-        // default theme
-        if (!ThemeStore.isConfigured(this, 1)) {
-            ThemeColor.editTheme(this)
-                .primaryColorRes(util.theme.materials.R.color.md_blue_A400)
-                .accentColorRes(util.theme.materials.R.color.md_yellow_900)
-                .commit()
-        }
         // night mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
