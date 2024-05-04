@@ -50,15 +50,15 @@ import android.widget.Toast.LENGTH_LONG
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.FileInputStream
-import mt.color.R as MR
+import util.theme.materials.R as MR
 
 class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequestPermission {
 
     private fun config() {
         isWizardMode = true
         showStatusBar(true)
-        setStatusBarColorRes(mt.color.R.color.md_black_1000)
-        setNavBarColorRes(mt.color.R.color.md_black_1000)
+        setStatusBarColorRes(util.theme.materials.R.color.md_black_1000)
+        setNavBarColorRes(util.theme.materials.R.color.md_black_1000)
         isColorTransitionsEnabled = true
     }
 

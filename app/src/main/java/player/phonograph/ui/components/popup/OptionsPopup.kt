@@ -5,9 +5,9 @@
 package player.phonograph.ui.components.popup
 
 import mt.pref.ThemeColor
-import mt.util.color.resolveColor
-import mt.util.color.secondaryTextColor
 import player.phonograph.util.theme.nightMode
+import util.theme.color.secondaryTextColor
+import util.theme.internal.resolveColor
 import androidx.appcompat.R
 import androidx.viewbinding.ViewBinding
 import android.content.Context
@@ -42,8 +42,7 @@ abstract class OptionsPopup protected constructor(
     protected open fun onShow() {}
 
     protected fun backgroundColor(context: Context): Int =
-        resolveColor(
-            context,
+        context.resolveColor(
             R.attr.colorBackgroundFloating,
             context.getColor(player.phonograph.R.color.cardBackgroundColor)
         )

@@ -6,15 +6,19 @@ package lib.phonograph.activity
 
 import mt.pref.ThemeColor
 import mt.pref.ThemeColor.accentColor
+import mt.pref.ThemeColor.navigationBarColor
 import mt.pref.ThemeColor.primaryColor
 import mt.pref.internal.ThemeStore.Companion.didThemeValuesChange
-import mt.tint.*
-import mt.util.color.darkenColor
-import mt.util.color.primaryTextColor
-import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.mechanism.setting.StyleConfig
 import player.phonograph.util.theme.nightMode
+import util.theme.activity.adjustStatusbarText
+import util.theme.activity.setNavigationBarColor
+import util.theme.activity.setStatusbarColor
+import util.theme.activity.setTaskDescriptionColor
+import util.theme.color.darkenColor
+import util.theme.color.primaryTextColor
+import util.theme.color.secondaryTextColor
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.os.Handler
@@ -51,8 +55,8 @@ abstract class ThemeActivity : MultiLanguageActivity() {
 
         // color
         if (autoSetStatusBarColor) setStatusbarColor(primaryColor(this))
-        if (autoSetNavigationBarColor) setNavigationBarColorAuto()
-        if (autoSetTaskDescriptionColor) setTaskDescriptionColorAuto()
+        if (autoSetNavigationBarColor) setNavigationBarColor(navigationBarColor(this))
+        if (autoSetTaskDescriptionColor) setTaskDescriptionColor(primaryColor(this))
     }
 
     /** Must call before super */
@@ -141,7 +145,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     open fun setStatusbarColor(color: Int) {
         val darkColor = darkenColor(color)
         setStatusbarColor(darkColor, R.id.status_bar)
-        requireLightStatusbarAuto(darkColor)
+        adjustStatusbarText(darkColor)
     }
 
     //

@@ -4,7 +4,6 @@ import coil.Coil
 import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.target.Target
-import mt.util.color.primaryTextColor
 import org.koin.core.context.GlobalContext
 import player.phonograph.MusicServiceMsgConst
 import player.phonograph.R
@@ -15,6 +14,7 @@ import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.LauncherActivity
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
+import util.theme.color.primaryTextColor
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes

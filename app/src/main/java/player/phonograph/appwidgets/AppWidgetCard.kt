@@ -1,11 +1,11 @@
 package player.phonograph.appwidgets
 
-import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.appwidgets.Util.createRoundedBitmap
 import player.phonograph.appwidgets.base.BaseAppWidget
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
+import util.theme.color.secondaryTextColor
 import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
 import android.graphics.Bitmap

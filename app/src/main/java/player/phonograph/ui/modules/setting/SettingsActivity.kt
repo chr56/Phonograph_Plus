@@ -138,7 +138,7 @@ class SettingsActivity : ComposeThemeActivity(),
                     Reboot.reboot(context)
                 }
                 cancelOnTouchOutside(true)
-                getActionButton(WhichButton.POSITIVE).updateTextColor(getColor(mt.color.R.color.md_red_A700))
+                getActionButton(WhichButton.POSITIVE).updateTextColor(getColor(util.theme.materials.R.color.md_red_A700))
             }
         }, stringResource(id = R.string.action_import).format(stringResource(id = R.string.action_backup)) to {
             openFileStorageAccessDelegate.launch(

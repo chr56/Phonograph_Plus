@@ -4,10 +4,10 @@
 
 package player.phonograph.util.theme
 
-import mt.util.color.darkenColor
-import mt.util.color.isColorLight
-import mt.util.color.isWindowBackgroundDark
-import mt.util.color.lightenColor
+import util.theme.color.darkenColor
+import util.theme.color.isColorLight
+import util.theme.color.isWindowBackgroundDark
+import util.theme.color.lightenColor
 import androidx.annotation.ColorInt
 import android.content.Context
 
@@ -34,9 +34,7 @@ fun shiftBackgroundColorForDarkText(@ColorInt backgroundColor: Int): Int {
 
 fun isWindowBackgroundDarkSafe(context: Context?): Boolean =
     try {
-        context?.let {
-            isWindowBackgroundDark(context)
-        } ?: false
+        context?.isWindowBackgroundDark() ?: false
     } catch (e: Exception) {
         false
     }

@@ -5,8 +5,6 @@
 package player.phonograph.service.notification
 
 import coil.request.Disposable
-import mt.util.color.primaryTextColor
-import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.mechanism.setting.NotificationAction
 import player.phonograph.mechanism.setting.NotificationActionsConfig
@@ -26,6 +24,8 @@ import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.permissions.checkNotificationPermission
 import player.phonograph.util.theme.createTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
+import util.theme.color.primaryTextColor
+import util.theme.color.secondaryTextColor
 import androidx.annotation.LayoutRes
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat

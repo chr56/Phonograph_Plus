@@ -8,14 +8,14 @@ import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.ToolbarCab.Companion.STATUS_ACTIVE
 import lib.phonograph.cab.initToolbarCab
 import mt.pref.ThemeColor
-import mt.util.color.darkenColor
-import mt.util.color.isColorLight
-import mt.util.color.lightenColor
 import player.phonograph.R
 import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.misc.IPaletteColorProvider
 import player.phonograph.util.debug
 import player.phonograph.util.theme.getTintedDrawable
+import util.theme.color.darkenColor
+import util.theme.color.isColorLight
+import util.theme.color.lightenColor
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.annotation.ColorInt

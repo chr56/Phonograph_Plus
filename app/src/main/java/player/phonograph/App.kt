@@ -94,8 +94,8 @@ class App : Application(), ImageLoaderFactory {
         // default theme
         if (!ThemeStore.isConfigured(this, 1)) {
             ThemeColor.editTheme(this)
-                .primaryColorRes(mt.color.R.color.md_blue_A400)
-                .accentColorRes(mt.color.R.color.md_yellow_900)
+                .primaryColorRes(util.theme.materials.R.color.md_blue_A400)
+                .accentColorRes(util.theme.materials.R.color.md_yellow_900)
                 .commit()
         }
         // night mode

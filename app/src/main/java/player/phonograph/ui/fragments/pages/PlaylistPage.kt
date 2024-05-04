@@ -6,7 +6,6 @@ package player.phonograph.ui.fragments.pages
 
 import mt.pref.accentColor
 import mt.pref.primaryColor
-import mt.util.color.lightenColor
 import org.koin.core.context.GlobalContext
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
@@ -22,6 +21,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.dialogs.CreatePlaylistDialog
 import player.phonograph.ui.fragments.pages.adapter.PlaylistDisplayAdapter
+import util.theme.color.lightenColor
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.content.Context

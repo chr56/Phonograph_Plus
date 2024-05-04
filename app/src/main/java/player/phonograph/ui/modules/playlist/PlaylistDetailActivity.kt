@@ -16,11 +16,7 @@ import lib.storage.launcher.IOpenDirStorageAccessible
 import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDirStorageAccessDelegate
 import lib.storage.launcher.OpenFileStorageAccessDelegate
-import mt.tint.setActivityToolbarColorAuto
-import mt.tint.viewtint.setBackgroundTint
-import mt.util.color.primaryTextColor
-import mt.util.color.secondaryDisabledTextColor
-import mt.util.color.secondaryTextColor
+import mt.pref.ThemeColor
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
@@ -38,6 +34,11 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
+import util.theme.color.primaryTextColor
+import util.theme.color.secondaryDisabledTextColor
+import util.theme.color.secondaryTextColor
+import util.theme.view.setBackgroundTint
+import util.theme.view.toolbar.setToolbarColor
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
@@ -163,8 +164,7 @@ class PlaylistDetailActivity :
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu, this::setupMenuCallback))
-
-        setActivityToolbarColorAuto(binding.toolbar)
+        setToolbarColor(binding.toolbar, ThemeColor.primaryColor(this))
     }
 
     private fun prepareRecyclerView() {

@@ -9,9 +9,6 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
-import mt.color.MaterialColor
-import mt.tint.viewtint.setMenuColor
-import mt.util.color.toolbarIconColor
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.mechanism.IFavorite
@@ -32,6 +29,9 @@ import player.phonograph.util.NavigationUtil
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.warning
+import util.theme.color.toolbarIconColor
+import util.theme.materials.MaterialColor
+import util.theme.view.menu.setMenuColor
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
 import androidx.annotation.MainThread

@@ -4,7 +4,7 @@
 
 package lib.phonograph.misc
 
-import mt.color.MaterialColor
+import util.theme.materials.MaterialColor
 import androidx.annotation.RequiresApi
 import android.content.Context
 import android.os.Build.VERSION_CODES.S

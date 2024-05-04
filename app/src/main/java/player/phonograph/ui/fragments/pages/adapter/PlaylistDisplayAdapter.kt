@@ -4,11 +4,11 @@
 
 package player.phonograph.ui.fragments.pages.adapter
 
-import mt.util.color.resolveColor
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.actions.ClickActionProviders
 import player.phonograph.actions.menu.ActionMenuProviders
+import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.sort.SortRef
@@ -17,8 +17,8 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.util.text.makeSectionName
+import util.theme.internal.resolveColor
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import android.content.Context
@@ -57,7 +57,10 @@ class PlaylistDisplayAdapter(
                     itemView.context.resources.getDimensionPixelSize(R.dimen.list_item_image_icon_padding)
                 image.setPadding(iconPadding, iconPadding, iconPadding, iconPadding)
                 image.setColorFilter(
-                    resolveColor(itemView.context, R.attr.iconColor), PorterDuff.Mode.SRC_IN
+                    itemView.context.resolveColor(
+                        R.attr.iconColor,
+                        itemView.context.getColor(R.color.iconColor)
+                    ), PorterDuff.Mode.SRC_IN
                 )
             }
         }
@@ -98,7 +101,12 @@ class PlaylistDisplayAdapter(
             if (shortSeparator != null) {
                 shortSeparator!!.visibility = View.GONE
             }
-            itemView.setBackgroundColor(resolveColor(activity, androidx.cardview.R.attr.cardBackgroundColor))
+            itemView.setBackgroundColor(
+                activity.resolveColor(
+                    androidx.cardview.R.attr.cardBackgroundColor,
+                    activity.getColor(R.color.cardBackgroundColor)
+                )
+            )
             itemView.elevation =
                 activity.resources.getDimensionPixelSize(R.dimen.card_elevation).toFloat()
         }

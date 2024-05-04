@@ -7,11 +7,6 @@ package player.phonograph.ui.modules.search
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import lib.phonograph.misc.menuProvider
-import mt.tint.setActivityToolbarColor
-import mt.tint.viewtint.setSearchViewContentColor
-import mt.tint.viewtint.tintCollapseIcon
-import mt.util.color.primaryTextColor
-import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.ActivitySearchBinding
 import player.phonograph.databinding.PopupWindowSearchBinding
@@ -22,6 +17,11 @@ import player.phonograph.ui.activities.base.AbsMusicServiceActivity
 import player.phonograph.ui.components.popup.OptionsPopup
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.hideKeyboard
+import util.theme.color.primaryTextColor
+import util.theme.color.secondaryTextColor
+import util.theme.view.searchview.setSearchViewContentColor
+import util.theme.view.toolbar.setToolbarColor
+import util.theme.view.toolbar.tintCollapseIcon
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Lifecycle
@@ -117,7 +117,7 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
-        setActivityToolbarColor(binding.toolbar, primaryColor)
+        setToolbarColor(binding.toolbar, primaryColor)
     }
 
     private fun setupMenu(menu: Menu) {

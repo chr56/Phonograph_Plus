@@ -8,7 +8,6 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import lib.phonograph.misc.Reboot
-import mt.util.color.primaryTextColor
 import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.App
 import player.phonograph.R
@@ -33,6 +32,7 @@ import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.reportError
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
+import util.theme.color.primaryTextColor
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope

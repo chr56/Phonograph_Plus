@@ -5,13 +5,13 @@
 package player.phonograph.ui.dialogs
 
 import mt.pref.ThemeColor
-import mt.tint.viewtint.tint
 import player.phonograph.ISSUE_TRACKER_LINK
 import player.phonograph.R
 import player.phonograph.databinding.DialogReportIssueBinding
 import player.phonograph.util.text.getDeviceInfo
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
+import util.theme.view.tint
 import androidx.fragment.app.DialogFragment
 import android.content.ClipData
 import android.content.ClipboardManager

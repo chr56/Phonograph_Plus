@@ -5,8 +5,6 @@
 package player.phonograph.ui.adapter
 
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-import mt.util.color.primaryTextColor
-import mt.util.color.secondaryTextColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.actions.ClickActionProviders
@@ -23,6 +21,8 @@ import player.phonograph.ui.adapter.DisplayConfig.Companion.IMAGE_TYPE_FIXED_ICO
 import player.phonograph.ui.adapter.DisplayConfig.Companion.IMAGE_TYPE_IMAGE
 import player.phonograph.ui.adapter.DisplayConfig.Companion.IMAGE_TYPE_TEXT
 import player.phonograph.ui.adapter.DisplayConfig.Companion.ImageType
+import util.theme.color.primaryTextColor
+import util.theme.color.secondaryTextColor
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView

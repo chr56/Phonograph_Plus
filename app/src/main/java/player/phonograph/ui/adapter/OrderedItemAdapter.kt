@@ -5,10 +5,10 @@
 package player.phonograph.ui.adapter
 
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-import mt.util.color.primaryTextColor
-import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.model.Displayable
+import util.theme.color.primaryTextColor
+import util.theme.color.secondaryTextColor
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView

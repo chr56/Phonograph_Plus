@@ -8,7 +8,6 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.github.chr56.android.menu_model.MenuContext
 import com.google.android.material.appbar.AppBarLayout
-import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.actionPlay
 import player.phonograph.databinding.FragmentFilePageBinding
@@ -23,6 +22,7 @@ import player.phonograph.ui.modules.explorer.FilesPageViewModel
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
+import util.theme.color.primaryTextColor
 import androidx.fragment.app.commitNow
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
