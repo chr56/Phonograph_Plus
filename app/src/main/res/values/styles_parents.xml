@@ -47,7 +47,7 @@
         <item name="cardBackgroundColor">@color/md_grey_800</item>
         <item name="colorBackgroundFloating">@color/md_grey_800</item>
         <item name="defaultFooterColor">@color/md_grey_900</item>
-        <item name="dividerColor">@color/md_divider_white</item>
+        <item name="dividerColor">@color/divider_dark</item>
         <item name="iconColor">@color/secondary_text_dark</item>
         <item name="colorControlActivated">@color/md_grey_200</item>
         <!-- just in case-->
@@ -81,7 +81,7 @@
         <item name="cardBackgroundColor">@color/md_white_1000</item>
         <item name="colorBackgroundFloating">@color/md_white_1000</item>
         <item name="defaultFooterColor">@color/md_grey_300</item>
-        <item name="dividerColor">@color/md_divider_black</item>
+        <item name="dividerColor">@color/divider_light</item>
         <item name="iconColor">@color/secondary_text_light</item>
         <item name="colorControlActivated">@color/md_grey_700</item>
         <!-- just in case-->

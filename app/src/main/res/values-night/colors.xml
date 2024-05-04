@@ -2,21 +2,15 @@
 <resources>
     <color name="ic_launcher_background">#E0E0E0</color>
 
-    <color name="twenty_percent_black_overlay">#34000000</color>
-    <color name="fifty_percent_black_overlay">#88000000</color>
-
     <color name="app_shortcut_default_foreground">@color/md_light_blue_800</color>
     <color name="app_shortcut_default_background">@color/md_grey_600</color>
 
     <color name="cardBackgroundColor">@color/md_grey_800</color>
     <color name="defaultFooterColor">@color/md_grey_900</color>
-    <color name="dividerColor">@color/md_divider_white</color>
+    <color name="dividerColor">@color/divider_dark</color>
     <color name="iconColor">@color/secondary_text_dark</color>
 
     <color name="grey_highlight">@color/md_grey_200</color>
-
-    <color name="md_divider_black">#1F3E3E3E</color>
-    <color name="md_divider_white">#1FD6D6D6</color>
 
     <color name="seek_arc_text">@color/md_white_1000</color>
 
