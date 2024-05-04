@@ -11,7 +11,7 @@
     <color name="cardBackgroundColor">@color/md_white_1000</color>
     <color name="defaultFooterColor">@color/md_grey_300</color>
     <color name="dividerColor">@color/md_divider_black</color>
-    <color name="iconColor">@color/MD_secondary_text_light</color>
+    <color name="iconColor">@color/secondary_text_light</color>
 
     <color name="grey_highlight">@color/md_grey_700</color>
 
@@ -21,4 +21,12 @@
     <color name="seek_arc_text">@color/md_black_1000</color>
 
     <color name="dialog_button_color">@color/md_black_1000</color>
+
+    <color name="secondary_text_light">#8A000000</color>
+    <color name="control_normal_light">#8A000000</color>
+    <color name="primary_text_light">#DE000000</color>
+
+    <color name="secondary_text_dark">#B3FFFFFF</color>
+    <color name="control_normal_dark">#B3FFFFFF</color>
+    <color name="primary_text_dark">#FFFFFFFF</color>
 </resources>
