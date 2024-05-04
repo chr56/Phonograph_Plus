@@ -1,13 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Theme.Phonograph.Auto" parent="Theme.Phonograph.Base.Auto" />
-
-    <style name="Theme.Phonograph.Dark" parent="Theme.Phonograph.Base.Dark" />
-
-    <style name="Theme.Phonograph.Light" parent="Theme.Phonograph.Base.Light" />
-
-    <style name="Theme.Phonograph.Black" parent="Theme.Phonograph.Base.Black" />
-
     <style name="Theme.Phonograph.Notification" parent="@android:style/TextAppearance.Material.Notification" />
 
     <style name="Theme.Phonograph.Notification.Title" parent="@android:style/TextAppearance.Material.Notification.Title" />
@@ -42,38 +34,34 @@
         <item name="android:transitionName" tools:ignore="NewApi">toolbar</item>
     </style>
 
-    <style name="Theme.AppIntroTheme" parent="Theme.AppCompat.NoActionBar">
-        <!-- Theme for app intro -->
-        <item name="colorPrimary">@color/md_blue_A400</item>
-        <item name="colorPrimaryDark">@color/md_blue_800</item>
-        <item name="colorAccent">@color/md_orange_500</item>
-    </style>
-
-    <style name="DialogActivity" parent="Theme.AppCompat.DayNight.Dialog">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:title">@null</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
+    <style name="Phonograph_TextButton">
         <item name="android:background">@null</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:dialogTitle">@null</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
-        <item name="android:windowAnimationStyle">@null</item>
-        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minWidth">64dp</item>
+        <item name="android:textAllCaps">false</item>
     </style>
 
-
-    <style name="Theme.Phonograph.Base.Auto.DialogActivity" parent="Theme.Phonograph.Base.Auto">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:title">@null</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:dialogTitle">@null</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
-        <item name="android:windowAnimationStyle">@null</item>
-        <item name="android:windowCloseOnTouchOutside">true</item>
+    <style name="FabParent">
+        <item name="borderWidth">0dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
+
+    <style name="MusicProgressSliderParent">
+        <item name="android:progressDrawable">@android:color/transparent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:thumb">@drawable/slider_thumb</item>
+    </style>
+
+    <!-- content description is necessary to find the overflow button later in the layout-->
+    <style name="Widget.ActionButton.Overflow" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:contentDescription">@string/abc_action_menu_overflow_description</item>
+    </style>
+
 
 </resources>

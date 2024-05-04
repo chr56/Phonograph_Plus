@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <style name="Theme.Phonograph.Auto" parent="Theme.Phonograph.Base.Auto" />
+
+    <style name="Theme.Phonograph.Dark" parent="Theme.Phonograph.Base.Dark" />
+
+    <style name="Theme.Phonograph.Light" parent="Theme.Phonograph.Base.Light" />
+
+    <style name="Theme.Phonograph.Black" parent="Theme.Phonograph.Base.Black" />
+
     <style name="Theme.Phonograph.Base.Auto" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
 
         <item name="android:statusBarColor">@android:color/transparent</item>
@@ -109,21 +118,38 @@
         <item name="md_background_color">@color/md_grey_900</item>
     </style>
 
-    <style name="FabParent">
-        <item name="borderWidth">0dp</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="Theme.AppIntroTheme" parent="Theme.AppCompat.NoActionBar">
+        <!-- Theme for app intro -->
+        <item name="colorPrimary">@color/md_blue_A400</item>
+        <item name="colorPrimaryDark">@color/md_blue_800</item>
+        <item name="colorAccent">@color/md_orange_500</item>
     </style>
 
-    <style name="MusicProgressSliderParent">
-        <item name="android:progressDrawable">@android:color/transparent</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:thumb">@drawable/slider_thumb</item>
+    <style name="DialogActivity" parent="Theme.AppCompat.DayNight.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:title">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:background">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:dialogTitle">@null</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
 
-    <!-- content description is necessary to find the overflow button later in the layout-->
-    <style name="Widget.ActionButton.Overflow" parent="Widget.AppCompat.ActionButton.Overflow">
-        <item name="android:contentDescription">@string/abc_action_menu_overflow_description</item>
+
+    <style name="Theme.Phonograph.Base.Auto.DialogActivity" parent="Theme.Phonograph.Base.Auto">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:title">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:dialogTitle">@null</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
+
 </resources>
