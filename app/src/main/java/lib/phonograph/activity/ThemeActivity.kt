@@ -101,7 +101,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (didThemeValuesChange(this, createTime)) {
+        if (ThemeColor.didChangeSince(this, createTime)) {
             postRecreate()
         }
     }

@@ -4,20 +4,30 @@
 
 package lib.phonograph.theme.internal
 
-import lib.phonograph.theme.*
-import android.annotation.SuppressLint
-import android.content.Context
-import android.content.SharedPreferences
+import lib.phonograph.theme.ThemeColor
+import lib.phonograph.theme.ThemeColorKeys.KEY_ACCENT_COLOR
+import lib.phonograph.theme.ThemeColorKeys.KEY_COLORED_NAVIGATION_BAR
+import lib.phonograph.theme.ThemeColorKeys.KEY_COLORED_STATUSBAR
+import lib.phonograph.theme.ThemeColorKeys.KEY_ENABLE_MONET
+import lib.phonograph.theme.ThemeColorKeys.KEY_IS_CONFIGURED
+import lib.phonograph.theme.ThemeColorKeys.KEY_LAST_EDIT_TIME
+import lib.phonograph.theme.ThemeColorKeys.KEY_MONET_ACCENT_COLOR
+import lib.phonograph.theme.ThemeColorKeys.KEY_MONET_PRIMARY_COLOR
+import lib.phonograph.theme.ThemeColorKeys.KEY_PRIMARY_COLOR
+import lib.phonograph.theme.ThemeColorKeys.KEY_VERSION
+import lib.phonograph.theme.internal.MonetColor.Depth
+import lib.phonograph.theme.internal.MonetColor.MonetColorPalette
+import lib.phonograph.theme.internal.MonetColor.Type
+import util.theme.internal.resolveColor
 import androidx.annotation.AttrRes
 import androidx.annotation.CheckResult
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.IntRange
 import androidx.core.content.ContextCompat
-import lib.phonograph.theme.internal.MonetColor.Depth
-import lib.phonograph.theme.internal.MonetColor.MonetColorPalette
-import lib.phonograph.theme.internal.MonetColor.Type
-import util.theme.internal.resolveColor
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
 
 /**
  * a class to store theme color preference
@@ -27,7 +37,7 @@ import util.theme.internal.resolveColor
 class ThemeStore internal constructor(private val context: Context) {
 
     internal val pref: SharedPreferences =
-        context.getSharedPreferences(CONFIG_PREFS_KEY_DEFAULT, Context.MODE_PRIVATE)
+        context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
 
     private val mEditor = pref.edit()
 
@@ -58,12 +68,12 @@ class ThemeStore internal constructor(private val context: Context) {
     }
 
     fun coloredStatusBar(colored: Boolean): ThemeStore {
-        mEditor.putBoolean(KEY_APPLY_PRIMARYDARK_STATUSBAR, colored)
+        mEditor.putBoolean(KEY_COLORED_STATUSBAR, colored)
         return this
     }
 
     fun coloredNavigationBar(applyToNavBar: Boolean): ThemeStore {
-        mEditor.putBoolean(KEY_APPLY_PRIMARY_NAVBAR, applyToNavBar)
+        mEditor.putBoolean(KEY_COLORED_NAVIGATION_BAR, applyToNavBar)
         return this
     }
 
@@ -85,14 +95,14 @@ class ThemeStore internal constructor(private val context: Context) {
     fun markChanged() = mEditor.commit().also { ThemeColor.updateCachedColor(context) }
 
     fun commit() =
-        mEditor.putLong(VALUES_CHANGED, System.currentTimeMillis())
-            .putBoolean(IS_CONFIGURED_KEY, true)
+        mEditor.putLong(KEY_LAST_EDIT_TIME, System.currentTimeMillis())
+            .putBoolean(KEY_IS_CONFIGURED, true)
             .commit()
             .also { ThemeColor.updateCachedColor(context) }
 
     fun apply() =
-        mEditor.putLong(VALUES_CHANGED, System.currentTimeMillis())
-            .putBoolean(IS_CONFIGURED_KEY, true)
+        mEditor.putLong(KEY_LAST_EDIT_TIME, System.currentTimeMillis())
+            .putBoolean(KEY_IS_CONFIGURED, true)
             .apply()
             .also { ThemeColor.updateCachedColor(context) }
 
@@ -105,14 +115,14 @@ class ThemeStore internal constructor(private val context: Context) {
 
     @CheckResult
     fun isConfigured(): Boolean {
-        return pref.getBoolean(IS_CONFIGURED_KEY, false)
+        return pref.getBoolean(KEY_IS_CONFIGURED, false)
     }
 
     @SuppressLint("ApplySharedPref")
     fun isConfigured(@IntRange(from = 0, to = Int.MAX_VALUE.toLong()) version: Int): Boolean {
-        val lastVersion = pref.getInt(IS_CONFIGURED_VERSION_KEY, -1)
+        val lastVersion = pref.getInt(KEY_VERSION, -1)
         if (version > lastVersion) {
-            mEditor.putInt(IS_CONFIGURED_VERSION_KEY, version).commit()
+            mEditor.putInt(KEY_VERSION, version).commit()
             return false
         }
         return true
@@ -130,7 +140,8 @@ class ThemeStore internal constructor(private val context: Context) {
 
         @SuppressLint("CommitPrefEdits")
         fun didThemeValuesChange(context: Context, since: Long): Boolean =
-            isConfigured(context) &&
-                    ThemeStore(context).pref.getLong(VALUES_CHANGED, -1) > since
+            isConfigured(context) && ThemeStore(context).pref.getLong(KEY_LAST_EDIT_TIME, -1) > since
+
+        private const val PREFERENCE_NAME = "theme_color_cfg"
     }
 }

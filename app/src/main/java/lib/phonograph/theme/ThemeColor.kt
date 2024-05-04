@@ -4,23 +4,31 @@
 
 package lib.phonograph.theme
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.graphics.Color
-import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.S
-import android.os.Handler
-import android.os.Looper
-import androidx.annotation.CheckResult
-import androidx.annotation.ColorInt
-import androidx.annotation.RequiresApi
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
+import lib.phonograph.theme.ThemeColorKeys.KEY_ACCENT_COLOR
+import lib.phonograph.theme.ThemeColorKeys.KEY_COLORED_NAVIGATION_BAR
+import lib.phonograph.theme.ThemeColorKeys.KEY_COLORED_STATUSBAR
+import lib.phonograph.theme.ThemeColorKeys.KEY_ENABLE_MONET
+import lib.phonograph.theme.ThemeColorKeys.KEY_MONET_ACCENT_COLOR
+import lib.phonograph.theme.ThemeColorKeys.KEY_MONET_PRIMARY_COLOR
+import lib.phonograph.theme.ThemeColorKeys.KEY_PRIMARY_COLOR
 import lib.phonograph.theme.internal.MonetColor.MonetColorPalette
 import lib.phonograph.theme.internal.MonetColor.defaultMonetAccentColor
 import lib.phonograph.theme.internal.MonetColor.defaultMonetPrimaryColor
 import lib.phonograph.theme.internal.ThemeStore
 import util.theme.color.shiftColor
+import androidx.annotation.CheckResult
+import androidx.annotation.ColorInt
+import androidx.annotation.RequiresApi
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import android.content.Context
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
+import android.graphics.Color
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.S
+import android.os.Handler
+import android.os.Looper
+import util.theme.materials.R as MR
 
 /**
  * a class to access stored preference
@@ -53,13 +61,13 @@ object ThemeColor {
     @CheckResult
     fun coloredStatusBar(context: Context): Boolean =
         ThemeStore(context).pref.getBoolean(
-            KEY_APPLY_PRIMARYDARK_STATUSBAR, true
+            KEY_COLORED_STATUSBAR, true
         )
 
     @CheckResult
     fun coloredNavigationBar(context: Context): Boolean =
         ThemeStore(context).pref.getBoolean(
-            KEY_APPLY_PRIMARY_NAVBAR, false
+            KEY_COLORED_NAVIGATION_BAR, false
         )
 
     @CheckResult
@@ -72,17 +80,24 @@ object ThemeColor {
     fun statusBarColor(context: Context): Int =
         if (coloredStatusBar(context)) primaryColorDark(context) else Color.BLACK
 
+    @CheckResult
+    @ColorInt
     @RequiresApi(S)
     fun preferredMonetPrimaryColor(context: Context) =
         MonetColorPalette(
             ThemeStore(context).pref.getInt(KEY_MONET_PRIMARY_COLOR, defaultMonetPrimaryColor.value)
         ).color(context)
 
+    @CheckResult
+    @ColorInt
     @RequiresApi(S)
     fun preferredMonetAccentColor(context: Context) =
         MonetColorPalette(
             ThemeStore(context).pref.getInt(KEY_MONET_ACCENT_COLOR, defaultMonetAccentColor.value)
         ).color(context)
+
+    @CheckResult
+    fun didChangeSince(context: Context, time: Long): Boolean = ThemeStore.didThemeValuesChange(context, time)
 
 
     @get:ColorInt
@@ -98,10 +113,7 @@ object ThemeColor {
             if (SDK_INT >= S && pref.getBoolean(KEY_ENABLE_MONET, false)) {
                 preferredMonetPrimaryColor(context)
             } else {
-                pref.getInt(
-                    KEY_PRIMARY_COLOR,
-                    context.getColor(util.theme.materials.R.color.md_blue_A400)
-                )
+                pref.getInt(KEY_PRIMARY_COLOR, context.getColor(MR.color.md_blue_A400))
             }
         cachedPrimaryColor = primaryColor
         return primaryColor
@@ -114,10 +126,7 @@ object ThemeColor {
             if (SDK_INT >= S && pref.getBoolean(KEY_ENABLE_MONET, false)) {
                 preferredMonetAccentColor(context)
             } else {
-                pref.getInt(
-                    KEY_ACCENT_COLOR,
-                    context.getColor(util.theme.materials.R.color.md_yellow_900)
-                )
+                pref.getInt(KEY_ACCENT_COLOR, context.getColor(MR.color.md_yellow_900))
             }
         cachedAccentColor = accentColor
         return accentColor
@@ -130,43 +139,36 @@ object ThemeColor {
 
     fun registerPreferenceChangeListener(
         l: ThemePreferenceChangeListener,
-        appContext: Context,
-        host: LifecycleOwner
+        context: Context,
+        host: LifecycleOwner,
     ) {
-        val context = appContext.applicationContext
         host.lifecycle.addObserver(object : DefaultLifecycleObserver {
             val themeListener = l
-            val listener =
-                SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-                    Handler(Looper.myLooper() ?: Looper.getMainLooper())
-                        .postDelayed(
-                            {
-                                if (key == KEY_ENABLE_MONET) {
+            val listener = OnSharedPreferenceChangeListener { _, key ->
+                Handler(Looper.myLooper() ?: Looper.getMainLooper()).postDelayed(
+                    {
+                        if (key == KEY_ENABLE_MONET) {
+                            themeListener.onAccentColorChanged(accentColor(context))
+                            themeListener.onPrimaryColorChanged(primaryColor(context))
+                        } else {
+                            when (key) {
+                                KEY_ACCENT_COLOR, KEY_MONET_ACCENT_COLOR   ->
                                     themeListener.onAccentColorChanged(accentColor(context))
+
+                                KEY_PRIMARY_COLOR, KEY_MONET_PRIMARY_COLOR ->
                                     themeListener.onPrimaryColorChanged(primaryColor(context))
-                                } else {
-                                    when (key) {
-                                        KEY_ACCENT_COLOR, KEY_MONET_ACCENT_COLOR ->
-                                            themeListener.onAccentColorChanged(accentColor(context))
 
-                                        KEY_PRIMARY_COLOR, KEY_MONET_PRIMARY_COLOR ->
-                                            themeListener.onPrimaryColorChanged(primaryColor(context))
+                                KEY_COLORED_STATUSBAR                      ->
+                                    themeListener.onStatusBarTintSettingChanged(coloredStatusBar(context))
 
-                                        KEY_APPLY_PRIMARYDARK_STATUSBAR ->
-                                            themeListener.onStatusBarTintSettingChanged(
-                                                coloredStatusBar(context)
-                                            )
-
-                                        KEY_APPLY_PRIMARY_NAVBAR ->
-                                            themeListener.onNavigationBarTintSettingChanged(
-                                                coloredNavigationBar(context)
-                                            )
-                                    }
-                                }
-                            },
-                            500
-                        )
-                }
+                                KEY_COLORED_NAVIGATION_BAR                 ->
+                                    themeListener.onNavigationBarTintSettingChanged(coloredNavigationBar(context))
+                            }
+                        }
+                    },
+                    500
+                )
+            }
 
             override fun onCreate(owner: LifecycleOwner) {
                 ThemeStore(context).pref.registerOnSharedPreferenceChangeListener(listener)

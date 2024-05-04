@@ -4,11 +4,11 @@
 
 package lib.phonograph.theme.internal
 
-import android.content.Context
-import android.os.Build.VERSION_CODES.S
 import androidx.annotation.ColorInt
 import androidx.annotation.IntDef
 import androidx.annotation.RequiresApi
+import android.content.Context
+import android.os.Build.VERSION_CODES.S
 
 object MonetColor {
 
