@@ -18,6 +18,7 @@ coil = "2.6.0"
 koin = "3.5.6"
 materialDialogs = "3.3.0"
 materialTools = "0.2.1"
+themeUtil = "0.1.0"
 room = "2.6.1"
 
 [libraries]
@@ -104,6 +105,9 @@ mt-util = { group = "com.github.chr56.material-tools", name = "mdUtil", version.
 mt-pref = { group = "com.github.chr56.material-tools", name = "mdPref", version.ref = "materialTools" }
 mt-tint = { group = "com.github.chr56.material-tools", name = "mdTint", version.ref = "materialTools" }
 
+themeUtils-materials = { group = "com.github.chr56.ThemeUtils", name = "materials-util", version.ref = "themeUtil" }
+themeUtils-color = { group = "com.github.chr56.ThemeUtils", name = "color-util", version.ref = "themeUtil" }
+themeUtils-tint = { group = "com.github.chr56.ThemeUtils", name = "tint-util", version.ref = "themeUtil" }
 
 composeSettingsUi = { group = "com.github.alorma", name = "compose-settings-ui", version.ref = "composeSetting" }
 
@@ -163,6 +167,12 @@ materialTools = [
     "mt-util",
     "mt-pref",
     "mt-tint",
+]
+
+themeUtil = [
+    "themeUtils-materials",
+    "themeUtils-color",
+    "themeUtils-tint",
 ]
 
 [plugins]

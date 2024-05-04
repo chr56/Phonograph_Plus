@@ -6,12 +6,9 @@ package player.phonograph.ui.dialogs
 
 import com.google.android.material.chip.Chip
 import lib.phonograph.dialog.LargeDialog
+import lib.phonograph.theme.ThemeColor
 import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
-import mt.pref.ThemeColor
-import mt.util.color.lightenColor
-import mt.util.color.primaryTextColor
-import mt.util.color.secondaryTextColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.DialogLyricsBinding
@@ -30,6 +27,9 @@ import player.phonograph.util.text.lyricsTimestamp
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.warning
+import util.theme.color.lightenColor
+import util.theme.color.primaryTextColor
+import util.theme.color.secondaryTextColor
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider

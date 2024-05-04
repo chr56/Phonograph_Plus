@@ -3,14 +3,6 @@ package player.phonograph.ui.fragments.player.flat
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
-import mt.tint.viewtint.applyOverflowMenuTint
-import mt.tint.viewtint.setToolbarTextColor
-import mt.tint.viewtint.tintMenuActionIcons
-import mt.util.color.darkenColor
-import mt.util.color.lightenColor
-import mt.util.color.primaryTextColor
-import mt.util.color.resolveColor
-import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.databinding.FragmentFlatPlayerBinding
@@ -29,6 +21,14 @@ import player.phonograph.util.ui.backgroundColorTransitionAnimator
 import player.phonograph.util.ui.convertDpToPixel
 import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.ui.textColorTransitionAnimator
+import util.theme.color.darkenColor
+import util.theme.color.lightenColor
+import util.theme.color.primaryTextColor
+import util.theme.color.secondaryTextColor
+import util.theme.internal.resolveColor
+import util.theme.view.menu.applyOverflowMenuTint
+import util.theme.view.menu.tintMenuActionIcons
+import util.theme.view.toolbar.setToolbarTextColor
 import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
 import androidx.appcompat.widget.Toolbar
@@ -233,12 +233,10 @@ class FlatPlayerFragment :
                 shortSeparator.visibility = View.GONE
                 image.scaleType = ImageView.ScaleType.CENTER
                 image.setColorFilter(
-                    resolveColor(
-                        fragment.requireContext(),
+                    image.context.resolveColor(
                         R.attr.iconColor,
-                        fragment.requireContext().secondaryTextColor(
-                            !isWindowBackgroundDarkSafe(fragment.requireActivity())
-                        )
+                        fragment.requireContext()
+                            .secondaryTextColor(!isWindowBackgroundDarkSafe(fragment.requireActivity()))
                     ),
                     PorterDuff.Mode.SRC_IN
                 )

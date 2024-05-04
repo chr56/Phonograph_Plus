@@ -10,9 +10,8 @@ import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import lib.phonograph.misc.menuProvider
-import mt.pref.accentColor
-import mt.pref.primaryColor
-import mt.util.color.primaryTextColor
+import lib.phonograph.theme.accentColor
+import lib.phonograph.theme.primaryColor
 import player.phonograph.R
 import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.mechanism.setting.HomeTabConfig
@@ -29,6 +28,7 @@ import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
 import player.phonograph.util.reportError
 import player.phonograph.util.theme.getTintedDrawable
+import util.theme.color.primaryTextColor
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat

@@ -3,7 +3,7 @@ package player.phonograph.ui.activities
 import de.psdev.licensesdialog.LicensesDialog
 import lib.phonograph.activity.ToolbarActivity
 import lib.phonograph.misc.NoticesProcessor
-import mt.tint.setActivityToolbarColorAuto
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.ActivityAboutBinding
@@ -19,6 +19,7 @@ import player.phonograph.util.currentVersionName
 import player.phonograph.util.gitRevisionHash
 import player.phonograph.util.reportError
 import player.phonograph.util.theme.nightMode
+import util.theme.view.toolbar.setToolbarColor
 import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
@@ -115,7 +116,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         mToolbar.setBackgroundColor(primaryColor)
         setSupportActionBar(mToolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        setActivityToolbarColorAuto(mToolbar)
+        setToolbarColor(mToolbar, ThemeColor.primaryColor(this))
     }
 
     @Keep

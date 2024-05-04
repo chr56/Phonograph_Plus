@@ -4,8 +4,6 @@
 
 package player.phonograph.ui.modules.explorer
 
-import mt.util.color.primaryTextColor
-import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity
@@ -13,6 +11,8 @@ import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.util.text.dateTimeText
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
+import util.theme.color.primaryTextColor
+import util.theme.internal.resolveColor
 import androidx.activity.ComponentActivity
 import android.text.format.Formatter
 import android.view.LayoutInflater
@@ -44,8 +44,8 @@ class FilesChooserAdapter(
                     image.context.getTintedDrawable(
                         if (item is FileEntity.File) R.drawable.ic_file_music_white_24dp
                         else R.drawable.ic_folder_white_24dp,
-                        resolveColor(
-                            context, R.attr.iconColor,
+                        context.resolveColor(
+                            R.attr.iconColor,
                             context.primaryTextColor(context.nightMode)
                         )
                     )

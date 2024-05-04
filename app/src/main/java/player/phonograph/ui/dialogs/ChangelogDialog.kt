@@ -5,8 +5,7 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import lib.phonograph.localization.LocalizationStore
-import mt.pref.ThemeColor
-import mt.util.color.resolveColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.util.currentVersionCode
@@ -14,6 +13,7 @@ import player.phonograph.util.reportError
 import player.phonograph.util.text.changelogCSS
 import player.phonograph.util.text.changelogHTML
 import player.phonograph.util.theme.nightMode
+import util.theme.internal.resolveColor
 import androidx.fragment.app.DialogFragment
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -25,7 +25,7 @@ import android.view.View
 import android.webkit.WebView
 import java.io.IOException
 import java.io.InputStream
-import java.util.*
+import java.util.Locale
 
 /**
  * @author Aidan Follestad (afollestad)
@@ -95,8 +95,7 @@ class ChangelogDialog : DialogFragment() {
 
     private fun generateChangelogHTML(content: String, accentColor: Int): String {
         val backgroundColor =
-            resolveColor(
-                requireContext(),
+            requireContext().resolveColor(
                 com.afollestad.materialdialogs.R.attr.md_background_color,
                 Color.parseColor(if (requireContext().nightMode) "#424242" else "#ffffff")
             )

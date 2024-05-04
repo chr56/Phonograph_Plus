@@ -4,7 +4,7 @@
 
 package lib.phonograph.activity
 
-import mt.tint.viewtint.applyOverflowMenuTint
+import util.theme.view.menu.applyOverflowMenuTint
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.WindowDecorActionBar
 import androidx.appcompat.widget.Toolbar

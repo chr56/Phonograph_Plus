@@ -1,8 +1,6 @@
 package player.phonograph.ui.fragments.player
 
-import mt.pref.ThemeColor
-import mt.util.color.resolveColor
-import mt.util.color.secondaryTextColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.databinding.FragmentMiniPlayerBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
@@ -13,6 +11,8 @@ import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
 import player.phonograph.util.theme.nightMode
+import util.theme.color.secondaryTextColor
+import util.theme.internal.resolveColor
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -70,10 +70,9 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         miniPlayerPlayPauseDrawable = PlayPauseDrawable(requireContext())
         binding.miniPlayerPlayPauseButton.setImageDrawable(miniPlayerPlayPauseDrawable)
         binding.miniPlayerPlayPauseButton.setColorFilter(
-            resolveColor(
-                requireActivity(),
-                R.attr.iconColor,
-                requireContext().secondaryTextColor(requireContext().nightMode)),
+            requireContext().resolveColor(
+                R.attr.iconColor, requireContext().secondaryTextColor(requireContext().nightMode)
+            ),
             PorterDuff.Mode.SRC_IN
         )
         binding.miniPlayerPlayPauseButton.setOnClickListener(PlayPauseButtonOnClickHandler())
@@ -115,7 +114,12 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
             GestureDetector(
                 context,
                 object : GestureDetector.SimpleOnGestureListener() {
-                    override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                    override fun onFling(
+                        e1: MotionEvent?,
+                        e2: MotionEvent,
+                        velocityX: Float,
+                        velocityY: Float,
+                    ): Boolean {
 
                         if (abs(velocityX) > abs(velocityY)) {
                             if (velocityX < 0) {

@@ -8,10 +8,6 @@ import lib.storage.launcher.IOpenDirStorageAccessible
 import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDirStorageAccessDelegate
 import lib.storage.launcher.OpenFileStorageAccessDelegate
-import mt.tint.viewtint.setItemIconColors
-import mt.tint.viewtint.setItemTextColors
-import mt.util.color.resolveColor
-import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.UPGRADABLE
 import player.phonograph.VERSION_INFO
@@ -43,6 +39,10 @@ import player.phonograph.util.logMetrics
 import player.phonograph.util.parcelableExtra
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.warning
+import util.theme.color.secondaryTextColor
+import util.theme.internal.resolveColor
+import util.theme.view.navigationview.setItemIconColors
+import util.theme.view.navigationview.setItemTextColors
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.drawerlayout.widget.DrawerLayout
@@ -182,7 +182,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
         // color
         val iconColor =
-            resolveColor(this, R.attr.iconColor, secondaryTextColor(nightMode))
+            resolveColor(R.attr.iconColor, secondaryTextColor(nightMode))
         with(drawerBinding.navigationView) {
             setItemIconColors(iconColor, accentColor)
             setItemTextColors(textColorPrimary, accentColor)

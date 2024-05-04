@@ -4,10 +4,6 @@
 
 package player.phonograph.ui.fragments.player
 
-import mt.util.color.isColorLight
-import mt.util.color.primaryTextColor
-import mt.util.color.secondaryDisabledTextColor
-import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.misc.SimpleOnSeekbarChangeListener
@@ -20,6 +16,10 @@ import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
+import util.theme.color.isColorLight
+import util.theme.color.primaryTextColor
+import util.theme.color.secondaryDisabledTextColor
+import util.theme.color.secondaryTextColor
 import androidx.annotation.ColorInt
 import androidx.core.graphics.BlendModeColorFilterCompat.createBlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat

@@ -5,7 +5,6 @@ import com.github.chr56.android.menu_dsl.menuItem
 import lib.phonograph.activity.ToolbarActivity
 import lib.phonograph.dialog.alertDialog
 import lib.phonograph.misc.Reboot
-import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.ActivityCrashBinding
 import player.phonograph.mechanism.SettingDataManager
@@ -18,6 +17,7 @@ import player.phonograph.util.text.dateTimeSuffixCompat
 import player.phonograph.util.text.getDeviceInfo
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
+import util.theme.color.primaryTextColor
 import androidx.lifecycle.lifecycleScope
 import android.app.Activity
 import android.app.ActivityManager
@@ -42,7 +42,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.File
-import mt.color.R as MR
+import util.theme.materials.R as MR
 
 class CrashActivity : ToolbarActivity() {
 

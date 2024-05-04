@@ -5,8 +5,8 @@
 package player.phonograph.ui.dialogs
 
 import com.triggertrap.seekarc.SeekArc
+import lib.phonograph.theme.ThemeColor.accentColor
 import lib.phonograph.view.CheckBoxX
-import mt.pref.ThemeColor.accentColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.getReadableDurationString

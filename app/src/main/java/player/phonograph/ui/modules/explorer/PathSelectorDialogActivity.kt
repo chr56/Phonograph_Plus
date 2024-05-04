@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.modules.explorer
 
-import mt.pref.ThemeColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
@@ -16,7 +16,6 @@ import androidx.core.view.setMargins
 import androidx.fragment.app.commit
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity

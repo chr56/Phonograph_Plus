@@ -16,7 +16,7 @@ import lib.phonograph.localization.LocalizationStore
 import lib.phonograph.misc.ColorChooser
 import lib.phonograph.misc.ColorPalette
 import lib.phonograph.misc.rememberDataStoreBooleanState
-import mt.pref.ThemeColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager

@@ -6,8 +6,7 @@ package player.phonograph.actions.menu
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
-import mt.pref.ThemeColor
-import mt.util.color.primaryTextColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.actions.actionPlay
 import player.phonograph.actions.actionPlayNext
@@ -16,6 +15,7 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.util.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.getTintedDrawable
+import util.theme.color.primaryTextColor
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem

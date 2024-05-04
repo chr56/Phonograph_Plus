@@ -4,6 +4,14 @@
 
 package player.phonograph.ui.views
 
+import player.phonograph.R
+import player.phonograph.databinding.ItemTextBinding
+import player.phonograph.model.file.Location
+import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.nightMode
+import util.theme.color.primaryTextColor
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
@@ -15,14 +23,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import mt.util.color.primaryTextColor
-import player.phonograph.R
-import player.phonograph.databinding.ItemTextBinding
-import player.phonograph.model.file.Location
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.nightMode
 
 @Suppress("JoinDeclarationAndAssignment")
 class BreadCrumbView : FrameLayout {

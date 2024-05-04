@@ -8,7 +8,6 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import lib.phonograph.dialog.alertDialog
-import mt.color.MaterialColor
 import player.phonograph.R
 import player.phonograph.UpdateConfig.CHANNEL_NAME
 import player.phonograph.UpdateConfig.DOMAIN_GITHUB
@@ -25,6 +24,7 @@ import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.TempPopupContent
 import player.phonograph.util.parcelable
 import player.phonograph.util.text.dateText
+import util.theme.materials.MaterialColor
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope

@@ -4,9 +4,7 @@
 
 package player.phonograph.ui.compose
 
-import mt.color.R
-import mt.pref.ThemeColor
-import mt.util.color.shiftColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.App
 import player.phonograph.mechanism.setting.StyleConfig
 import player.phonograph.mechanism.setting.StyleConfig.THEME_AUTO
@@ -14,6 +12,8 @@ import player.phonograph.mechanism.setting.StyleConfig.THEME_BLACK
 import player.phonograph.mechanism.setting.StyleConfig.THEME_DARK
 import player.phonograph.mechanism.setting.StyleConfig.THEME_LIGHT
 import player.phonograph.util.theme.systemDarkmode
+import util.theme.color.shiftColor
+import util.theme.materials.R
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme

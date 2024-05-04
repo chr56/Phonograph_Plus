@@ -48,7 +48,7 @@
         <item name="colorBackgroundFloating">@color/md_grey_800</item>
         <item name="defaultFooterColor">@color/md_grey_900</item>
         <item name="dividerColor">@color/md_divider_white</item>
-        <item name="iconColor">@color/MD_secondary_text_dark</item>
+        <item name="iconColor">@color/secondary_text_dark</item>
         <item name="colorControlActivated">@color/md_grey_200</item>
         <!-- just in case-->
         <item name="colorAccent">@android:color/white</item>
@@ -61,7 +61,7 @@
 
         <!--        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>-->
 
-        <item name="md_color_button_text">@color/MD_primary_text_dark</item>
+        <item name="md_color_button_text">@color/primary_text_dark</item>
         <item name="md_corner_radius">0dp</item>
     </style>
 
@@ -82,7 +82,7 @@
         <item name="colorBackgroundFloating">@color/md_white_1000</item>
         <item name="defaultFooterColor">@color/md_grey_300</item>
         <item name="dividerColor">@color/md_divider_black</item>
-        <item name="iconColor">@color/MD_secondary_text_light</item>
+        <item name="iconColor">@color/secondary_text_light</item>
         <item name="colorControlActivated">@color/md_grey_700</item>
         <!-- just in case-->
         <item name="colorAccent">@android:color/black</item>
@@ -96,7 +96,7 @@
         <!--        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>-->
 
 
-        <item name="md_color_button_text">@color/MD_primary_text_light</item>
+        <item name="md_color_button_text">@color/primary_text_light</item>
         <item name="md_corner_radius">0dp</item>
     </style>
 

@@ -9,12 +9,12 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import com.github.appintro.indicator.DotIndicatorController
-import mt.pref.ThemeColor
-import mt.util.color.primaryDisabledTextColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
+import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.model.NowPlayingScreen
 import player.phonograph.util.ui.convertDpToPixel
-import player.phonograph.mechanism.setting.NowPlayingScreenConfig
+import util.theme.color.primaryDisabledTextColor
 import androidx.fragment.app.DialogFragment
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager

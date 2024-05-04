@@ -5,7 +5,6 @@
 package player.phonograph.ui.modules.explorer
 
 import coil.size.ViewSizeResolver
-import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.actions.menu.fileEntityPopupMenu
 import player.phonograph.coil.loadImage
@@ -15,6 +14,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.util.theme.getTintedDrawable
+import util.theme.internal.resolveColor
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import android.annotation.SuppressLint
@@ -96,10 +96,13 @@ class FilesPageAdapter(
         }
 
         private fun iconFile(context: Context): Drawable? =
-            context.getTintedDrawable(R.drawable.ic_file_music_white_24dp, resolveColor(context, R.attr.iconColor))
+            context.getTintedDrawable(R.drawable.ic_file_music_white_24dp, color(context))
 
         private fun iconFolder(context: Context): Drawable? =
-            context.getTintedDrawable(R.drawable.ic_folder_white_24dp, resolveColor(context, R.attr.iconColor))
+            context.getTintedDrawable(R.drawable.ic_folder_white_24dp, color(context))
+
+        private fun color(context: Context):Int =
+            context.resolveColor(R.attr.iconColor, context.getColor(R.color.iconColor))
     }
 
     private var loadCover: Boolean = false

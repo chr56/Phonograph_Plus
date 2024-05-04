@@ -5,12 +5,12 @@
 package player.phonograph.ui.fragments.player.card
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import mt.tint.viewtint.tint
-import mt.util.color.secondaryTextColor
 import player.phonograph.databinding.FragmentCardPlayerPlaybackControlsBinding
 import player.phonograph.ui.fragments.player.AbsPlayerControllerFragment
 import player.phonograph.ui.fragments.player.PlayPauseButtonOnClickHandler
 import player.phonograph.ui.views.PlayPauseDrawable
+import util.theme.color.secondaryTextColor
+import util.theme.view.tint
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import android.content.Context

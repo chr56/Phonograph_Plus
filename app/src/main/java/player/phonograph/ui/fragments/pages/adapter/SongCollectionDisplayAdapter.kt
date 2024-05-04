@@ -4,17 +4,16 @@
 
 package player.phonograph.ui.fragments.pages.adapter
 
-import mt.util.color.primaryTextColor
-import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.actions.ClickActionProviders
+import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.SongCollection
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayConfig
-import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
+import util.theme.color.primaryTextColor
 import androidx.appcompat.app.AppCompatActivity
 import android.graphics.drawable.Drawable
 import android.view.View
@@ -48,11 +47,7 @@ class SongCollectionDisplayAdapter(
         override fun getIcon(item: SongCollection): Drawable? {
             val context = itemView.context
             return context.getTintedDrawable(
-                R.drawable.ic_folder_white_24dp, resolveColor(
-                    context,
-                    R.attr.iconColor,
-                    context.primaryTextColor(context.nightMode)
-                )
+                R.drawable.ic_folder_white_24dp, context.primaryTextColor(context.nightMode)
             )
         }
 

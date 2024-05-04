@@ -3,16 +3,7 @@ package player.phonograph.ui.activities
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import lib.phonograph.misc.menuProvider
-import mt.pref.ThemeColor
-import mt.tint.requireLightStatusbar
-import mt.tint.setActivityToolbarColor
-import mt.tint.setActivityToolbarColorAuto
-import mt.tint.setNavigationBarColor
-import mt.tint.viewtint.tintMenuActionIcons
-import mt.util.color.primaryTextColor
-import mt.util.color.resolveColor
-import mt.util.color.secondaryTextColor
-import mt.util.color.toolbarTitleColor
+import lib.phonograph.theme.ThemeColor
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.App
@@ -23,6 +14,7 @@ import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.misc.IPaletteColorProvider
 import player.phonograph.model.Artist
+import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.albumCountString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.songCountString
@@ -32,9 +24,17 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.adapter.ConstDisplayConfig
-import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.theme.getTintedDrawable
+import util.theme.activity.adjustStatusbarText
+import util.theme.activity.setNavigationBarColor
+import util.theme.color.primaryTextColor
+import util.theme.color.secondaryTextColor
+import util.theme.color.toolbarTitleColor
+import util.theme.internal.resolveColor
+import util.theme.materials.MaterialColor
+import util.theme.view.menu.tintMenuActionIcons
+import util.theme.view.toolbar.setToolbarColor
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -109,7 +109,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
             layoutManager = LinearLayoutManager(this@ArtistDetailActivity, HORIZONTAL, false)
         }
 
-        setColors(resolveColor(this, R.attr.defaultFooterColor))
+        setColors(resolveColor(R.attr.defaultFooterColor, MaterialColor.Grey._500.asColor))
     }
 
     private fun observeData() {
@@ -165,7 +165,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         setTaskDescriptionColor(color)
 
         setSupportActionBar(viewBinding.toolbar) // needed to auto readjust the toolbar content color
-        setActivityToolbarColor(viewBinding.toolbar, color)
+        setToolbarColor(viewBinding.toolbar, color)
         viewBinding.toolbar.setTitleTextColor(toolbarTitleColor(this, color))
 
         setStatusbarColor(color)
@@ -192,7 +192,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         supportActionBar?.title = null
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
-        setActivityToolbarColorAuto(viewBinding.toolbar)
+        setToolbarColor(viewBinding.toolbar, ThemeColor.primaryColor(this))
     }
 
     private fun setupMenu(menu: Menu) {
@@ -226,7 +226,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
 
     override fun setStatusbarColor(color: Int) {
         super.setStatusbarColor(color)
-        requireLightStatusbar(false)
+        adjustStatusbarText(false)
     }
 
     private suspend fun updateArtistInfo(artist: Artist) {
