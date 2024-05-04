@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.modules.web
 
-import lib.activityresultcontract.ActivityResultContractTool
+import lib.activityresultcontract.ActivityResultLauncherDelegate
 import mms.lastfm.LastFmAlbum
 import mms.lastfm.LastFmArtist
 import mms.lastfm.LastFmTrack
@@ -47,9 +47,9 @@ class WebSearchActivityResultContract : ActivityResultContract<Intent, Any?>() {
     }
 }
 
-class WebSearchTool : ActivityResultContractTool<Intent, Any?>() {
-    override fun key(): String = "WebSearch"
-    override fun contract(): ActivityResultContract<Intent, Any?> = WebSearchActivityResultContract()
+class WebSearchTool : ActivityResultLauncherDelegate<Intent, Any?>() {
+    override val key: String = "WebSearch"
+    override val contract: ActivityResultContract<Intent, Any?> = WebSearchActivityResultContract()
 }
 
 interface IWebSearchRequester {

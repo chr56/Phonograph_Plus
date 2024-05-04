@@ -5,9 +5,9 @@
 package player.phonograph.ui.dialogs
 
 import com.google.android.material.chip.Chip
-import lib.activityresultcontract.IOpenFileStorageAccess
-import lib.activityresultcontract.OpenDocumentContract
 import lib.phonograph.dialog.LargeDialog
+import lib.storage.launcher.IOpenFileStorageAccessible
+import lib.storage.launcher.OpenDocumentContract
 import mt.pref.ThemeColor
 import mt.util.color.lightenColor
 import mt.util.color.primaryTextColor
@@ -200,9 +200,9 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
     //region Manual Load
     private fun manualLoadLyrics() {
         val activity = requireActivity()
-        val accessor = activity as? IOpenFileStorageAccess
+        val accessor = activity as? IOpenFileStorageAccessible
         if (accessor != null) {
-            accessor.openFileStorageAccessTool.launch(OpenDocumentContract.Config(arrayOf("*/*"))) { uri ->
+            accessor.openFileStorageAccessDelegate.launch(OpenDocumentContract.Config(arrayOf("*/*"))) { uri ->
                 CoroutineScope(Dispatchers.IO).launch {
                     val lyricsViewModel = ViewModelProvider(activity)[LyricsViewModel::class.java]
                     lyricsViewModel.insert(activity, uri)

@@ -7,8 +7,8 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemA
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-import lib.activityresultcontract.IOpenFileStorageAccess
-import lib.activityresultcontract.OpenDocumentContract
+import lib.storage.launcher.IOpenFileStorageAccessible
+import lib.storage.launcher.OpenDocumentContract
 import mt.color.MaterialColor
 import mt.tint.viewtint.setMenuColor
 import mt.util.color.toolbarIconColor
@@ -198,9 +198,9 @@ abstract class AbsPlayerFragment :
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick {
                     val activity = requireActivity()
-                    val accessor = activity as? IOpenFileStorageAccess
+                    val accessor = activity as? IOpenFileStorageAccessible
                     if (accessor != null) {
-                        accessor.openFileStorageAccessTool.launch(OpenDocumentContract.Config(arrayOf("*/*"))) { uri ->
+                        accessor.openFileStorageAccessDelegate.launch(OpenDocumentContract.Config(arrayOf("*/*"))) { uri ->
                             CoroutineScope(Dispatchers.IO).launch {
                                 val lyricsViewModel = ViewModelProvider(activity)[LyricsViewModel::class.java]
                                 lyricsViewModel.insert(activity, uri)

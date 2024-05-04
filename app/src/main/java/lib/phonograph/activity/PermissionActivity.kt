@@ -5,9 +5,9 @@
 package lib.phonograph.activity
 
 import com.google.android.material.snackbar.Snackbar
+import lib.activityresultcontract.IRequestMultiplePermission
+import lib.activityresultcontract.RequestMultiplePermissionsDelegate
 import player.phonograph.R
-import player.phonograph.util.permissions.GrantResult
-import player.phonograph.util.permissions.PermissionDelegate
 import player.phonograph.util.permissions.hasPermissions
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.permissionDescription
@@ -18,9 +18,10 @@ import android.os.Bundle
 /**
  * @author chr_56, Karim Abou Zeid (kabouzeid)
  */
-open class PermissionActivity : ThemeActivity() {
+open class PermissionActivity : ThemeActivity(), IRequestMultiplePermission {
 
-    private val permissionDelegate: PermissionDelegate = PermissionDelegate()
+    override val requestMultiplePermissionsDelegate: RequestMultiplePermissionsDelegate =
+        RequestMultiplePermissionsDelegate()
 
     /**
      * Runtime Permissions to request
@@ -28,7 +29,7 @@ open class PermissionActivity : ThemeActivity() {
     protected open fun runtimePermissionsToRequest(): Array<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        permissionDelegate.register(lifecycle, activityResultRegistry)
+        requestMultiplePermissionsDelegate.register(this)
         super.onCreate(savedInstanceState)
     }
 
@@ -52,8 +53,8 @@ open class PermissionActivity : ThemeActivity() {
      */
     protected fun requestPermissions() {
         val permissions = runtimePermissionsToRequest() ?: return
-        permissionDelegate.grant(permissions) { result: GrantResult ->
-            checkResult(result)
+        requestMultiplePermissionsDelegate.launch(permissions) {
+            checkResult(it)
         }
     }
 
@@ -61,7 +62,7 @@ open class PermissionActivity : ThemeActivity() {
      * check and notify permission grant result to user if denied
      * @param result All result
      */
-    private fun checkResult(result: GrantResult): Boolean {
+    private fun checkResult(result: Map<String, Boolean>): Boolean {
         val denied = result.filterValues { !it }
         return if (denied.isNotEmpty()) {
             notifyPermissionDeniedUser(denied.keys.toList(), ::requestPermissions)

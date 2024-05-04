@@ -8,13 +8,14 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemA
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.interfaces.OnFastScrollStateChangeListener
-import lib.activityresultcontract.CreateFileStorageAccessTool
-import lib.activityresultcontract.ICreateFileStorageAccess
-import lib.activityresultcontract.IOpenDirStorageAccess
-import lib.activityresultcontract.IOpenFileStorageAccess
-import lib.activityresultcontract.OpenDirStorageAccessTool
-import lib.activityresultcontract.OpenFileStorageAccessTool
+import lib.activityresultcontract.registerActivityResultLauncherDelegate
 import lib.phonograph.misc.menuProvider
+import lib.storage.launcher.CreateFileStorageAccessDelegate
+import lib.storage.launcher.ICreateFileStorageAccessible
+import lib.storage.launcher.IOpenDirStorageAccessible
+import lib.storage.launcher.IOpenFileStorageAccessible
+import lib.storage.launcher.OpenDirStorageAccessDelegate
+import lib.storage.launcher.OpenFileStorageAccessDelegate
 import mt.tint.setActivityToolbarColorAuto
 import mt.tint.viewtint.setBackgroundTint
 import mt.util.color.primaryTextColor
@@ -54,9 +55,9 @@ import kotlinx.coroutines.launch
 
 class PlaylistDetailActivity :
         AbsSlidingMusicPanelActivity(),
-        IOpenFileStorageAccess,
-        ICreateFileStorageAccess,
-        IOpenDirStorageAccess {
+        IOpenFileStorageAccessible,
+        ICreateFileStorageAccessible,
+        IOpenDirStorageAccessible {
 
     private lateinit var binding: ActivityPlaylistDetailBinding
 
@@ -69,12 +70,10 @@ class PlaylistDetailActivity :
     private var wrappedAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>? = null
 
     // for saf callback
-    override val openFileStorageAccessTool: OpenFileStorageAccessTool =
-        OpenFileStorageAccessTool()
-    override val openDirStorageAccessTool: OpenDirStorageAccessTool =
-        OpenDirStorageAccessTool()
-    override val createFileStorageAccessTool: CreateFileStorageAccessTool =
-        CreateFileStorageAccessTool()
+    override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
+    override val openDirStorageAccessDelegate: OpenDirStorageAccessDelegate = OpenDirStorageAccessDelegate()
+    override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
+
 
     /* ********************
      *
@@ -86,9 +85,12 @@ class PlaylistDetailActivity :
 
         binding = ActivityPlaylistDetailBinding.inflate(layoutInflater)
 
-        openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
-        openDirStorageAccessTool.register(lifecycle, activityResultRegistry)
-        createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
+        registerActivityResultLauncherDelegate(
+            createFileStorageAccessDelegate,
+            openDirStorageAccessDelegate,
+            openFileStorageAccessDelegate,
+        )
+
         lifecycle.addObserver(MediaStoreListener())
 
         super.onCreate(savedInstanceState)

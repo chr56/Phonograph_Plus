@@ -4,10 +4,11 @@
 
 package player.phonograph.ui.modules.tag
 
-import lib.activityresultcontract.CreateFileStorageAccessTool
-import lib.activityresultcontract.ICreateFileStorageAccess
-import lib.activityresultcontract.IOpenFileStorageAccess
-import lib.activityresultcontract.OpenFileStorageAccessTool
+import lib.activityresultcontract.registerActivityResultLauncherDelegate
+import lib.storage.launcher.CreateFileStorageAccessDelegate
+import lib.storage.launcher.ICreateFileStorageAccessible
+import lib.storage.launcher.IOpenFileStorageAccessible
+import lib.storage.launcher.OpenFileStorageAccessDelegate
 import mms.Source
 import player.phonograph.R
 import player.phonograph.model.Song
@@ -61,15 +62,17 @@ import kotlinx.coroutines.runBlocking
 class TagBrowserActivity :
         ComposeThemeActivity(),
         IWebSearchRequester,
-        ICreateFileStorageAccess,
-        IOpenFileStorageAccess {
+        ICreateFileStorageAccessible,
+        IOpenFileStorageAccessible {
 
     private val viewModel: TagBrowserViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
-        openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
-        webSearchTool.register(lifecycle, activityResultRegistry)
+        registerActivityResultLauncherDelegate(
+            openFileStorageAccessDelegate,
+            createFileStorageAccessDelegate,
+        )
+        webSearchTool.register(this)
         val song = parseIntent(this, intent)
         viewModel.updateSong(this, song)
         super.onCreate(savedInstanceState)
@@ -94,8 +97,8 @@ class TagBrowserActivity :
         }
     }
 
-    override val openFileStorageAccessTool: OpenFileStorageAccessTool = OpenFileStorageAccessTool()
-    override val createFileStorageAccessTool: CreateFileStorageAccessTool = CreateFileStorageAccessTool()
+    override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
+    override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
     override val webSearchTool: WebSearchTool = WebSearchTool()
 
     companion object {

@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.modules.tag
 
-import lib.activityresultcontract.ICreateFileStorageAccess
+import lib.storage.launcher.ICreateFileStorageAccessible
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.retriever.PARAMETERS_RAW
 import player.phonograph.coil.target.PaletteTargetBuilder
@@ -54,8 +54,8 @@ fun saveArtwork(
     bitmap: Bitmap,
     fileName: String,
 ) {
-    if (activity is ICreateFileStorageAccess) {
-        val accessTool = activity.createFileStorageAccessTool
+    if (activity is ICreateFileStorageAccessible) {
+        val accessTool = activity.createFileStorageAccessDelegate
         accessTool.launch("$fileName.jpg") { uri ->
             if (uri != null) {
                 saveArtworkImpl(coroutineScope, activity, uri, bitmap)

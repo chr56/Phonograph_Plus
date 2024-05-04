@@ -4,9 +4,9 @@
 
 package player.phonograph.mechanism.tag.edit
 
-import lib.activityresultcontract.IOpenFileStorageAccess
-import lib.activityresultcontract.OpenDocumentContract
-import lib.activityresultcontract.OpenFileStorageAccessTool
+import lib.storage.launcher.IOpenFileStorageAccessible
+import lib.storage.launcher.OpenDocumentContract
+import lib.storage.launcher.OpenFileStorageAccessDelegate
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.exceptions.CannotReadException
@@ -55,7 +55,7 @@ internal fun applyEditImpl(
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
-suspend fun selectImage(accessTool: OpenFileStorageAccessTool): Uri? {
+suspend fun selectImage(accessTool: OpenFileStorageAccessDelegate): Uri? {
     val cfg = OpenDocumentContract.Config(mimeTypes = arrayOf("image/*"))
     return suspendCancellableCoroutine {
         accessTool.launch(cfg) { uri: Uri? ->
@@ -66,8 +66,8 @@ suspend fun selectImage(accessTool: OpenFileStorageAccessTool): Uri? {
 
 fun selectNewArtwork(activity: Context): MutableState<Uri?> {
     val state = mutableStateOf<Uri?>(null)
-    if (activity is IOpenFileStorageAccess) {
-        val accessTool = activity.openFileStorageAccessTool
+    if (activity is IOpenFileStorageAccessible) {
+        val accessTool = activity.openFileStorageAccessDelegate
         val cfg = OpenDocumentContract.Config(mimeTypes = arrayOf("image/*"))
         accessTool.launch(cfg) { uri ->
             if (uri != null) {

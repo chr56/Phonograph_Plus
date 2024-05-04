@@ -4,21 +4,18 @@
 
 package player.phonograph.util.file
 
-import lib.activityresultcontract.ActivityResultContractUtil.chooseDirViaSAF
-import lib.activityresultcontract.ActivityResultContractUtil.chooseFileViaSAF
+import lib.storage.childDocumentUriWithinTree
 import lib.storage.documentProviderUriAbsolutePath
 import lib.storage.externalFileBashPath
-import lib.storage.getBasePath
-import lib.storage.getStorageId
+import lib.storage.launcher.SAFActivityResultContracts.chooseDirViaSAF
+import lib.storage.launcher.SAFActivityResultContracts.chooseFileViaSAF
 import player.phonograph.R
 import player.phonograph.util.coroutineToast
-import player.phonograph.util.debug
 import player.phonograph.util.warning
 import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.provider.DocumentsContract
 import android.util.Log
 import java.io.File
 
@@ -150,26 +147,6 @@ private suspend fun notifyErrorChildDocumentUri(context: Context, childDocumentU
     coroutineToast(context, context.getString(R.string.file_incorrect))
     warning(TAG, message)
 }
-
-
-/**
- * Use [treeUri] to build document content uri of file [filePath]
- * @param treeUri Document Tree Uri (`content://<EXTERNAL_STORAGE_AUTHORITY>/tree/...`)
- * @param filePath absolute POSIX paths of target file
- * @return document content uri (`content://<EXTERNAL_STORAGE_AUTHORITY>/tree/.../child/...`)
- */
-private fun childDocumentUriWithinTree(context: Context, treeUri: Uri, filePath: String): Uri {
-    val documentId = run {
-        val file = File(filePath)
-        val storageId = file.getStorageId(context)
-        val basePath = file.getBasePath()
-        "$storageId:$basePath"
-    }
-    val childUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, documentId)
-    debug { Log.i(TAG, "Access ChildUri: ${childUri.path}") }
-    return childUri
-}
-
 
 /**
  * common path root of a list of paths

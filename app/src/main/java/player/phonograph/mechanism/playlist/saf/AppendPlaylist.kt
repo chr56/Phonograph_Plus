@@ -5,7 +5,7 @@
 package player.phonograph.mechanism.playlist.saf
 
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
-import lib.activityresultcontract.IOpenFileStorageAccess
+import lib.storage.launcher.IOpenFileStorageAccessible
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
@@ -23,7 +23,7 @@ import kotlinx.coroutines.yield
 import java.io.IOException
 
 /**
- * @param context must be [IOpenFileStorageAccess]
+ * @param context must be [IOpenFileStorageAccessible]
  */
 suspend fun appendToPlaylistViaSAF(
     context: Context,
@@ -34,9 +34,9 @@ suspend fun appendToPlaylistViaSAF(
     // check
     //
     if (songs.isEmpty()) return@withContext
-    require(context is IOpenFileStorageAccess)
+    require(context is IOpenFileStorageAccessible)
     require(filePlaylist.id > 0 || filePlaylist.associatedFilePath.contains('/'))
-    while (context.openFileStorageAccessTool.busy) yield()
+    while (context.openFileStorageAccessDelegate.busy) yield()
     //
     // select
     //

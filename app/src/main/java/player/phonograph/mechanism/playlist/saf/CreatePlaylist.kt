@@ -4,9 +4,9 @@
 
 package player.phonograph.mechanism.playlist.saf
 
-import lib.activityresultcontract.ActivityResultContractUtil.chooseDirViaSAF
-import lib.activityresultcontract.ActivityResultContractUtil.createFileViaSAF
-import lib.activityresultcontract.IOpenFileStorageAccess
+import lib.storage.launcher.IOpenFileStorageAccessible
+import lib.storage.launcher.SAFActivityResultContracts.chooseDirViaSAF
+import lib.storage.launcher.SAFActivityResultContracts.createFileViaSAF
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
@@ -29,7 +29,7 @@ import kotlinx.coroutines.yield
 import java.io.IOException
 
 /**
- * @param context must be [IOpenFileStorageAccess]
+ * @param context must be [IOpenFileStorageAccessible]
  */
 suspend fun createPlaylistViaSAF(
     context: Context,
@@ -37,8 +37,8 @@ suspend fun createPlaylistViaSAF(
     songs: List<Song>,
 ): Unit = withContext(Dispatchers.IO) {
     // check
-    require(context is IOpenFileStorageAccess)
-    while (context.openFileStorageAccessTool.busy) yield()
+    require(context is IOpenFileStorageAccessible)
+    while (context.openFileStorageAccessDelegate.busy) yield()
     // launch
     val uri = createFileViaSAF(context, "$playlistName.m3u")
     openOutputStreamSafe(context, uri, "rwt")?.use { stream ->
@@ -65,8 +65,8 @@ suspend fun createPlaylistsViaSAF(
 ) = withContext(Dispatchers.IO) {
     // check
     if (playlists.isEmpty()) return@withContext
-    require(context is IOpenFileStorageAccess)
-    while (context.openFileStorageAccessTool.busy) yield()
+    require(context is IOpenFileStorageAccessible)
+    while (context.openFileStorageAccessDelegate.busy) yield()
     // launch
     val treeUri = chooseDirViaSAF(context, initialPosition)
 
