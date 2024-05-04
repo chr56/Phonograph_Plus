@@ -8,7 +8,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
-import lib.activityresultcontract.ICreateFileStorageAccess
+import lib.storage.launcher.ICreateFileStorageAccessible
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.mechanism.backup.ALL_BACKUP_CONFIG
@@ -55,8 +55,8 @@ class BackupExportDialog : DialogFragment() {
                 val selected = adapter.currentConfig
                 val host = activity.get() ?: return@positiveButton
                 if (selected.isEmpty()) return@positiveButton
-                require(host is ICreateFileStorageAccess)
-                host.createFileStorageAccessTool.launch(
+                require(host is ICreateFileStorageAccessible)
+                host.createFileStorageAccessDelegate.launch(
                     "phonograph_plus_backup_${dateTimeSuffixCompat(currentDate())}.zip"
                 ) { uri ->
                     uri ?: return@launch

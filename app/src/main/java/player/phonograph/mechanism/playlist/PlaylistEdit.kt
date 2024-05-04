@@ -4,8 +4,8 @@
 
 package player.phonograph.mechanism.playlist
 
-import lib.activityresultcontract.ICreateFileStorageAccess
-import lib.activityresultcontract.IOpenFileStorageAccess
+import lib.storage.launcher.ICreateFileStorageAccessible
+import lib.storage.launcher.IOpenFileStorageAccessible
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mechanism.playlist.m3u.M3UWriter
@@ -49,7 +49,7 @@ object PlaylistEdit {
         context: Context,
         name: String,
         songs: List<Song>,
-    ) = if (shouldUseSAF(context) && context is ICreateFileStorageAccess) {
+    ) = if (shouldUseSAF(context) && context is ICreateFileStorageAccessible) {
         PlaylistEditImpl.SAF.create(context, name, songs)
     } else {
         PlaylistEditImpl.MediaStore.create(context, name, songs)
@@ -59,7 +59,7 @@ object PlaylistEdit {
         context: Context,
         songs: List<Song>,
         filePlaylist: FilePlaylist,
-    ) = if (shouldUseSAF(context) && context is IOpenFileStorageAccess) {
+    ) = if (shouldUseSAF(context) && context is IOpenFileStorageAccessible) {
         PlaylistEditImpl.SAF.append(context, songs, filePlaylist)
     } else {
         PlaylistEditImpl.MediaStore.append(context, songs, filePlaylist)
@@ -73,7 +73,7 @@ object PlaylistEdit {
     suspend fun duplicate(
         context: Context,
         playlists: List<Playlist>,
-    ) = if (shouldUseSAF(context) && context is ICreateFileStorageAccess) {
+    ) = if (shouldUseSAF(context) && context is ICreateFileStorageAccessible) {
         PlaylistEditImpl.SAF.duplicate(context, playlists)
     } else {
         PlaylistEditImpl.MediaStore.duplicate(context, playlists)

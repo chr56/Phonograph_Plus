@@ -8,12 +8,13 @@ package player.phonograph.ui.modules.setting
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
-import lib.activityresultcontract.CreateFileStorageAccessTool
-import lib.activityresultcontract.ICreateFileStorageAccess
-import lib.activityresultcontract.IOpenFileStorageAccess
-import lib.activityresultcontract.OpenDocumentContract
-import lib.activityresultcontract.OpenFileStorageAccessTool
+import lib.activityresultcontract.registerActivityResultLauncherDelegate
 import lib.phonograph.misc.Reboot
+import lib.storage.launcher.CreateFileStorageAccessDelegate
+import lib.storage.launcher.ICreateFileStorageAccessible
+import lib.storage.launcher.IOpenFileStorageAccessible
+import lib.storage.launcher.OpenDocumentContract
+import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
 import player.phonograph.mechanism.SettingDataManager
 import player.phonograph.mechanism.backup.Backup
@@ -56,15 +57,17 @@ import kotlinx.coroutines.launch
 import java.io.FileInputStream
 
 class SettingsActivity : ComposeThemeActivity(),
-                         ICreateFileStorageAccess, IOpenFileStorageAccess,
+                         ICreateFileStorageAccessible, IOpenFileStorageAccessible,
                          PathSelectorRequester {
 
     private val dropMenuState = mutableStateOf(false)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        openFileStorageAccessTool.register(this)
-        createFileStorageAccessTool.register(this)
+        registerActivityResultLauncherDelegate(
+            openFileStorageAccessDelegate,
+            createFileStorageAccessDelegate
+        )
         pathSelectorContractTool.register(this)
         super.onCreate(savedInstanceState)
 
@@ -138,7 +141,7 @@ class SettingsActivity : ComposeThemeActivity(),
                 getActionButton(WhichButton.POSITIVE).updateTextColor(getColor(mt.color.R.color.md_red_A700))
             }
         }, stringResource(id = R.string.action_import).format(stringResource(id = R.string.action_backup)) to {
-            openFileStorageAccessTool.launch(
+            openFileStorageAccessDelegate.launch(
                 OpenDocumentContract.Config(arrayOf("*/*"))
             ) { uri ->
                 uri ?: return@launch
@@ -158,8 +161,7 @@ class SettingsActivity : ComposeThemeActivity(),
         }))
     }
 
-
-    override val openFileStorageAccessTool: OpenFileStorageAccessTool = OpenFileStorageAccessTool()
-    override val createFileStorageAccessTool: CreateFileStorageAccessTool = CreateFileStorageAccessTool()
+    override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
+    override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
     override val pathSelectorContractTool: PathSelectorContractTool = PathSelectorContractTool()
 }

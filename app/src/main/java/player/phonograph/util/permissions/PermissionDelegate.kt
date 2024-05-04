@@ -4,16 +4,15 @@
 
 package player.phonograph.util.permissions
 
-import lib.activityresultcontract.ActivityResultContractTool
+import lib.activityresultcontract.ActivityResultLauncherDelegate
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 
 typealias GrantResult = Map<String, Boolean>
 
-class RequestPermissionsDelegate : ActivityResultContractTool<Array<String>, GrantResult>() {
+class RequestPermissionsDelegate : ActivityResultLauncherDelegate<Array<String>, GrantResult>() {
 
-    override fun key(): String = "GrantPermissions"
-
-    override fun contract(): ActivityResultContract<Array<String>, GrantResult> =
+    override val key: String = "GrantPermissions"
+    override val contract: ActivityResultContract<Array<String>, GrantResult> =
         ActivityResultContracts.RequestMultiplePermissions()
 }

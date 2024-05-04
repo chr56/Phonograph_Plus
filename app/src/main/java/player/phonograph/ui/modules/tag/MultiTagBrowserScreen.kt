@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.modules.tag
 
-import lib.activityresultcontract.IOpenFileStorageAccess
+import lib.storage.launcher.IOpenFileStorageAccessible
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.mechanism.tag.edit.selectImage
@@ -133,7 +133,7 @@ private fun CoverUpdater(viewModel: MultiTagBrowserViewModel) {
         onSave = { }, onDelete = { viewModel.process(context, TagEditEvent.RemoveArtwork) },
         onUpdate = {
             viewModel.viewModelScope.launch(Dispatchers.IO) {
-                val uri = selectImage((context as IOpenFileStorageAccess).openFileStorageAccessTool)
+                val uri = selectImage((context as IOpenFileStorageAccessible).openFileStorageAccessDelegate)
                 if (uri != null) {
                     viewModel.process(
                         context, TagEditEvent.UpdateArtwork.from(context, uri, viewModel.songs.hashCode().toString())

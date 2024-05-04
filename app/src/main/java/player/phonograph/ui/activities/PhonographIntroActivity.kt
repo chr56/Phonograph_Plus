@@ -9,11 +9,12 @@ import com.github.appintro.AppIntroFragment
 import com.github.appintro.SlideBackgroundColorHolder
 import com.github.appintro.SlidePolicy
 import com.google.android.material.snackbar.Snackbar
-import lib.activityresultcontract.IOpenFileStorageAccess
 import lib.activityresultcontract.IRequestPermission
-import lib.activityresultcontract.OpenDocumentContract
-import lib.activityresultcontract.OpenFileStorageAccessTool
-import lib.activityresultcontract.RequestPermissionTool
+import lib.activityresultcontract.RequestPermissionDelegate
+import lib.activityresultcontract.registerActivityResultLauncherDelegate
+import lib.storage.launcher.IOpenFileStorageAccessible
+import lib.storage.launcher.OpenDocumentContract
+import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
 import player.phonograph.databinding.FragmentIntroBinding
 import player.phonograph.databinding.FragmentIntroSlideSettingBinding
@@ -51,7 +52,7 @@ import kotlinx.coroutines.launch
 import java.io.FileInputStream
 import mt.color.R as MR
 
-class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPermission {
+class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequestPermission {
 
     private fun config() {
         isWizardMode = true
@@ -61,15 +62,15 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
         isColorTransitionsEnabled = true
     }
 
-    override val openFileStorageAccessTool: OpenFileStorageAccessTool = OpenFileStorageAccessTool()
-    override val requestPermissionTool: RequestPermissionTool = RequestPermissionTool()
+    override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
+        override val requestPermissionDelegate: RequestPermissionDelegate = RequestPermissionDelegate()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         config()
-        openFileStorageAccessTool.register(this)
-        requestPermissionTool.register(this)
+        registerActivityResultLauncherDelegate(openFileStorageAccessDelegate, requestPermissionDelegate)
 
         addSlide(
             AppIntroFragment.createInstance(
@@ -142,7 +143,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
             _items = permissions.map { detail ->
                 createViewItem(detail) { view ->
                     val context = container.context
-                    val permissionsTool = (context as? IRequestPermission)?.requestPermissionTool
+                    val permissionsTool = (context as? IRequestPermission)?.requestPermissionDelegate
                     if (permissionsTool != null) {
                         permissionsTool.launch(detail.permission) {
                             updateItemBackgroundColor(view, detail.permission)
@@ -243,8 +244,8 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
             contentBinding.backup.text = getString(R.string.action_import, getString(R.string.action_backup))
             contentBinding.backup.setOnClickListener {
                 val activity = activity
-                require(activity is IOpenFileStorageAccess)
-                activity.openFileStorageAccessTool.launch(
+                require(activity is IOpenFileStorageAccessible)
+                activity.openFileStorageAccessDelegate.launch(
                     OpenDocumentContract.Config(arrayOf("*/*"))
                 ) { uri ->
                     uri ?: return@launch

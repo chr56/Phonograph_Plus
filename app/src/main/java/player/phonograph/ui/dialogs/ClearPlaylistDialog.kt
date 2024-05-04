@@ -7,8 +7,8 @@ package player.phonograph.ui.dialogs
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
-import lib.activityresultcontract.IOpenDirStorageAccess
 import lib.storage.documentProviderUriAbsolutePath
+import lib.storage.launcher.IOpenDirStorageAccessible
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.model.playlist.FilePlaylist
@@ -176,7 +176,7 @@ class ClearPlaylistDialog : DialogFragment() {
                         .positiveButton(android.R.string.ok)
                         .negativeButton(R.string.delete_with_saf) {
                             CoroutineScope(Dispatchers.IO).launch {
-                                if (context is Activity && context is IOpenDirStorageAccess) {
+                                if (context is Activity && context is IOpenDirStorageAccessible) {
                                     deletePlaylistsViaSAF(context, filePlaylists)
                                 } else {
                                     coroutineToast(context, R.string.failed)
@@ -199,14 +199,14 @@ class ClearPlaylistDialog : DialogFragment() {
 
         /**
          * use SAF to choose a directory, and delete playlist inside this directory with user's confirmation
-         * @param activity must be [IOpenDirStorageAccess]
+         * @param activity must be [IOpenDirStorageAccessible]
          * @param filePlaylists playlists to delete
          */
         private suspend fun deletePlaylistsViaSAF(
             activity: Activity,
             filePlaylists: List<FilePlaylist>,
         ) {
-            require(activity is IOpenDirStorageAccess)
+            require(activity is IOpenDirStorageAccessible)
 
             val uris = selectDocumentUris(activity, filePlaylists.map { it.associatedFilePath })
             val warnings = buildDeletionMessage(

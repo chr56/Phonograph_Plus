@@ -1,12 +1,13 @@
 package player.phonograph.ui.activities
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
-import lib.activityresultcontract.CreateFileStorageAccessTool
-import lib.activityresultcontract.ICreateFileStorageAccess
-import lib.activityresultcontract.IOpenDirStorageAccess
-import lib.activityresultcontract.IOpenFileStorageAccess
-import lib.activityresultcontract.OpenDirStorageAccessTool
-import lib.activityresultcontract.OpenFileStorageAccessTool
+import lib.activityresultcontract.registerActivityResultLauncherDelegate
+import lib.storage.launcher.CreateFileStorageAccessDelegate
+import lib.storage.launcher.ICreateFileStorageAccessible
+import lib.storage.launcher.IOpenDirStorageAccessible
+import lib.storage.launcher.IOpenFileStorageAccessible
+import lib.storage.launcher.OpenDirStorageAccessDelegate
+import lib.storage.launcher.OpenFileStorageAccessDelegate
 import mt.tint.viewtint.setItemIconColors
 import mt.tint.viewtint.setItemTextColors
 import mt.util.color.resolveColor
@@ -64,7 +65,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 class MainActivity : AbsSlidingMusicPanelActivity(),
-                     IOpenFileStorageAccess, ICreateFileStorageAccess, IOpenDirStorageAccess,
+                     IOpenFileStorageAccessible, ICreateFileStorageAccessible, IOpenDirStorageAccessible,
                      PathSelectorRequester {
 
     private lateinit var mainBinding: ActivityMainBinding
@@ -74,22 +75,21 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
     private val drawerViewModel: MainDrawerViewModel by viewModels()
 
-    override val openFileStorageAccessTool: OpenFileStorageAccessTool =
-        OpenFileStorageAccessTool()
-    override val openDirStorageAccessTool: OpenDirStorageAccessTool =
-        OpenDirStorageAccessTool()
-    override val createFileStorageAccessTool: CreateFileStorageAccessTool =
-        CreateFileStorageAccessTool()
+    override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
+    override val openDirStorageAccessDelegate: OpenDirStorageAccessDelegate = OpenDirStorageAccessDelegate()
+    override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
 
     override val pathSelectorContractTool: PathSelectorContractTool = PathSelectorContractTool()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        openFileStorageAccessTool.register(this)
-        openDirStorageAccessTool.register(this)
-        createFileStorageAccessTool.register(this)
-        pathSelectorContractTool.register(this)
+        registerActivityResultLauncherDelegate(
+            createFileStorageAccessDelegate,
+            openDirStorageAccessDelegate,
+            openFileStorageAccessDelegate,
+            pathSelectorContractTool
+        )
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
