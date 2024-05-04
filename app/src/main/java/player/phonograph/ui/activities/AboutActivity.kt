@@ -3,7 +3,7 @@ package player.phonograph.ui.activities
 import de.psdev.licensesdialog.LicensesDialog
 import lib.phonograph.activity.ToolbarActivity
 import lib.phonograph.misc.NoticesProcessor
-import mt.pref.ThemeColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.ActivityAboutBinding

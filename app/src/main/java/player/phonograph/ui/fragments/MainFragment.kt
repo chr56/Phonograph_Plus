@@ -10,8 +10,8 @@ import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import lib.phonograph.misc.menuProvider
-import mt.pref.accentColor
-import mt.pref.primaryColor
+import lib.phonograph.theme.accentColor
+import lib.phonograph.theme.primaryColor
 import player.phonograph.R
 import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.mechanism.setting.HomeTabConfig

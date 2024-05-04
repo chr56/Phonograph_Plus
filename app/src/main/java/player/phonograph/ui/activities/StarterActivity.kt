@@ -5,7 +5,7 @@
 package player.phonograph.ui.activities
 
 import legacy.phonograph.MediaStoreCompat
-import mt.pref.ThemeColor
+import lib.phonograph.theme.ThemeColor
 import org.koin.android.ext.android.get
 import org.koin.core.context.GlobalContext
 import player.phonograph.BuildConfig

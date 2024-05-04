@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.dialogs
 
-import mt.pref.ThemeColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.ISSUE_TRACKER_LINK
 import player.phonograph.R
 import player.phonograph.databinding.DialogReportIssueBinding

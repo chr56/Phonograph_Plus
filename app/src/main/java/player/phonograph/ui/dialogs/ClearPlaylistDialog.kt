@@ -7,10 +7,11 @@ package player.phonograph.ui.dialogs
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
+import lib.phonograph.theme.ThemeColor
 import lib.storage.documentProviderUriAbsolutePath
 import lib.storage.launcher.IOpenDirStorageAccessible
-import mt.pref.ThemeColor
 import player.phonograph.R
+import player.phonograph.mechanism.playlist.mediastore.deletePlaylistsViaMediastore
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.ResettablePlaylist
@@ -23,7 +24,6 @@ import player.phonograph.util.reportError
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.text.ItemGroup
 import player.phonograph.util.text.buildDeletionMessage
-import player.phonograph.mechanism.playlist.mediastore.deletePlaylistsViaMediastore
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import android.app.Activity

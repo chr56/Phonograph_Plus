@@ -8,7 +8,7 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.github.chr56.android.menu_model.MenuContext
 import com.google.android.material.appbar.AppBarLayout
-import mt.pref.ThemeColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.actions.actionPlay

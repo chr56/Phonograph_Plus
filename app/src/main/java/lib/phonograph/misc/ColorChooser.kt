@@ -8,8 +8,8 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.color.colorChooser
-import mt.pref.ThemeColor
-import mt.pref.ThemeColor.accentColor
+import lib.phonograph.theme.ThemeColor
+import lib.phonograph.theme.ThemeColor.accentColor
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import android.annotation.SuppressLint

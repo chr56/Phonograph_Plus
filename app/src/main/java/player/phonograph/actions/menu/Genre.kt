@@ -6,7 +6,7 @@ package player.phonograph.actions.menu
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
-import mt.pref.ThemeColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.actions.actionPlay
 import player.phonograph.actions.actionPlayNext

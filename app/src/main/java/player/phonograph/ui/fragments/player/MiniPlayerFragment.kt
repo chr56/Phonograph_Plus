@@ -1,6 +1,6 @@
 package player.phonograph.ui.fragments.player
 
-import mt.pref.ThemeColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.databinding.FragmentMiniPlayerBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate

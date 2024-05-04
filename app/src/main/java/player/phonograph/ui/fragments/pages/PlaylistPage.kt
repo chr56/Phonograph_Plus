@@ -4,8 +4,8 @@
 
 package player.phonograph.ui.fragments.pages
 
-import mt.pref.accentColor
-import mt.pref.primaryColor
+import lib.phonograph.theme.accentColor
+import lib.phonograph.theme.primaryColor
 import org.koin.core.context.GlobalContext
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED

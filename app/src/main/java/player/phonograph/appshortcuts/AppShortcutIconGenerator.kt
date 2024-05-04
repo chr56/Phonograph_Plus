@@ -1,6 +1,6 @@
 package player.phonograph.appshortcuts
 
-import mt.pref.ThemeColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting

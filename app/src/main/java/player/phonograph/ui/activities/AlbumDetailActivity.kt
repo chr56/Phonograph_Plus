@@ -1,7 +1,7 @@
 package player.phonograph.ui.activities
 
 import lib.phonograph.misc.menuProvider
-import mt.pref.ThemeColor
+import lib.phonograph.theme.ThemeColor
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R

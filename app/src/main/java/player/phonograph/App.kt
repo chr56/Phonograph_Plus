@@ -8,8 +8,8 @@ import coil.ImageLoader
 import coil.ImageLoaderFactory
 import lib.phonograph.localization.ContextLocaleDelegate
 import lib.phonograph.misc.Reboot
-import mt.pref.ThemeColor
-import mt.pref.internal.ThemeStore
+import lib.phonograph.theme.ThemeColor
+import lib.phonograph.theme.internal.ThemeStore
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext

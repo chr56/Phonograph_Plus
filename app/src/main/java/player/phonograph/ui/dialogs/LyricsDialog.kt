@@ -6,9 +6,9 @@ package player.phonograph.ui.dialogs
 
 import com.google.android.material.chip.Chip
 import lib.phonograph.dialog.LargeDialog
+import lib.phonograph.theme.ThemeColor
 import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
-import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.DialogLyricsBinding

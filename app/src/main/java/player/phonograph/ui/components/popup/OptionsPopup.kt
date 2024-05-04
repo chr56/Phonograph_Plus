@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.components.popup
 
-import mt.pref.ThemeColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.util.theme.nightMode
 import util.theme.color.secondaryTextColor
 import util.theme.internal.resolveColor

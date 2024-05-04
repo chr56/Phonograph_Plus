@@ -3,7 +3,7 @@ package player.phonograph.ui.activities
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import lib.phonograph.misc.menuProvider
-import mt.pref.ThemeColor
+import lib.phonograph.theme.ThemeColor
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.App

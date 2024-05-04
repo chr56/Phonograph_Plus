@@ -8,7 +8,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
-import mt.pref.ThemeColor.accentColor
+import lib.phonograph.theme.ThemeColor.accentColor
 import player.phonograph.R
 import player.phonograph.mechanism.playlist.PlaylistEdit
 import player.phonograph.model.playlist.FilePlaylist

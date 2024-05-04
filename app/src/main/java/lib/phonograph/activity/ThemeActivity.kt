@@ -4,11 +4,11 @@
 
 package lib.phonograph.activity
 
-import mt.pref.ThemeColor
-import mt.pref.ThemeColor.accentColor
-import mt.pref.ThemeColor.navigationBarColor
-import mt.pref.ThemeColor.primaryColor
-import mt.pref.internal.ThemeStore.Companion.didThemeValuesChange
+import lib.phonograph.theme.ThemeColor
+import lib.phonograph.theme.ThemeColor.accentColor
+import lib.phonograph.theme.ThemeColor.navigationBarColor
+import lib.phonograph.theme.ThemeColor.primaryColor
+import lib.phonograph.theme.internal.ThemeStore.Companion.didThemeValuesChange
 import player.phonograph.R
 import player.phonograph.mechanism.setting.StyleConfig
 import player.phonograph.util.theme.nightMode

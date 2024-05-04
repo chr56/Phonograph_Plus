@@ -7,7 +7,7 @@ package player.phonograph.ui.adapter
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.ToolbarCab.Companion.STATUS_ACTIVE
 import lib.phonograph.cab.initToolbarCab
-import mt.pref.ThemeColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.misc.IPaletteColorProvider

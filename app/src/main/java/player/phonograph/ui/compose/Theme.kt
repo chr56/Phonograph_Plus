@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.compose
 
-import mt.pref.ThemeColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.App
 import player.phonograph.mechanism.setting.StyleConfig
 import player.phonograph.mechanism.setting.StyleConfig.THEME_AUTO

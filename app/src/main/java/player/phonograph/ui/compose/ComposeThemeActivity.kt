@@ -5,7 +5,7 @@
 package player.phonograph.ui.compose
 
 import lib.phonograph.activity.MultiLanguageActivity
-import mt.pref.ThemeColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import util.theme.activity.adjustStatusbarText
 import util.theme.activity.setNavigationBarColor

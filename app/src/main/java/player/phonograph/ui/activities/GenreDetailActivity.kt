@@ -1,7 +1,7 @@
 package player.phonograph.ui.activities
 
 import lib.phonograph.misc.menuProvider
-import mt.pref.ThemeColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.actions.menu.genreDetailToolbar
 import player.phonograph.databinding.ActivityGenreDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker

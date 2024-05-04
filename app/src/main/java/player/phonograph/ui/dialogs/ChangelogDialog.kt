@@ -5,7 +5,7 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import lib.phonograph.localization.LocalizationStore
-import mt.pref.ThemeColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.util.currentVersionCode

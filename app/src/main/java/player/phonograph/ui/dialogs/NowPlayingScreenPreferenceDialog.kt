@@ -9,7 +9,7 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import com.github.appintro.indicator.DotIndicatorController
-import mt.pref.ThemeColor
+import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.model.NowPlayingScreen
