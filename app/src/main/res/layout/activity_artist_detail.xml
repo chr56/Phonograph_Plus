@@ -16,7 +16,7 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            style="@style/Toolbar"
+            style="@style/Widget.Phonograph.Toolbar"
             android:background="@android:color/transparent" />
 
         <ViewStub

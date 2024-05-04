@@ -74,7 +74,7 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button_send"
-        style="@style/Fab"
+        style="@style/Widget.Phonograph.FloatingActionButton"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin_top_left_right"
         android:layout_marginEnd="24dp"
