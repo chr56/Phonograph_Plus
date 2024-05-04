@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Phonograph.Auto" parent="Theme.Phonograph.Base.Auto" />
-
-    <style name="Theme.Phonograph.Dark" parent="Theme.Phonograph.Base.Dark" />
-
-    <style name="Theme.Phonograph.Light" parent="Theme.Phonograph.Base.Light" />
-
-    <style name="Theme.Phonograph.Black" parent="Theme.Phonograph.Base.Black" />
-
-    <style name="Theme.Phonograph.Base.Auto" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
+    <style name="Theme.Phonograph.Auto" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
 
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
@@ -40,7 +32,7 @@
 
     </style>
 
-    <style name="Theme.Phonograph.Base.Dark" parent="Theme.MaterialComponents.NoActionBar.Bridge">
+    <style name="Theme.Phonograph.Dark" parent="Theme.MaterialComponents.NoActionBar.Bridge">
 
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
@@ -74,7 +66,7 @@
         <item name="md_corner_radius">0dp</item>
     </style>
 
-    <style name="Theme.Phonograph.Base.Light" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+    <style name="Theme.Phonograph.Light" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
 
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
@@ -109,7 +101,7 @@
         <item name="md_corner_radius">0dp</item>
     </style>
 
-    <style name="Theme.Phonograph.Base.Black" parent="@style/Theme.Phonograph.Base.Dark">
+    <style name="Theme.Phonograph.Black" parent="@style/Theme.Phonograph.Dark">
         <item name="android:windowBackground">@android:color/black</item>
         <item name="dividerColor">@color/md_grey_700</item>
         <item name="colorBackgroundFloating">@color/md_grey_900</item>
@@ -118,14 +110,14 @@
         <item name="md_background_color">@color/md_grey_900</item>
     </style>
 
-    <style name="Theme.AppIntroTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="Theme.AppIntro" parent="Theme.AppCompat.NoActionBar">
         <!-- Theme for app intro -->
         <item name="colorPrimary">@color/md_blue_A400</item>
         <item name="colorPrimaryDark">@color/md_blue_800</item>
         <item name="colorAccent">@color/md_orange_500</item>
     </style>
 
-    <style name="DialogActivity" parent="Theme.AppCompat.DayNight.Dialog">
+    <style name="Theme.Phonograph.StarterActivity" parent="Theme.AppCompat.DayNight.Dialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:title">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -140,7 +132,7 @@
     </style>
 
 
-    <style name="Theme.Phonograph.Base.Auto.DialogActivity" parent="Theme.Phonograph.Base.Auto">
+    <style name="Theme.Phonograph.DialogActivity.Auto" parent="Theme.Phonograph.Auto">
         <item name="android:windowNoTitle">true</item>
         <item name="android:title">@null</item>
         <item name="android:windowIsTranslucent">true</item>
