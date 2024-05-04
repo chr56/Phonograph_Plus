@@ -7,7 +7,7 @@ package lib.phonograph.activity
 import com.google.android.material.snackbar.Snackbar
 import player.phonograph.R
 import player.phonograph.util.permissions.GrantResult
-import player.phonograph.util.permissions.PermissionDelegate
+import player.phonograph.util.permissions.RequestPermissionsDelegate
 import player.phonograph.util.permissions.hasPermissions
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.permissionDescription
@@ -20,7 +20,7 @@ import android.os.Bundle
  */
 open class PermissionActivity : ThemeActivity() {
 
-    private val permissionDelegate: PermissionDelegate = PermissionDelegate()
+    private val permissionDelegate: RequestPermissionsDelegate = RequestPermissionsDelegate()
 
     /**
      * Runtime Permissions to request
@@ -52,7 +52,7 @@ open class PermissionActivity : ThemeActivity() {
      */
     protected fun requestPermissions() {
         val permissions = runtimePermissionsToRequest() ?: return
-        permissionDelegate.grant(permissions) { result: GrantResult ->
+        permissionDelegate.launch(permissions) { result: GrantResult ->
             checkResult(result)
         }
     }
