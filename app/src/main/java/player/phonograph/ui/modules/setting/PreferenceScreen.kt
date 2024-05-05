@@ -621,7 +621,7 @@ private fun BooleanPref(
         } else {
             rememberDataStoreBooleanState(
                 key = booleanPreferencesKey(key),
-                dataStore = LocalContext.current.dataStore,
+                dataStore = Setting.settingsDatastore(LocalContext.current),
                 defaultValue = defaultValue
             )
         }
@@ -793,7 +793,7 @@ internal class OptionGroupModel(
         }
 
     private suspend fun read(context: Context): Int {
-        val value = context.dataStore.data.first()[stringPreferencesKey(key)]
+        val value = Setting.settingsDatastore(context).data.first()[stringPreferencesKey(key)]
         val index = optionsValue.indexOf(value)
         return if (index > -1) {
             index
@@ -808,7 +808,7 @@ internal class OptionGroupModel(
     }
 
     suspend fun save(context: Context, index: Int) {
-        context.dataStore.edit { preferences ->
+        Setting.settingsDatastore(context).edit { preferences ->
             val newValue = optionsValue.getOrElse(index) { optionsValue[defaultValueIndex] }
             preferences[stringPreferencesKey(key)] = newValue
         }
@@ -823,7 +823,7 @@ private fun dependOn(key: String, required: Boolean = true): Boolean {
     return if (LocalInspectionMode.current) {
         false
     } else {
-        val datastore = LocalContext.current.dataStore
+        val datastore = Setting.settingsDatastore(LocalContext.current)
         rememberDataStoreBooleanState(key = booleanPreferencesKey(key), dataStore = datastore).value == required
     }
 }

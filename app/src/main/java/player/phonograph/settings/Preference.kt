@@ -14,7 +14,7 @@ import kotlinx.coroutines.runBlocking
 interface Preference<T>
 class PrimitivePreference<T>(private val key: PrimitiveKey<T>, context: Context) : Preference<T> {
 
-    private val dataStore = context.dataStore
+    private val dataStore = Setting.settingsDatastore(context)
 
     val flow: Flow<T>
         get() = dataStore.data.map { it[key.preferenceKey] ?: key.defaultValue() }
@@ -38,7 +38,7 @@ class PrimitivePreference<T>(private val key: PrimitiveKey<T>, context: Context)
 
 class CompositePreference<T>(key: CompositeKey<T>, context: Context) : Preference<T> {
 
-    private val dataStore = context.dataStore
+    private val dataStore = Setting.settingsDatastore(context)
 
     private val provider = key.valueProvider
 

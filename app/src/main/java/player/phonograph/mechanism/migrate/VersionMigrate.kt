@@ -6,7 +6,7 @@ package player.phonograph.mechanism.migrate
 
 import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.settings.PrerequisiteSetting
-import player.phonograph.settings.dataStore
+import player.phonograph.settings.Setting
 import player.phonograph.util.debug
 import player.phonograph.util.file.moveFile
 import player.phonograph.util.reportError
@@ -153,7 +153,7 @@ private fun removePreference(context: Context, keyName: String) {
     var exception: Exception? = null
     try {
         CoroutineScope(SupervisorJob()).launch {
-            context.dataStore.edit {
+            Setting.settingsDatastore(context).edit {
                 val booleanKey = booleanPreferencesKey(keyName)
                 val stringKey = stringPreferencesKey(keyName)
                 val intKey = intPreferencesKey(keyName)
