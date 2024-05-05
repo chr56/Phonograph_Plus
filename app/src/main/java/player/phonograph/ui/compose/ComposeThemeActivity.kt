@@ -6,6 +6,8 @@ package player.phonograph.ui.compose
 
 import lib.phonograph.activity.MultiLanguageActivity
 import player.phonograph.settings.ThemeSetting
+import player.phonograph.settings.ThemeSetting.accentColor
+import player.phonograph.settings.ThemeSetting.primaryColor
 import player.phonograph.util.theme.updateNavigationbarColor
 import player.phonograph.util.theme.updateStatusbarColor
 import player.phonograph.util.theme.updateTaskDescriptionColor
@@ -25,8 +27,8 @@ abstract class ComposeThemeActivity : MultiLanguageActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        primaryColor.value = Color(ThemeSetting.primaryColor(this))
-        accentColor.value = Color(ThemeSetting.accentColor(this))
+        primaryColor.value = Color(primaryColor())
+        accentColor.value = Color(accentColor())
 
         super.onCreate(savedInstanceState)
 

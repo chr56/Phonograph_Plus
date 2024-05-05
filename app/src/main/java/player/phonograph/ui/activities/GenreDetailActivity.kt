@@ -8,7 +8,7 @@ import player.phonograph.model.Genre
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
-import player.phonograph.settings.ThemeSetting
+import player.phonograph.settings.ThemeSetting.primaryColor
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
@@ -93,7 +93,7 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity() {
         supportActionBar!!.title = genre.name
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
-        setToolbarColor(binding.toolbar, ThemeSetting.primaryColor(this))
+        setToolbarColor(binding.toolbar, primaryColor())
     }
 
     private fun setupMenu(menu: Menu) {

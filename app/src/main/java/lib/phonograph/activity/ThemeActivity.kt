@@ -71,8 +71,8 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     protected var autoSetTaskDescriptionColor: Boolean = true
 
     private fun observeColors() {
-        primaryColor = primaryColor(this)
-        accentColor = accentColor(this)
+        primaryColor = primaryColor()
+        accentColor = accentColor()
         lifecycleScope.launch {
             ThemeSetting.observeColors(this@ThemeActivity) { primary, accent ->
                 primaryColor = primary

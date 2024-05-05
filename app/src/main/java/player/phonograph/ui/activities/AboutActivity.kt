@@ -10,7 +10,6 @@ import player.phonograph.mechanism.Update
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.DebugDialog
 import player.phonograph.ui.dialogs.ReportIssueDialog
@@ -116,7 +115,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         mToolbar.setBackgroundColor(primaryColor)
         setSupportActionBar(mToolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        setToolbarColor(mToolbar, ThemeSetting.primaryColor(this))
+        setToolbarColor(mToolbar, primaryColor)
     }
 
     @Keep

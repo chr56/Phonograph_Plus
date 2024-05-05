@@ -14,7 +14,7 @@ import player.phonograph.model.getYearString
 import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
 import player.phonograph.repo.loader.Songs
-import player.phonograph.settings.ThemeSetting
+import player.phonograph.settings.ThemeSetting.primaryColor
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.NavigationUtil.goToArtist
@@ -62,7 +62,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         setSupportActionBar(viewBinding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
-        setToolbarColor(viewBinding.toolbar, ThemeSetting.primaryColor(this))
+        setToolbarColor(viewBinding.toolbar, primaryColor())
 
         // content
         setUpViews()
