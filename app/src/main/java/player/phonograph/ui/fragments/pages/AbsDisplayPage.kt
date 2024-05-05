@@ -8,7 +8,6 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.github.chr56.android.menu_model.MenuContext
 import com.google.android.material.appbar.AppBarLayout
-import lib.phonograph.theme.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.actions.actionPlay
@@ -18,6 +17,7 @@ import player.phonograph.model.Displayable
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.sort.SortMode
 import player.phonograph.service.queue.ShuffleMode
+import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.components.popup.ListOptionsPopup
@@ -147,7 +147,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(
             mainActivity,
-            ThemeColor.accentColor(App.instance.applicationContext)
+            ThemeSetting.accentColor(App.instance.applicationContext)
         )
         binding.recyclerView.also {
             it.adapter = adapter
@@ -155,7 +155,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         }
 
         binding.refreshContainer.apply {
-            setColorSchemeColors(ThemeColor.accentColor(requireContext()))
+            setColorSchemeColors(ThemeSetting.accentColor(requireContext()))
             setDistanceToTriggerSync(480)
             setProgressViewOffset(false, 10, 120)
             setOnRefreshListener {

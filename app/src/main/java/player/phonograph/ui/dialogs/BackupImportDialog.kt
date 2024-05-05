@@ -9,10 +9,10 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import lib.phonograph.misc.Reboot
-import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.mechanism.backup.Backup
 import player.phonograph.settings.PrerequisiteSetting
+import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.reportError
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -102,7 +102,7 @@ class BackupImportDialog : DialogFragment() {
                 it.dismiss()
             }
             .apply {
-                val color = ThemeColor.accentColor(requireActivity())
+                val color = ThemeSetting.accentColor(requireActivity())
                 getActionButton(WhichButton.POSITIVE).updateTextColor(color)
                 getActionButton(WhichButton.NEGATIVE).updateTextColor(color)
             }

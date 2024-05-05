@@ -10,11 +10,11 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
-import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.mechanism.setting.CoilImageConfig
 import player.phonograph.model.ImageSource
 import player.phonograph.model.config.ImageSourceConfig
+import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.adapter.SortableListAdapter
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -66,7 +66,7 @@ class ImageSourceConfigDialog : DialogFragment() {
             }
             .apply {
                 // set button color
-                val color = ThemeColor.accentColor(requireActivity())
+                val color = ThemeSetting.accentColor(requireActivity())
                 getActionButton(WhichButton.POSITIVE).updateTextColor(color)
                 getActionButton(WhichButton.NEGATIVE).updateTextColor(color)
                 getActionButton(WhichButton.NEUTRAL).updateTextColor(color)

@@ -76,4 +76,16 @@ object ThemeSetting {
         cachedAccentColor = primaryColor
         return primaryColor
     }
+
+    @JvmName("Context_PrimaryColor")
+    @CheckResult
+    @ColorInt
+    fun Context.primaryColor(): Int = primaryColor(this)
+
+
+    @JvmName("Context_AccentColor")
+    @CheckResult
+    @ColorInt
+    fun Context.accentColor(): Int = accentColor(this)
+
 }

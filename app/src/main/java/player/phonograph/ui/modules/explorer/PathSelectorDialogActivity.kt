@@ -4,8 +4,8 @@
 
 package player.phonograph.ui.modules.explorer
 
-import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
+import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
 import player.phonograph.util.permissions.navigateToStorageSetting
@@ -79,7 +79,7 @@ class PathSelectorDialogActivity : AppCompatActivity() {
         finish()
     }
 
-    private val accentColor by lazy { ThemeColor.accentColor(this) }
+    private val accentColor by lazy { ThemeSetting.accentColor(this) }
 
     class PathSelectorActivityResultContract : ActivityResultContract<String?, String?>() {
         override fun createIntent(context: Context, input: String?): Intent =

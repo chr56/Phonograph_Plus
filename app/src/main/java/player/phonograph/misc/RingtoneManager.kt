@@ -4,8 +4,8 @@
 
 package player.phonograph.misc
 
-import lib.phonograph.theme.ThemeColor.accentColor
 import player.phonograph.R
+import player.phonograph.settings.ThemeSetting.accentColor
 import androidx.appcompat.app.AlertDialog
 import android.content.ContentUris
 import android.content.Context

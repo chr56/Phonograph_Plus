@@ -1,7 +1,6 @@
 package player.phonograph.ui.activities
 
 import lib.phonograph.misc.menuProvider
-import lib.phonograph.theme.ThemeColor
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
@@ -15,6 +14,9 @@ import player.phonograph.model.getYearString
 import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
 import player.phonograph.repo.loader.Songs
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
+import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.NavigationUtil.goToArtist
@@ -64,7 +66,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         setSupportActionBar(viewBinding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
-        setToolbarColor(viewBinding.toolbar, ThemeColor.primaryColor(this))
+        setToolbarColor(viewBinding.toolbar, ThemeSetting.primaryColor(this))
 
         // content
         setUpViews()
@@ -128,7 +130,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
     private fun updateColors(color: Int) {
         viewBinding.recyclerView.setUpFastScrollRecyclerViewColor(this, color)
         viewBinding.header.setBackgroundColor(color)
-        if (ThemeColor.coloredNavigationBar(this)) setNavigationBarColor(color)
+        if (Setting(this)[Keys.coloredNavigationBar].data) setNavigationBarColor(color)
         setTaskDescriptionColor(color)
 
 

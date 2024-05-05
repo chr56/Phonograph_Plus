@@ -4,13 +4,13 @@
 
 package player.phonograph.ui.compose
 
-import lib.phonograph.theme.ThemeColor
 import player.phonograph.App
 import player.phonograph.mechanism.setting.StyleConfig
 import player.phonograph.mechanism.setting.StyleConfig.THEME_AUTO
 import player.phonograph.mechanism.setting.StyleConfig.THEME_BLACK
 import player.phonograph.mechanism.setting.StyleConfig.THEME_DARK
 import player.phonograph.mechanism.setting.StyleConfig.THEME_LIGHT
+import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.theme.systemDarkmode
 import util.theme.color.shiftColor
 import util.theme.materials.R
@@ -173,8 +173,8 @@ fun colorConfig(previewMode: Boolean, context: Context = App.instance): ColorCon
             Color(R.color.md_orange_900),
         )
     } else {
-        val primary = ThemeColor.primaryColor(context)
-        val accent = ThemeColor.accentColor(context)
+        val primary = ThemeSetting.primaryColor(context)
+        val accent = ThemeSetting.accentColor(context)
         ColorConfig(
             Color(primary),
             Color(shiftColor(primary, 0.8f)),

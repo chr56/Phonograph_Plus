@@ -5,9 +5,9 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import lib.phonograph.localization.LocalizationStore
-import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.settings.PrerequisiteSetting
+import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.reportError
 import player.phonograph.util.text.changelogCSS
@@ -56,7 +56,7 @@ class ChangelogDialog : DialogFragment() {
             }
             .apply {
                 getActionButton(WhichButton.POSITIVE).updateTextColor(
-                    ThemeColor.accentColor(requireActivity())
+                    ThemeSetting.accentColor(requireActivity())
                 )
             }
 
@@ -78,7 +78,7 @@ class ChangelogDialog : DialogFragment() {
 
             val changeLog = generateChangelogHTML(
                 content,
-                ThemeColor.accentColor(requireContext())
+                ThemeSetting.accentColor(requireContext())
             )
 
             webView.loadData(changeLog, "text/html", "UTF-8")

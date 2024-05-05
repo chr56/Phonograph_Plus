@@ -8,11 +8,11 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
-import lib.phonograph.theme.ThemeColor.accentColor
 import player.phonograph.R
 import player.phonograph.mechanism.playlist.PlaylistEdit
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.settings.ThemeSetting.accentColor
 import player.phonograph.util.parcelableArrayList
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope

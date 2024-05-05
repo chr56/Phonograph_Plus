@@ -16,7 +16,6 @@ import lib.phonograph.localization.LocalizationStore
 import lib.phonograph.misc.ColorChooser
 import lib.phonograph.misc.ColorPalette
 import lib.phonograph.misc.rememberDataStoreBooleanState
-import lib.phonograph.theme.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
@@ -477,7 +476,7 @@ private fun GeneralThemeSetting() {
 private fun PrimaryColorPref() {
     val context = LocalContext.current
     val mode = remember {
-        if (SDK_INT >= S && ThemeColor.enableMonet(context)) ColorPalette.MODE_MONET_PRIMARY_COLOR
+        if (SDK_INT >= S && Setting(context)[Keys.enableMonet].data) ColorPalette.MODE_MONET_PRIMARY_COLOR
         else ColorPalette.MODE_PRIMARY_COLOR
     }
     ColorPrefImpl(
@@ -490,7 +489,7 @@ private fun PrimaryColorPref() {
 private fun AccentColorPref() {
     val context = LocalContext.current
     val mode = remember {
-        if (SDK_INT >= S && ThemeColor.enableMonet(context)) ColorPalette.MODE_MONET_ACCENT_COLOR
+        if (SDK_INT >= S && Setting(context)[Keys.enableMonet].data) ColorPalette.MODE_MONET_ACCENT_COLOR
         else ColorPalette.MODE_ACCENT_COLOR
     }
     ColorPrefImpl(
@@ -538,39 +537,14 @@ private fun ColorPrefImpl(
 
 @Composable
 private fun MonetSetting() {
-    class MonetSettingValueState(val context: Context) : SettingValueState<Boolean> {
-        private val _state = mutableStateOf(ThemeColor.enableMonet(context))
-        override var value: Boolean
-            get() = _state.value
-            set(value) {
-                _state.value = value
-                ThemeColor.edit(context) {
-                    enableMonet(value)
-                }
-            }
-
-        override fun reset() {
-            value = true
-        }
-
-    }
-
     val context = LocalContext.current
-
-    val booleanState =
-        if (LocalInspectionMode.current) {
-            rememberBooleanSettingState(false)
-        } else {
-            MonetSettingValueState(context)
-        }
-
-
-    BooleanPrefImpl(
+    BooleanPref(
+        key = ENABLE_MONET,
         titleRes = R.string.pref_title_enable_monet,
         summaryRes = R.string.pref_summary_enable_monet,
-        state = booleanState,
+        defaultValue = false,
         onCheckedChange = {
-            DynamicShortcutManager(context).updateDynamicShortcuts()
+            DynamicShortcutManager(App.instance).updateDynamicShortcuts()
             (context as? Activity)?.recreate()
         }
     )
@@ -578,35 +552,12 @@ private fun MonetSetting() {
 
 @Composable
 private fun ColoredNavigationBarSetting() {
-    class ColoredNavigationBarSettingValueState(val context: Context) : SettingValueState<Boolean> {
-        private val _state = mutableStateOf(ThemeColor.coloredNavigationBar(context))
-        override var value: Boolean
-            get() = _state.value
-            set(value) {
-                _state.value = value
-                ThemeColor.edit(context) {
-                    coloredNavigationBar(value)
-                }
-            }
-
-        override fun reset() {
-            value = true
-        }
-    }
-
-    val booleanState =
-        if (LocalInspectionMode.current) {
-            rememberBooleanSettingState(false)
-        } else {
-            ColoredNavigationBarSettingValueState(LocalContext.current)
-        }
-
     val context = LocalContext.current
-
-    BooleanPrefImpl(
+    BooleanPref(
+        key = COLORED_NAVIGATION_BAR,
         titleRes = R.string.pref_title_navigation_bar,
         summaryRes = R.string.pref_summary_colored_navigation_bar,
-        state = booleanState,
+       defaultValue = false,
         onCheckedChange = {
             (context as? Activity)?.recreate()
         }

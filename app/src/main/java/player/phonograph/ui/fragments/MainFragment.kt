@@ -10,8 +10,6 @@ import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import lib.phonograph.misc.menuProvider
-import lib.phonograph.theme.accentColor
-import lib.phonograph.theme.primaryColor
 import player.phonograph.R
 import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.mechanism.setting.HomeTabConfig
@@ -19,6 +17,8 @@ import player.phonograph.mechanism.setting.PageConfig
 import player.phonograph.model.pages.Pages
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.settings.ThemeSetting.accentColor
+import player.phonograph.settings.ThemeSetting.primaryColor
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.MainDrawerViewModel
 import player.phonograph.ui.components.popup.ListOptionsPopup

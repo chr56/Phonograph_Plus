@@ -8,10 +8,11 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.color.colorChooser
-import lib.phonograph.theme.ThemeColor
-import lib.phonograph.theme.ThemeColor.accentColor
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
+import player.phonograph.settings.ThemeSetting.accentColor
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -60,13 +61,11 @@ object ColorChooser {
     }
 
     private fun applyNewColor(context: Context, color: Int, mode: Int) {
-        ThemeColor.editTheme(context).apply {
-            when (mode) {
-                ColorPalette.MODE_PRIMARY_COLOR -> primaryColor(color)
-                ColorPalette.MODE_ACCENT_COLOR  -> accentColor(color)
-                0                  -> return
-            }
-        }.commit()
+        when (mode) {
+            ColorPalette.MODE_PRIMARY_COLOR -> Setting(context)[Keys.selectedPrimaryColor].data = color
+            ColorPalette.MODE_ACCENT_COLOR  -> Setting(context)[Keys.selectedAccentColor].data = color
+            0                               -> return
+        }
         if (SDK_INT >= N_MR1) {
             DynamicShortcutManager(context).updateDynamicShortcuts()
         }

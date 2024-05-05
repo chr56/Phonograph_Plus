@@ -4,10 +4,10 @@
 
 package player.phonograph.ui.dialogs
 
-import lib.phonograph.theme.ThemeColor
 import player.phonograph.ISSUE_TRACKER_LINK
 import player.phonograph.R
 import player.phonograph.databinding.DialogReportIssueBinding
+import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.text.getDeviceInfo
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
@@ -64,7 +64,7 @@ class ReportIssueDialog : DialogFragment() {
         }
     }
 
-    private val primaryColor get() = ThemeColor.primaryColor(requireContext())
+    private val primaryColor get() = ThemeSetting.primaryColor(requireContext())
 
     private fun Context.copyDeviceInfoToClipBoard() {
         val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager

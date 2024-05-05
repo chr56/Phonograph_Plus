@@ -4,13 +4,13 @@
 
 package lib.phonograph.activity
 
-import lib.phonograph.theme.ThemeColor
-import lib.phonograph.theme.ThemeColor.accentColor
-import lib.phonograph.theme.ThemeColor.navigationBarColor
-import lib.phonograph.theme.ThemeColor.primaryColor
-import lib.phonograph.theme.internal.ThemeStore.Companion.didThemeValuesChange
+import player.phonograph.settings.ThemeSetting.accentColor
+import player.phonograph.settings.ThemeSetting.navigationBarColor
+import player.phonograph.settings.ThemeSetting.primaryColor
 import player.phonograph.R
 import player.phonograph.mechanism.setting.StyleConfig
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import player.phonograph.util.theme.nightMode
 import util.theme.activity.adjustStatusbarText
 import util.theme.activity.setNavigationBarColor
@@ -19,6 +19,7 @@ import util.theme.activity.setTaskDescriptionColor
 import util.theme.color.darkenColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
+import androidx.lifecycle.lifecycleScope
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.os.Handler
@@ -27,6 +28,8 @@ import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 import android.view.animation.PathInterpolator
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * An abstract class providing material activity (no toolbar)
@@ -41,8 +44,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     protected var textColorSecondary: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        retrieveColors()
-        ThemeColor.registerPreferenceChangeListener(listener, this.applicationContext, this)
+        observeColors()
 
         super.onCreate(savedInstanceState)
         createTime = System.currentTimeMillis()
@@ -75,37 +77,35 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     /** Must call before super */
     protected var autoSetTaskDescriptionColor: Boolean = true
 
-    private fun retrieveColors() {
+    private fun observeColors() {
         primaryColor = primaryColor(this)
         accentColor = accentColor(this)
+        lifecycleScope.launch(Dispatchers.IO) {
+            Setting(this@ThemeActivity)[Keys.selectedPrimaryColor].flow.collect {
+                primaryColor = it
+                requireRecreate = true
+            }
+        }
+        lifecycleScope.launch(Dispatchers.IO) {
+            Setting(this@ThemeActivity)[Keys.selectedAccentColor].flow.collect {
+                accentColor = it
+                requireRecreate = true
+            }
+        }
         textColorPrimary = primaryTextColor(nightMode)
         textColorSecondary = secondaryTextColor(nightMode)
     }
 
-    private val listener = object : ThemeColor.ThemePreferenceChangeListener {
-        override fun onAccentColorChanged(newColor: Int) {
-            accentColor = newColor
-        }
-
-        override fun onPrimaryColorChanged(newColor: Int) {
-            primaryColor = newColor
-        }
-
-        override fun onNavigationBarTintSettingChanged(coloredNavigationBar: Boolean) {
-        }
-
-        override fun onStatusBarTintSettingChanged(coloredStatusBar: Boolean) {
-        }
-
-    }
 
     override fun onResume() {
         super.onResume()
-        if (ThemeColor.didChangeSince(this, createTime)) {
+        if (requireRecreate) {
             postRecreate()
+            requireRecreate = false
         }
     }
 
+    private var requireRecreate: Boolean = false
     protected fun postRecreate() {
         // hack to prevent java.lang.RuntimeException: Performing pause of activity that is not resumed
         // makes sure recreate() is called right after and not in onResume()
@@ -160,7 +160,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     protected fun animateThemeColorChange(oldColor: Int, newColor: Int) {
         animateThemeColorChange(oldColor, newColor) { animation: ValueAnimator ->
             setStatusbarColor(animation.animatedValue as Int)
-            if (ThemeColor.coloredNavigationBar(this)) setNavigationBarColor(animation.animatedValue as Int)
+            if (Setting(this)[Keys.coloredNavigationBar].data) setNavigationBarColor(animation.animatedValue as Int)
         }
     }
 

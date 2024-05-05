@@ -9,7 +9,6 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
-import lib.phonograph.theme.ThemeColor.accentColor
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
@@ -28,6 +27,7 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.getFileSizeString
 import player.phonograph.model.getReadableDurationString
+import player.phonograph.settings.ThemeSetting.accentColor
 import player.phonograph.util.parcelable
 import player.phonograph.util.reportError
 import androidx.fragment.app.DialogFragment

@@ -5,7 +5,6 @@
 package player.phonograph.ui.dialogs
 
 import com.triggertrap.seekarc.SeekArc
-import lib.phonograph.theme.ThemeColor.accentColor
 import lib.phonograph.view.CheckBoxX
 import player.phonograph.App
 import player.phonograph.R
@@ -14,6 +13,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.util.SleepTimer
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.settings.ThemeSetting.accentColor
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import android.app.Dialog

@@ -4,8 +4,6 @@
 
 package player.phonograph.ui.fragments.pages
 
-import lib.phonograph.theme.accentColor
-import lib.phonograph.theme.primaryColor
 import org.koin.core.context.GlobalContext
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
@@ -18,6 +16,8 @@ import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.settings.ThemeSetting.accentColor
+import player.phonograph.settings.ThemeSetting.primaryColor
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.dialogs.CreatePlaylistDialog
 import player.phonograph.ui.fragments.pages.adapter.PlaylistDisplayAdapter

@@ -4,7 +4,6 @@
 
 package player.phonograph.mechanism
 
-import lib.phonograph.theme.ThemeColor
 import okio.BufferedSink
 import player.phonograph.App
 import player.phonograph.BuildConfig.VERSION_CODE
@@ -173,8 +172,6 @@ object SettingDataManager {
             //Setting.instance.forceUnregisterAllListener()
             App.instance.dataStore.edit { it.clear() }
         }
-        ThemeColor.editTheme(App.instance).clearAllPreference() // lib
-
         Toast.makeText(App.instance, R.string.success, Toast.LENGTH_SHORT).show()
     }
 

@@ -10,7 +10,6 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.interfaces.OnFastScrollStateChangeListener
 import lib.activityresultcontract.registerActivityResultLauncherDelegate
 import lib.phonograph.misc.menuProvider
-import lib.phonograph.theme.ThemeColor
 import lib.storage.launcher.CreateFileStorageAccessDelegate
 import lib.storage.launcher.ICreateFileStorageAccessible
 import lib.storage.launcher.IOpenDirStorageAccessible
@@ -30,6 +29,7 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.totalDuration
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.getTintedDrawable
@@ -164,7 +164,7 @@ class PlaylistDetailActivity :
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu, this::setupMenuCallback))
-        setToolbarColor(binding.toolbar, ThemeColor.primaryColor(this))
+        setToolbarColor(binding.toolbar, ThemeSetting.primaryColor(this))
     }
 
     private fun prepareRecyclerView() {

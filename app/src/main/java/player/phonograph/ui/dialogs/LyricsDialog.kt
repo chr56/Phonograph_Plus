@@ -6,7 +6,6 @@ package player.phonograph.ui.dialogs
 
 import com.google.android.material.chip.Chip
 import lib.phonograph.dialog.LargeDialog
-import lib.phonograph.theme.ThemeColor
 import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
 import player.phonograph.App
@@ -21,6 +20,7 @@ import player.phonograph.model.lyrics.TextLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.fragments.player.LyricsViewModel
 import player.phonograph.util.reportError
 import player.phonograph.util.text.lyricsTimestamp
@@ -321,8 +321,8 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
     //region Theme& Color
 
-    private val accentColor by lazy { ThemeColor.accentColor(App.instance) }
-    private val primaryColor by lazy { ThemeColor.primaryColor(App.instance) }
+    private val accentColor by lazy { ThemeSetting.accentColor(App.instance) }
+    private val primaryColor by lazy { ThemeSetting.primaryColor(App.instance) }
     private val textColor by lazy { App.instance.primaryTextColor(App.instance.nightMode) }
 
 

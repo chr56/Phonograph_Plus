@@ -3,7 +3,7 @@
  */
 package lib.phonograph.view
 
-import lib.phonograph.theme.ThemeColor.accentColor
+import player.phonograph.settings.ThemeSetting.accentColor
 import player.phonograph.util.theme.nightMode
 import util.theme.view.checkbox.setTint
 import androidx.appcompat.widget.AppCompatCheckBox

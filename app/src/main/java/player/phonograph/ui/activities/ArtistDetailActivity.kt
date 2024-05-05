@@ -3,7 +3,6 @@ package player.phonograph.ui.activities
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import lib.phonograph.misc.menuProvider
-import lib.phonograph.theme.ThemeColor
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.App
@@ -22,6 +21,7 @@ import player.phonograph.model.totalDuration
 import player.phonograph.repo.loader.Songs
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
@@ -161,7 +161,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
 
     private fun setColors(color: Int) {
         viewBinding.header.setBackgroundColor(color)
-        if (ThemeColor.coloredNavigationBar(this)) setNavigationBarColor(color)
+        if (Setting(this)[Keys.coloredNavigationBar].data) setNavigationBarColor(color)
         setTaskDescriptionColor(color)
 
         setSupportActionBar(viewBinding.toolbar) // needed to auto readjust the toolbar content color
@@ -192,7 +192,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         supportActionBar?.title = null
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
-        setToolbarColor(viewBinding.toolbar, ThemeColor.primaryColor(this))
+        setToolbarColor(viewBinding.toolbar, ThemeSetting.primaryColor(this))
     }
 
     private fun setupMenu(menu: Menu) {
