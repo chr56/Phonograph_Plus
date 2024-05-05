@@ -12,6 +12,9 @@ const val HOME_TAB_CONFIG = "home_tab_config"
 const val COLORED_APP_SHORTCUTS = "colored_app_shortcuts"
 const val FIXED_TAB_LAYOUT = "fixed_tab_layout"
 
+const val COLORED_STATUSBAR = "colored_statusbar"
+const val COLORED_NAVIGATION_BAR = "colored_navigation_bar"
+
 // Appearance - Notification
 const val COLORED_NOTIFICATION = "colored_notification"
 const val CLASSIC_NOTIFICATION = "classic_notification"

@@ -31,6 +31,13 @@ object Keys {
     object fixedTabLayout :
             PrimitiveKey<Boolean>(booleanPK(FIXED_TAB_LAYOUT), { false })
 
+    object coloredStatusbar :
+            PrimitiveKey<Boolean>(booleanPK(COLORED_STATUSBAR), { true })
+
+    object coloredNavigationBar :
+            PrimitiveKey<Boolean>(booleanPK(COLORED_NAVIGATION_BAR), { false })
+
+
     // Appearance - Notification
     object coloredNotification :
             PrimitiveKey<Boolean>(booleanPK(COLORED_NOTIFICATION), { true })
