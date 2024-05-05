@@ -25,7 +25,7 @@ object Keys {
 
     // Appearance
     object theme :
-            PrimitiveKey<String>(stringPK(THEME), { ThemeSetting.THEME_AUTO })
+            PrimitiveKey<String>(stringPK(THEME), { THEME_AUTO })
 
     object homeTabConfigJsonString :
             PrimitiveKey<String>(stringPK(HOME_TAB_CONFIG), { "" })

@@ -23,8 +23,6 @@ import player.phonograph.mechanism.StatusBarLyric
 import player.phonograph.mechanism.setting.CoilImageConfig
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.NowPlayingScreenConfig
-import player.phonograph.mechanism.setting.StyleConfig
-import player.phonograph.mechanism.setting.StyleConfig.THEME_AUTO
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.time.displayText
@@ -447,27 +445,23 @@ private fun LibraryCategoriesSetting() {
 
 @Composable
 private fun GeneralThemeSetting() {
-
-    class GeneralThemeState(val context: Context) : SettingValueState<Int> {
-
-        override var value: Int
-            get() = StyleConfig.values.indexOf(StyleConfig.generalTheme(context))
-            set(value) {
-                StyleConfig.setGeneralTheme(context, StyleConfig.values[value])
-            }
-
-        override fun reset() {
-            StyleConfig.setGeneralTheme(context, THEME_AUTO)
-        }
-    }
-
     val context = LocalContext.current
-
-    ListPrefImpl(
+    val themeValues: List<String> = listOf(
+        THEME_AUTO,
+        THEME_DARK,
+        THEME_BLACK,
+        THEME_LIGHT
+    )
+    val themeNames: List<Int> = listOf(
+        R.string.auto_theme_name,
+        R.string.light_theme_name,
+        R.string.dark_theme_name,
+        R.string.black_theme_name,
+    )
+    ListPref(
+        options = OptionGroupModel(THEME, themeValues, themeNames),
         titleRes = R.string.pref_title_general_theme,
-        items = remember { StyleConfig.names(context) },
-        state = GeneralThemeState(context),
-        onItemSelected = { _, _ ->
+        onChange = { _, _ ->
             (context as? Activity)?.recreate()
         }
     )

@@ -4,7 +4,6 @@
 
 package lib.phonograph.activity
 
-import player.phonograph.mechanism.setting.StyleConfig
 import player.phonograph.settings.ThemeSetting
 import player.phonograph.settings.ThemeSetting.accentColor
 import player.phonograph.settings.ThemeSetting.primaryColor
@@ -22,8 +21,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 import android.view.animation.PathInterpolator
 import kotlinx.coroutines.launch
 
@@ -46,7 +43,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         createTime = System.currentTimeMillis()
 
         // theme
-        setTheme(StyleConfig.generalThemeStyle(this))
+        setTheme(ThemeSetting.themeStyle(this))
 
         // immersive status bar
         if (fullScreen) updateFullScreenSettings()
