@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ * Copyright (c) 2022~2024 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
 package lib.phonograph.activity
@@ -9,6 +9,8 @@ import player.phonograph.settings.ThemeSetting
 import player.phonograph.settings.ThemeSetting.accentColor
 import player.phonograph.settings.ThemeSetting.primaryColor
 import player.phonograph.util.theme.nightMode
+import player.phonograph.util.theme.restoreNotFullsScreen
+import player.phonograph.util.theme.setFullScreenAndIncludeStatusBar
 import player.phonograph.util.theme.updateNavigationbarColor
 import player.phonograph.util.theme.updateStatusbarColor
 import player.phonograph.util.theme.updateTaskDescriptionColor
@@ -47,7 +49,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         setTheme(StyleConfig.generalThemeStyle(this))
 
         // immersive status bar
-        if (useCustomStatusBar) setFullScreenAndIncludeStatusBar()
+        if (fullScreen) updateFullScreenSettings()
 
         // color
         if (autoSetStatusBarColor) updateStatusbarColor()
@@ -56,10 +58,10 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     }
 
     /** Must call before super */
-    protected var useCustomStatusBar: Boolean = true
+    protected var fullScreen: Boolean = true
         set(value) {
             field = value
-            if (value) setFullScreenAndIncludeStatusBar()
+            updateFullScreenSettings()
         }
 
     /** Must call before super */
@@ -113,16 +115,9 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     //
     // User Interface
     //
-    private fun setFullScreenAndIncludeStatusBar() {
-        @Suppress("DEPRECATION")
-        window.decorView.systemUiVisibility =
-            (SYSTEM_UI_FLAG_LAYOUT_STABLE or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
-    }
 
-    protected fun restoreNotFullsScreen() {
-        @Suppress("DEPRECATION")
-        window.decorView.systemUiVisibility -=
-            (SYSTEM_UI_FLAG_LAYOUT_STABLE or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+    protected fun updateFullScreenSettings() {
+        if (fullScreen) setFullScreenAndIncludeStatusBar() else restoreNotFullsScreen()
     }
 
     //

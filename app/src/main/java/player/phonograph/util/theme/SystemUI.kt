@@ -15,6 +15,7 @@ import util.theme.activity.setTaskDescriptionColor
 import util.theme.color.darkenColor
 import android.app.Activity
 import android.graphics.Color
+import android.view.View
 
 
 fun Activity.updateStatusbarColor() = updateStatusbarColor(darkenColor(primaryColor()))
@@ -36,3 +37,15 @@ fun Activity.updateTaskDescriptionColor(color: Int) = setTaskDescriptionColor(co
 
 
 private val coloredNavigationBar: Boolean get() = Setting(App.instance)[Keys.coloredNavigationBar].data
+
+@Suppress("DEPRECATION")
+fun Activity.setFullScreenAndIncludeStatusBar() {
+    window.decorView.systemUiVisibility =
+        (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+}
+
+@Suppress("DEPRECATION")
+fun Activity.restoreNotFullsScreen() {
+    window.decorView.systemUiVisibility -=
+        (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+}
