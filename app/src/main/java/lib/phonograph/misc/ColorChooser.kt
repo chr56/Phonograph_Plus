@@ -8,10 +8,11 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.color.colorChooser
-import lib.phonograph.theme.ThemeColor
-import lib.phonograph.theme.ThemeColor.accentColor
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
+import player.phonograph.settings.ThemeSetting
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -31,6 +32,7 @@ object ColorChooser {
             ) { _, color ->
                 applyNewColor(context, color, mode)
             }
+            val accentColor = ThemeSetting.accentColor(context)
             if (SDK_INT >= S) {
                 @Suppress("DEPRECATION")
                 neutralButton(res = R.string.dynamic_colors) {
@@ -44,29 +46,27 @@ object ColorChooser {
                     }.negativeButton {
                         it.dismiss()
                     }.apply {
-                        getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(context))
-                        getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(context))
+                        getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
+                        getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
                     }.show()
                 }
             }
             positiveButton(res = android.R.string.ok)
             negativeButton(res = android.R.string.cancel).apply {
                 // set button color
-                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(context))
-                getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(context))
-                getActionButton(WhichButton.NEUTRAL).updateTextColor(accentColor(context))
+                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
+                getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
+                getActionButton(WhichButton.NEUTRAL).updateTextColor(accentColor)
             }
         }
     }
 
     private fun applyNewColor(context: Context, color: Int, mode: Int) {
-        ThemeColor.editTheme(context).apply {
-            when (mode) {
-                ColorPalette.MODE_PRIMARY_COLOR -> primaryColor(color)
-                ColorPalette.MODE_ACCENT_COLOR  -> accentColor(color)
-                0                  -> return
-            }
-        }.commit()
+        when (mode) {
+            ColorPalette.MODE_PRIMARY_COLOR -> Setting(context)[Keys.selectedPrimaryColor].data = color
+            ColorPalette.MODE_ACCENT_COLOR  -> Setting(context)[Keys.selectedAccentColor].data = color
+            0                               -> return
+        }
         if (SDK_INT >= N_MR1) {
             DynamicShortcutManager(context).updateDynamicShortcuts()
         }

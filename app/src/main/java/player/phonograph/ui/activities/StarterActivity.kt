@@ -5,7 +5,6 @@
 package player.phonograph.ui.activities
 
 import legacy.phonograph.MediaStoreCompat
-import lib.phonograph.theme.ThemeColor
 import org.koin.android.ext.android.get
 import org.koin.core.context.GlobalContext
 import player.phonograph.BuildConfig
@@ -38,6 +37,7 @@ import player.phonograph.ui.components.viewcreater.buildDialogView
 import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
 import player.phonograph.ui.components.viewcreater.titlePanel
+import player.phonograph.util.theme.primaryColor
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.setMargins
@@ -248,7 +248,7 @@ class StarterActivity : AppCompatActivity() {
             hint: String,
             modes: IntArray,
         ): View {
-            val primaryColor = ThemeColor.primaryColor(context)
+            val primaryColor = context.primaryColor()
 
             val titlePanel = titlePanel(context).apply {
                 titleView.text = getString(R.string.app_name)

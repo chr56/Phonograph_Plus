@@ -1,9 +1,9 @@
 package player.phonograph.appshortcuts
 
-import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.theme.createTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
 import androidx.annotation.RequiresApi
@@ -45,7 +45,7 @@ object AppShortcutIconGenerator {
         // Return an Icon of iconId with those colors
         return generateThemedIcon(
             context, iconId,
-            ThemeColor.primaryColor(context),
+            ThemeSetting.primaryColor(context),
             typedColorBackground.data
         )
     }

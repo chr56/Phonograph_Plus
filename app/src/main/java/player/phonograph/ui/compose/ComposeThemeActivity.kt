@@ -5,12 +5,15 @@
 package player.phonograph.ui.compose
 
 import lib.phonograph.activity.MultiLanguageActivity
-import lib.phonograph.theme.ThemeColor
-import player.phonograph.R
-import util.theme.activity.adjustStatusbarText
-import util.theme.activity.setNavigationBarColor
-import util.theme.activity.setStatusbarColor
+import player.phonograph.settings.ThemeSetting
+import player.phonograph.util.theme.accentColor
+import player.phonograph.util.theme.observeThemeColors
+import player.phonograph.util.theme.primaryColor
+import player.phonograph.util.theme.updateNavigationbarColor
+import player.phonograph.util.theme.updateStatusbarColor
+import player.phonograph.util.theme.updateTaskDescriptionColor
 import util.theme.color.darkenColor
+import util.theme.materials.MaterialColor
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.lifecycleScope
@@ -20,14 +23,13 @@ import kotlinx.coroutines.launch
 
 abstract class ComposeThemeActivity : MultiLanguageActivity() {
 
-    protected val primaryColor: MutableStateFlow<Color> = MutableStateFlow(Color(util.theme.materials.R.color.md_cyan_A700))
-    protected val accentColor: MutableStateFlow<Color> = MutableStateFlow(Color(util.theme.materials.R.color.md_yellow_400))
+    protected val primaryColor: MutableStateFlow<Color> = MutableStateFlow(Color(MaterialColor.Blue._A400.asColor))
+    protected val accentColor: MutableStateFlow<Color> = MutableStateFlow(Color(MaterialColor.Yellow._900.asColor))
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        primaryColor.value = Color(ThemeColor.primaryColor(this))
-        accentColor.value = Color(ThemeColor.accentColor(this))
-        ThemeColor.registerPreferenceChangeListener(listener, this.applicationContext, this)
+        primaryColor.value = Color(primaryColor())
+        accentColor.value = Color(accentColor())
 
         super.onCreate(savedInstanceState)
 
@@ -37,32 +39,19 @@ abstract class ComposeThemeActivity : MultiLanguageActivity() {
             }
         }
 
+        lifecycleScope.launch {
+            observeThemeColors(this@ComposeThemeActivity) { primary, accent ->
+                primaryColor.value = Color(primary)
+                accentColor.value = Color(accent)
+            }
+        }
+
     }
 
     private fun onUpdatePrimaryColor(newPrimaryColor: Int) {
         val darkenPrimaryColor = darkenColor(newPrimaryColor)
-        setStatusbarColor(darkenPrimaryColor, R.id.status_bar)
-        adjustStatusbarText(darkenPrimaryColor)
-        if (ThemeColor.coloredNavigationBar(this)) setNavigationBarColor(newPrimaryColor)
+        updateStatusbarColor(darkenPrimaryColor)
+        updateNavigationbarColor(darkenPrimaryColor)
+        updateTaskDescriptionColor(darkenPrimaryColor)
     }
-
-    private val listener = object : ThemeColor.ThemePreferenceChangeListener {
-
-        override fun onAccentColorChanged(newColor: Int) {
-            accentColor.value = Color(newColor)
-        }
-
-        override fun onPrimaryColorChanged(newColor: Int) {
-            primaryColor.value = Color(newColor)
-        }
-
-        override fun onNavigationBarTintSettingChanged(coloredNavigationBar: Boolean) {
-        }
-
-        override fun onStatusBarTintSettingChanged(coloredStatusBar: Boolean) {
-        }
-
-    }
-
-
 }

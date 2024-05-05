@@ -4,12 +4,14 @@
 
 package player.phonograph.settings
 
+import lib.phonograph.misc.MonetColor
 import player.phonograph.model.SongClickMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.ItemLayoutStyle
+import util.theme.materials.MaterialColor
 import androidx.datastore.preferences.core.booleanPreferencesKey as booleanPK
 import androidx.datastore.preferences.core.intPreferencesKey as intPK
 import androidx.datastore.preferences.core.longPreferencesKey as longPK
@@ -22,6 +24,9 @@ import androidx.datastore.preferences.core.stringPreferencesKey as stringPK
 object Keys {
 
     // Appearance
+    object theme :
+            PrimitiveKey<String>(stringPK(THEME), { THEME_AUTO })
+
     object homeTabConfigJsonString :
             PrimitiveKey<String>(stringPK(HOME_TAB_CONFIG), { "" })
 
@@ -30,6 +35,28 @@ object Keys {
 
     object fixedTabLayout :
             PrimitiveKey<Boolean>(booleanPK(FIXED_TAB_LAYOUT), { false })
+
+    object coloredStatusbar :
+            PrimitiveKey<Boolean>(booleanPK(COLORED_STATUSBAR), { true })
+
+    object coloredNavigationBar :
+            PrimitiveKey<Boolean>(booleanPK(COLORED_NAVIGATION_BAR), { false })
+
+    object selectedPrimaryColor :
+            PrimitiveKey<Int>(intPK(SELECTED_PRIMARY_COLOR), { MaterialColor.Blue._A400.asColor })
+
+    object selectedAccentColor :
+            PrimitiveKey<Int>(intPK(SELECTED_ACCENT_COLOR), { MaterialColor.Yellow._900.asColor })
+
+    object enableMonet :
+            PrimitiveKey<Boolean>(booleanPK(ENABLE_MONET), { false })
+
+    object monetPalettePrimaryColor :
+            PrimitiveKey<Int>(intPK(MONET_PALETTE_PRIMARY_COLOR), { MonetColor.defaultMonetPrimaryColor.value })
+
+    object monetPaletteAccentColor :
+            PrimitiveKey<Int>(intPK(MONET_PALETTE_ACCENT_COLOR), { MonetColor.defaultMonetAccentColor.value })
+
 
     // Appearance - Notification
     object coloredNotification :

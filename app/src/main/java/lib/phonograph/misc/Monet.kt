@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2024 chr_56
  */
 
-package lib.phonograph.theme.internal
+package lib.phonograph.misc
 
 import androidx.annotation.ColorInt
 import androidx.annotation.IntDef

@@ -6,10 +6,8 @@ package player.phonograph.ui.dialogs
 
 import com.google.android.material.chip.Chip
 import lib.phonograph.dialog.LargeDialog
-import lib.phonograph.theme.ThemeColor
 import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.DialogLyricsBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelper
@@ -25,8 +23,9 @@ import player.phonograph.ui.fragments.player.LyricsViewModel
 import player.phonograph.util.reportError
 import player.phonograph.util.text.lyricsTimestamp
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.nightMode
+import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.warning
+import util.theme.color.isNightMode
 import util.theme.color.lightenColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
@@ -321,19 +320,14 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
     //region Theme& Color
 
-    private val accentColor by lazy { ThemeColor.accentColor(App.instance) }
-    private val primaryColor by lazy { ThemeColor.primaryColor(App.instance) }
-    private val textColor by lazy { App.instance.primaryTextColor(App.instance.nightMode) }
-
-
     private fun correctChipBackgroundColor(checked: Boolean) = ColorStateList.valueOf(
-        if (checked) lightenColor(primaryColor)
+        if (checked) lightenColor(primaryColor())
         else resources.getColor(R.color.footer_background, requireContext().theme)
     )
 
     private fun correctChipTextColor(checked: Boolean) = ColorStateList.valueOf(
-        if (checked) requireContext().secondaryTextColor(primaryColor)
-        else textColor
+        if (checked) requireContext().secondaryTextColor(primaryColor())
+        else requireContext().primaryTextColor(primaryColor())
     )
 
     private val backgroundCsl: ColorStateList by lazy {
@@ -343,8 +337,8 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
                 intArrayOf(android.R.attr.state_checked),
                 intArrayOf(),
             ), intArrayOf(
-                lightenColor(primaryColor),
-                lightenColor(primaryColor),
+                lightenColor(primaryColor()),
+                lightenColor(primaryColor()),
                 resources.getColor(R.color.footer_background, requireContext().theme)
             )
         )
@@ -354,7 +348,11 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
             arrayOf(
                 intArrayOf(android.R.attr.state_checked),
                 intArrayOf(),
-            ), intArrayOf(requireContext().primaryTextColor(primaryColor), textColor)
+            ),
+            intArrayOf(
+                requireContext().primaryTextColor(primaryColor()),
+                requireContext().primaryTextColor(requireContext().isNightMode())
+            )
         )
     }
     //endregion

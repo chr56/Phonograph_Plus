@@ -9,10 +9,11 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import com.github.appintro.indicator.DotIndicatorController
-import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.model.NowPlayingScreen
+import player.phonograph.settings.ThemeSetting
+import player.phonograph.util.theme.accentColor
 import player.phonograph.util.ui.convertDpToPixel
 import util.theme.color.primaryDisabledTextColor
 import androidx.fragment.app.DialogFragment
@@ -53,7 +54,7 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), OnPageChangeListener 
         )
         with(pageIndicator) {
             initialize(NowPlayingScreen.values().size)
-            selectedIndicatorColor = ThemeColor.accentColor(requireActivity())
+            selectedIndicatorColor = ThemeSetting.accentColor(requireActivity())
             unselectedIndicatorColor = requireActivity().primaryDisabledTextColor()
         }
         val viewPager: ViewPager = view.findViewById(R.id.now_playing_screen_view_pager)
@@ -71,8 +72,9 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), OnPageChangeListener 
             .negativeButton(android.R.string.cancel)
             .customView(view = view, dialogWrapContent = false)
             .apply {
-                getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
-                getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+                val accentColor = accentColor()
+                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
+                getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
             }
         return dialog
     }

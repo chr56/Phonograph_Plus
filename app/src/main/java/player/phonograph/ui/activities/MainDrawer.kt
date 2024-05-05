@@ -15,13 +15,13 @@ import player.phonograph.actions.actionPlay
 import player.phonograph.mechanism.scanner.FileScanner
 import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.mechanism.setting.PageConfig
-import player.phonograph.mechanism.setting.StyleConfig
 import player.phonograph.model.DirectoryInfo
 import player.phonograph.model.pages.Pages
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.settings.THEME_AUTO
 import player.phonograph.ui.modules.explorer.PathSelectorContractTool
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import player.phonograph.ui.modules.setting.SettingsActivity
@@ -32,6 +32,7 @@ import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.reportError
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
+import player.phonograph.util.theme.toggleTheme
 import util.theme.color.primaryTextColor
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
@@ -102,7 +103,7 @@ fun setupDrawerMenu(
 
         // normal items
         val groupIds = intArrayOf(0, 1, 2, 3)
-        if (StyleConfig.generalTheme(activity) != StyleConfig.THEME_AUTO) {
+        if (Setting(context)[Keys.theme].data != THEME_AUTO) {
             menuItem {
                 groupId = groupIds[1]
                 itemId = R.id.action_theme_toggle
@@ -111,7 +112,7 @@ fun setupDrawerMenu(
                 onClick {
                     Handler(Looper.getMainLooper()).postDelayed(
                         {
-                            val result = StyleConfig.toggleTheme(activity)
+                            val result = toggleTheme(activity)
                             if (result) recreate()
                         }, 150
                     )

@@ -4,22 +4,25 @@
 
 package player.phonograph.ui.compose
 
-import lib.phonograph.theme.ThemeColor
 import player.phonograph.App
-import player.phonograph.mechanism.setting.StyleConfig
-import player.phonograph.mechanism.setting.StyleConfig.THEME_AUTO
-import player.phonograph.mechanism.setting.StyleConfig.THEME_BLACK
-import player.phonograph.mechanism.setting.StyleConfig.THEME_DARK
-import player.phonograph.mechanism.setting.StyleConfig.THEME_LIGHT
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
+import player.phonograph.settings.ThemeSetting
+import player.phonograph.settings.THEME_AUTO
+import player.phonograph.settings.THEME_BLACK
+import player.phonograph.settings.THEME_DARK
+import player.phonograph.settings.THEME_LIGHT
 import player.phonograph.util.theme.systemDarkmode
 import util.theme.color.shiftColor
-import util.theme.materials.R
+import util.theme.materials.MaterialColor
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Shapes
 import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -34,7 +37,8 @@ import android.content.Context
 fun PhonographTheme(content: @Composable () -> Unit) {
 
     val previewMode = LocalInspectionMode.current
-    val colors = when (StyleConfig.generalTheme(LocalContext.current)) {
+    val theme by Setting(LocalContext.current)[Keys.theme].flow.collectAsState(THEME_AUTO)
+    val colors = when (theme) {
         THEME_AUTO  -> colorAuto(previewMode, LocalContext.current)
         THEME_DARK  -> colorsDark(previewMode)
         THEME_BLACK -> colorsBlack(previewMode)
@@ -50,7 +54,8 @@ fun PhonographTheme(content: @Composable () -> Unit) {
 @Composable
 fun PhonographTheme(primary: Color?, content: @Composable () -> Unit) {
     val previewMode = LocalInspectionMode.current
-    val colors = when (StyleConfig.generalTheme(LocalContext.current)) {
+    val theme by Setting(LocalContext.current)[Keys.theme].flow.collectAsState(THEME_AUTO)
+    val colors = when (theme) {
         THEME_AUTO  -> colorAuto(previewMode, LocalContext.current)
         THEME_DARK  -> colorsDark(previewMode)
         THEME_BLACK -> colorsBlack(previewMode)
@@ -167,14 +172,14 @@ class ColorConfig(
 fun colorConfig(previewMode: Boolean, context: Context = App.instance): ColorConfig =
     if (previewMode) {
         ColorConfig(
-            Color(R.color.md_blue_A400),
-            Color(R.color.md_blue_900),
-            Color(R.color.md_yellow_900),
-            Color(R.color.md_orange_900),
+            Color(MaterialColor.Blue._A400.asColor),
+            Color(MaterialColor.Blue._900.asColor),
+            Color(MaterialColor.Yellow._900.asColor),
+            Color(MaterialColor.Orange._900.asColor),
         )
     } else {
-        val primary = ThemeColor.primaryColor(context)
-        val accent = ThemeColor.accentColor(context)
+        val primary = ThemeSetting.primaryColor(context)
+        val accent = ThemeSetting.accentColor(context)
         ColorConfig(
             Color(primary),
             Color(shiftColor(primary, 0.8f)),

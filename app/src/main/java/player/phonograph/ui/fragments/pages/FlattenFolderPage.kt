@@ -7,8 +7,6 @@ package player.phonograph.ui.fragments.pages
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.google.android.material.appbar.AppBarLayout
-import lib.phonograph.theme.ThemeColor
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.actions.actionPlay
 import player.phonograph.databinding.FragmentDisplayPageBinding
@@ -22,6 +20,7 @@ import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.adapter.SongCollectionDisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
+import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
@@ -96,7 +95,7 @@ class FlattenFolderPage : AbsPage() {
             it.layoutManager = linearLayoutManager
         }
         binding.refreshContainer.apply {
-            setColorSchemeColors(ThemeColor.accentColor(requireContext()))
+            setColorSchemeColors(accentColor())
             setDistanceToTriggerSync(480)
             setProgressViewOffset(false, 10, 120)
             setOnRefreshListener {
@@ -267,7 +266,7 @@ class FlattenFolderPage : AbsPage() {
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(
             mainFragment.mainActivity,
-            ThemeColor.accentColor(App.instance.applicationContext)
+            accentColor()
         )
         binding.recyclerView.layoutManager = linearLayoutManager
         binding.recyclerView.adapter = songCollectionDisplayAdapter

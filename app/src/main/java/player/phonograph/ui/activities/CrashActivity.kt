@@ -61,8 +61,8 @@ class CrashActivity : ToolbarActivity() {
 
 
     private fun setupTheme() {
-        // statusbar theme
-        updateAllColors(colorPrimaryDeep)
+        // System UI
+        updateSystemUIColors(colorPrimaryDeep)
 
         // toolbar theme
         binding.toolbar.apply {

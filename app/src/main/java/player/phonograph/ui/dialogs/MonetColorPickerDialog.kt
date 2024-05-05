@@ -9,8 +9,10 @@ import com.vanpra.composematerialdialogs.customView
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import lib.phonograph.misc.ColorPalette
-import lib.phonograph.theme.ThemeColor
+import lib.phonograph.misc.MonetColor
 import player.phonograph.R
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.MonetColorPicker
@@ -88,11 +90,10 @@ private fun MonetColorPickerDialogContent(
     val context = LocalContext.current
     MonetColorPicker { type: Int, depth: Int ->
         context.lifecycleScopeOrNewOne().launch {
-            ThemeColor.edit(context) {
-                when (mode) {
-                    ColorPalette.MODE_MONET_PRIMARY_COLOR -> preferredMonetPrimaryColor(type, depth)
-                    ColorPalette.MODE_MONET_ACCENT_COLOR  -> preferredMonetAccentColor(type, depth)
-                }
+            val palette = MonetColor.MonetColorPalette(type, depth)
+            when (mode) {
+                ColorPalette.MODE_MONET_PRIMARY_COLOR -> Setting(context)[Keys.monetPalettePrimaryColor].edit { palette.value }
+                ColorPalette.MODE_MONET_ACCENT_COLOR  -> Setting(context)[Keys.monetPaletteAccentColor].edit { palette.value }
             }
             onDismiss()
             (context as? Activity)?.recreate()

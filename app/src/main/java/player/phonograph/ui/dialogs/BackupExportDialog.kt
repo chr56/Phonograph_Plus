@@ -8,7 +8,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
-import lib.phonograph.theme.ThemeColor
 import lib.storage.launcher.ICreateFileStorageAccessible
 import player.phonograph.R
 import player.phonograph.mechanism.backup.ALL_BACKUP_CONFIG
@@ -17,6 +16,7 @@ import player.phonograph.mechanism.backup.ENABLE_BACKUP_CONFIG
 import player.phonograph.util.reportError
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffixCompat
+import player.phonograph.util.theme.accentColor
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
@@ -80,9 +80,9 @@ class BackupExportDialog : DialogFragment() {
             }
             .negativeButton(android.R.string.cancel) { it.dismiss() }
             .apply {
-                val color = ThemeColor.accentColor(requireActivity())
-                getActionButton(WhichButton.POSITIVE).updateTextColor(color)
-                getActionButton(WhichButton.NEGATIVE).updateTextColor(color)
+                val accentColor = accentColor()
+                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
+                getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
             }
 
         return dialog

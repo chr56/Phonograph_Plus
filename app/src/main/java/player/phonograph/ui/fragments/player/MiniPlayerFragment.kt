@@ -1,6 +1,5 @@
 package player.phonograph.ui.fragments.player
 
-import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.databinding.FragmentMiniPlayerBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
@@ -10,6 +9,7 @@ import player.phonograph.service.player.currentState
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
+import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.nightMode
 import util.theme.color.secondaryTextColor
 import util.theme.internal.resolveColor
@@ -63,7 +63,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
 
     private fun setUpMiniPlayer() {
         setUpPlayPauseButton()
-        binding.progressIndicator.setIndicatorColor(ThemeColor.accentColor(requireContext()))
+        binding.progressIndicator.setIndicatorColor(accentColor())
     }
 
     private fun setUpPlayPauseButton() {

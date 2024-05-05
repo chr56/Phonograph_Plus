@@ -8,11 +8,11 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
-import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.PageConfig
 import player.phonograph.model.pages.Pages
+import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.adapter.SortableListAdapter
 import player.phonograph.util.warning
 import androidx.fragment.app.DialogFragment
@@ -71,7 +71,7 @@ class HomeTabConfigDialog : DialogFragment() {
             }
             .apply {
                 // set button color
-                val color = ThemeColor.accentColor(requireActivity())
+                val color = ThemeSetting.accentColor(requireActivity())
                 getActionButton(WhichButton.POSITIVE).updateTextColor(color)
                 getActionButton(WhichButton.NEGATIVE).updateTextColor(color)
                 getActionButton(WhichButton.NEUTRAL).updateTextColor(color)

@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.activities
 
-import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
@@ -14,6 +13,7 @@ import player.phonograph.model.Song
 import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.loader.Songs
+import player.phonograph.settings.ThemeSetting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -47,7 +47,7 @@ class ArtistDetailActivityViewModel(var artistId: Long) : ViewModel() {
     }
 
     fun loadArtistImage(context: Context, artist: Artist, imageView: ImageView) {
-        val defaultColor = ThemeColor.primaryColor(context)
+        val defaultColor = ThemeSetting.primaryColor(context)
         loadImage(context)
             .from(artist)
             .into(

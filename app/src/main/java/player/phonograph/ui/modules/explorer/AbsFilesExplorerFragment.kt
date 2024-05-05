@@ -5,11 +5,11 @@
 package player.phonograph.ui.modules.explorer
 
 import com.google.android.material.snackbar.Snackbar
-import lib.phonograph.theme.ThemeColor
 import lib.storage.root
 import player.phonograph.R
 import player.phonograph.databinding.FragmentFileExploreBinding
 import player.phonograph.model.file.Location
+import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
@@ -66,9 +66,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val accentColor = ThemeColor.accentColor(requireContext())
-
+        val accentColor = accentColor()
         setupObservers()
 
         // Back press

@@ -3,7 +3,6 @@ package player.phonograph.ui.activities
 import de.psdev.licensesdialog.LicensesDialog
 import lib.phonograph.activity.ToolbarActivity
 import lib.phonograph.misc.NoticesProcessor
-import lib.phonograph.theme.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.ActivityAboutBinding
@@ -116,7 +115,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         mToolbar.setBackgroundColor(primaryColor)
         setSupportActionBar(mToolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        setToolbarColor(mToolbar, ThemeColor.primaryColor(this))
+        setToolbarColor(mToolbar, primaryColor)
     }
 
     @Keep

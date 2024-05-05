@@ -1,7 +1,6 @@
 package player.phonograph.ui.activities
 
 import lib.phonograph.misc.menuProvider
-import lib.phonograph.theme.ThemeColor
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
@@ -19,9 +18,8 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
-import util.theme.activity.adjustStatusbarText
-import util.theme.activity.setNavigationBarColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import util.theme.view.menu.tintMenuActionIcons
@@ -64,7 +62,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         setSupportActionBar(viewBinding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
-        setToolbarColor(viewBinding.toolbar, ThemeColor.primaryColor(this))
+        setToolbarColor(viewBinding.toolbar, primaryColor())
 
         // content
         setUpViews()
@@ -128,13 +126,11 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
     private fun updateColors(color: Int) {
         viewBinding.recyclerView.setUpFastScrollRecyclerViewColor(this, color)
         viewBinding.header.setBackgroundColor(color)
-        if (ThemeColor.coloredNavigationBar(this)) setNavigationBarColor(color)
-        setTaskDescriptionColor(color)
 
 
         viewBinding.toolbar.setBackgroundColor(color)
         setSupportActionBar(viewBinding.toolbar) // needed to auto readjust the toolbar content color
-        setStatusbarColor(color)
+        updateSystemUIColors(color)
         setToolbarColor(viewBinding.toolbar, color)
 
         val secondaryTextColor = secondaryTextColor(color)
@@ -187,11 +183,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         override fun onMediaStoreChanged() {
             model.loadDataSet(this@AlbumDetailActivity)
         }
-    }
-
-    override fun setStatusbarColor(color: Int) {
-        super.setStatusbarColor(color)
-        adjustStatusbarText(false)
     }
 
     companion object {

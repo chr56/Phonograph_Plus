@@ -5,8 +5,10 @@
 package player.phonograph.mechanism.migrate
 
 import player.phonograph.coil.CustomArtistImageStore
+import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSetting
-import player.phonograph.settings.dataStore
+import player.phonograph.settings.PrimitiveKey
+import player.phonograph.settings.Setting
 import player.phonograph.util.debug
 import player.phonograph.util.file.moveFile
 import player.phonograph.util.reportError
@@ -16,11 +18,14 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.preference.PreferenceManager
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FilenameFilter
@@ -47,6 +52,8 @@ fun migrate(context: Context, from: Int, to: Int) {
             migrate(AutoDownloadMetadataMigration())
             migrate(LegacyLastAddedCutoffIntervalMigration())
             migrate(CustomArtistImageStoreMigration())
+            migrate(ThemeStoreMigration())
+            migrate(GeneralThemeMigration())
         }
 
         Log.i(TAG, "End Migration")
@@ -131,6 +138,105 @@ private class CustomArtistImageStoreMigration : Migration(introduced = 1053) {
 }
 
 
+private class ThemeStoreMigration : Migration(introduced = 1064) {
+    @SuppressLint("ApplySharedPref")
+    override fun doMigrate(context: Context) {
+        @Suppress("LocalVariableName")
+        val Old = DeprecatedPreference.ThemeColorKeys
+        val pref = context.getSharedPreferences(
+            Old.THEME_CONFIG_PREFERENCE_NAME,
+            Context.MODE_PRIVATE
+        )
+        CoroutineScope(Dispatchers.IO).launch {
+            if (pref.getBoolean(Old.KEY_IS_CONFIGURED, false)) {
+                with(context) {
+                    migrateIntPreferenceToDataStore(pref, Old.KEY_PRIMARY_COLOR, Keys.selectedPrimaryColor)
+                    migrateIntPreferenceToDataStore(pref, Old.KEY_ACCENT_COLOR, Keys.selectedAccentColor)
+                    migrateIntPreferenceToDataStore(pref, Old.KEY_MONET_PRIMARY_COLOR, Keys.monetPalettePrimaryColor)
+                    migrateIntPreferenceToDataStore(pref, Old.KEY_MONET_ACCENT_COLOR, Keys.monetPaletteAccentColor)
+                    migrateBooleanPreferenceToDataStore(pref, Old.KEY_COLORED_NAVIGATION_BAR, Keys.coloredNavigationBar)
+                    migrateBooleanPreferenceToDataStore(pref, Old.KEY_ENABLE_MONET, Keys.enableMonet)
+                }
+            }
+            pref.edit().clear().commit()
+            delay(100)
+            deleteSharedPreferences(context, Old.THEME_CONFIG_PREFERENCE_NAME)
+        }
+    }
+}
+
+private class GeneralThemeMigration : Migration(introduced = 1064) {
+    @SuppressLint("ApplySharedPref")
+    override fun doMigrate(context: Context) {
+        @Suppress("LocalVariableName")
+        val Old = DeprecatedPreference.StyleConfigKeys
+        val pref = context.getSharedPreferences(
+            Old.PREFERENCE_NAME,
+            Context.MODE_PRIVATE
+        )
+        CoroutineScope(Dispatchers.IO).launch {
+            context.migrateStringPreferenceToDataStore(pref, Old.KEY_THEME, Keys.theme)
+            pref.edit().clear().commit()
+            delay(100)
+            deleteSharedPreferences(context, Old.PREFERENCE_NAME)
+        }
+    }
+}
+
+fun deleteSharedPreferences(context: Context, fileName: String) {
+    val sharedPreferencesFile = File(context.applicationInfo.dataDir + "/shared_prefs/" + fileName + ".xml")
+    if (sharedPreferencesFile.exists()) {
+        sharedPreferencesFile.delete()
+    }
+}
+
+private suspend fun Context.migrateIntPreferenceToDataStore(
+    oldPreference: SharedPreferences,
+    oldKeyName: String,
+    newKeyName: PrimitiveKey<Int>,
+) {
+    try {
+        val value = oldPreference.getInt(oldKeyName, -1)
+        if (value != -1) {
+            Setting.settingsDatastore(this).edit {
+                it[newKeyName.preferenceKey] = value
+            }
+        }
+    } catch (e: Exception) {
+        Log.e(TAG, "Failed to migrate int preference $oldKeyName", e)
+    }
+}
+
+private suspend fun Context.migrateBooleanPreferenceToDataStore(
+    oldPreference: SharedPreferences,
+    oldKeyName: String,
+    newKeyName: PrimitiveKey<Boolean>,
+) {
+    try {
+        val value = oldPreference.getBoolean(oldKeyName, false)
+        Setting.settingsDatastore(this).edit { it[newKeyName.preferenceKey] = value }
+    } catch (e: Exception) {
+        Log.e(TAG, "Failed to migrate bool preference $oldKeyName", e)
+    }
+}
+
+private suspend fun Context.migrateStringPreferenceToDataStore(
+    oldPreference: SharedPreferences,
+    oldKeyName: String,
+    newKeyName: PrimitiveKey<String>,
+) {
+    try {
+        val value = oldPreference.getString(oldKeyName, null)
+        if (value != null) {
+            Setting.settingsDatastore(this).edit {
+                it[newKeyName.preferenceKey] = value
+            }
+        }
+    } catch (e: Exception) {
+        Log.e(TAG, "Failed to migrate int preference $oldKeyName", e)
+    }
+}
+
 private fun moveIntPreference(
     oldPreference: SharedPreferences,
     oldKeyName: String,
@@ -153,7 +259,7 @@ private fun removePreference(context: Context, keyName: String) {
     var exception: Exception? = null
     try {
         CoroutineScope(SupervisorJob()).launch {
-            context.dataStore.edit {
+            Setting.settingsDatastore(context).edit {
                 val booleanKey = booleanPreferencesKey(keyName)
                 val stringKey = stringPreferencesKey(keyName)
                 val intKey = intPreferencesKey(keyName)
@@ -252,5 +358,26 @@ object DeprecatedPreference {
         const val INTERVAL_THIS_WEEK = "this_week"
         const val INTERVAL_THIS_MONTH = "this_month"
         const val INTERVAL_THIS_YEAR = "this_year"
+    }
+
+    // "migrate to datastore since version code 1064"
+    object ThemeColorKeys {
+        const val THEME_CONFIG_PREFERENCE_NAME = "theme_color_cfg"
+        const val KEY_IS_CONFIGURED = "is_configured"
+        const val KEY_VERSION = "is_configured_version"
+        const val KEY_LAST_EDIT_TIME = "values_changed"
+        const val KEY_PRIMARY_COLOR = "primary_color"
+        const val KEY_ACCENT_COLOR = "accent_color"
+        const val KEY_COLORED_STATUSBAR = "apply_primarydark_statusbar"
+        const val KEY_COLORED_NAVIGATION_BAR = "apply_primary_navbar"
+        const val KEY_ENABLE_MONET = "enable_monet"
+        const val KEY_MONET_PRIMARY_COLOR = "monet_primary_color"
+        const val KEY_MONET_ACCENT_COLOR = "monet_accent_color"
+    }
+
+    // "migrate to datastore since version code 1064"
+    object StyleConfigKeys {
+        const val PREFERENCE_NAME = "style_config"
+        const val KEY_THEME = "theme"
     }
 }

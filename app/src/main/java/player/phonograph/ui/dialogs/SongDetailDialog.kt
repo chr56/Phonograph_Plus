@@ -9,7 +9,6 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
-import lib.phonograph.theme.ThemeColor.accentColor
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
@@ -30,6 +29,7 @@ import player.phonograph.model.getFileSizeString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.util.parcelable
 import player.phonograph.util.reportError
+import player.phonograph.util.theme.accentColor
 import androidx.fragment.app.DialogFragment
 import android.app.Activity
 import android.app.Dialog
@@ -58,7 +58,7 @@ class SongDetailDialog : DialogFragment() {
                 horizontalPadding = true,
                 scrollable = true
             ).apply {
-                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(context))
+                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor())
             }
 
         val dialogView: View = dialog.getCustomView()

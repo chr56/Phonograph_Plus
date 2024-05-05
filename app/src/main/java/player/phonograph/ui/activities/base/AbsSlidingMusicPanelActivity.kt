@@ -2,7 +2,6 @@ package player.phonograph.ui.activities.base
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
-import lib.phonograph.theme.ThemeColor
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
@@ -16,7 +15,9 @@ import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.MiniPlayerFragment
 import player.phonograph.ui.fragments.player.card.CardPlayerFragment
 import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment
-import util.theme.activity.setNavigationBarColor
+import player.phonograph.util.theme.updateNavigationbarColor
+import player.phonograph.util.theme.updateStatusbarColor
+import player.phonograph.util.theme.updateTaskDescriptionColor
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
@@ -30,7 +31,6 @@ import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import util.theme.activity.setTaskDescriptionColor as setTaskDescriptionColorExt
 
 /**
  *
@@ -117,12 +117,18 @@ abstract class AbsSlidingMusicPanelActivity :
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.highlightColor.collect { color ->
                     if (panelState == PanelState.EXPANDED) {
-                        animateThemeColorChange(viewModel.previousHighlightColor.value, color) { animation ->
-                            setStatusbarColor(
-                                if (viewModel.transparentStatusbar) Color.TRANSPARENT else animation.animatedValue as Int
-                            )
-                            if (ThemeColor.coloredNavigationBar(this@AbsSlidingMusicPanelActivity))
-                                setNavigationBarColor(animation.animatedValue as Int)
+                        animateThemeColorChange(
+                            viewModel.previousHighlightColor.value,
+                            actualStatusbarColor(viewModel.highlightColor.value)
+                        ) { animator ->
+                            updateStatusbarColor(animator.animatedValue as Int)
+                        }
+                        animateThemeColorChange(
+                            viewModel.previousHighlightColor.value,
+                            color
+                        ) { animator ->
+                            updateNavigationbarColor(animator.animatedValue as Int)
+                            updateTaskDescriptionColor(animator.animatedValue as Int)
                         }
                     }
                 }
@@ -174,11 +180,17 @@ abstract class AbsSlidingMusicPanelActivity :
             argbEvaluator.evaluate(
                 slideOffset,
                 viewModel.activityColor.value,
-                if (viewModel.transparentStatusbar) Color.TRANSPARENT else viewModel.highlightColor.value
+                viewModel.highlightColor.value
             ) as Int
-        setStatusbarColor(color)
-        if (ThemeColor.coloredNavigationBar(this@AbsSlidingMusicPanelActivity))
-            setNavigationBarColor(color)
+        updateNavigationbarColor(color)
+        updateTaskDescriptionColor(color)
+        val statusbarColor: Int =
+            argbEvaluator.evaluate(
+                slideOffset,
+                viewModel.activityColor.value,
+                actualStatusbarColor(viewModel.highlightColor.value)
+            ) as Int
+        updateStatusbarColor(statusbarColor)
     }
 
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
@@ -254,15 +266,12 @@ abstract class AbsSlidingMusicPanelActivity :
         }
     }
 
-    fun setTaskDescriptionColor(@ColorInt color: Int) =
-        when (panelState) {
-            PanelState.EXPANDED -> setTaskDescriptionColorExt(viewModel.highlightColor.value)
-            else                -> setTaskDescriptionColorExt(color)
-        }
-
     fun setAntiDragView(antiDragView: View?) {
         slidingUpPanelLayout?.setAntiDragView(antiDragView)
     }
+
+    private fun actualStatusbarColor(@ColorInt color: Int): Int =
+        if (playerFragment is CardPlayerFragment) Color.TRANSPARENT else color
 
     override val snackBarContainer: View get() = findViewById(R.id.content_container)
 

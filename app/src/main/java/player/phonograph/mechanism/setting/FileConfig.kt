@@ -6,7 +6,7 @@ package player.phonograph.mechanism.setting
 
 import player.phonograph.App
 import player.phonograph.model.file.defaultStartDirectory
-import player.phonograph.settings.dataStore
+import player.phonograph.settings.Setting
 import player.phonograph.util.file.safeGetCanonicalPath
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -24,11 +24,11 @@ object FileConfig {
     private var startDirectoryPath: String
         get() =
             runBlocking {
-                App.instance.dataStore.data.first()[stringPreferencesKey(START_DIRECTORY)] ?: defaultStartDirectory.path
+                Setting.settingsDatastore(App.instance).data.first()[stringPreferencesKey(START_DIRECTORY)] ?: defaultStartDirectory.path
             }
         set(value) {
             runBlocking {
-                App.instance.dataStore.edit {
+                Setting.settingsDatastore(App.instance).edit {
                     it[stringPreferencesKey(START_DIRECTORY)] = value
                 }
             }

@@ -5,13 +5,13 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import lib.phonograph.localization.LocalizationStore
-import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.reportError
 import player.phonograph.util.text.changelogCSS
 import player.phonograph.util.text.changelogHTML
+import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.nightMode
 import util.theme.internal.resolveColor
 import androidx.fragment.app.DialogFragment
@@ -55,9 +55,8 @@ class ChangelogDialog : DialogFragment() {
                 PrerequisiteSetting.instance(context).lastChangelogVersion = currentVersionCode(context)
             }
             .apply {
-                getActionButton(WhichButton.POSITIVE).updateTextColor(
-                    ThemeColor.accentColor(requireActivity())
-                )
+                val accentColor = accentColor()
+                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
             }
 
         val webView = customView.findViewById<WebView>(R.id.web_view)
@@ -76,10 +75,7 @@ class ChangelogDialog : DialogFragment() {
                 }
             }
 
-            val changeLog = generateChangelogHTML(
-                content,
-                ThemeColor.accentColor(requireContext())
-            )
+            val changeLog = generateChangelogHTML(content, accentColor())
 
             webView.loadData(changeLog, "text/html", "UTF-8")
         } catch (e: Throwable) {

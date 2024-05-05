@@ -3,7 +3,6 @@ package player.phonograph.ui.activities
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import lib.phonograph.misc.menuProvider
-import lib.phonograph.theme.ThemeColor
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.App
@@ -26,8 +25,6 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.theme.getTintedDrawable
-import util.theme.activity.adjustStatusbarText
-import util.theme.activity.setNavigationBarColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import util.theme.color.toolbarTitleColor
@@ -161,14 +158,12 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
 
     private fun setColors(color: Int) {
         viewBinding.header.setBackgroundColor(color)
-        if (ThemeColor.coloredNavigationBar(this)) setNavigationBarColor(color)
-        setTaskDescriptionColor(color)
 
         setSupportActionBar(viewBinding.toolbar) // needed to auto readjust the toolbar content color
         setToolbarColor(viewBinding.toolbar, color)
         viewBinding.toolbar.setTitleTextColor(toolbarTitleColor(this, color))
 
-        setStatusbarColor(color)
+        updateSystemUIColors(color)
         val secondaryTextColor = secondaryTextColor(color)
         viewBinding.durationIcon.setImageDrawable(
             getTintedDrawable(R.drawable.ic_timer_white_24dp, secondaryTextColor)
@@ -192,7 +187,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         supportActionBar?.title = null
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
-        setToolbarColor(viewBinding.toolbar, ThemeColor.primaryColor(this))
+        setToolbarColor(viewBinding.toolbar, primaryColor)
     }
 
     private fun setupMenu(menu: Menu) {
@@ -222,11 +217,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         override fun onMediaStoreChanged() {
             model.load(this@ArtistDetailActivity)
         }
-    }
-
-    override fun setStatusbarColor(color: Int) {
-        super.setStatusbarColor(color)
-        adjustStatusbarText(false)
     }
 
     private suspend fun updateArtistInfo(artist: Artist) {

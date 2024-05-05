@@ -5,7 +5,6 @@
 package player.phonograph.ui.dialogs
 
 import com.triggertrap.seekarc.SeekArc
-import lib.phonograph.theme.ThemeColor.accentColor
 import lib.phonograph.view.CheckBoxX
 import player.phonograph.App
 import player.phonograph.R
@@ -14,6 +13,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.util.SleepTimer
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.util.theme.accentColor
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import android.app.Dialog
@@ -50,6 +50,7 @@ class SleepTimerDialog : DialogFragment() {
                 timerUpdater = TimerUpdater()
                 it.setOnShowListener { alterDialog ->
                     alterDialog as AlertDialog
+                    val accentColor = accentColor()
                     alterDialog.getButton(DialogInterface.BUTTON_POSITIVE)?.setTextColor(accentColor)
                     alterDialog.getButton(DialogInterface.BUTTON_NEGATIVE)?.setTextColor(accentColor)
 
@@ -113,8 +114,8 @@ class SleepTimerDialog : DialogFragment() {
         val seekArc: SeekArc = alertDialog.findViewById(R.id.seek_arc)!!
 
         // init views : set seekArc color, size and progress
-        seekArc.progressColor = accentColor
-        seekArc.setThumbColor(accentColor)
+        seekArc.progressColor = accentColor()
+        seekArc.setThumbColor(accentColor())
         seekArc.post {
             val width = seekArc.width
             val height = seekArc.height
@@ -181,6 +182,4 @@ class SleepTimerDialog : DialogFragment() {
             dialog.getButton(DialogInterface.BUTTON_NEGATIVE)?.text = text
         }
     }
-
-    val accentColor get() = accentColor(requireContext())
 }

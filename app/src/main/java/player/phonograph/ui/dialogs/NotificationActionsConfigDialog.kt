@@ -8,12 +8,12 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
-import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.databinding.ItemRightCheckboxBinding
 import player.phonograph.mechanism.setting.NotificationAction
 import player.phonograph.mechanism.setting.NotificationActionsConfig
 import player.phonograph.mechanism.setting.NotificationConfig
+import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.adapter.SortableListAdapter
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -71,7 +71,7 @@ class NotificationActionsConfigDialog : DialogFragment() {
                 dismiss()
             }
             .apply {
-                val color = ThemeColor.accentColor(requireContext())
+                val color = ThemeSetting.accentColor(requireContext())
                 getActionButton(WhichButton.POSITIVE).updateTextColor(color)
                 getActionButton(WhichButton.NEGATIVE).updateTextColor(color)
                 getActionButton(WhichButton.NEUTRAL).updateTextColor(color)
