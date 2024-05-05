@@ -24,6 +24,9 @@ import androidx.datastore.preferences.core.stringPreferencesKey as stringPK
 object Keys {
 
     // Appearance
+    object theme :
+            PrimitiveKey<String>(stringPK(THEME), { ThemeSetting.THEME_AUTO })
+
     object homeTabConfigJsonString :
             PrimitiveKey<String>(stringPK(HOME_TAB_CONFIG), { "" })
 

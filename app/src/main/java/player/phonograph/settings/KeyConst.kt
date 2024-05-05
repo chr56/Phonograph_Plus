@@ -4,10 +4,14 @@
 
 package player.phonograph.settings
 
+import androidx.annotation.StringDef
+
 
 //region Keys
 
 // Appearance
+const val THEME = "theme"
+
 const val HOME_TAB_CONFIG = "home_tab_config"
 const val COLORED_APP_SHORTCUTS = "colored_app_shortcuts"
 const val FIXED_TAB_LAYOUT = "fixed_tab_layout"
@@ -132,4 +136,13 @@ const val IGNORE_MEDIA_STORE_ARTWORK = "ignore_media_store_artwork"
 const val PLAYLIST_OPS_BEHAVIOUR_AUTO = "auto"
 const val PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF = "force_saf"
 const val PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY = "force_legacy"
+// Theme
+const val THEME_AUTO = "auto"
+const val THEME_DARK = "dark"
+const val THEME_BLACK = "black"
+const val THEME_LIGHT = "light"
+
+@StringDef(THEME_AUTO, THEME_DARK, THEME_BLACK, THEME_LIGHT)
+@Retention(AnnotationRetention.SOURCE)
+annotation class GeneralTheme
 //endregion

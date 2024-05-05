@@ -5,8 +5,10 @@
 package player.phonograph.settings
 
 import lib.phonograph.misc.MonetColor
+import player.phonograph.R
 import androidx.annotation.CheckResult
 import androidx.annotation.ColorInt
+import androidx.annotation.StyleRes
 import android.content.Context
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
@@ -15,6 +17,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 object ThemeSetting {
+
+    @CheckResult
+    @StyleRes
+    fun themeStyle(context: Context): Int =
+        parseToStyleRes(Setting(context)[Keys.theme].data)
 
     @CheckResult
     @ColorInt
@@ -126,4 +133,13 @@ object ThemeSetting {
     @ColorInt
     fun Context.accentColor(): Int = accentColor(this)
 
+    @StyleRes
+    private fun parseToStyleRes(@GeneralTheme theme: String): Int =
+        when (theme) {
+            THEME_AUTO  -> R.style.Theme_Phonograph_Auto
+            THEME_DARK  -> R.style.Theme_Phonograph_Dark
+            THEME_BLACK -> R.style.Theme_Phonograph_Black
+            THEME_LIGHT -> R.style.Theme_Phonograph_Light
+            else        -> R.style.Theme_Phonograph_Auto
+        }
 }
