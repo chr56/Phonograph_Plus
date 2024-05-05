@@ -53,6 +53,7 @@ fun migrate(context: Context, from: Int, to: Int) {
             migrate(LegacyLastAddedCutoffIntervalMigration())
             migrate(CustomArtistImageStoreMigration())
             migrate(ThemeStoreMigration())
+            migrate(GeneralThemeMigration())
         }
 
         Log.i(TAG, "End Migration")
@@ -160,6 +161,24 @@ private class ThemeStoreMigration : Migration(introduced = 1064) {
             pref.edit().clear().commit()
             delay(100)
             deleteSharedPreferences(context, Old.THEME_CONFIG_PREFERENCE_NAME)
+        }
+    }
+}
+
+private class GeneralThemeMigration : Migration(introduced = 1064) {
+    @SuppressLint("ApplySharedPref")
+    override fun doMigrate(context: Context) {
+        @Suppress("LocalVariableName")
+        val Old = DeprecatedPreference.StyleConfigKeys
+        val pref = context.getSharedPreferences(
+            Old.PREFERENCE_NAME,
+            Context.MODE_PRIVATE
+        )
+        CoroutineScope(Dispatchers.IO).launch {
+            context.migrateStringPreferenceToDataStore(pref, Old.KEY_THEME, Keys.theme)
+            pref.edit().clear().commit()
+            delay(100)
+            deleteSharedPreferences(context, Old.PREFERENCE_NAME)
         }
     }
 }
@@ -354,5 +373,11 @@ object DeprecatedPreference {
         const val KEY_ENABLE_MONET = "enable_monet"
         const val KEY_MONET_PRIMARY_COLOR = "monet_primary_color"
         const val KEY_MONET_ACCENT_COLOR = "monet_accent_color"
+    }
+
+    // "migrate to datastore since version code 1064"
+    object StyleConfigKeys {
+        const val PREFERENCE_NAME = "style_config"
+        const val KEY_THEME = "theme"
     }
 }
