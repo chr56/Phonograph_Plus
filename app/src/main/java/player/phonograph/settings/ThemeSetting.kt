@@ -19,18 +19,22 @@ object ThemeSetting {
     @CheckResult
     @ColorInt
     fun primaryColor(context: Context): Int =
-        if (cachedPrimaryColor <= 0) updateCachedPrimaryColor(context) else cachedPrimaryColor
+        if (!isPrimaryColorUpdated) updateCachedPrimaryColor(context) else cachedPrimaryColor
 
     @CheckResult
     @ColorInt
     fun accentColor(context: Context): Int =
-        if (cachedAccentColor <= 0) updateCachedAccentColor(context) else cachedAccentColor
+        if (!isAccentColorUpdated) updateCachedAccentColor(context) else cachedAccentColor
+
+    private var isPrimaryColorUpdated = false
+    private var isAccentColorUpdated = false
+
 
     @ColorInt
-    private var cachedPrimaryColor: Int = -1
+    private var cachedPrimaryColor: Int = 0
 
     @ColorInt
-    private var cachedAccentColor: Int = -1
+    private var cachedAccentColor: Int = 0
 
     @ColorInt
     private fun updateCachedPrimaryColor(context: Context): Int {
@@ -44,6 +48,7 @@ object ThemeSetting {
                 Setting(context)[Keys.selectedPrimaryColor].data
             }
         cachedPrimaryColor = primaryColor
+        isPrimaryColorUpdated = true
         return primaryColor
     }
 
@@ -59,6 +64,7 @@ object ThemeSetting {
                 Setting(context)[Keys.selectedAccentColor].data
             }
         cachedAccentColor = primaryColor
+        isAccentColorUpdated = true
         return primaryColor
     }
 
