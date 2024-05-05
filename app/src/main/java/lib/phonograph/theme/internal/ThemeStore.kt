@@ -4,6 +4,9 @@
 
 package lib.phonograph.theme.internal
 
+import lib.phonograph.misc.MonetColor.Depth
+import lib.phonograph.misc.MonetColor.MonetColorPalette
+import lib.phonograph.misc.MonetColor.Type
 import lib.phonograph.theme.ThemeColor
 import lib.phonograph.theme.ThemeColorKeys.KEY_ACCENT_COLOR
 import lib.phonograph.theme.ThemeColorKeys.KEY_COLORED_NAVIGATION_BAR
@@ -15,9 +18,6 @@ import lib.phonograph.theme.ThemeColorKeys.KEY_MONET_ACCENT_COLOR
 import lib.phonograph.theme.ThemeColorKeys.KEY_MONET_PRIMARY_COLOR
 import lib.phonograph.theme.ThemeColorKeys.KEY_PRIMARY_COLOR
 import lib.phonograph.theme.ThemeColorKeys.KEY_VERSION
-import lib.phonograph.theme.internal.MonetColor.Depth
-import lib.phonograph.theme.internal.MonetColor.MonetColorPalette
-import lib.phonograph.theme.internal.MonetColor.Type
 import util.theme.internal.resolveColor
 import androidx.annotation.AttrRes
 import androidx.annotation.CheckResult

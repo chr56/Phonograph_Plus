@@ -9,7 +9,7 @@ import com.vanpra.composematerialdialogs.customView
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import lib.phonograph.misc.ColorPalette
-import lib.phonograph.theme.internal.MonetColor
+import lib.phonograph.misc.MonetColor
 import player.phonograph.R
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting

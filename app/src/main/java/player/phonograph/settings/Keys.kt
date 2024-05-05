@@ -4,8 +4,7 @@
 
 package player.phonograph.settings
 
-import lib.phonograph.theme.internal.MonetColor
-import player.phonograph.App
+import lib.phonograph.misc.MonetColor
 import player.phonograph.model.SongClickMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
