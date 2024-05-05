@@ -33,11 +33,11 @@ import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.service.queue.executePlayRequest
-import player.phonograph.settings.ThemeSetting.primaryColor
 import player.phonograph.ui.components.viewcreater.buildDialogView
 import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
 import player.phonograph.ui.components.viewcreater.titlePanel
+import player.phonograph.util.theme.primaryColor
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.setMargins

@@ -17,8 +17,6 @@ import player.phonograph.mechanism.setting.PageConfig
 import player.phonograph.model.pages.Pages
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.settings.ThemeSetting.accentColor
-import player.phonograph.settings.ThemeSetting.primaryColor
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.MainDrawerViewModel
 import player.phonograph.ui.components.popup.ListOptionsPopup
@@ -27,7 +25,9 @@ import player.phonograph.ui.modules.search.SearchActivity
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
 import player.phonograph.util.reportError
+import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.primaryColor
 import util.theme.color.primaryTextColor
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources

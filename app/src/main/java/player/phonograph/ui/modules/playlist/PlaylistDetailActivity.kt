@@ -29,10 +29,10 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.totalDuration
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
-import player.phonograph.settings.ThemeSetting.primaryColor
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryDisabledTextColor

@@ -13,7 +13,7 @@ import player.phonograph.R
 import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.model.NowPlayingScreen
 import player.phonograph.settings.ThemeSetting
-import player.phonograph.settings.ThemeSetting.accentColor
+import player.phonograph.util.theme.accentColor
 import player.phonograph.util.ui.convertDpToPixel
 import util.theme.color.primaryDisabledTextColor
 import androidx.fragment.app.DialogFragment

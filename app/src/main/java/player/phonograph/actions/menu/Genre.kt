@@ -12,9 +12,9 @@ import player.phonograph.actions.actionPlayNext
 import player.phonograph.model.Genre
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.settings.ThemeSetting.primaryColor
 import player.phonograph.util.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.primaryColor
 import util.theme.color.primaryTextColor
 import android.content.Context
 import android.view.Menu

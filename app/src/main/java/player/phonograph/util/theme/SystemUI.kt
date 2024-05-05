@@ -8,7 +8,6 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.settings.ThemeSetting.primaryColor
 import util.theme.activity.setNavigationBarColor
 import util.theme.activity.setStatusbarColor
 import util.theme.activity.setTaskDescriptionColor

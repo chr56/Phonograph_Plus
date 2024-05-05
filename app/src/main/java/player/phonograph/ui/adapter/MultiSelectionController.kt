@@ -10,9 +10,9 @@ import lib.phonograph.cab.initToolbarCab
 import player.phonograph.R
 import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.misc.IPaletteColorProvider
-import player.phonograph.settings.ThemeSetting.primaryColor
 import player.phonograph.util.debug
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.primaryColor
 import util.theme.color.darkenColor
 import util.theme.color.isColorLight
 import util.theme.color.lightenColor

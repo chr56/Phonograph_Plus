@@ -8,7 +8,6 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.github.chr56.android.menu_model.MenuContext
 import com.google.android.material.appbar.AppBarLayout
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.actions.actionPlay
 import player.phonograph.databinding.FragmentDisplayPageBinding
@@ -17,13 +16,12 @@ import player.phonograph.model.Displayable
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.sort.SortMode
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.settings.ThemeSetting
-import player.phonograph.settings.ThemeSetting.accentColor
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
+import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor

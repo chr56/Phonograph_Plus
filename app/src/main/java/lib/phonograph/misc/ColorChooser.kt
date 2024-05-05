@@ -12,7 +12,7 @@ import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.settings.ThemeSetting.accentColor
+import player.phonograph.settings.ThemeSetting
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -32,7 +32,7 @@ object ColorChooser {
             ) { _, color ->
                 applyNewColor(context, color, mode)
             }
-            val accentColor = accentColor(context)
+            val accentColor = ThemeSetting.accentColor(context)
             if (SDK_INT >= S) {
                 @Suppress("DEPRECATION")
                 neutralButton(res = R.string.dynamic_colors) {

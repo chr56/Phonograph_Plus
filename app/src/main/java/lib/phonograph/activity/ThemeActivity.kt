@@ -5,9 +5,9 @@
 package lib.phonograph.activity
 
 import player.phonograph.settings.ThemeSetting
-import player.phonograph.settings.ThemeSetting.accentColor
-import player.phonograph.settings.ThemeSetting.primaryColor
+import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.nightMode
+import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.restoreNotFullsScreen
 import player.phonograph.util.theme.setFullScreenAndIncludeStatusBar
 import player.phonograph.util.theme.updateNavigationbarColor

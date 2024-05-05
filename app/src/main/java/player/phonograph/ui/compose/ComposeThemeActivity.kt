@@ -6,8 +6,8 @@ package player.phonograph.ui.compose
 
 import lib.phonograph.activity.MultiLanguageActivity
 import player.phonograph.settings.ThemeSetting
-import player.phonograph.settings.ThemeSetting.accentColor
-import player.phonograph.settings.ThemeSetting.primaryColor
+import player.phonograph.util.theme.accentColor
+import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.updateNavigationbarColor
 import player.phonograph.util.theme.updateStatusbarColor
 import player.phonograph.util.theme.updateTaskDescriptionColor

@@ -7,12 +7,11 @@ import com.afollestad.materialdialogs.customview.customView
 import lib.phonograph.localization.LocalizationStore
 import player.phonograph.R
 import player.phonograph.settings.PrerequisiteSetting
-import player.phonograph.settings.ThemeSetting
-import player.phonograph.settings.ThemeSetting.accentColor
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.reportError
 import player.phonograph.util.text.changelogCSS
 import player.phonograph.util.text.changelogHTML
+import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.nightMode
 import util.theme.internal.resolveColor
 import androidx.fragment.app.DialogFragment

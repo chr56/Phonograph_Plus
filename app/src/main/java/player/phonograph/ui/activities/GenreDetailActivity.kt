@@ -8,11 +8,11 @@ import player.phonograph.model.Genre
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
-import player.phonograph.settings.ThemeSetting.primaryColor
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.parcelable
+import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import util.theme.view.toolbar.setToolbarColor
 import androidx.lifecycle.lifecycleScope

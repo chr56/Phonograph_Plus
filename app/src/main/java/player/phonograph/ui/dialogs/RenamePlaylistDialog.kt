@@ -11,8 +11,8 @@ import com.afollestad.materialdialogs.input.input
 import player.phonograph.R
 import player.phonograph.mechanism.playlist.PlaylistEdit
 import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.settings.ThemeSetting.accentColor
 import player.phonograph.util.parcelable
+import player.phonograph.util.theme.accentColor
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import android.app.Dialog

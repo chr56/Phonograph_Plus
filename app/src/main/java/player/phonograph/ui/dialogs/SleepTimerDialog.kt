@@ -13,7 +13,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.util.SleepTimer
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.settings.ThemeSetting.accentColor
+import player.phonograph.util.theme.accentColor
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import android.app.Dialog

@@ -12,9 +12,8 @@ import lib.phonograph.misc.Reboot
 import player.phonograph.R
 import player.phonograph.mechanism.backup.Backup
 import player.phonograph.settings.PrerequisiteSetting
-import player.phonograph.settings.ThemeSetting
-import player.phonograph.settings.ThemeSetting.accentColor
 import player.phonograph.util.reportError
+import player.phonograph.util.theme.accentColor
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Lifecycle

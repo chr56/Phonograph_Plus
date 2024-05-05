@@ -16,11 +16,11 @@ import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.settings.ThemeSetting.accentColor
-import player.phonograph.settings.ThemeSetting.primaryColor
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.dialogs.CreatePlaylistDialog
 import player.phonograph.ui.fragments.pages.adapter.PlaylistDisplayAdapter
+import player.phonograph.util.theme.accentColor
+import player.phonograph.util.theme.primaryColor
 import util.theme.color.lightenColor
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager

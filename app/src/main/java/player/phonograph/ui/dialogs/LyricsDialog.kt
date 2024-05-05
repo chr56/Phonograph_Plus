@@ -19,11 +19,11 @@ import player.phonograph.model.lyrics.TextLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.settings.ThemeSetting.primaryColor
 import player.phonograph.ui.fragments.player.LyricsViewModel
 import player.phonograph.util.reportError
 import player.phonograph.util.text.lyricsTimestamp
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.warning
 import util.theme.color.isNightMode
 import util.theme.color.lightenColor

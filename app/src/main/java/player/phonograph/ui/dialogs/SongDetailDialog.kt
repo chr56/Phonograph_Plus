@@ -27,9 +27,9 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.getFileSizeString
 import player.phonograph.model.getReadableDurationString
-import player.phonograph.settings.ThemeSetting.accentColor
 import player.phonograph.util.parcelable
 import player.phonograph.util.reportError
+import player.phonograph.util.theme.accentColor
 import androidx.fragment.app.DialogFragment
 import android.app.Activity
 import android.app.Dialog

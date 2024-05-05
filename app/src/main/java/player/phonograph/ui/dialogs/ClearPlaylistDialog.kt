@@ -16,7 +16,6 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.settings.ThemeSetting
-import player.phonograph.settings.ThemeSetting.accentColor
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.file.selectDocumentUris
 import player.phonograph.util.parcelableArrayList
@@ -25,6 +24,7 @@ import player.phonograph.util.reportError
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.text.ItemGroup
 import player.phonograph.util.text.buildDeletionMessage
+import player.phonograph.util.theme.accentColor
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import android.app.Activity
@@ -180,7 +180,7 @@ class ClearPlaylistDialog : DialogFragment() {
                             }
                         }
                         .apply {
-                            val accentColor = accentColor(context)
+                            val accentColor = ThemeSetting.accentColor(context)
                             getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
                             getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
                             getActionButton(WhichButton.NEUTRAL).updateTextColor(accentColor)

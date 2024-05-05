@@ -7,10 +7,9 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.player.PlayerController
 import player.phonograph.service.player.currentState
 import player.phonograph.service.queue.CurrentQueueState
-import player.phonograph.settings.ThemeSetting
-import player.phonograph.settings.ThemeSetting.accentColor
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
+import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.nightMode
 import util.theme.color.secondaryTextColor
 import util.theme.internal.resolveColor
