@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -41,8 +42,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -74,8 +73,7 @@ class SettingsActivity : ComposeThemeActivity(),
 
         setContent {
             val scaffoldState = rememberScaffoldState()
-            val highlightColor by primaryColor.collectAsState()
-            PhonographTheme(highlightColor) {
+            PhonographTheme {
                 Scaffold(
                     Modifier.statusBarsPadding(),
                     scaffoldState = scaffoldState,
@@ -104,8 +102,7 @@ class SettingsActivity : ComposeThemeActivity(),
                                     }
                                 )
                             },
-                            backgroundColor = highlightColor
-
+                            backgroundColor = MaterialTheme.colors.primary
                         )
                     },
                 ) {

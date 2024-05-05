@@ -5,51 +5,15 @@
 package player.phonograph.ui.compose
 
 import lib.phonograph.activity.MultiLanguageActivity
-import player.phonograph.settings.ThemeSetting
-import player.phonograph.util.theme.accentColor
-import player.phonograph.util.theme.observeThemeColors
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.updateAllSystemUIColors
-import player.phonograph.util.theme.updateNavigationbarColor
-import player.phonograph.util.theme.updateStatusbarColor
-import player.phonograph.util.theme.updateTaskDescriptionColor
-import util.theme.color.darkenColor
-import util.theme.materials.MaterialColor
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.lifecycle.lifecycleScope
 import android.os.Bundle
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
+import android.os.PersistableBundle
 
 abstract class ComposeThemeActivity : MultiLanguageActivity() {
 
-    protected val primaryColor: MutableStateFlow<Color> = MutableStateFlow(Color(MaterialColor.Blue._A400.asColor))
-    protected val accentColor: MutableStateFlow<Color> = MutableStateFlow(Color(MaterialColor.Yellow._900.asColor))
-
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        primaryColor.value = Color(primaryColor())
-        accentColor.value = Color(accentColor())
-
         super.onCreate(savedInstanceState)
-
-        lifecycleScope.launch {
-            primaryColor.collect {
-                onUpdatePrimaryColor(it.toArgb())
-            }
-        }
-
-        lifecycleScope.launch {
-            observeThemeColors(this@ComposeThemeActivity) { primary, accent ->
-                primaryColor.value = Color(primary)
-                accentColor.value = Color(accent)
-            }
-        }
-
-    }
-
-    private fun onUpdatePrimaryColor(newPrimaryColor: Int) {
-        updateAllSystemUIColors(this, darkenColor(newPrimaryColor))
+        updateAllSystemUIColors(this, primaryColor())
     }
 }
