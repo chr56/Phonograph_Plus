@@ -11,6 +11,7 @@ import player.phonograph.R
 import player.phonograph.mechanism.setting.StyleConfig
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.theme.nightMode
 import util.theme.activity.adjustStatusbarText
 import util.theme.activity.setNavigationBarColor
@@ -19,6 +20,7 @@ import util.theme.activity.setTaskDescriptionColor
 import util.theme.color.darkenColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.lifecycleScope
 import android.animation.ValueAnimator
 import android.os.Bundle
@@ -80,16 +82,10 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     private fun observeColors() {
         primaryColor = primaryColor(this)
         accentColor = accentColor(this)
-        lifecycleScope.launch(Dispatchers.IO) {
-            Setting(this@ThemeActivity)[Keys.selectedPrimaryColor].flow.collect {
-                primaryColor = it
-                requireRecreate = true
-            }
-        }
-        lifecycleScope.launch(Dispatchers.IO) {
-            Setting(this@ThemeActivity)[Keys.selectedAccentColor].flow.collect {
-                accentColor = it
-                requireRecreate = true
+        lifecycleScope.launch {
+            ThemeSetting.observeColors(this@ThemeActivity) { primary, accent ->
+                primaryColor = primary
+                accentColor = accent
             }
         }
         textColorPrimary = primaryTextColor(nightMode)

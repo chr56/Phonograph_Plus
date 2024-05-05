@@ -5,7 +5,6 @@
 package player.phonograph.ui.compose
 
 import lib.phonograph.activity.MultiLanguageActivity
-import lib.phonograph.theme.ThemeColor
 import player.phonograph.R
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
@@ -19,10 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.lifecycleScope
 import android.os.Bundle
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import util.theme.materials.R as MR
 
 abstract class ComposeThemeActivity : MultiLanguageActivity() {
 
@@ -42,14 +39,10 @@ abstract class ComposeThemeActivity : MultiLanguageActivity() {
             }
         }
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            Setting(this@ComposeThemeActivity)[Keys.selectedPrimaryColor].flow.collect {
-                primaryColor.value = Color(it)
-            }
-        }
-        lifecycleScope.launch(Dispatchers.IO) {
-            Setting(this@ComposeThemeActivity)[Keys.selectedAccentColor].flow.collect {
-                primaryColor.value = Color(it)
+        lifecycleScope.launch {
+            ThemeSetting.observeColors(this@ComposeThemeActivity) { primary, accent ->
+                primaryColor.value = Color(primary)
+                accentColor.value = Color(accent)
             }
         }
 

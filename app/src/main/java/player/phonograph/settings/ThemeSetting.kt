@@ -12,6 +12,9 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 object ThemeSetting {
 
@@ -75,6 +78,53 @@ object ThemeSetting {
             }
         cachedAccentColor = primaryColor
         return primaryColor
+    }
+
+    /**
+     * observe color changed
+     * @param onChanged callback (primary color & accent color)
+     */
+    suspend fun observeColors(context: Context, onChanged: (Int, Int) -> Unit) {
+        val setting = Setting(context.applicationContext)
+        val mode = setting[Keys.enableMonet]
+        val flowSelectedPrimaryColor =
+            setting[Keys.selectedPrimaryColor].flow
+        val flowSelectedAccentColor =
+            setting[Keys.selectedAccentColor].flow
+        val flowMonetPalettePrimaryColor =
+            setting[Keys.monetPalettePrimaryColor].flow
+        val flowMonetPaletteAccentColor =
+            setting[Keys.monetPaletteAccentColor].flow
+        withContext(Dispatchers.IO) {
+            mode.flow.collect {
+                delay(250)
+                onChanged(updateCachedPrimaryColor(context), updateCachedAccentColor(context))
+            }
+            flowSelectedPrimaryColor.collect {
+                delay(100)
+                if (mode.data) {
+                    onChanged(updateCachedPrimaryColor(context), cachedAccentColor)
+                }
+            }
+            flowSelectedAccentColor.collect {
+                delay(100)
+                if (mode.data) {
+                    onChanged(cachedPrimaryColor, updateCachedAccentColor(context))
+                }
+            }
+            flowMonetPalettePrimaryColor.collect {
+                delay(100)
+                if (mode.data) {
+                    onChanged(updateCachedPrimaryColor(context), cachedAccentColor)
+                }
+            }
+            flowMonetPaletteAccentColor.collect {
+                delay(100)
+                if (mode.data) {
+                    onChanged(cachedPrimaryColor, updateCachedAccentColor(context))
+                }
+            }
+        }
     }
 
     @JvmName("Context_PrimaryColor")
