@@ -84,6 +84,11 @@
     <string name="dark_theme_name">Ciemny</string>
     <string name="black_theme_name">Czarny (AMOLED)</string>
     <string name="auto_theme_name">Automatyczny</string>
+    <string name="theme_name_auto_lightblack">"Automatycznie (jasny/czarny)"</string>
+    <string name="theme_name_auto_lightdark">"Automatycznie (jasny/ciemny)"</string>
+    <string name="theme_name_light">Jasny</string>
+    <string name="theme_name_black">Czarny</string>
+    <string name="theme_name_dark">Ciemny</string>
     <string name="always">Zawsze</string>
     <string name="only_on_wifi">Tylko na WiFi</string>
     <string name="never">Nigdy</string>
@@ -539,4 +544,5 @@
     <string name="error_unstoppable_service">Nie można zamknąć usługi muzycznej na pierwszym planie lub w użyciu.</string>
     <string name="action_fast_rewind">Szybkie przewijanie do tyłu</string>
     <string name="action_fast_forward">Szybkie przewijanie do przodu</string>
+    <string name="path_selector">Selektor plików</string>
 </resources>
