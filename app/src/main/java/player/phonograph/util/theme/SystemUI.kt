@@ -17,23 +17,22 @@ import android.app.Activity
 import android.graphics.Color
 import android.view.View
 
-
-fun Activity.updateStatusbarColor() = updateStatusbarColor(darkenColor(primaryColor()))
-
-fun Activity.updateStatusbarColor(color: Int) {
+/**
+ * update Statusbar Color following current setting
+ */
+fun Activity.updateStatusbarColor(color: Int = darkenColor(primaryColor())) {
     setStatusbarColor(darkenColor(color), R.id.status_bar)
 }
 
-fun Activity.updateNavigationbarColor() = updateNavigationbarColor(darkenColor(primaryColor()))
-
-fun Activity.updateNavigationbarColor(color: Int) {
+/**
+ * update Navigation Color following current setting
+ */
+fun Activity.updateNavigationbarColor(color: Int = darkenColor(primaryColor())) {
     val targetColor = if (coloredNavigationBar) color else Color.BLACK
     setNavigationBarColor(targetColor)
 }
 
-
-fun Activity.updateTaskDescriptionColor() = updateTaskDescriptionColor(darkenColor(primaryColor()))
-fun Activity.updateTaskDescriptionColor(color: Int) = setTaskDescriptionColor(color)
+fun Activity.updateTaskDescriptionColor(color: Int = darkenColor(primaryColor())) = setTaskDescriptionColor(color)
 
 
 private var coloredNavigationBar: Boolean = Setting(App.instance)[Keys.coloredNavigationBar].data
