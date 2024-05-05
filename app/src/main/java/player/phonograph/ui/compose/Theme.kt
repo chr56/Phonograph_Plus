@@ -46,6 +46,24 @@ fun PhonographTheme(content: @Composable () -> Unit) {
     }
 }
 
+@Composable
+fun PhonographTheme(highLightColorState: State<Color?>, content: @Composable () -> Unit) {
+    val highLightColor by highLightColorState
+    val color = highLightColor
+    val colors =
+        if (color != null)
+            phonographColors().copy(
+                primary = color,
+                primaryVariant = color.darker(),
+                onPrimary = textColorOn(LocalContext.current, color),
+            ) else {
+            phonographColors()
+        }
+    PhonographTheme(colors) {
+        content()
+    }
+}
+
 
 @Composable
 fun PhonographTheme(primary: Color?, content: @Composable () -> Unit) {
