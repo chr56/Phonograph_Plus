@@ -94,8 +94,6 @@ class FlatPlayerFragment :
             }
         })
 
-        (activity as AbsSlidingMusicPanelActivity).viewModel.enableTransparentStatusbar(false)
-
         observeState()
     }
 

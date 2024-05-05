@@ -98,8 +98,6 @@ class CardPlayerFragment :
             }
         })
 
-        (activity as AbsSlidingMusicPanelActivity).viewModel.enableTransparentStatusbar(true)
-
         // for some reason the xml attribute doesn't get applied here.
         viewBinding.playingQueueCard.setCardBackgroundColor(
             requireContext().resolveColor(

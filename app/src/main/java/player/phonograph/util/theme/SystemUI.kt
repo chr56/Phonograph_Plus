@@ -13,7 +13,6 @@ import util.theme.activity.setNavigationBarColor
 import util.theme.activity.setStatusbarColor
 import util.theme.activity.setTaskDescriptionColor
 import util.theme.color.darkenColor
-import util.theme.color.primaryTextColor
 import android.app.Activity
 import android.graphics.Color
 
