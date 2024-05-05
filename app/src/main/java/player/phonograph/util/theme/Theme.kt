@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
 
 package player.phonograph.util.theme
@@ -21,6 +21,9 @@ import androidx.fragment.app.Fragment
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 @JvmName("Context_PrimaryColor")
 @CheckResult
@@ -62,7 +65,7 @@ fun systemDarkmode(resources: Resources): Boolean =
 
 
 @StyleRes
-private fun parseToStyleRes(@GeneralTheme theme: String): Int =
+fun parseToStyleRes(@GeneralTheme theme: String): Int =
     when (theme) {
         THEME_AUTO  -> R.style.Theme_Phonograph_Auto
         THEME_DARK  -> R.style.Theme_Phonograph_Dark
@@ -82,5 +85,52 @@ fun toggleTheme(context: Context): Boolean {
         true
     } else {
         false
+    }
+}
+
+/**
+ * observe color changed
+ * @param onChanged callback (primary color & accent color)
+ */
+suspend fun observeThemeColors(context: Context, onChanged: (Int, Int) -> Unit) {
+    val setting = Setting(context.applicationContext)
+    val mode = setting[Keys.enableMonet]
+    val flowSelectedPrimaryColor =
+        setting[Keys.selectedPrimaryColor].flow
+    val flowSelectedAccentColor =
+        setting[Keys.selectedAccentColor].flow
+    val flowMonetPalettePrimaryColor =
+        setting[Keys.monetPalettePrimaryColor].flow
+    val flowMonetPaletteAccentColor =
+        setting[Keys.monetPaletteAccentColor].flow
+    withContext(Dispatchers.IO) {
+        mode.flow.collect {
+            delay(250)
+            onChanged(ThemeSetting.updateCachedPrimaryColor(context), ThemeSetting.updateCachedAccentColor(context))
+        }
+        flowSelectedPrimaryColor.collect {
+            delay(100)
+            if (mode.data) {
+                onChanged(ThemeSetting.updateCachedPrimaryColor(context), ThemeSetting.peekCachedAccentColor())
+            }
+        }
+        flowSelectedAccentColor.collect {
+            delay(100)
+            if (mode.data) {
+                onChanged(ThemeSetting.peekCachedPrimaryColor(), ThemeSetting.updateCachedAccentColor(context))
+            }
+        }
+        flowMonetPalettePrimaryColor.collect {
+            delay(100)
+            if (mode.data) {
+                onChanged(ThemeSetting.updateCachedPrimaryColor(context), ThemeSetting.peekCachedAccentColor())
+            }
+        }
+        flowMonetPaletteAccentColor.collect {
+            delay(100)
+            if (mode.data) {
+                onChanged(ThemeSetting.peekCachedPrimaryColor(), ThemeSetting.updateCachedAccentColor(context))
+            }
+        }
     }
 }

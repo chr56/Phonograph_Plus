@@ -7,6 +7,7 @@ package player.phonograph.ui.compose
 import lib.phonograph.activity.MultiLanguageActivity
 import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.theme.accentColor
+import player.phonograph.util.theme.observeThemeColors
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.updateNavigationbarColor
 import player.phonograph.util.theme.updateStatusbarColor
@@ -39,7 +40,7 @@ abstract class ComposeThemeActivity : MultiLanguageActivity() {
         }
 
         lifecycleScope.launch {
-            ThemeSetting.observeColors(this@ComposeThemeActivity) { primary, accent ->
+            observeThemeColors(this@ComposeThemeActivity) { primary, accent ->
                 primaryColor.value = Color(primary)
                 accentColor.value = Color(accent)
             }

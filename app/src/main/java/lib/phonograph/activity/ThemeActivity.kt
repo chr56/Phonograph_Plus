@@ -7,6 +7,7 @@ package lib.phonograph.activity
 import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.nightMode
+import player.phonograph.util.theme.observeThemeColors
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.restoreNotFullsScreen
 import player.phonograph.util.theme.setFullScreenAndIncludeStatusBar
@@ -74,7 +75,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         primaryColor = primaryColor()
         accentColor = accentColor()
         lifecycleScope.launch {
-            ThemeSetting.observeColors(this@ThemeActivity) { primary, accent ->
+            observeThemeColors(this@ThemeActivity) { primary, accent ->
                 primaryColor = primary
                 accentColor = accent
             }
