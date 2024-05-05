@@ -9,6 +9,7 @@ import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.observeThemeColors
 import player.phonograph.util.theme.primaryColor
+import player.phonograph.util.theme.updateAllSystemUIColors
 import player.phonograph.util.theme.updateNavigationbarColor
 import player.phonograph.util.theme.updateStatusbarColor
 import player.phonograph.util.theme.updateTaskDescriptionColor
@@ -49,9 +50,6 @@ abstract class ComposeThemeActivity : MultiLanguageActivity() {
     }
 
     private fun onUpdatePrimaryColor(newPrimaryColor: Int) {
-        val darkenPrimaryColor = darkenColor(newPrimaryColor)
-        updateStatusbarColor(darkenPrimaryColor)
-        updateNavigationbarColor(darkenPrimaryColor)
-        updateTaskDescriptionColor(darkenPrimaryColor)
+        updateAllSystemUIColors(this, darkenColor(newPrimaryColor))
     }
 }
