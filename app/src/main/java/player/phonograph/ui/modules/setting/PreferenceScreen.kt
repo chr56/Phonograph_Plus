@@ -41,6 +41,7 @@ import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
 import player.phonograph.ui.dialogs.PathFilterPreferenceDialog
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.reportError
+import player.phonograph.util.theme.updateColoredNavigationBarSettingCache
 import player.phonograph.util.warning
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
@@ -560,6 +561,7 @@ private fun ColoredNavigationBarSetting() {
        defaultValue = false,
         onCheckedChange = {
             (context as? Activity)?.recreate()
+            updateColoredNavigationBarSettingCache(it)
         }
     )
 }

@@ -36,7 +36,10 @@ fun Activity.updateTaskDescriptionColor() = updateTaskDescriptionColor(darkenCol
 fun Activity.updateTaskDescriptionColor(color: Int) = setTaskDescriptionColor(color)
 
 
-private val coloredNavigationBar: Boolean get() = Setting(App.instance)[Keys.coloredNavigationBar].data
+private var coloredNavigationBar: Boolean = Setting(App.instance)[Keys.coloredNavigationBar].data
+fun updateColoredNavigationBarSettingCache(value: Boolean) {
+    coloredNavigationBar = value
+}
 
 @Suppress("DEPRECATION")
 fun Activity.setFullScreenAndIncludeStatusBar() {
