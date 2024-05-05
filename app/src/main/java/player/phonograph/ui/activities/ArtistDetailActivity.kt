@@ -26,8 +26,6 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.theme.getTintedDrawable
-import util.theme.activity.adjustStatusbarText
-import util.theme.activity.setNavigationBarColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import util.theme.color.toolbarTitleColor
@@ -161,14 +159,12 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
 
     private fun setColors(color: Int) {
         viewBinding.header.setBackgroundColor(color)
-        if (Setting(this)[Keys.coloredNavigationBar].data) setNavigationBarColor(color)
-        setTaskDescriptionColor(color)
 
         setSupportActionBar(viewBinding.toolbar) // needed to auto readjust the toolbar content color
         setToolbarColor(viewBinding.toolbar, color)
         viewBinding.toolbar.setTitleTextColor(toolbarTitleColor(this, color))
 
-        setStatusbarColor(color)
+        updateSystemUIColors(color)
         val secondaryTextColor = secondaryTextColor(color)
         viewBinding.durationIcon.setImageDrawable(
             getTintedDrawable(R.drawable.ic_timer_white_24dp, secondaryTextColor)
@@ -222,11 +218,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         override fun onMediaStoreChanged() {
             model.load(this@ArtistDetailActivity)
         }
-    }
-
-    override fun setStatusbarColor(color: Int) {
-        super.setStatusbarColor(color)
-        adjustStatusbarText(false)
     }
 
     private suspend fun updateArtistInfo(artist: Artist) {

@@ -4,23 +4,16 @@
 
 package lib.phonograph.activity
 
-import player.phonograph.settings.ThemeSetting.accentColor
-import player.phonograph.settings.ThemeSetting.navigationBarColor
-import player.phonograph.settings.ThemeSetting.primaryColor
-import player.phonograph.R
 import player.phonograph.mechanism.setting.StyleConfig
-import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
 import player.phonograph.settings.ThemeSetting
+import player.phonograph.settings.ThemeSetting.accentColor
+import player.phonograph.settings.ThemeSetting.primaryColor
 import player.phonograph.util.theme.nightMode
-import util.theme.activity.adjustStatusbarText
-import util.theme.activity.setNavigationBarColor
-import util.theme.activity.setStatusbarColor
-import util.theme.activity.setTaskDescriptionColor
-import util.theme.color.darkenColor
+import player.phonograph.util.theme.updateNavigationbarColor
+import player.phonograph.util.theme.updateStatusbarColor
+import player.phonograph.util.theme.updateTaskDescriptionColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.lifecycleScope
 import android.animation.ValueAnimator
 import android.os.Bundle
@@ -30,7 +23,6 @@ import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 import android.view.animation.PathInterpolator
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
@@ -58,9 +50,9 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         if (useCustomStatusBar) setFullScreenAndIncludeStatusBar()
 
         // color
-        if (autoSetStatusBarColor) setStatusbarColor(primaryColor(this))
-        if (autoSetNavigationBarColor) setNavigationBarColor(navigationBarColor(this))
-        if (autoSetTaskDescriptionColor) setTaskDescriptionColor(primaryColor(this))
+        if (autoSetStatusBarColor) updateStatusbarColor()
+        if (autoSetNavigationBarColor) updateNavigationbarColor()
+        if (autoSetTaskDescriptionColor) updateTaskDescriptionColor()
     }
 
     /** Must call before super */
@@ -108,10 +100,14 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         Handler(Looper.getMainLooper()).post { recreate() }
     }
 
-    protected fun updateAllColors(color: Int) {
-        setStatusbarColor(color)
-        setNavigationBarColor(color)
-        setTaskDescriptionColor(color)
+    //
+    // System UI Colors
+    //
+
+    protected fun updateSystemUIColors(color: Int) {
+        updateStatusbarColor(color)
+        updateNavigationbarColor(color)
+        updateTaskDescriptionColor(color)
     }
 
     //
@@ -130,21 +126,6 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     }
 
     //
-    // Status Bar
-    //
-    /**
-     * This will set the color of the view with the id "status_bar" on Lollipop.
-     * On Lollipop if no such view is found it will set the statusbar color using the native method.
-     *
-     * @param color the new statusbar color (will be shifted down on Lollipop and above)
-     */
-    open fun setStatusbarColor(color: Int) {
-        val darkColor = darkenColor(color)
-        setStatusbarColor(darkColor, R.id.status_bar)
-        adjustStatusbarText(darkColor)
-    }
-
-    //
     // SnackBar holder
     //
     protected open val snackBarContainer: View get() = window.decorView
@@ -153,28 +134,24 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     // Animation
     //
     private var colorChangeAnimator: ValueAnimator? = null
-    protected fun animateThemeColorChange(oldColor: Int, newColor: Int) {
-        animateThemeColorChange(oldColor, newColor) { animation: ValueAnimator ->
-            setStatusbarColor(animation.animatedValue as Int)
-            if (Setting(this)[Keys.coloredNavigationBar].data) setNavigationBarColor(animation.animatedValue as Int)
-        }
-    }
 
     protected fun animateThemeColorChange(
         oldColor: Int, newColor: Int, action: (ValueAnimator) -> Unit,
     ) { // todo: make sure lifecycle
+        colorChangeAnimator?.end()
         colorChangeAnimator?.cancel()
         colorChangeAnimator = ValueAnimator
             .ofArgb(oldColor, newColor)
             .setDuration(600L)
-        colorChangeAnimator?.also { animator ->
-            animator.interpolator = PathInterpolator(0.4f, 0f, 1f, 1f)
-            animator.addUpdateListener(action)
-            animator.start()
-        }
+            .also { animator ->
+                animator.interpolator = PathInterpolator(0.4f, 0f, 1f, 1f)
+                animator.addUpdateListener(action)
+                animator.start()
+            }
     }
 
     protected fun cancelThemeColorChange() {
+        colorChangeAnimator?.end()
         colorChangeAnimator?.cancel()
         colorChangeAnimator = null
     }

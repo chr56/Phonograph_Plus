@@ -5,13 +5,10 @@
 package player.phonograph.ui.compose
 
 import lib.phonograph.activity.MultiLanguageActivity
-import player.phonograph.R
-import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
 import player.phonograph.settings.ThemeSetting
-import util.theme.activity.adjustStatusbarText
-import util.theme.activity.setNavigationBarColor
-import util.theme.activity.setStatusbarColor
+import player.phonograph.util.theme.updateNavigationbarColor
+import player.phonograph.util.theme.updateStatusbarColor
+import player.phonograph.util.theme.updateTaskDescriptionColor
 import util.theme.color.darkenColor
 import util.theme.materials.MaterialColor
 import androidx.compose.ui.graphics.Color
@@ -50,8 +47,8 @@ abstract class ComposeThemeActivity : MultiLanguageActivity() {
 
     private fun onUpdatePrimaryColor(newPrimaryColor: Int) {
         val darkenPrimaryColor = darkenColor(newPrimaryColor)
-        setStatusbarColor(darkenPrimaryColor, R.id.status_bar)
-        adjustStatusbarText(darkenPrimaryColor)
-        if (Setting(this)[Keys.coloredNavigationBar].data) setNavigationBarColor(newPrimaryColor)
+        updateStatusbarColor(darkenPrimaryColor)
+        updateNavigationbarColor(darkenPrimaryColor)
+        updateTaskDescriptionColor(darkenPrimaryColor)
     }
 }

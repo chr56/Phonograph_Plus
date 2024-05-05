@@ -15,7 +15,8 @@ import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.MiniPlayerFragment
 import player.phonograph.ui.fragments.player.card.CardPlayerFragment
 import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment
-import util.theme.activity.setNavigationBarColor
+import player.phonograph.util.theme.updateNavigationbarColor
+import player.phonograph.util.theme.updateStatusbarColor
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
@@ -117,11 +118,10 @@ abstract class AbsSlidingMusicPanelActivity :
                 viewModel.highlightColor.collect { color ->
                     if (panelState == PanelState.EXPANDED) {
                         animateThemeColorChange(viewModel.previousHighlightColor.value, color) { animation ->
-                            setStatusbarColor(
+                            updateStatusbarColor(
                                 if (viewModel.transparentStatusbar) Color.TRANSPARENT else animation.animatedValue as Int
                             )
-                            if (Setting(this@AbsSlidingMusicPanelActivity)[Keys.coloredNavigationBar].data)
-                                setNavigationBarColor(animation.animatedValue as Int)
+                            updateNavigationbarColor(animation.animatedValue as Int)
                         }
                     }
                 }
@@ -175,8 +175,8 @@ abstract class AbsSlidingMusicPanelActivity :
                 viewModel.activityColor.value,
                 if (viewModel.transparentStatusbar) Color.TRANSPARENT else viewModel.highlightColor.value
             ) as Int
-        setStatusbarColor(color)
-        if (Setting(this)[Keys.coloredNavigationBar].data) setNavigationBarColor(color)
+        updateStatusbarColor(color)
+        updateNavigationbarColor(color)
     }
 
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {

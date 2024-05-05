@@ -5,11 +5,9 @@
 package player.phonograph.settings
 
 import lib.phonograph.misc.MonetColor
-import util.theme.color.shiftColor
 import androidx.annotation.CheckResult
 import androidx.annotation.ColorInt
 import android.content.Context
-import android.graphics.Color
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import kotlinx.coroutines.Dispatchers
@@ -25,24 +23,8 @@ object ThemeSetting {
 
     @CheckResult
     @ColorInt
-    fun primaryColorDark(context: Context): Int =
-        shiftColor(primaryColor(context), 0.9f)
-
-    @CheckResult
-    @ColorInt
     fun accentColor(context: Context): Int =
         if (cachedAccentColor <= 0) updateCachedAccentColor(context) else cachedAccentColor
-
-    @CheckResult
-    @ColorInt
-    fun navigationBarColor(context: Context): Int =
-        if (Setting(context)[Keys.coloredNavigationBar].data) primaryColor(context) else Color.BLACK
-
-    @CheckResult
-    @ColorInt
-    fun statusBarColor(context: Context): Int =
-        if (Setting(context)[Keys.coloredStatusbar].data) primaryColorDark(context) else Color.BLACK
-
 
     @ColorInt
     private var cachedPrimaryColor: Int = -1
