@@ -32,6 +32,7 @@ object ColorChooser {
             ) { _, color ->
                 applyNewColor(context, color, mode)
             }
+            val accentColor = accentColor(context)
             if (SDK_INT >= S) {
                 @Suppress("DEPRECATION")
                 neutralButton(res = R.string.dynamic_colors) {
@@ -45,17 +46,17 @@ object ColorChooser {
                     }.negativeButton {
                         it.dismiss()
                     }.apply {
-                        getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(context))
-                        getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(context))
+                        getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
+                        getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
                     }.show()
                 }
             }
             positiveButton(res = android.R.string.ok)
             negativeButton(res = android.R.string.cancel).apply {
                 // set button color
-                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(context))
-                getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(context))
-                getActionButton(WhichButton.NEUTRAL).updateTextColor(accentColor(context))
+                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
+                getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
+                getActionButton(WhichButton.NEUTRAL).updateTextColor(accentColor)
             }
         }
     }

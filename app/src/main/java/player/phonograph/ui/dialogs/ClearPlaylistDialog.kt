@@ -16,6 +16,7 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.settings.ThemeSetting
+import player.phonograph.settings.ThemeSetting.accentColor
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.file.selectDocumentUris
 import player.phonograph.util.parcelableArrayList
@@ -110,15 +111,10 @@ class ClearPlaylistDialog : DialogFragment() {
                     }
                 }
                 // set button color
-                it.getActionButton(WhichButton.POSITIVE).updateTextColor(
-                    ThemeSetting.accentColor(requireContext())
-                )
-                it.getActionButton(WhichButton.NEGATIVE).updateTextColor(
-                    ThemeSetting.accentColor(requireContext())
-                )
-                it.getActionButton(WhichButton.NEUTRAL).updateTextColor(
-                    ThemeSetting.accentColor(requireContext())
-                )
+                val accentColor = accentColor()
+                it.getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
+                it.getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
+                it.getActionButton(WhichButton.NEUTRAL).updateTextColor(accentColor)
             }
 
         return dialog
@@ -183,14 +179,11 @@ class ClearPlaylistDialog : DialogFragment() {
                                 }
                             }
                         }
-                        .also {
-                            // color
-                            it.getActionButton(WhichButton.POSITIVE)
-                                .updateTextColor(ThemeSetting.accentColor(context))
-                            it.getActionButton(WhichButton.NEGATIVE)
-                                .updateTextColor(ThemeSetting.accentColor(context))
-                            it.getActionButton(WhichButton.NEUTRAL)
-                                .updateTextColor(ThemeSetting.accentColor(context))
+                        .apply {
+                            val accentColor = accentColor(context)
+                            getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
+                            getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
+                            getActionButton(WhichButton.NEUTRAL).updateTextColor(accentColor)
                         }
                         .show()
                 }

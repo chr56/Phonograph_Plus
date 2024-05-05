@@ -58,7 +58,7 @@ class SongDetailDialog : DialogFragment() {
                 horizontalPadding = true,
                 scrollable = true
             ).apply {
-                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(context))
+                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor())
             }
 
         val dialogView: View = dialog.getCustomView()

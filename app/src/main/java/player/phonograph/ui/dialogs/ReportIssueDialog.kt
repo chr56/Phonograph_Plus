@@ -7,7 +7,7 @@ package player.phonograph.ui.dialogs
 import player.phonograph.ISSUE_TRACKER_LINK
 import player.phonograph.R
 import player.phonograph.databinding.DialogReportIssueBinding
-import player.phonograph.settings.ThemeSetting
+import player.phonograph.settings.ThemeSetting.primaryColor
 import player.phonograph.util.text.getDeviceInfo
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
@@ -49,7 +49,7 @@ class ReportIssueDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.deviceInfoText.text = deviceInfo
 
-        binding.buttonSend.tint(primaryColor, true, view.context.nightMode)
+        binding.buttonSend.tint(view.context.primaryColor(), true, view.context.nightMode)
         binding.buttonSend.setImageDrawable(
             view.context.getTintedDrawable(R.drawable.ic_send_white_24dp, Color.WHITE)
         )
@@ -63,8 +63,6 @@ class ReportIssueDialog : DialogFragment() {
             )
         }
     }
-
-    private val primaryColor get() = ThemeSetting.primaryColor(requireContext())
 
     private fun Context.copyDeviceInfoToClipBoard() {
         val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager

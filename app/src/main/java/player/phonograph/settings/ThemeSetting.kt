@@ -5,10 +5,12 @@
 package player.phonograph.settings
 
 import lib.phonograph.misc.MonetColor
+import player.phonograph.App
 import player.phonograph.R
 import androidx.annotation.CheckResult
 import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
+import androidx.fragment.app.Fragment
 import android.content.Context
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
@@ -127,11 +129,20 @@ object ThemeSetting {
     @ColorInt
     fun Context.primaryColor(): Int = primaryColor(this)
 
+    @JvmName("Fragment_PrimaryColor")
+    @CheckResult
+    @ColorInt
+    fun Fragment.primaryColor(): Int = primaryColor(context ?: App.instance)
 
     @JvmName("Context_AccentColor")
     @CheckResult
     @ColorInt
     fun Context.accentColor(): Int = accentColor(this)
+
+    @JvmName("Fragment_AccentColor")
+    @CheckResult
+    @ColorInt
+    fun Fragment.accentColor(): Int = accentColor(context ?: App.instance)
 
     @StyleRes
     private fun parseToStyleRes(@GeneralTheme theme: String): Int =

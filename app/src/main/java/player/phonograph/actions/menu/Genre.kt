@@ -12,7 +12,7 @@ import player.phonograph.actions.actionPlayNext
 import player.phonograph.model.Genre
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.settings.ThemeSetting
+import player.phonograph.settings.ThemeSetting.primaryColor
 import player.phonograph.util.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.getTintedDrawable
 import util.theme.color.primaryTextColor
@@ -27,7 +27,7 @@ fun genreDetailToolbar(
     context: Context,
     genre: Genre,
 ): Boolean = with(context) {
-    val iconColor = primaryTextColor(ThemeSetting.primaryColor(context))
+    val iconColor = primaryTextColor(primaryColor())
     attach(menu) {
         menuItem(getString(R.string.action_play)) {
             icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)

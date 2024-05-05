@@ -18,6 +18,7 @@ import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.sort.SortMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.ThemeSetting
+import player.phonograph.settings.ThemeSetting.accentColor
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.components.popup.ListOptionsPopup
@@ -147,7 +148,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(
             mainActivity,
-            ThemeSetting.accentColor(App.instance.applicationContext)
+            accentColor()
         )
         binding.recyclerView.also {
             it.adapter = adapter
@@ -155,7 +156,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         }
 
         binding.refreshContainer.apply {
-            setColorSchemeColors(ThemeSetting.accentColor(requireContext()))
+            setColorSchemeColors(accentColor())
             setDistanceToTriggerSync(480)
             setProgressViewOffset(false, 10, 120)
             setOnRefreshListener {

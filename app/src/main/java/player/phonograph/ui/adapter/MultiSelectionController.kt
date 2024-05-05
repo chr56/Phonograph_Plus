@@ -10,7 +10,7 @@ import lib.phonograph.cab.initToolbarCab
 import player.phonograph.R
 import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.misc.IPaletteColorProvider
-import player.phonograph.settings.ThemeSetting
+import player.phonograph.settings.ThemeSetting.primaryColor
 import player.phonograph.util.debug
 import player.phonograph.util.theme.getTintedDrawable
 import util.theme.color.darkenColor
@@ -140,7 +140,7 @@ class MultiSelectionController<I>(
     val cabColor: Int
         get() {
             var color =
-                (activity as? IPaletteColorProvider)?.paletteColor?.value ?: ThemeSetting.primaryColor(activity)
+                (activity as? IPaletteColorProvider)?.paletteColor?.value ?: activity.primaryColor()
             if (isColorLight(color)) {
                 // light to dark
                 for (it in 0 until 3) {

@@ -50,6 +50,7 @@ class SleepTimerDialog : DialogFragment() {
                 timerUpdater = TimerUpdater()
                 it.setOnShowListener { alterDialog ->
                     alterDialog as AlertDialog
+                    val accentColor = accentColor()
                     alterDialog.getButton(DialogInterface.BUTTON_POSITIVE)?.setTextColor(accentColor)
                     alterDialog.getButton(DialogInterface.BUTTON_NEGATIVE)?.setTextColor(accentColor)
 
@@ -113,8 +114,8 @@ class SleepTimerDialog : DialogFragment() {
         val seekArc: SeekArc = alertDialog.findViewById(R.id.seek_arc)!!
 
         // init views : set seekArc color, size and progress
-        seekArc.progressColor = accentColor
-        seekArc.setThumbColor(accentColor)
+        seekArc.progressColor = accentColor()
+        seekArc.setThumbColor(accentColor())
         seekArc.post {
             val width = seekArc.width
             val height = seekArc.height
@@ -181,6 +182,4 @@ class SleepTimerDialog : DialogFragment() {
             dialog.getButton(DialogInterface.BUTTON_NEGATIVE)?.text = text
         }
     }
-
-    val accentColor get() = accentColor(requireContext())
 }

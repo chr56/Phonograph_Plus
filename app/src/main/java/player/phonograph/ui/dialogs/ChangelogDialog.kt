@@ -8,6 +8,7 @@ import lib.phonograph.localization.LocalizationStore
 import player.phonograph.R
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.ThemeSetting
+import player.phonograph.settings.ThemeSetting.accentColor
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.reportError
 import player.phonograph.util.text.changelogCSS
@@ -55,9 +56,8 @@ class ChangelogDialog : DialogFragment() {
                 PrerequisiteSetting.instance(context).lastChangelogVersion = currentVersionCode(context)
             }
             .apply {
-                getActionButton(WhichButton.POSITIVE).updateTextColor(
-                    ThemeSetting.accentColor(requireActivity())
-                )
+                val accentColor = accentColor()
+                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
             }
 
         val webView = customView.findViewById<WebView>(R.id.web_view)
@@ -76,10 +76,7 @@ class ChangelogDialog : DialogFragment() {
                 }
             }
 
-            val changeLog = generateChangelogHTML(
-                content,
-                ThemeSetting.accentColor(requireContext())
-            )
+            val changeLog = generateChangelogHTML(content, accentColor())
 
             webView.loadData(changeLog, "text/html", "UTF-8")
         } catch (e: Throwable) {

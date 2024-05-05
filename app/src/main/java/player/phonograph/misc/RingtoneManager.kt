@@ -48,9 +48,9 @@ object RingtoneManager {
                 }
             )
         }
-        .create().also {
-            it.getButton(DialogInterface.BUTTON_POSITIVE)?.setTextColor(accentColor(context))
-            it.getButton(DialogInterface.BUTTON_NEGATIVE)?.setTextColor(accentColor(context))
-            it.show()
+        .create().apply {
+            getButton(DialogInterface.BUTTON_POSITIVE)?.setTextColor(accentColor(context))
+            getButton(DialogInterface.BUTTON_NEGATIVE)?.setTextColor(accentColor(context))
+            show()
         }
 }

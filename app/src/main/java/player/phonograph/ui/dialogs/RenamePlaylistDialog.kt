@@ -43,8 +43,9 @@ class RenamePlaylistDialog : DialogFragment() {
                 }
             }.apply {
                 // set button color
-                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(requireActivity()))
-                getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(requireActivity()))
+                val accentColor = accentColor()
+                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
+                getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
             }
         return dialog
     }
