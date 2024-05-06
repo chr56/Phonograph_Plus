@@ -76,7 +76,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 primaryColorFlow(this@ThemeActivity).collect {
                     ThemeSetting.updateCachedPrimaryColor(this@ThemeActivity)
-                    if (firstTime) firstTime = false else requireRecreate = true
+                    requireRecreate = true
                 }
             }
         }
@@ -84,7 +84,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 accentColorFlow(this@ThemeActivity).collect {
                     ThemeSetting.updateCachedAccentColor(this@ThemeActivity)
-                    if (firstTime) firstTime = false else requireRecreate = true
+                    requireRecreate = true
                 }
             }
         }
@@ -95,7 +95,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         super.onResume()
         if (requireRecreate) {
             requireRecreate = false
-            postRecreate()
+            if (firstTime) firstTime = false else postRecreate()
         }
     }
 
