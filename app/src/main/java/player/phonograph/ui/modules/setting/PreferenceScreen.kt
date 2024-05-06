@@ -448,9 +448,9 @@ private fun GeneralThemeSetting() {
     val context = LocalContext.current
     val themeValues: List<String> = listOf(
         THEME_AUTO,
+        THEME_LIGHT,
         THEME_DARK,
         THEME_BLACK,
-        THEME_LIGHT
     )
     val themeNames: List<Int> = listOf(
         R.string.auto_theme_name,
