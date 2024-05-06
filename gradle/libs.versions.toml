@@ -18,7 +18,7 @@ coil = "2.6.0"
 koin = "3.5.6"
 materialDialogs = "3.3.0"
 materialTools = "0.2.1"
-themeUtil = "0.1.0"
+themeUtil = "0.2.0"
 room = "2.6.1"
 
 [libraries]
