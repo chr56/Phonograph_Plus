@@ -38,6 +38,7 @@ import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
 import player.phonograph.ui.components.viewcreater.titlePanel
 import player.phonograph.util.theme.primaryColor
+import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.setMargins
@@ -361,7 +362,7 @@ class StarterActivity : AppCompatActivity() {
             .setOnCancelListener {
                 context.finish()
             }
-            .create()
+            .create().tintButtons()
     }
 
     companion object {

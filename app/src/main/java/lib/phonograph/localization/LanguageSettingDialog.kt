@@ -6,12 +6,13 @@ package lib.phonograph.localization
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import player.phonograph.R
+import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.DialogFragment
 import android.app.Dialog
 import android.os.Bundle
-import java.util.*
+import java.util.Locale
 
 class LanguageSettingDialog : DialogFragment() {
 
@@ -45,6 +46,7 @@ class LanguageSettingDialog : DialogFragment() {
                 LocalizationStore.save(requireContext(), locale)
             }
             .create()
+            .tintButtons()
         return dialog
     }
 

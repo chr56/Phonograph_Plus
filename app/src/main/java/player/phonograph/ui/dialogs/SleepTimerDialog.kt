@@ -14,6 +14,7 @@ import player.phonograph.service.util.SleepTimer
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.theme.accentColor
+import player.phonograph.util.theme.tintAlertDialogButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import android.app.Dialog
@@ -46,14 +47,10 @@ class SleepTimerDialog : DialogFragment() {
                 it.dismiss()
             }
             .setView(R.layout.dialog_sleep_timer)
-            .create().also {
+            .create().apply {
                 timerUpdater = TimerUpdater()
-                it.setOnShowListener { alterDialog ->
-                    alterDialog as AlertDialog
-                    val accentColor = accentColor()
-                    alterDialog.getButton(DialogInterface.BUTTON_POSITIVE)?.setTextColor(accentColor)
-                    alterDialog.getButton(DialogInterface.BUTTON_NEGATIVE)?.setTextColor(accentColor)
-
+                setOnShowListener {
+                    tintAlertDialogButtons(it as AlertDialog)
                     val service = MusicPlayerRemote.musicService ?: return@setOnShowListener
                     if (SleepTimer.instance(service).hasTimer()) timerUpdater.start()
                 }

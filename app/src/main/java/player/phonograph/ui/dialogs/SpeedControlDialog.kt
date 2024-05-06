@@ -8,6 +8,7 @@ import player.phonograph.R
 import player.phonograph.databinding.DialogSpeedControlBinding
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicService
+import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
@@ -41,7 +42,7 @@ class SpeedControlDialog : DialogFragment() {
 
         if (service == null) {
             Log.e(TAG, "Service unavailable!")
-            return AlertDialog.Builder(requireContext()).setMessage(R.string.not_available_now).create()
+            return AlertDialog.Builder(requireContext()).setMessage(R.string.not_available_now).create().tintButtons()
         }
 
         _binding = DialogSpeedControlBinding.inflate(layoutInflater)
@@ -61,7 +62,7 @@ class SpeedControlDialog : DialogFragment() {
                 speedData.value = 1.0f
                 applySpeed()
             }
-            .create()
+            .create().tintButtons()
     }
 
     override fun onDismiss(dialog: DialogInterface) {

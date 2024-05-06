@@ -5,11 +5,10 @@
 package player.phonograph.misc
 
 import player.phonograph.R
-import player.phonograph.settings.ThemeSetting
+import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import android.content.ContentUris
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
@@ -48,10 +47,5 @@ object RingtoneManager {
                 }
             )
         }
-        .create().apply {
-            val accentColor = ThemeSetting.accentColor(context)
-            getButton(DialogInterface.BUTTON_POSITIVE)?.setTextColor(accentColor)
-            getButton(DialogInterface.BUTTON_NEGATIVE)?.setTextColor(accentColor)
-            show()
-        }
+        .create().tintButtons()
 }

@@ -122,7 +122,7 @@ class BackupImportDialog : DialogFragment() {
             .setPositiveButton(context.getString(R.string.action_reboot)) { _, _ ->
                 Reboot.reboot(context)
             }
-            .create()
+            .create().tintButtons()
 
     private fun terminateBackup() = Backup.Import.endImportBackupFromArchive(sessionId)
 }

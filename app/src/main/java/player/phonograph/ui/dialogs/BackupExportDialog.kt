@@ -87,7 +87,7 @@ class BackupExportDialog : DialogFragment() {
             .setTitle(R.string.action_backup)
             .setMessage(context.getString(if (success) R.string.completed else R.string.failed))
             .setPositiveButton(android.R.string.ok) { _, _ -> }
-            .create()
+            .create().tintButtons()
 
 
     companion object {

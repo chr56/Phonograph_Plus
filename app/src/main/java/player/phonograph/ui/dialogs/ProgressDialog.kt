@@ -7,6 +7,7 @@ package player.phonograph.ui.dialogs
 import player.phonograph.R
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.Progress
+import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.DialogFragment
@@ -31,7 +32,7 @@ class ProgressDialog : DialogFragment() {
             .setTitle(title)
             .setView(setUpView(requireContext()))
             .setCancelable(false)
-            .create()
+            .create().tintButtons()
         return dialog
     }
 

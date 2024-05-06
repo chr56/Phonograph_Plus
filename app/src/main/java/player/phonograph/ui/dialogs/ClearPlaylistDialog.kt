@@ -220,7 +220,7 @@ class ClearPlaylistDialog : DialogFragment() {
                         }
                     }
                     .setNegativeButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
-                    .create()
+                    .create().tintButtons()
 
                 dialog.also {
                     it.getButton(DialogInterface.BUTTON_POSITIVE)

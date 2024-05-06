@@ -9,6 +9,7 @@ import player.phonograph.mechanism.playlist.PlaylistEdit
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.util.parcelableArrayList
+import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
@@ -43,7 +44,7 @@ class AddToPlaylistDialog : DialogFragment() {
                     }
                 }
             }
-            .create()
+            .create().tintButtons()
     }
 
     companion object {
