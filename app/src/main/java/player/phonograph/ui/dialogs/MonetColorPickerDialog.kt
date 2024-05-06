@@ -28,7 +28,9 @@ import androidx.compose.ui.unit.dp
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MonetColorPickerDialog : ComposeViewDialogFragment() {
     private var mode: Int = -1
@@ -96,7 +98,9 @@ private fun MonetColorPickerDialogContent(
                 ColorPalette.MODE_MONET_ACCENT_COLOR  -> Setting(context)[Keys.monetPaletteAccentColor].edit { palette.value }
             }
             onDismiss()
-            (context as? Activity)?.recreate()
+            withContext(Dispatchers.IO) {
+                (context as? Activity)?.recreate()
+            }
         }
     }
 }
