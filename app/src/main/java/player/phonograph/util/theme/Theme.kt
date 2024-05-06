@@ -97,53 +97,6 @@ fun toggleTheme(context: Context): Boolean {
     }
 }
 
-/**
- * observe color changed
- * @param onChanged callback (primary color & accent color)
- */
-suspend fun observeThemeColors(context: Context, onChanged: (Int, Int) -> Unit) {
-    val setting = Setting(context.applicationContext)
-    val mode = setting[Keys.enableMonet]
-    val flowSelectedPrimaryColor =
-        setting[Keys.selectedPrimaryColor].flow
-    val flowSelectedAccentColor =
-        setting[Keys.selectedAccentColor].flow
-    val flowMonetPalettePrimaryColor =
-        setting[Keys.monetPalettePrimaryColor].flow
-    val flowMonetPaletteAccentColor =
-        setting[Keys.monetPaletteAccentColor].flow
-    withContext(Dispatchers.IO) {
-        mode.flow.collect {
-            delay(250)
-            onChanged(ThemeSetting.updateCachedPrimaryColor(context), ThemeSetting.updateCachedAccentColor(context))
-        }
-        flowSelectedPrimaryColor.collect {
-            delay(100)
-            if (mode.data) {
-                onChanged(ThemeSetting.updateCachedPrimaryColor(context), ThemeSetting.peekCachedAccentColor())
-            }
-        }
-        flowSelectedAccentColor.collect {
-            delay(100)
-            if (mode.data) {
-                onChanged(ThemeSetting.peekCachedPrimaryColor(), ThemeSetting.updateCachedAccentColor(context))
-            }
-        }
-        flowMonetPalettePrimaryColor.collect {
-            delay(100)
-            if (mode.data) {
-                onChanged(ThemeSetting.updateCachedPrimaryColor(context), ThemeSetting.peekCachedAccentColor())
-            }
-        }
-        flowMonetPaletteAccentColor.collect {
-            delay(100)
-            if (mode.data) {
-                onChanged(ThemeSetting.peekCachedPrimaryColor(), ThemeSetting.updateCachedAccentColor(context))
-            }
-        }
-    }
-}
-
 private fun colorFlow(context: Context, monetPalette: PrimitiveKey<Int>, selected: PrimitiveKey<Int>): Flow<Int> {
     val preferencesFlow = Setting.settingsDatastore(context).data
     return preferencesFlow.map { preference ->

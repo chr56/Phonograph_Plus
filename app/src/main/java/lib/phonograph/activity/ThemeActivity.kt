@@ -82,6 +82,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 Setting(this@ThemeActivity)[Keys.theme].flow.collect {
+                    ThemeSetting.updateThemeStyle(this@ThemeActivity)
                     setTheme(ThemeSetting.themeStyle(this@ThemeActivity))
                     requireRecreate = true
                 }
@@ -91,6 +92,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 primaryColorFlow(this@ThemeActivity).collect {
                     primaryColor = it
+                    ThemeSetting.updateCachedPrimaryColor(this@ThemeActivity)
                     requireRecreate = true
                 }
             }
@@ -99,6 +101,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 accentColorFlow(this@ThemeActivity).collect {
                     accentColor = it
+                    ThemeSetting.updateCachedAccentColor(this@ThemeActivity)
                     requireRecreate = true
                 }
             }
