@@ -64,7 +64,7 @@ class MultiSelectionController<I>(
                 else IntRange(lastSelectedPosition, datasetPosition)
             for (i in range) {
                 val item = linkedAdapter.getItem(i)
-                if (item != null) {
+                if (item != null && !_selected.contains(item)) {
                     _selected.add(item)
                 }
             }
