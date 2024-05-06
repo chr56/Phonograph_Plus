@@ -13,6 +13,7 @@ import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayConfig
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
+import player.phonograph.util.theme.themeIconColor
 import util.theme.color.primaryTextColor
 import androidx.appcompat.app.AppCompatActivity
 import android.graphics.drawable.Drawable
@@ -47,7 +48,7 @@ class SongCollectionDisplayAdapter(
         override fun getIcon(item: SongCollection): Drawable? {
             val context = itemView.context
             return context.getTintedDrawable(
-                R.drawable.ic_folder_white_24dp, context.primaryTextColor(context.nightMode)
+                R.drawable.ic_folder_white_24dp, themeIconColor(context)
             )
         }
 
