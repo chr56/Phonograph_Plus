@@ -77,7 +77,8 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="?cardBackgroundColor">
 
                 <!--This is necessary for the drag sorting to work at the top-->
                 <View
