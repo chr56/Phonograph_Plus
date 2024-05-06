@@ -16,7 +16,7 @@ import kotlin.math.roundToInt
 
 private fun Color.hsvShift(by: Float): Color {
     val hsv = floatArrayOf(0f, 0f, 0f)
-    RGBToHSV(red.roundToInt(), green.roundToInt(), blue.roundToInt(), hsv)
+    RGBToHSV((red * 255).toInt(), (green * 255).toInt(), (blue * 255).toInt(), hsv)
     return Color.hsv(hsv[0], hsv[1], hsv[2] * by)
 }
 
