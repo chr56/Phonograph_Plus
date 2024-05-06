@@ -5,7 +5,7 @@
 package player.phonograph.util.theme
 
 import player.phonograph.R
-import util.theme.internal.resolveColor
+import androidx.annotation.AttrRes
 import androidx.annotation.CheckResult
 import androidx.annotation.ColorInt
 import android.content.Context
@@ -51,3 +51,13 @@ fun themeFloatingBackgroundColor(context: Context) =
         com.google.android.material.R.attr.colorBackgroundFloating,
         context.getColor(R.color.card_background_lightblack)
     )
+
+@ColorInt
+fun Context.resolveColor(@AttrRes attr: Int, @ColorInt fallbackColor: Int): Int {
+    val a = theme.obtainStyledAttributes(intArrayOf(attr))
+    return try {
+        a.getColor(0, fallbackColor)
+    } finally {
+        a.recycle()
+    }
+}

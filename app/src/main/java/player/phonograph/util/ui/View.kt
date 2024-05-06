@@ -7,7 +7,7 @@ package player.phonograph.util.ui
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import util.theme.color.primaryTextColor
 import util.theme.color.withAlpha
-import util.theme.internal.resolveColor
+import player.phonograph.util.theme.resolveColor
 import android.content.Context
 import android.util.TypedValue
 import android.view.View
