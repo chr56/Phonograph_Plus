@@ -6,9 +6,8 @@ package player.phonograph.ui.components.popup
 
 import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.theme.nightMode
+import player.phonograph.util.theme.themeFloatingBackgroundColor
 import util.theme.color.secondaryTextColor
-import util.theme.internal.resolveColor
-import androidx.appcompat.R
 import androidx.viewbinding.ViewBinding
 import android.content.Context
 import android.content.res.ColorStateList
@@ -26,7 +25,7 @@ abstract class OptionsPopup protected constructor(
 
     init {
         animationStyle = android.R.style.Animation_Dialog
-        super.setBackgroundDrawable(ColorDrawable(backgroundColor(viewBinding.root.context)))
+        super.setBackgroundDrawable(ColorDrawable(themeFloatingBackgroundColor(viewBinding.root.context)))
     }
 
     override fun showAtLocation(parent: View?, gravity: Int, x: Int, y: Int) {
@@ -40,13 +39,6 @@ abstract class OptionsPopup protected constructor(
     }
 
     protected open fun onShow() {}
-
-    protected fun backgroundColor(context: Context): Int =
-        context.resolveColor(
-            R.attr.colorBackgroundFloating,
-            context.getColor(player.phonograph.R.color.card_background_lightdark)
-        )
-
 
     protected var accentColor: Int = 0
         private set

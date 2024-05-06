@@ -16,6 +16,7 @@ import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
+import player.phonograph.util.theme.themeFooterColor
 import util.theme.color.isColorLight
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryDisabledTextColor
@@ -75,8 +76,9 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         binding.setUpShuffleButton { MusicPlayerRemote.toggleShuffleMode() }
         binding.setUpRepeatButton { MusicPlayerRemote.cycleRepeatMode() }
 
-        _backgroundColor.value = context.getColor(R.color.footer_background_lightdark)
-        calculateColor(context, context.getColor(R.color.footer_background_lightdark))
+        val footerColor = themeFooterColor(requireContext())
+        _backgroundColor.value = footerColor
+        calculateColor(context, footerColor)
         lightColor = context.primaryTextColor(true)
 
         binding.setUpPlayPauseButton(context)

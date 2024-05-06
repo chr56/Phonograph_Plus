@@ -18,7 +18,8 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.util.text.makeSectionName
-import util.theme.internal.resolveColor
+import player.phonograph.util.theme.themeCardBackgroundColor
+import player.phonograph.util.theme.themeIconColor
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import android.content.Context
@@ -57,10 +58,7 @@ class PlaylistDisplayAdapter(
                     itemView.context.resources.getDimensionPixelSize(R.dimen.list_item_image_icon_padding)
                 image.setPadding(iconPadding, iconPadding, iconPadding, iconPadding)
                 image.setColorFilter(
-                    itemView.context.resolveColor(
-                        R.attr.iconColor,
-                        itemView.context.getColor(R.color.icon_lightdark)
-                    ), PorterDuff.Mode.SRC_IN
+                    themeIconColor(itemView.context), PorterDuff.Mode.SRC_IN
                 )
             }
         }
@@ -101,12 +99,7 @@ class PlaylistDisplayAdapter(
             if (shortSeparator != null) {
                 shortSeparator!!.visibility = View.GONE
             }
-            itemView.setBackgroundColor(
-                activity.resolveColor(
-                    androidx.cardview.R.attr.cardBackgroundColor,
-                    activity.getColor(R.color.card_background_lightdark)
-                )
-            )
+            itemView.setBackgroundColor(themeCardBackgroundColor(activity))
             itemView.elevation =
                 activity.resources.getDimensionPixelSize(R.dimen.card_elevation).toFloat()
         }

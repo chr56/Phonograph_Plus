@@ -13,9 +13,10 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
-import player.phonograph.util.theme.isWindowBackgroundDarkSafe
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.requireDarkenColor
+import player.phonograph.util.theme.themeFooterColor
+import player.phonograph.util.theme.themeIconColor
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.ui.backgroundColorTransitionAnimator
 import player.phonograph.util.ui.convertDpToPixel
@@ -25,7 +26,6 @@ import util.theme.color.darkenColor
 import util.theme.color.lightenColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
-import util.theme.internal.resolveColor
 import util.theme.view.menu.applyOverflowMenuTint
 import util.theme.view.menu.tintMenuActionIcons
 import util.theme.view.toolbar.setToolbarTextColor
@@ -172,7 +172,7 @@ class FlatPlayerFragment :
 
         private fun textColor(@ColorInt color: Int): Int {
             val context = fragment.requireContext()
-            val defaultFooterColor = fragment.resources.getColor(R.color.footer_background_lightdark, null)
+            val defaultFooterColor = themeFooterColor(fragment.requireContext())
             val nightMode = context.nightMode
             return if (color == defaultFooterColor) context.secondaryTextColor(nightMode)
             else if (nightMode) lightenColor(color) else darkenColor(color)
@@ -231,11 +231,7 @@ class FlatPlayerFragment :
                 shortSeparator.visibility = View.GONE
                 image.scaleType = ImageView.ScaleType.CENTER
                 image.setColorFilter(
-                    image.context.resolveColor(
-                        R.attr.iconColor,
-                        fragment.requireContext()
-                            .secondaryTextColor(!isWindowBackgroundDarkSafe(fragment.requireActivity()))
-                    ),
+                    themeIconColor(image.context),
                     PorterDuff.Mode.SRC_IN
                 )
                 image.setImageResource(R.drawable.ic_volume_up_white_24dp)

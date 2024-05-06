@@ -4,8 +4,8 @@
 
 package player.phonograph.coil.target
 
-import player.phonograph.R
 import player.phonograph.coil.target.PaletteUtil.getColor
+import player.phonograph.util.theme.themeFooterColor
 import androidx.palette.graphics.Palette
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -20,7 +20,7 @@ import kotlinx.coroutines.yield
 
 open class PaletteTargetBuilder(protected open val defaultColor: Int) {
 
-    constructor(context: Context) : this(context.getColor(R.color.footer_background_lightdark))
+    constructor(context: Context) : this(themeFooterColor(context))
 
     private var onSuccess: (result: Drawable, paletteColor: Int) -> Unit = { _, _ -> }
     fun onResourceReady(block: (result: Drawable, paletteColor: Int) -> Unit): PaletteTargetBuilder =

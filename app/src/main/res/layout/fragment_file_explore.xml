@@ -8,7 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/navigation_header"
         android:elevation="2dp"
-        android:background="@color/card_background_lightdark"
+        android:background="?cardBackgroundColor"
         android:layout_gravity="top"
         android:layout_width="match_parent"
         android:layout_height="@dimen/path_navigation_header_height">

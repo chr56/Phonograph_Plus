@@ -24,6 +24,7 @@ import player.phonograph.util.reportError
 import player.phonograph.util.text.lyricsTimestamp
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
+import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.warning
 import util.theme.color.isNightMode
 import util.theme.color.lightenColor
@@ -322,7 +323,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
     private fun correctChipBackgroundColor(checked: Boolean) = ColorStateList.valueOf(
         if (checked) lightenColor(primaryColor())
-        else resources.getColor(R.color.footer_background_lightdark, requireContext().theme)
+        else themeFooterColor(requireContext())
     )
 
     private fun correctChipTextColor(checked: Boolean) = ColorStateList.valueOf(
@@ -339,7 +340,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
             ), intArrayOf(
                 lightenColor(primaryColor()),
                 lightenColor(primaryColor()),
-                resources.getColor(R.color.footer_background_lightdark, requireContext().theme)
+                themeFooterColor(requireContext())
             )
         )
     }

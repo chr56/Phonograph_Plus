@@ -14,7 +14,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.util.theme.getTintedDrawable
-import util.theme.internal.resolveColor
+import player.phonograph.util.theme.themeIconColor
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import android.annotation.SuppressLint
@@ -102,7 +102,7 @@ class FilesPageAdapter(
             context.getTintedDrawable(R.drawable.ic_folder_white_24dp, color(context))
 
         private fun color(context: Context):Int =
-            context.resolveColor(R.attr.iconColor, context.getColor(R.color.icon_lightdark))
+            themeIconColor(context)
     }
 
     private var loadCover: Boolean = false

@@ -15,6 +15,9 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.requireDarkenColor
+import player.phonograph.util.theme.themeCardBackgroundColor
+import player.phonograph.util.theme.themeFooterColor
+import player.phonograph.util.theme.themeIconColor
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.ui.backgroundColorTransitionAnimator
 import player.phonograph.util.ui.convertDpToPixel
@@ -24,7 +27,6 @@ import util.theme.color.darkenColor
 import util.theme.color.lightenColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
-import util.theme.internal.resolveColor
 import util.theme.view.menu.applyOverflowMenuTint
 import util.theme.view.menu.tintMenuActionIcons
 import util.theme.view.toolbar.setToolbarTextColor
@@ -100,10 +102,7 @@ class CardPlayerFragment :
 
         // for some reason the xml attribute doesn't get applied here.
         viewBinding.playingQueueCard.setCardBackgroundColor(
-            requireContext().resolveColor(
-                androidx.cardview.R.attr.cardBackgroundColor,
-                requireContext().getColor(R.color.card_background_lightdark)
-            )
+            themeCardBackgroundColor(requireContext())
         )
         observeState()
     }
@@ -194,7 +193,7 @@ class CardPlayerFragment :
 
         private fun textColor(@ColorInt color: Int): Int {
             val context = fragment.requireContext()
-            val defaultFooterColor = fragment.resources.getColor(R.color.footer_background_lightdark, null)
+            val defaultFooterColor = themeFooterColor(fragment.requireContext())
             val nightMode = context.nightMode
             return if (color == defaultFooterColor) context.secondaryTextColor(nightMode)
             else if (nightMode) lightenColor(color) else darkenColor(color)
@@ -277,10 +276,7 @@ class CardPlayerFragment :
                 shortSeparator.visibility = View.GONE
                 image.scaleType = ImageView.ScaleType.CENTER
                 image.setColorFilter(
-                    image.context.resolveColor(
-                        R.attr.iconColor,
-                        fragment.requireContext().secondaryTextColor(image.context.nightMode)
-                    ),
+                    themeIconColor(image.context),
                     PorterDuff.Mode.SRC_IN
                 )
                 image.setImageResource(R.drawable.ic_volume_up_white_24dp)

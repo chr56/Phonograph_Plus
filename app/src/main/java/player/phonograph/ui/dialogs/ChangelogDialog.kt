@@ -13,7 +13,7 @@ import player.phonograph.util.text.changelogCSS
 import player.phonograph.util.text.changelogHTML
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.nightMode
-import util.theme.internal.resolveColor
+import player.phonograph.util.theme.themeCardBackgroundColor
 import androidx.fragment.app.DialogFragment
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -91,10 +91,7 @@ class ChangelogDialog : DialogFragment() {
 
     private fun generateChangelogHTML(content: String, accentColor: Int): String {
         val backgroundColor =
-            requireContext().resolveColor(
-                com.afollestad.materialdialogs.R.attr.md_background_color,
-                Color.parseColor(if (requireContext().nightMode) "#424242" else "#ffffff")
-            )
+            themeCardBackgroundColor(requireContext())
 
         val textColor =
             Color.parseColor(if (requireContext().nightMode) "#ffffff" else "#000000")

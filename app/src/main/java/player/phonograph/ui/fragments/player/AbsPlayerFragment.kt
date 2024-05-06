@@ -27,6 +27,7 @@ import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.warning
 import util.theme.color.toolbarIconColor
@@ -87,7 +88,7 @@ abstract class AbsPlayerFragment :
             childFragmentManager.findFragmentById(R.id.playback_controls_fragment) as AbsPlayerControllerFragment<*>
 
         observeState()
-        lastPaletteColor = resources.getColor(R.color.footer_background_lightdark, null)
+        lastPaletteColor = themeFooterColor(view.context)
     }
 
     private fun initRecyclerView() {
