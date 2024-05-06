@@ -457,11 +457,11 @@ private fun GeneralThemeSetting() {
         THEME_DARK,
     )
     val themeNames: List<Int> = listOf(
-        R.string.auto_theme_name,
-        R.string.auto_theme_name,
-        R.string.light_theme_name,
-        R.string.black_theme_name,
-        R.string.dark_theme_name,
+        R.string.theme_name_auto_lightblack,
+        R.string.theme_name_auto_lightdark,
+        R.string.theme_name_light,
+        R.string.theme_name_black,
+        R.string.theme_name_dark,
     )
     ListPref(
         options = OptionGroupModel(THEME, themeValues, themeNames),

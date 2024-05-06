@@ -84,6 +84,11 @@
     <string name="dark_theme_name">暗沉</string>
     <string name="black_theme_name">純黑</string>
     <string name="auto_theme_name">自動偵測</string>
+    <string name="theme_name_auto_lightblack">"自動偵測 (明亮/純黑)"</string>
+    <string name="theme_name_auto_lightdark">"自動偵測 (明亮/暗沉)"</string>
+    <string name="theme_name_light">明亮</string>
+    <string name="theme_name_black">純黑</string>
+    <string name="theme_name_dark">暗沉</string>
     <string name="always">永遠</string>
     <string name="only_on_wifi">只在有 Wi-Fi 連接時</string>
     <string name="never">永不</string>
