@@ -4,25 +4,33 @@
 
 package player.phonograph.util.theme
 
+import lib.phonograph.misc.MonetColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.settings.GeneralTheme
 import player.phonograph.settings.Keys
+import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
 import player.phonograph.settings.THEME_AUTO
 import player.phonograph.settings.THEME_BLACK
 import player.phonograph.settings.THEME_DARK
 import player.phonograph.settings.THEME_LIGHT
 import player.phonograph.settings.ThemeSetting
+import util.theme.color.darkenColor
 import androidx.annotation.CheckResult
 import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
 import androidx.fragment.app.Fragment
+import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 @JvmName("Context_PrimaryColor")
@@ -133,4 +141,30 @@ suspend fun observeThemeColors(context: Context, onChanged: (Int, Int) -> Unit) 
             }
         }
     }
+}
+
+private fun colorFlow(context: Context, monetPalette: PrimitiveKey<Int>, selected: PrimitiveKey<Int>): Flow<Int> {
+    val preferencesFlow = Setting.settingsDatastore(context).data
+    return preferencesFlow.map { preference ->
+        val enableMonet = preference[Keys.enableMonet.preferenceKey] ?: Keys.enableMonet.defaultValue()
+        if (SDK_INT >= VERSION_CODES.S && enableMonet) {
+            MonetColor.MonetColorPalette(
+                preference[monetPalette.preferenceKey] ?: monetPalette.defaultValue()
+            ).color(context)
+        } else {
+            preference[selected.preferenceKey] ?: selected.defaultValue()
+        }
+    }
+}
+
+fun primaryColorFlow(context: Context): Flow<Int> =
+    colorFlow(context, Keys.monetPalettePrimaryColor, Keys.selectedPrimaryColor)
+
+fun accentColorFlow(context: Context): Flow<Int> =
+    colorFlow(context, Keys.monetPaletteAccentColor, Keys.selectedAccentColor)
+
+fun updateAllSystemUIColors(activity: Activity, color: Int) = with(activity) {
+    updateStatusbarColor(color)
+    updateNavigationbarColor(color)
+    updateTaskDescriptionColor(color)
 }

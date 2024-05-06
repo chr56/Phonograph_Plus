@@ -20,6 +20,8 @@ import player.phonograph.ui.modules.web.LastFmDialog
 import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.ui.modules.web.WebSearchTool
 import player.phonograph.util.debug
+import player.phonograph.util.theme.updateAllSystemUIColors
+import util.theme.color.darkenColor
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
@@ -37,10 +39,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,7 +59,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -78,8 +81,7 @@ class TagBrowserActivity :
         super.onCreate(savedInstanceState)
 
         setContent {
-            val highlightColor by primaryColor.collectAsState()
-            TagEditor(viewModel, highlightColor, onBackPressedDispatcher, webSearchTool)
+            TagEditor(viewModel, onBackPressedDispatcher, webSearchTool)
         }
         onBackPressedDispatcher.addCallback {
             if (viewModel.pendingEditRequests.isNotEmpty()) {
@@ -91,7 +93,7 @@ class TagBrowserActivity :
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.color.collect { color ->
-                    if (color != null) primaryColor.update { color }
+                    if (color != null) updateAllSystemUIColors(this@TagBrowserActivity, darkenColor(color.toArgb()))
                 }
             }
         }
@@ -126,11 +128,11 @@ class TagBrowserActivity :
 @Composable
 private fun TagEditor(
     viewModel: TagBrowserViewModel,
-    highlightColor: Color,
     onBackPressedDispatcher: OnBackPressedDispatcher,
     webSearchTool: WebSearchTool,
 ) {
-    PhonographTheme(highlightColor) {
+    val highlightColorState: State<Color?> = viewModel.color.collectAsState()
+    PhonographTheme(highlightColorState) {
         val scaffoldState = rememberScaffoldState()
         val editable by viewModel.editable.collectAsState()
         Scaffold(

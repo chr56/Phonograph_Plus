@@ -26,9 +26,7 @@ class WebSearchActivity : ComposeThemeActivity() {
         viewModel.selectorMode = intent.getBooleanExtra(EXTRA_SELECTOR_MODE, false)
 
         setContent {
-
-            val highlightColor by primaryColor.collectAsState()
-            PhonographTheme(highlightColor) {
+            PhonographTheme {
                 val scaffoldState = rememberScaffoldState()
                 val page by viewModel.navigator.currentPage.collectAsState()
                 WebSearch(viewModel, scaffoldState, page)

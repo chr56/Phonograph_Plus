@@ -11,6 +11,7 @@ import player.phonograph.util.theme.observeThemeColors
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.restoreNotFullsScreen
 import player.phonograph.util.theme.setFullScreenAndIncludeStatusBar
+import player.phonograph.util.theme.updateAllSystemUIColors
 import player.phonograph.util.theme.updateNavigationbarColor
 import player.phonograph.util.theme.updateStatusbarColor
 import player.phonograph.util.theme.updateTaskDescriptionColor
@@ -104,11 +105,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     // System UI Colors
     //
 
-    protected fun updateSystemUIColors(color: Int) {
-        updateStatusbarColor(color)
-        updateNavigationbarColor(color)
-        updateTaskDescriptionColor(color)
-    }
+    protected fun updateSystemUIColors(color: Int) = updateAllSystemUIColors(this, color)
 
     //
     // User Interface
