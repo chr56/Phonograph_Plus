@@ -137,12 +137,13 @@ const val PLAYLIST_OPS_BEHAVIOUR_AUTO = "auto"
 const val PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF = "force_saf"
 const val PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY = "force_legacy"
 // Theme
-const val THEME_AUTO = "auto"
-const val THEME_DARK = "dark"
-const val THEME_BLACK = "black"
+const val THEME_AUTO_LIGHTBLACK = "auto_lightblack"
+const val THEME_AUTO_LIGHTDARK = "auto_lightdark"
 const val THEME_LIGHT = "light"
+const val THEME_BLACK = "black"
+const val THEME_DARK = "dark"
 
-@StringDef(THEME_AUTO, THEME_DARK, THEME_BLACK, THEME_LIGHT)
+@StringDef(THEME_AUTO_LIGHTBLACK, THEME_AUTO_LIGHTDARK, THEME_LIGHT, THEME_BLACK, THEME_DARK)
 @Retention(AnnotationRetention.SOURCE)
 annotation class GeneralTheme
 //endregion

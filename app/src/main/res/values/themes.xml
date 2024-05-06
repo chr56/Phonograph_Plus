@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Phonograph.Auto" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
+    <style name="Theme.Phonograph.Auto.LightDark" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
+        <item name="android:windowBackground">@color/background_lightdark</item>
+        <item name="md_background_color">@color/background_lightdark</item>
 
         <item name="md_corner_radius">0dp</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
@@ -29,6 +31,8 @@
     </style>
 
     <style name="Theme.Phonograph.Dark" parent="Theme.MaterialComponents.NoActionBar.Bridge">
+        <item name="android:windowBackground">@color/material_grey_850</item>
+        <item name="md_background_color">@color/material_grey_850</item>
 
         <item name="md_corner_radius">0dp</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
@@ -57,6 +61,8 @@
     </style>
 
     <style name="Theme.Phonograph.Light" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+        <item name="android:windowBackground">@color/material_grey_50</item>
+        <item name="md_background_color">@color/material_grey_50</item>
 
         <item name="md_corner_radius">0dp</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
@@ -84,9 +90,19 @@
         <item name="colorControlActivated">@color/md_grey_700</item>
     </style>
 
+    <style name="Theme.Phonograph.Auto.LightBlack" parent="@style/Theme.Phonograph.Auto.LightDark">
+        <item name="android:windowBackground">@color/background_lightblack</item>
+        <item name="md_background_color">@color/background_lightblack</item>
+
+        <item name="cardBackgroundColor">@color/card_background_lightblack</item>
+        <item name="colorBackgroundFloating">@color/card_background_lightblack</item>
+        <item name="defaultFooterColor">@color/footer_background_lightblack</item>
+        <item name="dividerColor">@color/divider_lightblack</item>
+    </style>
+
     <style name="Theme.Phonograph.Black" parent="@style/Theme.Phonograph.Dark">
         <item name="android:windowBackground">@android:color/black</item>
-        <item name="md_background_color">@color/md_grey_900</item>
+        <item name="md_background_color">@android:color/black</item>
 
         <item name="cardBackgroundColor">@color/md_grey_900</item>
         <item name="colorBackgroundFloating">@color/md_grey_900</item>
@@ -101,7 +117,7 @@
         <item name="colorAccent">@color/md_orange_500</item>
     </style>
 
-    <style name="Theme.Phonograph.DialogActivity.Auto" parent="Theme.Phonograph.Auto">
+    <style name="Theme.Phonograph.DialogActivity.Auto" parent="Theme.Phonograph.Auto.LightDark">
         <item name="android:windowNoTitle">true</item>
         <item name="android:title">@null</item>
         <item name="android:windowIsTranslucent">true</item>

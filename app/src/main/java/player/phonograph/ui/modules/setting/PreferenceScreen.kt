@@ -450,16 +450,18 @@ private fun LibraryCategoriesSetting() {
 private fun GeneralThemeSetting() {
     val context = LocalContext.current
     val themeValues: List<String> = listOf(
-        THEME_AUTO,
+        THEME_AUTO_LIGHTBLACK,
+        THEME_AUTO_LIGHTDARK,
         THEME_LIGHT,
-        THEME_DARK,
         THEME_BLACK,
+        THEME_DARK,
     )
     val themeNames: List<Int> = listOf(
         R.string.auto_theme_name,
+        R.string.auto_theme_name,
         R.string.light_theme_name,
-        R.string.dark_theme_name,
         R.string.black_theme_name,
+        R.string.dark_theme_name,
     )
     ListPref(
         options = OptionGroupModel(THEME, themeValues, themeNames),

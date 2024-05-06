@@ -11,12 +11,12 @@ import player.phonograph.settings.GeneralTheme
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
-import player.phonograph.settings.THEME_AUTO
+import player.phonograph.settings.THEME_AUTO_LIGHTBLACK
+import player.phonograph.settings.THEME_AUTO_LIGHTDARK
 import player.phonograph.settings.THEME_BLACK
 import player.phonograph.settings.THEME_DARK
 import player.phonograph.settings.THEME_LIGHT
 import player.phonograph.settings.ThemeSetting
-import util.theme.color.darkenColor
 import androidx.annotation.CheckResult
 import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
@@ -57,11 +57,11 @@ val Context.nightMode: Boolean get() = isNightMode(this)
 
 private fun isNightMode(context: Context): Boolean =
     when (Setting(context)[Keys.theme].data) {
-        THEME_DARK  -> true
-        THEME_BLACK -> true
-        THEME_LIGHT -> false
-        THEME_AUTO  -> systemDarkmode(context.resources)
-        else        -> false
+        THEME_DARK                                  -> true
+        THEME_BLACK                                 -> true
+        THEME_LIGHT                                 -> false
+        THEME_AUTO_LIGHTBLACK, THEME_AUTO_LIGHTDARK -> systemDarkmode(context.resources)
+        else                                        -> false
     }
 
 fun systemDarkmode(resources: Resources): Boolean =
@@ -75,17 +75,18 @@ fun systemDarkmode(resources: Resources): Boolean =
 @StyleRes
 fun parseToStyleRes(@GeneralTheme theme: String): Int =
     when (theme) {
-        THEME_AUTO  -> R.style.Theme_Phonograph_Auto
-        THEME_DARK  -> R.style.Theme_Phonograph_Dark
-        THEME_BLACK -> R.style.Theme_Phonograph_Black
-        THEME_LIGHT -> R.style.Theme_Phonograph_Light
-        else        -> R.style.Theme_Phonograph_Auto
+        THEME_AUTO_LIGHTBLACK -> R.style.Theme_Phonograph_Auto_LightBlack
+        THEME_AUTO_LIGHTDARK  -> R.style.Theme_Phonograph_Auto_LightDark
+        THEME_LIGHT           -> R.style.Theme_Phonograph_Light
+        THEME_BLACK           -> R.style.Theme_Phonograph_Black
+        THEME_DARK            -> R.style.Theme_Phonograph_Dark
+        else                  -> R.style.Theme_Phonograph_Auto_LightBlack
     }
 
 fun toggleTheme(context: Context): Boolean {
     val preference = Setting(context)[Keys.theme]
     val theme = preference.data
-    return if (theme != THEME_AUTO) {
+    return if (theme != THEME_AUTO_LIGHTBLACK && theme != THEME_AUTO_LIGHTDARK) {
         when (theme) {
             THEME_DARK, THEME_BLACK -> preference.data = THEME_LIGHT
             THEME_LIGHT             -> preference.data = THEME_DARK
