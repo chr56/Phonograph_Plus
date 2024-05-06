@@ -8,8 +8,6 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.theme.*
-import util.theme.color.primaryTextColor
-import util.theme.color.secondaryTextColor
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -20,7 +18,6 @@ import android.os.Looper
 import android.view.View
 import android.view.animation.PathInterpolator
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 /**
@@ -30,11 +27,7 @@ import kotlinx.coroutines.launch
 abstract class ThemeActivity : MultiLanguageActivity() {
     private var createTime: Long = -1
 
-    protected var primaryColor: Int = 0
-    protected var accentColor: Int = 0
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        fetchColors()
 
         super.onCreate(savedInstanceState)
         createTime = System.currentTimeMillis()
@@ -69,11 +62,6 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     /** Must call before super */
     protected var autoSetTaskDescriptionColor: Boolean = true
 
-    private fun fetchColors() {
-        primaryColor = primaryColor()
-        accentColor = accentColor()
-    }
-
     private fun observeTheme() {
         lifecycleScope.launch(Dispatchers.IO) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -87,7 +75,6 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 primaryColorFlow(this@ThemeActivity).collect {
-                    primaryColor = it
                     ThemeSetting.updateCachedPrimaryColor(this@ThemeActivity)
                     requireRecreate = true
                 }
@@ -96,7 +83,6 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 accentColorFlow(this@ThemeActivity).collect {
-                    accentColor = it
                     ThemeSetting.updateCachedAccentColor(this@ThemeActivity)
                     requireRecreate = true
                 }

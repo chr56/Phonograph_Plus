@@ -26,6 +26,7 @@ import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.themeFooterColor
+import player.phonograph.util.theme.primaryColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import util.theme.color.toolbarTitleColor
@@ -185,7 +186,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         supportActionBar?.title = null
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
-        setToolbarColor(viewBinding.toolbar, primaryColor)
+        setToolbarColor(viewBinding.toolbar, primaryColor())
     }
 
     private fun setupMenu(menu: Menu) {

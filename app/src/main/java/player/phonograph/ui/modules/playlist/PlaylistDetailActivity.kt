@@ -31,6 +31,7 @@ import player.phonograph.model.totalDuration
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.parcelable
+import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
@@ -160,7 +161,7 @@ class PlaylistDetailActivity :
     override fun createContentView(): View = wrapSlidingMusicPanel(binding.root)
 
     private fun setUpToolbar() {
-        binding.toolbar.setBackgroundColor(primaryColor)
+        binding.toolbar.setBackgroundColor(primaryColor())
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu, this::setupMenuCallback))
@@ -169,7 +170,7 @@ class PlaylistDetailActivity :
 
     private fun prepareRecyclerView() {
         // FastScrollRecyclerView
-        binding.recyclerView.setUpFastScrollRecyclerViewColor(this, accentColor)
+        binding.recyclerView.setUpFastScrollRecyclerViewColor(this, accentColor())
         binding.recyclerView.setOnFastScrollStateChangeListener(
             object : OnFastScrollStateChangeListener {
                 override fun onFastScrollStart() {
@@ -196,7 +197,7 @@ class PlaylistDetailActivity :
 
     private fun setUpDashBroad() {
         with(binding) {
-            dashBroad.setBackgroundColor(primaryColor)
+            dashBroad.setBackgroundColor(primaryColor())
             dashBroad.addOnOffsetChangedListener { _, verticalOffset ->
                 updateRecyclerviewPadding(verticalOffset)
             }
@@ -204,8 +205,8 @@ class PlaylistDetailActivity :
         }
 
         // colors
-        val textColor = secondaryTextColor(primaryColor)
-        val iconColor = secondaryDisabledTextColor(primaryColor)
+        val textColor = secondaryTextColor(primaryColor())
+        val iconColor = secondaryDisabledTextColor(primaryColor())
         with(binding) {
             nameIcon.setImageDrawable(
                 getTintedDrawable(
@@ -314,7 +315,7 @@ class PlaylistDetailActivity :
     }
 
     private fun setupMenu(menu: Menu) {
-        playlistDetailToolbar(menu, this, model, iconColor = primaryTextColor(primaryColor))
+        playlistDetailToolbar(menu, this, model, iconColor = primaryTextColor(primaryColor()))
     }
 
     private fun setupMenuCallback(item: MenuItem): Boolean {

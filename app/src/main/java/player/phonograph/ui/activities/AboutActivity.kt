@@ -10,6 +10,7 @@ import player.phonograph.mechanism.Update
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.DebugDialog
 import player.phonograph.ui.dialogs.ReportIssueDialog
@@ -18,6 +19,7 @@ import player.phonograph.util.currentVersionName
 import player.phonograph.util.gitRevisionHash
 import player.phonograph.util.reportError
 import player.phonograph.util.theme.nightMode
+import player.phonograph.util.theme.primaryColor
 import util.theme.view.toolbar.setToolbarColor
 import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatButton
@@ -112,10 +114,10 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
     }
 
     private fun setUpToolbar() {
-        mToolbar.setBackgroundColor(primaryColor)
+        mToolbar.setBackgroundColor(primaryColor())
         setSupportActionBar(mToolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        setToolbarColor(mToolbar, primaryColor)
+        setToolbarColor(mToolbar, primaryColor())
     }
 
     @Keep

@@ -4,6 +4,7 @@
 
 package lib.phonograph.activity
 
+import player.phonograph.settings.ThemeSetting
 import util.theme.view.menu.applyOverflowMenuTint
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.WindowDecorActionBar
@@ -55,7 +56,7 @@ abstract class ToolbarActivity : PermissionActivity() {
     // Menu (Tint)
     //
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        supportToolbar?.let { applyOverflowMenuTint(this, it, accentColor) }
+        supportToolbar?.let { applyOverflowMenuTint(this, it, ThemeSetting.accentColor(this)) }
         return super.onPrepareOptionsMenu(menu)
     }
 

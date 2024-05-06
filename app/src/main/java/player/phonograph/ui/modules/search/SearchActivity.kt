@@ -16,6 +16,8 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
 import player.phonograph.ui.components.popup.OptionsPopup
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.primaryColor
+import player.phonograph.util.theme.accentColor
 import player.phonograph.util.ui.hideKeyboard
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
@@ -77,6 +79,8 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
     }
 
     private fun setUpPager() {
+        val primaryColor = primaryColor()
+        val accentColor = accentColor()
         searchResultPageAdapter = SearchResultPageAdapter(this)
         with(binding) {
             with(pager) {
@@ -117,7 +121,7 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu))
-        setToolbarColor(binding.toolbar, primaryColor)
+        setToolbarColor(binding.toolbar, primaryColor())
     }
 
     private fun setupMenu(menu: Menu) {
@@ -143,7 +147,7 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
 
         searchView!!.post { searchView!!.setOnQueryTextListener(this) }
 
-        val textColor = primaryTextColor(primaryColor)
+        val textColor = primaryTextColor(primaryColor())
         binding.toolbar.tintCollapseIcon(textColor)
         setSearchViewContentColor(searchView, textColor)
     }
