@@ -46,7 +46,7 @@ suspend fun loadImage(context: Context, song: Song, timeout: Long): PaletteBitma
     } catch (e: TimeoutCancellationException) {
         PaletteBitmap(
             AppCompatResources.getDrawable(context, R.drawable.default_album_art)!!.toBitmap(),
-            context.getColor(R.color.footer_background)
+            context.getColor(R.color.footer_background_lightdark)
         )
     }
 

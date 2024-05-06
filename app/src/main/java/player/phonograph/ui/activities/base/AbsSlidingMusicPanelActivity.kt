@@ -52,9 +52,9 @@ abstract class AbsSlidingMusicPanelActivity :
 
     val viewModel: PanelViewModel by viewModel {
         val paletteColor = playerFragment?.paletteColorState?.value ?: 0
-        val highlightColor = if (paletteColor > 0) paletteColor else getColor(R.color.footer_background)
+        val highlightColor = if (paletteColor > 0) paletteColor else getColor(R.color.footer_background_lightdark)
         parametersOf(
-            primaryColor, highlightColor, getColor(R.color.footer_background)
+            primaryColor, highlightColor, getColor(R.color.footer_background_lightdark)
         )
     }
 

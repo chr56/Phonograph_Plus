@@ -39,7 +39,9 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -61,7 +63,7 @@ class PlayerAlbumCoverFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycle.addObserver(progressViewUpdateHelperDelegate)
-        playerViewModel.refreshPaletteColor(requireContext().getColor(R.color.footer_background))
+        playerViewModel.refreshPaletteColor(requireContext().getColor(R.color.footer_background_lightdark))
     }
 
     private fun observeState() {
@@ -212,7 +214,7 @@ class PlayerAlbumCoverFragment :
         if (song != null && song != Song.EMPTY_SONG) {
             playerViewModel.refreshPaletteColor(requireContext(), song)
         } else {
-            playerViewModel.refreshPaletteColor(requireContext().getColor(R.color.footer_background))
+            playerViewModel.refreshPaletteColor(requireContext().getColor(R.color.footer_background_lightdark))
         }
     }
 

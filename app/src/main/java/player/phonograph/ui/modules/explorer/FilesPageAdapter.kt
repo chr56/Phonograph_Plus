@@ -102,7 +102,7 @@ class FilesPageAdapter(
             context.getTintedDrawable(R.drawable.ic_folder_white_24dp, color(context))
 
         private fun color(context: Context):Int =
-            context.resolveColor(R.attr.iconColor, context.getColor(R.color.icon))
+            context.resolveColor(R.attr.iconColor, context.getColor(R.color.icon_lightdark))
     }
 
     private var loadCover: Boolean = false

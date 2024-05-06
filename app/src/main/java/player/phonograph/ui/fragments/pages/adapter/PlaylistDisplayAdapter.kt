@@ -59,7 +59,7 @@ class PlaylistDisplayAdapter(
                 image.setColorFilter(
                     itemView.context.resolveColor(
                         R.attr.iconColor,
-                        itemView.context.getColor(R.color.icon)
+                        itemView.context.getColor(R.color.icon_lightdark)
                     ), PorterDuff.Mode.SRC_IN
                 )
             }
@@ -104,7 +104,7 @@ class PlaylistDisplayAdapter(
             itemView.setBackgroundColor(
                 activity.resolveColor(
                     androidx.cardview.R.attr.cardBackgroundColor,
-                    activity.getColor(R.color.card_background)
+                    activity.getColor(R.color.card_background_lightdark)
                 )
             )
             itemView.elevation =

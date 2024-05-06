@@ -18,15 +18,14 @@
         <item name="rectSelectorStrong">@drawable/rect_selector_strong_auto</item>
 
         <item name="md_color_button_text">@color/primary_text_default</item>
-        <item name="cardBackgroundColor">@color/card_background</item>
-        <item name="colorBackgroundFloating">@color/card_background</item>
-        <item name="defaultFooterColor">@color/footer_background</item>
-        <item name="dividerColor">@color/divider</item>
+        <item name="cardBackgroundColor">@color/card_background_lightdark</item>
+        <item name="colorBackgroundFloating">@color/card_background_lightdark</item>
+        <item name="defaultFooterColor">@color/footer_background_lightdark</item>
+        <item name="dividerColor">@color/divider_lightdark</item>
         <item name="iconColor">@color/secondary_text_default</item>
-        <item name="colorControlActivated">@color/grey_highlight</item>
 
         <item name="colorAccent">@color/grey_highlight</item> <!-- just in case-->
-
+        <item name="colorControlActivated">@color/grey_highlight</item>
     </style>
 
     <style name="Theme.Phonograph.Dark" parent="Theme.MaterialComponents.NoActionBar.Bridge">
@@ -52,9 +51,9 @@
         <item name="defaultFooterColor">@color/md_grey_900</item>
         <item name="dividerColor">@color/divider_dark</item>
         <item name="iconColor">@color/secondary_text_default_darkmode</item>
-        <item name="colorControlActivated">@color/md_grey_200</item>
 
         <item name="colorAccent">@android:color/white</item> <!-- just in case-->
+        <item name="colorControlActivated">@color/md_grey_200</item>
     </style>
 
     <style name="Theme.Phonograph.Light" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
@@ -80,9 +79,9 @@
         <item name="defaultFooterColor">@color/md_grey_300</item>
         <item name="dividerColor">@color/divider_light</item>
         <item name="iconColor">@color/secondary_text_default_lightmode</item>
-        <item name="colorControlActivated">@color/md_grey_700</item>
 
         <item name="colorAccent">@android:color/black</item> <!-- just in case-->
+        <item name="colorControlActivated">@color/md_grey_700</item>
     </style>
 
     <style name="Theme.Phonograph.Black" parent="@style/Theme.Phonograph.Dark">
@@ -91,7 +90,7 @@
 
         <item name="cardBackgroundColor">@color/md_grey_900</item>
         <item name="colorBackgroundFloating">@color/md_grey_900</item>
-        <item name="defaultFooterColor">@color/md_grey_900</item>
+        <item name="defaultFooterColor">@color/md_black_1000</item>
         <item name="dividerColor">@color/md_grey_700</item>
     </style>
 

@@ -87,7 +87,7 @@ abstract class AbsPlayerFragment :
             childFragmentManager.findFragmentById(R.id.playback_controls_fragment) as AbsPlayerControllerFragment<*>
 
         observeState()
-        lastPaletteColor = resources.getColor(R.color.footer_background, null)
+        lastPaletteColor = resources.getColor(R.color.footer_background_lightdark, null)
     }
 
     private fun initRecyclerView() {

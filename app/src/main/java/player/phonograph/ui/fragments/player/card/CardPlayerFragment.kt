@@ -102,7 +102,7 @@ class CardPlayerFragment :
         viewBinding.playingQueueCard.setCardBackgroundColor(
             requireContext().resolveColor(
                 androidx.cardview.R.attr.cardBackgroundColor,
-                requireContext().getColor(R.color.card_background)
+                requireContext().getColor(R.color.card_background_lightdark)
             )
         )
         observeState()
@@ -194,7 +194,7 @@ class CardPlayerFragment :
 
         private fun textColor(@ColorInt color: Int): Int {
             val context = fragment.requireContext()
-            val defaultFooterColor = fragment.resources.getColor(R.color.footer_background, null)
+            val defaultFooterColor = fragment.resources.getColor(R.color.footer_background_lightdark, null)
             val nightMode = context.nightMode
             return if (color == defaultFooterColor) context.secondaryTextColor(nightMode)
             else if (nightMode) lightenColor(color) else darkenColor(color)
