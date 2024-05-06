@@ -40,7 +40,9 @@ import player.phonograph.ui.dialogs.PathFilterPreferenceDialog
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.reportError
 import player.phonograph.util.runOnMainHandler
+import player.phonograph.util.theme.updateAllSystemUIColors
 import player.phonograph.util.theme.updateColoredNavigationBarSettingCache
+import player.phonograph.util.theme.updateNavigationbarColor
 import player.phonograph.util.warning
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
@@ -463,9 +465,6 @@ private fun GeneralThemeSetting() {
         options = OptionGroupModel(THEME, themeValues, themeNames),
         titleRes = R.string.pref_title_general_theme,
         onChange = { _, _ ->
-            runOnMainHandler {
-                (context as? Activity)?.recreate()
-            }
         }
     )
 }
@@ -544,7 +543,7 @@ private fun MonetSetting() {
         onCheckedChange = {
             DynamicShortcutManager(App.instance).updateDynamicShortcuts()
             runOnMainHandler {
-                (context as? Activity)?.recreate()
+                updateAllSystemUIColors(context as Activity, ThemeSetting.primaryColor(context))
             }
         }
     )
@@ -561,7 +560,7 @@ private fun ColoredNavigationBarSetting() {
         onCheckedChange = {
             updateColoredNavigationBarSettingCache(it)
             runOnMainHandler {
-                (context as? Activity)?.recreate()
+                (context as? Activity)?.updateNavigationbarColor()
             }
         }
     )
