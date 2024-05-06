@@ -32,8 +32,6 @@ abstract class ThemeActivity : MultiLanguageActivity() {
 
     protected var primaryColor: Int = 0
     protected var accentColor: Int = 0
-    protected var textColorPrimary: Int = 0
-    protected var textColorSecondary: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         fetchColors()
@@ -74,8 +72,6 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     private fun fetchColors() {
         primaryColor = primaryColor()
         accentColor = accentColor()
-        textColorPrimary = primaryTextColor(nightMode)
-        textColorSecondary = secondaryTextColor(nightMode)
     }
 
     private fun observeTheme() {
