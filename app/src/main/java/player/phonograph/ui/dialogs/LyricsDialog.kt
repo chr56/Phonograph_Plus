@@ -23,10 +23,10 @@ import player.phonograph.ui.fragments.player.LyricsViewModel
 import player.phonograph.util.reportError
 import player.phonograph.util.text.lyricsTimestamp
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.warning
-import util.theme.color.isNightMode
 import util.theme.color.lightenColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
@@ -352,7 +352,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
             ),
             intArrayOf(
                 requireContext().primaryTextColor(primaryColor()),
-                requireContext().primaryTextColor(requireContext().isNightMode())
+                requireContext().primaryTextColor(requireContext().nightMode)
             )
         )
     }
