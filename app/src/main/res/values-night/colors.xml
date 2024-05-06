@@ -16,6 +16,6 @@
 
     <color name="card_background_lightblack">@color/md_grey_900</color>
     <color name="footer_background_lightblack">@color/md_black_1000</color>
-    <color name="divider_lightblack">@color/md_grey_700</color>
+    <color name="divider_lightblack">@color/divider_black</color>
     <color name="icon_lightblack">@color/secondary_text_dark</color>
 </resources>

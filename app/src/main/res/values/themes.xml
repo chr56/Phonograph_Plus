@@ -91,7 +91,7 @@
         <item name="cardBackgroundColor">@color/md_grey_900</item>
         <item name="colorBackgroundFloating">@color/md_grey_900</item>
         <item name="defaultFooterColor">@color/md_black_1000</item>
-        <item name="dividerColor">@color/md_grey_700</item>
+        <item name="dividerColor">@color/divider_black</item>
     </style>
 
     <!-- Theme for app intro -->
