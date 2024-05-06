@@ -5,8 +5,6 @@
 package player.phonograph.ui.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.WhichButton
-import com.afollestad.materialdialogs.actions.getActionButton
 import lib.storage.documentProviderUriAbsolutePath
 import lib.storage.launcher.IOpenDirStorageAccessible
 import player.phonograph.R
@@ -15,7 +13,6 @@ import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
-import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.file.selectDocumentUris
 import player.phonograph.util.parcelableArrayList
@@ -24,7 +21,7 @@ import player.phonograph.util.reportError
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.text.ItemGroup
 import player.phonograph.util.text.buildDeletionMessage
-import player.phonograph.util.theme.accentColor
+import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import android.app.Activity
@@ -110,12 +107,8 @@ class ClearPlaylistDialog : DialogFragment() {
                         })
                     }
                 }
-                // set button color
-                val accentColor = accentColor()
-                it.getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
-                it.getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
-                it.getActionButton(WhichButton.NEUTRAL).updateTextColor(accentColor)
             }
+            .tintButtons()
 
         return dialog
     }
@@ -179,12 +172,7 @@ class ClearPlaylistDialog : DialogFragment() {
                                 }
                             }
                         }
-                        .apply {
-                            val accentColor = ThemeSetting.accentColor(context)
-                            getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
-                            getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
-                            getActionButton(WhichButton.NEUTRAL).updateTextColor(accentColor)
-                        }
+                        .tintButtons()
                         .show()
                 }
             }

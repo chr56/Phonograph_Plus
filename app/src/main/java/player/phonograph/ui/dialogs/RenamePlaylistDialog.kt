@@ -5,14 +5,12 @@
 package player.phonograph.ui.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.WhichButton
-import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
 import player.phonograph.R
 import player.phonograph.mechanism.playlist.PlaylistEdit
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.util.parcelable
-import player.phonograph.util.theme.accentColor
+import player.phonograph.util.theme.tintButtons
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import android.app.Dialog
@@ -41,12 +39,8 @@ class RenamePlaylistDialog : DialogFragment() {
                         PlaylistEdit.renamePlaylist(requireContext(), playlist, name)
                     }
                 }
-            }.apply {
-                // set button color
-                val accentColor = accentColor()
-                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
-                getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
             }
+            .tintButtons()
         return dialog
     }
 

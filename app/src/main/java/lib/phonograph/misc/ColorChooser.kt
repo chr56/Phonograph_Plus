@@ -5,14 +5,13 @@
 package lib.phonograph.misc
 
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.WhichButton
-import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.color.colorChooser
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.settings.ThemeSetting
+import player.phonograph.util.theme.tintButtons
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -28,7 +27,10 @@ object ColorChooser {
         MaterialDialog(context).show {
             title(R.string.pref_header_colors)
             colorChooser(
-                colors = ColorPalette.colors, subColors = ColorPalette.subColors, allowCustomArgb = true, initialSelection = defaultColor
+                colors = ColorPalette.colors,
+                subColors = ColorPalette.subColors,
+                allowCustomArgb = true,
+                initialSelection = defaultColor
             ) { _, color ->
                 applyNewColor(context, color, mode)
             }
@@ -36,28 +38,23 @@ object ColorChooser {
             if (SDK_INT >= S) {
                 @Suppress("DEPRECATION")
                 neutralButton(res = R.string.dynamic_colors) {
-                    MaterialDialog(context).title(R.string.dynamic_colors).colorChooser(
-                        colors = ColorPalette.dynamicColors(context), subColors = ColorPalette.allDynamicColors(context)
-                    ) { _, color ->
-                        applyNewColor(context, color, mode)
-                    }.positiveButton {
-                        it.dismiss()
-                        dismiss()
-                    }.negativeButton {
-                        it.dismiss()
-                    }.apply {
-                        getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
-                        getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
-                    }.show()
+                    MaterialDialog(context).title(R.string.dynamic_colors)
+                        .colorChooser(
+                            colors = ColorPalette.dynamicColors(context),
+                            subColors = ColorPalette.allDynamicColors(context)
+                        ) { _, color ->
+                            applyNewColor(context, color, mode)
+                        }.positiveButton {
+                            it.dismiss()
+                            dismiss()
+                        }.negativeButton {
+                            it.dismiss()
+                        }.tintButtons().show()
                 }
             }
             positiveButton(res = android.R.string.ok)
-            negativeButton(res = android.R.string.cancel).apply {
-                // set button color
-                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
-                getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
-                getActionButton(WhichButton.NEUTRAL).updateTextColor(accentColor)
-            }
+            negativeButton(res = android.R.string.cancel)
+            tintButtons()
         }
     }
 

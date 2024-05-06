@@ -5,8 +5,6 @@
 package player.phonograph.ui.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.WhichButton
-import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import org.jaudiotagger.audio.AudioFile
@@ -29,7 +27,7 @@ import player.phonograph.model.getFileSizeString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.util.parcelable
 import player.phonograph.util.reportError
-import player.phonograph.util.theme.accentColor
+import player.phonograph.util.theme.tintButtons
 import androidx.fragment.app.DialogFragment
 import android.app.Activity
 import android.app.Dialog
@@ -57,9 +55,8 @@ class SongDetailDialog : DialogFragment() {
                 viewRes = R.layout.dialog_file_details,
                 horizontalPadding = true,
                 scrollable = true
-            ).apply {
-                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor())
-            }
+            )
+            .tintButtons()
 
         val dialogView: View = dialog.getCustomView()
 

@@ -1,8 +1,6 @@
 package player.phonograph.ui.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.WhichButton
-import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import lib.phonograph.localization.LocalizationStore
 import player.phonograph.R
@@ -14,6 +12,7 @@ import player.phonograph.util.text.changelogHTML
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.themeCardBackgroundColor
+import player.phonograph.util.theme.tintButtons
 import androidx.fragment.app.DialogFragment
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -44,6 +43,7 @@ class ChangelogDialog : DialogFragment() {
                     .title(android.R.string.dialog_alert_title)
                     .message(text = msg)
                     .positiveButton(android.R.string.ok)
+                    .tintButtons()
             }
 
         val dialog: MaterialDialog = MaterialDialog(requireActivity())
@@ -54,10 +54,7 @@ class ChangelogDialog : DialogFragment() {
                 val context = requireContext()
                 PrerequisiteSetting.instance(context).lastChangelogVersion = currentVersionCode(context)
             }
-            .apply {
-                val accentColor = accentColor()
-                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
-            }
+            .tintButtons()
 
         val webView = customView.findViewById<WebView>(R.id.web_view)
 

@@ -25,6 +25,7 @@ import player.phonograph.ui.dialogs.BackupExportDialog
 import player.phonograph.ui.dialogs.BackupImportDialog
 import player.phonograph.ui.modules.explorer.PathSelectorContractTool
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
+import player.phonograph.util.theme.tintButtons
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -135,7 +136,9 @@ class SettingsActivity : ComposeThemeActivity(),
                     Reboot.reboot(context)
                 }
                 cancelOnTouchOutside(true)
-                getActionButton(WhichButton.POSITIVE).updateTextColor(getColor(util.theme.materials.R.color.md_red_A700))
+                getActionButton(WhichButton.POSITIVE).updateTextColor(
+                    getColor(util.theme.materials.R.color.md_red_A700)
+                )
             }
         }, stringResource(id = R.string.action_import).format(stringResource(id = R.string.action_backup)) to {
             openFileStorageAccessDelegate.launch(
