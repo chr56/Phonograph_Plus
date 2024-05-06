@@ -24,6 +24,7 @@ import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.TempPopupContent
 import player.phonograph.util.parcelable
 import player.phonograph.util.text.dateText
+import player.phonograph.util.theme.accentColoredButtonStyle
 import util.theme.materials.MaterialColor
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -105,14 +106,14 @@ private fun MainContent(versionCatalog: VersionCatalog, dismiss: () -> Unit) {
             buttons = {
                 button(
                     res = R.string.ignore_once,
-                    textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary),
+                    textStyle = accentColoredButtonStyle(),
                 ) {
                     dismiss()
                     actionIgnore(context, versionCatalog)
                 }
                 positiveButton(
                     res = R.string.more_actions,
-                    textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary),
+                    textStyle = accentColoredButtonStyle(),
                     disableDismiss = true
                 ) {
                     actionMore(context)

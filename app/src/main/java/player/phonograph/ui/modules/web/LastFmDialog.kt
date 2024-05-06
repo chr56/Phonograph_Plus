@@ -27,6 +27,7 @@ import player.phonograph.model.Song
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.util.parcelable
+import player.phonograph.util.theme.accentColoredButtonStyle
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -106,13 +107,13 @@ class LastFmDialog : ComposeViewDialogFragment() {
                 buttons = {
                     negativeButton(
                         res = R.string.search_online,
-                        textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
+                        textStyle = accentColoredButtonStyle()
                     ) {
                         webSearchDialogState.show()
                     }
                     button(
                         res = android.R.string.ok,
-                        textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
+                        textStyle = accentColoredButtonStyle()
                     ) {
                         dismiss()
                     }

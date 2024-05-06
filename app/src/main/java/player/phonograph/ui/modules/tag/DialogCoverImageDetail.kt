@@ -7,6 +7,7 @@ package player.phonograph.ui.modules.tag
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.title
+import player.phonograph.util.theme.accentColoredButtonStyle
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -33,7 +34,7 @@ internal fun CoverImageDetailDialog(
 ) = MaterialDialog(
     dialogState = state,
     buttons = {
-        positiveButton(res = android.R.string.ok) { state.hide() }
+        positiveButton(res = android.R.string.ok, textStyle = accentColoredButtonStyle()) { state.hide() }
     }
 ) {
     title(res = player.phonograph.R.string.label_details)

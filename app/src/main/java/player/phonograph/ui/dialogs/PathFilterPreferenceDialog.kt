@@ -19,6 +19,7 @@ import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.TempPopupContent
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
+import player.phonograph.util.theme.accentColoredButtonStyle
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -273,7 +274,7 @@ private fun ConfirmDialog(
         dialogState = dialogState,
         onCloseRequest = { dialogState.hide() },
         buttons = {
-            val style = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
+            val style = accentColoredButtonStyle()
             positiveButton(stringResource(android.R.string.ok), textStyle = style) {
                 val path = selectedPath
                 if (!path.isNullOrEmpty()) model.add(path)

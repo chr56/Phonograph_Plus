@@ -17,6 +17,7 @@ import player.phonograph.util.parcelableArrayList
 import player.phonograph.util.permissions.hasStorageWritePermission
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.runOnMainHandler
+import player.phonograph.util.theme.accentColoredButtonStyle
 import player.phonograph.util.withLooper
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -97,7 +98,7 @@ private fun MainContent(context: Context, songs: List<Song>, dismiss: () -> Unit
             buttons = {
                 negativeButton(
                     res = android.R.string.cancel,
-                    textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
+                    textStyle = accentColoredButtonStyle()
                 ) { dismiss() }
             }
         ) {
