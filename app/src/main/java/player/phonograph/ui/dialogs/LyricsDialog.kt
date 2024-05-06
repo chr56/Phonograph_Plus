@@ -5,7 +5,6 @@
 package player.phonograph.ui.dialogs
 
 import com.google.android.material.chip.Chip
-import lib.phonograph.dialog.LargeDialog
 import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
 import player.phonograph.R
@@ -26,10 +25,12 @@ import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.themeFooterColor
+import player.phonograph.util.ui.applyLargeDialog
 import player.phonograph.util.warning
 import util.theme.color.lightenColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -63,7 +64,7 @@ import java.util.regex.Pattern
  *
  * **MUST** be created from a view-model owner possessing [LyricsViewModel]
  */
-class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
+class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
 
     private var _viewBinding: DialogLyricsBinding? = null
     val binding: DialogLyricsBinding get() = _viewBinding!!
@@ -106,6 +107,11 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         super.onDestroyView()
         progressUpdater.destroy()
         _viewBinding = null
+    }
+
+    override fun onStart() {
+        super.onStart()
+        applyLargeDialog()
     }
 
     //endregion

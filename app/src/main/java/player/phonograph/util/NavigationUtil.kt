@@ -10,6 +10,7 @@ import player.phonograph.ui.activities.ArtistDetailActivity
 import player.phonograph.ui.activities.GenreDetailActivity
 import player.phonograph.ui.modules.playlist.PlaylistDetailActivity
 import player.phonograph.util.text.splitMultiTag
+import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
@@ -46,7 +47,7 @@ object NavigationUtil {
                             goToArtist(context, artists[selected].id, sharedElements)
                             dialog.dismiss()
                         }
-                        .show()
+                        .show().tintButtons()
                 } else {
                     goToArtist(context, artists.first().id, sharedElements)
                 }

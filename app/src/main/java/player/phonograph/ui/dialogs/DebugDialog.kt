@@ -11,6 +11,7 @@ import player.phonograph.model.version.VersionCatalog
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.util.coroutineToast
+import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
@@ -77,7 +78,7 @@ class DebugDialog : DialogFragment() {
                 dialog.dismiss()
                 callbacks[index].invoke(dialog)
             }
-            .create()
+            .create().tintButtons()
     }
 
     override fun onStart() {

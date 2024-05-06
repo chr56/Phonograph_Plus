@@ -40,6 +40,7 @@ import player.phonograph.ui.dialogs.PathFilterPreferenceDialog
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.reportError
 import player.phonograph.util.runOnMainHandler
+import player.phonograph.util.theme.tintButtons
 import player.phonograph.util.theme.updateAllSystemUIColors
 import player.phonograph.util.theme.updateColoredNavigationBarSettingCache
 import player.phonograph.util.theme.updateNavigationbarColor
@@ -432,7 +433,7 @@ private fun LibraryCategoriesSetting() {
                         )
                         .setPositiveButton(android.R.string.ok) { _, _ -> HomeTabConfig.resetHomeTabConfig() }
                         .setNegativeButton(android.R.string.cancel) { _, _ -> }
-                        .show()
+                        .show().tintButtons()
                 },
                 content = {
                     Icon(
@@ -558,7 +559,7 @@ private fun ColoredNavigationBarSetting() {
         key = COLORED_NAVIGATION_BAR,
         titleRes = R.string.pref_title_navigation_bar,
         summaryRes = R.string.pref_summary_colored_navigation_bar,
-       defaultValue = false,
+        defaultValue = false,
         onCheckedChange = {
             updateColoredNavigationBarSettingCache(it)
             runOnMainHandler {

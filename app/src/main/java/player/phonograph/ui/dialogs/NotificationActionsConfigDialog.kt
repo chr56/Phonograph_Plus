@@ -5,16 +5,14 @@
 package player.phonograph.ui.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.WhichButton
-import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.R
 import player.phonograph.databinding.ItemRightCheckboxBinding
 import player.phonograph.mechanism.setting.NotificationAction
 import player.phonograph.mechanism.setting.NotificationActionsConfig
 import player.phonograph.mechanism.setting.NotificationConfig
-import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.adapter.SortableListAdapter
+import player.phonograph.util.theme.tintButtons
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -70,12 +68,7 @@ class NotificationActionsConfigDialog : DialogFragment() {
                 NotificationConfig.actions = NotificationActionsConfig.DEFAULT
                 dismiss()
             }
-            .apply {
-                val color = ThemeSetting.accentColor(requireContext())
-                getActionButton(WhichButton.POSITIVE).updateTextColor(color)
-                getActionButton(WhichButton.NEGATIVE).updateTextColor(color)
-                getActionButton(WhichButton.NEUTRAL).updateTextColor(color)
-            }
+            .tintButtons()
 
         return dialog
     }

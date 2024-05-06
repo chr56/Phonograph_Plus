@@ -9,6 +9,7 @@ import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.repo.database.PathFilterStore
+import player.phonograph.util.theme.tintButtons
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -62,10 +63,12 @@ object PathFilter {
                                         parentDialog.dismiss()
                                     }
                                     .negativeButton(android.R.string.cancel)
+                                    .tintButtons()
                                     .show()
                             }
                         }
                     }
+                    .tintButtons()
                     .show()
             }
         }

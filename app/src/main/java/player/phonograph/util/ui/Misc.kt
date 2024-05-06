@@ -5,6 +5,7 @@
 package player.phonograph.util.ui
 
 import androidx.annotation.ColorInt
+import androidx.fragment.app.DialogFragment
 import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
@@ -15,6 +16,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.StateListDrawable
 import android.os.Build
+import android.view.Window
 import android.view.inputmethod.InputMethodManager
 
 fun convertDpToPixel(dp: Float, resources: Resources): Float {
@@ -47,4 +49,15 @@ fun createSelectorDrawable(@Suppress("UNUSED_PARAMETER") context: Context, @Colo
     baseSelector.addState(intArrayOf(), ColorDrawable(Color.TRANSPARENT))
     baseSelector.addState(intArrayOf(android.R.attr.state_pressed), ColorDrawable(color))
     return baseSelector
+}
+
+fun DialogFragment.applyLargeDialog(ratio: Float = 0.9f) {
+    applyLargeDialog(requireDialog().window!!, requireActivity().window!!, ratio)
+}
+
+fun applyLargeDialog(dialogWindows: Window, activityWindows: Window, ratio: Float) {
+    dialogWindows.attributes = dialogWindows.attributes.apply {
+        width = (activityWindows.decorView.width * ratio).toInt()
+        height = (activityWindows.decorView.height * ratio).toInt()
+    }
 }

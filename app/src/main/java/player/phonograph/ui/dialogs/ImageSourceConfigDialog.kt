@@ -7,15 +7,13 @@
 package player.phonograph.ui.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.WhichButton
-import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.R
 import player.phonograph.mechanism.setting.CoilImageConfig
 import player.phonograph.model.ImageSource
 import player.phonograph.model.config.ImageSourceConfig
-import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.adapter.SortableListAdapter
+import player.phonograph.util.theme.tintButtons
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -64,14 +62,7 @@ class ImageSourceConfigDialog : DialogFragment() {
                 CoilImageConfig.resetImageSourceToDefault()
                 dismiss()
             }
-            .apply {
-                // set button color
-                val color = ThemeSetting.accentColor(requireActivity())
-                getActionButton(WhichButton.POSITIVE).updateTextColor(color)
-                getActionButton(WhichButton.NEGATIVE).updateTextColor(color)
-                getActionButton(WhichButton.NEUTRAL).updateTextColor(color)
-            }
-
+            .tintButtons()
 
         return dialog
     }

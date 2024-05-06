@@ -7,6 +7,7 @@ package player.phonograph.ui.modules.tag
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.title
+import player.phonograph.util.theme.accentColoredButtonStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 
@@ -21,8 +22,8 @@ internal fun ExitWithoutSavingDialog(
         elevation = 0.dp,
         autoDismiss = false,
         buttons = {
-            positiveButton(res = android.R.string.cancel, onClick = dismiss)
-            button(res = android.R.string.ok) {
+            positiveButton(res = android.R.string.cancel, onClick = dismiss, textStyle = accentColoredButtonStyle())
+            button(res = android.R.string.ok, textStyle = accentColoredButtonStyle()) {
                 dismiss()
                 onExit()
             }

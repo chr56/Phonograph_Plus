@@ -5,15 +5,13 @@
 package player.phonograph.ui.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.WhichButton
-import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
 import player.phonograph.R
 import player.phonograph.mechanism.playlist.PlaylistEdit
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.util.parcelableArrayList
-import player.phonograph.util.theme.accentColor
+import player.phonograph.util.theme.tintButtons
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import android.app.Dialog
@@ -63,11 +61,8 @@ class CreatePlaylistDialog : DialogFragment() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            }.apply {
-                val accentColor = accentColor()
-                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
-                getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
             }
+            .tintButtons()
     }
 
     companion object {

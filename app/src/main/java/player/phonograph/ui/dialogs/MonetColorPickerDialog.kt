@@ -17,10 +17,10 @@ import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.MonetColorPicker
 import player.phonograph.util.lifecycleScopeOrNewOne
+import player.phonograph.util.theme.accentColoredButtonStyle
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -51,7 +51,7 @@ class MonetColorPickerDialog : ComposeViewDialogFragment() {
                 buttons = {
                     positiveButton(
                         res = android.R.string.ok,
-                        textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
+                        textStyle = accentColoredButtonStyle()
                     ) {
                         dismiss()
                     }

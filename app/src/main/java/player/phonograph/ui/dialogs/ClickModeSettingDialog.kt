@@ -17,6 +17,7 @@ import player.phonograph.ui.compose.components.FlagCheckBox
 import player.phonograph.ui.compose.components.ModeRadioBox
 import player.phonograph.util.setBit
 import player.phonograph.util.testBit
+import player.phonograph.util.theme.accentColoredButtonStyle
 import player.phonograph.util.unsetBit
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,7 +25,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -44,7 +44,7 @@ class ClickModeSettingDialog : ComposeViewDialogFragment() {
                 buttons = {
                     positiveButton(
                         res = android.R.string.ok,
-                        textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
+                        textStyle = accentColoredButtonStyle()
                     ) {
                         dismiss()
                     }

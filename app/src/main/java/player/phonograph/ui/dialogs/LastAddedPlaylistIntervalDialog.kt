@@ -19,6 +19,7 @@ import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.WheelPicker
 import player.phonograph.util.debug
+import player.phonograph.util.theme.accentColoredButtonStyle
 import player.phonograph.util.time.TimeInterval.past
 import player.phonograph.util.time.TimeInterval.recently
 import androidx.compose.foundation.layout.Arrangement
@@ -26,7 +27,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -86,11 +86,11 @@ class LastAddedPlaylistIntervalDialog : ComposeViewDialogFragment() {
                 buttons = {
                     negativeButton(
                         res = android.R.string.cancel,
-                        textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
+                        textStyle = accentColoredButtonStyle()
                     ) { dismiss() }
                     positiveButton(
                         res = android.R.string.ok,
-                        textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
+                        textStyle = accentColoredButtonStyle()
                     ) {
                         dismiss()
                         synchronized(this) {

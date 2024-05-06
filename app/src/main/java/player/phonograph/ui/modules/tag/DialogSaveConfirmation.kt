@@ -9,6 +9,7 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.customView
 import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
+import player.phonograph.util.theme.accentColoredButtonStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 
@@ -28,8 +29,8 @@ internal fun SaveConfirmationDialog(
         elevation = 0.dp,
         autoDismiss = false,
         buttons = {
-            button(res = R.string.save, onClick = save)
-            button(res = android.R.string.cancel, onClick = dismiss)
+            button(res = R.string.save, onClick = save, textStyle = accentColoredButtonStyle())
+            button(res = android.R.string.cancel, onClick = dismiss, textStyle = accentColoredButtonStyle())
         }
     ) {
         title(res = R.string.save)
