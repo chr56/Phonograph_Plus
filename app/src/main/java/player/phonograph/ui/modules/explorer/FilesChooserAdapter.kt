@@ -10,9 +10,7 @@ import player.phonograph.model.file.FileEntity
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.util.text.dateTimeText
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.nightMode
-import util.theme.color.primaryTextColor
-import util.theme.internal.resolveColor
+import player.phonograph.util.theme.themeIconColor
 import androidx.activity.ComponentActivity
 import android.text.format.Formatter
 import android.view.LayoutInflater
@@ -44,10 +42,7 @@ class FilesChooserAdapter(
                     image.context.getTintedDrawable(
                         if (item is FileEntity.File) R.drawable.ic_file_music_white_24dp
                         else R.drawable.ic_folder_white_24dp,
-                        context.resolveColor(
-                            R.attr.iconColor,
-                            context.primaryTextColor(context.nightMode)
-                        )
+                        themeIconColor(context)
                     )
                 )
                 binding.menu.visibility = GONE

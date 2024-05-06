@@ -84,6 +84,11 @@
     <string name="dark_theme_name">Dark</string>
     <string name="black_theme_name">Black (AMOLED)</string>
     <string name="auto_theme_name">Auto</string>
+    <string name="theme_name_auto_lightblack">"Auto (Light/Black)"</string>
+    <string name="theme_name_auto_lightdark">"Auto (Light/Dark)"</string>
+    <string name="theme_name_light">Light</string>
+    <string name="theme_name_black">Black</string>
+    <string name="theme_name_dark">Dark</string>
     <string name="always">Always</string>
     <string name="only_on_wifi">Only on Wi-Fi</string>
     <string name="never">Never</string>

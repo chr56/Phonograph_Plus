@@ -39,7 +39,10 @@ import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
 import player.phonograph.ui.dialogs.PathFilterPreferenceDialog
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.reportError
+import player.phonograph.util.runOnMainHandler
+import player.phonograph.util.theme.updateAllSystemUIColors
 import player.phonograph.util.theme.updateColoredNavigationBarSettingCache
+import player.phonograph.util.theme.updateNavigationbarColor
 import player.phonograph.util.warning
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
@@ -447,22 +450,23 @@ private fun LibraryCategoriesSetting() {
 private fun GeneralThemeSetting() {
     val context = LocalContext.current
     val themeValues: List<String> = listOf(
-        THEME_AUTO,
-        THEME_DARK,
+        THEME_AUTO_LIGHTBLACK,
+        THEME_AUTO_LIGHTDARK,
+        THEME_LIGHT,
         THEME_BLACK,
-        THEME_LIGHT
+        THEME_DARK,
     )
     val themeNames: List<Int> = listOf(
-        R.string.auto_theme_name,
-        R.string.light_theme_name,
-        R.string.dark_theme_name,
-        R.string.black_theme_name,
+        R.string.theme_name_auto_lightblack,
+        R.string.theme_name_auto_lightdark,
+        R.string.theme_name_light,
+        R.string.theme_name_black,
+        R.string.theme_name_dark,
     )
     ListPref(
         options = OptionGroupModel(THEME, themeValues, themeNames),
         titleRes = R.string.pref_title_general_theme,
         onChange = { _, _ ->
-            (context as? Activity)?.recreate()
         }
     )
 }
@@ -540,7 +544,9 @@ private fun MonetSetting() {
         defaultValue = false,
         onCheckedChange = {
             DynamicShortcutManager(App.instance).updateDynamicShortcuts()
-            (context as? Activity)?.recreate()
+            runOnMainHandler {
+                updateAllSystemUIColors(context as Activity, ThemeSetting.primaryColor(context))
+            }
         }
     )
 }
@@ -554,8 +560,10 @@ private fun ColoredNavigationBarSetting() {
         summaryRes = R.string.pref_summary_colored_navigation_bar,
        defaultValue = false,
         onCheckedChange = {
-            (context as? Activity)?.recreate()
             updateColoredNavigationBarSettingCache(it)
+            runOnMainHandler {
+                (context as? Activity)?.updateNavigationbarColor()
+            }
         }
     )
 }

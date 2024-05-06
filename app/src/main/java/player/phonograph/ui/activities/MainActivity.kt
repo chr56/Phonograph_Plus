@@ -37,10 +37,8 @@ import player.phonograph.util.currentVersionCode
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
 import player.phonograph.util.parcelableExtra
-import player.phonograph.util.theme.nightMode
+import player.phonograph.util.theme.themeIconColor
 import player.phonograph.util.warning
-import util.theme.color.secondaryTextColor
-import util.theme.internal.resolveColor
 import util.theme.view.navigationview.setItemIconColors
 import util.theme.view.navigationview.setItemTextColors
 import androidx.activity.OnBackPressedCallback
@@ -181,8 +179,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         )
 
         // color
-        val iconColor =
-            resolveColor(R.attr.iconColor, secondaryTextColor(nightMode))
+        val iconColor = themeIconColor(this)
         with(drawerBinding.navigationView) {
             setItemIconColors(iconColor, accentColor)
             setItemTextColors(textColorPrimary, accentColor)

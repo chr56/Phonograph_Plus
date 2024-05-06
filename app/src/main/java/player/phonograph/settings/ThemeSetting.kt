@@ -18,7 +18,15 @@ object ThemeSetting {
     @CheckResult
     @StyleRes
     fun themeStyle(context: Context): Int =
-        parseToStyleRes(Setting(context)[Keys.theme].data)
+        parseToStyleRes(cachedTheme ?: updateThemeStyle(context))
+
+    private var cachedTheme: String? = null
+
+    fun updateThemeStyle(context: Context): String {
+        val theme = Setting(context)[Keys.theme].data
+        cachedTheme = theme
+        return theme
+    }
 
     @CheckResult
     @ColorInt

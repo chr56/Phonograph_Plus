@@ -25,11 +25,10 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.themeFooterColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import util.theme.color.toolbarTitleColor
-import util.theme.internal.resolveColor
-import util.theme.materials.MaterialColor
 import util.theme.view.menu.tintMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
 import androidx.lifecycle.Lifecycle
@@ -105,8 +104,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
             adapter = albumAdapter
             layoutManager = LinearLayoutManager(this@ArtistDetailActivity, HORIZONTAL, false)
         }
-
-        setColors(resolveColor(R.attr.defaultFooterColor, MaterialColor.Grey._500.asColor))
+        setColors(themeFooterColor(this))
     }
 
     private fun observeData() {

@@ -13,6 +13,7 @@ import player.phonograph.R
 import player.phonograph.coil.target.PaletteBitmap
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
+import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.withTimeoutOrNot
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
@@ -46,7 +47,7 @@ suspend fun loadImage(context: Context, song: Song, timeout: Long): PaletteBitma
     } catch (e: TimeoutCancellationException) {
         PaletteBitmap(
             AppCompatResources.getDrawable(context, R.drawable.default_album_art)!!.toBitmap(),
-            context.getColor(R.color.footer_background)
+            themeFooterColor(context)
         )
     }
 

@@ -31,10 +31,3 @@ fun shiftBackgroundColorForDarkText(@ColorInt backgroundColor: Int): Int {
     while (!isColorLight(newColor)) newColor = lightenColor(newColor)
     return newColor
 }
-
-fun isWindowBackgroundDarkSafe(context: Context?): Boolean =
-    try {
-        context?.isWindowBackgroundDark() ?: false
-    } catch (e: Exception) {
-        false
-    }

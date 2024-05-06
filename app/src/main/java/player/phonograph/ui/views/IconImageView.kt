@@ -1,7 +1,6 @@
 package player.phonograph.ui.views
 
-import player.phonograph.R
-import util.theme.internal.resolveColor
+import player.phonograph.util.theme.themeIconColor
 import androidx.appcompat.widget.AppCompatImageView
 import android.content.Context
 import android.graphics.PorterDuff
@@ -26,7 +25,7 @@ class IconImageView : AppCompatImageView {
 
     private fun init(context: Context) {
         setColorFilter(
-            context.resolveColor(R.attr.iconColor, context.getColor(R.color.icon)),
+            themeIconColor(context),
             PorterDuff.Mode.SRC_IN
         )
     }

@@ -9,6 +9,7 @@ import player.phonograph.databinding.FragmentCardPlayerPlaybackControlsBinding
 import player.phonograph.ui.fragments.player.AbsPlayerControllerFragment
 import player.phonograph.ui.fragments.player.PlayPauseButtonOnClickHandler
 import player.phonograph.ui.views.PlayPauseDrawable
+import player.phonograph.util.theme.nightMode
 import util.theme.color.secondaryTextColor
 import util.theme.view.tint
 import androidx.core.graphics.BlendModeColorFilterCompat
@@ -89,7 +90,7 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment<FragmentCardPla
             playPauseDrawable = PlayPauseDrawable(context)
 
             val fabColor = Color.WHITE
-            viewBinding.playerPlayPauseFab.tint(fabColor, true)
+            viewBinding.playerPlayPauseFab.tint(fabColor, true, context.nightMode)
 
             playPauseDrawable.colorFilter =
                 BlendModeColorFilterCompat.createBlendModeColorFilterCompat(

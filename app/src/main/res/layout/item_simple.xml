@@ -34,7 +34,7 @@
 
     <player.phonograph.ui.views.IconImageView
         android:id="@+id/menu"
-        style="@style/OverFlowButton"
+        style="@style/Widget.Phonograph.OverFlowButton"
         android:background="@drawable/rect_selector_auto"
         android:layout_gravity="center_vertical"
         android:visibility="gone"

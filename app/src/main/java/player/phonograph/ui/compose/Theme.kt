@@ -6,7 +6,8 @@ package player.phonograph.ui.compose
 
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.settings.THEME_AUTO
+import player.phonograph.settings.THEME_AUTO_LIGHTBLACK
+import player.phonograph.settings.THEME_AUTO_LIGHTDARK
 import player.phonograph.settings.THEME_BLACK
 import player.phonograph.settings.THEME_DARK
 import player.phonograph.settings.THEME_LIGHT
@@ -96,7 +97,7 @@ private fun PhonographTheme(colors: Colors, content: @Composable () -> Unit) {
 
 @Composable
 private fun phonographColors(): Colors {
-    val theme by Setting(LocalContext.current)[Keys.theme].flow.collectAsState(THEME_AUTO)
+    val theme by Setting(LocalContext.current)[Keys.theme].flow.collectAsState(THEME_AUTO_LIGHTBLACK)
     val previewMode = LocalInspectionMode.current
     val colorPalette: ColorPalette = if (previewMode) {
         PreviewColorPalette
@@ -104,19 +105,28 @@ private fun phonographColors(): Colors {
         ThemeColorPalette(LocalContext.current)
     }
     return when (theme) {
-        THEME_AUTO  -> colorAuto(colorPalette, LocalContext.current)
-        THEME_DARK  -> colorsDark(colorPalette)
-        THEME_BLACK -> colorsBlack(colorPalette)
-        THEME_LIGHT -> colorsLight(colorPalette)
-        else        -> colorAuto(colorPalette, LocalContext.current)
+        THEME_AUTO_LIGHTBLACK -> colorAutoBlack(colorPalette, LocalContext.current)
+        THEME_AUTO_LIGHTDARK  -> colorAutoDark(colorPalette, LocalContext.current)
+        THEME_DARK            -> colorsDark(colorPalette)
+        THEME_BLACK           -> colorsBlack(colorPalette)
+        THEME_LIGHT           -> colorsLight(colorPalette)
+        else                  -> colorAutoDark(colorPalette, LocalContext.current)
     }
 }
 
 
 @Composable
-private fun colorAuto(palette: ColorPalette, context: Context) =
+private fun colorAutoDark(palette: ColorPalette, context: Context) =
     if (systemDarkmode(context.resources)) {
         colorsDark(palette)
+    } else {
+        colorsLight(palette)
+    }
+
+@Composable
+private fun colorAutoBlack(palette: ColorPalette, context: Context) =
+    if (systemDarkmode(context.resources)) {
+        colorsBlack(palette)
     } else {
         colorsLight(palette)
     }

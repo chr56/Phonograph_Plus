@@ -88,7 +88,7 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/ok"
-            style="@style/Phonograph_TextButton"
+            style="@style/Widget.Phonograph.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@android:string/ok"

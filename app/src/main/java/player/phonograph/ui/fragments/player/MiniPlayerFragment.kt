@@ -1,6 +1,5 @@
 package player.phonograph.ui.fragments.player
 
-import player.phonograph.R
 import player.phonograph.databinding.FragmentMiniPlayerBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.service.MusicPlayerRemote
@@ -10,9 +9,7 @@ import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
 import player.phonograph.util.theme.accentColor
-import player.phonograph.util.theme.nightMode
-import util.theme.color.secondaryTextColor
-import util.theme.internal.resolveColor
+import player.phonograph.util.theme.themeIconColor
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -70,9 +67,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         miniPlayerPlayPauseDrawable = PlayPauseDrawable(requireContext())
         binding.miniPlayerPlayPauseButton.setImageDrawable(miniPlayerPlayPauseDrawable)
         binding.miniPlayerPlayPauseButton.setColorFilter(
-            requireContext().resolveColor(
-                R.attr.iconColor, requireContext().secondaryTextColor(requireContext().nightMode)
-            ),
+            themeIconColor(requireContext()),
             PorterDuff.Mode.SRC_IN
         )
         binding.miniPlayerPlayPauseButton.setOnClickListener(PlayPauseButtonOnClickHandler())

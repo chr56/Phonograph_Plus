@@ -93,7 +93,7 @@
 
         <player.phonograph.ui.views.IconImageView
             android:id="@+id/menu"
-            style="@style/OverFlowButton"
+            style="@style/Widget.Phonograph.OverFlowButton"
             android:layout_gravity="center_vertical"
             tools:ignore="ContentDescription" />
 

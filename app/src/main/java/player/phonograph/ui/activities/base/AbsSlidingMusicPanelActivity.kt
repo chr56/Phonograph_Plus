@@ -15,6 +15,7 @@ import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.MiniPlayerFragment
 import player.phonograph.ui.fragments.player.card.CardPlayerFragment
 import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment
+import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.updateNavigationbarColor
 import player.phonograph.util.theme.updateStatusbarColor
 import player.phonograph.util.theme.updateTaskDescriptionColor
@@ -52,9 +53,9 @@ abstract class AbsSlidingMusicPanelActivity :
 
     val viewModel: PanelViewModel by viewModel {
         val paletteColor = playerFragment?.paletteColorState?.value ?: 0
-        val highlightColor = if (paletteColor > 0) paletteColor else getColor(R.color.footer_background)
+        val highlightColor = if (paletteColor > 0) paletteColor else themeFooterColor(this)
         parametersOf(
-            primaryColor, highlightColor, getColor(R.color.footer_background)
+            primaryColor, highlightColor, themeFooterColor(this)
         )
     }
 

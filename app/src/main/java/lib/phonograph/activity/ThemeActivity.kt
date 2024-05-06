@@ -4,26 +4,23 @@
 
 package lib.phonograph.activity
 
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import player.phonograph.settings.ThemeSetting
-import player.phonograph.util.theme.accentColor
-import player.phonograph.util.theme.nightMode
-import player.phonograph.util.theme.observeThemeColors
-import player.phonograph.util.theme.primaryColor
-import player.phonograph.util.theme.restoreNotFullsScreen
-import player.phonograph.util.theme.setFullScreenAndIncludeStatusBar
-import player.phonograph.util.theme.updateAllSystemUIColors
-import player.phonograph.util.theme.updateNavigationbarColor
-import player.phonograph.util.theme.updateStatusbarColor
-import player.phonograph.util.theme.updateTaskDescriptionColor
+import player.phonograph.util.theme.*
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.animation.PathInterpolator
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 /**
@@ -39,7 +36,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     protected var textColorSecondary: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        observeColors()
+        fetchColors()
 
         super.onCreate(savedInstanceState)
         createTime = System.currentTimeMillis()
@@ -54,6 +51,8 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         if (autoSetStatusBarColor) updateStatusbarColor()
         if (autoSetNavigationBarColor) updateNavigationbarColor()
         if (autoSetTaskDescriptionColor) updateTaskDescriptionColor()
+
+        observeTheme()
     }
 
     /** Must call before super */
@@ -72,28 +71,53 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     /** Must call before super */
     protected var autoSetTaskDescriptionColor: Boolean = true
 
-    private fun observeColors() {
+    private fun fetchColors() {
         primaryColor = primaryColor()
         accentColor = accentColor()
-        lifecycleScope.launch {
-            observeThemeColors(this@ThemeActivity) { primary, accent ->
-                primaryColor = primary
-                accentColor = accent
-            }
-        }
         textColorPrimary = primaryTextColor(nightMode)
         textColorSecondary = secondaryTextColor(nightMode)
+    }
+
+    private fun observeTheme() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                Setting(this@ThemeActivity)[Keys.theme].flow.collect {
+                    ThemeSetting.updateThemeStyle(this@ThemeActivity)
+                    setTheme(ThemeSetting.themeStyle(this@ThemeActivity))
+                    requireRecreate = true
+                }
+            }
+        }
+        lifecycleScope.launch(Dispatchers.IO) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                primaryColorFlow(this@ThemeActivity).collect {
+                    primaryColor = it
+                    ThemeSetting.updateCachedPrimaryColor(this@ThemeActivity)
+                    requireRecreate = true
+                }
+            }
+        }
+        lifecycleScope.launch(Dispatchers.IO) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                accentColorFlow(this@ThemeActivity).collect {
+                    accentColor = it
+                    ThemeSetting.updateCachedAccentColor(this@ThemeActivity)
+                    requireRecreate = true
+                }
+            }
+        }
     }
 
 
     override fun onResume() {
         super.onResume()
         if (requireRecreate) {
-            postRecreate()
             requireRecreate = false
+            if (firstTime) firstTime = false else postRecreate()
         }
     }
 
+    private var firstTime: Boolean = true // todo
     private var requireRecreate: Boolean = false
     protected fun postRecreate() {
         // hack to prevent java.lang.RuntimeException: Performing pause of activity that is not resumed
