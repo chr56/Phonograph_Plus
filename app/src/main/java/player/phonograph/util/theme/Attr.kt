@@ -41,7 +41,7 @@ fun themeDividerColor(context: Context) =
 fun themeCardBackgroundColor(context: Context) =
     context.resolveColor(
         com.google.android.material.R.attr.cardBackgroundColor,
-        context.getColor(R.color.card_background_lightblack)
+        context.getColor(R.color.background_medium_lightblack)
     )
 
 @CheckResult
@@ -49,7 +49,7 @@ fun themeCardBackgroundColor(context: Context) =
 fun themeFloatingBackgroundColor(context: Context) =
     context.resolveColor(
         com.google.android.material.R.attr.colorBackgroundFloating,
-        context.getColor(R.color.card_background_lightblack)
+        context.getColor(R.color.background_medium_lightblack)
     )
 
 @ColorInt

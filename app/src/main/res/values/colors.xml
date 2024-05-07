@@ -11,14 +11,12 @@
 
     <color name="background_heavy_lightdark">@color/md_grey_50</color>
     <color name="background_medium_lightdark">@color/md_grey_50</color>
-    <color name="card_background_lightdark">@color/md_grey_50</color>
     <color name="footer_background_lightdark">@color/md_grey_300</color>
     <color name="divider_lightdark">@color/divider_light</color>
     <color name="icon_lightdark">@color/secondary_text_light</color>
 
     <color name="background_heavy_lightblack">@color/md_grey_50</color>
     <color name="background_medium_lightblack">@color/md_grey_50</color>
-    <color name="card_background_lightblack">@color/md_grey_50</color>
     <color name="footer_background_lightblack">@color/md_grey_300</color>
     <color name="divider_lightblack">@color/divider_light</color>
     <color name="icon_lightblack">@color/secondary_text_light</color>
