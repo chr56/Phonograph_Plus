@@ -84,7 +84,7 @@ jobs:
         id: release_github
         if: startsWith(github.ref, 'refs/tags/preview_')
         with:
-          name: "${{ env.PRODUCT_VARIANT }} ${{ github.ref_name }}"
+          name: "Preview ${{ github.ref_name }}"
           files: |
             products/${{ env.PRODUCT_VARIANT }}/PhonographPlus_*.apk
             products/${{ env.PRODUCT_VARIANT }}/PhonographPlus_*.apk.sha1
