@@ -2,6 +2,26 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "1.7-dev2",
+      "versionCode": 1064,
+      "date": 1715058000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.7-dev2"
+        },
+        {
+          "name": "Github Release (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.7-dev2/PhonographPlus_1.7-dev2.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>**警告** 迁移主题及颜色设置时可能失败而导致对应配置丢失</li><li>修复 区间选择时会添加重复的项目</li><li>修复 某些对话框的按钮颜色并非强调色</li><li>修复 在卡片播放器且处于横屏时，状态栏未着色</li><li>新增 主题和主题颜色可以在备份文件中正确导出</li><li>新增 自动主题支持选择首选夜间主题（黑色或深色）</li><li>修改 自动主题的夜间主题现在默认为黑色</li><li>开发 重构主题相关的内容</li></ol>",
+        "en": "<ol><li>**WARNING**: you may encounter failures of migrating Theme and Theme Colors settings, causing loss of these configurations</li><li>Fix: duplicated items would be added using Range Selection</li><li>Fix: button color of some dialogs are not Accent Color</li><li>Fix: uncolored Statusbar when in landscape mode in Card Player</li><li>New: Theme and Theme Colors can be corrected exported in backups file</li><li>New: Auto Theme supporting choosing preferred night Theme (Black or Dark)</li><li>Modify: make night Theme Black as default for Auto Theme</li><li>Development: refactor a number of Theme related stuffs</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.7-dev1",
       "versionCode": 1063,
       "date": 1714831916,
