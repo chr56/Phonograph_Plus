@@ -9,15 +9,15 @@
     <color name="seek_arc_text">@color/md_white_1000</color>
     <color name="dialog_button_color">@color/md_white_1000</color>
 
-    <color name="background_heavy_lightdark">@color/md_grey_850</color>
-    <color name="background_medium_lightdark">@color/md_grey_800</color>
-    <color name="footer_background_lightdark">@color/md_grey_900</color>
+    <color name="background_heavy_lightdark">@color/background_heavy_dark</color>
+    <color name="background_medium_lightdark">@color/background_medium_dark</color>
+    <color name="background_footer_lightdark">@color/background_footer_dark</color>
     <color name="divider_lightdark">@color/divider_dark</color>
     <color name="icon_lightdark">@color/secondary_text_dark</color>
 
-    <color name="background_heavy_lightblack">@color/md_black_1000</color>
-    <color name="background_medium_lightblack">@color/md_grey_900</color>
-    <color name="footer_background_lightblack">@color/md_black_1000</color>
+    <color name="background_heavy_lightblack">@color/background_heavy_black</color>
+    <color name="background_medium_lightblack">@color/background_medium_black</color>
+    <color name="background_footer_lightblack">@color/background_footer_black</color>
     <color name="divider_lightblack">@color/divider_black</color>
     <color name="icon_lightblack">@color/secondary_text_dark</color>
 </resources>

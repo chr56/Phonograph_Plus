@@ -15,4 +15,19 @@
     <color name="twenty_percent_black_overlay">#34000000</color>
     <color name="fifty_percent_black_overlay">#88000000</color>
 
+
+    <color name="background_heavy_light">@color/md_grey_50</color>
+    <color name="background_medium_light">@color/md_grey_50</color>
+    <color name="background_footer_light">@color/md_grey_300</color>
+
+
+    <color name="background_heavy_black">@color/md_black_1000</color>
+    <color name="background_medium_black">@color/md_grey_900</color>
+    <color name="background_footer_black">@color/md_black_1000</color>
+
+
+    <color name="background_heavy_dark">@color/md_grey_850</color>
+    <color name="background_medium_dark">@color/md_grey_800</color>
+    <color name="background_footer_dark">@color/md_grey_900</color>
+
 </resources>

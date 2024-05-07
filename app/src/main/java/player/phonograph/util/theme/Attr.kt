@@ -16,7 +16,7 @@ import android.content.Context
 fun themeFooterColor(context: Context) =
     context.resolveColor(
         R.attr.defaultFooterColor,
-        context.getColor(R.color.footer_background_lightdark)
+        context.getColor(R.color.background_footer_lightdark)
     )
 
 @CheckResult
