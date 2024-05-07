@@ -6,7 +6,7 @@ notes:
   en:
     highlights: [ ]
     items:
-      - "**WARNING**: you may counter failures of migrating Theme and Theme Colors settings, causing loss of these configurations"
+      - "**WARNING**: you may encounter failures of migrating Theme and Theme Colors settings, causing loss of these configurations"
       - "Fix: duplicated items would be added using Range Selection"
       - "Fix: button color of some dialogs are not Accent Color"
       - "Fix: uncolored Statusbar when in landscape mode in Card Player"

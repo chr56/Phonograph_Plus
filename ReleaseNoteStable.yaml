@@ -6,7 +6,7 @@ notes:
   en:
     highlights: [ ]
     items:
-      - "**WARNING**: you may counter failures of migrating Theme and Theme Colors settings, causing loss of these configurations"
+      - "**WARNING**: you may encounter failures of migrating Theme and Theme Colors settings, causing loss of these configurations"
       - "New: remember last scroll position in Folders or Files tab till next start"
       - "New: brand-new ui or Files tab supporting play or shuffle current folder"
       - "Fix: duplicated items would be added using Range Selection"
