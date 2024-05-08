@@ -47,7 +47,7 @@ class BackupExportDialog : DialogFragment() {
 
         // dialog
         val dialog = MaterialDialog(requireActivity())
-            .title(text = getString(R.string.action_import, getString(R.string.action_backup)))
+            .title(text = getString(R.string.action_export, getString(R.string.action_backup)))
             .customView(view = view, dialogWrapContent = false)
             .positiveButton(android.R.string.ok) { dialog ->
                 val selected = adapter.currentConfig
