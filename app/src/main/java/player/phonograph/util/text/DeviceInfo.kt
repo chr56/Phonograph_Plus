@@ -14,6 +14,7 @@
 
 package player.phonograph.util.text
 
+import player.phonograph.BuildConfig
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.currentVersionName
 import player.phonograph.util.gitRevisionHash
@@ -21,19 +22,18 @@ import androidx.annotation.IntRange
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
-import java.util.*
+import java.util.Locale
 
 @SuppressLint("ObsoleteSdkInt")
 fun getDeviceInfo(context: Context): String {
 
     // App
 
-    val packageName: String = context.packageName
     val versionName: String = currentVersionName(context)
     val versionCode: String = currentVersionCode(context).toString()
-
+    val packageName: String = context.packageName
     val gitCommitHash: String = gitRevisionHash(context)
-    val appLanguage: String = Locale.getDefault().language
+    val favor: String = BuildConfig.FLAVOR
 
     // os
     val releaseVersion = Build.VERSION.RELEASE
@@ -48,13 +48,15 @@ fun getDeviceInfo(context: Context): String {
     val device: String = Build.DEVICE // device code name
     val product: String = Build.PRODUCT // rom code name
     val hardware: String = Build.HARDWARE // motherboard?
+    val appLanguage: String = Locale.getDefault().language
 
     return """
-            Package name:    $packageName
             App version:     $versionName ($versionCode)
             Git Commit Hash: $gitCommitHash
-            Android version: $releaseVersion (SDK $sdkVersion)
-            Device brand:    $brand  (by $manufacturer)
+            Package name:    $packageName
+            Release favor:   $favor
+            Android version: $releaseVersion (API $sdkVersion)
+            Device brand:    $brand (by $manufacturer)
             Device model:    $model (code: $device)
             Product name:    $product
             Build version:   $buildID 
