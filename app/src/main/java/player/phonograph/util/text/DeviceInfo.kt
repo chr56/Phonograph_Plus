@@ -18,6 +18,8 @@ import player.phonograph.BuildConfig
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.currentVersionName
 import player.phonograph.util.gitRevisionHash
+import player.phonograph.util.permissions.hasStorageReadPermission
+import player.phonograph.util.permissions.hasStorageWritePermission
 import androidx.annotation.IntRange
 import android.annotation.SuppressLint
 import android.content.Context
@@ -34,6 +36,7 @@ fun getDeviceInfo(context: Context): String {
     val packageName: String = context.packageName
     val gitCommitHash: String = gitRevisionHash(context)
     val favor: String = BuildConfig.FLAVOR
+    val storage: String = storagePermissionInfo(context)
 
     // os
     val releaseVersion = Build.VERSION.RELEASE
@@ -63,6 +66,21 @@ fun getDeviceInfo(context: Context): String {
                              ($buildVersion)
             Hardware:        $hardware
             Language:        $appLanguage
+            Permissions:     Storage($storage)
 
             """.trimIndent()
+}
+
+private fun storagePermissionInfo(context: Context): String {
+    val read = try {
+        if (hasStorageReadPermission(context)) "READ" else "-"
+    } catch (e: Exception) {
+        "N/A"
+    }
+    val write = try {
+        if (hasStorageWritePermission(context)) "WRITE" else "-"
+    } catch (e: Exception) {
+        "N/A"
+    }
+    return "$read/$write"
 }
