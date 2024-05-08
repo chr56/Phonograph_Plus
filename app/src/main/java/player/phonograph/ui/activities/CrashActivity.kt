@@ -18,6 +18,7 @@ import player.phonograph.util.text.getDeviceInfo
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import util.theme.color.primaryTextColor
+import util.theme.view.toolbar.setToolbarColor
 import androidx.lifecycle.lifecycleScope
 import android.app.Activity
 import android.app.ActivityManager
@@ -27,7 +28,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -66,7 +66,7 @@ class CrashActivity : ToolbarActivity() {
 
         // toolbar theme
         binding.toolbar.apply {
-            setBackgroundColor(colorPrimary)
+            setToolbarColor(this, colorPrimary)
             title = if (crashReportMode) getString(R.string.crash) else getString(R.string.internal_error)
             setSupportActionBar(this)
         }
@@ -173,7 +173,10 @@ class CrashActivity : ToolbarActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         attach(menu) {
             menuItem(0, R.id.nav_settings, 1, getString(R.string.action_settings)) {
-                icon = getTintedDrawable(R.drawable.ic_settings_white_24dp, Color.WHITE)
+                icon = getTintedDrawable(
+                    R.drawable.ic_settings_white_24dp,
+                    context.primaryTextColor(colorPrimary)
+                )
                 showAsActionFlag = SHOW_AS_ACTION_IF_ROOM
                 onClick {
                     Handler(Looper.getMainLooper()).postDelayed(
