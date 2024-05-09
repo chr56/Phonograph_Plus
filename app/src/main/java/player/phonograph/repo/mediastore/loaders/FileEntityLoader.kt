@@ -82,7 +82,7 @@ object FileEntityLoader {
                             name = file.name,
                             dateAdded = file.lastModified(),
                             dateModified = file.lastModified()
-                        ).also { it.songCount = 0 }
+                        )
                     }
 
                     file.isFile      -> {

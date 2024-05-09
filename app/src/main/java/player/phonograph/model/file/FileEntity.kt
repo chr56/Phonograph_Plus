@@ -55,10 +55,9 @@ sealed class FileEntity(
         name: String?,
         dateAdded: Long = -1,
         dateModified: Long = -1,
-    ) : FileEntity(location, name, dateAdded, dateModified) {
         @JvmSynthetic
-        var songCount: Int = 0
-    }
+        var songCount: Int = -1
+    ) : FileEntity(location, name, dateAdded, dateModified)
 
     // only location matters
 

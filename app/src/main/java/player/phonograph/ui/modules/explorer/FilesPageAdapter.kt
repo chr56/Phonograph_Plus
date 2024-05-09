@@ -19,6 +19,7 @@ import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.text.format.Formatter
 import android.view.LayoutInflater
@@ -50,9 +51,7 @@ class FilesPageAdapter(
                 title.text = item.name
                 text.text = when (item) {
                     is FileEntity.File   -> Formatter.formatFileSize(context, item.size)
-                    is FileEntity.Folder -> context.resources.getQuantityString(
-                        R.plurals.item_songs, item.songCount, item.songCount
-                    )
+                    is FileEntity.Folder -> folderDescriptionString(context.resources, item.songCount)
                 }
 
                 shortSeparator.visibility = if (position == dataSet.size - 1) View.GONE else View.VISIBLE
@@ -70,6 +69,14 @@ class FilesPageAdapter(
                 true
             }
             itemView.isActivated = controller.isSelected(item)
+        }
+
+        private fun folderDescriptionString(resources: Resources, songCount: Int): String {
+            return if (songCount >= 0) {
+                resources.getQuantityString(R.plurals.item_songs, songCount, songCount)
+            } else {
+                resources.getString(R.string.folder)
+            }
         }
 
         private fun setImage(image: ImageView, item: FileEntity) {
@@ -101,7 +108,7 @@ class FilesPageAdapter(
         private fun iconFolder(context: Context): Drawable? =
             context.getTintedDrawable(R.drawable.ic_folder_white_24dp, color(context))
 
-        private fun color(context: Context):Int =
+        private fun color(context: Context): Int =
             themeIconColor(context)
     }
 
