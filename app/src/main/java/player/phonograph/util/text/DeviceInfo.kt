@@ -46,6 +46,7 @@ fun getDeviceInfo(context: Context): String {
     val buildID: String = Build.DISPLAY
     val buildVersion = Build.VERSION.INCREMENTAL
     // device
+    val arch: String = Build.SUPPORTED_ABIS.joinToString()
     val brand: String = Build.BRAND
     val manufacturer: String = Build.MANUFACTURER
     val model: String = Build.MODEL
@@ -61,6 +62,7 @@ fun getDeviceInfo(context: Context): String {
             Package name:    $packageName
             Release favor:   $favor
             Android version: $releaseVersion (API $sdkVersion)
+            Architecture:    $arch
             Device brand:    $brand (by $manufacturer)
             Device model:    $model (code: $device)
             Product name:    $product
