@@ -124,6 +124,8 @@ abstract class AbsPlayerFragment :
             WrapperAdapterUtils.releaseAll(wrappedAdapter)
             _wrappedAdapter = null
         }
+        currentAnimatorSet?.end()
+        currentAnimatorSet?.cancel()
     }
 
     //
