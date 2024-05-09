@@ -24,6 +24,7 @@ import androidx.annotation.IntRange
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
+import android.util.DisplayMetrics
 import java.util.Locale
 
 @SuppressLint("ObsoleteSdkInt")
@@ -52,6 +53,7 @@ fun getDeviceInfo(context: Context): String {
     val product: String = Build.PRODUCT // rom code name
     val hardware: String = Build.HARDWARE // motherboard?
     val appLanguage: String = Locale.getDefault().language
+    val screenInfo = screenInfo(context.resources.displayMetrics)
 
     return """
             App version:     $versionName ($versionCode)
@@ -66,10 +68,14 @@ fun getDeviceInfo(context: Context): String {
                              ($buildVersion)
             Hardware:        $hardware
             Language:        $appLanguage
+            Screen:          $screenInfo
             Permissions:     Storage($storage)
 
             """.trimIndent()
 }
+
+private fun screenInfo(displayMetrics: DisplayMetrics): String =
+    "${displayMetrics.heightPixels}x${displayMetrics.widthPixels} (dpi ${displayMetrics.densityDpi})"
 
 private fun storagePermissionInfo(context: Context): String {
     val read = try {
