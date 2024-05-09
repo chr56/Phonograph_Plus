@@ -14,53 +14,82 @@
 
 package player.phonograph.util.text
 
+import player.phonograph.BuildConfig
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.currentVersionName
 import player.phonograph.util.gitRevisionHash
+import player.phonograph.util.permissions.hasStorageReadPermission
+import player.phonograph.util.permissions.hasStorageWritePermission
 import androidx.annotation.IntRange
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
-import java.util.*
+import android.util.DisplayMetrics
+import java.util.Locale
 
 @SuppressLint("ObsoleteSdkInt")
 fun getDeviceInfo(context: Context): String {
 
     // App
 
-    val packageName: String = context.packageName
     val versionName: String = currentVersionName(context)
     val versionCode: String = currentVersionCode(context).toString()
-
+    val packageName: String = context.packageName
     val gitCommitHash: String = gitRevisionHash(context)
-    val appLanguage: String = Locale.getDefault().language
+    val favor: String = BuildConfig.FLAVOR
+    val storage: String = storagePermissionInfo(context)
 
     // os
     val releaseVersion = Build.VERSION.RELEASE
-    @IntRange(from = 0)
     val sdkVersion: Int = Build.VERSION.SDK_INT
     val buildID: String = Build.DISPLAY
     val buildVersion = Build.VERSION.INCREMENTAL
     // device
+    val arch: String = Build.SUPPORTED_ABIS.joinToString()
+    val soc: String = socInfo()
     val brand: String = Build.BRAND
     val manufacturer: String = Build.MANUFACTURER
     val model: String = Build.MODEL
     val device: String = Build.DEVICE // device code name
     val product: String = Build.PRODUCT // rom code name
-    val hardware: String = Build.HARDWARE // motherboard?
+    val appLanguage: String = Locale.getDefault().language
+    val screenInfo = screenInfo(context.resources.displayMetrics)
 
     return """
-            Package name:    $packageName
             App version:     $versionName ($versionCode)
             Git Commit Hash: $gitCommitHash
-            Android version: $releaseVersion (SDK $sdkVersion)
-            Device brand:    $brand  (by $manufacturer)
-            Device model:    $model (code: $device)
-            Product name:    $product
-            Build version:   $buildID 
+            Package name:    $packageName
+            Release favor:   $favor
+            Android version: $releaseVersion (API $sdkVersion)
+            Architecture:    $arch
+            Soc:             $soc 
+            Device brand:    $brand (by $manufacturer)
+            Device model:    $product/$model (code $device)
+            Build version:   $buildID
                              ($buildVersion)
-            Hardware:        $hardware
             Language:        $appLanguage
+            Screen:          $screenInfo
+            Permissions:     Storage($storage)
 
             """.trimIndent()
+}
+
+private fun socInfo(): String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    "${Build.SOC_MODEL}/${Build.BOARD} (by ${Build.SOC_MANUFACTURER})"
+} else {
+    "${Build.HARDWARE}/${Build.BOARD}"
+}
+
+private fun screenInfo(displayMetrics: DisplayMetrics): String =
+    "${displayMetrics.heightPixels}x${displayMetrics.widthPixels} (dpi ${displayMetrics.densityDpi})"
+
+private fun storagePermissionInfo(context: Context): String {
+    return buildString {
+        if (hasStorageReadPermission(context)) {
+            append("READ")
+        }
+        if (hasStorageReadPermission(context)) {
+            append(" WRITE")
+        }
+    }
 }
