@@ -33,11 +33,12 @@ import android.os.Bundle
 import kotlinx.coroutines.launch
 
 class MonetColorPickerDialog : ComposeViewDialogFragment() {
-    private var mode: Int = -1
+
+    private lateinit var mode: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mode = requireArguments().getInt(KEY_MODE)
+        mode = requireArguments().getString(KEY_MODE)!!
     }
 
     @Composable
@@ -61,7 +62,7 @@ class MonetColorPickerDialog : ComposeViewDialogFragment() {
                 title(res = R.string.dynamic_colors)
                 customView {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        MonetColorPickerDialogContent(mode = mode, onDismiss = ::dismiss)
+                        MonetColorPickerDialogContent(ColorPalette.Variant.valueOf(mode), onDismiss = ::dismiss)
                     }
                 }
             }
@@ -74,12 +75,7 @@ class MonetColorPickerDialog : ComposeViewDialogFragment() {
         private fun create(variant: ColorPalette.Variant): MonetColorPickerDialog =
             MonetColorPickerDialog().apply {
                 arguments = Bundle().apply {
-                    putInt(
-                        KEY_MODE, when (variant) {
-                            ColorPalette.Variant.Primary -> PRIMARY_COLOR
-                            ColorPalette.Variant.Accent  -> ACCENT_COLOR
-                        }
-                    )
+                    putString(KEY_MODE, variant.name)
                 }
             }
 
@@ -91,16 +87,16 @@ class MonetColorPickerDialog : ComposeViewDialogFragment() {
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 private fun MonetColorPickerDialogContent(
-    mode: Int,
+    variant: ColorPalette.Variant,
     onDismiss: () -> Unit,
 ) {
     val context = LocalContext.current
     MonetColorPicker { type: Int, depth: Int ->
         context.lifecycleScopeOrNewOne().launch {
             val palette = MonetColor.MonetColorPalette(type, depth)
-            when (mode) {
-                PRIMARY_COLOR -> Setting(context)[Keys.monetPalettePrimaryColor].edit { palette.value }
-                ACCENT_COLOR  -> Setting(context)[Keys.monetPaletteAccentColor].edit { palette.value }
+            when (variant) {
+                ColorPalette.Variant.Primary -> Setting(context)[Keys.monetPalettePrimaryColor].edit { palette.value }
+                ColorPalette.Variant.Accent  -> Setting(context)[Keys.monetPaletteAccentColor].edit { palette.value }
             }
             ThemeSetting.updateCachedPrimaryColor(context)
             ThemeSetting.updateCachedAccentColor(context)
@@ -108,6 +104,3 @@ private fun MonetColorPickerDialogContent(
         }
     }
 }
-
-private const val PRIMARY_COLOR: Int = 8
-private const val ACCENT_COLOR: Int = 16

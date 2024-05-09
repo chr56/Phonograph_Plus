@@ -23,26 +23,20 @@ import android.os.Bundle
 
 class MaterialColorPickerDialog : DialogFragment() {
 
-    private var mode: Int = -1
+    private lateinit var mode: String
     private var initialColor: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mode = requireArguments().getInt(KEY_MODE)
+        mode = requireArguments().getString(KEY_MODE)!!
         initialColor = requireArguments().getInt(KEY_INITIAL_COLOR)
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val variant = when (mode) {
-            PRIMARY_COLOR -> ColorPalette.Variant.Primary
-            ACCENT_COLOR  -> ColorPalette.Variant.Accent
-            else          -> return super.onCreateDialog(savedInstanceState)
-        }
-        return dialog(requireContext(), initialColor, variant)
-    }
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
+        colorPicker(requireContext(), initialColor, ColorPalette.Variant.valueOf(mode))
 
     @SuppressLint("CheckResult")
-    fun dialog(context: Context, defaultColor: Int, variant: ColorPalette.Variant): Dialog =
+    private fun colorPicker(context: Context, defaultColor: Int, variant: ColorPalette.Variant): Dialog =
         MaterialDialog(context).apply {
             title(R.string.pref_header_colors)
             colorChooser(
@@ -90,18 +84,11 @@ class MaterialColorPickerDialog : DialogFragment() {
     companion object {
         private const val KEY_MODE = "mode"
         private const val KEY_INITIAL_COLOR = "color"
-        private const val PRIMARY_COLOR: Int = 8
-        private const val ACCENT_COLOR: Int = 16
 
         private fun create(variant: ColorPalette.Variant, initialColor: Int): MaterialColorPickerDialog =
             MaterialColorPickerDialog().apply {
                 arguments = Bundle().apply {
-                    putInt(
-                        KEY_MODE, when (variant) {
-                            ColorPalette.Variant.Primary -> PRIMARY_COLOR
-                            ColorPalette.Variant.Accent  -> ACCENT_COLOR
-                        }
-                    )
+                    putString(KEY_MODE, variant.name)
                     putInt(KEY_INITIAL_COLOR, initialColor)
                 }
             }
