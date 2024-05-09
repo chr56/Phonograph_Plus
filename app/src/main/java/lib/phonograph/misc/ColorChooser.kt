@@ -13,7 +13,6 @@ import player.phonograph.settings.Setting
 import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.theme.tintButtons
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.N_MR1
@@ -23,7 +22,7 @@ import android.os.Build.VERSION_CODES.S
 object ColorChooser {
 
     @SuppressLint("CheckResult")
-    fun showColorChooserDialog(context: Context, defaultColor: Int, mode: Int) {
+    fun showColorChooserDialog(context: Context, defaultColor: Int, variant: ColorPalette.Variant) {
         MaterialDialog(context).show {
             title(R.string.pref_header_colors)
             colorChooser(
@@ -32,9 +31,8 @@ object ColorChooser {
                 allowCustomArgb = true,
                 initialSelection = defaultColor
             ) { _, color ->
-                applyNewColor(context, color, mode)
+                applyNewColor(context, color, variant)
             }
-            val accentColor = ThemeSetting.accentColor(context)
             if (SDK_INT >= S) {
                 @Suppress("DEPRECATION")
                 neutralButton(res = R.string.dynamic_colors) {
@@ -43,7 +41,7 @@ object ColorChooser {
                             colors = ColorPalette.dynamicColors(context),
                             subColors = ColorPalette.allDynamicColors(context)
                         ) { _, color ->
-                            applyNewColor(context, color, mode)
+                            applyNewColor(context, color, variant)
                         }.positiveButton {
                             it.dismiss()
                             dismiss()
@@ -58,15 +56,15 @@ object ColorChooser {
         }
     }
 
-    private fun applyNewColor(context: Context, color: Int, mode: Int) {
-        when (mode) {
-            ColorPalette.MODE_PRIMARY_COLOR -> Setting(context)[Keys.selectedPrimaryColor].data = color
-            ColorPalette.MODE_ACCENT_COLOR  -> Setting(context)[Keys.selectedAccentColor].data = color
-            0                               -> return
+    private fun applyNewColor(context: Context, color: Int, variant: ColorPalette.Variant) {
+        when (variant) {
+            ColorPalette.Variant.Primary -> Setting(context)[Keys.selectedPrimaryColor].data = color
+            ColorPalette.Variant.Accent  -> Setting(context)[Keys.selectedAccentColor].data = color
         }
+        ThemeSetting.updateCachedPrimaryColor(context)
+        ThemeSetting.updateCachedAccentColor(context)
         if (SDK_INT >= N_MR1) {
             DynamicShortcutManager(context).updateDynamicShortcuts()
         }
-        (context as? Activity)?.recreate()
     }
 }

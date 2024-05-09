@@ -13,6 +13,7 @@ import lib.phonograph.misc.MonetColor
 import player.phonograph.R
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.MonetColorPicker
@@ -25,12 +26,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import android.app.Activity
+import androidx.fragment.app.FragmentActivity
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MonetColorPickerDialog : ComposeViewDialogFragment() {
     private var mode: Int = -1
@@ -69,17 +69,22 @@ class MonetColorPickerDialog : ComposeViewDialogFragment() {
     }
 
     companion object {
-        const val KEY_MODE = "mode"
+        private const val KEY_MODE = "mode"
 
-        fun primaryColor() = create(ColorPalette.MODE_MONET_PRIMARY_COLOR)
-        fun accentColor() = create(ColorPalette.MODE_MONET_ACCENT_COLOR)
-
-        private fun create(mode: Int): MonetColorPickerDialog =
+        private fun create(variant: ColorPalette.Variant): MonetColorPickerDialog =
             MonetColorPickerDialog().apply {
                 arguments = Bundle().apply {
-                    putInt(KEY_MODE, mode)
+                    putInt(
+                        KEY_MODE, when (variant) {
+                            ColorPalette.Variant.Primary -> PRIMARY_COLOR
+                            ColorPalette.Variant.Accent  -> ACCENT_COLOR
+                        }
+                    )
                 }
             }
+
+        fun showColorChooserDialog(context: Context, variant: ColorPalette.Variant) =
+            create(variant).show((context as FragmentActivity).supportFragmentManager, null)
     }
 }
 
@@ -94,13 +99,15 @@ private fun MonetColorPickerDialogContent(
         context.lifecycleScopeOrNewOne().launch {
             val palette = MonetColor.MonetColorPalette(type, depth)
             when (mode) {
-                ColorPalette.MODE_MONET_PRIMARY_COLOR -> Setting(context)[Keys.monetPalettePrimaryColor].edit { palette.value }
-                ColorPalette.MODE_MONET_ACCENT_COLOR  -> Setting(context)[Keys.monetPaletteAccentColor].edit { palette.value }
+                PRIMARY_COLOR -> Setting(context)[Keys.monetPalettePrimaryColor].edit { palette.value }
+                ACCENT_COLOR  -> Setting(context)[Keys.monetPaletteAccentColor].edit { palette.value }
             }
+            ThemeSetting.updateCachedPrimaryColor(context)
+            ThemeSetting.updateCachedAccentColor(context)
             onDismiss()
-            withContext(Dispatchers.IO) {
-                (context as? Activity)?.recreate()
-            }
         }
     }
 }
+
+private const val PRIMARY_COLOR: Int = 8
+private const val ACCENT_COLOR: Int = 16

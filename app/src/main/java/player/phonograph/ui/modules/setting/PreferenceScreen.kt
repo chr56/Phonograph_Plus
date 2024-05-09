@@ -41,7 +41,6 @@ import player.phonograph.util.NavigationUtil
 import player.phonograph.util.reportError
 import player.phonograph.util.runOnMainHandler
 import player.phonograph.util.theme.tintButtons
-import player.phonograph.util.theme.updateAllSystemUIColors
 import player.phonograph.util.theme.updateColoredNavigationBarSettingCache
 import player.phonograph.util.theme.updateNavigationbarColor
 import player.phonograph.util.warning
@@ -64,11 +63,10 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -143,19 +141,9 @@ fun PhonographPreferenceScreen() {
             if (SDK_INT >= S) MonetSetting()
             PrimaryColorPref()
             AccentColorPref()
-            ColoredNavigationBarSetting()
-            if (SDK_INT >= N_MR1) {
-                BooleanPref(
-                    key = COLORED_APP_SHORTCUTS,
-                    titleRes = R.string.pref_title_app_shortcuts,
-                    summaryRes = R.string.pref_summary_colored_app_shortcuts,
-                    defaultValue = true,
-                    onCheckedChange = {
-                        DynamicShortcutManager(App.instance).updateDynamicShortcuts()
-                    }
-                )
-            }
             GeneralThemeSetting()
+            ColoredNavigationBarSetting()
+            if (SDK_INT >= N_MR1) ColoredAppShortcuts()
         }
 
         SettingsGroup(title = header(R.string.pref_header_content)) {
@@ -451,7 +439,6 @@ private fun LibraryCategoriesSetting() {
 
 @Composable
 private fun GeneralThemeSetting() {
-    val context = LocalContext.current
     val themeValues: List<String> = listOf(
         THEME_AUTO_LIGHTBLACK,
         THEME_AUTO_LIGHTDARK,
@@ -476,61 +463,48 @@ private fun GeneralThemeSetting() {
 
 @Composable
 private fun PrimaryColorPref() {
-    val context = LocalContext.current
-    val enableMonet by Setting(context)[Keys.enableMonet].flow.collectAsState(false)
-    val mode = remember(enableMonet) {
-        if (SDK_INT >= S && enableMonet) ColorPalette.MODE_MONET_PRIMARY_COLOR
-        else ColorPalette.MODE_PRIMARY_COLOR
-    }
-    ColorPrefImpl(
+    ColorPref(
         titleRes = R.string.primary_color,
         summaryRes = R.string.primary_color_desc,
-        mode = mode
+        ColorPalette.Variant.Primary
     )
 }
 @Composable
 private fun AccentColorPref() {
-    val context = LocalContext.current
-    val enableMonet by Setting(context)[Keys.enableMonet].flow.collectAsState(false)
-    val mode = remember(enableMonet) {
-        if (SDK_INT >= S && enableMonet) ColorPalette.MODE_MONET_ACCENT_COLOR
-        else ColorPalette.MODE_ACCENT_COLOR
-    }
-    ColorPrefImpl(
+    ColorPref(
         titleRes = R.string.accent_color,
         summaryRes = R.string.accent_color_desc,
-        mode = mode
+        ColorPalette.Variant.Accent
     )
+}
+
+@Composable
+private fun ColorPref(
+    @StringRes titleRes: Int,
+    @StringRes summaryRes: Int,
+    variant: ColorPalette.Variant,
+) {
+    val color = when (variant) {
+        ColorPalette.Variant.Primary -> MaterialTheme.colors.primary
+        ColorPalette.Variant.Accent  -> MaterialTheme.colors.secondary
+    }
+    val context = LocalContext.current
+    ColorPrefImpl(titleRes, summaryRes, color) {
+        if (SDK_INT >= S && Setting(context)[Keys.enableMonet].data) {
+            MonetColorPickerDialog.showColorChooserDialog(context, variant)
+        } else {
+            ColorChooser.showColorChooserDialog(context, color.toArgb(), variant)
+        }
+    }
 }
 
 @Composable
 private fun ColorPrefImpl(
     @StringRes titleRes: Int,
     @StringRes summaryRes: Int,
-    mode: Int,
+    color: Color,
+    onClick: () -> Unit,
 ) {
-    val context = LocalContext.current
-
-    val color =
-        when (mode) {
-            ColorPalette.MODE_PRIMARY_COLOR, ColorPalette.MODE_MONET_PRIMARY_COLOR -> MaterialTheme.colors.primary
-            ColorPalette.MODE_ACCENT_COLOR, ColorPalette.MODE_MONET_ACCENT_COLOR   -> MaterialTheme.colors.secondary
-            else                                                                   -> MaterialTheme.colors.error
-        }
-
-    val onClick = {
-        when (mode) {
-            ColorPalette.MODE_PRIMARY_COLOR, ColorPalette.MODE_ACCENT_COLOR ->
-                ColorChooser.showColorChooserDialog(context, color.toArgb(), mode)
-
-            ColorPalette.MODE_MONET_PRIMARY_COLOR                           ->
-                MonetColorPickerDialog.primaryColor().show((context as FragmentActivity).supportFragmentManager, null)
-
-            ColorPalette.MODE_MONET_ACCENT_COLOR                            ->
-                MonetColorPickerDialog.accentColor().show((context as FragmentActivity).supportFragmentManager, null)
-        }
-    }
-
     SettingsMenuLink(
         title = title(titleRes),
         subtitle = subtitle(summaryRes),
@@ -541,7 +515,6 @@ private fun ColorPrefImpl(
 
 @Composable
 private fun MonetSetting() {
-    val context = LocalContext.current
     BooleanPref(
         key = ENABLE_MONET,
         titleRes = R.string.pref_title_enable_monet,
@@ -549,9 +522,6 @@ private fun MonetSetting() {
         defaultValue = false,
         onCheckedChange = {
             DynamicShortcutManager(App.instance).updateDynamicShortcuts()
-            runOnMainHandler {
-                updateAllSystemUIColors(context as Activity, ThemeSetting.primaryColor(context))
-            }
         }
     )
 }
@@ -569,6 +539,19 @@ private fun ColoredNavigationBarSetting() {
             runOnMainHandler {
                 (context as? Activity)?.updateNavigationbarColor()
             }
+        }
+    )
+}
+
+@Composable
+private fun ColoredAppShortcuts() {
+    BooleanPref(
+        key = COLORED_APP_SHORTCUTS,
+        titleRes = R.string.pref_title_app_shortcuts,
+        summaryRes = R.string.pref_summary_colored_app_shortcuts,
+        defaultValue = true,
+        onCheckedChange = {
+            DynamicShortcutManager(App.instance).updateDynamicShortcuts()
         }
     )
 }
