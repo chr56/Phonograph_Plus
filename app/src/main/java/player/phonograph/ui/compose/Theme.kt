@@ -15,6 +15,7 @@ import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.theme.accentColorFlow
 import player.phonograph.util.theme.primaryColorFlow
 import player.phonograph.util.theme.systemDarkmode
+import player.phonograph.util.theme.updateAllSystemUIColors
 import util.theme.materials.MaterialColor
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Colors
@@ -22,12 +23,14 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Shapes
 import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.TextStyle
@@ -35,6 +38,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.app.Activity
 import android.content.Context
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -93,6 +97,14 @@ private fun PhonographTheme(colors: Colors, content: @Composable () -> Unit) {
         shapes = Shapes,
         content = content
     )
+    AwareSystemUIColor(colors.primary)
+}
+@Composable
+private fun AwareSystemUIColor(primary: Color) {
+    val context = LocalContext.current
+    LaunchedEffect(primary) {
+        if (context is Activity) updateAllSystemUIColors(context, primary.toArgb())
+    }
 }
 
 @Composable
