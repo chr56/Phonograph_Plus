@@ -64,6 +64,8 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -475,8 +477,9 @@ private fun GeneralThemeSetting() {
 @Composable
 private fun PrimaryColorPref() {
     val context = LocalContext.current
-    val mode = remember {
-        if (SDK_INT >= S && Setting(context)[Keys.enableMonet].data) ColorPalette.MODE_MONET_PRIMARY_COLOR
+    val enableMonet by Setting(context)[Keys.enableMonet].flow.collectAsState(false)
+    val mode = remember(enableMonet) {
+        if (SDK_INT >= S && enableMonet) ColorPalette.MODE_MONET_PRIMARY_COLOR
         else ColorPalette.MODE_PRIMARY_COLOR
     }
     ColorPrefImpl(
@@ -488,8 +491,9 @@ private fun PrimaryColorPref() {
 @Composable
 private fun AccentColorPref() {
     val context = LocalContext.current
-    val mode = remember {
-        if (SDK_INT >= S && Setting(context)[Keys.enableMonet].data) ColorPalette.MODE_MONET_ACCENT_COLOR
+    val enableMonet by Setting(context)[Keys.enableMonet].flow.collectAsState(false)
+    val mode = remember(enableMonet) {
+        if (SDK_INT >= S && enableMonet) ColorPalette.MODE_MONET_ACCENT_COLOR
         else ColorPalette.MODE_ACCENT_COLOR
     }
     ColorPrefImpl(
