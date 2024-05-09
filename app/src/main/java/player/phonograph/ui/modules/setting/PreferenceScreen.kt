@@ -13,7 +13,6 @@ import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.alorma.compose.settings.ui.SettingsSwitch
 import lib.phonograph.localization.LanguageSettingDialog
 import lib.phonograph.localization.LocalizationStore
-import lib.phonograph.misc.ColorChooser
 import lib.phonograph.misc.ColorPalette
 import lib.phonograph.misc.rememberDataStoreBooleanState
 import player.phonograph.App
@@ -33,6 +32,7 @@ import player.phonograph.ui.dialogs.ClickModeSettingDialog
 import player.phonograph.ui.dialogs.HomeTabConfigDialog
 import player.phonograph.ui.dialogs.ImageSourceConfigDialog
 import player.phonograph.ui.dialogs.LastAddedPlaylistIntervalDialog
+import player.phonograph.ui.dialogs.MaterialColorPickerDialog
 import player.phonograph.ui.dialogs.MonetColorPickerDialog
 import player.phonograph.ui.dialogs.NotificationActionsConfigDialog
 import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
@@ -493,7 +493,7 @@ private fun ColorPref(
         if (SDK_INT >= S && Setting(context)[Keys.enableMonet].data) {
             MonetColorPickerDialog.showColorChooserDialog(context, variant)
         } else {
-            ColorChooser.showColorChooserDialog(context, color.toArgb(), variant)
+            MaterialColorPickerDialog.showColorChooserDialog(context, color.toArgb(), variant)
         }
     }
 }
