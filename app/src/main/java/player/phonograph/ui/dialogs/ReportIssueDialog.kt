@@ -54,20 +54,23 @@ class ReportIssueDialog : DialogFragment() {
             view.context.getTintedDrawable(R.drawable.ic_send_white_24dp, Color.WHITE)
         )
         binding.buttonSend.setOnClickListener {
-            requireContext().copyDeviceInfoToClipBoard()
-            startActivity(
+            it.context.copyDeviceInfoToClipBoard()
+            it.context.startActivity(
                 Intent(Intent.ACTION_VIEW).apply {
                     this.data = Uri.parse(ISSUE_TRACKER_LINK)
                     this.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
             )
         }
+
+        binding.deviceInfoCard.setOnClickListener {
+            it.context.copyDeviceInfoToClipBoard()
+        }
     }
 
     private fun Context.copyDeviceInfoToClipBoard() {
         val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboardManager
-            .setPrimaryClip(ClipData.newPlainText(getString(R.string.device_info), deviceInfo))
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(getString(R.string.device_info), deviceInfo))
         Toast.makeText(this, R.string.copied_device_info_to_clipboard, Toast.LENGTH_LONG).show()
     }
 
