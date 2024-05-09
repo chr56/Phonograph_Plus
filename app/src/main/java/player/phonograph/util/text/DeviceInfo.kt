@@ -41,18 +41,17 @@ fun getDeviceInfo(context: Context): String {
 
     // os
     val releaseVersion = Build.VERSION.RELEASE
-    @IntRange(from = 0)
     val sdkVersion: Int = Build.VERSION.SDK_INT
     val buildID: String = Build.DISPLAY
     val buildVersion = Build.VERSION.INCREMENTAL
     // device
     val arch: String = Build.SUPPORTED_ABIS.joinToString()
+    val soc: String = socInfo()
     val brand: String = Build.BRAND
     val manufacturer: String = Build.MANUFACTURER
     val model: String = Build.MODEL
     val device: String = Build.DEVICE // device code name
     val product: String = Build.PRODUCT // rom code name
-    val hardware: String = Build.HARDWARE // motherboard?
     val appLanguage: String = Locale.getDefault().language
     val screenInfo = screenInfo(context.resources.displayMetrics)
 
@@ -63,12 +62,11 @@ fun getDeviceInfo(context: Context): String {
             Release favor:   $favor
             Android version: $releaseVersion (API $sdkVersion)
             Architecture:    $arch
+            Soc:             $soc 
             Device brand:    $brand (by $manufacturer)
-            Device model:    $model (code: $device)
-            Product name:    $product
-            Build version:   $buildID 
+            Device model:    $product/$model (code $device)
+            Build version:   $buildID
                              ($buildVersion)
-            Hardware:        $hardware
             Language:        $appLanguage
             Screen:          $screenInfo
             Permissions:     Storage($storage)
@@ -76,19 +74,22 @@ fun getDeviceInfo(context: Context): String {
             """.trimIndent()
 }
 
+private fun socInfo(): String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    "${Build.SOC_MODEL}/${Build.BOARD} (by ${Build.SOC_MANUFACTURER})"
+} else {
+    "${Build.HARDWARE}/${Build.BOARD}"
+}
+
 private fun screenInfo(displayMetrics: DisplayMetrics): String =
     "${displayMetrics.heightPixels}x${displayMetrics.widthPixels} (dpi ${displayMetrics.densityDpi})"
 
 private fun storagePermissionInfo(context: Context): String {
-    val read = try {
-        if (hasStorageReadPermission(context)) "READ" else "-"
-    } catch (e: Exception) {
-        "N/A"
+    return buildString {
+        if (hasStorageReadPermission(context)) {
+            append("READ")
+        }
+        if (hasStorageReadPermission(context)) {
+            append(" WRITE")
+        }
     }
-    val write = try {
-        if (hasStorageWritePermission(context)) "WRITE" else "-"
-    } catch (e: Exception) {
-        "N/A"
-    }
-    return "$read/$write"
 }
