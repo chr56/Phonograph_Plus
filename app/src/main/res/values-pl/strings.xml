@@ -309,6 +309,7 @@
     <string name="lyricist">Autor tekstu utworu</string>
     <string name="music_tags">Znaczniki muzyczne</string>
     <string name="file">Plik</string>
+    <string name="folder">Katalog</string>
     <string name="pref_header_compatibility">Zgodność</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Używaj starszego mechanizmu ulubionych list odtwarzania</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">Po włączeniu tej opcji aplikacja będzie zapisywać ulubione utwory na liście odtwarzania m3u w pamięci masowej, zamiast zapisywać ulubione utwory w wewnętrznej bazie danych aplikacji (listę można wyeksportować ręcznie).</string>
