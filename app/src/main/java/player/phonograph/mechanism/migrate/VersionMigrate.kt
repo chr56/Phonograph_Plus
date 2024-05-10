@@ -179,6 +179,14 @@ private class GeneralThemeMigration : Migration(introduced = 1064) {
             pref.edit().clear().commit()
             delay(100)
             deleteSharedPreferences(context, Old.PREFERENCE_NAME)
+            // change "auto"
+            delay(100)
+            Setting.settingsDatastore(context).edit { preferences ->
+                val theme = preferences[Keys.theme.preferenceKey]
+                if (theme == "auto") {
+                    preferences[Keys.theme.preferenceKey] = Keys.theme.defaultValue()
+                }
+            }
         }
     }
 }
