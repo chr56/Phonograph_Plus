@@ -10,7 +10,6 @@ import player.phonograph.mechanism.Update
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.DebugDialog
 import player.phonograph.ui.dialogs.ReportIssueDialog
@@ -23,7 +22,6 @@ import player.phonograph.util.theme.primaryColor
 import util.theme.view.toolbar.setToolbarColor
 import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
 import android.content.Intent
 import android.net.Uri
@@ -43,7 +41,6 @@ import kotlinx.coroutines.launch
 class AboutActivity : ToolbarActivity(), View.OnClickListener {
     private lateinit var binding: ActivityAboutBinding
 
-    private lateinit var mToolbar: Toolbar
     private lateinit var appIcon: ImageView
     private lateinit var appVersion: TextView
     private lateinit var appVersionHash: TextView
@@ -72,7 +69,6 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
 
         binding = ActivityAboutBinding.inflate(layoutInflater)
         binding()
-        mToolbar = binding.toolbar
 
         setContentView(binding.root)
 
@@ -114,10 +110,9 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
     }
 
     private fun setUpToolbar() {
-        mToolbar.setBackgroundColor(primaryColor())
-        setSupportActionBar(mToolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        setToolbarColor(mToolbar, primaryColor())
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setToolbarColor(binding.toolbar, primaryColor())
     }
 
     @Keep
@@ -276,7 +271,6 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
 
         private const val TRANSLATE = "https://crowdin.com/project/phonograph-plus"
 
-        //            "https://phonograph.oneskyapp.com/collaboration/project?id=26521"
         private const val AIDAN_FOLLESTAD_GITHUB = "https://github.com/afollestad"
         private const val MICHAEL_COOK_WEBSITE = "https://cookicons.co/"
         private const val MAARTEN_CORPEL_WEBSITE = "https://maartencorpel.com/"
