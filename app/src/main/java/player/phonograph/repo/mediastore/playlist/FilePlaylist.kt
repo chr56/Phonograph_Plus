@@ -77,13 +77,6 @@ class FilePlaylistImpl : FilePlaylist {
 
     override fun describeContents(): Int = 0
 
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        super.writeToParcel(dest, flags)
-        dest.writeString(associatedFilePath)
-        dest.writeLong(dateAdded)
-        dest.writeLong(dateModified)
-    }
-
     constructor(parcel: Parcel) : super(parcel)
 
     companion object {
