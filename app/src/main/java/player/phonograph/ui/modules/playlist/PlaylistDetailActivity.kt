@@ -161,11 +161,9 @@ class PlaylistDetailActivity :
     override fun createContentView(): View = wrapSlidingMusicPanel(binding.root)
 
     private fun setUpToolbar() {
-        binding.toolbar.setBackgroundColor(primaryColor())
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         addMenuProvider(menuProvider(this::setupMenu, this::setupMenuCallback))
-        setToolbarColor(binding.toolbar, primaryColor())
     }
 
     private fun prepareRecyclerView() {
@@ -316,6 +314,7 @@ class PlaylistDetailActivity :
 
     private fun setupMenu(menu: Menu) {
         playlistDetailToolbar(menu, this, model, iconColor = primaryTextColor(primaryColor()))
+        setToolbarColor(binding.toolbar, primaryColor())
     }
 
     private fun setupMenuCallback(item: MenuItem): Boolean {
