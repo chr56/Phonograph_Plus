@@ -163,7 +163,7 @@ class PlaylistDetailActivity :
     private fun setUpToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        addMenuProvider(menuProvider(this::setupMenu, this::setupMenuCallback))
+        addMenuProvider(menuProvider(this::setupMenu))
     }
 
     private fun prepareRecyclerView() {
@@ -315,17 +315,6 @@ class PlaylistDetailActivity :
     private fun setupMenu(menu: Menu) {
         playlistDetailToolbar(menu, this, model, iconColor = primaryTextColor(primaryColor()))
         setToolbarColor(binding.toolbar, primaryColor())
-    }
-
-    private fun setupMenuCallback(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-                true
-            }
-
-            else              -> false
-        }
     }
 
 
