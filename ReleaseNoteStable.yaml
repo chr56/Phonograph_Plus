@@ -1,6 +1,6 @@
 version: "1.7.0"
 versionCode: 1070
-timestamp: 1714831916
+timestamp: 1715502411
 channel: "PREVIEW"
 notes:
   en:
@@ -10,6 +10,7 @@ notes:
       - "New: remember last scroll position in Folders or Files tab till next start"
       - "New: brand-new ui or Files tab supporting play or shuffle current folder"
       - "Fix: duplicated items would be added using Range Selection"
+      - "Fix: crash when opening some dialogs or details on Android 13"
       - "Fix: Main Player text color legibility in landscape"
       - "Fix: button color of some dialogs are not Accent Color"
       - "Fix: uncolored Statusbar when in landscape mode in Card Player"
@@ -33,6 +34,7 @@ notes:
       - "新增 记住文件或文件夹页的上次滚动位置直至重启"
       - "新增 重新设计的文件页，支持顺序或随机播放当前文件夹"
       - "修复 区间选择时会添加重复的项目"
+      - "修复 Android 13 上，打开部分对话框或详情时崩溃"
       - "修复 横屏下主播放器某些文本颜色可读性"
       - "修复 某些对话框的按钮颜色并非强调色"
       - "修复 在卡片播放器且处于横屏时，状态栏未着色"

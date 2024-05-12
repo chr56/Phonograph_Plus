@@ -1,30 +1,28 @@
-## **v1.7-dev2 2024.05.07**
+## **v1.7-beta1 2024.05.12**
 
 This is a _Preview Channel_ Release (with package name suffix `preview`), which might have potential bugs.
 此为预览通道版本 (包名后缀`preview`), 可能存在潜在问题!
 
 ### EN
 
-1. **WARNING**: you may counter failures of migrating Theme and Theme Colors settings, causing loss of these configurations
-2. Fix: duplicated items would be added using Range Selection
-3. Fix: button color of some dialogs are not Accent Color
-4. Fix: uncolored Statusbar when in landscape mode in Card Player
-5. New: Theme and Theme Colors can be corrected exported in backups file
-6. New: Auto Theme supporting choosing preferred night Theme (Black or Dark)
-7. Modify: make night Theme Black as default for Auto Theme
-8. Development: refactor a number of Theme related stuffs
+1. Fix: broken Theme Color settings since v1.7-dev2
+2. Fix: possible rare crash caused by color animation
+3. Fix: crash when opening some dialogs or details on Android 13
+4. Fix: wrong title of Backup Export Dialog
+5. Modify: hide song count of folders when using legacy ways to read files
+6. Improve: better information collection on crash (permissions, screen density and so on)
+7. Translation: update Polish (by cooky), Russian (by Yurt Page)
 
 
 ### ZH
 
-1. **警告** 迁移主题及颜色设置时可能失败而导致对应配置丢失
-2. 修复 区间选择时会添加重复的项目
-3. 修复 某些对话框的按钮颜色并非强调色
-4. 修复 在卡片播放器且处于横屏时，状态栏未着色
-5. 新增 主题和主题颜色可以在备份文件中正确导出
-6. 新增 自动主题支持选择首选夜间主题（黑色或深色）
-7. 修改 自动主题的夜间主题现在默认为黑色
-8. 开发 重构主题相关的内容
+1. 修复 自v1.7-dev2起，色彩设置失效
+2. 修复 可能的动画导致的罕见崩溃
+3. 修复 Android 13 上，打开部分对话框或详情时崩溃
+4. 修复 备份导出对话框的标题错误
+5. 修改 使用传统方式读取文件时，隐藏歌曲数量
+6. 改进 崩溃后的信息收集（权限、屏幕密度等）
+7. 翻译 更新 波兰语（cookie）、俄语（Yurt Page）
 
 
 
