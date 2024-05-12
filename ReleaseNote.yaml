@@ -1,21 +1,24 @@
-version: "1.6.2"
-versionCode: 1062
-timestamp: 1714191671
+version: "1.6.3"
+versionCode: 1063
+timestamp: 1715513081
 channel: "STABLE"
 notes:
   en:
     highlights: [ ]
     items:
-      - "Fix: rare random crash due to cover artwork in Main Player"
-      - "Fix: blank App Widget if app is not running (especially after device booting)"
-      - "Modify: start service when clicking App Widget if app is not running instead of launching app"
-      - "Improve: performance of App Widget"
-      - "Development: upgrade dependencies"
+      - "Fix: crash when opening some dialogs or Playlist Detail on Android 13 (only)"
+      - "Fix: duplicated items would be added using Range Selection"
+      - "Fix: wrong title of Backup Export Dialog"
+      - "Translation: update Russian (by Yurt Page)"
+      - "Translation: update Spanish (by Dino RTX (rtxdino36))"
+      - "Translation: update Turkish (by volkspolizist)"
+
   zh:
     highlights: [ ]
     items:
-      - "修复 罕见随机崩溃 （由主播放器图片而导致）"
-      - "修复 微件白屏，若应用未运行（特别是在开机后）"
-      - "修改 若应用未运行，则点击微件时启动服务，而不是打开应用"
-      - "改进 微件性能"
-      - "开发 更新依赖"
+      - "修复 (仅) Android 13 上，打开部分对话框或播放列表详情时崩溃"
+      - "修复 区间选择时会添加重复的项目"
+      - "修复 备份导出对话框的标题错误"
+      - "翻译 更新 俄语 (Yurt Page)"
+      - "翻译 更新 西班牙语 (Dino RTX (rtxdino36))"
+      - "翻译 更新 土耳其语 (volkspolizist)"
