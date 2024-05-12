@@ -1,6 +1,46 @@
 {
   "versions": [
     {
+      "channel": "stable",
+      "versionName": "1.6.3",
+      "versionCode": 1063,
+      "date": 1715513081,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.6.3"
+        },
+        {
+          "name": "Github Release (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.6.3/PhonographPlus_1.6.3.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 (仅) Android 13 上，打开部分对话框或播放列表详情时崩溃</li><li>修复 区间选择时会添加重复的项目</li><li>修复 备份导出对话框的标题错误</li><li>翻译 更新 俄语 (Yurt Page)</li><li>翻译 更新 西班牙语 (Dino RTX (rtxdino36))</li><li>翻译 更新 土耳其语 (volkspolizist)</li></ol>",
+        "en": "<ol><li>Fix: crash when opening some dialogs or Playlist Detail on Android 13 (only)</li><li>Fix: duplicated items would be added using Range Selection</li><li>Fix: wrong title of Backup Export Dialog</li><li>Translation: update Russian (by Yurt Page)</li><li>Translation: update Spanish (by Dino RTX (rtxdino36))</li><li>Translation: update Turkish (by volkspolizist)</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
+      "versionName": "1.7-beta1",
+      "versionCode": 1065,
+      "date": 1715502415,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.7-beta1"
+        },
+        {
+          "name": "Github Release (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.7-beta1/PhonographPlus_1.7-beta1.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 自v1.7-dev2起，色彩设置失效</li><li>修复 可能的动画导致的罕见崩溃</li><li>修复 Android 13 上，打开部分对话框或详情时崩溃</li><li>修复 备份导出对话框的标题错误</li><li>修改 使用传统方式读取文件时，隐藏歌曲数量</li><li>改进 崩溃后的信息收集（权限、屏幕密度等）</li><li>翻译 更新 波兰语（cookie）、俄语（Yurt Page）</li></ol>",
+        "en": "<ol><li>Fix: broken Theme Color settings since v1.7-dev2</li><li>Fix: possible rare crash caused by color animation</li><li>Fix: crash when opening some dialogs or details on Android 13</li><li>Fix: wrong title of Backup Export Dialog</li><li>Modify: hide song count of folders when using legacy ways to read files</li><li>Improve: better information collection on crash (permissions, screen density and so on)</li><li>Translation: update Polish (by cooky), Russian (by Yurt Page)</li></ol>"
+      }
+    },
+    {
       "channel": "preview",
       "versionName": "1.7-dev2",
       "versionCode": 1064,
@@ -16,8 +56,8 @@
         }
       ],
       "releaseNote": {
-        "zh-cn": "<ol><li>**警告** 迁移主题及颜色设置时可能失败而导致对应配置丢失</li><li>修复 区间选择时会添加重复的项目</li><li>修复 某些对话框的按钮颜色并非强调色</li><li>修复 在卡片播放器且处于横屏时，状态栏未着色</li><li>新增 主题和主题颜色可以在备份文件中正确导出</li><li>新增 自动主题支持选择首选夜间主题（黑色或深色）</li><li>修改 自动主题的夜间主题现在默认为黑色</li><li>开发 重构主题相关的内容</li></ol>",
-        "en": "<ol><li>**WARNING**: you may encounter failures of migrating Theme and Theme Colors settings, causing loss of these configurations</li><li>Fix: duplicated items would be added using Range Selection</li><li>Fix: button color of some dialogs are not Accent Color</li><li>Fix: uncolored Statusbar when in landscape mode in Card Player</li><li>New: Theme and Theme Colors can be corrected exported in backups file</li><li>New: Auto Theme supporting choosing preferred night Theme (Black or Dark)</li><li>Modify: make night Theme Black as default for Auto Theme</li><li>Development: refactor a number of Theme related stuffs</li></ol>"
+        "zh-cn": "<ol><li><b>警告</b> 迁移主题及颜色设置时可能失败而导致对应配置丢失</li><li>修复 区间选择时会添加重复的项目</li><li>修复 某些对话框的按钮颜色并非强调色</li><li>修复 在卡片播放器且处于横屏时，状态栏未着色</li><li>新增 主题和主题颜色可以在备份文件中正确导出</li><li>新增 自动主题支持选择首选夜间主题（黑色或深色）</li><li>修改 自动主题的夜间主题现在默认为黑色</li><li>开发 重构主题相关的内容</li></ol>",
+        "en": "<ol><li><b>WARNING<b>: you may encounter failures of migrating Theme and Theme Colors settings, causing loss of these configurations</li><li>Fix: duplicated items would be added using Range Selection</li><li>Fix: button color of some dialogs are not Accent Color</li><li>Fix: uncolored Statusbar when in landscape mode in Card Player</li><li>New: Theme and Theme Colors can be corrected exported in backups file</li><li>New: Auto Theme supporting choosing preferred night Theme (Black or Dark)</li><li>Modify: make night Theme Black as default for Auto Theme</li><li>Development: refactor a number of Theme related stuffs</li></ol>"
       }
     },
     {
