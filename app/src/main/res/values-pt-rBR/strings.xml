@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="exit">Sair</string>
     <string name="disable">desabilitar</string>
     <string name="choose_at_least_one">Por favor, escolha ao menos um</string>
     <string name="action_set_as_ringtone">Definir como toque de chamada</string>
@@ -83,6 +84,11 @@
     <string name="dark_theme_name">Escuro</string>
     <string name="black_theme_name">Preto (AMOLED)</string>
     <string name="auto_theme_name">Automático</string>
+    <string name="theme_name_auto_lightblack">"Automático (Claro/Escuro)"</string>
+    <string name="theme_name_auto_lightdark">"Automático (Claro/Escuro)"</string>
+    <string name="theme_name_light">Claro</string>
+    <string name="theme_name_black">Preto</string>
+    <string name="theme_name_dark">Escuro</string>
     <string name="always">Sempre</string>
     <string name="only_on_wifi">Apenas no Wi-Fi</string>
     <string name="never">Nunca</string>
@@ -251,8 +257,9 @@
     <string name="clear_all_preference_msg"><b>Aviso</b>: isso vai reinicias <b>TODAS</b> as preferências/configurações do aplicativo! \n\n Isso pode ajudar se o aplicativo trava na inocialização. \nVocê tem certeza?</string>
     <string name="failed_to_delete">Falha ao deletar</string>
     <string name="grant_permission">Conceder Permissão</string>
+    <string name="tips_no_storage_write_permission">Phonograph não tem permissão para escrever ou editar, ou excluir arquivos!</string>
     <string name="retry">Tente novamente</string>
-    <string name="permission_manage_external_storage_denied">parece que o Phonograph não tem permissão para \"gerenciar armazenamento externo\"!</string>
+    <string name="permission_manage_external_storage_denied">Parece que o Phonograph não tem permissão para \"gerenciar armazenamento externo\"!</string>
     <string name="not_available_now">não disponível agora</string>
     <string name="check_upgrade">Verificar atualização</string>
     <string name="no_newer_version">Sem atualização!</string>
@@ -302,6 +309,7 @@
     <string name="lyricist">Letrista</string>
     <string name="music_tags">Etiquetas da Música</string>
     <string name="file">Arquivo</string>
+    <string name="folder">Pasta</string>
     <string name="pref_header_compatibility">Compatibilidade</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Use o mecanismo de playlist favorito legado</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">Se habilitar isso, o aplicativo salvará as músicas favoritas em uma lista de reprodução m3u no armazenamento em vez de salvar as músicas favoritas no banco de dados interno do aplicativo. (Você pode exportar a lista manualmente.)</string>
@@ -377,6 +385,7 @@
     <string name="path_filter">Filtro de Caminho</string>
     <string name="path_filter_excluded_mode">Modo Excluído</string>
     <string name="path_filter_included_mode">Modo Incluído</string>
+    <string name="path_filter_confirmation">Você quer adicionar isso a %s?</string>
     <string name="pref_summary_path_filter_excluded_mode">O conteúdo das pastas excluídas está oculto da sua biblioteca.</string>
     <string name="pref_summary_path_filter_included_mode">Sua biblioteca só exibe o conteúdo das pastas incluídas.</string>
     <string name="pref_title_load_lyrics">Carregar Letras</string>
@@ -486,8 +495,10 @@
     <string name="action_item_layout">Disposição de Itens</string>
     <string name="item_layout_list">Lista (2 linhas)</string>
     <string name="item_layout_list_extended">Lista (2 linhas, estendidas)</string>
+    <string name="item_layout_list_no_image">Lista (2 linhas, sem imagem)</string>
     <string name="item_layout_list_3l">Lista (3 linhas)</string>
     <string name="item_layout_list_3l_extended">Lista (3 linhas, estendidas)</string>
+    <string name="item_layout_list_3l_no_image">Lista (3 linhas, sem imagem)</string>
     <string name="item_layout_grid">Grade</string>
     <string name="warning_inappropriate_config">A sua configuração atual é considerada \"Inapropriada\".</string>
     <string name="internal_error">Erro Interno</string>
@@ -503,4 +514,16 @@
     <string name="clear_image_cache">Limpar Cache de imagem</string>
     <string name="pref_title_persistent_playback_notification">Notificação de reprodução permanente</string>
     <string name="pref_summary_persistent_playback_notification">A notificação de reprodução estará sempre em curso e não será cancelada.</string>
+    <string name="pref_title_always_play">Sempre tocar</string>
+    <string name="pref_summary_always_play">Ignorar quaisquer interrupções e continuar a tocar, não importa o que mais esteja sendo tocado. (Isso pode causar saída silenciosa em algumas circunstâncias.)</string>
+    <string name="action_view_external_files">Ver arquivos externos</string>
+    <string name="pref_title_notification_actions">Ações de notificação de reprodução</string>
+    <string name="pref_summary_notification_actions">Botões personalizados de ação de notificação de reprodução</string>
+    <string name="help_notification_actions">Você pode configurar até 5 ações na notificação expandida, e até 3 ações em notificação compacta. (As caixas de seleção da esquerda são expandidas; as caixas de seleção da direita são para as compactas.)</string>
+    <string name="help_unmatched_notification_actions">As ações na notificação compacta também devem estar na notificação expandida.</string>
+    <string name="illegal_operation">A operação não atende aos seus requisitos.</string>
+    <string name="error_unstoppable_service">Não é possível sair do serviço de música em primeiro plano ou em uso.</string>
+    <string name="action_fast_rewind">Retroceder Rapidamente</string>
+    <string name="action_fast_forward">Avançar rapidamente</string>
+    <string name="path_selector">Seletor de arquivos</string>
 </resources>
