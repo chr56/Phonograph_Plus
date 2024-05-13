@@ -16,10 +16,10 @@ import android.provider.MediaStore.MediaColumns.DATE_MODIFIED
 
 object SongLoader : Loader<Song> {
 
-    override fun all(context: Context): List<Song> =
+    override suspend fun all(context: Context): List<Song> =
         querySongs(context).intoSongs()
 
-    override fun id(context: Context, id: Long): Song =
+    override suspend fun id(context: Context, id: Long): Song =
         querySongs(context, "${MediaStore.Audio.AudioColumns._ID} =? ", arrayOf(id.toString())).intoFirstSong()
 
     fun path(context: Context, path: String): Song =
@@ -42,7 +42,7 @@ object SongLoader : Loader<Song> {
         return cursor.intoSongs()
     }
 
-    fun searchByFileEntity(context: Context, file: FileEntity.File): Song {
+    suspend fun searchByFileEntity(context: Context, file: FileEntity.File): Song {
         return if (file.id > 0) id(context, file.id)
         else searchByPath(context, file.location.sqlPattern, true).firstOrNull() ?: Song.EMPTY_SONG
     }
@@ -59,7 +59,7 @@ object SongLoader : Loader<Song> {
         return cursor.intoSongs()
     }
 
-    fun latest(context: Context): Song? {
+    suspend fun latest(context: Context): Song? {
         return all(context).maxByOrNull { it.dateModified }
     }
 }

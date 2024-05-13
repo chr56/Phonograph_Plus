@@ -23,10 +23,10 @@ import android.provider.MediaStore.VOLUME_EXTERNAL
 
 object PlaylistLoader : Loader<FilePlaylist> {
 
-    override fun all(context: Context): List<FilePlaylist> =
+    override suspend fun all(context: Context): List<FilePlaylist> =
         queryPlaylists(context, null, null).intoPlaylists().sortAll(context)
 
-    override fun id(context: Context, id: Long): FilePlaylist =
+    override suspend fun id(context: Context, id: Long): FilePlaylist =
         queryPlaylists(context, BaseColumns._ID + "=?", arrayOf(id.toString())).intoFirstPlaylist()
 
     fun playlistName(context: Context, playlistName: String): FilePlaylist =

@@ -21,10 +21,10 @@ import android.provider.MediaStore.Audio.Genres
 
 object GenreLoader : Loader<Genre> {
 
-    override fun all(context: Context): List<Genre> =
+    override suspend fun all(context: Context): List<Genre> =
         queryGenre(context)?.intoGenres(context)?.sortAll(context) ?: emptyList()
 
-    override fun id(context: Context, id: Long): Genre? =
+    override suspend fun id(context: Context, id: Long): Genre? =
         queryGenre(context, id)?.intoGenres(context)?.first()
 
     fun genreSongs(context: Context, genreId: Long): List<Song> {

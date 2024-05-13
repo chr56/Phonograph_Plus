@@ -15,21 +15,21 @@ import kotlinx.coroutines.runBlocking
 
 object ArtistLoader : Loader<Artist> {
 
-    override fun all(context: Context): List<Artist> {
+    override suspend fun all(context: Context): List<Artist> {
         val songs = querySongs(context, sortOrder = null).intoSongs()
         return if (songs.isEmpty()) return emptyList() else songs.toArtistList()
     }
 
-    override fun id(context: Context, id: Long): Artist {
+    override suspend fun id(context: Context, id: Long): Artist {
         val songs = ArtistSongLoader.id(context, id)
         val albums = ArtistAlbumLoader.id(context, id)
         return Artist(id, songs[0].artistName ?: Artist.UNKNOWN_ARTIST_DISPLAY_NAME, albums.size, songs.size)
     }
 
-    fun searchByName(context: Context, query: String): List<Artist> {
+    suspend fun searchByName(context: Context, query: String): List<Artist> {
         val songs = querySongs(context, "${AudioColumns.ARTIST} LIKE ?", arrayOf("%$query%"), null).intoSongs()
         return if (songs.isEmpty()) return emptyList() else songs.toArtistList()
     }
 
-    private fun List<Song>.toArtistList() = runBlocking { catalogArtists(this@toArtistList).await() }
+    private suspend fun List<Song>.toArtistList() = catalogArtists(this@toArtistList).await()
 }

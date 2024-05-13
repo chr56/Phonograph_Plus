@@ -7,6 +7,7 @@ package player.phonograph.repo.mediastore.internal
 import player.phonograph.App
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
+import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
@@ -79,6 +80,8 @@ suspend fun catalogArtists(songs: List<Song>): Deferred<List<Artist>> = coroutin
 
         while (!completed) yield() // wait until result is ready
 
+        val sortMode = Setting(App.instance).Composites[Keys.artistSortMode].flowData()
+
         // handle result
         return@async flow {
             for ((id, map) in table) {
@@ -103,12 +106,11 @@ suspend fun catalogArtists(songs: List<Song>): Deferred<List<Artist>> = coroutin
             )
         }.catch { e ->
             reportError(e, TAG_ARTIST, "Fail to load artists")
-        }.toList().sortAllArtist()
+        }.toList().sortAllArtist(sortMode)
     }
 }
 
-internal fun List<Artist>.sortAllArtist(): List<Artist> {
-    val sortMode = Setting(App.instance).Composites[Keys.artistSortMode].data
+internal fun List<Artist>.sortAllArtist(sortMode: SortMode): List<Artist> {
     val revert = sortMode.revert
     return when (sortMode.sortRef) {
         SortRef.ARTIST_NAME -> this.sort(revert) { it.name.lowercase() }

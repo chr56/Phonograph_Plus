@@ -7,6 +7,6 @@ package player.phonograph.repo.mediastore.loaders
 import android.content.Context
 
 interface Loader<T> {
-    fun all(context: Context): List<T>
-    fun id(context: Context, id: Long): T?
+    suspend fun all(context: Context): List<T>
+    suspend fun id(context: Context, id: Long): T?
 }

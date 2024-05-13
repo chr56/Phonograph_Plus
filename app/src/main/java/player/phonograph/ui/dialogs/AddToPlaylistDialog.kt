@@ -16,11 +16,12 @@ import androidx.lifecycle.lifecycleScope
 import android.app.Dialog
 import android.os.Bundle
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class AddToPlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val songs = requireArguments().parcelableArrayList<Song>(SONG)!!
-        val playlists = PlaylistLoader.all(requireActivity())
+        val playlists = runBlocking { PlaylistLoader.all(requireContext()) }
 
         val playlistNames =
             arrayOf(resources.getString(R.string.action_new_playlist)) + playlists.map { it.name }.toTypedArray()
