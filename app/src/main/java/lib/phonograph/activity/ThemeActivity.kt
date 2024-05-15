@@ -18,6 +18,8 @@ import android.os.Looper
 import android.view.View
 import android.view.animation.PathInterpolator
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 
 /**
@@ -65,7 +67,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     private fun observeTheme() {
         lifecycleScope.launch(Dispatchers.IO) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                Setting(this@ThemeActivity)[Keys.theme].flow.collect {
+                Setting(this@ThemeActivity)[Keys.theme].flow.distinctUntilChanged().drop(1).collect {
                     ThemeSetting.updateThemeStyle(this@ThemeActivity)
                     setTheme(ThemeSetting.themeStyle(this@ThemeActivity))
                     requireRecreate = true
@@ -74,7 +76,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         }
         lifecycleScope.launch(Dispatchers.IO) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                primaryColorFlow(this@ThemeActivity).collect {
+                primaryColorFlow(this@ThemeActivity).distinctUntilChanged().drop(1).collect {
                     ThemeSetting.updateCachedPrimaryColor(this@ThemeActivity)
                     requireRecreate = true
                 }
@@ -82,7 +84,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         }
         lifecycleScope.launch(Dispatchers.IO) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                accentColorFlow(this@ThemeActivity).collect {
+                accentColorFlow(this@ThemeActivity).distinctUntilChanged().drop(1).collect {
                     ThemeSetting.updateCachedAccentColor(this@ThemeActivity)
                     requireRecreate = true
                 }
@@ -95,11 +97,10 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         super.onResume()
         if (requireRecreate) {
             requireRecreate = false
-            if (firstTime) firstTime = false else postRecreate()
+            postRecreate()
         }
     }
 
-    private var firstTime: Boolean = true // todo
     private var requireRecreate: Boolean = false
     protected fun postRecreate() {
         // hack to prevent java.lang.RuntimeException: Performing pause of activity that is not resumed
