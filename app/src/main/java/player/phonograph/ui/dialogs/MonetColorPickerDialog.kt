@@ -13,7 +13,6 @@ import lib.phonograph.misc.MonetColor
 import player.phonograph.R
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.settings.ThemeSetting
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.MonetColorPicker
@@ -98,8 +97,6 @@ private fun MonetColorPickerDialogContent(
                 ColorPalette.Variant.Primary -> Setting(context)[Keys.monetPalettePrimaryColor].edit { palette.value }
                 ColorPalette.Variant.Accent  -> Setting(context)[Keys.monetPaletteAccentColor].edit { palette.value }
             }
-            ThemeSetting.updateCachedPrimaryColor(context)
-            ThemeSetting.updateCachedAccentColor(context)
             onDismiss()
         }
     }

@@ -26,6 +26,7 @@ import android.os.Looper
 import android.view.View
 import android.view.animation.PathInterpolator
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
@@ -85,7 +86,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 primaryColorFlow(this@ThemeActivity).distinctUntilChanged().drop(1).collect {
-                    ThemeSetting.updateCachedPrimaryColor(this@ThemeActivity)
+                    delay(500)
                     requireRecreate()
                 }
             }
@@ -93,7 +94,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 accentColorFlow(this@ThemeActivity).distinctUntilChanged().drop(1).collect {
-                    ThemeSetting.updateCachedAccentColor(this@ThemeActivity)
+                    delay(500)
                     requireRecreate()
                 }
             }

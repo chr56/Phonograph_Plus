@@ -11,7 +11,6 @@ import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.theme.tintButtons
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
@@ -74,8 +73,6 @@ class MaterialColorPickerDialog : DialogFragment() {
             ColorPalette.Variant.Primary -> Setting(context)[Keys.selectedPrimaryColor].data = color
             ColorPalette.Variant.Accent  -> Setting(context)[Keys.selectedAccentColor].data = color
         }
-        ThemeSetting.updateCachedPrimaryColor(context)
-        ThemeSetting.updateCachedAccentColor(context)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             DynamicShortcutManager(context).updateDynamicShortcuts()
         }

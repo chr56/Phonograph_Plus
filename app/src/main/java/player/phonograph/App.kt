@@ -23,6 +23,7 @@ import player.phonograph.ui.moduleViewModels
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
 import player.phonograph.util.postDelayedOnceHandlerCallback
+import player.phonograph.util.theme.ThemeCacheUpdateDelegate
 import player.phonograph.util.theme.changeGlobalNightMode
 import player.phonograph.util.theme.checkNightMode
 import androidx.appcompat.app.AppCompatDelegate
@@ -98,6 +99,9 @@ class App : Application(), ImageLoaderFactory {
 
             modules(moduleStatus, moduleLoaders, moduleViewModels)
         }
+
+        // Color
+        ThemeCacheUpdateDelegate.start(this)
     }
 
     override fun onTerminate() {

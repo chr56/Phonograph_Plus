@@ -27,11 +27,15 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
+import java.util.concurrent.CancellationException
 
 @JvmName("Context_PrimaryColor")
 @CheckResult
@@ -121,4 +125,43 @@ fun updateAllSystemUIColors(activity: Activity, color: Int) = with(activity) {
     updateStatusbarColor(color)
     updateNavigationbarColor(color)
     updateTaskDescriptionColor(color)
+}
+
+object ThemeCacheUpdateDelegate {
+
+    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+
+    private fun <T> observeSetting(context: Context, key: PrimitiveKey<T>, collector: FlowCollector<T>): Job =
+        scope.launch { Setting(context)[key].flow.distinctUntilChanged().collect(collector) }
+
+    private var job: Job? = null
+    private fun observeThemeColor(context: Context) {
+        job = scope.launch {
+            observeSetting(context, Keys.selectedPrimaryColor) {
+                ThemeSetting.updateCachedPrimaryColor(context)
+            }
+            observeSetting(context, Keys.monetPalettePrimaryColor) {
+                ThemeSetting.updateCachedPrimaryColor(context)
+            }
+            observeSetting(context, Keys.selectedAccentColor) {
+                ThemeSetting.updateCachedAccentColor(context)
+            }
+            observeSetting(context, Keys.monetPaletteAccentColor) {
+                ThemeSetting.updateCachedAccentColor(context)
+            }
+            observeSetting(context, Keys.enableMonet) {
+                ThemeSetting.updateCachedPrimaryColor(context)
+                ThemeSetting.updateCachedAccentColor(context)
+            }
+        }
+    }
+
+    fun start(context: Context) {
+        observeThemeColor(context.applicationContext)
+    }
+
+    fun stop() {
+        job?.cancel(CancellationException("Force stop"))
+    }
+
 }

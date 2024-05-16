@@ -523,10 +523,7 @@ private fun MonetSetting() {
         summaryRes = R.string.pref_summary_enable_monet,
         defaultValue = false,
         onCheckedChange = {
-            val context = App.instance
-            DynamicShortcutManager(context).updateDynamicShortcuts()
-            ThemeSetting.updateCachedPrimaryColor(context)
-            ThemeSetting.updateCachedAccentColor(context)
+            if (SDK_INT >= N_MR1) DynamicShortcutManager(App.instance).updateDynamicShortcuts()
         }
     )
 }
@@ -556,7 +553,7 @@ private fun ColoredAppShortcuts() {
         summaryRes = R.string.pref_summary_colored_app_shortcuts,
         defaultValue = true,
         onCheckedChange = {
-            DynamicShortcutManager(App.instance).updateDynamicShortcuts()
+            if (SDK_INT >= N_MR1) DynamicShortcutManager(App.instance).updateDynamicShortcuts()
         }
     )
 }
