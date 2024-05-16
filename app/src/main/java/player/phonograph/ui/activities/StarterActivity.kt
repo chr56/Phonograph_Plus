@@ -349,7 +349,7 @@ class StarterActivity : AppCompatActivity() {
                         addView(
                             TextView(context).apply {
                                 setPadding(32, 32, 32, 64)
-                                text = intent.data.toString()
+                                text = originalIntent.data.toString()
                             }
                         )
                     }
