@@ -7,10 +7,18 @@ package lib.phonograph.activity
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.settings.ThemeSetting
-import player.phonograph.util.theme.*
+import player.phonograph.util.theme.accentColorFlow
+import player.phonograph.util.theme.primaryColorFlow
+import player.phonograph.util.theme.restoreNotFullsScreen
+import player.phonograph.util.theme.setFullScreenAndIncludeStatusBar
+import player.phonograph.util.theme.updateAllSystemUIColors
+import player.phonograph.util.theme.updateNavigationbarColor
+import player.phonograph.util.theme.updateStatusbarColor
+import player.phonograph.util.theme.updateTaskDescriptionColor
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.withResumed
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.os.Handler
@@ -18,6 +26,7 @@ import android.os.Looper
 import android.view.View
 import android.view.animation.PathInterpolator
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
@@ -68,9 +77,8 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 Setting(this@ThemeActivity)[Keys.theme].flow.distinctUntilChanged().drop(1).collect {
-                    ThemeSetting.updateThemeStyle(this@ThemeActivity)
                     setTheme(ThemeSetting.themeStyle(this@ThemeActivity))
-                    requireRecreate = true
+                    requireRecreate()
                 }
             }
         }
@@ -78,7 +86,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 primaryColorFlow(this@ThemeActivity).distinctUntilChanged().drop(1).collect {
                     ThemeSetting.updateCachedPrimaryColor(this@ThemeActivity)
-                    requireRecreate = true
+                    requireRecreate()
                 }
             }
         }
@@ -86,26 +94,22 @@ abstract class ThemeActivity : MultiLanguageActivity() {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 accentColorFlow(this@ThemeActivity).distinctUntilChanged().drop(1).collect {
                     ThemeSetting.updateCachedAccentColor(this@ThemeActivity)
-                    requireRecreate = true
+                    requireRecreate()
+                }
+            }
+        }
+        lifecycleScope.launch(Dispatchers.IO) {
+            recreateEffect.collect {
+                lifecycle.withResumed {
+                    Handler(Looper.getMainLooper()).post { recreate() }
                 }
             }
         }
     }
 
-
-    override fun onResume() {
-        super.onResume()
-        if (requireRecreate) {
-            requireRecreate = false
-            postRecreate()
-        }
-    }
-
-    private var requireRecreate: Boolean = false
-    protected fun postRecreate() {
-        // hack to prevent java.lang.RuntimeException: Performing pause of activity that is not resumed
-        // makes sure recreate() is called right after and not in onResume()
-        Handler(Looper.getMainLooper()).post { recreate() }
+    private val recreateEffect: MutableSharedFlow<Unit> = MutableSharedFlow()
+    protected suspend fun requireRecreate() {
+        recreateEffect.emit(Unit)
     }
 
     //
