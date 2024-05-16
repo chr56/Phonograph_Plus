@@ -1,27 +1,19 @@
-version: "1.7-beta1"
-versionCode: 1065
-timestamp: 1715502415
+version: "1.7-beta2"
+versionCode: 1066
+timestamp: 1715835175
 channel: "PREVIEW"
 notes:
   en:
     highlights: [ ]
     items:
-      - "Fix: broken Theme Color settings since v1.7-dev2"
-      - "Fix: possible rare crash caused by color animation"
-      - "Fix: crash when opening some dialogs or details on Android 13"
-      - "Fix: wrong title of Backup Export Dialog"
-      - "Modify: hide song count of folders when using legacy ways to read files"
-      - "Improve: better information collection on crash (permissions, screen density and so on)"
-      - "Translation: update Polish (by cooky), Russian (by Yurt Page)"
+      - "Fix: some issue of color setting updating since v1.7-dev2"
+      - "Fix: albums sorting in Artist Detail"
+      - "Translation: update Portuguese, Brazilian (by FalaTudo)"
   zh:
     highlights: [ ]
     items:
-      - "修复 自v1.7-dev2起，色彩设置失效"
-      - "修复 可能的动画导致的罕见崩溃"
-      - "修复 Android 13 上，打开部分对话框或详情时崩溃"
-      - "修复 备份导出对话框的标题错误"
-      - "修改 使用传统方式读取文件时，隐藏歌曲数量"
-      - "改进 崩溃后的信息收集（权限、屏幕密度等）"
-      - "翻译 更新 波兰语（cookie）、俄语（Yurt Page）"
+      - "修复 自v1.7-dev2以来，颜色设置刷新问题"
+      - "修复 艺术家详情中专辑排序"
+      - "翻译 更新 巴西葡萄牙语 (FalaTudo)"
 
 
