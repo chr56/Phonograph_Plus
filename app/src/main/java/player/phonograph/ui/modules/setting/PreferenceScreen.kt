@@ -453,10 +453,12 @@ private fun GeneralThemeSetting() {
         R.string.theme_name_black,
         R.string.theme_name_dark,
     )
+    val context = LocalContext.current
     ListPref(
         options = OptionGroupModel(THEME, themeValues, themeNames),
         titleRes = R.string.pref_title_general_theme,
         onChange = { _, _ ->
+            ThemeSetting.updateThemeStyle(context)
         }
     )
 }
@@ -521,7 +523,10 @@ private fun MonetSetting() {
         summaryRes = R.string.pref_summary_enable_monet,
         defaultValue = false,
         onCheckedChange = {
-            DynamicShortcutManager(App.instance).updateDynamicShortcuts()
+            val context = App.instance
+            DynamicShortcutManager(context).updateDynamicShortcuts()
+            ThemeSetting.updateCachedPrimaryColor(context)
+            ThemeSetting.updateCachedAccentColor(context)
         }
     )
 }
