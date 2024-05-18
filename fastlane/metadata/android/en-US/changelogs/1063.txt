@@ -1,0 +1,5 @@
+<b>1.6.3(1063) 2024.05.12</b>
+- Fix: crash when opening some dialogs or Playlist Detail on Android 13 (only)
+- Fix: duplicated items would be added using Range Selection
+- Fix: wrong title of Backup Export Dialog
+- Translation: update Russian (by Yurt Page), Spanish (by Dino RTX (rtxdino36)), Turkish (by volkspolizist)
