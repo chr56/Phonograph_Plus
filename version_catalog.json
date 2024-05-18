@@ -22,6 +22,26 @@
     },
     {
       "channel": "preview",
+      "versionName": "1.7-beta2",
+      "versionCode": 1066,
+      "date": 1715835175,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.7-beta2"
+        },
+        {
+          "name": "Github Release (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.7-beta2/PhonographPlus_1.7-beta2.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 自v1.7-dev2以来，颜色设置刷新问题</li><li>修复 艺术家详情中专辑排序</li><li>翻译 更新 巴西葡萄牙语 (FalaTudo)</li></ol>",
+        "en": "<ol><li>Fix: some issue of color setting updating since v1.7-dev2</li><li>Fix: albums sorting in Artist Detail</li><li>Translation: update Portuguese, Brazilian (by FalaTudo)</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.7-beta1",
       "versionCode": 1065,
       "date": 1715502415,
