@@ -17,7 +17,8 @@ import java.io.Writer
 
 
 private const val MAX_CHANNEL_ITEM = 3
-private const val GITHUB_LINK = "https://github.com/chr56/Phonograph_Plus/releases/tag/"
+private const val GITHUB_RELEASE_LINK = "https://github.com/chr56/Phonograph_Plus/releases/tag/%s"
+private const val GITHUB_DOWNLOAD_LINK = "https://github.com/chr56/Phonograph_Plus/releases/download/%s/PhonographPlus_%s.apk"
 
 class VersionJsonOutput(versionJsonFile: File, private val releaseNote: ReleaseNote) : OutputFormat {
 
@@ -31,9 +32,13 @@ class VersionJsonOutput(versionJsonFile: File, private val releaseNote: ReleaseN
             date = timestamp,
             link = listOf(
                 VersionJsonItem.Link(
-                    name = "Github Release",
-                    url = "$GITHUB_LINK$tag"
-                )
+                    name = "Github Release (Website)",
+                    url = String.format(GITHUB_RELEASE_LINK, tag)
+                ),
+                VersionJsonItem.Link(
+                    name = "Github Release (File Download Link)",
+                    url = String.format(GITHUB_DOWNLOAD_LINK, tag, version)
+                ),
             ),
             releaseNote = VersionJsonItem.ReleaseNote(
                 zh = generateHTMLNoteMinify(this, Language.ZH),
