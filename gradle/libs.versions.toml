@@ -15,6 +15,7 @@ compose = "1.6.6"
 composeCompiler = "1.5.10"
 composeSetting = "1.0.3"
 coil = "2.6.0"
+koin = "3.5.6"
 materialDialogs = "3.3.0"
 materialTools = "0.2.0"
 room = "2.6.1"
@@ -82,7 +83,7 @@ kotlinx-serialization-ktoml = "com.akuleshov7:ktoml-core:0.5.0"
 kotlinx-serialization-kaml = "com.charleskorn.kaml:kaml:0.57.0"
 coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt:coil-compose-base", version.ref = "coil" }
-koin = "io.insert-koin:koin-android:3.5.3"
+koin = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 kotlinx-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0"
 
 #
