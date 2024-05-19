@@ -84,7 +84,7 @@
     <string name="dark_theme_name">Escuro</string>
     <string name="black_theme_name">Preto (AMOLED)</string>
     <string name="auto_theme_name">Automático</string>
-    <string name="theme_name_auto_lightblack">"Automático (Claro/Escuro)"</string>
+    <string name="theme_name_auto_lightblack">"Automático (Claro/Preto)"</string>
     <string name="theme_name_auto_lightdark">"Automático (Claro/Escuro)"</string>
     <string name="theme_name_light">Claro</string>
     <string name="theme_name_black">Preto</string>
@@ -519,7 +519,7 @@
     <string name="action_view_external_files">Ver arquivos externos</string>
     <string name="pref_title_notification_actions">Ações de notificação de reprodução</string>
     <string name="pref_summary_notification_actions">Botões personalizados de ação de notificação de reprodução</string>
-    <string name="help_notification_actions">Você pode configurar até 5 ações na notificação expandida, e até 3 ações em notificação compacta. (As caixas de seleção da esquerda são expandidas; as caixas de seleção da direita são para as compactas.)</string>
+    <string name="help_notification_actions">Você pode configurar até 5 ações na notificação expandida, e até 3 ações na notificação compacta. (As caixas de seleção da esquerda são expandidas; as caixas de seleção da direita são para as compactas.)</string>
     <string name="help_unmatched_notification_actions">As ações na notificação compacta também devem estar na notificação expandida.</string>
     <string name="illegal_operation">A operação não atende aos seus requisitos.</string>
     <string name="error_unstoppable_service">Não é possível sair do serviço de música em primeiro plano ou em uso.</string>
