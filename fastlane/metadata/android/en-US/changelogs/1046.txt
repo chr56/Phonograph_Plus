@@ -1,0 +1,7 @@
+<b>1.4.6(1046) 2024.05.19</b>
+- Improve: slightly adjust tab width [backported from v1.6.0]
+- Fix: failed to duplicate multiple playlists [backported from v1.6.0]
+- Fix: preference Colored Navigation Bar failed [backported from v1.6.0]
+- Fix: sometimes abnormal PlayPause button on going back from background [backported from v1.6.0]
+- Fix: crash after adding a same track multiple times in a same playlist [backported from v1.6.1]
+...(Visit project homepage to see full changelogs)
