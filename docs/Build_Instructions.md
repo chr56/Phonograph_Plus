@@ -4,19 +4,18 @@ _This part is not written very well._
 
 See also [Developer Guide](./Developer_Guide.md).
 
-
 ## **Requirement**
 
 **Build**:
 
 1. a PC : any desktop operate system platform (only `Windows` and `Ubuntu 20.04` are tested), I am not sure if it works
    on `Android(Termux)` because jvm version.
-2. JDK 17 (we are using AGP 8.2.2 with gradle 8.5).
+2. JDK 17 (we are using AGP 8.3.2 with gradle 8.6).
 3. The connected and fast network.
 
 **Development**:
 
-Plus `Android Studio` with correspond `Android Gradle Plugin` (currently `Hedgehog (Patch 2)`). 
+Plus `Android Studio` with correspond `Android Gradle Plugin` (currently `Iguana 2023.2.1 (Patch 2)`).
 (`IDEA` might be not compatible because `Android Gradle Plugin` is too new)
 
 ## **Instructions (Build with commandline)**
@@ -58,15 +57,13 @@ yum install temurin-17-jdk
 
 ### 4) generate a new signing key or use your own
 
-using `keytool` from JDK
-
-```shell
-keytool -genkeypair -storepass <keystore-password> -alias <key-alias> -keypass <key-password> -keyalg RSA -keysize 2048 -keystore <your-signing-key-file-path->
-```
+See Also Appendix [Generate A New Keystore for Signing](#generate_keystore)
 
 ### 5) configure Signing Config
 
 create file `signing.properties` on repository's root:
+
+(Replace <\*> with yours.)
 
 ```properties
 storeFile=<your-signing-key-file-path->
@@ -75,16 +72,7 @@ keyAlias=<key-alias>
 keyPassword=<key-password>
 ```
 
-replace <\*> with yours.
-
-You can create `signing.properties` by command:
-
-```shell
-echo "storeFile=<your-signing-key-file-path->" >> ./signing.properties
-echo "storePassword=<keystore-password>" >> ./signing.properties
-echo "keyAlias=<key-alias>" >> ./signing.properties
-echo "keyPassword=<key-password>" >> ./signing.properties
-```
+See Also Appendix [Generate A New Keystore for Signing](#generate_signing_properties)
 
 ### 6) build
 
@@ -108,3 +96,25 @@ You can run
 
 to move apk to `./products/stableRelease` and rename to `Phonograph Plus_<VERSION>.apk`
 
+## Appendix
+
+### Generate A New Keystore for Signing <a id="generate_keystore"></a>
+
+Use `keytool` from JDK:
+
+```shell
+keytool -genkeypair -storepass <keystore-password> -alias <key-alias> -keypass <key-password> -keyalg RSA -keysize 2048 -keystore <your-signing-key-file-path->
+```
+
+### Generate `signing.properties` <a id="generate_signing_properties"></a>
+
+You can create `signing.properties` by command:
+
+(Replace <\*> with yours.)
+
+```shell
+echo "storeFile=<your-signing-key-file-path->" >> ./signing.properties
+echo "storePassword=<keystore-password>" >> ./signing.properties
+echo "keyAlias=<key-alias>" >> ./signing.properties
+echo "keyPassword=<key-password>" >> ./signing.properties
+```
