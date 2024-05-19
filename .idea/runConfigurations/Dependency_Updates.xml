@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Dependency Updates" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="Dependency Updates" type="GradleRunConfiguration" factoryName="Gradle" activateToolWindowBeforeRun="false" singleton="false">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -15,7 +15,7 @@
       </option>
       <option name="vmOptions" />
     </ExternalSystemSettings>
-    <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+    <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
     <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
     <DebugAllEnabled>false</DebugAllEnabled>
     <RunAsTest>false</RunAsTest>
