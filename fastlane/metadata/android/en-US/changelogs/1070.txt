@@ -1,0 +1,8 @@
+<b>1.7.0(1070) 2024.05.20</b>
+- New: remember last scroll position in Folders or Files tab till next start
+- New: brand-new ui or Files tab supporting play or shuffle current folder
+- New: Theme and Theme Colors can be corrected exported in backups file
+- New: Auto Theme supporting choosing preferred night Theme (Black or Dark)
+- Modify: make night Theme Black as default for Auto Theme
+- Modify: hide song count of folders when using legacy ways 
+...(Visit project homepage to see full changelogs)
