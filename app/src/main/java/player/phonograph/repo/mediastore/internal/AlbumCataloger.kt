@@ -89,7 +89,7 @@ suspend fun catalogAlbums(songs: List<Song>): Deferred<List<Album>> = coroutineS
             createAlbum(id, list)
         }.catch { e ->
             reportError(e, TAG_ALBUM, "Fail to load albums")
-        }.toList().sortAllAlbums(SortMode(SortRef.YEAR, true))
+        }.toList().sortAllAlbums(SortMode(SortRef.YEAR, false))
     }
 }
 
