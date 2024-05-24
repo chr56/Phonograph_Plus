@@ -4,7 +4,7 @@
 
 package player.phonograph.model
 
-import lib.storage.root
+import lib.storage.extension.rootDirectory
 import player.phonograph.App
 import androidx.core.content.getSystemService
 import android.content.Context
@@ -37,7 +37,7 @@ data class SongCollection(
         private val internalStorageRootPath: String by lazy {
             val storageManager = App.instance.getSystemService<StorageManager>()!!
             val storageVolume = storageManager.primaryStorageVolume
-            storageVolume.root()?.absolutePath ?: ""
+            storageVolume.rootDirectory()?.absolutePath ?: ""
         }
     }
 

@@ -4,9 +4,9 @@
 
 package player.phonograph.model.file
 
-import lib.storage.externalStoragePath
-import lib.storage.root
+import lib.storage.extension.rootDirectory
 import player.phonograph.App
+import player.phonograph.util.primaryExternalStoragePath
 import player.phonograph.util.warning
 import androidx.core.content.getSystemService
 import android.content.Context
@@ -25,7 +25,7 @@ class Location private constructor(val basePath: String, val storageVolume: Stor
 
     val absolutePath: String
         get() {
-            val prefix = storageVolume.root()?.path ?: externalStoragePath
+            val prefix = storageVolume.rootDirectory()?.path ?: primaryExternalStoragePath
             return "$prefix$basePath"
         }
 
@@ -61,7 +61,7 @@ class Location private constructor(val basePath: String, val storageVolume: Stor
             val storageManager = context.getSystemService<StorageManager>()!!
 
             val storageVolume = file.getStorageVolume(storageManager)
-            val basePath = file.getBasePath(storageVolume.root() ?: throw IllegalStateException("unavailable for $storageManager"))
+            val basePath = file.getBasePath(storageVolume.rootDirectory() ?: throw IllegalStateException("unavailable for $storageManager"))
             // path.substringAfter(storageVolume.root()?.path ?: file.getBasePath(context))
 
             return from(basePath, storageVolume)

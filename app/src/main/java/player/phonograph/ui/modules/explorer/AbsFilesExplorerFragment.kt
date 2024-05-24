@@ -5,7 +5,7 @@
 package player.phonograph.ui.modules.explorer
 
 import com.google.android.material.snackbar.Snackbar
-import lib.storage.root
+import lib.storage.extension.rootDirectory
 import player.phonograph.R
 import player.phonograph.databinding.FragmentFileExploreBinding
 import player.phonograph.model.file.Location
@@ -194,13 +194,13 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
             Snackbar.make(binding.root, getString(R.string.no_volume_found), Snackbar.LENGTH_SHORT).show()
             return false
         }
-        val volumesNames = volumes.map { "${it.getDescription(context)}\n(${it.root()?.path ?: "N/A"})" }
+        val volumesNames = volumes.map { "${it.getDescription(context)}\n(${it.rootDirectory()?.path ?: "N/A"})" }
         val selected = volumes.indexOf(model.currentLocation.value.storageVolume)
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.storage_volumes)
             .setSingleChoiceItems(volumesNames.toTypedArray(), selected) { dialog, choice ->
                 dialog.dismiss()
-                val path = volumes[choice].root()?.absolutePath
+                val path = volumes[choice].rootDirectory()?.absolutePath
                 if (path == null) {
                     Toast.makeText(context, R.string.not_available_now, Toast.LENGTH_SHORT).show()
                 } else {

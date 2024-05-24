@@ -4,7 +4,8 @@
 
 package player.phonograph.service.util
 
-import lib.storage.externalFileBashPath
+import lib.storage.basePathOf
+import lib.storage.textparser.ExternalFilePathParser
 import player.phonograph.R
 import android.content.res.Resources
 import android.media.MediaPlayer.MEDIA_ERROR_IO
@@ -44,7 +45,7 @@ internal fun makeErrorMessage(resources: Resources, path: String, exist: Boolean
 private fun makeErrorMessage(resources: Resources, path: String): String {
     val head = resources.getString(R.string.unplayable_file)
     val path = try {
-        externalFileBashPath(path)
+        ExternalFilePathParser.bashPath(path)
     } catch (e: Exception) {
         path
     }

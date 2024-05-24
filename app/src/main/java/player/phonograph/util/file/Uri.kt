@@ -6,9 +6,9 @@ package player.phonograph.util.file
 
 import lib.storage.childDocumentUriWithinTree
 import lib.storage.documentProviderUriAbsolutePath
-import lib.storage.externalFileBashPath
 import lib.storage.launcher.SAFActivityResultContracts.chooseDirViaSAF
 import lib.storage.launcher.SAFActivityResultContracts.chooseFileViaSAF
+import lib.storage.textparser.ExternalFilePathParser
 import player.phonograph.R
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.warning
@@ -30,7 +30,10 @@ suspend fun selectDocumentUris(
     filePaths: List<String>,
 ): List<Uri> {
     val treeUri = selectDocumentTreeUri(context, filePaths) ?: return emptyList()
-    return filePaths.map { filePath -> childDocumentUriWithinTree(context, treeUri, filePath) }
+    return filePaths.map { filePath ->
+        childDocumentUriWithinTree(context, treeUri, filePath)
+            ?: throw IllegalArgumentException("Corrupted file path $filePath")
+    }
 }
 
 /**
@@ -61,7 +64,7 @@ suspend fun selectContentUri(
     filePath: String,
     mimeTypes: Array<String> = arrayOf("*/*"),
 ): Uri? {
-    val bashPath = externalFileBashPath(filePath)
+    val bashPath = ExternalFilePathParser.bashPath(filePath) ?: return null
     val doNotUseTree = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         val segments = bashPath.split(File.separatorChar)
         when {
@@ -93,6 +96,7 @@ private suspend fun selectContentUriViaDocumentTree(
 ): Uri? {
     val treeUri = chooseDirViaSAF(context, filePath)
     val childUri: Uri = childDocumentUriWithinTree(context, treeUri, filePath)
+        ?: throw IllegalArgumentException("Corrupted file path $filePath")
     val segments = childUri.pathSegments
     return if (segments.size >= 4 && segments[3].startsWith(segments[1])) {
         childUri

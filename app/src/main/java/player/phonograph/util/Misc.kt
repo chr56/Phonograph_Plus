@@ -29,6 +29,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
@@ -188,6 +189,9 @@ fun logMetrics(stage: String) {
 //
 // Other
 //
+
+val primaryExternalStoragePath: String = Environment.getExternalStorageDirectory().absolutePath
+
 private val albumArtContentUri: Uri by lazy(LazyThreadSafetyMode.NONE) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
         MediaStore.AUTHORITY_URI.buildUpon()

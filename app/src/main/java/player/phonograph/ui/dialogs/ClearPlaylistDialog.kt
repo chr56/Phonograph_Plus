@@ -34,7 +34,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.DocumentsContract
 import android.provider.Settings
-import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -196,11 +195,7 @@ class ClearPlaylistDialog : DialogFragment() {
                 "",
                 ItemGroup(
                     activity.resources.getQuantityString(R.plurals.item_files, filePlaylists.size, filePlaylists.size),
-                    uris.mapNotNull { uri ->
-                        val absolutePath = documentProviderUriAbsolutePath(uri, activity) ?: uri.path
-                        Log.v("FileDelete", "FilePath: $absolutePath")
-                        absolutePath
-                    }
+                    uris.mapNotNull { uri -> documentProviderUriAbsolutePath(uri, activity) ?: uri.path }
                 )
             )
             withContext(Dispatchers.Main) {
