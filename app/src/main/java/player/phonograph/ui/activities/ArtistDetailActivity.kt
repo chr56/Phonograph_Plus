@@ -62,7 +62,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         set(value) {
             field = value
             Setting(App.instance)[Keys.albumArtistColoredFooters].data = usePalette
-            albumAdapter.config = ConstDisplayConfig(ItemLayoutStyle.LIST, usePalette)
+            albumAdapter.config = ConstDisplayConfig(ItemLayoutStyle.GRID_CARD_HORIZONTAL, usePalette)
             val dataset = albumAdapter.dataset
             synchronized(albumAdapter) {
                 albumAdapter.dataset = emptyList()
