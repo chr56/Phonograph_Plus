@@ -16,7 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 
 open class PaletteTargetBuilder(protected open val defaultColor: Int) {
 
@@ -40,12 +39,6 @@ open class PaletteTargetBuilder(protected open val defaultColor: Int) {
             onStart = block
         }
 
-    private var yieldCondition: () -> Boolean = { true }
-    fun withConditionalYield(condition: () -> Boolean): PaletteTargetBuilder =
-        this.apply {
-            yieldCondition = condition
-        }
-
     fun build(): BasePaletteTarget {
         return createBasePaletteTarget(
             onStart = onStart,
@@ -53,7 +46,6 @@ open class PaletteTargetBuilder(protected open val defaultColor: Int) {
             onSuccess = { result: Drawable, palette: Deferred<Palette>? ->
                 coroutineScope.launch {
                     val color = palette?.getColor(defaultColor) ?: defaultColor
-                    while (!yieldCondition()) yield()
                     withContext(Dispatchers.Main) {
                         onSuccess(result, color)
                     }
