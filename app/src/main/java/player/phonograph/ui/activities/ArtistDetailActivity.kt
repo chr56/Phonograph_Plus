@@ -206,12 +206,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         tintMenuActionIcons(viewBinding.toolbar, menu, primaryTextColor(viewModel.activityColor.value))
     }
 
-    override fun onBackPressed() {
-        viewBinding.albumRecycleView.stopScroll()
-        viewBinding.songsRecycleView.stopScroll()
-        super.onBackPressed()
-    }
-
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
             model.load(this@ArtistDetailActivity)
