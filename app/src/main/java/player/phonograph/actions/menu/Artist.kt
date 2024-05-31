@@ -6,27 +6,28 @@ package player.phonograph.actions.menu
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
+import lib.activityresultcontract.ActivityResultLauncherDelegate
 import player.phonograph.R
 import player.phonograph.actions.actionAddToPlaylist
 import player.phonograph.actions.actionDelete
 import player.phonograph.actions.actionEnqueue
 import player.phonograph.actions.actionPlay
 import player.phonograph.actions.actionPlayNext
-import player.phonograph.actions.activity
 import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.model.Artist
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
-import player.phonograph.ui.activities.ArtistDetailActivity
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.ui.modules.web.LastFmDialog
 import player.phonograph.util.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.getTintedDrawable
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorInt
 import androidx.fragment.app.FragmentActivity
 import android.content.Context
-import android.content.Intent
+import android.net.Uri
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -103,16 +104,15 @@ fun artistDetailToolbar(
             icon = getTintedDrawable(R.drawable.ic_person_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                activity(context) {
-                    it.startActivityForResult(
-                        Intent.createChooser(
-                            Intent(Intent.ACTION_GET_CONTENT).apply {
-                                type = "image/*"
-                            }, getString(R.string.pick_from_local_storage)
-                        ),
-                        ArtistDetailActivity.REQUEST_CODE_SELECT_IMAGE
-                    )
+                if (context is IGetContentRequester) {
+                    context.getContentDelegate.launch("image/*") {
+                        if (it != null)
+                            CustomArtistImageStore.instance(context)
+                                .setCustomArtistImage(context, artist.id, artist.name, it)
+                    }
                     true
+                } else {
+                    false
                 }
             }
         }
@@ -170,3 +170,12 @@ fun artistDetailToolbar(
 
 
 private suspend fun Artist.allSongs(context: Context) = Songs.artist(context, id)
+
+class GetContentDelegate : ActivityResultLauncherDelegate<String, Uri?>() {
+    override val key: String = "GetContent"
+    override val contract: ActivityResultContract<String, Uri?> = ActivityResultContracts.GetContent()
+}
+
+interface IGetContentRequester {
+    val getContentDelegate: GetContentDelegate
+}

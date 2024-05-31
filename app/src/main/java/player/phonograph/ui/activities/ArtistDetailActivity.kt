@@ -2,12 +2,14 @@ package player.phonograph.ui.activities
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
+import lib.activityresultcontract.registerActivityResultLauncherDelegate
 import lib.phonograph.misc.menuProvider
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
+import player.phonograph.actions.menu.GetContentDelegate
+import player.phonograph.actions.menu.IGetContentRequester
 import player.phonograph.actions.menu.artistDetailToolbar
-import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.misc.IPaletteColorProvider
@@ -42,16 +44,17 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvider {
+class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvider, IGetContentRequester {
 
     private lateinit var viewBinding: ActivityArtistDetailBinding
     private val model: ArtistDetailActivityViewModel by viewModel { parametersOf(parseIntent(intent)) }
 
     private lateinit var albumAdapter: HorizontalAlbumDisplayAdapter
     private lateinit var songAdapter: SongDisplayAdapter
+
+    override val getContentDelegate: GetContentDelegate = GetContentDelegate()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewBinding = ActivityArtistDetailBinding.inflate(layoutInflater)
@@ -68,6 +71,8 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         observeData()
 
         lifecycle.addObserver(MediaStoreListener())
+
+        registerActivityResultLauncherDelegate(getContentDelegate)
     }
 
     override fun createContentView(): View = wrapSlidingMusicPanel(viewBinding.root)
@@ -133,22 +138,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
                 model.paletteColor.collect { color ->
                     setColors(color)
                 }
-            }
-        }
-    }
-
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            REQUEST_CODE_SELECT_IMAGE -> if (resultCode == RESULT_OK) {
-                val artist = model.artist.value!!
-                CustomArtistImageStore.instance(this)
-                    .setCustomArtistImage(this, artist.id, artist.name, data!!.data!!)
-            }
-
-            else                      -> if (resultCode == RESULT_OK) {
-                model.load(this)
             }
         }
     }
@@ -223,7 +212,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         setPadding(paddingLeft, top, paddingRight, paddingBottom)
 
     companion object {
-        const val REQUEST_CODE_SELECT_IMAGE = 1000
         private const val EXTRA_ARTIST_ID = "extra_artist_id"
 
         fun launchIntent(from: Context, artistId: Long): Intent =
