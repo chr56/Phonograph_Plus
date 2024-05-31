@@ -5,7 +5,6 @@ import com.github.chr56.android.menu_dsl.menuItem
 import lib.phonograph.misc.menuProvider
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.actions.menu.artistDetailToolbar
 import player.phonograph.coil.CustomArtistImageStore
@@ -19,14 +18,12 @@ import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
 import player.phonograph.repo.loader.Songs
-import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.primaryColor
+import player.phonograph.util.theme.themeFooterColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import util.theme.color.toolbarTitleColor
@@ -45,6 +42,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvider {
@@ -54,18 +52,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
 
     private lateinit var albumAdapter: HorizontalAlbumDisplayAdapter
     private lateinit var songAdapter: SongDisplayAdapter
-
-    private var usePalette = Setting(App.instance)[Keys.albumArtistColoredFooters].data
-        set(value) {
-            field = value
-            Setting(App.instance)[Keys.albumArtistColoredFooters].data = usePalette
-            albumAdapter.config = ConstDisplayConfig(ItemLayoutStyle.GRID_CARD_HORIZONTAL, usePalette)
-            val dataset = albumAdapter.dataset
-            synchronized(albumAdapter) {
-                albumAdapter.dataset = emptyList()
-                albumAdapter.dataset = dataset
-            }
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewBinding = ActivityArtistDetailBinding.inflate(layoutInflater)
@@ -109,6 +95,18 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
     }
 
     private fun observeData() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                model.usePaletteColor.collect {
+                    albumAdapter.config = ConstDisplayConfig(ItemLayoutStyle.GRID_CARD_HORIZONTAL, it)
+                    val dataset = albumAdapter.dataset
+                    synchronized(albumAdapter) {
+                        albumAdapter.dataset = emptyList()
+                        albumAdapter.dataset = dataset
+                    }
+                }
+            }
+        }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 model.artist.collect {
@@ -194,11 +192,11 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         attach(menu) {
             menuItem(title = getString(R.string.colored_footers)) {
                 checkable = true
-                checked = usePalette
+                checked = model.usePaletteColor.value
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick {
                     it.isChecked = !it.isChecked
-                    usePalette = it.isChecked
+                    model.updateUsePaletteColor(it.isChecked)
                     true
                 }
             }
