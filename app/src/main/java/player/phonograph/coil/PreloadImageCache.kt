@@ -39,6 +39,8 @@ abstract class AbsPreloadImageCache<K, G : Any>(size: Int, @CacheImplementation 
         }
     }
 
+    fun peek(context: Context, key: K): G? = cache[id(key)]
+
     suspend fun preload(context: Context, key: K) {
         loadAndStore(context, key)
     }
