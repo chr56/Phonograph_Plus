@@ -113,7 +113,7 @@ composeSettingsUi = { group = "com.github.alorma", name = "compose-settings-ui",
 
 
 storageUtilities = "io.github.chr56:android-storage-utilities:0.3.1"
-musicMetadataSource = "com.github.PhonographPlus:MusicMetadataSource:0.1.0"
+musicMetadataSource = "io.github.phonographplus:music-metadata-source:0.1.1"
 menuDsl = "io.github.chr56:android-menu-dsl:0.1.3"
 seekArc = "com.github.chr56:SeekArc:1.0"
 slidingUpPanel = "com.github.kabouzeid:AndroidSlidingUpPanel:6"
