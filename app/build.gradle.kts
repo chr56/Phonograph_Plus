@@ -70,8 +70,9 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
 
-            // git tracker
+            // git revision tracker
             manifestPlaceholders["GIT_COMMIT_HASH"] = getGitHash(false)
+            vcsInfo.include = false // we have our means
         }
         getByName("debug") {
             // signing as well
