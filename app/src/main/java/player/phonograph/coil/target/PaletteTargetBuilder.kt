@@ -5,16 +5,9 @@
 package player.phonograph.coil.target
 
 import coil.target.Target
-import player.phonograph.coil.target.PaletteUtil.processPalette
 import androidx.annotation.ColorInt
-import androidx.palette.graphics.Palette
 import android.graphics.drawable.Drawable
 import android.view.View
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 
 class PaletteTargetBuilder {
 
@@ -58,25 +51,19 @@ class PaletteTargetBuilder {
         if (view != null) {
             return ViewPaletteDelegateTarget.create(
                 view,
+                fallbackColor,
                 onStart = onStart,
                 onError = onFail,
-                onSuccess = { result: Drawable, palette: Deferred<Palette>? ->
-                    processPalette(result, palette, fallbackColor, onResourceReady)
-                }
+                onSuccess = onResourceReady
             )
         } else {
             return PaletteDelegateTarget.create(
+                fallbackColor,
                 onStart = onStart,
                 onError = onFail,
-                onSuccess = { result: Drawable, palette: Deferred<Palette>? ->
-                    processPalette(result, palette, fallbackColor, onResourceReady)
-                }
+                onSuccess = onResourceReady
             )
         }
     }
 
-    companion object {
-        private val coroutineScope =
-            CoroutineScope(Dispatchers.Default + SupervisorJob() + CoroutineName("PaletteGenerator"))
-    }
 }

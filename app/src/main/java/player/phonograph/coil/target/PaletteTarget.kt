@@ -4,36 +4,46 @@
 
 package player.phonograph.coil.target
 
+import coil.target.Target
+import coil.target.ViewTarget
+import player.phonograph.coil.target.PaletteUtil.getColor
+import player.phonograph.coil.target.PaletteUtil.toPaletteAsync
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.Log
-import androidx.palette.graphics.Palette
-import coil.target.Target
-import coil.target.ViewTarget
-import kotlinx.coroutines.Deferred
-import player.phonograph.coil.target.PaletteUtil.toPaletteAsync
 import android.view.View
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 interface PaletteTarget {
     fun onStart(placeholder: Drawable?) {}
 
     fun onError(error: Drawable?) {}
 
-    fun onSuccess(result: Drawable, palette: Deferred<Palette>?) {}
+    fun onSuccess(result: Drawable, paletteColor: Int) {}
+
 }
 
-class PaletteDelegateTarget(private val delegate: PaletteTarget) : Target {
+class PaletteDelegateTarget(
+    private val delegate: PaletteTarget,
+    private val defaultColor: Int,
+) : Target {
 
     override fun onStart(placeholder: Drawable?) {
         delegate.onStart(placeholder)
     }
 
     override fun onSuccess(result: Drawable) {
-        if (result is BitmapDrawable) {
-            delegate.onSuccess(result, result.bitmap.toPaletteAsync())
-        } else {
-            Log.w("PaletteTarget", "Not A Bitmap drawable: $result")
-            delegate.onSuccess(result, null)
+        coroutineScope.launch(Dispatchers.IO) {
+            if (result is BitmapDrawable) {
+                val paletteColor = result.bitmap.toPaletteAsync().getColor(defaultColor)
+                delegate.onSuccess(result, paletteColor)
+            } else {
+                Log.w("PaletteTarget", "Not A Bitmap drawable: $result")
+                delegate.onSuccess(result, defaultColor)
+            }
         }
     }
 
@@ -43,30 +53,38 @@ class PaletteDelegateTarget(private val delegate: PaletteTarget) : Target {
 
     companion object {
         internal inline fun create(
+            defaultColor: Int,
             crossinline onStart: (placeholder: Drawable?) -> Unit = {},
             crossinline onError: (error: Drawable?) -> Unit = {},
-            crossinline onSuccess: (result: Drawable, palette: Deferred<Palette>?) -> Unit = { _, _ -> },
+            crossinline onSuccess: (result: Drawable, paletteColor: Int) -> Unit = { _, _ -> },
         ) = PaletteDelegateTarget(object : PaletteTarget {
             override fun onStart(placeholder: Drawable?) = onStart(placeholder)
             override fun onError(error: Drawable?) = onError(error)
-            override fun onSuccess(result: Drawable, palette: Deferred<Palette>?) =
-                onSuccess(result, palette)
-        })
+            override fun onSuccess(result: Drawable, paletteColor: Int) =
+                onSuccess(result, paletteColor)
+        }, defaultColor)
     }
 }
 
-class ViewPaletteDelegateTarget<T : View>(private val delegate: PaletteTarget, override val view: T) : ViewTarget<T> {
+class ViewPaletteDelegateTarget<T : View>(
+    private val delegate: PaletteTarget,
+    private val defaultColor: Int,
+    override val view: T,
+) : ViewTarget<T> {
 
     override fun onStart(placeholder: Drawable?) {
         delegate.onStart(placeholder)
     }
 
     override fun onSuccess(result: Drawable) {
-        if (result is BitmapDrawable) {
-            delegate.onSuccess(result, result.bitmap.toPaletteAsync())
-        } else {
-            Log.w("PaletteTarget", "Not A Bitmap drawable: $result")
-            delegate.onSuccess(result, null)
+        coroutineScope.launch(Dispatchers.IO) {
+            if (result is BitmapDrawable) {
+                val paletteColor = result.bitmap.toPaletteAsync().getColor(defaultColor)
+                delegate.onSuccess(result, paletteColor)
+            } else {
+                Log.w("PaletteTarget", "Not A Bitmap drawable: $result")
+                delegate.onSuccess(result, defaultColor)
+            }
         }
     }
 
@@ -77,14 +95,17 @@ class ViewPaletteDelegateTarget<T : View>(private val delegate: PaletteTarget, o
     companion object {
         inline fun <V : View> create(
             view: V,
+            defaultColor: Int,
             crossinline onStart: (placeholder: Drawable?) -> Unit = {},
             crossinline onError: (error: Drawable?) -> Unit = {},
-            crossinline onSuccess: (result: Drawable, palette: Deferred<Palette>?) -> Unit = { _, _ -> },
+            crossinline onSuccess: (result: Drawable, paletteColor: Int) -> Unit = { _, _ -> },
         ) = ViewPaletteDelegateTarget(object : PaletteTarget {
             override fun onStart(placeholder: Drawable?) = onStart(placeholder)
             override fun onError(error: Drawable?) = onError(error)
-            override fun onSuccess(result: Drawable, palette: Deferred<Palette>?) =
-                onSuccess(result, palette)
-        }, view)
+            override fun onSuccess(result: Drawable, paletteColor: Int) =
+                onSuccess(result, paletteColor)
+        }, defaultColor, view)
     }
 }
+
+private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
