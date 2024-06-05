@@ -12,7 +12,7 @@ import coil.target.Target
 import kotlinx.coroutines.Deferred
 import player.phonograph.coil.target.PaletteUtil.toPaletteAsync
 
-class BasePaletteTarget internal constructor(private val callbacks: Target) : Target {
+class PaletteDelegateTarget internal constructor(private val callbacks: Callbacks) : Target {
 
     override fun onStart(placeholder: Drawable?) {
         callbacks.onStart(placeholder)
@@ -31,7 +31,7 @@ class BasePaletteTarget internal constructor(private val callbacks: Target) : Ta
         callbacks.onError(error)
     }
 
-    interface Target {
+    interface Callbacks {
         fun onStart(placeholder: Drawable?) {}
 
         fun onError(error: Drawable?) {}
@@ -40,12 +40,12 @@ class BasePaletteTarget internal constructor(private val callbacks: Target) : Ta
     }
 }
 
-internal fun createBasePaletteTarget(t: BasePaletteTarget.Target) = BasePaletteTarget(t)
+internal fun createBasePaletteTarget(t: PaletteDelegateTarget.Callbacks) = PaletteDelegateTarget(t)
 internal inline fun createBasePaletteTarget(
     crossinline onStart: (placeholder: Drawable?) -> Unit = {},
     crossinline onError: (error: Drawable?) -> Unit = {},
     crossinline onSuccess: (result: Drawable, palette: Deferred<Palette>?) -> Unit = { _, _ -> },
-) = BasePaletteTarget(object : BasePaletteTarget.Target {
+) = PaletteDelegateTarget(object : PaletteDelegateTarget.Callbacks {
     override fun onStart(placeholder: Drawable?) = onStart(placeholder)
     override fun onError(error: Drawable?) = onError(error)
     override fun onSuccess(result: Drawable, palette: Deferred<Palette>?) =

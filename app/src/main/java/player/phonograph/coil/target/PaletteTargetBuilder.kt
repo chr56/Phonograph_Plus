@@ -39,7 +39,7 @@ open class PaletteTargetBuilder(protected open val defaultColor: Int) {
             onStart = block
         }
 
-    fun build(): BasePaletteTarget {
+    fun build(): PaletteDelegateTarget {
         return createBasePaletteTarget(
             onStart = onStart,
             onError = onFail,
