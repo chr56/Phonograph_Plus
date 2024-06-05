@@ -19,8 +19,6 @@ import kotlinx.coroutines.withContext
 
 open class PaletteTargetBuilder(protected open val defaultColor: Int) {
 
-    constructor(context: Context) : this(themeFooterColor(context))
-
     private var onResourceReady: (result: Drawable, paletteColor: Int) -> Unit = { _, _ -> }
     fun onResourceReady(block: (result: Drawable, paletteColor: Int) -> Unit): PaletteTargetBuilder =
         this.apply {

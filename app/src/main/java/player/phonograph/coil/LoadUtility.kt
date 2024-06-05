@@ -60,7 +60,7 @@ fun loadImage(
     loadImage(context)
         .from(song)
         .into(
-            PaletteTargetBuilder(context)
+            PaletteTargetBuilder(themeFooterColor(context))
                 .onResourceReady { result, palette ->
                     colorCallback(song, result, palette)
                 }
