@@ -39,10 +39,14 @@ class PaletteDelegateTarget(
         coroutineScope.launch(Dispatchers.IO) {
             if (result is BitmapDrawable) {
                 val paletteColor = result.bitmap.toPaletteAsync().getColor(defaultColor)
-                delegate.onSuccess(result, paletteColor)
+                coroutineScope.launch(Dispatchers.Main.immediate) {
+                    delegate.onSuccess(result, paletteColor)
+                }
             } else {
                 Log.w("PaletteTarget", "Not A Bitmap drawable: $result")
-                delegate.onSuccess(result, defaultColor)
+                coroutineScope.launch(Dispatchers.Main.immediate) {
+                    delegate.onSuccess(result, defaultColor)
+                }
             }
         }
     }
@@ -80,10 +84,14 @@ class ViewPaletteDelegateTarget<T : View>(
         coroutineScope.launch(Dispatchers.IO) {
             if (result is BitmapDrawable) {
                 val paletteColor = result.bitmap.toPaletteAsync().getColor(defaultColor)
-                delegate.onSuccess(result, paletteColor)
+                coroutineScope.launch(Dispatchers.Main.immediate) {
+                    delegate.onSuccess(result, paletteColor)
+                }
             } else {
                 Log.w("PaletteTarget", "Not A Bitmap drawable: $result")
-                delegate.onSuccess(result, defaultColor)
+                coroutineScope.launch(Dispatchers.Main.immediate) {
+                    delegate.onSuccess(result, defaultColor)
+                }
             }
         }
     }
