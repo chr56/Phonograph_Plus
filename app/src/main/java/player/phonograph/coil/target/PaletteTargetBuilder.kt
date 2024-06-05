@@ -40,7 +40,7 @@ open class PaletteTargetBuilder(protected open val defaultColor: Int) {
         }
 
     fun build(): PaletteDelegateTarget {
-        return createBasePaletteTarget(
+        return PaletteDelegateTarget.create(
             onStart = onStart,
             onError = onFail,
             onSuccess = { result: Drawable, palette: Deferred<Palette>? ->
