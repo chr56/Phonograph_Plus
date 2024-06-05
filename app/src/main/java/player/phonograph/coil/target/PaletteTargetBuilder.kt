@@ -5,7 +5,7 @@
 package player.phonograph.coil.target
 
 import coil.target.Target
-import player.phonograph.coil.target.PaletteUtil.getColor
+import player.phonograph.coil.target.PaletteUtil.processPalette
 import androidx.annotation.ColorInt
 import androidx.palette.graphics.Palette
 import android.graphics.drawable.Drawable
@@ -15,8 +15,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class PaletteTargetBuilder {
 
@@ -63,12 +61,7 @@ class PaletteTargetBuilder {
                 onStart = onStart,
                 onError = onFail,
                 onSuccess = { result: Drawable, palette: Deferred<Palette>? ->
-                    coroutineScope.launch {
-                        val color = palette?.getColor(fallbackColor) ?: fallbackColor
-                        withContext(Dispatchers.Main.immediate) {
-                            onResourceReady(result, color)
-                        }
-                    }
+                    processPalette(result, palette, fallbackColor, onResourceReady)
                 }
             )
         } else {
@@ -76,12 +69,7 @@ class PaletteTargetBuilder {
                 onStart = onStart,
                 onError = onFail,
                 onSuccess = { result: Drawable, palette: Deferred<Palette>? ->
-                    coroutineScope.launch {
-                        val color = palette?.getColor(fallbackColor) ?: fallbackColor
-                        withContext(Dispatchers.Main.immediate) {
-                            onResourceReady(result, color)
-                        }
-                    }
+                    processPalette(result, palette, fallbackColor, onResourceReady)
                 }
             )
         }
