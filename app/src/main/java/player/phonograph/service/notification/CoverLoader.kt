@@ -43,7 +43,8 @@ class CoverLoader(private val context: Context) {
                     .data(song)
                     .properSize()
                     .target(
-                        PaletteTargetBuilder(themeFooterColor(context))
+                        PaletteTargetBuilder()
+                            .defaultColor(themeFooterColor(context))
                             .onResourceReady { result, paletteColor ->
                                 val bitmap =
                                     if (result is BitmapDrawable) result.bitmap else result.toBitmapOrNull()

@@ -53,7 +53,8 @@ class AppWidgetCard : BaseAppWidget() {
             context = context.applicationContext,
             song = song,
             widgetImageSize = imageSize,
-            target = PaletteTargetBuilder(fallbackColor)
+            target = PaletteTargetBuilder()
+                .defaultColor(fallbackColor)
                 .onStart {
                     view.setImageViewResource(R.id.image, R.drawable.default_album_art)
                 }

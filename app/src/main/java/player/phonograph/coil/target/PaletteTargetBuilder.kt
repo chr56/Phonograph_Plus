@@ -6,6 +6,7 @@ package player.phonograph.coil.target
 
 import coil.target.Target
 import player.phonograph.coil.target.PaletteUtil.getColor
+import androidx.annotation.ColorInt
 import androidx.palette.graphics.Palette
 import android.graphics.drawable.Drawable
 import android.view.View
@@ -17,7 +18,15 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-open class PaletteTargetBuilder(protected open val defaultColor: Int) {
+class PaletteTargetBuilder {
+
+    private var _defaultColorHasSet = false
+    private var _defaultColor: Int = 0
+    fun defaultColor(@ColorInt value: Int): PaletteTargetBuilder =
+        this.apply {
+            _defaultColorHasSet = true
+            _defaultColor = value
+        }
 
     private var _view: View? = null
     fun view(view: View): PaletteTargetBuilder =
@@ -44,6 +53,9 @@ open class PaletteTargetBuilder(protected open val defaultColor: Int) {
         }
 
     fun build(): Target {
+        if (!_defaultColorHasSet) throw RuntimeException("No DefaultColor!")
+        val fallbackColor = _defaultColor
+
         val view = _view
         if (view != null) {
             return ViewPaletteDelegateTarget.create(
@@ -52,7 +64,7 @@ open class PaletteTargetBuilder(protected open val defaultColor: Int) {
                 onError = onFail,
                 onSuccess = { result: Drawable, palette: Deferred<Palette>? ->
                     coroutineScope.launch {
-                        val color = palette?.getColor(defaultColor) ?: defaultColor
+                        val color = palette?.getColor(fallbackColor) ?: fallbackColor
                         withContext(Dispatchers.Main.immediate) {
                             onResourceReady(result, color)
                         }
@@ -65,7 +77,7 @@ open class PaletteTargetBuilder(protected open val defaultColor: Int) {
                 onError = onFail,
                 onSuccess = { result: Drawable, palette: Deferred<Palette>? ->
                     coroutineScope.launch {
-                        val color = palette?.getColor(defaultColor) ?: defaultColor
+                        val color = palette?.getColor(fallbackColor) ?: fallbackColor
                         withContext(Dispatchers.Main.immediate) {
                             onResourceReady(result, color)
                         }

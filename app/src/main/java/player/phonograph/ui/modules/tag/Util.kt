@@ -33,7 +33,8 @@ suspend fun loadCover(context: Context, data: Any): Pair<Bitmap?, Color?> {
             data(data)
             parameters(PARAMETERS_RAW)
             target(
-                PaletteTargetBuilder(themeFooterColor(context))
+                PaletteTargetBuilder()
+                    .defaultColor(themeFooterColor(context))
                     .onResourceReady { result: Drawable, paletteColor: Int ->
                         continuation.resume(result.toBitmap() to Color(paletteColor)) {}
                     }

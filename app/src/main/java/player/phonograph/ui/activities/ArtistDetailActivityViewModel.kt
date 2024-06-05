@@ -54,7 +54,8 @@ class ArtistDetailActivityViewModel(var artistId: Long) : ViewModel() {
         loadImage(context)
             .from(artist)
             .into(
-                PaletteTargetBuilder(defaultColor)
+                PaletteTargetBuilder()
+                    .defaultColor(defaultColor)
                     .onResourceReady { result, color ->
                         imageView.setImageDrawable(result)
                         _paletteColor.tryEmit(color)
