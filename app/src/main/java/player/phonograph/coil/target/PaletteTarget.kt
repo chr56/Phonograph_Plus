@@ -8,6 +8,7 @@ import coil.target.Target
 import coil.target.ViewTarget
 import player.phonograph.coil.target.PaletteUtil.getColor
 import player.phonograph.coil.target.PaletteUtil.toPaletteAsync
+import player.phonograph.util.debug
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.Log
@@ -37,16 +38,17 @@ class PaletteDelegateTarget(
 
     override fun onSuccess(result: Drawable) {
         coroutineScope.launch(Dispatchers.IO) {
-            if (result is BitmapDrawable) {
-                val paletteColor = result.bitmap.toPaletteAsync().getColor(defaultColor)
-                coroutineScope.launch(Dispatchers.Main.immediate) {
-                    delegate.onSuccess(result, paletteColor)
-                }
+            val bitmap = (result as? BitmapDrawable)?.bitmap
+            val paletteColor = if (bitmap != null) {
+                bitmap.toPaletteAsync().getColor(defaultColor)
             } else {
-                Log.w("PaletteTarget", "Not A Bitmap drawable: $result")
-                coroutineScope.launch(Dispatchers.Main.immediate) {
-                    delegate.onSuccess(result, defaultColor)
+                debug {
+                    Log.w("PaletteTarget", "Not A Bitmap drawable: $result")
                 }
+                defaultColor
+            }
+            coroutineScope.launch(Dispatchers.Main.immediate) {
+                delegate.onSuccess(result, paletteColor)
             }
         }
     }
@@ -82,16 +84,17 @@ class ViewPaletteDelegateTarget<T : View>(
 
     override fun onSuccess(result: Drawable) {
         coroutineScope.launch(Dispatchers.IO) {
-            if (result is BitmapDrawable) {
-                val paletteColor = result.bitmap.toPaletteAsync().getColor(defaultColor)
-                coroutineScope.launch(Dispatchers.Main.immediate) {
-                    delegate.onSuccess(result, paletteColor)
-                }
+            val bitmap = (result as? BitmapDrawable)?.bitmap
+            val paletteColor = if (bitmap != null) {
+                bitmap.toPaletteAsync().getColor(defaultColor)
             } else {
-                Log.w("PaletteTarget", "Not A Bitmap drawable: $result")
-                coroutineScope.launch(Dispatchers.Main.immediate) {
-                    delegate.onSuccess(result, defaultColor)
+                debug {
+                    Log.w("PaletteTarget", "Not A Bitmap drawable: $result")
                 }
+                defaultColor
+            }
+            coroutineScope.launch(Dispatchers.Main.immediate) {
+                delegate.onSuccess(result, paletteColor)
             }
         }
     }
