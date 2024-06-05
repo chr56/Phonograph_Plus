@@ -21,10 +21,10 @@ open class PaletteTargetBuilder(protected open val defaultColor: Int) {
 
     constructor(context: Context) : this(themeFooterColor(context))
 
-    private var onSuccess: (result: Drawable, paletteColor: Int) -> Unit = { _, _ -> }
+    private var onResourceReady: (result: Drawable, paletteColor: Int) -> Unit = { _, _ -> }
     fun onResourceReady(block: (result: Drawable, paletteColor: Int) -> Unit): PaletteTargetBuilder =
         this.apply {
-            onSuccess = block
+            onResourceReady = block
         }
 
     private var onFail: (error: Drawable?) -> Unit = {}
@@ -46,8 +46,8 @@ open class PaletteTargetBuilder(protected open val defaultColor: Int) {
             onSuccess = { result: Drawable, palette: Deferred<Palette>? ->
                 coroutineScope.launch {
                     val color = palette?.getColor(defaultColor) ?: defaultColor
-                    withContext(Dispatchers.Main) {
-                        onSuccess(result, color)
+                    withContext(Dispatchers.Main.immediate) {
+                        onResourceReady(result, color)
                     }
                 }
             }
