@@ -4,11 +4,11 @@
 
 package player.phonograph.coil.target
 
+import coil.target.Target
 import player.phonograph.coil.target.PaletteUtil.getColor
-import player.phonograph.util.theme.themeFooterColor
 import androidx.palette.graphics.Palette
-import android.content.Context
 import android.graphics.drawable.Drawable
+import android.view.View
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -18,6 +18,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 open class PaletteTargetBuilder(protected open val defaultColor: Int) {
+
+    private var _view: View? = null
+    fun view(view: View): PaletteTargetBuilder =
+        this.apply {
+            _view = view
+        }
 
     private var onResourceReady: (result: Drawable, paletteColor: Int) -> Unit = { _, _ -> }
     fun onResourceReady(block: (result: Drawable, paletteColor: Int) -> Unit): PaletteTargetBuilder =
@@ -37,19 +43,36 @@ open class PaletteTargetBuilder(protected open val defaultColor: Int) {
             onStart = block
         }
 
-    fun build(): PaletteDelegateTarget {
-        return PaletteDelegateTarget.create(
-            onStart = onStart,
-            onError = onFail,
-            onSuccess = { result: Drawable, palette: Deferred<Palette>? ->
-                coroutineScope.launch {
-                    val color = palette?.getColor(defaultColor) ?: defaultColor
-                    withContext(Dispatchers.Main.immediate) {
-                        onResourceReady(result, color)
+    fun build(): Target {
+        val view = _view
+        if (view != null) {
+            return ViewPaletteDelegateTarget.create(
+                view,
+                onStart = onStart,
+                onError = onFail,
+                onSuccess = { result: Drawable, palette: Deferred<Palette>? ->
+                    coroutineScope.launch {
+                        val color = palette?.getColor(defaultColor) ?: defaultColor
+                        withContext(Dispatchers.Main.immediate) {
+                            onResourceReady(result, color)
+                        }
                     }
                 }
-            }
-        )
+            )
+        } else {
+            return PaletteDelegateTarget.create(
+                onStart = onStart,
+                onError = onFail,
+                onSuccess = { result: Drawable, palette: Deferred<Palette>? ->
+                    coroutineScope.launch {
+                        val color = palette?.getColor(defaultColor) ?: defaultColor
+                        withContext(Dispatchers.Main.immediate) {
+                            onResourceReady(result, color)
+                        }
+                    }
+                }
+            )
+        }
     }
 
     companion object {
