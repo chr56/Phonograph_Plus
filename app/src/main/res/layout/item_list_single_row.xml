@@ -39,6 +39,7 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:scaleType="centerCrop"
+                app:emojiCompatEnabled="false"
                 tools:ignore="ContentDescription" />
 
             <TextView
@@ -50,7 +51,8 @@
                 android:minHeight="40dp"
                 android:singleLine="true"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:emojiCompatEnabled="false" />
 
         </FrameLayout>
 
@@ -66,7 +68,8 @@
             android:layout_weight="1"
             android:fontFamily="sans-serif"
             android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            app:emojiCompatEnabled="false" />
 
         <player.phonograph.ui.views.IconImageView
             android:id="@+id/menu"

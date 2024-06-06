@@ -43,6 +43,7 @@
                 android:maxLines="3"
                 android:singleLine="false"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                app:emojiCompatEnabled="false"
                 tools:text="TITLE" />
 
             <TextView
@@ -61,7 +62,8 @@
                 android:fontFamily="sans-serif"
                 android:maxLines="2"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textColor="?android:textColorSecondary" />
+                android:textColor="?android:textColorSecondary"
+                app:emojiCompatEnabled="false" />
         </LinearLayout>
 
         <player.phonograph.ui.views.IconImageView
