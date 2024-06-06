@@ -6,8 +6,7 @@ package player.phonograph.coil.target
 
 import coil.target.Target
 import coil.target.ViewTarget
-import player.phonograph.coil.target.PaletteUtil.getColor
-import player.phonograph.coil.target.PaletteUtil.toPaletteAsync
+import player.phonograph.coil.target.PaletteUtil.paletteColor
 import player.phonograph.util.debug
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -40,7 +39,7 @@ class PaletteDelegateTarget(
         coroutineScope.launch(Dispatchers.IO) {
             val bitmap = (result as? BitmapDrawable)?.bitmap
             val paletteColor = if (bitmap != null) {
-                bitmap.toPaletteAsync().getColor(defaultColor)
+                paletteColor(bitmap, defaultColor)
             } else {
                 debug {
                     Log.w("PaletteTarget", "Not A Bitmap drawable: $result")
@@ -86,7 +85,7 @@ class ViewPaletteDelegateTarget<T : View>(
         coroutineScope.launch(Dispatchers.IO) {
             val bitmap = (result as? BitmapDrawable)?.bitmap
             val paletteColor = if (bitmap != null) {
-                bitmap.toPaletteAsync().getColor(defaultColor)
+                paletteColor(bitmap, defaultColor)
             } else {
                 debug {
                     Log.w("PaletteTarget", "Not A Bitmap drawable: $result")
