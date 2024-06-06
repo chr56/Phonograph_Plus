@@ -12,8 +12,11 @@ import player.phonograph.R
 fun Song.infoString(): String =
     buildInfoString(artistName, albumName)
 
-fun songCountString(context: Context, songCount: Int): String =
-    context.resources.getQuantityString(R.plurals.item_songs, songCount, songCount)
+fun songCountString(context: Context, songCount: Int): String {
+    val songString =
+        if (songCount == 1) context.resources.getString(R.string.song) else context.resources.getString(R.string.songs)
+    return "$songCount $songString"
+}
 
 fun Artist.infoString(context: Context): String =
     buildInfoString(
