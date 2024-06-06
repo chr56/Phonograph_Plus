@@ -1,27 +1,35 @@
-version: "1.7.1-dev2"
-versionCode: 1070
-timestamp: 1717670000
-channel: "PREVIEW"
+version: "1.7.1"
+versionCode: 1071
+timestamp: 0
+channel: "STABLE"
 notes:
   en:
     highlights: [ ]
     items:
+      - "Fix: crash when toggling Colored Footers in Artist Detail"
       - "Fix: wrong cover if scrolling too fast"
       - "Fix: missing album cover in Artist Detail after going back from Artist Album Detail"
       - "Improve: accelerate palette color generation for performance"
       - "Modify: reimplement image preload mechanism"
+      - "Modify: sort Artist Albums by year ascending"
       - "Development: avoid unexpectedly blocking main thread when loading images"
       - "Development: disable emoji compat to improve RecyclerView performance"
       - "Development: do not use plurals strings to improve RecyclerView performance"
       - "Development: cleanup code"
+      - "Development: upgrade AGP to 8.4.1"
+      - "Modify: forbid upgrading from prior to v0.7.0, drop related compatibility support"
   zh:
     highlights: [ ]
     items:
+      - "修复 艺术家详情中切换彩色页脚开关时崩溃"
       - "修复 滚动过快时封面错误"
       - "修复 艺术家详情中，从专辑详情返回后，专辑封面丢失"
       - "改进 改进主色调生成以提升性能"
       - "修改 重新实现图像预加载机制"
+      - "修改 艺术家专辑按年份升序排序"
       - "开发 避免在加载图像时意外阻塞主线程"
       - "开发 禁用 emoji compat 以提升 RecyclerView 性能"
       - "开发 不使用 plurals 字符串以提升 RecyclerView 性能"
       - "开发 清理代码"
+      - "开发 更新 AGP 至 8.4.1"
+      - "修改 禁止从 v0.7.0 之前的版本升级至当前版本，清理相关旧版兼容性支持"
