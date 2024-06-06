@@ -9,32 +9,26 @@ import android.content.Context
 import java.util.*
 import player.phonograph.R
 
+fun songCountString(context: Context, songCount: Int): String {
+    val songString =
+        if (songCount == 1) context.resources.getString(R.string.song) else context.resources.getString(R.string.songs)
+    return "$songCount $songString"
+}
+
+fun albumCountString(context: Context, albumCount: Int): String {
+    val albumString =
+        if (albumCount == 1) context.resources.getString(R.string.album) else context.resources.getString(R.string.albums)
+    return "$albumCount $albumString"
+}
+
 fun Song.infoString(): String =
     buildInfoString(artistName, albumName)
-
-fun songCountString(context: Context, songCount: Int): String =
-    context.resources.getQuantityString(R.plurals.item_songs, songCount, songCount)
 
 fun Artist.infoString(context: Context): String =
     buildInfoString(
         albumCountString(context, albumCount),
         songCountString(context, songCount)
     )
-
-fun isArtistNameUnknown(artistName: String?): Boolean = when {
-    artistName.isNullOrBlank() -> false // not certain
-    artistName == Artist.UNKNOWN_ARTIST_DISPLAY_NAME -> true
-    artistName.trim().lowercase() == "unknown" -> true
-    artistName.trim().lowercase() == "<unknown>" -> true
-    else -> false
-}
-
-fun albumCountString(context: Context, albumCount: Int): String {
-    val albumString = if (albumCount == 1) context.resources.getString(R.string.album) else context.resources.getString(
-        R.string.albums
-    )
-    return "$albumCount $albumString"
-}
 
 fun Album.infoString(context: Context): String =
     buildInfoString(
@@ -53,10 +47,10 @@ fun Genre.infoString(context: Context): String =
  */
 fun buildInfoString(string1: String?, string2: String?): String =
     when {
-        string1.isNullOrEmpty() && !string2.isNullOrEmpty() -> string2
-        !string1.isNullOrEmpty() && string2.isNullOrEmpty() -> string1
+        string1.isNullOrEmpty() && !string2.isNullOrEmpty()  -> string2
+        !string1.isNullOrEmpty() && string2.isNullOrEmpty()  -> string1
         !string1.isNullOrEmpty() && !string2.isNullOrEmpty() -> "$string1  •  $string2"
-        else -> ""
+        else                                                 -> ""
     }
 
 fun getReadableDurationString(songDurationMillis: Long): String {

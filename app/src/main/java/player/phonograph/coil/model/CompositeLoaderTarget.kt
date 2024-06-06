@@ -4,6 +4,8 @@
 
 package player.phonograph.coil.model
 
+import android.content.Context
+
 interface CompositeLoaderTarget<I> : LoaderTarget {
-    fun disassemble(): Iterable<I>
+    suspend fun items(context: Context): Iterable<I>
 }

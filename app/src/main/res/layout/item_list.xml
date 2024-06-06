@@ -52,7 +52,8 @@
                 android:minHeight="40dp"
                 android:singleLine="true"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:emojiCompatEnabled="false" />
 
         </FrameLayout>
 
@@ -73,7 +74,8 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:singleLine="true"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                app:emojiCompatEnabled="false" />
 
             <TextView
                 android:id="@+id/text"
@@ -82,7 +84,8 @@
                 android:fontFamily="sans-serif"
                 android:singleLine="true"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textColor="?android:textColorSecondary" />
+                android:textColor="?android:textColorSecondary"
+                app:emojiCompatEnabled="false" />
         </LinearLayout>
 
         <player.phonograph.ui.views.IconImageView

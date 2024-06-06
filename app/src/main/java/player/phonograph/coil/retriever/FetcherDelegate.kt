@@ -12,8 +12,6 @@ import player.phonograph.coil.model.CompositeLoaderTarget
 import player.phonograph.coil.model.LoaderTarget
 import player.phonograph.coil.model.SongImage
 import player.phonograph.mechanism.setting.CoilImageConfig
-import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
 import player.phonograph.util.debug
 import android.content.Context
 import android.util.Log
@@ -31,7 +29,7 @@ sealed class FetcherDelegate<T : LoaderTarget, R : ImageRetriever> {
 
     abstract val cacheStore: CacheStore.Cache<T>
 
-    fun retrieve(
+    suspend fun retrieve(
         target: T,
         context: Context,
         size: Size,
@@ -75,7 +73,7 @@ sealed class FetcherDelegate<T : LoaderTarget, R : ImageRetriever> {
         }
     }
 
-    abstract fun retrieveImpl(
+    abstract suspend fun retrieveImpl(
         target: T,
         context: Context,
         size: Size,
@@ -95,7 +93,7 @@ class AudioFileImageFetcherDelegate<R : ImageRetriever>(
 
     override val cacheStore: CacheStore.Cache<SongImage> = CacheStore.AudioFiles(context.applicationContext)
 
-    override fun retrieveImpl(target: SongImage, context: Context, size: Size, rawImage: Boolean): FetchResult? {
+    override suspend fun retrieveImpl(target: SongImage, context: Context, size: Size, rawImage: Boolean): FetchResult? {
         return retriever.retrieve(target.path, target.albumId, context, size, rawImage)
     }
 }
@@ -104,7 +102,7 @@ sealed class CompositeFetcherDelegate<T : CompositeLoaderTarget<SongImage>, R : 
     override val retriever: R,
 ) : FetcherDelegate<T, R>() {
 
-    override fun retrieveImpl(target: T, context: Context, size: Size, rawImage: Boolean): FetchResult? {
+    override suspend fun retrieveImpl(target: T, context: Context, size: Size, rawImage: Boolean): FetchResult? {
 
         if (enableCache(context)) {
             val noImage = cacheStore.isNoImage(target, retriever.id)
@@ -118,7 +116,7 @@ sealed class CompositeFetcherDelegate<T : CompositeLoaderTarget<SongImage>, R : 
 
         val audioFilesCache = CacheStore.AudioFiles(context.applicationContext)
 
-        for (file in target.disassemble()) {
+        for (file in target.items(context)) {
 
             if (enableCache(context)) {
                 val noSpecificImage = audioFilesCache.isNoImage(file, retriever.id)

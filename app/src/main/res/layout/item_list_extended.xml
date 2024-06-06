@@ -49,7 +49,8 @@
                 android:minHeight="40dp"
                 android:singleLine="true"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:emojiCompatEnabled="false" />
 
         </FrameLayout>
 
@@ -71,6 +72,7 @@
                 android:maxLines="3"
                 android:singleLine="false"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                app:emojiCompatEnabled="false"
                 tools:text="TITLE" />
 
             <TextView
@@ -82,6 +84,7 @@
                 android:singleLine="false"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="?android:textColorSecondary"
+                app:emojiCompatEnabled="false"
                 tools:text="SUBTITLE" />
         </LinearLayout>
 

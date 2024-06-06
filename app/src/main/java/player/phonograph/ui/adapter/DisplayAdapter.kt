@@ -33,7 +33,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.Q
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,7 +43,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
 
 abstract class DisplayAdapter<I : Displayable>(
     protected val activity: FragmentActivity,
@@ -57,7 +55,7 @@ abstract class DisplayAdapter<I : Displayable>(
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
-            if (config.layoutStyle.hasImage) imageCacheDelegate.preloadImages(activity, value)
+            if (config.layoutStyle.hasImage) imageCacheDelegate.startPreloadImages(activity, value)
             notifyDataSetChanged()
         }
 
@@ -84,23 +82,13 @@ abstract class DisplayAdapter<I : Displayable>(
 
     override fun onBindViewHolder(holder: DisplayViewHolder<I>, position: Int) {
         val item: I = dataset[position]
-        holder.bind(item, position, dataset, controller, config.imageType, config.usePalette)
+        holder.bind(item, position, dataset, controller, config.imageType, config.usePalette, imageCacheDelegate)
     }
 
     override fun getItemCount(): Int = dataset.size
 
     override fun getSectionName(position: Int): String =
         if (config.showSectionName) getSectionNameImp(position) else ""
-
-    override fun onViewAttachedToWindow(holder: DisplayViewHolder<I>) {
-        if (holder.bindingAdapterPosition in dataset.indices) {
-            imageCacheDelegate.updateImage(activity, holder, dataset[holder.bindingAdapterPosition], config.usePalette)
-        } else{
-            Log.v("ImageCacheDelegate", "Holder has already detached?")
-        }
-    }
-
-    // override fun onViewDetachedFromWindow(holder: DisplayViewHolder<I>) {}
 
     // for inheriting
     open fun getSectionNameImp(position: Int): String =
@@ -115,6 +103,7 @@ abstract class DisplayAdapter<I : Displayable>(
             controller: MultiSelectionController<I>,
             @ImageType imageType: Int,
             usePalette: Boolean,
+            imageCacheDelegate: ImageCacheDelegate<I>,
         ) {
             shortSeparator?.visibility = View.VISIBLE
             itemView.isActivated = controller.isSelected(item)
@@ -123,7 +112,7 @@ abstract class DisplayAdapter<I : Displayable>(
             textSecondary?.text = item.getSecondaryText(itemView.context)
             textTertiary?.text = item.getTertiaryText(itemView.context)
 
-            prepareImage(imageType, item)
+            prepareImage(imageType, item, usePalette, imageCacheDelegate)
 
             controller.registerClicking(itemView, position) {
                 onClick(position, dataset, image)
@@ -160,7 +149,12 @@ abstract class DisplayAdapter<I : Displayable>(
         protected open fun getDescription(item: I): CharSequence? =
             item.getDescription(context = itemView.context)
 
-        protected open fun prepareImage(@ImageType imageType: Int, item: I) {
+        protected open fun prepareImage(
+            @ImageType imageType: Int,
+            item: I,
+            usePalette: Boolean,
+            imageCacheDelegate: ImageCacheDelegate<I>,
+        ) {
             when (imageType) {
                 IMAGE_TYPE_FIXED_ICON -> {
                     image?.visibility = View.VISIBLE
@@ -169,8 +163,7 @@ abstract class DisplayAdapter<I : Displayable>(
 
                 IMAGE_TYPE_IMAGE      -> {
                     image?.visibility = View.VISIBLE
-                    image?.setImageDrawable(defaultIcon)
-                    setPaletteColors(themeFooterColor(itemView.context))
+                    image?.let { imageView -> fetchImage(item, imageView, usePalette, imageCacheDelegate) }
                 }
 
                 IMAGE_TYPE_TEXT       -> {
@@ -179,6 +172,41 @@ abstract class DisplayAdapter<I : Displayable>(
                 }
             }
         }
+
+        protected open fun fetchImage(
+            item: I,
+            imageView: ImageView,
+            usePalette: Boolean,
+            imageCacheDelegate: ImageCacheDelegate<I>,
+        ) {
+            val context = imageView.context
+            val cached = imageCacheDelegate.peek(context, item)
+            if (cached != null) {
+                imageView.setImageBitmap(cached.bitmap)
+                if (usePalette) setPaletteColors(cached.paletteColor)
+            } else {
+                coroutineScope.launch {
+                    loadImage(context)
+                        .from(item)
+                        .into(
+                            PaletteTargetBuilder()
+                                .defaultColor(themeFooterColor(context))
+                                .view(imageView)
+                                .onStart {
+                                    imageView.setImageDrawable(defaultIcon)
+                                    setPaletteColors(themeFooterColor(itemView.context))
+                                }
+                                .onResourceReady { result, paletteColor ->
+                                    imageView.setImageDrawable(result)
+                                    if (usePalette) setPaletteColors(paletteColor)
+                                }
+                                .build()
+                        )
+                        .enqueue()
+                }
+            }
+        }
+
 
         protected open fun getIcon(item: I): Drawable? = defaultIcon
 
@@ -199,6 +227,10 @@ abstract class DisplayAdapter<I : Displayable>(
                 textTertiary?.setTextColor(context.secondaryTextColor(color))
             }
         }
+
+        companion object {
+            val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+        }
     }
 
     class ImageCacheDelegate<I : Displayable>(val config: DisplayConfig) {
@@ -215,8 +247,8 @@ abstract class DisplayAdapter<I : Displayable>(
                 _imageCache = value
             }
 
-        fun preloadImages(context: Context, items: Collection<I>) {
-            if (config.imageType != IMAGE_TYPE_IMAGE && enabledPreload) return
+        fun startPreloadImages(context: Context, items: Collection<I>) {
+            if (!enabledPreload || config.imageType != IMAGE_TYPE_IMAGE) return
 
             imageCache = DisplayPreloadImageCache(items.size.coerceAtLeast(1))
             imageCache.imageLoaderScope.launch {
@@ -226,18 +258,7 @@ abstract class DisplayAdapter<I : Displayable>(
             }
         }
 
-        fun updateImage(context: Context, viewHolder: DisplayViewHolder<I>, item: I, usePalette: Boolean) {
-            if (config.imageType != IMAGE_TYPE_IMAGE) return
-
-            imageCache.imageLoaderScope.launch {
-                val loaded =
-                    if (enabledPreload) imageCache.fetch(context, item) else imageCache.read(context, item)
-                withContext(Dispatchers.Main) {
-                    viewHolder.image?.setImageBitmap(loaded.bitmap)
-                    if (usePalette) viewHolder.setPaletteColors(loaded.paletteColor)
-                }
-            }
-        }
+        fun peek(context: Context, item: I): PaletteBitmap? = imageCache.peek(context, item)
 
         private val enabledPreload: Boolean = Setting(App.instance)[Keys.preloadImages].data
     }

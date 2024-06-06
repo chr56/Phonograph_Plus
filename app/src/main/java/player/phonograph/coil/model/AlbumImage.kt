@@ -4,14 +4,17 @@
 
 package player.phonograph.coil.model
 
+import player.phonograph.repo.loader.Songs
+import android.content.Context
+
 data class AlbumImage(
     override val id: Long,
     val name: String,
-    val files: List<SongImage>,
 ) : CompositeLoaderTarget<SongImage> {
 
-    override fun disassemble(): Iterable<SongImage> = files
+    override suspend fun items(context: Context): Iterable<SongImage> =
+        Songs.album(context, id).map { SongImage.from(it) }
 
     override fun toString(): String =
-        "AlbumImage(name=$name, id=$id, files=${files.joinToString(prefix = "[", postfix = "]") { it.path }})"
+        "AlbumImage(name=$name, id=$id,)"
 }
