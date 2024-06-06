@@ -47,7 +47,8 @@ class AlbumDetailActivityViewModel(val albumId: Long) : ViewModel() {
         loadImage(context)
             .from(album)
             .into(
-                PaletteTargetBuilder(defaultColor)
+                PaletteTargetBuilder()
+                    .defaultColor(defaultColor)
                     .onResourceReady { result, color ->
                         imageView.setImageDrawable(result)
                         _paletteColor.tryEmit(color)

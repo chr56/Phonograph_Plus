@@ -4,54 +4,33 @@
 
 package player.phonograph.coil.target
 
-import android.graphics.Bitmap
 import androidx.annotation.ColorInt
 import androidx.palette.graphics.Palette
-import kotlinx.coroutines.*
+import androidx.palette.graphics.Target
+import android.graphics.Bitmap
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 object PaletteUtil {
-    private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
-    fun Bitmap.toPaletteAsync(): Deferred<Palette> =
-        coroutineScope.async {
-            Palette.from(this@toPaletteAsync).generate()
+    private val coroutineName = CoroutineName("PaletteGenerator")
+
+    suspend fun paletteColor(bitmap: Bitmap, @ColorInt fallbackColor: Int): Int {
+        val builder = Palette
+            .from(bitmap)
+            .clearTargets()
+            .addTarget(Target.VIBRANT)
+            .addTarget(Target.MUTED)
+
+        val palette = withContext(Dispatchers.Default + coroutineName) {
+            builder.generate()
         }
 
-    suspend fun Deferred<Palette>.getColor(@ColorInt fallbackColor: Int): Int =
-        try {
-            withTimeout(1200) {
-                val palette = this@getColor.await()
-                palette.getColor(fallbackColor)
-            }
-        } catch (e: TimeoutCancellationException) {
-            fallbackColor
+        val swatch = with(palette) {
+            vibrantSwatch ?: mutedSwatch
         }
-
-
-    @ColorInt
-    fun Palette.getColor(fallback: Int): Int {
-        val swatchColor =
-            vibrantSwatch
-                ?: mutedSwatch
-                ?: lightVibrantSwatch
-                ?: lightMutedSwatch
-                ?: darkVibrantSwatch
-                ?: darkMutedSwatch
-        return swatchColor?.rgb
-            ?: if (swatches.isNotEmpty()) swatches.maxWith(SwatchComparator.instance!!).rgb else fallback
+        return swatch?.rgb ?: fallbackColor
     }
 
-    private class SwatchComparator : Comparator<Palette.Swatch> {
-        override fun compare(lhs: Palette.Swatch, rhs: Palette.Swatch): Int = lhs.population - rhs.population
-
-        companion object {
-            private var mInstance: SwatchComparator? = null
-
-            val instance: SwatchComparator?
-                get() {
-                    if (mInstance == null) mInstance = SwatchComparator()
-                    return mInstance
-                }
-        }
-    }
 }

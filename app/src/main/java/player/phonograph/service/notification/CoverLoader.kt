@@ -12,6 +12,7 @@ import player.phonograph.R
 import player.phonograph.coil.target.PaletteBitmap
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
+import player.phonograph.util.theme.themeFooterColor
 import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
 import android.graphics.Bitmap
@@ -42,7 +43,8 @@ class CoverLoader(private val context: Context) {
                     .data(song)
                     .properSize()
                     .target(
-                        PaletteTargetBuilder(context)
+                        PaletteTargetBuilder()
+                            .defaultColor(themeFooterColor(context))
                             .onResourceReady { result, paletteColor ->
                                 val bitmap =
                                     if (result is BitmapDrawable) result.bitmap else result.toBitmapOrNull()

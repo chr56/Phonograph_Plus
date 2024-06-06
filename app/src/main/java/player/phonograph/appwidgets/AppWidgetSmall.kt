@@ -57,7 +57,8 @@ class AppWidgetSmall : BaseAppWidget() {
             song = song,
             widgetImageSize = imageSize,
             target =
-            PaletteTargetBuilder(fallbackColor)
+            PaletteTargetBuilder()
+                .defaultColor(fallbackColor)
                 .onStart {
                     view.setImageViewResource(R.id.image, R.drawable.default_album_art)
                 }

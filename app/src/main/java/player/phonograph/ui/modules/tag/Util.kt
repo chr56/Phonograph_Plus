@@ -9,6 +9,7 @@ import player.phonograph.coil.loadImage
 import player.phonograph.coil.retriever.PARAMETERS_RAW
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
+import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.warning
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.drawable.toBitmap
@@ -32,7 +33,8 @@ suspend fun loadCover(context: Context, data: Any): Pair<Bitmap?, Color?> {
             data(data)
             parameters(PARAMETERS_RAW)
             target(
-                PaletteTargetBuilder(context)
+                PaletteTargetBuilder()
+                    .defaultColor(themeFooterColor(context))
                     .onResourceReady { result: Drawable, paletteColor: Int ->
                         continuation.resume(result.toBitmap() to Color(paletteColor)) {}
                     }

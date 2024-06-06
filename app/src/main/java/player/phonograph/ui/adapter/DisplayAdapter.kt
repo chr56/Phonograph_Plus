@@ -253,7 +253,8 @@ abstract class DisplayAdapter<I : Displayable>(
                 loadImage(context)
                     .from(key)
                     .into(
-                        PaletteTargetBuilder(context)
+                        PaletteTargetBuilder()
+                            .defaultColor(themeFooterColor(context))
                             .onResourceReady { result, palette ->
                                 if (result is BitmapDrawable) {
                                     continuation.resume(PaletteBitmap(result.bitmap, palette)) { continuation.cancel() }

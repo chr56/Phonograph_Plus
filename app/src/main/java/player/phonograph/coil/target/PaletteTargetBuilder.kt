@@ -4,28 +4,31 @@
 
 package player.phonograph.coil.target
 
-import player.phonograph.coil.target.PaletteUtil.getColor
-import player.phonograph.util.theme.themeFooterColor
-import androidx.palette.graphics.Palette
-import android.content.Context
+import coil.target.Target
+import androidx.annotation.ColorInt
 import android.graphics.drawable.Drawable
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
+import android.view.View
 
-open class PaletteTargetBuilder(protected open val defaultColor: Int) {
+class PaletteTargetBuilder {
 
-    constructor(context: Context) : this(themeFooterColor(context))
+    private var _defaultColorHasSet = false
+    private var _defaultColor: Int = 0
+    fun defaultColor(@ColorInt value: Int): PaletteTargetBuilder =
+        this.apply {
+            _defaultColorHasSet = true
+            _defaultColor = value
+        }
 
-    private var onSuccess: (result: Drawable, paletteColor: Int) -> Unit = { _, _ -> }
+    private var _view: View? = null
+    fun view(view: View): PaletteTargetBuilder =
+        this.apply {
+            _view = view
+        }
+
+    private var onResourceReady: (result: Drawable, paletteColor: Int) -> Unit = { _, _ -> }
     fun onResourceReady(block: (result: Drawable, paletteColor: Int) -> Unit): PaletteTargetBuilder =
         this.apply {
-            onSuccess = block
+            onResourceReady = block
         }
 
     private var onFail: (error: Drawable?) -> Unit = {}
@@ -40,30 +43,27 @@ open class PaletteTargetBuilder(protected open val defaultColor: Int) {
             onStart = block
         }
 
-    private var yieldCondition: () -> Boolean = { true }
-    fun withConditionalYield(condition: () -> Boolean): PaletteTargetBuilder =
-        this.apply {
-            yieldCondition = condition
+    fun build(): Target {
+        if (!_defaultColorHasSet) throw RuntimeException("No DefaultColor!")
+        val fallbackColor = _defaultColor
+
+        val view = _view
+        if (view != null) {
+            return ViewPaletteDelegateTarget.create(
+                view,
+                fallbackColor,
+                onStart = onStart,
+                onError = onFail,
+                onSuccess = onResourceReady
+            )
+        } else {
+            return PaletteDelegateTarget.create(
+                fallbackColor,
+                onStart = onStart,
+                onError = onFail,
+                onSuccess = onResourceReady
+            )
         }
-
-    fun build(): BasePaletteTarget {
-        return createBasePaletteTarget(
-            onStart = onStart,
-            onError = onFail,
-            onSuccess = { result: Drawable, palette: Deferred<Palette>? ->
-                coroutineScope.launch {
-                    val color = palette?.getColor(defaultColor) ?: defaultColor
-                    while (!yieldCondition()) yield()
-                    withContext(Dispatchers.Main) {
-                        onSuccess(result, color)
-                    }
-                }
-            }
-        )
     }
 
-    companion object {
-        private val coroutineScope =
-            CoroutineScope(Dispatchers.Default + SupervisorJob() + CoroutineName("PaletteGenerator"))
-    }
 }
