@@ -194,7 +194,7 @@ abstract class DisplayAdapter<I : Displayable>(
                                 .view(imageView)
                                 .onStart {
                                     imageView.setImageDrawable(defaultIcon)
-                                    if (usePalette) setPaletteColors(themeFooterColor(itemView.context))
+                                    setPaletteColors(themeFooterColor(itemView.context))
                                 }
                                 .onResourceReady { result, paletteColor ->
                                     imageView.setImageDrawable(result)
