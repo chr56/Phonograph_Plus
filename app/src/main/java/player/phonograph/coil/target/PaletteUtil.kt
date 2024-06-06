@@ -6,6 +6,7 @@ package player.phonograph.coil.target
 
 import androidx.annotation.ColorInt
 import androidx.palette.graphics.Palette
+import androidx.palette.graphics.Target
 import android.graphics.Bitmap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -20,7 +21,12 @@ object PaletteUtil {
 
     fun Bitmap.toPaletteAsync(): Deferred<Palette> =
         coroutineScope.async {
-            Palette.from(this@toPaletteAsync).generate()
+            Palette
+                .from(this@toPaletteAsync)
+                .clearTargets()
+                .addTarget(Target.VIBRANT)
+                .addTarget(Target.MUTED)
+                .generate()
         }
 
     suspend fun Deferred<Palette>.getColor(@ColorInt fallbackColor: Int): Int =
@@ -37,27 +43,8 @@ object PaletteUtil {
     @ColorInt
     fun Palette.getColor(fallback: Int): Int {
         val swatchColor =
-            vibrantSwatch
-                ?: mutedSwatch
-                ?: lightVibrantSwatch
-                ?: lightMutedSwatch
-                ?: darkVibrantSwatch
-                ?: darkMutedSwatch
-        return swatchColor?.rgb
-            ?: if (swatches.isNotEmpty()) swatches.maxWith(SwatchComparator.instance!!).rgb else fallback
+            vibrantSwatch ?: mutedSwatch
+        return swatchColor?.rgb ?: fallback
     }
 
-    private class SwatchComparator : Comparator<Palette.Swatch> {
-        override fun compare(lhs: Palette.Swatch, rhs: Palette.Swatch): Int = lhs.population - rhs.population
-
-        companion object {
-            private var mInstance: SwatchComparator? = null
-
-            val instance: SwatchComparator?
-                get() {
-                    if (mInstance == null) mInstance = SwatchComparator()
-                    return mInstance
-                }
-        }
-    }
 }
