@@ -33,7 +33,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.Q
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,7 +56,7 @@ abstract class DisplayAdapter<I : Displayable>(
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
-            if (config.layoutStyle.hasImage) imageCacheDelegate.preloadImages(activity, value)
+            // if (config.layoutStyle.hasImage) imageCacheDelegate.preloadImages(activity, value)
             notifyDataSetChanged()
         }
 
@@ -92,13 +91,13 @@ abstract class DisplayAdapter<I : Displayable>(
     override fun getSectionName(position: Int): String =
         if (config.showSectionName) getSectionNameImp(position) else ""
 
-    override fun onViewAttachedToWindow(holder: DisplayViewHolder<I>) {
-        if (holder.bindingAdapterPosition in dataset.indices) {
-            imageCacheDelegate.updateImage(activity, holder, dataset[holder.bindingAdapterPosition], config.usePalette)
-        } else{
-            Log.v("ImageCacheDelegate", "Holder has already detached?")
-        }
-    }
+    // override fun onViewAttachedToWindow(holder: DisplayViewHolder<I>) {
+    //     if (holder.bindingAdapterPosition in dataset.indices) {
+    //         imageCacheDelegate.updateImage(activity, holder, dataset[holder.bindingAdapterPosition], config.usePalette)
+    //     } else{
+    //         Log.v("ImageCacheDelegate", "Holder has already detached?")
+    //     }
+    // }
 
     // override fun onViewDetachedFromWindow(holder: DisplayViewHolder<I>) {}
 
@@ -123,7 +122,7 @@ abstract class DisplayAdapter<I : Displayable>(
             textSecondary?.text = item.getSecondaryText(itemView.context)
             textTertiary?.text = item.getTertiaryText(itemView.context)
 
-            prepareImage(imageType, item)
+            prepareImage(imageType, item, usePalette)
 
             controller.registerClicking(itemView, position) {
                 onClick(position, dataset, image)
@@ -160,7 +159,7 @@ abstract class DisplayAdapter<I : Displayable>(
         protected open fun getDescription(item: I): CharSequence? =
             item.getDescription(context = itemView.context)
 
-        protected open fun prepareImage(@ImageType imageType: Int, item: I) {
+        protected open fun prepareImage(@ImageType imageType: Int, item: I, usePalette: Boolean) {
             when (imageType) {
                 IMAGE_TYPE_FIXED_ICON -> {
                     image?.visibility = View.VISIBLE
@@ -169,8 +168,7 @@ abstract class DisplayAdapter<I : Displayable>(
 
                 IMAGE_TYPE_IMAGE      -> {
                     image?.visibility = View.VISIBLE
-                    image?.setImageDrawable(defaultIcon)
-                    setPaletteColors(themeFooterColor(itemView.context))
+                    image?.let { imageView -> fetchImage(item, imageView, usePalette) }
                 }
 
                 IMAGE_TYPE_TEXT       -> {
@@ -179,6 +177,30 @@ abstract class DisplayAdapter<I : Displayable>(
                 }
             }
         }
+
+        protected open fun fetchImage(item: I, imageView: ImageView, usePalette: Boolean) {
+            val context = imageView.context
+            coroutineScope.launch {
+                loadImage(context)
+                    .from(item)
+                    .into(
+                        PaletteTargetBuilder()
+                            .defaultColor(themeFooterColor(context))
+                            .view(imageView)
+                            .onStart {
+                                imageView.setImageDrawable(defaultIcon)
+                                if (usePalette) setPaletteColors(themeFooterColor(itemView.context))
+                            }
+                            .onResourceReady { result, paletteColor ->
+                                imageView.setImageDrawable(result)
+                                if (usePalette) setPaletteColors(paletteColor)
+                            }
+                            .build()
+                    )
+                    .enqueue()
+            }
+        }
+
 
         protected open fun getIcon(item: I): Drawable? = defaultIcon
 
@@ -198,6 +220,10 @@ abstract class DisplayAdapter<I : Displayable>(
                 textSecondary?.setTextColor(context.secondaryTextColor(color))
                 textTertiary?.setTextColor(context.secondaryTextColor(color))
             }
+        }
+
+        companion object {
+            val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
         }
     }
 
