@@ -6,8 +6,7 @@ package player.phonograph.repo.mediastore.loaders
 
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
-import player.phonograph.model.Song
-import player.phonograph.repo.mediastore.internal.catalogAlbums
+import player.phonograph.repo.mediastore.internal.generateArtistAlbums
 import player.phonograph.repo.mediastore.internal.intoSongs
 import player.phonograph.repo.mediastore.internal.querySongs
 import android.content.Context
@@ -17,10 +16,8 @@ import kotlinx.coroutines.runBlocking
 object ArtistAlbumLoader {
     fun id(context: Context, artistId: Long): List<Album> =
         querySongs(context, "${AudioColumns.ARTIST_ID}=?", arrayOf(artistId.toString()), null)
-            .intoSongs()
-            .toAlbumList()
+            .intoSongs().let { runBlocking { generateArtistAlbums(it) } }
 
     fun Artist.allAlbums(context: Context): List<Album> = id(context, id)
 
-    private fun List<Song>.toAlbumList(): List<Album> = runBlocking { catalogAlbums(this@toAlbumList).await() }
 }

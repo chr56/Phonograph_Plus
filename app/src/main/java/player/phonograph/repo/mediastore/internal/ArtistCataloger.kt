@@ -7,11 +7,13 @@ package player.phonograph.repo.mediastore.internal
 import player.phonograph.App
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
+import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.reportError
 import player.phonograph.util.sort
+import android.content.Context
 import android.util.ArrayMap
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -25,8 +27,10 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.yield
 
+suspend fun generateArtists(context: Context, songs: List<Song>): List<Artist> =
+    catalogArtists(songs, Setting(context).Composites[Keys.artistSortMode].flowData()).await()
 
-suspend fun catalogArtists(songs: List<Song>): Deferred<List<Artist>> = coroutineScope {
+private suspend fun catalogArtists(songs: List<Song>, sortMode: SortMode): Deferred<List<Artist>> = coroutineScope {
     async {
 
         var completed = false
