@@ -8,8 +8,11 @@ import player.phonograph.model.Album
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import player.phonograph.util.reportError
 import player.phonograph.util.sort
+import android.content.Context
 import android.util.ArrayMap
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -49,7 +52,10 @@ fun createAlbum(id: Long, songs: List<Song>): Album {
     }
 }
 
-suspend fun catalogAlbums(songs: List<Song>): Deferred<List<Album>> = coroutineScope {
+suspend fun generateAlbums(context: Context, songs: List<Song>): List<Album> =
+    catalogAlbums(songs, Setting(context).Composites[Keys.albumSortMode].flowData()).await()
+
+private suspend fun catalogAlbums(songs: List<Song>, sortMode: SortMode): Deferred<List<Album>> = coroutineScope {
     async {
 
         var completed = false
@@ -89,7 +95,7 @@ suspend fun catalogAlbums(songs: List<Song>): Deferred<List<Album>> = coroutineS
             createAlbum(id, list)
         }.catch { e ->
             reportError(e, TAG_ALBUM, "Fail to load albums")
-        }.toList().sortAllAlbums(SortMode(SortRef.YEAR, false))
+        }.toList().sortAllAlbums(sortMode)
     }
 }
 
