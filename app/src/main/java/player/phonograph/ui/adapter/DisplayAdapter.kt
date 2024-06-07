@@ -25,6 +25,7 @@ import player.phonograph.util.theme.themeFooterColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
@@ -37,6 +38,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -180,7 +183,7 @@ abstract class DisplayAdapter<I : Displayable>(
             imageCacheDelegate: ImageCacheDelegate<I>,
         ) {
             val context = imageView.context
-            val cached = imageCacheDelegate.peek(context, item)
+            val cached = imageCacheDelegate.peek(item)
             if (cached != null) {
                 imageView.setImageBitmap(cached.bitmap)
                 if (usePalette) setPaletteColors(cached.paletteColor)
@@ -258,15 +261,13 @@ abstract class DisplayAdapter<I : Displayable>(
             }
         }
 
-        fun peek(context: Context, item: I): PaletteBitmap? = imageCache.peek(context, item)
+        fun peek(item: I): PaletteBitmap? = imageCache.peek(item)
 
         private val enabledPreload: Boolean = Setting(App.instance)[Keys.preloadImages].data
     }
 
     class DisplayPreloadImageCache<I : Displayable>(size: Int) :
             AbsPreloadImageCache<I, PaletteBitmap>(size, if (SDK_INT >= Q) IMPL_SPARSE_ARRAY else IMPL_SCATTER_MAP) {
-
-        suspend fun read(context: Context, key: I): PaletteBitmap = load(context, key)
 
         @OptIn(ExperimentalCoroutinesApi::class)
         override suspend fun load(context: Context, key: I): PaletteBitmap =

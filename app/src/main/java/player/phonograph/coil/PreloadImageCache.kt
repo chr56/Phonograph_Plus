@@ -9,25 +9,20 @@ import androidx.collection.LruCache
 import androidx.collection.MutableScatterMap
 import android.content.Context
 import android.util.LongSparseArray
+import android.view.View
 
 abstract class AbsPreloadImageCache<K, G : Any>(size: Int, @CacheImplementation type: Int) {
 
-    private val cache: Cache<G> = when (type) {
-        IMPL_LRU          -> Cache.LruCacheImpl(size)
-        IMPL_SPARSE_ARRAY -> Cache.SparseArrayCacheImpl(size)
-        IMPL_SCATTER_MAP  -> Cache.ScatterMapCacheImpl(size)
-        else              -> throw IllegalArgumentException("Unknown cache type: $type")
-    }
+
+    protected abstract fun id(key: K): Long
+
+    protected abstract suspend fun load(context: Context, key: K): G
 
     private suspend fun loadAndStore(context: Context, key: K): G {
         val loaded: G = load(context, key)
         cache[id(key)] = loaded
         return loaded
     }
-
-    protected abstract suspend fun load(context: Context, key: K): G
-
-    protected abstract fun id(key: K): Long
 
     suspend fun fetch(context: Context, key: K): G {
         val cached: G? = cache[id(key)]
@@ -39,10 +34,17 @@ abstract class AbsPreloadImageCache<K, G : Any>(size: Int, @CacheImplementation 
         }
     }
 
-    fun peek(context: Context, key: K): G? = cache[id(key)]
-
     suspend fun preload(context: Context, key: K) {
         loadAndStore(context, key)
+    }
+
+    fun peek(key: K): G? = cache[id(key)]
+
+    private val cache: Cache<G> = when (type) {
+        IMPL_LRU          -> Cache.LruCacheImpl(size)
+        IMPL_SPARSE_ARRAY -> Cache.SparseArrayCacheImpl(size)
+        IMPL_SCATTER_MAP  -> Cache.ScatterMapCacheImpl(size)
+        else              -> throw IllegalArgumentException("Unknown cache type: $type")
     }
 
     private sealed interface Cache<V> {
