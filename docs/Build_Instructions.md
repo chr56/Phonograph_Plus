@@ -10,12 +10,12 @@ See also [Developer Guide](./Developer_Guide.md).
 
 1. a PC : any desktop operate system platform (only `Windows` and `Ubuntu 20.04` are tested), I am not sure if it works
    on `Android(Termux)` because jvm version.
-2. JDK 17 (we are using AGP 8.3.2 with gradle 8.6).
+2. JDK 17 (we are using AGP 8.4.1 with gradle 8.6).
 3. The connected and fast network.
 
 **Development**:
 
-Plus `Android Studio` with correspond `Android Gradle Plugin` (currently `Iguana 2023.2.1 (Patch 2)`).
+Plus `Android Studio` with correspond `Android Gradle Plugin` (currently `Jellyfish | 2023.3.1 Patch 1`).
 (`IDEA` might be not compatible because `Android Gradle Plugin` is too new)
 
 ## **Instructions (Build with commandline)**
