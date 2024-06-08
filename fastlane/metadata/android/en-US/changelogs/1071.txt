@@ -1,0 +1,9 @@
+<b>1.7.1(1071) 2024.06.09</b>
+- Fix: Albums Page sorting not working
+- Fix: crash when toggling Colored Footers in Artist Detail
+- Fix: wrong cover if scrolling too fast
+- Fix: missing album cover in Artist Detail after going back from Artist Album Detail
+- Improve: accelerate palette color generation for performance
+- Improve: performance for loading some list items
+- Modify: sort Artist Albums by year ascending
+...(Visit project homepage to see full changelogs)
