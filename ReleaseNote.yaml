@@ -1,27 +1,13 @@
-version: "1.7.1-dev2"
+version: "1.7.1-beta1"
 versionCode: 1070
-timestamp: 1717670000
+timestamp: 1717820000
 channel: "PREVIEW"
 notes:
   en:
     highlights: [ ]
     items:
-      - "Fix: wrong cover if scrolling too fast"
-      - "Fix: missing album cover in Artist Detail after going back from Artist Album Detail"
-      - "Improve: accelerate palette color generation for performance"
-      - "Modify: reimplement image preload mechanism"
-      - "Development: avoid unexpectedly blocking main thread when loading images"
-      - "Development: disable emoji compat to improve RecyclerView performance"
-      - "Development: do not use plurals strings to improve RecyclerView performance"
-      - "Development: cleanup code"
+      - "Fix: Albums Page sort order fails since v1.7.1-dev1"
   zh:
     highlights: [ ]
     items:
-      - "修复 滚动过快时封面错误"
-      - "修复 艺术家详情中，从专辑详情返回后，专辑封面丢失"
-      - "改进 改进主色调生成以提升性能"
-      - "修改 重新实现图像预加载机制"
-      - "开发 避免在加载图像时意外阻塞主线程"
-      - "开发 禁用 emoji compat 以提升 RecyclerView 性能"
-      - "开发 不使用 plurals 字符串以提升 RecyclerView 性能"
-      - "开发 清理代码"
+      - "Fix: 自 v1.7.1-dev1 起，专辑页排序失效"
