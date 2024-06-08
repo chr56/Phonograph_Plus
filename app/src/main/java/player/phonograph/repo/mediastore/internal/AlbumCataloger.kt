@@ -52,6 +52,9 @@ fun createAlbum(id: Long, songs: List<Song>): Album {
     }
 }
 
+suspend fun generateArtistAlbums(songs: List<Song>): List<Album> =
+    catalogAlbums(songs, SortMode(SortRef.YEAR, false)).await()
+
 suspend fun generateAlbums(context: Context, songs: List<Song>): List<Album> =
     catalogAlbums(songs, Setting(context).Composites[Keys.albumSortMode].flowData()).await()
 
