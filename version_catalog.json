@@ -2,6 +2,26 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "1.7.1-beta1",
+      "versionCode": 1070,
+      "date": 1717820000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.7.1-beta1"
+        },
+        {
+          "name": "Github Release (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.7.1-beta1/PhonographPlus_1.7.1-beta1.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 自 v1.7.1-dev1 起，专辑页排序失效</li></ol>",
+        "en": "<ol><li>Fix: Albums Page sort order fails since v1.7.1-dev1</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.7.1-dev2",
       "versionCode": 1070,
       "date": 1717670000,
