@@ -8,11 +8,30 @@ import legacy.phonograph.MediaStoreCompat
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists.EXTERNAL_CONTENT_URI
 import legacy.phonograph.MediaStoreCompat.Audio.PlaylistsColumns
 import player.phonograph.R
+import player.phonograph.model.Song
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.util.coroutineToast
+import player.phonograph.util.sentPlaylistChangedLocalBoardCast
+import player.phonograph.util.warning
 import android.content.ContentValues
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+
+suspend fun createPlaylistViaMediastore(context: Context, name: String, songs: List<Song>) {
+    val id = createOrFindPlaylistViaMediastore(context, name)
+    if (PlaylistLoader.checkExistence(context, id)) {
+        addToPlaylistViaMediastore(context, songs, id, true)
+        coroutineToast(context, R.string.success)
+        delay(250)
+        sentPlaylistChangedLocalBoardCast()
+    } else {
+        warning("Playlist", "Failed to save playlist (id=$id)")
+        coroutineToast(context, R.string.failed)
+    }
+}
+
 
 /**
  * find or create playlist via MediaStore
