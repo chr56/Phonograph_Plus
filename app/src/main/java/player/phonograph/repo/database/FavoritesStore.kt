@@ -9,6 +9,8 @@ import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist2.FilePlaylistLocation
+import player.phonograph.model.playlist2.Playlist as Playlist2
 import player.phonograph.repo.database.DatabaseConstants.FAVORITE_DB
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
@@ -104,6 +106,10 @@ class FavoritesStore constructor(context: Context) :
         if (playlist is FilePlaylist)
             containsImpl(TABLE_NAME_PLAYLISTS, playlist.id, playlist.associatedFilePath)
         else false
+    fun containsPlaylist(playlist: Playlist2): Boolean =
+        if (!playlist.isVirtual())
+            containsImpl(TABLE_NAME_PLAYLISTS, playlist.id, (playlist.location as FilePlaylistLocation).path)
+        else false
 
     fun containsPlaylist(playlistId: Long?, path: String?): Boolean =
         containsImpl(TABLE_NAME_PLAYLISTS, playlistId, path)
@@ -125,6 +131,9 @@ class FavoritesStore constructor(context: Context) :
 
     fun addPlaylist(playlist: FilePlaylist): Boolean =
         addImpl(TABLE_NAME_PLAYLISTS, playlist.id, playlist.associatedFilePath, playlist.name)
+
+    fun addPlaylist(playlist: Playlist2): Boolean =
+        addImpl(TABLE_NAME_PLAYLISTS, playlist.id, (playlist.location as FilePlaylistLocation).path, playlist.name)
 
     private fun addImpl(tableName: String, id: Long, path: String, name: String?): Boolean {
         val database = writableDatabase
@@ -196,6 +205,9 @@ class FavoritesStore constructor(context: Context) :
 
     fun removePlaylist(playlist: FilePlaylist): Boolean =
         removeImpl(TABLE_NAME_PLAYLISTS, playlist.id, playlist.associatedFilePath)
+
+    fun removePlaylist(playlist: Playlist2): Boolean =
+        removeImpl(TABLE_NAME_PLAYLISTS, playlist.id, (playlist.location as FilePlaylistLocation).path)
 
     private fun removeImpl(table: String, id: Long, path: String): Boolean {
         val database = writableDatabase

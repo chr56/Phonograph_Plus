@@ -3,6 +3,7 @@ package player.phonograph.util
 import player.phonograph.R
 import player.phonograph.model.Genre
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist2.Playlist as Playlist2
 import player.phonograph.repo.loader.Artists
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.activities.AlbumDetailActivity
@@ -93,6 +94,9 @@ object NavigationUtil {
     @Suppress("UNUSED_PARAMETER")
     fun goToPlaylist(context: Context, playlist: Playlist, vararg sharedElements: Pair<*, *>?) =
         context.startActivity(PlaylistDetailActivity.launchIntent(context, playlist))
+    @Suppress("UNUSED_PARAMETER")
+    fun goToPlaylist(context: Context, playlist: Playlist2, vararg sharedElements: Pair<*, *>?) = Unit
+        // context.startActivity(PlaylistDetailActivity.launchIntent(context, playlist))// todo
 
     fun openEqualizer(activity: Activity) {
         val sessionId = MusicPlayerRemote.audioSessionId

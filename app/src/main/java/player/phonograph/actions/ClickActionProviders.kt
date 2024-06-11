@@ -25,6 +25,7 @@ import player.phonograph.model.SongClickMode.SONG_PLAY_NOW
 import player.phonograph.model.SongClickMode.SONG_SINGLE_PLAY
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist2.Playlist as Playlist2
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
@@ -155,6 +156,18 @@ object ClickActionProviders {
             return true
         }
 
+    }
+
+    class PlaylistClickActionProvider2 : ClickActionProvider<Playlist2> {
+        override fun listClick(
+            list: List<player.phonograph.model.playlist2.Playlist>,
+            position: Int,
+            context: Context,
+            imageView: ImageView?,
+        ): Boolean {
+            NavigationUtil.goToPlaylist(context, list[position])
+            return true
+        }
     }
 
     class PlaylistClickActionProvider : ClickActionProvider<Playlist> {
