@@ -6,6 +6,7 @@ package player.phonograph.repo.browser
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
+import player.phonograph.mechanism.playlist2.PlaylistProcessors
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
@@ -13,12 +14,14 @@ import player.phonograph.model.PlayRequest
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.model.playlist2.Playlist as Playlist2
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.loader.Genres
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader2
 import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.service.queue.QueueManager
@@ -120,6 +123,12 @@ object MediaItemProviders {
             }
 
         protected fun FilePlaylist.toMediaItem(): MediaItem =
+            mediaItem(FLAG_BROWSABLE) {
+                setTitle(name)
+                setMediaId(MediaItemPath.playlist(id).mediaId)
+            }
+
+        protected fun Playlist2.toMediaItem(): MediaItem =
             mediaItem(FLAG_BROWSABLE) {
                 setTitle(name)
                 setMediaId(MediaItemPath.playlist(id).mediaId)
@@ -354,6 +363,21 @@ object MediaItemProviders {
 
     private class PlaylistProvider(val playlistId: Long) : AbsMediaItemProvider() {
         private suspend fun fetch(context: Context) = PlaylistLoader.id(context, playlistId).getSongs(context)
+
+        override suspend fun browser(context: Context): List<MediaItem> =
+            withPlayAllItems(
+                context.resources,
+                MediaItemPath.playlist(playlistId).mediaId,
+                fetch(context).map { it.toMediaItem() }
+            )
+
+        override suspend fun play(context: Context): PlayRequest =
+            PlayRequest.SongsRequest(fetch(context), 0)
+    }
+
+    private class PlaylistProvider2(val playlistId: Long) : AbsMediaItemProvider() {
+        private suspend fun fetch(context: Context) =
+            PlaylistProcessors.of(PlaylistLoader2.id(context, playlistId)).allSongs(context)
 
         override suspend fun browser(context: Context): List<MediaItem> =
             withPlayAllItems(
