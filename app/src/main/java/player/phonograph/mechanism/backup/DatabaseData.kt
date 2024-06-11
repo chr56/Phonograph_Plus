@@ -9,10 +9,13 @@ import org.koin.core.context.GlobalContext
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.model.playlist2.FilePlaylistLocation
+import player.phonograph.model.playlist2.Playlist as Playlist2
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.database.PathFilterStore
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader2
 import player.phonograph.service.queue.MusicPlaybackQueueStore
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
@@ -236,6 +239,13 @@ object DatabaseDataManger {
         array?.map { parser.decodeFromJsonElement(PersistentPlaylist.serializer(), it) }
             ?.mapNotNull { it.getMatchingPlaylist(context) }
 
+    private fun persistentPlaylist2(playlist: Playlist2): JsonElement =
+        parser.encodeToJsonElement(PersistentPlaylist.serializer(), PersistentPlaylist.from(playlist))
+
+    private fun recoverPlaylists2(context: Context, array: JsonArray?): List<Playlist2>? =
+        array?.map { parser.decodeFromJsonElement(PersistentPlaylist.serializer(), it) }
+            ?.mapNotNull { it.getMatchingPlaylist2(context) }
+
 
     @Keep
     @Serializable
@@ -262,10 +272,14 @@ object DatabaseDataManger {
         companion object {
             fun from(filePlaylist: FilePlaylist): PersistentPlaylist =
                 PersistentPlaylist(filePlaylist.associatedFilePath, filePlaylist.name)
+            fun from(playlist: Playlist2): PersistentPlaylist =
+                PersistentPlaylist((playlist.location as FilePlaylistLocation).path, playlist.name)
         }
 
         fun getMatchingPlaylist(context: Context): FilePlaylist? =
             PlaylistLoader.searchByPath(context, path)
+        fun getMatchingPlaylist2(context: Context): Playlist2? =
+            PlaylistLoader2.searchByPath(context, path)
     }
 
     private fun parseJson(rawString: String, name: String, block: (JsonObject) -> Boolean): Boolean {
