@@ -157,7 +157,7 @@ private sealed interface PlaylistEditImpl {
 
         override suspend fun append(context: Context, songs: List<Song>, filePlaylist: FilePlaylist) {
             coroutineToast(context, R.string.direction_open_file_with_saf)
-            appendToPlaylistViaSAF(context, songs = songs, filePlaylist = filePlaylist)
+            appendToPlaylistViaSAF(context, songs, filePlaylist.id, filePlaylist.associatedFilePath)
         }
 
         override suspend fun duplicate(context: Context, playlists: List<Playlist>) {
