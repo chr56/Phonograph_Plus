@@ -15,6 +15,7 @@ import player.phonograph.appshortcuts.shortcuttype.LastAddedShortcutType
 import player.phonograph.appshortcuts.shortcuttype.ShuffleAllShortcutType
 import player.phonograph.appshortcuts.shortcuttype.TopTracksShortcutType
 import player.phonograph.mechanism.SongUriParsers
+import player.phonograph.mechanism.playlist2.PlaylistProcessors
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.PlayRequest.SongRequest
 import player.phonograph.model.PlayRequest.SongsRequest
@@ -26,6 +27,7 @@ import player.phonograph.model.SongClickMode.SONG_PLAY_NOW
 import player.phonograph.model.SongClickMode.SONG_SINGLE_PLAY
 import player.phonograph.model.SongClickMode.modeName
 import player.phonograph.model.playlist.SmartPlaylist
+import player.phonograph.model.playlist2.DynamicPlaylists
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
 import player.phonograph.repo.mediastore.processQuery
@@ -63,6 +65,7 @@ import android.widget.TextView
 import android.widget.Toast
 import kotlin.random.Random
 import kotlinx.coroutines.runBlocking
+import player.phonograph.model.playlist2.Playlist as Playlist2
 
 class StarterActivity : AppCompatActivity() {
 
@@ -208,6 +211,34 @@ class StarterActivity : AppCompatActivity() {
 
         val songs = runBlocking { playlist?.getSongs(applicationContext) }
         if (songs != null) {
+            play(songs, shuffleMode)
+        }
+    }
+
+    private fun processShortCut2(shortcutType: Int) {
+        var shuffleMode = ShuffleMode.NONE
+        val playlist: Playlist2 = when (shortcutType) {
+            SHORTCUT_TYPE_SHUFFLE_ALL -> {
+                reportShortcutUsed(this, ShuffleAllShortcutType.id)
+                shuffleMode = ShuffleMode.SHUFFLE
+                DynamicPlaylists.random()
+            }
+
+            SHORTCUT_TYPE_TOP_TRACKS  -> {
+                reportShortcutUsed(this, TopTracksShortcutType.id)
+                DynamicPlaylists.myTopTrack()
+            }
+
+            SHORTCUT_TYPE_LAST_ADDED  -> {
+                reportShortcutUsed(this, LastAddedShortcutType.id)
+                DynamicPlaylists.lastAdded()
+            }
+
+            else                      -> return
+        }
+
+        runBlocking {
+            val songs = PlaylistProcessors.of(playlist).allSongs(this@StarterActivity)
             play(songs, shuffleMode)
         }
     }
