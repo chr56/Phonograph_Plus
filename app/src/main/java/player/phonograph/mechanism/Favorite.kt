@@ -29,7 +29,7 @@ interface IFavorite {
      */
     fun toggleFavorite(context: Context, song: Song): Boolean
 
-    fun clearAll(context: Context)
+    fun clearAll(context: Context): Boolean
 
 }
 
@@ -51,8 +51,9 @@ class FavoriteDatabaseImpl : IFavorite {
         }
     }
 
-    override fun clearAll(context: Context) {
+    override fun clearAll(context: Context): Boolean {
         favoritesStore.clearAll()
+        return true
     }
 }
 
@@ -87,8 +88,9 @@ class FavoritePlaylistImpl : IFavorite {
         }
     }
 
-    override fun clearAll(context: Context) {
+    override fun clearAll(context: Context): Boolean {
         getFavoritesPlaylist(context)?.clear(context)
+        return true
     }
 
     private fun getFavoritesPlaylist(context: Context): FilePlaylist? {

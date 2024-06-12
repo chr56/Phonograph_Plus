@@ -44,7 +44,7 @@ class FavoriteSongsPlaylistImpl : FavoriteSongsPlaylist {
         notifyMediaStoreChanged()
     }
 
-    override fun clear(context: Context) = favorite.clearAll(context)
+    override fun clear(context: Context) { favorite.clearAll(context) }
 
 
     constructor(parcel: Parcel) : super(parcel)
