@@ -232,8 +232,8 @@ class SongPlayCountStore(context: Context) :
         }
     }
 
-    fun clear() {
-        writableDatabase.delete(NAME, null, null)
+    fun clear(): Boolean {
+        return writableDatabase.delete(NAME, null, null) > 0
     }
 
     /**
