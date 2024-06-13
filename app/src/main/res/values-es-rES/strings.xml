@@ -84,6 +84,11 @@
     <string name="dark_theme_name">Oscuro</string>
     <string name="black_theme_name">Negro (AMOLED)</string>
     <string name="auto_theme_name">Auto</string>
+    <string name="theme_name_auto_lightblack">"Auto (Claro/Oscuro)"</string>
+    <string name="theme_name_auto_lightdark">"Auto (Claro/Negro)"</string>
+    <string name="theme_name_light">Claro</string>
+    <string name="theme_name_black">Oscuro</string>
+    <string name="theme_name_dark">Negro</string>
     <string name="always">Siempre</string>
     <string name="only_on_wifi">Solo mediante Wi-Fi</string>
     <string name="never">Nunca</string>
@@ -304,6 +309,7 @@
     <string name="lyricist">Letrista</string>
     <string name="music_tags">Etiquetas</string>
     <string name="file">Archivo</string>
+    <string name="folder">Carpeta</string>
     <string name="pref_header_compatibility">Compatibilidad</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Utilizar mecanismo de lista de reproducción favorito antiguo</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">Si lo activa, la aplicación guardará canciones favoritas en una lista de reproducción m3u en Storage en lugar de guardar canciones favoritas en la base de datos interna de la aplicación. Puedes exportar la lista manualmente..)</string>
@@ -418,6 +424,7 @@
     <string name="permission_desc_manage_external_storage">Desde Android R (11), tienes que conceder este permiso para leer o escribir tu almacenamiento mucho más fácilmente al administrar tu biblioteca de música en tu dispositivo.</string>
     <string name="completed">Completado</string>
     <string name="dynamic_colors">Colores dinámicos</string>
+    <string name="pref_title_enable_monet">Habilitar Monet</string>
     <string name="pref_summary_enable_monet">Utilizar fondos de pantalla basados en el tema del sistema (Material You). Esta función es experimental.</string>
     <string name="action_import">Importar %1$s</string>
     <string name="action_export">Exportar %1$s</string>
@@ -451,6 +458,7 @@
     <string name="timeunit_week">Semana</string>
     <string name="timeunit_month">Mes</string>
     <string name="timeunit_year">Año</string>
+    <string name="time_interval_text">%1$s %2$d %3$s</string>
     <string name="preview_text_cutoff_time_interval">La marca de tiempo límite será: \n %1$s \n(%2$s)</string>
     <string name="preview_text_next_upgrade_check">La siguiente comprobación de actualizaciones será después de: \n %1$s \n(%2$s)</string>
     <string name="home">Inicio</string>
@@ -471,14 +479,19 @@
     <string name="key_date">Fecha</string>
     <string name="key_country">País</string>
     <string name="key_area">Área</string>
+    <string name="key_gender">Género</string>
     <string name="key_media">Media</string>
+    <string name="count">Contar</string>
     <string name="format">Formato</string>
     <string name="status">Estado</string>
     <string name="key_barcode">Código de barras</string>
     <string name="key_record_label">Sello discográfico</string>
     <string name="pref_title_disable_real_time_search">Desactivar búsqueda local en tiempo real</string>
+    <string name="pref_summary_disable_real_time_search">El resultado de la búsqueda se actualizará SOLO después de confirmar por Enter. Esto sería útil para arreglar algunas IMEs no puede mostrar barra de caducidad o pista/predicción de palabras si la composición en línea está habilitada, especialmente para algunas IMes de CJK (o idiomas requieren composiciones antes de la entrada).</string>
     <string name="deleted">Borrado</string>
     <string name="action_shuffle_mode">Modo aleatorio</string>
+    <string name="action_repeat_mode">Modo repetición</string>
+    <string name="action_item_layout">Diseño del Ítem</string>
     <string name="item_layout_list">Lista (2 líneas)</string>
     <string name="item_layout_list_extended">Lista (2 líneas extendidas)</string>
     <string name="item_layout_list_no_image">Lista (2 líneas, sin imagen)</string>
@@ -511,4 +524,5 @@
     <string name="error_unstoppable_service">No se puede salir del servicio de música en primer plano o en uso.</string>
     <string name="action_fast_rewind">Rebobinado rápido</string>
     <string name="action_fast_forward">Avance rápido</string>
+    <string name="path_selector">Selector de archivos</string>
 </resources>
