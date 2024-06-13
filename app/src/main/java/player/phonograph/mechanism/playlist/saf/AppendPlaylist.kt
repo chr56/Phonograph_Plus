@@ -8,7 +8,6 @@ import legacy.phonograph.MediaStoreCompat.Audio.Playlists
 import lib.storage.launcher.IOpenFileStorageAccessible
 import player.phonograph.R
 import player.phonograph.model.Song
-import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.util.PLAYLIST_MIME_TYPE
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.file.selectContentUri
@@ -28,19 +27,19 @@ import java.io.IOException
 suspend fun appendToPlaylistViaSAF(
     context: Context,
     songs: List<Song>,
-    filePlaylist: FilePlaylist,
+    playlistId: Long,
+    playlistPath: String,
 ) = withContext(Dispatchers.IO) {
     //
     // check
     //
     if (songs.isEmpty()) return@withContext
     require(context is IOpenFileStorageAccessible)
-    require(filePlaylist.id > 0 || filePlaylist.associatedFilePath.contains('/'))
+    require(playlistId > 0 || playlistPath.contains('/'))
     while (context.openFileStorageAccessDelegate.busy) yield()
     //
     // select
     //
-    val playlistPath = filePlaylist.associatedFilePath
     val mimeTypes = arrayOf(PLAYLIST_MIME_TYPE, Playlists.CONTENT_TYPE, Playlists.ENTRY_CONTENT_TYPE)
     val uri: Uri? = selectContentUri(context, playlistPath, mimeTypes)
     if (uri == null) {
@@ -57,7 +56,7 @@ suspend fun appendToPlaylistViaSAF(
         }
     } catch (e: IOException) {
         warning(TAG, "Failed write playlist via uri: $uri (from file $playlistPath)")
-        coroutineToast(context, context.getString(R.string.failed_to_save_playlist, filePlaylist.name))
+        coroutineToast(context, context.getString(R.string.failed_to_save_playlist, playlistPath))
     }
 }
 

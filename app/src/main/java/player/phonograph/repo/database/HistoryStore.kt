@@ -78,8 +78,8 @@ class HistoryStore(context: Context) :
         writableDatabase.delete(NAME, "$ID = ?", arrayOf(songId.toString()))
     }
 
-    fun clear() {
-        writableDatabase.delete(NAME, null, null)
+    fun clear(): Boolean {
+        return writableDatabase.delete(NAME, null, null) > 0
     }
 
     operator fun contains(id: Long): Boolean =

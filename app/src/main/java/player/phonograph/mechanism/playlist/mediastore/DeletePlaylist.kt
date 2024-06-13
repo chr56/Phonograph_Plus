@@ -17,7 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
- * delete playlist by path via MediaStore
+ * delete playlist via MediaStore
  * @return playlists failing to delete
  */
 suspend fun deletePlaylistsViaMediastore(
@@ -35,7 +35,7 @@ suspend fun deletePlaylistsViaMediastore(
         )
         if (output == 0) {
             Log.w(
-                "DeletePlaylist",
+                TAG,
                 "fail to delete playlist ${filePlaylists[index].name}(id:${filePlaylists[index].id})"
             )
             failList.add(filePlaylists[index])
@@ -47,7 +47,44 @@ suspend fun deletePlaylistsViaMediastore(
         context.resources.getQuantityString(R.plurals.msg_deletion_result, result, result, filePlaylists.size),
     )
     if (failList.isNotEmpty())
-        warning("DeletePlaylist", failList.fold("Failed to delete:") { acc, s -> "$acc, $s" })
+        warning(TAG, failList.fold("Failed to delete:") { acc, s -> "$acc, $s" })
     sentPlaylistChangedLocalBoardCast()
     failList
 }
+
+
+/**
+ * delete playlists by ids via MediaStore
+ * @return playlist ids failing to delete
+ */
+suspend fun deletePlaylistsViaMediastore(
+    context: Context,
+    playlistIds: LongArray,
+): LongArray = withContext(Dispatchers.IO) {
+    var success = 0
+    val failList = mutableListOf<Long>()
+    // try to delete
+    for (id in playlistIds) {
+        val result = context.contentResolver.delete(
+            MediaStoreCompat.Audio.Playlists.EXTERNAL_CONTENT_URI,
+            "${MediaStore.Audio.Media._ID} = ?",
+            arrayOf(id.toString())
+        )
+        if (result == 0) {
+            Log.w(TAG, "failed to delete playlist id: $id")
+            failList.add(id)
+        }
+        success += result
+    }
+    coroutineToast(
+        context,
+        context.resources.getQuantityString(R.plurals.msg_deletion_result, playlistIds.size, success, playlistIds.size)
+    )
+    if (failList.isNotEmpty())
+        warning(TAG, failList.fold("Failed to delete playlist(id):") { acc, s -> "$acc, $s" })
+
+    sentPlaylistChangedLocalBoardCast()
+    failList.toLongArray()
+}
+
+private const val TAG = "DeletePlaylist"

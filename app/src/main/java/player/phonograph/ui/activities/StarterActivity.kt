@@ -205,9 +205,15 @@ class StarterActivity : AppCompatActivity() {
 
             else                      -> null
         }
-        val songs = runBlocking { playlist?.getSongs(applicationContext) }
 
-        if (!songs.isNullOrEmpty()) {
+        val songs = runBlocking { playlist?.getSongs(applicationContext) }
+        if (songs != null) {
+            play(songs, shuffleMode)
+        }
+    }
+
+    private fun play(songs: List<Song>, shuffleMode: ShuffleMode) {
+        if (songs.isNotEmpty()) {
             val queueManager: QueueManager = get()
             queueManager.swapQueue(
                 songs,
@@ -222,7 +228,7 @@ class StarterActivity : AppCompatActivity() {
                 }
             )
         } else {
-            Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.playlist_empty_text, Toast.LENGTH_SHORT).show()
         }
     }
 
