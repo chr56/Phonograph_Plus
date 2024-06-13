@@ -17,6 +17,7 @@ import player.phonograph.util.coroutineToast
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffix
+import player.phonograph.util.text.dateTimeSuffixCompat
 import player.phonograph.util.warning
 import android.content.ContentValues
 import android.content.Context
@@ -119,6 +120,35 @@ suspend fun duplicatePlaylistViaMediaStore(context: Context, playlists: List<Pla
             failureList.append(playlist.name).append(" ")
             Log.e("Playlist", "Failed to write playlist", e)
         }
+    }
+    val msg =
+        if (failures == 0) String.format(
+            context.applicationContext.getString(R.string.saved_x_playlists_to_x),
+            successes, dir
+        ) else String.format(
+            context.applicationContext.getString(R.string.saved_x_playlists_to_x_failed_to_save_x),
+            successes, dir, failures
+        )
+    coroutineToast(context, msg)
+}
+
+suspend fun duplicatePlaylistViaMediaStore(context: Context, songBatches: List<List<Song>>, names: List<String>) {
+    var successes = 0
+    var failures = 0
+    var dir: String? = null
+    val failureList = StringBuffer()
+    for ((index, songs) in songBatches.withIndex()) {
+        try {
+            val filename: String = "${names[index]}_${dateTimeSuffixCompat(currentDate())}"
+            dir = M3UWriter.write(File(Environment.DIRECTORY_DOWNLOADS), songs, filename).parent
+            successes++
+        } catch (e: IOException) {
+            failures++
+            failureList.append(names[index]).append(" ")
+        }
+    }
+    if (failures > 0) {
+        Log.e("Playlist", "Failed to write playlist: $failureList")
     }
     val msg =
         if (failures == 0) String.format(
