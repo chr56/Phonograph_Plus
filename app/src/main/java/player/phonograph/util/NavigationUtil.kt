@@ -10,6 +10,7 @@ import player.phonograph.ui.activities.AlbumDetailActivity
 import player.phonograph.ui.activities.ArtistDetailActivity
 import player.phonograph.ui.activities.GenreDetailActivity
 import player.phonograph.ui.modules.playlist.PlaylistDetailActivity
+import player.phonograph.ui.modules.playlist2.PlaylistDetailActivity as PlaylistDetailActivity2
 import player.phonograph.util.text.splitMultiTag
 import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
@@ -95,8 +96,8 @@ object NavigationUtil {
     fun goToPlaylist(context: Context, playlist: Playlist, vararg sharedElements: Pair<*, *>?) =
         context.startActivity(PlaylistDetailActivity.launchIntent(context, playlist))
     @Suppress("UNUSED_PARAMETER")
-    fun goToPlaylist(context: Context, playlist: Playlist2, vararg sharedElements: Pair<*, *>?) = Unit
-        // context.startActivity(PlaylistDetailActivity.launchIntent(context, playlist))// todo
+    fun goToPlaylist(context: Context, playlist: Playlist2, vararg sharedElements: Pair<*, *>?) =
+        context.startActivity(PlaylistDetailActivity2.launchIntent(context, playlist))
 
     fun openEqualizer(activity: Activity) {
         val sessionId = MusicPlayerRemote.audioSessionId

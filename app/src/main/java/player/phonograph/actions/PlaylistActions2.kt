@@ -10,6 +10,8 @@ import player.phonograph.model.playlist2.Playlist
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.dialogs.AddToPlaylistDialog
+import player.phonograph.ui.modules.playlist2.dialogs.ClearPlaylistDialog
+import player.phonograph.ui.modules.playlist2.dialogs.RenamePlaylistDialog
 import androidx.fragment.app.FragmentActivity
 import android.content.Context
 import kotlin.random.Random
@@ -50,24 +52,17 @@ fun Playlist.actionAddToPlaylist(activity: FragmentActivity) = runBlocking {
 }
 
 fun Playlist.actionRenamePlaylist(activity: FragmentActivity) {
-    // todo
-    // RenamePlaylistDialog.create(this)
-    //     .show(activity.supportFragmentManager, "RENAME_PLAYLIST")
+    RenamePlaylistDialog.create(this).show(activity.supportFragmentManager, "RENAME_PLAYLIST")
 }
 
 fun Playlist.actionDeletePlaylist(activity: FragmentActivity) {
-    // todo
-    // ClearPlaylistDialog.create(listOf(this))
-    //     .show(activity.supportFragmentManager, "CLEAR_PLAYLIST")
+    ClearPlaylistDialog.create(listOf(this)).show(activity.supportFragmentManager, "CLEAR_PLAYLIST")
 }
 
-fun List<Playlist>.actionDeletePlaylists(activity: Context): Boolean =
-    fragmentActivity(activity) {
-        // todo
-        // ClearPlaylistDialog.create(this)
-        //     .show(it.supportFragmentManager, "CLEAR_PLAYLIST")
-        true
-    }
+fun List<Playlist>.actionDeletePlaylists(context: Context): Boolean = fragmentActivity(context) { activity ->
+    ClearPlaylistDialog.create(this).show(activity.supportFragmentManager, "CLEAR_PLAYLIST")
+    true
+}
 
 fun Playlist.actionSavePlaylist(activity: FragmentActivity) {
     CoroutineScope(Dispatchers.Default).launch {
