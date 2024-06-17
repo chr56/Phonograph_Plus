@@ -10,10 +10,6 @@ import com.github.chr56.android.menu_dsl.submenu
 import player.phonograph.R
 import player.phonograph.actions.*
 import player.phonograph.model.Song
-import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.playlist2.Playlist as Playlist2
-import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist2.FilePlaylistLocation
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.util.lifecycleScopeOrNewOne
@@ -24,6 +20,7 @@ import android.view.View
 import android.widget.PopupMenu
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import player.phonograph.model.playlist2.Playlist as Playlist2
 
 @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
 object ActionMenuProviders {

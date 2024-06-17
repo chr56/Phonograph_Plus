@@ -24,7 +24,6 @@ import player.phonograph.model.SongClickMode.SONG_PLAY_NEXT
 import player.phonograph.model.SongClickMode.SONG_PLAY_NOW
 import player.phonograph.model.SongClickMode.SONG_SINGLE_PLAY
 import player.phonograph.model.file.FileEntity
-import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist2.Playlist as Playlist2
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicPlayerRemote
