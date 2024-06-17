@@ -11,8 +11,7 @@ import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
 import player.phonograph.model.file.FileEntity
-import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.playlist2.Playlist as Playlist2
+import player.phonograph.model.playlist2.Playlist
 import player.phonograph.repo.loader.Songs
 import androidx.fragment.app.FragmentActivity
 import android.app.Activity
@@ -24,8 +23,7 @@ internal suspend fun convertToSongs(selections: Iterable<*>, context: Context): 
         is Album -> Songs.album(context, it.id)
         is Artist -> Songs.artist(context, it.id)
         is Genre -> Songs.genres(context, it.id)
-        is Playlist -> it.getSongs(context)
-        is Playlist2 -> PlaylistProcessors.of(it).allSongs(context)
+        is Playlist -> PlaylistProcessors.of(it).allSongs(context)
         is SongCollection -> it.songs
         is FileEntity.File -> listOf(Songs.searchByFileEntity(context, it))
         // is FileEntity.Folder -> TODO()

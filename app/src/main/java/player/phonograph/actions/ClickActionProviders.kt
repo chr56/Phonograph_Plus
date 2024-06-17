@@ -170,19 +170,6 @@ object ClickActionProviders {
         }
     }
 
-    class PlaylistClickActionProvider : ClickActionProvider<Playlist> {
-        override fun listClick(
-            list: List<Playlist>,
-            position: Int,
-            context: Context,
-            imageView: ImageView?,
-        ): Boolean {
-            NavigationUtil.goToPlaylist(context, list[position])
-            return true
-        }
-
-    }
-
     class GenreClickActionProvider : ClickActionProvider<Genre> {
         override fun listClick(
             list: List<Genre>,
