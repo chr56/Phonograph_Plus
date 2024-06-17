@@ -14,6 +14,7 @@ import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
+import kotlinx.coroutines.runBlocking
 
 class FavoriteSongsPlaylistImpl : FavoriteSongsPlaylist {
 
@@ -44,7 +45,7 @@ class FavoriteSongsPlaylistImpl : FavoriteSongsPlaylist {
         notifyMediaStoreChanged()
     }
 
-    override fun clear(context: Context) { favorite.clearAll(context) }
+    override fun clear(context: Context) { runBlocking{ favorite.clearAll(context) } }
 
 
     constructor(parcel: Parcel) : super(parcel)

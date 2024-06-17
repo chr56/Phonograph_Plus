@@ -5,14 +5,14 @@ package player.phonograph.mechanism
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
-import player.phonograph.mechanism.playlist.PlaylistEdit
 import player.phonograph.mechanism.playlist.mediastore.addToPlaylistViaMediastore
 import player.phonograph.mechanism.playlist.mediastore.createOrFindPlaylistViaMediastore
+import player.phonograph.mechanism.playlist2.EditablePlaylistProcessor
+import player.phonograph.mechanism.playlist2.PlaylistProcessors
 import player.phonograph.model.Song
-import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist2.Playlist
 import player.phonograph.repo.database.FavoritesStore
-import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader2
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
 import android.content.Context
 import kotlinx.coroutines.runBlocking
@@ -29,7 +29,7 @@ interface IFavorite {
      */
     fun toggleFavorite(context: Context, song: Song): Boolean
 
-    fun clearAll(context: Context): Boolean
+    suspend fun clearAll(context: Context): Boolean
 
 }
 
@@ -51,7 +51,7 @@ class FavoriteDatabaseImpl : IFavorite {
         }
     }
 
-    override fun clearAll(context: Context): Boolean {
+    override suspend fun clearAll(context: Context): Boolean {
         favoritesStore.clearAll()
         return true
     }
@@ -60,9 +60,13 @@ class FavoriteDatabaseImpl : IFavorite {
 class FavoritePlaylistImpl : IFavorite {
 
 
-    override suspend fun allSongs(context: Context): List<Song> = runBlocking {
+    override suspend fun allSongs(context: Context): List<Song> {
         val favoritesPlaylist = getFavoritesPlaylist(context)
-        favoritesPlaylist?.getSongs(context) ?: emptyList()
+        return if (favoritesPlaylist != null) {
+            PlaylistProcessors.of(favoritesPlaylist).allSongs(context)
+        } else {
+            emptyList()
+        }
     }
 
     override suspend fun isFavorite(context: Context, song: Song): Boolean {
@@ -79,7 +83,8 @@ class FavoritePlaylistImpl : IFavorite {
             if (isFavorite(context, song)) {
                 val favoritesPlaylist = getFavoritesPlaylist(context)
                 if (favoritesPlaylist != null)
-                    PlaylistEdit.removeItem(context, favoritesPlaylist, song.id)
+                    (PlaylistProcessors.of(favoritesPlaylist) as EditablePlaylistProcessor)
+                        .removeSong(context, song, -1)
                 false
             } else {
                 addToPlaylistViaMediastore(context, song, getOrCreateFavoritesPlaylist(context).id, false)
@@ -88,17 +93,21 @@ class FavoritePlaylistImpl : IFavorite {
         }
     }
 
-    override fun clearAll(context: Context): Boolean {
-        getFavoritesPlaylist(context)?.clear(context)
-        return true
+    override suspend fun clearAll(context: Context): Boolean {
+        val favoritesPlaylist = getFavoritesPlaylist(context)
+        return if (favoritesPlaylist != null) {
+            PlaylistProcessors.of(favoritesPlaylist).clear(context)
+        } else {
+            false
+        }
     }
 
-    private fun getFavoritesPlaylist(context: Context): FilePlaylist? {
-        return PlaylistLoader.playlistName(context, context.getString(R.string.favorites)).takeIf { it.id > 0 }
+    private fun getFavoritesPlaylist(context: Context): Playlist? {
+        return PlaylistLoader2.playlistName(context, context.getString(R.string.favorites)).takeIf { it.id > 0 }
     }
 
     private suspend fun getOrCreateFavoritesPlaylist(context: Context): Playlist {
-        return PlaylistLoader.id(
+        return PlaylistLoader2.id(
             context,
             createOrFindPlaylistViaMediastore(context, context.getString(R.string.favorites))
         )
