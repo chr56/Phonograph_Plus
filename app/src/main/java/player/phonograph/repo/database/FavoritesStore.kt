@@ -8,12 +8,10 @@ import org.koin.core.context.GlobalContext
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist2.FilePlaylistLocation
-import player.phonograph.model.playlist2.Playlist as Playlist2
 import player.phonograph.repo.database.DatabaseConstants.FAVORITE_DB
 import player.phonograph.repo.loader.Songs
-import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader2
 import player.phonograph.util.text.currentTimestamp
 import player.phonograph.util.warning
 import android.content.ContentValues
@@ -21,6 +19,7 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import player.phonograph.model.playlist2.Playlist as Playlist2
 
 class FavoritesStore constructor(context: Context) :
         SQLiteOpenHelper(context, FAVORITE_DB, null, VERSION) {
@@ -57,7 +56,7 @@ class FavoritesStore constructor(context: Context) :
 
     suspend fun getAllSongs(context: Context): List<Song> = getAllSongsImpl(context)
 
-    suspend fun getAllPlaylists(context: Context): List<FilePlaylist> = getAllPlaylistsImpl(context)
+    suspend fun getAllPlaylists(context: Context): List<Playlist2> = getAllPlaylistsImpl(context)
 
 
     private suspend fun getAllSongsImpl(context: Context): List<Song> {
@@ -66,9 +65,9 @@ class FavoritesStore constructor(context: Context) :
         }
     }
 
-    private suspend fun getAllPlaylistsImpl(context: Context): List<FilePlaylist> {
+    private suspend fun getAllPlaylistsImpl(context: Context): List<Playlist2> {
         return parseCursorImpl(TABLE_NAME_PLAYLISTS) { cursor ->
-            PlaylistLoader.searchByPath(context, cursor.getString(1))
+            PlaylistLoader2.searchByPath(context, cursor.getString(1))
         }
     }
 
@@ -102,10 +101,6 @@ class FavoritesStore constructor(context: Context) :
     fun containsSong(songId: Long?, path: String?): Boolean =
         containsImpl(TABLE_NAME_SONGS, songId, path)
 
-    fun containsPlaylist(playlist: Playlist): Boolean =
-        if (playlist is FilePlaylist)
-            containsImpl(TABLE_NAME_PLAYLISTS, playlist.id, playlist.associatedFilePath)
-        else false
     fun containsPlaylist(playlist: Playlist2): Boolean =
         if (!playlist.isVirtual())
             containsImpl(TABLE_NAME_PLAYLISTS, playlist.id, (playlist.location as FilePlaylistLocation).path)
@@ -170,11 +165,11 @@ class FavoritesStore constructor(context: Context) :
         return addMultipleImpl(TABLE_NAME_SONGS, data)
     }
 
-    fun addPlaylists(playlists: Collection<FilePlaylist>): Boolean {
+    fun addPlaylists(playlists: Collection<Playlist2>): Boolean {
         val data = playlists.map {
             ContentValues(4).apply {
                 put(COLUMNS_ID, it.id)
-                put(COLUMNS_PATH, it.associatedFilePath)
+                put(COLUMNS_PATH, (it.location as FilePlaylistLocation).path)
                 put(COLUMNS_TITLE, it.name)
                 put(COLUMNS_TIMESTAMP, currentTimestamp())
             }
