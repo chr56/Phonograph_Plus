@@ -10,7 +10,6 @@ import player.phonograph.mechanism.playlist.PlaylistEdit
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
-import player.phonograph.ui.dialogs.ClearPlaylistDialog
 import player.phonograph.util.warning
 import androidx.annotation.Keep
 import androidx.fragment.app.FragmentActivity
@@ -65,8 +64,8 @@ class FilePlaylistImpl : FilePlaylist {
         val fragmentActivity = context as? FragmentActivity
         if (fragmentActivity != null) {
             fragmentActivity.lifecycleScope.launch(Dispatchers.Main) {
-                ClearPlaylistDialog.create(listOf(this@FilePlaylistImpl))
-                    .show(fragmentActivity.supportFragmentManager, "CLEAR_PLAYLIST_DIALOG")
+                // ClearPlaylistDialog.create(listOf(this@FilePlaylistImpl))
+                //     .show(fragmentActivity.supportFragmentManager, "CLEAR_PLAYLIST_DIALOG")
             }
         } else {
             warning("FilePlaylist", context.getString(R.string.failed))
