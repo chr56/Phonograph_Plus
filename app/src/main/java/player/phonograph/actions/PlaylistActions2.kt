@@ -9,7 +9,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist2.Playlist
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.ui.dialogs.AddToPlaylistDialog
+import player.phonograph.ui.modules.playlist2.dialogs.AddToPlaylistDialog
 import player.phonograph.ui.modules.playlist2.dialogs.ClearPlaylistDialog
 import player.phonograph.ui.modules.playlist2.dialogs.RenamePlaylistDialog
 import androidx.fragment.app.FragmentActivity
