@@ -6,7 +6,6 @@ package player.phonograph.repo.mediastore.playlist
 
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
 import player.phonograph.R
-import player.phonograph.mechanism.playlist.PlaylistEdit
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
@@ -42,13 +41,13 @@ class FilePlaylistImpl : FilePlaylist {
 
 
     override fun removeSong(context: Context, song: Song) = runBlocking {
-        PlaylistEdit.removeItem(context, this@FilePlaylistImpl, song.id)
+        // PlaylistEdit.removeItem(context, this@FilePlaylistImpl, song.id)
         Unit
     }
 
     override fun appendSongs(context: Context, songs: List<Song>) {
         CoroutineScope(Dispatchers.Default).launch {
-            PlaylistEdit.append(context, songs, this@FilePlaylistImpl)
+            // PlaylistEdit.append(context, songs, this@FilePlaylistImpl)
         }
     }
 
@@ -56,7 +55,7 @@ class FilePlaylistImpl : FilePlaylist {
 
     override fun moveSong(context: Context, song: Song, from: Int, to: Int) {
         runBlocking {
-            PlaylistEdit.moveItem(context, this@FilePlaylistImpl, from, to)
+            // PlaylistEdit.moveItem(context, this@FilePlaylistImpl, from, to)
         }
     }
 
