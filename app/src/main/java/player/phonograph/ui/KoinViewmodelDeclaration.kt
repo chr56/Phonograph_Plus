@@ -9,13 +9,11 @@ import org.koin.dsl.module
 import player.phonograph.ui.activities.AlbumDetailActivityViewModel
 import player.phonograph.ui.activities.ArtistDetailActivityViewModel
 import player.phonograph.ui.activities.base.PanelViewModel
-import player.phonograph.ui.modules.playlist.PlaylistDetailViewModel
 import player.phonograph.ui.modules.playlist2.PlaylistDetailViewModel as PlaylistDetailViewModel2
 
 val moduleViewModels = module {
     viewModel { param -> PanelViewModel(param.get(), param.get(), param.get()) }
     viewModel { param -> ArtistDetailActivityViewModel(param.get()) }
     viewModel { param -> AlbumDetailActivityViewModel(param.get()) }
-    viewModel { param -> PlaylistDetailViewModel(param.get()) }
     viewModel { param -> PlaylistDetailViewModel2(param.get()) }
 }
