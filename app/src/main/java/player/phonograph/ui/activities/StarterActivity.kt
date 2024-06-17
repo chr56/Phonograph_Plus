@@ -26,8 +26,8 @@ import player.phonograph.model.SongClickMode.SONG_PLAY_NEXT
 import player.phonograph.model.SongClickMode.SONG_PLAY_NOW
 import player.phonograph.model.SongClickMode.SONG_SINGLE_PLAY
 import player.phonograph.model.SongClickMode.modeName
-import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.playlist2.DynamicPlaylists
+import player.phonograph.model.playlist2.Playlist
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
 import player.phonograph.repo.mediastore.processQuery
@@ -65,7 +65,6 @@ import android.widget.TextView
 import android.widget.Toast
 import kotlin.random.Random
 import kotlinx.coroutines.runBlocking
-import player.phonograph.model.playlist2.Playlist as Playlist2
 
 class StarterActivity : AppCompatActivity() {
 
@@ -82,7 +81,7 @@ class StarterActivity : AppCompatActivity() {
 
         if (extras != null && extras.getBoolean(EXTRA_SHORTCUT_MODE, false)) {
             debugLog("ShortCut Mode")
-            processShortCut(launcherIntent.extras?.getInt(SHORTCUT_TYPE) ?: SHORTCUT_TYPE_NONE)
+            processShortCut2(launcherIntent.extras?.getInt(SHORTCUT_TYPE) ?: SHORTCUT_TYPE_NONE)
             finish()
         } else {
             debugLog("Normal Mode")
@@ -186,38 +185,9 @@ class StarterActivity : AppCompatActivity() {
     }
 
 
-    private fun processShortCut(shortcutType: Int) {
-        var shuffleMode = ShuffleMode.NONE
-        val playlist: SmartPlaylist? = when (shortcutType) {
-            SHORTCUT_TYPE_SHUFFLE_ALL -> {
-                reportShortcutUsed(this, ShuffleAllShortcutType.id)
-                shuffleMode = ShuffleMode.SHUFFLE
-                SmartPlaylist.shuffleAllPlaylist
-
-            }
-
-            SHORTCUT_TYPE_TOP_TRACKS  -> {
-                reportShortcutUsed(this, TopTracksShortcutType.id)
-                SmartPlaylist.myTopTracksPlaylist
-            }
-
-            SHORTCUT_TYPE_LAST_ADDED  -> {
-                reportShortcutUsed(this, LastAddedShortcutType.id)
-                SmartPlaylist.lastAddedPlaylist
-            }
-
-            else                      -> null
-        }
-
-        val songs = runBlocking { playlist?.getSongs(applicationContext) }
-        if (songs != null) {
-            play(songs, shuffleMode)
-        }
-    }
-
     private fun processShortCut2(shortcutType: Int) {
         var shuffleMode = ShuffleMode.NONE
-        val playlist: Playlist2 = when (shortcutType) {
+        val playlist: Playlist = when (shortcutType) {
             SHORTCUT_TYPE_SHUFFLE_ALL -> {
                 reportShortcutUsed(this, ShuffleAllShortcutType.id)
                 shuffleMode = ShuffleMode.SHUFFLE
