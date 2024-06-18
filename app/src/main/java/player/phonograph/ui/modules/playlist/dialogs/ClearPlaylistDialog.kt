@@ -2,17 +2,17 @@
  *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.ui.modules.playlist2.dialogs
+package player.phonograph.ui.modules.playlist.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog
 import lib.storage.documentProviderUriAbsolutePath
 import lib.storage.launcher.IOpenDirStorageAccessible
 import player.phonograph.R
-import player.phonograph.mechanism.playlist2.PlaylistProcessors
-import player.phonograph.model.playlist2.FilePlaylistLocation
-import player.phonograph.model.playlist2.Playlist
-import player.phonograph.model.playlist2.VirtualPlaylistLocation
-import player.phonograph.model.playlist2.playlistTypeName
+import player.phonograph.mechanism.playlist.PlaylistProcessors
+import player.phonograph.model.playlist.FilePlaylistLocation
+import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.VirtualPlaylistLocation
+import player.phonograph.model.playlist.playlistTypeName
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.file.selectDocumentUris
 import player.phonograph.util.parcelableArrayList

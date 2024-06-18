@@ -28,7 +28,7 @@ class SearchResultPageAdapter(
             TabType.SONG     -> SongSearchResultPageFragment()
             TabType.ALBUM    -> AlbumSearchResultPageFragment()
             TabType.ARTIST   -> ArtistSearchResultPageFragment()
-            TabType.PLAYLIST -> Playlist2SearchResultPageFragment()
+            TabType.PLAYLIST -> PlaylistSearchResultPageFragment()
             TabType.QUEUE    -> QueueSearchResultPageFragment()
         }
     }

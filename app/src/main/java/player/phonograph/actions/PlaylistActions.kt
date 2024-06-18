@@ -4,14 +4,14 @@
 
 package player.phonograph.actions
 
-import player.phonograph.mechanism.playlist2.PlaylistProcessors
+import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Song
-import player.phonograph.model.playlist2.Playlist
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.ui.modules.playlist2.dialogs.AddToPlaylistDialog
-import player.phonograph.ui.modules.playlist2.dialogs.ClearPlaylistDialog
-import player.phonograph.ui.modules.playlist2.dialogs.RenamePlaylistDialog
+import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialog
+import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialog
+import player.phonograph.ui.modules.playlist.dialogs.RenamePlaylistDialog
 import androidx.fragment.app.FragmentActivity
 import android.content.Context
 import kotlin.random.Random

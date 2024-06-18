@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.mechanism.playlist2
+package player.phonograph.mechanism.playlist
 
 import lib.storage.launcher.ICreateFileStorageAccessible
 import lib.storage.launcher.IOpenFileStorageAccessible
@@ -21,14 +21,14 @@ import player.phonograph.mechanism.playlist.saf.appendToPlaylistViaSAF
 import player.phonograph.mechanism.playlist.saf.createPlaylistViaSAF
 import player.phonograph.mechanism.playlist.saf.createPlaylistsViaSAF
 import player.phonograph.model.Song
-import player.phonograph.model.playlist2.FilePlaylistLocation
-import player.phonograph.model.playlist2.PLAYLIST_TYPE_FAVORITE
-import player.phonograph.model.playlist2.PLAYLIST_TYPE_HISTORY
-import player.phonograph.model.playlist2.PLAYLIST_TYPE_LAST_ADDED
-import player.phonograph.model.playlist2.PLAYLIST_TYPE_MY_TOP_TRACK
-import player.phonograph.model.playlist2.PLAYLIST_TYPE_RANDOM
-import player.phonograph.model.playlist2.Playlist
-import player.phonograph.model.playlist2.VirtualPlaylistLocation
+import player.phonograph.model.playlist.FilePlaylistLocation
+import player.phonograph.model.playlist.PLAYLIST_TYPE_FAVORITE
+import player.phonograph.model.playlist.PLAYLIST_TYPE_HISTORY
+import player.phonograph.model.playlist.PLAYLIST_TYPE_LAST_ADDED
+import player.phonograph.model.playlist.PLAYLIST_TYPE_MY_TOP_TRACK
+import player.phonograph.model.playlist.PLAYLIST_TYPE_RANDOM
+import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.VirtualPlaylistLocation
 import player.phonograph.repo.database.HistoryStore
 import player.phonograph.repo.database.SongPlayCountStore
 import player.phonograph.repo.loader.Songs

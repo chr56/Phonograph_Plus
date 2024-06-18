@@ -2,7 +2,7 @@
  * Copyright (c) 2021 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.ui.modules.playlist2
+package player.phonograph.ui.modules.playlist
 
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
@@ -24,9 +24,9 @@ import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
 import player.phonograph.model.getReadableDurationString
-import player.phonograph.model.playlist2.Playlist
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.totalDuration
-import player.phonograph.repo.mediastore.loaders.PlaylistLoader2
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.accentColor
@@ -132,7 +132,7 @@ class PlaylistDetailActivity :
                 model.fetchAllSongs(this@PlaylistDetailActivity)
                 supportActionBar!!.title = playlist.name
                 if (!playlist.isVirtual() &&
-                    !PlaylistLoader2.checkExistence(this@PlaylistDetailActivity, playlist.id)
+                    !PlaylistLoader.checkExistence(this@PlaylistDetailActivity, playlist.id)
                 ) {
                     // File Playlist was deleted
                     finish()

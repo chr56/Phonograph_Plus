@@ -10,7 +10,7 @@ import legacy.phonograph.MediaStoreCompat.Audio.PlaylistsColumns
 import player.phonograph.R
 import player.phonograph.mechanism.playlist.m3u.M3UWriter
 import player.phonograph.model.Song
-import player.phonograph.repo.mediastore.loaders.PlaylistLoader2
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.text.currentDate
@@ -28,7 +28,7 @@ import java.io.IOException
 
 suspend fun createPlaylistViaMediastore(context: Context, name: String, songs: List<Song>) {
     val id = createOrFindPlaylistViaMediastore(context, name)
-    if (PlaylistLoader2.checkExistence(context, id)) {
+    if (PlaylistLoader.checkExistence(context, id)) {
         addToPlaylistViaMediastore(context, songs, id, true)
         coroutineToast(context, R.string.success)
         delay(250)

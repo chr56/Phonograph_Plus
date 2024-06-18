@@ -16,7 +16,7 @@ import player.phonograph.ui.fragments.pages.EmptyPage
 import player.phonograph.ui.fragments.pages.FilesPage
 import player.phonograph.ui.fragments.pages.FlattenFolderPage
 import player.phonograph.ui.fragments.pages.GenrePage
-import player.phonograph.ui.fragments.pages.Playlist2Page
+import player.phonograph.ui.fragments.pages.PlaylistPage
 import player.phonograph.ui.fragments.pages.SongPage
 import player.phonograph.util.reportError
 import android.util.Log
@@ -159,7 +159,7 @@ class PageConfig private constructor(pages: List<String>) : Iterable<String> {
             Pages.SONG     -> SongPage()
             Pages.ALBUM    -> AlbumPage()
             Pages.ARTIST   -> ArtistPage()
-            Pages.PLAYLIST -> Playlist2Page()
+            Pages.PLAYLIST -> PlaylistPage()
             Pages.GENRE    -> GenrePage()
             Pages.FILES    -> FilesPage()
             Pages.FOLDER   -> FlattenFolderPage()

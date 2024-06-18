@@ -9,7 +9,7 @@ import player.phonograph.R
 import player.phonograph.actions.ClickActionProviders
 import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.model.ItemLayoutStyle
-import player.phonograph.model.playlist2.Playlist
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.settings.Keys
@@ -28,7 +28,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-class Playlist2DisplayAdapter(
+class PlaylistDisplayAdapter(
     activity: AppCompatActivity,
 ) : DisplayAdapter<Playlist>(activity, ConstDisplayConfig(ItemLayoutStyle.LIST_SINGLE_ROW)) {
 
@@ -63,10 +63,10 @@ class Playlist2DisplayAdapter(
         }
 
         override val clickActionProvider: ClickActionProviders.ClickActionProvider<Playlist>
-            get() = ClickActionProviders.PlaylistClickActionProvider2()
+            get() = ClickActionProviders.PlaylistClickActionProvider()
 
         override val menuProvider: ActionMenuProviders.ActionMenuProvider<Playlist>
-            get() = ActionMenuProviders.PlaylistActionMenuProvider2
+            get() = ActionMenuProviders.PlaylistActionMenuProvider
 
 
         override val defaultIcon: Drawable?

@@ -5,8 +5,8 @@
 package player.phonograph.repo.mediastore.loaders
 
 import legacy.phonograph.MediaStoreCompat
-import player.phonograph.model.playlist2.FilePlaylistLocation
-import player.phonograph.model.playlist2.Playlist
+import player.phonograph.model.playlist.FilePlaylistLocation
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.internal.SQLWhereClause
 import player.phonograph.repo.mediastore.internal.withBasePlaylistFilter
@@ -21,7 +21,7 @@ import android.os.Build.VERSION_CODES.Q
 import android.provider.BaseColumns
 import android.provider.MediaStore.VOLUME_EXTERNAL
 
-object PlaylistLoader2 : Loader<Playlist> {
+object PlaylistLoader : Loader<Playlist> {
 
     override suspend fun all(context: Context): List<Playlist> =
         queryPlaylists(context, null, null).intoPlaylists().sortAll(context)

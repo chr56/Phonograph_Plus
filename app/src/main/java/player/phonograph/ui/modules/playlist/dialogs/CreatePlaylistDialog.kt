@@ -2,14 +2,14 @@
  *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.ui.modules.playlist2.dialogs
+package player.phonograph.ui.modules.playlist.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import player.phonograph.R
-import player.phonograph.mechanism.playlist2.PlaylistProcessors
+import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Song
-import player.phonograph.repo.mediastore.loaders.PlaylistLoader2
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.util.parcelableArrayList
 import player.phonograph.util.theme.tintButtons
 import androidx.fragment.app.DialogFragment
@@ -42,7 +42,7 @@ class CreatePlaylistDialog : DialogFragment() {
                     return@input
                 }
                 val activity = requireActivity()
-                if (!PlaylistLoader2.checkExistence(activity, name)) {
+                if (!PlaylistLoader.checkExistence(activity, name)) {
                     lifecycleScope.launch(Dispatchers.IO) {
                         PlaylistProcessors.create(
                             context = activity,

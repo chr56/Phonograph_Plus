@@ -2,11 +2,13 @@ package player.phonograph.util
 
 import player.phonograph.R
 import player.phonograph.model.Genre
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.loader.Artists
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.activities.AlbumDetailActivity
 import player.phonograph.ui.activities.ArtistDetailActivity
 import player.phonograph.ui.activities.GenreDetailActivity
+import player.phonograph.ui.modules.playlist.PlaylistDetailActivity
 import player.phonograph.util.text.splitMultiTag
 import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
@@ -21,8 +23,6 @@ import android.media.audiofx.AudioEffect
 import android.view.View
 import android.widget.Toast
 import kotlinx.coroutines.runBlocking
-import player.phonograph.model.playlist2.Playlist as Playlist2
-import player.phonograph.ui.modules.playlist2.PlaylistDetailActivity as PlaylistDetailActivity2
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -91,8 +91,8 @@ object NavigationUtil {
         context.startActivity(GenreDetailActivity.launchIntent(context, genre))
 
     @Suppress("UNUSED_PARAMETER")
-    fun goToPlaylist(context: Context, playlist: Playlist2, vararg sharedElements: Pair<*, *>?) =
-        context.startActivity(PlaylistDetailActivity2.launchIntent(context, playlist))
+    fun goToPlaylist(context: Context, playlist: Playlist, vararg sharedElements: Pair<*, *>?) =
+        context.startActivity(PlaylistDetailActivity.launchIntent(context, playlist))
 
     fun openEqualizer(activity: Activity) {
         val sessionId = MusicPlayerRemote.audioSessionId

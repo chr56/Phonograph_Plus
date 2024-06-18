@@ -2,13 +2,13 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.ui.modules.playlist2
+package player.phonograph.ui.modules.playlist
 
-import player.phonograph.mechanism.playlist2.EditablePlaylistProcessor
-import player.phonograph.mechanism.playlist2.PlaylistProcessors
+import player.phonograph.mechanism.playlist.EditablePlaylistProcessor
+import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
-import player.phonograph.model.playlist2.Playlist
+import player.phonograph.model.playlist.Playlist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context

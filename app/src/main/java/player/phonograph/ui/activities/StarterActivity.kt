@@ -15,7 +15,7 @@ import player.phonograph.appshortcuts.shortcuttype.LastAddedShortcutType
 import player.phonograph.appshortcuts.shortcuttype.ShuffleAllShortcutType
 import player.phonograph.appshortcuts.shortcuttype.TopTracksShortcutType
 import player.phonograph.mechanism.SongUriParsers
-import player.phonograph.mechanism.playlist2.PlaylistProcessors
+import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.PlayRequest.SongRequest
 import player.phonograph.model.PlayRequest.SongsRequest
@@ -26,8 +26,8 @@ import player.phonograph.model.SongClickMode.SONG_PLAY_NEXT
 import player.phonograph.model.SongClickMode.SONG_PLAY_NOW
 import player.phonograph.model.SongClickMode.SONG_SINGLE_PLAY
 import player.phonograph.model.SongClickMode.modeName
-import player.phonograph.model.playlist2.DynamicPlaylists
-import player.phonograph.model.playlist2.Playlist
+import player.phonograph.model.playlist.DynamicPlaylists
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
 import player.phonograph.repo.mediastore.processQuery
@@ -81,7 +81,7 @@ class StarterActivity : AppCompatActivity() {
 
         if (extras != null && extras.getBoolean(EXTRA_SHORTCUT_MODE, false)) {
             debugLog("ShortCut Mode")
-            processShortCut2(launcherIntent.extras?.getInt(SHORTCUT_TYPE) ?: SHORTCUT_TYPE_NONE)
+            processShortCut(launcherIntent.extras?.getInt(SHORTCUT_TYPE) ?: SHORTCUT_TYPE_NONE)
             finish()
         } else {
             debugLog("Normal Mode")
@@ -185,7 +185,7 @@ class StarterActivity : AppCompatActivity() {
     }
 
 
-    private fun processShortCut2(shortcutType: Int) {
+    private fun processShortCut(shortcutType: Int) {
         var shuffleMode = ShuffleMode.NONE
         val playlist: Playlist = when (shortcutType) {
             SHORTCUT_TYPE_SHUFFLE_ALL -> {

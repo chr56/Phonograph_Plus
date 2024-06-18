@@ -6,20 +6,20 @@ package player.phonograph.repo.browser
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
-import player.phonograph.mechanism.playlist2.PlaylistProcessors
+import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
-import player.phonograph.model.playlist2.Playlist
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.loader.Genres
 import player.phonograph.repo.loader.Songs
-import player.phonograph.repo.mediastore.loaders.PlaylistLoader2
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.service.queue.QueueManager
@@ -184,7 +184,7 @@ object MediaItemProviders {
 
                     MediaItemPath.PLAYLISTS        -> {
                         val item = segments[1]
-                        PlaylistProvider2(item.toLong())
+                        PlaylistProvider(item.toLong())
                     }
 
                     MediaItemPath.SONGS_FAVORITES  -> {
@@ -350,12 +350,12 @@ object MediaItemProviders {
 
     private object PlaylistsProvider : AbsMediaItemProvider() {
         override suspend fun browser(context: Context): List<MediaItem> =
-            PlaylistLoader2.all(context).map { it.toMediaItem() }
+            PlaylistLoader.all(context).map { it.toMediaItem() }
     }
 
-    private class PlaylistProvider2(val playlistId: Long) : AbsMediaItemProvider() {
+    private class PlaylistProvider(val playlistId: Long) : AbsMediaItemProvider() {
         private suspend fun fetch(context: Context) =
-            PlaylistProcessors.of(PlaylistLoader2.id(context, playlistId)).allSongs(context)
+            PlaylistProcessors.of(PlaylistLoader.id(context, playlistId)).allSongs(context)
 
         override suspend fun browser(context: Context): List<MediaItem> =
             withPlayAllItems(

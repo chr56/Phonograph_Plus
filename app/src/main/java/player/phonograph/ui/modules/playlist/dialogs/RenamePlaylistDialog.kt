@@ -2,14 +2,14 @@
  *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.ui.modules.playlist2.dialogs
+package player.phonograph.ui.modules.playlist.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import player.phonograph.R
-import player.phonograph.mechanism.playlist2.EditablePlaylistProcessor
-import player.phonograph.mechanism.playlist2.PlaylistProcessors
-import player.phonograph.model.playlist2.Playlist
+import player.phonograph.mechanism.playlist.EditablePlaylistProcessor
+import player.phonograph.mechanism.playlist.PlaylistProcessors
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.util.lifecycleScopeOrNewOne
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.tintButtons

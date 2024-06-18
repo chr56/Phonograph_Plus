@@ -8,12 +8,12 @@ import okio.BufferedSink
 import org.koin.core.context.GlobalContext
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
-import player.phonograph.model.playlist2.FilePlaylistLocation
-import player.phonograph.model.playlist2.Playlist
+import player.phonograph.model.playlist.FilePlaylistLocation
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.database.PathFilterStore
 import player.phonograph.repo.loader.Songs
-import player.phonograph.repo.mediastore.loaders.PlaylistLoader2
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.service.queue.MusicPlaybackQueueStore
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
@@ -173,7 +173,7 @@ object DatabaseDataManger {
         val songs =
             runBlocking { db.getAllSongs(context).map(DatabaseDataManger::persistentSong) }
         val playlists =
-            runBlocking { db.getAllPlaylists(context).map(DatabaseDataManger::persistentPlaylist2) }
+            runBlocking { db.getAllPlaylists(context).map(DatabaseDataManger::persistentPlaylist) }
         return if (songs.isNotEmpty()) {
             JsonObject(
                 mapOf(
@@ -201,7 +201,7 @@ object DatabaseDataManger {
         val db = favoritesStore
 
         val songs = recoverSongs(context, s)
-        val playlists = recoverPlaylists2(context, p)
+        val playlists = recoverPlaylists(context, p)
 
         val r1 = if (!songs.isNullOrEmpty()) {
             if (override) db.clearAllSongs()
@@ -230,10 +230,10 @@ object DatabaseDataManger {
         array?.map { parser.decodeFromJsonElement(PersistentSong.serializer(), it) }
             ?.mapNotNull { runBlocking { it.getMatchingSong(context) } }
 
-    private fun persistentPlaylist2(playlist: Playlist): JsonElement =
+    private fun persistentPlaylist(playlist: Playlist): JsonElement =
         parser.encodeToJsonElement(PersistentPlaylist.serializer(), PersistentPlaylist.from(playlist))
 
-    private fun recoverPlaylists2(context: Context, array: JsonArray?): List<Playlist>? =
+    private fun recoverPlaylists(context: Context, array: JsonArray?): List<Playlist>? =
         array?.map { parser.decodeFromJsonElement(PersistentPlaylist.serializer(), it) }
             ?.mapNotNull { it.getMatchingPlaylist(context) }
 
@@ -266,7 +266,7 @@ object DatabaseDataManger {
         }
 
         fun getMatchingPlaylist(context: Context): Playlist? =
-            PlaylistLoader2.searchByPath(context, path)
+            PlaylistLoader.searchByPath(context, path)
     }
 
     private fun parseJson(rawString: String, name: String, block: (JsonObject) -> Boolean): Boolean {

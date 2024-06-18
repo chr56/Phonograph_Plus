@@ -8,19 +8,19 @@ import org.koin.core.context.GlobalContext
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
-import player.phonograph.mechanism.playlist2.PlaylistProcessors
+import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.Song
-import player.phonograph.model.playlist2.DynamicPlaylists
-import player.phonograph.model.playlist2.FilePlaylistLocation
-import player.phonograph.model.playlist2.Playlist
+import player.phonograph.model.playlist.DynamicPlaylists
+import player.phonograph.model.playlist.FilePlaylistLocation
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.FavoritesStore
-import player.phonograph.repo.mediastore.loaders.PlaylistLoader2
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.fragments.pages.adapter.Playlist2DisplayAdapter
-import player.phonograph.ui.modules.playlist2.dialogs.CreatePlaylistDialog
+import player.phonograph.ui.fragments.pages.adapter.PlaylistDisplayAdapter
+import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialog
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.primaryColor
 import util.theme.color.lightenColor
@@ -33,7 +33,7 @@ import android.os.Bundle
 import android.view.View
 import kotlinx.coroutines.CoroutineScope
 
-class Playlist2Page : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
+class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
 
     override val viewModel: AbsDisplayPageViewModel<Playlist> get() = _viewModel
 
@@ -52,7 +52,7 @@ class Playlist2Page : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
                 }
             }.also { playlists ->
                 val (pined, normal) =
-                    PlaylistLoader2.all(context).partition { playlist ->
+                    PlaylistLoader.all(context).partition { playlist ->
                         val path = (playlist.location as? FilePlaylistLocation)?.path!!
                         favoritesStore.containsPlaylist(playlist.id, path)
                     }
@@ -62,7 +62,7 @@ class Playlist2Page : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
         }
 
         override suspend fun collectAllSongs(context: Context): List<Song> =
-            PlaylistLoader2.all(context).flatMap { PlaylistProcessors.of(it).allSongs(context) }
+            PlaylistLoader.all(context).flatMap { PlaylistProcessors.of(it).allSongs(context) }
 
         override val headerTextRes: Int get() = R.plurals.item_playlists
     }
@@ -94,7 +94,7 @@ class Playlist2Page : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
     override fun displayConfig(): PageDisplayConfig = PlaylistPageDisplayConfig(requireContext())
 
     override fun initAdapter(): DisplayAdapter<Playlist> {
-        return Playlist2DisplayAdapter(mainActivity)
+        return PlaylistDisplayAdapter(mainActivity)
     }
 
     // override fun configAppBarActionButton(menuContext: MenuContext) {}

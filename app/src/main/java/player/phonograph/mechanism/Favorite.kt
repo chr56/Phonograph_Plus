@@ -5,14 +5,14 @@ package player.phonograph.mechanism
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
+import player.phonograph.mechanism.playlist.EditablePlaylistProcessor
+import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.mechanism.playlist.mediastore.addToPlaylistViaMediastore
 import player.phonograph.mechanism.playlist.mediastore.createOrFindPlaylistViaMediastore
-import player.phonograph.mechanism.playlist2.EditablePlaylistProcessor
-import player.phonograph.mechanism.playlist2.PlaylistProcessors
 import player.phonograph.model.Song
-import player.phonograph.model.playlist2.Playlist
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.FavoritesStore
-import player.phonograph.repo.mediastore.loaders.PlaylistLoader2
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
 import android.content.Context
 import kotlinx.coroutines.runBlocking
@@ -103,11 +103,11 @@ class FavoritePlaylistImpl : IFavorite {
     }
 
     private fun getFavoritesPlaylist(context: Context): Playlist? {
-        return PlaylistLoader2.playlistName(context, context.getString(R.string.favorites)).takeIf { it.id > 0 }
+        return PlaylistLoader.playlistName(context, context.getString(R.string.favorites)).takeIf { it.id > 0 }
     }
 
     private suspend fun getOrCreateFavoritesPlaylist(context: Context): Playlist {
-        return PlaylistLoader2.id(
+        return PlaylistLoader.id(
             context,
             createOrFindPlaylistViaMediastore(context, context.getString(R.string.favorites))
         )

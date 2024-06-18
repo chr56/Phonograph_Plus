@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.model.playlist2
+package player.phonograph.model.playlist
 
 import player.phonograph.R
 import androidx.annotation.IntDef

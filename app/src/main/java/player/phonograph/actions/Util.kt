@@ -4,14 +4,14 @@
 
 package player.phonograph.actions
 
-import player.phonograph.mechanism.playlist2.PlaylistProcessors
+import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
 import player.phonograph.model.file.FileEntity
-import player.phonograph.model.playlist2.Playlist
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.loader.Songs
 import androidx.fragment.app.FragmentActivity
 import android.app.Activity

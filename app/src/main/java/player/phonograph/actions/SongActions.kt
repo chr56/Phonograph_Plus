@@ -14,7 +14,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.dialogs.DeletionDialog
 import player.phonograph.ui.dialogs.SongDetailDialog
-import player.phonograph.ui.modules.playlist2.dialogs.AddToPlaylistDialog
+import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialog
 import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.shareFileIntent

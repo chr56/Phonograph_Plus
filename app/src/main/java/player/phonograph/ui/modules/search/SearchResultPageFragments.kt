@@ -13,14 +13,14 @@ import player.phonograph.model.Displayable
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
-import player.phonograph.model.playlist2.Playlist
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.OrderedItemAdapter
 import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.ArtistDisplayAdapter
-import player.phonograph.ui.fragments.pages.adapter.Playlist2DisplayAdapter
+import player.phonograph.ui.fragments.pages.adapter.PlaylistDisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -142,13 +142,13 @@ class ArtistSearchResultPageFragment : SearchResultPageFragment<Artist>() {
     }
 }
 
-class Playlist2SearchResultPageFragment : SearchResultPageFragment<Playlist>() {
+class PlaylistSearchResultPageFragment : SearchResultPageFragment<Playlist>() {
 
     @Suppress("UNCHECKED_CAST")
     private val adapter: DisplayAdapter<Playlist>? get() = actualAdapter as? DisplayAdapter<Playlist>
 
     override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Playlist> {
-        return Playlist2DisplayAdapter(activity)
+        return PlaylistDisplayAdapter(activity)
     }
 
     override fun targetFlow(): StateFlow<List<Playlist>> = viewModel.playlists

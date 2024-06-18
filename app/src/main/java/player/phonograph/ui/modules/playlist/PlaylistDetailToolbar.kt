@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.ui.modules.playlist2
+package player.phonograph.ui.modules.playlist
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
@@ -16,10 +16,10 @@ import player.phonograph.actions.actionRenamePlaylist
 import player.phonograph.actions.actionSavePlaylist
 import player.phonograph.actions.actionShuffleAndPlay
 import player.phonograph.actions.fragmentActivity
-import player.phonograph.mechanism.playlist2.PlaylistProcessors
+import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.UIMode
-import player.phonograph.model.playlist2.PLAYLIST_TYPE_LAST_ADDED
-import player.phonograph.model.playlist2.VirtualPlaylistLocation
+import player.phonograph.model.playlist.PLAYLIST_TYPE_LAST_ADDED
+import player.phonograph.model.playlist.VirtualPlaylistLocation
 import player.phonograph.ui.dialogs.LastAddedPlaylistIntervalDialog
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.util.theme.getTintedDrawable
