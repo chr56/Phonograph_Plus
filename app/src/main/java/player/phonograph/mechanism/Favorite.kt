@@ -27,7 +27,7 @@ interface IFavorite {
     /**
      * @return new favorite state
      */
-    fun toggleFavorite(context: Context, song: Song): Boolean
+    suspend fun toggleFavorite(context: Context, song: Song): Boolean
 
     suspend fun clearAll(context: Context): Boolean
 
@@ -43,7 +43,7 @@ class FavoriteDatabaseImpl : IFavorite {
     override suspend fun isFavorite(context: Context, song: Song): Boolean =
         favoritesStore.containsSong(song.id, song.data)
 
-    override fun toggleFavorite(context: Context, song: Song): Boolean = runBlocking {
+    override suspend fun toggleFavorite(context: Context, song: Song): Boolean = runBlocking {
         if (isFavorite(context, song)) {
             !favoritesStore.removeSong(song)
         } else {
@@ -78,7 +78,7 @@ class FavoritePlaylistImpl : IFavorite {
         }
     }
 
-    override fun toggleFavorite(context: Context, song: Song): Boolean {
+    override suspend fun toggleFavorite(context: Context, song: Song): Boolean {
         return runBlocking {
             if (isFavorite(context, song)) {
                 val favoritesPlaylist = getFavoritesPlaylist(context)

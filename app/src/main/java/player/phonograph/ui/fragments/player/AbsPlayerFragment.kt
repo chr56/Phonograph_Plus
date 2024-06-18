@@ -171,8 +171,10 @@ abstract class AbsPlayerFragment :
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 itemId = R.id.action_toggle_favorite
                 onClick {
-                    val favorite = GlobalContext.get().get<IFavorite>()
-                    favorite.toggleFavorite(context, viewModel.currentSong.value)
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        val favorite = GlobalContext.get().get<IFavorite>()
+                        favorite.toggleFavorite(context, viewModel.currentSong.value)
+                    }
                     true
                 }
             }.apply {
