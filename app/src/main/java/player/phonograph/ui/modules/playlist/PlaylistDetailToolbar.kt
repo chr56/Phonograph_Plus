@@ -137,7 +137,7 @@ fun playlistDetailToolbar(
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
                     runBlocking {
-                        val paths = PlaylistProcessors.of(playlist).allSongs(context).map { it.data }
+                        val paths = PlaylistProcessors.reader(playlist).allSongs(context).map { it.data }
                         MultiTagBrowserActivity.launch(context, ArrayList(paths))
                     }
                     true

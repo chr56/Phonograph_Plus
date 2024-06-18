@@ -52,8 +52,10 @@ import java.io.File
 
 object PlaylistProcessors {
 
-    @Suppress("MemberVisibilityCanBePrivate")
-    fun of(playlist: Playlist): PlaylistProcessor =
+    fun reader(playlist: Playlist): PlaylistReader = of(playlist) as PlaylistReader
+    fun writer(playlist: Playlist): PlaylistWriter? = of(playlist) as? PlaylistWriter
+
+    private fun of(playlist: Playlist): PlaylistProcessor =
         when (val location = playlist.location) {
             is FilePlaylistLocation    -> FilePlaylistProcessor(playlist.id, location.path)
             is VirtualPlaylistLocation -> when (location.type) {
@@ -75,11 +77,11 @@ object PlaylistProcessors {
         }
 
     suspend fun duplicate(context: Context, playlist: Playlist) =
-        create(context, playlist.name + dateTimeSuffix(currentDate()), of(playlist).allSongs(context))
+        create(context, playlist.name + dateTimeSuffix(currentDate()), reader(playlist).allSongs(context))
 
     suspend fun duplicate(context: Context, playlists: List<Playlist>) {
         val names = playlists.map { it.name }
-        val songBatches = playlists.map { of(it).allSongs(context) }
+        val songBatches = playlists.map { reader(it).allSongs(context) }
         if (shouldUseSAF(context) && context is ICreateFileStorageAccessible) {
             createPlaylistsViaSAF(context, songBatches, names, defaultDirectory.absolutePath)
         } else {
@@ -94,14 +96,16 @@ object PlaylistProcessors {
     const val OPTION_DELETE_WITH_MEDIASTORE = "MEDIASTORE"
 }
 
-sealed interface PlaylistProcessor {
+sealed interface PlaylistProcessor
+
+sealed interface PlaylistReader : PlaylistProcessor {
     suspend fun allSongs(context: Context): List<Song>
     suspend fun containsSong(context: Context, songId: Long): Boolean
     suspend fun refresh(context: Context) {}
     suspend fun clear(context: Context, options: Any? = null): Boolean = false
 }
 
-interface EditablePlaylistProcessor : PlaylistProcessor {
+sealed interface PlaylistWriter : PlaylistProcessor {
     suspend fun removeSong(context: Context, song: Song, index: Long): Boolean
     suspend fun removeSongs(context: Context, songs: List<Song>) {
         for (song in songs) {
@@ -122,7 +126,7 @@ interface EditablePlaylistProcessor : PlaylistProcessor {
 }
 
 
-private class FilePlaylistProcessor(val id: Long, val path: String) : EditablePlaylistProcessor {
+private class FilePlaylistProcessor(val id: Long, val path: String) : PlaylistReader, PlaylistWriter {
 
     override suspend fun allSongs(context: Context): List<Song> =
         PlaylistSongLoader.getPlaylistSongList(context, id).map { it.song }
@@ -171,7 +175,7 @@ private class FilePlaylistProcessor(val id: Long, val path: String) : EditablePl
     }
 }
 
-private data object FavoriteSongsPlaylistProcessor : EditablePlaylistProcessor {
+private data object FavoriteSongsPlaylistProcessor : PlaylistReader, PlaylistWriter {
 
     val favorite: IFavorite by GlobalContext.get().inject()
 
@@ -199,7 +203,7 @@ private data object FavoriteSongsPlaylistProcessor : EditablePlaylistProcessor {
     override suspend fun moveSong(context: Context, from: Int, to: Int): Boolean = false
 }
 
-private data object HistoryPlaylistProcessor : PlaylistProcessor {
+private data object HistoryPlaylistProcessor : PlaylistReader {
     override suspend fun allSongs(context: Context): List<Song> =
         RecentlyPlayedTracksLoader.get().tracks(context)
 
@@ -210,7 +214,7 @@ private data object HistoryPlaylistProcessor : PlaylistProcessor {
     }
 }
 
-private data object LastAddedPlaylistProcessor : PlaylistProcessor {
+private data object LastAddedPlaylistProcessor : PlaylistReader {
 
     override suspend fun allSongs(context: Context): List<Song> =
         Songs.since(context, Setting(context).Composites[Keys.lastAddedCutoffTimeStamp].data / 1000)
@@ -220,7 +224,7 @@ private data object LastAddedPlaylistProcessor : PlaylistProcessor {
 
 }
 
-private data object MyTopTracksPlaylistProcessor : PlaylistProcessor {
+private data object MyTopTracksPlaylistProcessor : PlaylistReader {
 
 
     override suspend fun allSongs(context: Context): List<Song> =
@@ -241,7 +245,7 @@ private data object MyTopTracksPlaylistProcessor : PlaylistProcessor {
 
 }
 
-private data object ShuffleAllPlaylistProcessor : PlaylistProcessor {
+private data object ShuffleAllPlaylistProcessor : PlaylistReader {
     override suspend fun allSongs(context: Context): List<Song> = Songs.all(context)
     override suspend fun containsSong(context: Context, songId: Long): Boolean = true
 }

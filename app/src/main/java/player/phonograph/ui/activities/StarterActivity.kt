@@ -208,7 +208,7 @@ class StarterActivity : AppCompatActivity() {
         }
 
         runBlocking {
-            val songs = PlaylistProcessors.of(playlist).allSongs(this@StarterActivity)
+            val songs = PlaylistProcessors.reader(playlist).allSongs(this@StarterActivity)
             play(songs, shuffleMode)
         }
     }

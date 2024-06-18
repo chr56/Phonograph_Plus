@@ -5,7 +5,6 @@
 package player.phonograph.ui.modules.playlist.dialogs
 
 import player.phonograph.R
-import player.phonograph.mechanism.playlist.EditablePlaylistProcessor
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
@@ -39,7 +38,7 @@ class AddToPlaylistDialog : DialogFragment() {
                             .show(fragmentActivity.supportFragmentManager, "ADD_TO_PLAYLIST")
                     } else {
                         val targetPlaylist = playlists[index - 1]
-                        (PlaylistProcessors.of(targetPlaylist) as EditablePlaylistProcessor).appendSongs(
+                        PlaylistProcessors.writer(targetPlaylist)!!.appendSongs(
                             context = fragmentActivity,
                             songs = songs,
                         )

@@ -77,4 +77,4 @@ fun List<Playlist>.actionSavePlaylists(activity: Context) {
 }
 
 private suspend fun Playlist.songs(context: Context): List<Song> =
-    PlaylistProcessors.of(this).allSongs(context)
+    PlaylistProcessors.reader(this).allSongs(context)
