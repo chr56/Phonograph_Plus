@@ -20,10 +20,14 @@ import player.phonograph.model.playlist.VirtualPlaylistLocation
 import player.phonograph.repo.database.HistoryStore
 import player.phonograph.repo.database.SongPlayCountStore
 import player.phonograph.repo.mediastore.MediaStorePlaylists
+import player.phonograph.repo.room.MusicDatabase
+import player.phonograph.repo.room.domain.PlaylistActions
 import player.phonograph.util.file.selectDocumentUris
 import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 object PlaylistManager {
 
@@ -42,7 +46,10 @@ object PlaylistManager {
             }
         }
 
-        suspend fun intoDatabase(context: Context, name: String): Boolean = false
+        @Suppress("unused")
+        suspend fun intoDatabase(context: Context, name: String): Boolean = withContext(Dispatchers.IO) {
+            PlaylistActions.createPlaylist(MusicDatabase.koinInstance, name, songs)
+        }
     }
 
     fun delete(playlist: Playlist, preferSaf: Boolean): Deleter = when (playlist.location) {
@@ -84,7 +91,7 @@ object PlaylistManager {
             override suspend fun delete(context: Context): Boolean {
                 val location = playlist.location
                 if (location !is DatabasePlaylistLocation) return false
-                return false
+                return PlaylistActions.deletePlaylist(MusicDatabase.koinInstance, location.databaseId)
             }
 
         }
@@ -207,9 +214,10 @@ object PlaylistManager {
                 else                       -> false
             }
 
-        private suspend fun deleteDatabase(context: Context, location: DatabasePlaylistLocation): Boolean {
-            return true
-        }
+        private suspend fun deleteDatabase(context: Context, location: DatabasePlaylistLocation): Boolean =
+            withContext(Dispatchers.IO) {
+                PlaylistActions.deletePlaylist(MusicDatabase.koinInstance, location.databaseId)
+            }
 
         private suspend fun deleteUsingMediastore(context: Context, filePlaylists: List<Playlist>): List<Playlist> {
             val ids = filePlaylists.map { (it.location as FilePlaylistLocation).mediastoreId }.toLongArray()
