@@ -47,18 +47,3 @@ products/**/mapping.txt
 products/
 
 GitHubReleaseNote.url.txt
-
-# Idea file/folder those are not tracked.
-.idea/other.xml
-.idea/appInsightsSettings.xml
-.idea/compiler.xml
-.idea/copyright
-.idea/modules
-.idea/deploymentTargetDropDown.xml
-.idea/deploymentTargetSelector.xml
-.idea/encodings.xml
-.idea/workspace.xml
-.idea/kotlinc.xml
-.idea/gradle.xml
-.idea/vcs.xml
-.idea/misc.xml

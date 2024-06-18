@@ -18,3 +18,7 @@ workspace.xml
 compiler.xml
 deploymentTargetDropDown.xml
 deploymentTargetSelector.xml
+appInsightsSettings.xml
+encodings.xml
+copyright
+other.xml
