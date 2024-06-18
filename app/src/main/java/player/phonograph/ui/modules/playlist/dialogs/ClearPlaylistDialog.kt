@@ -9,6 +9,7 @@ import lib.storage.documentProviderUriAbsolutePath
 import lib.storage.launcher.IOpenDirStorageAccessible
 import player.phonograph.R
 import player.phonograph.mechanism.playlist.PlaylistProcessors
+import player.phonograph.model.playlist.DatabasePlaylistLocation
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.VirtualPlaylistLocation
@@ -61,6 +62,7 @@ class ClearPlaylistDialog : DialogFragment() {
                     when (val location = playlist.location) {
                         is FilePlaylistLocation -> "${playlist.name}(${location.path})"
                         is VirtualPlaylistLocation -> playlistTypeName(context.resources, location.type).toString()
+                        is DatabasePlaylistLocation -> "${playlist.location.text(context)}"
                     }
                 }
             ),

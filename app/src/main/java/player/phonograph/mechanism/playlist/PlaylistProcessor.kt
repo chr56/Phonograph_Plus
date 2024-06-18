@@ -21,6 +21,7 @@ import player.phonograph.mechanism.playlist.saf.appendToPlaylistViaSAF
 import player.phonograph.mechanism.playlist.saf.createPlaylistViaSAF
 import player.phonograph.mechanism.playlist.saf.createPlaylistsViaSAF
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.DatabasePlaylistLocation
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.PLAYLIST_TYPE_FAVORITE
 import player.phonograph.model.playlist.PLAYLIST_TYPE_HISTORY
@@ -35,6 +36,9 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
 import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.mediastore.loaders.TopTracksLoader
+import player.phonograph.repo.room.MusicDatabase
+import player.phonograph.repo.room.converter.MediastoreSongConverter
+import player.phonograph.repo.room.domain.PlaylistActions
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_AUTO
 import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY
@@ -57,8 +61,9 @@ object PlaylistProcessors {
 
     private fun of(playlist: Playlist): PlaylistProcessor =
         when (val location = playlist.location) {
-            is FilePlaylistLocation    -> FilePlaylistProcessor(location)
-            is VirtualPlaylistLocation -> when (location.type) {
+            is FilePlaylistLocation     -> FilePlaylistProcessor(location)
+            is DatabasePlaylistLocation -> DatabasePlaylistProcessor(location.databaseId)
+            is VirtualPlaylistLocation  -> when (location.type) {
                 PLAYLIST_TYPE_FAVORITE     -> FavoriteSongsPlaylistProcessor
                 PLAYLIST_TYPE_LAST_ADDED   -> LastAddedPlaylistProcessor
                 PLAYLIST_TYPE_HISTORY      -> HistoryPlaylistProcessor
@@ -168,6 +173,47 @@ private class FilePlaylistProcessor(val location: FilePlaylistLocation) : Playli
 
 }
 
+private class DatabasePlaylistProcessor(val id: Long) : PlaylistReader, PlaylistWriter {
+    private val database get() = MusicDatabase.koinInstance
+
+    override suspend fun allSongs(context: Context): List<Song> {
+        val entity = database.PlaylistSongDao().playlist(id)
+        return entity?.songs?.map { songEntity ->
+            if (songEntity != null) {
+                MediastoreSongConverter.toSongModel(songEntity)
+            } else {
+                Song.EMPTY_SONG
+            }
+        } ?: emptyList()
+    }
+
+    override suspend fun containsSong(context: Context, songId: Long): Boolean {
+        val entity = database.PlaylistSongDao().playlist(id)
+        return if (entity != null) {
+            entity.songs.find { it?.mediastorId == songId } != null
+        } else {
+            false
+        }
+    }
+
+    override suspend fun removeSong(context: Context, song: Song, index: Long): Boolean =
+        PlaylistActions.removeSongFromPlaylist(database, id, song.id, index.toInt())
+
+    override suspend fun moveSong(context: Context, from: Int, to: Int): Boolean =
+        PlaylistActions.moveSongFromPlaylist(database, id, from, to)
+
+    override suspend fun appendSong(context: Context, song: Song) {
+        PlaylistActions.amendPlaylist(database, id, listOf(song))
+    }
+
+    override suspend fun appendSongs(context: Context, songs: List<Song>) {
+        PlaylistActions.amendPlaylist(database, id, songs)
+    }
+
+    override suspend fun rename(context: Context, newName: String): Boolean =
+        PlaylistActions.renamePlaylist(database, id, newName)
+}
+
 private data object FavoriteSongsPlaylistProcessor : PlaylistReader, PlaylistWriter {
 
     val favorite: IFavorite by GlobalContext.get().inject()
@@ -236,7 +282,7 @@ private data object ShuffleAllPlaylistProcessor : PlaylistReader {
 
 private suspend fun deleteImpl(context: Context, playlist: Playlist, options: Any?): Boolean {
     return when (val location = playlist.location) {
-        is FilePlaylistLocation    -> {
+        is FilePlaylistLocation     -> {
             if (options == PlaylistProcessors.OPTION_DELETE_WITH_MEDIASTORE) {
                 return deletePlaylistsViaMediastore(context, longArrayOf(location.mediastoreId)).isEmpty()
             } else {
@@ -245,12 +291,14 @@ private suspend fun deleteImpl(context: Context, playlist: Playlist, options: An
             }
         }
 
-        is VirtualPlaylistLocation -> when (location.type) {
+        is VirtualPlaylistLocation  -> when (location.type) {
             PLAYLIST_TYPE_HISTORY      -> HistoryStore.get().clear()
             PLAYLIST_TYPE_FAVORITE     -> GlobalContext.get().get<IFavorite>().clearAll(context)
             PLAYLIST_TYPE_MY_TOP_TRACK -> GlobalContext.get().get<SongPlayCountStore>().clear()
             else                       -> false
         }
+
+        is DatabasePlaylistLocation -> PlaylistActions.deletePlaylist(MusicDatabase.koinInstance, location.databaseId)
     }
 }
 
