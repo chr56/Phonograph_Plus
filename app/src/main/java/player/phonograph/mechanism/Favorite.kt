@@ -94,7 +94,7 @@ class FavoritePlaylistImpl : IFavorite {
     override suspend fun clearAll(context: Context): Boolean {
         val favoritesPlaylist = getFavoritesPlaylist(context)
         return if (favoritesPlaylist != null) {
-            PlaylistProcessors.reader(favoritesPlaylist).clear(context)
+            PlaylistProcessors.delete(context, favoritesPlaylist)
         } else {
             false
         }

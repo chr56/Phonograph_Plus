@@ -98,11 +98,10 @@ class ClearPlaylistDialog : DialogFragment() {
      * @param context must be IOpenDirStorageAccess
      */
     private suspend fun delete(context: FragmentActivity, playlists: List<Playlist>) {
-        val playlistProcessors = playlists.map(PlaylistProcessors::reader)
 
         /* Normally Delete (MediaStore + Internal database) */
-        val results = playlistProcessors.map { playlistProcessor ->
-            playlistProcessor.clear(context, PlaylistProcessors.OPTION_DELETE_WITH_MEDIASTORE)
+        val results = playlists.map { playlist ->
+            PlaylistProcessors.delete(context, playlist, PlaylistProcessors.OPTION_DELETE_WITH_MEDIASTORE)
         }
 
         /* Check */
