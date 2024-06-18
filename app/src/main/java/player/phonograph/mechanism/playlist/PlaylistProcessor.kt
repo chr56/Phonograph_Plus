@@ -105,7 +105,6 @@ sealed interface PlaylistReader : PlaylistProcessor {
     suspend fun allSongs(context: Context): List<Song>
     suspend fun containsSong(context: Context, songId: Long): Boolean
     suspend fun refresh(context: Context) {}
-    suspend fun clear(context: Context, options: Any? = null): Boolean = false
 }
 
 sealed interface PlaylistWriter : PlaylistProcessor {
@@ -167,15 +166,6 @@ private class FilePlaylistProcessor(val id: Long, val path: String) : PlaylistRe
         renamePlaylistViaMediastore(context, id, newName)
 
 
-    override suspend fun clear(context: Context, options: Any?): Boolean {
-        if (options == PlaylistProcessors.OPTION_DELETE_WITH_MEDIASTORE) {
-            val results = deletePlaylistsViaMediastore(context, longArrayOf(id)).firstOrNull() ?: return false
-            return results > 0
-        } else {
-            val uri = selectDocumentUris(context, listOf(path)).firstOrNull() ?: return false
-            return DocumentsContract.deleteDocument(context.contentResolver, uri)
-        }
-    }
 }
 
 private data object FavoriteSongsPlaylistProcessor : PlaylistReader, PlaylistWriter {
@@ -187,8 +177,6 @@ private data object FavoriteSongsPlaylistProcessor : PlaylistReader, PlaylistWri
 
     override suspend fun containsSong(context: Context, songId: Long): Boolean =
         favorite.isFavorite(context, Songs.id(context, songId))
-
-    override suspend fun clear(context: Context, options: Any?) = favorite.clearAll(context)
 
     override suspend fun removeSong(context: Context, song: Song, index: Long): Boolean =
         favorite.toggleFavorite(context, song)
@@ -212,9 +200,6 @@ private data object HistoryPlaylistProcessor : PlaylistReader {
 
     override suspend fun containsSong(context: Context, songId: Long): Boolean = false //todo
 
-    override suspend fun clear(context: Context, options: Any?): Boolean {
-        return HistoryStore.get().clear()
-    }
 }
 
 private data object LastAddedPlaylistProcessor : PlaylistReader {
@@ -237,10 +222,6 @@ private data object MyTopTracksPlaylistProcessor : PlaylistReader {
 
     override suspend fun refresh(context: Context) {
         songPlayCountStore.reCalculateScore(context)
-    }
-
-    override suspend fun clear(context: Context, options: Any?): Boolean {
-        return songPlayCountStore.clear()
     }
 
     private val songPlayCountStore: SongPlayCountStore
