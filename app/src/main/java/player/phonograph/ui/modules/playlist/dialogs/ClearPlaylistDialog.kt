@@ -152,8 +152,7 @@ class ClearPlaylistDialog : DialogFragment() {
     private suspend fun deleteViaSAF(activity: Activity, playlists: List<Playlist>) {
         require(activity is IOpenDirStorageAccessible)
 
-        val paths =
-            playlists.mapNotNull { playlist -> (playlist.location as? FilePlaylistLocation)?.path }
+        val paths = playlists.mapNotNull { playlist -> playlist.path() }
         val uris = selectDocumentUris(activity, paths)
 
         val warnings = buildDeletionMessage(

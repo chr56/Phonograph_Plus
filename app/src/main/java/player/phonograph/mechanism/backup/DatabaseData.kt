@@ -262,7 +262,7 @@ object DatabaseDataManger {
     ) {
         companion object {
             fun from(playlist: Playlist): PersistentPlaylist =
-                PersistentPlaylist((playlist.location as FilePlaylistLocation).path, playlist.name)
+                PersistentPlaylist(playlist.path() ?: "-", playlist.name)
         }
 
         fun getMatchingPlaylist(context: Context): Playlist? =

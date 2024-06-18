@@ -53,8 +53,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
             }.also { playlists ->
                 val (pined, normal) =
                     PlaylistLoader.all(context).partition { playlist ->
-                        val path = (playlist.location as? FilePlaylistLocation)?.path!!
-                        favoritesStore.containsPlaylist(playlist.id, path)
+                        favoritesStore.containsPlaylist(playlist.id, playlist.path())
                     }
                 playlists.addAll(pined)
                 playlists.addAll(normal)
