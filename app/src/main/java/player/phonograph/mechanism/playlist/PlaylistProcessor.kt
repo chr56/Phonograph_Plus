@@ -90,6 +90,9 @@ object PlaylistProcessors {
         }
     }
 
+    suspend fun delete(context: Context, playlist: Playlist, options: Any? = null): Boolean =
+        deleteImpl(context, playlist, options)
+
     private val defaultDirectory: File get() = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
 
     const val OPTION_DELETE_WITH_SAF = "SAF"
@@ -248,6 +251,28 @@ private data object MyTopTracksPlaylistProcessor : PlaylistReader {
 private data object ShuffleAllPlaylistProcessor : PlaylistReader {
     override suspend fun allSongs(context: Context): List<Song> = Songs.all(context)
     override suspend fun containsSong(context: Context, songId: Long): Boolean = true
+}
+
+private suspend fun deleteImpl(context: Context, playlist: Playlist, options: Any?): Boolean {
+    return when (val location = playlist.location) {
+        is FilePlaylistLocation    -> {
+            if (options == PlaylistProcessors.OPTION_DELETE_WITH_MEDIASTORE) {
+                val results =
+                    deletePlaylistsViaMediastore(context, longArrayOf(playlist.id)).firstOrNull() ?: return false
+                return results > 0
+            } else {
+                val uri = selectDocumentUris(context, listOf(location.path)).firstOrNull() ?: return false
+                return DocumentsContract.deleteDocument(context.contentResolver, uri)
+            }
+        }
+
+        is VirtualPlaylistLocation -> when (location.type) {
+            PLAYLIST_TYPE_HISTORY      -> HistoryStore.get().clear()
+            PLAYLIST_TYPE_FAVORITE     -> GlobalContext.get().get<IFavorite>().clearAll(context)
+            PLAYLIST_TYPE_MY_TOP_TRACK -> GlobalContext.get().get<SongPlayCountStore>().clear()
+            else                       -> false
+        }
+    }
 }
 
 private fun shouldUseSAF(context: Context): Boolean {
