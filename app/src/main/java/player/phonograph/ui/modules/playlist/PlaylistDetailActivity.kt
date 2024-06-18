@@ -24,9 +24,7 @@ import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
 import player.phonograph.model.getReadableDurationString
-import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.totalDuration
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
@@ -45,11 +43,11 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -104,6 +102,7 @@ class PlaylistDetailActivity :
         observeData()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun observeData() {
         lifecycleScope.launch {
             model.songs.collect { songs ->
@@ -132,7 +131,7 @@ class PlaylistDetailActivity :
             model.playlist.collect { playlist ->
                 model.fetchAllSongs(this@PlaylistDetailActivity)
                 supportActionBar!!.title = playlist.name
-                if (playlist !is SmartPlaylist &&
+                if (!playlist.isVirtual() &&
                     !PlaylistLoader.checkExistence(this@PlaylistDetailActivity, playlist.id)
                 ) {
                     // File Playlist was deleted
@@ -303,12 +302,7 @@ class PlaylistDetailActivity :
             nameText.text = playlist.name
             songCountText.text = songs.size.toString()
             durationText.text = getReadableDurationString(songs.totalDuration())
-            if (playlist is FilePlaylist) {
-                pathText.text = playlist.associatedFilePath
-            } else {
-                pathText.visibility = GONE
-                pathIcon.visibility = GONE
-            }
+            pathText.text = playlist.location.text(this@PlaylistDetailActivity)
         }
     }
 

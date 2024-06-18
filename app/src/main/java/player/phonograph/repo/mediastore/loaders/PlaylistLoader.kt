@@ -1,16 +1,16 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
 
 package player.phonograph.repo.mediastore.loaders
 
 import legacy.phonograph.MediaStoreCompat
-import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.model.playlist.FilePlaylistLocation
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.internal.SQLWhereClause
 import player.phonograph.repo.mediastore.internal.withBasePlaylistFilter
 import player.phonograph.repo.mediastore.internal.withPathFilter
-import player.phonograph.repo.mediastore.playlist.FilePlaylistImpl
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import android.content.Context
@@ -21,25 +21,25 @@ import android.os.Build.VERSION_CODES.Q
 import android.provider.BaseColumns
 import android.provider.MediaStore.VOLUME_EXTERNAL
 
-object PlaylistLoader : Loader<FilePlaylist> {
+object PlaylistLoader : Loader<Playlist> {
 
-    override suspend fun all(context: Context): List<FilePlaylist> =
+    override suspend fun all(context: Context): List<Playlist> =
         queryPlaylists(context, null, null).intoPlaylists().sortAll(context)
 
-    override suspend fun id(context: Context, id: Long): FilePlaylist =
+    override suspend fun id(context: Context, id: Long): Playlist =
         queryPlaylists(context, BaseColumns._ID + "=?", arrayOf(id.toString())).intoFirstPlaylist()
 
-    fun playlistName(context: Context, playlistName: String): FilePlaylist =
+    fun playlistName(context: Context, playlistName: String): Playlist =
         queryPlaylists(
             context, MediaStoreCompat.Audio.PlaylistsColumns.NAME + "=?", arrayOf(playlistName)
         ).intoFirstPlaylist()
 
-    fun searchByPath(context: Context, path: String): FilePlaylist? =
+    fun searchByPath(context: Context, path: String): Playlist? =
         queryPlaylists(
             context, "${MediaStoreCompat.Audio.PlaylistsColumns.DATA} = ?", arrayOf(path)
         ).intoFirstPlaylist().takeIf { it.id > 0 }
 
-    fun searchByName(context: Context, name: String): List<FilePlaylist> =
+    fun searchByName(context: Context, name: String): List<Playlist> =
         queryPlaylists(
             context, "${MediaStoreCompat.Audio.PlaylistsColumns.NAME} LIKE ?", arrayOf("%$name%")
         ).intoPlaylists()
@@ -48,16 +48,16 @@ object PlaylistLoader : Loader<FilePlaylist> {
     /**
      * consume cursor (read & close) and convert into FilePlaylist list
      */
-    private fun Cursor?.intoPlaylists(): List<FilePlaylist> =
+    private fun Cursor?.intoPlaylists(): List<Playlist> =
         this?.use {
-            val filePlaylists = mutableListOf<FilePlaylist>()
+            val filePlaylists = mutableListOf<Playlist>()
             if (moveToFirst()) {
                 do {
                     filePlaylists.add(
-                        FilePlaylistImpl(
+                        Playlist(
                             id = getLong(0),
                             name = getString(1),
-                            path = getString(2),
+                            location = FilePlaylistLocation(getString(2)),
                             dateAdded = getLong(3),
                             dateModified = getLong(4),
                         )
@@ -70,19 +70,19 @@ object PlaylistLoader : Loader<FilePlaylist> {
     /**
      * consume cursor (read & close) and convert into first FilePlaylist
      */
-    fun Cursor?.intoFirstPlaylist(): FilePlaylist {
+    fun Cursor?.intoFirstPlaylist(): Playlist {
         return this?.use {
             if (moveToFirst())
-                FilePlaylistImpl(
+                Playlist(
                     id = getLong(0),
                     name = getString(1),
-                    path = getString(2),
+                    location = FilePlaylistLocation(getString(2)),
                     dateAdded = getLong(3),
                     dateModified = getLong(4),
                 )
             else
-                FilePlaylistImpl.EMPTY_PLAYLIST
-        } ?: FilePlaylistImpl.EMPTY_PLAYLIST
+                Playlist.EMPTY_PLAYLIST
+        } ?: Playlist.EMPTY_PLAYLIST
     }
 
     /**
@@ -141,22 +141,22 @@ object PlaylistLoader : Loader<FilePlaylist> {
 
 
 
-    private fun List<FilePlaylist>.sortAll(context: Context): List<FilePlaylist> {
+    private fun List<Playlist>.sortAll(context: Context): List<Playlist> {
         val sortMode = Setting(context).Composites[Keys.playlistSortMode].data
         val revert = sortMode.revert
         return when (sortMode.sortRef) {
             SortRef.DISPLAY_NAME  -> this.sort(revert) { it.name }
-            SortRef.PATH          -> this.sort(revert) { it.associatedFilePath }
+            SortRef.PATH          -> this.sort(revert) { it.location }
             SortRef.ADDED_DATE    -> this.sort(revert) { it.dateAdded }
             SortRef.MODIFIED_DATE -> this.sort(revert) { it.dateModified }
             else                  -> this
         }
     }
 
-    private inline fun List<FilePlaylist>.sort(
+    private inline fun List<Playlist>.sort(
         revert: Boolean,
-        crossinline selector: (FilePlaylist) -> Comparable<*>?,
-    ): List<FilePlaylist> {
+        crossinline selector: (Playlist) -> Comparable<*>?,
+    ): List<Playlist> {
         return if (revert) this.sortedWith(compareByDescending(selector))
         else this.sortedWith(compareBy(selector))
     }

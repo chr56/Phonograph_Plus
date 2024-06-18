@@ -167,7 +167,6 @@ object ClickActionProviders {
             NavigationUtil.goToPlaylist(context, list[position])
             return true
         }
-
     }
 
     class GenreClickActionProvider : ClickActionProvider<Genre> {

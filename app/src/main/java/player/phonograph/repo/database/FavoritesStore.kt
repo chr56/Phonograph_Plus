@@ -7,7 +7,7 @@ package player.phonograph.repo.database
 import org.koin.core.context.GlobalContext
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
-import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.DatabaseConstants.FAVORITE_DB
 import player.phonograph.repo.loader.Songs
@@ -55,7 +55,7 @@ class FavoritesStore constructor(context: Context) :
 
     suspend fun getAllSongs(context: Context): List<Song> = getAllSongsImpl(context)
 
-    suspend fun getAllPlaylists(context: Context): List<FilePlaylist> = getAllPlaylistsImpl(context)
+    suspend fun getAllPlaylists(context: Context): List<Playlist> = getAllPlaylistsImpl(context)
 
 
     private suspend fun getAllSongsImpl(context: Context): List<Song> {
@@ -64,7 +64,7 @@ class FavoritesStore constructor(context: Context) :
         }
     }
 
-    private suspend fun getAllPlaylistsImpl(context: Context): List<FilePlaylist> {
+    private suspend fun getAllPlaylistsImpl(context: Context): List<Playlist> {
         return parseCursorImpl(TABLE_NAME_PLAYLISTS) { cursor ->
             PlaylistLoader.searchByPath(context, cursor.getString(1))
         }
@@ -101,8 +101,8 @@ class FavoritesStore constructor(context: Context) :
         containsImpl(TABLE_NAME_SONGS, songId, path)
 
     fun containsPlaylist(playlist: Playlist): Boolean =
-        if (playlist is FilePlaylist)
-            containsImpl(TABLE_NAME_PLAYLISTS, playlist.id, playlist.associatedFilePath)
+        if (!playlist.isVirtual())
+            containsImpl(TABLE_NAME_PLAYLISTS, playlist.id, (playlist.location as FilePlaylistLocation).path)
         else false
 
     fun containsPlaylist(playlistId: Long?, path: String?): Boolean =
@@ -123,8 +123,8 @@ class FavoritesStore constructor(context: Context) :
     fun addSong(song: Song): Boolean =
         addImpl(TABLE_NAME_SONGS, song.id, song.data, song.title)
 
-    fun addPlaylist(playlist: FilePlaylist): Boolean =
-        addImpl(TABLE_NAME_PLAYLISTS, playlist.id, playlist.associatedFilePath, playlist.name)
+    fun addPlaylist(playlist: Playlist): Boolean =
+        addImpl(TABLE_NAME_PLAYLISTS, playlist.id, (playlist.location as FilePlaylistLocation).path, playlist.name)
 
     private fun addImpl(tableName: String, id: Long, path: String, name: String?): Boolean {
         val database = writableDatabase
@@ -161,11 +161,11 @@ class FavoritesStore constructor(context: Context) :
         return addMultipleImpl(TABLE_NAME_SONGS, data)
     }
 
-    fun addPlaylists(playlists: Collection<FilePlaylist>): Boolean {
+    fun addPlaylists(playlists: Collection<Playlist>): Boolean {
         val data = playlists.map {
             ContentValues(4).apply {
                 put(COLUMNS_ID, it.id)
-                put(COLUMNS_PATH, it.associatedFilePath)
+                put(COLUMNS_PATH, (it.location as FilePlaylistLocation).path)
                 put(COLUMNS_TITLE, it.name)
                 put(COLUMNS_TIMESTAMP, currentTimestamp())
             }
@@ -194,8 +194,8 @@ class FavoritesStore constructor(context: Context) :
     fun removeSong(song: Song): Boolean =
         removeImpl(TABLE_NAME_SONGS, song.id, song.data)
 
-    fun removePlaylist(playlist: FilePlaylist): Boolean =
-        removeImpl(TABLE_NAME_PLAYLISTS, playlist.id, playlist.associatedFilePath)
+    fun removePlaylist(playlist: Playlist): Boolean =
+        removeImpl(TABLE_NAME_PLAYLISTS, playlist.id, (playlist.location as FilePlaylistLocation).path)
 
     private fun removeImpl(table: String, id: Long, path: String): Boolean {
         val database = writableDatabase

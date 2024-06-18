@@ -4,6 +4,7 @@
 
 package player.phonograph.actions
 
+import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
@@ -22,7 +23,7 @@ internal suspend fun convertToSongs(selections: Iterable<*>, context: Context): 
         is Album -> Songs.album(context, it.id)
         is Artist -> Songs.artist(context, it.id)
         is Genre -> Songs.genres(context, it.id)
-        is Playlist -> it.getSongs(context)
+        is Playlist -> PlaylistProcessors.of(it).allSongs(context)
         is SongCollection -> it.songs
         is FileEntity.File -> listOf(Songs.searchByFileEntity(context, it))
         // is FileEntity.Folder -> TODO()

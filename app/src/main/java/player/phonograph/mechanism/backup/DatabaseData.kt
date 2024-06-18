@@ -8,7 +8,8 @@ import okio.BufferedSink
 import org.koin.core.context.GlobalContext
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
-import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.model.playlist.FilePlaylistLocation
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.database.PathFilterStore
 import player.phonograph.repo.loader.Songs
@@ -229,10 +230,10 @@ object DatabaseDataManger {
         array?.map { parser.decodeFromJsonElement(PersistentSong.serializer(), it) }
             ?.mapNotNull { runBlocking { it.getMatchingSong(context) } }
 
-    private fun persistentPlaylist(playlist: FilePlaylist): JsonElement =
+    private fun persistentPlaylist(playlist: Playlist): JsonElement =
         parser.encodeToJsonElement(PersistentPlaylist.serializer(), PersistentPlaylist.from(playlist))
 
-    private fun recoverPlaylists(context: Context, array: JsonArray?): List<FilePlaylist>? =
+    private fun recoverPlaylists(context: Context, array: JsonArray?): List<Playlist>? =
         array?.map { parser.decodeFromJsonElement(PersistentPlaylist.serializer(), it) }
             ?.mapNotNull { it.getMatchingPlaylist(context) }
 
@@ -260,11 +261,11 @@ object DatabaseDataManger {
         @SerialName("title") val name: String,
     ) {
         companion object {
-            fun from(filePlaylist: FilePlaylist): PersistentPlaylist =
-                PersistentPlaylist(filePlaylist.associatedFilePath, filePlaylist.name)
+            fun from(playlist: Playlist): PersistentPlaylist =
+                PersistentPlaylist((playlist.location as FilePlaylistLocation).path, playlist.name)
         }
 
-        fun getMatchingPlaylist(context: Context): FilePlaylist? =
+        fun getMatchingPlaylist(context: Context): Playlist? =
             PlaylistLoader.searchByPath(context, path)
     }
 

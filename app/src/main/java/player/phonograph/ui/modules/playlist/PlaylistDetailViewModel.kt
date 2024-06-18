@@ -4,11 +4,10 @@
 
 package player.phonograph.ui.modules.playlist
 
-import player.phonograph.mechanism.playlist.PlaylistEdit
+import player.phonograph.mechanism.playlist.EditablePlaylistProcessor
+import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
-import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.model.playlist.GeneratedPlaylist
 import player.phonograph.model.playlist.Playlist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,28 +22,24 @@ import kotlinx.coroutines.launch
 @Suppress("LocalVariableName")
 class PlaylistDetailViewModel(_playlist: Playlist) : ViewModel() {
 
-
     private val _playlist: MutableStateFlow<Playlist> = MutableStateFlow(_playlist)
     val playlist get() = _playlist.asStateFlow()
 
-
     fun refreshPlaylist(context: Context) {
         val playlist = _playlist.value
-        if (playlist is GeneratedPlaylist) {
-            playlist.refresh(context)
+        viewModelScope.launch(Dispatchers.IO) {
+            PlaylistProcessors.of(playlist).refresh(context)
+            fetchAllSongs(context)
         }
-        fetchAllSongs(context)
     }
-
 
     private val _songs: MutableStateFlow<List<Song>> = MutableStateFlow(emptyList())
     val songs get() = _songs.asStateFlow()
 
 
-    fun fetchAllSongs(context: Context) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _songs.emit(playlist.value.getSongs(context))
-        }
+    suspend fun fetchAllSongs(context: Context) {
+        val playlistSongs = PlaylistProcessors.of(playlist.value).allSongs(context)
+        _songs.emit(playlistSongs)
     }
 
     private val _searchResults: MutableStateFlow<List<Song>> = MutableStateFlow(emptyList())
@@ -73,16 +68,22 @@ class PlaylistDetailViewModel(_playlist: Playlist) : ViewModel() {
 
     fun moveItem(context: Context, fromPosition: Int, toPosition: Int): Deferred<Boolean> =
         viewModelScope.async(Dispatchers.IO) {
-            if (fromPosition != toPosition) {
-                PlaylistEdit.moveItem(context, playlist.value as FilePlaylist, fromPosition, toPosition)
+            val processor = PlaylistProcessors.of(playlist.value)
+            if (processor is EditablePlaylistProcessor && fromPosition != toPosition) {
+                processor.moveSong(context, fromPosition, toPosition)
             } else {
                 false
             }
         }
 
-    fun deleteItem(context: Context, songId: Long, index: Int): Deferred<Boolean> =
+    fun deleteItem(context: Context, song: Song, index: Int): Deferred<Boolean> =
         viewModelScope.async(Dispatchers.IO) {
-            PlaylistEdit.removeItem(context, playlist.value as FilePlaylist, songId, index.toLong()) > 0
+            val processor = PlaylistProcessors.of(playlist.value)
+            if (processor is EditablePlaylistProcessor) {
+                processor.removeSong(context, song, index.toLong())
+            } else {
+                false
+            }
         }
 
 }

@@ -230,8 +230,8 @@ class MusicService : MediaBrowserServiceCompat() {
         }
     }
 
-    private fun toggleFavorite(song: Song) {
-        GlobalContext.get().inject<IFavorite>().value.toggleFavorite(this, song)
+    private fun toggleFavorite(song: Song) = runBlocking {
+        GlobalContext.get().inject<IFavorite>().value.toggleFavorite(this@MusicService, song)
     }
 
     val playerState get() = controller.playerState

@@ -17,7 +17,6 @@ import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
-import player.phonograph.ui.dialogs.CreatePlaylistDialog
 import player.phonograph.ui.dialogs.LyricsDialog
 import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
 import player.phonograph.ui.dialogs.QueueSnapshotsDialog
@@ -25,6 +24,7 @@ import player.phonograph.ui.dialogs.SleepTimerDialog
 import player.phonograph.ui.dialogs.SpeedControlDialog
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
+import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialog
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.themeFooterColor
@@ -171,8 +171,10 @@ abstract class AbsPlayerFragment :
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 itemId = R.id.action_toggle_favorite
                 onClick {
-                    val favorite = GlobalContext.get().get<IFavorite>()
-                    favorite.toggleFavorite(context, viewModel.currentSong.value)
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        val favorite = GlobalContext.get().get<IFavorite>()
+                        favorite.toggleFavorite(context, viewModel.currentSong.value)
+                    }
                     true
                 }
             }.apply {

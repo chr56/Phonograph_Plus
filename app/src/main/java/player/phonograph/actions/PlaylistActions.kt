@@ -1,17 +1,17 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
 
 package player.phonograph.actions
 
-import player.phonograph.mechanism.playlist.PlaylistEdit
-import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.mechanism.playlist.PlaylistProcessors
+import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.ui.dialogs.AddToPlaylistDialog
-import player.phonograph.ui.dialogs.ClearPlaylistDialog
-import player.phonograph.ui.dialogs.RenamePlaylistDialog
+import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialog
+import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialog
+import player.phonograph.ui.modules.playlist.dialogs.RenamePlaylistDialog
 import androidx.fragment.app.FragmentActivity
 import android.content.Context
 import kotlin.random.Random
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 fun Playlist.actionPlay(context: Context): Boolean = runBlocking {
-    getSongs(context).let { songs ->
+    songs(context).let { songs ->
         if (songs.isNotEmpty())
             songs.actionPlay(ShuffleMode.NONE, 0)
         else
@@ -30,7 +30,7 @@ fun Playlist.actionPlay(context: Context): Boolean = runBlocking {
 }
 
 fun Playlist.actionShuffleAndPlay(context: Context) = runBlocking {
-    getSongs(context).let { songs ->
+    songs(context).let { songs ->
         if (songs.isNotEmpty())
             songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
         else
@@ -39,43 +39,42 @@ fun Playlist.actionShuffleAndPlay(context: Context) = runBlocking {
 }
 
 fun Playlist.actionPlayNext(context: Context): Boolean = runBlocking {
-    MusicPlayerRemote.playNext(ArrayList(getSongs(context)))
+    MusicPlayerRemote.playNext(ArrayList(songs(context)))
 }
 
 fun Playlist.actionAddToCurrentQueue(context: Context): Boolean = runBlocking {
-    MusicPlayerRemote.enqueue(ArrayList(getSongs(context)))
+    MusicPlayerRemote.enqueue(ArrayList(songs(context)))
 }
 
 fun Playlist.actionAddToPlaylist(activity: FragmentActivity) = runBlocking {
-    AddToPlaylistDialog.create(getSongs(activity))
+    AddToPlaylistDialog.create(songs(activity))
         .show(activity.supportFragmentManager, "ADD_PLAYLIST")
 }
 
-fun FilePlaylist.actionRenamePlaylist(activity: FragmentActivity) {
-    RenamePlaylistDialog.create(this)
-        .show(activity.supportFragmentManager, "RENAME_PLAYLIST")
+fun Playlist.actionRenamePlaylist(activity: FragmentActivity) {
+    RenamePlaylistDialog.create(this).show(activity.supportFragmentManager, "RENAME_PLAYLIST")
 }
 
 fun Playlist.actionDeletePlaylist(activity: FragmentActivity) {
-    ClearPlaylistDialog.create(listOf(this))
-        .show(activity.supportFragmentManager, "CLEAR_PLAYLIST")
+    ClearPlaylistDialog.create(listOf(this)).show(activity.supportFragmentManager, "CLEAR_PLAYLIST")
 }
 
-fun List<Playlist>.actionDeletePlaylists(activity: Context): Boolean =
-    fragmentActivity(activity) {
-        ClearPlaylistDialog.create(this)
-            .show(it.supportFragmentManager, "CLEAR_PLAYLIST")
-        true
-    }
+fun List<Playlist>.actionDeletePlaylists(context: Context): Boolean = fragmentActivity(context) { activity ->
+    ClearPlaylistDialog.create(this).show(activity.supportFragmentManager, "CLEAR_PLAYLIST")
+    true
+}
 
 fun Playlist.actionSavePlaylist(activity: FragmentActivity) {
     CoroutineScope(Dispatchers.Default).launch {
-        PlaylistEdit.duplicate(activity, this@actionSavePlaylist)
+        PlaylistProcessors.duplicate(activity, this@actionSavePlaylist)
     }
 }
 
 fun List<Playlist>.actionSavePlaylists(activity: Context) {
     CoroutineScope(Dispatchers.Default).launch {
-        PlaylistEdit.duplicate(activity, this@actionSavePlaylists)
+        PlaylistProcessors.duplicate(activity, this@actionSavePlaylists)
     }
 }
+
+private suspend fun Playlist.songs(context: Context): List<Song> =
+    PlaylistProcessors.of(this).allSongs(context)

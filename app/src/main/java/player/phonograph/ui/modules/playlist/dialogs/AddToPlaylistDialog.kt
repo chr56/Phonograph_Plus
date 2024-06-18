@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 2022~2023 chr_56, Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.ui.dialogs
+package player.phonograph.ui.modules.playlist.dialogs
 
 import player.phonograph.R
-import player.phonograph.mechanism.playlist.PlaylistEdit
+import player.phonograph.mechanism.playlist.EditablePlaylistProcessor
+import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.util.parcelableArrayList
@@ -37,10 +38,10 @@ class AddToPlaylistDialog : DialogFragment() {
                         CreatePlaylistDialog.create(songs)
                             .show(fragmentActivity.supportFragmentManager, "ADD_TO_PLAYLIST")
                     } else {
-                        PlaylistEdit.append(
+                        val targetPlaylist = playlists[index - 1]
+                        (PlaylistProcessors.of(targetPlaylist) as EditablePlaylistProcessor).appendSongs(
                             context = fragmentActivity,
                             songs = songs,
-                            filePlaylist = playlists[index - 1]
                         )
                     }
                 }

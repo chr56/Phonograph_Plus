@@ -8,17 +8,19 @@ import org.koin.core.context.GlobalContext
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
+import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.DynamicPlaylists
+import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.dialogs.CreatePlaylistDialog
 import player.phonograph.ui.fragments.pages.adapter.PlaylistDisplayAdapter
+import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialog
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.primaryColor
 import util.theme.color.lightenColor
@@ -41,25 +43,26 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
         private val favoritesStore by GlobalContext.get().inject<FavoritesStore>()
         override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Playlist> {
             return mutableListOf<Playlist>(
-                SmartPlaylist.lastAddedPlaylist,
-                SmartPlaylist.historyPlaylist,
-                SmartPlaylist.myTopTracksPlaylist,
+                DynamicPlaylists.lastAdded(),
+                DynamicPlaylists.history(),
+                DynamicPlaylists.myTopTrack(),
             ).also {
                 if (!Setting(context)[Keys.useLegacyFavoritePlaylistImpl].data) {
-                    it.add(SmartPlaylist.favoriteSongsPlaylist)
+                    it.add(DynamicPlaylists.favorite())
                 }
-            }.also {
-                val allPlaylist = PlaylistLoader.all(context)
-                val (pined, normal) = allPlaylist.partition {
-                    favoritesStore.containsPlaylist(it.id, it.associatedFilePath)
-                }
-                it.addAll(pined)
-                it.addAll(normal)
+            }.also { playlists ->
+                val (pined, normal) =
+                    PlaylistLoader.all(context).partition { playlist ->
+                        val path = (playlist.location as? FilePlaylistLocation)?.path!!
+                        favoritesStore.containsPlaylist(playlist.id, path)
+                    }
+                playlists.addAll(pined)
+                playlists.addAll(normal)
             }
         }
 
         override suspend fun collectAllSongs(context: Context): List<Song> =
-            PlaylistLoader.all(context).flatMap { it.getSongs(context) }
+            PlaylistLoader.all(context).flatMap { PlaylistProcessors.of(it).allSongs(context) }
 
         override val headerTextRes: Int get() = R.plurals.item_playlists
     }

@@ -10,7 +10,6 @@ import player.phonograph.actions.ClickActionProviders
 import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.settings.Keys
@@ -42,13 +41,13 @@ class PlaylistDisplayAdapter(
     }
 
     override fun getItemViewType(position: Int): Int =
-        if (dataset[position] is SmartPlaylist) SMART_PLAYLIST else DEFAULT_PLAYLIST
+        if (dataset[position].isVirtual()) DYNAMIC_PLAYLIST else DEFAULT_PLAYLIST
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Playlist> {
         val view =
             LayoutInflater.from(activity)
                 .inflate(ItemLayoutStyle.LIST_SINGLE_ROW.layout(), parent, false)
-        return if (viewType == SMART_PLAYLIST) SmartPlaylistViewHolder(view) else CommonPlaylistViewHolder(view)
+        return if (viewType == DYNAMIC_PLAYLIST) SmartPlaylistViewHolder(view) else CommonPlaylistViewHolder(view)
     }
 
     open class CommonPlaylistViewHolder(itemView: View) : DisplayViewHolder<Playlist>(itemView) {
@@ -77,10 +76,9 @@ class PlaylistDisplayAdapter(
             AppCompatResources.getDrawable(itemView.context, getIconRes(item))
 
         private fun getIconRes(playlist: Playlist): Int = when {
-            playlist is SmartPlaylist                      -> playlist.iconRes
             favoritesStore.containsPlaylist(playlist)      -> R.drawable.ic_pin_white_24dp
             isFavoritePlaylist(itemView.context, playlist) -> R.drawable.ic_favorite_white_24dp
-            else                                           -> R.drawable.ic_queue_music_white_24dp
+            else                                           -> playlist.iconRes
         }
 
         companion object {
@@ -106,7 +104,7 @@ class PlaylistDisplayAdapter(
     }
 
     companion object {
-        private const val SMART_PLAYLIST = 0
+        private const val DYNAMIC_PLAYLIST = 0
         private const val DEFAULT_PLAYLIST = 1
     }
 

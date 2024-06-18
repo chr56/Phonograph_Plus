@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2022~2023 chr_56, Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.ui.dialogs
+package player.phonograph.ui.modules.playlist.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import player.phonograph.R
-import player.phonograph.mechanism.playlist.PlaylistEdit
+import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.util.parcelableArrayList
@@ -44,7 +44,7 @@ class CreatePlaylistDialog : DialogFragment() {
                 val activity = requireActivity()
                 if (!PlaylistLoader.checkExistence(activity, name)) {
                     lifecycleScope.launch(Dispatchers.IO) {
-                        PlaylistEdit.create(
+                        PlaylistProcessors.create(
                             context = activity,
                             name = name,
                             songs = songs,

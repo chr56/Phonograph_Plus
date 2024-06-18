@@ -16,11 +16,10 @@ import player.phonograph.actions.actionRenamePlaylist
 import player.phonograph.actions.actionSavePlaylist
 import player.phonograph.actions.actionShuffleAndPlay
 import player.phonograph.actions.fragmentActivity
+import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.UIMode
-import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.model.playlist.PlaylistType
-import player.phonograph.model.playlist.ResettablePlaylist
-import player.phonograph.model.playlist.SmartPlaylist
+import player.phonograph.model.playlist.PLAYLIST_TYPE_LAST_ADDED
+import player.phonograph.model.playlist.VirtualPlaylistLocation
 import player.phonograph.ui.dialogs.LastAddedPlaylistIntervalDialog
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.util.theme.getTintedDrawable
@@ -98,18 +97,14 @@ fun playlistDetailToolbar(
             }
 
             // File Playlist
-            if (playlist !is SmartPlaylist) {
+            if (!playlist.isVirtual()) {
                 menuItem {
                     title = getString(R.string.edit)
                     itemId = R.id.action_edit_playlist
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
-                        if (playlist is FilePlaylist) {
-                            model.updateCurrentMode(UIMode.Editor)
-                            true
-                        } else {
-                            false
-                        }
+                        model.updateCurrentMode(UIMode.Editor)
+                        true
                     }
                 }
                 menuItem {
@@ -117,25 +112,22 @@ fun playlistDetailToolbar(
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
                         fragmentActivity(context) {
-                            (playlist as FilePlaylist).actionRenamePlaylist(it)
+                            playlist.actionRenamePlaylist(it)
                             true
                         }
                     }
                 }
             }
 
-            // Resettable
-            if (playlist is ResettablePlaylist) {
-                menuItem {
-                    title = getString(
-                        if (playlist is FilePlaylist) R.string.delete_action else R.string.clear_action
-                    )
-                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                    onClick {
-                        fragmentActivity(context) {
-                            playlist.actionDeletePlaylist(it)
-                            true
-                        }
+            menuItem {
+                title = getString(
+                    if (!playlist.isVirtual()) R.string.delete_action else R.string.clear_action
+                )
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    fragmentActivity(context) {
+                        playlist.actionDeletePlaylist(it)
+                        true
                     }
                 }
             }
@@ -145,7 +137,8 @@ fun playlistDetailToolbar(
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
                     runBlocking {
-                        MultiTagBrowserActivity.launch(context, ArrayList(playlist.getSongs(context).map { it.data }))
+                        val paths = PlaylistProcessors.of(playlist).allSongs(context).map { it.data }
+                        MultiTagBrowserActivity.launch(context, ArrayList(paths))
                     }
                     true
                 }
@@ -163,7 +156,8 @@ fun playlistDetailToolbar(
             }
 
             // shortcut
-            if (playlist.type == PlaylistType.LAST_ADDED) {
+            val location = playlist.location
+            if (location is VirtualPlaylistLocation && location.type == PLAYLIST_TYPE_LAST_ADDED) {
                 menuItem {
                     itemId = R.id.action_setting_last_added_interval
                     title = getString(R.string.pref_title_last_added_interval)
