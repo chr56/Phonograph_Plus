@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.modules.playlist
 
-import player.phonograph.mechanism.playlist.EditablePlaylistProcessor
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
@@ -28,7 +27,7 @@ class PlaylistDetailViewModel(_playlist: Playlist) : ViewModel() {
     fun refreshPlaylist(context: Context) {
         val playlist = _playlist.value
         viewModelScope.launch(Dispatchers.IO) {
-            PlaylistProcessors.of(playlist).refresh(context)
+            PlaylistProcessors.reader(playlist).refresh(context)
             fetchAllSongs(context)
         }
     }
@@ -38,7 +37,7 @@ class PlaylistDetailViewModel(_playlist: Playlist) : ViewModel() {
 
 
     suspend fun fetchAllSongs(context: Context) {
-        val playlistSongs = PlaylistProcessors.of(playlist.value).allSongs(context)
+        val playlistSongs = PlaylistProcessors.reader(playlist.value).allSongs(context)
         _songs.emit(playlistSongs)
     }
 
@@ -68,22 +67,12 @@ class PlaylistDetailViewModel(_playlist: Playlist) : ViewModel() {
 
     fun moveItem(context: Context, fromPosition: Int, toPosition: Int): Deferred<Boolean> =
         viewModelScope.async(Dispatchers.IO) {
-            val processor = PlaylistProcessors.of(playlist.value)
-            if (processor is EditablePlaylistProcessor && fromPosition != toPosition) {
-                processor.moveSong(context, fromPosition, toPosition)
-            } else {
-                false
-            }
+            PlaylistProcessors.writer(playlist.value)?.moveSong(context, fromPosition, toPosition) ?: false
         }
 
     fun deleteItem(context: Context, song: Song, index: Int): Deferred<Boolean> =
         viewModelScope.async(Dispatchers.IO) {
-            val processor = PlaylistProcessors.of(playlist.value)
-            if (processor is EditablePlaylistProcessor) {
-                processor.removeSong(context, song, index.toLong())
-            } else {
-                false
-            }
+            PlaylistProcessors.writer(playlist.value)?.removeSong(context, song, index.toLong()) ?: false
         }
 
 }

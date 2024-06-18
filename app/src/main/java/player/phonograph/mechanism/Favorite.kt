@@ -5,7 +5,6 @@ package player.phonograph.mechanism
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
-import player.phonograph.mechanism.playlist.EditablePlaylistProcessor
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.mechanism.playlist.mediastore.addToPlaylistViaMediastore
 import player.phonograph.mechanism.playlist.mediastore.createOrFindPlaylistViaMediastore
@@ -63,7 +62,7 @@ class FavoritePlaylistImpl : IFavorite {
     override suspend fun allSongs(context: Context): List<Song> {
         val favoritesPlaylist = getFavoritesPlaylist(context)
         return if (favoritesPlaylist != null) {
-            PlaylistProcessors.of(favoritesPlaylist).allSongs(context)
+            PlaylistProcessors.reader(favoritesPlaylist).allSongs(context)
         } else {
             emptyList()
         }
@@ -83,8 +82,7 @@ class FavoritePlaylistImpl : IFavorite {
             if (isFavorite(context, song)) {
                 val favoritesPlaylist = getFavoritesPlaylist(context)
                 if (favoritesPlaylist != null)
-                    (PlaylistProcessors.of(favoritesPlaylist) as EditablePlaylistProcessor)
-                        .removeSong(context, song, -1)
+                    PlaylistProcessors.writer(favoritesPlaylist)!!.removeSong(context, song, -1)
                 false
             } else {
                 addToPlaylistViaMediastore(context, song, getOrCreateFavoritesPlaylist(context).id, false)
@@ -96,7 +94,7 @@ class FavoritePlaylistImpl : IFavorite {
     override suspend fun clearAll(context: Context): Boolean {
         val favoritesPlaylist = getFavoritesPlaylist(context)
         return if (favoritesPlaylist != null) {
-            PlaylistProcessors.of(favoritesPlaylist).clear(context)
+            PlaylistProcessors.delete(context, favoritesPlaylist)
         } else {
             false
         }

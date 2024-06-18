@@ -23,7 +23,7 @@ internal suspend fun convertToSongs(selections: Iterable<*>, context: Context): 
         is Album -> Songs.album(context, it.id)
         is Artist -> Songs.artist(context, it.id)
         is Genre -> Songs.genres(context, it.id)
-        is Playlist -> PlaylistProcessors.of(it).allSongs(context)
+        is Playlist -> PlaylistProcessors.reader(it).allSongs(context)
         is SongCollection -> it.songs
         is FileEntity.File -> listOf(Songs.searchByFileEntity(context, it))
         // is FileEntity.Folder -> TODO()

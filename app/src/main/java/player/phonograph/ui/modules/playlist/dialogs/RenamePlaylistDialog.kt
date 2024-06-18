@@ -7,7 +7,6 @@ package player.phonograph.ui.modules.playlist.dialogs
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import player.phonograph.R
-import player.phonograph.mechanism.playlist.EditablePlaylistProcessor
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.util.lifecycleScopeOrNewOne
@@ -37,7 +36,7 @@ class RenamePlaylistDialog : DialogFragment() {
                 val name: String = charSequence.toString().trim()
                 if (name.isNotEmpty()) {
                     dialog.context.lifecycleScopeOrNewOne().launch {
-                        (PlaylistProcessors.of(playlist) as EditablePlaylistProcessor).rename(dialog.context, name)
+                        PlaylistProcessors.writer(playlist)!!.rename(dialog.context, name)
                     }
                 }
             }

@@ -101,8 +101,7 @@ class FavoritesStore constructor(context: Context) :
         containsImpl(TABLE_NAME_SONGS, songId, path)
 
     fun containsPlaylist(playlist: Playlist): Boolean =
-        if (!playlist.isVirtual())
-            containsImpl(TABLE_NAME_PLAYLISTS, playlist.id, (playlist.location as FilePlaylistLocation).path)
+        if (!playlist.isVirtual()) containsImpl(TABLE_NAME_PLAYLISTS, playlist.id, playlist.path())
         else false
 
     fun containsPlaylist(playlistId: Long?, path: String?): Boolean =
@@ -124,7 +123,7 @@ class FavoritesStore constructor(context: Context) :
         addImpl(TABLE_NAME_SONGS, song.id, song.data, song.title)
 
     fun addPlaylist(playlist: Playlist): Boolean =
-        addImpl(TABLE_NAME_PLAYLISTS, playlist.id, (playlist.location as FilePlaylistLocation).path, playlist.name)
+        addImpl(TABLE_NAME_PLAYLISTS, playlist.id, playlist.path()!!, playlist.name)
 
     private fun addImpl(tableName: String, id: Long, path: String, name: String?): Boolean {
         val database = writableDatabase
@@ -165,7 +164,7 @@ class FavoritesStore constructor(context: Context) :
         val data = playlists.map {
             ContentValues(4).apply {
                 put(COLUMNS_ID, it.id)
-                put(COLUMNS_PATH, (it.location as FilePlaylistLocation).path)
+                put(COLUMNS_PATH, it.path()!!)
                 put(COLUMNS_TITLE, it.name)
                 put(COLUMNS_TIMESTAMP, currentTimestamp())
             }
@@ -195,7 +194,7 @@ class FavoritesStore constructor(context: Context) :
         removeImpl(TABLE_NAME_SONGS, song.id, song.data)
 
     fun removePlaylist(playlist: Playlist): Boolean =
-        removeImpl(TABLE_NAME_PLAYLISTS, playlist.id, (playlist.location as FilePlaylistLocation).path)
+        removeImpl(TABLE_NAME_PLAYLISTS, playlist.id, playlist.path()!!)
 
     private fun removeImpl(table: String, id: Long, path: String): Boolean {
         val database = writableDatabase

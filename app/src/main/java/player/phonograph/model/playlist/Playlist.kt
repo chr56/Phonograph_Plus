@@ -28,6 +28,11 @@ data class Playlist(
 
     fun isVirtual(): Boolean = location is VirtualPlaylistLocation
 
+    /**
+     * @return actual path of this playlist if this playlist is actually file file playlist (null if not)
+     */
+    fun path() = (location as? FilePlaylistLocation)?.path
+
     companion object {
         val EMPTY_PLAYLIST = Playlist(0, "EMPTY PLAYLIST", FilePlaylistLocation("/"))
     }

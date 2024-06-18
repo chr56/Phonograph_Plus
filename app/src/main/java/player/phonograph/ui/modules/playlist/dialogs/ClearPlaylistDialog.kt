@@ -98,11 +98,10 @@ class ClearPlaylistDialog : DialogFragment() {
      * @param context must be IOpenDirStorageAccess
      */
     private suspend fun delete(context: FragmentActivity, playlists: List<Playlist>) {
-        val playlistProcessors = playlists.map(PlaylistProcessors::of)
 
         /* Normally Delete (MediaStore + Internal database) */
-        val results = playlistProcessors.map { playlistProcessor ->
-            playlistProcessor.clear(context, PlaylistProcessors.OPTION_DELETE_WITH_MEDIASTORE)
+        val results = playlists.map { playlist ->
+            PlaylistProcessors.delete(context, playlist, PlaylistProcessors.OPTION_DELETE_WITH_MEDIASTORE)
         }
 
         /* Check */
@@ -152,8 +151,7 @@ class ClearPlaylistDialog : DialogFragment() {
     private suspend fun deleteViaSAF(activity: Activity, playlists: List<Playlist>) {
         require(activity is IOpenDirStorageAccessible)
 
-        val paths =
-            playlists.mapNotNull { playlist -> (playlist.location as? FilePlaylistLocation)?.path }
+        val paths = playlists.mapNotNull { playlist -> playlist.path() }
         val uris = selectDocumentUris(activity, paths)
 
         val warnings = buildDeletionMessage(

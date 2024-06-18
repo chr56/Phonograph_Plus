@@ -355,7 +355,7 @@ object MediaItemProviders {
 
     private class PlaylistProvider(val playlistId: Long) : AbsMediaItemProvider() {
         private suspend fun fetch(context: Context) =
-            PlaylistProcessors.of(PlaylistLoader.id(context, playlistId)).allSongs(context)
+            PlaylistProcessors.reader(PlaylistLoader.id(context, playlistId)).allSongs(context)
 
         override suspend fun browser(context: Context): List<MediaItem> =
             withPlayAllItems(
