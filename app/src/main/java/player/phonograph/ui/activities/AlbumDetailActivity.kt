@@ -4,7 +4,7 @@ import lib.phonograph.misc.menuProvider
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
-import player.phonograph.actions.menu.albumDetailToolbar
+import player.phonograph.actions.menu.ToolbarMenuProviders
 import player.phonograph.databinding.ActivityAlbumDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.misc.IPaletteColorProvider
@@ -170,7 +170,8 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
     }
 
     private fun setupMenu(menu: Menu) {
-        albumDetailToolbar(menu, this, model.album.value, primaryTextColor(viewModel.activityColor.value))
+        ToolbarMenuProviders.AlbumToolbarMenuProvider
+            .inflateMenu(menu, this, model.album.value, primaryTextColor(viewModel.activityColor.value))
         tintMenuActionIcons(viewBinding.toolbar, menu, primaryTextColor(viewModel.activityColor.value))
     }
 

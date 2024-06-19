@@ -7,9 +7,9 @@ import lib.phonograph.misc.menuProvider
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
-import player.phonograph.actions.menu.GetContentDelegate
-import player.phonograph.actions.menu.IGetContentRequester
-import player.phonograph.actions.menu.artistDetailToolbar
+import player.phonograph.actions.GetContentDelegate
+import player.phonograph.actions.IGetContentRequester
+import player.phonograph.actions.menu.ToolbarMenuProviders
 import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.misc.IPaletteColorProvider
@@ -177,7 +177,9 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
     }
 
     private fun setupMenu(menu: Menu) {
-        artistDetailToolbar(menu, this, model.artist.value ?: Artist(), primaryTextColor(viewModel.activityColor.value))
+        ToolbarMenuProviders.ArtistToolbarMenuProvider.inflateMenu(
+            menu, this, model.artist.value ?: Artist(), primaryTextColor(viewModel.activityColor.value)
+        )
         attach(menu) {
             menuItem(title = getString(R.string.colored_footers)) {
                 checkable = true
