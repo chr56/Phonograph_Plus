@@ -4,14 +4,14 @@
 
 package player.phonograph.ui.fragments.pages.adapter
 
-import player.phonograph.actions.ClickActionProviders
+import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.model.Genre
+import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.util.text.makeSectionName
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View

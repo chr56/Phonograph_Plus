@@ -7,12 +7,12 @@ package player.phonograph.ui.adapter
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.actions.ClickActionProviders
-import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.coil.AbsPreloadImageCache
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteBitmap
 import player.phonograph.coil.target.PaletteTargetBuilder
+import player.phonograph.mechanism.actions.ActionMenuProviders
+import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.model.Displayable
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.settings.Keys
@@ -25,7 +25,6 @@ import player.phonograph.util.theme.themeFooterColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
@@ -38,8 +37,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

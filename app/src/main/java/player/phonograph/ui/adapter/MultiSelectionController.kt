@@ -8,7 +8,7 @@ import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.ToolbarCab.Companion.STATUS_ACTIVE
 import lib.phonograph.cab.initToolbarCab
 import player.phonograph.R
-import player.phonograph.actions.menu.multiItemsToolbar
+import player.phonograph.mechanism.actions.MultiSelectionToolbarMenuProviders
 import player.phonograph.misc.IPaletteColorProvider
 import player.phonograph.util.debug
 import player.phonograph.util.theme.getTintedDrawable
@@ -198,7 +198,7 @@ class MultiSelectionController<I>(
 
     private fun ToolbarCab.setupMenu() {
         menuHandler = {
-            multiItemsToolbar(it.menu, activity, this@MultiSelectionController)
+            MultiSelectionToolbarMenuProviders.inflate(it.menu, activity, this@MultiSelectionController)
         }
     }
     /**

@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.actions
+package player.phonograph.mechanism.actions
 
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Song
@@ -12,6 +12,7 @@ import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialog
 import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialog
 import player.phonograph.ui.modules.playlist.dialogs.RenamePlaylistDialog
+import player.phonograph.util.fragmentActivity
 import androidx.fragment.app.FragmentActivity
 import android.content.Context
 import kotlin.random.Random

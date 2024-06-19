@@ -13,9 +13,9 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHold
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
-import player.phonograph.actions.ClickActionProviders
-import player.phonograph.actions.actionGotoDetail
-import player.phonograph.actions.menu.ActionMenuProviders
+import player.phonograph.mechanism.actions.ActionMenuProviders
+import player.phonograph.mechanism.actions.ClickActionProviders
+import player.phonograph.mechanism.actions.actionGotoDetail
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
 import player.phonograph.ui.adapter.OrderedItemAdapter

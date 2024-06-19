@@ -4,8 +4,8 @@
 
 package player.phonograph.ui.fragments.pages.adapter
 
-import player.phonograph.actions.ClickActionProviders
-import player.phonograph.actions.menu.ActionMenuProviders
+import player.phonograph.mechanism.actions.ActionMenuProviders
+import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString

@@ -11,7 +11,7 @@ import lib.phonograph.misc.Reboot
 import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.actions.actionPlay
+import player.phonograph.mechanism.actions.actionPlay
 import player.phonograph.mechanism.scanner.FileScanner
 import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.mechanism.setting.PageConfig

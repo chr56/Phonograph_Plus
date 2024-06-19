@@ -10,11 +10,11 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHold
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
-import player.phonograph.actions.menu.ActionMenuProviders
+import player.phonograph.mechanism.actions.ActionMenuProviders
+import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.adapter.OrderedItemAdapter
 import player.phonograph.util.produceSafeId
