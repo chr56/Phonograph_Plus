@@ -5,7 +5,7 @@
 package player.phonograph.ui.fragments.pages.adapter
 
 import player.phonograph.R
-import player.phonograph.actions.ClickActionProviders
+import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.model.Album
 import player.phonograph.model.getYearString
 import player.phonograph.model.sort.SortRef

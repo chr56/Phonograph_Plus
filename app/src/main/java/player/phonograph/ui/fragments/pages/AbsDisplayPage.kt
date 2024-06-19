@@ -9,8 +9,8 @@ import com.github.chr56.android.menu_dsl.menuItem
 import com.github.chr56.android.menu_model.MenuContext
 import com.google.android.material.appbar.AppBarLayout
 import player.phonograph.R
-import player.phonograph.actions.actionPlay
 import player.phonograph.databinding.FragmentDisplayPageBinding
+import player.phonograph.mechanism.actions.actionPlay
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Displayable
 import player.phonograph.model.ItemLayoutStyle

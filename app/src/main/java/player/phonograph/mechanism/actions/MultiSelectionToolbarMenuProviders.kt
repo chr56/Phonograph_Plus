@@ -2,20 +2,20 @@
  *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.actions.menu
+package player.phonograph.mechanism.actions
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
-import player.phonograph.actions.actionAddToPlaylist
-import player.phonograph.actions.actionDelete
-import player.phonograph.actions.actionDeletePlaylists
-import player.phonograph.actions.actionEnqueue
-import player.phonograph.actions.actionPlay
-import player.phonograph.actions.actionPlayNext
-import player.phonograph.actions.actionSavePlaylists
-import player.phonograph.actions.convertToSongs
+import player.phonograph.mechanism.playlist.PlaylistProcessors
+import player.phonograph.model.Album
+import player.phonograph.model.Artist
+import player.phonograph.model.Genre
+import player.phonograph.model.Song
+import player.phonograph.model.SongCollection
+import player.phonograph.model.file.FileEntity
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.repo.loader.Songs
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
@@ -160,4 +160,18 @@ object MultiSelectionToolbarMenuProviders {
             } // attach
             true
         }
+
+    private suspend fun convertToSongs(selections: Iterable<*>, context: Context): List<Song> = selections.flatMap {
+        when (it) {
+            is Song            -> listOf(it)
+            is Album           -> Songs.album(context, it.id)
+            is Artist          -> Songs.artist(context, it.id)
+            is Genre           -> Songs.genres(context, it.id)
+            is Playlist        -> PlaylistProcessors.reader(it).allSongs(context)
+            is SongCollection  -> it.songs
+            is FileEntity.File -> listOf(Songs.searchByFileEntity(context, it))
+            // is FileEntity.Folder -> TODO()
+            else               -> emptyList()
+        }
+    }
 }

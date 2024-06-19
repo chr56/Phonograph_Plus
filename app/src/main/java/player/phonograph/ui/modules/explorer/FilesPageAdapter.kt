@@ -6,9 +6,9 @@ package player.phonograph.ui.modules.explorer
 
 import coil.size.ViewSizeResolver
 import player.phonograph.R
-import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ItemListBinding
+import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.model.file.FileEntity
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting

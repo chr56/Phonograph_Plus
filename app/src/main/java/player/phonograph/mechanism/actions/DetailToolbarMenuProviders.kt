@@ -2,18 +2,11 @@
  *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.actions.menu
+package player.phonograph.mechanism.actions
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
-import player.phonograph.actions.IGetContentRequester
-import player.phonograph.actions.actionAddToPlaylist
-import player.phonograph.actions.actionDelete
-import player.phonograph.actions.actionEnqueue
-import player.phonograph.actions.actionPlay
-import player.phonograph.actions.actionPlayNext
-import player.phonograph.actions.fragmentActivity
 import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -34,7 +27,7 @@ import android.widget.Toast
 import kotlin.random.Random
 import kotlinx.coroutines.launch
 
-object ToolbarMenuProviders {
+object DetailToolbarMenuProviders {
 
 
     interface ToolbarMenuProvider<I> {

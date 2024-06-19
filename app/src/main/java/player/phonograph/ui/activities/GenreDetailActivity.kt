@@ -1,8 +1,8 @@
 package player.phonograph.ui.activities
 
 import lib.phonograph.misc.menuProvider
-import player.phonograph.actions.menu.ToolbarMenuProviders
 import player.phonograph.databinding.ActivityGenreDetailBinding
+import player.phonograph.mechanism.actions.DetailToolbarMenuProviders
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Genre
 import player.phonograph.model.ItemLayoutStyle
@@ -100,7 +100,7 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity() {
     }
 
     private fun setupMenu(menu: Menu) {
-        ToolbarMenuProviders.GenreEntityToolbarMenuProvider
+        DetailToolbarMenuProviders.GenreEntityToolbarMenuProvider
             .inflateMenu(menu, this, genre, primaryTextColor(viewModel.activityColor.value))
         tintMenuActionIcons(binding.toolbar, menu, primaryTextColor(viewModel.activityColor.value))
     }

@@ -8,8 +8,8 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.google.android.material.appbar.AppBarLayout
 import player.phonograph.R
-import player.phonograph.actions.actionPlay
 import player.phonograph.databinding.FragmentDisplayPageBinding
+import player.phonograph.mechanism.actions.actionPlay
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef

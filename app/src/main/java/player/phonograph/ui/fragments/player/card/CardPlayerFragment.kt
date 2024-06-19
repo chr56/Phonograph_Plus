@@ -4,9 +4,9 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import player.phonograph.R
-import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.databinding.FragmentCardPlayerBinding
 import player.phonograph.databinding.ItemListBinding
+import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote

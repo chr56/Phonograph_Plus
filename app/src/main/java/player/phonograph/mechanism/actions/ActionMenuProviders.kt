@@ -1,14 +1,13 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.actions.menu
+package player.phonograph.mechanism.actions
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.github.chr56.android.menu_dsl.submenu
 import player.phonograph.R
-import player.phonograph.actions.*
 import player.phonograph.mechanism.PathFilter
 import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.mechanism.setting.FileConfig

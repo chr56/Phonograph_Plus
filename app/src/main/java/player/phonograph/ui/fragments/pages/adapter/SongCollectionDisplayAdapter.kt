@@ -5,16 +5,14 @@
 package player.phonograph.ui.fragments.pages.adapter
 
 import player.phonograph.R
-import player.phonograph.actions.ClickActionProviders
+import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.SongCollection
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayConfig
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.themeIconColor
-import util.theme.color.primaryTextColor
 import androidx.appcompat.app.AppCompatActivity
 import android.graphics.drawable.Drawable
 import android.view.View

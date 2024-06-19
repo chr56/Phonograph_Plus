@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.actions
+package player.phonograph.mechanism.actions
 
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Song

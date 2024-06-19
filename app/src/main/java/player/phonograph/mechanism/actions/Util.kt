@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.actions
+package player.phonograph.mechanism.actions
 
 import lib.activityresultcontract.ActivityResultLauncherDelegate
 import player.phonograph.mechanism.playlist.PlaylistProcessors
@@ -20,22 +20,6 @@ import androidx.fragment.app.FragmentActivity
 import android.app.Activity
 import android.content.Context
 import android.net.Uri
-
-internal suspend fun convertToSongs(selections: Iterable<*>, context: Context): List<Song> = selections.flatMap {
-    when (it) {
-        is Song -> listOf(it)
-        is Album -> Songs.album(context, it.id)
-        is Artist -> Songs.artist(context, it.id)
-        is Genre -> Songs.genres(context, it.id)
-        is Playlist -> PlaylistProcessors.reader(it).allSongs(context)
-        is SongCollection -> it.songs
-        is FileEntity.File -> listOf(Songs.searchByFileEntity(context, it))
-        // is FileEntity.Folder -> TODO()
-        else -> emptyList()
-    }
-}
-
-
 
 inline fun activity(context: Context, block: (Activity) -> Boolean): Boolean =
     if (context is Activity) {

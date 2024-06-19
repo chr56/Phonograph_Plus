@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.modules.explorer
 
-import player.phonograph.actions.ClickActionProviders
+import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.model.file.FileEntity
 import androidx.fragment.app.viewModels
 

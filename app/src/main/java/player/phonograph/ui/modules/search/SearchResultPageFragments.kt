@@ -5,8 +5,8 @@
 package player.phonograph.ui.modules.search
 
 import player.phonograph.R
-import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.databinding.RecyclerViewWrappedProperBinding
+import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Displayable
