@@ -8,9 +8,11 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
 import player.phonograph.coil.CustomArtistImageStore
+import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
@@ -27,6 +29,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import kotlin.random.Random
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 object DetailToolbarMenuProviders {
 
@@ -354,6 +357,96 @@ object DetailToolbarMenuProviders {
             }
 
         private suspend fun Genre.allSongs(context: Context) = Songs.genres(context, id)
+    }
+
+    object PlaylistEntityToolbarMenuProvider : ToolbarMenuProvider<Playlist> {
+        override fun inflateMenu(
+            menu: Menu,
+            context: ComponentActivity,
+            item: Playlist,
+            iconColor: Int,
+        ): Boolean = with(context) {
+            attach(menu) {
+                menuItem {
+                    title = getString(R.string.action_play)
+                    icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
+                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+                    onClick { item.actionPlay(context) }
+                }
+                menuItem {
+                    title = getString(R.string.action_shuffle_playlist)
+                    icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
+                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+                    onClick { item.actionShuffleAndPlay(context) }
+                }
+                menuItem {
+                    title = getString(R.string.action_play_next)
+                    icon = getTintedDrawable(R.drawable.ic_redo_white_24dp, iconColor)
+                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                    onClick { item.actionPlayNext(context) }
+                }
+                menuItem {
+                    title = getString(R.string.action_add_to_playing_queue)
+                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                    onClick { item.actionAddToCurrentQueue(context) }
+                }
+                menuItem {
+                    title = getString(R.string.action_add_to_playlist)
+                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                    onClick {
+                        fragmentActivity(context) {
+                            item.actionAddToPlaylist(it)
+                            true
+                        }
+                    }
+                }
+                if (!item.isVirtual()) {
+                    menuItem {
+                        title = getString(R.string.rename_action)
+                        showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                        onClick {
+                            fragmentActivity(context) {
+                                item.actionRenamePlaylist(it)
+                                true
+                            }
+                        }
+                    }
+                }
+                menuItem {
+                    title = getString(
+                        if (!item.isVirtual()) R.string.delete_action else R.string.clear_action
+                    )
+                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                    onClick {
+                        fragmentActivity(context) {
+                            item.actionDeletePlaylist(it)
+                            true
+                        }
+                    }
+                }
+                menuItem(title = getString(R.string.action_tag_editor)) { //id = R.id.action_tag_editor
+                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                    onClick {
+                        runBlocking {
+                            val paths = PlaylistProcessors.reader(item).allSongs(context).map { it.data }
+                            MultiTagBrowserActivity.launch(context, ArrayList(paths))
+                        }
+                        true
+                    }
+                }
+                menuItem {
+                    title = getString(R.string.save_playlist_title)
+                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                    onClick {
+                        fragmentActivity(context) {
+                            item.actionSavePlaylist(it)
+                            true
+                        }
+                    }
+                }
+            }
+            true
+        }
     }
 
 }
