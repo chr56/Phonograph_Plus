@@ -17,6 +17,7 @@ import player.phonograph.ui.dialogs.SongDetailDialog
 import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialog
 import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.util.NavigationUtil
+import player.phonograph.util.fragmentActivity
 import player.phonograph.util.shareFileIntent
 import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity

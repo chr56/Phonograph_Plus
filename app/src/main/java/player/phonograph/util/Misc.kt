@@ -20,10 +20,12 @@ import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.model.Song
 import androidx.annotation.StringRes
 import androidx.core.content.FileProvider
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
@@ -73,6 +75,25 @@ fun sentPlaylistChangedLocalBoardCast() =
     LocalBroadcastManager.getInstance(App.instance).sendBroadcast(
         Intent(BROADCAST_PLAYLISTS_CHANGED)
     )
+
+
+//
+// Context check
+//
+
+inline fun activity(context: Context, block: (Activity) -> Boolean): Boolean =
+    if (context is Activity) {
+        block(context)
+    } else {
+        false
+    }
+
+inline fun fragmentActivity(context: Context, block: (FragmentActivity) -> Boolean): Boolean =
+    if (context is FragmentActivity) {
+        block(context)
+    } else {
+        false
+    }
 
 //
 // Looper & Handler

@@ -17,7 +17,9 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.ui.modules.web.LastFmDialog
+import player.phonograph.util.IGetContentRequester
 import player.phonograph.util.NavigationUtil
+import player.phonograph.util.fragmentActivity
 import player.phonograph.util.theme.getTintedDrawable
 import androidx.activity.ComponentActivity
 import androidx.annotation.ColorInt

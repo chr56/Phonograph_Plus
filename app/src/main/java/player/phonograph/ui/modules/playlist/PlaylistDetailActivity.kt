@@ -23,7 +23,6 @@ import org.koin.core.parameter.parametersOf
 import player.phonograph.R
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.mechanism.actions.DetailToolbarMenuProviders
-import player.phonograph.mechanism.actions.fragmentActivity
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
@@ -35,6 +34,7 @@ import player.phonograph.model.totalDuration
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.dialogs.LastAddedPlaylistIntervalDialog
+import player.phonograph.util.fragmentActivity
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
