@@ -16,10 +16,11 @@ import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.ui.modules.web.LastFmDialog
 import player.phonograph.util.NavigationUtil
-import player.phonograph.util.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.getTintedDrawable
+import androidx.activity.ComponentActivity
 import androidx.annotation.ColorInt
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
@@ -36,14 +37,19 @@ object DetailToolbarMenuProviders {
          */
         fun inflateMenu(
             menu: Menu,
-            context: Context,
+            context: ComponentActivity,
             item: I,
             @ColorInt iconColor: Int,
         ): Boolean
     }
 
     object AlbumToolbarMenuProvider : ToolbarMenuProvider<Album> {
-        override fun inflateMenu(menu: Menu, context: Context, item: Album, iconColor: Int): Boolean =
+        override fun inflateMenu(
+            menu: Menu,
+            context: ComponentActivity,
+            item: Album,
+            @ColorInt iconColor: Int,
+        ): Boolean =
             with(context) {
                 attach(menu) {
 
@@ -51,7 +57,7 @@ object DetailToolbarMenuProviders {
                         icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
-                            context.lifecycleScopeOrNewOne().launch {
+                            context.lifecycleScope.launch {
                                 item.allSongs(context).actionPlay(ShuffleMode.NONE, 0)
                             }
                             true
@@ -62,7 +68,7 @@ object DetailToolbarMenuProviders {
                         icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
-                            context.lifecycleScopeOrNewOne().launch {
+                            context.lifecycleScope.launch {
                                 val songs = item.allSongs(context)
                                 songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
                             }
@@ -75,7 +81,7 @@ object DetailToolbarMenuProviders {
                         icon = getTintedDrawable(R.drawable.ic_redo_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
-                            context.lifecycleScopeOrNewOne().launch {
+                            context.lifecycleScope.launch {
                                 item.allSongs(context).actionPlayNext()
                             }
                             true
@@ -87,7 +93,7 @@ object DetailToolbarMenuProviders {
                         icon = getTintedDrawable(R.drawable.ic_library_add_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
-                            context.lifecycleScopeOrNewOne().launch {
+                            context.lifecycleScope.launch {
                                 item.allSongs(context).actionEnqueue()
                             }
                             true
@@ -98,7 +104,7 @@ object DetailToolbarMenuProviders {
                         icon = getTintedDrawable(R.drawable.ic_playlist_add_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
-                            context.lifecycleScopeOrNewOne().launch {
+                            context.lifecycleScope.launch {
                                 item.allSongs(context).actionAddToPlaylist(context)
                             }
                             true
@@ -123,7 +129,7 @@ object DetailToolbarMenuProviders {
                         icon = getTintedDrawable(R.drawable.ic_library_music_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
-                            context.lifecycleScopeOrNewOne().launch {
+                            context.lifecycleScope.launch {
                                 val songs = item.allSongs(context)
                                 MultiTagBrowserActivity.launch(context, ArrayList(songs.map { it.data }))
                             }
@@ -137,7 +143,7 @@ object DetailToolbarMenuProviders {
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
                             fragmentActivity(context) {
-                                context.lifecycleScopeOrNewOne().launch {
+                                context.lifecycleScope.launch {
                                     item.allSongs(context).actionDelete(it)
                                 }
                                 true
@@ -163,7 +169,12 @@ object DetailToolbarMenuProviders {
     }
 
     object ArtistToolbarMenuProvider : ToolbarMenuProvider<Artist> {
-        override fun inflateMenu(menu: Menu, context: Context, item: Artist, iconColor: Int): Boolean =
+        override fun inflateMenu(
+            menu: Menu,
+            context: ComponentActivity,
+            item: Artist,
+            @ColorInt iconColor: Int,
+        ): Boolean =
             with(context) {
                 attach(menu) {
 
@@ -171,7 +182,7 @@ object DetailToolbarMenuProviders {
                         icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
-                            context.lifecycleScopeOrNewOne().launch {
+                            context.lifecycleScope.launch {
                                 item.allSongs(context).actionPlay(ShuffleMode.NONE, 0)
                             }
                             true
@@ -182,7 +193,7 @@ object DetailToolbarMenuProviders {
                         icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
-                            context.lifecycleScopeOrNewOne().launch {
+                            context.lifecycleScope.launch {
                                 val songs = item.allSongs(context)
                                 songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
                             }
@@ -195,7 +206,7 @@ object DetailToolbarMenuProviders {
                         icon = getTintedDrawable(R.drawable.ic_redo_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
-                            context.lifecycleScopeOrNewOne().launch {
+                            context.lifecycleScope.launch {
                                 item.allSongs(context).actionPlayNext()
                             }
                             true
@@ -207,7 +218,7 @@ object DetailToolbarMenuProviders {
                         icon = getTintedDrawable(R.drawable.ic_library_add_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
-                            context.lifecycleScopeOrNewOne().launch {
+                            context.lifecycleScope.launch {
                                 item.allSongs(context).actionEnqueue()
                             }
                             true
@@ -218,7 +229,7 @@ object DetailToolbarMenuProviders {
                         icon = getTintedDrawable(R.drawable.ic_playlist_add_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
-                            context.lifecycleScopeOrNewOne().launch {
+                            context.lifecycleScope.launch {
                                 item.allSongs(context).actionAddToPlaylist(context)
                             }
                             true
@@ -259,7 +270,7 @@ object DetailToolbarMenuProviders {
                         icon = getTintedDrawable(R.drawable.ic_library_music_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
-                            context.lifecycleScopeOrNewOne().launch {
+                            context.lifecycleScope.launch {
                                 val songs = item.allSongs(context)
                                 MultiTagBrowserActivity.launch(context, ArrayList(songs.map { it.data }))
                             }
@@ -271,7 +282,7 @@ object DetailToolbarMenuProviders {
                         icon = getTintedDrawable(R.drawable.ic_delete_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
-                            context.lifecycleScopeOrNewOne().launch {
+                            context.lifecycleScope.launch {
                                 item.allSongs(context).actionDelete(context)
                             }
                             true
@@ -297,14 +308,19 @@ object DetailToolbarMenuProviders {
     }
 
     object GenreEntityToolbarMenuProvider : ToolbarMenuProvider<Genre> {
-        override fun inflateMenu(menu: Menu, context: Context, item: Genre, iconColor: Int): Boolean =
+        override fun inflateMenu(
+            menu: Menu,
+            context: ComponentActivity,
+            item: Genre,
+            @ColorInt iconColor: Int,
+        ): Boolean =
             with(context) {
                 attach(menu) {
                     menuItem(getString(R.string.action_play)) {
                         icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                         onClick {
-                            context.lifecycleScopeOrNewOne().launch {
+                            context.lifecycleScope.launch {
                                 val allSongs = item.allSongs(context)
                                 allSongs.actionPlay(ShuffleMode.NONE, 0)
                             }
@@ -315,7 +331,7 @@ object DetailToolbarMenuProviders {
                         icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                         onClick {
-                            context.lifecycleScopeOrNewOne().launch {
+                            context.lifecycleScope.launch {
                                 val allSongs = item.allSongs(context)
                                 allSongs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(allSongs.size))
                             }
@@ -326,7 +342,7 @@ object DetailToolbarMenuProviders {
                         icon = getTintedDrawable(R.drawable.ic_redo_white_24dp, iconColor)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
-                            context.lifecycleScopeOrNewOne().launch {
+                            context.lifecycleScope.launch {
                                 val allSongs = item.allSongs(context)
                                 allSongs.actionPlayNext()
                             }
