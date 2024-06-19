@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.explorer
 
 import coil.size.ViewSizeResolver
 import player.phonograph.R
-import player.phonograph.actions.menu.fileEntityPopupMenu
+import player.phonograph.actions.menu.ActionMenuProviders
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity
@@ -26,7 +26,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.PopupMenu
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -59,9 +58,7 @@ class FilesPageAdapter(
                 setImage(image, item)
 
                 menu.setOnClickListener {
-                    PopupMenu(context, binding.menu).apply {
-                        fileEntityPopupMenu(context, this.menu, item)
-                    }.show()
+                    ActionMenuProviders.FileEntityActionMenuProvider.prepareMenu(it, item)
                 }
             }
             controller.registerClicking(itemView, bindingAdapterPosition) {
