@@ -56,7 +56,7 @@ fun FieldKey.res(): Int =
         FieldKey.YEAR         -> R.string.year
         FieldKey.GENRE        -> R.string.genre
         FieldKey.DISC_NO      -> R.string.disk_number
-        FieldKey.DISC_TOTAL   -> R.string.disk_number
+        FieldKey.DISC_TOTAL   -> R.string.disk_number_total
         FieldKey.TRACK        -> R.string.track
         FieldKey.TRACK_TOTAL  -> R.string.track_total
         FieldKey.RATING       -> R.string.rating
