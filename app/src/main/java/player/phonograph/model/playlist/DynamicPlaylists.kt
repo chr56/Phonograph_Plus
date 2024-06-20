@@ -5,40 +5,41 @@
 package player.phonograph.model.playlist
 
 import player.phonograph.R
+import android.content.res.Resources
 
 object DynamicPlaylists {
 
-    fun favorite(): Playlist =
+    fun favorites(resources: Resources): Playlist =
         Playlist(
-            "Favorite",
+            resources.getString(R.string.favorites),
             VirtualPlaylistLocation(PLAYLIST_TYPE_FAVORITE),
             iconRes = R.drawable.ic_favorite_white_24dp
         )
 
-    fun history(): Playlist =
+    fun history(resources: Resources): Playlist =
         Playlist(
-            "History",
+            resources.getString(R.string.history),
             VirtualPlaylistLocation(PLAYLIST_TYPE_HISTORY),
             iconRes = R.drawable.ic_access_time_white_24dp
         )
 
-    fun lastAdded(): Playlist =
+    fun lastAdded(resources: Resources): Playlist =
         Playlist(
-            "LastAdded",
+            resources.getString(R.string.last_added),
             VirtualPlaylistLocation(PLAYLIST_TYPE_LAST_ADDED),
             iconRes = R.drawable.ic_library_add_white_24dp
         )
 
-    fun myTopTrack(): Playlist =
+    fun myTopTrack(resources: Resources): Playlist =
         Playlist(
-            "MyTopTrack",
+            resources.getString(R.string.my_top_tracks),
             VirtualPlaylistLocation(PLAYLIST_TYPE_MY_TOP_TRACK),
             iconRes = R.drawable.ic_trending_up_white_24dp
         )
 
-    fun random(): Playlist =
+    fun random(resources: Resources): Playlist =
         Playlist(
-            "Random",
+            resources.getString(R.string.action_shuffle_all),
             VirtualPlaylistLocation(PLAYLIST_TYPE_RANDOM),
             iconRes = R.drawable.ic_shuffle_white_24dp
         )
