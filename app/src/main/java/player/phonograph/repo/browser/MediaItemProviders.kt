@@ -123,7 +123,7 @@ object MediaItemProviders {
         protected fun Playlist.toMediaItem(): MediaItem =
             mediaItem(FLAG_BROWSABLE) {
                 setTitle(name)
-                setMediaId(MediaItemPath.playlist(id()).mediaId)
+                setMediaId(MediaItemPath.playlist(id).mediaId)
             }
 
         protected fun Genre.toMediaItem(): MediaItem =

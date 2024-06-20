@@ -101,7 +101,7 @@ class FavoritePlaylistImpl : IFavorite {
     }
 
     private fun getFavoritesPlaylist(context: Context): Playlist? {
-        return PlaylistLoader.playlistName(context, context.getString(R.string.favorites)).takeIf { it.id() > 0 }
+        return PlaylistLoader.playlistName(context, context.getString(R.string.favorites)).takeIf { it.id > 0 }
     }
 
     private suspend fun getOrCreateFavoritesPlaylist(context: Context): Playlist {
