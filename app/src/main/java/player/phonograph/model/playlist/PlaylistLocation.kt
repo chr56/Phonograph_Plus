@@ -21,7 +21,11 @@ data class VirtualPlaylistLocation(@PlaylistType val type: Int) : PlaylistLocati
 }
 
 @Parcelize
-data class FilePlaylistLocation(val path: String) : PlaylistLocation {
+data class FilePlaylistLocation(
+    val path: String,
+    val storageVolume: String,
+    val mediastoreId: Long,
+) : PlaylistLocation {
     override fun text(context: Context): CharSequence = path
     override fun toString(): String = path
     override fun compareTo(other: PlaylistLocation): Int =

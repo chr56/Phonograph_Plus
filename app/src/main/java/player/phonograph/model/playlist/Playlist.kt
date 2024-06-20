@@ -6,6 +6,7 @@ package player.phonograph.model.playlist
 
 import player.phonograph.R
 import player.phonograph.model.Displayable
+import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
 import android.content.Context
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -34,7 +35,7 @@ data class Playlist(
     fun path() = (location as? FilePlaylistLocation)?.path
 
     companion object {
-        val EMPTY_PLAYLIST = Playlist(0, "EMPTY PLAYLIST", FilePlaylistLocation("/"))
+        val EMPTY_PLAYLIST = Playlist(0, "EMPTY PLAYLIST", FilePlaylistLocation("/", MEDIASTORE_VOLUME_EXTERNAL, -1))
     }
 }
 
