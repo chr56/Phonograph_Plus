@@ -71,7 +71,7 @@ class FavoritePlaylistImpl : IFavorite {
     override suspend fun isFavorite(context: Context, song: Song): Boolean {
         val favoritesPlaylist = getFavoritesPlaylist(context)
         return if (favoritesPlaylist != null) {
-            PlaylistSongLoader.doesPlaylistContain(context, favoritesPlaylist.id, song.id)
+            PlaylistSongLoader.doesPlaylistContain(context, favoritesPlaylist.mediaStoreId()!!, song.id)
         } else {
             false
         }
@@ -85,7 +85,7 @@ class FavoritePlaylistImpl : IFavorite {
                     PlaylistProcessors.writer(favoritesPlaylist)!!.removeSong(context, song, -1)
                 false
             } else {
-                addToPlaylistViaMediastore(context, song, getOrCreateFavoritesPlaylist(context).id, false)
+                addToPlaylistViaMediastore(context, song, getOrCreateFavoritesPlaylist(context).mediaStoreId()!!, false)
                 true
             }
         }
@@ -101,7 +101,7 @@ class FavoritePlaylistImpl : IFavorite {
     }
 
     private fun getFavoritesPlaylist(context: Context): Playlist? {
-        return PlaylistLoader.playlistName(context, context.getString(R.string.favorites)).takeIf { it.id > 0 }
+        return PlaylistLoader.playlistName(context, context.getString(R.string.favorites)).takeIf { it.id() > 0 }
     }
 
     private suspend fun getOrCreateFavoritesPlaylist(context: Context): Playlist {

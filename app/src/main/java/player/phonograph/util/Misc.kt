@@ -271,3 +271,14 @@ fun produceSafeId(id: Long, position: Int): Long {
     val shifted: Long = (position.toLong() and BITWISE_POSITION_CUT_MASK) shl BITWISE_SHIFT
     return cleared or shifted
 }
+
+
+private const val MASK_SHIFT = Long.SIZE_BITS - Byte.SIZE_BITS
+private const val MASK_LOWER_56BITS = (1L shl MASK_SHIFT) - 1 // 0x00ff_ffff_ffff_ffff
+/**
+ * Generate a sectioned 64-bits ID: the lowers 56 bits is cut from [id], the higher 8 bits is shifted from [section]
+ */
+fun produceSectionedId(id: Long, section: Int): Long {
+    return (id and MASK_LOWER_56BITS) + (section shl MASK_SHIFT)
+}
+

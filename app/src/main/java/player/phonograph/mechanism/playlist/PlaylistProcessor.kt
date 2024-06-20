@@ -57,7 +57,7 @@ object PlaylistProcessors {
 
     private fun of(playlist: Playlist): PlaylistProcessor =
         when (val location = playlist.location) {
-            is FilePlaylistLocation    -> FilePlaylistProcessor(playlist.id, location.path)
+            is FilePlaylistLocation    -> FilePlaylistProcessor(location.mediastoreId, location.path)
             is VirtualPlaylistLocation -> when (location.type) {
                 PLAYLIST_TYPE_FAVORITE     -> FavoriteSongsPlaylistProcessor
                 PLAYLIST_TYPE_LAST_ADDED   -> LastAddedPlaylistProcessor
@@ -239,7 +239,8 @@ private suspend fun deleteImpl(context: Context, playlist: Playlist, options: An
         is FilePlaylistLocation    -> {
             if (options == PlaylistProcessors.OPTION_DELETE_WITH_MEDIASTORE) {
                 val results =
-                    deletePlaylistsViaMediastore(context, longArrayOf(playlist.id)).firstOrNull() ?: return false
+                    deletePlaylistsViaMediastore(context, longArrayOf(location.mediastoreId)).firstOrNull()
+                        ?: return false
                 return results > 0
             } else {
                 val uri = selectDocumentUris(context, listOf(location.path)).firstOrNull() ?: return false

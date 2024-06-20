@@ -38,7 +38,7 @@ object PlaylistLoader : Loader<Playlist> {
     fun searchByPath(context: Context, path: String): Playlist? =
         queryPlaylists(
             context, "${MediaStoreCompat.Audio.PlaylistsColumns.DATA} = ?", arrayOf(path)
-        ).intoFirstPlaylist().takeIf { it.id > 0 }
+        ).intoFirstPlaylist().takeIf { it.id() > 0 }
 
     fun searchByName(context: Context, name: String): List<Playlist> =
         queryPlaylists(
@@ -75,7 +75,6 @@ object PlaylistLoader : Loader<Playlist> {
     }
 
     private fun extractPlaylist(cursor: Cursor): Playlist = Playlist(
-        id = cursor.getLong(0),
         name = cursor.getString(1),
         location = FilePlaylistLocation(
             path = cursor.getString(2),

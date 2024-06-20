@@ -4,17 +4,20 @@
 
 package player.phonograph.model.playlist
 
+import player.phonograph.util.produceSectionedId
 import android.content.Context
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 sealed interface PlaylistLocation : Parcelable, Comparable<PlaylistLocation> {
+    fun id(): Long
     fun text(context: Context): CharSequence
 }
 
 @Parcelize
 data class VirtualPlaylistLocation(@PlaylistType val type: Int) : PlaylistLocation {
+    override fun id(): Long = produceSectionedId(type.toLong(), SECTION_VIRTUAL)
     override fun text(context: Context): CharSequence = playlistTypeName(context.resources, type)
     override fun toString(): String = "Virtual(type: $type)"
     override fun compareTo(other: PlaylistLocation): Int = 1
@@ -26,6 +29,7 @@ data class FilePlaylistLocation(
     val storageVolume: String,
     val mediastoreId: Long,
 ) : PlaylistLocation {
+    override fun id(): Long = produceSectionedId(mediastoreId, SECTION_MEDIASTORE)
     override fun text(context: Context): CharSequence = path
     override fun toString(): String = path
     override fun compareTo(other: PlaylistLocation): Int =
@@ -35,3 +39,6 @@ data class FilePlaylistLocation(
             -1
         }
 }
+
+private const val SECTION_MEDIASTORE = 0
+private const val SECTION_VIRTUAL = 1 shl 2

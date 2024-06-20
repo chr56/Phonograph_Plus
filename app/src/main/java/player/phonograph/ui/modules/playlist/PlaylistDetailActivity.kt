@@ -27,6 +27,7 @@ import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
 import player.phonograph.model.getReadableDurationString
+import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.PLAYLIST_TYPE_LAST_ADDED
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.VirtualPlaylistLocation
@@ -142,8 +143,8 @@ class PlaylistDetailActivity :
             model.playlist.collect { playlist ->
                 model.fetchAllSongs(this@PlaylistDetailActivity)
                 supportActionBar!!.title = playlist.name
-                if (!playlist.isVirtual() &&
-                    !PlaylistLoader.checkExistence(this@PlaylistDetailActivity, playlist.id)
+                if (playlist.location is FilePlaylistLocation
+                    && !PlaylistLoader.checkExistence(this@PlaylistDetailActivity, playlist.location.mediastoreId)
                 ) {
                     // File Playlist was deleted
                     finish()
