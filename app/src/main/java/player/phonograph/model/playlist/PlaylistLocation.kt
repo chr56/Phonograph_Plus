@@ -16,11 +16,16 @@ sealed interface PlaylistLocation : Parcelable, Comparable<PlaylistLocation> {
 }
 
 @Parcelize
-data class VirtualPlaylistLocation(@PlaylistType val type: Int) : PlaylistLocation {
+sealed class VirtualPlaylistLocation(@PlaylistType val type: Int) : PlaylistLocation {
     override fun id(): Long = produceSectionedId(type.toLong(), SECTION_VIRTUAL)
     override fun text(context: Context): CharSequence = playlistTypeName(context.resources, type)
-    override fun toString(): String = "Virtual(type: $type)"
     override fun compareTo(other: PlaylistLocation): Int = 1
+
+    data object Favorite : VirtualPlaylistLocation(PLAYLIST_TYPE_FAVORITE)
+    data object LastAdded : VirtualPlaylistLocation(PLAYLIST_TYPE_LAST_ADDED)
+    data object History : VirtualPlaylistLocation(PLAYLIST_TYPE_HISTORY)
+    data object MyTopTrack : VirtualPlaylistLocation(PLAYLIST_TYPE_MY_TOP_TRACK)
+    data object Random : VirtualPlaylistLocation(PLAYLIST_TYPE_RANDOM)
 }
 
 @Parcelize

@@ -12,35 +12,35 @@ object DynamicPlaylists {
     fun favorites(resources: Resources): Playlist =
         Playlist(
             resources.getString(R.string.favorites),
-            VirtualPlaylistLocation(PLAYLIST_TYPE_FAVORITE),
+            VirtualPlaylistLocation.Favorite,
             iconRes = R.drawable.ic_favorite_white_24dp
         )
 
     fun history(resources: Resources): Playlist =
         Playlist(
             resources.getString(R.string.history),
-            VirtualPlaylistLocation(PLAYLIST_TYPE_HISTORY),
+            VirtualPlaylistLocation.History,
             iconRes = R.drawable.ic_access_time_white_24dp
         )
 
     fun lastAdded(resources: Resources): Playlist =
         Playlist(
             resources.getString(R.string.last_added),
-            VirtualPlaylistLocation(PLAYLIST_TYPE_LAST_ADDED),
+            VirtualPlaylistLocation.LastAdded,
             iconRes = R.drawable.ic_library_add_white_24dp
         )
 
     fun myTopTrack(resources: Resources): Playlist =
         Playlist(
             resources.getString(R.string.my_top_tracks),
-            VirtualPlaylistLocation(PLAYLIST_TYPE_MY_TOP_TRACK),
+            VirtualPlaylistLocation.MyTopTrack,
             iconRes = R.drawable.ic_trending_up_white_24dp
         )
 
     fun random(resources: Resources): Playlist =
         Playlist(
             resources.getString(R.string.action_shuffle_all),
-            VirtualPlaylistLocation(PLAYLIST_TYPE_RANDOM),
+            VirtualPlaylistLocation.Random,
             iconRes = R.drawable.ic_shuffle_white_24dp
         )
 }
