@@ -11,16 +11,22 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
 import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
+import android.provider.MediaStore
 import android.util.SparseArray
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.Objects
+
+
+/** Storage Volume `external` **/
+val MEDIASTORE_VOLUME_EXTERNAL = if (SDK_INT >= VERSION_CODES.Q) MediaStore.VOLUME_EXTERNAL else "external"
 
 @Throws(IOException::class)
 fun InputStream.transferToOutputStream(outputStream: OutputStream): Long {

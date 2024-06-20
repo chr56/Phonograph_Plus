@@ -6,13 +6,14 @@ package player.phonograph.model.playlist
 
 import player.phonograph.R
 import player.phonograph.model.Displayable
+import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
 import android.content.Context
 import android.os.Parcelable
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Playlist(
-    @JvmField val id: Long,
     @JvmField val name: String,
     @JvmField val location: PlaylistLocation,
     @JvmField val dateAdded: Long = -1,
@@ -21,6 +22,9 @@ data class Playlist(
     @JvmField val iconRes: Int = R.drawable.ic_queue_music_white_24dp,
 ) : Parcelable, Displayable {
 
+    @IgnoredOnParcel
+    @JvmField
+    val id: Long = location.id()
 
     override fun getItemID(): Long = id
     override fun getDisplayTitle(context: Context): CharSequence = name
@@ -33,8 +37,13 @@ data class Playlist(
      */
     fun path() = (location as? FilePlaylistLocation)?.path
 
+    /**
+     * @return MediaStore id if available
+     */
+    fun mediaStoreId(): Long? = (location as? FilePlaylistLocation)?.mediastoreId
+
     companion object {
-        val EMPTY_PLAYLIST = Playlist(0, "EMPTY PLAYLIST", FilePlaylistLocation("/"))
+        val EMPTY_PLAYLIST = Playlist("EMPTY_PLAYLIST", FilePlaylistLocation("/", MEDIASTORE_VOLUME_EXTERNAL, -1))
     }
 }
 

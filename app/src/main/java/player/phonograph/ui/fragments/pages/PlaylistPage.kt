@@ -41,18 +41,19 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
     class PlaylistPageViewModel : AbsDisplayPageViewModel<Playlist>() {
         private val favoritesStore by GlobalContext.get().inject<FavoritesStore>()
         override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Playlist> {
+            val resources = context.resources
             return mutableListOf<Playlist>(
-                DynamicPlaylists.lastAdded(),
-                DynamicPlaylists.history(),
-                DynamicPlaylists.myTopTrack(),
+                DynamicPlaylists.lastAdded(resources),
+                DynamicPlaylists.history(resources),
+                DynamicPlaylists.myTopTrack(resources),
             ).also {
                 if (!Setting(context)[Keys.useLegacyFavoritePlaylistImpl].data) {
-                    it.add(DynamicPlaylists.favorite())
+                    it.add(DynamicPlaylists.favorites(resources))
                 }
             }.also { playlists ->
                 val (pined, normal) =
                     PlaylistLoader.all(context).partition { playlist ->
-                        favoritesStore.containsPlaylist(playlist.id, playlist.path())
+                        favoritesStore.containsPlaylist(playlist.mediaStoreId(), playlist.path())
                     }
                 playlists.addAll(pined)
                 playlists.addAll(normal)

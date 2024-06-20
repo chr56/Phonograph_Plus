@@ -191,17 +191,17 @@ class StarterActivity : AppCompatActivity() {
             SHORTCUT_TYPE_SHUFFLE_ALL -> {
                 reportShortcutUsed(this, ShuffleAllShortcutType.id)
                 shuffleMode = ShuffleMode.SHUFFLE
-                DynamicPlaylists.random()
+                DynamicPlaylists.random(resources)
             }
 
             SHORTCUT_TYPE_TOP_TRACKS  -> {
                 reportShortcutUsed(this, TopTracksShortcutType.id)
-                DynamicPlaylists.myTopTrack()
+                DynamicPlaylists.myTopTrack(resources)
             }
 
             SHORTCUT_TYPE_LAST_ADDED  -> {
                 reportShortcutUsed(this, LastAddedShortcutType.id)
-                DynamicPlaylists.lastAdded()
+                DynamicPlaylists.lastAdded(resources)
             }
 
             else                      -> return

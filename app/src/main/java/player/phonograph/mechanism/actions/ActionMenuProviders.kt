@@ -154,7 +154,7 @@ object ActionMenuProviders {
                         }
                     }
                     if (location is FilePlaylistLocation) menuItem {
-                        val pined = FavoritesStore.get().containsPlaylist(playlist.id, location.path)
+                        val pined = FavoritesStore.get().containsPlaylist(location.mediastoreId, location.path)
                         title =
                             getString(if (!pined) R.string.action_pin else R.string.action_unpin)
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
