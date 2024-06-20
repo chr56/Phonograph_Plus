@@ -7,14 +7,14 @@ package player.phonograph.mechanism.playlist.mediastore
 import legacy.phonograph.MediaStoreCompat
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
 import player.phonograph.R
-import player.phonograph.model.PlaylistSong
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.util.coroutineToast
+import player.phonograph.util.sentPlaylistChangedLocalBoardCast
+import player.phonograph.util.warning
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
-import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +30,7 @@ suspend fun renamePlaylistViaMediastore(
     id: Long,
     newName: String,
 ): Boolean = withContext(Dispatchers.IO) {
-    val playlistUri = PlaylistLoader.idToMediastoreUri(id)
+    val playlistUri = PlaylistLoader.mediastoreUri(id)
     try {
         val result = context.contentResolver.update(playlistUri, ContentValues().apply {
             put(MediaStoreCompat.Audio.PlaylistsColumns.NAME, newName)
@@ -70,7 +70,7 @@ suspend fun addToPlaylistViaMediastore(
     playlistId: Long,
     showToastOnFinish: Boolean,
 ): Boolean = withContext(Dispatchers.IO) {
-    val uri = Playlists.Members.getContentUri("external", playlistId)
+    val uri = PlaylistLoader.mediastoreUri(playlistId)
     var cursor: Cursor? = null
     var base = 0
     try {
@@ -145,6 +145,39 @@ suspend fun moveItemViaMediastore(
     res
 }
 
+/**
+ * delete playlists by ids via MediaStore
+ * @return playlist ids failing to delete
+ */
+suspend fun deletePlaylistsViaMediastore(
+    context: Context,
+    playlistIds: LongArray,
+): LongArray = withContext(Dispatchers.IO) {
+    var success = 0
+    val failList = mutableListOf<Long>()
+    // try to delete
+    for (id in playlistIds) {
+        val result = context.contentResolver.delete(
+            Playlists.EXTERNAL_CONTENT_URI,
+            "${MediaStore.Audio.Media._ID} = ?",
+            arrayOf(id.toString())
+        )
+        if (result == 0) {
+            Log.w(TAG, "failed to delete playlist id: $id")
+            failList.add(id)
+        }
+        success += result
+    }
+    coroutineToast(
+        context,
+        context.resources.getQuantityString(R.plurals.msg_deletion_result, playlistIds.size, success, playlistIds.size)
+    )
+    if (failList.isNotEmpty())
+        warning(TAG, failList.fold("Failed to delete playlist(id):") { acc, s -> "$acc, $s" })
+
+    sentPlaylistChangedLocalBoardCast()
+    failList.toLongArray()
+}
 
 /**
  * @return success or not
@@ -156,95 +189,18 @@ suspend fun removeFromPlaylistViaMediastore(
     index: Long,
 ): Int = withContext(Dispatchers.IO) {
     try {
-        val playlistUri = if (Build.VERSION.SDK_INT >= 29) {
-            Playlists.Members.getContentUri(MediaStore.getExternalVolumeNames(context).first(), playlistId)
-        } else {
-            PlaylistLoader.idToMediastoreUri(playlistId)
-        }
+        val playlistUri = PlaylistLoader.mediastoreUri(playlistId)
         val deleted = context.contentResolver.delete(
             playlistUri,
             "${Playlists.Members.AUDIO_ID} = ? AND ${Playlists.Members.PLAY_ORDER} = ?",
             arrayOf(songId.toString(), (index + 1).toString()) // start with 1
         )
         // Necessary because somehow the MediaStoreObserver doesn't work for playlists
-        context.contentResolver.notifyChange(PlaylistLoader.idToMediastoreUri(playlistId), null)
-        if (deleted > 1) {
-            Log.e("Playlist", "More items have been deleted!")
-        }
+        context.contentResolver.notifyChange(playlistUri, null)
+        if (deleted > 1) Log.e(TAG, "More items have been deleted!")
         deleted
     } catch (ignored: SecurityException) {
         0
     }
 }
-
-/**
- * @return success or not
- */
-suspend fun removeFromPlaylistViaMediastore(
-    context: Context,
-    playlistId: Long,
-    songId: Long,
-): Boolean = withContext(Dispatchers.IO) {
-    try {
-        val playlistUri = if (Build.VERSION.SDK_INT >= 29) {
-            Playlists.Members.getContentUri(MediaStore.getExternalVolumeNames(context).first(), playlistId)
-        } else {
-            PlaylistLoader.idToMediastoreUri(playlistId)
-        }
-        val deleted = context.contentResolver.delete(
-            playlistUri,
-            "${Playlists.Members.AUDIO_ID} = ?",
-            arrayOf(songId.toString())
-        )
-        // Necessary because somehow the MediaStoreObserver doesn't work for playlists
-        context.contentResolver.notifyChange(PlaylistLoader.idToMediastoreUri(playlistId), null)
-        if (deleted > 1) {
-            Log.e("Playlist", "More items have been deleted!")
-        }
-        deleted > 0
-    } catch (ignored: SecurityException) {
-        false
-    }
-}
-
-/**
- * @return success or not
- */
-suspend fun removeFromPlaylistViaMediastore(
-    context: Context,
-    songs: List<PlaylistSong>,
-): Boolean = withContext(Dispatchers.IO) {
-    val selectionArgs = arrayOfNulls<String>(songs.size)
-    for (i in selectionArgs.indices) {
-        selectionArgs[i] = songs[i].idInPlayList.toString()
-    }
-
-    var selection = Playlists.Members._ID + " IN ("
-    for (selectionArg in selectionArgs) selection += "?, "
-    selection = selection.substring(0, selection.length - 2) + ")"
-
-    try {
-        if (Build.VERSION.SDK_INT >= 29)
-            context.contentResolver.delete(
-                Playlists.Members.getContentUri(
-                    MediaStore.getExternalVolumeNames(context).firstOrNull(),
-                    songs[0].playlistId
-                ),
-                selection, selectionArgs
-            )
-        else
-            context.contentResolver.delete(
-                PlaylistLoader.idToMediastoreUri(songs[0].playlistId),
-                selection,
-                selectionArgs
-            )
-        // Necessary because somehow the MediaStoreObserver is not notified when adding a playlist
-        context.contentResolver.notifyChange(
-            PlaylistLoader.idToMediastoreUri(songs[0].playlistId),
-            null
-        )
-        true
-    } catch (ignored: SecurityException) {
-        false
-    }
-}
+private const val TAG = "Playlist"

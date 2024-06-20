@@ -136,10 +136,14 @@ object PlaylistLoader : Loader<Playlist> {
             .query(MediaStoreCompat.Audio.Playlists.EXTERNAL_CONTENT_URI, arrayOf(), selection, values, null)
             ?.use { it.count > 0 } ?: false
 
-    fun idToMediastoreUri(id: Long): Uri =
-        MediaStoreCompat.Audio.Playlists.Members.getContentUri(if (SDK_INT >= Q) VOLUME_EXTERNAL else "external", id)
+    /**
+     * @param id playlist id
+     * @return playlist uri in MediaStore
+     */
+    fun mediastoreUri(id: Long, volume: String = EXTERNAL): Uri =
+        MediaStoreCompat.Audio.Playlists.Members.getContentUri(volume, id)
 
-
+    private val EXTERNAL = if (SDK_INT >= Q) VOLUME_EXTERNAL else "external"
 
     private fun List<Playlist>.sortAll(context: Context): List<Playlist> {
         val sortMode = Setting(context).Composites[Keys.playlistSortMode].data
