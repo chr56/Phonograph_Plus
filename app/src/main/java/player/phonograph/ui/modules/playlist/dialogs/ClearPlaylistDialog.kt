@@ -119,8 +119,7 @@ class ClearPlaylistDialog : DialogFragment() {
                 "${context.getString(R.string.failed_to_delete)}: "
             )
             for (failure in failures) {
-                appendLine(failure)
-
+                appendLine("${failure.name}(${failure.location})")
             }
         }
 
