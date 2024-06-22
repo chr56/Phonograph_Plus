@@ -4,91 +4,94 @@
 
 package player.phonograph.service.util
 
-import player.phonograph.App
+import player.phonograph.R
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.util.reportError
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
-import java.lang.ref.WeakReference
+import android.widget.Toast
 
-class SleepTimer private constructor(s: MusicService) {
-    val reference: WeakReference<MusicService> = WeakReference(s)
+class SleepTimer private constructor() {
 
-    var currentTimerPendingIntent: PendingIntent? = null
-        private set
+    private var currentTimerPendingIntent: PendingIntent? = null
 
     /**
-     * true if the sleep timer was set
+     * @return true if the sleep timer was set
      */
     fun hasTimer() = currentTimerPendingIntent != null
-
-    internal val alarmManager = s.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     /**
      * Set a sleep timer
      * @param minutesToQuit minutes to stop Music Service
      * @param shouldFinishLastSong flag whether to complete current song then quit the Service on Sleep Timer's time-up
      */
-    fun setTimer(minutesToQuit: Long, shouldFinishLastSong: Boolean): Boolean {
-        val context: Context = reference.get() ?: return false
-        return runCatching {
+    fun setTimer(context: Context, minutesToQuit: Long, shouldFinishLastSong: Boolean) {
+        try {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
             val nextSleepTimerElapsedTime = SystemClock.elapsedRealtime() + minutesToQuit * 60 * 1000
             Setting(context)[Keys.nextSleepTimerElapsedRealTime].data = nextSleepTimerElapsedTime
 
-            currentTimerPendingIntent = stopMusicServicePendingIntent(context, shouldFinishLastSong)
-            alarmManager.set(
-                AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                nextSleepTimerElapsedTime,
-                currentTimerPendingIntent!!
-            )
-        }.isSuccess
+            val pendingIntent = stopMusicServicePendingIntent(context, shouldFinishLastSong)
+            currentTimerPendingIntent = pendingIntent
+            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextSleepTimerElapsedTime, pendingIntent)
+
+            Toast.makeText(
+                context,
+                context.getString(R.string.sleep_timer_set, minutesToQuit),
+                Toast.LENGTH_SHORT
+            ).show()
+        } catch (e: Exception) {
+            reportError(e, TAG, "Failed to set sleep timer")
+            Toast.makeText(
+                context,
+                context.getString(R.string.failed),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     /**
      * Cancel current timer
      */
-    fun cancelTimer(): Boolean {
-        val context: Context = reference.get() ?: return false
-        return runCatching {
-            currentTimerPendingIntent?.let {
-                alarmManager.cancel(it)
-                it.cancel()
-                context.startService(
-                    cancelTimerIntent()
-                )
+    fun cancelTimer(context: Context) {
+        try {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+            val pendingIntent = currentTimerPendingIntent
+            if (pendingIntent != null) {
+                alarmManager.cancel(pendingIntent)
+                context.startService(cancelTimerIntent(context))
+                pendingIntent.cancel()
+                currentTimerPendingIntent = null
             }
-            currentTimerPendingIntent = null
-        }.isSuccess
+            Toast.makeText(
+                context,
+                context.getString(R.string.sleep_timer_canceled),
+                Toast.LENGTH_SHORT
+            ).show()
+        } catch (e: Exception) {
+            reportError(e, TAG, context.getString(R.string.failed))
+            Toast.makeText(
+                context,
+                context.getString(R.string.failed),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     companion object {
-        private var s: SleepTimer? = null
+        private var sleepTimer: SleepTimer? = null
 
-        /**
-         * @param musicService the MusicService to create the instance if static field is null
-         */
-        fun instance(musicService: MusicService): SleepTimer {
-            return s ?: SleepTimer(musicService).also { s = it }
+        fun instance(): SleepTimer {
+            return sleepTimer ?: SleepTimer().also { sleepTimer = it }
         }
 
-        /**
-         * Intent to stop background MusicService
-         * @param context Application context
-         * @param shouldFinishLastSong flag whether to complete current song then quit the Service on Sleep Timer's time-up
-         */
-        private fun stopMusicServiceIntent(
-            context: Context = App.instance,
-            shouldFinishLastSong: Boolean
-        ): Intent =
-            Intent(context, MusicService::class.java).apply {
-                action = if (shouldFinishLastSong) {
-                    MusicService.ACTION_STOP_AND_QUIT_PENDING
-                } else MusicService.ACTION_STOP_AND_QUIT_NOW
-            }
 
         /**
          * PendingIntent to send a intent which to stop background MusicService
@@ -97,8 +100,8 @@ class SleepTimer private constructor(s: MusicService) {
          */
         private fun stopMusicServicePendingIntent(
             context: Context,
-            shouldFinishLastSong: Boolean
-        ): PendingIntent? =
+            shouldFinishLastSong: Boolean,
+        ): PendingIntent =
             PendingIntent.getService(
                 context,
                 0,
@@ -106,11 +109,27 @@ class SleepTimer private constructor(s: MusicService) {
                 PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
-        private fun cancelTimerIntent(context: Context = App.instance): Intent = Intent(
-            context.applicationContext,
-            MusicService::class.java
-        ).apply {
-            action = MusicService.ACTION_CANCEL_PENDING_QUIT
-        }
+        /**
+         * Intent to stop background MusicService
+         * @param context Application context
+         * @param shouldFinishLastSong flag whether to complete current song then quit the Service on Sleep Timer's time-up
+         */
+        private fun stopMusicServiceIntent(
+            context: Context,
+            shouldFinishLastSong: Boolean,
+        ): Intent =
+            Intent(context.applicationContext, MusicService::class.java).apply {
+                action =
+                    if (shouldFinishLastSong) MusicService.ACTION_STOP_AND_QUIT_PENDING
+                    else MusicService.ACTION_STOP_AND_QUIT_NOW
+            }
+
+
+        private fun cancelTimerIntent(context: Context): Intent =
+            Intent(context.applicationContext, MusicService::class.java).apply {
+                action = MusicService.ACTION_CANCEL_PENDING_QUIT
+            }
+
+        private const val TAG = "SleepTimer"
     }
 }

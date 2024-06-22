@@ -24,7 +24,6 @@ import android.os.CountDownTimer
 import android.os.SystemClock
 import android.widget.FrameLayout
 import android.widget.TextView
-import android.widget.Toast
 
 /**
  * @author Karim Abou Zeid (kabouzeid), chr_56<modify>
@@ -52,7 +51,7 @@ class SleepTimerDialog : DialogFragment() {
                 setOnShowListener {
                     tintAlertDialogButtons(it as AlertDialog)
                     val service = MusicPlayerRemote.musicService ?: return@setOnShowListener
-                    if (SleepTimer.instance(service).hasTimer()) timerUpdater.start()
+                    if (SleepTimer.instance().hasTimer()) timerUpdater.start()
                 }
             }
 
@@ -67,41 +66,19 @@ class SleepTimerDialog : DialogFragment() {
     }
 
     private fun startTimer() {
-        val minutesToQuit = progress
         val service = MusicPlayerRemote.musicService
         require(service != null)
 
-        SleepTimer.instance(service).setTimer(
-            minutesToQuit.toLong(),
-            Setting(service)[Keys.sleepTimerFinishMusic].data
-        ).let { success ->
-            Toast.makeText(
-                requireActivity(),
-                if (success) {
-                    getString(R.string.sleep_timer_set, minutesToQuit)
-                } else {
-                    getString(R.string.failed)
-                },
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+        val minutesToQuit = progress.toLong()
+        val shouldFinishLastSong = Setting(service)[Keys.sleepTimerFinishMusic].data
+        SleepTimer.instance().setTimer(service, minutesToQuit, shouldFinishLastSong)
     }
 
     private fun cancelTimer() {
         val service = MusicPlayerRemote.musicService
         require(service != null)
 
-        SleepTimer.instance(service).cancelTimer().let {
-            Toast.makeText(
-                requireActivity(),
-                if (it) {
-                    getString(R.string.sleep_timer_canceled)
-                } else {
-                    getString(R.string.failed)
-                },
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+        SleepTimer.instance().cancelTimer(service)
     }
 
     private fun setupMainView(alertDialog: AlertDialog) {
@@ -173,7 +150,7 @@ class SleepTimerDialog : DialogFragment() {
         private fun setNegativeButtonText(time: Long) {
             val text = requireContext().getString(R.string.cancel_current_timer).plus(
                 MusicPlayerRemote.musicService?.let {
-                    if (time > 0 && SleepTimer.instance(it).hasTimer()) "(${getReadableDurationString(time)})" else ""
+                    if (time > 0 && SleepTimer.instance().hasTimer()) "(${getReadableDurationString(time)})" else ""
                 } ?: "(N/A)"
             )
             dialog.getButton(DialogInterface.BUTTON_NEGATIVE)?.text = text
