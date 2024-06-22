@@ -13,11 +13,11 @@ import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.util.parcelableArrayList
 import player.phonograph.util.theme.tintButtons
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.lifecycleScope
 import android.app.Dialog
 import android.os.Bundle
 import android.text.InputType
 import android.widget.Toast
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -43,7 +43,7 @@ class CreatePlaylistDialog : DialogFragment() {
                 }
                 val activity = requireActivity()
                 if (!PlaylistLoader.checkExistence(activity, name)) {
-                    lifecycleScope.launch(Dispatchers.IO) {
+                    coroutineScope.launch(Dispatchers.IO) {
                         PlaylistProcessors.create(
                             context = activity,
                             name = name,
@@ -65,6 +65,8 @@ class CreatePlaylistDialog : DialogFragment() {
             .tintButtons()
     }
 
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+
     companion object {
         private const val SONGS = "songs"
 
@@ -74,6 +76,5 @@ class CreatePlaylistDialog : DialogFragment() {
                     putParcelableArrayList(SONGS, ArrayList(songs ?: emptyList()))
                 }
             }
-
     }
 }
