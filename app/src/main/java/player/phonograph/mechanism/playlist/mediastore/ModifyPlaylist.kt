@@ -38,14 +38,11 @@ suspend fun renamePlaylistViaMediastore(
         if (result > 0) {
             // Necessary because somehow the MediaStoreObserver doesn't work for playlists
             context.contentResolver.notifyChange(playlistUri, null)
-            coroutineToast(context, R.string.success)
             true
         } else {
-            coroutineToast(context, R.string.failed)
             false
         }
     } catch (ignored: Exception) {
-        coroutineToast(context, R.string.failed)
         false
     }
 }

@@ -16,6 +16,7 @@ import androidx.fragment.app.DialogFragment
 import android.app.Dialog
 import android.os.Bundle
 import android.text.InputType
+import android.widget.Toast
 import kotlinx.coroutines.launch
 
 class RenamePlaylistDialog : DialogFragment() {
@@ -36,7 +37,12 @@ class RenamePlaylistDialog : DialogFragment() {
                 val name: String = charSequence.toString().trim()
                 if (name.isNotEmpty()) {
                     dialog.context.lifecycleScopeOrNewOne().launch {
-                        PlaylistProcessors.writer(playlist)!!.rename(dialog.context, name)
+                        val result = PlaylistProcessors.writer(playlist)!!.rename(dialog.context, name)
+                        Toast.makeText(
+                            dialog.context,
+                            if (result) R.string.success else R.string.failed,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
