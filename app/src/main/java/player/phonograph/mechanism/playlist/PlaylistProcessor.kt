@@ -238,10 +238,7 @@ private suspend fun deleteImpl(context: Context, playlist: Playlist, options: An
     return when (val location = playlist.location) {
         is FilePlaylistLocation    -> {
             if (options == PlaylistProcessors.OPTION_DELETE_WITH_MEDIASTORE) {
-                val results =
-                    deletePlaylistsViaMediastore(context, longArrayOf(location.mediastoreId)).firstOrNull()
-                        ?: return false
-                return results > 0
+                return deletePlaylistsViaMediastore(context, longArrayOf(location.mediastoreId)).isEmpty()
             } else {
                 val uri = selectDocumentUris(context, listOf(location.path)).firstOrNull() ?: return false
                 return DocumentsContract.deleteDocument(context.contentResolver, uri)
