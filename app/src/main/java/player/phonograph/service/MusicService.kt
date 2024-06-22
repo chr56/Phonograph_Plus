@@ -181,13 +181,23 @@ class MusicService : MediaBrowserServiceCompat() {
                     ACTION_PLAY                  -> play()
                     ACTION_REWIND                -> back(false)
                     ACTION_SKIP                  -> playNextSong(false)
-                    ACTION_STOP_AND_QUIT_NOW     -> stopSelf()
+                    ACTION_STOP_AND_QUIT_NOW     -> exitOrStop()
                     ACTION_STOP_AND_QUIT_PENDING -> controller.quitAfterFinishCurrentSong = true
                     ACTION_CANCEL_PENDING_QUIT   -> controller.quitAfterFinishCurrentSong = false
                 }
             }
         }
         return START_NOT_STICKY
+    }
+
+    private fun exitOrStop() {
+        log("serviceUsedInForeground: $serviceUsedInForeground", false)
+        if (serviceUsedInForeground > 0) {
+            pause()
+            log("Can not exit foreground service!", false)
+        } else {
+            stopSelf()
+        }
     }
 
     val playerState get() = controller.playerState
@@ -520,7 +530,9 @@ class MusicService : MediaBrowserServiceCompat() {
 
     }
 
+    private var serviceUsedInForeground: Int = 0
     override fun onBind(intent: Intent): IBinder {
+        serviceUsedInForeground++
         return if (SERVICE_INTERFACE == intent.action) {
             log("onBind(): bind to $SERVICE_INTERFACE", true)
             super.onBind(intent) ?: musicBind
@@ -528,6 +540,11 @@ class MusicService : MediaBrowserServiceCompat() {
             log("onBind(): bind to common MusicBinder", true)
             musicBind
         }
+    }
+
+    override fun onUnbind(intent: Intent?): Boolean {
+        serviceUsedInForeground--
+        return super.onUnbind(intent)
     }
 
     private val musicBind: IBinder = MusicBinder()
