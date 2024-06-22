@@ -70,10 +70,10 @@ class CreatePlaylistDialog : DialogFragment() {
     companion object {
         private const val SONGS = "songs"
 
-        fun create(songs: List<Song>?): CreatePlaylistDialog =
+        fun create(songs: List<Song>): CreatePlaylistDialog =
             CreatePlaylistDialog().apply {
                 arguments = Bundle().apply {
-                    putParcelableArrayList(SONGS, ArrayList(songs ?: emptyList()))
+                    putParcelableArrayList(SONGS, ArrayList(songs))
                 }
             }
     }
