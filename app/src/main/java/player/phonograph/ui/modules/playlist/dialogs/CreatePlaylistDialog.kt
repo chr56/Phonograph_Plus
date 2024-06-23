@@ -44,7 +44,7 @@ class CreatePlaylistDialog : DialogFragment() {
     private lateinit var nameBox: TextInputLayout
     private lateinit var locationBox: TextInputLayout
     private lateinit var cancelButton: AppCompatButton
-    private lateinit var okButton: AppCompatButton
+    private lateinit var createButton: AppCompatButton
     private lateinit var useSafCheckbox: AppCompatCheckBox
 
     private lateinit var nameEditText: EditText
@@ -69,7 +69,7 @@ class CreatePlaylistDialog : DialogFragment() {
         nameBox = alertDialog.findViewById(R.id.name)!!
         locationBox = alertDialog.findViewById(R.id.location)!!
         cancelButton = alertDialog.findViewById(R.id.button_cancel)!!
-        okButton = alertDialog.findViewById(R.id.button_ok)!!
+        createButton = alertDialog.findViewById(R.id.button_create)!!
         useSafCheckbox = alertDialog.findViewById(R.id.checkBox_saf)!!
 
         nameEditText = nameBox.editText!!
@@ -89,7 +89,7 @@ class CreatePlaylistDialog : DialogFragment() {
             }
         }
 
-        okButton.setOnClickListener {
+        createButton.setOnClickListener {
             val context = it.context
             coroutineScope.launch {
                 if (useSafCheckbox.isChecked) {
