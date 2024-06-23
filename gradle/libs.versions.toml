@@ -158,7 +158,6 @@ composeSettings = [
 
 materialDialogs = [
     "materialDialogs-core",
-    "materialDialogs-input",
     "materialDialogs-color",
 ]
 
