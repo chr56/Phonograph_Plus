@@ -40,6 +40,13 @@ suspend fun createPlaylistViaSAF(
     while (context.openFileStorageAccessDelegate.busy) yield()
     // launch
     val uri = createFileViaSAF(context, "$playlistName.m3u")
+    writePlaylist(context, uri, songs)
+}
+
+/**
+ * @param uri content uri to write
+ */
+suspend fun writePlaylist(context: Context, uri: Uri, songs: List<Song>) {
     openOutputStreamSafe(context, uri, "rwt")?.use { stream ->
         try {
             M3UWriter.write(stream, songs, true)
