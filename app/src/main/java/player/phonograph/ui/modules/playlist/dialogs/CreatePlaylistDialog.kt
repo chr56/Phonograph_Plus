@@ -9,7 +9,9 @@ import lib.storage.launcher.SAFActivityResultContracts
 import lib.storage.textparser.DocumentUriPathParser.documentUriBasePath
 import player.phonograph.R
 import player.phonograph.mechanism.playlist.m3u.M3UWriter
+import player.phonograph.mechanism.playlist.mediastore.createPlaylistViaMediastore
 import player.phonograph.model.Song
+import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.openOutputStreamSafe
 import player.phonograph.util.parcelableArrayList
@@ -17,12 +19,15 @@ import player.phonograph.util.reportError
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.fragment.app.DialogFragment
 import android.app.Dialog
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -40,6 +45,7 @@ class CreatePlaylistDialog : DialogFragment() {
     private lateinit var locationBox: TextInputLayout
     private lateinit var cancelButton: AppCompatButton
     private lateinit var okButton: AppCompatButton
+    private lateinit var useSafCheckbox: AppCompatCheckBox
 
     private lateinit var nameEditText: EditText
     private lateinit var locationEditText: EditText
@@ -64,6 +70,7 @@ class CreatePlaylistDialog : DialogFragment() {
         locationBox = alertDialog.findViewById(R.id.location)!!
         cancelButton = alertDialog.findViewById(R.id.button_cancel)!!
         okButton = alertDialog.findViewById(R.id.button_ok)!!
+        useSafCheckbox = alertDialog.findViewById(R.id.checkBox_saf)!!
 
         nameEditText = nameBox.editText!!
         locationEditText = locationBox.editText!!
@@ -71,6 +78,10 @@ class CreatePlaylistDialog : DialogFragment() {
 
     private fun setupMainView(alertDialog: AlertDialog) {
         nameEditText.setText(R.string.new_playlist_title)
+
+        useSafCheckbox.setOnCheckedChangeListener { _, value ->
+            locationBox.visibility = if (value) View.VISIBLE else View.INVISIBLE
+        }
 
         locationBox.setEndIconOnClickListener {
             coroutineScope.launch {
@@ -81,12 +92,16 @@ class CreatePlaylistDialog : DialogFragment() {
         okButton.setOnClickListener {
             val context = it.context
             coroutineScope.launch {
-                var uri = selectedUri
-                if (uri != null) {
-                    writePlaylist(context, uri, songs)
+                if (useSafCheckbox.isChecked) {
+                    var uri = selectedUri
+                    if (uri != null) {
+                        writePlaylist(context, uri, songs)
+                    } else {
+                        uri = selectFile()
+                        writePlaylist(context, uri, songs)
+                    }
                 } else {
-                    uri = selectFile()
-                    writePlaylist(context, uri, songs)
+                    createFromMediaStore(nameEditText.text.toString())
                 }
                 alertDialog.dismiss()
             }
@@ -103,6 +118,28 @@ class CreatePlaylistDialog : DialogFragment() {
             locationEditText.setText(documentUriBasePath(documentUri.pathSegments))
         }
         return documentUri
+    }
+
+    private suspend fun createFromMediaStore(name: String) {
+        if (name.isEmpty()) {
+            Toast.makeText(requireContext(), getString(R.string.failed), Toast.LENGTH_SHORT).show()
+            return
+        }
+        val activity = requireActivity()
+        if (!PlaylistLoader.checkExistence(activity, name)) {
+            coroutineScope.launch(Dispatchers.IO) {
+                createPlaylistViaMediastore(activity, name, songs)
+            }
+        } else {
+            Toast.makeText(
+                activity,
+                requireActivity().resources.getString(
+                    R.string.playlist_exists,
+                    name
+                ),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)

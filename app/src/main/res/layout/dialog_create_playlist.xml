@@ -43,7 +43,7 @@
             android:paddingVertical="8dp"
             app:endIconDrawable="@drawable/ic_add_white_24dp"
             app:endIconMode="custom"
-            app:layout_constraintBottom_toTopOf="@id/button_ok"
+            app:layout_constraintBottom_toTopOf="@id/checkBox_saf"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/name"
@@ -57,6 +57,18 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/checkBox_saf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:checked="true"
+            android:paddingVertical="16dp"
+            android:text="@string/behaviour_force_saf"
+            app:layout_constraintBottom_toTopOf="@id/button_ok"
+            app:layout_constraintStart_toStartOf="@id/location"
+            app:layout_constraintTop_toBottomOf="@id/location" />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_ok"
             style="@style/Widget.AppCompat.Button.Borderless"
@@ -65,7 +77,7 @@
             android:text="@android:string/ok"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/location"
-            app:layout_constraintTop_toBottomOf="@+id/location" />
+            app:layout_constraintTop_toBottomOf="@+id/checkBox_saf" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_cancel"
