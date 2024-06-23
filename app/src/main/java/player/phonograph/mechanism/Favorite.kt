@@ -7,14 +7,18 @@ import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.mechanism.playlist.mediastore.addToPlaylistViaMediastore
-import player.phonograph.mechanism.playlist.mediastore.createOrFindPlaylistViaMediastore
+import player.phonograph.mechanism.playlist.mediastore.createPlaylistViaMediastore
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
+import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
 import android.content.Context
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 
 interface IFavorite {
@@ -71,7 +75,12 @@ class FavoritePlaylistImpl : IFavorite {
     override suspend fun isFavorite(context: Context, song: Song): Boolean {
         val favoritesPlaylist = getFavoritesPlaylist(context)
         return if (favoritesPlaylist != null) {
-            PlaylistSongLoader.doesPlaylistContain(context, favoritesPlaylist.mediaStoreId()!!, song.id)
+            PlaylistSongLoader.doesPlaylistContain(
+                context,
+                MEDIASTORE_VOLUME_EXTERNAL,
+                favoritesPlaylist.mediaStoreId()!!,
+                song.id
+            )
         } else {
             false
         }
@@ -85,7 +94,15 @@ class FavoritePlaylistImpl : IFavorite {
                     PlaylistProcessors.writer(favoritesPlaylist)!!.removeSong(context, song, -1)
                 false
             } else {
-                addToPlaylistViaMediastore(context, song, getOrCreateFavoritesPlaylist(context).mediaStoreId()!!, false)
+                val favoritesPlaylist = getOrCreateFavoritesPlaylist(context)
+                val location = favoritesPlaylist.location as FilePlaylistLocation
+                addToPlaylistViaMediastore(
+                    context,
+                    song,
+                    location.storageVolume,
+                    location.mediastoreId,
+                    false
+                )
                 true
             }
         }
@@ -105,9 +122,31 @@ class FavoritePlaylistImpl : IFavorite {
     }
 
     private suspend fun getOrCreateFavoritesPlaylist(context: Context): Playlist {
-        return PlaylistLoader.id(
-            context,
-            createOrFindPlaylistViaMediastore(context, context.getString(R.string.favorites))
-        )
+        return createOrFindPlaylistViaMediastore(context, context.getString(R.string.favorites))
+            ?: Playlist.EMPTY_PLAYLIST
+    }
+
+
+    /**
+     * find or create playlist via MediaStore
+     * @return playlist created or found
+     */
+    private suspend fun createOrFindPlaylistViaMediastore(
+        context: Context,
+        name: String,
+    ): Playlist? = withContext(Dispatchers.IO) {
+        require(name.isNotEmpty())
+        // query first
+        val playlists = PlaylistLoader.searchByName(context, name)
+        if (playlists.isNotEmpty()) {
+            playlists.first()
+        } else {
+            val id = createPlaylistViaMediastore(context, name)
+            if (id != -1L) {
+                PlaylistLoader.id(context, id)
+            } else {
+                null
+            }
+        }
     }
 }

@@ -57,7 +57,7 @@ object PlaylistProcessors {
 
     private fun of(playlist: Playlist): PlaylistProcessor =
         when (val location = playlist.location) {
-            is FilePlaylistLocation    -> FilePlaylistProcessor(location.mediastoreId, location.path)
+            is FilePlaylistLocation    -> FilePlaylistProcessor(location)
             is VirtualPlaylistLocation -> when (location.type) {
                 PLAYLIST_TYPE_FAVORITE     -> FavoriteSongsPlaylistProcessor
                 PLAYLIST_TYPE_LAST_ADDED   -> LastAddedPlaylistProcessor
@@ -73,7 +73,8 @@ object PlaylistProcessors {
         if (shouldUseSAF(context) && context is ICreateFileStorageAccessible) {
             createPlaylistViaSAF(context, playlistName = name, songs = songs)
         } else {
-            createPlaylistViaMediastore(context, name, songs)
+            val id = createPlaylistViaMediastore(context, name, songs)
+            coroutineToast(context, if (id != -1L) R.string.success else R.string.failed)
         }
 
     suspend fun duplicate(context: Context, playlist: Playlist) =
@@ -85,8 +86,8 @@ object PlaylistProcessors {
         if (shouldUseSAF(context) && context is ICreateFileStorageAccessible) {
             createPlaylistsViaSAF(context, songBatches, names, defaultDirectory.absolutePath)
         } else {
-            // todo
-            duplicatePlaylistViaMediaStore(context, songBatches, names)
+            val result = duplicatePlaylistViaMediaStore(context, songBatches, names)
+            coroutineToast(context, if (result) R.string.success else R.string.failed)
         }
     }
 
@@ -128,42 +129,41 @@ sealed interface PlaylistWriter : PlaylistProcessor {
 }
 
 
-private class FilePlaylistProcessor(val id: Long, val path: String) : PlaylistReader, PlaylistWriter {
+private class FilePlaylistProcessor(val location: FilePlaylistLocation) : PlaylistReader, PlaylistWriter {
 
     override suspend fun allSongs(context: Context): List<Song> =
-        PlaylistSongLoader.getPlaylistSongList(context, id).map { it.song }
+        PlaylistSongLoader.getPlaylistSongList(context, location.mediastoreId).map { it.song }
 
     override suspend fun containsSong(context: Context, songId: Long): Boolean =
-        PlaylistSongLoader.doesPlaylistContain(context, id, songId)
+        PlaylistSongLoader.doesPlaylistContain(context, location.storageVolume, location.mediastoreId, songId)
 
-    override suspend fun removeSong(context: Context, song: Song, index: Long): Boolean {
-        return removeFromPlaylistViaMediastore(context, id, song.id, index) > 0
-    }
+    override suspend fun removeSong(context: Context, song: Song, index: Long): Boolean =
+        removeFromPlaylistViaMediastore(context, location.storageVolume, location.mediastoreId, song.id, index) > 0
 
     override suspend fun moveSong(context: Context, from: Int, to: Int): Boolean {
-        return moveItemViaMediastore(context, id, from, to)
+        return moveItemViaMediastore(context, location.mediastoreId, from, to)
     }
 
     override suspend fun appendSong(context: Context, song: Song) {
         if (shouldUseSAF(context) && context is IOpenFileStorageAccessible) {
             coroutineToast(context, R.string.direction_open_file_with_saf)
-            appendToPlaylistViaSAF(context, listOf(song), id, path)
+            appendToPlaylistViaSAF(context, listOf(song), location.mediastoreId, location.path)
         } else {
-            addToPlaylistViaMediastore(context, listOf(song), id, true)
+            addToPlaylistViaMediastore(context, listOf(song), location.storageVolume, location.mediastoreId, true)
         }
     }
 
     override suspend fun appendSongs(context: Context, songs: List<Song>) {
         if (shouldUseSAF(context) && context is IOpenFileStorageAccessible) {
             coroutineToast(context, R.string.direction_open_file_with_saf)
-            appendToPlaylistViaSAF(context, songs, id, path)
+            appendToPlaylistViaSAF(context, songs, location.mediastoreId, location.path)
         } else {
-            addToPlaylistViaMediastore(context, songs, id, true)
+            addToPlaylistViaMediastore(context, songs, location.storageVolume, location.mediastoreId, true)
         }
     }
 
     override suspend fun rename(context: Context, newName: String): Boolean =
-        renamePlaylistViaMediastore(context, id, newName)
+        renamePlaylistViaMediastore(context, location.storageVolume, location.mediastoreId, newName)
 
 
 }

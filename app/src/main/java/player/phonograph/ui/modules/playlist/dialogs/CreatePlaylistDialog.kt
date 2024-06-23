@@ -8,15 +8,11 @@ import com.google.android.material.textfield.TextInputLayout
 import lib.storage.launcher.SAFActivityResultContracts
 import lib.storage.textparser.DocumentUriPathParser.documentUriBasePath
 import player.phonograph.R
-import player.phonograph.mechanism.playlist.m3u.M3UWriter
 import player.phonograph.mechanism.playlist.mediastore.createPlaylistViaMediastore
+import player.phonograph.mechanism.playlist.saf.writePlaylist
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
-import player.phonograph.util.coroutineToast
-import player.phonograph.util.openOutputStreamSafe
 import player.phonograph.util.parcelableArrayList
-import player.phonograph.util.reportError
-import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatCheckBox
@@ -30,7 +26,6 @@ import android.widget.EditText
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -101,7 +96,7 @@ class CreatePlaylistDialog : DialogFragment() {
                         writePlaylist(context, uri, songs)
                     }
                 } else {
-                    createFromMediaStore(nameEditText.text.toString())
+                    createFromMediaStore(requireContext(), nameEditText.text.toString(), songs)
                 }
                 alertDialog.dismiss()
             }
@@ -120,27 +115,6 @@ class CreatePlaylistDialog : DialogFragment() {
         return documentUri
     }
 
-    private suspend fun createFromMediaStore(name: String) {
-        if (name.isEmpty()) {
-            Toast.makeText(requireContext(), getString(R.string.failed), Toast.LENGTH_SHORT).show()
-            return
-        }
-        val activity = requireActivity()
-        if (!PlaylistLoader.checkExistence(activity, name)) {
-            coroutineScope.launch(Dispatchers.IO) {
-                createPlaylistViaMediastore(activity, name, songs)
-            }
-        } else {
-            Toast.makeText(
-                activity,
-                requireActivity().resources.getString(
-                    R.string.playlist_exists,
-                    name
-                ),
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
 
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
@@ -164,16 +138,30 @@ class CreatePlaylistDialog : DialogFragment() {
             return documentUri
         }
 
-        private suspend fun writePlaylist(context: Context, uri: Uri, songs: List<Song>) {
-            openOutputStreamSafe(context, uri, "rwt")?.use { stream ->
-                try {
-                    M3UWriter.write(stream, songs, true)
-                    coroutineToast(context, R.string.success)
-                    delay(250)
-                    sentPlaylistChangedLocalBoardCast()
-                } catch (e: Exception) {
-                    reportError(e, "Playlist", "Failed to write $uri")
-                    coroutineToast(context, R.string.failed)
+
+        private suspend fun createFromMediaStore(activity: Context, name: String, songs: List<Song>) {
+            if (name.isEmpty()) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(activity, activity.getString(R.string.failed), Toast.LENGTH_SHORT).show()
+                }
+                return
+            }
+            if (!PlaylistLoader.checkExistence(activity, name)) {
+                val id = createPlaylistViaMediastore(activity, name, songs)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        activity,
+                        if (id != -1L) activity.getString(R.string.success) else activity.getString(R.string.failed),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } else {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        activity,
+                        activity.getString(R.string.playlist_exists, name),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }

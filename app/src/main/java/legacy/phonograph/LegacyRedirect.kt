@@ -22,6 +22,8 @@ object MediaStoreCompat {
             const val DEFAULT_SORT_ORDER = MediaStore.Audio.Playlists.DEFAULT_SORT_ORDER
             val EXTERNAL_CONTENT_URI: Uri get() = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI
             val INTERNAL_CONTENT_URI: Uri get() = MediaStore.Audio.Playlists.INTERNAL_CONTENT_URI
+            fun getContentUri(volumeName: String?): Uri =
+                MediaStore.Audio.Playlists.getContentUri(volumeName)
 
             object Members {
                 const val _ID = MediaStore.Audio.Playlists.Members._ID
@@ -30,14 +32,13 @@ object MediaStoreCompat {
                 const val DEFAULT_SORT_ORDER = MediaStore.Audio.Playlists.Members.DEFAULT_SORT_ORDER
 
                 fun getContentUri(volumeName: String?, playlistId: Long): Uri =
-                    MediaStore.Audio.Playlists.Members
-                        .getContentUri(volumeName, playlistId)
+                    MediaStore.Audio.Playlists.Members.getContentUri(volumeName, playlistId)
 
                 fun moveItem(
                     contentResolver: ContentResolver,
                     playlistId: Long,
                     from: Int,
-                    to: Int
+                    to: Int,
                 ): Boolean =
                     MediaStore.Audio.Playlists.Members
                         .moveItem(contentResolver, playlistId, from, to)
