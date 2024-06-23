@@ -115,26 +115,30 @@ class ClearPlaylistDialog : DialogFragment() {
                     allCount, allCount - failureCount, allCount
                 )
             )
-            appendLine(
-                "${context.getString(R.string.failed_to_delete)}: "
-            )
-            for (failure in failures) {
-                appendLine("${failure.name}(${failure.location})")
+            if (failureCount>0) {
+                appendLine(
+                    "${context.getString(R.string.failed_to_delete)}: "
+                )
+                for (failure in failures) {
+                    appendLine("${failure.name}(${failure.location})")
+                }
             }
         }
 
         /* Again */
         withContext(Dispatchers.Main) {
             MaterialDialog(context)
-                .title(R.string.failed_to_delete)
+                .title(R.string.action_delete_from_device)
                 .message(text = errorMessages)
                 .positiveButton(android.R.string.ok)
-                .negativeButton(R.string.delete_with_saf) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        if (context is IOpenDirStorageAccessible) {
-                            deleteViaSAF(context, failures)
-                        } else {
-                            coroutineToast(context, R.string.failed)
+                .apply {
+                    if (failureCount > 0) negativeButton(R.string.delete_with_saf) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            if (context is IOpenDirStorageAccessible) {
+                                deleteViaSAF(context, failures)
+                            } else {
+                                coroutineToast(context, R.string.failed)
+                            }
                         }
                     }
                 }

@@ -113,7 +113,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
         )
         addNewItemButton.visibility = View.VISIBLE
         addNewItemButton.setOnClickListener {
-            CreatePlaylistDialog.create(null).show(childFragmentManager, "CREATE_NEW_PLAYLIST")
+            CreatePlaylistDialog.create(emptyList()).show(childFragmentManager, "CREATE_NEW_PLAYLIST")
         }
     }
 
