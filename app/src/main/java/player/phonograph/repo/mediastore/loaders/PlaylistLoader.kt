@@ -14,6 +14,7 @@ import player.phonograph.repo.mediastore.internal.withPathFilter
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
+import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
@@ -149,10 +150,18 @@ object PlaylistLoader : Loader<Playlist> {
 
     /**
      * @param id playlist id
+     * @return playlist members uri in MediaStore
+     */
+    fun mediastoreMembersUri(id: Long, volume: String = MEDIASTORE_VOLUME_EXTERNAL): Uri =
+        MediaStoreCompat.Audio.Playlists.Members.getContentUri(volume, id)
+
+    /**
+     * @param volume MediaStore volume name
+     * @param id playlist id
      * @return playlist uri in MediaStore
      */
-    fun mediastoreUri(id: Long, volume: String = MEDIASTORE_VOLUME_EXTERNAL): Uri =
-        MediaStoreCompat.Audio.Playlists.Members.getContentUri(volume, id)
+    fun mediastoreUri(volume: String, id: Long): Uri =
+        ContentUris.withAppendedId(MediaStoreCompat.Audio.Playlists.getContentUri(volume), id)
 
     private fun List<Playlist>.sortAll(context: Context): List<Playlist> {
         val sortMode = Setting(context).Composites[Keys.playlistSortMode].data

@@ -85,7 +85,7 @@ object PlaylistSongLoader {
      */
     fun doesPlaylistContain(context: Context, playlistId: Long, songId: Long): Boolean {
         val cursor = context.contentResolver.query(
-            PlaylistLoader.mediastoreUri(playlistId),
+            PlaylistLoader.mediastoreMembersUri(playlistId),
             arrayOf(Playlists.Members.AUDIO_ID),
             Playlists.Members.AUDIO_ID + "=?",
             arrayOf(songId.toString()),

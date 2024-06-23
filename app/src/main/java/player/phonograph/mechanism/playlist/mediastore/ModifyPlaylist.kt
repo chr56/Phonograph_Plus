@@ -21,16 +21,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
+ * @param volume Mediastore volume where playlist is in
  * @param id playlist id to rename
  * @param newName new name
  * @return success or not
  */
 suspend fun renamePlaylistViaMediastore(
     context: Context,
+    volume: String,
     id: Long,
     newName: String,
 ): Boolean = withContext(Dispatchers.IO) {
-    val playlistUri = PlaylistLoader.mediastoreUri(id)
+    val playlistUri = PlaylistLoader.mediastoreUri(volume, id)
     try {
         val result = context.contentResolver.update(playlistUri, ContentValues().apply {
             put(MediaStoreCompat.Audio.PlaylistsColumns.NAME, newName)
@@ -67,7 +69,7 @@ suspend fun addToPlaylistViaMediastore(
     playlistId: Long,
     showToastOnFinish: Boolean,
 ): Boolean = withContext(Dispatchers.IO) {
-    val uri = PlaylistLoader.mediastoreUri(playlistId)
+    val uri = PlaylistLoader.mediastoreMembersUri(playlistId)
     var cursor: Cursor? = null
     var base = 0
     try {
@@ -186,7 +188,7 @@ suspend fun removeFromPlaylistViaMediastore(
     index: Long,
 ): Int = withContext(Dispatchers.IO) {
     try {
-        val playlistUri = PlaylistLoader.mediastoreUri(playlistId)
+        val playlistUri = PlaylistLoader.mediastoreMembersUri(playlistId)
         val deleted = context.contentResolver.delete(
             playlistUri,
             "${Playlists.Members.AUDIO_ID} = ? AND ${Playlists.Members.PLAY_ORDER} = ?",

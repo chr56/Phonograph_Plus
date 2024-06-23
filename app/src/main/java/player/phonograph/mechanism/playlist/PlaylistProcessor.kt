@@ -163,7 +163,7 @@ private class FilePlaylistProcessor(val location: FilePlaylistLocation) : Playli
     }
 
     override suspend fun rename(context: Context, newName: String): Boolean =
-        renamePlaylistViaMediastore(context, location.mediastoreId, newName)
+        renamePlaylistViaMediastore(context, location.storageVolume, location.mediastoreId, newName)
 
 
 }
