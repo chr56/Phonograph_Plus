@@ -86,8 +86,8 @@ object PlaylistProcessors {
         if (shouldUseSAF(context) && context is ICreateFileStorageAccessible) {
             createPlaylistsViaSAF(context, songBatches, names, defaultDirectory.absolutePath)
         } else {
-            // todo
-            duplicatePlaylistViaMediaStore(context, songBatches, names)
+            val result = duplicatePlaylistViaMediaStore(context, songBatches, names)
+            coroutineToast(context, if (result) R.string.success else R.string.failed)
         }
     }
 
