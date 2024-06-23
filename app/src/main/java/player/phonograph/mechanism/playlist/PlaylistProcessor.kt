@@ -73,7 +73,8 @@ object PlaylistProcessors {
         if (shouldUseSAF(context) && context is ICreateFileStorageAccessible) {
             createPlaylistViaSAF(context, playlistName = name, songs = songs)
         } else {
-            createPlaylistViaMediastore(context, name, songs)
+            val id = createPlaylistViaMediastore(context, name, songs)
+            coroutineToast(context, if (id != -1L) R.string.success else R.string.failed)
         }
 
     suspend fun duplicate(context: Context, playlist: Playlist) =

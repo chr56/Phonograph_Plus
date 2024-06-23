@@ -147,7 +147,14 @@ class CreatePlaylistDialog : DialogFragment() {
                 return
             }
             if (!PlaylistLoader.checkExistence(activity, name)) {
-                createPlaylistViaMediastore(activity, name, songs)
+                val id = createPlaylistViaMediastore(activity, name, songs)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        activity,
+                        if (id != -1L) activity.getString(R.string.success) else activity.getString(R.string.failed),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             } else {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(
