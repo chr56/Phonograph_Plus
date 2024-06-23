@@ -11,6 +11,7 @@ import player.phonograph.R
 import player.phonograph.mechanism.playlist.m3u.M3UWriter
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.text.currentDate
@@ -29,7 +30,7 @@ import java.io.IOException
 suspend fun createPlaylistViaMediastore(context: Context, name: String, songs: List<Song>) {
     val id = createOrFindPlaylistViaMediastore(context, name)
     if (PlaylistLoader.checkExistence(context, id)) {
-        addToPlaylistViaMediastore(context, songs, id, true)
+        addToPlaylistViaMediastore(context, songs, MEDIASTORE_VOLUME_EXTERNAL, id, true)
         coroutineToast(context, R.string.success)
         delay(250)
         sentPlaylistChangedLocalBoardCast()
@@ -56,10 +57,10 @@ suspend fun createOrFindPlaylistViaMediastore(
             PlaylistsColumns.NAME + "=?", arrayOf(name), null
         )
         if (cursor == null) {
-            createPlaylistImpl(context, name)
+            createPlaylistImpl(context, MEDIASTORE_VOLUME_EXTERNAL, name)
         } else if (cursor.count < 1) {
             cursor.close()
-            createPlaylistImpl(context, name)
+            createPlaylistImpl(context, MEDIASTORE_VOLUME_EXTERNAL, name)
         } else {
             // Playlist exists
             cursor.use {
@@ -79,16 +80,17 @@ suspend fun createOrFindPlaylistViaMediastore(
 /**
  * @return playlist id created (-1 if failed)
  */
-private suspend fun createPlaylistImpl(context: Context, name: String): Long {
+private suspend fun createPlaylistImpl(context: Context, volume: String, name: String): Long {
     val values = ContentValues(1).apply {
         put(PlaylistsColumns.NAME, name)
     }
-    val uri = context.contentResolver.insert(EXTERNAL_CONTENT_URI, values)
-    return if (uri != null) {
+    val playlistsUri = MediaStoreCompat.Audio.Playlists.getContentUri(volume)
+    val playlist = context.contentResolver.insert(playlistsUri, values)
+    return if (playlist != null) {
         // Necessary because somehow the MediaStoreObserver doesn't work for playlists
-        context.contentResolver.notifyChange(uri, null)
+        context.contentResolver.notifyChange(playlist, null)
         coroutineToast(context, context.resources.getString(R.string.created_playlist_x, name))
-        uri.lastPathSegment?.toLong() ?: -1
+        playlist.lastPathSegment?.toLong() ?: -1
     } else {
         coroutineToast(context, R.string.could_not_create_playlist)
         -1

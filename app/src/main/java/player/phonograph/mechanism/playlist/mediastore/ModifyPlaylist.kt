@@ -9,6 +9,7 @@ import legacy.phonograph.MediaStoreCompat.Audio.Playlists
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.warning
@@ -55,10 +56,11 @@ suspend fun renamePlaylistViaMediastore(
 suspend fun addToPlaylistViaMediastore(
     context: Context,
     song: Song,
+    volume: String,
     playlistId: Long,
     showToastOnFinish: Boolean,
 ): Boolean =
-    addToPlaylistViaMediastore(context, listOf(song), playlistId, showToastOnFinish)
+    addToPlaylistViaMediastore(context, listOf(song), volume, playlistId, showToastOnFinish)
 
 /**
  * @return success or not
@@ -66,10 +68,11 @@ suspend fun addToPlaylistViaMediastore(
 suspend fun addToPlaylistViaMediastore(
     context: Context,
     songs: List<Song>,
+    volume: String,
     playlistId: Long,
     showToastOnFinish: Boolean,
 ): Boolean = withContext(Dispatchers.IO) {
-    val uri = PlaylistLoader.mediastoreMembersUri(playlistId)
+    val uri = PlaylistLoader.mediastoreMembersUri(volume, playlistId)
     var cursor: Cursor? = null
     var base = 0
     try {
@@ -183,12 +186,13 @@ suspend fun deletePlaylistsViaMediastore(
  */
 suspend fun removeFromPlaylistViaMediastore(
     context: Context,
+    volume: String,
     playlistId: Long,
     songId: Long,
     index: Long,
 ): Int = withContext(Dispatchers.IO) {
     try {
-        val playlistUri = PlaylistLoader.mediastoreMembersUri(playlistId)
+        val playlistUri = PlaylistLoader.mediastoreMembersUri(volume, playlistId)
         val deleted = context.contentResolver.delete(
             playlistUri,
             "${Playlists.Members.AUDIO_ID} = ? AND ${Playlists.Members.PLAY_ORDER} = ?",
@@ -202,4 +206,5 @@ suspend fun removeFromPlaylistViaMediastore(
         0
     }
 }
+
 private const val TAG = "Playlist"

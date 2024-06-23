@@ -152,7 +152,7 @@ object PlaylistLoader : Loader<Playlist> {
      * @param id playlist id
      * @return playlist members uri in MediaStore
      */
-    fun mediastoreMembersUri(id: Long, volume: String = MEDIASTORE_VOLUME_EXTERNAL): Uri =
+    fun mediastoreMembersUri(volume: String, id: Long): Uri =
         MediaStoreCompat.Audio.Playlists.Members.getContentUri(volume, id)
 
     /**

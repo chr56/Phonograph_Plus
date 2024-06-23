@@ -134,11 +134,10 @@ private class FilePlaylistProcessor(val location: FilePlaylistLocation) : Playli
         PlaylistSongLoader.getPlaylistSongList(context, location.mediastoreId).map { it.song }
 
     override suspend fun containsSong(context: Context, songId: Long): Boolean =
-        PlaylistSongLoader.doesPlaylistContain(context, location.mediastoreId, songId)
+        PlaylistSongLoader.doesPlaylistContain(context, location.storageVolume, location.mediastoreId, songId)
 
-    override suspend fun removeSong(context: Context, song: Song, index: Long): Boolean {
-        return removeFromPlaylistViaMediastore(context, location.mediastoreId, song.id, index) > 0
-    }
+    override suspend fun removeSong(context: Context, song: Song, index: Long): Boolean =
+        removeFromPlaylistViaMediastore(context, location.storageVolume, location.mediastoreId, song.id, index) > 0
 
     override suspend fun moveSong(context: Context, from: Int, to: Int): Boolean {
         return moveItemViaMediastore(context, location.mediastoreId, from, to)
@@ -149,7 +148,7 @@ private class FilePlaylistProcessor(val location: FilePlaylistLocation) : Playli
             coroutineToast(context, R.string.direction_open_file_with_saf)
             appendToPlaylistViaSAF(context, listOf(song), location.mediastoreId, location.path)
         } else {
-            addToPlaylistViaMediastore(context, listOf(song), location.mediastoreId, true)
+            addToPlaylistViaMediastore(context, listOf(song), location.storageVolume, location.mediastoreId, true)
         }
     }
 
@@ -158,7 +157,7 @@ private class FilePlaylistProcessor(val location: FilePlaylistLocation) : Playli
             coroutineToast(context, R.string.direction_open_file_with_saf)
             appendToPlaylistViaSAF(context, songs, location.mediastoreId, location.path)
         } else {
-            addToPlaylistViaMediastore(context, songs, location.mediastoreId, true)
+            addToPlaylistViaMediastore(context, songs, location.storageVolume, location.mediastoreId, true)
         }
     }
 
