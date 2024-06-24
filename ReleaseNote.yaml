@@ -1,29 +1,24 @@
-version: "1.7.1"
+version: "1.7.2-dev1"
 versionCode: 1071
-timestamp: 1717870000
-channel: "STABLE"
+timestamp: 1719212000
+channel: "PREVIEW"
 notes:
   en:
     highlights: [ ]
     items:
-      - "Fix: Albums Page sorting not working"
-      - "Fix: crash when toggling Colored Footers in Artist Detail"
-      - "Fix: wrong cover if scrolling too fast"
-      - "Fix: missing album cover in Artist Detail after going back from Artist Album Detail"
-      - "Improve: accelerate palette color generation for performance"
-      - "Improve: performance for loading some list items"
-      - "Modify: sort Artist Albums by year ascending"
-      - "Modify: forbid upgrading from prior to v0.7.0, drop related compatibility support"
-      - "Development: upgrade AGP to 8.4.1, cleanup code"
+      - "Fix: Sleep Timer not working"
+      - "Fix: renaming playlists failed"
+      - "Improve: dialog of creating or renaming playlists"
+      - "Translation: update Spanish (by Dino RTX (rtxdino36)), Arabic (by Ruger Blaze (hima_96))"
+      - "Development: upgrade AGP to 8.4.2, cleanup code"
+      - "Development: some changes for preparing internal stored playlists"
+
   zh:
     highlights: [ ]
     items:
-      - "修复 专辑页排序失效"
-      - "修复 艺术家详情中切换彩色页脚开关时崩溃"
-      - "修复 滚动过快时封面错误"
-      - "修复 艺术家详情中，从专辑详情返回后，专辑封面丢失"
-      - "改进 改进主色调生成以提升性能"
-      - "改进 部分列表项目加载速度"
-      - "修改 艺术家专辑按年份升序排序"
-      - "修改 禁止从 v0.7.0 之前的版本升级至当前版本，清理相关旧版兼容性支持"
-      - "开发 更新 AGP 至 8.4.1，清理代码"
+      - "修复 睡眠定时器失效"
+      - "修复 重命名播放列表失败"
+      - "改进 创建或重命名播放列表的对话框"
+      - "翻译 更新 西班牙语 (Dino RTX (rtxdino36))，阿拉伯语 (Ruger Blaze (hima_96))"
+      - "开发 更新 AGP 至 8.4.2，清理代码"
+      - "开发 为内部存储的播放列表准备"
