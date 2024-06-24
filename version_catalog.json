@@ -1,6 +1,26 @@
 {
   "versions": [
     {
+      "channel": "preview",
+      "versionName": "1.7.2-dev1",
+      "versionCode": 1071,
+      "date": 1719212000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.7.2-dev1"
+        },
+        {
+          "name": "Github Release (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.7.2-dev1/PhonographPlus_1.7.2-dev1.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 睡眠定时器失效</li><li>修复 重命名播放列表失败</li><li>改进 创建或重命名播放列表的对话框</li><li>翻译 更新 西班牙语 (Dino RTX (rtxdino36))，阿拉伯语 (Ruger Blaze (hima_96))</li><li>开发 更新 AGP 至 8.4.2，清理代码</li><li>开发 为内部存储的播放列表准备</li></ol>",
+        "en": "<ol><li>Fix: Sleep Timer not working</li><li>Fix: renaming playlists failed</li><li>Improve: dialog of creating or renaming playlists</li><li>Translation: update Spanish (by Dino RTX (rtxdino36)), Arabic (by Ruger Blaze (hima_96))</li><li>Development: upgrade AGP to 8.4.2, cleanup code</li><li>Development: some changes for preparing internal stored playlists</li></ol>"
+      }
+    },
+    {
       "channel": "stable",
       "versionName": "1.7.1",
       "versionCode": 1071,
@@ -18,46 +38,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>修复 专辑页排序失效</li><li>修复 艺术家详情中切换彩色页脚开关时崩溃</li><li>修复 滚动过快时封面错误</li><li>修复 艺术家详情中，从专辑详情返回后，专辑封面丢失</li><li>改进 改进主色调生成以提升性能</li><li>改进 部分列表项目加载速度</li><li>修改 艺术家专辑按年份升序排序</li><li>修改 禁止从 v0.7.0 之前的版本升级至当前版本，清理相关旧版兼容性支持</li><li>开发 更新 AGP 至 8.4.1，清理代码</li></ol>",
         "en": "<ol><li>Fix: Albums Page sorting not working</li><li>Fix: crash when toggling Colored Footers in Artist Detail</li><li>Fix: wrong cover if scrolling too fast</li><li>Fix: missing album cover in Artist Detail after going back from Artist Album Detail</li><li>Improve: accelerate palette color generation for performance</li><li>Improve: performance for loading some list items</li><li>Modify: sort Artist Albums by year ascending</li><li>Modify: forbid upgrading from prior to v0.7.0, drop related compatibility support</li><li>Development: upgrade AGP to 8.4.1, cleanup code</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.7.1-beta1",
-      "versionCode": 1070,
-      "date": 1717820000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.7.1-beta1"
-        },
-        {
-          "name": "Github Release (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.7.1-beta1/PhonographPlus_1.7.1-beta1.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "见v1.7.1",
-        "en": "See v1.7.1"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "1.7.0",
-      "versionCode": 1070,
-      "date": 1716200000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.7.0"
-        },
-        {
-          "name": "Github Release (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.7.0/PhonographPlus_1.7.0.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>新增 记住文件或文件夹页的上次滚动位置直至重启</li><li>新增 重新设计的文件页，支持顺序或随机播放当前文件夹</li><li>新增 主题和主题颜色可以在备份文件中正确导出</li><li>新增 自动主题支持选择首选夜间主题 (黑色或深色)</li><li>修改 自动主题的夜间主题现在默认为黑色</li><li>修改 使用旧式方式读取文件时，隐藏歌曲数量</li><li>修改 缩小某些界面组件 (特别是在横屏下)</li><li>改进 崩溃后的信息收集 (权限、屏幕密度等)</li><li>修复 横屏下主播放器某些文本颜色可读性</li><li>修复 在卡片播放器且处于横屏时，状态栏未着色</li><li>修复 某些对话框的按钮颜色并非强调色</li><li>修复 可能的动画导致的罕见崩溃</li><li>修复 艺术家详情中专辑排序</li><li>修复 由于文件夹页导致无法立即退出应用</li><li>翻译 更新 西班牙语 (Dino RTX (rtxdino36)), 土耳其语 (volkspolizist)， 波兰语 (cookie), 俄语 (Yurt Page), 巴西葡萄牙语 (FalaTudo)</li><li>开发 清理部分旧版兼容性支持</li><li>开发 清理代码，重构主题相关的内容</li><li>修改 禁止从 v0.6.3 之前的版本升级至当前版本, 警告从 v1.2.0 之前的版本升级至当前版本</li></ol>",
-        "en": "<ol><li>New: remember last scroll position in Folders or Files tab till next start</li><li>New: brand-new ui or Files tab supporting play or shuffle current folder</li><li>New: Theme and Theme Colors can be corrected exported in backups file</li><li>New: Auto Theme supporting choosing preferred night Theme (Black or Dark)</li><li>Modify: make night Theme Black as default for Auto Theme</li><li>Modify: hide song count of folders when using legacy ways to read files</li><li>Modify: shrink height of some ui widgets especially in landscape</li><li>Improve: better information collection on crash (permissions, screen density and so on)</li><li>Fix: Main Player text color legibility in landscape</li><li>Fix: uncolored Statusbar when in landscape mode in Card Player</li><li>Fix: button color of some dialogs are not Accent Color</li><li>Fix: possible rare crash caused by color animation</li><li>Fix: albums sorting in Artist Detail</li><li>Fix: can not exit app instantly due to Folders tab</li><li>Translation: update Spanish (by Dino RTX (rtxdino36)), Turkish (by volkspolizist)， Polish (by cooky), Russian (by Yurt Page), Portuguese Brazilian (by FalaTudo)</li><li>Development: remove some compatibility support of legacy version</li><li>Development: cleanup code, refactor a number of Theme related stuffs</li><li>Modify: forbid upgrading from prior to v0.6.3 & warn upgrading from prior to v1.2.0</li></ol>"
       }
     },
     {
