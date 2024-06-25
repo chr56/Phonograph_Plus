@@ -529,4 +529,5 @@
     <string name="action_fast_rewind">Fast Rewind</string>
     <string name="action_fast_forward">Fast Forward</string>
     <string name="path_selector">File Selector</string>
+    <string name="notification_is_disabled">Notification is disabled!</string>
 </resources>

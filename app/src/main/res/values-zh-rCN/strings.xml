@@ -516,4 +516,5 @@
     <string name="action_fast_rewind">快退</string>
     <string name="action_fast_forward">快进</string>
     <string name="path_selector">文件选择器</string>
+    <string name="notification_is_disabled">通知已被关闭！</string>
 </resources>

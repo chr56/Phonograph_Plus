@@ -4,6 +4,7 @@
 
 package player.phonograph.util.permissions
 
+import player.phonograph.R
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PermissionResult
 import android.Manifest
@@ -31,7 +32,7 @@ fun checkNotificationPermission(context: Context) {
     if (SDK_INT > TIRAMISU) {
         val result = context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
         if (result != PackageManager.PERMISSION_GRANTED) {
-            val message = "Notification is disabled!"
+            val message = context.getString(R.string.notification_is_disabled)
             Log.e("Phonograph", message)
             try {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
