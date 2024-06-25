@@ -19,7 +19,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.debug
 import player.phonograph.util.file.stripExtension
-import player.phonograph.util.permissions.hasStorageReadPermission
+import player.phonograph.util.permissions.StoragePermissionChecker
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -41,7 +41,7 @@ object LyricsLoader {
             return LyricsInfo.EMPTY
         }
 
-        if (!hasStorageReadPermission(App.instance)) {
+        if (!StoragePermissionChecker.hasStorageReadPermission(App.instance)) {
             debug {
                 Log.v(TAG, "No storage read permission to fetch lyrics for ${song.title}")
             }

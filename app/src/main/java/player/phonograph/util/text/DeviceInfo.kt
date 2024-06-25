@@ -18,9 +18,7 @@ import player.phonograph.BuildConfig
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.currentVersionName
 import player.phonograph.util.gitRevisionHash
-import player.phonograph.util.permissions.hasStorageReadPermission
-import player.phonograph.util.permissions.hasStorageWritePermission
-import androidx.annotation.IntRange
+import player.phonograph.util.permissions.StoragePermissionChecker
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
@@ -84,11 +82,12 @@ private fun screenInfo(displayMetrics: DisplayMetrics): String =
     "${displayMetrics.heightPixels}x${displayMetrics.widthPixels} (dpi ${displayMetrics.densityDpi})"
 
 private fun storagePermissionInfo(context: Context): String {
+    val checker = StoragePermissionChecker
     return buildString {
-        if (hasStorageReadPermission(context)) {
+        if (checker.hasStorageReadPermission(context)) {
             append("READ")
         }
-        if (hasStorageReadPermission(context)) {
+        if (checker.hasStorageReadPermission(context)) {
             append(" WRITE")
         }
     }

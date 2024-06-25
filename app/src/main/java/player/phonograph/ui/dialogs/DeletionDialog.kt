@@ -14,7 +14,7 @@ import player.phonograph.repo.mediastore.deleteSongsViaMediaStore
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.util.parcelableArrayList
-import player.phonograph.util.permissions.hasStorageWritePermission
+import player.phonograph.util.permissions.StoragePermissionChecker
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.runOnMainHandler
 import player.phonograph.util.theme.accentColoredButtonStyle
@@ -91,7 +91,7 @@ class DeletionDialog : ComposeViewDialogFragment() {
 private fun MainContent(context: Context, songs: List<Song>, dismiss: () -> Unit) {
     PhonographTheme {
         var withLyrics: Boolean by remember { mutableStateOf(false) }
-        val hasPermission: Boolean = remember { hasStorageWritePermission(context) }
+        val hasPermission: Boolean = remember { StoragePermissionChecker.hasStorageWritePermission(context) }
         MaterialDialog(
             dialogState = rememberMaterialDialogState(true),
             onCloseRequest = { dismiss() },

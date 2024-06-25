@@ -10,9 +10,8 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.util.permissions.hasStorageReadPermission
+import player.phonograph.util.permissions.StoragePermissionChecker
 import player.phonograph.util.permissions.navigateToAppDetailSetting
-import player.phonograph.util.permissions.necessaryStorageReadPermission
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -51,10 +50,10 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
                     }
                 )
             volumeControlStream = AudioManager.STREAM_MUSIC
-            val result = hasStorageReadPermission(this@AbsMusicServiceActivity)
+            val result = StoragePermissionChecker.hasStorageReadPermission(this@AbsMusicServiceActivity)
             if (!result) {
                 withResumed {
-                    notifyPermissionDeniedUser(listOf(necessaryStorageReadPermission)) {
+                    notifyPermissionDeniedUser(listOf(StoragePermissionChecker.necessaryStorageReadPermission)) {
                         navigateToAppDetailSetting(this@AbsMusicServiceActivity)
                     }
                 }
