@@ -24,6 +24,8 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.Setting
 import player.phonograph.ui.dialogs.BackupImportDialog
+import player.phonograph.util.permissions.necessaryPermissions
+import player.phonograph.util.permissions.PermissionDetail
 import player.phonograph.util.permissions.hasPermission
 import player.phonograph.util.permissions.permissionDescription
 import player.phonograph.util.permissions.permissionName
@@ -31,11 +33,8 @@ import androidx.annotation.StringRes
 import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -118,29 +117,11 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
         override val descriptionRes: Int get() = R.string.grant_permission_description
 
 
-        class PermissionDetail(
-            val permission: String,
-            val required: Boolean = true,
-        )
-
-        val permissions: List<PermissionDetail>
-            get() = when {
-                SDK_INT >= TIRAMISU ->
-                    listOf(
-                        PermissionDetail(Manifest.permission.POST_NOTIFICATIONS),
-                        PermissionDetail(Manifest.permission.READ_MEDIA_AUDIO),
-                    )
-
-                else                ->
-                    listOf(
-                        PermissionDetail(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    )
-            }
-
         private var _items: List<ItemSimpleBinding>? = null
         private val items get() = _items!!
+
         override fun setUpView(container: ViewGroup) {
-            _items = permissions.map { detail ->
+            _items = necessaryPermissions.map { detail ->
                 createViewItem(detail) { view ->
                     val context = container.context
                     val permissionsTool = (context as? IRequestPermission)?.requestPermissionDelegate
@@ -196,7 +177,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
         override val isPolicyRespected: Boolean
             get() {
                 val context = requireContext()
-                for (permission in permissions) {
+                for (permission in necessaryPermissions) {
                     val result = context.checkSelfPermission(permission.permission)
                     if (result == PackageManager.PERMISSION_DENIED && permission.required) {
                         Snackbar.make(binding.container, R.string.permissions_denied, Snackbar.LENGTH_SHORT).show()
