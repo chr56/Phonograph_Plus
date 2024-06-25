@@ -16,7 +16,7 @@ import player.phonograph.model.playlist.playlistTypeName
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.file.selectDocumentUris
 import player.phonograph.util.parcelableArrayList
-import player.phonograph.util.permissions.hasStorageWritePermission
+import player.phonograph.util.permissions.StoragePermissionChecker
 import player.phonograph.util.reportError
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.text.ItemGroup
@@ -48,7 +48,7 @@ class ClearPlaylistDialog : DialogFragment() {
         val playlists: List<Playlist> = requireArguments().parcelableArrayList(EXTRA_PLAYLIST)!!
 
         // extra permission check on R(11)
-        val hasPermission = hasStorageWritePermission(context)
+        val hasPermission = StoragePermissionChecker.hasStorageWritePermission(context)
 
         // generate msg
         val message = buildDeletionMessage(

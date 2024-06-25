@@ -4,19 +4,14 @@
 
 package player.phonograph.util.permissions
 
+import player.phonograph.R
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PermissionResult
 import android.Manifest
-import android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.READ_MEDIA_AUDIO
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES
 import android.os.Build.VERSION_CODES.TIRAMISU
-import android.os.Environment
 import android.util.Log
 import android.widget.Toast
 
@@ -33,26 +28,11 @@ fun checkPermission(context: Context, permissionId: String): Int =
 fun checkPermissions(context: Context, permissionIds: Array<String>): Map<String, Int> =
     permissionIds.associateWith { checkPermission(context, it) }
 
-val necessaryStorageReadPermission: String
-    get() = if (SDK_INT >= TIRAMISU) READ_MEDIA_AUDIO else READ_EXTERNAL_STORAGE
-
-val necessaryStorageWritePermission: String
-    get() = if (SDK_INT >= VERSION_CODES.R) MANAGE_EXTERNAL_STORAGE else WRITE_EXTERNAL_STORAGE
-
-fun hasStorageReadPermission(context: Context): Boolean =
-    hasPermission(context, necessaryStorageReadPermission)
-
-fun hasStorageWritePermission(context: Context): Boolean = when {
-    /** check [MANAGE_EXTERNAL_STORAGE] on Android R and above **/
-    SDK_INT >= VERSION_CODES.R -> Environment.isExternalStorageManager()
-    else                       -> hasPermission(context, WRITE_EXTERNAL_STORAGE)
-}
-
 fun checkNotificationPermission(context: Context) {
     if (SDK_INT > TIRAMISU) {
         val result = context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
         if (result != PackageManager.PERMISSION_GRANTED) {
-            val message = "Notification is disabled!"
+            val message = context.getString(R.string.notification_is_disabled)
             Log.e("Phonograph", message)
             try {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
