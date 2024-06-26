@@ -124,7 +124,7 @@ class FavoritePlaylistImpl : IFavorite {
     }
 
     private fun getFavoritesPlaylist(context: Context): Playlist? =
-        PlaylistLoader.playlistName(context, context.getString(R.string.favorites)).takeIf { it.mediaStoreId()!! > 0 }
+        PlaylistLoader.playlistName(context, context.getString(R.string.favorites))
 
     private suspend fun getOrCreateFavoritesPlaylist(context: Context): Playlist? {
         return createOrFindPlaylistViaMediastore(context, context.getString(R.string.favorites))

@@ -42,8 +42,5 @@ data class Playlist(
      */
     fun mediaStoreId(): Long? = (location as? FilePlaylistLocation)?.mediastoreId
 
-    companion object {
-        val EMPTY_PLAYLIST = Playlist("EMPTY_PLAYLIST", FilePlaylistLocation("/", MEDIASTORE_VOLUME_EXTERNAL, -1))
-    }
 }
 

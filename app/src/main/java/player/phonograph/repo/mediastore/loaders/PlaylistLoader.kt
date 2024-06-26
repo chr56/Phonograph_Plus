@@ -28,10 +28,10 @@ object PlaylistLoader : Loader<Playlist> {
     override suspend fun all(context: Context): List<Playlist> =
         queryPlaylists(context, null, null).intoPlaylists().sortAll(context)
 
-    override suspend fun id(context: Context, id: Long): Playlist =
+    override suspend fun id(context: Context, id: Long): Playlist? =
         queryPlaylists(context, BaseColumns._ID + "=?", arrayOf(id.toString())).intoFirstPlaylist()
 
-    fun playlistName(context: Context, playlistName: String): Playlist =
+    fun playlistName(context: Context, playlistName: String): Playlist? =
         queryPlaylists(
             context, MediaStoreCompat.Audio.PlaylistsColumns.NAME + "=?", arrayOf(playlistName)
         ).intoFirstPlaylist()
@@ -39,7 +39,7 @@ object PlaylistLoader : Loader<Playlist> {
     fun searchByPath(context: Context, path: String): Playlist? =
         queryPlaylists(
             context, "${MediaStoreCompat.Audio.PlaylistsColumns.DATA} = ?", arrayOf(path)
-        ).intoFirstPlaylist().takeIf { (it.mediaStoreId() ?: -1L) > 0 }
+        ).intoFirstPlaylist()
 
     fun searchByName(context: Context, name: String): List<Playlist> =
         queryPlaylists(
@@ -66,13 +66,10 @@ object PlaylistLoader : Loader<Playlist> {
     /**
      * consume cursor (read & close) and convert into first FilePlaylist
      */
-    fun Cursor?.intoFirstPlaylist(): Playlist {
+    private fun Cursor?.intoFirstPlaylist(): Playlist? {
         return this?.use {
-            if (moveToFirst())
-                extractPlaylist(this)
-            else
-                Playlist.EMPTY_PLAYLIST
-        } ?: Playlist.EMPTY_PLAYLIST
+            if (moveToFirst()) extractPlaylist(this) else null
+        }
     }
 
     private fun extractPlaylist(cursor: Cursor): Playlist = Playlist(
