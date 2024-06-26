@@ -2,6 +2,26 @@
   "versions": [
     {
       "channel": "stable",
+      "versionName": "1.7.2.1",
+      "versionCode": 1072,
+      "date": 1719390000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.7.2.1"
+        },
+        {
+          "name": "Github Release (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.7.2.1/PhonographPlus_1.7.2.1.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 开启`使用旧式歌曲收藏机制`时崩溃</li><li>修复 Android Auto 无法读取播放列表</li></ol>",
+        "en": "<ol><li>Fix: crash if enable `Use legacy favorite playlist mechanism`</li><li>Fix: Android Auto could not read playlists</li></ol>"
+      }
+    },
+    {
+      "channel": "stable",
       "versionName": "1.7.2",
       "versionCode": 1072,
       "date": 1719380000,
