@@ -11,6 +11,7 @@ import player.phonograph.repo.mediastore.internal.BASE_AUDIO_SELECTION
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore.Audio.AudioColumns
+import android.util.Log
 
 object PlaylistSongLoader {
 
@@ -89,13 +90,19 @@ object PlaylistSongLoader {
         playlistId: Long,
         songId: Long,
     ): Boolean {
-        val cursor = context.contentResolver.query(
-            PlaylistLoader.mediastoreMembersUri(volume, playlistId),
-            arrayOf(Playlists.Members.AUDIO_ID),
-            Playlists.Members.AUDIO_ID + "=?",
-            arrayOf(songId.toString()),
-            null
-        ) ?: return false
-        return cursor.use { it.count > 0 }
+        if (playlistId <= 0) return false
+        try {
+            val cursor = context.contentResolver.query(
+                PlaylistLoader.mediastoreMembersUri(volume, playlistId),
+                arrayOf(Playlists.Members.AUDIO_ID),
+                Playlists.Members.AUDIO_ID + "=?",
+                arrayOf(songId.toString()),
+                null
+            ) ?: return false
+            return cursor.use { it.count > 0 }
+        } catch (e: UnsupportedOperationException) {
+            Log.w("PlaylistSong", "Failed to check playlistId $playlistId", e)
+            return false
+        }
     }
 }
