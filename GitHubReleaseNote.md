@@ -1,24 +1,16 @@
-## **v1.7.2 2024.06.26**
+## **v1.7.2.1 2024.06.26**
 
 
 ### EN
-
-1. Fix: Sleep Timer not working
-2. Fix: renaming playlists not working
-3. Improve: dialog for creating or renaming playlists
-4. Translation: update Spanish (by Dino RTX (rtxdino36)), Arabic (by Ruger Blaze (hima_96))
-5. Development: upgrade AGP to 8.4.2, cleanup code
-6. Development: some changes for preparing internal stored playlists
+This is a patch version.
+1. Fix: crash if enable `Use legacy favorite playlist mechanism`
+2. Fix: Android Auto could not read playlists
 
 
 ### ZH
-
-1. 修复 睡眠定时器失效
-2. 修复 重命名播放列表无效
-3. 改进 创建或重命名播放列表的对话框
-4. 翻译 更新 西班牙语 (Dino RTX (rtxdino36))，阿拉伯语 (Ruger Blaze (hima_96))
-5. 开发 更新 AGP 至 8.4.2，清理代码
-6. 开发 为内部存储的播放列表准备
+此乃补丁修正版本
+1. 修复 开启`使用旧式歌曲收藏机制`时崩溃
+2. 修复 Android Auto 无法读取播放列表
 
 
 
