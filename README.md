@@ -130,8 +130,10 @@ See [Developer Guide](docs/Developer_Guide.md)
 
 See [Road Map](docs/Road_Map.md)
 
-## **Repository Mirror**
+## **Repository Mirrors**
 
 [![GitHub](https://img.shields.io/badge/Git-Github-Blue)](https://github.com/chr56/Phonograph_Plus/)
 [![Codeberg](https://img.shields.io/badge/Git-Codeberg-Blue)](https://codeberg.org/PhonographPlus/Phonograph_Plus)
 [![BitBucket](https://img.shields.io/badge/Git-BitBucket-Blue)](https://bitbucket.org/phonograph-plus/phonograph_plus/)
+
+**Only** these three sites above are considered as official Git Repositories (mirroring each other), all the other are non-official.

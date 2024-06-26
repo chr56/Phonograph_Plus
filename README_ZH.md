@@ -133,3 +133,5 @@ Phonograph Plus 可从 GitHub Release (稳定版通道和预览版通道[^1]) �
 [![GitHub](https://img.shields.io/badge/Git-Github-Blue)](https://github.com/chr56/Phonograph_Plus/)
 [![Codeberg](https://img.shields.io/badge/Git-Codeberg-Blue)](https://codeberg.org/PhonographPlus/Phonograph_Plus)
 [![BitBucket](https://img.shields.io/badge/Git-BitBucket-Blue)](https://bitbucket.org/phonograph-plus/phonograph_plus/)
+
+**仅**以上三者视作官方 Git 仓库（互为镜像），其余皆非官方仓库。
