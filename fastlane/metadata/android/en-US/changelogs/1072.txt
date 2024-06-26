@@ -1,0 +1,7 @@
+<b>1.7.2(1072) 2024.06.26</b>
+- Fix: Sleep Timer not working
+- Fix: renaming playlists not working
+- Improve: dialog for creating or renaming playlists
+- Translation: update Spanish (by Dino RTX (rtxdino36)), Arabic (by Ruger Blaze (hima_96))
+- Development: upgrade AGP to 8.4.2, cleanup code
+- Development: some changes for preparing internal stored playlists
