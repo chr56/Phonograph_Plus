@@ -15,6 +15,7 @@ import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
 import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
+import player.phonograph.util.coroutineToast
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -95,15 +96,20 @@ class FavoritePlaylistImpl : IFavorite {
                 false
             } else {
                 val favoritesPlaylist = getOrCreateFavoritesPlaylist(context)
-                val location = favoritesPlaylist.location as FilePlaylistLocation
-                addToPlaylistViaMediastore(
-                    context,
-                    song,
-                    location.storageVolume,
-                    location.mediastoreId,
+                if (favoritesPlaylist != null) {
+                    val location = favoritesPlaylist.location as FilePlaylistLocation
+                    addToPlaylistViaMediastore(
+                        context,
+                        song,
+                        location.storageVolume,
+                        location.mediastoreId,
+                        false
+                    )
+                    true
+                } else {
+                    coroutineToast(context, R.string.failed)
                     false
-                )
-                true
+                }
             }
         }
     }
@@ -120,9 +126,8 @@ class FavoritePlaylistImpl : IFavorite {
     private fun getFavoritesPlaylist(context: Context): Playlist? =
         PlaylistLoader.playlistName(context, context.getString(R.string.favorites)).takeIf { it.mediaStoreId()!! > 0 }
 
-    private suspend fun getOrCreateFavoritesPlaylist(context: Context): Playlist {
+    private suspend fun getOrCreateFavoritesPlaylist(context: Context): Playlist? {
         return createOrFindPlaylistViaMediastore(context, context.getString(R.string.favorites))
-            ?: Playlist.EMPTY_PLAYLIST
     }
 
 
