@@ -50,7 +50,6 @@ class SleepTimerDialog : DialogFragment() {
                 timerUpdater = TimerUpdater()
                 setOnShowListener {
                     tintAlertDialogButtons(it as AlertDialog)
-                    val service = MusicPlayerRemote.musicService ?: return@setOnShowListener
                     if (SleepTimer.instance().hasTimer()) timerUpdater.start()
                 }
             }
