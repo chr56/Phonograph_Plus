@@ -18,6 +18,7 @@ object LocalizationUtil {
         resources: Resources,
         newLocale: Locale = Locale.getDefault(),
     ) {
+        @Suppress("DEPRECATION")
         resources.updateConfiguration(
             amendConfiguration(resources.configuration, newLocale),
             resources.displayMetrics
