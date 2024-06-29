@@ -383,6 +383,8 @@ class PlaylistDetailActivity :
     }
 
 
+    @Deprecated("-") // todo: Use `OnBackPressedCallback`
+    @Suppress("DEPRECATION")
     override fun onBackPressed() {
         when {
             model.currentMode.value == UIMode.Common -> super.onBackPressed()

@@ -204,18 +204,20 @@ abstract class AbsSlidingMusicPanelActivity :
         }
     }
 
+    @Suppress("DEPRECATION")
     open fun onPanelCollapsed(panel: View?) {
         // restore values
         playerFragment?.setMenuVisibility(false)
-        playerFragment?.userVisibleHint = false
+        playerFragment?.userVisibleHint = false // todo: remove legacy userVisibleHint
         playerFragment?.onHide()
         panelBackPressedCallback.remove()
     }
 
+    @Suppress("DEPRECATION")
     open fun onPanelExpanded(panel: View?) {
         // setting fragments values
         playerFragment?.setMenuVisibility(true)
-        playerFragment?.userVisibleHint = true
+        playerFragment?.userVisibleHint = true // todo: remove legacy userVisibleHint
         playerFragment?.onShow()
         onBackPressedDispatcher.addCallback(this, panelBackPressedCallback)
     }
