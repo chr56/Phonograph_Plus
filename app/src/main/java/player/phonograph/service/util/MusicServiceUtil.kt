@@ -15,6 +15,7 @@ import android.content.Intent
 object MusicServiceUtil {
     private const val ANDROID_MUSIC_PACKAGE_NAME = "com.android.music"
     fun sendPublicIntent(service: MusicService, what: String) {
+        @Suppress("DEPRECATION")
         service.sendStickyBroadcast(
             Intent(
                 what.replace(ACTUAL_PACKAGE_NAME, ANDROID_MUSIC_PACKAGE_NAME)
