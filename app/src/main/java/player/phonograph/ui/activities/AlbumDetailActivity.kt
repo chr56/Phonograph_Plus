@@ -175,6 +175,8 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         tintMenuActionIcons(viewBinding.toolbar, menu, primaryTextColor(viewModel.activityColor.value))
     }
 
+    @Deprecated("-") // todo: Use `OnBackPressedCallback`
+    @Suppress("DEPRECATION")
     override fun onBackPressed() {
         viewBinding.recyclerView.stopScroll()
         super.onBackPressed()
