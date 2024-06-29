@@ -24,7 +24,7 @@ room = "2.6.1"
 [libraries]
 
 androidx-core = "androidx.core:core-ktx:1.13.1"
-androidx-appcompat = "androidx.appcompat:appcompat:1.6.1"
+androidx-appcompat = "androidx.appcompat:appcompat:1.7.0"
 androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
 androidx-fragment = "androidx.fragment:fragment-ktx:1.6.2"
 androidx-lifecycle_runtime = "androidx.lifecycle:lifecycle-runtime-ktx:2.7.0"
