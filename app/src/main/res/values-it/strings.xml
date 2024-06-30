@@ -248,7 +248,6 @@
     <string name="failed_to_delete">Impossibile eliminare</string>
     <string name="grant_permission">Concedi autorizzazione</string>
     <string name="retry">Riprova</string>
-    <string name="permission_manage_external_storage_denied">sembra che Phonograph non abbia il permesso di \"gestire l\'archiviazione esterna\"!</string>
     <string name="not_available_now">Non disponibile ora</string>
     <string name="check_upgrade">Controlla aggiornamenti</string>
     <string name="no_newer_version">Nessun aggiornamento!</string>
@@ -397,6 +396,7 @@
     <string name="no_changes">Nessuna modifica</string>
     <string name="image_source_external_file">File esterno</string>
     <string name="image_source_config">Configurazione origine immagine</string>
+    <string name="action_backup">Backup</string>
     <string name="grant_permission_description">Alcuni permessi necessari sono richiesti per assicurare un corretto funzionamento dell\'app.</string>
     <string name="permission_name_post_notifications">Pubblica notifiche</string>
     <string name="permission_desc_post_notifications">A partire da Android T (13), le app richiedono questa autorizzazione per pubblicare notifiche.</string>

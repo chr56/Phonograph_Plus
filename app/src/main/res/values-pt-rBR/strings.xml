@@ -526,4 +526,5 @@
     <string name="action_fast_rewind">Retroceder Rapidamente</string>
     <string name="action_fast_forward">Avançar rapidamente</string>
     <string name="path_selector">Seletor de arquivos</string>
+    <string name="notification_is_disabled">As notificações estão desativadas!</string>
 </resources>

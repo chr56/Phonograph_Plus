@@ -252,7 +252,6 @@
     <string name="failed_to_delete">Löschen fehlgeschlagen</string>
     <string name="grant_permission">Berechtigung erlauben</string>
     <string name="retry">Erneut versuchen</string>
-    <string name="permission_manage_external_storage_denied">Anscheinend hat Phonograph nicht die Berechtigung \"Externen Speicher verwalten\"! </string>
     <string name="not_available_now">Momentan nicht verfügbar</string>
     <string name="check_upgrade">Auf Upgrade prüfen</string>
     <string name="no_newer_version">Kein Update!</string>

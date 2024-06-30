@@ -32,6 +32,7 @@
     <string name="biography_unavailable">N\u00e3o foi poss\u00edvel encontrar a biografia deste artista.</string>
     <string name="wiki_unavailable">Não foi possível encontrar o registro wiki deste álbum.</string>
     <string name="biography">Biografia</string>
+    <string name="wiki">Wiki</string>
     <string name="audio_focus_denied">Foco de áudio negado.</string>
     <string name="album">Álbum</string>
     <string name="artist">Artista</string>
@@ -247,7 +248,6 @@
     <string name="failed_to_delete">Ocorreu um erro ao eliminar</string>
     <string name="grant_permission">Conceder Permissões</string>
     <string name="retry">Voltar a tentar</string>
-    <string name="permission_manage_external_storage_denied">parece que o Phonograph não tem a permissão \"gerir armazenamento externo\"!</string>
     <string name="not_available_now">Não está disponível agora</string>
     <string name="check_upgrade">Verificar atualização</string>
     <string name="no_newer_version">Não há atualizações</string>
