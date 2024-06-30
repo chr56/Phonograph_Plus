@@ -546,4 +546,5 @@
     <string name="action_fast_rewind">Szybkie przewijanie do tyłu</string>
     <string name="action_fast_forward">Szybkie przewijanie do przodu</string>
     <string name="path_selector">Selektor plików</string>
+    <string name="notification_is_disabled">Powiadomienia są wyłączone</string>
 </resources>
