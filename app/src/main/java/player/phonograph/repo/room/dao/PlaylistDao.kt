@@ -9,6 +9,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 
 @Dao
@@ -28,5 +29,16 @@ abstract class PlaylistDao {
 
     @Delete
     abstract fun delete(playlist: PlaylistEntity): Int
+
+    @Transaction
+    open fun rename(id: Long, newName: String): Boolean {
+        val entity = id(id)
+        return if (entity != null) {
+            update(entity.copy(name = newName))
+            true
+        } else {
+            false
+        }
+    }
 
 }
