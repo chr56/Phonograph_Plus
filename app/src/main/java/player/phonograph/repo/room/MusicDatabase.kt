@@ -4,6 +4,7 @@
 
 package player.phonograph.repo.room
 
+import org.koin.core.context.GlobalContext
 import player.phonograph.repo.room.dao.MediaStoreSongDao
 import player.phonograph.repo.room.dao.PlaylistDao
 import player.phonograph.repo.room.dao.PlaylistSongDao
@@ -57,5 +58,6 @@ abstract class MusicDatabase : RoomDatabase(), Closeable {
                     }
                 }
 
+        val koinInstance: MusicDatabase get() = GlobalContext.get().get()
     }
 }
