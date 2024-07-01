@@ -194,7 +194,7 @@ fun setupDrawerMenu(
                 val items = listOf(
                     "Delete Databases" to {
                         activity.lifecycleScope.launch(Dispatchers.IO) {
-                            val database = MusicDatabase.database(activity)
+                            val database = MusicDatabase.koinInstance
                             database.close()
                             database.clearAllTables()
                             database.close()
@@ -202,7 +202,7 @@ fun setupDrawerMenu(
                     },
                     "Refresh Databases" to {
                         activity.lifecycleScope.launch(Dispatchers.IO) {
-                            val database = MusicDatabase.database(activity)
+                            val database = MusicDatabase.koinInstance
                             DatabaseUpdater.checkAndRefresh(context.applicationContext, database)
                             database.close()
                         }
