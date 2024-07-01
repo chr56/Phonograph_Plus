@@ -14,6 +14,7 @@ import player.phonograph.repo.database.PathFilterStore
 import player.phonograph.repo.database.SongPlayCountStore
 import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.mediastore.loaders.TopTracksLoader
+import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.service.queue.MusicPlaybackQueueStore
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.Keys
@@ -39,4 +40,6 @@ val moduleLoaders = module {
     factory { TopTracksLoader(get()) }
     factory { RecentlyPlayedTracksLoader(get()) }
 
+
+    single { MusicDatabase.database(get()) }
 }
