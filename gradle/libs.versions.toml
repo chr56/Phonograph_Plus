@@ -53,7 +53,7 @@ themeUtil = "0.3.2"
 
 ## Test
 junit = "4.13.2"
-mockito = "5.6.0"
+mockito = "5.15.2"
 testCore = "1.6.1"
 testExtJunit = "1.2.1"
 testEspresso = "3.6.1"

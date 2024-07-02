@@ -43,6 +43,7 @@ android {
         versionCode = 1093
         versionName = "1.10.0-dev0"
 
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
 
@@ -242,4 +243,9 @@ dependencies {
     implementation(libs.statusBarLyricsApi)
     implementation(libs.lyricsGetterAPi)
 
+
+    //region Test
+    testImplementation(libs.bundles.test.unit)
+    androidTestImplementation(libs.bundles.test.androidx.suite)
+    //endregion
 }
