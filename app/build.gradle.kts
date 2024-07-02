@@ -2,6 +2,7 @@
 
 import tools.release.git.getGitHash
 import tools.release.registerPublishTask
+import tools.release.text.NameSegment
 import java.util.Properties
 
 plugins {
@@ -162,6 +163,10 @@ android {
         jvmTarget = "17"
     }
 
+}
+
+androidPublish {
+    nameStyle = listOf(NameSegment.VersionName, NameSegment.Favor)
 }
 
 /**
