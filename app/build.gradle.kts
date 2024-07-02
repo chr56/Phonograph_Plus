@@ -41,6 +41,7 @@ android {
         versionCode = 1072
         versionName = "1.7.2.1"
 
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         setProperty("archivesBaseName", "PhonographPlus_$versionName")
 
@@ -215,4 +216,9 @@ dependencies {
     implementation(libs.statusBarLyricsApi)
     implementation(libs.lyricsGetterAPi)
 
+
+    //region Test
+    testImplementation(libs.bundles.test.unit)
+    androidTestImplementation(libs.bundles.test.androidx.suite)
+    //endregion
 }
