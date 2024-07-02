@@ -14,7 +14,7 @@
 # init variables
 
 if [ -z "$PRODUCT_VARIANT" ]; then
-  export PRODUCT_VARIANT="PreviewRelease"
+  export PRODUCT_VARIANT="MainstreamPreviewRelease"
 fi
 
 if [ -z "$REPO_ROOT" ]; then
