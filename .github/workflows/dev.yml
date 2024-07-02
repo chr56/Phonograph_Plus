@@ -29,10 +29,12 @@ on:
       - '**.md'
 
 jobs:
-  build-mainstream:
-    name: "Dev CI - Build Mainstream"
-    env:
-      PRODUCT_VARIANT: MainstreamCheckoutDebug
+  build:
+    # Matrix builds
+    name: "Dev Ci"
+    strategy:
+      matrix:
+        PRODUCT_VARIANT: [MainstreamCheckoutDebug, LegacyCheckoutDebug]
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -64,56 +66,11 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          ./gradlew assemble${{ env.PRODUCT_VARIANT }} --stacktrace
+          ./gradlew assemble${{ matrix.PRODUCT_VARIANT }} --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: dev_build_mainstream
+          name: Artifacts_${{ matrix.PRODUCT_VARIANT }}
           path: ./app/build/outputs/apk/*/debug/*.apk
           retention-days: 3
-
-  build-legacy:
-    name: "Dev CI - Build Legacy"
-    env:
-      PRODUCT_VARIANT: LegacyCheckoutDebug
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'adopt'
-          cache: gradle
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v3
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Generate Sign Config
-        env:
-          SECRETS_KEY: ${{ secrets.KEY }}
-          SECRETS_STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
-          SECRETS_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-          SECRETS_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEYSTORE_FILE: ${{ github.workspace }}/key.jdk
-          CONFIG_FILE: ${{ github.workspace }}/signing.properties
-        run: |
-          bash ${{ github.workspace }}/scripts/generate_signing_key.sh
-
-      - name: Build with Gradle
-        run: |
-          ./gradlew assemble${{ env.PRODUCT_VARIANT }} --stacktrace
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: dev_build_legacy
-          path: ./app/build/outputs/apk/*/debug/*.apk
-          retention-days: 3
-
