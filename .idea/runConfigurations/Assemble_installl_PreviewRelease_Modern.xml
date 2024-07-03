@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Assemble&amp;installl MainstreamPreviewRelease" type="GradleRunConfiguration" factoryName="Gradle" activateToolWindowBeforeRun="false">
+  <configuration default="false" name="Assemble&amp;installl PreviewRelease (Modern)" type="GradleRunConfiguration" factoryName="Gradle" activateToolWindowBeforeRun="false">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -10,8 +10,8 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value="app:assembleMainstreamPreviewRelease" />
-          <option value="app:installMainstreamPreviewRelease" />
+          <option value="app:assembleModernPreviewRelease" />
+          <option value="app:installModernPreviewRelease" />
         </list>
       </option>
       <option name="vmOptions" />

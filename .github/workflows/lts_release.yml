@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        PRODUCT_VARIANT: [ MainstreamStableRelease, LegacyStableRelease ]
+        PRODUCT_VARIANT: [ ModernStableRelease, LegacyStableRelease ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4

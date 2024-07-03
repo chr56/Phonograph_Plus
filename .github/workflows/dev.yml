@@ -34,7 +34,7 @@ jobs:
     name: "Dev Ci"
     strategy:
       matrix:
-        PRODUCT_VARIANT: [MainstreamCheckoutDebug, LegacyCheckoutDebug]
+        PRODUCT_VARIANT: [ModernCheckoutDebug, LegacyCheckoutDebug]
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
