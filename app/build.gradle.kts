@@ -114,14 +114,14 @@ android {
             manifestPlaceholders["GIT_COMMIT_HASH"] = getGitHash(false)
         }
 
-        create("mainstream") {
+        create("modern") {
             dimension = "target"
 
             isDefault = true
         }
         create("legacy") {
             dimension = "target"
-            matchingFallbacks.add("mainstream")
+            matchingFallbacks.add("modern")
 
             targetSdk = 28
         }
