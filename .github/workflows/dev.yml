@@ -30,9 +30,11 @@ on:
 
 jobs:
   build:
-    name: Build Dev CI
-    env:
-      PRODUCT_VARIANT: CheckoutDebug
+    # Matrix builds
+    name: "Dev Ci"
+    strategy:
+      matrix:
+        PRODUCT_VARIANT: [MainstreamCheckoutDebug, LegacyCheckoutDebug]
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -64,12 +66,11 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          ./gradlew assemble${{ env.PRODUCT_VARIANT }} --stacktrace
+          ./gradlew assemble${{ matrix.PRODUCT_VARIANT }} --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: dev_build
+          name: Artifacts_${{ matrix.PRODUCT_VARIANT }}
           path: ./app/build/outputs/apk/*/debug/*.apk
           retention-days: 3
-

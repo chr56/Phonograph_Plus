@@ -3,7 +3,7 @@
 # This bash script is to upload apk
 
 # Required Environment Variables:
-#   $PRODUCT_VARIANT: build variant (used in finding artifacts in product directory)
+#   $SEARCH_PATH    : search path artifacts
 #   $REPO_ROOT      : root path of repository
 #   $GIT_REF_NAME   : tag name
 #   $GIT_COMMIT_SHA : commit sha
@@ -13,8 +13,8 @@
 
 # init variables
 
-if [ -z "$PRODUCT_VARIANT" ]; then
-  export PRODUCT_VARIANT="PreviewRelease"
+if [ -z "$SEARCH_PATH" ]; then
+  export SEARCH_PATH="products"
 fi
 
 if [ -z "$REPO_ROOT" ]; then
@@ -41,7 +41,7 @@ if [ -z "$TG_CHAT_ID" ]; then
 fi
 
 # search APK
-APK_FILES=$(find products/$PRODUCT_VARIANT -name "Phonograph*.apk" | tr -d '[:blank:]')
+APK_FILES=$(find $SEARCH_PATH -name "Phonograph*.apk" | tr -d '[:blank:]')
 
 # upload APK
 
