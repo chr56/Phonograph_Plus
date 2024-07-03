@@ -6,13 +6,13 @@ on:
       - "LTS*"
 
 jobs:
+
   build:
-    name: Build & Release LTS
-    env:
-      PRODUCT_VARIANT: StableRelease
+    name: Build
     runs-on: ubuntu-22.04
-    permissions:
-      contents: write
+    strategy:
+      matrix:
+        PRODUCT_VARIANT: [ ModernStableRelease, LegacyStableRelease ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,60 +45,69 @@ jobs:
         # just download gradle wrapper, start gradle daemon, make actual build logs clean
         run: |
           ./gradlew clean
+
       - name: Build with Gradle
         run: |
-          ./gradlew assemble${{ env.PRODUCT_VARIANT }} --stacktrace
+          ./gradlew assemble${{ matrix.PRODUCT_VARIANT }} --stacktrace
 
       - name: Collect Files
         run: |
           # collect files
           mkdir products
-          ./gradlew Publish${{ env.PRODUCT_VARIANT }} --stacktrace
+          ./gradlew Publish${{ matrix.PRODUCT_VARIANT }} --stacktrace
+          echo "Artifacts:"
           tree -aF ./products
 
-      - name: Upload Artifact
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: lts_release
-          path: products/${{ env.PRODUCT_VARIANT }}/*.apk
+          name: Artifacts_${{ matrix.PRODUCT_VARIANT }}
+          path: |
+            products/${{ matrix.PRODUCT_VARIANT }}/*.apk
+            products/${{ matrix.PRODUCT_VARIANT }}/*.sha*
+            products/${{ matrix.PRODUCT_VARIANT }}/PhonographPlus*.txt.gz
           retention-days: 30
 
-      - name: Upload mapping.txt
-        uses: actions/upload-artifact@v4
+      - name: Clean up
+        run: |
+          rm -r -v ./products/${{ matrix.PRODUCT_VARIANT }}
+
+  upload:
+    name: Release & Upload
+    runs-on: ubuntu-22.04
+    needs:
+      - build
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
         with:
-          name: mapping
-          path: products/${{ env.PRODUCT_VARIANT }}/PhonographPlus*.txt.gz
+          path: products
+          pattern: Artifacts_*
+          merge-multiple: true
+
+      - name: Check Files
+        run: |
+          tree -aF ./products
 
       - name: Release New Version
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         id: release_github
+        # if: startsWith(github.ref, 'refs/tags/preview_')
         with:
           name: "LTS Release ${{ github.ref_name }}"
           files: |
-            products/${{ env.PRODUCT_VARIANT }}/PhonographPlus_*.apk
-            products/${{ env.PRODUCT_VARIANT }}/PhonographPlus_*.apk.sha1
-            products/${{ env.PRODUCT_VARIANT }}/PhonographPlus_*.apk.sha256
-            products/${{ env.PRODUCT_VARIANT }}/PhonographPlus*.txt.gz
+            products/PhonographPlus_*.apk
+            products/PhonographPlus_*.apk.sha1
+            products/PhonographPlus_*.apk.sha256
+            products/PhonographPlus*.txt.gz
           prerelease: false
           draft: true
           tag_name: ${{ github.ref }}
           body: LTS Release - ${{ github.ref }}
           body_path: ${{ github.workspace }}/GitHubReleaseNote.md
           token: ${{ secrets.TOKEN }}
-
-#      - name: Upload to Channel
-#        env:
-#          REPO_ROOT: ${{ github.workspace }}
-#          GIT_REF_NAME: ${{ github.ref_name }}
-#          GIT_COMMIT_SHA: ${{ github.sha }}
-#          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
-#          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
-#        run: |
-#          # generate changelog
-#          ./gradlew tools:changelog-generator:GenerateEncodedUrl
-#          # upload
-#           bash ${{ github.workspace }}/scripts/upload_apk_with_changelog.sh
-
-      - name: Cleanup
-        run: |
-          rm -r -v ./products/${{ env.PRODUCT_VARIANT }}

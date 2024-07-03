@@ -2,6 +2,7 @@
 
 import tools.release.git.getGitHash
 import tools.release.registerPublishTask
+import tools.release.text.NameSegment
 import java.util.Properties
 
 plugins {
@@ -83,7 +84,7 @@ android {
         }
     }
 
-    flavorDimensions += listOf("channel")
+    flavorDimensions += listOf("target", "channel")
     productFlavors {
         // Stable or LTS release
         create("stable") {
@@ -112,6 +113,19 @@ android {
 
             manifestPlaceholders["GIT_COMMIT_HASH"] = getGitHash(false)
         }
+
+        create("modern") {
+            dimension = "target"
+
+            isDefault = true
+        }
+        create("legacy") {
+            dimension = "target"
+            matchingFallbacks.add("modern")
+
+            targetSdk = 28
+        }
+
     }
     androidComponents {
         beforeVariants(selector().withBuildType("release")) { variantBuilder ->
@@ -149,6 +163,10 @@ android {
         jvmTarget = "17"
     }
 
+}
+
+androidPublish {
+    nameStyle = listOf(NameSegment.VersionName, NameSegment.Favor)
 }
 
 /**
