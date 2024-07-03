@@ -1,16 +1,18 @@
-version: "1.7.2.1"
-versionCode: 1072
-timestamp: 1719390000
-channel: "STABLE"
+version: "1.8.0-dev1"
+versionCode: 1073
+timestamp: 1719991829
+channel: "PREVIEW"
 notes:
   en:
     highlights: [ ]
     items:
-      - "Fix: crash if enable `Use legacy favorite playlist mechanism`"
-      - "Fix: Android Auto could not read playlists"
+      - "Note: Now, we have a special version especially for user on Android 10 and BELOW"
+      - "Translation: update Polish (by cooky), Portuguese Brazilian (by FalaTudo)"
+      - "Development: upgrade dependencies"
 
   zh:
     highlights: [ ]
     items:
-      - "修复 开启`使用旧式歌曲收藏机制`时崩溃"
-      - "修复 Android Auto 无法读取播放列表"
+      - "注意 现专为Android 10 及以下用户提供特别版本"
+      - "翻译 更新 波兰语（cooky）、巴西葡萄牙语（FalaTudo）"
+      - "开发 更新依赖"
