@@ -11,22 +11,23 @@ import android.content.Context
 import android.os.Build
 import android.os.Environment
 
+
+////////////////////////////////////////////
+/////////// Legacy Flavor Variant //////////
+////////////////////////////////////////////
+
+/**
+ * [IStoragePermissionChecker] implementation for Android R and above
+ *
+ * **_NOTE_: This is for product flavor `legacy` (which has low `targetApi` to surpass Scope Storage)**
+ */
 @RequiresApi(Build.VERSION_CODES.R)
-object StoragePermissionCheckerR : IStoragePermissionChecker {
+object StoragePermissionCheckerR : IStoragePermissionChecker by StoragePermissionCheckerM // legacy variant use low target sdk
 
-    override val necessaryStorageReadPermission: String
-        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.READ_MEDIA_AUDIO else Manifest.permission.READ_EXTERNAL_STORAGE
-    override val necessaryStorageWritePermission: String
-        get() = Manifest.permission.MANAGE_EXTERNAL_STORAGE
 
-    override fun hasStorageReadPermission(context: Context): Boolean =
-        hasPermission(context, necessaryStorageReadPermission)
-
-    /** check [MANAGE_EXTERNAL_STORAGE] on Android R and above **/
-    override fun hasStorageWritePermission(context: Context): Boolean =
-        Environment.isExternalStorageManager()
-}
-
+/**
+ * [IStoragePermissionChecker] implementation for Android M and above
+ */
 @SuppressLint("ObsoleteSdkInt")
 @RequiresApi(Build.VERSION_CODES.M)
 object StoragePermissionCheckerM : IStoragePermissionChecker {
