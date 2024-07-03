@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Release Preview (Legacy)" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="Assemble&amp;installl PreviewDebug (Modern)" type="GradleRunConfiguration" factoryName="Gradle" activateToolWindowBeforeRun="false" singleton="false">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -10,8 +10,8 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value="app:assembleLegacyPreviewRelease" />
-          <option value="app:PublishLegacyPreviewRelease" />
+          <option value="app:assembleModernPreviewDebug" />
+          <option value="app:installModernPreviewDebug" />
         </list>
       </option>
       <option name="vmOptions" />
@@ -19,6 +19,7 @@
     <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
     <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
     <DebugAllEnabled>false</DebugAllEnabled>
+    <RunAsTest>false</RunAsTest>
     <method v="2" />
   </configuration>
 </component>
