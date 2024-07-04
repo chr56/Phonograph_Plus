@@ -8,6 +8,7 @@ import util.phonograph.jsonParser
 import util.phonograph.output.html.generateHTMLNoteMinify
 import util.phonograph.releasenote.Language
 import util.phonograph.releasenote.ReleaseNote
+import util.phonograph.releasenote.TargetVariant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -18,7 +19,7 @@ import java.io.Writer
 
 private const val MAX_CHANNEL_ITEM = 3
 private const val GITHUB_RELEASE_LINK = "https://github.com/chr56/Phonograph_Plus/releases/tag/%s"
-private const val GITHUB_DOWNLOAD_LINK = "https://github.com/chr56/Phonograph_Plus/releases/download/%s/PhonographPlus_%s.apk"
+private const val GITHUB_DOWNLOAD_LINK = "https://github.com/chr56/Phonograph_Plus/releases/download/%s/PhonographPlus_%s_%s.apk"
 
 class VersionJsonOutput(versionJsonFile: File, private val releaseNote: ReleaseNote) : OutputFormat {
 
@@ -36,8 +37,12 @@ class VersionJsonOutput(versionJsonFile: File, private val releaseNote: ReleaseN
                     url = String.format(GITHUB_RELEASE_LINK, tag)
                 ),
                 VersionJsonItem.Link(
-                    name = "Github Release (File Download Link)",
-                    url = String.format(GITHUB_DOWNLOAD_LINK, tag, version)
+                    name = "Github Release Modern Variant APK (File Download Link)",
+                    url = String.format(GITHUB_DOWNLOAD_LINK, tag, version, variant(TargetVariant.MODERN))
+                ),
+                VersionJsonItem.Link(
+                    name = "Github Release Legacy Variant APK(File Download Link)",
+                    url = String.format(GITHUB_DOWNLOAD_LINK, tag, version, variant(TargetVariant.LEGACY))
                 ),
             ),
             releaseNote = VersionJsonItem.ReleaseNote(
