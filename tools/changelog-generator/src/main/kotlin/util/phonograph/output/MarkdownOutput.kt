@@ -100,7 +100,7 @@ class GitHubReleaseMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
 
         @JvmStatic
         private fun generateDiffLink(releaseNote: ReleaseNote): String =
-            GITHUB_DIFF.format(releaseNote.previousTag, releaseNote.previousTag)
+            GITHUB_DIFF.format(releaseNote.previousTag, releaseNote.tag)
 
         private const val GITHUB_DIFF = "https://github.com/chr56/Phonograph_Plus/compare/%s...%s"
     }
