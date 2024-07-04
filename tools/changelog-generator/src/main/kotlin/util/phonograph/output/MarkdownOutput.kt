@@ -40,6 +40,23 @@ abstract class Markdown : OutputFormat {
             }
         }
     }
+
+    protected fun guideOnDownload(): String = buildString {
+        appendLine(title("Version Variants Description / 版本说明", 2))
+        appendLine(VERSION_DESCRIPTION.trimIndent())
+    }
+
+    companion object {
+
+        private const val VERSION_DESCRIPTION =
+            """
+            -> [Version Guide](docs/Version_Guide.md) / [版本指南](docs/Version_Guide_ZH.md)
+            
+            **TL;DR**: If you are a user of Android 7~10, use `Legacy`; If not, use `Modern`.
+            **太长不看**: 若为 Android 7~10 用户，请使用 `Legacy` 版本；否则，请使用 `Modern` 版本。
+            
+            """
+    }
 }
 
 
@@ -72,15 +89,20 @@ class GitHubReleaseMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
         target.append('\n')
 
 
-        val diffLink = generateDiffLink(
-            previousVersion = releaseNote.previousVersion,
-            previousChannel = releaseNote.previousChannel,
-            version = releaseNote.version,
-            channel = releaseNote.channel
-        )
-        val diff = "**Commit log**: $diffLink"
+        val diff = "**Commit log**: ${generateDiffLink(releaseNote)}"
         target.append(diff)
 
+        target.append('\n').append('\n')
+        target.append(guideOnDownload())
+    }
+
+    companion object {
+
+        @JvmStatic
+        private fun generateDiffLink(releaseNote: ReleaseNote): String =
+            GITHUB_DIFF.format(releaseNote.previousTag, releaseNote.previousTag)
+
+        private const val GITHUB_DIFF = "https://github.com/chr56/Phonograph_Plus/compare/%s...%s"
     }
 }
 
@@ -104,17 +126,3 @@ class IMReleaseMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
 
     }
 }
-
-private fun generateDiffLink(
-    previousVersion: String,
-    previousChannel: ReleaseChannel,
-    version: String,
-    channel: ReleaseChannel,
-): String = GITHUB_DIFF.format(tag(previousVersion, previousChannel), tag(version, channel))
-
-private fun tag(version: String, channel: ReleaseChannel): String = when (channel) {
-    ReleaseChannel.PREVIEW -> "preview_$version"
-    else                   -> "v$version"
-}
-
-private const val GITHUB_DIFF = "https://github.com/chr56/Phonograph_Plus/compare/%s...%s"
