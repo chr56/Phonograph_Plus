@@ -52,8 +52,8 @@ abstract class Markdown : OutputFormat {
             """
             -> [Version Guide](docs/Version_Guide.md) / [版本指南](docs/Version_Guide_ZH.md)
             
-            **TL;DR**: If you are a user of Android 7~10, use `Legacy`; If not, use `Modern`.
-            **太长不看**: 若为 Android 7~10 用户，请使用 `Legacy` 版本；否则，请使用 `Modern` 版本。
+            **TL;DR**: If you are a user of Android 7-10, use `Legacy`; If not, use `Modern`.
+            **太长不看**: 若为 Android 7-10 用户，请使用 `Legacy` 版本；否则，请使用 `Modern` 版本。
             
             """
     }
