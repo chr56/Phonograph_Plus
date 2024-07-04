@@ -14,6 +14,8 @@ data class ReleaseNote(
     val timestamp: Long,
     val channel: ReleaseChannel,
     val notes: Notes,
+    val previousVersion: String,
+    val previousChannel: ReleaseChannel,
 ) {
 
     val tag: String
