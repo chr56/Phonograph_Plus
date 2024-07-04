@@ -76,25 +76,25 @@ See Also Appendix [Generate A New Keystore for Signing](#generate_signing_proper
 
 ### 6) build
 
-We are building the build variant `Stable` (Build Type `Release`) now.
+Now, we can build project in variant of `Modern` and `Stable` with Build Type `Release` now. [^f]
 
-See more in section Build Variant.
+[^f]: See more in section _Build Variant_ from [Development Guild](./Developer_Guide.md#build-variants).
 
 ```shell
- ./gradlew assembleStableRelease --parallel
+ ./gradlew assembleModernStableRelease --parallel
 ```
 
 ### 7) pick up file
 
-Built apk is in `./app/build/outputs/apk/stable/release/` with name `PhonographPlus_<VERSION>-stable-release.apk`
+Built apk is in `./app/build/outputs/apk/modernStable/release/` with name `PhonographPlus_<VERSION>-modern-stable-release.apk`
 
 You can run
 
 ```shell
-./gradlew PublishStableRelease
+./gradlew PublishModernStableRelease
 ```
 
-to move apk to `./products/stableRelease` and rename to `Phonograph Plus_<VERSION>.apk`
+to move apk to `./products/ModernStableRelease` and rename to `Phonograph Plus_<VERSION>_ModernStableRelease.apk`
 
 ## Appendix
 

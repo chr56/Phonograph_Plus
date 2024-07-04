@@ -33,19 +33,32 @@ Highlight:
 
 See [List of Libraries and Gradle Plugins in Use](./List_of_Libraries.md) for details
 
-## Build Variant
+## Build Variants
 
-Currently, there are one Flavor Dimension `purpose` for different release channel, which has 3 variants[^1].
-
-| Dimension `purpose` | Extra Package Name Suffix |                   Usage                   |       Note       |
-|:-------------------:|:-------------------------:|:-----------------------------------------:|:----------------:|
-|      `stable`       |         _(None)_          | **Stable** & **LTS**<br/> channel release |                  |
-|      `preview`      |        `.preview`         |     **Preview**<br/> channel release      |                  |
-|     `checkout`      |        `.checkout`        |         (`Github Action` Build )          | for locating bug |
-
-[^1]: Before v0.4.0, there are more variants (like `common` as `stable`, `ci` for `Github Action`).
+Since 1.8[^1], we have two Flavor Dimension currently: `purpose` (for different release channel), `target` (for Android platform).
 
 And, there are two default `BuildType`s (`debug`/`release`), and all `release` shrinks and minifies.
+
+[^1]: Before 1.8, there is only `purpose`.
+
+#### Dimension `purpose`
+
+| Dimension `purpose`[^2] | Extra Package Name Suffix |                   Usage                   | Note             |
+|:-----------------------:|:-------------------------:|:-----------------------------------------:|------------------|
+|        `stable`         |         _(None)_          | **Stable** & **LTS**<br/> channel release |                  |
+|        `preview`        |        `.preview`         |     **Preview**<br/> channel release      |                  |
+|       `checkout`        |        `.checkout`        |         (`Github Action` Build )          | for locating bug |
+
+[^2]: Before v0.4.0, there are more variants (like `common` as `stable`, `ci` for `Github Action`).
+
+#### Dimension `target`
+
+We make this distinction mostly for surpass _Scope Storage_ for Android 10.
+
+| Dimension `target` | Target SDK | Min SDK | Descriptions                                                                           |
+|:------------------:|:----------:|:-------:|----------------------------------------------------------------------------------------|
+|      `modern`      | _(Latest)_ |   24    | for mainstream android device user                                                     |
+|      `legacy`      |     28     |   24    | for legacy android device user <br/>(especially Android 10, to bypass _Scope Storage_) |
 
 ## Project Structure
 
