@@ -94,9 +94,23 @@ class GitHubReleaseMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
 
         target.append('\n').append('\n')
         target.append(guideOnDownload())
+
+        target.append(fileDownloadLinks(releaseNote.tag, releaseNote.version, releaseNote.channel))
     }
 
     companion object {
+
+        fun fileDownloadLinks(tag: String, version: String, channel: ReleaseChannel): String =
+            buildString {
+                val channelText = when (channel) {
+                    ReleaseChannel.PREVIEW -> "Preview"
+                    else                   -> "Stable"
+                }
+                append("Download Links ")
+                append('|')
+                append(" [Modern](https://github.com/chr56/Phonograph_Plus/releases/download/${tag}/PhonographPlus_${version}_Modern${channelText}Release.apk) |")
+                append(" [Legacy](https://github.com/chr56/Phonograph_Plus/releases/download/${tag}/PhonographPlus_${version}_Legacy${channelText}Release.apk) |")
+            }
 
         @JvmStatic
         private fun generateDiffLink(releaseNote: ReleaseNote): String =
