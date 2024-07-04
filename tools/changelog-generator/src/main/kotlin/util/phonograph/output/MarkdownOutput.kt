@@ -61,7 +61,6 @@ class GitHubReleaseMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
         val subtitleZH = subtitle(Language.ZH, releaseNote.channel == ReleaseChannel.PREVIEW)
         val contentEN = section(releaseNote.notes.en, "EN", 3)
         val contentZH = section(releaseNote.notes.zh, "ZH", 3)
-        val extra = "**Commit log**: "
 
         target.append(title)
         target.append('\n')
@@ -71,7 +70,16 @@ class GitHubReleaseMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
         target.append(contentEN)
         target.append(contentZH)
         target.append('\n')
-        target.append(extra)
+
+
+        val diffLink = generateDiffLink(
+            previousVersion = releaseNote.previousVersion,
+            previousChannel = releaseNote.previousChannel,
+            version = releaseNote.version,
+            channel = releaseNote.channel
+        )
+        val diff = "**Commit log**: $diffLink"
+        target.append(diff)
 
     }
 }
@@ -96,3 +104,17 @@ class IMReleaseMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
 
     }
 }
+
+private fun generateDiffLink(
+    previousVersion: String,
+    previousChannel: ReleaseChannel,
+    version: String,
+    channel: ReleaseChannel,
+): String = GITHUB_DIFF.format(tag(previousVersion, previousChannel), tag(version, channel))
+
+private fun tag(version: String, channel: ReleaseChannel): String = when (channel) {
+    ReleaseChannel.PREVIEW -> "preview_$version"
+    else                   -> "v$version"
+}
+
+private const val GITHUB_DIFF = "https://github.com/chr56/Phonograph_Plus/compare/%s...%s"
