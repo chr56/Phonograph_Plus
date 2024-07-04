@@ -1,7 +1,7 @@
 version: "1.8.0-dev1"
+channel: "PREVIEW"
 versionCode: 1073
 timestamp: 1719991829
-channel: "PREVIEW"
 notes:
   en:
     highlights: [ ]
@@ -16,3 +16,6 @@ notes:
       - "注意 现专为Android 10 及以下用户提供特别版本"
       - "翻译 更新 波兰语（cooky）、巴西葡萄牙语（FalaTudo）"
       - "开发 更新依赖"
+
+previousVersion: "1.7.2.1"
+previousChannel: "STABLE"
