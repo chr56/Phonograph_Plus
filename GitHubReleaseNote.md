@@ -1,17 +1,29 @@
-## **v1.7.2.1 2024.06.26**
+## **v1.8.0-dev1 2024.07.04**
 
+This is a _Preview Channel_ Release (with package name suffix `preview`), which might have potential bugs.
+此为预览通道版本 (包名后缀`preview`), 可能存在潜在问题!
 
 ### EN
-This is a patch version.
-1. Fix: crash if enable `Use legacy favorite playlist mechanism`
-2. Fix: Android Auto could not read playlists
+
+1. Note: Now, we have a special version especially for user on Android 10 and BELOW
+2. Translation: update Polish (by cooky), Portuguese Brazilian (by FalaTudo)
+3. Development: upgrade dependencies
 
 
 ### ZH
-此乃补丁修正版本
-1. 修复 开启`使用旧式歌曲收藏机制`时崩溃
-2. 修复 Android Auto 无法读取播放列表
+
+1. 注意 现专为Android 10 及以下用户提供特别版本
+2. 翻译 更新 波兰语（cooky）、巴西葡萄牙语（FalaTudo）
+3. 开发 更新依赖
 
 
 
-**Commit log**: 
+**Commit log**: https://github.com/chr56/Phonograph_Plus/compare/v1.7.2.1...v1.7.2.1
+
+## Version Variants Description / 版本说明
+
+-> [Version Guide](docs/Version_Guide.md) / [版本指南](docs/Version_Guide_ZH.md)
+
+**TL;DR**: If you are a user of Android 7~10, use `Legacy`; If not, use `Modern`.
+**太长不看**: 若为 Android 7~10 用户，请使用 `Legacy` 版本；否则，请使用 `Modern` 版本。
+
