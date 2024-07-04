@@ -1,6 +1,30 @@
 {
   "versions": [
     {
+      "channel": "preview",
+      "versionName": "1.8.0-dev1",
+      "versionCode": 1073,
+      "date": 1720080000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.8.0-dev1"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.0-dev1/PhonographPlus_1.8.0-dev1_ModernPreviewRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.0-dev1/PhonographPlus_1.8.0-dev1_LegacyPreviewRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>注意 现专为Android 10 及以下用户提供特别版本</li><li>翻译 更新 波兰语（cooky）、巴西葡萄牙语（FalaTudo）</li><li>开发 更新依赖</li></ol>",
+        "en": "<ol><li>Note: Now, we have a special version especially for user on Android 10 and BELOW</li><li>Translation: update Polish (by cooky), Portuguese Brazilian (by FalaTudo)</li><li>Development: upgrade dependencies</li></ol>"
+      }
+    },
+    {
       "channel": "stable",
       "versionName": "1.7.2.1",
       "versionCode": 1072,
