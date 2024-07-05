@@ -21,6 +21,7 @@ val originalReleaseNotePath = "ReleaseNote.yaml"
 
 val outputGitHubReleaseNotePath = "GitHubReleaseNote.md"
 val outputEncodedUrlPath = "GitHubReleaseNote.url.txt"
+val outputEscapedReleaseNotePath = "EscapedReleaseNote.md"
 
 val changelogsPath = "app/src/main/assets"
 
@@ -40,6 +41,16 @@ tasks.register("GenerateGithubReleaseNote", JavaExec::class.java) {
         rootProject.projectDir.absolutePath,
         originalReleaseNotePath,
         outputGitHubReleaseNotePath
+    )
+}
+
+tasks.register("GenerateEscapedMarkdownReleaseNote", JavaExec::class.java) {
+    prepareTask(this)
+    args = listOf(
+        "GenerateEscapedMarkdownReleaseNote",
+        rootProject.projectDir.absolutePath,
+        originalReleaseNotePath,
+        outputEscapedReleaseNotePath
     )
 }
 
