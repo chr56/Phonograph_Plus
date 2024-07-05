@@ -5,6 +5,7 @@
 package util.phonograph.output
 
 import util.phonograph.dateString
+import util.phonograph.escapeMarkdown
 import util.phonograph.releasenote.Language
 import util.phonograph.releasenote.Notes
 import util.phonograph.releasenote.ReleaseChannel
@@ -117,6 +118,34 @@ class GitHubReleaseMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
             GITHUB_DIFF.format(releaseNote.previousTag, releaseNote.tag)
 
         private const val GITHUB_DIFF = "https://github.com/chr56/Phonograph_Plus/compare/%s...%s"
+    }
+}
+
+class EscapedMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
+    private fun section(note: Notes.Note, title: String): String = buildString {
+        appendLine(border(title))
+        if (note.highlights.isNotEmpty()) appendLine(escapeMarkdown(makeOrderedList(note.highlights))).append('\n')
+        if (note.items.isNotEmpty()) appendLine(escapeMarkdown(makeOrderedList(note.items)))
+    }
+
+    override fun write(target: Writer) {
+
+
+        val title = border(escapeMarkdown("${(releaseNote.tag)} ${dateString(releaseNote.timestamp)}"))
+
+        val subtitleEN = subtitle(Language.EN, releaseNote.channel == ReleaseChannel.PREVIEW)
+        val subtitleZH = subtitle(Language.ZH, releaseNote.channel == ReleaseChannel.PREVIEW)
+
+        val contentEN = section(releaseNote.notes.en, "EN")
+        val contentZH = section(releaseNote.notes.zh, "ZH")
+
+        target.append(title)
+        target.append('\n').append('\n')
+        target.append(subtitleEN)
+        target.append(subtitleZH)
+        target.append('\n')
+        target.append(contentEN)
+        target.append(contentZH)
     }
 }
 
