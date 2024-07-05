@@ -27,6 +27,7 @@ fun process(command: String, parameters: List<String>) {
         println("Process ...")
         when (command) {
             CMD_GENERATE_GITHUB_RELEASE_NOTE -> generateGithubReleaseNote(model, "$rootPath/${parameters[2]}")
+            CMD_GENERATE_ESCAPED_MARKDOWN    -> generateEscapedMarkdownReleaseNote(model, "$rootPath/${parameters[2]}")
             CMD_GENERATE_VERSION_JSON        -> generateVersionJson(model, "$rootPath/${parameters[2]}")
             CMD_GENERATE_HTML                -> generateHtml(model)
             CMD_GENERATE_FDROID_METADATA     -> generateFdroidMetadata(model, rootPath)
@@ -40,6 +41,7 @@ fun process(command: String, parameters: List<String>) {
 }
 
 const val CMD_GENERATE_GITHUB_RELEASE_NOTE = "GenerateGithubReleaseNote"
+const val CMD_GENERATE_ESCAPED_MARKDOWN = "GenerateEscapedMarkdownReleaseNote"
 const val CMD_GENERATE_VERSION_JSON = "GenerateVersionJson"
 const val CMD_GENERATE_HTML = "GenerateHTML"
 const val CMD_GENERATE_FDROID_METADATA = "GenerateFdroidMetadata"
