@@ -30,17 +30,18 @@ abstract class Markdown : OutputFormat {
         }
     }
 
-    protected fun subtitle(language: Language, previewWarning: Boolean): String = buildString {
-        when (language) {
-            Language.EN -> {
-                if (previewWarning) appendLine("This is a _Preview Channel_ Release (with package name suffix `preview`), which might have potential bugs.")
-            }
+    protected fun subtitle(language: Language, previewWarning: Boolean, escaped: Boolean = false): String =
+        buildString {
+            when (language) {
+                Language.EN -> {
+                    if (previewWarning) appendLine(if (escaped) PREVIEW_WARNING_EN_ESCAPED else PREVIEW_WARNING_EN)
+                }
 
-            Language.ZH -> {
-                if (previewWarning) appendLine("此为预览通道版本 (包名后缀`preview`), 可能存在潜在问题!")
+                Language.ZH -> {
+                    if (previewWarning) appendLine(if (escaped) PREVIEW_WARNING_ZH_ESCAPED else PREVIEW_WARNING_ZH)
+                }
             }
         }
-    }
 
     protected fun guideOnDownload(): String = buildString {
         appendLine(title("Version Variants Description / 版本说明", 2))
@@ -48,6 +49,17 @@ abstract class Markdown : OutputFormat {
     }
 
     companion object {
+
+        private const val PREVIEW_WARNING_EN =
+            "This is a _Preview Channel_ Release (with package name suffix `preview`), which might have potential bugs."
+        private const val PREVIEW_WARNING_ZH =
+            "此为预览通道版本 (包名后缀`preview`), 可能存在潜在问题!"
+
+        private const val PREVIEW_WARNING_EN_ESCAPED =
+            "This is a _Preview Channel_ Release \\(with package name suffix `preview`\\)\\, which might have potential bugs\\."
+
+        private const val PREVIEW_WARNING_ZH_ESCAPED =
+            "此为预览通道版本 \\(包名后缀`preview`\\), 可能存在潜在问题\\!"
 
         private const val VERSION_DESCRIPTION =
             """
@@ -136,8 +148,8 @@ class EscapedMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
 
         val title = border(escapeMarkdown("${(releaseNote.tag)} ${dateString(releaseNote.timestamp)}"))
 
-        val subtitleEN = subtitle(Language.EN, releaseNote.channel == ReleaseChannel.PREVIEW)
-        val subtitleZH = subtitle(Language.ZH, releaseNote.channel == ReleaseChannel.PREVIEW)
+        val subtitleEN = subtitle(Language.EN, releaseNote.channel == ReleaseChannel.PREVIEW, true)
+        val subtitleZH = subtitle(Language.ZH, releaseNote.channel == ReleaseChannel.PREVIEW, true)
 
         val contentEN = section(releaseNote.notes.en, "EN")
         val contentZH = section(releaseNote.notes.zh, "ZH")
