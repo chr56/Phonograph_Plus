@@ -14,7 +14,7 @@ import java.io.Writer
 
 abstract class Markdown : OutputFormat {
 
-    protected fun border(text: String) = "**$text**"
+    protected open fun border(text: String) = "**$text**"
 
     protected fun title(text: String, level: Int) = "${"#".repeat(level)} $text\n"
 
@@ -122,6 +122,9 @@ class GitHubReleaseMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
 }
 
 class EscapedMarkdown(private val releaseNote: ReleaseNote) : Markdown() {
+
+    override fun border(text: String): String = "*$text*"
+
     private fun section(note: Notes.Note, title: String): String = buildString {
         appendLine(border(title))
         if (note.highlights.isNotEmpty()) appendLine(escapeMarkdown(makeOrderedList(note.highlights))).append('\n')
