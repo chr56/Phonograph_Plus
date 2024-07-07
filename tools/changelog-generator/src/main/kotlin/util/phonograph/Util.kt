@@ -53,3 +53,10 @@ fun writeToFile(data: String, file: File, override: Boolean = true) {
 
 private fun File.bufferedWriter(): BufferedWriter =
     outputStream().writer(Charsets.UTF_8).buffered(4096)
+
+/**
+ * Escapes Markdown characters
+ */
+fun escapeMarkdown(origin: String): String {
+    return Regex("""([_*\[\]()~`>\#\+\-=|\.!\{\}])""").replace(origin) { "\\${it.value}" }
+}

@@ -46,4 +46,5 @@ gen-external-apklibs
 products/**/mapping.txt
 products/
 
+EscapedReleaseNote.md
 GitHubReleaseNote.url.txt
