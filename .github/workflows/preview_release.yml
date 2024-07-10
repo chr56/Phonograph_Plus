@@ -126,18 +126,28 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Generate Changelog
+      - name: Generate Changelog Markdown
         run: |
           # generate changelog
-          ./gradlew tools:changelog-generator:GenerateEncodedUrl
+          ./gradlew tools:changelog-generator:GenerateEscapedMarkdownReleaseNote
 
-      - name: Upload to Channel
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python Pip Dependencies
+        if: startsWith(github.ref, 'refs/tags/preview_')
+        run: |
+          python -m pip install pyTelegramBotAPI
+
+      - name: Upload Files with Changelogs
         if: startsWith(github.ref, 'refs/tags/preview_')
         env:
-          REPO_ROOT: ${{ github.workspace }}
-          GIT_REF_NAME: ${{ github.ref_name }}
-          GIT_COMMIT_SHA: ${{ github.sha }}
-          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
-          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          TOKEN: ${{ secrets.TB_TOKEN }}
+          CHAT_ID: ${{ secrets.TG_CHANNEL_CHAT_ID }}
+          VERSION: ${{ github.ref_name }}
+          GIT_COMMIT: ${{ github.sha }}
+          ARTIFACTS: "products"
         run: |
-          bash ${{ github.workspace }}/scripts/upload_apk_with_changelog.sh
+          python ${{ github.workspace }}/scripts/upload_apk_with_changelog.py
