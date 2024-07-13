@@ -526,4 +526,5 @@
     <string name="action_fast_rewind">Rebobinado rápido</string>
     <string name="action_fast_forward">Avance rápido</string>
     <string name="path_selector">Selector de archivos</string>
+    <string name="notification_is_disabled">¡Notificación desactivada!</string>
 </resources>
