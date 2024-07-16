@@ -343,12 +343,6 @@ fun PhonographPreferenceScreen() {
                 defaultValue = false,
             )
             BooleanPref(
-                key = USE_LEGACY_DETAIL_DIALOG,
-                titleRes = R.string.pref_title_use_legacy_detail_dialog,
-                summaryRes = R.string.pref_summary_use_legacy_detail_dialog,
-                defaultValue = false,
-            )
-            BooleanPref(
                 key = DISABLE_REAL_TIME_SEARCH,
                 titleRes = R.string.pref_title_disable_real_time_search,
                 summaryRes = R.string.pref_summary_disable_real_time_search,

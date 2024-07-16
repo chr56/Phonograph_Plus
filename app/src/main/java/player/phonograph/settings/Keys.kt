@@ -315,9 +315,6 @@ object Keys {
     object playlistFilesOperationBehaviour :
             PrimitiveKey<String>(stringPK(PLAYLIST_FILES_OPERATION_BEHAVIOUR), { PLAYLIST_OPS_BEHAVIOUR_AUTO })
 
-    object useLegacyDetailDialog :
-            PrimitiveKey<Boolean>(booleanPK(USE_LEGACY_DETAIL_DIALOG), { false })
-
     object disableRealTimeSearch :
             PrimitiveKey<Boolean>(booleanPK(DISABLE_REAL_TIME_SEARCH), { false })
 
