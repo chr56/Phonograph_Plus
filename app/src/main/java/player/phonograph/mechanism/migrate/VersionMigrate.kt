@@ -54,6 +54,7 @@ fun migrate(context: Context, from: Int, to: Int) {
             migrate(CustomArtistImageStoreMigration())
             migrate(ThemeStoreMigration())
             migrate(GeneralThemeMigration())
+            migrate(LegacyDetailDialogMigration())
         }
 
         Log.i(TAG, "End Migration")
@@ -188,6 +189,12 @@ private class GeneralThemeMigration : Migration(introduced = 1064) {
                 }
             }
         }
+    }
+}
+
+private class LegacyDetailDialogMigration : Migration(introduced = 1081) {
+    override fun doMigrate(context: Context) {
+        removePreference(context, DeprecatedPreference.LegacyDetailDialog.USE_LEGACY_DETAIL_DIALOG)
     }
 }
 
@@ -387,5 +394,10 @@ object DeprecatedPreference {
     object StyleConfigKeys {
         const val PREFERENCE_NAME = "style_config"
         const val KEY_THEME = "theme"
+    }
+
+    // "remove fallback since 1081"
+    object LegacyDetailDialog {
+        const val USE_LEGACY_DETAIL_DIALOG = "use_legacy_detail_dialog"
     }
 }
