@@ -517,4 +517,6 @@
     <string name="action_fast_forward">快进</string>
     <string name="path_selector">文件选择器</string>
     <string name="notification_is_disabled">通知已被关闭！</string>
+    <string name="pref_title_always_use_media_session_to_display_cover">总是使用 Media Session 显示图片</string>
+    <string name="pref_summary_always_use_media_session_to_display_cover">总是使用 Media Session 向系统提供图片，用于通知等</string>
 </resources>

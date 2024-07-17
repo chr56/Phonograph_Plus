@@ -326,6 +326,12 @@ fun PhonographPreferenceScreen() {
 
         SettingsGroup(title = header(R.string.pref_header_compatibility)) {
             BooleanPref(
+                key = ALWAYS_USE_MEDIA_SESSION_TO_DISPLAY_COVER,
+                titleRes = R.string.pref_title_always_use_media_session_to_display_cover,
+                summaryRes = R.string.pref_summary_always_use_media_session_to_display_cover,
+                defaultValue = false,
+            )
+            BooleanPref(
                 key = USE_LEGACY_FAVORITE_PLAYLIST_IMPL,
                 titleRes = R.string.pref_title_use_legacy_favorite_playlist_impl,
                 summaryRes = R.string.pref_summary_use_legacy_favorite_playlist_impl,
