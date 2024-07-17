@@ -306,6 +306,9 @@ object Keys {
             PrimitiveKey<Boolean>(booleanPK(PATH_FILTER_EXCLUDE_MODE), { true })
 
     // Compatibility
+    object alwaysUseMediaSessionToDisplayCover :
+            PrimitiveKey<Boolean>(booleanPK(ALWAYS_USE_MEDIA_SESSION_TO_DISPLAY_COVER), { false })
+
     object useLegacyFavoritePlaylistImpl :
             PrimitiveKey<Boolean>(booleanPK(USE_LEGACY_FAVORITE_PLAYLIST_IMPL), { false })
 

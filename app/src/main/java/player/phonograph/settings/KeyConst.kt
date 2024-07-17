@@ -116,6 +116,7 @@ const val IGNORE_UPGRADE_DATE = "ignore_upgrade_date"
 const val PATH_FILTER_EXCLUDE_MODE = "path_filter_exclude_mode"
 
 // compatibility
+const val ALWAYS_USE_MEDIA_SESSION_TO_DISPLAY_COVER = "always_use_media_session_to_display_cover"
 const val USE_LEGACY_FAVORITE_PLAYLIST_IMPL = "use_legacy_favorite_playlist_impl"
 const val USE_LEGACY_LIST_FILES_IMPL = "use_legacy_list_files_impl"
 const val PLAYLIST_FILES_OPERATION_BEHAVIOUR = "playlist_files_operation_behaviour"
