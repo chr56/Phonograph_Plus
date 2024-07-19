@@ -3,7 +3,7 @@
 ## Plugins
 
 kotlin = "1.9.22"
-agp = "8.4.2"
+agp = "8.5.1"
 ksp = "1.9.22-1.0.17"
 versionChecker = "0.51.0"
 
