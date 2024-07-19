@@ -30,6 +30,7 @@ import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
 import player.phonograph.repo.mediastore.processQuery
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.ShuffleMode
@@ -289,6 +290,7 @@ class StarterActivity : AppCompatActivity() {
                     val queueManager: QueueManager = (context as? AppCompatActivity)?.get() ?: GlobalContext.get().get()
                     executePlayRequest(queueManager, playRequest, selected)
                     callback()
+                    MusicPlayerRemote.resumePlaying()
                 }
             }
             return buildDialogView(
