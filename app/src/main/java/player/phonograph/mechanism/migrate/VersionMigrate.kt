@@ -33,11 +33,11 @@ import java.io.FilenameFilter
 fun migrate(context: Context, from: Int, to: Int) {
 
     when (from) {
-        in 1 until 600    -> { // v0.7.0
+        in 1 until 1000    -> { // v1.0.0
             throw IllegalStateException("You are upgrading from a very old version (version $from)! Please Wipe app data!")
         }
 
-        in 600 until 1020 -> { // v1.2.0
+        in 1000 until 1040 -> { // v1.4.0
             reportError(
                 IllegalStateException(), TAG,
                 "You are upgrading from a very old version (version $from)! Try to wipe app data!"
