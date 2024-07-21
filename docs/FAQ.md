@@ -64,8 +64,9 @@ _See Also Issue: #112_
 
 Installer(uninstaller) crashed on Android 10 with physical SD card.
 
-(This is currently unsolved for now.)
+**Workaround**
 
-Use _adb_ to uninstall as a workaround.  
+1. Use _adb_ to uninstall as a workaround.
+2. Install `Legacy` variant.
 
 _See Also Issue: #151_
