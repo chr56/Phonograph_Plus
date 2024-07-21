@@ -1,0 +1,5 @@
+<b>1.8.0(1080) 2024.07.21</b>
+- Note: Now, we have a special version especially for user on Android 10 and BELOW
+- Fix: not instantly start playing from the external source (like file explorer)
+- Translation: update Spanish (by Dino RTX)，update Polish (by cooky), Portuguese Brazilian (by FalaTudo)
+- Development: upgrade Gradle to 8.8, upgrade AGP to 8.5.1, upgrade dependencies

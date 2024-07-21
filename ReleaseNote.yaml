@@ -1,21 +1,23 @@
-version: "1.8.0-dev2"
-channel: "PREVIEW"
-versionCode: 1074
-timestamp: 1721380000
+version: "1.8.0"
+channel: "STABLE"
+versionCode: 1080
+timestamp: 1721550000
 notes:
   en:
     highlights: [ ]
     items:
-      - "Fix: not instantly start playing from the external (like file explorer)"
-      - "Translation: update Spanish (by Dino RTX)"
-      - "Development: upgrade Gradle to 8.8, upgrade AGP to 8.5.1"
+      - "Note: Now, we have a special version especially for user on Android 10 and BELOW"
+      - "Fix: not instantly start playing from the external source (like file explorer)"
+      - "Translation: update Spanish (by Dino RTX)，update Polish (by cooky), Portuguese Brazilian (by FalaTudo)"
+      - "Development: upgrade Gradle to 8.8, upgrade AGP to 8.5.1, upgrade dependencies"
 
   zh:
     highlights: [ ]
     items:
+      - "注意 现专为Android 10 及以下用户提供特别版本"
       - "修复 从外部（如文件资源管理器）启动时未立即播放"
-      - "翻译 更新 西班牙语（Dino RTX）"
-      - "开发 更新 Gradle 至 8.8，更新 AGP 至 8.5.1"
+      - "翻译 更新 西班牙语（Dino RTX），波兰语（cooky）、巴西葡萄牙语（FalaTudo）"
+      - "开发 更新 Gradle 至 8.8，更新 AGP 至 8.5.1，更新依赖"
 
-previousVersion: "1.8.0-dev1"
-previousChannel: "PREVIEW"
+previousVersion: "1.7.2.1"
+previousChannel: "STABLE"
