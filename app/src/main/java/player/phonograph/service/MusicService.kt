@@ -26,6 +26,7 @@ import player.phonograph.repo.browser.MediaBrowserDelegate
 import player.phonograph.repo.database.HistoryStore
 import player.phonograph.service.notification.CoverLoader
 import player.phonograph.service.notification.PlayingNotificationManager
+import player.phonograph.service.notification.PlayingNotificationManager.Companion.VERSION_SET_COVER_USING_METADATA
 import player.phonograph.service.player.MSG_NOW_PLAYING_CHANGED
 import player.phonograph.service.player.MediaSessionController
 import player.phonograph.service.player.PlayerController
@@ -56,6 +57,7 @@ import android.content.IntentFilter
 import android.content.res.Configuration
 import android.media.audiofx.AudioEffect
 import android.os.Binder
+import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
@@ -362,7 +364,7 @@ class MusicService : MediaBrowserServiceCompat() {
                     queueManager.currentSong,
                     (queueManager.currentSongPosition + 1).toLong(),
                     queueManager.playingQueue.size.toLong(),
-                    true
+                    couldPutCover
                 )
                 // because playing queue size might have changed
 
@@ -390,7 +392,7 @@ class MusicService : MediaBrowserServiceCompat() {
             currentSong,
             (queueManager.currentSongPosition + 1).toLong(),
             queueManager.playingQueue.size.toLong(),
-            loadCover
+            loadCover && couldPutCover
         )
         mediaSessionController.updatePlaybackState(serviceStatus)
     }
@@ -428,7 +430,12 @@ class MusicService : MediaBrowserServiceCompat() {
         collect(Keys.broadcastCurrentPlayerState) { broadcastCurrentPlayerState ->
             throttledTimer.broadcastCurrentPlayerState = broadcastCurrentPlayerState
         }
+        collect(Keys.alwaysUseMediaSessionToDisplayCover) { alwaysUseMediaSessionToDisplayCover ->
+            couldPutCover = SDK_INT >= VERSION_SET_COVER_USING_METADATA || alwaysUseMediaSessionToDisplayCover
+        }
     }
+
+    private var couldPutCover: Boolean = true
 
     fun replaceLyrics(lyrics: LrcLyrics?) = controller.replaceLyrics(lyrics)
 

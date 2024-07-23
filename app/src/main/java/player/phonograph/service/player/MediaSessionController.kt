@@ -14,7 +14,6 @@ import player.phonograph.model.Song
 import player.phonograph.repo.browser.MediaBrowserDelegate
 import player.phonograph.service.MusicService
 import player.phonograph.service.ServiceComponent
-import player.phonograph.service.notification.PlayingNotificationManager
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
@@ -25,7 +24,6 @@ import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Bitmap
-import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
@@ -258,17 +256,15 @@ class MediaSessionController : ServiceComponent {
             mediaSession.setMetadata(null)
         } else {
 
-            val shouldPutCover = loadCover || SDK_INT >= PlayingNotificationManager.VERSION_SET_COVER_USING_METADATA
-
             val metadata = fillMetadata(song, pos, total, null)
-            if (shouldPutCover && cachedSong == song && cachedBitmap != null) {
+            if (loadCover && cachedSong == song && cachedBitmap != null) {
                 metadata.putBitmap(METADATA_KEY_ALBUM_ART, cachedBitmap)
             }
 
             mediaSession.setMetadata(metadata.build())
 
             disposable?.dispose()
-            if (shouldPutCover && cachedSong != song) {
+            if (loadCover && cachedSong != song) {
                 disposable = service.coverLoader.load(song) { bitmap, _ ->
                     metadata.putBitmap(METADATA_KEY_ALBUM_ART, bitmap)
                     mediaSession.setMetadata(metadata.build())
