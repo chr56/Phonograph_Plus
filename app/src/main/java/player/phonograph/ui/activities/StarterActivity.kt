@@ -321,7 +321,7 @@ class StarterActivity : AppCompatActivity() {
                         if (count > 10) append("...")
                     }
 
-                    val buttons = SongClickMode.baseModes
+                    val buttons = SongClickMode.multipleItemsModes
 
                     buildDialogView(context, text, buttons)
 
@@ -333,12 +333,7 @@ class StarterActivity : AppCompatActivity() {
                         append("${playRequest.song.title}\n")
                     }
 
-                    val buttons = intArrayOf(
-                        SONG_PLAY_NEXT,
-                        SONG_PLAY_NOW,
-                        SONG_APPEND_QUEUE,
-                        SONG_SINGLE_PLAY
-                    )
+                    val buttons = SongClickMode.singleItemModes
 
                     buildDialogView(context, text, buttons)
 
