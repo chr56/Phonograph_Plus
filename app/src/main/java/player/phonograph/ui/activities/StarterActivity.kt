@@ -40,6 +40,7 @@ import player.phonograph.ui.components.viewcreater.buildDialogView
 import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
 import player.phonograph.ui.components.viewcreater.titlePanel
+import player.phonograph.ui.dialogs.OpenWithDialog
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
@@ -99,9 +100,8 @@ class StarterActivity : AppCompatActivity() {
             Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show()
             gotoMainActivity()
         } else {
-            makeActionDialog(this, playRequest, intent) {
-                gotoMainActivity()
-            }.show()
+            val openWithDialog = OpenWithDialog.create(playRequest)
+            openWithDialog?.show(supportFragmentManager, null)
         }
     }
 
