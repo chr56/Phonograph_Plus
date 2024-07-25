@@ -16,6 +16,7 @@ import player.phonograph.model.SongClickMode
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.executePlayRequest
+import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.ModeRadioBox
@@ -36,12 +37,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 
 class OpenWithDialog : ComposeViewDialogFragment() {
 
     private var isMultipleSong: Boolean = false
     private lateinit var playRequest: PlayRequest
+    private var gotoMainActivity: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +58,7 @@ class OpenWithDialog : ComposeViewDialogFragment() {
         } else {
             PlayRequest.SongRequest(arguments?.parcelable<Song>(EXTRA_SONG)!!)
         }
+        gotoMainActivity = arguments?.getBoolean(EXTRA_GOTO_MAIN_ACTIVITY) ?: false
     }
 
 
@@ -98,29 +102,44 @@ class OpenWithDialog : ComposeViewDialogFragment() {
         MusicPlayerRemote.resumePlaying()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (gotoMainActivity) {
+            startActivity(
+                Intent(requireContext(), MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+            )
+            requireActivity().finish()
+        }
+    }
+
     companion object {
+        private const val EXTRA_GOTO_MAIN_ACTIVITY = "goto_main_activity"
         private const val EXTRA_IS_MULTIPLE_SONGS = "is_multiple_song"
         private const val EXTRA_SONG = "song"
         private const val EXTRA_SONGS = "songs"
 
 
-        fun create(song: Song): OpenWithDialog = OpenWithDialog().apply {
+        fun create(song: Song, gotoMainActivity: Boolean): OpenWithDialog = OpenWithDialog().apply {
             arguments = Bundle().apply {
                 putBoolean(EXTRA_IS_MULTIPLE_SONGS, false)
                 putParcelable(EXTRA_SONG, song)
+                putBoolean(EXTRA_GOTO_MAIN_ACTIVITY, gotoMainActivity)
             }
         }
 
-        fun create(songs: List<Song>): OpenWithDialog = OpenWithDialog().apply {
+        fun create(songs: List<Song>, gotoMainActivity: Boolean): OpenWithDialog = OpenWithDialog().apply {
             arguments = Bundle().apply {
                 putBoolean(EXTRA_IS_MULTIPLE_SONGS, true)
                 putParcelableArrayList(EXTRA_SONGS, ArrayList(songs))
+                putBoolean(EXTRA_GOTO_MAIN_ACTIVITY, gotoMainActivity)
             }
         }
 
-        fun create(playRequest: PlayRequest): OpenWithDialog? = when (playRequest) {
-            is PlayRequest.SongRequest -> create(playRequest.song)
-            is PlayRequest.SongsRequest -> create(playRequest.songs)
+        fun create(playRequest: PlayRequest, gotoMainActivity: Boolean = true): OpenWithDialog? = when (playRequest) {
+            is PlayRequest.SongRequest -> create(playRequest.song, gotoMainActivity)
+            is PlayRequest.SongsRequest -> create(playRequest.songs, gotoMainActivity)
             else -> null
         }
     }
