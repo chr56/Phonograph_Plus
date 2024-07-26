@@ -35,6 +35,7 @@ import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import android.content.Context
 import android.content.Intent
@@ -91,7 +92,18 @@ class OpenWithDialog : ComposeViewDialogFragment() {
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
                 title(res = R.string.app_name)
-                OpenWithDialogContent(requireContext(), isMultipleSong, currentMode)
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 16.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    val context = LocalContext.current
+                    Spacer(Modifier.height(8.dp))
+                    OpenWithOptions(context, isMultipleSong, currentMode) { newValue: Int ->
+                        currentMode.intValue = newValue
+                    }
+                    Spacer(Modifier.height(8.dp))
+                }
             }
         }
     }
@@ -146,25 +158,20 @@ class OpenWithDialog : ComposeViewDialogFragment() {
 }
 
 @Composable
-private fun OpenWithDialogContent(context: Context, isMultipleSong: Boolean, currentMode: MutableIntState) {
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 24.dp, vertical = 12.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        val modes = if (isMultipleSong) SongClickMode.multipleItemsModes else SongClickMode.singleItemModes
-        val setCurrentMode = { new: Int ->
-            currentMode.intValue = new
-        }
-        for (id in modes) {
-            ModeRadioBox(
-                mode = id,
-                name = SongClickMode.modeName(context.resources, id),
-                currentMode = currentMode,
-                setCurrentMode = setCurrentMode
-            )
-        }
-        Spacer(Modifier.height(8.dp))
+private fun OpenWithOptions(
+    context: Context,
+    isMultipleSong: Boolean,
+    currentMode: MutableIntState,
+    setCurrentMode: (Int) -> Unit,
+) {
+    val modes = if (isMultipleSong) SongClickMode.multipleItemsModes else SongClickMode.singleItemModes
+    for (id in modes) {
+        ModeRadioBox(
+            mode = id,
+            name = SongClickMode.modeName(context.resources, id),
+            currentMode = currentMode,
+            setCurrentMode = setCurrentMode
+        )
     }
 }
 
