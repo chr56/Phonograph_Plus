@@ -51,6 +51,7 @@ class OpenWithDialog : ComposeViewDialogFragment() {
     private var isMultipleSong: Boolean = false
     private lateinit var playRequest: PlayRequest
     private var gotoMainActivity: Boolean = false
+    private var confirmed: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,6 +92,7 @@ class OpenWithDialog : ComposeViewDialogFragment() {
                         textStyle = accentColoredButtonStyle()
                     ) {
                         play(currentMode.intValue)
+                        if (currentMode.intValue > 0) confirmed = true
                         dismiss()
                     }
                 }
@@ -122,14 +124,14 @@ class OpenWithDialog : ComposeViewDialogFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (gotoMainActivity) {
+        if (gotoMainActivity && confirmed) {
             startActivity(
                 Intent(requireContext(), MainActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
             )
-            requireActivity().finish()
         }
+        requireActivity().finish()
     }
 
     companion object {
