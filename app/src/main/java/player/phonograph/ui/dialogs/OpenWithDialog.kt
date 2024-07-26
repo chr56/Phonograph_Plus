@@ -27,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -165,10 +166,16 @@ class OpenWithDialog : ComposeViewDialogFragment() {
 
 @Composable
 private fun OpenWithContent(playRequest: PlayRequest) {
-    when (playRequest) {
-        is PlayRequest.SongRequest  -> SongItem(song = playRequest.song)
-        is PlayRequest.SongsRequest -> for (song in playRequest.songs) SongItem(song = song)
-        else                        -> {}
+    Column(
+        modifier = Modifier
+            .heightIn(max = 96.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        when (playRequest) {
+            is PlayRequest.SongRequest  -> SongItem(song = playRequest.song)
+            is PlayRequest.SongsRequest -> for (song in playRequest.songs) SongItem(song = song)
+            else                        -> {}
+        }
     }
 }
 
