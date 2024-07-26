@@ -30,13 +30,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -98,6 +102,7 @@ class OpenWithDialog : ComposeViewDialogFragment() {
                         .verticalScroll(rememberScrollState())
                 ) {
                     val context = LocalContext.current
+                    OpenWithContent(playRequest)
                     Spacer(Modifier.height(8.dp))
                     OpenWithOptions(context, isMultipleSong, currentMode) { newValue: Int ->
                         currentMode.intValue = newValue
@@ -156,6 +161,33 @@ class OpenWithDialog : ComposeViewDialogFragment() {
         }
     }
 }
+
+
+@Composable
+private fun OpenWithContent(playRequest: PlayRequest) {
+    when (playRequest) {
+        is PlayRequest.SongRequest  -> SongItem(song = playRequest.song)
+        is PlayRequest.SongsRequest -> for (song in playRequest.songs) SongItem(song = song)
+        else                        -> {}
+    }
+}
+
+@Composable
+private fun SongItem(song: Song) {
+    Column(Modifier.padding(horizontal = 4.dp, vertical = 2.dp)) {
+        Text(
+            song.title,
+            Modifier.padding(2.dp),
+            style = MaterialTheme.typography.subtitle2,
+            fontWeight = FontWeight.SemiBold
+        )
+        Text(
+            song.data, Modifier.padding(2.dp),
+            fontSize = 12.sp
+        )
+    }
+}
+
 
 @Composable
 private fun OpenWithOptions(
