@@ -89,6 +89,11 @@ object MusicPlayerRemote {
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
             musicService = (service as MusicBinder).service
             mCallback?.onServiceConnected(className, service)
+            if (resumeInstantlyIfReady) {
+                service.service.play()
+                Log.v(TAG, "Resume eagerly due to setting!")
+                resumeInstantlyIfReady = false
+            }
         }
 
         override fun onServiceDisconnected(className: ComponentName) {
@@ -114,6 +119,21 @@ object MusicPlayerRemote {
 
     fun resumePlaying() {
         musicService?.play()
+    }
+
+    private var resumeInstantlyIfReady: Boolean = false
+
+    fun requireResumeInstantlyIfReady() {
+        val service = musicService
+        if (service == null) {
+            resumeInstantlyIfReady = true
+        } else {
+            service.play()
+        }
+    }
+
+    fun cancelResumeInstantlyIfReady() {
+        resumeInstantlyIfReady = false
     }
 
     /**
