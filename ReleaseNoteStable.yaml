@@ -1,7 +1,7 @@
-version: "1.8.1-dev1"
-channel: "PREVIEW"
-versionCode: 1080
-timestamp: 1722070000
+version: "1.8.1"
+channel: "STABLE"
+versionCode: 1081
+timestamp: 1722170000
 notes:
   en:
     highlights: [ ]
