@@ -6,7 +6,6 @@ package player.phonograph.ui.activities
 
 import legacy.phonograph.MediaStoreCompat
 import org.koin.android.ext.android.get
-import org.koin.core.context.GlobalContext
 import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
@@ -17,36 +16,18 @@ import player.phonograph.appshortcuts.shortcuttype.TopTracksShortcutType
 import player.phonograph.mechanism.SongUriParsers
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.PlayRequest
-import player.phonograph.model.PlayRequest.SongRequest
 import player.phonograph.model.PlayRequest.SongsRequest
 import player.phonograph.model.Song
-import player.phonograph.model.SongClickMode
-import player.phonograph.model.SongClickMode.SONG_APPEND_QUEUE
-import player.phonograph.model.SongClickMode.SONG_PLAY_NEXT
-import player.phonograph.model.SongClickMode.SONG_PLAY_NOW
-import player.phonograph.model.SongClickMode.SONG_SINGLE_PLAY
-import player.phonograph.model.SongClickMode.modeName
 import player.phonograph.model.playlist.DynamicPlaylists
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
 import player.phonograph.repo.mediastore.processQuery
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.service.queue.executePlayRequest
-import player.phonograph.ui.components.viewcreater.buildDialogView
-import player.phonograph.ui.components.viewcreater.buttonPanel
-import player.phonograph.ui.components.viewcreater.contentPanel
-import player.phonograph.ui.components.viewcreater.titlePanel
-import player.phonograph.util.theme.primaryColor
-import player.phonograph.util.theme.tintButtons
-import androidx.appcompat.app.AlertDialog
+import player.phonograph.ui.dialogs.OpenWithDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.setMargins
-import androidx.core.view.setPadding
-import androidx.fragment.app.FragmentActivity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
@@ -54,15 +35,6 @@ import android.os.Build.VERSION_CODES.N_MR1
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.view.Gravity
-import android.view.View
-import android.widget.FrameLayout.LayoutParams
-import android.widget.FrameLayout.LayoutParams.MATCH_PARENT
-import android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
-import android.widget.LinearLayout
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.TextView
 import android.widget.Toast
 import kotlin.random.Random
 import kotlinx.coroutines.runBlocking
@@ -99,9 +71,8 @@ class StarterActivity : AppCompatActivity() {
             Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show()
             gotoMainActivity()
         } else {
-            makeActionDialog(this, playRequest, intent) {
-                gotoMainActivity()
-            }.show()
+            val openWithDialog = OpenWithDialog.create(playRequest)
+            openWithDialog?.show(supportFragmentManager, null)
         }
     }
 
@@ -241,137 +212,6 @@ class StarterActivity : AppCompatActivity() {
             }
         )
         finish()
-    }
-
-    private fun makeActionDialog(
-        context: FragmentActivity,
-        playRequest: PlayRequest,
-        originalIntent: Intent,
-        callback: () -> Unit,
-    ): AlertDialog {
-
-        var selected: Int = -1
-
-        fun buildDialogView(
-            context: FragmentActivity,
-            hint: String,
-            modes: IntArray,
-        ): View {
-            val primaryColor = context.primaryColor()
-
-            val titlePanel = titlePanel(context).apply {
-                titleView.text = getString(R.string.app_name)
-            }
-            val contentPanel = contentPanel(context) {
-                addView(
-                    LinearLayout(context).apply {
-                        orientation = LinearLayout.VERTICAL
-                        // Text
-                        TextView(context, null, androidx.appcompat.R.style.Base_TextAppearance_AppCompat_Medium).apply {
-                            text = hint
-                        }.also {
-                            addView(it)
-                        }
-                        // Buttons
-                        RadioGroup(context).apply {
-                            for (i in modes.indices) {
-                                addView(
-                                    RadioButton(context).apply {
-                                        this.text = modeName(context.resources, modes[i])
-                                        this.setOnClickListener {
-                                            selected = modes[i]
-                                        }
-                                    },
-                                    MATCH_PARENT, WRAP_CONTENT
-                                )
-                            }
-                        }.also {
-                            addView(it)
-                        }
-                    },
-                    LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply { setMargins(16) }
-                )
-            }
-            val buttonPanel = buttonPanel(context) {
-                button(0, getString(android.R.string.cancel), primaryColor) {}
-                space(1)
-                button(2, getString(android.R.string.ok), primaryColor) {
-                    val queueManager: QueueManager = (context as? AppCompatActivity)?.get() ?: GlobalContext.get().get()
-                    executePlayRequest(queueManager, playRequest, selected)
-                    callback()
-                    MusicPlayerRemote.resumePlaying()
-                }
-            }
-            return buildDialogView(
-                context, titlePanel, contentPanel, buttonPanel
-            )
-        }
-
-        val dialogView: View =
-            when (playRequest) {
-                is SongsRequest -> {
-                    val text = buildString {
-                        append("${getString(R.string.action_play)}\n")
-                        val songs = playRequest.songs
-                        val count = songs.size
-                        append("${context.resources.getQuantityString(R.plurals.item_songs, count, count)}\n")
-                        songs.take(10).forEach {
-                            append("${it.title}\n")
-                        }
-                        if (count > 10) append("...")
-                    }
-
-                    val buttons = SongClickMode.baseModes
-
-                    buildDialogView(context, text, buttons)
-
-                }
-
-                is SongRequest  -> {
-                    val text = buildString {
-                        append("${getString(R.string.action_play)}\n")
-                        append("${playRequest.song.title}\n")
-                    }
-
-                    val buttons = intArrayOf(
-                        SONG_PLAY_NEXT,
-                        SONG_PLAY_NOW,
-                        SONG_APPEND_QUEUE,
-                        SONG_SINGLE_PLAY
-                    )
-
-                    buildDialogView(context, text, buttons)
-
-                }
-
-                else            -> {
-                    LinearLayout(context).apply {
-                        orientation = LinearLayout.VERTICAL
-                        addView(
-                            TextView(context).apply {
-                                setPadding(32)
-                                setTextAppearance(androidx.appcompat.R.style.TextAppearance_AppCompat_Medium)
-                                gravity = Gravity.CENTER
-                                setText(R.string.unplayable_file)
-                            }
-                        )
-                        addView(
-                            TextView(context).apply {
-                                setPadding(32, 32, 32, 64)
-                                text = originalIntent.data.toString()
-                            }
-                        )
-                    }
-                }
-            }
-
-
-        return AlertDialog.Builder(context, androidx.appcompat.R.style.ThemeOverlay_AppCompat_Dialog_Alert)
-            .setView(dialogView)
-            .setOnCancelListener {
-                context.finish()
-            }
-            .create().tintButtons()
     }
 
     companion object {

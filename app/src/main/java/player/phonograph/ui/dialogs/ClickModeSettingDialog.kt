@@ -72,7 +72,7 @@ private fun ClickModeSettingDialogContent(context: Context) {
             currentMode.intValue = new
             Setting(context)[Keys.songItemClickMode].data = new
         }
-        for (id in SongClickMode.baseModes) {
+        for (id in SongClickMode.allModes) {
             ModeRadioBox(
                 mode = id,
                 name = SongClickMode.modeName(context.resources, id),

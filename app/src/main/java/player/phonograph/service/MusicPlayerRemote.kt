@@ -64,7 +64,7 @@ object MusicPlayerRemote {
                 mConnectionMap[contextWrapper] = serviceConnection
                 ServiceToken(contextWrapper)
             } else {
-                warning(TAG,"Failed to start MusicService")
+                warning(TAG, "Failed to start MusicService")
                 null
             }
         }
@@ -89,6 +89,11 @@ object MusicPlayerRemote {
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
             musicService = (service as MusicBinder).service
             mCallback?.onServiceConnected(className, service)
+            if (resumeInstantlyIfReady) {
+                service.service.play()
+                Log.v(TAG, "Resume eagerly due to setting!")
+                resumeInstantlyIfReady = false
+            }
         }
 
         override fun onServiceDisconnected(className: ComponentName) {
@@ -106,8 +111,29 @@ object MusicPlayerRemote {
         musicService?.playSongAt(position)
     }
 
+    val isPlaying: Boolean get() = musicService != null && musicService!!.isPlaying
+
     fun pauseSong() {
         musicService?.pause()
+    }
+
+    fun resumePlaying() {
+        musicService?.play()
+    }
+
+    private var resumeInstantlyIfReady: Boolean = false
+
+    fun requireResumeInstantlyIfReady() {
+        val service = musicService
+        if (service == null) {
+            resumeInstantlyIfReady = true
+        } else {
+            service.playSongAt(position)
+        }
+    }
+
+    fun cancelResumeInstantlyIfReady() {
+        resumeInstantlyIfReady = false
     }
 
     /**
@@ -129,12 +155,6 @@ object MusicPlayerRemote {
      */
     fun back() {
         musicService?.back(true)
-    }
-
-    val isPlaying: Boolean get() = musicService != null && musicService!!.isPlaying
-
-    fun resumePlaying() {
-        musicService?.play()
     }
 
     /**
@@ -235,8 +255,7 @@ object MusicPlayerRemote {
                 musicService,
                 it.resources.getString(R.string.added_title_to_playing_queue),
                 LENGTH_SHORT
-            )
-                .show()
+            ).show()
         }
     }
 
