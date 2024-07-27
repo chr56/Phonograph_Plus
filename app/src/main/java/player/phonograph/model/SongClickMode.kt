@@ -60,6 +60,17 @@ object SongClickMode {
         )
     }
 
+    val modesRequiringInstantlyChangingState by lazy {
+        intArrayOf(
+            SONG_PLAY_NOW,
+            SONG_SINGLE_PLAY,
+            QUEUE_PLAY_NOW,
+            QUEUE_SWITCH_TO_BEGINNING,
+            QUEUE_SWITCH_TO_POSITION,
+            QUEUE_SHUFFLE,
+        )
+    }
+
 
     fun modeName(resources: Resources, id: Int): String {
         return when (id) {
