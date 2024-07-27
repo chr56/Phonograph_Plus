@@ -13,7 +13,6 @@ import player.phonograph.R
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
 import player.phonograph.model.SongClickMode
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.executePlayRequest
 import player.phonograph.ui.activities.MainActivity
@@ -23,7 +22,7 @@ import player.phonograph.ui.compose.components.ModeRadioBox
 import player.phonograph.util.parcelable
 import player.phonograph.util.parcelableArrayList
 import player.phonograph.util.theme.accentColoredButtonStyle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -117,11 +116,8 @@ class OpenWithDialog : ComposeViewDialogFragment() {
     }
 
     private fun play(mode: Int) {
-        val queueManager: QueueManager = (context as? AppCompatActivity)?.get() ?: GlobalContext.get().get()
+        val queueManager: QueueManager = (context as? ComponentActivity)?.get() ?: GlobalContext.get().get()
         executePlayRequest(queueManager, playRequest, mode)
-        if (mode in SongClickMode.modesRequiringInstantlyChangingState) {
-            MusicPlayerRemote.requireResumeInstantlyIfReady()
-        }
     }
 
     override fun onDestroy() {

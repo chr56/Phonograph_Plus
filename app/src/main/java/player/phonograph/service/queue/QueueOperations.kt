@@ -7,6 +7,7 @@ package player.phonograph.service.queue
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
 import player.phonograph.model.SongClickMode
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.warning
 
 
@@ -185,6 +186,9 @@ fun executePlayRequest(queueManager: QueueManager, request: PlayRequest, mode: I
         is PlayRequest.SongRequest   -> executePlayRequest(queueManager, request, mode)
         is PlayRequest.SongsRequest  -> executePlayRequest(queueManager, request, mode)
         else                         -> {}
+    }
+    if (mode in SongClickMode.modesRequiringInstantlyChangingState) {
+        MusicPlayerRemote.requireResumeInstantlyIfReady()
     }
 }
 
