@@ -128,7 +128,7 @@ object MusicPlayerRemote {
         if (service == null) {
             resumeInstantlyIfReady = true
         } else {
-            service.play()
+            service.playSongAt(position)
         }
     }
 
