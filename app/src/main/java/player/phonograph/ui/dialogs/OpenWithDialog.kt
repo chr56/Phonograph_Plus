@@ -158,9 +158,9 @@ class OpenWithDialog : ComposeViewDialogFragment() {
         }
 
         fun create(playRequest: PlayRequest, gotoMainActivity: Boolean = true): OpenWithDialog? = when (playRequest) {
-            is PlayRequest.SongRequest -> create(playRequest.song, gotoMainActivity)
+            is PlayRequest.SongRequest  -> create(playRequest.song, gotoMainActivity)
             is PlayRequest.SongsRequest -> create(playRequest.songs, gotoMainActivity)
-            else -> null
+            else                        -> null
         }
     }
 }
