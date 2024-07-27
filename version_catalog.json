@@ -1,6 +1,30 @@
 {
   "versions": [
     {
+      "channel": "preview",
+      "versionName": "1.8.1-dev1",
+      "versionCode": 1080,
+      "date": 1722070000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.8.1-dev1"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.1-dev1/PhonographPlus_1.8.1-dev1_ModernPreviewRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.1-dev1/PhonographPlus_1.8.1-dev1_LegacyPreviewRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>移除 旧版歌曲详情</li><li>改进 从外部播放时的打开...对话框</li><li>新增 始终使用 Media Session 显示封面的选项以改进兼容性</li></ol>",
+        "en": "<ol><li>Remove: Legacy Song Detail</li><li>Improve: Open With dialog for externally playing</li><li>New: opt-in option for always using Media Session to display cover for compatibility</li></ol>"
+      }
+    },
+    {
       "channel": "stable",
       "versionName": "1.8.0",
       "versionCode": 1080,
@@ -22,50 +46,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>注意 现专为Android 10 及以下用户提供特别版本</li><li>修复 从外部（如文件资源管理器）启动时未立即播放</li><li>翻译 更新 西班牙语（Dino RTX），波兰语（cooky）、巴西葡萄牙语（FalaTudo）</li><li>开发 更新 Gradle 至 8.8，更新 AGP 至 8.5.1，更新依赖</li></ol>",
         "en": "<ol><li>Note: Now, we have a special version especially for user on Android 10 and BELOW</li><li>Fix: not instantly start playing from the external source (like file explorer)</li><li>Translation: update Spanish (by Dino RTX)，update Polish (by cooky), Portuguese Brazilian (by FalaTudo)</li><li>Development: upgrade Gradle to 8.8, upgrade AGP to 8.5.1, upgrade dependencies</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.8.0-dev1",
-      "versionCode": 1073,
-      "date": 1720080000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.8.0-dev1"
-        },
-        {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.0-dev1/PhonographPlus_1.8.0-dev1_ModernPreviewRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK(File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.0-dev1/PhonographPlus_1.8.0-dev1_LegacyPreviewRelease.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>注意 现专为Android 10 及以下用户提供特别版本</li><li>翻译 更新 波兰语（cooky）、巴西葡萄牙语（FalaTudo）</li><li>开发 更新依赖</li></ol>",
-        "en": "<ol><li>Note: Now, we have a special version especially for user on Android 10 and BELOW</li><li>Translation: update Polish (by cooky), Portuguese Brazilian (by FalaTudo)</li><li>Development: upgrade dependencies</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "1.7.2.1",
-      "versionCode": 1072,
-      "date": 1719390000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.7.2.1"
-        },
-        {
-          "name": "Github Release (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.7.2.1/PhonographPlus_1.7.2.1.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 开启`使用旧式歌曲收藏机制`时崩溃</li><li>修复 Android Auto 无法读取播放列表</li></ol>",
-        "en": "<ol><li>Fix: crash if enable `Use legacy favorite playlist mechanism`</li><li>Fix: Android Auto could not read playlists</li></ol>"
       }
     },
     {
