@@ -119,7 +119,9 @@ class OpenWithDialog : ComposeViewDialogFragment() {
     private fun play(mode: Int) {
         val queueManager: QueueManager = (context as? AppCompatActivity)?.get() ?: GlobalContext.get().get()
         executePlayRequest(queueManager, playRequest, mode)
-        MusicPlayerRemote.resumePlaying()
+        if (mode in SongClickMode.modesRequiringInstantlyChangingState) {
+            MusicPlayerRemote.requireResumeInstantlyIfReady()
+        }
     }
 
     override fun onDestroy() {
