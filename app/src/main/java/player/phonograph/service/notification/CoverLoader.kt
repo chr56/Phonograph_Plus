@@ -66,15 +66,7 @@ class CoverLoader(private val context: Context) {
      * size correct size
      */
     private fun ImageRequest.Builder.properSize(): ImageRequest.Builder {
-
-        when (Build.VERSION.SDK_INT) {
-            in VERSION_CODES.P until Int.MAX_VALUE -> {
-                // so no operation
-            }
-            in  VERSION_CODES.BASE until VERSION_CODES.P -> {
-                size(largeIconSize)
-            }
-        }
+        if (Build.VERSION.SDK_INT < VERSION_CODES.P) size(largeIconSize)
         return this
     }
 
