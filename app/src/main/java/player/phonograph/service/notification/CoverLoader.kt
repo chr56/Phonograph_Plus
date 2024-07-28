@@ -68,13 +68,10 @@ class CoverLoader(private val context: Context) {
     private fun ImageRequest.Builder.properSize(): ImageRequest.Builder {
 
         when (Build.VERSION.SDK_INT) {
-            in VERSION_CODES.TIRAMISU until Int.MAX_VALUE -> {
-                // on Vanilla Android T (13), the large icon of media notification is background, so no limit there,
-                // add do not allow [albumArtOnLockscreen],
+            in VERSION_CODES.P until Int.MAX_VALUE -> {
                 // so no operation
             }
-            in  VERSION_CODES.BASE until VERSION_CODES.TIRAMISU -> {
-                // after Android R (11), [albumArtOnLockscreen] is invalid always
+            in  VERSION_CODES.BASE until VERSION_CODES.P -> {
                 size(largeIconSize)
             }
         }
