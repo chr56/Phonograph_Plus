@@ -97,6 +97,15 @@ object Keys {
     object songItemClickExtraFlag :
             PrimitiveKey<Int>(intPK(SONG_ITEM_CLICK_EXTRA_FLAG), { SongClickMode.FLAG_MASK_PLAY_QUEUE_IF_EMPTY })
 
+    object externalPlayRequestShowPrompt :
+            PrimitiveKey<Boolean>(booleanPK(EXTERNAL_PLAY_REQUEST_SHOW_PROMPT), { false })
+
+    object externalPlayRequestSingleMode :
+            PrimitiveKey<Int>(intPK(EXTERNAL_PLAY_REQUEST_SINGLE_MODE), { SongClickMode.SONG_PLAY_NOW })
+
+    object externalPlayRequestMultipleMode :
+            PrimitiveKey<Int>(intPK(EXTERNAL_PLAY_REQUEST_MULTIPLE_MODE), { SongClickMode.QUEUE_PLAY_NOW })
+
     object gaplessPlayback :
             PrimitiveKey<Boolean>(booleanPK(GAPLESS_PLAYBACK), { false })
 
