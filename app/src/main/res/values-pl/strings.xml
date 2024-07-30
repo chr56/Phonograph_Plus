@@ -536,4 +536,6 @@
     <string name="action_fast_forward">Szybkie przewijanie do przodu</string>
     <string name="path_selector">Selektor plików</string>
     <string name="notification_is_disabled">Powiadomienia są wyłączone</string>
+    <string name="pref_title_always_use_media_session_to_display_cover">Zawsze używaj sesji multimedialnej do wyświetlania okładki</string>
+    <string name="pref_summary_always_use_media_session_to_display_cover">Zawsze używaj sesji multimedialnej dla dostarczania okładek systemowi powiadomień, ect.</string>
 </resources>
