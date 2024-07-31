@@ -1,24 +1,26 @@
-## **v1.8.1-dev1 2024.07.27**
+## **v1.8.1-dev2 2024.07.31**
 
 This is a _Preview Channel_ Release (with package name suffix `preview`), which might have potential bugs.
 此为预览通道版本 (包名后缀`preview`), 可能存在潜在问题!
 
 ### EN
 
-1. Remove: Legacy Song Detail
-2. Improve: Open With dialog for externally playing
-3. New: opt-in option for always using Media Session to display cover for compatibility
+1. Translation: update Polish (by cooky), Spanish by (by Dragonrojo)
+2. Improve: some text and descriptions about Updates
+3. Fix: notification image quality on Android Q
+4. Modify: forbid upgrading from prior to v1.0.0 & warn upgrading from prior to v1.4.0
 
 
 ### ZH
 
-1. 移除 旧版歌曲详情
-2. 改进 从外部播放时的打开...对话框
-3. 新增 始终使用 Media Session 显示封面的选项以改进兼容性
+1. 翻译 更新 波兰语（cooky）、西班牙语（Dragonrojo）
+2. 改进 关于更新的部分文字和说明
+3. 修复 Android Q 上通知图像质量
+4. 修改 禁止从 V1.0.0 之前升级，警告从 V1.4.0 之前升级
 
 
 
-**Commit log**: https://github.com/chr56/Phonograph_Plus/compare/v1.8.1...preview_1.8.1-dev1
+**Commit log**: https://github.com/chr56/Phonograph_Plus/compare/preview_1.8.1-dev2...preview_1.8.1-dev2
 
 ## Version Variants Description / 版本说明
 
@@ -27,4 +29,4 @@ This is a _Preview Channel_ Release (with package name suffix `preview`), which 
 **TL;DR**: If you are a user of Android 7-10, use `Legacy`; If not, use `Modern`.
 **太长不看**: 若为 Android 7-10 用户，请使用 `Legacy` 版本；否则，请使用 `Modern` 版本。
 
-Download Links | [Modern](https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.1-dev1/PhonographPlus_1.8.1-dev1_ModernPreviewRelease.apk) | [Legacy](https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.1-dev1/PhonographPlus_1.8.1-dev1_LegacyPreviewRelease.apk) |
+Download Links | [Modern](https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.1-dev2/PhonographPlus_1.8.1-dev2_ModernPreviewRelease.apk) | [Legacy](https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.1-dev2/PhonographPlus_1.8.1-dev2_LegacyPreviewRelease.apk) |

@@ -1,21 +1,23 @@
-version: "1.8.1-dev1"
+version: "1.8.1-dev2"
 channel: "PREVIEW"
 versionCode: 1080
-timestamp: 1722070000
+timestamp: 1722409000
 notes:
   en:
     highlights: [ ]
     items:
-      - "Remove: Legacy Song Detail"
-      - "Improve: Open With dialog for externally playing"
-      - "New: opt-in option for always using Media Session to display cover for compatibility"
+      - "Translation: update Polish (by cooky), Spanish by (by Dragonrojo)"
+      - "Improve: some text and descriptions about Updates"
+      - "Fix: notification image quality on Android Q"
+      - "Modify: forbid upgrading from prior to v1.0.0 & warn upgrading from prior to v1.4.0"
 
   zh:
     highlights: [ ]
     items:
-      - "移除 旧版歌曲详情"
-      - "改进 从外部播放时的打开...对话框"
-      - "新增 始终使用 Media Session 显示封面的选项以改进兼容性"
+    - "翻译 更新 波兰语（cooky）、西班牙语（Dragonrojo）"
+    - "改进 关于更新的部分文字和说明"
+    - "修复 Android Q 上通知图像质量"
+    - "修改 禁止从 V1.0.0 之前升级，警告从 V1.4.0 之前升级"
 
-previousVersion: "1.8.0"
-previousChannel: "STABLE"
+previousVersion: "1.8.1-dev2"
+previousChannel: "PREVIEW"
