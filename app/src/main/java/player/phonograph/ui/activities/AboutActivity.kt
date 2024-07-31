@@ -168,10 +168,10 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
                             if (Setting(App.instance)[Keys.ignoreUpgradeDate].data
                                 >= versionCatalog.currentLatestChannelVersionBy { it.date }.date
                             ) {
-                                toast(getString(R.string.upgrade_ignored))
+                                toast(getString(R.string.ignored_update))
                             }
                         } else {
-                            toast(getText(R.string.no_newer_version))
+                            toast(getText(R.string.no_updates))
                         }
                     }
                 }

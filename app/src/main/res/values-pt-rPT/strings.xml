@@ -249,15 +249,8 @@
     <string name="retry">Voltar a tentar</string>
     <string name="permission_manage_external_storage_denied">parece que o Phonograph não tem a permissão \"gerir armazenamento externo\"!</string>
     <string name="not_available_now">Não está disponível agora</string>
-    <string name="check_upgrade">Verificar atualização</string>
-    <string name="no_newer_version">Não há atualizações</string>
-    <string name="new_version">Nova Versão:</string>
-    <string name="new_version_code">versão</string>
     <string name="download">Transferir</string>
-    <string name="ignore_once">Ignorar este</string>
-    <string name="upgrade_ignored">A atualização foi ignorada.</string>
     <string name="tg_channel">Canal do Telegram</string>
-    <string name="auto_check_upgrade">Verificar atualizações automaticamente</string>
     <string name="edit">Editar…</string>
     <string name="move_to_top">Mover para o topo</string>
     <string name="move_to_bottom">Mover para o fundo</string>

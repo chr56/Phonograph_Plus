@@ -13,7 +13,7 @@
             android:id="@+id/check_upgrade_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/auto_check_upgrade"
+            android:text="@string/check_for_updates"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             app:layout_constraintBottom_toTopOf="@id/check_upgrade_desc"
             app:layout_constraintEnd_toEndOf="parent"
@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/auto_check_upgrade_extra_description"
+            android:text="@string/pref_summary_auto_check_for_updates"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             app:layout_constraintBottom_toTopOf="@id/check_upgrade_choose"
             app:layout_constraintEnd_toEndOf="@+id/check_upgrade_title"
@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:text="@string/auto_check_upgrade" />
+                android:text="@string/pref_title_auto_check_for_updates" />
 
             <RadioButton
                 android:id="@+id/disable"

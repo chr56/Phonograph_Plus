@@ -261,17 +261,8 @@
     <string name="retry">Повторить</string>
     <string name="permission_manage_external_storage_denied">Кажется у Phonograph нет разрешения к \"управление внешним хранилищем\"!</string>
     <string name="not_available_now">Недоступно сейчас</string>
-    <string name="check_upgrade">Проверить обновление</string>
-    <string name="no_newer_version">Нет обновлений!</string>
-    <string name="new_version">Новая версия!</string>
-    <string name="new_version_code">версия</string>
     <string name="download">Скачать</string>
-    <string name="ignore_once">Игнорировать это</string>
-    <string name="upgrade_ignored">Обновление проигнорировано.</string>
     <string name="tg_channel">Telegram Канал</string>
-    <string name="auto_check_upgrade">Проверять обновления автоматически</string>
-    <string name="auto_check_upgrade_summary">Открывать окно обновления, если доступна более новая версия.</string>
-    <string name="auto_check_upgrade_extra_description">Приложение проверит новые версии с общедоступного статического ресурса на GitHub Repository и других зеркальных сайтах.</string>
     <string name="edit">Изменить…</string>
     <string name="move_to_top">Переместить в началу</string>
     <string name="move_to_bottom">Переместить в конец</string>
@@ -460,7 +451,6 @@
     <string name="disk_number">Номер диска</string>
     <string name="disk_number_total">Номер диска</string>
     <string name="rating">Оценка</string>
-    <string name="pref_title_check_upgrade_interval">Интервал проверки обновления</string>
     <string name="interval_past">Прошлые</string>
     <string name="interval_recent">Недавние</string>
     <string name="interval_every">Каждые</string>
@@ -473,7 +463,6 @@
     <string name="timeunit_year">Год</string>
     <string name="time_interval_text">%1$s %2$d %3$s</string>
     <string name="preview_text_cutoff_time_interval">Урезанная метка времени будет: \n %1$s \n(%2$s)</string>
-    <string name="preview_text_next_upgrade_check">Следующая проверка обновления будет проведена: \n %1$s \n(%2$s)</string>
     <string name="home">Главная</string>
     <string name="search_online">Искать в сети</string>
     <string name="target">Цель</string>

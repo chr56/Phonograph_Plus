@@ -41,7 +41,7 @@ class DebugDialog : DialogFragment() {
         "Send Crash Notification" to {
             ErrorNotification.postErrorNotification(Exception("Test"), "Crash Notification Test!!")
         },
-        "Check Upgrade (Dialog)" to {
+        "Check for updates (Dialog)" to {
             CoroutineScope(Dispatchers.Unconfined).launch {
                 Update.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
                     try {
@@ -56,7 +56,7 @@ class DebugDialog : DialogFragment() {
                 }
             }
         },
-        "Check Upgrade (Notification)" to {
+        "Check for updates (Notification)" to {
             CoroutineScope(Dispatchers.Unconfined).launch {
                 Update.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
                     UpgradeNotification.sendUpgradeNotification(versionCatalog, ReleaseChannel.currentChannel)

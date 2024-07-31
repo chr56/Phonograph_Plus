@@ -261,17 +261,8 @@
     <string name="retry">Reintentar</string>
     <string name="permission_manage_external_storage_denied">Parece que Phonograph no tiene este permiso \"gestionar almacenamiento externo\"!</string>
     <string name="not_available_now">no disponible por ahora </string>
-    <string name="check_upgrade">Comprobar actualizaciones</string>
-    <string name="no_newer_version">No hay actualizaciones disponibles</string>
-    <string name="new_version">Nueva versión encontrada </string>
-    <string name="new_version_code">versión</string>
     <string name="download">Descargar</string>
-    <string name="ignore_once">Ignorar</string>
-    <string name="upgrade_ignored">La actualización ha sido ignorada.</string>
     <string name="tg_channel">Canal de Telegram</string>
-    <string name="auto_check_upgrade">Buscar actualizaciones automáticamente</string>
-    <string name="auto_check_upgrade_summary">Mostrar un diálogo de actualización al instante si está disponible una versión más reciente.</string>
-    <string name="auto_check_upgrade_extra_description">La aplicación comprobará nuevas versiones de un recurso público estático en el repositorio de GitHub y otros sitios espejos.</string>
     <string name="edit">Editar…</string>
     <string name="move_to_top">Mover al principio</string>
     <string name="move_to_bottom">Mover al final</string>
@@ -447,7 +438,6 @@
     <string name="disk_number">Número de disco</string>
     <string name="disk_number_total">Número total de discos</string>
     <string name="rating">Calificación</string>
-    <string name="pref_title_check_upgrade_interval">Comprobar intervalo de actualización</string>
     <string name="interval_past">Anterior</string>
     <string name="interval_recent">Reciente</string>
     <string name="interval_every">Cada</string>
@@ -460,7 +450,6 @@
     <string name="timeunit_year">Año</string>
     <string name="time_interval_text">%1$s %2$d %3$s</string>
     <string name="preview_text_cutoff_time_interval">La marca de tiempo límite será: \n %1$s \n(%2$s)</string>
-    <string name="preview_text_next_upgrade_check">La siguiente comprobación de actualizaciones será después de: \n %1$s \n(%2$s)</string>
     <string name="home">Inicio</string>
     <string name="search_online">Búsqueda en línea</string>
     <string name="target">Destino</string>

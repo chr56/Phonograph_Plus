@@ -253,17 +253,8 @@
     <string name="retry">Yritä uudelleen</string>
     <string name="permission_manage_external_storage_denied">Näyttää siltä, että Phonographilla ei ole lupaa \"hallitse ulkoista tallennustilaa\".</string>
     <string name="not_available_now">Ei saatavilla nyt</string>
-    <string name="check_upgrade">Tarkista päivitykset</string>
-    <string name="no_newer_version">Ei päivitystä!</string>
-    <string name="new_version">Uusi versio!</string>
-    <string name="new_version_code">versio</string>
     <string name="download">Lataa</string>
-    <string name="ignore_once">Ohita tämä</string>
-    <string name="upgrade_ignored">Päivitys on ohitettu.</string>
     <string name="tg_channel">Telegram-kanava</string>
-    <string name="auto_check_upgrade">Tarkista päivitykset automaattisesti</string>
-    <string name="auto_check_upgrade_summary">Ilmoita uudesta versiosta välittömästi, jos sellainen on saatavilla.</string>
-    <string name="auto_check_upgrade_extra_description">Sovellus tarkistaa uudemmat versiot GitHub-arkiston julkisista staattisista resursseista ja muista peilisivustoista.</string>
     <string name="edit">Muokkaa…</string>
     <string name="move_to_top">Siirrä ylimmäiseksi</string>
     <string name="move_to_bottom">Siirrä alimmaiseksi</string>

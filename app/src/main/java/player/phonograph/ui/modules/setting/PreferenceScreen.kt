@@ -373,17 +373,18 @@ fun PhonographPreferenceScreen() {
             )
         }
 
-        SettingsGroup(title = header(R.string.check_upgrade)) {
+        SettingsGroup(title = header(R.string.check_for_updates)) {
             BooleanPref(
                 key = CHECK_UPGRADE_AT_STARTUP,
-                titleRes = R.string.auto_check_upgrade,
-                summaryRes = R.string.auto_check_upgrade_summary,
+                titleRes = R.string.pref_title_auto_check_for_updates,
+                summaryRes = R.string.pref_summary_auto_check_for_updates,
                 defaultValue = false,
             )
             DialogPref(
                 model = DialogPreferenceModel(
                     CheckUpdateIntervalDialog::class.java,
-                    R.string.pref_title_check_upgrade_interval,
+                    titleRes = R.string.pref_title_check_for_updates_interval,
+                    summaryRes = R.string.pref_summary_check_for_updates_interval
                 ) {
                     val resources = it.resources
                     val preference = Setting(it).Composites[Keys.checkUpdateInterval]

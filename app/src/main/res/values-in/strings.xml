@@ -238,16 +238,8 @@
     <string name="retry">Coba Lagi</string>
     <string name="permission_manage_external_storage_denied">sepertinya Phonograph tidak mempunyai izin \"mengelola penyimpanan external\"!</string>
     <string name="not_available_now">tidak tersedia saat ini </string>
-    <string name="check_upgrade">Cek pembaruan</string>
-    <string name="no_newer_version">Tidak ada pembaruan!</string>
-    <string name="new_version">Versi Baru!</string>
-    <string name="new_version_code">versi</string>
     <string name="download">Unduh</string>
-    <string name="ignore_once">Abaikan ini</string>
-    <string name="upgrade_ignored">Pembaruan di abaikan</string>
     <string name="tg_channel">Saluran Telegram</string>
-    <string name="auto_check_upgrade">Periksa pembaruan otomatis</string>
-    <string name="auto_check_upgrade_summary">Munculkan dialog pembaruan secepatnya jika versi terbaru tersedia.</string>
     <string name="move_to_top">Pindahkan ke atas</string>
     <string name="move_to_bottom">Pindahkan ke bawah</string>
     <string name="move_up">Pindah ke atas</string>

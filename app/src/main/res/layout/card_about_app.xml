@@ -169,7 +169,7 @@
                     android:layout_marginStart="32dp"
                     android:paddingBottom="8dp"
                     android:paddingTop="8dp"
-                    android:text="@string/check_upgrade"
+                    android:text="@string/check_for_updates"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             </LinearLayout>
