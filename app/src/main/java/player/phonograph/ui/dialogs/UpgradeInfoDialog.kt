@@ -105,7 +105,7 @@ private fun MainContent(versionCatalog: VersionCatalog, dismiss: () -> Unit) {
             onCloseRequest = { dismiss() },
             buttons = {
                 button(
-                    res = R.string.ignore_once,
+                    res = R.string.ignore_for_once,
                     textStyle = accentColoredButtonStyle(),
                 ) {
                     dismiss()
@@ -120,7 +120,7 @@ private fun MainContent(versionCatalog: VersionCatalog, dismiss: () -> Unit) {
                 }
             }
         ) {
-            title(res = R.string.new_version)
+            title(res = R.string.new_version_available)
             Column(
                 Modifier
                     .padding(16.dp)
@@ -263,7 +263,7 @@ private fun VersionPopupContent(version: Version, dismissPopup: () -> Unit) {
 
 private fun actionIgnore(context: Context, versionCatalog: VersionCatalog) {
     Setting(context)[Keys.ignoreUpgradeDate].data = versionCatalog.currentLatestChannelVersionBy { it.date }.date
-    Toast.makeText(context, R.string.upgrade_ignored, Toast.LENGTH_SHORT).show()
+    Toast.makeText(context, R.string.ignored_update, Toast.LENGTH_SHORT).show()
 }
 
 private fun actionMore(context: Context) {

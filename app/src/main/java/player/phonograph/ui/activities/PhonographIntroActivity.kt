@@ -62,7 +62,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
     }
 
     override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
-        override val requestPermissionDelegate: RequestPermissionDelegate = RequestPermissionDelegate()
+    override val requestPermissionDelegate: RequestPermissionDelegate = RequestPermissionDelegate()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -214,7 +214,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
             val msg =
-                "${getString(R.string.auto_check_upgrade_summary)}\n\n${getString(R.string.auto_check_upgrade_extra_description)}"
+                "${getString(R.string.pref_summary_auto_check_for_updates)}\n\n${getString(R.string.pref_description_auto_check_for_updates_extra_description)}"
             contentBinding.checkUpgradeDesc.text = msg
             contentBinding.checkUpgradeChoose.setOnCheckedChangeListener { _, selected ->
                 when (selected) {

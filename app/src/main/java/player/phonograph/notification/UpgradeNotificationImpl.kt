@@ -38,7 +38,7 @@ class UpgradeNotificationImpl(context: Context) : AbsNotificationImpl() {
             val clickIntent: PendingIntent =
                 PendingIntent.getActivity(context, 0, action, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
-            val title = "${context.getString(R.string.new_version_code)} -- ${version.versionName}"
+            val title = version.versionName
             val note = version.releaseNote.parsed(context.resources)
             val notification: Notification =
                 NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_UPGRADABLE)
@@ -46,7 +46,7 @@ class UpgradeNotificationImpl(context: Context) : AbsNotificationImpl() {
                     .setCategory(NotificationCompat.CATEGORY_RECOMMENDATION)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
-                    .setContentTitle(context.getText(R.string.new_version))
+                    .setContentTitle(context.getText(R.string.new_version_available))
                     .setContentText("$title\n$note")
                     .setStyle(
                         NotificationCompat.BigTextStyle()

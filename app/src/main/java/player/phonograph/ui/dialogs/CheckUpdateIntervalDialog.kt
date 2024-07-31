@@ -77,7 +77,7 @@ class CheckUpdateIntervalDialog : ComposeViewDialogFragment() {
                     }
                 }
             ) {
-                title(res = R.string.pref_title_check_upgrade_interval)
+                title(res = R.string.pref_title_check_for_updates_interval)
                 customView {
                     Column {
                         TimeIntervalPicker(duration) {
