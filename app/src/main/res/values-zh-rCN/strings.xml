@@ -261,6 +261,16 @@
     <string name="retry">重试</string>
     <string name="permission_manage_external_storage_denied"> Phonograph 疑似无\"所有文件访问\"权限! </string>
     <string name="not_available_now">暂不可用</string>
+    <string name="check_for_updates">检查更新</string>
+    <string name="new_version_available">新版本可用！</string>
+    <string name="no_updates">无更新! 正在使用当前通道最新版本！</string>
+    <string name="ignore_for_once">忽略一次</string>
+    <string name="ignored_update">更新已忽略！</string>
+    <string name="pref_title_auto_check_for_updates">自动检查更新</string>
+    <string name="pref_summary_auto_check_for_updates">新版本可用时，发送通知。</string>
+    <string name="pref_description_auto_check_for_updates_extra_description">将从 GitHub 和其他镜像站点上检查更新版本</string>
+    <string name="pref_title_check_for_updates_interval">检查更新周期</string>
+    <string name="pref_summary_check_for_updates_interval">自动检查更新的周期</string>
     <string name="check_upgrade">检查更新</string>
     <string name="no_newer_version">无更新</string>
     <string name="new_version">新版本可用!</string>

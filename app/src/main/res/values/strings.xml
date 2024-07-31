@@ -261,6 +261,16 @@
     <string name="retry">Retry</string>
     <string name="permission_manage_external_storage_denied">It seems that Phonograph has no permission \"manage external storage\"!</string>
     <string name="not_available_now">Not available now</string>
+    <string name="check_for_updates">Check for updates</string>
+    <string name="new_version_available">A new version is available!</string>
+    <string name="no_updates">No updates! You are using the newest version in current channel.</string>
+    <string name="ignore_for_once">Ignore for once</string>
+    <string name="ignored_update">The update has been ignored!</string>
+    <string name="pref_title_auto_check_for_updates">Check for updates automatically</string>
+    <string name="pref_summary_auto_check_for_updates">Send a notification when a newer version is available.</string>
+    <string name="pref_description_auto_check_for_updates_extra_description">App would check newer versions from public static resources in GitHub Repository or other mirrors.</string>
+    <string name="pref_title_check_for_updates_interval">Check for updates interval</string>
+    <string name="pref_summary_check_for_updates_interval">Time interval of checking for updates automatically</string>
     <string name="check_upgrade">Check upgrade</string>
     <string name="no_newer_version">No update!</string>
     <string name="new_version">New Version!</string>
