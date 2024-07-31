@@ -103,7 +103,7 @@ class CheckUpdateIntervalDialog : ComposeViewDialogFragment() {
     ): String {
         val timeText = formatter.format(System.currentTimeMillis() + duration.toSeconds() * 1000)
         val durationText = duration.displayText(resources, resources.getString(R.string.interval_every))
-        return resources.getString(R.string.preview_text_next_upgrade_check, timeText, durationText)
+        return resources.getString(R.string.preview_text_next_updates_check, timeText, durationText)
     }
 
     companion object {

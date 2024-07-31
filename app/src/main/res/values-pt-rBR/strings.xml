@@ -450,7 +450,6 @@
     <string name="timeunit_year">Ano</string>
     <string name="time_interval_text">%1$s %2$d %3$s</string>
     <string name="preview_text_cutoff_time_interval"> Valor do tempo limite será: \n %1$s \n(%2$s)</string>
-    <string name="preview_text_next_upgrade_check">A próxima verificação de atualizações será após: \n %1$s \n(%2$s)</string>
     <string name="home">Início</string>
     <string name="search_online">Procurar na Rede</string>
     <string name="target">Alvo</string>

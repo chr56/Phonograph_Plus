@@ -435,7 +435,6 @@
     <string name="timeunit_month">Monat</string>
     <string name="timeunit_year">Jahr</string>
     <string name="time_interval_text">%1$s %2$d %3$s</string>
-    <string name="preview_text_next_upgrade_check">Die nächste Aktualisierungsüberprüfung  erfolgt nach: \n %1$s \n(%2$s)</string>
     <string name="search_online">Suche online</string>
     <string name="target">Ziel</string>
     <string name="query">Abfrage</string>

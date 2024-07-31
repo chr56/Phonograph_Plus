@@ -450,7 +450,6 @@
     <string name="timeunit_year">Año</string>
     <string name="time_interval_text">%1$s %2$d %3$s</string>
     <string name="preview_text_cutoff_time_interval">La marca de tiempo límite será: \n %1$s \n(%2$s)</string>
-    <string name="preview_text_next_upgrade_check">La siguiente comprobación de actualizaciones será después de: \n %1$s \n(%2$s)</string>
     <string name="home">Inicio</string>
     <string name="search_online">Búsqueda en línea</string>
     <string name="target">Destino</string>

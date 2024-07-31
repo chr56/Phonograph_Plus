@@ -426,7 +426,6 @@
     <string name="timeunit_year">年</string>
     <string name="time_interval_text">%2$d %1$s %3$s</string>
     <string name="preview_text_cutoff_time_interval">カットオフタイムスタンプは次のようになります: \n %1$s \n(%2$s)</string>
-    <string name="preview_text_next_upgrade_check">次のアップグレード確認まで: \n %1$s \n(%2$s)</string>
     <string name="home">ホーム</string>
     <string name="search_online">オンラインで検索</string>
     <string name="target">ターゲット</string>

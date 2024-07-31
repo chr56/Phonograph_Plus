@@ -463,7 +463,6 @@
     <string name="timeunit_year">Год</string>
     <string name="time_interval_text">%1$s %2$d %3$s</string>
     <string name="preview_text_cutoff_time_interval">Урезанная метка времени будет: \n %1$s \n(%2$s)</string>
-    <string name="preview_text_next_upgrade_check">Следующая проверка обновления будет проведена: \n %1$s \n(%2$s)</string>
     <string name="home">Главная</string>
     <string name="search_online">Искать в сети</string>
     <string name="target">Цель</string>
