@@ -2,6 +2,30 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "1.8.1-dev2",
+      "versionCode": 1080,
+      "date": 1722409000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.8.1-dev2"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.1-dev2/PhonographPlus_1.8.1-dev2_ModernPreviewRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.1-dev2/PhonographPlus_1.8.1-dev2_LegacyPreviewRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>翻译 更新 波兰语（cooky）、西班牙语（Dragonrojo）</li><li>改进 关于更新的部分文字和说明</li><li>修复 Android Q 上通知图像质量</li><li>修改 禁止从 V1.0.0 之前升级，警告从 V1.4.0 之前升级</li></ol>",
+        "en": "<ol><li>Translation: update Polish (by cooky), Spanish by (by Dragonrojo)</li><li>Improve: some text and descriptions about Updates</li><li>Fix: notification image quality on Android Q</li><li>Modify: forbid upgrading from prior to v1.0.0 & warn upgrading from prior to v1.4.0</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.8.1-dev1",
       "versionCode": 1080,
       "date": 1722070000,
