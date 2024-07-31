@@ -516,4 +516,5 @@
     <string name="action_fast_forward">Avance rápido</string>
     <string name="path_selector">Selector de archivos</string>
     <string name="notification_is_disabled">¡Notificación desactivada!</string>
+    <string name="pref_title_always_use_media_session_to_display_cover">Inicie sesión para mostrar la portada</string>
 </resources>
