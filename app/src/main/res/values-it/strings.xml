@@ -250,17 +250,8 @@
     <string name="retry">Riprova</string>
     <string name="permission_manage_external_storage_denied">sembra che Phonograph non abbia il permesso di \"gestire l\'archiviazione esterna\"!</string>
     <string name="not_available_now">Non disponibile ora</string>
-    <string name="check_upgrade">Controlla aggiornamenti</string>
-    <string name="no_newer_version">Nessun aggiornamento!</string>
-    <string name="new_version">Nuova versione!</string>
-    <string name="new_version_code">versione</string>
     <string name="download">Scarica</string>
-    <string name="ignore_once">Ignora questo</string>
-    <string name="upgrade_ignored">L\'aggiornamento è stato ignorato.</string>
     <string name="tg_channel">Canale Telegram</string>
-    <string name="auto_check_upgrade">Controlla l\'aggiornamento automaticamente</string>
-    <string name="auto_check_upgrade_summary">Apri immediatamente una finestra di dialogo se è disponibile una versione più recente.</string>
-    <string name="auto_check_upgrade_extra_description">L\'applicazione controlla le versioni più recenti da una risorsa statica pubblica nel repository GitHub e in altri siti mirror.</string>
     <string name="edit">Modifica…</string>
     <string name="move_to_top">Sposta in alto</string>
     <string name="move_to_bottom">Sposta in basso</string>

@@ -256,17 +256,8 @@
     <string name="retry">Yeniden dene</string>
     <string name="permission_manage_external_storage_denied">Phonograph\'ın harici depolamaya erişimi yok gibi gözüküyor.</string>
     <string name="not_available_now">şuan kullanılamıyor</string>
-    <string name="check_upgrade">Güncellemeleri kontrol et</string>
-    <string name="no_newer_version">Güncelleme yok!</string>
-    <string name="new_version">Yeni Sürüm!</string>
-    <string name="new_version_code">sürüm</string>
     <string name="download">İndir</string>
-    <string name="ignore_once">Yoksay</string>
-    <string name="upgrade_ignored">Güncelleme yoksayıldı.</string>
     <string name="tg_channel">Telegram Kanalı</string>
-    <string name="auto_check_upgrade">Güncellemeyi otomatik kontrol et</string>
-    <string name="auto_check_upgrade_summary">Daha yeni bir sürüm mevcutsa anında bir yükseltme iletişim kutusu açılır.</string>
-    <string name="auto_check_upgrade_extra_description">Uygulama yeni versiyonlarını, GitHub Deposundaki açık kaynaklardan ve diğer kaynaklardan kontrol eder.</string>
     <string name="edit">Düzenle…</string>
     <string name="move_to_top">En üste çık</string>
     <string name="move_to_bottom">En aşağıya taşı</string>
@@ -411,7 +402,6 @@
     <string name="disk_number">Disk Sayısı</string>
     <string name="disk_number_total">Toplam Disk Sayısı</string>
     <string name="rating">Derecelendirme</string>
-    <string name="pref_title_check_upgrade_interval">Güncelleme kontrol aralığı</string>
     <string name="interval_past">Geçmiş</string>
     <string name="interval_recent">En son</string>
     <string name="interval_every">Her</string>

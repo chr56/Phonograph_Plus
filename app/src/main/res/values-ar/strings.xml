@@ -261,13 +261,7 @@
     <string name="retry">حاول مجدداً</string>
     <string name="permission_manage_external_storage_denied">يبدو ان الحاكي (فُنُكراف) لا يملك الاذن للتحكم في الذاكرة الخارجية!</string>
     <string name="not_available_now">غير متاح حالياً</string>
-    <string name="check_upgrade">تفحص الترقية لاصدار اعلى</string>
-    <string name="no_newer_version">لا تحديثات متاحة</string>
-    <string name="new_version">اصدار جديد متاح!</string>
-    <string name="new_version_code">اصدار</string>
     <string name="download">تنزيل</string>
-    <string name="ignore_once">تخطى هذه</string>
-    <string name="upgrade_ignored">تم تخطي التحديث</string>
     <string name="background_notification_name">العمل في الخلفية</string>
     <string name="sort_order_song_count">اعداد الاغاني</string>
     <string name="sort_order_album_count">اعداد الالبومات</string>

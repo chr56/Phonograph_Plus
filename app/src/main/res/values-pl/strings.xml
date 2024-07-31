@@ -261,17 +261,8 @@
     <string name="retry">Ponów</string>
     <string name="permission_manage_external_storage_denied">Wygląda na to, że Phonograph nie ma uprawnień do \"zarządzania pamięcią zewnętrzną\"!</string>
     <string name="not_available_now">Obecnie niedostępne</string>
-    <string name="check_upgrade">Sprawdź aktualizację</string>
-    <string name="no_newer_version">Brak aktualizacji!</string>
-    <string name="new_version">Nowa wersja</string>
-    <string name="new_version_code">wersja</string>
     <string name="download">Pobierz</string>
-    <string name="ignore_once">Ignoruj ten</string>
-    <string name="upgrade_ignored">Aktualizacja została zignorowana.</string>
     <string name="tg_channel">Kanał Telegram</string>
-    <string name="auto_check_upgrade">Sprawdzaj dostępne aktualizacje automatycznie</string>
-    <string name="auto_check_upgrade_summary">Wyświetlaj powiadomienie jeśli dostępna jest nowsza wersja.</string>
-    <string name="auto_check_upgrade_extra_description">Aplikacja sprawdzałaby nowsze wersje z publicznego zasobu statycznego w repozytorium GitHub i innych witrynach lustrzanych.</string>
     <string name="edit">Edytuj…</string>
     <string name="move_to_top">Przenieś na górę</string>
     <string name="move_to_bottom">Przenieś w dół</string>
@@ -467,7 +458,6 @@
     <string name="disk_number">Numer płyty</string>
     <string name="disk_number_total">Całkowita liczba płyt</string>
     <string name="rating">Ocena</string>
-    <string name="pref_title_check_upgrade_interval">Sprawdź interwał aktualizacji</string>
     <string name="interval_past">Poprzedni</string>
     <string name="interval_recent">Najnowsze</string>
     <string name="interval_every">Każdy</string>

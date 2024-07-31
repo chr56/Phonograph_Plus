@@ -253,17 +253,8 @@
     <string name="retry">再試行</string>
     <string name="permission_manage_external_storage_denied">Phonograph に「外部ストレージ管理」の権限が許可されていないようです!</string>
     <string name="not_available_now">現在利用できません</string>
-    <string name="check_upgrade">アップデートを確認</string>
-    <string name="no_newer_version">アップデートはありません!</string>
-    <string name="new_version">新バージョンが利用可能です!</string>
-    <string name="new_version_code">バージョン</string>
     <string name="download">ダウンロード</string>
-    <string name="ignore_once">今回は無視する</string>
-    <string name="upgrade_ignored">アップグレードは無視されています。</string>
     <string name="tg_channel">Telegram チャンネル</string>
-    <string name="auto_check_upgrade">アップデートを自動的に確認</string>
-    <string name="auto_check_upgrade_summary">新バージョンが利用可能な場合は、すぐにアップデートダイアログを開きます。</string>
-    <string name="auto_check_upgrade_extra_description">アプリは、GitHubリポジトリや他のミラーサイトのパブリック静的リソースから新しいバージョンを確認します。</string>
     <string name="edit">編集…</string>
     <string name="move_to_top">一番上に移動</string>
     <string name="move_to_bottom">一番下へ移動</string>
@@ -423,7 +414,6 @@
     <string name="disk_number">ディスク番号</string>
     <string name="disk_number_total">合計ディスク数</string>
     <string name="rating">評価</string>
-    <string name="pref_title_check_upgrade_interval">アップグレードのチェック間隔</string>
     <string name="interval_past">過去</string>
     <string name="interval_recent">最近</string>
     <string name="interval_every">毎</string>

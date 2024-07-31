@@ -271,17 +271,8 @@
     <string name="pref_description_auto_check_for_updates_extra_description">將從 GitHub 和其他映象站點上檢查更新版本</string>
     <string name="pref_title_check_for_updates_interval">檢查更新週期</string>
     <string name="pref_summary_check_for_updates_interval">自動檢查更新的週期</string>
-    <string name="check_upgrade">檢查更新</string>
-    <string name="no_newer_version">沒有更新</string>
-    <string name="new_version">新版本！</string>
-    <string name="new_version_code">版本</string>
     <string name="download">下載</string>
-    <string name="ignore_once">忽略</string>
-    <string name="upgrade_ignored">更新已忽略！</string>
     <string name="tg_channel">Telegram 頻道</string>
-    <string name="auto_check_upgrade">自動檢查更新</string>
-    <string name="auto_check_upgrade_summary">自動檢查更新並及時彈出更新對話方塊</string>
-    <string name="auto_check_upgrade_extra_description">將從 GitHub 儲存庫和其他映象站點中的公共靜態資源檢查更新版本。</string>
     <string name="edit">編輯…</string>
     <string name="move_to_top">移至頂端</string>
     <string name="move_to_bottom">移到底端</string>
@@ -447,7 +438,6 @@
     <string name="disk_number">牒號</string>
     <string name="disk_number_total">牒號總數</string>
     <string name="rating">評分</string>
-    <string name="pref_title_check_upgrade_interval">檢查更新周期</string>
     <string name="interval_past">過去</string>
     <string name="interval_recent">最近</string>
     <string name="interval_every">每</string>

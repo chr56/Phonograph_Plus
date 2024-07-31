@@ -254,17 +254,8 @@
     <string name="retry">Erneut versuchen</string>
     <string name="permission_manage_external_storage_denied">Anscheinend hat Phonograph nicht die Berechtigung \"Externen Speicher verwalten\"! </string>
     <string name="not_available_now">Momentan nicht verfügbar</string>
-    <string name="check_upgrade">Auf Upgrade prüfen</string>
-    <string name="no_newer_version">Kein Update!</string>
-    <string name="new_version">Neue Version!</string>
-    <string name="new_version_code">version</string>
     <string name="download">Herunterladen</string>
-    <string name="ignore_once">Dieses Update ignorieren</string>
-    <string name="upgrade_ignored">Das Update wird ignoriert.</string>
     <string name="tg_channel">Telegram-Kanal</string>
-    <string name="auto_check_upgrade">Automatisch nach Updates suchen</string>
-    <string name="auto_check_upgrade_summary">Wenn eine neuere Version verfügbar ist, erscheint sofort eine Update-Aufforderung.</string>
-    <string name="auto_check_upgrade_extra_description">Die App sucht nach neueren Versionen in einer bestimmten öffentlichen Quelle im GitHub Repository und auf anderen Spiegelservern.</string>
     <string name="edit">Bearbeiten…</string>
     <string name="move_to_top">Ganz nach oben</string>
     <string name="move_to_bottom">Ganz nach unten</string>
@@ -435,7 +426,6 @@
     <string name="pref_summary_resume_after_audio_focus_gain">Wiedergabe nach Unterbrechungen immer fortsetzen (bspw. Anruf oder Alarm).</string>
     <string name="tag_format">Tag-Format</string>
     <string name="rating">Bewertung</string>
-    <string name="pref_title_check_upgrade_interval">Intervall der Aktualisierungsprüfung</string>
     <string name="interval_every">jede(r/s)</string>
     <string name="timeunit_second">Sekunde</string>
     <string name="timeunit_minute">Minute</string>
