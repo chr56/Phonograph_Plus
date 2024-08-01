@@ -1,6 +1,30 @@
 {
   "versions": [
     {
+      "channel": "stable",
+      "versionName": "1.8.1",
+      "versionCode": 1081,
+      "date": 1722490000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.8.1"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.8.1/PhonographPlus_1.8.1_ModernStableRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.8.1/PhonographPlus_1.8.1_LegacyStableRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>移除 旧版歌曲详情</li><li>新增 始终使用 Media Session 显示封面的选项以改进兼容性</li><li>修复 Android Q 上通知图像质量过低</li><li>改进 从外部播放时的对话框</li><li>改进 部分关于更新的文字和说明</li><li>修改 禁止从 v1.0.0 之前升级，警告从 v1.4.0 之前升级</li><li>翻译 更新 波兰语（cooky）、西班牙语（Dragonrojo）</li></ol>",
+        "en": "<ol><li>Remove: legacy Song Detail</li><li>New: opt-in option for always using Media Session to display cover for compatibility</li><li>Fix: low notification image quality on Android Q</li><li>Improve: Open With dialog for externally playing</li><li>Improve: some text and descriptions about Updates</li><li>Modify: forbid upgrading from prior to v1.0.0 & warn upgrading from prior to v1.4.0</li><li>Translation: update Polish (by cooky), Spanish by (by Dragonrojo)</li></ol>"
+      }
+    },
+    {
       "channel": "preview",
       "versionName": "1.8.1-dev2",
       "versionCode": 1080,
@@ -22,30 +46,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>翻译 更新 波兰语（cooky）、西班牙语（Dragonrojo）</li><li>改进 关于更新的部分文字和说明</li><li>修复 Android Q 上通知图像质量</li><li>修改 禁止从 V1.0.0 之前升级，警告从 V1.4.0 之前升级</li></ol>",
         "en": "<ol><li>Translation: update Polish (by cooky), Spanish by (by Dragonrojo)</li><li>Improve: some text and descriptions about Updates</li><li>Fix: notification image quality on Android Q</li><li>Modify: forbid upgrading from prior to v1.0.0 & warn upgrading from prior to v1.4.0</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.8.1-dev1",
-      "versionCode": 1080,
-      "date": 1722070000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.8.1-dev1"
-        },
-        {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.1-dev1/PhonographPlus_1.8.1-dev1_ModernPreviewRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK(File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.1-dev1/PhonographPlus_1.8.1-dev1_LegacyPreviewRelease.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>移除 旧版歌曲详情</li><li>改进 从外部播放时的打开...对话框</li><li>新增 始终使用 Media Session 显示封面的选项以改进兼容性</li></ol>",
-        "en": "<ol><li>Remove: Legacy Song Detail</li><li>Improve: Open With dialog for externally playing</li><li>New: opt-in option for always using Media Session to display cover for compatibility</li></ol>"
       }
     },
     {
