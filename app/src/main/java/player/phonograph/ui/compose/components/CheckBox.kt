@@ -67,3 +67,26 @@ fun FlagCheckBox(
     }
 
 }
+
+
+@Composable
+fun CheckBoxItem(name: String, checked: Boolean, flip: () -> Unit) {
+    Row(Modifier
+        .clickable { flip() }
+        .fillMaxWidth()
+    ) {
+        Checkbox(
+            checked = checked,
+            onCheckedChange = { flip() }
+        )
+        Text(
+            text = name,
+            Modifier
+                .padding(4.dp)
+                .fillMaxWidth()
+                .align(Alignment.CenterVertically)
+                .alignByBaseline()
+        )
+    }
+
+}
