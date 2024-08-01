@@ -266,13 +266,13 @@
     <string name="no_updates">无更新! 正在使用当前通道最新版本！</string>
     <string name="ignore_for_once">忽略一次</string>
     <string name="ignored_update">更新已忽略！</string>
+    <string name="download">下载</string>
+    <string name="tg_channel">Telegram Channel</string>
     <string name="pref_title_auto_check_for_updates">自动检查更新</string>
     <string name="pref_summary_auto_check_for_updates">新版本可用时，发送通知。</string>
     <string name="pref_description_auto_check_for_updates_extra_description">将从 GitHub 和其他镜像站点上检查更新版本</string>
     <string name="pref_title_check_for_updates_interval">检查更新周期</string>
     <string name="pref_summary_check_for_updates_interval">自动检查更新的周期</string>
-    <string name="download">下载</string>
-    <string name="tg_channel">Telegram Channel</string>
     <string name="edit">编辑…</string>
     <string name="move_to_top">移至顶部</string>
     <string name="move_to_bottom">移至底部</string>
