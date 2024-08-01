@@ -54,7 +54,7 @@ class ExternalPlayRequestSettingDialog : ComposeViewDialogFragment() {
                 }
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
-                title(res = player.phonograph.R.string.pref_title_external_play_request)
+                title(res = R.string.pref_title_external_play_request)
                 ExternalPlayRequestSettingDialogContent(requireContext())
             }
         }
@@ -77,48 +77,46 @@ private fun ExternalPlayRequestSettingDialogContent(context: Context) {
             Setting(context)[Keys.externalPlayRequestShowPrompt].data = newValue
         }
 
-        val currentModeSingle = remember {
+        var currentModeSingle by remember {
             mutableIntStateOf(Setting(context)[Keys.externalPlayRequestSingleMode].data)
         }
         val setCurrentModeSingle = { new: Int ->
-            currentModeSingle.intValue = new
+            currentModeSingle = new
             Setting(context)[Keys.externalPlayRequestSingleMode].data = new
         }
 
-        val currentModeMultiple = remember {
+        var currentModeMultiple by remember {
             mutableIntStateOf(Setting(context)[Keys.externalPlayRequestMultipleMode].data)
         }
         val setCurrentModeMultiple = { new: Int ->
-            currentModeMultiple.intValue = new
+            currentModeMultiple = new
             Setting(context)[Keys.externalPlayRequestMultipleMode].data = new
         }
 
-        CheckBoxItem(stringResource(R.string.pref_option_show_prompt), showPrompt, flipUseDefault)
+        CheckBoxItem(stringResource(R.string.pref_option_show_prompt), showPrompt, flip = flipUseDefault)
 
-        if (!showPrompt) {
-
-            Spacer(Modifier.height(8.dp))
-            Text(text = stringResource(R.string.single_item), style = MaterialTheme.typography.h6)
-            for (id in SongClickMode.singleItemModes) {
-                ModeRadioBox(
-                    mode = id,
-                    name = SongClickMode.modeName(context.resources, id),
-                    currentMode = currentModeSingle,
-                    setCurrentMode = setCurrentModeSingle
-                )
-            }
-            Spacer(Modifier.height(8.dp))
-            Text(text = stringResource(R.string.multiple_items), style = MaterialTheme.typography.h6)
-            for (id in SongClickMode.multipleItemsModes) {
-                ModeRadioBox(
-                    mode = id,
-                    name = SongClickMode.modeName(context.resources, id),
-                    currentMode = currentModeMultiple,
-                    setCurrentMode = setCurrentModeMultiple
-                )
-            }
-            Spacer(Modifier.height(8.dp))
-
+        Spacer(Modifier.height(8.dp))
+        Text(text = stringResource(R.string.single_item), style = MaterialTheme.typography.h6)
+        for (id in SongClickMode.singleItemModes) {
+            ModeRadioBox(
+                mode = id,
+                name = SongClickMode.modeName(context.resources, id),
+                selectedMode = currentModeSingle,
+                setCurrentMode = setCurrentModeSingle,
+                enabled = !showPrompt,
+            )
         }
+        Spacer(Modifier.height(8.dp))
+        Text(text = stringResource(R.string.multiple_items), style = MaterialTheme.typography.h6)
+        for (id in SongClickMode.multipleItemsModes) {
+            ModeRadioBox(
+                mode = id,
+                name = SongClickMode.modeName(context.resources, id),
+                selectedMode = currentModeMultiple,
+                setCurrentMode = setCurrentModeMultiple,
+                enabled = !showPrompt,
+            )
+        }
+        Spacer(Modifier.height(8.dp))
     }
 }

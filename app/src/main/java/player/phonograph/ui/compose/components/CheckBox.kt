@@ -13,22 +13,22 @@ import androidx.compose.material.Checkbox
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun ModeRadioBox(
-    mode: Int,
     name: String,
-    currentMode: MutableState<Int>,
+    mode: Int,
+    selectedMode: Int,
+    enabled: Boolean = true,
     setCurrentMode: (Int) -> Unit,
 ) {
     Row(Modifier
         .clickable { setCurrentMode(mode) }
         .fillMaxWidth()) {
-        RadioButton(selected = currentMode.value == mode, onClick = { setCurrentMode(mode) })
+        RadioButton(selected = selectedMode == mode, onClick = { setCurrentMode(mode) }, enabled = enabled)
         Text(
             text = name,
             Modifier
@@ -42,42 +42,32 @@ fun ModeRadioBox(
 
 @Composable
 fun FlagCheckBox(
-    mask: Int,
     name: String,
-    currentExtraFlag: MutableState<Int>,
-    flipExtraFlagBit: (Int) -> Unit,
+    mask: Int,
+    currentFlag: Int,
+    flipFlagBit: (Int) -> Unit,
 ) {
-
-    Row(Modifier
-        .clickable { flipExtraFlagBit(mask) }
-        .fillMaxWidth()
-    ) {
-        Checkbox(
-            checked = currentExtraFlag.value.testBit(mask),
-            onCheckedChange = { flipExtraFlagBit(mask) }
-        )
-        Text(
-            text = name,
-            Modifier
-                .padding(4.dp)
-                .fillMaxWidth()
-                .align(Alignment.CenterVertically)
-                .alignByBaseline()
-        )
+    CheckBoxItem(name, checked = currentFlag.testBit(mask)) {
+        flipFlagBit(mask)
     }
-
 }
 
 
 @Composable
-fun CheckBoxItem(name: String, checked: Boolean, flip: () -> Unit) {
+fun CheckBoxItem(
+    name: String,
+    checked: Boolean,
+    enabled: Boolean = true,
+    flip: () -> Unit,
+) {
     Row(Modifier
         .clickable { flip() }
         .fillMaxWidth()
     ) {
         Checkbox(
             checked = checked,
-            onCheckedChange = { flip() }
+            onCheckedChange = { flip() },
+            enabled = enabled
         )
         Text(
             text = name,

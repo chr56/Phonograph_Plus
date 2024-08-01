@@ -26,8 +26,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import android.content.Context
@@ -65,48 +67,48 @@ private fun ClickModeSettingDialogContent(context: Context) {
             .padding(horizontal = 24.dp, vertical = 12.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        val currentMode = remember {
+        var currentMode by remember {
             mutableIntStateOf(Setting(context)[Keys.songItemClickMode].data)
         }
         val setCurrentMode = { new: Int ->
-            currentMode.intValue = new
+            currentMode = new
             Setting(context)[Keys.songItemClickMode].data = new
         }
         for (id in SongClickMode.allModes) {
             ModeRadioBox(
                 mode = id,
                 name = SongClickMode.modeName(context.resources, id),
-                currentMode = currentMode,
+                selectedMode = currentMode,
                 setCurrentMode = setCurrentMode
             )
         }
 
         Spacer(Modifier.height(8.dp))
 
-        val currentExtraFlag = remember {
+        var currentExtraFlag by remember {
             mutableIntStateOf(Setting(context)[Keys.songItemClickExtraFlag].data)
         }
         val flipExtraFlagBit = { mask: Int ->
-            val new = if (currentExtraFlag.intValue.testBit(mask)) {
-                currentExtraFlag.intValue.unsetBit(mask)
+            val new = if (currentExtraFlag.testBit(mask)) {
+                currentExtraFlag.unsetBit(mask)
             } else {
-                currentExtraFlag.intValue.setBit(mask)
+                currentExtraFlag.setBit(mask)
             }
-            currentExtraFlag.intValue = new
+            currentExtraFlag = new
             Setting(context)[Keys.songItemClickExtraFlag].data = new
         }
 
         FlagCheckBox(
             mask = SongClickMode.FLAG_MASK_GOTO_POSITION_FIRST,
             name = context.getString(R.string.mode_flag_goto_position_first),
-            currentExtraFlag = currentExtraFlag,
-            flipExtraFlagBit = flipExtraFlagBit
+            currentFlag = currentExtraFlag,
+            flipFlagBit = flipExtraFlagBit
         )
         FlagCheckBox(
             mask = SongClickMode.FLAG_MASK_PLAY_QUEUE_IF_EMPTY,
             name = context.getString(R.string.mode_flag_play_queue_if_empty),
-            currentExtraFlag = currentExtraFlag,
-            flipExtraFlagBit = flipExtraFlagBit
+            currentFlag = currentExtraFlag,
+            flipFlagBit = flipExtraFlagBit
         )
     }
 }

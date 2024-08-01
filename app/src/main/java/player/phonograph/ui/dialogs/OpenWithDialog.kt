@@ -33,9 +33,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -71,9 +72,7 @@ class OpenWithDialog : ComposeViewDialogFragment() {
     @Composable
     override fun Content() {
         val dialogState = rememberMaterialDialogState(true)
-        val currentMode = remember {
-            mutableIntStateOf(-1)
-        }
+        var currentMode by remember { mutableIntStateOf(-1) }
         PhonographTheme {
             MaterialDialog(
                 dialogState = dialogState,
@@ -90,8 +89,8 @@ class OpenWithDialog : ComposeViewDialogFragment() {
                         res = android.R.string.ok,
                         textStyle = accentColoredButtonStyle()
                     ) {
-                        play(currentMode.intValue)
-                        if (currentMode.intValue > 0) confirmed = true
+                        play(currentMode)
+                        if (currentMode > 0) confirmed = true
                         dismiss()
                     }
                 }
@@ -106,9 +105,7 @@ class OpenWithDialog : ComposeViewDialogFragment() {
                     val context = LocalContext.current
                     OpenWithContent(playRequest)
                     Spacer(Modifier.height(8.dp))
-                    OpenWithOptions(context, isMultipleSong, currentMode) { newValue: Int ->
-                        currentMode.intValue = newValue
-                    }
+                    OpenWithOptions(context, isMultipleSong, currentMode) { newValue: Int -> currentMode = newValue }
                     Spacer(Modifier.height(8.dp))
                 }
             }
@@ -200,7 +197,7 @@ private fun SongItem(song: Song) {
 private fun OpenWithOptions(
     context: Context,
     isMultipleSong: Boolean,
-    currentMode: MutableIntState,
+    currentMode: Int,
     setCurrentMode: (Int) -> Unit,
 ) {
     val modes = if (isMultipleSong) SongClickMode.multipleItemsModes else SongClickMode.singleItemModes
@@ -208,7 +205,7 @@ private fun OpenWithOptions(
         ModeRadioBox(
             mode = id,
             name = SongClickMode.modeName(context.resources, id),
-            currentMode = currentMode,
+            selectedMode = currentMode,
             setCurrentMode = setCurrentMode
         )
     }
