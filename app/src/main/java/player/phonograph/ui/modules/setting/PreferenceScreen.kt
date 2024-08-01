@@ -29,6 +29,7 @@ import player.phonograph.settings.*
 import player.phonograph.ui.compose.components.ColorCircle
 import player.phonograph.ui.dialogs.CheckUpdateIntervalDialog
 import player.phonograph.ui.dialogs.ClickModeSettingDialog
+import player.phonograph.ui.dialogs.ExternalPlayRequestSettingDialog
 import player.phonograph.ui.dialogs.HomeTabConfigDialog
 import player.phonograph.ui.dialogs.ImageSourceConfigDialog
 import player.phonograph.ui.dialogs.LastAddedPlaylistIntervalDialog
@@ -191,6 +192,13 @@ fun PhonographPreferenceScreen() {
                     dialog = ClickModeSettingDialog::class.java,
                     titleRes = R.string.pref_title_click_behavior,
                     summaryRes = R.string.pref_summary_click_behavior,
+                )
+            )
+            DialogPref(
+                model = DialogPreferenceModel(
+                    dialog = ExternalPlayRequestSettingDialog::class.java,
+                    titleRes = R.string.pref_title_external_play_request,
+                    summaryRes = R.string.pref_summary_external_play_request,
                 )
             )
             DialogPref(
