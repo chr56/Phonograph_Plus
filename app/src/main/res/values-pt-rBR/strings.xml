@@ -261,8 +261,18 @@
     <string name="retry">Tente novamente</string>
     <string name="permission_manage_external_storage_denied">Parece que o Phonograph não tem permissão para \"gerenciar armazenamento externo\"!</string>
     <string name="not_available_now">não disponível agora</string>
+    <string name="check_for_updates">Checar por atualizações</string>
+    <string name="new_version_available">Uma nova versão está disponível</string>
+    <string name="no_updates">Sem atualizações! Você está usando a versão mais recente do canal atual.</string>
+    <string name="ignore_for_once">Ignorar uma vez</string>
+    <string name="ignored_update">A atualização foi ignorada!</string>
     <string name="download">Baixar</string>
     <string name="tg_channel">Canal do Telegram</string>
+    <string name="pref_title_auto_check_for_updates">Verifique se há atualizações automaticamente</string>
+    <string name="pref_summary_auto_check_for_updates">Enviar uma notificação quando uma versão mais recente estiver disponível.</string>
+    <string name="pref_description_auto_check_for_updates_extra_description">O aplicativo verificaria versões mais recentes de recursos estáticos públicos no repositório do GitHub ou em outros espelhos.</string>
+    <string name="pref_title_check_for_updates_interval">Intervalo para verificar atualizações</string>
+    <string name="pref_summary_check_for_updates_interval">Intervalo de tempo para verificação automática de atualizações</string>
     <string name="edit">Editar…</string>
     <string name="move_to_top">Mover ao topo</string>
     <string name="move_to_bottom">Mover para o final</string>
@@ -450,6 +460,7 @@
     <string name="timeunit_year">Ano</string>
     <string name="time_interval_text">%1$s %2$d %3$s</string>
     <string name="preview_text_cutoff_time_interval"> Valor do tempo limite será: \n %1$s \n(%2$s)</string>
+    <string name="preview_text_next_updates_check">A próxima verificação de atualizações será após: \n %1$s \n(%2$s)</string>
     <string name="home">Início</string>
     <string name="search_online">Procurar na Rede</string>
     <string name="target">Alvo</string>
@@ -516,4 +527,6 @@
     <string name="action_fast_forward">Avançar rapidamente</string>
     <string name="path_selector">Seletor de arquivos</string>
     <string name="notification_is_disabled">As notificações estão desativadas!</string>
+    <string name="pref_title_always_use_media_session_to_display_cover">Sempre usar a Sessão de Mídia para exibir a capa</string>
+    <string name="pref_summary_always_use_media_session_to_display_cover">Sempre usar a Sessão de Mídia para fornecer imagens de capa para o sistema de notificações, etc.</string>
 </resources>
