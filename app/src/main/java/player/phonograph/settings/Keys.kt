@@ -106,6 +106,9 @@ object Keys {
     object externalPlayRequestMultipleMode :
             PrimitiveKey<Int>(intPK(EXTERNAL_PLAY_REQUEST_MULTIPLE_MODE), { SongClickMode.QUEUE_PLAY_NOW })
 
+    object externalPlayRequestSilence :
+            PrimitiveKey<Boolean>(booleanPK(EXTERNAL_PLAY_REQUEST_SILENCE), { false })
+
     object gaplessPlayback :
             PrimitiveKey<Boolean>(booleanPK(GAPLESS_PLAYBACK), { false })
 
