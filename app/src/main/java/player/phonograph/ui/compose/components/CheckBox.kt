@@ -10,9 +10,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Checkbox
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -29,14 +32,16 @@ fun ModeRadioBox(
         .clickable { if (enabled) setCurrentMode(mode) }
         .fillMaxWidth()) {
         RadioButton(selected = selectedMode == mode, onClick = { setCurrentMode(mode) }, enabled = enabled)
-        Text(
-            text = name,
-            Modifier
-                .padding(4.dp)
-                .fillMaxWidth()
-                .align(Alignment.CenterVertically)
-                .alignByBaseline()
-        )
+        CompositionLocalProvider(LocalContentAlpha provides (if (enabled) 1f else ContentAlpha.disabled)) {
+            Text(
+                text = name,
+                Modifier
+                    .padding(4.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterVertically)
+                    .alignByBaseline()
+            )
+        }
     }
 }
 
@@ -69,14 +74,16 @@ fun CheckBoxItem(
             onCheckedChange = { flip() },
             enabled = enabled
         )
-        Text(
-            text = name,
-            Modifier
-                .padding(4.dp)
-                .fillMaxWidth()
-                .align(Alignment.CenterVertically)
-                .alignByBaseline()
-        )
+        CompositionLocalProvider(LocalContentAlpha provides (if (enabled) 1f else ContentAlpha.disabled)) {
+            Text(
+                text = name,
+                Modifier
+                    .padding(4.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterVertically)
+                    .alignByBaseline()
+            )
+        }
     }
 
 }
