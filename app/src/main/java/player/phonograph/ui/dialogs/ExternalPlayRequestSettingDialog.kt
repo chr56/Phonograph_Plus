@@ -77,6 +77,15 @@ private fun ExternalPlayRequestSettingDialogContent(context: Context) {
             Setting(context)[Keys.externalPlayRequestShowPrompt].data = newValue
         }
 
+        var silence by remember {
+            mutableStateOf(Setting(context)[Keys.externalPlayRequestSilence].data)
+        }
+        val flipSilence = {
+            val newValue = !silence
+            silence = newValue
+            Setting(context)[Keys.externalPlayRequestSilence].data = newValue
+        }
+
         var currentModeSingle by remember {
             mutableIntStateOf(Setting(context)[Keys.externalPlayRequestSingleMode].data)
         }
@@ -94,6 +103,8 @@ private fun ExternalPlayRequestSettingDialogContent(context: Context) {
         }
 
         CheckBoxItem(stringResource(R.string.pref_option_show_prompt), showPrompt, flip = flipUseDefault)
+
+        CheckBoxItem(stringResource(R.string.pref_option_silence), silence, flip = flipSilence)
 
         Spacer(Modifier.height(8.dp))
         Text(text = stringResource(R.string.single_item), style = MaterialTheme.typography.h6)
@@ -118,15 +129,5 @@ private fun ExternalPlayRequestSettingDialogContent(context: Context) {
             )
         }
         Spacer(Modifier.height(8.dp))
-
-        var silence by remember {
-            mutableStateOf(Setting(context)[Keys.externalPlayRequestSilence].data)
-        }
-        val flipSilence = {
-            val newValue = !silence
-            silence = newValue
-            Setting(context)[Keys.externalPlayRequestSilence].data = newValue
-        }
-        CheckBoxItem(stringResource(R.string.pref_option_silence), silence, flip = flipSilence)
     }
 }
