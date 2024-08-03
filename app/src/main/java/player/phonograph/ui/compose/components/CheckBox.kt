@@ -10,60 +10,80 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Checkbox
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun ModeRadioBox(
-    mode: Int,
     name: String,
-    currentMode: MutableState<Int>,
+    mode: Int,
+    selectedMode: Int,
+    enabled: Boolean = true,
     setCurrentMode: (Int) -> Unit,
 ) {
     Row(Modifier
-        .clickable { setCurrentMode(mode) }
+        .clickable { if (enabled) setCurrentMode(mode) }
         .fillMaxWidth()) {
-        RadioButton(selected = currentMode.value == mode, onClick = { setCurrentMode(mode) })
-        Text(
-            text = name,
-            Modifier
-                .padding(4.dp)
-                .fillMaxWidth()
-                .align(Alignment.CenterVertically)
-                .alignByBaseline()
-        )
+        RadioButton(selected = selectedMode == mode, onClick = { setCurrentMode(mode) }, enabled = enabled)
+        CompositionLocalProvider(LocalContentAlpha provides (if (enabled) 1f else ContentAlpha.disabled)) {
+            Text(
+                text = name,
+                Modifier
+                    .padding(4.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterVertically)
+                    .alignByBaseline()
+            )
+        }
     }
 }
 
 @Composable
 fun FlagCheckBox(
-    mask: Int,
     name: String,
-    currentExtraFlag: MutableState<Int>,
-    flipExtraFlagBit: (Int) -> Unit,
+    mask: Int,
+    currentFlag: Int,
+    flipFlagBit: (Int) -> Unit,
 ) {
+    CheckBoxItem(name, checked = currentFlag.testBit(mask)) {
+        flipFlagBit(mask)
+    }
+}
 
+
+@Composable
+fun CheckBoxItem(
+    name: String,
+    checked: Boolean,
+    enabled: Boolean = true,
+    flip: () -> Unit,
+) {
     Row(Modifier
-        .clickable { flipExtraFlagBit(mask) }
+        .clickable { if (enabled) flip() }
         .fillMaxWidth()
     ) {
         Checkbox(
-            checked = currentExtraFlag.value.testBit(mask),
-            onCheckedChange = { flipExtraFlagBit(mask) }
+            checked = checked,
+            onCheckedChange = { flip() },
+            enabled = enabled
         )
-        Text(
-            text = name,
-            Modifier
-                .padding(4.dp)
-                .fillMaxWidth()
-                .align(Alignment.CenterVertically)
-                .alignByBaseline()
-        )
+        CompositionLocalProvider(LocalContentAlpha provides (if (enabled) 1f else ContentAlpha.disabled)) {
+            Text(
+                text = name,
+                Modifier
+                    .padding(4.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterVertically)
+                    .alignByBaseline()
+            )
+        }
     }
 
 }

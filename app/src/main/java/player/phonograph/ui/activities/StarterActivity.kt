@@ -16,6 +16,7 @@ import player.phonograph.appshortcuts.shortcuttype.TopTracksShortcutType
 import player.phonograph.mechanism.SongUriParsers
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.PlayRequest
+import player.phonograph.model.PlayRequest.SongRequest
 import player.phonograph.model.PlayRequest.SongsRequest
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.DynamicPlaylists
@@ -26,6 +27,9 @@ import player.phonograph.repo.mediastore.processQuery
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.ShuffleMode
+import player.phonograph.service.queue.executePlayRequest
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import player.phonograph.ui.dialogs.OpenWithDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
@@ -71,9 +75,27 @@ class StarterActivity : AppCompatActivity() {
             Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show()
             gotoMainActivity()
         } else {
-            val openWithDialog = OpenWithDialog.create(playRequest)
-            openWithDialog?.show(supportFragmentManager, null)
+            val showPrompt: Boolean = Setting(this.applicationContext)[Keys.externalPlayRequestShowPrompt].data
+            val silence: Boolean = Setting(this.applicationContext)[Keys.externalPlayRequestSilence].data
+            if (showPrompt) {
+                val openWithDialog = OpenWithDialog.create(playRequest, gotoMainActivity = !silence)
+                openWithDialog?.show(supportFragmentManager, null)
+            } else {
+                executePlayRequestByDefault(playRequest, silence)
+            }
         }
+    }
+
+    private fun executePlayRequestByDefault(playRequest: PlayRequest, silence: Boolean) {
+        val queueManager: QueueManager = get()
+        val key = when (playRequest) {
+            is SongRequest -> Keys.externalPlayRequestSingleMode
+            is SongsRequest -> Keys.externalPlayRequestMultipleMode
+            else -> return
+        }
+        val mode = Setting(this.applicationContext)[key].data
+        executePlayRequest(queueManager, playRequest, mode)
+        if (!silence) gotoMainActivity() else finish()
     }
 
 

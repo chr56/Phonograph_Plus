@@ -519,4 +519,10 @@
     <string name="notification_is_disabled">通知已被关闭！</string>
     <string name="pref_title_always_use_media_session_to_display_cover">总是使用 Media Session 显示图片</string>
     <string name="pref_summary_always_use_media_session_to_display_cover">总是使用 Media Session 向系统提供图片，用于通知等</string>
+    <string name="single_item">单项</string>
+    <string name="multiple_items">多项</string>
+    <string name="pref_title_external_play_request">从外部播放时的默认操作</string>
+    <string name="pref_summary_external_play_request">定义播放器从外部（如文件管理器）播放时应执行的默认操作</string>
+    <string name="pref_option_show_prompt">每次都显示提示对话框</string>
+    <string name="pref_option_silence">静默 (保持后台不转跳)</string>
 </resources>
