@@ -76,16 +76,17 @@ class StarterActivity : AppCompatActivity() {
             gotoMainActivity()
         } else {
             val showPrompt: Boolean = Setting(this.applicationContext)[Keys.externalPlayRequestShowPrompt].data
+            val silence: Boolean = Setting(this.applicationContext)[Keys.externalPlayRequestSilence].data
             if (showPrompt) {
-                val openWithDialog = OpenWithDialog.create(playRequest)
+                val openWithDialog = OpenWithDialog.create(playRequest, gotoMainActivity = !silence)
                 openWithDialog?.show(supportFragmentManager, null)
             } else {
-                executePlayRequestByDefault(playRequest)
+                executePlayRequestByDefault(playRequest, silence)
             }
         }
     }
 
-    private fun executePlayRequestByDefault(playRequest: PlayRequest) {
+    private fun executePlayRequestByDefault(playRequest: PlayRequest, silence: Boolean) {
         val queueManager: QueueManager = get()
         val key = when (playRequest) {
             is SongRequest -> Keys.externalPlayRequestSingleMode
@@ -94,7 +95,7 @@ class StarterActivity : AppCompatActivity() {
         }
         val mode = Setting(this.applicationContext)[key].data
         executePlayRequest(queueManager, playRequest, mode)
-        gotoMainActivity()
+        if (!silence) gotoMainActivity() else finish()
     }
 
 
