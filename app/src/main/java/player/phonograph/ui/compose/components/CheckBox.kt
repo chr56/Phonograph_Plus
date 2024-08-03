@@ -26,7 +26,7 @@ fun ModeRadioBox(
     setCurrentMode: (Int) -> Unit,
 ) {
     Row(Modifier
-        .clickable { setCurrentMode(mode) }
+        .clickable { if (enabled) setCurrentMode(mode) }
         .fillMaxWidth()) {
         RadioButton(selected = selectedMode == mode, onClick = { setCurrentMode(mode) }, enabled = enabled)
         Text(
@@ -61,7 +61,7 @@ fun CheckBoxItem(
     flip: () -> Unit,
 ) {
     Row(Modifier
-        .clickable { flip() }
+        .clickable { if (enabled) flip() }
         .fillMaxWidth()
     ) {
         Checkbox(
