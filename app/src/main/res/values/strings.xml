@@ -534,8 +534,8 @@
     <string name="pref_summary_always_use_media_session_to_display_cover">Always use Media Session to provide cover images to system for Notification etc.</string>
     <string name="single_item">Single Item</string>
     <string name="multiple_items">Multiple Items</string>
-    <string name="pref_title_external_play_request">Default action when play from the external</string>
-    <string name="pref_summary_external_play_request">Define what the player should do when play from the external (e.g. File Explorer).</string>
+    <string name="pref_title_external_play_request">Default action when playing from the external</string>
+    <string name="pref_summary_external_play_request">Define what the player should do when playing from the external (e.g. File Explorer).</string>
     <string name="pref_option_show_prompt">Show prompt dialog every time</string>
     <string name="pref_option_silence">Silence (keep in background without jumping to player)</string>
 </resources>
