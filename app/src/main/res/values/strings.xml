@@ -537,4 +537,5 @@
     <string name="pref_title_external_play_request">Default action when play from the external</string>
     <string name="pref_summary_external_play_request">Define what the player should do when play from the external (e.g. File Explorer).</string>
     <string name="pref_option_show_prompt">Show prompt dialog every time</string>
+    <string name="pref_option_silence">Silence (keep in background without jumping to player)</string>
 </resources>

@@ -118,5 +118,15 @@ private fun ExternalPlayRequestSettingDialogContent(context: Context) {
             )
         }
         Spacer(Modifier.height(8.dp))
+
+        var silence by remember {
+            mutableStateOf(Setting(context)[Keys.externalPlayRequestSilence].data)
+        }
+        val flipSilence = {
+            val newValue = !silence
+            silence = newValue
+            Setting(context)[Keys.externalPlayRequestSilence].data = newValue
+        }
+        CheckBoxItem(stringResource(R.string.pref_option_silence), silence, flip = flipSilence)
     }
 }
