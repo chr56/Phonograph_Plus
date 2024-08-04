@@ -261,8 +261,18 @@
     <string name="retry">Ponów</string>
     <string name="permission_manage_external_storage_denied">Wygląda na to, że Phonograph nie ma uprawnień do \"zarządzania pamięcią zewnętrzną\"!</string>
     <string name="not_available_now">Obecnie niedostępne</string>
+    <string name="check_for_updates">Sprawdź aktualizacje</string>
+    <string name="new_version_available">Dostępna jest nowa wersja!</string>
+    <string name="no_updates">Brak aktualizacji! Używasz najnowszej wersji na bieżącym kanale.</string>
+    <string name="ignore_for_once">Zignoruj raz</string>
+    <string name="ignored_update">Aktualizacja została zignorowana!</string>
     <string name="download">Pobierz</string>
     <string name="tg_channel">Kanał Telegram</string>
+    <string name="pref_title_auto_check_for_updates">Automatycznie sprawdzaj aktualizacje</string>
+    <string name="pref_summary_auto_check_for_updates">Powiadamiaj mnie, gdy nowa wersja jest dostępna.</string>
+    <string name="pref_description_auto_check_for_updates_extra_description">Aplikacja będzie sprawdzać nowsze wersje w publicznych zasobach repozytorium GitHub lub innych lustrzanych serwerach.</string>
+    <string name="pref_title_check_for_updates_interval">Częstotliwość sprawdzania aktualizacji</string>
+    <string name="pref_summary_check_for_updates_interval">Częstotliwość automatycznego sprawdzania aktualizacji</string>
     <string name="edit">Edytuj…</string>
     <string name="move_to_top">Przenieś na górę</string>
     <string name="move_to_bottom">Przenieś w dół</string>
@@ -470,6 +480,7 @@
     <string name="timeunit_year">Rok</string>
     <string name="time_interval_text">%1$s %2$d %3$s</string>
     <string name="preview_text_cutoff_time_interval">Znacznik czasu odcięcia będzie wynosić: \n %1$s \n(%2$s)</string>
+    <string name="preview_text_next_updates_check">Następna kontrola aktualizacji nastąpi po: \n %1$s \n(%2$s)</string>
     <string name="home">Strona główna</string>
     <string name="search_online">Wyszukaj w sieci</string>
     <string name="target">Cel</string>
@@ -538,4 +549,10 @@
     <string name="notification_is_disabled">Powiadomienia są wyłączone</string>
     <string name="pref_title_always_use_media_session_to_display_cover">Zawsze używaj sesji multimedialnej do wyświetlania okładki</string>
     <string name="pref_summary_always_use_media_session_to_display_cover">Zawsze używaj sesji multimedialnej dla dostarczania okładek systemowi powiadomień, ect.</string>
+    <string name="single_item">Pojedynczy element</string>
+    <string name="multiple_items">Wiele elementów</string>
+    <string name="pref_title_external_play_request">Domyślna akcja podczas odtwarzania z zewnętrznego źródła</string>
+    <string name="pref_summary_external_play_request">Określ co odtwarzacz powinien zrobić podczas odtwarzania z zewnętrznego źródła (np. Eksplorator plików).</string>
+    <string name="pref_option_show_prompt">Pokazuj okno dialogowe za każdym razem</string>
+    <string name="pref_option_silence">Wycisz (zachowaj w tle bez przełączania do odtwarzacza)</string>
 </resources>
