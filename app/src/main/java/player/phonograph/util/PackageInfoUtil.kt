@@ -43,12 +43,13 @@ private fun getPackageInfo(context: Context, packageName: String, flags: Int): P
 
 fun gitRevisionHash(context: Context): String {
     val packageInfo = getPackageInfo(context, context.packageName, PackageManager.GET_META_DATA) ?: return NA
-    return packageInfo.applicationInfo.metaData.getString("GitCommitHash") ?: NA
+    val applicationInfo = packageInfo.applicationInfo ?: return NA
+    return applicationInfo.metaData.getString("GitCommitHash") ?: NA
 }
 
 fun currentVersionName(context: Context): String {
     val packageInfo = getPackageInfo(context, context.packageName, 0) ?: return NA
-    return packageInfo.versionName
+    return packageInfo.versionName ?: NA
 }
 
 fun currentVersionCode(context: Context): Int {
@@ -60,7 +61,7 @@ fun currentVersionCode(context: Context): Int {
 fun fetchPackageSignatures(context: Context, packageName: String): Array<Signature>? {
     if (SDK_INT > P) {
         val packageInfo = getPackageInfo(context, packageName, PackageManager.GET_SIGNING_CERTIFICATES) ?: return null
-        return packageInfo.signingInfo.apkContentsSigners
+        return packageInfo.signingInfo?.apkContentsSigners
     } else {
         @Suppress("DEPRECATION")
         val packageInfo = getPackageInfo(context, packageName, PackageManager.GET_SIGNATURES) ?: return null
