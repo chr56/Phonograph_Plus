@@ -42,7 +42,7 @@ fun Bitmap.cropAndScaleTo(size: Size): Bitmap {
                 setRectToRect(selected, result, ScaleToFit.CENTER)
             }
             return try {
-                Bitmap.createBitmap(targetWidth, targetHeight, config).also {
+                Bitmap.createBitmap(targetWidth, targetHeight, config ?: Bitmap.Config.ARGB_8888).also {
                     Canvas(it).drawBitmap(this, matrix, null)
                 }
             } catch (e: Exception) {
