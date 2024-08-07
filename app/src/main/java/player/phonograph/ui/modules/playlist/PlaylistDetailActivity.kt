@@ -47,6 +47,7 @@ import util.theme.color.secondaryTextColor
 import util.theme.view.menu.tintMenuActionIcons
 import util.theme.view.setBackgroundTint
 import util.theme.view.toolbar.setToolbarColor
+import androidx.activity.addCallback
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -112,6 +113,8 @@ class PlaylistDetailActivity :
         setUpDashBroad()
 
         observeData()
+
+        setupOnBackPressCallback()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -165,6 +168,17 @@ class PlaylistDetailActivity :
                     adapter.dataset = songs
                     binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
                 }
+            }
+        }
+    }
+
+    private fun setupOnBackPressCallback() {
+        onBackPressedDispatcher.addCallback {
+            if (model.currentMode.value != UIMode.Common) {
+                model.updateCurrentMode(UIMode.Common)
+            } else {
+                remove()
+                onBackPressedDispatcher.onBackPressed()
             }
         }
     }
@@ -380,16 +394,6 @@ class PlaylistDetailActivity :
             }
         }
         tintMenuActionIcons(binding.toolbar, menu, iconColor)
-    }
-
-
-    @Deprecated("-") // todo: Use `OnBackPressedCallback`
-    @Suppress("DEPRECATION")
-    override fun onBackPressed() {
-        when {
-            model.currentMode.value == UIMode.Common -> super.onBackPressed()
-            else                                     -> model.updateCurrentMode(UIMode.Common)
-        }
     }
 
     /* *******************
