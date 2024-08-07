@@ -24,6 +24,7 @@ import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import util.theme.view.menu.tintMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
+import androidx.activity.addCallback
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -84,6 +85,13 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
                     adapter.dataset = it
                 }
             }
+        }
+
+        // back-press
+        onBackPressedDispatcher.addCallback {
+            remove()
+            viewBinding.recyclerView.stopScroll()
+            onBackPressedDispatcher.onBackPressed()
         }
     }
 
@@ -173,13 +181,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         DetailToolbarMenuProviders.AlbumToolbarMenuProvider
             .inflateMenu(menu, this, model.album.value, primaryTextColor(viewModel.activityColor.value))
         tintMenuActionIcons(viewBinding.toolbar, menu, primaryTextColor(viewModel.activityColor.value))
-    }
-
-    @Deprecated("-") // todo: Use `OnBackPressedCallback`
-    @Suppress("DEPRECATION")
-    override fun onBackPressed() {
-        viewBinding.recyclerView.stopScroll()
-        super.onBackPressed()
     }
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
