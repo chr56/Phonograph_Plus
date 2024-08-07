@@ -138,8 +138,7 @@ abstract class AbsPlayerFragment :
         playerToolbar = getImplToolbar()
         playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
         playerToolbar.setNavigationOnClickListener {
-            @Suppress("DEPRECATION")
-            requireActivity().onBackPressed()
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
         requireContext().attach(playerToolbar.menu) {
             // visible
