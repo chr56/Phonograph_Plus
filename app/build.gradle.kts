@@ -43,8 +43,6 @@ android {
         versionName = "1.8.2-dev1"
 
 
-        setProperty("archivesBaseName", "PhonographPlus_$versionName")
-
         proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
 
 
@@ -128,6 +126,18 @@ android {
 
     }
     androidComponents {
+
+        val moduleName = project.name
+        onVariants(selector().all()) { variant ->
+            // Rename
+            for (output in variant.outputs) {
+                val outputImpl = output as? com.android.build.api.variant.impl.VariantOutputImpl ?: continue
+                val origin = outputImpl.outputFileName.get()
+                val new = origin.replace(moduleName, "PhonographPlus-${output.versionName.get()}")
+                outputImpl.outputFileName.set(new)
+            }
+        }
+
         beforeVariants(selector().withBuildType("release")) { variantBuilder ->
             val favors = variantBuilder.productFlavors
             // no "release" type
