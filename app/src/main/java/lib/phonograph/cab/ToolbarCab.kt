@@ -54,40 +54,6 @@ class ToolbarCab internal constructor(val toolbar: Toolbar) {
     var status: Int = STATUS_INACTIVE // default
         private set
 
-    init {
-        toolbar.run {
-            translationY = 0f
-            alpha = 1f
-
-            setBackgroundColor(backgroundColor)
-
-            navigationIcon = this@ToolbarCab.navigationIcon
-            setNavigationOnClickListener(closeClickListener)
-
-            title = titleText
-            setTitleTextColor(titleTextColor)
-
-            subtitle = subtitleText
-            setSubtitleTextColor(subtitleTextColor)
-
-            popupTheme = popThemeRes
-            setUpMenu()
-        }
-    }
-
-    private fun setUpMenu() = toolbar.run {
-        menu.clear()
-        if (menuHandler != null) {
-            menuHandler!!.invoke(this)
-            // tint
-            val iconRes = androidx.appcompat.R.drawable.abc_ic_menu_overflow_material
-            overflowIcon = toolbar.context.getTintedDrawable(iconRes, titleTextColor)
-            for (item in menu) {
-                item.icon = item.icon?.apply { setTint(titleTextColor) }
-            }
-        }
-    }
-
     @ColorInt
     var backgroundColor: Int = Color.GRAY
         set(value) {
@@ -153,6 +119,41 @@ class ToolbarCab internal constructor(val toolbar: Toolbar) {
             field = value
             toolbar.setNavigationOnClickListener(value)
         }
+
+
+    init {
+        toolbar.run {
+            translationY = 0f
+            alpha = 1f
+
+            setBackgroundColor(backgroundColor)
+
+            navigationIcon = this@ToolbarCab.navigationIcon
+            setNavigationOnClickListener(closeClickListener)
+
+            title = titleText
+            setTitleTextColor(titleTextColor)
+
+            subtitle = subtitleText
+            setSubtitleTextColor(subtitleTextColor)
+
+            popupTheme = popThemeRes
+            setUpMenu()
+        }
+    }
+
+    private fun setUpMenu() = toolbar.run {
+        menu.clear()
+        if (menuHandler != null) {
+            menuHandler!!.invoke(this)
+            // tint
+            val iconRes = androidx.appcompat.R.drawable.abc_ic_menu_overflow_material
+            overflowIcon = toolbar.context.getTintedDrawable(iconRes, titleTextColor)
+            for (item in menu) {
+                item.icon = item.icon?.apply { setTint(titleTextColor) }
+            }
+        }
+    }
 
     @Synchronized
     fun show() = toolbar.run {
