@@ -31,6 +31,7 @@ import util.theme.color.secondaryTextColor
 import util.theme.color.toolbarTitleColor
 import util.theme.view.menu.tintMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
+import androidx.activity.addCallback
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -73,6 +74,14 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         lifecycle.addObserver(MediaStoreListener())
 
         registerActivityResultLauncherDelegate(getContentDelegate)
+
+        // back-press
+        onBackPressedDispatcher.addCallback {
+            remove()
+            viewBinding.albumRecycleView.stopScroll()
+            viewBinding.songsRecycleView.stopScroll()
+            onBackPressedDispatcher.onBackPressed()
+        }
     }
 
     override fun createContentView(): View = wrapSlidingMusicPanel(viewBinding.root)
