@@ -2,9 +2,9 @@
 
 ## Plugins
 
-kotlin = "1.9.22"
+kotlin = "2.0.10"
 agp = "8.5.1"
-ksp = "1.9.22-1.0.17"
+ksp = "2.0.10-1.0.24"
 versionChecker = "0.51.0"
 
 ## Libraries
@@ -233,6 +233,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 

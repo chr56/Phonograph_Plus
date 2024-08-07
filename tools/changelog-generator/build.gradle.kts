@@ -1,5 +1,5 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 repositories {
     mavenCentral()
@@ -107,8 +107,11 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-tasks.withType(KotlinCompile::class.java) {
-    (kotlinOptions as KotlinJvmOptions).jvmTarget = "17"
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
+        apiVersion.set(KotlinVersion.KOTLIN_2_0)
+    }
 }
 
 dependencies {
