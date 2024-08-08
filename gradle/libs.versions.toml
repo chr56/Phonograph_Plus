@@ -46,7 +46,6 @@ koin = "3.5.6"
 materialDialogs = "3.3.0"
 composeMaterialDialogs = "0.9.0"
 composeSetting = "1.0.3"
-materialTools = "0.2.1"
 themeUtil = "0.2.0"
 #### Others End
 
@@ -129,11 +128,6 @@ materialDialogs-color = { group = "com.afollestad.material-dialogs", name = "col
 composeMaterialDialogs = { module = "io.github.vanpra.compose-material-dialogs:core", version.ref = "composeMaterialDialogs" }
 composeSettingsUi = { group = "com.github.alorma", name = "compose-settings-ui", version.ref = "composeSetting" }
 
-mt-colorRes = { group = "com.github.chr56.material-tools", name = "mdColorRes", version.ref = "materialTools" }
-mt-util = { group = "com.github.chr56.material-tools", name = "mdUtil", version.ref = "materialTools" }
-mt-pref = { group = "com.github.chr56.material-tools", name = "mdPref", version.ref = "materialTools" }
-mt-tint = { group = "com.github.chr56.material-tools", name = "mdTint", version.ref = "materialTools" }
-
 themeUtils-materials = { group = "com.github.chr56.ThemeUtils", name = "materials-util", version.ref = "themeUtil" }
 themeUtils-color = { group = "com.github.chr56.ThemeUtils", name = "color-util", version.ref = "themeUtil" }
 themeUtils-tint = { group = "com.github.chr56.ThemeUtils", name = "tint-util", version.ref = "themeUtil" }
@@ -184,13 +178,6 @@ composeSettings = [
 materialDialogs = [
     "materialDialogs-core",
     "materialDialogs-color",
-]
-
-materialTools = [
-    "mt-colorRes",
-    "mt-util",
-    "mt-pref",
-    "mt-tint",
 ]
 
 themeUtil = [
