@@ -49,6 +49,13 @@ composeSetting = "1.0.3"
 themeUtil = "0.2.0"
 #### Others End
 
+## Test
+junit = "4.13.2"
+mockito = "5.6.0"
+testCore = "1.6.1"
+testExtJunit = "1.2.1"
+testEspresso = "3.6.1"
+
 [libraries]
 
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
@@ -114,6 +121,18 @@ retrofit2 = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofi
 coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt:coil-compose-base", version.ref = "coil" }
 koin = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+
+
+#
+# Test
+#
+junit = { module = "junit:junit", version.ref = "junit" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockito" }
+androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "testCore" }
+androidx-test-junit = { module = "androidx.test.ext:junit", version.ref = "testExtJunit" }
+androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "testEspresso" }
+
 
 #
 # other
@@ -185,6 +204,22 @@ themeUtil = [
     "themeUtils-color",
     "themeUtils-tint",
 ]
+
+
+# Test
+
+test-unit = [
+    "junit",
+    "mockito-core",
+    "mockito-android",
+]
+
+test-androidx-suite = [
+    "androidx-test-core",
+    "androidx-test-junit",
+    "androidx-test-espresso-core",
+]
+
 
 [plugins]
 
