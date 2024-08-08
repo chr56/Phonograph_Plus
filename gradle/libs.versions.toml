@@ -21,6 +21,7 @@ constraintlayout = "2.1.4"
 percentlayout = "1.0.0"
 swiperefreshlayout = "1.1.0"
 media = "1.7.0"
+browser = "1.7.0"
 cardview = "1.0.0"
 palette = "1.0.0"
 room = "2.6.1"
@@ -74,6 +75,7 @@ androidx-percentlayout = { module = "androidx.percentlayout:percentlayout", vers
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
 
 androidx-media = { module = "androidx.media:media", version.ref = "media" }
+androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }
 androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
 androidx-palette = { module = "androidx.palette:palette-ktx", version.ref = "palette" }
 
@@ -112,6 +114,7 @@ compose-activity = { group = "androidx.activity", name = "activity-compose", ver
 # popular
 #
 
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "ktxc" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "ktxs-json" }
 kotlinx-serialization-ktoml = { module = "com.akuleshov7:ktoml-core", version.ref = "ktxs-ktoml" }
