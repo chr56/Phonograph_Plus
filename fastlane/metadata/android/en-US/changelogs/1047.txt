@@ -1,0 +1,8 @@
+<b>1.4.7(1047) 2024.08.09</b>
+- Fix: rare crash caused by color animation [backported from v1.7.0]
+- Fix: albums sorting in Artist Detail [backported from v1.7.0]
+- Fix: crash when toggling Colored Footers in Artist Detail [backported from v1.7.1]
+- Fix: Sleep Timer not working [backported from v1.7.2]
+- Fix: not instantly start playing from the external source (like file explorer) [backported from v1.8.0]
+- Fix: low notification image quality o
+...(Visit project homepage to see full changelogs)

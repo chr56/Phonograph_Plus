@@ -1,39 +1,33 @@
-version: "1.4.6"
-versionCode: 1046
-timestamp: 1716120000
+version: "1.4.7"
+versionCode: 1047
+timestamp: 1723210000
 channel: "LTS"
 notes:
   en:
     highlights:
       - "This is a LTS release"
-      - "This contains many fixes back-ported from v1.6.x"
+      - "This contains many fixes back-ported from v1.7.x and v1.8.x"
     items:
-      - "Improve: slightly adjust tab width [backported from v1.6.0]"
-      - "Fix: failed to duplicate multiple playlists [backported from v1.6.0]"
-      - "Fix: preference Colored Navigation Bar failed [backported from v1.6.0]"
-      - "Fix: sometimes abnormal PlayPause button on going back from background [backported from v1.6.0]"
-      - "Fix: crash after adding a same track multiple times in a same playlist [backported from v1.6.1]"
-      - "Fix: possible random crash after selecting multiple items [backported from v1.6.1]"
-      - "Fix: rare random crash due to cover artwork in Main Player [backported from v1.6.2]"
-      - "Fix: crash when opening some dialogs or Playlist Detail on Android 13 (only) [backported from v1.6.3]"
-      - "Fix: duplicated items would be added using Range Selection [backported from v1.6.3]"
-      - "Fix: wrong title of Backup Export Dialog [backported from v1.6.3]"
-      - "Translation: update Turkish (by volkspolizist), Polish (by cooky), Russian (by Yurt Page (yurtpage)), Spanish (by Dino RTX (rtxdino36) & Dderfla_53)"
-      - "Development: update dependencies, upgrade AGP to 8.3.2"
+      - "Fix: rare crash caused by color animation [backported from v1.7.0]"
+      - "Fix: albums sorting in Artist Detail [backported from v1.7.0]"
+      - "Fix: crash when toggling Colored Footers in Artist Detail [backported from v1.7.1]"
+      - "Fix: Sleep Timer not working [backported from v1.7.2]"
+      - "Fix: not instantly start playing from the external source (like file explorer) [backported from v1.8.0]"
+      - "Fix: low notification image quality on Android Q [backported from v1.8.1]"
+      - "Fix: crash when jumping to Artist detail in some rare circumstance [backported from v1.8.2]"
+      - "Translation: update PortugueseBrazilian (by FalaTudo), Arabic (by Ruger Blaze (hima_96)), Spanish (by Dino RTX (rtxdino36))"
+      - "Development: update gradle to 8.8, upgrade AGP to 8.5.1"
   zh:
     highlights:
       - "此版本为 LTS 版本"
-      - "此版本包含许多从 v1.6.x 移植的修复"
+      - "此版本包含许多从 v1.7.x 与 v1.8.x 移植的修复"
     items:
-      - "改进 微调标签宽度 [移植自 v1.6.0]"
-      - "修复 复制多个播放列表失败 [移植自 v1.6.0]"
-      - "修复 导航栏着色选项失效 [移植自 v1.6.0]"
-      - "修复 从后台返回前台后有时播放暂停按钮异常 [移植自 v1.6.0]"
-      - "修复 向某播放列表中重复添加相同曲目后崩溃 [移植自 v1.6.1]"
-      - "修复 在选择多个项目后可能随机崩溃 [移植自 v1.6.1]"
-      - "修复 罕见随机崩溃 （由主播放器图片而导致）[移植自 v1.6.2]"
-      - "修复 (仅) Android 13 上，打开部分对话框或播放列表详情时崩溃 [移植自 v1.6.3]"
-      - "修复 区间选择时会添加重复的项目 [移植自 v1.6.3]"
-      - "修复 备份导出对话框的标题错误 [移植自 v1.6.3]"
-      - "翻译 更新 土耳其语(volkspolizist)，波兰语(cooky), 俄语 (Yurt Page (yurtpage)), 西班牙语(Dino RTX (rtxdino36) & Dderfla_53)"
-      - "开发 更新依赖，更新 AGP 至 8.3.2"
+      - "修复 可能的动画导致的罕见崩溃 [移植自 v1.7.0]"
+      - "修复 艺术家详情中专辑排序 [移植自 v1.7.0]"
+      - "修复 艺术家详情中切换彩色页脚开关时崩溃 [移植自 v1.7.1]"
+      - "修复 睡眠定时器失效 [移植自 v1.7.2]"
+      - "修复 从外部（如文件资源管理器）启动时未立即播放 [移植自 v1.8.0]"
+      - "修复 Android Q 上通知图像质量过低 [移植自 v1.8.1]"
+      - "修复 在某些罕见情况下跳转到艺术家详情时崩溃 [移植自 v1.8.2]"
+      - "翻译 更新 巴西葡语(FalaTudo)，阿拉伯语(Ruger Blaze (hima_96)), 西班牙语(Dino RTX (rtxdino36))"
+      - "开发 更新 Gradle 至 8.8，更新 AGP 至 8.5.1"
