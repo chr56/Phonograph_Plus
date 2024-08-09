@@ -1,0 +1,4 @@
+<b>1.8.2(1082) 2024.08.10</b>
+- New: support specify the default action when playing from the external (e.g. File Explorer)
+- Fix: crash when jumping to Artist detail in some rare circumstance
+- Translation: update Portuguese,Brazilian (by FalaTudo), Polish (by cooky)
