@@ -8,39 +8,76 @@ ksp = "1.9.22-1.0.17"
 versionChecker = "0.51.0"
 
 ## Libraries
-
+#### Jetpack Start
+core-ktx = "1.13.1"
+appcompat = "1.7.0"
 activity = "1.9.0"
+fragment = "1.8.1"
+lifecycle = "2.7.0"
+annotation = "1.8.0"
+preference = "1.2.1"
+recyclerview = "1.3.2"
+constraintlayout = "2.1.4"
+percentlayout = "1.0.0"
+swiperefreshlayout = "1.1.0"
+media = "1.7.0"
+browser = "1.7.0"
+cardview = "1.0.0"
+palette = "1.0.0"
+room = "2.6.1"
 datastore = { strictly = "1.0.0" }
+material = "1.9.0"
 compose = "1.6.8"
 composeCompiler = "1.5.10"
-composeSetting = "1.0.3"
+#### Jetpack End
+
+
+#### Popular Start
+ktxc = "1.8.1"
+ktxs-json = "1.6.3"
+ktxs-ktoml = "0.5.0"
+ktxs-kaml = "0.57.0"
+okhttp = "4.12.0"
+retrofit = "2.11.0"
 coil = "2.6.0"
 koin = "3.5.6"
+#### Popular End
+
+#### Others Start
 materialDialogs = "3.3.0"
-materialTools = "0.2.1"
+composeMaterialDialogs = "0.9.0"
+composeSetting = "1.0.3"
 themeUtil = "0.2.0"
-room = "2.6.1"
+#### Others End
+
+## Test
+junit = "4.13.2"
+mockito = "5.6.0"
+testCore = "1.6.1"
+testExtJunit = "1.2.1"
+testEspresso = "3.6.1"
 
 [libraries]
 
-androidx-core = "androidx.core:core-ktx:1.13.1"
-androidx-appcompat = "androidx.appcompat:appcompat:1.7.0"
+androidx-core = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
-androidx-fragment = "androidx.fragment:fragment-ktx:1.8.1"
-androidx-lifecycle_runtime = "androidx.lifecycle:lifecycle-runtime-ktx:2.7.0"
+androidx-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment" }
+androidx-lifecycle_runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 
-androidx-annotation = "androidx.annotation:annotation:1.8.0"
-androidx-preference = "androidx.preference:preference-ktx:1.2.1"
+androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
+androidx-preference = { module = "androidx.preference:preference-ktx", version.ref = "preference" }
 
-androidx-recyclerview = "androidx.recyclerview:recyclerview:1.3.2"
+androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 
-androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
-androidx-percentlayout = "androidx.percentlayout:percentlayout:1.0.0"
-androidx-swiperefreshlayout = "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+androidx-percentlayout = { module = "androidx.percentlayout:percentlayout", version.ref = "percentlayout" }
+androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
 
-androidx-media = "androidx.media:media:1.7.0"
-androidx-cardview = "androidx.cardview:cardview:1.0.0"
-androidx-palette = "androidx.palette:palette-ktx:1.0.0"
+androidx-media = { module = "androidx.media:media", version.ref = "media" }
+androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }
+androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
+androidx-palette = { module = "androidx.palette:palette-ktx", version.ref = "palette" }
 
 #
 # Room
@@ -59,7 +96,7 @@ androidx-datastore-preferences-core = { group = "androidx.datastore", name = "da
 androidx-datastore-core = { group = "androidx.datastore", name = "datastore-core", version.ref = "datastore" }
 
 
-google-material = "com.google.android.material:material:1.9.0"
+google-material = { module = "com.google.android.material:material", version.ref = "material" }
 
 #
 # Jetpack Compose
@@ -77,15 +114,28 @@ compose-activity = { group = "androidx.activity", name = "activity-compose", ver
 # popular
 #
 
-okhttp3 = "com.squareup.okhttp3:okhttp:4.12.0"
-retrofit2 = "com.squareup.retrofit2:retrofit:2.11.0"
-kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3"
-kotlinx-serialization-ktoml = "com.akuleshov7:ktoml-core:0.5.0"
-kotlinx-serialization-kaml = "com.charleskorn.kaml:kaml:0.57.0"
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "ktxc" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "ktxs-json" }
+kotlinx-serialization-ktoml = { module = "com.akuleshov7:ktoml-core", version.ref = "ktxs-ktoml" }
+kotlinx-serialization-kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "ktxs-kaml" }
+okhttp3 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+retrofit2 = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt:coil-compose-base", version.ref = "coil" }
 koin = { module = "io.insert-koin:koin-android", version.ref = "koin" }
-kotlinx-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1"
+
+
+#
+# Test
+#
+junit = { module = "junit:junit", version.ref = "junit" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockito" }
+androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "testCore" }
+androidx-test-junit = { module = "androidx.test.ext:junit", version.ref = "testExtJunit" }
+androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "testEspresso" }
+
 
 #
 # other
@@ -97,36 +147,28 @@ materialDialogs-core = { group = "com.afollestad.material-dialogs", name = "core
 materialDialogs-input = { group = "com.afollestad.material-dialogs", name = "input", version.ref = "materialDialogs" }
 materialDialogs-color = { group = "com.afollestad.material-dialogs", name = "color", version.ref = "materialDialogs" }
 
-composeMaterialDialogs = "io.github.vanpra.compose-material-dialogs:core:0.9.0"
-
-
-mt-colorRes = { group = "com.github.chr56.material-tools", name = "mdColorRes", version.ref = "materialTools" }
-mt-util = { group = "com.github.chr56.material-tools", name = "mdUtil", version.ref = "materialTools" }
-mt-pref = { group = "com.github.chr56.material-tools", name = "mdPref", version.ref = "materialTools" }
-mt-tint = { group = "com.github.chr56.material-tools", name = "mdTint", version.ref = "materialTools" }
+composeMaterialDialogs = { module = "io.github.vanpra.compose-material-dialogs:core", version.ref = "composeMaterialDialogs" }
+composeSettingsUi = { group = "com.github.alorma", name = "compose-settings-ui", version.ref = "composeSetting" }
 
 themeUtils-materials = { group = "com.github.chr56.ThemeUtils", name = "materials-util", version.ref = "themeUtil" }
 themeUtils-color = { group = "com.github.chr56.ThemeUtils", name = "color-util", version.ref = "themeUtil" }
 themeUtils-tint = { group = "com.github.chr56.ThemeUtils", name = "tint-util", version.ref = "themeUtil" }
 
-composeSettingsUi = { group = "com.github.alorma", name = "compose-settings-ui", version.ref = "composeSetting" }
-
-
-storageUtilities = "io.github.chr56:android-storage-utilities:0.3.1"
-musicMetadataSource = "io.github.phonographplus:music-metadata-source:0.1.1"
-menuDsl = "io.github.chr56:android-menu-dsl:0.1.3"
-seekArc = "com.github.chr56:SeekArc:1.0"
-slidingUpPanel = "com.github.kabouzeid:AndroidSlidingUpPanel:6"
-recyclerviewFastscroll = "com.simplecityapps:recyclerview-fastscroll:2.0.1"
-licensesdialog = "de.psdev.licensesdialog:licensesdialog:2.2.0"
-jaudiotagger = "com.github.chr56:jaudiotagger:0.0.3"
-observablescrollview = "com.github.chr56:Android-ObservableScrollView-Retro:0.0.1"
-appIntro = "com.github.AppIntro:AppIntro:6.3.1"
-advrecyclerview = "com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:1.0.0"
-composeReorderable = "org.burnoutcrew.composereorderable:reorderable:0.9.6"
-composeAnnotatedText = "io.github.aghajari:AnnotatedText:1.0.3"
-statusBarLyricsApi = "com.github.577fkj:StatusBarApiExample:2.0"
-lyricsGetterAPi = "com.github.xiaowine:Lyric-Getter-Api:6.0.0"
+storageUtilities = { module = "io.github.chr56:android-storage-utilities", version = "0.3.1" }
+musicMetadataSource = { module = "io.github.phonographplus:music-metadata-source", version = "0.1.1" }
+menuDsl = { module = "io.github.chr56:android-menu-dsl", version = "0.1.3" }
+seekArc = { module = "com.github.chr56:SeekArc", version = "1.0" }
+slidingUpPanel = { module = "com.github.kabouzeid:AndroidSlidingUpPanel", version = "6" }
+recyclerviewFastscroll = { module = "com.simplecityapps:recyclerview-fastscroll", version = "2.0.1" }
+licensesdialog = { module = "de.psdev.licensesdialog:licensesdialog", version = "2.2.0" }
+jaudiotagger = { module = "com.github.chr56:jaudiotagger", version = "0.0.3" }
+observablescrollview = { module = "com.github.chr56:Android-ObservableScrollView-Retro", version = "0.0.1" }
+appIntro = { module = "com.github.AppIntro:AppIntro", version = "6.3.1" }
+advrecyclerview = { module = "com.h6ah4i.android.widget.advrecyclerview:advrecyclerview", version = "1.0.0" }
+composeReorderable = { module = "org.burnoutcrew.composereorderable:reorderable", version = "0.9.6" }
+composeAnnotatedText = { module = "io.github.aghajari:AnnotatedText", version = "1.0.3" }
+statusBarLyricsApi = { module = "com.github.577fkj:StatusBarApiExample", version = "2.0" }
+lyricsGetterAPi = { module = "com.github.xiaowine:Lyric-Getter-Api", version = "6.0.0" }
 
 [bundles]
 
@@ -145,7 +187,6 @@ androidx-datastore = [
     "androidx-datastore-core",
 ]
 
-
 androidx-room = [
     "androidx-room-runtime",
     "androidx-room-ktx",
@@ -161,18 +202,27 @@ materialDialogs = [
     "materialDialogs-color",
 ]
 
-materialTools = [
-    "mt-colorRes",
-    "mt-util",
-    "mt-pref",
-    "mt-tint",
-]
-
 themeUtil = [
     "themeUtils-materials",
     "themeUtils-color",
     "themeUtils-tint",
 ]
+
+
+# Test
+
+test-unit = [
+    "junit",
+    "mockito-core",
+    "mockito-android",
+]
+
+test-androidx-suite = [
+    "androidx-test-core",
+    "androidx-test-junit",
+    "androidx-test-espresso-core",
+]
+
 
 [plugins]
 
