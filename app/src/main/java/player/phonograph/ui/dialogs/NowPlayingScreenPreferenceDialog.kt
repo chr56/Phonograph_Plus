@@ -8,8 +8,9 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.github.appintro.indicator.DotIndicatorController
 import player.phonograph.R
-import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.model.NowPlayingScreen
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.theme.tintButtons
 import player.phonograph.util.ui.convertDpToPixel
@@ -41,6 +42,7 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), OnPageChangeListener 
     private var viewPagerPosition = 0
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val preference = Setting(requireContext()).Composites[Keys.nowPlayingScreen]
         @SuppressLint("InflateParams")
         val view = layoutInflater.inflate(R.layout.preference_dialog_now_playing_screen, null) as LinearLayout
 
@@ -51,7 +53,7 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), OnPageChangeListener 
             LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply { gravity = Gravity.CENTER }
         )
         with(pageIndicator) {
-            initialize(NowPlayingScreen.values().size)
+            initialize(NowPlayingScreen.entries.size)
             selectedIndicatorColor = ThemeSetting.accentColor(requireActivity())
             unselectedIndicatorColor = requireActivity().primaryDisabledTextColor()
         }
@@ -60,12 +62,12 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), OnPageChangeListener 
             adapter = NowPlayingScreenAdapter(context)
             addOnPageChangeListener(this@NowPlayingScreenPreferenceDialog)
             pageMargin = convertDpToPixel(32f, resources).toInt()
-            currentItem = NowPlayingScreenConfig.nowPlayingScreen.ordinal
+            currentItem = preference.data.ordinal
         }
         val dialog = MaterialDialog(requireContext())
             .title(R.string.pref_title_now_playing_screen_appearance)
             .positiveButton(android.R.string.ok) {
-                NowPlayingScreenConfig.nowPlayingScreen = NowPlayingScreen.values()[viewPagerPosition]
+                Setting(it.context).Composites[Keys.nowPlayingScreen].data = NowPlayingScreen.entries[viewPagerPosition]
             }
             .negativeButton(android.R.string.cancel)
             .customView(view = view, dialogWrapContent = false)
@@ -82,7 +84,7 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), OnPageChangeListener 
     override fun onPageScrollStateChanged(state: Int) {}
     private class NowPlayingScreenAdapter(private val context: Context?) : PagerAdapter() {
         override fun instantiateItem(collection: ViewGroup, position: Int): Any {
-            val nowPlayingScreen = NowPlayingScreen.values()[position]
+            val nowPlayingScreen = NowPlayingScreen.entries[position]
             val inflater = LayoutInflater.from(context)
             val layout = inflater.inflate(R.layout.preference_now_playing_screen_item, collection, false) as ViewGroup
             collection.addView(layout)
@@ -98,7 +100,7 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), OnPageChangeListener 
         }
 
         override fun getCount(): Int {
-            return NowPlayingScreen.values().size
+            return NowPlayingScreen.entries.size
         }
 
         override fun isViewFromObject(view: View, `object`: Any): Boolean {
@@ -106,7 +108,7 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), OnPageChangeListener 
         }
 
         override fun getPageTitle(position: Int): CharSequence {
-            return context!!.getString(NowPlayingScreen.values()[position].titleRes)
+            return context!!.getString(NowPlayingScreen.entries[position].titleRes)
         }
     }
 

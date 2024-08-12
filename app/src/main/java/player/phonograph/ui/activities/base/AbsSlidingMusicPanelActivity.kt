@@ -15,8 +15,8 @@ import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.MiniPlayerFragment
 import player.phonograph.ui.fragments.player.card.CardPlayerFragment
 import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment
-import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.primaryColor
+import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.updateNavigationbarColor
 import player.phonograph.util.theme.updateStatusbarColor
 import player.phonograph.util.theme.updateTaskDescriptionColor
@@ -105,11 +105,11 @@ abstract class AbsSlidingMusicPanelActivity :
         miniPlayerFragment?.requireView()?.setOnClickListener { expandPanel() }
 
         // add fragment
-        val flow = Setting(this)[Keys.nowPlayingScreenIndex].flow
         lifecycleScope.launch {
+            val flow = Setting(this@AbsSlidingMusicPanelActivity).Composites[Keys.nowPlayingScreen].flow()
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                flow.distinctUntilChanged().collect { id ->
-                    setupPlayerFragment(id)
+                flow.distinctUntilChanged().collect { screen ->
+                    setupPlayerFragment(screen)
                 }
             }
         }
@@ -150,14 +150,13 @@ abstract class AbsSlidingMusicPanelActivity :
         cancelThemeColorChange() // just in case
     }
 
-    private fun setupPlayerFragment(nowPlayingScreen: Int) {
+    private fun setupPlayerFragment(screen: NowPlayingScreen) {
         supportFragmentManager.apply {
             beginTransaction().replace(
                 R.id.player_fragment_container,
-                when (nowPlayingScreen) {
-                    NowPlayingScreen.FLAT.id -> FlatPlayerFragment()
-                    NowPlayingScreen.CARD.id -> CardPlayerFragment()
-                    else                     -> FlatPlayerFragment()
+                when (screen) {
+                    NowPlayingScreen.FLAT -> FlatPlayerFragment()
+                    NowPlayingScreen.CARD -> CardPlayerFragment()
                 },
                 NOW_PLAYING_FRAGMENT
             ).commit()

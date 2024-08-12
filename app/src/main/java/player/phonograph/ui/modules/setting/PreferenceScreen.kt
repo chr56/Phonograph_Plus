@@ -21,7 +21,6 @@ import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.mechanism.StatusBarLyric
 import player.phonograph.mechanism.setting.CoilImageConfig
 import player.phonograph.mechanism.setting.HomeTabConfig
-import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.time.displayText
@@ -120,7 +119,8 @@ fun PhonographPreferenceScreen() {
                     dialog = NowPlayingScreenPreferenceDialog::class.java,
                     titleRes = R.string.pref_title_player_style,
                     currentValueForHint = { context ->
-                        context.getString(NowPlayingScreenConfig.nowPlayingScreen.titleRes)
+                        val screen = Setting(context).Composites[Keys.nowPlayingScreen].flowData()
+                        context.getString(screen.titleRes)
                     }
                 ))
             LibraryCategoriesSetting()
