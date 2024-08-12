@@ -10,6 +10,8 @@ import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.NowPlayingScreen
+import player.phonograph.model.file.defaultStartDirectory
+import player.phonograph.util.file.safeGetCanonicalPath
 import player.phonograph.util.time.TimeInterval
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -17,6 +19,7 @@ import androidx.datastore.preferences.core.edit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import java.io.File
 
 /**
  * Provider for Composite Preference (not primitive type)
@@ -79,6 +82,18 @@ data object NowPlayingScreenPreferenceProvider :
     }
 
     override fun save(data: NowPlayingScreen): Int = data.id
+}
+
+data object StartDirectoryPreferenceProvider :
+        MonoPreferenceProvider<File, String>(
+            Keys.startDirectoryPath, { defaultStartDirectory }
+        ) {
+
+    override fun read(flow: Flow<String>): Flow<File> = flow.map { path ->
+        File(path)
+    }
+
+    override fun save(data: File): String = safeGetCanonicalPath(data)
 }
 
 sealed class SortModePreferenceProvider(backField: PrimitiveKey<String>) :

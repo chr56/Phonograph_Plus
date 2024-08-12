@@ -12,7 +12,9 @@ import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.NowPlayingScreen
+import player.phonograph.model.file.defaultStartDirectory
 import util.theme.materials.MaterialColor
+import java.io.File
 import androidx.datastore.preferences.core.booleanPreferencesKey as booleanPK
 import androidx.datastore.preferences.core.intPreferencesKey as intPK
 import androidx.datastore.preferences.core.longPreferencesKey as longPK
@@ -85,6 +87,12 @@ object Keys {
     // Database
 
     // Behavior-File
+    object startDirectoryPath :
+            PrimitiveKey<String>(stringPK(START_DIRECTORY), { defaultStartDirectory.path })
+
+    object startDirectory :
+            CompositeKey<File>(StartDirectoryPreferenceProvider)
+
     object preloadImages :
             PrimitiveKey<Boolean>(booleanPK(PRELOAD_IMAGES), { true })
 
