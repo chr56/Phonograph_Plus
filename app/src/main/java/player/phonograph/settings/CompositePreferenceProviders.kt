@@ -70,7 +70,7 @@ data object CheckUpdateIntervalPreferenceProvider :
 
 data object NowPlayingScreenPreferenceProvider :
         MonoPreferenceProvider<NowPlayingScreen, Int>(
-            Keys.nowPlayingScreenIndex, { NowPlayingScreen.CARD }
+            Keys._nowPlayingScreenIndex, { NowPlayingScreen.CARD }
         ) {
 
     override fun read(flow: Flow<Int>): Flow<NowPlayingScreen> = flow.map { id ->
@@ -86,7 +86,7 @@ data object NowPlayingScreenPreferenceProvider :
 
 data object StartDirectoryPreferenceProvider :
         MonoPreferenceProvider<File, String>(
-            Keys.startDirectoryPath, { defaultStartDirectory }
+            Keys._startDirectoryPath, { defaultStartDirectory }
         ) {
 
     override fun read(flow: Flow<String>): Flow<File> = flow.map { path ->

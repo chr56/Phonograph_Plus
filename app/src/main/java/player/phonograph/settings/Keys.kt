@@ -78,7 +78,7 @@ object Keys {
     object lastPage :
             PrimitiveKey<Int>(intPK(LAST_PAGE), { 0 })
 
-    object nowPlayingScreenIndex :
+    object _nowPlayingScreenIndex :
             PrimitiveKey<Int>(intPK(NOW_PLAYING_SCREEN_ID), { 0 })
 
     object nowPlayingScreen :
@@ -87,7 +87,7 @@ object Keys {
     // Database
 
     // Behavior-File
-    object startDirectoryPath :
+    object _startDirectoryPath :
             PrimitiveKey<String>(stringPK(START_DIRECTORY), { defaultStartDirectory.path })
 
     object startDirectory :
