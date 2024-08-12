@@ -11,7 +11,10 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.ItemLayoutStyle
+import player.phonograph.model.NowPlayingScreen
+import player.phonograph.model.file.defaultStartDirectory
 import util.theme.materials.MaterialColor
+import java.io.File
 import androidx.datastore.preferences.core.booleanPreferencesKey as booleanPK
 import androidx.datastore.preferences.core.intPreferencesKey as intPK
 import androidx.datastore.preferences.core.longPreferencesKey as longPK
@@ -75,12 +78,21 @@ object Keys {
     object lastPage :
             PrimitiveKey<Int>(intPK(LAST_PAGE), { 0 })
 
-    object nowPlayingScreenIndex :
+    object _nowPlayingScreenIndex :
             PrimitiveKey<Int>(intPK(NOW_PLAYING_SCREEN_ID), { 0 })
+
+    object nowPlayingScreen :
+            CompositeKey<NowPlayingScreen>(NowPlayingScreenPreferenceProvider)
 
     // Database
 
     // Behavior-File
+    object _startDirectoryPath :
+            PrimitiveKey<String>(stringPK(START_DIRECTORY), { defaultStartDirectory.path })
+
+    object startDirectory :
+            CompositeKey<File>(StartDirectoryPreferenceProvider)
+
     object preloadImages :
             PrimitiveKey<Boolean>(booleanPK(PRELOAD_IMAGES), { true })
 

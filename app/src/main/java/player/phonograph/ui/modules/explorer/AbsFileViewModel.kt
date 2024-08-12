@@ -4,9 +4,11 @@
 
 package player.phonograph.ui.modules.explorer
 
-import player.phonograph.mechanism.setting.FileConfig
+import player.phonograph.App
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -22,7 +24,8 @@ sealed class AbsFileViewModel : ViewModel() {
 
 
     private val _currentLocation: MutableStateFlow<Location> =
-        MutableStateFlow(Location.from(FileConfig.startDirectory))
+        MutableStateFlow(Location.from(Setting(App.instance).Composites[Keys.startDirectory].data))
+
     val currentLocation = _currentLocation.asStateFlow()
 
 

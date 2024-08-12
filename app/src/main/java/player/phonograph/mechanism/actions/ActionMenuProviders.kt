@@ -10,7 +10,6 @@ import com.github.chr56.android.menu_dsl.submenu
 import player.phonograph.R
 import player.phonograph.mechanism.PathFilter
 import player.phonograph.mechanism.scanner.MediaStoreScanner
-import player.phonograph.mechanism.setting.FileConfig
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.playlist.FilePlaylistLocation
@@ -18,6 +17,8 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.util.fragmentActivity
 import player.phonograph.util.lifecycleScopeOrNewOne
@@ -308,7 +309,7 @@ object ActionMenuProviders {
 
         private fun setStartDirectory(context: Context, dir: FileEntity.Folder): Boolean {
             val path = dir.location.absolutePath
-            FileConfig.startDirectory = File(path)
+            Setting(context).Composites[Keys.startDirectory].data = File(path)
             Toast.makeText(
                 context,
                 String.format(context.getString(R.string.new_start_directory), path),
