@@ -4,7 +4,7 @@ This document describes the overview of this project for developers.
 
 See also [Build Instruction](./Build_Instructions.md).
 
-_Last Update: 2024.07.20_
+_Last Update: 2024.08.12_
 
 ## Toolchain & Dependencies
 
@@ -17,7 +17,7 @@ Please refer [libs.versions.toml](../gradle/libs.versions.toml) for all the libr
 **Toolchain**
 
 - Gradlew `8.8`, requiring JDK `17`
-- `Android Gradle Plugin` `8.5.1`
+- `Android Gradle Plugin` `8.5.2`
 - Android SDK `34`
 - kotlin for JVM(Android) `1.9.22`
 
