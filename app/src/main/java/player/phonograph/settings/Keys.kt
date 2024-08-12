@@ -11,6 +11,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.ItemLayoutStyle
+import player.phonograph.model.NowPlayingScreen
 import util.theme.materials.MaterialColor
 import androidx.datastore.preferences.core.booleanPreferencesKey as booleanPK
 import androidx.datastore.preferences.core.intPreferencesKey as intPK
@@ -77,6 +78,9 @@ object Keys {
 
     object nowPlayingScreenIndex :
             PrimitiveKey<Int>(intPK(NOW_PLAYING_SCREEN_ID), { 0 })
+
+    object nowPlayingScreen :
+            CompositeKey<NowPlayingScreen>(NowPlayingScreenPreferenceProvider)
 
     // Database
 

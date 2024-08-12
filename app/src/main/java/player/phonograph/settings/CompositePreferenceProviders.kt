@@ -9,6 +9,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.ItemLayoutStyle
+import player.phonograph.model.NowPlayingScreen
 import player.phonograph.util.time.TimeInterval
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -64,6 +65,22 @@ data object CheckUpdateIntervalPreferenceProvider :
         data.serialise()
 }
 
+data object NowPlayingScreenPreferenceProvider :
+        MonoPreferenceProvider<NowPlayingScreen, Int>(
+            Keys.nowPlayingScreenIndex, { NowPlayingScreen.CARD }
+        ) {
+
+    override fun read(flow: Flow<Int>): Flow<NowPlayingScreen> = flow.map { id ->
+        var screen = NowPlayingScreen.CARD
+        for (nowPlayingScreen in NowPlayingScreen.entries) {
+            if (nowPlayingScreen.id == id) screen = nowPlayingScreen
+        }
+        screen
+    }
+
+    override fun save(data: NowPlayingScreen): Int = data.id
+}
+
 sealed class SortModePreferenceProvider(backField: PrimitiveKey<String>) :
         MonoPreferenceProvider<SortMode, String>(
             backField, { SortMode(SortRef.ID) }
@@ -90,7 +107,9 @@ sealed class ItemLayoutProvider(backField: PrimitiveKey<Int>, default: () -> Ite
     data object ArtistItemLayoutProvider : ItemLayoutProvider(Keys._artistItemLayout, { ItemLayoutStyle.LIST })
     data object LandSongItemLayoutProvider : ItemLayoutProvider(Keys._songItemLayoutLand, { ItemLayoutStyle.LIST })
     data object LandAlbumItemLayoutProvider : ItemLayoutProvider(Keys._albumItemLayoutLand, { ItemLayoutStyle.LIST_3L })
-    data object LandArtistItemLayoutProvider : ItemLayoutProvider(Keys._artistItemLayoutLand, { ItemLayoutStyle.LIST_3L })
+    data object LandArtistItemLayoutProvider : ItemLayoutProvider(
+        Keys._artistItemLayoutLand,
+        { ItemLayoutStyle.LIST_3L })
 }
 
 object LastAddedCutOffDurationPreferenceProvider : CompositePreferenceProvider<Long> {
@@ -110,7 +129,7 @@ object LastAddedCutOffDurationPreferenceProvider : CompositePreferenceProvider<L
         return mode.combine(duration) { calculationMode, lastAddedDuration ->
             if (calculationMode != null && lastAddedDuration != null) {
                 System.currentTimeMillis() - when (calculationMode) {
-                    TimeIntervalCalculationMode.PAST   -> TimeInterval.past(lastAddedDuration)
+                    TimeIntervalCalculationMode.PAST -> TimeInterval.past(lastAddedDuration)
                     TimeIntervalCalculationMode.RECENT -> TimeInterval.recently(lastAddedDuration)
                 }
             } else {
