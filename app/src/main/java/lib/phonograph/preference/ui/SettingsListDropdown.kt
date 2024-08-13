@@ -4,8 +4,8 @@
 
 package lib.phonograph.preference.ui
 
-import com.alorma.compose.settings.storage.base.SettingValueState
-import com.alorma.compose.settings.storage.base.rememberIntSettingState
+import lib.phonograph.preference.SettingValueState
+import lib.phonograph.preference.rememberIntSettingState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

@@ -4,13 +4,13 @@
 
 package player.phonograph.ui.modules.setting
 
-import com.alorma.compose.settings.storage.base.SettingValueState
-import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
-import com.alorma.compose.settings.storage.base.rememberIntSettingState
 import lib.phonograph.localization.LanguageSettingDialog
 import lib.phonograph.localization.LocalizationStore
 import lib.phonograph.misc.ColorPalette
 import lib.phonograph.misc.rememberDataStoreBooleanState
+import lib.phonograph.preference.SettingValueState
+import lib.phonograph.preference.rememberBooleanSettingState
+import lib.phonograph.preference.rememberIntSettingState
 import lib.phonograph.preference.ui.SettingsGroup
 import lib.phonograph.preference.ui.SettingsListDropdown
 import lib.phonograph.preference.ui.SettingsMenuLink

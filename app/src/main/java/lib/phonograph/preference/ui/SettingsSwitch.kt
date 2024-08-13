@@ -4,10 +4,10 @@
 
 package lib.phonograph.preference.ui
 
-import com.alorma.compose.settings.storage.base.SettingValueState
-import com.alorma.compose.settings.storage.base.getValue
-import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
-import com.alorma.compose.settings.storage.base.setValue
+import lib.phonograph.preference.SettingValueState
+import lib.phonograph.preference.getValue
+import lib.phonograph.preference.rememberBooleanSettingState
+import lib.phonograph.preference.setValue
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
