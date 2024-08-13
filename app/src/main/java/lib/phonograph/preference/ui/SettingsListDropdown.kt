@@ -7,6 +7,7 @@ package lib.phonograph.preference.ui
 import lib.phonograph.preference.SettingValueState
 import lib.phonograph.preference.rememberIntSettingState
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,9 +56,10 @@ fun SettingsListDropdown(
                 modifier = modifier.fillMaxWidth()
                     .clickable(enabled = enabled) { isDropdownExpanded = true },
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Row(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.padding(end = 4.dp).weight(5f),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     SettingsTileIcon(icon = icon)
@@ -68,7 +70,7 @@ fun SettingsListDropdown(
                 }
 
                 Column(
-                    modifier = Modifier.padding(end = 8.dp)
+                    modifier = Modifier.padding(end = 8.dp).weight(2f)
                         .verticalScroll(scrollState),
                 ) {
                     Row(
