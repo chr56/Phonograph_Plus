@@ -4,7 +4,7 @@
 
 package lib.phonograph.misc
 
-import com.alorma.compose.settings.storage.base.SettingValueState
+import lib.phonograph.preference.SettingValueState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
