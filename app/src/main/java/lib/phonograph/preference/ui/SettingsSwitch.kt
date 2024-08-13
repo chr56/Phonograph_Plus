@@ -51,7 +51,7 @@ fun SettingsSwitch(
                 ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            WrapContentColor(enabled = enabled) {
+            InabilityColor(enabled = enabled) {
                 SettingsTileIcon(icon = icon)
                 SettingsTileTexts(modifier = Modifier.weight(1f), title = title, subtitle = subtitle)
                 SettingsTileAction {

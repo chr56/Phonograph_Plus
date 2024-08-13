@@ -29,7 +29,7 @@ fun SettingsMenuLink(
     onClick: () -> Unit,
 ) {
     Surface {
-        WrapContentColor(enabled = enabled) {
+        InabilityColor(enabled = enabled) {
             Row(
                 modifier = modifier.fillMaxWidth(),
             ) {

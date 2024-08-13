@@ -48,7 +48,7 @@ fun SettingsListDropdown(
     val scrollState = rememberScrollState()
 
     Surface {
-        WrapContentColor(enabled = enabled) {
+        InabilityColor(enabled = enabled) {
             var isDropdownExpanded by remember { mutableStateOf(false) }
 
             Row(
