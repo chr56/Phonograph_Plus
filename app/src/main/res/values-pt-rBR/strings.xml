@@ -425,7 +425,7 @@
     <string name="permission_desc_manage_external_storage">Desde o Android R (11), você pode conceder essa permissão para ler ou escrever seu armazenamento muito mais facilmente quando estiver gerenciando sua biblioteca de música em seu dispositivo.</string>
     <string name="completed">Completo</string>
     <string name="dynamic_colors">Cores Dinâmicas</string>
-    <string name="pref_title_enable_monet">Habilitar Monetização</string>
+    <string name="pref_title_enable_monet">Habilitar Monet</string>
     <string name="pref_summary_enable_monet">Usar o sistema de temas Material You baseado em papel de parede. (experimental, não há suporte completo ao Material You)</string>
     <string name="action_import">Importar %1$s</string>
     <string name="action_export">Exportar %1$s</string>
@@ -529,4 +529,10 @@
     <string name="notification_is_disabled">As notificações estão desativadas!</string>
     <string name="pref_title_always_use_media_session_to_display_cover">Sempre usar a Sessão de Mídia para exibir a capa</string>
     <string name="pref_summary_always_use_media_session_to_display_cover">Sempre usar a Sessão de Mídia para fornecer imagens de capa para o sistema de notificações, etc.</string>
+    <string name="single_item">Item Único</string>
+    <string name="multiple_items">Múltiplos Itens</string>
+    <string name="pref_title_external_play_request">Ação padrão ao reproduzir a partir do externo</string>
+    <string name="pref_summary_external_play_request">Defina o que o reprodutor deve fazer ao reproduzir do externo (por exemplo, Explorador de Arquivos).</string>
+    <string name="pref_option_show_prompt">Mostrar prompt de aviso sempre</string>
+    <string name="pref_option_silence">Silêncio (mantenha em segundo plano sem pular para o reprodutor)</string>
 </resources>
