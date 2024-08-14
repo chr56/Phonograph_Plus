@@ -332,11 +332,7 @@ class PlaylistDetailActivity :
     }
 
     private fun onSearch(): Boolean {
-        if (model.currentMode.value != UIMode.Search) {
-            model.updateCurrentMode(UIMode.Search)
-        } else { // exit
-            model.updateCurrentMode(UIMode.Common)
-        }
+        model.updateCurrentMode(UIMode.Search)
         return true
     }
 
