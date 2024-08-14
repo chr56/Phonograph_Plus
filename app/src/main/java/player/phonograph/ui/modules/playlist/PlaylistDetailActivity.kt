@@ -102,9 +102,21 @@ class PlaylistDetailActivity :
         prepareRecyclerView()
         setUpDashBroad()
 
+        initialize()
+
         observeData()
 
         setupOnBackPressCallback()
+    }
+
+
+    private fun initialize() {
+        val playlist = model.playlist
+        if (!checkExistence(playlist)) finish()  // File Playlist was deleted
+        supportActionBar!!.title = playlist.name
+        lifecycleScope.launch {
+            model.fetchAllSongs(this@PlaylistDetailActivity)
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -114,7 +126,7 @@ class PlaylistDetailActivity :
                 if (model.currentMode.value != UIMode.Search) {
                     adapter.dataset = songs
                     binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
-                    updateDashboard(model.playlist.value, songs)
+                    updateDashboard(model.playlist, songs)
                 }
             }
         }
@@ -122,27 +134,14 @@ class PlaylistDetailActivity :
             model.currentMode.collect { mode ->
                 supportActionBar!!.title =
                     if (mode == UIMode.Editor)
-                        "${model.playlist.value.name} [${getString(R.string.edit)}]"
+                        "${model.playlist.name} [${getString(R.string.edit)}]"
                     else
-                        model.playlist.value.name
+                        model.playlist.name
                 updateSearchBarVisibility(mode == UIMode.Search)
                 adapter.notifyDataSetChanged()
                 if (mode == UIMode.Search) {
                     model.searchSongs(model.keyword.value)
                 }
-            }
-        }
-        lifecycleScope.launch {
-            model.playlist.collect { playlist ->
-                model.fetchAllSongs(this@PlaylistDetailActivity)
-                supportActionBar!!.title = playlist.name
-                if (playlist.location is FilePlaylistLocation
-                    && !PlaylistLoader.checkExistence(this@PlaylistDetailActivity, playlist.location.mediastoreId)
-                ) {
-                    // File Playlist was deleted
-                    finish()
-                }
-                updateDashboard(playlist, model.songs.value)
             }
         }
         lifecycleScope.launch {
@@ -324,10 +323,9 @@ class PlaylistDetailActivity :
     }
 
     private fun setupMenu(menu: Menu) {
-        val playlist = model.playlist.value
         val iconColor = primaryTextColor(viewModel.activityColor.value)
         PlaylistToolbarMenuProvider(::onSearch, ::onRefresh, ::onEdit)
-            .inflateMenu(menu, this, playlist, iconColor)
+            .inflateMenu(menu, this, model.playlist, iconColor)
         tintMenuActionIcons(binding.toolbar, menu, iconColor)
     }
 
@@ -338,6 +336,7 @@ class PlaylistDetailActivity :
 
     private fun onRefresh(): Boolean {
         model.refreshPlaylist(this)
+        initialize()
         return true
     }
 
@@ -371,9 +370,14 @@ class PlaylistDetailActivity :
             if (model.currentMode.value != UIMode.Editor) {
                 adapter.dataset = emptyList()
                 model.refreshPlaylist(this@PlaylistDetailActivity)
+                initialize()
             }
         }
     }
+
+    private fun checkExistence(playlist: Playlist): Boolean =
+        !(playlist.location is FilePlaylistLocation &&
+                !PlaylistLoader.checkExistence(this, playlist.location.mediastoreId))
 
     /* *******************
      *   companion object
