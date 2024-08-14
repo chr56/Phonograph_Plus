@@ -151,7 +151,7 @@
     <string name="pref_summary_audio_ducking">通知、导航等</string>
     <string name="pref_summary_synchronized_lyrics_show">当前仅支持 LRC 格式同步歌词（内嵌或外置均可）</string>
     <string name="pref_summary_remember_last_tab">启动时跳转到最后打开页面</string>
-    <string name="search_hint">正在扫描</string>
+    <string name="search_hint">搜索媒体库…</string>
     <string name="favorites">收藏夹</string>
     <string name="last_added">最近添加</string>
     <string name="history">最近播放</string>
