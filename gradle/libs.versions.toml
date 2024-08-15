@@ -2,9 +2,9 @@
 
 ## Plugins
 
-kotlin = "1.9.22"
+kotlin = "2.0.20"
 agp = "8.5.2"
-ksp = "1.9.22-1.0.17"
+ksp = "2.0.20-1.0.24"
 versionChecker = "0.51.0"
 
 ## Libraries
@@ -28,7 +28,6 @@ room = "2.6.1"
 datastore = { strictly = "1.0.0" }
 material = "1.9.0"
 compose = "1.6.8"
-composeCompiler = "1.5.10"
 #### Jetpack End
 
 
@@ -233,6 +232,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
