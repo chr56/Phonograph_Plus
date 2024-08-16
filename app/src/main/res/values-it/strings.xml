@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="exit">Esci</string>
     <string name="disable">disabilita</string>
     <string name="choose_at_least_one">Scegliere almeno uno</string>
     <string name="action_set_as_ringtone">Imposta come suoneria</string>
@@ -40,6 +41,7 @@
     <string name="album_artist">Artista dell\'album</string>
     <string name="year">Anno</string>
     <string name="track">Numero Traccia</string>
+    <string name="track_total">Numero Totale Tracce</string>
     <string name="lyrics">Testi</string>
     <string name="saving_changes">Salva le modifiche</string>
     <string name="label_details">Dettagli</string>
@@ -69,6 +71,9 @@
     <string name="save_playlists_title">Salva come file</string>
     <string name="add_playlist_title">Aggiungi alla playlist</string>
     <string name="select_all_title">Seleziona tutto</string>
+    <string name="unselect_all_title">Deseleziona tutto</string>
+    <string name="invert_selection">Inverti la selezione</string>
+    <string name="action_play_all">Riproduci tutto</string>
     <string name="action_shuffle_all">Riproduzione casuale</string>
     <string name="action_shuffle_album">Riproduzione casuale album</string>
     <string name="action_shuffle_artist">Riproduzione casuale artista</string>
@@ -247,11 +252,21 @@
     <string name="clear_all_preference_msg"><b>Attenzione</b>: ciò resetterà <b>TUTTE</b> le preferenze/impostazioni dell\'app!\n\nQuesto potrebbe essere molto utile se l\'applicazione si arresta in modo anomalo all\'avvio.\nSei sicuro?</string>
     <string name="failed_to_delete">Impossibile eliminare</string>
     <string name="grant_permission">Concedi autorizzazione</string>
+    <string name="tips_no_storage_write_permission">Phonograph non ha i permessi per scrivere modificare o cancellare i file!</string>
     <string name="retry">Riprova</string>
     <string name="permission_manage_external_storage_denied">sembra che Phonograph non abbia il permesso di \"gestire l\'archiviazione esterna\"!</string>
     <string name="not_available_now">Non disponibile ora</string>
+    <string name="check_for_updates">Controlla aggiornamenti</string>
+    <string name="new_version_available">È disponibile una nuova versione!</string>
+    <string name="no_updates">Nessun aggiornamento disponibile! Stai usando la versione più recente nel canale corrente.</string>
+    <string name="ignore_for_once">Ignora questa volta</string>
+    <string name="ignored_update">L\'aggiornamento è stato ignorato!</string>
     <string name="download">Scarica</string>
     <string name="tg_channel">Canale Telegram</string>
+    <string name="pref_title_auto_check_for_updates">Controlla aggiornamenti automaticamente</string>
+    <string name="pref_summary_auto_check_for_updates">Invia una notifica quando è disponibile una nuova versione.</string>
+    <string name="pref_title_check_for_updates_interval">Intervallo per la ricerca degli aggiornamenti</string>
+    <string name="pref_summary_check_for_updates_interval">Intervallo di tempo per cercare gli aggiornamenti in automatico</string>
     <string name="edit">Modifica…</string>
     <string name="move_to_top">Sposta in alto</string>
     <string name="move_to_bottom">Sposta in basso</string>
@@ -289,6 +304,7 @@
     <string name="lyricist">Testo</string>
     <string name="music_tags">Etichette Musica</string>
     <string name="file">File</string>
+    <string name="folder">Cartella</string>
     <string name="pref_header_compatibility">Compatibilità</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Usa il meccanismo legacy della playlist Preferiti</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">Se abilitato, l\'app salverà i brani preferiti in una playlist m3u nell\'archiviazione invece di salvare i brani preferiti nel database interno dell\'app. (È possibile esportare la lista manualmente)</string>
@@ -344,8 +360,8 @@
         <item quantity="other">%1$d generi</item>
     </plurals>
     <plurals name="msg_header_delete_items">
-        <item quantity="one">Questo elemento sarà cancellato:</item>
-        <item quantity="other">Questi elementi saranno eliminati:</item>
+        <item quantity="one">%1$d elemento sarà eliminato:</item>
+        <item quantity="other">%1$d elementi saranno eliminati:</item>
     </plurals>
     <plurals name="msg_header_remove_items">
         <!-- %1$s: where -->
@@ -395,6 +411,10 @@
     <string name="permission_desc_read_media_audio">A partire da Android T (13), le applicazioni con questa autorizzazione possono leggere gli audio del dispositivo.</string>
     <string name="permission_name_read_external_storage">Leggi memoria esterna</string>
     <string name="permission_desc_read_external_storage">L\'autorizzazione a leggere la memoria esterna è richiesta per leggere file musicali nel dispositivo.</string>
+    <string name="permission_name_write_external_storage">Scrittura sulla Memoria Esterna</string>
+    <string name="permission_desc_write_external_storage">Il permesso di Scrittura sulla Memoria Esterna è richiesto per poter cancellare o modificare playlist o file di musica (tag) nel dispositivo.</string>
+    <string name="permission_name_manage_external_storage">Gestione della Memoria Esterna</string>
+    <string name="permission_desc_manage_external_storage">A partire da Android R (11), puoi concedere questo permesso per accedere alla memoria in modo più semplice quando gestisci la libreria musicale sul tuo dispositivo.</string>
     <string name="completed">Completato</string>
     <string name="dynamic_colors">Colori dinamici</string>
     <string name="pref_title_enable_monet">Abilita Monet</string>
@@ -413,4 +433,18 @@
     <string name="pref_title_use_legacy_status_bar_lyrics_api">Usa l\'API legacy StatusBar Lyrics</string>
     <string name="pref_summary_use_legacy_status_bar_lyrics_api">Se disattivato, verrà utilizzata l\'API LyricGetter, invece di StatusBarLyricAPI. È usato per il modulo Xposed StatusBar Lyrics versione 6.x e successive; attivalo se usi versioni precedenti di StatusBar Lyrics.</string>
     <string name="action_speed">Velocità</string>
+    <string name="pref_title_resume_after_audio_focus_gain">Riprendi automaticamente dopo le interruzioni</string>
+    <string name="pref_summary_resume_after_audio_focus_gain">Riprendi sempre dopo le interruzioni (come chiamate o sveglie)</string>
+    <string name="timeunit_second">Secondo</string>
+    <string name="timeunit_minute">Minuto</string>
+    <string name="timeunit_hour">Ora</string>
+    <string name="timeunit_day">Giorno</string>
+    <string name="timeunit_week">Settimana</string>
+    <string name="timeunit_month">Mese</string>
+    <string name="timeunit_year">Anno</string>
+    <string name="home">Home</string>
+    <string name="search_online">Cerca Online</string>
+    <string name="target_album">Album</string>
+    <string name="target_artist">Artista</string>
+    <string name="target_track">Traccia</string>
 </resources>
