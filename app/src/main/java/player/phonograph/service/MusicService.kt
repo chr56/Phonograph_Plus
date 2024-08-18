@@ -322,7 +322,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
             PLAY_STATE_CHANGED                        -> {
                 // update playing notification
-                updateNotificationAndMediaSession(false)
+                updateNotificationAndMediaSession()
 
                 // save state
                 if (!isPlaying && songProgressMillis > 0) {
@@ -339,12 +339,12 @@ class MusicService : MediaBrowserServiceCompat() {
 
             REPEAT_MODE_CHANGED, SHUFFLE_MODE_CHANGED -> {
                 // just update playing notification
-                updateNotificationAndMediaSession(false)
+                updateNotificationAndMediaSession()
             }
 
             META_CHANGED                              -> {
                 // update playing notification
-                updateNotificationAndMediaSession(true)
+                updateNotificationAndMediaSession()
 
                 // save state
                 queueManager.post(MSG_SAVE_CFG)
@@ -384,7 +384,7 @@ class MusicService : MediaBrowserServiceCompat() {
         }
     }
 
-    private fun updateNotificationAndMediaSession(loadCover: Boolean) {
+    private fun updateNotificationAndMediaSession() {
         val currentSong = queueManager.currentSong
         val serviceStatus = statusForNotification
         playNotificationManager.updateNotification(currentSong, serviceStatus)
@@ -392,7 +392,7 @@ class MusicService : MediaBrowserServiceCompat() {
             currentSong,
             (queueManager.currentSongPosition + 1).toLong(),
             queueManager.playingQueue.size.toLong(),
-            loadCover && couldPutCover
+            couldPutCover
         )
         mediaSessionController.updatePlaybackState(serviceStatus)
     }
@@ -446,7 +446,7 @@ class MusicService : MediaBrowserServiceCompat() {
                 queueManager.currentSong,
                 (queueManager.currentSongPosition + 1).toLong(),
                 queueManager.playingQueue.size.toLong(),
-                false
+                couldPutCover
             )
             mediaSessionController.updatePlaybackState(statusForNotification)
             mHandler.removeCallbacks(this)
