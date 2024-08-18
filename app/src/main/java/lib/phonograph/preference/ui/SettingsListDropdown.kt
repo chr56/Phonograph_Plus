@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.DropdownMenu
@@ -59,7 +60,7 @@ fun SettingsListDropdown(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Row(
-                    modifier = Modifier.padding(end = 4.dp).weight(5f),
+                    modifier = Modifier.padding(end = 4.dp).weight(5f).widthIn(min=24.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     SettingsTileIcon(icon = icon)
@@ -70,7 +71,7 @@ fun SettingsListDropdown(
                 }
 
                 Column(
-                    modifier = Modifier.padding(end = 8.dp).weight(2f)
+                    modifier = Modifier.padding(end = 8.dp).widthIn(min=8.dp, max = 128.dp)
                         .verticalScroll(scrollState),
                 ) {
                     Row(
