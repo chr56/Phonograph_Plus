@@ -4,8 +4,6 @@
 
 package player.phonograph.ui.modules.playlist
 
-import com.github.chr56.android.menu_dsl.attach
-import com.github.chr56.android.menu_dsl.menuItem
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
@@ -22,20 +20,15 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
-import player.phonograph.mechanism.actions.DetailToolbarMenuProviders
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.playlist.FilePlaylistLocation
-import player.phonograph.model.playlist.PLAYLIST_TYPE_LAST_ADDED
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.playlist.VirtualPlaylistLocation
 import player.phonograph.model.totalDuration
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
-import player.phonograph.ui.dialogs.LastAddedPlaylistIntervalDialog
-import player.phonograph.util.fragmentActivity
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
@@ -50,8 +43,6 @@ import util.theme.view.toolbar.setToolbarColor
 import androidx.activity.addCallback
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -60,7 +51,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -336,64 +326,24 @@ class PlaylistDetailActivity :
     private fun setupMenu(menu: Menu) {
         val playlist = model.playlist.value
         val iconColor = primaryTextColor(viewModel.activityColor.value)
-        DetailToolbarMenuProviders.PlaylistEntityToolbarMenuProvider
+        PlaylistToolbarMenuProvider(::onSearch, ::onRefresh, ::onEdit)
             .inflateMenu(menu, this, playlist, iconColor)
-        attach(menu) {
-            menuItem {
-                title = getString(R.string.action_search)
-                icon = getTintedDrawable(R.drawable.ic_search_white_24dp, iconColor)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-                onClick {
-                    if (model.currentMode.value != UIMode.Search) {
-                        model.updateCurrentMode(UIMode.Search)
-                    } else { // exit
-                        model.updateCurrentMode(UIMode.Common)
-                    }
-                    true
-                }
-            }
-            menuItem {
-                title = getString(R.string.refresh)
-                icon = getTintedDrawable(R.drawable.ic_refresh_white_24dp, iconColor)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-                onClick {
-                    model.refreshPlaylist(context)
-                    true
-                }
-            }
-            if (!playlist.isVirtual()) menuItem {
-                title = getString(R.string.edit)
-                itemId = R.id.action_edit_playlist
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                onClick {
-                    model.updateCurrentMode(UIMode.Editor)
-                    true
-                }
-            } else {
-                val location = playlist.location
-                if (location is VirtualPlaylistLocation && location.type == PLAYLIST_TYPE_LAST_ADDED) {
-                    menuItem {
-                        itemId = R.id.action_setting_last_added_interval
-                        title = getString(R.string.pref_title_last_added_interval)
-                        icon = getTintedDrawable(R.drawable.ic_timer_white_24dp, iconColor)
-                        onClick {
-                            fragmentActivity(context) { activity ->
-                                val dialog = LastAddedPlaylistIntervalDialog()
-                                dialog.show(activity.supportFragmentManager, "LAST_ADDED")
-                                dialog.lifecycle.addObserver(object : DefaultLifecycleObserver {
-                                    override fun onDestroy(owner: LifecycleOwner) {
-                                        model.refreshPlaylist(activity)
-                                    }
-                                })
-                                true
-                            }
-                            true
-                        }
-                    }
-                }
-            }
-        }
         tintMenuActionIcons(binding.toolbar, menu, iconColor)
+    }
+
+    private fun onSearch(): Boolean {
+        model.updateCurrentMode(UIMode.Search)
+        return true
+    }
+
+    private fun onRefresh(): Boolean {
+        model.refreshPlaylist(this)
+        return true
+    }
+
+    private fun onEdit(): Boolean {
+        model.updateCurrentMode(UIMode.Editor)
+        return true
     }
 
     /* *******************
