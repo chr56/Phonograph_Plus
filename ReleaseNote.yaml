@@ -1,21 +1,23 @@
-version: "1.8.2"
-channel: "STABLE"
+version: "1.8.3-dev1"
+channel: "PREVIEW"
 versionCode: 1082
-timestamp: 1723220000
+timestamp: 1724000000
 notes:
   en:
     highlights: [ ]
     items:
-      - "New: support specify the default action when playing from the external (e.g. File Explorer)"
-      - "Fix: crash when jumping to Artist detail in some rare circumstance"
-      - "Translation: update Portuguese,Brazilian (by FalaTudo), Polish (by cooky)"
+      - "Fix: blinking images in media notification since v1.8.1"
+      - "Fix: minor inappropriate layout abnormalities in Settings"
+      - "Translation: update Portuguese,Brazilian (by Chacal), Italian (by Enrico Storelli)"
+      - "Development: upgrade AGP to 8.5.2, update dependencies, cleanup codes"
 
   zh:
     highlights: [ ]
     items:
-      - "新增 支持指定从外部（如文件管理器）播放时的默认操作"
-      - "修复 在某些罕见情况下跳转到艺术家详情时崩溃"
-      - "翻译 更新巴西葡萄牙语（FalaTudo）、波兰语（Cooky）"
+      - "修复 媒体通知中的图像闪烁 (自 v1.8.1 起)"
+      - "修复 设置界面的微小异常布局"
+      - "翻译 更新 巴西葡萄牙语(Chacal)、意大利语(Enrico Storelli)"
+      - "开发 升级 AGP 至 8.5.2，更新依赖，清理代码"
 
-previousVersion: "1.8.1"
+previousVersion: "1.8.2"
 previousChannel: "STABLE"
