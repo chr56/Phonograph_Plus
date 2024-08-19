@@ -8,6 +8,7 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
 import player.phonograph.mechanism.actions.DetailToolbarMenuProviders
+import player.phonograph.model.UIMode
 import player.phonograph.model.playlist.PLAYLIST_TYPE_LAST_ADDED
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.VirtualPlaylistLocation
@@ -21,9 +22,7 @@ import android.view.Menu
 import android.view.MenuItem
 
 class PlaylistToolbarMenuProvider(
-    private val onSearch: () -> Boolean,
-    private val onRefresh: () -> Boolean,
-    private val onEdit: () -> Boolean,
+    private val onAction: (PlaylistAction) -> Boolean,
 ) : DetailToolbarMenuProviders.ToolbarMenuProvider<Playlist> {
 
     override fun inflateMenu(menu: Menu, context: ComponentActivity, item: Playlist, iconColor: Int): Boolean {
@@ -37,13 +36,7 @@ class PlaylistToolbarMenuProvider(
                     icon = getTintedDrawable(R.drawable.ic_search_white_24dp, iconColor)
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                     onClick {
-                        onSearch()
-                        // if (model.currentMode.value != UIMode.Search) {
-                        //     model.updateCurrentMode(UIMode.Search)
-                        // } else { // exit
-                        //     model.updateCurrentMode(UIMode.Common)
-                        // }
-                        // true
+                        onAction(UpdateMode(UIMode.Search))
                     }
                 }
                 menuItem {
@@ -51,8 +44,7 @@ class PlaylistToolbarMenuProvider(
                     icon = getTintedDrawable(R.drawable.ic_refresh_white_24dp, iconColor)
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                     onClick {
-                        onRefresh()
-                        // model.refreshPlaylist(context)
+                        onAction(Refresh(fetch = true))
                         true
                     }
                 }
@@ -61,8 +53,7 @@ class PlaylistToolbarMenuProvider(
                     itemId = R.id.action_edit_playlist
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
-                        onEdit()
-                        // model.updateCurrentMode(UIMode.Editor)
+                        onAction(UpdateMode(UIMode.Editor))
                         true
                     }
                 } else {
@@ -78,8 +69,7 @@ class PlaylistToolbarMenuProvider(
                                     dialog.show(activity.supportFragmentManager, "LAST_ADDED")
                                     dialog.lifecycle.addObserver(object : DefaultLifecycleObserver {
                                         override fun onDestroy(owner: LifecycleOwner) {
-                                            onRefresh()
-                                            // model.refreshPlaylist(activity)
+                                            onAction(Refresh(fetch = true))
                                         }
                                     })
                                     true

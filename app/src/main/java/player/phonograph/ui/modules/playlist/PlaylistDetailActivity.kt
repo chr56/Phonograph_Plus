@@ -64,7 +64,7 @@ class PlaylistDetailActivity :
 
     private lateinit var binding: ActivityPlaylistDetailBinding
 
-    private val model: PlaylistDetailViewModel by viewModel { parametersOf(parseIntent(intent)) }
+    private val model: PlaylistDetailViewModel by viewModel { parametersOf(parseIntent(intent), emptyList<Song>()) }
 
     private lateinit var adapter: PlaylistSongDisplayAdapter // init in OnCreate() -> setUpRecyclerView()
 
@@ -114,9 +114,7 @@ class PlaylistDetailActivity :
         val playlist = model.playlist
         if (!checkExistence(playlist)) finish()  // File Playlist was deleted
         supportActionBar!!.title = playlist.name
-        lifecycleScope.launch {
-            model.fetchAllSongs(this@PlaylistDetailActivity)
-        }
+        execute(Fetch)
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -139,16 +137,6 @@ class PlaylistDetailActivity :
                         model.playlist.name
                 updateSearchBarVisibility(mode == UIMode.Search)
                 adapter.notifyDataSetChanged()
-                if (mode == UIMode.Search) {
-                    model.searchSongs(model.keyword.value)
-                }
-            }
-        }
-        lifecycleScope.launch {
-            model.keyword.collect { word ->
-                if (model.currentMode.value == UIMode.Search) {
-                    model.searchSongs(word)
-                }
             }
         }
         lifecycleScope.launch {
@@ -164,7 +152,7 @@ class PlaylistDetailActivity :
     private fun setupOnBackPressCallback() {
         onBackPressedDispatcher.addCallback {
             if (model.currentMode.value != UIMode.Common) {
-                model.updateCurrentMode(UIMode.Common)
+                execute(UpdateMode(UIMode.Common))
             } else {
                 remove()
                 onBackPressedDispatcher.onBackPressed()
@@ -273,18 +261,18 @@ class PlaylistDetailActivity :
                 close.setOnClickListener {
                     val editable = editQuery.editableText
                     if (editable.isEmpty()) {
-                        model.updateCurrentMode(UIMode.Common)
+                        execute(UpdateMode(UIMode.Common))
                     } else {
-                        editable.clear()
+                        editQuery.editableText.clear()
                     }
                 }
                 editQuery.setTextColor(textColor)
                 editQuery.setHintTextColor(iconColor)
                 editQuery.setBackgroundTint(textColor)
-            }
-            searchBox.editQuery.addTextChangedListener { editable ->
-                if (editable != null) {
-                    model.updateKeyword(editable.toString())
+                editQuery.addTextChangedListener { editable ->
+                    if (editable != null) {
+                        execute(Search(editable.toString()))
+                    }
                 }
             }
         }
@@ -307,7 +295,6 @@ class PlaylistDetailActivity :
     private fun updateSearchBarVisibility(visibility: Boolean) {
         with(binding) {
             searchBar.visibility = if (visibility) VISIBLE else GONE
-            searchBox.editQuery.setText(if (visibility) model.keyword.value else "")
             updateRecyclerviewPadding(if (visibility) 0 else searchBar.height)
         }
     }
@@ -324,24 +311,15 @@ class PlaylistDetailActivity :
 
     private fun setupMenu(menu: Menu) {
         val iconColor = primaryTextColor(viewModel.activityColor.value)
-        PlaylistToolbarMenuProvider(::onSearch, ::onRefresh, ::onEdit)
+        PlaylistToolbarMenuProvider(::execute)
             .inflateMenu(menu, this, model.playlist, iconColor)
         tintMenuActionIcons(binding.toolbar, menu, iconColor)
     }
 
-    private fun onSearch(): Boolean {
-        model.updateCurrentMode(UIMode.Search)
-        return true
-    }
-
-    private fun onRefresh(): Boolean {
-        model.refreshPlaylist(this)
-        initialize()
-        return true
-    }
-
-    private fun onEdit(): Boolean {
-        model.updateCurrentMode(UIMode.Editor)
+    private fun execute(action: PlaylistAction): Boolean {
+        lifecycleScope.launch {
+            model.execute(this@PlaylistDetailActivity, action)
+        }
         return true
     }
 
@@ -369,8 +347,7 @@ class PlaylistDetailActivity :
         override fun onMediaStoreChanged() {
             if (model.currentMode.value != UIMode.Editor) {
                 adapter.dataset = emptyList()
-                model.refreshPlaylist(this@PlaylistDetailActivity)
-                initialize()
+                execute(Refresh(fetch = true))
             }
         }
     }
