@@ -13,8 +13,11 @@ import player.phonograph.model.playlist.Playlist
 import androidx.lifecycle.ViewModel
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.withContext
 
 @Suppress("LocalVariableName")
@@ -32,6 +35,12 @@ class PlaylistDetailViewModel(_playlist: Playlist, _songs: List<Song>) : ViewMod
 
     private val _searchResults: MutableStateFlow<List<Song>> = MutableStateFlow(emptyList())
     val searchResults get() = _searchResults.asStateFlow()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val items: Flow<List<Song>> =
+        _currentMode.flatMapLatest { mode ->
+            if (mode == UIMode.Search) searchResults else songs
+        }
 
     suspend fun execute(context: Context, action: PlaylistAction): Boolean = when (action) {
         is Fetch      -> fetch(context)

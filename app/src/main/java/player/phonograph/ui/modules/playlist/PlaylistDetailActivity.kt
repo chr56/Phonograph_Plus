@@ -120,10 +120,10 @@ class PlaylistDetailActivity :
     @SuppressLint("NotifyDataSetChanged")
     private fun observeData() {
         lifecycleScope.launch {
-            model.songs.collect { songs ->
+            model.items.collect { songs ->
+                adapter.dataset = songs
+                binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
                 if (model.currentMode.value != UIMode.Search) {
-                    adapter.dataset = songs
-                    binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
                     updateDashboard(model.playlist, songs)
                 }
             }
@@ -137,14 +137,6 @@ class PlaylistDetailActivity :
                         model.playlist.name
                 updateSearchBarVisibility(mode == UIMode.Search)
                 adapter.notifyDataSetChanged()
-            }
-        }
-        lifecycleScope.launch {
-            model.searchResults.collect { songs ->
-                if (model.currentMode.value == UIMode.Search) {
-                    adapter.dataset = songs
-                    binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
-                }
             }
         }
     }
