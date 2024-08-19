@@ -228,7 +228,7 @@ androidx-room = [
 androidx-media3 =[
     "androidx-media3-common",
     "androidx-media3-session",
-    # "androidx-media3-exoplayer",
+    "androidx-media3-exoplayer",
 ]
 
 themeUtil = [
