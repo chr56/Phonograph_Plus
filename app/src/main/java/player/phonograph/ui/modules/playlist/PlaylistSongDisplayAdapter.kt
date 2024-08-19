@@ -12,7 +12,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableI
 import player.phonograph.R
 import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.mechanism.actions.ClickActionProviders
-import player.phonograph.model.Song
+import player.phonograph.model.QueueSong
 import player.phonograph.model.UIMode
 import player.phonograph.ui.adapter.OrderedItemAdapter
 import player.phonograph.util.produceSafeId
@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 class PlaylistSongDisplayAdapter(
     activity: FragmentActivity,
     val viewModel: PlaylistDetailViewModel,
-) : OrderedItemAdapter<Song>(activity, R.layout.item_list, showSectionName = true),
+) : OrderedItemAdapter<QueueSong>(activity, R.layout.item_list, showSectionName = true),
     DraggableItemAdapter<PlaylistSongDisplayAdapter.PlaylistSongViewHolder> {
 
     override fun getItemId(position: Int): Long =
@@ -35,11 +35,11 @@ class PlaylistSongDisplayAdapter(
 
     override fun getSectionNameImp(position: Int): String = (position + 1).toString()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderedItemViewHolder<Song> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderedItemViewHolder<QueueSong> {
         return PlaylistSongViewHolder(inflatedView(parent, viewType))
     }
 
-    override fun onBindViewHolder(holder: OrderedItemViewHolder<Song>, position: Int) {
+    override fun onBindViewHolder(holder: OrderedItemViewHolder<QueueSong>, position: Int) {
         if (viewModel.currentMode.value == UIMode.Editor) {
             holder.dragView?.visibility = View.VISIBLE
         }
@@ -59,7 +59,7 @@ class PlaylistSongDisplayAdapter(
     private suspend fun moveSong(fromPosition: Int, toPosition: Int) {
         if (viewModel.moveItem(activity, fromPosition, toPosition)) {
             synchronized(dataset) {
-                val newSongs: MutableList<Song> = dataset.toMutableList()
+                val newSongs: MutableList<QueueSong> = dataset.toMutableList()
                 val song = newSongs.removeAt(fromPosition)
                 newSongs.add(toPosition, song)
                 dataset = newSongs
@@ -72,8 +72,8 @@ class PlaylistSongDisplayAdapter(
     }
 
     private suspend fun deleteSong(position: Int) {
-        val song = dataset[position]
-        if (viewModel.deleteItem(activity, song, position)) {
+        val queueSong = dataset[position]
+        if (viewModel.deleteItem(activity, queueSong.song, position)) {
             synchronized(dataset) {
                 dataset = dataset.toMutableList().also { it.removeAt(position) }
             }
@@ -104,28 +104,28 @@ class PlaylistSongDisplayAdapter(
     }
 
     inner class PlaylistSongViewHolder(itemView: View) :
-            OrderedItemViewHolder<Song>(itemView),
+            OrderedItemViewHolder<QueueSong>(itemView),
             DraggableItemViewHolder {
 
-        override fun onClick(position: Int, dataset: List<Song>, imageView: ImageView?): Boolean {
+        override fun onClick(position: Int, dataset: List<QueueSong>, imageView: ImageView?): Boolean {
             return ClickActionProviders.SongClickActionProvider()
-                .listClick(dataset, position, itemView.context, imageView)
+                .listClick(dataset.map { it.song }, position, itemView.context, imageView)
         }
 
 
-        override fun prepareMenu(item: Song, position: Int, menuButtonView: View) {
+        override fun prepareMenu(item: QueueSong, position: Int, menuButtonView: View) {
             menuButtonView.setOnClickListener {
                 if (viewModel.currentMode.value == UIMode.Editor) {
                     PlaylistEditorItemMenuProvider(position, ::dataset, ::deleteSong, ::moveSong)
                         .prepareMenu(menuButtonView, item)
                 } else {
                     ActionMenuProviders.SongActionMenuProvider(showPlay = false)
-                        .prepareMenu(menuButtonView, item)
+                        .prepareMenu(menuButtonView, item.song)
                 }
             }
         }
 
-        override fun getRelativeOrdinalText(item: Song, position: Int): String = (position + 1).toString()
+        override fun getRelativeOrdinalText(item: QueueSong, position: Int): String = (item.index + 1).toString()
 
         //region DragState
         @DraggableItemStateFlags

@@ -7,6 +7,7 @@ package player.phonograph.ui.modules.playlist
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.mechanism.playlist.PlaylistReader
 import player.phonograph.mechanism.playlist.PlaylistWriter
+import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
 import player.phonograph.model.playlist.Playlist
@@ -23,7 +24,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 @Suppress("LocalVariableName")
-class PlaylistDetailViewModel(_playlist: Playlist, _songs: List<Song>) : ViewModel() {
+class PlaylistDetailViewModel(_playlist: Playlist, _songs: List<QueueSong>) : ViewModel() {
 
     val playlist: Playlist = _playlist
     private val reader: PlaylistReader = PlaylistProcessors.reader(playlist)
@@ -32,20 +33,20 @@ class PlaylistDetailViewModel(_playlist: Playlist, _songs: List<Song>) : ViewMod
     private val _currentMode: MutableStateFlow<UIMode> = MutableStateFlow(UIMode.Common)
     val currentMode get() = _currentMode.asStateFlow()
 
-    private val _songs: MutableStateFlow<List<Song>> = MutableStateFlow(_songs)
+    private val _songs: MutableStateFlow<List<QueueSong>> = MutableStateFlow(_songs)
     val songs get() = _songs.asStateFlow()
 
-    private val _searchResults: MutableStateFlow<List<Song>> = MutableStateFlow(emptyList())
+    private val _searchResults: MutableStateFlow<List<QueueSong>> = MutableStateFlow(emptyList())
     val searchResults get() = _searchResults.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val items: Flow<List<Song>> =
+    val items: Flow<List<QueueSong>> =
         _currentMode.flatMapLatest { mode ->
             if (mode == UIMode.Search) searchResults else songs
         }
 
     val totalCount: Flow<Int> = songs.map { it.size }
-    val totalDuration: Flow<Long> = songs.map { it.totalDuration() }
+    val totalDuration: Flow<Long> = songs.map { it.fold(0L) { acc: Long, queueSong -> acc + queueSong.song.duration } }
 
     suspend fun execute(context: Context, action: PlaylistAction): Boolean = when (action) {
         is Fetch      -> fetch(context)
@@ -63,13 +64,13 @@ class PlaylistDetailViewModel(_playlist: Playlist, _songs: List<Song>) : ViewMod
 
     private suspend fun fetch(context: Context): Boolean = withContext(Dispatchers.IO) {
         _songs.emit(
-            reader.allSongs(context)
+            QueueSong.fromQueue(reader.allSongs(context))
         )
         true
     }
 
     private suspend fun search(keyword: String): Boolean = withContext(Dispatchers.IO) {
-        _searchResults.emit(_songs.value.filter { it.title.contains(keyword) })
+        _searchResults.emit(_songs.value.filter { it.song.title.contains(keyword) })
         true
     }
 

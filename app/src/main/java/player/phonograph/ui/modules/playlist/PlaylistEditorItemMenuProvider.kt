@@ -10,6 +10,7 @@ import com.github.chr56.android.menu_dsl.submenu
 import player.phonograph.R
 import player.phonograph.mechanism.actions.ActionMenuProviders.ActionMenuProvider
 import player.phonograph.mechanism.actions.actionGotoDetail
+import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.ui.dialogs.DeletionDialog
 import player.phonograph.ui.modules.tag.TagBrowserActivity
@@ -22,11 +23,11 @@ import kotlinx.coroutines.launch
 
 class PlaylistEditorItemMenuProvider(
     private val bindingAdapterPosition: Int,
-    private val dataset: () -> List<Song>,
+    private val dataset: () -> List<QueueSong>,
     private val deleteSong: suspend (Int) -> Unit,
     private val moveSong: suspend (Int, Int) -> Unit,
-) : ActionMenuProvider<Song> {
-    override fun inflateMenu(menu: Menu, context: Context, item: Song) {
+) : ActionMenuProvider<QueueSong> {
+    override fun inflateMenu(menu: Menu, context: Context, item: QueueSong) {
         editorItemMenu(menu, context as FragmentActivity, dataset(), bindingAdapterPosition, deleteSong, moveSong)
     }
 
@@ -34,12 +35,12 @@ class PlaylistEditorItemMenuProvider(
     private fun editorItemMenu(
         menu: Menu,
         activity: FragmentActivity,
-        dataset: List<Song>,
+        dataset: List<QueueSong>,
         bindingAdapterPosition: Int,
         deleteSong: suspend (Int) -> Unit,
         moveSong: suspend (Int, Int) -> Unit,
     ) = attach(activity, menu) {
-        val song = dataset[bindingAdapterPosition]
+        val queueSong = dataset[bindingAdapterPosition]
         menuItem {
             titleRes(R.string.action_remove_from_playlist)
             onClick {
@@ -83,7 +84,7 @@ class PlaylistEditorItemMenuProvider(
         menuItem {
             titleRes(R.string.action_details)
             onClick {
-                song.actionGotoDetail(activity)
+                queueSong.song.actionGotoDetail(activity)
                 true
             }
         }
@@ -94,14 +95,14 @@ class PlaylistEditorItemMenuProvider(
             menuItem {
                 titleRes(R.string.action_tag_editor)
                 onClick {
-                    TagBrowserActivity.launch(activity, song.data)
+                    TagBrowserActivity.launch(activity, queueSong.song.data)
                     true
                 }
             }
             menuItem {
                 titleRes(R.string.action_delete_from_device)
                 onClick {
-                    DeletionDialog.create(arrayListOf(song))
+                    DeletionDialog.create(arrayListOf(queueSong.song))
                         .show(activity.supportFragmentManager, "DELETE_SONGS")
                     true
                 }
