@@ -33,7 +33,9 @@ import player.phonograph.util.parcelable
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
+import player.phonograph.util.ui.hideKeyboard
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
+import player.phonograph.util.ui.showKeyboard
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryDisabledTextColor
 import util.theme.color.secondaryTextColor
@@ -289,10 +291,19 @@ class PlaylistDetailActivity :
             searchBar.visibility = if (searchBarVisibility) VISIBLE else GONE
             updateRecyclerviewPadding(if (searchBarVisibility) 0 else searchBar.height)
             // Dashboard
+            val statsBarVisibility = mode != UIMode.Search
+            statsBar.visibility = if (statsBarVisibility) VISIBLE else GONE
             nameText.text = model.playlist.name
             songCountText.text = model.songs.value.size.toString()
             durationText.text = getReadableDurationString(model.songs.value.totalDuration())
             pathText.text = model.playlist.location.text(this@PlaylistDetailActivity)
+            // IME
+            if (searchBarVisibility) {
+                showKeyboard(this@PlaylistDetailActivity, searchBox.editQuery)
+            } else {
+                hideKeyboard(this@PlaylistDetailActivity, searchBox.editQuery)
+            }
+
         }
     }
 
