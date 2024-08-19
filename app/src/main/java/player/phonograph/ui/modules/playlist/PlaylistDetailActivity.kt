@@ -115,6 +115,7 @@ class PlaylistDetailActivity :
         if (!checkExistence(playlist)) finish()  // File Playlist was deleted
         supportActionBar!!.title = playlist.name
         execute(Fetch)
+        updateBanner(model.currentMode.value)
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -123,9 +124,6 @@ class PlaylistDetailActivity :
             model.items.collect { songs ->
                 adapter.dataset = songs
                 binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
-                if (model.currentMode.value != UIMode.Search) {
-                    updateDashboard(model.playlist, songs)
-                }
             }
         }
         lifecycleScope.launch {
@@ -135,7 +133,7 @@ class PlaylistDetailActivity :
                         "${model.playlist.name} [${getString(R.string.edit)}]"
                     else
                         model.playlist.name
-                updateSearchBarVisibility(mode == UIMode.Search)
+                updateBanner(mode)
                 adapter.notifyDataSetChanged()
             }
         }
@@ -284,20 +282,17 @@ class PlaylistDetailActivity :
         }
     }
 
-    private fun updateSearchBarVisibility(visibility: Boolean) {
+    private fun updateBanner(mode: UIMode) {
         with(binding) {
-            searchBar.visibility = if (visibility) VISIBLE else GONE
-            updateRecyclerviewPadding(if (visibility) 0 else searchBar.height)
-        }
-    }
-
-    private fun updateDashboard(playlist: Playlist, songs: List<Song>) {
-        // text
-        with(binding) {
-            nameText.text = playlist.name
-            songCountText.text = songs.size.toString()
-            durationText.text = getReadableDurationString(songs.totalDuration())
-            pathText.text = playlist.location.text(this@PlaylistDetailActivity)
+            // Search Bar
+            val searchBarVisibility = mode == UIMode.Search
+            searchBar.visibility = if (searchBarVisibility) VISIBLE else GONE
+            updateRecyclerviewPadding(if (searchBarVisibility) 0 else searchBar.height)
+            // Dashboard
+            nameText.text = model.playlist.name
+            songCountText.text = model.songs.value.size.toString()
+            durationText.text = getReadableDurationString(model.songs.value.totalDuration())
+            pathText.text = model.playlist.location.text(this@PlaylistDetailActivity)
         }
     }
 
