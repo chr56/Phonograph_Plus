@@ -233,6 +233,8 @@ dependencies {
     implementation(libs.bundles.androidx.datastore)
     ksp(libs.androidx.room.compiler)
 
+    implementation(libs.bundles.androidx.media3)
+
     implementation(libs.google.material)
 
     implementation(libs.bundles.compose)
