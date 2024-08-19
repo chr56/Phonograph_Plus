@@ -10,6 +10,7 @@ import player.phonograph.mechanism.playlist.PlaylistWriter
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.totalDuration
 import androidx.lifecycle.ViewModel
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 @Suppress("LocalVariableName")
@@ -41,6 +43,9 @@ class PlaylistDetailViewModel(_playlist: Playlist, _songs: List<Song>) : ViewMod
         _currentMode.flatMapLatest { mode ->
             if (mode == UIMode.Search) searchResults else songs
         }
+
+    val totalCount: Flow<Int> = songs.map { it.size }
+    val totalDuration: Flow<Long> = songs.map { it.totalDuration() }
 
     suspend fun execute(context: Context, action: PlaylistAction): Boolean = when (action) {
         is Fetch      -> fetch(context)

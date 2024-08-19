@@ -26,7 +26,6 @@ import player.phonograph.model.UIMode
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.totalDuration
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.parcelable
@@ -117,7 +116,6 @@ class PlaylistDetailActivity :
         if (!checkExistence(playlist)) finish()  // File Playlist was deleted
         supportActionBar!!.title = playlist.name
         execute(Fetch)
-        updateBanner(model.currentMode.value)
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -135,8 +133,22 @@ class PlaylistDetailActivity :
                         "${model.playlist.name} [${getString(R.string.edit)}]"
                     else
                         model.playlist.name
-                updateBanner(mode)
+                updateBannerVisibility(mode)
                 adapter.notifyDataSetChanged()
+            }
+        }
+        lifecycleScope.launch {
+            model.totalCount.collect {
+                with(binding) {
+                    songCountText.text = it.toString()
+                }
+            }
+        }
+        lifecycleScope.launch {
+            model.totalDuration.collect {
+                with(binding) {
+                    durationText.text = getReadableDurationString(it)
+                }
             }
         }
     }
@@ -243,6 +255,11 @@ class PlaylistDetailActivity :
             pathText.setTextColor(textColor)
 
 
+            val playlist = model.playlist
+            nameText.text = playlist.name
+            pathText.text = playlist.location.text(this@PlaylistDetailActivity)
+
+
             with(searchBox) {
                 searchBadge.setImageDrawable(
                     getTintedDrawable(R.drawable.ic_search_white_24dp, textColor)
@@ -284,19 +301,14 @@ class PlaylistDetailActivity :
         }
     }
 
-    private fun updateBanner(mode: UIMode) {
+    private fun updateBannerVisibility(mode: UIMode) {
         with(binding) {
             // Search Bar
             val searchBarVisibility = mode == UIMode.Search
             searchBar.visibility = if (searchBarVisibility) VISIBLE else GONE
-            updateRecyclerviewPadding(if (searchBarVisibility) 0 else searchBar.height)
             // Dashboard
             val statsBarVisibility = mode != UIMode.Search
             statsBar.visibility = if (statsBarVisibility) VISIBLE else GONE
-            nameText.text = model.playlist.name
-            songCountText.text = model.songs.value.size.toString()
-            durationText.text = getReadableDurationString(model.songs.value.totalDuration())
-            pathText.text = model.playlist.location.text(this@PlaylistDetailActivity)
             // IME
             if (searchBarVisibility) {
                 showKeyboard(this@PlaylistDetailActivity, searchBox.editQuery)
