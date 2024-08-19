@@ -207,6 +207,8 @@ dependencies {
     implementation(libs.androidx.palette)
     implementation(libs.bundles.androidx.datastore)
 
+    implementation(libs.bundles.androidx.media3)
+
     implementation(libs.google.material)
 
     implementation(libs.bundles.compose)
