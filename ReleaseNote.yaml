@@ -1,14 +1,14 @@
-version: "1.8.3-dev1"
-channel: "PREVIEW"
-versionCode: 1082
-timestamp: 1724000000
+version: "1.8.3"
+channel: "STABLE"
+versionCode: 1083
+timestamp: 1724250000
 notes:
   en:
     highlights: [ ]
     items:
       - "Fix: blinking images in media notification since v1.8.1"
       - "Fix: minor inappropriate layout abnormalities in Settings"
-      - "Translation: update Portuguese,Brazilian (by Chacal), Italian (by Enrico Storelli)"
+      - "Translation: update French (manafy), Portuguese,Brazilian (by Chacal), Italian (by Enrico Storelli)"
       - "Development: upgrade AGP to 8.5.2, update dependencies, cleanup codes"
 
   zh:
@@ -16,7 +16,7 @@ notes:
     items:
       - "修复 媒体通知中的图像闪烁 (自 v1.8.1 起)"
       - "修复 设置界面的微小异常布局"
-      - "翻译 更新 巴西葡萄牙语(Chacal)、意大利语(Enrico Storelli)"
+      - "翻译 更新 法语(manafy)、巴西葡萄牙语(Chacal)、意大利语(Enrico Storelli)"
       - "开发 升级 AGP 至 8.5.2，更新依赖，清理代码"
 
 previousVersion: "1.8.2"

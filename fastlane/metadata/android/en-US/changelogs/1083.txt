@@ -1,0 +1,5 @@
+<b>1.8.3(1083) 2024.08.21</b>
+- Fix: blinking images in media notification since v1.8.1
+- Fix: minor inappropriate layout abnormalities in Settings
+- Translation: update French (manafy), Portuguese,Brazilian (by Chacal), Italian (by Enrico Storelli)
+- Development: upgrade AGP to 8.5.2, update dependencies, cleanup codes
