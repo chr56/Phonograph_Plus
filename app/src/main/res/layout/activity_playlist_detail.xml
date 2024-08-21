@@ -59,28 +59,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <FrameLayout
+                android:id="@+id/search_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways"
+                tools:background="#1B2DAF"
+                tools:layout_height="96dp"
+                tools:layout_width="match_parent"
+                tools:visibility="visible">
+
+                <include
+                    android:id="@+id/search_box"
+                    layout="@layout/layout_search_box" />
+            </FrameLayout>
+
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/stats_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                tools:background="#0091EA"
                 tools:ignore="HardcodedText">
-
-
-                <FrameLayout
-                    android:id="@+id/search_bar"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toTopOf="@id/icon"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:visibility="visible">
-
-                    <include
-                        android:id="@+id/search_box"
-                        layout="@layout/layout_search_box" />
-                </FrameLayout>
 
                 <ImageView
                     android:id="@+id/icon"
@@ -94,8 +99,9 @@
                     app:layout_constraintEnd_toStartOf="@id/barrier"
                     app:layout_constraintHorizontal_bias="0.494"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/search_bar"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:src="@drawable/ic_description_white_24dp" />
 
 
                 <androidx.constraintlayout.widget.Barrier
@@ -123,13 +129,13 @@
                     android:layout_marginStart="48dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:text="-"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     app:layout_constraintBottom_toTopOf="@+id/song_count_text"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@id/barrier"
-                    app:layout_constraintTop_toBottomOf="@id/search_bar"
-                    app:layout_constraintVertical_chainStyle="packed" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:text="PlaylistName" />
 
                 <ImageView
                     android:id="@+id/song_count_icon"
@@ -146,13 +152,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="-"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     app:layout_constraintBottom_toTopOf="@id/duration_text"
                     app:layout_constraintEnd_toEndOf="@+id/name_text"
                     app:layout_constraintStart_toStartOf="@+id/name_text"
                     app:layout_constraintTop_toBottomOf="@+id/name_text"
-                    app:layout_constraintVertical_chainStyle="packed" />
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:text="0" />
 
                 <ImageView
                     android:id="@+id/duration_icon"
@@ -169,12 +175,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="-"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     app:layout_constraintBottom_toTopOf="@id/path_text"
                     app:layout_constraintEnd_toEndOf="@+id/song_count_text"
                     app:layout_constraintStart_toStartOf="@+id/song_count_text"
-                    app:layout_constraintTop_toBottomOf="@id/song_count_text" />
+                    app:layout_constraintTop_toBottomOf="@id/song_count_text"
+                    tools:text="0:00" />
 
                 <ImageView
                     android:id="@+id/path_icon"
@@ -193,13 +199,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="16dp"
-                    android:text="-"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/duration_text"
                     app:layout_constraintStart_toStartOf="@+id/duration_text"
                     app:layout_constraintTop_toBottomOf="@+id/duration_text"
-                    app:layout_goneMarginBottom="16dp" />
+                    app:layout_goneMarginBottom="16dp"
+                    tools:text="/" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

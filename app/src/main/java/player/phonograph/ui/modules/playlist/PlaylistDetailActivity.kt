@@ -26,14 +26,15 @@ import player.phonograph.model.UIMode
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.totalDuration
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
+import player.phonograph.util.ui.hideKeyboard
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
+import player.phonograph.util.ui.showKeyboard
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryDisabledTextColor
 import util.theme.color.secondaryTextColor
@@ -64,7 +65,7 @@ class PlaylistDetailActivity :
 
     private lateinit var binding: ActivityPlaylistDetailBinding
 
-    private val model: PlaylistDetailViewModel by viewModel { parametersOf(parseIntent(intent)) }
+    private val model: PlaylistDetailViewModel by viewModel { parametersOf(parseIntent(intent), emptyList<Song>()) }
 
     private lateinit var adapter: PlaylistSongDisplayAdapter // init in OnCreate() -> setUpRecyclerView()
 
@@ -102,61 +103,51 @@ class PlaylistDetailActivity :
         prepareRecyclerView()
         setUpDashBroad()
 
+        initialize()
+
         observeData()
 
         setupOnBackPressCallback()
     }
 
+
+    private fun initialize() {
+        val playlist = model.playlist
+        if (!checkExistence(playlist)) finish()  // File Playlist was deleted
+        supportActionBar!!.title = playlist.name
+        execute(Fetch)
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     private fun observeData() {
         lifecycleScope.launch {
-            model.songs.collect { songs ->
-                if (model.currentMode.value != UIMode.Search) {
-                    adapter.dataset = songs
-                    binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
-                    updateDashboard(model.playlist.value, songs)
-                }
+            model.items.collect { songs ->
+                adapter.dataset = songs
+                binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
             }
         }
         lifecycleScope.launch {
             model.currentMode.collect { mode ->
                 supportActionBar!!.title =
                     if (mode == UIMode.Editor)
-                        "${model.playlist.value.name} [${getString(R.string.edit)}]"
+                        "${model.playlist.name} [${getString(R.string.edit)}]"
                     else
-                        model.playlist.value.name
-                updateSearchBarVisibility(mode == UIMode.Search)
+                        model.playlist.name
+                updateBannerVisibility(mode)
                 adapter.notifyDataSetChanged()
-                if (mode == UIMode.Search) {
-                    model.searchSongs(model.keyword.value)
+            }
+        }
+        lifecycleScope.launch {
+            model.totalCount.collect {
+                with(binding) {
+                    songCountText.text = it.toString()
                 }
             }
         }
         lifecycleScope.launch {
-            model.playlist.collect { playlist ->
-                model.fetchAllSongs(this@PlaylistDetailActivity)
-                supportActionBar!!.title = playlist.name
-                if (playlist.location is FilePlaylistLocation
-                    && !PlaylistLoader.checkExistence(this@PlaylistDetailActivity, playlist.location.mediastoreId)
-                ) {
-                    // File Playlist was deleted
-                    finish()
-                }
-                updateDashboard(playlist, model.songs.value)
-            }
-        }
-        lifecycleScope.launch {
-            model.keyword.collect { word ->
-                if (model.currentMode.value == UIMode.Search) {
-                    model.searchSongs(word)
-                }
-            }
-        }
-        lifecycleScope.launch {
-            model.searchResults.collect { songs ->
-                if (model.currentMode.value == UIMode.Search) {
-                    adapter.dataset = songs
-                    binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
+            model.totalDuration.collect {
+                with(binding) {
+                    durationText.text = getReadableDurationString(it)
                 }
             }
         }
@@ -165,7 +156,7 @@ class PlaylistDetailActivity :
     private fun setupOnBackPressCallback() {
         onBackPressedDispatcher.addCallback {
             if (model.currentMode.value != UIMode.Common) {
-                model.updateCurrentMode(UIMode.Common)
+                execute(UpdateMode(UIMode.Common))
             } else {
                 remove()
                 onBackPressedDispatcher.onBackPressed()
@@ -264,6 +255,11 @@ class PlaylistDetailActivity :
             pathText.setTextColor(textColor)
 
 
+            val playlist = model.playlist
+            nameText.text = playlist.name
+            pathText.text = playlist.location.text(this@PlaylistDetailActivity)
+
+
             with(searchBox) {
                 searchBadge.setImageDrawable(
                     getTintedDrawable(R.drawable.ic_search_white_24dp, textColor)
@@ -274,18 +270,18 @@ class PlaylistDetailActivity :
                 close.setOnClickListener {
                     val editable = editQuery.editableText
                     if (editable.isEmpty()) {
-                        model.updateCurrentMode(UIMode.Common)
+                        execute(UpdateMode(UIMode.Common))
                     } else {
-                        editable.clear()
+                        editQuery.editableText.clear()
                     }
                 }
                 editQuery.setTextColor(textColor)
                 editQuery.setHintTextColor(iconColor)
                 editQuery.setBackgroundTint(textColor)
-            }
-            searchBox.editQuery.addTextChangedListener { editable ->
-                if (editable != null) {
-                    model.updateKeyword(editable.toString())
+                editQuery.addTextChangedListener { editable ->
+                    if (editable != null) {
+                        execute(Search(editable.toString()))
+                    }
                 }
             }
         }
@@ -305,44 +301,35 @@ class PlaylistDetailActivity :
         }
     }
 
-    private fun updateSearchBarVisibility(visibility: Boolean) {
+    private fun updateBannerVisibility(mode: UIMode) {
         with(binding) {
-            searchBar.visibility = if (visibility) VISIBLE else GONE
-            searchBox.editQuery.setText(if (visibility) model.keyword.value else "")
-            updateRecyclerviewPadding(if (visibility) 0 else searchBar.height)
-        }
-    }
+            // Search Bar
+            val searchBarVisibility = mode == UIMode.Search
+            searchBar.visibility = if (searchBarVisibility) VISIBLE else GONE
+            // Dashboard
+            val statsBarVisibility = mode != UIMode.Search
+            statsBar.visibility = if (statsBarVisibility) VISIBLE else GONE
+            // IME
+            if (searchBarVisibility) {
+                showKeyboard(this@PlaylistDetailActivity, searchBox.editQuery)
+            } else {
+                hideKeyboard(this@PlaylistDetailActivity, searchBox.editQuery)
+            }
 
-    private fun updateDashboard(playlist: Playlist, songs: List<Song>) {
-        // text
-        with(binding) {
-            nameText.text = playlist.name
-            songCountText.text = songs.size.toString()
-            durationText.text = getReadableDurationString(songs.totalDuration())
-            pathText.text = playlist.location.text(this@PlaylistDetailActivity)
         }
     }
 
     private fun setupMenu(menu: Menu) {
-        val playlist = model.playlist.value
         val iconColor = primaryTextColor(viewModel.activityColor.value)
-        PlaylistToolbarMenuProvider(::onSearch, ::onRefresh, ::onEdit)
-            .inflateMenu(menu, this, playlist, iconColor)
+        PlaylistToolbarMenuProvider(::execute)
+            .inflateMenu(menu, this, model.playlist, iconColor)
         tintMenuActionIcons(binding.toolbar, menu, iconColor)
     }
 
-    private fun onSearch(): Boolean {
-        model.updateCurrentMode(UIMode.Search)
-        return true
-    }
-
-    private fun onRefresh(): Boolean {
-        model.refreshPlaylist(this)
-        return true
-    }
-
-    private fun onEdit(): Boolean {
-        model.updateCurrentMode(UIMode.Editor)
+    private fun execute(action: PlaylistAction): Boolean {
+        lifecycleScope.launch {
+            model.execute(this@PlaylistDetailActivity, action)
+        }
         return true
     }
 
@@ -370,10 +357,14 @@ class PlaylistDetailActivity :
         override fun onMediaStoreChanged() {
             if (model.currentMode.value != UIMode.Editor) {
                 adapter.dataset = emptyList()
-                model.refreshPlaylist(this@PlaylistDetailActivity)
+                execute(Refresh(fetch = true))
             }
         }
     }
+
+    private fun checkExistence(playlist: Playlist): Boolean =
+        !(playlist.location is FilePlaylistLocation &&
+                !PlaylistLoader.checkExistence(this, playlist.location.mediastoreId))
 
     /* *******************
      *   companion object
