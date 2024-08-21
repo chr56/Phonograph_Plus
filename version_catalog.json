@@ -1,6 +1,30 @@
 {
   "versions": [
     {
+      "channel": "stable",
+      "versionName": "1.8.3",
+      "versionCode": 1083,
+      "date": 1724250000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.8.3"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.8.3/PhonographPlus_1.8.3_ModernStableRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.8.3/PhonographPlus_1.8.3_LegacyStableRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 媒体通知中的图像闪烁 (自 v1.8.1 起)</li><li>修复 设置界面的微小异常布局</li><li>翻译 更新 法语(manafy)、巴西葡萄牙语(Chacal)、意大利语(Enrico Storelli)</li><li>开发 升级 AGP 至 8.5.2，更新依赖，清理代码</li></ol>",
+        "en": "<ol><li>Fix: blinking images in media notification since v1.8.1</li><li>Fix: minor inappropriate layout abnormalities in Settings</li><li>Translation: update French (manafy), Portuguese,Brazilian (by Chacal), Italian (by Enrico Storelli)</li><li>Development: upgrade AGP to 8.5.2, update dependencies, cleanup codes</li></ol>"
+      }
+    },
+    {
       "channel": "preview",
       "versionName": "1.8.3-dev1",
       "versionCode": 1082,
@@ -25,30 +49,6 @@
       }
     },
     {
-      "channel": "stable",
-      "versionName": "1.8.2",
-      "versionCode": 1082,
-      "date": 1723220000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.8.2"
-        },
-        {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.8.2/PhonographPlus_1.8.2_ModernStableRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK(File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.8.2/PhonographPlus_1.8.2_LegacyStableRelease.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>新增 支持指定从外部（如文件管理器）播放时的默认操作</li><li>修复 在某些罕见情况下跳转到艺术家详情时崩溃</li><li>翻译 更新巴西葡萄牙语（FalaTudo）、波兰语（Cooky）</li></ol>",
-        "en": "<ol><li>New: support specify the default action when playing from the external (e.g. File Explorer)</li><li>Fix: crash when jumping to Artist detail in some rare circumstance</li><li>Translation: update Portuguese,Brazilian (by FalaTudo), Polish (by cooky)</li></ol>"
-      }
-    },
-    {
       "channel": "lts",
       "versionName": "1.4.7",
       "versionCode": 1047,
@@ -62,30 +62,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>修复 可能的动画导致的罕见崩溃 [移植自 v1.7.0]</li><li>修复 艺术家详情中专辑排序 [移植自 v1.7.0]</li><li>修复 艺术家详情中切换彩色页脚开关时崩溃 [移植自 v1.7.1]</li><li>修复 睡眠定时器失效 [移植自 v1.7.2]</li><li>修复 从外部（如文件资源管理器）启动时未立即播放 [移植自 v1.8.0]</li><li>修复 Android Q 上通知图像质量过低 [移植自 v1.8.1]</li><li>修复 在某些罕见情况下跳转到艺术家详情时崩溃 [移植自 v1.8.2]</li><li>翻译 更新 巴西葡语(FalaTudo)，阿拉伯语(Ruger Blaze (hima_96)), 西班牙语(Dino RTX (rtxdino36))</li><li>开发 更新 Gradle 至 8.8，更新 AGP 至 8.5.1</li></ol>",
         "en": "<ol><li>Fix: rare crash caused by color animation [backported from v1.7.0]</li><li>Fix: albums sorting in Artist Detail [backported from v1.7.0]</li><li>Fix: crash when toggling Colored Footers in Artist Detail [backported from v1.7.1]</li><li>Fix: Sleep Timer not working [backported from v1.7.2]</li><li>Fix: not instantly start playing from the external source (like file explorer) [backported from v1.8.0]</li><li>Fix: low notification image quality on Android Q [backported from v1.8.1]</li><li>Fix: crash when jumping to Artist detail in some rare circumstance [backported from v1.8.2]</li><li>Translation: update PortugueseBrazilian (by FalaTudo), Arabic (by Ruger Blaze (hima_96)), Spanish (by Dino RTX (rtxdino36))</li><li>Development: update gradle to 8.8, upgrade AGP to 8.5.1</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.8.2-dev1",
-      "versionCode": 1081,
-      "date": 1722657054,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.8.2-dev1"
-        },
-        {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.2-dev1/PhonographPlus_1.8.2-dev1_ModernPreviewRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK(File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.2-dev1/PhonographPlus_1.8.2-dev1_LegacyPreviewRelease.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>新增 支持指定从外部（如文件管理器）播放时的默认操作</li><li>修复 在某些罕见情况下跳转到艺术家详情时崩溃</li></ol>",
-        "en": "<ol><li>New: support specify the default action when playing from the external (e.g. File Explorer)</li><li>Fix: crash when jumping to Artist detail in some rare circumstance</li></ol>"
       }
     }
   ]
