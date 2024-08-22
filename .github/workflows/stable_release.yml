@@ -23,7 +23,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           token: ${{ secrets.TOKEN }}
-          name: "Stable ${{ github.ref_name }}"
+          name: "${{ github.ref_name }}"
           draft: true
           tag_name: ${{ github.ref }}
           body_path: ./GitHubReleaseNote.md
