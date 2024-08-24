@@ -21,7 +21,7 @@ constraintlayout = "2.1.4"
 percentlayout = "1.0.0"
 swiperefreshlayout = "1.1.0"
 media = "1.7.0"
-browser = "1.7.0"
+browser = "1.8.0"
 cardview = "1.0.0"
 palette = "1.0.0"
 room = "2.6.1"
@@ -45,7 +45,6 @@ koin = "3.5.6"
 #### Others Start
 materialDialogs = "3.3.0"
 composeMaterialDialogs = "0.9.0"
-composeSetting = "1.0.3"
 themeUtil = "0.2.0"
 #### Others End
 
@@ -147,7 +146,6 @@ materialDialogs-input = { group = "com.afollestad.material-dialogs", name = "inp
 materialDialogs-color = { group = "com.afollestad.material-dialogs", name = "color", version.ref = "materialDialogs" }
 
 composeMaterialDialogs = { module = "io.github.vanpra.compose-material-dialogs:core", version.ref = "composeMaterialDialogs" }
-composeSettingsUi = { group = "com.github.alorma", name = "compose-settings-ui", version.ref = "composeSetting" }
 
 themeUtils-materials = { group = "com.github.chr56.ThemeUtils", name = "materials-util", version.ref = "themeUtil" }
 themeUtils-color = { group = "com.github.chr56.ThemeUtils", name = "color-util", version.ref = "themeUtil" }
@@ -189,11 +187,6 @@ androidx-datastore = [
 androidx-room = [
     "androidx-room-runtime",
     "androidx-room-ktx",
-]
-
-composeSettings = [
-    "composeSettingsUi",
-    #    "composeSettingsDatastore",
 ]
 
 materialDialogs = [
