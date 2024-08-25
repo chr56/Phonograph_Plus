@@ -35,11 +35,7 @@ import android.util.Log
 import android.widget.Toast
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -190,16 +186,13 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
         }
     }
 
-    private var _playerState: PlayerState = PlayerState.PREPARING
-    var playerState: PlayerState
-        get() = _playerState
+    var playerState: PlayerState = PlayerState.PREPARING
         private set(value) {
-            val oldState = _playerState
-            synchronized(_playerState) {
-                _playerState = value
+            synchronized(field) {
+                val oldState = field
+                field = value
+                observers.executeForEach { onPlayerStateChanged(oldState, value) }
             }
-            observers.executeForEach { onPlayerStateChanged(oldState, value) }
-            _state.update { _playerState }
         }
 
     /**
@@ -716,12 +709,3 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
     }
 
 }
-
-/**
- *  the exposed internal state as StateFlow for collect in ui.
- */
-val PlayerController.Companion.currentState: StateFlow<PlayerState>
-    get() = _state.asStateFlow()
-
-@Suppress("ObjectPropertyName")
-private val _state by lazy { MutableStateFlow(PlayerState.PREPARING) }
