@@ -16,7 +16,6 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
 import player.phonograph.util.registerReceiverCompat
-import androidx.annotation.IntDef
 import androidx.core.content.ContextCompat
 import android.content.BroadcastReceiver
 import android.content.ContentUris
@@ -557,26 +556,6 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
     }
 
     companion object {
-        const val NOT_PAUSED = 0
-        const val PAUSE_BY_MANUAL_ACTION = 2
-        const val PAUSE_FOR_QUEUE_ENDED = 4
-        const val PAUSE_FOR_AUDIO_BECOMING_NOISY = 8
-        const val PAUSE_FOR_TRANSIENT_LOSS_OF_FOCUS = 16
-        const val PAUSE_FOR_LOSS_OF_FOCUS = 32
-        const val PAUSE_ERROR = -2
-
-        @IntDef(
-            NOT_PAUSED,
-            PAUSE_BY_MANUAL_ACTION,
-            PAUSE_FOR_QUEUE_ENDED,
-            PAUSE_FOR_AUDIO_BECOMING_NOISY,
-            PAUSE_FOR_TRANSIENT_LOSS_OF_FOCUS,
-            PAUSE_FOR_LOSS_OF_FOCUS,
-            PAUSE_ERROR
-        )
-        @Retention(AnnotationRetention.SOURCE)
-        annotation class PauseReasonInt
-
         private fun getTrackUri(songId: Long): Uri =
             ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, songId)
     }
