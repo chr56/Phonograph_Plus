@@ -47,10 +47,10 @@ import java.io.File
 /**
  * @author chr_56 & Abou Zeid (kabouzeid) (original author)
  */
-class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
+class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controller {
 
     private var _service: MusicService? = null
-    internal val service: MusicService get() = _service!!
+    val service: MusicService get() = _service!!
 
 
     private var _audioPlayer: AudioPlayer? = null
@@ -314,7 +314,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
     /**
      * continue play
      */
-    fun play() = handler.request {
+    override fun play() = handler.request {
         it.playImp()
     }
 
@@ -364,7 +364,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
      * @param releaseResource false if not release taken resource
      * @param reason cause of this pause (see [PauseReasonInt])
      */
-    fun pause(releaseResource: Boolean, @PauseReasonInt reason: Int) = handler.request {
+    override fun pause(releaseResource: Boolean, @PauseReasonInt reason: Int) = handler.request {
         it.pauseImp(force = false, releaseResource = releaseResource, reason = reason)
     }
 
@@ -378,7 +378,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
         }
     }
 
-    fun togglePlayPause() = handler.request {
+    override fun togglePlayPause() = handler.request {
         it.togglePlayPauseImp()
     }
 
@@ -390,20 +390,12 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
         }
     }
 
-    fun isPlaying() = audioPlayer.isInitialized && audioPlayer.isPlaying()
-
-    val positionInTrack: Int
-        get() =
-            if (audioPlayer.isInitialized) {
-                audioPlayer.position()
-            } else {
-                -1
-            }
+    override val isPlaying get() = audioPlayer.isInitialized && audioPlayer.isPlaying()
 
     /**
      * Jump to beginning of this song
      */
-    fun rewindToBeginning() = handler.request {
+    override fun rewindToBeginning() = handler.request {
         it.rewindToBeginningImp()
     }
 
@@ -415,7 +407,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
     /**
      * Return to previous song
      */
-    fun jumpBackward(force: Boolean) = handler.request {
+    override fun jumpBackward(force: Boolean) = handler.request {
         it.jumpBackwardImp(force)
     }
 
@@ -432,7 +424,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
     /**
      * [rewindToBeginningImp] or [jumpBackwardImp]
      */
-    fun back(force: Boolean) = handler.request {
+    override fun back(force: Boolean) = handler.request {
         it.backImp(force)
     }
 
@@ -447,7 +439,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
     /**
      * Skip and jump to next song
      */
-    fun jumpForward(force: Boolean) = handler.request {
+    override fun jumpForward(force: Boolean) = handler.request {
         it.jumpForwardImp(force)
     }
 
@@ -472,7 +464,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
      * Move current time to [position]
      * @param position time in millisecond
      */
-    fun seekTo(position: Long): Int = synchronized(audioPlayer) {
+    override fun seekTo(position: Long): Int = synchronized(audioPlayer) {
         seekToImp(position)
     }
 
@@ -480,7 +472,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
         return audioPlayer.seek(position.toInt())
     }
 
-    fun stop() = handler.request {
+    override fun stop() = handler.request {
         it.stopImp()
     }
 
@@ -498,18 +490,18 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
      * true if you want to stop player when current track is ended
      * Used by Sleep Timer
      */
-    internal var quitAfterFinishCurrentSong: Boolean = false
+    var quitAfterFinishCurrentSong: Boolean = false
         set(value) {
             synchronized(this) {
                 field = value
             }
         }
 
-    internal var resumeAfterAudioFocusGain: Boolean = false
+    var resumeAfterAudioFocusGain: Boolean = false
 
-    internal var ignoreAudioFocus: Boolean = false
+    var ignoreAudioFocus: Boolean = false
 
-    internal var audioDucking: Boolean = true
+    var audioDucking: Boolean = true
 
     override fun onTrackWentToNext() {
         handler.request {
@@ -597,7 +589,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
 
     val audioSessionId: Int get() = audioPlayer.audioSessionId
 
-    fun setVolume(vol: Float) = handler.request { playerController ->
+    override fun setVolume(vol: Float) = handler.request { playerController ->
         playerController.audioPlayer.setVolume(vol)
     }
 
@@ -675,7 +667,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
                 playerController.broadcastStopLyric()
                 return false
             }
-            playerController.lyricsUpdater.broadcast(playerController.getSongProgressMillis())
+            playerController.lyricsUpdater.broadcast(playerController.songProgressMillis)
             return true
         }
 
@@ -698,18 +690,17 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
         }
     }
 
-    fun getSongProgressMillis(): Int = audioPlayer.position()
-    fun getSongDurationMillis(): Int = audioPlayer.duration()
+    override val songProgressMillis: Int
+        get() = if (audioPlayer.isInitialized) audioPlayer.position() else -1
 
-    fun playerSpeed() = audioPlayer.speed
+    override val songDurationMillis: Int
+        get() = if (audioPlayer.isInitialized) audioPlayer.duration() else -1
 
-    fun setPlayerSpeed(speed: Float) = handler.request {
-        setPlayerSpeedImpl(speed)
-    }
-
-    private fun setPlayerSpeedImpl(speed: Float) {
-        audioPlayer.speed = speed
-    }
+    override var playerSpeed
+        get() = audioPlayer.speed
+        set(speed) = handler.request {
+            audioPlayer.speed = speed
+        }
 
     private fun broadcastStopLyric() = StatusBarLyric.stopLyric()
     fun replaceLyrics(lyrics: LrcLyrics?) {
@@ -720,7 +711,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
         }
     }
 
-    fun log(where: String, msg: String, force: Boolean = false) {
+    private fun log(where: String, msg: String, force: Boolean = false) {
         if (DEBUG || force) Log.i("PlayerController", "※$msg @$where")
     }
 

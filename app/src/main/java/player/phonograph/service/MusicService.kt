@@ -29,6 +29,9 @@ import player.phonograph.service.notification.PlayingNotificationManager
 import player.phonograph.service.notification.PlayingNotificationManager.Companion.VERSION_SET_COVER_USING_METADATA
 import player.phonograph.service.player.MSG_NOW_PLAYING_CHANGED
 import player.phonograph.service.player.MediaSessionController
+import player.phonograph.service.player.PAUSE_BY_MANUAL_ACTION
+import player.phonograph.service.player.PAUSE_ERROR
+import player.phonograph.service.player.PAUSE_FOR_QUEUE_ENDED
 import player.phonograph.service.player.PlayerController
 import player.phonograph.service.player.PlayerController.ControllerHandler.Companion.RE_PREPARE_NEXT_PLAYER
 import player.phonograph.service.player.PlayerState
@@ -238,7 +241,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
     val playerState get() = controller.playerState
 
-    val isPlaying: Boolean get() = controller.isPlaying()
+    val isPlaying: Boolean get() = controller.isPlaying
 
     var isDestroyed = false
         private set
@@ -276,18 +279,14 @@ class MusicService : MediaBrowserServiceCompat() {
     }
 
     fun playSongAt(position: Int) = controller.playAt(position)
-    fun pause() = controller.pause(releaseResource = true, reason = PlayerController.PAUSE_BY_MANUAL_ACTION)
+    fun pause() = controller.pause(releaseResource = true, reason = PAUSE_BY_MANUAL_ACTION)
     fun play() = controller.play()
     fun playPreviousSong(force: Boolean) = controller.jumpBackward(force)
     fun back(force: Boolean) = controller.back(force)
     fun playNextSong(force: Boolean) = controller.jumpForward(force)
-    val songProgressMillis: Int get() = controller.getSongProgressMillis()
-    val songDurationMillis: Int get() = controller.getSongDurationMillis()
-    var speed: Float
-        get() = controller.playerSpeed()
-        set(value) {
-            controller.setPlayerSpeed(value)
-        }
+    val songProgressMillis: Int get() = controller.songProgressMillis
+    val songDurationMillis: Int get() = controller.songDurationMillis
+    var speed: Float by controller::playerSpeed
 
     fun seek(millis: Int): Int = synchronized(this) {
         return try {
@@ -456,7 +455,7 @@ class MusicService : MediaBrowserServiceCompat() {
         private val onSetCancelableNotification = Runnable {
             if (controller.playerState != PlayerState.PLAYING) {
                 when (controller.pauseReason) {
-                    PlayerController.PAUSE_BY_MANUAL_ACTION, PlayerController.PAUSE_FOR_QUEUE_ENDED, PlayerController.PAUSE_ERROR,
+                    PAUSE_BY_MANUAL_ACTION, PAUSE_FOR_QUEUE_ENDED, PAUSE_ERROR,
                     -> stopForeground(STOP_FOREGROUND_DETACH)
                 }
             }
