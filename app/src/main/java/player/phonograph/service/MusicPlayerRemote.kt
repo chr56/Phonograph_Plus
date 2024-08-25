@@ -8,6 +8,8 @@ import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.service.MusicService.MusicBinder
+import player.phonograph.service.player.PlayerState
+import player.phonograph.service.player.PlayerStateObserver
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
@@ -27,6 +29,10 @@ import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import java.util.WeakHashMap
 
 /**
@@ -94,9 +100,11 @@ object MusicPlayerRemote {
                 Log.v(TAG, "Resume eagerly due to setting!")
                 resumeInstantlyIfReady = false
             }
+            musicService?.addPlayerStateObserver(playerStateObserver)
         }
 
         override fun onServiceDisconnected(className: ComponentName) {
+            musicService?.removePlayerStateObserver(playerStateObserver)
             musicService = null
             mCallback?.onServiceDisconnected(className)
         }
@@ -119,6 +127,18 @@ object MusicPlayerRemote {
 
     fun resumePlaying() {
         musicService?.play()
+    }
+
+
+    private val _currentState: MutableStateFlow<PlayerState> = MutableStateFlow(PlayerState.PREPARING)
+    val currentState: StateFlow<PlayerState> = _currentState.asStateFlow()
+
+    private val playerStateObserver: PlayerStateObserver = object : PlayerStateObserver {
+        override fun onPlayerStateChanged(oldState: PlayerState, newState: PlayerState) {
+            _currentState.update { newState }
+        }
+
+        override fun onReceivingMessage(msg: Int) {}
     }
 
     private var resumeInstantlyIfReady: Boolean = false

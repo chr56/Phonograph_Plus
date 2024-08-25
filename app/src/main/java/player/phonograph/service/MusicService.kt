@@ -239,6 +239,15 @@ class MusicService : MediaBrowserServiceCompat() {
         GlobalContext.get().inject<IFavorite>().value.toggleFavorite(this@MusicService, song)
     }
 
+
+    fun addPlayerStateObserver(observer: PlayerStateObserver) {
+        controller.addObserver(observer)
+    }
+
+    fun removePlayerStateObserver(observer: PlayerStateObserver) {
+        controller.removeObserver(observer)
+    }
+
     val playerState get() = controller.playerState
 
     val isPlaying: Boolean get() = controller.isPlaying
