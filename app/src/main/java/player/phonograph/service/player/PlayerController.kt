@@ -595,7 +595,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
          * Request running in the handler thread
          * @param request RunnableRequest: (PlayerController) -> Unit
          */
-        fun request(request: RunnableRequest) {
+        fun request(request: (PlayerController) -> Unit) {
             post { request(playerController) }
         }
 
