@@ -324,7 +324,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
                             audioPlayer.play()
 
                             playerState = PlayerState.PLAYING
-                            pauseReason = NOT_PAUSED
+                            pauseReason = PauseReason.NOT_PAUSED
                             acquireWakeLock(
                                 queueManager.currentSong.duration - audioPlayer.position() + 1000L
                             )
@@ -345,23 +345,23 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
                 ).show()
             }
         } else {
-            pauseImp(force = true, reason = PAUSE_FOR_QUEUE_ENDED)
+            pauseImp(force = true, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED)
         }
     }
 
-    @PauseReasonInt
-    var pauseReason: Int = NOT_PAUSED
+    @PauseReason
+    var pauseReason: Int = PauseReason.NOT_PAUSED
 
     /**
      * Pause
      * @param releaseResource false if not release taken resource
-     * @param reason cause of this pause (see [PauseReasonInt])
+     * @param reason cause of this pause (see [PauseReason])
      */
-    override fun pause(releaseResource: Boolean, @PauseReasonInt reason: Int) = handler.request {
+    override fun pause(releaseResource: Boolean, @PauseReason reason: Int) = handler.request {
         it.pauseImp(force = false, releaseResource = releaseResource, reason = reason)
     }
 
-    private fun pauseImp(force: Boolean = false, @PauseReasonInt reason: Int, releaseResource: Boolean = true) {
+    private fun pauseImp(force: Boolean = false, @PauseReason reason: Int, releaseResource: Boolean = true) {
         if (audioPlayer.isPlaying || force) {
             audioPlayer.pause()
             pauseReason = reason
@@ -377,7 +377,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
 
     private fun togglePlayPauseImp() {
         if (audioPlayer.isPlaying) {
-            pauseImp(force = false, reason = PAUSE_BY_MANUAL_ACTION)
+            pauseImp(force = false, reason = PauseReason.PAUSE_BY_MANUAL_ACTION)
         } else {
             playImp()
         }
@@ -446,7 +446,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
         if (position >= 0) {
             playAtImp(position)
         } else {
-            pauseImp(force = true, reason = PAUSE_FOR_QUEUE_ENDED)
+            pauseImp(force = true, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED)
             observers.executeForEach {
                 onReceivingMessage(MSG_NO_MORE_SONGS)
             }
@@ -517,7 +517,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
         }
         if (queueManager.isQueueEnded()) {
             handler.request {
-                pauseImp(force = true, reason = PAUSE_FOR_QUEUE_ENDED)
+                pauseImp(force = true, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED)
             }
             broadcastStopLyric()
             observers.executeForEach {
@@ -537,7 +537,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
         Handler(Looper.getMainLooper()).post {
             Toast.makeText(service, msg, Toast.LENGTH_SHORT).show()
         }
-        pauseReason = PAUSE_ERROR
+        pauseReason = PauseReason.PAUSE_ERROR
     }
 
     companion object {
@@ -567,7 +567,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
     private val becomingNoisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
-                pause(releaseResource = true, reason = PAUSE_FOR_AUDIO_BECOMING_NOISY)
+                pause(releaseResource = true, reason = PauseReason.PAUSE_FOR_AUDIO_BECOMING_NOISY)
             }
         }
     }

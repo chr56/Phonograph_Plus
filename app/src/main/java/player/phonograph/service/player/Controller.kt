@@ -14,9 +14,9 @@ interface Controller {
     /**
      * Pause
      * @param releaseResource false if not release taken resource
-     * @param reason cause of this pause (see [PauseReasonInt])
+     * @param reason cause of this pause (see [PauseReason])
      */
-    fun pause(releaseResource: Boolean, @PauseReasonInt reason: Int)
+    fun pause(releaseResource: Boolean, @PauseReason reason: Int)
 
 
     /**

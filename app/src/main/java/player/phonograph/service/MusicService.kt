@@ -29,9 +29,7 @@ import player.phonograph.service.notification.PlayingNotificationManager
 import player.phonograph.service.notification.PlayingNotificationManager.Companion.VERSION_SET_COVER_USING_METADATA
 import player.phonograph.service.player.MSG_NOW_PLAYING_CHANGED
 import player.phonograph.service.player.MediaSessionController
-import player.phonograph.service.player.PAUSE_BY_MANUAL_ACTION
-import player.phonograph.service.player.PAUSE_ERROR
-import player.phonograph.service.player.PAUSE_FOR_QUEUE_ENDED
+import player.phonograph.service.player.PauseReason
 import player.phonograph.service.player.PlayerController
 import player.phonograph.service.player.PlayerController.ControllerHandler.Companion.RE_PREPARE_NEXT_PLAYER
 import player.phonograph.service.player.PlayerState
@@ -288,7 +286,7 @@ class MusicService : MediaBrowserServiceCompat() {
     }
 
     fun playSongAt(position: Int) = controller.playAt(position)
-    fun pause() = controller.pause(releaseResource = true, reason = PAUSE_BY_MANUAL_ACTION)
+    fun pause() = controller.pause(releaseResource = true, reason = PauseReason.PAUSE_BY_MANUAL_ACTION)
     fun play() = controller.play()
     fun playPreviousSong(force: Boolean) = controller.jumpBackward(force)
     fun back(force: Boolean) = controller.back(force)
@@ -464,7 +462,7 @@ class MusicService : MediaBrowserServiceCompat() {
         private val onSetCancelableNotification = Runnable {
             if (controller.playerState != PlayerState.PLAYING) {
                 when (controller.pauseReason) {
-                    PAUSE_BY_MANUAL_ACTION, PAUSE_FOR_QUEUE_ENDED, PAUSE_ERROR,
+                    PauseReason.PAUSE_BY_MANUAL_ACTION, PauseReason.PAUSE_FOR_QUEUE_ENDED, PauseReason.PAUSE_ERROR,
                     -> stopForeground(STOP_FOREGROUND_DETACH)
                 }
             }
