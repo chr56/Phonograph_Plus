@@ -15,7 +15,7 @@ import android.util.Log
 /**
  * @author chr_56, Andrew Neal, Karim Abou Zeid (kabouzeid)
  */
-class AudioPlayer(private val context: Context, override var gaplessPlayback: Boolean) :
+class VanillaAudioPlayer(private val context: Context, override var gaplessPlayback: Boolean) :
         Playback, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
     private var currentMediaPlayer = MediaPlayer().also {
@@ -269,6 +269,6 @@ class AudioPlayer(private val context: Context, override var gaplessPlayback: Bo
     }
 
     companion object {
-        private const val TAG = "Player"
+        private const val TAG = "VanillaAudioPlayer"
     }
 }

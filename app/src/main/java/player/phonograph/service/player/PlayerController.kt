@@ -77,7 +77,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
     override fun onCreate(musicService: MusicService) {
         _service = musicService
 
-        _audioPlayer = AudioPlayer(service, false /* default */, this)
+        _audioPlayer = VanillaAudioPlayer(service, false /* default */, this)
 
         _wakeLock =
             (service.getSystemService(Context.POWER_SERVICE) as PowerManager)
