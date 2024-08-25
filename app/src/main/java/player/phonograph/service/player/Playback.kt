@@ -4,6 +4,7 @@ package player.phonograph.service.player
  * @author chr_56 & Karim Abou Zeid (kabouzeid) (original author)
  */
 interface Playback {
+    val currentDataSource: String
     fun setDataSource(path: String): Boolean
     fun setNextDataSource(path: String?)
     fun setCallbacks(callbacks: PlaybackCallbacks?)
@@ -19,6 +20,8 @@ interface Playback {
     fun setVolume(vol: Float): Boolean
     fun setAudioSessionId(sessionId: Int): Boolean
     val audioSessionId: Int
+    var speed: Float
+    var gaplessPlayback: Boolean
 
     interface PlaybackCallbacks {
         fun onTrackWentToNext()

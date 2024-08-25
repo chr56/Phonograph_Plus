@@ -15,7 +15,7 @@ import android.util.Log
 /**
  * @author chr_56, Andrew Neal, Karim Abou Zeid (kabouzeid)
  */
-class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) :
+class AudioPlayer(private val context: Context, override var gaplessPlayback: Boolean) :
         Playback, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
     private var currentMediaPlayer = MediaPlayer().also {
@@ -25,7 +25,7 @@ class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) :
         )
     }
 
-    var currentDataSource: String = ""
+    override var currentDataSource: String = ""
         private set
 
     private var nextMediaPlayer: MediaPlayer? = null
@@ -265,7 +265,7 @@ class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) :
 
     private var _speed: Float = 1.0f
 
-    var speed: Float
+    override var speed: Float
         get() = _speed
         set(value) {
             _speed = value
