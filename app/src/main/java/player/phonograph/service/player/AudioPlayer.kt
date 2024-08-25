@@ -30,30 +30,17 @@ class AudioPlayer(private val context: Context, override var gaplessPlayback: Bo
 
     private var nextMediaPlayer: MediaPlayer? = null
 
-    private var callbacks: Playback.PlaybackCallbacks? = null
+    override var callbacks: Playback.PlaybackCallbacks? = null
 
     override var isInitialized: Boolean = false
         private set
-
-    /**
-     * Sets the callbacks
-     * @param callbacks The callbacks to use
-     */
-    override fun setCallbacks(callbacks: Playback.PlaybackCallbacks?) {
-        this.callbacks = callbacks
-    }
 
     constructor(context: Context, gaplessPlayback: Boolean, callbacks: Playback.PlaybackCallbacks) :
             this(context, gaplessPlayback) {
         this.callbacks = callbacks
     }
 
-    /**
-     * @param path The path of the file, or the http/rtsp URL of the stream
-     * you want to play
-     * @return True if the `player` has been prepared and is
-     * ready to play, false otherwise
-     */
+
     override fun setDataSource(path: String): Boolean {
         isInitialized = false
         isInitialized = setDataSourceImpl(currentMediaPlayer, path)
@@ -63,13 +50,6 @@ class AudioPlayer(private val context: Context, override var gaplessPlayback: Bo
         return isInitialized
     }
 
-    /**
-     * @param player The [MediaPlayer] to use
-     * @param path   The path of the file, or the http/rtsp URL of the stream
-     * you want to play
-     * @return True if the `player` has been prepared and is
-     * ready to play, false otherwise
-     */
     private fun setDataSourceImpl(player: MediaPlayer, path: String): Boolean {
         try {
             player.reset()
@@ -111,12 +91,7 @@ class AudioPlayer(private val context: Context, override var gaplessPlayback: Bo
         return true
     }
 
-    /**
-     * Set the MediaPlayer to start when this MediaPlayer finishes playback.
-     *
-     * @param path The path of the file, or the http/rtsp URL of the stream
-     * you want to play
-     */
+
     override fun setNextDataSource(path: String?) {
         try {
             currentMediaPlayer.setNextMediaPlayer(null)
@@ -165,10 +140,7 @@ class AudioPlayer(private val context: Context, override var gaplessPlayback: Bo
         }
     }
 
-    /**
-     * Starts or resumes playback.
-     */
-    override fun start(): Boolean =
+    override fun play(): Boolean =
         try {
             // currentMediaPlayer.start()
             playWithSpeed(currentMediaPlayer, _speed)
@@ -177,26 +149,18 @@ class AudioPlayer(private val context: Context, override var gaplessPlayback: Bo
             false
         }
 
-    /**
-     * Resets the MediaPlayer to its uninitialized state.
-     */
     override fun stop() {
         currentMediaPlayer.reset()
         isInitialized = false
     }
 
-    /**
-     * Releases resources associated with this MediaPlayer object.
-     */
     override fun release() {
         stop()
         currentMediaPlayer.release()
         nextMediaPlayer?.release()
     }
 
-    /**
-     * Pauses playback. Call start() to resume.
-     */
+
     override fun pause(): Boolean =
         try {
             currentMediaPlayer.pause()
@@ -205,16 +169,11 @@ class AudioPlayer(private val context: Context, override var gaplessPlayback: Bo
             false
         }
 
-    /**
-     * Checks whether the MultiPlayer is playing.
-     */
-    override fun isPlaying(): Boolean = isInitialized && currentMediaPlayer.isPlaying
 
-    /**
-     * Gets the duration of the file.
-     *
-     * @return The duration in milliseconds
-     */
+    override val isPlaying: Boolean
+        get() = isInitialized && currentMediaPlayer.isPlaying
+
+
     override fun duration(): Int =
         if (!isInitialized) -1
         else {
@@ -225,11 +184,7 @@ class AudioPlayer(private val context: Context, override var gaplessPlayback: Bo
             }
         }
 
-    /**
-     * Gets the current playback position.
-     *
-     * @return The current position in milliseconds
-     */
+
     override fun position(): Int =
         if (!isInitialized) {
             -1
@@ -241,12 +196,7 @@ class AudioPlayer(private val context: Context, override var gaplessPlayback: Bo
             }
         }
 
-    /**
-     * Gets the current playback position.
-     *
-     * @param whereto The offset in milliseconds from the start to seek to
-     * @return The offset in milliseconds from the start to seek to
-     */
+
     override fun seek(whereto: Int): Int =
         try {
             currentMediaPlayer.seekTo(whereto)
@@ -269,7 +219,7 @@ class AudioPlayer(private val context: Context, override var gaplessPlayback: Bo
         get() = _speed
         set(value) {
             _speed = value
-            if (isPlaying()) playWithSpeed(currentMediaPlayer, _speed)
+            if (isPlaying) playWithSpeed(currentMediaPlayer, _speed)
         }
 
     private fun playWithSpeed(player: MediaPlayer, targetSpeed: Float) {
@@ -285,12 +235,7 @@ class AudioPlayer(private val context: Context, override var gaplessPlayback: Bo
 
     override val audioSessionId: Int get() = currentMediaPlayer.audioSessionId
 
-    /**
-     * Sets the audio session ID.
-     *
-     * @param sessionId The audio session ID
-     * @return success or not
-     */
+
     override fun setAudioSessionId(sessionId: Int): Boolean =
         try {
             currentMediaPlayer.audioSessionId = sessionId
@@ -301,9 +246,6 @@ class AudioPlayer(private val context: Context, override var gaplessPlayback: Bo
             false
         }
 
-    /**
-     * {@inheritDoc}
-     */
     override fun onError(mp: MediaPlayer, what: Int, extra: Int): Boolean {
         isInitialized = false
         currentMediaPlayer.release()
@@ -313,9 +255,6 @@ class AudioPlayer(private val context: Context, override var gaplessPlayback: Bo
         return false
     }
 
-    /**
-     * {@inheritDoc}
-     */
     override fun onCompletion(mp: MediaPlayer) {
         if (mp === currentMediaPlayer && nextMediaPlayer != null) {
             isInitialized = false

@@ -53,8 +53,8 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
     val service: MusicService get() = _service!!
 
 
-    private var _audioPlayer: AudioPlayer? = null
-    private val audioPlayer: AudioPlayer get() = _audioPlayer!!
+    private var _audioPlayer: Playback? = null
+    private val audioPlayer: Playback get() = _audioPlayer!!
 
     private var _wakeLock: WakeLock? = null
     private val wakeLock: WakeLock get() = _wakeLock!!
@@ -322,13 +322,13 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
         if (queueManager.playingQueue.isNotEmpty()) {
             if (audioFocusManager.requestAudioFocus()) {
                 checkAndRegisterBecomingNoisyReceiver(service)
-                if (!audioPlayer.isPlaying()) {
+                if (!audioPlayer.isPlaying) {
                     // Actual Logics Start
                     synchronized(this) {
                         if (!audioPlayer.isInitialized) {
                             playAtImp(queueManager.currentSongPosition)
                         } else {
-                            audioPlayer.start()
+                            audioPlayer.play()
 
                             playerState = PlayerState.PLAYING
                             pauseReason = NOT_PAUSED
@@ -369,7 +369,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
     }
 
     private fun pauseImp(force: Boolean = false, @PauseReasonInt reason: Int, releaseResource: Boolean = true) {
-        if (audioPlayer.isPlaying() || force) {
+        if (audioPlayer.isPlaying || force) {
             audioPlayer.pause()
             pauseReason = reason
             broadcastStopLyric()
@@ -383,14 +383,14 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
     }
 
     private fun togglePlayPauseImp() {
-        if (audioPlayer.isPlaying()) {
+        if (audioPlayer.isPlaying) {
             pauseImp(force = false, reason = PAUSE_BY_MANUAL_ACTION)
         } else {
             playImp()
         }
     }
 
-    override val isPlaying get() = audioPlayer.isInitialized && audioPlayer.isPlaying()
+    override val isPlaying get() = audioPlayer.isInitialized && audioPlayer.isPlaying
 
     /**
      * Jump to beginning of this song
