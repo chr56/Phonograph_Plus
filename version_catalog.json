@@ -1,6 +1,30 @@
 {
   "versions": [
     {
+      "channel": "preview",
+      "versionName": "1.8.4-dev1",
+      "versionCode": 1083,
+      "date": 1724600000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.8.4-dev1"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.4-dev1/PhonographPlus_1.8.4-dev1_ModernPreviewRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.4-dev1/PhonographPlus_1.8.4-dev1_LegacyPreviewRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>改进 播放列表内搜索功能</li><li>翻译 更新 法语(manafy)</li><li>开发 升级 Kotlin 至 2.0.20，更新依赖，清理代码</li></ol>",
+        "en": "<ol><li>Improve: Search function in Playlist Detail</li><li>Translation: update French (manafy)</li><li>Development: upgrade kotlin to 2.0.20, update dependencies</li></ol>"
+      }
+    },
+    {
       "channel": "stable",
       "versionName": "1.8.3",
       "versionCode": 1083,
@@ -22,30 +46,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>修复 媒体通知中的图像闪烁 (自 v1.8.1 起)</li><li>修复 设置界面的微小异常布局</li><li>翻译 更新 法语(manafy)、巴西葡萄牙语(Chacal)、意大利语(Enrico Storelli)</li><li>开发 升级 AGP 至 8.5.2，更新依赖，清理代码</li></ol>",
         "en": "<ol><li>Fix: blinking images in media notification since v1.8.1</li><li>Fix: minor inappropriate layout abnormalities in Settings</li><li>Translation: update French (manafy), Portuguese,Brazilian (by Chacal), Italian (by Enrico Storelli)</li><li>Development: upgrade AGP to 8.5.2, update dependencies, cleanup codes</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.8.3-dev1",
-      "versionCode": 1082,
-      "date": 1724000000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.8.3-dev1"
-        },
-        {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.3-dev1/PhonographPlus_1.8.3-dev1_ModernPreviewRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK(File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.3-dev1/PhonographPlus_1.8.3-dev1_LegacyPreviewRelease.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 媒体通知中的图像闪烁 (自 v1.8.1 起)</li><li>修复 设置界面的微小异常布局</li><li>翻译 更新 巴西葡萄牙语(Chacal)、意大利语(Enrico Storelli)</li><li>开发 升级 AGP 至 8.5.2，更新依赖，清理代码</li></ol>",
-        "en": "<ol><li>Fix: blinking images in media notification since v1.8.1</li><li>Fix: minor inappropriate layout abnormalities in Settings</li><li>Translation: update Portuguese,Brazilian (by Chacal), Italian (by Enrico Storelli)</li><li>Development: upgrade AGP to 8.5.2, update dependencies, cleanup codes</li></ol>"
       }
     },
     {
