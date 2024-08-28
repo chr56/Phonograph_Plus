@@ -1,6 +1,11 @@
 package player.phonograph.ui.activities
 
+import lib.activityresultcontract.registerActivityResultLauncherDelegate
 import lib.phonograph.misc.menuProvider
+import lib.storage.launcher.CreateFileStorageAccessDelegate
+import lib.storage.launcher.ICreateFileStorageAccessible
+import lib.storage.launcher.IOpenFileStorageAccessible
+import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.databinding.ActivityGenreDetailBinding
 import player.phonograph.mechanism.actions.DetailToolbarMenuProviders
 import player.phonograph.mechanism.event.MediaStoreTracker
@@ -31,7 +36,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 
-class GenreDetailActivity : AbsSlidingMusicPanelActivity() {
+class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
+                            ICreateFileStorageAccessible, IOpenFileStorageAccessible {
 
     private var _viewBinding: ActivityGenreDetailBinding? = null
     private val binding: ActivityGenreDetailBinding get() = _viewBinding!!
@@ -39,10 +45,20 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity() {
     private lateinit var genre: Genre
     private lateinit var adapter: SongDisplayAdapter
 
+    override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
+    override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         genre = parseIntent(intent) ?: throw IllegalArgumentException()
         loadDataSet(this)
         _viewBinding = ActivityGenreDetailBinding.inflate(layoutInflater)
+
+        registerActivityResultLauncherDelegate(
+            createFileStorageAccessDelegate,
+            openFileStorageAccessDelegate,
+        )
 
         super.onCreate(savedInstanceState)
 
