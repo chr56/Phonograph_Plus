@@ -1,6 +1,11 @@
 package player.phonograph.ui.activities
 
+import lib.activityresultcontract.registerActivityResultLauncherDelegate
 import lib.phonograph.misc.menuProvider
+import lib.storage.launcher.CreateFileStorageAccessDelegate
+import lib.storage.launcher.ICreateFileStorageAccessible
+import lib.storage.launcher.IOpenFileStorageAccessible
+import lib.storage.launcher.OpenFileStorageAccessDelegate
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
@@ -42,10 +47,15 @@ import kotlinx.coroutines.launch
 /**
  * Be careful when changing things in this Activity!
  */
-class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvider {
+class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvider,
+                            ICreateFileStorageAccessible, IOpenFileStorageAccessible {
 
     private lateinit var viewBinding: ActivityAlbumDetailBinding
     private val model: AlbumDetailActivityViewModel by viewModel { parametersOf(parseIntent(intent)) }
+
+    override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
+    override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
+
 
     private lateinit var adapter: SongDisplayAdapter
 
@@ -57,6 +67,13 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         autoSetStatusBarColor = false
         autoSetNavigationBarColor = false
         autoSetTaskDescriptionColor = false
+
+
+        registerActivityResultLauncherDelegate(
+            createFileStorageAccessDelegate,
+            openFileStorageAccessDelegate,
+        )
+
         super.onCreate(savedInstanceState)
 
         // activity
