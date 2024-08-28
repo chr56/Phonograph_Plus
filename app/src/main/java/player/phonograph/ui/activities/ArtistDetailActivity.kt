@@ -4,6 +4,10 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import lib.activityresultcontract.registerActivityResultLauncherDelegate
 import lib.phonograph.misc.menuProvider
+import lib.storage.launcher.CreateFileStorageAccessDelegate
+import lib.storage.launcher.ICreateFileStorageAccessible
+import lib.storage.launcher.IOpenFileStorageAccessible
+import lib.storage.launcher.OpenFileStorageAccessDelegate
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
@@ -47,10 +51,15 @@ import android.view.View
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvider, IGetContentRequester {
+class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvider, IGetContentRequester,
+                             ICreateFileStorageAccessible, IOpenFileStorageAccessible {
 
     private lateinit var viewBinding: ActivityArtistDetailBinding
     private val model: ArtistDetailActivityViewModel by viewModel { parametersOf(parseIntent(intent)) }
+
+    override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
+    override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
+
 
     private lateinit var albumAdapter: HorizontalAlbumDisplayAdapter
     private lateinit var songAdapter: SongDisplayAdapter
@@ -64,6 +73,12 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         autoSetStatusBarColor = false
         autoSetNavigationBarColor = false
         autoSetTaskDescriptionColor = false
+
+        registerActivityResultLauncherDelegate(
+            createFileStorageAccessDelegate,
+            openFileStorageAccessDelegate,
+        )
+
 
         super.onCreate(savedInstanceState)
 
