@@ -6,7 +6,12 @@ package player.phonograph.ui.modules.search
 
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import lib.activityresultcontract.registerActivityResultLauncherDelegate
 import lib.phonograph.misc.menuProvider
+import lib.storage.launcher.CreateFileStorageAccessDelegate
+import lib.storage.launcher.ICreateFileStorageAccessible
+import lib.storage.launcher.IOpenFileStorageAccessible
+import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
 import player.phonograph.databinding.ActivitySearchBinding
 import player.phonograph.databinding.PopupWindowSearchBinding
@@ -37,13 +42,16 @@ import android.view.Menu
 import android.view.MenuItem
 import kotlinx.coroutines.launch
 
-class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener {
+class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener,
+                       ICreateFileStorageAccessible, IOpenFileStorageAccessible {
 
     private var viewBinding: ActivitySearchBinding? = null
     val binding get() = viewBinding!!
 
     private val viewModel: SearchActivityViewModel by viewModels()
 
+    override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
+    override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
 
     private lateinit var searchResultPageAdapter: SearchResultPageAdapter
     private lateinit var mediator: TabLayoutMediator
@@ -52,6 +60,12 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewBinding = ActivitySearchBinding.inflate(layoutInflater)
+
+        registerActivityResultLauncherDelegate(
+            createFileStorageAccessDelegate,
+            openFileStorageAccessDelegate,
+        )
+
         super.onCreate(savedInstanceState)
 
         setContentView(binding.root)
