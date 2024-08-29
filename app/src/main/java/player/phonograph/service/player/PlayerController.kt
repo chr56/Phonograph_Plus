@@ -195,6 +195,287 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
             }
         }
 
+
+    inner class ControllerImpl : Controller, ServiceComponent, Playback.PlaybackCallbacks {
+
+        private var _audioPlayer: Playback? = null
+        private val audioPlayer: Playback get() = _audioPlayer!!
+
+
+        override fun onCreate(musicService: MusicService) {
+            _audioPlayer = VanillaAudioPlayer(service, false, this)
+        }
+
+        override fun onDestroy(musicService: MusicService) {
+            audioPlayer.release()
+            _audioPlayer = null
+        }
+
+        /**
+         * prepare current player data source safely
+         * @param song what to play now
+         * @return true if success
+         */
+        private fun prepareCurrentPlayer(song: Song): Boolean {
+            return if (song != Song.EMPTY_SONG) {
+                audioPlayer.setDataSource(getTrackUri(song.id).toString())
+            } else {
+                false
+            }
+        }
+
+        /**
+         * prepare next player data source safely
+         * @param song what to play now
+         */
+        private fun prepareNextPlayer(song: Song?) {
+            audioPlayer.setNextDataSource(
+                if (song != null && song != Song.EMPTY_SONG) getTrackUri(song.id).toString() else null
+            )
+        }
+
+        /**
+         * prepare current and next player and set queue cursor(position)
+         * @param position where to start in queue
+         * @return true if it is ready
+         */
+        private fun prepareSongs(position: Int): Boolean {
+            if (position < 0) {
+                log("prepareSongs", "illegal position $position")
+                return false
+            }
+            broadcastStopLyric()
+            log("prepareSongs:Before", dumpState(position))
+            return synchronized(this) {
+                queueManager.modifyPosition(position, false)
+                // playerState = PlayerState.PREPARING
+                prepareCurrentPlayer(queueManager.currentSong).also { setCurrentSuccess ->
+                    prepareNextPlayer(if (setCurrentSuccess) queueManager.nextSong else null)
+
+                    notifyNowPlayingChanged()
+
+                    log("prepareSongs:After", dumpState(position))
+                }
+            }
+        }
+
+        fun playAt(position: Int) {
+            if (prepareSongs(position)) {
+                play()
+            } else {
+                handler.post { checkFile(queueManager.currentSong.data) }
+                if (queueManager.repeatMode != RepeatMode.REPEAT_SINGLE_SONG) {
+                    jumpForward(false)
+                }
+            }
+            log("playAtImp", dumpState(position))
+        }
+
+        override fun play() {
+            if (queueManager.playingQueue.isNotEmpty()) {
+                if (audioFocusManager.requestAudioFocus()) {
+                    checkAndRegisterBecomingNoisyReceiver(service)
+                    if (!audioPlayer.isPlaying) {
+                        // Actual Logics Start
+                        synchronized(this) {
+                            if (!audioPlayer.isInitialized) {
+                                playAt(queueManager.currentSongPosition)
+                            } else {
+                                audioPlayer.play()
+
+                                playerState = PlayerState.PLAYING
+                                pauseReason = PauseReason.NOT_PAUSED
+                                acquireWakeLock(
+                                    queueManager.currentSong.duration - audioPlayer.position() + 1000L
+                                )
+                                handler.removeMessages(ControllerHandler.DUCK)
+                                handler.sendEmptyMessage(ControllerHandler.UNDUCK)
+                                handler.lyricsLoop() // start broadcast lyrics loop
+                            }
+                        }
+                        // Actual Logics End
+                    } else {
+                        log("playImp", "Already Playing!", true)
+                    }
+                } else {
+                    Toast.makeText(
+                        service,
+                        service.resources.getString(R.string.audio_focus_denied),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } else {
+                pause(true, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED)
+            }
+        }
+
+        override fun pause(releaseResource: Boolean, reason: Int) {
+            if (audioPlayer.pause()) {
+                pauseReason = reason
+                broadcastStopLyric()
+                playerState = PlayerState.PAUSED
+                if (releaseResource) releaseTakenResources()
+            } else {
+                log("pause", "Failed!")
+            }
+        }
+
+        override fun stop() {
+            audioPlayer.stop()
+            broadcastStopLyric()
+            playerState = PlayerState.STOPPED
+            releaseTakenResources()
+            observers.executeForEach {
+                onReceivingMessage(MSG_PLAYER_STOPPED)
+            }
+        }
+
+        override fun togglePlayPause() {
+            if (audioPlayer.isPlaying) {
+                pause(false, reason = PauseReason.PAUSE_BY_MANUAL_ACTION)
+            } else {
+                play()
+            }
+        }
+
+        override val isPlaying: Boolean
+            get() = audioPlayer.isInitialized && audioPlayer.isPlaying
+
+        override val songProgressMillis: Int
+            get() = if (audioPlayer.isInitialized) audioPlayer.position() else -1
+
+        override val songDurationMillis: Int
+            get() = if (audioPlayer.isInitialized) audioPlayer.duration() else -1
+
+
+        override fun seekTo(position: Long): Int {
+            return audioPlayer.seek(position.toInt())
+        }
+
+        override fun rewindToBeginning() {
+            seekTo(0)
+            service.requireRefreshMediaSessionState()
+        }
+
+        override fun jumpBackward(force: Boolean) {
+            val position =
+                if (force) {
+                    queueManager.previousLoopPosition
+                } else {
+                    queueManager.previousSongPosition
+                }
+            playAt(position)
+        }
+
+        override fun back(force: Boolean) {
+            if (audioPlayer.position() > 5000) {
+                rewindToBeginning()
+            } else {
+                jumpBackward(force)
+            }
+        }
+
+        override fun jumpForward(force: Boolean) {
+            val position =
+                if (force) {
+                    queueManager.nextLoopPosition
+                } else {
+                    queueManager.nextSongPosition
+                }
+            if (position >= 0) {
+                playAt(position)
+            } else {
+                pause(false, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED)
+                observers.executeForEach {
+                    onReceivingMessage(MSG_NO_MORE_SONGS)
+                }
+            }
+        }
+
+        override var playerSpeed
+            get() = audioPlayer.speed
+            set(speed) = handler.request {
+                audioPlayer.speed = speed
+            }
+
+        override fun setVolume(vol: Float) {
+            audioPlayer.setVolume(vol)
+        }
+
+        override val audioSessionId: Int get() = audioPlayer.audioSessionId
+
+        var gaplessPlayback
+            get() = audioPlayer.gaplessPlayback
+            set(value) {
+                audioPlayer.gaplessPlayback = value
+            }
+
+        override fun onTrackWentToNext() {
+            // check sleep timer
+            if (quitAfterFinishCurrentSong) {
+                handler.request { stop() }
+                return
+            }
+            handler.request {
+                queueManager.moveToNextSong(false)
+                notifyNowPlayingChanged()
+                prepareNextPlayer(queueManager.nextSong)
+            }
+        }
+
+        override fun onTrackEnded() {
+            // check sleep timer
+            if (quitAfterFinishCurrentSong) {
+                handler.request { stop() }
+                return
+            }
+            if (queueManager.isQueueEnded()) {
+                handler.request {
+                    pause(true, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED)
+                }
+                broadcastStopLyric()
+                observers.executeForEach {
+                    onReceivingMessage(MSG_NO_MORE_SONGS)
+                }
+            } else {
+                handler.request {
+                    prepareNextPlayer(queueManager.nextSong)
+                    queueManager.moveToNextSong(false)
+                    playAt(queueManager.currentSongPosition)
+                }
+            }
+        }
+
+        override fun onError(what: Int, extra: Int) {
+            val msg = makeErrorMessage(service.resources, what, extra, audioPlayer.currentDataSource)
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(service, msg, Toast.LENGTH_SHORT).show()
+            }
+            pauseReason = PauseReason.PAUSE_ERROR
+        }
+
+        private fun dumpState(position: Int): String =
+            "<@$position> current:${queueManager.currentSong.title}, next:${queueManager.nextSong.title}, state: $playerState"
+
+        private fun checkFile(path: String) {
+            val exists = try {
+                File(path).exists()
+            } catch (e: SecurityException) {
+                false
+            }
+            Toast.makeText(
+                service,
+                makeErrorMessage(service.resources, path, exists),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        fun saveCurrentMills() {
+            QueuePreferenceManager(service).currentMillisecond = audioPlayer.position()
+        }
+
+    }
+
     /**
      * prepare current and next player and set queue cursor(position)
      * @param position where to start in queue
