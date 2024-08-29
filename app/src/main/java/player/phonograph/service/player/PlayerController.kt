@@ -580,7 +580,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
         QueuePreferenceManager(service).currentMillisecond = audioPlayer.position()
     }
 
-    val audioSessionId: Int get() = audioPlayer.audioSessionId
+    override val audioSessionId: Int get() = audioPlayer.audioSessionId
 
     override fun setVolume(vol: Float) = handler.request { playerController ->
         playerController.audioPlayer.setVolume(vol)

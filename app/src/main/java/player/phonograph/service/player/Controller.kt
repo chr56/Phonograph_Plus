@@ -85,4 +85,5 @@ interface Controller {
 
     fun setVolume(vol: Float)
 
+    val audioSessionId: Int
 }
