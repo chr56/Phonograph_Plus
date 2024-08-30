@@ -196,7 +196,28 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
         }
 
 
-    inner class ControllerImpl : Controller, ServiceComponent, Playback.PlaybackCallbacks {
+    interface ControllerInternal : Controller, ServiceComponent {
+
+        fun playAt(position: Int)
+
+        /**
+         * prepare current player data source safely
+         * @param song what to play now
+         * @return true if success
+         */
+        fun prepareCurrentPlayer(song: Song): Boolean
+
+        /**
+         * prepare next player data source safely
+         * @param song what to play now
+         */
+        fun prepareNextPlayer(song: Song?)
+
+        fun saveCurrentMills()
+    }
+
+
+    inner class ControllerImpl : ControllerInternal, Playback.PlaybackCallbacks {
 
         private var _audioPlayer: Playback? = null
         private val audioPlayer: Playback get() = _audioPlayer!!
@@ -211,12 +232,8 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
             _audioPlayer = null
         }
 
-        /**
-         * prepare current player data source safely
-         * @param song what to play now
-         * @return true if success
-         */
-        private fun prepareCurrentPlayer(song: Song): Boolean {
+
+        override fun prepareCurrentPlayer(song: Song): Boolean {
             return if (song != Song.EMPTY_SONG) {
                 audioPlayer.setDataSource(getTrackUri(song.id).toString())
             } else {
@@ -224,11 +241,8 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
             }
         }
 
-        /**
-         * prepare next player data source safely
-         * @param song what to play now
-         */
-        private fun prepareNextPlayer(song: Song?) {
+
+        override fun prepareNextPlayer(song: Song?) {
             audioPlayer.setNextDataSource(
                 if (song != null && song != Song.EMPTY_SONG) getTrackUri(song.id).toString() else null
             )
@@ -259,7 +273,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
             }
         }
 
-        fun playAt(position: Int) {
+        override fun playAt(position: Int) {
             if (prepareSongs(position)) {
                 play()
             } else {
@@ -470,7 +484,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks, Controlle
             ).show()
         }
 
-        fun saveCurrentMills() {
+        override fun saveCurrentMills() {
             QueuePreferenceManager(service).currentMillisecond = audioPlayer.position()
         }
 
