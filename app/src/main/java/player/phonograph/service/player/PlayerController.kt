@@ -529,6 +529,17 @@ class PlayerController : ServiceComponent, Controller {
         }
     }
 
+    fun prepareNext() {
+        handler.post {
+            val controllerImpl = impl
+            if (controllerImpl is ControllerImpl) {
+                controllerImpl.prepareNextPlayer(
+                    if (controllerImpl.gaplessPlayback) queueManager.nextSong else null
+                )
+            }
+        }
+    }
+
     /**
      * Play songs from a certain position
      */

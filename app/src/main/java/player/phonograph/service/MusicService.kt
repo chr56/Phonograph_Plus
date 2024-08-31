@@ -163,8 +163,7 @@ class MusicService : MediaBrowserServiceCompat() {
         }
 
         private fun rePrepareNextSong() {
-            controller.handler.removeMessages(RE_PREPARE_NEXT_PLAYER)
-            controller.handler.sendEmptyMessage(RE_PREPARE_NEXT_PLAYER)
+            controller.prepareNext()
         }
     }
 
@@ -380,8 +379,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
                 // notify controller
                 if (queueManager.playingQueue.isNotEmpty()) {
-                    controller.handler.removeMessages(RE_PREPARE_NEXT_PLAYER)
-                    controller.handler.sendEmptyMessage(RE_PREPARE_NEXT_PLAYER)
+                    controller.prepareNext()
                 } else {
                     controller.stop()
                     playNotificationManager.cancelNotification()
