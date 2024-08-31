@@ -32,6 +32,13 @@ interface Controller {
 
 
     /**
+     * The reason of pause
+     */
+    @PauseReason
+    val pauseReason: Int
+
+
+    /**
      * True if it is playing
      */
     val isPlaying: Boolean

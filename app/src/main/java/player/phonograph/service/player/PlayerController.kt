@@ -346,6 +346,9 @@ class PlayerController : ServiceComponent, Controller {
             }
         }
 
+        @PauseReason
+        override var pauseReason: Int = PauseReason.NOT_PAUSED
+
         override val isPlaying: Boolean
             get() = audioPlayer.isInitialized && audioPlayer.isPlaying
 
@@ -549,8 +552,7 @@ class PlayerController : ServiceComponent, Controller {
         impl.play()
     }
 
-    @PauseReason
-    var pauseReason: Int = PauseReason.NOT_PAUSED
+    override val pauseReason: Int get() = impl.pauseReason
 
     /**
      * Pause
