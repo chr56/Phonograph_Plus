@@ -189,19 +189,6 @@ class PlayerController : ServiceComponent, Controller {
 
         fun playAt(position: Int)
 
-        /**
-         * prepare current player data source safely
-         * @param song what to play now
-         * @return true if success
-         */
-        fun prepareCurrentPlayer(song: Song): Boolean
-
-        /**
-         * prepare next player data source safely
-         * @param song what to play now
-         */
-        fun prepareNextPlayer(song: Song?)
-
         fun saveCurrentMills()
     }
 
@@ -232,7 +219,12 @@ class PlayerController : ServiceComponent, Controller {
         }
 
 
-        override fun prepareCurrentPlayer(song: Song): Boolean {
+        /**
+         * prepare current player data source safely
+         * @param song what to play now
+         * @return true if success
+         */
+        private fun prepareCurrentPlayer(song: Song): Boolean {
             return if (song != Song.EMPTY_SONG) {
                 audioPlayer.setDataSource(getTrackUri(song.id).toString())
             } else {
@@ -240,8 +232,11 @@ class PlayerController : ServiceComponent, Controller {
             }
         }
 
-
-        override fun prepareNextPlayer(song: Song?) {
+        /**
+         * prepare next player data source safely
+         * @param song what to play now
+         */
+        fun prepareNextPlayer(song: Song?) {
             audioPlayer.setNextDataSource(
                 if (song != null && song != Song.EMPTY_SONG) getTrackUri(song.id).toString() else null
             )
@@ -698,15 +693,6 @@ class PlayerController : ServiceComponent, Controller {
 
                 }
 
-                RE_PREPARE_NEXT_PLAYER -> synchronized(playerController.impl) {
-                    playerController.impl.prepareNextPlayer(playerController.queueManager.nextSong)
-                }
-
-
-                CLEAN_NEXT_PLAYER      -> synchronized(playerController.impl) {
-                    playerController.impl.prepareNextPlayer(null)
-                }
-
             }
         }
 
@@ -738,8 +724,6 @@ class PlayerController : ServiceComponent, Controller {
             const val DUCK = 20
             const val UNDUCK = 30
 
-            const val RE_PREPARE_NEXT_PLAYER = 40
-            const val CLEAN_NEXT_PLAYER = 41
         }
     }
 
