@@ -89,7 +89,7 @@ class PlayerController : ServiceComponent, Controller {
 
         // Prepare Player
 
-        _impl = ControllerImpl(this)
+        _impl = VanillaAudioPlayerControllerImpl(this)
         impl.onCreate(musicService)
 
 
@@ -141,7 +141,7 @@ class PlayerController : ServiceComponent, Controller {
         }
         collect(Keys.gaplessPlayback) { gaplessPlayback ->
             val controllerImpl = impl
-            if (controllerImpl is ControllerImpl) {
+            if (controllerImpl is VanillaAudioPlayerControllerImpl) {
                 handler.post {
                     controllerImpl.gaplessPlayback = gaplessPlayback
                     controllerImpl.prepareNextPlayer(
@@ -185,7 +185,9 @@ class PlayerController : ServiceComponent, Controller {
 
     interface ControllerInternal : Controller, ServiceComponent
 
-    class ControllerImpl(val controller: PlayerController) : ControllerInternal, Playback.PlaybackCallbacks {
+    class VanillaAudioPlayerControllerImpl(
+        val controller: PlayerController,
+    ) : ControllerInternal, Playback.PlaybackCallbacks {
 
         private var _service: MusicService? = null
         val service: MusicService get() = _service!!
@@ -539,7 +541,7 @@ class PlayerController : ServiceComponent, Controller {
     fun prepareNext() {
         handler.post {
             val controllerImpl = impl
-            if (controllerImpl is ControllerImpl) {
+            if (controllerImpl is VanillaAudioPlayerControllerImpl) {
                 controllerImpl.prepareNextPlayer(
                     if (controllerImpl.gaplessPlayback) queueManager.nextSong else null
                 )
