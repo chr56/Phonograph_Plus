@@ -15,22 +15,20 @@ import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
+import player.phonograph.util.mediaStoreSongUri
 import player.phonograph.util.registerReceiverCompat
 import androidx.core.content.ContextCompat
 import android.content.BroadcastReceiver
-import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
-import android.net.Uri
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
 import android.os.Message
 import android.os.PowerManager
 import android.os.PowerManager.WakeLock
-import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import kotlinx.coroutines.SupervisorJob
@@ -220,7 +218,7 @@ class PlayerController : ServiceComponent, Controller {
          */
         private fun prepareCurrentPlayer(song: Song): Boolean {
             return if (song != Song.EMPTY_SONG) {
-                audioPlayer.setDataSource(getTrackUri(song.id).toString())
+                audioPlayer.setDataSource(mediaStoreSongUri(song.id).toString())
             } else {
                 false
             }
@@ -232,7 +230,7 @@ class PlayerController : ServiceComponent, Controller {
          */
         fun prepareNextPlayer(song: Song?) {
             audioPlayer.setNextDataSource(
-                if (song != null && song != Song.EMPTY_SONG) getTrackUri(song.id).toString() else null
+                if (song != null && song != Song.EMPTY_SONG) mediaStoreSongUri(song.id).toString() else null
             )
         }
 
@@ -617,11 +615,6 @@ class PlayerController : ServiceComponent, Controller {
     private var audioDucking: Boolean = true
 
     private var broadcastSynchronizedLyrics: Boolean = false
-
-    companion object {
-        private fun getTrackUri(songId: Long): Uri =
-            ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, songId)
-    }
 
     fun saveCurrentMills() = handler.request {
         QueuePreferenceManager(service).currentMillisecond = impl.songProgressMillis

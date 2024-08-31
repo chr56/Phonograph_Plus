@@ -36,6 +36,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.provider.MediaStore
+import android.provider.MediaStore.Audio
 import android.util.Log
 import android.widget.Toast
 import kotlin.coroutines.CoroutineContext
@@ -224,6 +225,8 @@ private val albumArtContentUri: Uri by lazy(LazyThreadSafetyMode.NONE) {
 }
 
 fun mediaStoreAlbumArtUri(albumId: Long): Uri = ContentUris.withAppendedId(albumArtContentUri, albumId)
+
+fun mediaStoreSongUri(songId: Long): Uri = ContentUris.withAppendedId(Audio.Media.EXTERNAL_CONTENT_URI, songId)
 
 
 fun openOutputStreamSafe(context: Context, uri: Uri, mode: String): OutputStream? =
