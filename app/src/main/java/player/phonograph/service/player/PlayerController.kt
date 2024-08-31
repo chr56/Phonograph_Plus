@@ -185,13 +185,7 @@ class PlayerController : ServiceComponent, Controller {
         }
 
 
-    interface ControllerInternal : Controller, ServiceComponent {
-
-        fun playAt(position: Int)
-
-        fun saveCurrentMills()
-    }
-
+    interface ControllerInternal : Controller, ServiceComponent
 
     inner class ControllerImpl : ControllerInternal, Playback.PlaybackCallbacks {
 
@@ -481,10 +475,6 @@ class PlayerController : ServiceComponent, Controller {
             ).show()
         }
 
-        override fun saveCurrentMills() {
-            QueuePreferenceManager(service).currentMillisecond = audioPlayer.position()
-        }
-
         //region BecomingNoisyReceiver
         private var becomingNoisyReceiverRegistered = false
         private fun checkAndRegisterBecomingNoisyReceiver(context: Context) {
@@ -541,7 +531,7 @@ class PlayerController : ServiceComponent, Controller {
     /**
      * Play songs from a certain position
      */
-    fun playAt(position: Int) = handler.request {
+    override fun playAt(position: Int) = handler.request {
         impl.playAt(position)
     }
 
@@ -634,7 +624,7 @@ class PlayerController : ServiceComponent, Controller {
     }
 
     fun saveCurrentMills() = handler.request {
-        impl.saveCurrentMills()
+        QueuePreferenceManager(service).currentMillisecond = impl.songProgressMillis
     }
 
     override val audioSessionId: Int get() = impl.audioSessionId
@@ -665,7 +655,7 @@ class PlayerController : ServiceComponent, Controller {
         override fun handleMessage(msg: Message) {
             when (msg.what) {
 
-                DUCK                   -> {
+                DUCK   -> {
                     if (playerController.audioDucking) {
                         currentDuckVolume -= .05f
                         if (currentDuckVolume > .2f) {
@@ -680,7 +670,7 @@ class PlayerController : ServiceComponent, Controller {
 
                 }
 
-                UNDUCK                 -> {
+                UNDUCK -> {
                     if (playerController.audioDucking) {
                         currentDuckVolume += .03f
                         if (currentDuckVolume < 1f) {

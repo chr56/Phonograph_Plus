@@ -32,6 +32,13 @@ interface Controller {
 
 
     /**
+     * Play the given position in queue
+     * @param position position in queue
+     */
+    fun playAt(position: Int)
+
+
+    /**
      * The reason of pause
      */
     @PauseReason
