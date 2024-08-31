@@ -98,9 +98,6 @@ class PlayerController : ServiceComponent, Controller {
         _lyricsUpdater = LyricsUpdater()
         lyricsUpdater.onCreate(service)
 
-
-        restorePosition()
-
         observeSettings(musicService)
     }
 
@@ -113,8 +110,6 @@ class PlayerController : ServiceComponent, Controller {
         impl.onDestroy(musicService)
         _impl = null
 
-
-        unregisterBecomingNoisyReceiver(service)
         audioFocusManager.abandonAudioFocus()
         releaseWakeLock()
 
@@ -147,14 +142,13 @@ class PlayerController : ServiceComponent, Controller {
             ignoreAudioFocus = value
         }
         collect(Keys.gaplessPlayback) { gaplessPlayback ->
-            (impl as? ControllerImpl)?.gaplessPlayback = gaplessPlayback
-            handler.apply {
-                if (gaplessPlayback) {
-                    removeMessages(ControllerHandler.RE_PREPARE_NEXT_PLAYER)
-                    sendEmptyMessage(ControllerHandler.RE_PREPARE_NEXT_PLAYER)
-                } else {
-                    removeMessages(ControllerHandler.CLEAN_NEXT_PLAYER)
-                    sendEmptyMessage(ControllerHandler.CLEAN_NEXT_PLAYER)
+            val controllerImpl = impl
+            if (controllerImpl is ControllerImpl) {
+                handler.post {
+                    controllerImpl.gaplessPlayback = gaplessPlayback
+                    controllerImpl.prepareNextPlayer(
+                        if (gaplessPlayback) queueManager.nextSong else null
+                    )
                 }
             }
         }
@@ -162,17 +156,6 @@ class PlayerController : ServiceComponent, Controller {
             broadcastSynchronizedLyrics = value
         }
     }
-
-    private fun restorePosition() {
-        impl.prepareCurrentPlayer(queueManager.currentSong).let { success ->
-            if (success) {
-                val restoredPositionInTrack = QueuePreferenceManager(service).currentMillisecond
-                if (restoredPositionInTrack > 0) seekTo(restoredPositionInTrack.toLong())
-            }
-        }
-    }
-
-    private var broadcastSynchronizedLyrics: Boolean = false
 
     /**
      * release taken resources but not vitals
@@ -230,12 +213,22 @@ class PlayerController : ServiceComponent, Controller {
 
 
         override fun onCreate(musicService: MusicService) {
-            _audioPlayer = VanillaAudioPlayer(service, false, this)
+            _audioPlayer = VanillaAudioPlayer(musicService, false, this)
+
+            restore(musicService)
         }
 
         override fun onDestroy(musicService: MusicService) {
+            unregisterBecomingNoisyReceiver(musicService)
             audioPlayer.release()
             _audioPlayer = null
+        }
+
+        private fun restore(musicService: MusicService) {
+            if (prepareCurrentPlayer(queueManager.currentSong)) {
+                val restored = QueuePreferenceManager(musicService).currentMillisecond
+                if (restored > 0) seekTo(restored.toLong())
+            }
         }
 
 
@@ -494,6 +487,37 @@ class PlayerController : ServiceComponent, Controller {
             QueuePreferenceManager(service).currentMillisecond = audioPlayer.position()
         }
 
+        //region BecomingNoisyReceiver
+        private var becomingNoisyReceiverRegistered = false
+        private fun checkAndRegisterBecomingNoisyReceiver(context: Context) {
+            if (!becomingNoisyReceiverRegistered) {
+                context.registerReceiverCompat(
+                    becomingNoisyReceiver,
+                    IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY),
+                    ContextCompat.RECEIVER_EXPORTED
+                )
+                becomingNoisyReceiverRegistered = true
+            }
+        }
+
+        private fun unregisterBecomingNoisyReceiver(context: Context) {
+            if (becomingNoisyReceiverRegistered) {
+                context.unregisterReceiver(becomingNoisyReceiver)
+                becomingNoisyReceiverRegistered = false
+            }
+        }
+
+        private val becomingNoisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
+                    handler.request {
+                        pause(releaseResource = true, reason = PauseReason.PAUSE_FOR_AUDIO_BECOMING_NOISY)
+                    }
+                }
+            }
+        }
+        //endregion
+
     }
 
     private fun notifyNowPlayingChanged() {
@@ -592,38 +616,13 @@ class PlayerController : ServiceComponent, Controller {
 
     var ignoreAudioFocus: Boolean = false
 
-    var audioDucking: Boolean = true
+    private var audioDucking: Boolean = true
+
+    private var broadcastSynchronizedLyrics: Boolean = false
 
     companion object {
         private fun getTrackUri(songId: Long): Uri =
             ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, songId)
-    }
-
-    private var becomingNoisyReceiverRegistered = false
-    private fun checkAndRegisterBecomingNoisyReceiver(context: Context) {
-        if (!becomingNoisyReceiverRegistered) {
-            context.registerReceiverCompat(
-                becomingNoisyReceiver,
-                IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY),
-                ContextCompat.RECEIVER_EXPORTED
-            )
-            becomingNoisyReceiverRegistered = true
-        }
-    }
-
-    private fun unregisterBecomingNoisyReceiver(context: Context) {
-        if (becomingNoisyReceiverRegistered) {
-            context.unregisterReceiver(becomingNoisyReceiver)
-            becomingNoisyReceiverRegistered = false
-        }
-    }
-
-    private val becomingNoisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
-                pause(releaseResource = true, reason = PauseReason.PAUSE_FOR_AUDIO_BECOMING_NOISY)
-            }
-        }
     }
 
     fun saveCurrentMills() = handler.request {
