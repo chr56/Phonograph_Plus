@@ -89,7 +89,7 @@ class PlayerController : ServiceComponent, Controller {
 
         // Prepare Player
 
-        _impl = ControllerImpl()
+        _impl = ControllerImpl(this)
         impl.onCreate(musicService)
 
 
@@ -185,14 +185,26 @@ class PlayerController : ServiceComponent, Controller {
 
     interface ControllerInternal : Controller, ServiceComponent
 
-    inner class ControllerImpl : ControllerInternal, Playback.PlaybackCallbacks {
+    class ControllerImpl(val controller: PlayerController) : ControllerInternal, Playback.PlaybackCallbacks {
+
+        private var _service: MusicService? = null
+        val service: MusicService get() = _service!!
 
         private var _audioPlayer: Playback? = null
         private val audioPlayer: Playback get() = _audioPlayer!!
 
+        private var _queueManager: QueueManager? = null
+        private val queueManager: QueueManager get() = _queueManager!!
+
+        private val handler: ControllerHandler get() = controller.handler
+        private val audioFocusManager: AudioFocusManager get() = controller.audioFocusManager
 
         override fun onCreate(musicService: MusicService) {
+            _service = musicService
+
             _audioPlayer = VanillaAudioPlayer(musicService, false, this)
+
+            _queueManager = musicService.queueManager
 
             restore(musicService)
         }
@@ -200,8 +212,13 @@ class PlayerController : ServiceComponent, Controller {
         override fun onDestroy(musicService: MusicService) {
             unregisterBecomingNoisyReceiver(musicService)
             audioPlayer.release()
+
+            _queueManager = null
             _audioPlayer = null
+
+            _service = null
         }
+
 
         private fun restore(musicService: MusicService) {
             if (prepareCurrentPlayer(queueManager.currentSong)) {
@@ -244,7 +261,7 @@ class PlayerController : ServiceComponent, Controller {
                 log("prepareSongs", "illegal position $position")
                 return false
             }
-            broadcastStopLyric()
+            controller.broadcastStopLyric()
             log("prepareSongs:Before", dumpState(position))
             return synchronized(this) {
                 queueManager.modifyPosition(position, false)
@@ -252,7 +269,7 @@ class PlayerController : ServiceComponent, Controller {
                 prepareCurrentPlayer(queueManager.currentSong).also { setCurrentSuccess ->
                     prepareNextPlayer(if (setCurrentSuccess) queueManager.nextSong else null)
 
-                    notifyNowPlayingChanged()
+                    controller.notifyNowPlayingChanged()
 
                     log("prepareSongs:After", dumpState(position))
                 }
@@ -263,7 +280,7 @@ class PlayerController : ServiceComponent, Controller {
             if (prepareSongs(position)) {
                 play()
             } else {
-                handler.post { checkFile(queueManager.currentSong.data) }
+                controller.handler.post { checkFile(queueManager.currentSong.data) }
                 if (queueManager.repeatMode != RepeatMode.REPEAT_SINGLE_SONG) {
                     jumpForward(false)
                 }
@@ -283,9 +300,9 @@ class PlayerController : ServiceComponent, Controller {
                             } else {
                                 audioPlayer.play()
 
-                                playerState = PlayerState.PLAYING
+                                controller.playerState = PlayerState.PLAYING
                                 pauseReason = PauseReason.NOT_PAUSED
-                                acquireWakeLock(
+                                controller.acquireWakeLock(
                                     queueManager.currentSong.duration - audioPlayer.position() + 1000L
                                 )
                                 handler.removeMessages(ControllerHandler.DUCK)
@@ -312,9 +329,9 @@ class PlayerController : ServiceComponent, Controller {
         override fun pause(releaseResource: Boolean, reason: Int) {
             if (audioPlayer.pause()) {
                 pauseReason = reason
-                broadcastStopLyric()
-                playerState = PlayerState.PAUSED
-                if (releaseResource) releaseTakenResources()
+                controller.broadcastStopLyric()
+                controller.playerState = PlayerState.PAUSED
+                if (releaseResource) controller.releaseTakenResources()
             } else {
                 log("pause", "Failed!")
             }
@@ -322,10 +339,10 @@ class PlayerController : ServiceComponent, Controller {
 
         override fun stop() {
             audioPlayer.stop()
-            broadcastStopLyric()
-            playerState = PlayerState.STOPPED
-            releaseTakenResources()
-            observers.executeForEach {
+            controller.broadcastStopLyric()
+            controller.playerState = PlayerState.STOPPED
+            controller.releaseTakenResources()
+            controller.observers.executeForEach {
                 onReceivingMessage(MSG_PLAYER_STOPPED)
             }
         }
@@ -389,7 +406,7 @@ class PlayerController : ServiceComponent, Controller {
                 playAt(position)
             } else {
                 pause(false, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED)
-                observers.executeForEach {
+                controller.observers.executeForEach {
                     onReceivingMessage(MSG_NO_MORE_SONGS)
                 }
             }
@@ -415,20 +432,20 @@ class PlayerController : ServiceComponent, Controller {
 
         override fun onTrackWentToNext() {
             // check sleep timer
-            if (quitAfterFinishCurrentSong) {
+            if (controller.quitAfterFinishCurrentSong) {
                 handler.request { stop() }
                 return
             }
             handler.request {
                 queueManager.moveToNextSong(false)
-                notifyNowPlayingChanged()
+                controller.notifyNowPlayingChanged()
                 prepareNextPlayer(queueManager.nextSong)
             }
         }
 
         override fun onTrackEnded() {
             // check sleep timer
-            if (quitAfterFinishCurrentSong) {
+            if (controller.quitAfterFinishCurrentSong) {
                 handler.request { stop() }
                 return
             }
@@ -436,8 +453,8 @@ class PlayerController : ServiceComponent, Controller {
                 handler.request {
                     pause(true, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED)
                 }
-                broadcastStopLyric()
-                observers.executeForEach {
+                controller.broadcastStopLyric()
+                controller.observers.executeForEach {
                     onReceivingMessage(MSG_NO_MORE_SONGS)
                 }
             } else {
@@ -458,7 +475,7 @@ class PlayerController : ServiceComponent, Controller {
         }
 
         private fun dumpState(position: Int): String =
-            "<@$position> current:${queueManager.currentSong.title}, next:${queueManager.nextSong.title}, state: $playerState"
+            "<@$position> current:${queueManager.currentSong.title}, next:${queueManager.nextSong.title}, state: ${controller.playerState}"
 
         private fun checkFile(path: String) {
             val exists = try {
@@ -471,6 +488,10 @@ class PlayerController : ServiceComponent, Controller {
                 makeErrorMessage(service.resources, path, exists),
                 Toast.LENGTH_SHORT
             ).show()
+        }
+
+        private fun log(where: String, msg: String, force: Boolean = false) {
+            if (DEBUG || force) Log.i("ControllerImpl", "<$where>$msg")
         }
 
         //region BecomingNoisyReceiver
@@ -729,10 +750,6 @@ class PlayerController : ServiceComponent, Controller {
         } else {
             lyricsUpdater.clear()
         }
-    }
-
-    private fun log(where: String, msg: String, force: Boolean = false) {
-        if (DEBUG || force) Log.i("PlayerController", "※$msg @$where")
     }
 
 }
