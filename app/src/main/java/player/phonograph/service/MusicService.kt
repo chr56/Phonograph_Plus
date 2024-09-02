@@ -29,8 +29,8 @@ import player.phonograph.service.notification.PlayingNotificationManager
 import player.phonograph.service.notification.PlayingNotificationManager.Companion.VERSION_SET_COVER_USING_METADATA
 import player.phonograph.service.player.MSG_NOW_PLAYING_CHANGED
 import player.phonograph.service.player.MediaSessionController
+import player.phonograph.service.player.PauseReason
 import player.phonograph.service.player.PlayerController
-import player.phonograph.service.player.PlayerController.ControllerHandler.Companion.RE_PREPARE_NEXT_PLAYER
 import player.phonograph.service.player.PlayerState
 import player.phonograph.service.player.PlayerStateObserver
 import player.phonograph.service.queue.QueueManager
@@ -162,8 +162,7 @@ class MusicService : MediaBrowserServiceCompat() {
         }
 
         private fun rePrepareNextSong() {
-            controller.handler.removeMessages(RE_PREPARE_NEXT_PLAYER)
-            controller.handler.sendEmptyMessage(RE_PREPARE_NEXT_PLAYER)
+            controller.prepareNext()
         }
     }
 
@@ -236,9 +235,18 @@ class MusicService : MediaBrowserServiceCompat() {
         GlobalContext.get().inject<IFavorite>().value.toggleFavorite(this@MusicService, song)
     }
 
+
+    fun addPlayerStateObserver(observer: PlayerStateObserver) {
+        controller.addObserver(observer)
+    }
+
+    fun removePlayerStateObserver(observer: PlayerStateObserver) {
+        controller.removeObserver(observer)
+    }
+
     val playerState get() = controller.playerState
 
-    val isPlaying: Boolean get() = controller.isPlaying()
+    val isPlaying: Boolean get() = controller.isPlaying
 
     var isDestroyed = false
         private set
@@ -276,18 +284,14 @@ class MusicService : MediaBrowserServiceCompat() {
     }
 
     fun playSongAt(position: Int) = controller.playAt(position)
-    fun pause() = controller.pause(releaseResource = true, reason = PlayerController.PAUSE_BY_MANUAL_ACTION)
+    fun pause() = controller.pause(releaseResource = true, reason = PauseReason.PAUSE_BY_MANUAL_ACTION)
     fun play() = controller.play()
     fun playPreviousSong(force: Boolean) = controller.jumpBackward(force)
     fun back(force: Boolean) = controller.back(force)
     fun playNextSong(force: Boolean) = controller.jumpForward(force)
-    val songProgressMillis: Int get() = controller.getSongProgressMillis()
-    val songDurationMillis: Int get() = controller.getSongDurationMillis()
-    var speed: Float
-        get() = controller.playerSpeed()
-        set(value) {
-            controller.setPlayerSpeed(value)
-        }
+    val songProgressMillis: Int get() = controller.songProgressMillis
+    val songDurationMillis: Int get() = controller.songDurationMillis
+    var speed: Float by controller::playerSpeed
 
     fun seek(millis: Int): Int = synchronized(this) {
         return try {
@@ -374,8 +378,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
                 // notify controller
                 if (queueManager.playingQueue.isNotEmpty()) {
-                    controller.handler.removeMessages(RE_PREPARE_NEXT_PLAYER)
-                    controller.handler.sendEmptyMessage(RE_PREPARE_NEXT_PLAYER)
+                    controller.prepareNext()
                 } else {
                     controller.stop()
                     playNotificationManager.cancelNotification()
@@ -456,7 +459,7 @@ class MusicService : MediaBrowserServiceCompat() {
         private val onSetCancelableNotification = Runnable {
             if (controller.playerState != PlayerState.PLAYING) {
                 when (controller.pauseReason) {
-                    PlayerController.PAUSE_BY_MANUAL_ACTION, PlayerController.PAUSE_FOR_QUEUE_ENDED, PlayerController.PAUSE_ERROR,
+                    PauseReason.PAUSE_BY_MANUAL_ACTION, PauseReason.PAUSE_FOR_QUEUE_ENDED, PauseReason.PAUSE_ERROR,
                     -> stopForeground(STOP_FOREGROUND_DETACH)
                 }
             }

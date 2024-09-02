@@ -15,32 +15,25 @@ import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
+import player.phonograph.util.mediaStoreSongUri
 import player.phonograph.util.registerReceiverCompat
-import androidx.annotation.IntDef
 import androidx.core.content.ContextCompat
 import android.content.BroadcastReceiver
-import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
-import android.net.Uri
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
 import android.os.Message
 import android.os.PowerManager
 import android.os.PowerManager.WakeLock
-import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -48,14 +41,14 @@ import java.io.File
 /**
  * @author chr_56 & Abou Zeid (kabouzeid) (original author)
  */
-class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
+class PlayerController : ServiceComponent, Controller {
 
     private var _service: MusicService? = null
-    internal val service: MusicService get() = _service!!
+    val service: MusicService get() = _service!!
 
 
-    private var _audioPlayer: AudioPlayer? = null
-    private val audioPlayer: AudioPlayer get() = _audioPlayer!!
+    private var _impl: ControllerInternal? = null
+    private val impl: ControllerInternal get() = _impl!!
 
     private var _wakeLock: WakeLock? = null
     private val wakeLock: WakeLock get() = _wakeLock!!
@@ -78,8 +71,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
     override fun onCreate(musicService: MusicService) {
         _service = musicService
 
-        _audioPlayer = AudioPlayer(service, false /* default */, this)
-
+        // acquire resources
         _wakeLock =
             (service.getSystemService(Context.POWER_SERVICE) as PowerManager)
                 .newWakeLock(
@@ -95,36 +87,38 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
         thread.start()
         _handler = ControllerHandler(this, thread.looper)
 
+        // Prepare Player
+
+        _impl = VanillaAudioPlayerControllerImpl(this)
+        impl.onCreate(musicService)
+
 
         _lyricsUpdater = LyricsUpdater()
         lyricsUpdater.onCreate(service)
-
-
-        restorePosition()
 
         observeSettings(musicService)
     }
 
     override fun onDestroy(musicService: MusicService) {
 
-        stopImp()
-        unregisterBecomingNoisyReceiver(service)
-
         lyricsUpdater.onDestroy(musicService)
         _lyricsUpdater = null
+
+        impl.stop()
+        impl.onDestroy(musicService)
+        _impl = null
+
+        audioFocusManager.abandonAudioFocus()
+        releaseWakeLock()
+
+        _wakeLock = null
+        _audioFocusManager = null
+
 
         thread.quitSafely()
         handler.looper.quitSafely()
         _thread = null
         _handler = null
-
-
-        releaseWakeLock()
-        audioFocusManager.abandonAudioFocus()
-        audioPlayer.release()
-        _wakeLock = null
-        _audioFocusManager = null
-        _audioPlayer = null
 
         _service = null
     }
@@ -146,14 +140,13 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
             ignoreAudioFocus = value
         }
         collect(Keys.gaplessPlayback) { gaplessPlayback ->
-            audioPlayer.gaplessPlayback = gaplessPlayback
-            handler.apply {
-                if (gaplessPlayback) {
-                    removeMessages(ControllerHandler.RE_PREPARE_NEXT_PLAYER)
-                    sendEmptyMessage(ControllerHandler.RE_PREPARE_NEXT_PLAYER)
-                } else {
-                    removeMessages(ControllerHandler.CLEAN_NEXT_PLAYER)
-                    sendEmptyMessage(ControllerHandler.CLEAN_NEXT_PLAYER)
+            val controllerImpl = impl
+            if (controllerImpl is VanillaAudioPlayerControllerImpl) {
+                handler.post {
+                    controllerImpl.gaplessPlayback = gaplessPlayback
+                    controllerImpl.prepareNextPlayer(
+                        if (gaplessPlayback) queueManager.nextSong else null
+                    )
                 }
             }
         }
@@ -161,17 +154,6 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
             broadcastSynchronizedLyrics = value
         }
     }
-
-    private fun restorePosition() {
-        prepareCurrentPlayer(queueManager.currentSong).let { success ->
-            if (success) {
-                val restoredPositionInTrack = QueuePreferenceManager(service).currentMillisecond
-                if (restoredPositionInTrack > 0) seekTo(restoredPositionInTrack.toLong())
-            }
-        }
-    }
-
-    private var broadcastSynchronizedLyrics: Boolean = false
 
     /**
      * release taken resources but not vitals
@@ -191,47 +173,360 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
         }
     }
 
-    private var _playerState: PlayerState = PlayerState.PREPARING
-    var playerState: PlayerState
-        get() = _playerState
+    var playerState: PlayerState = PlayerState.PREPARING
         private set(value) {
-            val oldState = _playerState
-            synchronized(_playerState) {
-                _playerState = value
+            synchronized(field) {
+                val oldState = field
+                field = value
+                observers.executeForEach { onPlayerStateChanged(oldState, value) }
             }
-            observers.executeForEach { onPlayerStateChanged(oldState, value) }
-            _state.update { _playerState }
         }
 
-    /**
-     * prepare current and next player and set queue cursor(position)
-     * @param position where to start in queue
-     * @return true if it is ready
-     */
-    private fun prepareSongsImp(position: Int): Boolean {
-        if (position < 0) {
-            log("prepareSongsImp", "illegal position")
-            return false
+
+    interface ControllerInternal : Controller, ServiceComponent
+
+    class VanillaAudioPlayerControllerImpl(
+        val controller: PlayerController,
+    ) : ControllerInternal, Playback.PlaybackCallbacks {
+
+        private var _service: MusicService? = null
+        val service: MusicService get() = _service!!
+
+        private var _audioPlayer: Playback? = null
+        private val audioPlayer: Playback get() = _audioPlayer!!
+
+        private var _queueManager: QueueManager? = null
+        private val queueManager: QueueManager get() = _queueManager!!
+
+        private val handler: ControllerHandler get() = controller.handler
+        private val audioFocusManager: AudioFocusManager get() = controller.audioFocusManager
+
+        override fun onCreate(musicService: MusicService) {
+            _service = musicService
+
+            _audioPlayer = VanillaAudioPlayer(musicService, false, this)
+
+            _queueManager = musicService.queueManager
+
+            restore(musicService)
         }
-        // todo: change STATE if possible
-        broadcastStopLyric()
-        log(
-            "prepareSongsImp:Before",
-            "current:${queueManager.currentSong.title} ,next:${queueManager.nextSong.title}"
-        )
-        return synchronized(this) {
-            queueManager.modifyPosition(position, false)
-            prepareCurrentPlayer(queueManager.currentSong).also { setCurrentSuccess ->
-                prepareNextPlayer(if (setCurrentSuccess) queueManager.nextSong else null)
 
-                notifyNowPlayingChanged()
+        override fun onDestroy(musicService: MusicService) {
+            unregisterBecomingNoisyReceiver(musicService)
+            audioPlayer.release()
 
-                log(
-                    "prepareSongsImp:After",
-                    "current:${queueManager.currentSong.title}, next:${queueManager.nextSong.title}"
+            _queueManager = null
+            _audioPlayer = null
+
+            _service = null
+        }
+
+
+        private fun restore(musicService: MusicService) {
+            if (prepareCurrentPlayer(queueManager.currentSong)) {
+                val restored = QueuePreferenceManager(musicService).currentMillisecond
+                if (restored > 0) seekTo(restored.toLong())
+            }
+        }
+
+
+        /**
+         * prepare current player data source safely
+         * @param song what to play now
+         * @return true if success
+         */
+        private fun prepareCurrentPlayer(song: Song): Boolean {
+            return if (song != Song.EMPTY_SONG) {
+                audioPlayer.setDataSource(mediaStoreSongUri(song.id).toString())
+            } else {
+                false
+            }
+        }
+
+        /**
+         * prepare next player data source safely
+         * @param song what to play now
+         */
+        fun prepareNextPlayer(song: Song?) {
+            audioPlayer.setNextDataSource(
+                if (song != null && song != Song.EMPTY_SONG) mediaStoreSongUri(song.id).toString() else null
+            )
+        }
+
+        /**
+         * prepare current and next player and set queue cursor(position)
+         * @param position where to start in queue
+         * @return true if it is ready
+         */
+        private fun prepareSongs(position: Int): Boolean {
+            if (position < 0) {
+                log("prepareSongs", "illegal position $position")
+                return false
+            }
+            controller.broadcastStopLyric()
+            log("prepareSongs:Before", dumpState(position))
+            return synchronized(this) {
+                queueManager.modifyPosition(position, false)
+                // playerState = PlayerState.PREPARING
+                prepareCurrentPlayer(queueManager.currentSong).also { setCurrentSuccess ->
+                    prepareNextPlayer(if (setCurrentSuccess) queueManager.nextSong else null)
+
+                    controller.notifyNowPlayingChanged()
+
+                    log("prepareSongs:After", dumpState(position))
+                }
+            }
+        }
+
+        override fun playAt(position: Int) {
+            if (prepareSongs(position)) {
+                play()
+            } else {
+                controller.handler.post { checkFile(queueManager.currentSong.data) }
+                if (queueManager.repeatMode != RepeatMode.REPEAT_SINGLE_SONG) {
+                    jumpForward(false)
+                }
+            }
+            log("playAtImp", dumpState(position))
+        }
+
+        override fun play() {
+            if (queueManager.playingQueue.isNotEmpty()) {
+                if (audioFocusManager.requestAudioFocus()) {
+                    checkAndRegisterBecomingNoisyReceiver(service)
+                    if (!audioPlayer.isPlaying) {
+                        // Actual Logics Start
+                        synchronized(this) {
+                            if (!audioPlayer.isInitialized) {
+                                playAt(queueManager.currentSongPosition)
+                            } else {
+                                audioPlayer.play()
+
+                                controller.playerState = PlayerState.PLAYING
+                                pauseReason = PauseReason.NOT_PAUSED
+                                controller.acquireWakeLock(
+                                    queueManager.currentSong.duration - audioPlayer.position() + 1000L
+                                )
+                                handler.removeMessages(ControllerHandler.DUCK)
+                                handler.sendEmptyMessage(ControllerHandler.UNDUCK)
+                                handler.lyricsLoop() // start broadcast lyrics loop
+                            }
+                        }
+                        // Actual Logics End
+                    } else {
+                        log("playImp", "Already Playing!", true)
+                    }
+                } else {
+                    Toast.makeText(
+                        service,
+                        service.resources.getString(R.string.audio_focus_denied),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } else {
+                pause(true, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED)
+            }
+        }
+
+        override fun pause(releaseResource: Boolean, reason: Int) {
+            if (audioPlayer.pause()) {
+                pauseReason = reason
+                controller.broadcastStopLyric()
+                controller.playerState = PlayerState.PAUSED
+                if (releaseResource) controller.releaseTakenResources()
+            } else {
+                log("pause", "Failed!")
+            }
+        }
+
+        override fun stop() {
+            audioPlayer.stop()
+            controller.broadcastStopLyric()
+            controller.playerState = PlayerState.STOPPED
+            controller.releaseTakenResources()
+            controller.observers.executeForEach {
+                onReceivingMessage(MSG_PLAYER_STOPPED)
+            }
+        }
+
+        override fun togglePlayPause() {
+            if (audioPlayer.isPlaying) {
+                pause(false, reason = PauseReason.PAUSE_BY_MANUAL_ACTION)
+            } else {
+                play()
+            }
+        }
+
+        @PauseReason
+        override var pauseReason: Int = PauseReason.NOT_PAUSED
+
+        override val isPlaying: Boolean
+            get() = audioPlayer.isInitialized && audioPlayer.isPlaying
+
+        override val songProgressMillis: Int
+            get() = if (audioPlayer.isInitialized) audioPlayer.position() else -1
+
+        override val songDurationMillis: Int
+            get() = if (audioPlayer.isInitialized) audioPlayer.duration() else -1
+
+
+        override fun seekTo(position: Long): Int {
+            return audioPlayer.seek(position.toInt())
+        }
+
+        override fun rewindToBeginning() {
+            seekTo(0)
+            service.requireRefreshMediaSessionState()
+        }
+
+        override fun jumpBackward(force: Boolean) {
+            val position =
+                if (force) {
+                    queueManager.previousLoopPosition
+                } else {
+                    queueManager.previousSongPosition
+                }
+            playAt(position)
+        }
+
+        override fun back(force: Boolean) {
+            if (audioPlayer.position() > 5000) {
+                rewindToBeginning()
+            } else {
+                jumpBackward(force)
+            }
+        }
+
+        override fun jumpForward(force: Boolean) {
+            val position =
+                if (force) {
+                    queueManager.nextLoopPosition
+                } else {
+                    queueManager.nextSongPosition
+                }
+            if (position >= 0) {
+                playAt(position)
+            } else {
+                pause(false, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED)
+                controller.observers.executeForEach {
+                    onReceivingMessage(MSG_NO_MORE_SONGS)
+                }
+            }
+        }
+
+        override var playerSpeed
+            get() = audioPlayer.speed
+            set(speed) = handler.request {
+                audioPlayer.speed = speed
+            }
+
+        override fun setVolume(vol: Float) {
+            audioPlayer.setVolume(vol)
+        }
+
+        override val audioSessionId: Int get() = audioPlayer.audioSessionId
+
+        var gaplessPlayback
+            get() = audioPlayer.gaplessPlayback
+            set(value) {
+                audioPlayer.gaplessPlayback = value
+            }
+
+        override fun onTrackWentToNext() {
+            // check sleep timer
+            if (controller.quitAfterFinishCurrentSong) {
+                handler.request { stop() }
+                return
+            }
+            handler.request {
+                queueManager.moveToNextSong(false)
+                controller.notifyNowPlayingChanged()
+                prepareNextPlayer(queueManager.nextSong)
+            }
+        }
+
+        override fun onTrackEnded() {
+            // check sleep timer
+            if (controller.quitAfterFinishCurrentSong) {
+                handler.request { stop() }
+                return
+            }
+            if (queueManager.isQueueEnded()) {
+                handler.request {
+                    pause(true, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED)
+                }
+                controller.broadcastStopLyric()
+                controller.observers.executeForEach {
+                    onReceivingMessage(MSG_NO_MORE_SONGS)
+                }
+            } else {
+                handler.request {
+                    prepareNextPlayer(queueManager.nextSong)
+                    queueManager.moveToNextSong(false)
+                    playAt(queueManager.currentSongPosition)
+                }
+            }
+        }
+
+        override fun onError(what: Int, extra: Int) {
+            val msg = makeErrorMessage(service.resources, what, extra, audioPlayer.currentDataSource)
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(service, msg, Toast.LENGTH_SHORT).show()
+            }
+            pauseReason = PauseReason.PAUSE_ERROR
+        }
+
+        private fun dumpState(position: Int): String =
+            "<@$position> current:${queueManager.currentSong.title}, next:${queueManager.nextSong.title}, state: ${controller.playerState}"
+
+        private fun checkFile(path: String) {
+            val exists = try {
+                File(path).exists()
+            } catch (e: SecurityException) {
+                false
+            }
+            Toast.makeText(
+                service,
+                makeErrorMessage(service.resources, path, exists),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        private fun log(where: String, msg: String, force: Boolean = false) {
+            if (DEBUG || force) Log.i("ControllerImpl", "<$where>$msg")
+        }
+
+        //region BecomingNoisyReceiver
+        private var becomingNoisyReceiverRegistered = false
+        private fun checkAndRegisterBecomingNoisyReceiver(context: Context) {
+            if (!becomingNoisyReceiverRegistered) {
+                context.registerReceiverCompat(
+                    becomingNoisyReceiver,
+                    IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY),
+                    ContextCompat.RECEIVER_EXPORTED
                 )
+                becomingNoisyReceiverRegistered = true
             }
         }
+
+        private fun unregisterBecomingNoisyReceiver(context: Context) {
+            if (becomingNoisyReceiverRegistered) {
+                context.unregisterReceiver(becomingNoisyReceiver)
+                becomingNoisyReceiverRegistered = false
+            }
+        }
+
+        private val becomingNoisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
+                    handler.request {
+                        pause(releaseResource = true, reason = PauseReason.PAUSE_FOR_AUDIO_BECOMING_NOISY)
+                    }
+                }
+            }
+        }
+        //endregion
+
     }
 
     private fun notifyNowPlayingChanged() {
@@ -243,383 +538,115 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
         }
     }
 
-    /**
-     * prepare current player data source safely
-     * @param song what to play now
-     * @return true if success
-     */
-    private fun prepareCurrentPlayer(song: Song): Boolean {
-        return if (song != Song.EMPTY_SONG) audioPlayer.setDataSource(
-            getTrackUri(song.id).toString()
-        ) else {
-            false
+    fun prepareNext() {
+        handler.post {
+            val controllerImpl = impl
+            if (controllerImpl is VanillaAudioPlayerControllerImpl) {
+                controllerImpl.prepareNextPlayer(
+                    if (controllerImpl.gaplessPlayback) queueManager.nextSong else null
+                )
+            }
         }
-    }
-
-    /**
-     * prepare next player data source safely
-     * @param song what to play now
-     */
-    private fun prepareNextPlayer(song: Song?) {
-        audioPlayer.setNextDataSource(
-            if (song != null && song != Song.EMPTY_SONG) getTrackUri(song.id).toString() else null
-        )
     }
 
     /**
      * Play songs from a certain position
      */
-    fun playAt(position: Int) = handler.request {
-        it.playAtImp(position)
-    }
-
-    private fun playAtImp(position: Int) {
-        if (prepareSongsImp(position)) {
-            playImp()
-        } else {
-            val path = queueManager.currentSong.data
-            handler.post {
-                val exists = try {
-                    File(path).exists()
-                } catch (e: SecurityException) {
-                    false
-                }
-                Toast.makeText(
-                    service,
-                    makeErrorMessage(service.resources, path, exists),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            if (queueManager.repeatMode != RepeatMode.REPEAT_SINGLE_SONG) {
-                jumpForwardImp(false)
-            }
-        }
-        log("playAtImp", "current: at $position song(${queueManager.currentSong.title})")
-    }
-
-    /**
-     * Set position in current queue, only available if paused
-     * @param position current position in playing queue
-     */
-    fun setPosition(position: Int) = handler.request {
-        it.setPositionImp(position)
-    }
-
-    private fun setPositionImp(position: Int) {
-        if (playerState == PlayerState.PAUSED) {
-            queueManager.modifyPosition(position, false)
-            prepareSongsImp(position)
-        }
+    override fun playAt(position: Int) = handler.request {
+        impl.playAt(position)
     }
 
     /**
      * continue play
      */
-    fun play() = handler.request {
-        it.playImp()
+    override fun play() = handler.request {
+        impl.play()
     }
 
-    private fun playImp() {
-        if (queueManager.playingQueue.isNotEmpty()) {
-            if (audioFocusManager.requestAudioFocus()) {
-                checkAndRegisterBecomingNoisyReceiver(service)
-                if (!audioPlayer.isPlaying()) {
-                    // Actual Logics Start
-                    synchronized(this) {
-                        if (!audioPlayer.isInitialized) {
-                            playAtImp(queueManager.currentSongPosition)
-                        } else {
-                            audioPlayer.start()
-
-                            playerState = PlayerState.PLAYING
-                            pauseReason = NOT_PAUSED
-                            acquireWakeLock(
-                                queueManager.currentSong.duration - audioPlayer.position() + 1000L
-                            )
-                            handler.removeMessages(ControllerHandler.DUCK)
-                            handler.sendEmptyMessage(ControllerHandler.UNDUCK)
-                            handler.lyricsLoop() // start broadcast lyrics loop
-                        }
-                    }
-                    // Actual Logics End
-                } else {
-                    log("playImp", "Already Playing!", true)
-                }
-            } else {
-                Toast.makeText(
-                    service,
-                    service.resources.getString(R.string.audio_focus_denied),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        } else {
-            pauseImp(force = true, reason = PAUSE_FOR_QUEUE_ENDED)
-        }
-    }
-
-    @PauseReasonInt
-    var pauseReason: Int = NOT_PAUSED
+    override val pauseReason: Int get() = impl.pauseReason
 
     /**
      * Pause
      * @param releaseResource false if not release taken resource
-     * @param reason cause of this pause (see [PauseReasonInt])
+     * @param reason cause of this pause (see [PauseReason])
      */
-    fun pause(releaseResource: Boolean, @PauseReasonInt reason: Int) = handler.request {
-        it.pauseImp(force = false, releaseResource = releaseResource, reason = reason)
+    override fun pause(releaseResource: Boolean, @PauseReason reason: Int) = handler.request {
+        impl.pause(releaseResource, reason)
     }
 
-    private fun pauseImp(force: Boolean = false, @PauseReasonInt reason: Int, releaseResource: Boolean = true) {
-        if (audioPlayer.isPlaying() || force) {
-            audioPlayer.pause()
-            pauseReason = reason
-            broadcastStopLyric()
-            playerState = PlayerState.PAUSED
-            if (releaseResource) releaseTakenResources()
-        }
+    override fun togglePlayPause() = handler.request {
+        impl.togglePlayPause()
     }
 
-    fun togglePlayPause() = handler.request {
-        it.togglePlayPauseImp()
-    }
-
-    private fun togglePlayPauseImp() {
-        if (audioPlayer.isPlaying()) {
-            pauseImp(force = false, reason = PAUSE_BY_MANUAL_ACTION)
-        } else {
-            playImp()
-        }
-    }
-
-    fun isPlaying() = audioPlayer.isInitialized && audioPlayer.isPlaying()
-
-    val positionInTrack: Int
-        get() =
-            if (audioPlayer.isInitialized) {
-                audioPlayer.position()
-            } else {
-                -1
-            }
+    override val isPlaying: Boolean get() = impl.isPlaying
 
     /**
      * Jump to beginning of this song
      */
-    fun rewindToBeginning() = handler.request {
-        it.rewindToBeginningImp()
-    }
-
-    private fun rewindToBeginningImp() {
-        seekTo(0)
-        service.requireRefreshMediaSessionState()
+    override fun rewindToBeginning() = handler.request {
+        impl.rewindToBeginning()
     }
 
     /**
      * Return to previous song
      */
-    fun jumpBackward(force: Boolean) = handler.request {
-        it.jumpBackwardImp(force)
-    }
-
-    private fun jumpBackwardImp(force: Boolean) {
-        val position =
-            if (force) {
-                queueManager.previousLoopPosition
-            } else {
-                queueManager.previousSongPosition
-            }
-        playAtImp(position)
+    override fun jumpBackward(force: Boolean) = handler.request {
+        impl.jumpBackward(force)
     }
 
     /**
-     * [rewindToBeginningImp] or [jumpBackwardImp]
+     * [rewindToBeginning] or [jumpBackward]
      */
-    fun back(force: Boolean) = handler.request {
-        it.backImp(force)
-    }
-
-    private fun backImp(force: Boolean) {
-        if (audioPlayer.position() > 5000) {
-            rewindToBeginningImp()
-        } else {
-            jumpBackwardImp(force)
-        }
+    override fun back(force: Boolean) = handler.request {
+        impl.back(force)
     }
 
     /**
      * Skip and jump to next song
      */
-    fun jumpForward(force: Boolean) = handler.request {
-        it.jumpForwardImp(force)
-    }
-
-    private fun jumpForwardImp(force: Boolean) {
-        val position =
-            if (force) {
-                queueManager.nextLoopPosition
-            } else {
-                queueManager.nextSongPosition
-            }
-        if (position >= 0) {
-            playAtImp(position)
-        } else {
-            pauseImp(force = true, reason = PAUSE_FOR_QUEUE_ENDED)
-            observers.executeForEach {
-                onReceivingMessage(MSG_NO_MORE_SONGS)
-            }
-        }
+    override fun jumpForward(force: Boolean) = handler.request {
+        impl.jumpForward(force)
     }
 
     /**
      * Move current time to [position]
      * @param position time in millisecond
      */
-    fun seekTo(position: Long): Int = synchronized(audioPlayer) {
-        seekToImp(position)
+    override fun seekTo(position: Long): Int = synchronized(impl) {
+        impl.seekTo(position)
     }
 
-    private fun seekToImp(position: Long): Int {
-        return audioPlayer.seek(position.toInt())
-    }
-
-    fun stop() = handler.request {
-        it.stopImp()
-    }
-
-    private fun stopImp() {
-        audioPlayer.stop()
-        broadcastStopLyric()
-        playerState = PlayerState.STOPPED
-        releaseTakenResources()
-        observers.executeForEach {
-            onReceivingMessage(MSG_PLAYER_STOPPED)
-        }
+    override fun stop() = handler.request {
+        impl.stop()
     }
 
     /**
      * true if you want to stop player when current track is ended
      * Used by Sleep Timer
      */
-    internal var quitAfterFinishCurrentSong: Boolean = false
+    var quitAfterFinishCurrentSong: Boolean = false
         set(value) {
             synchronized(this) {
                 field = value
             }
         }
 
-    internal var resumeAfterAudioFocusGain: Boolean = false
+    var resumeAfterAudioFocusGain: Boolean = false
 
-    internal var ignoreAudioFocus: Boolean = false
+    var ignoreAudioFocus: Boolean = false
 
-    internal var audioDucking: Boolean = true
+    private var audioDucking: Boolean = true
 
-    override fun onTrackWentToNext() {
-        handler.request {
-            // check sleep timer
-            if (quitAfterFinishCurrentSong) {
-                stopImp()
-                return@request
-            }
-            queueManager.moveToNextSong(false)
-            notifyNowPlayingChanged()
-            prepareNextPlayer(queueManager.nextSong)
-        }
-    }
-
-    override fun onTrackEnded() {
-        // check sleep timer
-        if (quitAfterFinishCurrentSong) {
-            stop()
-            return
-        }
-        if (queueManager.isQueueEnded()) {
-            handler.request {
-                pauseImp(force = true, reason = PAUSE_FOR_QUEUE_ENDED)
-            }
-            broadcastStopLyric()
-            observers.executeForEach {
-                onReceivingMessage(MSG_NO_MORE_SONGS)
-            }
-        } else {
-            handler.request {
-                prepareNextPlayer(queueManager.nextSong)
-                queueManager.moveToNextSong(false)
-                playAtImp(queueManager.currentSongPosition)
-            }
-        }
-    }
-
-    override fun onError(what: Int, extra: Int) {
-        val msg = makeErrorMessage(service.resources, what, extra, audioPlayer.currentDataSource)
-        Handler(Looper.getMainLooper()).post {
-            Toast.makeText(service, msg, Toast.LENGTH_SHORT).show()
-        }
-        pauseReason = PAUSE_ERROR
-    }
-
-    companion object {
-        const val NOT_PAUSED = 0
-        const val PAUSE_BY_MANUAL_ACTION = 2
-        const val PAUSE_FOR_QUEUE_ENDED = 4
-        const val PAUSE_FOR_AUDIO_BECOMING_NOISY = 8
-        const val PAUSE_FOR_TRANSIENT_LOSS_OF_FOCUS = 16
-        const val PAUSE_FOR_LOSS_OF_FOCUS = 32
-        const val PAUSE_ERROR = -2
-
-        @IntDef(
-            NOT_PAUSED,
-            PAUSE_BY_MANUAL_ACTION,
-            PAUSE_FOR_QUEUE_ENDED,
-            PAUSE_FOR_AUDIO_BECOMING_NOISY,
-            PAUSE_FOR_TRANSIENT_LOSS_OF_FOCUS,
-            PAUSE_FOR_LOSS_OF_FOCUS,
-            PAUSE_ERROR
-        )
-        @Retention(AnnotationRetention.SOURCE)
-        annotation class PauseReasonInt
-
-        private fun getTrackUri(songId: Long): Uri =
-            ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, songId)
-    }
-
-    private var becomingNoisyReceiverRegistered = false
-    private fun checkAndRegisterBecomingNoisyReceiver(context: Context) {
-        if (!becomingNoisyReceiverRegistered) {
-            context.registerReceiverCompat(
-                becomingNoisyReceiver,
-                IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY),
-                ContextCompat.RECEIVER_EXPORTED
-            )
-            becomingNoisyReceiverRegistered = true
-        }
-    }
-
-    private fun unregisterBecomingNoisyReceiver(context: Context) {
-        if (becomingNoisyReceiverRegistered) {
-            context.unregisterReceiver(becomingNoisyReceiver)
-            becomingNoisyReceiverRegistered = false
-        }
-    }
-
-    private val becomingNoisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
-                pause(releaseResource = true, reason = PAUSE_FOR_AUDIO_BECOMING_NOISY)
-            }
-        }
-    }
+    private var broadcastSynchronizedLyrics: Boolean = false
 
     fun saveCurrentMills() = handler.request {
-        saveCurrentMillsImp()
+        QueuePreferenceManager(service).currentMillisecond = impl.songProgressMillis
     }
 
-    private fun saveCurrentMillsImp() {
-        QueuePreferenceManager(service).currentMillisecond = audioPlayer.position()
-    }
+    override val audioSessionId: Int get() = impl.audioSessionId
 
-    val audioSessionId: Int get() = audioPlayer.audioSessionId
-
-    fun setVolume(vol: Float) = handler.request { playerController ->
-        playerController.audioPlayer.setVolume(vol)
+    override fun setVolume(vol: Float) = handler.request {
+        impl.setVolume(vol)
     }
 
     private val observers: MutableList<PlayerStateObserver> = ArrayList()
@@ -631,7 +658,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
          * Request running in the handler thread
          * @param request RunnableRequest: (PlayerController) -> Unit
          */
-        fun request(request: RunnableRequest) {
+        fun request(request: (PlayerController) -> Unit) {
             post { request(playerController) }
         }
 
@@ -644,7 +671,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
         override fun handleMessage(msg: Message) {
             when (msg.what) {
 
-                DUCK                   -> {
+                DUCK   -> {
                     if (playerController.audioDucking) {
                         currentDuckVolume -= .05f
                         if (currentDuckVolume > .2f) {
@@ -655,11 +682,11 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
                     } else {
                         currentDuckVolume = 1f
                     }
-                    playerController.audioPlayer.setVolume(currentDuckVolume)
+                    playerController.impl.setVolume(currentDuckVolume)
 
                 }
 
-                UNDUCK                 -> {
+                UNDUCK -> {
                     if (playerController.audioDucking) {
                         currentDuckVolume += .03f
                         if (currentDuckVolume < 1f) {
@@ -670,17 +697,8 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
                     } else {
                         currentDuckVolume = 1f
                     }
-                    playerController.audioPlayer.setVolume(currentDuckVolume)
+                    playerController.impl.setVolume(currentDuckVolume)
 
-                }
-
-                RE_PREPARE_NEXT_PLAYER -> synchronized(playerController.audioPlayer) {
-                    playerController.prepareNextPlayer(playerController.queueManager.nextSong)
-                }
-
-
-                CLEAN_NEXT_PLAYER      -> synchronized(playerController.audioPlayer) {
-                    playerController.prepareNextPlayer(null)
                 }
 
             }
@@ -696,7 +714,7 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
                 playerController.broadcastStopLyric()
                 return false
             }
-            playerController.lyricsUpdater.broadcast(playerController.getSongProgressMillis())
+            playerController.lyricsUpdater.broadcast(playerController.songProgressMillis)
             return true
         }
 
@@ -714,23 +732,18 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
             const val DUCK = 20
             const val UNDUCK = 30
 
-            const val RE_PREPARE_NEXT_PLAYER = 40
-            const val CLEAN_NEXT_PLAYER = 41
         }
     }
 
-    fun getSongProgressMillis(): Int = audioPlayer.position()
-    fun getSongDurationMillis(): Int = audioPlayer.duration()
+    override val songProgressMillis: Int get() = impl.songProgressMillis
 
-    fun playerSpeed() = audioPlayer.speed
+    override val songDurationMillis: Int get() = impl.songDurationMillis
 
-    fun setPlayerSpeed(speed: Float) = handler.request {
-        setPlayerSpeedImpl(speed)
-    }
-
-    private fun setPlayerSpeedImpl(speed: Float) {
-        audioPlayer.speed = speed
-    }
+    override var playerSpeed
+        get() = impl.playerSpeed
+        set(speed) = handler.request {
+            impl.playerSpeed = speed
+        }
 
     private fun broadcastStopLyric() = StatusBarLyric.stopLyric()
     fun replaceLyrics(lyrics: LrcLyrics?) {
@@ -741,17 +754,4 @@ class PlayerController : ServiceComponent, Playback.PlaybackCallbacks {
         }
     }
 
-    fun log(where: String, msg: String, force: Boolean = false) {
-        if (DEBUG || force) Log.i("PlayerController", "※$msg @$where")
-    }
-
 }
-
-/**
- *  the exposed internal state as StateFlow for collect in ui.
- */
-val PlayerController.Companion.currentState: StateFlow<PlayerState>
-    get() = _state.asStateFlow()
-
-@Suppress("ObjectPropertyName")
-private val _state by lazy { MutableStateFlow(PlayerState.PREPARING) }

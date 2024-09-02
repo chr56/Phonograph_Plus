@@ -3,8 +3,6 @@ package player.phonograph.ui.fragments.player
 import player.phonograph.databinding.FragmentMiniPlayerBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.player.PlayerController
-import player.phonograph.service.player.currentState
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
@@ -73,7 +71,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         binding.miniPlayerPlayPauseButton.setOnClickListener(PlayPauseButtonOnClickHandler())
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                PlayerController.currentState.collect {
+                MusicPlayerRemote.currentState.collect {
                     updatePlayPauseDrawableState(
                         lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
                     )

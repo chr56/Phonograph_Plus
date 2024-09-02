@@ -23,9 +23,10 @@
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.MusicService { public <methods>;public <fields>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.notification.** { public <methods>;public <fields>; }
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.player.AudioPlayer { public <methods>; }
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.player.VanillaAudioPlayer { public <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.player.PlayerController { public <methods>; }
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.util.** { public <methods>; }
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.player.PlayerController$VanillaAudioPlayerControllerImpl { public <methods>; }
+-keepclassmembernames,allowoptimization,allowshrinking interface player.phonograph.service.** { <methods>; }
 
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.file.UriKt { public void select*(...); }
