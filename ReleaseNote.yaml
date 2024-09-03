@@ -1,21 +1,19 @@
-version: "1.8.4-dev1"
+version: "1.8.4-dev2"
 channel: "PREVIEW"
 versionCode: 1083
-timestamp: 1724600000
+timestamp: 1725375000
 notes:
   en:
     highlights: [ ]
     items:
-      - "Improve: Search function in Playlist Detail"
-      - "Translation: update French (manafy)"
-      - "Development: upgrade kotlin to 2.0.20, update dependencies"
+      - "Fix: Crash when creating playlists in Search Results, Album Detail, Artist Detail, Genre Detail"
+      - "Development: refactor player"
 
   zh:
     highlights: [ ]
     items:
-      - "改进 播放列表内搜索功能"
-      - "翻译 更新 法语(manafy)"
-      - "开发 升级 Kotlin 至 2.0.20，更新依赖，清理代码"
+      - "修复 在搜索结果、专辑详情、艺术家详情、流派详情中，创建播放列表时崩溃"
+      - "开发 重构播放器"
 
-previousVersion: "1.8.3"
-previousChannel: "STABLE"
+previousVersion: "1.8.4-dev1"
+previousChannel: "PREVIEW"
