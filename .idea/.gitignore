@@ -5,6 +5,7 @@
 #
 /modules/
 /libraries/
+/caches/
 
 gradle.xml
 jarRepositories.xml
