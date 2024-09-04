@@ -2,26 +2,26 @@
   "versions": [
     {
       "channel": "preview",
-      "versionName": "1.8.4-dev1",
+      "versionName": "1.8.4-dev2",
       "versionCode": 1083,
-      "date": 1724600000,
+      "date": 1725375000,
       "link": [
         {
           "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.8.4-dev1"
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.8.4-dev2"
         },
         {
           "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.4-dev1/PhonographPlus_1.8.4-dev1_ModernPreviewRelease.apk"
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.4-dev2/PhonographPlus_1.8.4-dev2_ModernPreviewRelease.apk"
         },
         {
           "name": "Github Release Legacy Variant APK(File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.4-dev1/PhonographPlus_1.8.4-dev1_LegacyPreviewRelease.apk"
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.4-dev2/PhonographPlus_1.8.4-dev2_LegacyPreviewRelease.apk"
         }
       ],
       "releaseNote": {
-        "zh-cn": "<ol><li>改进 播放列表内搜索功能</li><li>翻译 更新 法语(manafy)</li><li>开发 升级 Kotlin 至 2.0.20，更新依赖，清理代码</li></ol>",
-        "en": "<ol><li>Improve: Search function in Playlist Detail</li><li>Translation: update French (manafy)</li><li>Development: upgrade kotlin to 2.0.20, update dependencies</li></ol>"
+        "zh-cn": "<ol><li>修复 在搜索结果、专辑详情、艺术家详情、流派详情中，创建播放列表时崩溃</li><li>开发 重构播放器</li></ol>",
+        "en": "<ol><li>Fix: Crash when creating playlists in Search Results, Album Detail, Artist Detail, Genre Detail</li><li>Development: refactor player</li></ol>"
       }
     },
     {
