@@ -192,9 +192,13 @@ class PlayerController : ServiceComponent, Controller {
 
     interface ControllerInternal : Controller, ServiceComponent
 
-    class VanillaAudioPlayerControllerImpl(val controller: PlayerController) : ControllerInternal, Playback.PlaybackCallbacks {
+    sealed class AudioPlayerControllerImpl(
+        val controller: PlayerController,
+    ) : ControllerInternal, Playback.PlaybackCallbacks {
 
         override var created: Boolean = false
+
+        abstract fun initPlayer(musicService: MusicService): Playback
 
         private val queueManager: QueueManager get() = controller.queueManager
 
@@ -210,7 +214,7 @@ class PlayerController : ServiceComponent, Controller {
         override fun onCreate(musicService: MusicService) {
             _service = musicService
 
-            _audioPlayer = VanillaAudioPlayer(musicService, false, this)
+            _audioPlayer = initPlayer(musicService)
 
             created = true
             restore(musicService)
@@ -541,6 +545,16 @@ class PlayerController : ServiceComponent, Controller {
         }
         //endregion
 
+    }
+
+    class VanillaAudioPlayerControllerImpl(controller: PlayerController) : AudioPlayerControllerImpl(controller) {
+        override fun initPlayer(musicService: MusicService): Playback =
+            VanillaAudioPlayer(musicService, false, this)
+    }
+
+    class ExoAudioPlayerControllerImpl(controller: PlayerController) : AudioPlayerControllerImpl(controller) {
+        override fun initPlayer(musicService: MusicService): Playback =
+            ExoAudioPlayer(musicService, controller.handler, false, this)
     }
 
     override var gaplessPlayback: Boolean
