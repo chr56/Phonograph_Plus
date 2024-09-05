@@ -189,11 +189,13 @@ class PlayerController : ServiceComponent, Controller {
 
     interface ControllerInternal : Controller, ServiceComponent
 
-    class VanillaAudioPlayerControllerImpl(
+    sealed class AudioPlayerControllerImpl(
         val controller: PlayerController,
     ) : ControllerInternal, Playback.PlaybackCallbacks {
 
         override var created: Boolean = false
+
+        abstract fun initPlayer(musicService: MusicService): Playback
 
         private var _service: MusicService? = null
         val service: MusicService get() = _service!!
@@ -210,7 +212,7 @@ class PlayerController : ServiceComponent, Controller {
         override fun onCreate(musicService: MusicService) {
             _service = musicService
 
-            _audioPlayer = VanillaAudioPlayer(musicService, false, this)
+            _audioPlayer = initPlayer(musicService)
 
             _queueManager = musicService.queueManager
 
@@ -546,6 +548,16 @@ class PlayerController : ServiceComponent, Controller {
         }
         //endregion
 
+    }
+
+    class VanillaAudioPlayerControllerImpl(controller: PlayerController) : AudioPlayerControllerImpl(controller) {
+        override fun initPlayer(musicService: MusicService): Playback =
+            VanillaAudioPlayer(musicService, false, this)
+    }
+
+    class ExoAudioPlayerControllerImpl(controller: PlayerController) : AudioPlayerControllerImpl(controller) {
+        override fun initPlayer(musicService: MusicService): Playback =
+            ExoAudioPlayer(musicService, controller.handler, false, this)
     }
 
     private fun notifyNowPlayingChanged() {
