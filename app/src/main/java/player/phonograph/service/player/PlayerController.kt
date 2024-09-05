@@ -223,9 +223,11 @@ class PlayerController : ServiceComponent, Controller {
 
 
         private fun restore(musicService: MusicService) {
-            if (prepareCurrentPlayer(queueManager.currentSong)) {
-                val restored = QueuePreferenceManager(musicService).currentMillisecond
-                if (restored > 0) seekTo(restored.toLong())
+            handler.post {
+                if (prepareCurrentPlayer(queueManager.currentSong)) {
+                    val restored = QueuePreferenceManager(musicService).currentMillisecond
+                    if (restored > 0) seekTo(restored.toLong())
+                }
             }
         }
 
