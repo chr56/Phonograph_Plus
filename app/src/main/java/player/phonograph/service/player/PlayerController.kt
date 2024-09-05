@@ -92,7 +92,7 @@ class PlayerController : ServiceComponent, Controller {
 
         // Prepare Player
 
-        _impl = VanillaAudioPlayerControllerImpl(this)
+        _impl = ExoAudioPlayerControllerImpl(this)
         impl.onCreate(musicService)
 
 
