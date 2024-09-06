@@ -261,8 +261,18 @@
     <string name="retry">Reintentar</string>
     <string name="permission_manage_external_storage_denied">Parece que Phonograph no tiene este permiso \"gestionar almacenamiento externo\"!</string>
     <string name="not_available_now">no disponible por ahora </string>
+    <string name="check_for_updates">Buscar actualizaciones</string>
+    <string name="new_version_available">¡Hay una nueva versión disponible!</string>
+    <string name="no_updates">¡No hay actualizaciones! Estás utilizando la última versión en el canal actual.</string>
+    <string name="ignore_for_once">Ignorar una vez</string>
+    <string name="ignored_update">¡La actualización fue ignorada!</string>
     <string name="download">Descargar</string>
     <string name="tg_channel">Canal de Telegram</string>
+    <string name="pref_title_auto_check_for_updates">Buscar actualizaciones automáticamente</string>
+    <string name="pref_summary_auto_check_for_updates">Envía una notificación cuando haya una nueva versión disponible.</string>
+    <string name="pref_description_auto_check_for_updates_extra_description">La aplicación buscará las últimas versiones de fuentes públicas en el almacén de GitHub o similar.</string>
+    <string name="pref_title_check_for_updates_interval">Comprobar el intervalo de actualizaciones</string>
+    <string name="pref_summary_check_for_updates_interval">Intervalo de tiempo para la comprobación automática de actualizaciones</string>
     <string name="edit">Editar…</string>
     <string name="move_to_top">Mover al principio</string>
     <string name="move_to_bottom">Mover al final</string>
@@ -450,6 +460,7 @@
     <string name="timeunit_year">Año</string>
     <string name="time_interval_text">%1$s %2$d %3$s</string>
     <string name="preview_text_cutoff_time_interval">La marca de tiempo límite será: \n %1$s \n(%2$s)</string>
+    <string name="preview_text_next_updates_check">La próxima comprobación de actualizaciones será después: \n %1$s \n(%2$s)</string>
     <string name="home">Inicio</string>
     <string name="search_online">Búsqueda en línea</string>
     <string name="target">Destino</string>
@@ -517,4 +528,11 @@
     <string name="path_selector">Selector de archivos</string>
     <string name="notification_is_disabled">¡Notificación desactivada!</string>
     <string name="pref_title_always_use_media_session_to_display_cover">Inicie sesión para mostrar la portada</string>
+    <string name="pref_summary_always_use_media_session_to_display_cover">Utilice siempre la sesión multimedia para proporcionar imágenes de portada para el sistema de notificación, etc.</string>
+    <string name="single_item">Elemento único</string>
+    <string name="multiple_items">Múltiples elementos</string>
+    <string name="pref_title_external_play_request">Acción estándar del agente externo</string>
+    <string name="pref_summary_external_play_request">Define lo que debe hacer el reproductor al reproducir desde el exterior (por ejemplo, el Explorador de archivos).</string>
+    <string name="pref_option_show_prompt">Mostrar siempre aviso de advertencia</string>
+    <string name="pref_option_silence">Silencioso (se mantiene en segundo plano sin pasar al reproductor)</string>
 </resources>
