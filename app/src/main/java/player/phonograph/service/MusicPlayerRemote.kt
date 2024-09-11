@@ -105,8 +105,8 @@ object MusicPlayerRemote {
 
         override fun onServiceDisconnected(className: ComponentName) {
             musicService?.removePlayerStateObserver(playerStateObserver)
-            musicService = null
             mCallback?.onServiceDisconnected(className)
+            musicService = null
         }
     }
 
