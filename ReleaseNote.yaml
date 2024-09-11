@@ -1,19 +1,17 @@
-version: "1.8.4-dev2"
+version: "1.8.4-dev3"
 channel: "PREVIEW"
 versionCode: 1083
-timestamp: 1725375000
+timestamp: 1726150000
 notes:
   en:
     highlights: [ ]
     items:
-      - "Fix: Crash when creating playlists in Search Results, Album Detail, Artist Detail, Genre Detail"
-      - "Development: refactor player"
+      - "Translation: update Portuguese (by azilara), Spanish (by Ulisses_Mello), German (by jande75)"
 
   zh:
     highlights: [ ]
     items:
-      - "修复 在搜索结果、专辑详情、艺术家详情、流派详情中，创建播放列表时崩溃"
-      - "开发 重构播放器"
+      - "翻译 葡萄牙语 (azilara), 西班牙语 (Ulisses_Mello), 德语 (jande75)"
 
 previousVersion: "1.8.4-dev1"
 previousChannel: "PREVIEW"
