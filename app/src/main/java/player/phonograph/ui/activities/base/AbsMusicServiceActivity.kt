@@ -36,35 +36,45 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-            serviceToken =
-                MusicPlayerRemote.bindToService(
-                    this@AbsMusicServiceActivity,
-                    object : ServiceConnection {
-                        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-                            this@AbsMusicServiceActivity.onServiceConnected()
-                        }
-
-                        override fun onServiceDisconnected(name: ComponentName) {
-                            this@AbsMusicServiceActivity.onServiceDisconnected()
-                        }
-                    }
-                )
-            volumeControlStream = AudioManager.STREAM_MUSIC
-            val result = StoragePermissionChecker.hasStorageReadPermission(this@AbsMusicServiceActivity)
-            if (!result) {
-                withResumed {
-                    notifyPermissionDeniedUser(listOf(StoragePermissionChecker.necessaryStorageReadPermission)) {
-                        navigateToAppDetailSetting(this@AbsMusicServiceActivity)
-                    }
-                }
-            }
+            connectToService()
         }
-        lifecycle.addObserver(LifeCycleObserver())
+        lifecycleScope.launch {
+            checkStorageReadPermission()
+        }
+        volumeControlStream = AudioManager.STREAM_MUSIC
+        lifecycle.addObserver(QueueStateLifeCycleObserver())
     }
 
     override fun onDestroy() {
         super.onDestroy()
         MusicPlayerRemote.unbindFromService(serviceToken)
+    }
+
+    suspend fun connectToService() {
+        serviceToken =
+            MusicPlayerRemote.bindToService(
+                this@AbsMusicServiceActivity,
+                object : ServiceConnection {
+                    override fun onServiceConnected(name: ComponentName, service: IBinder) {
+                        this@AbsMusicServiceActivity.onServiceConnected()
+                    }
+
+                    override fun onServiceDisconnected(name: ComponentName) {
+                        this@AbsMusicServiceActivity.onServiceDisconnected()
+                    }
+                }
+            )
+    }
+
+    private suspend fun checkStorageReadPermission() {
+        val result = StoragePermissionChecker.hasStorageReadPermission(this@AbsMusicServiceActivity)
+        if (!result) {
+            withResumed {
+                notifyPermissionDeniedUser(listOf(StoragePermissionChecker.necessaryStorageReadPermission)) {
+                    navigateToAppDetailSetting(this@AbsMusicServiceActivity)
+                }
+            }
+        }
     }
 
     //
@@ -85,7 +95,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
     // CurrentQueueState
     //
 
-    inner class LifeCycleObserver : DefaultLifecycleObserver {
+    private inner class QueueStateLifeCycleObserver : DefaultLifecycleObserver {
 
         private var registered = false
 
