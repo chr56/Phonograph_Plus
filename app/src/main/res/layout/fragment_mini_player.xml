@@ -39,7 +39,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
         <player.phonograph.ui.views.IconImageView
-            android:id="@+id/mini_player_play_pause_button"
+            android:id="@+id/mini_player_action_button"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center_vertical"
