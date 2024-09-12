@@ -92,6 +92,17 @@ object MusicPlayerRemote {
         }
     }
 
+    fun unbindAllFromService() {
+        synchronized(mConnectionMap) {
+            for ((context, connection) in mConnectionMap) {
+                context.unbindService(connection)
+                connection.onServiceDetached()
+            }
+            mConnectionMap.clear()
+            musicService = null
+        }
+    }
+
     class MusicServiceConnectionImpl(private val mCallback: MusicServiceConnection?) : MusicServiceConnection {
 
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
