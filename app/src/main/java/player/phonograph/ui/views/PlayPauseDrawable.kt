@@ -122,30 +122,6 @@ class PlayPauseDrawable(context: Context) : Drawable() {
     @Deprecated("This method is no longer used in graphics optimizations")
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
-    fun setPlay(animate: Boolean) {
-        if (animate) {
-            if (!isPlaySet) {
-                playAnimation()
-            }
-        } else {
-            isPlaySet = true
-            isPlay = true
-            progress = 1f
-        }
-    }
-
-    fun setPause(animate: Boolean) {
-        if (animate) {
-            if (isPlaySet) {
-                playAnimation()
-            }
-        } else {
-            isPlaySet = false
-            isPlay = false
-            progress = 0f
-        }
-    }
-
     fun update(state: Boolean, animate: Boolean) {
         if (animate) {
             if (state xor isPlaySet) { // (state && !isPlaySet) || (!state && isPlaySet)
@@ -157,8 +133,6 @@ class PlayPauseDrawable(context: Context) : Drawable() {
             progress = if (state) 1f else 0f
         }
     }
-
-
 
     private var animator: Animator? = null
 
@@ -200,8 +174,6 @@ class PlayPauseDrawable(context: Context) : Drawable() {
         /**
          * Linear interpolate between a and b with parameter t.
          */
-        private fun lerp(a: Float, b: Float, t: Float): Float {
-            return a + (b - a) * t
-        }
+        private fun lerp(a: Float, b: Float, t: Float): Float = a + (b - a) * t
     }
 }
