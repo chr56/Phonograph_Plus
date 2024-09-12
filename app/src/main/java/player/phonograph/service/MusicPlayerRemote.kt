@@ -16,6 +16,7 @@ import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.util.debug
 import player.phonograph.util.warning
 import androidx.activity.ComponentActivity
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.withStarted
 import android.content.ComponentName
 import android.content.Context
@@ -23,6 +24,7 @@ import android.content.Context.BIND_AUTO_CREATE
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.ServiceConnection
+import android.os.Build.VERSION_CODES
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.IBinder
@@ -47,7 +49,7 @@ object MusicPlayerRemote {
 
     suspend fun bindToService(
         activity: ComponentActivity,
-        callback: ServiceConnection?,
+        callback: MusicServiceConnection?,
     ): ServiceToken? {
         val contextWrapper = ContextWrapper(
             activity.parent ?: activity // try to use parent activity
@@ -56,7 +58,7 @@ object MusicPlayerRemote {
             // start service foreground
             contextWrapper.startService(Intent(contextWrapper, MusicService::class.java))
 
-            val serviceConnection = MusicServiceConnection(callback)
+            val serviceConnection = MusicServiceConnectionImpl(callback)
 
             // bind service
             if (
@@ -90,7 +92,7 @@ object MusicPlayerRemote {
         }
     }
 
-    class MusicServiceConnection(private val mCallback: ServiceConnection?) : ServiceConnection {
+    class MusicServiceConnectionImpl(private val mCallback: MusicServiceConnection?) : MusicServiceConnection {
 
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
             musicService = (service as MusicBinder).service
@@ -103,10 +105,24 @@ object MusicPlayerRemote {
             musicService?.addPlayerStateObserver(playerStateObserver)
         }
 
+        override fun onServiceDetached() {
+            mCallback?.onServiceDetached()
+        }
+
         override fun onServiceDisconnected(className: ComponentName) {
             musicService?.removePlayerStateObserver(playerStateObserver)
             mCallback?.onServiceDisconnected(className)
             musicService = null
+        }
+
+        @RequiresApi(VERSION_CODES.O)
+        override fun onBindingDied(name: ComponentName?) {
+            mCallback?.onBindingDied(name)
+        }
+
+        @RequiresApi(VERSION_CODES.P)
+        override fun onNullBinding(name: ComponentName?) {
+            mCallback?.onNullBinding(name)
         }
     }
 

@@ -8,6 +8,7 @@ import lib.phonograph.activity.ToolbarActivity
 import org.koin.android.ext.android.inject
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
+import player.phonograph.service.MusicServiceConnection
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.util.permissions.StoragePermissionChecker
@@ -17,7 +18,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withResumed
 import android.content.ComponentName
-import android.content.ServiceConnection
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.IBinder
@@ -54,12 +54,16 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         serviceToken =
             MusicPlayerRemote.bindToService(
                 this@AbsMusicServiceActivity,
-                object : ServiceConnection {
+                object : MusicServiceConnection {
                     override fun onServiceConnected(name: ComponentName, service: IBinder) {
                         this@AbsMusicServiceActivity.onServiceConnected()
                     }
 
                     override fun onServiceDisconnected(name: ComponentName) {
+                        this@AbsMusicServiceActivity.onServiceDisconnected()
+                    }
+
+                    override fun onServiceDetached() {
                         this@AbsMusicServiceActivity.onServiceDisconnected()
                     }
                 }
