@@ -1,5 +1,6 @@
 package player.phonograph.ui.fragments.player
 
+import player.phonograph.R
 import player.phonograph.databinding.FragmentMiniPlayerBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.service.MusicPlayerRemote
@@ -7,6 +8,8 @@ import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
 import player.phonograph.util.theme.accentColor
+import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.themeIconColor
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -20,6 +23,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import kotlin.math.abs
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
@@ -85,6 +89,14 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         replaceText(MusicPlayerRemote.currentSong.title)
         replaceDrawable(miniPlayerPlayPauseDrawable)
         updatePlayPauseDrawableState(false)
+    }
+
+    override fun onServiceDisconnected() {
+        val context = requireContext()
+        lifecycleScope.launch(Dispatchers.Main) {
+            replaceText(context.getString(R.string.not_available_now))
+            replaceDrawable(context.getTintedDrawable(R.drawable.ic_refresh_white_24dp, themeIconColor(context)))
+        }
     }
 
     private fun updateProgressViews(progress: Int, total: Int) {
