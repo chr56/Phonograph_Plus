@@ -140,11 +140,9 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
     override fun onServiceDisconnected() {
         super.onServiceDisconnected()
         val activity = requireActivity()
-        activity.lifecycleScope.launch(Dispatchers.Main) {
-            binding.setPlayPauseButton(
-                activity.getTintedDrawable(R.drawable.ic_refresh_white_24dp, themeIconColor(activity))
-            )
-        }
+        binding.setPlayPauseButton(
+            activity.getTintedDrawable(R.drawable.ic_refresh_white_24dp, themeIconColor(activity))
+        )
     }
 
     private val _backgroundColor: MutableStateFlow<Int> = MutableStateFlow(0)
