@@ -8,6 +8,7 @@ import lib.phonograph.activity.ToolbarActivity
 import org.koin.android.ext.android.inject
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
+import player.phonograph.service.MusicServiceConnection
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.util.permissions.StoragePermissionChecker
@@ -17,7 +18,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withResumed
 import android.content.ComponentName
-import android.content.ServiceConnection
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.IBinder
@@ -36,35 +36,49 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-            serviceToken =
-                MusicPlayerRemote.bindToService(
-                    this@AbsMusicServiceActivity,
-                    object : ServiceConnection {
-                        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-                            this@AbsMusicServiceActivity.onServiceConnected()
-                        }
-
-                        override fun onServiceDisconnected(name: ComponentName) {
-                            this@AbsMusicServiceActivity.onServiceDisconnected()
-                        }
-                    }
-                )
-            volumeControlStream = AudioManager.STREAM_MUSIC
-            val result = StoragePermissionChecker.hasStorageReadPermission(this@AbsMusicServiceActivity)
-            if (!result) {
-                withResumed {
-                    notifyPermissionDeniedUser(listOf(StoragePermissionChecker.necessaryStorageReadPermission)) {
-                        navigateToAppDetailSetting(this@AbsMusicServiceActivity)
-                    }
-                }
-            }
+            connectToService()
         }
-        lifecycle.addObserver(LifeCycleObserver())
+        lifecycleScope.launch {
+            checkStorageReadPermission()
+        }
+        volumeControlStream = AudioManager.STREAM_MUSIC
+        lifecycle.addObserver(QueueStateLifeCycleObserver())
     }
 
     override fun onDestroy() {
         super.onDestroy()
         MusicPlayerRemote.unbindFromService(serviceToken)
+    }
+
+    suspend fun connectToService() {
+        serviceToken =
+            MusicPlayerRemote.bindToService(
+                this@AbsMusicServiceActivity,
+                object : MusicServiceConnection {
+                    override fun onServiceConnected(name: ComponentName, service: IBinder) {
+                        this@AbsMusicServiceActivity.onServiceConnected()
+                    }
+
+                    override fun onServiceDisconnected(name: ComponentName) {
+                        this@AbsMusicServiceActivity.onServiceDisconnected()
+                    }
+
+                    override fun onServiceDetached() {
+                        this@AbsMusicServiceActivity.onServiceDisconnected()
+                    }
+                }
+            )
+    }
+
+    private suspend fun checkStorageReadPermission() {
+        val result = StoragePermissionChecker.hasStorageReadPermission(this@AbsMusicServiceActivity)
+        if (!result) {
+            withResumed {
+                notifyPermissionDeniedUser(listOf(StoragePermissionChecker.necessaryStorageReadPermission)) {
+                    navigateToAppDetailSetting(this@AbsMusicServiceActivity)
+                }
+            }
+        }
     }
 
     //
@@ -85,7 +99,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
     // CurrentQueueState
     //
 
-    inner class LifeCycleObserver : DefaultLifecycleObserver {
+    private inner class QueueStateLifeCycleObserver : DefaultLifecycleObserver {
 
         private var registered = false
 

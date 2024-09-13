@@ -221,10 +221,10 @@ class MusicService : MediaBrowserServiceCompat() {
         log("serviceUsedInForeground: $serviceUsedInForeground", false)
         if (serviceUsedInForeground > 0) {
             pause()
-            log("Can not exit foreground service!", false)
-            try {
-                Toast.makeText(this, R.string.error_unstoppable_service, Toast.LENGTH_SHORT).show()
-            } catch (_: Exception) {
+            MusicPlayerRemote.unbindAllFromService()
+            log("All service bindings are removed", false)
+            controller.handler.post {
+                stopSelf()
             }
         } else {
             stopSelf()

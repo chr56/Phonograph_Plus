@@ -16,6 +16,7 @@ import android.animation.ObjectAnimator
 import android.animation.TimeInterpolator
 import android.content.Context
 import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import java.util.*
@@ -105,13 +106,19 @@ class FlatPlayerControllerFragment : AbsPlayerControllerFragment<FragmentFlatPla
             return viewBinding.root
         }
 
-        override fun setUpPlayPauseButton(context: Context) {
+        override fun preparePlayPauseButton(context: Context) {
             playPauseDrawable = PlayPauseDrawable(context)
-            viewBinding.playerPlayPauseButton.setOnClickListener(PlayPauseButtonOnClickHandler())
-            viewBinding.playerPlayPauseButton.setImageDrawable(playPauseDrawable)
-            // viewBinding.playerPlayPauseButton.pivotX = viewBinding.playerPlayPauseButton.width.toFloat() / 2
-            // viewBinding.playerPlayPauseButton.pivotY = viewBinding.playerPlayPauseButton.height.toFloat() / 2
+            with(viewBinding.playerPlayPauseButton) {
+                setOnClickListener(PlayPauseButtonOnClickHandler())
+                // pivotX = width.toFloat() / 2
+                // pivotY = height.toFloat() / 2
+            }
         }
+
+        override fun setPlayPauseButton(drawable: Drawable?) {
+            viewBinding.playerPlayPauseButton.setImageDrawable(drawable)
+        }
+
 
         override fun updatePlayPauseColor(@ColorInt controlsColor: Int) {
             viewBinding.playerPlayPauseButton.setColorFilter(controlsColor, PorterDuff.Mode.SRC_IN)

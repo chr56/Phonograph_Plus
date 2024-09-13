@@ -1,5 +1,6 @@
 package player.phonograph.ui.fragments.player
 
+import player.phonograph.R
 import player.phonograph.databinding.FragmentMiniPlayerBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.service.MusicPlayerRemote
@@ -7,13 +8,14 @@ import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
 import player.phonograph.util.theme.accentColor
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.themeIconColor
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.LayoutInflater
@@ -21,19 +23,20 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import kotlin.math.abs
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 class MiniPlayerFragment : AbsMusicServiceFragment() {
+
     private var viewBinding: FragmentMiniPlayerBinding? = null
     private val binding get() = viewBinding!!
 
     private var miniPlayerPlayPauseDrawable: PlayPauseDrawable? = null
 
-    private val progressViewUpdateHelperDelegate =
-        MusicProgressViewUpdateHelperDelegate(::updateProgressViews)
+    private val progressViewUpdateHelperDelegate = MusicProgressViewUpdateHelperDelegate(::updateProgressViews)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewBinding = FragmentMiniPlayerBinding.inflate(layoutInflater)
@@ -58,17 +61,12 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
 
     private fun setUpMiniPlayer() {
         setUpPlayPauseButton()
+        binding.miniPlayerActionButton.setOnClickListener(PlayPauseButtonOnClickHandler())
         binding.progressIndicator.setIndicatorColor(accentColor())
     }
 
     private fun setUpPlayPauseButton() {
         miniPlayerPlayPauseDrawable = PlayPauseDrawable(requireContext())
-        binding.miniPlayerPlayPauseButton.setImageDrawable(miniPlayerPlayPauseDrawable)
-        binding.miniPlayerPlayPauseButton.setColorFilter(
-            themeIconColor(requireContext()),
-            PorterDuff.Mode.SRC_IN
-        )
-        binding.miniPlayerPlayPauseButton.setOnClickListener(PlayPauseButtonOnClickHandler())
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 MusicPlayerRemote.currentState.collect {
@@ -81,19 +79,22 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 CurrentQueueState.currentSong.collect {
-                    updateSongTitle()
+                    replaceText(MusicPlayerRemote.currentSong.title)
                 }
             }
         }
     }
 
-    private fun updateSongTitle() {
-        binding.miniPlayerTitle.text = MusicPlayerRemote.currentSong.title
+    override fun onServiceConnected() {
+        replaceText(MusicPlayerRemote.currentSong.title)
+        replaceDrawable(miniPlayerPlayPauseDrawable)
+        updatePlayPauseDrawableState(false)
     }
 
-    override fun onServiceConnected() {
-        updateSongTitle()
-        updatePlayPauseDrawableState(false)
+    override fun onServiceDisconnected() {
+        val context = requireContext()
+        replaceText(context.getString(R.string.service_disconnected))
+        replaceDrawable(context.getTintedDrawable(R.drawable.ic_refresh_white_24dp, themeIconColor(context)))
     }
 
     private fun updateProgressViews(progress: Int, total: Int) {
@@ -132,6 +133,14 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         override fun onTouch(v: View, event: MotionEvent): Boolean {
             return flingPlayBackController.onTouchEvent(event)
         }
+    }
+
+    private fun replaceText(text: String) {
+        binding.miniPlayerTitle.text = text
+    }
+
+    private fun replaceDrawable(drawable: Drawable?) {
+        binding.miniPlayerActionButton.setImageDrawable(drawable)
     }
 
     private fun updatePlayPauseDrawableState(animate: Boolean) {

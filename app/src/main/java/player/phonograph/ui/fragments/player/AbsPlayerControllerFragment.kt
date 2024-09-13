@@ -14,7 +14,9 @@ import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.themeFooterColor
+import player.phonograph.util.theme.themeIconColor
 import util.theme.color.isColorLight
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryDisabledTextColor
@@ -28,6 +30,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import android.content.Context
 import android.graphics.PorterDuff.Mode.SRC_IN
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +38,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -79,7 +83,8 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         calculateColor(context, footerColor)
         lightColor = context.primaryTextColor(true)
 
-        binding.setUpPlayPauseButton(context)
+        binding.preparePlayPauseButton(context)
+        binding.setPlayPauseButton(binding.playPauseDrawable)
         binding.updatePlayPauseColor(controlsColor)
         binding.updateButtonsColor(controlsColor)
 
@@ -128,7 +133,16 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
 
     override fun onServiceConnected() {
         super.onServiceConnected()
+        binding.setPlayPauseButton(binding.playPauseDrawable)
         binding.updatePlayPauseDrawableState(true)
+    }
+
+    override fun onServiceDisconnected() {
+        super.onServiceDisconnected()
+        val activity = requireActivity()
+        binding.setPlayPauseButton(
+            activity.getTintedDrawable(R.drawable.ic_refresh_white_24dp, themeIconColor(activity))
+        )
     }
 
     private val _backgroundColor: MutableStateFlow<Int> = MutableStateFlow(0)
@@ -237,7 +251,8 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
 
         //region Behaviour
         lateinit var playPauseDrawable: PlayPauseDrawable
-        abstract fun setUpPlayPauseButton(context: Context)
+        abstract fun preparePlayPauseButton(context: Context)
+        abstract fun setPlayPauseButton(drawable: Drawable?)
         abstract fun updatePlayPauseColor(controlsColor: Int)
 
         fun updatePlayPauseDrawableState(animate: Boolean) {
