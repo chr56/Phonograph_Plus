@@ -93,10 +93,8 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
 
     override fun onServiceDisconnected() {
         val context = requireContext()
-        lifecycleScope.launch(Dispatchers.Main) {
-            replaceText(context.getString(R.string.not_available_now))
-            replaceDrawable(context.getTintedDrawable(R.drawable.ic_refresh_white_24dp, themeIconColor(context)))
-        }
+        replaceText(context.getString(R.string.not_available_now))
+        replaceDrawable(context.getTintedDrawable(R.drawable.ic_refresh_white_24dp, themeIconColor(context)))
     }
 
     private fun updateProgressViews(progress: Int, total: Int) {
