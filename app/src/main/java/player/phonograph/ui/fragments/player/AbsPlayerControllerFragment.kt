@@ -14,7 +14,9 @@ import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.themeFooterColor
+import player.phonograph.util.theme.themeIconColor
 import util.theme.color.isColorLight
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryDisabledTextColor
@@ -36,6 +38,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -130,7 +133,18 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
 
     override fun onServiceConnected() {
         super.onServiceConnected()
+        binding.setPlayPauseButton(binding.playPauseDrawable)
         binding.updatePlayPauseDrawableState(true)
+    }
+
+    override fun onServiceDisconnected() {
+        super.onServiceDisconnected()
+        val activity = requireActivity()
+        activity.lifecycleScope.launch(Dispatchers.Main) {
+            binding.setPlayPauseButton(
+                activity.getTintedDrawable(R.drawable.ic_refresh_white_24dp, themeIconColor(activity))
+            )
+        }
     }
 
     private val _backgroundColor: MutableStateFlow<Int> = MutableStateFlow(0)
