@@ -16,6 +16,7 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -86,21 +87,24 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment<FragmentCardPla
             super.unbind()
         }
 
-        override fun setUpPlayPauseButton(context: Context) {
-            playPauseDrawable = PlayPauseDrawable(context)
-
+        override fun preparePlayPauseButton(context: Context) {
             val fabColor = Color.WHITE
-            viewBinding.playerPlayPauseFab.tint(fabColor, true, context.nightMode)
+            playPauseDrawable = PlayPauseDrawable(context).apply {
+                colorFilter =
+                    BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                        context.secondaryTextColor(fabColor), BlendModeCompat.SRC_IN
+                    )
+            }
+            with(viewBinding.playerPlayPauseFab) {
+                tint(fabColor, true, context.nightMode)
+                setOnClickListener(PlayPauseButtonOnClickHandler())
+                // pivotX = width.toFloat() / 2
+                // pivotY = height.toFloat() / 2
+            }
+        }
 
-            playPauseDrawable.colorFilter =
-                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                    context.secondaryTextColor(fabColor), BlendModeCompat.SRC_IN
-                )
-
-            viewBinding.playerPlayPauseFab.setImageDrawable(playPauseDrawable) // Note: set the drawable AFTER TintHelper.setTintAuto() was called
-            viewBinding.playerPlayPauseFab.setOnClickListener(PlayPauseButtonOnClickHandler())
-            // viewBinding.playerPlayPauseFab.pivotX = viewBinding.playerPlayPauseFab.width.toFloat() / 2
-            // viewBinding.playerPlayPauseFab.pivotY = viewBinding.playerPlayPauseFab.height.toFloat() / 2
+        override fun setPlayPauseButton(drawable: Drawable?) {
+            viewBinding.playerPlayPauseFab.setImageDrawable(drawable)
         }
 
         override fun updatePlayPauseColor(controlsColor: Int) {}

@@ -28,6 +28,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import android.content.Context
 import android.graphics.PorterDuff.Mode.SRC_IN
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -79,7 +80,8 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         calculateColor(context, footerColor)
         lightColor = context.primaryTextColor(true)
 
-        binding.setUpPlayPauseButton(context)
+        binding.preparePlayPauseButton(context)
+        binding.setPlayPauseButton(binding.playPauseDrawable)
         binding.updatePlayPauseColor(controlsColor)
         binding.updateButtonsColor(controlsColor)
 
@@ -237,7 +239,8 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
 
         //region Behaviour
         lateinit var playPauseDrawable: PlayPauseDrawable
-        abstract fun setUpPlayPauseButton(context: Context)
+        abstract fun preparePlayPauseButton(context: Context)
+        abstract fun setPlayPauseButton(drawable: Drawable?)
         abstract fun updatePlayPauseColor(controlsColor: Int)
 
         fun updatePlayPauseDrawableState(animate: Boolean) {
