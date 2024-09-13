@@ -203,42 +203,8 @@ fun setupDrawerMenu(
                         activity.startActivity(WebSearchLauncher.launchIntent(activity))
                     },
                     context.getString(R.string.action_view_external_files) to {
-                        val uri =
-                            Uri.parse("content://com.android.externalstorage.documents/document/primary%3AAndroid%2Fdata%2F$ACTUAL_PACKAGE_NAME")
-                        val activityName = "com.android.documentsui.files.FilesActivity"
-                        try {
-                            activity.startActivity(
-                                Intent(
-                                    Intent.ACTION_VIEW,
-                                    uri
-                                ).apply {
-                                    flags = Intent.FLAG_ACTIVITY_NEW_DOCUMENT
-                                    component = ComponentName(
-                                        "com.android.documentsui",
-                                        activityName,
-                                    )
-                                }
-                            )
-                        } catch (e: Exception) {
-                            try {
-                                activity.startActivity(
-                                    Intent(
-                                        Intent.ACTION_VIEW,
-                                        uri
-                                    ).apply {
-                                        flags = Intent.FLAG_ACTIVITY_NEW_DOCUMENT
-                                        component = ComponentName(
-                                            "com.google.android.documentsui",
-                                            activityName,
-                                        )
-                                    }
-                                )
-                            } catch (e: Exception) {
-                                reportError(e, "OpenDocumentsUi", "Failed to open Documents UI")
-                            }
-                        }
-
-                    }
+                        viewFiles(activity)
+                    },
                 )
                 MaterialAlertDialogBuilder(activity)
                     .setTitle(R.string.more_actions)
@@ -257,6 +223,43 @@ fun setupDrawerMenu(
         }
     }
 
+}
+
+private fun viewFiles(activity: FragmentActivity) {
+    val uri =
+        Uri.parse("content://com.android.externalstorage.documents/document/primary%3AAndroid%2Fdata%2F$ACTUAL_PACKAGE_NAME")
+    val activityName = "com.android.documentsui.files.FilesActivity"
+    try {
+        activity.startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                uri
+            ).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_DOCUMENT
+                component = ComponentName(
+                    "com.android.documentsui",
+                    activityName,
+                )
+            }
+        )
+    } catch (e: Exception) {
+        try {
+            activity.startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    uri
+                ).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_DOCUMENT
+                    component = ComponentName(
+                        "com.google.android.documentsui",
+                        activityName,
+                    )
+                }
+            )
+        } catch (e: Exception) {
+            reportError(e, "OpenDocumentsUi", "Failed to open Documents UI")
+        }
+    }
 }
 
 private fun onScanMedia(fragmentActivity: FragmentActivity) {
