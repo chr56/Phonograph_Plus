@@ -18,6 +18,7 @@ import player.phonograph.mechanism.setting.PageConfig
 import player.phonograph.model.DirectoryInfo
 import player.phonograph.model.pages.Pages
 import player.phonograph.repo.loader.Songs
+import player.phonograph.service.MusicService
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
@@ -31,6 +32,7 @@ import player.phonograph.util.coroutineToast
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.reportError
+import player.phonograph.util.runOnMainHandler
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.toggleTheme
@@ -39,6 +41,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -204,6 +207,18 @@ fun setupDrawerMenu(
                     },
                     context.getString(R.string.action_view_external_files) to {
                         viewFiles(activity)
+                    },
+                    context.getString(R.string.exit) to {
+                        val pendingIntent = PendingIntent.getService(
+                            context, 0,
+                            Intent(MusicService.ACTION_EXIT_OR_STOP).apply {
+                                component = ComponentName(context, MusicService::class.java)
+                            }, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+                        )
+                        runOnMainHandler {
+                            pendingIntent.send()
+                            activity.finishAffinity()
+                        }
                     },
                 )
                 MaterialAlertDialogBuilder(activity)
