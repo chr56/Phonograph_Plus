@@ -7,6 +7,8 @@ notes:
     highlights: [ ]
     items:
       - "Fix: Crash when creating playlists in Search Results, Album Detail, Artist Detail, Genre Detail"
+      - "New: add \"Exit\" in Main Drawer Menu"
+      - "Improve: quiting from Media Notification in any circumstance"
       - "Improve: Search function in Playlist Detail"
       - "Translation: update French (manafy), Portuguese (by azilara), Spanish (by Ulisses_Mello), German (by jande75)"
       - "Development: upgrade kotlin to 2.0.20, update dependencies"
@@ -16,6 +18,8 @@ notes:
     highlights: [ ]
     items:
       - "修复 在搜索结果、专辑详情、艺术家详情、流派详情中，创建播放列表时崩溃"
+      - "新增 主抽屉菜单新增“退出”选项"
+      - "改进 在任何情形下，从媒体通知退出"
       - "改进 播放列表内搜索功能"
       - "翻译 更新 法语(manafy), 葡萄牙语(azilara), 西班牙语(Ulisses_Mello), 德语(jande75)"
       - "开发 升级 Kotlin 至 2.0.20，更新依赖，清理代码"

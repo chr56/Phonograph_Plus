@@ -1,16 +1,20 @@
 version: "1.8.4-dev3"
 channel: "PREVIEW"
 versionCode: 1083
-timestamp: 1726150000
+timestamp: 1726215000
 notes:
   en:
     highlights: [ ]
     items:
+      - "New: add \"Exit\" in Main Drawer Menu"
+      - "Improve: quiting from Media Notification in any circumstance"
       - "Translation: update Portuguese (by azilara), Spanish (by Ulisses_Mello), German (by jande75)"
 
   zh:
     highlights: [ ]
     items:
+      - "新增 主抽屉菜单新增“退出”选项"
+      - "改进 在任何情形下，从媒体通知退出"
       - "翻译 葡萄牙语 (azilara), 西班牙语 (Ulisses_Mello), 德语 (jande75)"
 
 previousVersion: "1.8.4-dev1"
