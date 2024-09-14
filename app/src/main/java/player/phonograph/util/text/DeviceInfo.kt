@@ -20,6 +20,8 @@ import player.phonograph.util.currentVersionName
 import player.phonograph.util.gitRevisionHash
 import player.phonograph.util.permissions.StoragePermissionChecker
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.ActivityManager
 import android.content.Context
 import android.os.Build
 import android.util.DisplayMetrics
@@ -51,6 +53,7 @@ fun getDeviceInfo(context: Context): String {
     val device: String = Build.DEVICE // device code name
     val product: String = Build.PRODUCT // rom code name
     val appLanguage: String = Locale.getDefault().language
+    val memoryInfo: String = memoryInfo(context)
     val screenInfo = screenInfo(context.resources.displayMetrics)
 
     return """
@@ -66,6 +69,7 @@ fun getDeviceInfo(context: Context): String {
             Build version:   $buildID
                              ($buildVersion)
             Language:        $appLanguage
+            Memory:          $memoryInfo
             Screen:          $screenInfo
             Permissions:     Storage($storage)
 
@@ -80,6 +84,28 @@ private fun socInfo(): String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES
 
 private fun screenInfo(displayMetrics: DisplayMetrics): String =
     "${displayMetrics.heightPixels}x${displayMetrics.widthPixels} (dpi ${displayMetrics.densityDpi})"
+
+private fun memoryInfo(context: Context): String {
+    val activityManager = context.getSystemService(Activity.ACTIVITY_SERVICE) as ActivityManager
+    val memoryInfo = ActivityManager.MemoryInfo()
+
+    try {
+        activityManager.getMemoryInfo(memoryInfo)
+
+        val availableMem = memoryInfo.availMem / (1024 * 1024)
+        val totalMem = memoryInfo.totalMem / (1024 * 1024)
+        val flags =
+            buildString {
+                if (activityManager.isLowRamDevice) append('L')
+                if (memoryInfo.lowMemory) append('!')
+            }
+
+        val extra = if (flags.isNotEmpty()) "[$flags]" else ""
+        return "$availableMem/$totalMem $extra"
+    } catch (e: Exception) {
+        return "NA"
+    }
+}
 
 private fun storagePermissionInfo(context: Context): String {
     val checker = StoragePermissionChecker
