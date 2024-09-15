@@ -24,20 +24,18 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 
-@OptIn(ExperimentalCoroutinesApi::class)
 suspend fun loadImage(context: Context, song: Song, timeout: Long): PaletteBitmap =
     try {
         withTimeoutOrNot(timeout, Dispatchers.IO) {
             suspendCancellableCoroutine { continuation ->
                 loadImage(context, song) { _, drawable, color ->
                     if (drawable is BitmapDrawable) {
-                        continuation.resume(PaletteBitmap(drawable.bitmap, color)) { cancel() }
+                        continuation.resume(PaletteBitmap(drawable.bitmap, color)) { tr, _, _ -> cancel("", tr) }
                     } else {
                         continuation.cancel()
                     }

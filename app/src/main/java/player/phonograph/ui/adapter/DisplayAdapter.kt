@@ -39,7 +39,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -266,7 +265,6 @@ abstract class DisplayAdapter<I : Displayable>(
     class DisplayPreloadImageCache<I : Displayable>(size: Int) :
             AbsPreloadImageCache<I, PaletteBitmap>(size, if (SDK_INT >= Q) IMPL_SPARSE_ARRAY else IMPL_SCATTER_MAP) {
 
-        @OptIn(ExperimentalCoroutinesApi::class)
         override suspend fun load(context: Context, key: I): PaletteBitmap =
             suspendCancellableCoroutine { continuation ->
                 loadImage(context)
@@ -276,7 +274,11 @@ abstract class DisplayAdapter<I : Displayable>(
                             .defaultColor(themeFooterColor(context))
                             .onResourceReady { result, palette ->
                                 if (result is BitmapDrawable) {
-                                    continuation.resume(PaletteBitmap(result.bitmap, palette)) { continuation.cancel() }
+                                    continuation.resume(
+                                        PaletteBitmap(result.bitmap, palette)
+                                    ) { cause, _, _ ->
+                                        continuation.cancel(cause)
+                                    }
                                 } else {
                                     continuation.cancel()
                                 }

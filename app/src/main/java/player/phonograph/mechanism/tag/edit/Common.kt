@@ -26,7 +26,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import android.content.Context
 import android.net.Uri
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
 import java.io.IOException
@@ -53,13 +52,11 @@ internal fun applyEditImpl(
     }
 }
 
-
-@OptIn(ExperimentalCoroutinesApi::class)
 suspend fun selectImage(accessTool: OpenFileStorageAccessDelegate): Uri? {
     val cfg = OpenDocumentContract.Config(mimeTypes = arrayOf("image/*"))
     return suspendCancellableCoroutine {
         accessTool.launch(cfg) { uri: Uri? ->
-            it.resume(uri) {}
+            it.resume(uri) { _, _, _ -> }
         }
     }
 }
