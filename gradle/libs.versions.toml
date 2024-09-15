@@ -27,7 +27,7 @@ palette = "1.0.0"
 room = "2.6.1"
 datastore = { strictly = "1.0.0" }
 material = "1.9.0"
-compose = "1.6.8"
+compose = "1.7.1"
 #### Jetpack End
 
 
@@ -105,6 +105,7 @@ compose-foundation = { group = "androidx.compose.foundation", name = "foundation
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
 compose-material = { group = "androidx.compose.material", name = "material", version.ref = "compose" }
+compose-material-icons = { group = "androidx.compose.material", name = "material-icons-core", version.ref = "compose" }
 
 compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
 
@@ -174,6 +175,7 @@ compose = [
     "compose-foundation",
     "compose-ui",
     "compose-material",
+    "compose-material-icons",
     "compose-activity",
 ]
 
