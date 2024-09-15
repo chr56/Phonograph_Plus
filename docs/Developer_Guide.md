@@ -4,7 +4,7 @@ This document describes the overview of this project for developers.
 
 See also [Build Instruction](./Build_Instructions.md).
 
-_Last Update: 2024.08.12_
+_Last Update: 2024.09.15_
 
 ## Toolchain & Dependencies
 
@@ -17,15 +17,15 @@ Please refer [libs.versions.toml](../gradle/libs.versions.toml) for all the libr
 **Toolchain**
 
 - Gradlew `8.8`, requiring JDK `17`
-- `Android Gradle Plugin` `8.5.2`
+- `Android Gradle Plugin` `8.6.0`
 - Android SDK `34`
-- kotlin for JVM(Android) `1.9.22`
+- kotlin for JVM(Android) `2.0.20`
 
 **Libraries**
 
 Highlight:
 
-- `Jetpack Compose` 1.6.8
+- `Jetpack Compose` 1.7.1
 - `Jetpack Datastore` 1.0.0
 - `kotlinx.serialization`
 - `kotlinx.parcelize`
