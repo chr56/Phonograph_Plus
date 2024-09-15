@@ -19,14 +19,11 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.IOException
 import java.io.OutputStream
 
-
-@OptIn(ExperimentalCoroutinesApi::class)
 suspend fun loadCover(context: Context, data: Any): Pair<Bitmap?, Color?> {
     return suspendCancellableCoroutine { continuation ->
         loadImage(context) {
@@ -36,10 +33,10 @@ suspend fun loadCover(context: Context, data: Any): Pair<Bitmap?, Color?> {
                 PaletteTargetBuilder()
                     .defaultColor(themeFooterColor(context))
                     .onResourceReady { result: Drawable, paletteColor: Int ->
-                        continuation.resume(result.toBitmap() to Color(paletteColor)) {}
+                        continuation.resume(result.toBitmap() to Color(paletteColor)) { _, _, _ -> }
                     }
                     .onFail {
-                        continuation.resume(null to null) {}
+                        continuation.resume(null to null) { _, _, _ -> }
                     }
                     .build()
             )

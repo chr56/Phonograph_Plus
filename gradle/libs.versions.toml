@@ -11,9 +11,9 @@ versionChecker = "0.51.0"
 #### Jetpack Start
 core-ktx = "1.13.1"
 appcompat = "1.7.0"
-activity = "1.9.1"
-fragment = "1.8.2"
-lifecycle = "2.7.0"
+activity = "1.9.2"
+fragment = "1.8.3"
+lifecycle = "2.8.5"
 annotation = "1.8.0"
 preference = "1.2.1"
 recyclerview = "1.3.2"
@@ -25,15 +25,15 @@ browser = "1.8.0"
 cardview = "1.0.0"
 palette = "1.0.0"
 room = "2.6.1"
-datastore = { strictly = "1.0.0" }
+datastore = "1.1.1"
 material = "1.9.0"
-compose = "1.6.8"
+compose = "1.7.1"
 #### Jetpack End
 
 
 #### Popular Start
-ktxc = "1.8.1"
-ktxs-json = "1.7.1"
+ktxc = "1.9.0"
+ktxs-json = "1.7.2"
 ktxs-ktoml = "0.5.0"
 ktxs-kaml = "0.61.0"
 okhttp = "4.12.0"
@@ -105,6 +105,7 @@ compose-foundation = { group = "androidx.compose.foundation", name = "foundation
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
 compose-material = { group = "androidx.compose.material", name = "material", version.ref = "compose" }
+compose-material-icons = { group = "androidx.compose.material", name = "material-icons-core", version.ref = "compose" }
 
 compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
 
@@ -174,6 +175,7 @@ compose = [
     "compose-foundation",
     "compose-ui",
     "compose-material",
+    "compose-material-icons",
     "compose-activity",
 ]
 
