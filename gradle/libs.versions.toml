@@ -33,7 +33,7 @@ compose = "1.6.8"
 
 #### Popular Start
 ktxc = "1.8.1"
-ktxs-json = "1.7.1"
+ktxs-json = "1.7.2"
 ktxs-ktoml = "0.5.0"
 ktxs-kaml = "0.61.0"
 okhttp = "4.12.0"
