@@ -7,15 +7,65 @@ on:
       - '.github/**'
 
 jobs:
+
+  changelog:
+    name: Generate Changelogs
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+          cache: gradle
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Grant Execute Permission for Gradlew
+        run:
+          chmod +x gradlew
+
+      - name: Generate Changelog Markdown
+        run: |
+          # Prepare
+          ./gradlew tools:changelog-generator:classes
+          # generate changelog
+          ./gradlew tools:changelog-generator:GenerateGithubReleaseNote
+          ./gradlew tools:changelog-generator:GenerateEscapedMarkdownReleaseNote
+
+      - name: Upload Changelogs
+        uses: actions/upload-artifact@v4
+        with:
+          name: Changelogs
+          path: |
+            GitHubReleaseNote.md
+            EscapedReleaseNote.md
+          retention-days: 1
+
+
   release:
     name: Create Stable Release Template
     runs-on: ubuntu-22.04
     permissions:
       contents: write
+    needs:
+      - changelog
     steps:
 
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Download Changelogs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: Changelogs
+          merge-multiple: true
 
       - name: Create Stable Release Template
         uses: softprops/action-gh-release@v1
