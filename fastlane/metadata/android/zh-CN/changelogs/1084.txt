@@ -1,0 +1,7 @@
+<b>1.8.4(1084) 2024.09.16</b>
+- 修复 在搜索结果、专辑详情、艺术家详情、流派详情中，创建播放列表时崩溃
+- 新增 主抽屉菜单新增“退出”选项
+- 改进 在任何情形下，都允许使用媒体通知退出
+- 改进 播放列表内的搜索功能
+- 翻译 更新 法语(manafy), 葡萄牙语(azilara), 西班牙语(Ulisses_Mello), 德语(jande75), 巴西葡萄牙语(FalaTudo)
+...(Visit project homepage to see full changelogs)

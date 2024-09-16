@@ -1,0 +1,7 @@
+<b>1.8.4(1084) 2024.09.16</b>
+- Fix: Crash when creating playlists in Search Results, Album Detail, Artist Detail, Genre Detail
+- New: add "Exit" in Main Drawer Menu
+- Improve: quiting from Media Notification in any circumstance
+- Improve: Search function in Playlist Detail
+- Translation: update French (manafy), Portuguese (by azilara), Spanish (by Ulisses_Mello), German (by jande75), Portuguese, Brazilian (by FalaTudo)
+...(Visit project homepage to see full changelogs)
