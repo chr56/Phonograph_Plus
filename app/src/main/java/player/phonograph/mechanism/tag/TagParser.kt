@@ -198,7 +198,7 @@ object SimpleKeyValueReader : TagReader<AbstractTag> {
                 preprocessTagField(tagField) {
                     when (it) {
                         is TagTextField -> TextData(it.content)
-                        else            -> TextData(it.rawContent.toString())
+                        else            -> TextData(it.rawContent.take(64).toString())
                     }
                 }
             }.let { MultipleData(it) }
