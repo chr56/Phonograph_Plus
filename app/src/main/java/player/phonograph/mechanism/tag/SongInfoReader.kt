@@ -100,7 +100,7 @@ private fun readTagFieldsImpl(audioFile: AudioFile, keys: Set<FieldKey>): Map<Fi
                     EmptyData
                 } else {
                     val text = audioFile.tag.getFirst(key)
-                    TextData(text)
+                    TextData("${text.take(512)}\n...")
                 }
             } else {
                 EmptyData

@@ -21,6 +21,9 @@ import org.jaudiotagger.tag.mp4.field.Mp4TagCoverField
 import org.jaudiotagger.tag.mp4.field.Mp4TagRawBinaryField
 import org.jaudiotagger.tag.mp4.field.Mp4TagReverseDnsField
 import org.jaudiotagger.tag.mp4.field.Mp4TagTextField
+import org.jaudiotagger.tag.vorbiscomment.VorbisCommentFieldKey
+import org.jaudiotagger.tag.vorbiscomment.VorbisCommentTag
+import org.jaudiotagger.tag.vorbiscomment.VorbisCommentTagField
 import org.jaudiotagger.tag.wav.WavTag
 import player.phonograph.model.RawTag
 import player.phonograph.model.TagData
@@ -42,6 +45,7 @@ fun readAllTags(audioFile: AudioFile): Map<String, RawTag> {
             is ID3v1Tag         -> ID3v1TagReaders.ID3v1TagReader.read(tag)
             is FlacTag          -> FlacTagReader.read(tag)
             is Mp4Tag           -> Mp4TagReader.read(tag)
+            is VorbisCommentTag -> VorbisCommentTagReader.read(tag)
             is AbstractTag      -> SimpleKeyValueReader.read(tag)
             else                -> emptyMap()
         }
@@ -198,7 +202,7 @@ object SimpleKeyValueReader : TagReader<AbstractTag> {
                 preprocessTagField(tagField) {
                     when (it) {
                         is TagTextField -> TextData(it.content)
-                        else            -> TextData(it.rawContent.toString())
+                        else            -> TextData(it.rawContent.take(64).toString())
                     }
                 }
             }.let { MultipleData(it) }
@@ -225,6 +229,30 @@ object Mp4TagReader : TagReader<Mp4Tag> {
                 else                     -> ErrData("Unknown: $field")
             }
             id to RawTag(id, name, value, description)
+        }
+    }
+}
+
+object VorbisCommentTagReader : TagReader<VorbisCommentTag> {
+    override fun read(tag: VorbisCommentTag): Map<String, RawTag> {
+        val mappedFields: Map<String, List<TagField>> = tag.mappedFields
+        return mappedFields.mapValues { (key, tagFields) ->
+            val value = tagFields.map { tagField ->
+                if (tagField is VorbisCommentTagField) {
+                    val imageTags = listOf(
+                        VorbisCommentFieldKey.METADATA_BLOCK_PICTURE.fieldName,
+                        VorbisCommentFieldKey.COVERART.fieldName,
+                    )
+                    if (key in imageTags) {
+                        TextData("<BASE64_IMAGES>")
+                    } else {
+                        TextData(tagField.content)
+                    }
+                } else {
+                    TextData("Unknown field (${tagField.rawContent.take(24)})")
+                }
+            }.let { MultipleData(it) }
+            RawTag(key, key, value, null)
         }
     }
 }
