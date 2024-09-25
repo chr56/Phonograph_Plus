@@ -4,7 +4,7 @@
 
 package player.phonograph.ui
 
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import player.phonograph.ui.activities.AlbumDetailActivityViewModel
 import player.phonograph.ui.activities.ArtistDetailActivityViewModel
