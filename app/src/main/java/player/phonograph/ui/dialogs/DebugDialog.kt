@@ -6,10 +6,13 @@ package player.phonograph.ui.dialogs
 
 import player.phonograph.App
 import player.phonograph.mechanism.Update
+import player.phonograph.model.Song
 import player.phonograph.model.version.ReleaseChannel
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.UpgradeNotification
+import player.phonograph.repo.mediastore.checkEmbeddedIdOverflow
+import player.phonograph.repo.mediastore.checkIdConflict
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
@@ -24,6 +27,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
 
 class DebugDialog : DialogFragment() {
@@ -40,6 +44,18 @@ class DebugDialog : DialogFragment() {
         },
         "Send Crash Notification" to {
             ErrorNotification.postErrorNotification(Exception("Test"), "Crash Notification Test!!")
+        },
+        "Check Overflowed Song Ids" to {
+            CoroutineScope(Dispatchers.IO).launch {
+                val errors = checkEmbeddedIdOverflow(App.instance)
+                dumpSong("Overflowed Ids", errors)
+            }
+        },
+        "Check Conflicted Song Ids" to {
+            CoroutineScope(Dispatchers.IO).launch {
+                val errors = checkIdConflict(App.instance)
+                dumpSong("Conflicted Position Embedded Ids", errors)
+            }
         },
         "Check for updates (Dialog)" to {
             CoroutineScope(Dispatchers.Unconfined).launch {
@@ -67,6 +83,16 @@ class DebugDialog : DialogFragment() {
             }
         },
     )
+
+    private suspend fun dumpSong(title: String, errors: Collection<Song>) {
+        val message = errors.fold("$title\n:") { acc, song -> "$acc\n${song.id}: ${song.title}" }
+        withContext(Dispatchers.Main) {
+            AlertDialog.Builder(hostActivity.get()!!)
+                .setTitle(title)
+                .setMessage(message)
+                .show()
+        }
+    }
 
 
     private lateinit var hostActivity: WeakReference<FragmentActivity>
