@@ -14,6 +14,7 @@ import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.util.debug
+import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
@@ -55,8 +56,12 @@ object MusicPlayerRemote {
             activity.parent ?: activity // try to use parent activity
         )
         return activity.lifecycle.withStarted {
-            // start service foreground
-            contextWrapper.startService(Intent(contextWrapper, MusicService::class.java))
+            try {
+                // start service
+                contextWrapper.startService(Intent(contextWrapper, MusicService::class.java))
+            } catch (e: Exception) {
+                reportError(e, TAG, "Failed to start service")
+            }
 
             val serviceConnection = MusicServiceConnectionImpl(callback)
 
