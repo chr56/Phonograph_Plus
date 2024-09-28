@@ -27,6 +27,8 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -86,6 +88,21 @@ class CreatePlaylistDialog : DialogFragment() {
             coroutineScope.launch {
                 viewModel.execute(context, songs)
                 alertDialog.dismiss()
+            }
+        }
+
+        with(binding.spinner) {
+            val options = listOf(
+                getString(R.string.file_playlists),
+            )
+            val adapter = ArrayAdapter(context, R.layout.item_dropdown, options)
+            setAdapter(adapter)
+            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
             }
         }
 
