@@ -4,25 +4,22 @@
 
 package player.phonograph.ui.modules.playlist.dialogs
 
-import com.google.android.material.textfield.TextInputLayout
 import lib.storage.launcher.SAFActivityResultContracts
 import lib.storage.textparser.DocumentUriPathParser.documentUriBasePath
 import player.phonograph.R
+import player.phonograph.databinding.DialogCreatePlaylistBinding
 import player.phonograph.mechanism.playlist.mediastore.createPlaylistViaMediastore
 import player.phonograph.mechanism.playlist.saf.writePlaylist
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.util.parcelableArrayList
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.fragment.app.DialogFragment
 import android.app.Dialog
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,14 +33,7 @@ class CreatePlaylistDialog : DialogFragment() {
 
     private var selectedUri: Uri? = null
 
-    private lateinit var nameBox: TextInputLayout
-    private lateinit var locationBox: TextInputLayout
-    private lateinit var cancelButton: AppCompatButton
-    private lateinit var createButton: AppCompatButton
-    private lateinit var useSafCheckbox: AppCompatCheckBox
-
-    private lateinit var nameEditText: EditText
-    private lateinit var locationEditText: EditText
+    private lateinit var binding: DialogCreatePlaylistBinding
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         songs = requireArguments().parcelableArrayList<Song>(SONGS)!!
@@ -56,38 +46,30 @@ class CreatePlaylistDialog : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        bind(alertDialog)
+        binding = DialogCreatePlaylistBinding.bind(alertDialog.findViewById(R.id.content_container)!!)
         setupMainView(alertDialog)
     }
 
-    private fun bind(alertDialog: AlertDialog) {
-        nameBox = alertDialog.findViewById(R.id.name)!!
-        locationBox = alertDialog.findViewById(R.id.location)!!
-        cancelButton = alertDialog.findViewById(R.id.button_cancel)!!
-        createButton = alertDialog.findViewById(R.id.button_create)!!
-        useSafCheckbox = alertDialog.findViewById(R.id.checkBox_saf)!!
-
-        nameEditText = nameBox.editText!!
-        locationEditText = locationBox.editText!!
-    }
-
     private fun setupMainView(alertDialog: AlertDialog) {
+
+        val nameEditText = binding.name.editText!!
+
         nameEditText.setText(R.string.new_playlist_title)
 
-        useSafCheckbox.setOnCheckedChangeListener { _, value ->
-            locationBox.visibility = if (value) View.VISIBLE else View.INVISIBLE
+        binding.checkBoxSaf.setOnCheckedChangeListener { _, value ->
+            binding.location.visibility = if (value) View.VISIBLE else View.INVISIBLE
         }
 
-        locationBox.setEndIconOnClickListener {
+        binding.location.setEndIconOnClickListener {
             coroutineScope.launch {
                 selectedUri = selectFile()
             }
         }
 
-        createButton.setOnClickListener {
+        binding.buttonCreate.setOnClickListener {
             val context = it.context
             coroutineScope.launch {
-                if (useSafCheckbox.isChecked) {
+                if (binding.checkBoxSaf.isChecked) {
                     var uri = selectedUri
                     if (uri != null) {
                         writePlaylist(context, uri, songs)
@@ -102,15 +84,15 @@ class CreatePlaylistDialog : DialogFragment() {
             }
         }
 
-        cancelButton.setOnClickListener { alertDialog.dismiss() }
+        binding.buttonCancel.setOnClickListener { alertDialog.dismiss() }
     }
 
     private suspend fun selectFile(): Uri {
         val context = requireContext()
-        val playlistText = nameEditText.text
+        val playlistText = binding.name.editText!!.text
         val documentUri = createNewFile(context, playlistText)
         withContext(Dispatchers.Main) {
-            locationEditText.setText(documentUriBasePath(documentUri.pathSegments))
+            binding.location.editText!!.setText(documentUriBasePath(documentUri.pathSegments))
         }
         return documentUri
     }
