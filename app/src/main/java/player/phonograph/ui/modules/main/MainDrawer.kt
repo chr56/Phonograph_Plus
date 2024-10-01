@@ -23,6 +23,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.settings.THEME_AUTO_LIGHTBLACK
 import player.phonograph.settings.THEME_AUTO_LIGHTDARK
+import player.phonograph.ui.dialogs.DatabaseMaintenanceDialog
 import player.phonograph.ui.modules.auxiliary.AboutActivity
 import player.phonograph.ui.modules.explorer.PathSelectorContractTool
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
@@ -174,6 +175,9 @@ fun setupDrawerMenu(
             titleRes(R.string.more_actions)
             onClick {
                 val items = listOf(
+                    "Internal Database Maintenance" to {
+                        DatabaseMaintenanceDialog.create().show(activity.supportFragmentManager, "DATABASE_MAINTENANCE")
+                    },
                     activity.getString(R.string.action_grant_storage_permission) to {
                         navigateToStorageSetting(activity)
                     },
