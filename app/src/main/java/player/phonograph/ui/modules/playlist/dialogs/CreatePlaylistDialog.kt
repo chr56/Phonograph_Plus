@@ -11,7 +11,7 @@ import player.phonograph.databinding.DialogCreatePlaylistBinding
 import player.phonograph.mechanism.playlist.mediastore.createPlaylistViaMediastore
 import player.phonograph.mechanism.playlist.saf.writePlaylist
 import player.phonograph.model.Song
-import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.util.parcelableArrayList
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
@@ -197,7 +197,7 @@ class CreatePlaylistDialog : DialogFragment() {
         private suspend fun createFromMediaStore(context: Context, name: String?, songs: List<Song>) {
             @Suppress("NAME_SHADOWING")
             val name: String = if (name.isNullOrEmpty()) context.getString(R.string.new_playlist_title) else name
-            if (!PlaylistLoader.checkExistence(context, name)) {
+            if (!MediaStorePlaylists.checkExistence(context, name)) {
                 val id = createPlaylistViaMediastore(context, name, songs)
                 withContext(Dispatchers.Main) {
                     Toast.makeText(

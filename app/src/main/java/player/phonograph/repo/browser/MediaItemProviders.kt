@@ -18,8 +18,8 @@ import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.loader.Genres
+import player.phonograph.repo.loader.Playlists
 import player.phonograph.repo.loader.Songs
-import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.service.queue.QueueManager
@@ -350,12 +350,12 @@ object MediaItemProviders {
 
     private object PlaylistsProvider : AbsMediaItemProvider() {
         override suspend fun browser(context: Context): List<MediaItem> =
-            PlaylistLoader.all(context).map { it.toMediaItem() }
+            Playlists.all(context).map { it.toMediaItem() }
     }
 
     private class PlaylistProvider(val playlistId: Long) : AbsMediaItemProvider() {
         private suspend fun fetch(context: Context) =
-            PlaylistProcessors.reader(PlaylistLoader.id(context, playlistId)!!).allSongs(context)
+            PlaylistProcessors.reader(Playlists.id(context, playlistId)!!).allSongs(context)
 
         override suspend fun browser(context: Context): List<MediaItem> =
             withPlayAllItems(

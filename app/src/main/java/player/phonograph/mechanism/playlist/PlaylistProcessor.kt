@@ -32,7 +32,7 @@ import player.phonograph.model.playlist.VirtualPlaylistLocation
 import player.phonograph.repo.database.HistoryStore
 import player.phonograph.repo.database.SongPlayCountStore
 import player.phonograph.repo.loader.Songs
-import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
+import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.settings.Keys
@@ -132,10 +132,10 @@ sealed interface PlaylistWriter : PlaylistProcessor {
 private class FilePlaylistProcessor(val location: FilePlaylistLocation) : PlaylistReader, PlaylistWriter {
 
     override suspend fun allSongs(context: Context): List<Song> =
-        PlaylistSongLoader.getPlaylistSongList(context, location.mediastoreId).map { it.song }
+        MediaStorePlaylists.songs(context, location.mediastoreId).map { it.song }
 
     override suspend fun containsSong(context: Context, songId: Long): Boolean =
-        PlaylistSongLoader.doesPlaylistContain(context, location.storageVolume, location.mediastoreId, songId)
+        MediaStorePlaylists.contains(context, location.storageVolume, location.mediastoreId, songId)
 
     override suspend fun removeSong(context: Context, song: Song, index: Long): Boolean =
         removeFromPlaylistViaMediastore(context, location.storageVolume, location.mediastoreId, song.id, index) > 0

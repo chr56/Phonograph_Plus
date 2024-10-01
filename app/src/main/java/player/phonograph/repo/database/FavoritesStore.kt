@@ -7,11 +7,10 @@ package player.phonograph.repo.database
 import org.koin.core.context.GlobalContext
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
-import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.DatabaseConstants.FAVORITE_DB
 import player.phonograph.repo.loader.Songs
-import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.util.text.currentTimestamp
 import player.phonograph.util.warning
 import android.content.ContentValues
@@ -66,7 +65,7 @@ class FavoritesStore constructor(context: Context) :
 
     private suspend fun getAllPlaylistsImpl(context: Context): List<Playlist> {
         return parseCursorImpl(TABLE_NAME_PLAYLISTS) { cursor ->
-            PlaylistLoader.searchByPath(context, cursor.getString(1))
+            MediaStorePlaylists.searchByPath(context, cursor.getString(1))
         }
     }
 

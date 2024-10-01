@@ -26,7 +26,7 @@ import player.phonograph.model.UIMode
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.repo.loader.Playlists
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.accentColor
@@ -113,9 +113,12 @@ class PlaylistDetailActivity :
 
     private fun initialize() {
         val playlist = model.playlist
-        if (!checkExistence(playlist)) finish()  // File Playlist was deleted
         supportActionBar!!.title = playlist.name
-        execute(Fetch)
+
+        lifecycleScope.launch {
+            if (!checkExistence(playlist)) finish()  // File Playlist was deleted
+            execute(Fetch)
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -362,9 +365,9 @@ class PlaylistDetailActivity :
         }
     }
 
-    private fun checkExistence(playlist: Playlist): Boolean =
+    private suspend fun checkExistence(playlist: Playlist): Boolean =
         !(playlist.location is FilePlaylistLocation &&
-                !PlaylistLoader.checkExistence(this, playlist.location.mediastoreId))
+                !Playlists.checkExistence(this, playlist.location.mediastoreId))
 
     /* *******************
      *   companion object

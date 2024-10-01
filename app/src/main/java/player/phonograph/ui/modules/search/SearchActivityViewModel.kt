@@ -12,8 +12,8 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Artists
+import player.phonograph.repo.loader.Playlists
 import player.phonograph.repo.loader.Songs
-import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.service.queue.QueueManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -67,7 +67,7 @@ class SearchActivityViewModel : ViewModel() {
             }
             jobPlaylists?.cancel()
             jobPlaylists = viewModelScope.launch(Dispatchers.IO) {
-                _playlists.value = PlaylistLoader.searchByName(context, query)
+                _playlists.value = Playlists.searchByName(context, query)
             }
             jobSongsInQueue?.cancel()
             jobSongsInQueue = viewModelScope.launch(Dispatchers.IO) {

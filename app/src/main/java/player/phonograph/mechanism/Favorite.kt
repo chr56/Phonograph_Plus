@@ -12,7 +12,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.FavoritesStore
-import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
 import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
 import player.phonograph.util.coroutineToast
@@ -76,7 +76,7 @@ class FavoritePlaylistImpl : IFavorite {
     override suspend fun isFavorite(context: Context, song: Song): Boolean {
         val favoritesPlaylist = getFavoritesPlaylist(context)
         return if (favoritesPlaylist != null) {
-            PlaylistSongLoader.doesPlaylistContain(
+            MediaStorePlaylists.contains(
                 context,
                 MEDIASTORE_VOLUME_EXTERNAL,
                 favoritesPlaylist.mediaStoreId()!!,
@@ -123,8 +123,8 @@ class FavoritePlaylistImpl : IFavorite {
         }
     }
 
-    private fun getFavoritesPlaylist(context: Context): Playlist? =
-        PlaylistLoader.playlistName(context, context.getString(R.string.favorites))
+    private suspend fun getFavoritesPlaylist(context: Context): Playlist? =
+        MediaStorePlaylists.playlistName(context, context.getString(R.string.favorites))
 
     private suspend fun getOrCreateFavoritesPlaylist(context: Context): Playlist? {
         return createOrFindPlaylistViaMediastore(context, context.getString(R.string.favorites))
@@ -141,13 +141,13 @@ class FavoritePlaylistImpl : IFavorite {
     ): Playlist? = withContext(Dispatchers.IO) {
         require(name.isNotEmpty())
         // query first
-        val playlists = PlaylistLoader.searchByName(context, name)
+        val playlists = MediaStorePlaylists.searchByName(context, name)
         if (playlists.isNotEmpty()) {
             playlists.first()
         } else {
             val id = createPlaylistViaMediastore(context, name)
             if (id != -1L) {
-                PlaylistLoader.id(context, id)
+                MediaStorePlaylists.id(context, id)
             } else {
                 null
             }

@@ -14,7 +14,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.DynamicPlaylists
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.FavoritesStore
-import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.repo.loader.Playlists
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
@@ -52,7 +52,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
                 }
             }.also { playlists ->
                 val (pined, normal) =
-                    PlaylistLoader.all(context).partition { playlist ->
+                    Playlists.all(context).partition { playlist ->
                         favoritesStore.containsPlaylist(playlist.mediaStoreId(), playlist.path())
                     }
                 playlists.addAll(pined)
@@ -61,7 +61,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
         }
 
         override suspend fun collectAllSongs(context: Context): List<Song> =
-            PlaylistLoader.all(context).flatMap { PlaylistProcessors.reader(it).allSongs(context) }
+            Playlists.all(context).flatMap { PlaylistProcessors.reader(it).allSongs(context) }
 
         override val headerTextRes: Int get() = R.plurals.item_playlists
     }
