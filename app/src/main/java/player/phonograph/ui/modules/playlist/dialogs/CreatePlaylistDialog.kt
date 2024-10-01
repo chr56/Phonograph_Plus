@@ -90,7 +90,7 @@ class CreatePlaylistDialog : DialogFragment() {
                 if (viewModel.args.userAction == USER_ACTION_CREATE) View.VISIBLE else View.GONE
             val options = listOf(
                 getString(R.string.file_playlists),
-                // getString(R.string.database_playlists),
+                getString(R.string.database_playlists),
             )
             val callback: (Int) -> Unit = { position: Int ->
                 when (position) {
