@@ -7,6 +7,7 @@ package player.phonograph.repo.loader
 import player.phonograph.repo.mediastore.MediaStoreAlbums
 import player.phonograph.repo.mediastore.MediaStoreArtists
 import player.phonograph.repo.mediastore.MediaStoreGenres
+import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.repo.mediastore.MediaStoreSongs
 
 object Albums : IAlbums by MediaStoreAlbums
@@ -14,5 +15,7 @@ object Albums : IAlbums by MediaStoreAlbums
 object Artists : IArtists by MediaStoreArtists
 
 object Genres : IGenres by MediaStoreGenres
+
+object Playlists : IPlaylists by MediaStorePlaylists
 
 object Songs : ISongs by MediaStoreSongs
