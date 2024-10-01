@@ -49,13 +49,15 @@ class CreatePlaylistDialog : DialogFragment() {
         alertDialog = AlertDialog.Builder(requireContext())
             .setTitle(R.string.new_playlist_title)
             .setView(R.layout.dialog_create_playlist)
-            .create()
+            .show()
+        binding = DialogCreatePlaylistBinding.bind(alertDialog.findViewById(R.id.content_container)!!)
         return alertDialog
     }
 
-    override fun onStart() {
-        super.onStart()
-        binding = DialogCreatePlaylistBinding.bind(alertDialog.findViewById(R.id.content_container)!!)
+    @Deprecated("Deprecated")
+    @Suppress("DEPRECATION")
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         setupMainView(alertDialog)
     }
 
