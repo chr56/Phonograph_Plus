@@ -4,28 +4,37 @@
 
 package player.phonograph.ui.modules.playlist.dialogs
 
-import com.google.android.material.textfield.TextInputLayout
 import lib.storage.launcher.SAFActivityResultContracts
 import lib.storage.textparser.DocumentUriPathParser.documentUriBasePath
 import player.phonograph.R
+import player.phonograph.databinding.DialogCreatePlaylistBinding
 import player.phonograph.mechanism.playlist.mediastore.createPlaylistViaMediastore
 import player.phonograph.mechanism.playlist.saf.writePlaylist
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.util.parcelableArrayList
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.AppCompatCheckBox
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -34,87 +43,186 @@ class CreatePlaylistDialog : DialogFragment() {
     private lateinit var alertDialog: AlertDialog
     private lateinit var songs: List<Song>
 
-    private var selectedUri: Uri? = null
-
-    private lateinit var nameBox: TextInputLayout
-    private lateinit var locationBox: TextInputLayout
-    private lateinit var cancelButton: AppCompatButton
-    private lateinit var createButton: AppCompatButton
-    private lateinit var useSafCheckbox: AppCompatCheckBox
-
-    private lateinit var nameEditText: EditText
-    private lateinit var locationEditText: EditText
+    private lateinit var binding: DialogCreatePlaylistBinding
+    private val viewModel: DialogViewModel by viewModels<DialogViewModel>(ownerProducer = { requireActivity() })
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         songs = requireArguments().parcelableArrayList<Song>(SONGS)!!
         alertDialog = AlertDialog.Builder(requireContext())
             .setTitle(R.string.new_playlist_title)
             .setView(R.layout.dialog_create_playlist)
-            .create()
+            .show()
+        binding = DialogCreatePlaylistBinding.bind(alertDialog.findViewById(R.id.content_container)!!)
         return alertDialog
     }
 
-    override fun onStart() {
-        super.onStart()
-        bind(alertDialog)
+    @Deprecated("Deprecated")
+    @Suppress("DEPRECATION")
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         setupMainView(alertDialog)
     }
 
-    private fun bind(alertDialog: AlertDialog) {
-        nameBox = alertDialog.findViewById(R.id.name)!!
-        locationBox = alertDialog.findViewById(R.id.location)!!
-        cancelButton = alertDialog.findViewById(R.id.button_cancel)!!
-        createButton = alertDialog.findViewById(R.id.button_create)!!
-        useSafCheckbox = alertDialog.findViewById(R.id.checkBox_saf)!!
-
-        nameEditText = nameBox.editText!!
-        locationEditText = locationBox.editText!!
-    }
-
+    @SuppressLint("RepeatOnLifecycleWrongUsage")
     private fun setupMainView(alertDialog: AlertDialog) {
-        nameEditText.setText(R.string.new_playlist_title)
 
-        useSafCheckbox.setOnCheckedChangeListener { _, value ->
-            locationBox.visibility = if (value) View.VISIBLE else View.INVISIBLE
+        binding.checkBoxSaf.setOnCheckedChangeListener { _, value ->
+            viewModel.updateUseSAF(value)
         }
 
-        locationBox.setEndIconOnClickListener {
+        binding.name.editText?.addTextChangedListener { editable ->
+            viewModel.updateName(editable?.toString())
+        }
+
+        binding.location.setEndIconOnClickListener {
             coroutineScope.launch {
-                selectedUri = selectFile()
+                viewModel.selectFile(requireActivity())
             }
         }
 
-        createButton.setOnClickListener {
-            val context = it.context
+        binding.buttonCancel.setOnClickListener { alertDialog.dismiss() }
+
+        binding.buttonCreate.setOnClickListener {
+            val context = requireActivity()
             coroutineScope.launch {
-                if (useSafCheckbox.isChecked) {
-                    var uri = selectedUri
-                    if (uri != null) {
-                        writePlaylist(context, uri, songs)
-                    } else {
-                        uri = selectFile()
-                        writePlaylist(context, uri, songs)
-                    }
-                } else {
-                    createFromMediaStore(requireContext(), nameEditText.text.toString(), songs)
-                }
+                viewModel.execute(context, songs)
                 alertDialog.dismiss()
             }
         }
 
-        cancelButton.setOnClickListener { alertDialog.dismiss() }
-    }
+        with(binding.spinner) {
+            val options = listOf(
+                getString(R.string.file_playlists),
+                // getString(R.string.database_playlists),
+            )
+            val adapter = ArrayAdapter(context, R.layout.item_dropdown, options)
+            setAdapter(adapter)
+            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    when (position) {
+                        1 -> viewModel.updateMode(DialogViewModel.MODE_FILE_DATABASE)
+                        0 -> viewModel.updateMode(
+                            if (viewModel.useSAF.value) DialogViewModel.MODE_FILE_SAF else DialogViewModel.MODE_FILE_MEDIASTORE
+                        )
+                    }
+                }
 
-    private suspend fun selectFile(): Uri {
-        val context = requireContext()
-        val playlistText = nameEditText.text
-        val documentUri = createNewFile(context, playlistText)
-        withContext(Dispatchers.Main) {
-            locationEditText.setText(documentUriBasePath(documentUri.pathSegments))
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
+            }
         }
-        return documentUri
+
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.location.collect { path ->
+                    binding.location.editText?.setText(path)
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.mode.collect { mode ->
+                    binding.location.visibility =
+                        if (mode == DialogViewModel.MODE_FILE_SAF) View.VISIBLE else View.INVISIBLE
+                    binding.checkBoxSaf.visibility =
+                        if (mode == DialogViewModel.MODE_FILE_DATABASE) View.INVISIBLE else View.VISIBLE
+                }
+            }
+        }
+
     }
 
+    class DialogViewModel : ViewModel() {
+
+        private val _name: MutableStateFlow<String?> = MutableStateFlow(null)
+        val name get() = _name.asStateFlow()
+        fun updateName(name: String?) {
+            _name.update { name }
+        }
+
+        private val _mode: MutableStateFlow<Int> = MutableStateFlow(MODE_FILE_SAF)
+        val mode get() = _mode.asStateFlow()
+        fun updateMode(mode: Int) {
+            _mode.update { mode }
+        }
+
+        // Use SAF
+        private val _useSAF: MutableStateFlow<Boolean> = MutableStateFlow(true)
+        val useSAF get() = _useSAF.asStateFlow()
+        fun updateUseSAF(useSAF: Boolean) {
+            _useSAF.update { useSAF }
+        }
+
+
+        private val _uri: MutableStateFlow<Uri?> = MutableStateFlow(null)
+        val uri get() = _uri.asStateFlow()
+
+        private val _location: MutableStateFlow<String?> = MutableStateFlow(null)
+        val location get() = _location.asStateFlow()
+
+        suspend fun selectFile(context: Context): Uri = withContext(Dispatchers.IO) {
+            val documentUri = makeNewFile(context, name.value ?: context.getString(R.string.new_playlist_title))
+            _uri.update { documentUri }
+            _location.update { documentUriBasePath(documentUri.pathSegments) }
+            documentUri
+        }
+
+        suspend fun execute(context: Context, songs: List<Song>) = withContext(Dispatchers.IO) {
+            when (mode.value) {
+                MODE_FILE_SAF        -> createFromSAF(context, songs)
+                MODE_FILE_MEDIASTORE -> createFromMediaStore(context, name.value, songs)
+                MODE_FILE_DATABASE   -> createFromDatabase(context, name.value, songs)
+                else                 -> throw IllegalStateException("Illegal mode ${mode.value}")
+            }
+        }
+
+        private suspend fun makeNewFile(context: Context, playlistName: CharSequence): Uri =
+            SAFActivityResultContracts.createFileViaSAF(context, "$playlistName.m3u")
+
+        private suspend fun createFromDatabase(context: Context, name: String?, songs: List<Song>) {
+
+        }
+
+        private suspend fun createFromSAF(context: Context, songs: List<Song>) {
+            var uri = _uri.value
+            if (uri != null) {
+                writePlaylist(context, uri, songs)
+            } else {
+                uri = selectFile(context)
+                writePlaylist(context, uri, songs)
+            }
+        }
+
+        private suspend fun createFromMediaStore(context: Context, name: String?, songs: List<Song>) {
+            @Suppress("NAME_SHADOWING")
+            val name: String = if (name.isNullOrEmpty()) context.getString(R.string.new_playlist_title) else name
+            if (!PlaylistLoader.checkExistence(context, name)) {
+                val id = createPlaylistViaMediastore(context, name, songs)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        context,
+                        if (id != -1L) context.getString(R.string.success) else context.getString(R.string.failed),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } else {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.playlist_exists, name),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+
+        companion object {
+            const val MODE_FILE_SAF = 1
+            const val MODE_FILE_MEDIASTORE = 2
+            const val MODE_FILE_DATABASE = 4
+        }
+    }
 
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
@@ -128,42 +236,5 @@ class CreatePlaylistDialog : DialogFragment() {
                 }
             }
 
-        private suspend fun createNewFile(
-            context: Context,
-            playlistName: CharSequence,
-        ): Uri {
-            // launch
-            val documentUri = SAFActivityResultContracts.createFileViaSAF(context, "$playlistName.m3u")
-            // process
-            return documentUri
-        }
-
-
-        private suspend fun createFromMediaStore(activity: Context, name: String, songs: List<Song>) {
-            if (name.isEmpty()) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(activity, activity.getString(R.string.failed), Toast.LENGTH_SHORT).show()
-                }
-                return
-            }
-            if (!PlaylistLoader.checkExistence(activity, name)) {
-                val id = createPlaylistViaMediastore(activity, name, songs)
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(
-                        activity,
-                        if (id != -1L) activity.getString(R.string.success) else activity.getString(R.string.failed),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            } else {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(
-                        activity,
-                        activity.getString(R.string.playlist_exists, name),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        }
     }
 }
