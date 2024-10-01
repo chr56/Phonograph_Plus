@@ -16,6 +16,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.DisplayConfig
 import player.phonograph.util.text.makeSectionName
 import player.phonograph.util.theme.themeCardBackgroundColor
 import player.phonograph.util.theme.themeIconColor
@@ -30,7 +31,10 @@ import android.view.ViewGroup
 
 class PlaylistDisplayAdapter(
     activity: AppCompatActivity,
-) : DisplayAdapter<Playlist>(activity, ConstDisplayConfig(ItemLayoutStyle.LIST_SINGLE_ROW)) {
+) : DisplayAdapter<Playlist>(
+    activity,
+    ConstDisplayConfig(ItemLayoutStyle.LIST_SINGLE_ROW, imageType = DisplayConfig.IMAGE_TYPE_FIXED_ICON)
+) {
 
     override fun getSectionNameImp(position: Int): String {
         val sortMode = Setting(activity).Composites[Keys.playlistSortMode].data
