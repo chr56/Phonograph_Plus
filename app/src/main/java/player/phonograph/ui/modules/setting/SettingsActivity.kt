@@ -18,6 +18,8 @@ import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
 import player.phonograph.mechanism.SettingDataManager
 import player.phonograph.mechanism.backup.Backup
+import player.phonograph.repo.room.DatabaseUtil
+import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.DropDownMenuContent
@@ -134,6 +136,7 @@ class SettingsActivity : ComposeActivity(),
                 menuItemClearAll(context),
                 menuItemImport(context),
                 menuItemExport(),
+                menuItemDeleteDatabase(),
             )
         )
     }
@@ -181,6 +184,14 @@ class SettingsActivity : ComposeActivity(),
     private fun menuItemExport(): Pair<String, Function0<Unit>> =
         stringResource(id = R.string.action_export).format(stringResource(id = R.string.action_backup)) to {
             BackupExportDialog().show(supportFragmentManager, "EXPORT")
+        }
+
+    @Composable
+    private fun menuItemDeleteDatabase(): Pair<String, Function0<Unit>> =
+        "Delete Database" to {
+            lifecycleScope.launch(Dispatchers.IO) {
+                DatabaseUtil.deleteEntireDatabase(this@SettingsActivity, MusicDatabase.koinInstance)
+            }
         }
 
 
