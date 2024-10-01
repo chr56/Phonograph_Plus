@@ -65,7 +65,7 @@ class CreatePlaylistDialog : DialogFragment() {
     private fun setupMainView(alertDialog: AlertDialog) {
 
         binding.checkBoxSaf.setOnCheckedChangeListener { _, value ->
-            viewModel.updateMode(value)
+            viewModel.updateMode(if (value) DialogViewModel.MODE_FILE_SAF else DialogViewModel.MODE_FILE_MEDIASTORE)
             binding.location.visibility = if (value) View.VISIBLE else View.INVISIBLE
         }
 
@@ -108,9 +108,9 @@ class CreatePlaylistDialog : DialogFragment() {
         }
 
         // Use SAF
-        private val _mode: MutableStateFlow<Boolean> = MutableStateFlow(true)
+        private val _mode: MutableStateFlow<Int> = MutableStateFlow(MODE_FILE_SAF)
         val mode get() = _mode.asStateFlow()
-        fun updateMode(mode: Boolean) {
+        fun updateMode(mode: Int) {
             _mode.update { mode }
         }
 
@@ -122,57 +122,60 @@ class CreatePlaylistDialog : DialogFragment() {
         val location get() = _location.asStateFlow()
 
         suspend fun selectFile(context: Context): Uri = withContext(Dispatchers.IO) {
-            val documentUri = createNewFile(context, name.value ?: context.getString(R.string.new_playlist_title))
+            val documentUri = makeNewFile(context, name.value ?: context.getString(R.string.new_playlist_title))
             _uri.update { documentUri }
             _location.update { documentUriBasePath(documentUri.pathSegments) }
             documentUri
         }
 
         suspend fun execute(context: Context, songs: List<Song>) = withContext(Dispatchers.IO) {
-            if (mode.value) {
-                var uri = _uri.value
-                if (uri != null) {
-                    writePlaylist(context, uri, songs)
-                } else {
-                    uri = selectFile(context)
-                    writePlaylist(context, uri, songs)
-                }
-            } else {
-                createFromMediaStore(context, name.value ?: context.getString(R.string.new_playlist_title), songs)
+            when (mode.value) {
+                MODE_FILE_SAF        -> createFromSAF(context, songs)
+                MODE_FILE_MEDIASTORE -> createFromMediaStore(context, name.value, songs)
+                else                 -> throw IllegalStateException("Illegal mode ${mode.value}")
             }
         }
 
+        private suspend fun makeNewFile(context: Context, playlistName: CharSequence): Uri =
+            SAFActivityResultContracts.createFileViaSAF(context, "$playlistName.m3u")
 
-        private suspend fun createNewFile(
-            context: Context,
-            playlistName: CharSequence,
-        ): Uri = SAFActivityResultContracts.createFileViaSAF(context, "$playlistName.m3u")
 
-        private suspend fun createFromMediaStore(activity: Context, name: String, songs: List<Song>) {
-            if (name.isEmpty()) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(activity, activity.getString(R.string.failed), Toast.LENGTH_SHORT).show()
-                }
-                return
+        private suspend fun createFromSAF(context: Context, songs: List<Song>) {
+            var uri = _uri.value
+            if (uri != null) {
+                writePlaylist(context, uri, songs)
+            } else {
+                uri = selectFile(context)
+                writePlaylist(context, uri, songs)
             }
-            if (!PlaylistLoader.checkExistence(activity, name)) {
-                val id = createPlaylistViaMediastore(activity, name, songs)
+        }
+
+        private suspend fun createFromMediaStore(context: Context, name: String?, songs: List<Song>) {
+            @Suppress("NAME_SHADOWING")
+            val name: String = if (name.isNullOrEmpty()) context.getString(R.string.new_playlist_title) else name
+            if (!PlaylistLoader.checkExistence(context, name)) {
+                val id = createPlaylistViaMediastore(context, name, songs)
                 withContext(Dispatchers.Main) {
                     Toast.makeText(
-                        activity,
-                        if (id != -1L) activity.getString(R.string.success) else activity.getString(R.string.failed),
+                        context,
+                        if (id != -1L) context.getString(R.string.success) else context.getString(R.string.failed),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
             } else {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(
-                        activity,
-                        activity.getString(R.string.playlist_exists, name),
+                        context,
+                        context.getString(R.string.playlist_exists, name),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
             }
+        }
+
+        companion object {
+            const val MODE_FILE_SAF = 1
+            const val MODE_FILE_MEDIASTORE = 2
         }
     }
 
