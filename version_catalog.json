@@ -1,6 +1,30 @@
 {
   "versions": [
     {
+      "channel": "preview",
+      "versionName": "1.8.5-dev1",
+      "versionCode": 1084,
+      "date": 1727788001,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.8.5-dev1"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.5-dev1/PhonographPlus_1.8.5-dev1_ModernPreviewRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.5-dev1/PhonographPlus_1.8.5-dev1_LegacyPreviewRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 播放列表图标</li><li>修复 在标签编辑器中处理超长标签时卡死或崩溃</li><li>修复 从后台启动时可能的崩溃</li><li>翻译 更新 波兰语(cooky)</li><li>开发 更新 AGP 至 8.6.1, 更新依赖</li><li>开发 清理代码</li></ol>",
+        "en": "<ol><li>Fix: regression of playlists icons</li><li>Fix: frozen or crashes when processing extremely long tag in Tag Editor</li><li>Fix: possible crashes when starting from background</li><li>Translation: update Polish (cooky)</li><li>Development: upgrade AGP to 8.6.1, update dependencies</li><li>Development: cleanup code</li></ol>"
+      }
+    },
+    {
       "channel": "stable",
       "versionName": "1.8.4",
       "versionCode": 1084,
@@ -22,30 +46,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>修复 在搜索结果、专辑详情、艺术家详情、流派详情中，创建播放列表时崩溃</li><li>新增 主抽屉菜单新增“退出”选项</li><li>改进 在任何情形下，都允许使用媒体通知退出</li><li>改进 播放列表内的搜索功能</li><li>翻译 更新 法语(manafy), 葡萄牙语(azilara), 西班牙语(Ulisses_Mello), 德语(jande75), 巴西葡萄牙语(FalaTudo)</li><li>开发 升级 Kotlin 至 2.0.20, 更新 AGP 至 8.6.0, 更新 Jetpack Compose 至 1.7.1, 更新依赖</li><li>开发 重构播放器</li></ol>",
         "en": "<ol><li>Fix: Crash when creating playlists in Search Results, Album Detail, Artist Detail, Genre Detail</li><li>New: add \"Exit\" in Main Drawer Menu</li><li>Improve: quiting from Media Notification in any circumstance</li><li>Improve: Search function in Playlist Detail</li><li>Translation: update French (manafy), Portuguese (by azilara), Spanish (by Ulisses_Mello), German (by jande75), Portuguese, Brazilian (by FalaTudo)</li><li>Development: upgrade kotlin to 2.0.20, upgrade AGP to 8.6.0, upgrade Jetpack Compose to 1.7.1, update dependencies</li><li>Development: refactor player</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.8.4-dev3",
-      "versionCode": 1083,
-      "date": 1726215000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.8.4-dev3"
-        },
-        {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.4-dev3/PhonographPlus_1.8.4-dev3_ModernPreviewRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK(File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.4-dev3/PhonographPlus_1.8.4-dev3_LegacyPreviewRelease.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>新增 主抽屉菜单新增“退出”选项</li><li>改进 在任何情形下，从媒体通知退出</li><li>翻译 葡萄牙语 (azilara), 西班牙语 (Ulisses_Mello), 德语 (jande75)</li></ol>",
-        "en": "<ol><li>New: add \"Exit\" in Main Drawer Menu</li><li>Improve: quiting from Media Notification in any circumstance</li><li>Translation: update Portuguese (by azilara), Spanish (by Ulisses_Mello), German (by jande75)</li></ol>"
       }
     },
     {
