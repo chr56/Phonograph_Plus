@@ -19,7 +19,7 @@ data class Playlist(
     @JvmField val dateAdded: Long = -1,
     @JvmField val dateModified: Long = -1,
     @JvmField val size: Int = -1,
-    @JvmField val iconRes: Int = R.drawable.ic_queue_music_white_24dp,
+    @JvmField val iconRes: Int = R.drawable.ic_file_music_white_24dp,
 ) : Parcelable, Displayable {
 
     @IgnoredOnParcel
