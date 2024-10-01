@@ -93,7 +93,7 @@ class CreatePlaylistDialog : DialogFragment() {
         with(binding.spinner) {
             val options = listOf(
                 getString(R.string.file_playlists),
-                getString(R.string.database_playlists),
+                // getString(R.string.database_playlists),
             )
             val adapter = ArrayAdapter(context, R.layout.item_dropdown, options)
             setAdapter(adapter)
