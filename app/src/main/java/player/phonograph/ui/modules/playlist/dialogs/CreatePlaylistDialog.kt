@@ -67,8 +67,7 @@ class CreatePlaylistDialog : DialogFragment() {
     private fun setupMainView(alertDialog: AlertDialog) {
 
         binding.checkBoxSaf.setOnCheckedChangeListener { _, value ->
-            viewModel.updateMode(if (value) DialogViewModel.MODE_FILE_SAF else DialogViewModel.MODE_FILE_MEDIASTORE)
-            binding.location.visibility = if (value) View.VISIBLE else View.INVISIBLE
+            viewModel.updateUseSAF(value)
         }
 
         binding.name.editText?.addTextChangedListener { editable ->
@@ -94,11 +93,18 @@ class CreatePlaylistDialog : DialogFragment() {
         with(binding.spinner) {
             val options = listOf(
                 getString(R.string.file_playlists),
+                getString(R.string.database_playlists),
             )
             val adapter = ArrayAdapter(context, R.layout.item_dropdown, options)
             setAdapter(adapter)
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    when (position) {
+                        1 -> viewModel.updateMode(DialogViewModel.MODE_FILE_DATABASE)
+                        0 -> viewModel.updateMode(
+                            if (viewModel.useSAF.value) DialogViewModel.MODE_FILE_SAF else DialogViewModel.MODE_FILE_MEDIASTORE
+                        )
+                    }
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -114,6 +120,17 @@ class CreatePlaylistDialog : DialogFragment() {
             }
         }
 
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.mode.collect { mode ->
+                    binding.location.visibility =
+                        if (mode == DialogViewModel.MODE_FILE_SAF) View.VISIBLE else View.INVISIBLE
+                    binding.checkBoxSaf.visibility =
+                        if (mode == DialogViewModel.MODE_FILE_DATABASE) View.INVISIBLE else View.VISIBLE
+                }
+            }
+        }
+
     }
 
     class DialogViewModel : ViewModel() {
@@ -124,11 +141,17 @@ class CreatePlaylistDialog : DialogFragment() {
             _name.update { name }
         }
 
-        // Use SAF
         private val _mode: MutableStateFlow<Int> = MutableStateFlow(MODE_FILE_SAF)
         val mode get() = _mode.asStateFlow()
         fun updateMode(mode: Int) {
             _mode.update { mode }
+        }
+
+        // Use SAF
+        private val _useSAF: MutableStateFlow<Boolean> = MutableStateFlow(true)
+        val useSAF get() = _useSAF.asStateFlow()
+        fun updateUseSAF(useSAF: Boolean) {
+            _useSAF.update { useSAF }
         }
 
 
@@ -149,6 +172,7 @@ class CreatePlaylistDialog : DialogFragment() {
             when (mode.value) {
                 MODE_FILE_SAF        -> createFromSAF(context, songs)
                 MODE_FILE_MEDIASTORE -> createFromMediaStore(context, name.value, songs)
+                MODE_FILE_DATABASE   -> createFromDatabase(context, name.value, songs)
                 else                 -> throw IllegalStateException("Illegal mode ${mode.value}")
             }
         }
@@ -156,6 +180,9 @@ class CreatePlaylistDialog : DialogFragment() {
         private suspend fun makeNewFile(context: Context, playlistName: CharSequence): Uri =
             SAFActivityResultContracts.createFileViaSAF(context, "$playlistName.m3u")
 
+        private suspend fun createFromDatabase(context: Context, name: String?, songs: List<Song>) {
+
+        }
 
         private suspend fun createFromSAF(context: Context, songs: List<Song>) {
             var uri = _uri.value
@@ -193,6 +220,7 @@ class CreatePlaylistDialog : DialogFragment() {
         companion object {
             const val MODE_FILE_SAF = 1
             const val MODE_FILE_MEDIASTORE = 2
+            const val MODE_FILE_DATABASE = 4
         }
     }
 

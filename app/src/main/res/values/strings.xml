@@ -540,4 +540,5 @@
     <string name="pref_option_silence">Silence (keep in background without jumping to player)</string>
     <string name="service_disconnected">[Service is disconnected!]</string>
     <string name="file_playlists">File playlists</string>
+    <string name="database_playlists">Database Playlists</string>
 </resources>
