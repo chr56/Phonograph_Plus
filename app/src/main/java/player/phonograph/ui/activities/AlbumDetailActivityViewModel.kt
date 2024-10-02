@@ -35,7 +35,7 @@ class AlbumDetailActivityViewModel(val albumId: Long) : ViewModel() {
     fun loadDataSet(context: Context) {
         viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
             _album.emit(Albums.id(context, albumId))
-            _songs.emit(Songs.album(context, albumId))
+            _songs.emit(Songs.album(context, albumId).sortedBy { it.trackNumber })
         }
     }
 
