@@ -15,7 +15,8 @@ import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
-import player.phonograph.util.mediaStoreSongUri
+import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
+import player.phonograph.util.mediaStoreUriSong
 import player.phonograph.util.registerReceiverCompat
 import androidx.core.content.ContextCompat
 import android.content.BroadcastReceiver
@@ -239,7 +240,7 @@ class PlayerController : ServiceComponent, Controller {
          */
         private fun prepareCurrentPlayer(song: Song): Boolean {
             return if (song != Song.EMPTY_SONG) {
-                audioPlayer.setDataSource(mediaStoreSongUri(song.id).toString())
+                audioPlayer.setDataSource(mediaStoreUriSong(MEDIASTORE_VOLUME_EXTERNAL, song.id).toString())
             } else {
                 false
             }
@@ -251,7 +252,9 @@ class PlayerController : ServiceComponent, Controller {
          */
         fun prepareNextPlayer(song: Song?) {
             audioPlayer.setNextDataSource(
-                if (song != null && song != Song.EMPTY_SONG) mediaStoreSongUri(song.id).toString() else null
+                if (song != null && song != Song.EMPTY_SONG)
+                    mediaStoreUriSong(MEDIASTORE_VOLUME_EXTERNAL, song.id).toString()
+                else null
             )
         }
 

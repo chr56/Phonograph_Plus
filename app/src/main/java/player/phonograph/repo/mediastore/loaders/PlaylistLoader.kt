@@ -14,10 +14,9 @@ import player.phonograph.repo.mediastore.internal.withPathFilter
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
-import android.content.ContentUris
+import player.phonograph.util.mediastoreUriPlaylists
 import android.content.Context
 import android.database.Cursor
-import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.Q
 import android.provider.BaseColumns
@@ -99,7 +98,7 @@ object PlaylistLoader : Loader<Playlist> {
                 )
             }
         return context.contentResolver.query(
-            MediaStoreCompat.Audio.Playlists.EXTERNAL_CONTENT_URI,
+            mediastoreUriPlaylists(MEDIASTORE_VOLUME_EXTERNAL),
             if (SDK_INT > Q) BASE_PLAYLIST_PROJECTION_Q else BASE_PLAYLIST_PROJECTION,
             actual.selection,
             actual.selectionValues,
@@ -142,23 +141,8 @@ object PlaylistLoader : Loader<Playlist> {
 
     private fun checkExistenceImpl(context: Context, selection: String, values: Array<String>): Boolean =
         context.contentResolver
-            .query(MediaStoreCompat.Audio.Playlists.EXTERNAL_CONTENT_URI, arrayOf(), selection, values, null)
+            .query(mediastoreUriPlaylists(MEDIASTORE_VOLUME_EXTERNAL), arrayOf(), selection, values, null)
             ?.use { it.count > 0 } ?: false
-
-    /**
-     * @param id playlist id
-     * @return playlist members uri in MediaStore
-     */
-    fun mediastoreMembersUri(volume: String, id: Long): Uri =
-        MediaStoreCompat.Audio.Playlists.Members.getContentUri(volume, id)
-
-    /**
-     * @param volume MediaStore volume name
-     * @param id playlist id
-     * @return playlist uri in MediaStore
-     */
-    fun mediastoreUri(volume: String, id: Long): Uri =
-        ContentUris.withAppendedId(MediaStoreCompat.Audio.Playlists.getContentUri(volume), id)
 
     private fun List<Playlist>.sortAll(context: Context): List<Playlist> {
         val sortMode = Setting(context).Composites[Keys.playlistSortMode].data

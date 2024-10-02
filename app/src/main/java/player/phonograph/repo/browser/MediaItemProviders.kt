@@ -25,7 +25,7 @@ import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.util.mediaStoreAlbumArtUri
+import player.phonograph.util.mediaStoreUriAlbumArt
 import androidx.annotation.DrawableRes
 import android.content.ContentResolver
 import android.content.Context
@@ -93,7 +93,7 @@ object MediaItemProviders {
                 setTitle(title)
                 setSubtitle(albumName)
                 setDescription(artistName)
-                setIconUri(mediaStoreAlbumArtUri(albumId))
+                setIconUri(mediaStoreUriAlbumArt(albumId))
                 setMediaId(MediaItemPath.song(id).mediaId)
             }
 
@@ -110,7 +110,7 @@ object MediaItemProviders {
                 setTitle(title)
                 setSubtitle(artistName)
                 setDescription(artistName)
-                setIconUri(mediaStoreAlbumArtUri(id))
+                setIconUri(mediaStoreUriAlbumArt(id))
                 setMediaId(MediaItemPath.album(id).mediaId)
             }
 

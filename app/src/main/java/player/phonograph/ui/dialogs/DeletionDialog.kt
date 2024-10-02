@@ -13,6 +13,8 @@ import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.deleteSongsViaMediaStore
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
+import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
+import player.phonograph.util.mediaStoreUriSong
 import player.phonograph.util.parcelableArrayList
 import player.phonograph.util.permissions.StoragePermissionChecker
 import player.phonograph.util.permissions.navigateToStorageSetting
@@ -51,7 +53,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import android.app.Activity
 import android.content.Context
-import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
@@ -270,9 +271,7 @@ private fun showFailDialog(context: Context, msg: String, failList: Collection<S
         if (SDK_INT >= VERSION_CODES.R && context is Activity) {
             negativeButton(R.string.retry) {
                 val uris = failList.map { song ->
-                    Uri.withAppendedPath(
-                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, song.id.toString()
-                    )
+                    mediaStoreUriSong(MEDIASTORE_VOLUME_EXTERNAL, song.id)
                 }
                 context.startIntentSenderForResult(
                     MediaStore.createDeleteRequest(

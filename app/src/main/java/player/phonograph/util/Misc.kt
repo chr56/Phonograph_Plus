@@ -26,17 +26,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.provider.MediaStore
-import android.provider.MediaStore.Audio
 import android.util.Log
 import android.widget.Toast
 import kotlin.coroutines.CoroutineContext
@@ -213,20 +209,6 @@ fun logMetrics(stage: String) {
 //
 
 val primaryExternalStoragePath: String = Environment.getExternalStorageDirectory().absolutePath
-
-private val albumArtContentUri: Uri by lazy(LazyThreadSafetyMode.NONE) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-        MediaStore.AUTHORITY_URI.buildUpon()
-            .appendPath(MediaStore.VOLUME_EXTERNAL)
-            .appendPath("audio")
-            .appendPath("albumart")
-            .build()
-    else Uri.parse("content://media/external/audio/albumart")
-}
-
-fun mediaStoreAlbumArtUri(albumId: Long): Uri = ContentUris.withAppendedId(albumArtContentUri, albumId)
-
-fun mediaStoreSongUri(songId: Long): Uri = ContentUris.withAppendedId(Audio.Media.EXTERNAL_CONTENT_URI, songId)
 
 
 fun openOutputStreamSafe(context: Context, uri: Uri, mode: String): OutputStream? =

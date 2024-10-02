@@ -4,10 +4,10 @@
 
 package player.phonograph.mechanism.playlist.mediastore
 
-import legacy.phonograph.MediaStoreCompat
 import legacy.phonograph.MediaStoreCompat.Audio.PlaylistsColumns
 import player.phonograph.model.Song
 import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
+import player.phonograph.util.mediastoreUriPlaylists
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffixCompat
@@ -47,7 +47,7 @@ private fun createPlaylistImpl(context: Context, volume: String, name: String): 
     val values = ContentValues(1).apply {
         put(PlaylistsColumns.NAME, name)
     }
-    val playlistsUri = MediaStoreCompat.Audio.Playlists.getContentUri(volume)
+    val playlistsUri = mediastoreUriPlaylists(volume)
     val playlist = context.contentResolver.insert(playlistsUri, values)
     return if (playlist != null) {
         // Necessary because somehow the MediaStoreObserver doesn't work for playlists

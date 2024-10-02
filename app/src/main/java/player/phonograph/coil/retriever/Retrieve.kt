@@ -20,10 +20,10 @@ import okio.source
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import player.phonograph.util.debug
-import player.phonograph.util.mediaStoreAlbumArtUri
+import player.phonograph.util.mediaStoreUriAlbumArt
+import player.phonograph.util.mediastoreUriAlbum
 import player.phonograph.util.recordThrowable
 import android.annotation.SuppressLint
-import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
@@ -104,10 +104,7 @@ internal fun retrieveFromAlbumUri(
 ): SourceResult? {
     val contentResolver = context.contentResolver
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        val uri = ContentUris.withAppendedId(
-            MediaStore.Audio.Albums.getContentUri(MediaStore.VOLUME_EXTERNAL),
-            albumId
-        )
+        val uri = mediastoreUriAlbum(MediaStore.VOLUME_EXTERNAL, albumId)
         val width = size.width.pxOrElse { -1 }
         val height = size.height.pxOrElse { -1 }
         try {
@@ -134,7 +131,7 @@ internal fun retrieveFromAlbumUri(
             null
         }
     } else {
-        val uri = mediaStoreAlbumArtUri(albumId)
+        val uri = mediaStoreUriAlbumArt(albumId)
         @SuppressLint("Recycle")
         val source = contentResolver.openInputStream(uri)?.source()?.buffer()
         if (source != null)

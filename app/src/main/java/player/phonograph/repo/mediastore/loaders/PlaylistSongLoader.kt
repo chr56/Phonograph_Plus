@@ -8,6 +8,8 @@ import legacy.phonograph.MediaStoreCompat.Audio.Playlists
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.internal.BASE_AUDIO_SELECTION
+import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
+import player.phonograph.util.mediastoreUriPlaylistMembers
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore.Audio.AudioColumns
@@ -54,7 +56,7 @@ object PlaylistSongLoader {
     private fun makeCursor(context: Context, playlistId: Long): Cursor? {
         return try {
             context.contentResolver.query(
-                Playlists.Members.getContentUri("external", playlistId),
+                mediastoreUriPlaylistMembers(MEDIASTORE_VOLUME_EXTERNAL, playlistId),
                 arrayOf(
                     Playlists.Members.AUDIO_ID, // 0
                     AudioColumns.TITLE, // 1
@@ -93,7 +95,7 @@ object PlaylistSongLoader {
         if (playlistId <= 0) return false
         try {
             val cursor = context.contentResolver.query(
-                PlaylistLoader.mediastoreMembersUri(volume, playlistId),
+                mediastoreUriPlaylistMembers(volume, playlistId),
                 arrayOf(Playlists.Members.AUDIO_ID),
                 Playlists.Members.AUDIO_ID + "=?",
                 arrayOf(songId.toString()),

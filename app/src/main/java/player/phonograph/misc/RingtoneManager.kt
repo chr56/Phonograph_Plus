@@ -5,14 +5,14 @@
 package player.phonograph.misc
 
 import player.phonograph.R
+import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
+import player.phonograph.util.mediaStoreUriSong
 import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
-import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
-import android.provider.MediaStore
 import android.provider.Settings
 
 object RingtoneManager {
@@ -30,7 +30,7 @@ object RingtoneManager {
         RingtoneManager.setActualDefaultRingtoneUri(
             context,
             RingtoneManager.TYPE_ALARM,
-            ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, songId)
+            mediaStoreUriSong(MEDIASTORE_VOLUME_EXTERNAL, songId)
         )
     }
 

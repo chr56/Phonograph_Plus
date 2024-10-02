@@ -11,6 +11,9 @@ import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
 import player.phonograph.util.coroutineToast
+import player.phonograph.util.mediastoreUriPlaylist
+import player.phonograph.util.mediastoreUriPlaylistMembers
+import player.phonograph.util.mediastoreUriPlaylists
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.warning
 import android.content.ContentValues
@@ -33,7 +36,7 @@ suspend fun renamePlaylistViaMediastore(
     id: Long,
     newName: String,
 ): Boolean = withContext(Dispatchers.IO) {
-    val playlistUri = PlaylistLoader.mediastoreUri(volume, id)
+    val playlistUri = mediastoreUriPlaylist(volume, id)
     try {
         val result = context.contentResolver.update(playlistUri, ContentValues().apply {
             put(MediaStoreCompat.Audio.PlaylistsColumns.NAME, newName)
@@ -72,7 +75,7 @@ suspend fun addToPlaylistViaMediastore(
     playlistId: Long,
     showToastOnFinish: Boolean,
 ): Boolean = withContext(Dispatchers.IO) {
-    val uri = PlaylistLoader.mediastoreMembersUri(volume, playlistId)
+    val uri = mediastoreUriPlaylistMembers(volume, playlistId)
     var cursor: Cursor? = null
     var base = 0
     try {
@@ -160,7 +163,7 @@ suspend fun deletePlaylistsViaMediastore(
     // try to delete
     for (id in playlistIds) {
         val result = context.contentResolver.delete(
-            Playlists.EXTERNAL_CONTENT_URI,
+            mediastoreUriPlaylists(MEDIASTORE_VOLUME_EXTERNAL),
             "${MediaStore.Audio.Media._ID} = ?",
             arrayOf(id.toString())
         )
@@ -192,7 +195,7 @@ suspend fun removeFromPlaylistViaMediastore(
     index: Long,
 ): Int = withContext(Dispatchers.IO) {
     try {
-        val playlistUri = PlaylistLoader.mediastoreMembersUri(volume, playlistId)
+        val playlistUri = mediastoreUriPlaylistMembers(volume, playlistId)
         val deleted = context.contentResolver.delete(
             playlistUri,
             "${Playlists.Members.AUDIO_ID} = ? AND ${Playlists.Members.PLAY_ORDER} = ?",

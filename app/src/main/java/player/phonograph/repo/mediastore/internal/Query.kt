@@ -9,17 +9,14 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
+import player.phonograph.util.mediastoreUriSongs
 import player.phonograph.util.recordThrowable
-import player.phonograph.util.warning
 import android.content.Context
 import android.database.Cursor
-import android.net.Uri
-import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.Q
 import android.provider.BaseColumns
 import android.provider.MediaStore.Audio
 import android.provider.MediaStore.Audio.AudioColumns
-import android.provider.MediaStore.VOLUME_EXTERNAL
 
 
 /**
@@ -80,20 +77,13 @@ fun queryAudio(
         }
 
     return try {
-        val uri = EXTERNAL_CONTENT_URI_COMPAT
-        // this content uri may be null
-        if (uri != null) {
-            context.contentResolver.query(
-                uri,
-                projection,
-                actual.selection,
-                actual.selectionValues,
-                sortOrder
-            )
-        } else {
-            warning(TAG, "Can not access to MediaStore")
-            null
-        }
+        context.contentResolver.query(
+            mediastoreUriSongs(MEDIASTORE_VOLUME_EXTERNAL),
+            projection,
+            actual.selection,
+            actual.selectionValues,
+            sortOrder
+        )
     } catch (e: SecurityException) {
         null
     } catch (e: IllegalArgumentException) {
@@ -133,10 +123,6 @@ const val BASE_AUDIO_SELECTION =
 
 const val BASE_PLAYLIST_SELECTION =
     "${MediaStoreCompat.Audio.PlaylistsColumns.NAME} != '' "
-
-val EXTERNAL_CONTENT_URI_COMPAT: Uri?
-    get() =
-        if (SDK_INT >= Q) Audio.Media.getContentUri(VOLUME_EXTERNAL) else Audio.Media.EXTERNAL_CONTENT_URI
 
 private fun defaultSortOrder(context: Context) =
     Setting(context).Composites[Keys.songSortMode].data.mediastoreQuerySortOrder()

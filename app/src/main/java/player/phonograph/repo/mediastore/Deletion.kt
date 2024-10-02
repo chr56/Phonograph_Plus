@@ -5,7 +5,9 @@
 package player.phonograph.repo.mediastore
 
 import player.phonograph.model.Song
+import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
 import player.phonograph.util.debug
+import player.phonograph.util.mediastoreUriSongs
 import android.content.Context
 import android.provider.MediaStore.Audio
 import android.util.Log
@@ -31,7 +33,7 @@ fun deleteSongViaMediaStore(context: Context, song: Song): Boolean {
  */
 private fun deleteViaMediaStoreImpl(context: Context, song: Song): Boolean {
     val output = context.contentResolver.delete(
-        Audio.Media.EXTERNAL_CONTENT_URI, "${Audio.Media.DATA} = ?", arrayOf(song.data)
+        mediastoreUriSongs(MEDIASTORE_VOLUME_EXTERNAL), "${Audio.Media.DATA} = ?", arrayOf(song.data)
     )
     // if it failed
     return if (output <= 0) {

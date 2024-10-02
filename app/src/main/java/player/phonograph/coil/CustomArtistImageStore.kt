@@ -7,7 +7,9 @@ package player.phonograph.coil
 import coil.Coil
 import coil.request.ImageRequest
 import coil.target.Target
+import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
 import player.phonograph.util.file.createOrOverrideFileRecursive
+import player.phonograph.util.mediastoreUriArtists
 import player.phonograph.util.reportError
 import player.phonograph.util.ui.BitmapUtil.restraintBitmapSize
 import player.phonograph.util.warning
@@ -18,7 +20,6 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat.JPEG
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.provider.MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -125,7 +126,7 @@ class CustomArtistImageStore private constructor(context: Context) {
                         preferences.edit()
                             .putBoolean(getArtistFileName(artistId, artistName), true)
                             .apply()
-                        context.contentResolver.notifyChange(EXTERNAL_CONTENT_URI, null)
+                        context.contentResolver.notifyChange(mediastoreUriArtists(MEDIASTORE_VOLUME_EXTERNAL), null)
                     } catch (e: Exception) {
                         e.printStackTrace()
                         reportError(e, TAG, "Failed to update custom image $artistName")
@@ -142,7 +143,7 @@ class CustomArtistImageStore private constructor(context: Context) {
             try {
                 File(storeDir, getArtistFileName(artistId, artistName)).delete()
                 preferences.edit().putBoolean(getArtistFileName(artistId, artistName), false).apply()
-                context.contentResolver.notifyChange(EXTERNAL_CONTENT_URI, null)
+                context.contentResolver.notifyChange(mediastoreUriArtists(MEDIASTORE_VOLUME_EXTERNAL), null)
                 // trigger media store changed to force artist image reload
             } catch (e: Exception) {
                 e.printStackTrace()
