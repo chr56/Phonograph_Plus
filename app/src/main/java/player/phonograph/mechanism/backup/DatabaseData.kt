@@ -8,12 +8,11 @@ import okio.BufferedSink
 import org.koin.core.context.GlobalContext
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
-import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.database.PathFilterStore
 import player.phonograph.repo.loader.Songs
-import player.phonograph.repo.mediastore.loaders.PlaylistLoader
+import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.service.queue.MusicPlaybackQueueStore
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
@@ -200,8 +199,8 @@ object DatabaseDataManger {
 
         val db = favoritesStore
 
-        val songs = recoverSongs(context, s)
-        val playlists = recoverPlaylists(context, p)
+        val songs = runBlocking { recoverSongs(context, s) }
+        val playlists = runBlocking { recoverPlaylists(context, p) }
 
         val r1 = if (!songs.isNullOrEmpty()) {
             if (override) db.clearAllSongs()
@@ -233,7 +232,7 @@ object DatabaseDataManger {
     private fun persistentPlaylist(playlist: Playlist): JsonElement =
         parser.encodeToJsonElement(PersistentPlaylist.serializer(), PersistentPlaylist.from(playlist))
 
-    private fun recoverPlaylists(context: Context, array: JsonArray?): List<Playlist>? =
+    private suspend fun recoverPlaylists(context: Context, array: JsonArray?): List<Playlist>? =
         array?.map { parser.decodeFromJsonElement(PersistentPlaylist.serializer(), it) }
             ?.mapNotNull { it.getMatchingPlaylist(context) }
 
@@ -265,8 +264,8 @@ object DatabaseDataManger {
                 PersistentPlaylist(playlist.path() ?: "-", playlist.name)
         }
 
-        fun getMatchingPlaylist(context: Context): Playlist? =
-            PlaylistLoader.searchByPath(context, path)
+        suspend fun getMatchingPlaylist(context: Context): Playlist? =
+            MediaStorePlaylists.searchByPath(context, path)
     }
 
     private fun parseJson(rawString: String, name: String, block: (JsonObject) -> Boolean): Boolean {
