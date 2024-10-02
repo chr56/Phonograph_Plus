@@ -33,6 +33,7 @@ import player.phonograph.model.TagData.ErrData
 import player.phonograph.model.TagData.MultipleData
 import player.phonograph.model.TagData.TextData
 import player.phonograph.util.reportError
+import java.io.UnsupportedEncodingException
 
 
 fun readAllTags(audioFile: AudioFile): Map<String, RawTag> {
@@ -126,7 +127,7 @@ object ID3v2Readers {
                             if (data is AbstractID3v2Frame) {
                                 parseID3v2Frame(data)
                             } else {
-                                TextData(data.rawContent.toString())
+                                TextData(rawTagOf(data))
                             }
                         }
                     }
@@ -138,7 +139,7 @@ object ID3v2Readers {
                                     if (it is AbstractID3v2Frame) {
                                         parseID3v2Frame(it)
                                     } else {
-                                        TextData(it.rawContent.toString())
+                                        TextData(rawTagOf(it))
                                     }
                                 }
                             else
@@ -202,7 +203,7 @@ object SimpleKeyValueReader : TagReader<AbstractTag> {
                 preprocessTagField(tagField) {
                     when (it) {
                         is TagTextField -> TextData(it.content)
-                        else            -> TextData(it.rawContent.take(64).toString())
+                        else            -> TextData(rawTagOf(it).take(64))
                     }
                 }
             }.let { MultipleData(it) }
@@ -249,7 +250,7 @@ object VorbisCommentTagReader : TagReader<VorbisCommentTag> {
                         TextData(tagField.content)
                     }
                 } else {
-                    TextData("Unknown field (${tagField.rawContent.take(24)})")
+                    TextData("Unknown field (${rawTagOf(tagField).take(24)})")
                 }
             }.let { MultipleData(it) }
             RawTag(key, key, value, null)
@@ -265,4 +266,12 @@ private inline fun <T : TagField> preprocessTagField(
         frame.isBinary -> BinaryData
         frame.isEmpty  -> EmptyData
         else           -> block(frame)
+    }
+
+private fun rawTagOf(field: TagField): String =
+    try {
+        field.rawContent.toString()
+    } catch (e: UnsupportedEncodingException) {
+        // ID3 AggregatedFrame may throw `UnsupportedEncodingException` but has `getContent()`
+        if (field is TagTextField) field.content else field.toString()
     }
