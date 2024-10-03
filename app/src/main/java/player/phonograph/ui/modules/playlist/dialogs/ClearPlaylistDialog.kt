@@ -8,6 +8,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import lib.storage.documentProviderUriAbsolutePath
 import lib.storage.launcher.IOpenDirStorageAccessible
 import player.phonograph.R
+import player.phonograph.mechanism.playlist.PlaylistManager
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
@@ -101,7 +102,7 @@ class ClearPlaylistDialog : DialogFragment() {
 
         /* Normally Delete (MediaStore + Internal database) */
         val results = playlists.map { playlist ->
-            PlaylistProcessors.delete(context, playlist, PlaylistProcessors.OPTION_DELETE_WITH_MEDIASTORE)
+            PlaylistManager.delete(context, playlist, PlaylistProcessors.OPTION_DELETE_WITH_MEDIASTORE)
         }
 
         /* Check */

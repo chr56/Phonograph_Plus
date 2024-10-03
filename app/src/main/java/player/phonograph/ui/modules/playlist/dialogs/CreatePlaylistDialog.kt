@@ -8,6 +8,7 @@ import lib.storage.launcher.SAFActivityResultContracts
 import lib.storage.textparser.DocumentUriPathParser.documentUriBasePath
 import player.phonograph.R
 import player.phonograph.databinding.DialogCreatePlaylistBinding
+import player.phonograph.mechanism.playlist.PlaylistManager
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Song
 import player.phonograph.util.coroutineToast
@@ -184,11 +185,11 @@ class CreatePlaylistDialog : DialogFragment() {
 
         private suspend fun createFromSAF(context: Context, songs: List<Song>) {
             val uri = _uri.value ?: selectFile(context)
-            PlaylistProcessors.create(context, songs, uri)
+            PlaylistManager.create(context, songs, uri)
         }
 
         private suspend fun createFromMediaStore(context: Context, name: String?, songs: List<Song>) {
-            val result = PlaylistProcessors.create(context, songs, name)
+            val result = PlaylistManager.create(context, songs, name)
             val message = when (result) {
                 -1L  -> context.getString(R.string.failed)
                 -2L  -> context.getString(R.string.playlist_exists, name)

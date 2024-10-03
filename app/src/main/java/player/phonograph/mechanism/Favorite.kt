@@ -5,6 +5,7 @@ package player.phonograph.mechanism
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
+import player.phonograph.mechanism.playlist.PlaylistManager
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.mechanism.playlist.mediastore.addToPlaylistViaMediastore
 import player.phonograph.mechanism.playlist.mediastore.createPlaylistViaMediastore
@@ -117,7 +118,7 @@ class FavoritePlaylistImpl : IFavorite {
     override suspend fun clearAll(context: Context): Boolean {
         val favoritesPlaylist = getFavoritesPlaylist(context)
         return if (favoritesPlaylist != null) {
-            PlaylistProcessors.delete(context, favoritesPlaylist)
+            PlaylistManager.delete(context, favoritesPlaylist)
         } else {
             false
         }

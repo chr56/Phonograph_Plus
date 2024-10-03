@@ -4,6 +4,7 @@
 
 package player.phonograph.mechanism.actions
 
+import player.phonograph.mechanism.playlist.PlaylistManager
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
@@ -67,13 +68,13 @@ fun List<Playlist>.actionDeletePlaylists(context: Context): Boolean = fragmentAc
 
 fun Playlist.actionSavePlaylist(activity: FragmentActivity) {
     CoroutineScope(Dispatchers.Default).launch {
-        PlaylistProcessors.duplicate(activity, this@actionSavePlaylist)
+        PlaylistManager.duplicate(activity, this@actionSavePlaylist)
     }
 }
 
 fun List<Playlist>.actionSavePlaylists(activity: Context) {
     CoroutineScope(Dispatchers.Default).launch {
-        PlaylistProcessors.duplicate(activity, this@actionSavePlaylists)
+        PlaylistManager.duplicate(activity, this@actionSavePlaylists)
     }
 }
 
