@@ -20,10 +20,10 @@ object MediaStorePlaylists : IPlaylists {
     override suspend fun id(context: Context, id: Long): Playlist? = PlaylistLoader.id(context, id)
 
     override suspend fun songs(context: Context, playlistId: Long): List<PlaylistSong> =
-        PlaylistSongLoader.getPlaylistSongList(context, playlistId)
+        PlaylistSongLoader.songs(context, playlistId)
 
     override suspend fun contains(context: Context, volume: String, playlistId: Long, songId: Long): Boolean =
-        PlaylistSongLoader.doesPlaylistContain(context, volume, playlistId, songId)
+        PlaylistSongLoader.contains(context, volume, playlistId, songId)
 
     override suspend fun playlistName(context: Context, playlistName: String): Playlist? =
         PlaylistLoader.playlistName(context, playlistName)
