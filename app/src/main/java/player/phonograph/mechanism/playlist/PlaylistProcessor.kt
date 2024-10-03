@@ -9,7 +9,6 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.mechanism.IFavorite
-import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.mechanism.playlist.mediastore.addToPlaylistViaMediastore
 import player.phonograph.mechanism.playlist.mediastore.createPlaylistViaMediastore
 import player.phonograph.mechanism.playlist.mediastore.deletePlaylistsViaMediastore
@@ -37,9 +36,6 @@ import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.settings.Keys
-import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_AUTO
-import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY
-import player.phonograph.settings.PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF
 import player.phonograph.settings.Setting
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.file.selectDocumentUris
@@ -47,7 +43,6 @@ import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffix
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import android.os.Environment
 import android.provider.DocumentsContract
 import java.io.File
@@ -269,20 +264,5 @@ private suspend fun deleteImpl(context: Context, playlist: Playlist, options: An
         }
     }
 }
-
-private fun shouldUseSAF(context: Context): Boolean {
-    val preference = Setting(context)[Keys.playlistFilesOperationBehaviour]
-    return when (preference.data) {
-        PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF    -> true
-        PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY -> false
-        PLAYLIST_OPS_BEHAVIOUR_AUTO         -> Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-        else                                -> {
-            preference.data = PLAYLIST_OPS_BEHAVIOUR_AUTO // reset to default
-            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-        }
-    }
-}
-
-private fun notifyMediaStoreChanged() = GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
 
 private const val TAG = "PlaylistProcessors"
