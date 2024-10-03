@@ -49,7 +49,7 @@ fun Playlist.actionAddToCurrentQueue(context: Context): Boolean = runBlocking {
 }
 
 fun Playlist.actionAddToPlaylist(activity: FragmentActivity) = runBlocking {
-    AddToPlaylistDialog.create(songs(activity))
+    AddToPlaylistDialog.create(activity, songs(activity))
         .show(activity.supportFragmentManager, "ADD_PLAYLIST")
 }
 

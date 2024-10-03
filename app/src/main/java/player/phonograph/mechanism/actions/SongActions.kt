@@ -109,7 +109,7 @@ fun Song.actionTagEditor(context: Context): Boolean {
 fun List<Song>.actionAddToPlaylist(context: Context) =
     fragmentActivity(context) {
         AddToPlaylistDialog
-            .create(this).show(it.supportFragmentManager, "ADD_PLAYLIST")
+            .create(context, this).show(it.supportFragmentManager, "ADD_PLAYLIST")
         true
     }
 
