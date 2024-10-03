@@ -8,10 +8,9 @@ import lib.storage.launcher.SAFActivityResultContracts
 import lib.storage.textparser.DocumentUriPathParser.documentUriBasePath
 import player.phonograph.R
 import player.phonograph.databinding.DialogCreatePlaylistBinding
-import player.phonograph.mechanism.playlist.mediastore.createPlaylistViaMediastore
-import player.phonograph.mechanism.playlist.saf.writePlaylist
+import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Song
-import player.phonograph.repo.mediastore.MediaStorePlaylists
+import player.phonograph.util.coroutineToast
 import player.phonograph.util.parcelableArrayList
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
@@ -29,7 +28,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -185,36 +183,18 @@ class CreatePlaylistDialog : DialogFragment() {
         }
 
         private suspend fun createFromSAF(context: Context, songs: List<Song>) {
-            var uri = _uri.value
-            if (uri != null) {
-                writePlaylist(context, uri, songs)
-            } else {
-                uri = selectFile(context)
-                writePlaylist(context, uri, songs)
-            }
+            val uri = _uri.value ?: selectFile(context)
+            PlaylistProcessors.create(context, songs, uri)
         }
 
         private suspend fun createFromMediaStore(context: Context, name: String?, songs: List<Song>) {
-            @Suppress("NAME_SHADOWING")
-            val name: String = if (name.isNullOrEmpty()) context.getString(R.string.new_playlist_title) else name
-            if (!MediaStorePlaylists.checkExistence(context, name)) {
-                val id = createPlaylistViaMediastore(context, name, songs)
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(
-                        context,
-                        if (id != -1L) context.getString(R.string.success) else context.getString(R.string.failed),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            } else {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.playlist_exists, name),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+            val result = PlaylistProcessors.create(context, songs, name)
+            val message = when (result) {
+                -1L  -> context.getString(R.string.failed)
+                -2L  -> context.getString(R.string.playlist_exists, name)
+                else -> context.getString(R.string.success)
             }
+            coroutineToast(context, message)
         }
 
         companion object {

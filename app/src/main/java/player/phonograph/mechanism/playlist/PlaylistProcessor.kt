@@ -20,6 +20,7 @@ import player.phonograph.mechanism.playlist.mediastore.renamePlaylistViaMediasto
 import player.phonograph.mechanism.playlist.saf.appendToPlaylistViaSAF
 import player.phonograph.mechanism.playlist.saf.createPlaylistViaSAF
 import player.phonograph.mechanism.playlist.saf.createPlaylistsViaSAF
+import player.phonograph.mechanism.playlist.saf.writePlaylist
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.PLAYLIST_TYPE_FAVORITE
@@ -45,6 +46,7 @@ import player.phonograph.util.file.selectDocumentUris
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffix
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.DocumentsContract
@@ -68,8 +70,7 @@ object PlaylistProcessors {
             }
         }
 
-
-    suspend fun create(context: Context, name: String, songs: List<Song>) =
+    private suspend fun createAuto(context: Context, name: String, songs: List<Song>) =
         if (shouldUseSAF(context) && context is ICreateFileStorageAccessible) {
             createPlaylistViaSAF(context, playlistName = name, songs = songs)
         } else {
@@ -78,7 +79,7 @@ object PlaylistProcessors {
         }
 
     suspend fun duplicate(context: Context, playlist: Playlist) =
-        create(context, playlist.name + dateTimeSuffix(currentDate()), reader(playlist).allSongs(context))
+        createAuto(context, playlist.name + dateTimeSuffix(currentDate()), reader(playlist).allSongs(context))
 
     suspend fun duplicate(context: Context, playlists: List<Playlist>) {
         val names = playlists.map { it.name }
@@ -88,6 +89,21 @@ object PlaylistProcessors {
         } else {
             val result = duplicatePlaylistViaMediaStore(context, songBatches, names)
             coroutineToast(context, if (result) R.string.success else R.string.failed)
+        }
+    }
+
+    suspend fun create(context: Context, songs: List<Song>, uri: Uri) {
+        writePlaylist(context, uri, songs)
+    }
+
+    suspend fun create(context: Context, songs: List<Song>, name: String?): Long {
+        @Suppress("NAME_SHADOWING")
+        val name: String = if (name.isNullOrEmpty()) context.getString(R.string.new_playlist_title) else name
+        if (!MediaStorePlaylists.checkExistence(context, name)) {
+            val id = createPlaylistViaMediastore(context, name, songs)
+            return id
+        } else {
+            return -2L
         }
     }
 
