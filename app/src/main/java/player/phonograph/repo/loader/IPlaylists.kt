@@ -6,6 +6,7 @@ package player.phonograph.repo.loader
 
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.PlaylistLocation
 import android.content.Context
 
 interface IPlaylists {
@@ -26,6 +27,6 @@ interface IPlaylists {
 
     suspend fun checkExistence(context: Context, name: String): Boolean
 
-    suspend fun checkExistence(context: Context, playlistId: Long): Boolean
+    suspend fun checkExistence(context: Context, location: PlaylistLocation): Boolean
 
 }

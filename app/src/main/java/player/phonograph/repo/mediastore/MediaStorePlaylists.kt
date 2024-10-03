@@ -5,7 +5,9 @@
 package player.phonograph.repo.mediastore
 
 import player.phonograph.model.PlaylistSong
+import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.PlaylistLocation
 import player.phonograph.repo.loader.IPlaylists
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
@@ -35,6 +37,6 @@ object MediaStorePlaylists : IPlaylists {
     override suspend fun checkExistence(context: Context, name: String): Boolean =
         PlaylistLoader.checkExistence(context, name)
 
-    override suspend fun checkExistence(context: Context, playlistId: Long): Boolean =
-        PlaylistLoader.checkExistence(context, playlistId)
+    override suspend fun checkExistence(context: Context, location: PlaylistLocation): Boolean =
+        PlaylistLoader.checkExistence(context, (location as FilePlaylistLocation).mediastoreId)
 }
