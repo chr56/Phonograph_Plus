@@ -4,7 +4,9 @@ import lib.activityresultcontract.registerActivityResultLauncherDelegate
 import lib.phonograph.misc.menuProvider
 import lib.storage.launcher.CreateFileStorageAccessDelegate
 import lib.storage.launcher.ICreateFileStorageAccessible
+import lib.storage.launcher.IOpenDirStorageAccessible
 import lib.storage.launcher.IOpenFileStorageAccessible
+import lib.storage.launcher.OpenDirStorageAccessDelegate
 import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.databinding.ActivityGenreDetailBinding
 import player.phonograph.mechanism.actions.DetailToolbarMenuProviders
@@ -37,7 +39,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 
 class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
-                            ICreateFileStorageAccessible, IOpenFileStorageAccessible {
+                            ICreateFileStorageAccessible, IOpenFileStorageAccessible, IOpenDirStorageAccessible {
 
     private var _viewBinding: ActivityGenreDetailBinding? = null
     private val binding: ActivityGenreDetailBinding get() = _viewBinding!!
@@ -47,6 +49,7 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
 
     override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
     override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
+    override val openDirStorageAccessDelegate: OpenDirStorageAccessDelegate = OpenDirStorageAccessDelegate()
 
 
 
@@ -58,6 +61,7 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
         registerActivityResultLauncherDelegate(
             createFileStorageAccessDelegate,
             openFileStorageAccessDelegate,
+            openDirStorageAccessDelegate,
         )
 
         super.onCreate(savedInstanceState)
