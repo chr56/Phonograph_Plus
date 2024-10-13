@@ -10,7 +10,9 @@ import lib.activityresultcontract.registerActivityResultLauncherDelegate
 import lib.phonograph.misc.menuProvider
 import lib.storage.launcher.CreateFileStorageAccessDelegate
 import lib.storage.launcher.ICreateFileStorageAccessible
+import lib.storage.launcher.IOpenDirStorageAccessible
 import lib.storage.launcher.IOpenFileStorageAccessible
+import lib.storage.launcher.OpenDirStorageAccessDelegate
 import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
 import player.phonograph.databinding.ActivitySearchBinding
@@ -20,9 +22,9 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
 import player.phonograph.ui.components.popup.OptionsPopup
+import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
-import player.phonograph.util.theme.accentColor
 import player.phonograph.util.ui.hideKeyboard
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
@@ -43,7 +45,7 @@ import android.view.MenuItem
 import kotlinx.coroutines.launch
 
 class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener,
-                       ICreateFileStorageAccessible, IOpenFileStorageAccessible {
+                       ICreateFileStorageAccessible, IOpenFileStorageAccessible, IOpenDirStorageAccessible {
 
     private var viewBinding: ActivitySearchBinding? = null
     val binding get() = viewBinding!!
@@ -52,6 +54,7 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
 
     override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
     override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
+    override val openDirStorageAccessDelegate: OpenDirStorageAccessDelegate = OpenDirStorageAccessDelegate()
 
     private lateinit var searchResultPageAdapter: SearchResultPageAdapter
     private lateinit var mediator: TabLayoutMediator
@@ -64,6 +67,7 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
         registerActivityResultLauncherDelegate(
             createFileStorageAccessDelegate,
             openFileStorageAccessDelegate,
+            openDirStorageAccessDelegate,
         )
 
         super.onCreate(savedInstanceState)
