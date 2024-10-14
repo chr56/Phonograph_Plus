@@ -4,6 +4,8 @@
 
 package player.phonograph.mechanism.actions
 
+import player.phonograph.mechanism.actions.actionSavePlaylist
+import player.phonograph.mechanism.actions.songs
 import player.phonograph.mechanism.playlist.PlaylistManager
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Song
@@ -12,15 +14,18 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialog
 import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialog
+import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialog
 import player.phonograph.ui.modules.playlist.dialogs.RenamePlaylistDialog
 import player.phonograph.util.fragmentActivity
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import android.content.Context
 import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 fun Playlist.actionPlay(context: Context): Boolean = runBlocking {
     songs(context).let { songs ->
@@ -67,15 +72,22 @@ fun List<Playlist>.actionDeletePlaylists(context: Context): Boolean = fragmentAc
 }
 
 fun Playlist.actionSavePlaylist(activity: FragmentActivity) {
-    CoroutineScope(Dispatchers.Default).launch {
-        PlaylistManager.duplicate(activity, this@actionSavePlaylist)
+    activity.lifecycleScope.launch(Dispatchers.IO) {
+        val songs = PlaylistProcessors.reader(this@actionSavePlaylist).allSongs(activity)
+        withContext(Dispatchers.Main) {
+            CreatePlaylistDialog.duplicate(songs, name).show(activity.supportFragmentManager, "DUPLICATE_PLAYLIST")
+        }
     }
 }
 
-fun List<Playlist>.actionSavePlaylists(activity: Context) {
-    CoroutineScope(Dispatchers.Default).launch {
-        PlaylistManager.duplicate(activity, this@actionSavePlaylists)
+fun List<Playlist>.actionSavePlaylists(context: Context) = fragmentActivity(context) { activity ->
+    activity.lifecycleScope.launch(Dispatchers.IO) {
+        withContext(Dispatchers.Main) {
+            CreatePlaylistDialog.duplicate(this@actionSavePlaylists)
+                .show(activity.supportFragmentManager, "DUPLICATE_PLAYLISTS")
+        }
     }
+    true
 }
 
 private suspend fun Playlist.songs(context: Context): List<Song> =
