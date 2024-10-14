@@ -20,7 +20,8 @@ object PlaylistSongLoader {
     fun songs(context: Context, playlistId: Long): List<PlaylistSong> =
         queryPlaylistSongs(context, playlistId).intoPlaylistSongs(playlistId)
 
-    private val PROJECTION = BASE_SONG_PROJECTION + arrayOf(Playlists.Members._ID)
+    private val PROJECTION =
+        arrayOf(Playlists.Members.AUDIO_ID) + BASE_SONG_PROJECTION.drop(1) + arrayOf(Playlists.Members._ID)
 
     private fun queryPlaylistSongs(context: Context, playlistId: Long): Cursor? = try {
         context.contentResolver.query(
