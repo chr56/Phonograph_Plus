@@ -101,7 +101,7 @@ class CreatePlaylistDialog : DialogFragment() {
                     when (position) {
                         1 -> viewModel.updateMode(DialogViewModel.MODE_FILE_DATABASE)
                         0 -> viewModel.updateMode(
-                            if (viewModel.useSAF.value) DialogViewModel.MODE_FILE_SAF else DialogViewModel.MODE_FILE_MEDIASTORE
+                            if (viewModel.useSAF) DialogViewModel.MODE_FILE_SAF else DialogViewModel.MODE_FILE_MEDIASTORE
                         )
                     }
                 }
@@ -147,10 +147,14 @@ class CreatePlaylistDialog : DialogFragment() {
         }
 
         // Use SAF
-        private val _useSAF: MutableStateFlow<Boolean> = MutableStateFlow(true)
-        val useSAF get() = _useSAF.asStateFlow()
+        private var _useSAF: Boolean = true
+        val useSAF get() = _useSAF
         fun updateUseSAF(useSAF: Boolean) {
-            _useSAF.update { useSAF }
+            _useSAF = useSAF
+            // check mode
+            if (mode.value == MODE_FILE_SAF || mode.value == MODE_FILE_MEDIASTORE) {
+                updateMode(if (useSAF) MODE_FILE_SAF else MODE_FILE_MEDIASTORE)
+            }
         }
 
 
