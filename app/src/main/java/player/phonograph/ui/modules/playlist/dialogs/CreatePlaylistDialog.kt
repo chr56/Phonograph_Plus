@@ -190,6 +190,7 @@ class CreatePlaylistDialog : DialogFragment() {
         private suspend fun createFromSAF(context: Context, songs: List<Song>) {
             val uri = _uri.value ?: selectFile(context)
             PlaylistManager.create(context, songs, uri)
+            _uri.value = null // clear
         }
 
         private suspend fun createFromMediaStore(context: Context, name: String?, songs: List<Song>) {
