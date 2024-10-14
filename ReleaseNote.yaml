@@ -1,27 +1,27 @@
-version: "1.8.5-dev1"
+version: "1.8.5-dev2"
 channel: "PREVIEW"
 versionCode: 1084
-timestamp: 1727788001
+timestamp: 1728888788
 notes:
   en:
     highlights: [ ]
     items:
-      - "Fix: regression of playlists icons"
-      - "Fix: frozen or crashes when processing extremely long tag in Tag Editor"
-      - "Fix: possible crashes when starting from background"
-      - "Translation: update Polish (cooky)"
-      - "Development: upgrade AGP to 8.6.1, update dependencies"
+      - "Fix: crash when reading or editing tags of some certain files"
+      - "Fix: crash when adding songs to a playlist in Search Results, Album Detail, Artist Detail, Genre Detail"
+      - "Modify: no longer start service after device booting on Android N if any AppWidget exists"
+      - "Improve: sort order of track number in the album on some devices"
+      - "Development: update dependencies"
       - "Development: cleanup code"
 
   zh:
     highlights: [ ]
     items:
-      - "修复 播放列表图标"
-      - "修复 在标签编辑器中处理超长标签时卡死或崩溃"
-      - "修复 从后台启动时可能的崩溃"
-      - "翻译 更新 波兰语(cooky)"
-      - "开发 更新 AGP 至 8.6.1, 更新依赖"
+      - "修复 读写某些文件的音乐标签时崩溃"
+      - "修复 在搜索结果、专辑详情、艺术家详情、流派详情中，向播放列表增添歌曲时崩溃"
+      - "修改 Android N 上，不再开机自启服务，倘若存在任何小组件时"
+      - "改进 在某些设备上专辑中曲目编号的排序顺序"
+      - "开发 更新依赖"
       - "开发 清理代码"
 
-previousVersion: "1.8.4"
-previousChannel: "STABLE"
+previousVersion: "1.8.5-dev1"
+previousChannel: "PREVIEW"
