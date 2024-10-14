@@ -46,19 +46,18 @@ suspend fun createPlaylistViaSAF(
 /**
  * @param uri content uri to write
  */
-suspend fun writePlaylist(context: Context, uri: Uri, songs: List<Song>) {
+suspend fun writePlaylist(context: Context, uri: Uri, songs: List<Song>): Boolean =
     openOutputStreamSafe(context, uri, "rwt")?.use { stream ->
         try {
             M3UWriter.write(stream, songs, true)
-            coroutineToast(context, R.string.success)
             delay(250)
             sentPlaylistChangedLocalBoardCast()
+            true
         } catch (e: Exception) {
             reportError(e, TAG, "Failed to write $uri")
-            coroutineToast(context, R.string.failed)
+            false
         }
-    }
-}
+    } == true
 
 /**
  * @param context must be [IOpenFileStorageAccessible]

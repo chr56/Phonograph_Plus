@@ -38,9 +38,8 @@ import kotlinx.coroutines.withContext
 
 object PlaylistManager {
 
-    suspend fun create(context: Context, songs: List<Song>, uri: Uri) {
+    suspend fun create(context: Context, songs: List<Song>, uri: Uri): Boolean =
         writePlaylist(context, uri, songs)
-    }
 
     suspend fun create(context: Context, songs: List<Song>, name: String?): Long {
         @Suppress("NAME_SHADOWING")

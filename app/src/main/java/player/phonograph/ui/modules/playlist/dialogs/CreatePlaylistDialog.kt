@@ -272,7 +272,12 @@ class CreatePlaylistDialog : DialogFragment() {
 
         private suspend fun createFromSAF(context: Context, songs: List<Song>) {
             val uri = _uri.value ?: selectFile(context)
-            PlaylistManager.create(context, songs, uri)
+            val result = PlaylistManager.create(context, songs, uri)
+            val message = when (result) {
+                true  -> context.getString(R.string.success)
+                false -> context.getString(R.string.failed)
+            }
+            coroutineToast(context, message)
             _uri.value = null // clear
         }
 
@@ -292,6 +297,8 @@ class CreatePlaylistDialog : DialogFragment() {
             val parentDocumentUri =
                 DocumentsContract.buildDocumentUriUsingTree(treeUri, DocumentsContract.getTreeDocumentId(treeUri))
 
+            val failed = mutableListOf<Playlist>()
+
             for (playlist in playlists) {
                 val childUri: Uri? = try {
                     DocumentsContract.createDocument(
@@ -299,14 +306,25 @@ class CreatePlaylistDialog : DialogFragment() {
                         "${playlist.name}${dateTimeSuffix(currentDate())}"
                     )
                 } catch (e: Exception) {
+                    failed.add(playlist)
                     e.printStackTrace()
                     null
                 }
                 if (childUri != null) {
                     val songs = reader(playlist).allSongs(context)
-                    PlaylistManager.create(context, songs, childUri)
+                    val result = PlaylistManager.create(context, songs, childUri)
+                    if (!result) failed.add(playlist)
                 }
             }
+
+            if (failed.isNotEmpty()) {
+                val message = context.getString(
+                    R.string.failed_to_save_playlist,
+                    failed.fold("total ${failed.size}: ") { a, b -> "$a, ${b.name}" }
+                )
+                coroutineToast(context, message)
+            }
+
             _uri.value = null
         }
 
