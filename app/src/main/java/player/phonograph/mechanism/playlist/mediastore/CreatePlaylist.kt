@@ -19,10 +19,11 @@ import android.net.Uri
 /**
  * @return created Playlist id
  */
-suspend fun createPlaylistViaMediastore(context: Context, name: String): Long {
-    val playlistUri = createPlaylistImpl(context, MEDIASTORE_VOLUME_EXTERNAL, name)
-    val id = playlistId(playlistUri)
-    if (id != -1L) sentPlaylistChangedLocalBoardCast()
+fun createPlaylistViaMediastore(context: Context, name: String): Long {
+    val id = insertNewPlaylist(context, name)
+    if (id != -1L) {
+        sentPlaylistChangedLocalBoardCast()
+    }
     return id
 }
 
@@ -31,8 +32,7 @@ suspend fun createPlaylistViaMediastore(context: Context, name: String): Long {
  * @return created Playlist id
  */
 suspend fun createPlaylistViaMediastore(context: Context, name: String, songs: List<Song>): Long {
-    val playlistUri = createPlaylistImpl(context, MEDIASTORE_VOLUME_EXTERNAL, name)
-    val id = playlistId(playlistUri)
+    val id = insertNewPlaylist(context, name)
     if (id != -1L) {
         addToPlaylistViaMediastore(context, songs, MEDIASTORE_VOLUME_EXTERNAL, id, true)
         sentPlaylistChangedLocalBoardCast()
@@ -41,9 +41,17 @@ suspend fun createPlaylistViaMediastore(context: Context, name: String, songs: L
 }
 
 /**
+ * @return playlist uri (-1 if failed)
+ */
+private fun insertNewPlaylist(context: Context, name: String): Long {
+    val playlistUri = insertNewPlaylist(context, MEDIASTORE_VOLUME_EXTERNAL, name)
+    return playlistId(playlistUri)
+}
+
+/**
  * @return playlist uri (null if failed)
  */
-private fun createPlaylistImpl(context: Context, volume: String, name: String): Uri? {
+private fun insertNewPlaylist(context: Context, volume: String, name: String): Uri? {
     val values = ContentValues(1).apply {
         put(PlaylistsColumns.NAME, name)
     }
@@ -58,14 +66,17 @@ private fun createPlaylistImpl(context: Context, volume: String, name: String): 
     }
 }
 
-suspend fun duplicatePlaylistViaMediaStore(context: Context, songBatches: List<List<Song>>, names: List<String>): Boolean {
+suspend fun duplicatePlaylistViaMediaStore(
+    context: Context,
+    songBatches: List<List<Song>>,
+    names: List<String>,
+): Boolean {
     var successes = 0
     var failures = 0
     val failureList = StringBuffer()
     for ((index, songs) in songBatches.withIndex()) {
         val filename = "${names[index]}_${dateTimeSuffixCompat(currentDate())}"
-        val created = createPlaylistImpl(context, MEDIASTORE_VOLUME_EXTERNAL, filename)
-        val id = playlistId(created)
+        val id = insertNewPlaylist(context, filename)
         if (id != -1L) {
             addToPlaylistViaMediastore(context, songs, MEDIASTORE_VOLUME_EXTERNAL, id, true)
             successes++
