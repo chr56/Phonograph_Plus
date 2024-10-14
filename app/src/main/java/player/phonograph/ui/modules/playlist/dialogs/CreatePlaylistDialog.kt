@@ -20,6 +20,7 @@ import player.phonograph.util.parcelableArrayList
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffix
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatSpinner
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
@@ -27,9 +28,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -47,120 +48,92 @@ import kotlinx.coroutines.withContext
 
 class CreatePlaylistDialog : DialogFragment() {
 
-    private lateinit var alertDialog: AlertDialog
+    private var alertDialog: AlertDialog? = null
 
-    private lateinit var binding: DialogCreatePlaylistBinding
+    private var _binding: DialogCreatePlaylistBinding? = null
+    private val binding: DialogCreatePlaylistBinding get() = _binding!!
     private val viewModel: DialogViewModel by viewModels<DialogViewModel>(ownerProducer = { requireActivity() })
-
-    private var userAction: Int = -1
-    private var songs: List<Song> = emptyList()
-    private var playlists: List<Playlist> = emptyList()
-    private lateinit var defaultName: String
-
-    private fun readArgument(arguments: Bundle) {
-        userAction = arguments.getInt(USER_ACTION, 0)
-        when (userAction) {
-            USER_ACTION_CREATE              -> {
-                songs = arguments.parcelableArrayList<Song>(SONGS) ?: emptyList()
-                defaultName = resources.getString(R.string.new_playlist_title)
-                viewModel.updateName(defaultName)
-            }
-
-            USER_ACTION_DUPLICATE_PLAYLIST  -> {
-                songs = arguments.parcelableArrayList<Song>(SONGS) ?: emptyList()
-                defaultName = arguments.getString(NAME, null)
-                viewModel.updateName(defaultName)
-            }
-
-            USER_ACTION_DUPLICATE_PLAYLISTS -> {
-                playlists = arguments.parcelableArrayList<Playlist>(PLAYLISTS) ?: emptyList()
-                defaultName = resources.getString(R.string.new_playlist_title)
-                viewModel.updateName(defaultName)
-                viewModel.updateMode(DialogViewModel.MODE_PLAYLISTS_SAF)
-            }
-
-            else                            -> throw IllegalStateException()
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        readArgument(requireArguments())
+        viewModel.initArgs(requireArguments(), resources)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val title = when (userAction) {
+        val title = when (viewModel.args.userAction) {
             USER_ACTION_DUPLICATE_PLAYLIST  -> R.string.save_playlist_title
             USER_ACTION_DUPLICATE_PLAYLISTS -> R.string.save_playlists_title
             else                            -> R.string.new_playlist_title
         }
-        alertDialog = AlertDialog.Builder(requireContext())
+        val dialog = AlertDialog.Builder(requireContext())
             .setTitle(title)
             .setView(R.layout.dialog_create_playlist)
             .show()
-        binding = DialogCreatePlaylistBinding.bind(alertDialog.findViewById(R.id.content_container)!!)
-        return alertDialog
+        _binding = DialogCreatePlaylistBinding.bind(dialog.findViewById(R.id.content_container)!!)
+        alertDialog = dialog
+        return dialog
     }
 
     @Deprecated("Deprecated")
     @Suppress("DEPRECATION")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        setupMainView(alertDialog)
+        setupMainView()
     }
 
-    @SuppressLint("RepeatOnLifecycleWrongUsage")
-    private fun setupMainView(alertDialog: AlertDialog) {
-
-        binding.checkBoxSaf.setOnCheckedChangeListener { _, value ->
-            viewModel.updateUseSAF(value)
+    private fun setupMainView() {
+        bindEvent()
+        bindState()
+        prefillData()
+        with(binding) {
+            spinnerContainer.visibility =
+                if (viewModel.args.userAction == USER_ACTION_CREATE) View.VISIBLE else View.GONE
+            val options = listOf(
+                getString(R.string.file_playlists),
+                // getString(R.string.database_playlists),
+            )
+            val callback: (Int) -> Unit = { position: Int ->
+                when (position) {
+                    1 -> viewModel.updateMode(DialogViewModel.MODE_DATABASE)
+                    0 -> viewModel.updateMode(
+                        if (viewModel.useSAF) DialogViewModel.MODE_FILE_SAF else DialogViewModel.MODE_FILE_MEDIASTORE
+                    )
+                }
+            }
+            setupSpinner(spinner, options, callback)
         }
+    }
 
-        with(binding.name) {
-            editText?.setText(defaultName)
-            editText?.addTextChangedListener { editable ->
-                viewModel.updateName(editable?.toString())
+    private fun prefillData() {
+        with(binding) {
+            name.editText?.setText(viewModel.args.defaultName)
+            location.editText?.setText(null)
+            checkBoxSaf.isChecked = true
+        }
+    }
+
+    private fun bindEvent() {
+        binding.buttonCancel.setOnClickListener { dismiss() }
+        binding.buttonCreate.setOnClickListener {
+            dismiss()
+            coroutineScope.launch {
+                viewModel.execute(requireActivity())
             }
         }
-
+        binding.name.editText?.addTextChangedListener { editable ->
+            viewModel.updateName(editable?.toString())
+        }
         binding.location.setEndIconOnClickListener {
             coroutineScope.launch {
                 viewModel.selectUri(requireActivity())
             }
         }
-
-        binding.buttonCancel.setOnClickListener { alertDialog.dismiss() }
-
-        binding.buttonCreate.setOnClickListener {
-            val context = requireActivity()
-            coroutineScope.launch {
-                viewModel.execute(context, songs, playlists)
-                alertDialog.dismiss()
-            }
+        binding.checkBoxSaf.setOnCheckedChangeListener { _, value ->
+            viewModel.updateUseSAF(value)
         }
+    }
 
-        binding.spinnerContainer.visibility = if (userAction == USER_ACTION_CREATE) View.VISIBLE else View.GONE
-        with(binding.spinner) {
-            val options = listOf(
-                getString(R.string.file_playlists),
-                // getString(R.string.database_playlists),
-            )
-            val adapter = ArrayAdapter(context, R.layout.item_dropdown, options)
-            setAdapter(adapter)
-            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    when (position) {
-                        1 -> viewModel.updateMode(DialogViewModel.MODE_DATABASE)
-                        0 -> viewModel.updateMode(
-                            if (viewModel.useSAF) DialogViewModel.MODE_FILE_SAF else DialogViewModel.MODE_FILE_MEDIASTORE
-                        )
-                    }
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                }
-            }
-        }
+    private fun bindState() {
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -191,7 +164,37 @@ class CreatePlaylistDialog : DialogFragment() {
 
     }
 
+    private fun setupSpinner(
+        spinner: AppCompatSpinner,
+        options: List<String>,
+        onclick: (Int) -> Unit,
+    ) {
+        spinner.setAdapter(ArrayAdapter(spinner.context, R.layout.item_dropdown, options))
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                onclick(position)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+    }
+
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
+
     class DialogViewModel : ViewModel() {
+
+        lateinit var args: Parameter
+            private set
+
+        fun initArgs(bundle: Bundle, resources: Resources) {
+            args = Parameter.parse(bundle, resources)
+            updateName(args.defaultName)
+            if (args.userAction == USER_ACTION_DUPLICATE_PLAYLISTS) updateMode(MODE_PLAYLISTS_SAF)
+        }
 
         private val _name: MutableStateFlow<String?> = MutableStateFlow(null)
         val name get() = _name.asStateFlow()
@@ -248,14 +251,14 @@ class CreatePlaylistDialog : DialogFragment() {
             documentUri
         }
 
-        suspend fun execute(context: Context, songs: List<Song>, playlists: List<Playlist>) =
+        suspend fun execute(context: Context) =
             withContext(Dispatchers.IO) {
                 when (mode.value) {
-                    MODE_FILE_SAF             -> createFromSAF(context, songs)
-                    MODE_FILE_MEDIASTORE      -> createFromMediaStore(context, name.value, songs)
-                    MODE_DATABASE             -> createFromDatabase(context, name.value, songs)
-                    MODE_PLAYLISTS_SAF        -> duplicatePlaylistsFromSAF(context, playlists)
-                    MODE_PLAYLISTS_MEDIASTORE -> duplicatePlaylistsFromMediaStore(context, playlists)
+                    MODE_FILE_SAF             -> createFromSAF(context, args.songs)
+                    MODE_FILE_MEDIASTORE      -> createFromMediaStore(context, name.value, args.songs)
+                    MODE_DATABASE             -> createFromDatabase(context, name.value, args.songs)
+                    MODE_PLAYLISTS_SAF        -> duplicatePlaylistsFromSAF(context, args.playlists)
+                    MODE_PLAYLISTS_MEDIASTORE -> duplicatePlaylistsFromMediaStore(context, args.playlists)
                     else                      -> throw IllegalStateException("Illegal mode ${mode.value}")
                 }
             }
@@ -332,6 +335,48 @@ class CreatePlaylistDialog : DialogFragment() {
             val names = playlists.map { it.name }
             val songBatches = withContext(Dispatchers.IO) { playlists.map { reader(it).allSongs(context) } }
             duplicatePlaylistViaMediaStore(context, songBatches, names)
+        }
+
+        class Parameter(
+            var userAction: Int = -1,
+            var defaultName: String? = null,
+            var songs: List<Song> = emptyList(),
+            var playlists: List<Playlist> = emptyList(),
+        ) {
+            companion object {
+                fun parse(arguments: Bundle, resources: Resources): Parameter =
+                    when (val userAction = arguments.getInt(USER_ACTION, 0)) {
+                        USER_ACTION_CREATE              -> {
+                            val songs = arguments.parcelableArrayList<Song>(SONGS) ?: emptyList()
+                            Parameter(
+                                userAction = userAction,
+                                defaultName = resources.getString(R.string.new_playlist_title),
+                                songs = songs,
+                            )
+                        }
+
+                        USER_ACTION_DUPLICATE_PLAYLIST  -> {
+                            val songs = arguments.parcelableArrayList<Song>(SONGS) ?: emptyList()
+                            val defaultName = arguments.getString(NAME, null)
+                            Parameter(
+                                userAction = userAction,
+                                defaultName = defaultName,
+                                songs = songs,
+                            )
+                        }
+
+                        USER_ACTION_DUPLICATE_PLAYLISTS -> {
+                            val playlists = arguments.parcelableArrayList<Playlist>(PLAYLISTS) ?: emptyList()
+                            Parameter(
+                                userAction = userAction,
+                                defaultName = resources.getString(R.string.new_playlist_title),
+                                playlists = playlists,
+                            )
+                        }
+
+                        else                            -> throw IllegalStateException("UserAction: $userAction")
+                    }
+            }
         }
 
         companion object {
