@@ -2,6 +2,30 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "1.8.5-dev2",
+      "versionCode": 1084,
+      "date": 1729158000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.8.5-dev2"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.5-dev2/PhonographPlus_1.8.5-dev2_ModernPreviewRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.5-dev2/PhonographPlus_1.8.5-dev2_LegacyPreviewRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 读写某些文件的音乐标签时崩溃</li><li>修复 在搜索结果、专辑详情、艺术家详情、流派详情中，向播放列表增添歌曲时崩溃</li><li>修改 Android N 上，不再开机自启服务，倘若存在任何小组件时</li><li>改进 创建或复制播放列表流程</li><li>改进 在某些设备上专辑中曲目编号的排序顺序</li><li>开发 更新依赖</li><li>开发 清理代码</li></ol>",
+        "en": "<ol><li>Fix: crash when reading or editing tags of some certain files</li><li>Fix: crash when adding songs to a playlist in Search Results, Album Detail, Artist Detail, Genre Detail</li><li>Modify: no longer start service after device booting on Android N if any AppWidget exists</li><li>Improve: user experience on creating or duplicating playlists</li><li>Improve: sort order of track number in the album on some devices</li><li>Development: update dependencies</li><li>Development: cleanup code</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.8.5-dev1",
       "versionCode": 1084,
       "date": 1727788001,
