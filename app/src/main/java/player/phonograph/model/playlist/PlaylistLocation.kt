@@ -28,6 +28,20 @@ sealed class VirtualPlaylistLocation(@PlaylistType val type: Int) : PlaylistLoca
     data object Random : VirtualPlaylistLocation(PLAYLIST_TYPE_RANDOM)
 }
 
+
+@Parcelize
+data class DatabasePlaylistLocation(val databaseId: Long) : PlaylistLocation {
+    override fun id(): Long = produceSectionedId(databaseId, SECTION_DATABASE)
+    override fun text(context: Context): CharSequence = "Playlist #$databaseId"
+    override fun toString(): String = "Database(id: $databaseId)"
+    override fun compareTo(other: PlaylistLocation): Int =
+        when (other) {
+            is DatabasePlaylistLocation -> other.databaseId.compareTo(databaseId)
+            is FilePlaylistLocation     -> 0
+            else                        -> -1
+        }
+}
+
 @Parcelize
 data class FilePlaylistLocation(
     val path: String,
@@ -46,4 +60,5 @@ data class FilePlaylistLocation(
 }
 
 private const val SECTION_MEDIASTORE = 0
+private const val SECTION_DATABASE = 1 shl 1
 private const val SECTION_VIRTUAL = 1 shl 2

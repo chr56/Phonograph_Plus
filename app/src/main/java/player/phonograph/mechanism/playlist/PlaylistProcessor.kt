@@ -14,6 +14,7 @@ import player.phonograph.mechanism.playlist.mediastore.removeFromPlaylistViaMedi
 import player.phonograph.mechanism.playlist.mediastore.renamePlaylistViaMediastore
 import player.phonograph.mechanism.playlist.saf.appendToPlaylistViaSAF
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.DatabasePlaylistLocation
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.PLAYLIST_TYPE_FAVORITE
 import player.phonograph.model.playlist.PLAYLIST_TYPE_HISTORY
@@ -39,8 +40,9 @@ object PlaylistProcessors {
 
     private fun of(playlist: Playlist): PlaylistProcessor =
         when (val location = playlist.location) {
-            is FilePlaylistLocation    -> FilePlaylistProcessor(location)
-            is VirtualPlaylistLocation -> when (location.type) {
+            is FilePlaylistLocation     -> FilePlaylistProcessor(location)
+            is DatabasePlaylistLocation -> TODO()
+            is VirtualPlaylistLocation  -> when (location.type) {
                 PLAYLIST_TYPE_FAVORITE     -> FavoriteSongsPlaylistProcessor
                 PLAYLIST_TYPE_LAST_ADDED   -> LastAddedPlaylistProcessor
                 PLAYLIST_TYPE_HISTORY      -> HistoryPlaylistProcessor

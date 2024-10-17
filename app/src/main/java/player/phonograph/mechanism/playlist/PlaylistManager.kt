@@ -11,6 +11,7 @@ import player.phonograph.mechanism.playlist.mediastore.createPlaylistViaMediasto
 import player.phonograph.mechanism.playlist.mediastore.deletePlaylistsViaMediastore
 import player.phonograph.mechanism.playlist.saf.writePlaylist
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.DatabasePlaylistLocation
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.PLAYLIST_TYPE_FAVORITE
 import player.phonograph.model.playlist.PLAYLIST_TYPE_HISTORY
@@ -51,6 +52,8 @@ object PlaylistManager {
                     return DocumentsContract.deleteDocument(context.contentResolver, uri)
                 }
             }
+
+            is DatabasePlaylistLocation -> false
 
             is VirtualPlaylistLocation -> when (location.type) {
                 PLAYLIST_TYPE_HISTORY      -> HistoryStore.get().clear()
