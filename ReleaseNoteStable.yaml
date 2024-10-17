@@ -15,7 +15,9 @@ notes:
       - "Improve: sort order of track number in the album on some devices"
       - "Improve: user experience on creating or duplicating playlists"
       - "Translation: update Polish (cooky)"
-      - "Development: upgrade AGP to 8.6.1, update dependencies"
+      - "Development: compile with SDK 35"
+      - "Development: upgrade Gradle to 8.10.2, upgrade AGP to 8.7.1, upgrade kotlin to 2.0.21"
+      - "Development: upgrade Jetpack Compose to 1.7.4, update dependencies"
       - "Development: cleanup code"
 
   zh:
@@ -30,7 +32,9 @@ notes:
       - "改进 在某些设备上专辑中曲目编号的排序顺序"
       - "改进 创建或复制播放列表流程"
       - "翻译 更新 波兰语(cooky)"
-      - "开发 更新 AGP 至 8.6.1, 更新依赖"
+      - "开发 使用 SDK 35 编译"
+      - "开发 升级 Gradle 至 8.10.2, 升级 AGP 至 8.7.1, 升级 kotlin 至 2.0.21"
+      - "开发 升级 Jetpack Compose 至 1.7.4, 更新依赖"
       - "开发 清理代码"
 
 previousVersion: "1.8.4"
