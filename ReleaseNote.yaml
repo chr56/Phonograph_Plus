@@ -1,7 +1,7 @@
 version: "1.8.5-dev2"
 channel: "PREVIEW"
 versionCode: 1084
-timestamp: 1728888788
+timestamp: 1729158000
 notes:
   en:
     highlights: [ ]
@@ -9,6 +9,7 @@ notes:
       - "Fix: crash when reading or editing tags of some certain files"
       - "Fix: crash when adding songs to a playlist in Search Results, Album Detail, Artist Detail, Genre Detail"
       - "Modify: no longer start service after device booting on Android N if any AppWidget exists"
+      - "Improve: user experience on creating or duplicating playlists"
       - "Improve: sort order of track number in the album on some devices"
       - "Development: update dependencies"
       - "Development: cleanup code"
@@ -19,6 +20,7 @@ notes:
       - "修复 读写某些文件的音乐标签时崩溃"
       - "修复 在搜索结果、专辑详情、艺术家详情、流派详情中，向播放列表增添歌曲时崩溃"
       - "修改 Android N 上，不再开机自启服务，倘若存在任何小组件时"
+      - "改进 创建或复制播放列表流程"
       - "改进 在某些设备上专辑中曲目编号的排序顺序"
       - "开发 更新依赖"
       - "开发 清理代码"
