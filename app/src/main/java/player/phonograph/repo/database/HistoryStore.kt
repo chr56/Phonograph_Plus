@@ -88,7 +88,7 @@ class HistoryStore(context: Context) :
             "$ID=?", arrayOf(id.toString()),
             null, null, null, null
         ).use { cursor ->
-            cursor != null && cursor.moveToFirst()
+            cursor.moveToFirst()
         }
 
     fun queryRecentIds(): Cursor =

@@ -217,7 +217,7 @@ class SongPlayCountStore(context: Context) :
         val cursor = database.query(NAME, null, WHERE_ID_EQUALS, arrayOf(id.toString()), null, null, null)
         try {
             // if target existed
-            if (cursor != null && cursor.moveToFirst()) {
+            if (cursor.moveToFirst()) {
                 updateExistedPlayedEntry(readableDatabase, cursor, id, bumpCount, force)
             } else {
                 // if we have no existing results, create a new one
@@ -227,7 +227,7 @@ class SongPlayCountStore(context: Context) :
         } catch (e: Exception) {
             reportError(e, this::class.java.simpleName, "Failed to update song play count in SongPlayCountDatabase (songId=$id)")
         } finally {
-            cursor?.close()
+            cursor.close()
             database.endTransaction()
         }
     }
@@ -276,7 +276,7 @@ class SongPlayCountStore(context: Context) :
             database.query(
                 NAME, arrayOf(ID),
                 null, null, null, null, null
-            )?.use { cursor ->
+            ).use { cursor ->
                 if (cursor.moveToFirst()) {
                     // for each row, update it
                     do {
@@ -295,7 +295,7 @@ class SongPlayCountStore(context: Context) :
      * re-calculate-score
      */
     fun reCalculateScore(context: Context) {
-        readableDatabase.query(NAME, arrayOf(ID), null, null, null, null, null)?.use { cursor ->
+        readableDatabase.query(NAME, arrayOf(ID), null, null, null, null, null).use { cursor ->
             if (cursor.moveToFirst()) {
                 val totalCount = cursor.count
                 try {
