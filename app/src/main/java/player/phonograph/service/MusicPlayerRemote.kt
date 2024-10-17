@@ -52,6 +52,7 @@ object MusicPlayerRemote {
         activity: ComponentActivity,
         callback: MusicServiceConnection?,
     ): ServiceToken? {
+        @Suppress("DEPRECATION")
         val contextWrapper = ContextWrapper(
             activity.parent ?: activity // try to use parent activity
         )
