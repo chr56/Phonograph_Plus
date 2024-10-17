@@ -225,6 +225,7 @@ class CreatePlaylistDialog : DialogFragment() {
 
         private val _uri: MutableStateFlow<Uri?> = MutableStateFlow(null)
         val uri get() = _uri.asStateFlow()
+        suspend fun requireUri(context: Context): Uri = uri.value ?: selectUri(context)
 
         private val _location: MutableStateFlow<String?> = MutableStateFlow(null)
         val location get() = _location.asStateFlow()
@@ -254,8 +255,8 @@ class CreatePlaylistDialog : DialogFragment() {
         suspend fun execute(context: Context) =
             withContext(Dispatchers.IO) {
                 when (mode.value) {
-                    MODE_FILE_SAF             -> createFromSAF(context, args.songs)
-                    MODE_FILE_MEDIASTORE      -> createFromMediaStore(context, name.value, args.songs)
+                    MODE_FILE_SAF             -> createFromSAF(context, args.songs, requireUri(context))
+                    MODE_FILE_MEDIASTORE      -> createFromMediaStore(context, args.songs, name.value)
                     MODE_DATABASE             -> createFromDatabase(context, name.value, args.songs)
                     MODE_PLAYLISTS_SAF        -> duplicatePlaylistsFromSAF(context, args.playlists)
                     MODE_PLAYLISTS_MEDIASTORE -> duplicatePlaylistsFromMediaStore(context, args.playlists)
@@ -273,8 +274,7 @@ class CreatePlaylistDialog : DialogFragment() {
 
         }
 
-        private suspend fun createFromSAF(context: Context, songs: List<Song>) {
-            val uri = _uri.value ?: selectFile(context)
+        private suspend fun createFromSAF(context: Context, songs: List<Song>, uri: Uri) {
             val result = PlaylistManager.create(context, songs, uri)
             val message = when (result) {
                 true  -> context.getString(R.string.success)
@@ -284,7 +284,7 @@ class CreatePlaylistDialog : DialogFragment() {
             _uri.value = null // clear
         }
 
-        private suspend fun createFromMediaStore(context: Context, name: String?, songs: List<Song>) {
+        private suspend fun createFromMediaStore(context: Context, songs: List<Song>, name: String?) {
             val result = PlaylistManager.create(context, songs, name)
             val message = when (result) {
                 -1L  -> context.getString(R.string.failed)
