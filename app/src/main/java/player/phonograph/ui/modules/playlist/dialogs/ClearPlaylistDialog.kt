@@ -10,10 +10,7 @@ import lib.storage.launcher.IOpenDirStorageAccessible
 import player.phonograph.R
 import player.phonograph.mechanism.playlist.PlaylistManager
 import player.phonograph.mechanism.playlist.PlaylistProcessors
-import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.playlist.VirtualPlaylistLocation
-import player.phonograph.model.playlist.playlistTypeName
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.file.selectDocumentUris
 import player.phonograph.util.parcelableArrayList
@@ -58,12 +55,7 @@ class ClearPlaylistDialog : DialogFragment() {
             extraSuffix = if (!hasPermission) context.getString(R.string.permission_manage_external_storage_denied) else "",
             ItemGroup(
                 resources.getQuantityString(R.plurals.item_playlists, playlists.size, playlists.size),
-                playlists.map { playlist ->
-                    when (val location = playlist.location) {
-                        is FilePlaylistLocation -> "${playlist.name}(${location.path})"
-                        is VirtualPlaylistLocation -> playlistTypeName(context.resources, location.type).toString()
-                    }
-                }
+                playlists.map { playlist -> playlist.location.text(context).toString() }
             ),
         )
 
