@@ -2,19 +2,21 @@
 
 ## Plugins
 
-kotlin = "2.0.20"
-agp = "8.6.1"
-ksp = "2.0.20-1.0.24"
+kotlin = "2.0.21"
+ksp = "2.0.21-1.0.25"
+
+agp = "8.7.1"
+
 versionChecker = "0.51.0"
 
 ## Libraries
 #### Jetpack Start
 core-ktx = "1.13.1"
 appcompat = "1.7.0"
-activity = "1.9.2"
+activity = "1.9.3"
 fragment = "1.8.4"
 lifecycle = "2.8.6"
-annotation = "1.8.0"
+annotation = "1.9.0"
 preference = "1.2.1"
 recyclerview = "1.3.2"
 constraintlayout = "2.1.4"
@@ -27,7 +29,7 @@ palette = "1.0.0"
 room = "2.6.1"
 datastore = "1.1.1"
 material = "1.9.0"
-compose = "1.7.3"
+compose = "1.7.4"
 #### Jetpack End
 
 
