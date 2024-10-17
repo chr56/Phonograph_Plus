@@ -52,8 +52,6 @@ object PlaylistProcessors {
             }
         }
 
-    const val OPTION_DELETE_WITH_SAF = "SAF"
-    const val OPTION_DELETE_WITH_MEDIASTORE = "MEDIASTORE"
 }
 
 sealed interface PlaylistProcessor
