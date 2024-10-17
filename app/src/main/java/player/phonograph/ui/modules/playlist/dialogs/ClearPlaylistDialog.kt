@@ -94,7 +94,7 @@ class ClearPlaylistDialog : DialogFragment() {
 
         /* Normally Delete (MediaStore + Internal database) */
         val results = playlists.map { playlist ->
-            PlaylistManager.delete(context, playlist, PlaylistProcessors.OPTION_DELETE_WITH_MEDIASTORE)
+            PlaylistManager.delete(playlist, false).delete(context)
         }
 
         /* Check */

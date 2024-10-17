@@ -5,7 +5,6 @@
 package player.phonograph.mechanism.playlist
 
 import org.koin.core.context.GlobalContext
-import player.phonograph.R
 import player.phonograph.mechanism.IFavorite
 import player.phonograph.mechanism.playlist.mediastore.createPlaylistViaMediastore
 import player.phonograph.mechanism.playlist.mediastore.deletePlaylistsViaMediastore
@@ -28,39 +27,66 @@ import android.provider.DocumentsContract
 
 object PlaylistManager {
 
-    suspend fun create(context: Context, songs: List<Song>, uri: Uri): Boolean =
-        writePlaylist(context, uri, songs)
+    fun create(songs: List<Song>): Creator = Creator(songs)
 
-    suspend fun create(context: Context, songs: List<Song>, name: String?): Long {
-        @Suppress("NAME_SHADOWING")
-        val name: String = if (name.isNullOrEmpty()) context.getString(R.string.new_playlist_title) else name
-        if (!MediaStorePlaylists.checkExistence(context, name)) {
-            val id = createPlaylistViaMediastore(context, name, songs)
-            return id
-        } else {
-            return -2L
+    class Creator(val songs: List<Song>) {
+        suspend fun fromUri(context: Context, uri: Uri): Boolean =
+            writePlaylist(context, uri, songs)
+
+        suspend fun fromMediaStore(context: Context, name: String): Long {
+            if (!MediaStorePlaylists.checkExistence(context, name)) {
+                val id = createPlaylistViaMediastore(context, name, songs)
+                return id
+            } else {
+                return -2L
+            }
         }
+
+        suspend fun intoDatabase(context: Context, name: String): Boolean = false
     }
 
-    suspend fun delete(context: Context, playlist: Playlist, options: Any? = null): Boolean {
-        return when (val location = playlist.location) {
-            is FilePlaylistLocation    -> {
-                if (options == PlaylistProcessors.OPTION_DELETE_WITH_MEDIASTORE) {
+    fun delete(playlist: Playlist, preferSaf: Boolean): Deleter = when (playlist.location) {
+        is FilePlaylistLocation     -> Deleter.FilePlaylistDeleter(playlist, preferSaf)
+        is DatabasePlaylistLocation -> Deleter.DatabasePlaylistDeleter(playlist, preferSaf)
+        is VirtualPlaylistLocation  -> Deleter.VirtualPlaylistDeleter(playlist, preferSaf)
+    }
+
+    sealed class Deleter(val playlist: Playlist, protected val preferSaf: Boolean) {
+        abstract suspend fun delete(context: Context): Boolean
+
+        class FilePlaylistDeleter(playlist: Playlist, preferSaf: Boolean) : Deleter(playlist, preferSaf) {
+            override suspend fun delete(context: Context): Boolean {
+                val location = playlist.location
+                if (location !is FilePlaylistLocation) return false
+                if (!preferSaf) {
                     return deletePlaylistsViaMediastore(context, longArrayOf(location.mediastoreId)).isEmpty()
                 } else {
                     val uri = selectDocumentUris(context, listOf(location.path)).firstOrNull() ?: return false
                     return DocumentsContract.deleteDocument(context.contentResolver, uri)
                 }
             }
+        }
 
-            is DatabasePlaylistLocation -> false
-
-            is VirtualPlaylistLocation -> when (location.type) {
-                PLAYLIST_TYPE_HISTORY      -> HistoryStore.get().clear()
-                PLAYLIST_TYPE_FAVORITE     -> GlobalContext.get().get<IFavorite>().clearAll(context)
-                PLAYLIST_TYPE_MY_TOP_TRACK -> GlobalContext.get().get<SongPlayCountStore>().clear()
-                else                       -> false
+        class VirtualPlaylistDeleter(playlist: Playlist, preferSaf: Boolean) : Deleter(playlist, preferSaf) {
+            override suspend fun delete(context: Context): Boolean {
+                val location = playlist.location
+                if (location !is VirtualPlaylistLocation) return false
+                return when (location.type) {
+                    PLAYLIST_TYPE_HISTORY      -> HistoryStore.get().clear()
+                    PLAYLIST_TYPE_FAVORITE     -> GlobalContext.get().get<IFavorite>().clearAll(context)
+                    PLAYLIST_TYPE_MY_TOP_TRACK -> GlobalContext.get().get<SongPlayCountStore>().clear()
+                    else                       -> false
+                }
             }
+        }
+
+        class DatabasePlaylistDeleter(playlist: Playlist, preferSaf: Boolean) : Deleter(playlist, preferSaf) {
+            override suspend fun delete(context: Context): Boolean {
+                val location = playlist.location
+                if (location !is DatabasePlaylistLocation) return false
+                return false
+            }
+
         }
     }
 

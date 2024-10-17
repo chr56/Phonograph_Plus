@@ -271,11 +271,14 @@ class CreatePlaylistDialog : DialogFragment() {
             SAFActivityResultContracts.chooseDirViaSAF(context, path)
 
         private suspend fun createFromDatabase(context: Context, name: String?, songs: List<Song>) {
-
+            PlaylistManager.create(songs).intoDatabase(
+                context,
+                if (name.isNullOrEmpty()) context.getString(R.string.new_playlist_title) else name
+            )
         }
 
         private suspend fun createFromSAF(context: Context, songs: List<Song>, uri: Uri) {
-            val result = PlaylistManager.create(context, songs, uri)
+            val result = PlaylistManager.create(songs).fromUri(context, uri)
             val message = when (result) {
                 true  -> context.getString(R.string.success)
                 false -> context.getString(R.string.failed)
@@ -285,7 +288,9 @@ class CreatePlaylistDialog : DialogFragment() {
         }
 
         private suspend fun createFromMediaStore(context: Context, songs: List<Song>, name: String?) {
-            val result = PlaylistManager.create(context, songs, name)
+            val result = PlaylistManager.create(songs).fromMediaStore(
+                context, if (name.isNullOrEmpty()) context.getString(R.string.new_playlist_title) else name
+            )
             val message = when (result) {
                 -1L  -> context.getString(R.string.failed)
                 -2L  -> context.getString(R.string.playlist_exists, name)
@@ -315,7 +320,7 @@ class CreatePlaylistDialog : DialogFragment() {
                 }
                 if (childUri != null) {
                     val songs = reader(playlist).allSongs(context)
-                    val result = PlaylistManager.create(context, songs, childUri)
+                    val result = PlaylistManager.create(songs).fromUri(context, childUri)
                     if (!result) failed.add(playlist)
                 }
             }
