@@ -25,7 +25,6 @@ import player.phonograph.ui.dialogs.BackupExportDialog
 import player.phonograph.ui.dialogs.BackupImportDialog
 import player.phonograph.ui.modules.explorer.PathSelectorContractTool
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
-import player.phonograph.util.theme.tintButtons
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -51,6 +50,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
+import android.content.Context
 import android.os.Bundle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -125,7 +125,18 @@ class SettingsActivity : ComposeThemeActivity(),
     @Composable
     private fun Menu() {
         val context = LocalContext.current
-        DropDownMenuContent(listOf(stringResource(id = R.string.clear_all_preference) to {
+        DropDownMenuContent(
+            listOf(
+                menuItemClearAll(context),
+                menuItemImport(context),
+                menuItemExport(),
+            )
+        )
+    }
+
+    @Composable
+    private fun menuItemClearAll(context: Context): Pair<String, Function0<Unit>> =
+        stringResource(id = R.string.clear_all_preference) to {
             MaterialDialog(context).show {
                 title(R.string.clear_all_preference)
                 message(R.string.clear_all_preference_msg)
@@ -140,7 +151,11 @@ class SettingsActivity : ComposeThemeActivity(),
                     getColor(util.theme.materials.R.color.md_red_A700)
                 )
             }
-        }, stringResource(id = R.string.action_import).format(stringResource(id = R.string.action_backup)) to {
+        }
+
+    @Composable
+    private fun menuItemImport(context: Context): Pair<String, Function0<Unit>> =
+        stringResource(id = R.string.action_import).format(stringResource(id = R.string.action_backup)) to {
             openFileStorageAccessDelegate.launch(
                 OpenDocumentContract.Config(arrayOf("*/*"))
             ) { uri ->
@@ -156,10 +171,14 @@ class SettingsActivity : ComposeThemeActivity(),
                     }
                 }
             }
-        }, stringResource(id = R.string.action_export).format(stringResource(id = R.string.action_backup)) to {
+        }
+
+    @Composable
+    private fun menuItemExport(): Pair<String, Function0<Unit>> =
+        stringResource(id = R.string.action_export).format(stringResource(id = R.string.action_backup)) to {
             BackupExportDialog().show(supportFragmentManager, "EXPORT")
-        }))
-    }
+        }
+
 
     override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
     override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
