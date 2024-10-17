@@ -4,18 +4,20 @@ _This part is not written very well._
 
 See also [Developer Guide](./Developer_Guide.md).
 
+_Last Update: 2024.10.17_
+
 ## **Requirement**
 
 **Build**:
 
 1. a PC : any desktop operate system platform (only `Windows` and `Ubuntu 20.04` are tested), I am not sure if it works
    on `Android(Termux)` because jvm version.
-2. JDK 17 (we are using AGP 8.6.0 with gradle 8.8).
+2. JDK 17 (we are using AGP 8.7.1 with gradle 8.10.2).
 3. The connected and fast network.
 
 **Development**:
 
-Plus `Android Studio` with correspond `Android Gradle Plugin` (currently `Koala Feature Drop | 2024.1.2`).
+Plus `Android Studio` with correspond `Android Gradle Plugin` (currently `Ladybug | 2024.2.1 Patch 1`).
 (`IDEA` might be not compatible because `Android Gradle Plugin` is too new)
 
 ## **Instructions (Build with commandline)**

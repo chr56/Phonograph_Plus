@@ -1,25 +1,27 @@
 ## List of Libraries and Gradle Plugins in Use
 
-- androidx.activity:activity-compose:1.9.2
-- androidx.activity:activity-ktx:1.9.2
-- androidx.annotation:annotation:1.8.0
+_Last Update at 2024.10.17_
+
+- androidx.activity:activity-compose:1.9.3
+- androidx.activity:activity-ktx:1.9.3
+- androidx.annotation:annotation:1.9.0
 - androidx.appcompat:appcompat:1.7.0
 - androidx.cardview:cardview:1.0.0
-- androidx.compose.foundation:foundation:1.7.1
-- androidx.compose.material:material:1.7.1
-- androidx.compose.material:material-icons-core:1.7.1
-- androidx.compose.runtime:runtime:1.7.1
-- androidx.compose.ui:ui:1.7.1
-- androidx.compose.ui:ui-tooling:1.7.1
+- androidx.compose.foundation:foundation:1.7.4
+- androidx.compose.material:material:1.7.4
+- androidx.compose.material:material-icons-core:1.7.4
+- androidx.compose.runtime:runtime:1.7.4
+- androidx.compose.ui:ui:1.7.4
+- androidx.compose.ui:ui-tooling:1.7.4
 - androidx.constraintlayout:constraintlayout:2.1.4
 - androidx.core:core-ktx:1.13.1
-- androidx.databinding:viewbinding:8.6.0
+- androidx.databinding:viewbinding:8.7.1
 - androidx.datastore:datastore:1.1.1
 - androidx.datastore:datastore-core:1.1.1
 - androidx.datastore:datastore-preferences:1.1.1
 - androidx.datastore:datastore-preferences-core:1.1.1
-- androidx.fragment:fragment-ktx:1.8.3
-- androidx.lifecycle:lifecycle-runtime-ktx:2.8.5
+- androidx.fragment:fragment-ktx:1.8.4
+- androidx.lifecycle:lifecycle-runtime-ktx:2.8.6
 - androidx.media:media:1.7.0
 - androidx.palette:palette-ktx:1.0.0
 - androidx.percentlayout:percentlayout:1.0.0
@@ -52,25 +54,22 @@
 - io.github.chr56.tools.release:io.github.chr56.tools.release.gradle.plugin:0.1.2
 - io.github.phonographplus:music-metadata-source:0.1.1
 - io.github.vanpra.compose-material-dialogs:core:0.9.0
-- io.insert-koin:koin-android:3.5.6
+- io.insert-koin:koin-android:4.0.0
 - org.burnoutcrew.composereorderable:reorderable:0.9.6
-- org.jetbrains.kotlin:kotlin-build-tools-impl:2.0.20
-- org.jetbrains.kotlin:kotlin-compiler-embeddable:2.0.20
-- org.jetbrains.kotlin:kotlin-compose-compiler-plugin-embeddable:2.0.20
-- org.jetbrains.kotlin:kotlin-klib-commonizer-embeddable:2.0.20
-- org.jetbrains.kotlin:kotlin-native-prebuilt:2.0.20
-- org.jetbrains.kotlin:kotlin-parcelize-compiler:2.0.20
-- org.jetbrains.kotlin:kotlin-parcelize-runtime:2.0.20
-- org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:2.0.20
-- org.jetbrains.kotlin:kotlin-serialization-compiler-plugin-embeddable:2.0.20
-- org.jetbrains.kotlin:kotlin-stdlib:2.0.20
-- org.jetbrains.kotlin.android:org.jetbrains.kotlin.android.gradle.plugin:2.0.20
-- org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin:2.0.20
-- org.jetbrains.kotlin.plugin.compose:org.jetbrains.kotlin.plugin.compose.gradle.plugin:2.0.20
-- org.jetbrains.kotlin.plugin.parcelize:org.jetbrains.kotlin.plugin.parcelize.gradle.plugin:2.0.20
-- org.jetbrains.kotlin.plugin.serialization:org.jetbrains.kotlin.plugin.serialization.gradle.plugin:2.0.20
+- org.jetbrains.kotlin:kotlin-build-tools-impl:2.0.21
+- org.jetbrains.kotlin:kotlin-compiler-embeddable:2.0.21
+- org.jetbrains.kotlin:kotlin-compose-compiler-plugin-embeddable:2.0.21
+- org.jetbrains.kotlin:kotlin-klib-commonizer-embeddable:2.0.21
+- org.jetbrains.kotlin:kotlin-native-prebuilt:2.0.21
+- org.jetbrains.kotlin:kotlin-parcelize-compiler:2.0.21
+- org.jetbrains.kotlin:kotlin-parcelize-runtime:2.0.21
+- org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:2.0.21
+- org.jetbrains.kotlin:kotlin-serialization-compiler-plugin-embeddable:2.0.21
+- org.jetbrains.kotlin:kotlin-stdlib:2.0.21
+- org.jetbrains.kotlin.android:org.jetbrains.kotlin.android.gradle.plugin:2.0.21
+- org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin:2.0.21
+- org.jetbrains.kotlin.plugin.compose:org.jetbrains.kotlin.plugin.compose.gradle.plugin:2.0.21
+- org.jetbrains.kotlin.plugin.parcelize:org.jetbrains.kotlin.plugin.parcelize.gradle.plugin:2.0.21
+- org.jetbrains.kotlin.plugin.serialization:org.jetbrains.kotlin.plugin.serialization.gradle.plugin:2.0.21
 - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0
-- org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.2
-
-
-_Last Update at 2024.09.15_
+- org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3
