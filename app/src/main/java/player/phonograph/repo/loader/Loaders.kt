@@ -16,6 +16,6 @@ object Artists : IArtists by MediaStoreArtists
 
 object Genres : IGenres by MediaStoreGenres
 
-object Playlists : IPlaylists by MediaStorePlaylists
+object Playlists : IPlaylists by RouterPlaylists
 
 object Songs : ISongs by MediaStoreSongs
