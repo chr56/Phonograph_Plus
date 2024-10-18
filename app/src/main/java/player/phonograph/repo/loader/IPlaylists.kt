@@ -13,9 +13,9 @@ interface IPlaylists {
 
     suspend fun all(context: Context): List<Playlist>
 
-    suspend fun id(context: Context, id: Long): Playlist?
+    suspend fun of(context: Context, location: PlaylistLocation): Playlist?
 
-    suspend fun songs(context: Context, id: Long): List<PlaylistSong>
+    suspend fun songs(context: Context, location: PlaylistLocation): List<PlaylistSong>
 
     suspend fun contains(context: Context, location: PlaylistLocation, songId: Long): Boolean
 

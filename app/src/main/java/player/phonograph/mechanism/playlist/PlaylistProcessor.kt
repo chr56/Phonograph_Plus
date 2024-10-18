@@ -86,7 +86,7 @@ sealed interface PlaylistWriter : PlaylistProcessor {
 private class FilePlaylistProcessor(val location: FilePlaylistLocation) : PlaylistReader, PlaylistWriter {
 
     override suspend fun allSongs(context: Context): List<Song> =
-        MediaStorePlaylists.songs(context, location.mediastoreId).map { it.song }
+        MediaStorePlaylists.songs(context, location).map { it.song }
 
     override suspend fun containsSong(context: Context, songId: Long): Boolean =
         MediaStorePlaylists.contains(context, location, songId)

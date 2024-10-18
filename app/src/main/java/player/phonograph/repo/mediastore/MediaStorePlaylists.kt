@@ -17,10 +17,13 @@ object MediaStorePlaylists : IPlaylists {
 
     override suspend fun all(context: Context): List<Playlist> = PlaylistLoader.all(context)
 
-    override suspend fun id(context: Context, id: Long): Playlist? = PlaylistLoader.id(context, id)
+    suspend fun id(context: Context, id: Long): Playlist? = PlaylistLoader.id(context, id)
 
-    override suspend fun songs(context: Context, id: Long): List<PlaylistSong> =
-        PlaylistSongLoader.songs(context, id)
+    override suspend fun of(context: Context, location: PlaylistLocation): Playlist? =
+        PlaylistLoader.id(context, (location as FilePlaylistLocation).mediastoreId)
+
+    override suspend fun songs(context: Context, location: PlaylistLocation): List<PlaylistSong> =
+        PlaylistSongLoader.songs(context, (location as FilePlaylistLocation).mediastoreId)
 
     override suspend fun contains(context: Context, location: PlaylistLocation, songId: Long): Boolean =
         PlaylistSongLoader.contains(context, location, songId)
@@ -36,4 +39,8 @@ object MediaStorePlaylists : IPlaylists {
 
     fun searchByPath(context: Context, path: String): Playlist? =
         PlaylistLoader.searchByPath(context, path)
+
+
+    fun songs(context: Context, id: Long): List<PlaylistSong> =
+        PlaylistSongLoader.songs(context, id)
 }

@@ -23,6 +23,7 @@ import player.phonograph.model.playlist.DynamicPlaylists
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.repo.loader.Songs
+import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.repo.mediastore.processQuery
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
@@ -152,7 +153,7 @@ class StarterActivity : AppCompatActivity() {
                 val id = parseIdFromIntent(intent, "playlistId", "playlist")
                 if (id >= 0) {
                     val position = intent.getIntExtra("position", 0)
-                    val songs = Playlists.songs(this, id).map { it.song }
+                    val songs = MediaStorePlaylists.songs(this, id).map { it.song }
                     if (songs.isNotEmpty()) return SongsRequest(songs, position)
                 }
             }
