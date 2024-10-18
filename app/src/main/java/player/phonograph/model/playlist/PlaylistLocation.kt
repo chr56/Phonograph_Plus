@@ -4,6 +4,7 @@
 
 package player.phonograph.model.playlist
 
+import lib.storage.textparser.ExternalFilePathParser
 import player.phonograph.util.produceSectionedId
 import android.content.Context
 import android.os.Parcelable
@@ -32,7 +33,7 @@ sealed class VirtualPlaylistLocation(@PlaylistType val type: Int) : PlaylistLoca
 @Parcelize
 data class DatabasePlaylistLocation(val databaseId: Long) : PlaylistLocation {
     override fun id(): Long = produceSectionedId(databaseId, SECTION_DATABASE)
-    override fun text(context: Context): CharSequence = "Playlist #$databaseId"
+    override fun text(context: Context): CharSequence = "#$databaseId"
     override fun toString(): String = "Database(id: $databaseId)"
     override fun compareTo(other: PlaylistLocation): Int =
         when (other) {
@@ -49,7 +50,7 @@ data class FilePlaylistLocation(
     val mediastoreId: Long,
 ) : PlaylistLocation {
     override fun id(): Long = produceSectionedId(mediastoreId, SECTION_MEDIASTORE)
-    override fun text(context: Context): CharSequence = path
+    override fun text(context: Context): CharSequence = ExternalFilePathParser.bashPath(path) ?: path
     override fun toString(): String = path
     override fun compareTo(other: PlaylistLocation): Int =
         if (other is FilePlaylistLocation) {
