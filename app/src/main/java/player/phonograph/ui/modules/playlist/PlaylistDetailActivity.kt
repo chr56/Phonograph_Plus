@@ -366,7 +366,7 @@ class PlaylistDetailActivity :
     }
 
     private suspend fun checkExistence(playlist: Playlist): Boolean =
-        !(playlist.location is FilePlaylistLocation && !Playlists.checkExistence(this, playlist.location))
+        !(playlist.location is FilePlaylistLocation && !Playlists.exists(this, playlist.location))
 
     /* *******************
      *   companion object

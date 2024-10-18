@@ -89,7 +89,7 @@ private class FilePlaylistProcessor(val location: FilePlaylistLocation) : Playli
         MediaStorePlaylists.songs(context, location.mediastoreId).map { it.song }
 
     override suspend fun containsSong(context: Context, songId: Long): Boolean =
-        MediaStorePlaylists.contains(context, location.storageVolume, location.mediastoreId, songId)
+        MediaStorePlaylists.contains(context, location, songId)
 
     override suspend fun removeSong(context: Context, song: Song, index: Long): Boolean =
         removeFromPlaylistViaMediastore(context, location.storageVolume, location.mediastoreId, song.id, index) > 0

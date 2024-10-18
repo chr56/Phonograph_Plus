@@ -14,8 +14,6 @@ import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.MediaStorePlaylists
-import player.phonograph.repo.mediastore.loaders.PlaylistSongLoader
-import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
 import player.phonograph.util.coroutineToast
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
@@ -77,12 +75,7 @@ class FavoritePlaylistImpl : IFavorite {
     override suspend fun isFavorite(context: Context, song: Song): Boolean {
         val favoritesPlaylist = getFavoritesPlaylist(context)
         return if (favoritesPlaylist != null) {
-            MediaStorePlaylists.contains(
-                context,
-                MEDIASTORE_VOLUME_EXTERNAL,
-                favoritesPlaylist.mediaStoreId()!!,
-                song.id
-            )
+            MediaStorePlaylists.contains(context, favoritesPlaylist.location, song.id)
         } else {
             false
         }
@@ -125,7 +118,7 @@ class FavoritePlaylistImpl : IFavorite {
     }
 
     private suspend fun getFavoritesPlaylist(context: Context): Playlist? =
-        MediaStorePlaylists.playlistName(context, context.getString(R.string.favorites))
+        MediaStorePlaylists.named(context, context.getString(R.string.favorites))
 
     private suspend fun getOrCreateFavoritesPlaylist(context: Context): Playlist? {
         return createOrFindPlaylistViaMediastore(context, context.getString(R.string.favorites))

@@ -6,6 +6,8 @@ package player.phonograph.repo.mediastore.loaders
 
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
 import player.phonograph.model.PlaylistSong
+import player.phonograph.model.playlist.FilePlaylistLocation
+import player.phonograph.model.playlist.PlaylistLocation
 import player.phonograph.repo.mediastore.internal.BASE_AUDIO_SELECTION
 import player.phonograph.repo.mediastore.internal.BASE_SONG_PROJECTION
 import player.phonograph.repo.mediastore.internal.readSong
@@ -53,6 +55,13 @@ object PlaylistSongLoader {
             playlistId = playlistId,
             idInPlayList = getLong(14),
         )
+
+    fun contains(context: Context, location: PlaylistLocation, songId: Long): Boolean =
+        if (location is FilePlaylistLocation) {
+            contains(context, location.storageVolume, location.mediastoreId, songId)
+        } else {
+            false
+        }
 
     /**
      * check a song whether be in a playlist or not
