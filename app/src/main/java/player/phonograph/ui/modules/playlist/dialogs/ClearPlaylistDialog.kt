@@ -55,7 +55,9 @@ class ClearPlaylistDialog : DialogFragment() {
             extraSuffix = if (!hasPermission) context.getString(R.string.permission_manage_external_storage_denied) else "",
             ItemGroup(
                 resources.getQuantityString(R.plurals.item_playlists, playlists.size, playlists.size),
-                playlists.map { playlist -> playlist.location.text(context).toString() }
+                playlists.map { playlist ->
+                    "${playlist.name} (${playlist.location.text(context)})"
+                }
             ),
         )
 
@@ -108,7 +110,7 @@ class ClearPlaylistDialog : DialogFragment() {
                     allCount, allCount - failureCount, allCount
                 )
             )
-            if (failureCount>0) {
+            if (failureCount > 0) {
                 appendLine(
                     "${context.getString(R.string.failed_to_delete)}: "
                 )
