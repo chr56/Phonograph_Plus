@@ -535,4 +535,5 @@
     <string name="pref_summary_external_play_request">Define lo que debe hacer el reproductor al reproducir desde el exterior (por ejemplo, el Explorador de archivos).</string>
     <string name="pref_option_show_prompt">Mostrar siempre aviso de advertencia</string>
     <string name="pref_option_silence">Silencioso (se mantiene en segundo plano sin pasar al reproductor)</string>
+    <string name="service_disconnected">[¡El servicio está desconectado!]</string>
 </resources>
