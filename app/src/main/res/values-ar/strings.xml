@@ -254,7 +254,7 @@
     <string name="success">تم بنجاح</string>
     <string name="failed">فشلت العملية</string>
     <string name="clear_all_preference">مسح كافة الإعدادات للتطبيق</string>
-    <string name="clear_all_preference_msg">&lt;b&gt; تحذير &lt;b&gt; سيقوم هذا الاجراء باعادة ضبط و تعيين &lt;b&gt; كـــل &lt;b&gt; اعدادات و تفضيلات التطبيق \n\n هذا قد يكون مفيد في حال كنت تعاني من مشاكل عند تشغيل التطبيق \n هل انت متأكد من انك تريد القيام بهذا ؟ </string>
+    <string name="clear_all_preference_msg"><b> تحذير </b> سيقوم هذا الاجراء باعادة ضبط و تعيين <b> كـــل </b> اعدادات و تفضيلات التطبيق \n\n هذا قد يكون مفيد في حال كنت تعاني من مشاكل عند تشغيل التطبيق \n هل انت متأكد من انك تريد القيام بهذا ؟ </string>
     <string name="failed_to_delete">فشل في الحذف</string>
     <string name="grant_permission">اعطاء الاذن</string>
     <string name="tips_no_storage_write_permission">لا يملك تطبيق الحاكي (فُنُكراف) الاذونات اللازمة للكتابة او تعديل او حذف الملفات! </string>
