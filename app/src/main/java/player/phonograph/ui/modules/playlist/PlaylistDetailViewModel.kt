@@ -11,7 +11,6 @@ import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.totalDuration
 import androidx.lifecycle.ViewModel
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
@@ -79,18 +78,18 @@ class PlaylistDetailViewModel(_playlist: Playlist, _songs: List<QueueSong>) : Vi
         return true
     }
 
-    private suspend fun edit(context: Context, action: EditAction): Boolean {
-        return when (action) {
+    private suspend fun edit(context: Context, action: EditAction): Boolean = withContext(Dispatchers.IO) {
+        when (action) {
             is EditAction.Delete -> deleteItem(context, action.song, action.position)
             is EditAction.Move   -> moveItem(context, action.from, action.to)
         }
     }
 
     suspend fun deleteItem(context: Context, song: Song, position: Int): Boolean =
-        writer?.removeSong(context, song, position.toLong()) ?: false
+        writer?.removeSong(context, song, position.toLong()) == true
 
     suspend fun moveItem(context: Context, fromPosition: Int, toPosition: Int): Boolean =
-        writer?.moveSong(context, fromPosition, toPosition) ?: false
+        writer?.moveSong(context, fromPosition, toPosition) == true
 
 
 }
