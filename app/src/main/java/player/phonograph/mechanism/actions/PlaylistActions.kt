@@ -4,12 +4,10 @@
 
 package player.phonograph.mechanism.actions
 
-import player.phonograph.mechanism.actions.actionSavePlaylist
-import player.phonograph.mechanism.actions.songs
-import player.phonograph.mechanism.playlist.PlaylistManager
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.repo.loader.Playlists
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialog
@@ -21,7 +19,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import android.content.Context
 import kotlin.random.Random
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -53,9 +50,10 @@ fun Playlist.actionAddToCurrentQueue(context: Context): Boolean = runBlocking {
     MusicPlayerRemote.enqueue(ArrayList(songs(context)))
 }
 
-fun Playlist.actionAddToPlaylist(activity: FragmentActivity) = runBlocking {
-    AddToPlaylistDialog.create(activity, songs(activity))
-        .show(activity.supportFragmentManager, "ADD_PLAYLIST")
+fun Playlist.actionAddToPlaylist(activity: FragmentActivity) = activity.lifecycleScope.launch {
+    val songs = withContext(Dispatchers.IO) { songs(activity) }
+    val playlists = withContext(Dispatchers.IO) { Playlists.all(activity) }
+    AddToPlaylistDialog.create(songs, playlists).show(activity.supportFragmentManager, "ADD_PLAYLIST")
 }
 
 fun Playlist.actionRenamePlaylist(activity: FragmentActivity) {

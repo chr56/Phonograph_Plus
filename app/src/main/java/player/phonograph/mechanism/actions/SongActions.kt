@@ -8,6 +8,7 @@ import player.phonograph.R
 import player.phonograph.mechanism.PathFilter
 import player.phonograph.misc.RingtoneManager
 import player.phonograph.model.Song
+import player.phonograph.repo.loader.Playlists
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.dialogs.DeletionDialog
@@ -18,9 +19,13 @@ import player.phonograph.util.fragmentActivity
 import player.phonograph.util.shareFileIntent
 import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import android.content.Context
 import android.content.Intent
 import android.view.View
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 fun Song.actionPlay(): Boolean = actionPlayNow()
@@ -107,9 +112,12 @@ fun Song.actionTagEditor(context: Context): Boolean {
 }
 
 fun List<Song>.actionAddToPlaylist(context: Context) =
-    fragmentActivity(context) {
-        AddToPlaylistDialog
-            .create(context, this).show(it.supportFragmentManager, "ADD_PLAYLIST")
+    fragmentActivity(context) { activity ->
+        activity.lifecycleScope.launch {
+            val songs = this@actionAddToPlaylist
+            val playlists = withContext(Dispatchers.IO) { Playlists.all(activity) }
+            AddToPlaylistDialog.create(songs, playlists).show(activity.supportFragmentManager, "ADD_PLAYLIST")
+        }
         true
     }
 

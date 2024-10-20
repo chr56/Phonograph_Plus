@@ -8,18 +8,15 @@ import player.phonograph.R
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.repo.loader.Playlists
 import player.phonograph.util.parcelableArrayList
 import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class AddToPlaylistDialog : DialogFragment() {
 
@@ -54,12 +51,11 @@ class AddToPlaylistDialog : DialogFragment() {
     }
 
     companion object {
-        fun create(context: Context, songs: List<Song>): AddToPlaylistDialog =
+        fun create(songs: List<Song>, supportedPlaylist: List<Playlist>): AddToPlaylistDialog =
             AddToPlaylistDialog().apply {
-                val playlists = runBlocking { Playlists.all(context) }
                 arguments = Bundle().apply {
                     putParcelableArrayList(SONG, ArrayList(songs))
-                    putParcelableArrayList(ALL_PLAYLISTS, ArrayList(playlists))
+                    putParcelableArrayList(ALL_PLAYLISTS, ArrayList(supportedPlaylist))
                 }
             }
 
