@@ -1,11 +1,12 @@
 version: "1.8.5-dev3"
 channel: "PREVIEW"
 versionCode: 1084
-timestamp: 1729159000
+timestamp: 1729500000
 notes:
   en:
     highlights: [ ]
     items:
+      - "Fix: sometimes playlists would not be automatically updated after changing"
       - "Development: compile with SDK 35"
       - "Development: upgrade Gradle to 8.10.2, upgrade AGP to 8.7.1, upgrade kotlin to 2.0.21"
       - "Development: upgrade Jetpack Compose to 1.7.4, update dependencies"
@@ -13,9 +14,10 @@ notes:
   zh:
     highlights: [ ]
     items:
+      - "修复 更改后播放列表有时不会自动更新"
       - "开发 使用 SDK 35 编译"
       - "开发 升级 Gradle 至 8.10.2, 升级 AGP 至 8.7.1, 升级 kotlin 至 2.0.21"
       - "开发 升级 Jetpack Compose 至 1.7.4, 更新依赖"
 
-previousVersion: "1.8.5-dev1"
+previousVersion: "1.8.5-dev2"
 previousChannel: "PREVIEW"
