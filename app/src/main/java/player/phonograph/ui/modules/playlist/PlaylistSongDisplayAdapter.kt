@@ -22,7 +22,9 @@ import androidx.lifecycle.lifecycleScope
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PlaylistSongDisplayAdapter(
     activity: FragmentActivity,
@@ -53,11 +55,14 @@ class PlaylistSongDisplayAdapter(
         ItemDraggableRange(0, dataset.size - 1)
 
     override fun onMoveItem(fromPosition: Int, toPosition: Int) {
-        activity.lifecycleScope.launch { moveSong(fromPosition, toPosition) }
+        activity.lifecycleScope.launch(Dispatchers.IO) { moveSong(fromPosition, toPosition) }
     }
 
     private suspend fun moveSong(fromPosition: Int, toPosition: Int) {
-        if (viewModel.moveItem(activity, fromPosition, toPosition)) {
+        val result = withContext(Dispatchers.IO) {
+            viewModel.moveItem(activity, fromPosition, toPosition)
+        }
+        if (result) withContext(Dispatchers.Main) {
             synchronized(dataset) {
                 val newSongs: MutableList<QueueSong> = dataset.toMutableList()
                 val song = newSongs.removeAt(fromPosition)
@@ -73,7 +78,10 @@ class PlaylistSongDisplayAdapter(
 
     private suspend fun deleteSong(position: Int) {
         val queueSong = dataset[position]
-        if (viewModel.deleteItem(activity, queueSong.song, position)) {
+        val result = withContext(Dispatchers.IO) {
+            viewModel.deleteItem(activity, queueSong.song, position)
+        }
+        if (result) withContext(Dispatchers.Main) {
             synchronized(dataset) {
                 dataset = dataset.toMutableList().also { it.removeAt(position) }
             }

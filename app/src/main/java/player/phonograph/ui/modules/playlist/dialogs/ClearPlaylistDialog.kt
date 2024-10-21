@@ -10,10 +10,7 @@ import lib.storage.launcher.IOpenDirStorageAccessible
 import player.phonograph.R
 import player.phonograph.mechanism.playlist.PlaylistManager
 import player.phonograph.mechanism.playlist.PlaylistProcessors
-import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.playlist.VirtualPlaylistLocation
-import player.phonograph.model.playlist.playlistTypeName
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.file.selectDocumentUris
 import player.phonograph.util.parcelableArrayList
@@ -59,10 +56,7 @@ class ClearPlaylistDialog : DialogFragment() {
             ItemGroup(
                 resources.getQuantityString(R.plurals.item_playlists, playlists.size, playlists.size),
                 playlists.map { playlist ->
-                    when (val location = playlist.location) {
-                        is FilePlaylistLocation -> "${playlist.name}(${location.path})"
-                        is VirtualPlaylistLocation -> playlistTypeName(context.resources, location.type).toString()
-                    }
+                    "${playlist.name} (${playlist.location.text(context)})"
                 }
             ),
         )
@@ -102,7 +96,7 @@ class ClearPlaylistDialog : DialogFragment() {
 
         /* Normally Delete (MediaStore + Internal database) */
         val results = playlists.map { playlist ->
-            PlaylistManager.delete(context, playlist, PlaylistProcessors.OPTION_DELETE_WITH_MEDIASTORE)
+            PlaylistManager.delete(playlist, false).delete(context)
         }
 
         /* Check */
@@ -116,7 +110,7 @@ class ClearPlaylistDialog : DialogFragment() {
                     allCount, allCount - failureCount, allCount
                 )
             )
-            if (failureCount>0) {
+            if (failureCount > 0) {
                 appendLine(
                     "${context.getString(R.string.failed_to_delete)}: "
                 )

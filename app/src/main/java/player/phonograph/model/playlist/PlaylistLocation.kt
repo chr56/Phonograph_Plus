@@ -4,6 +4,7 @@
 
 package player.phonograph.model.playlist
 
+import lib.storage.textparser.ExternalFilePathParser
 import player.phonograph.util.produceSectionedId
 import android.content.Context
 import android.os.Parcelable
@@ -28,6 +29,20 @@ sealed class VirtualPlaylistLocation(@PlaylistType val type: Int) : PlaylistLoca
     data object Random : VirtualPlaylistLocation(PLAYLIST_TYPE_RANDOM)
 }
 
+
+@Parcelize
+data class DatabasePlaylistLocation(val databaseId: Long) : PlaylistLocation {
+    override fun id(): Long = produceSectionedId(databaseId, SECTION_DATABASE)
+    override fun text(context: Context): CharSequence = "#$databaseId"
+    override fun toString(): String = "Database(id: $databaseId)"
+    override fun compareTo(other: PlaylistLocation): Int =
+        when (other) {
+            is DatabasePlaylistLocation -> other.databaseId.compareTo(databaseId)
+            is FilePlaylistLocation     -> 0
+            else                        -> -1
+        }
+}
+
 @Parcelize
 data class FilePlaylistLocation(
     val path: String,
@@ -35,7 +50,7 @@ data class FilePlaylistLocation(
     val mediastoreId: Long,
 ) : PlaylistLocation {
     override fun id(): Long = produceSectionedId(mediastoreId, SECTION_MEDIASTORE)
-    override fun text(context: Context): CharSequence = path
+    override fun text(context: Context): CharSequence = ExternalFilePathParser.bashPath(path) ?: path
     override fun toString(): String = path
     override fun compareTo(other: PlaylistLocation): Int =
         if (other is FilePlaylistLocation) {
@@ -46,4 +61,5 @@ data class FilePlaylistLocation(
 }
 
 private const val SECTION_MEDIASTORE = 0
+private const val SECTION_DATABASE = 1 shl 1
 private const val SECTION_VIRTUAL = 1 shl 2

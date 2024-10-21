@@ -14,6 +14,7 @@ import player.phonograph.mechanism.playlist.mediastore.removeFromPlaylistViaMedi
 import player.phonograph.mechanism.playlist.mediastore.renamePlaylistViaMediastore
 import player.phonograph.mechanism.playlist.saf.appendToPlaylistViaSAF
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.DatabasePlaylistLocation
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.PLAYLIST_TYPE_FAVORITE
 import player.phonograph.model.playlist.PLAYLIST_TYPE_HISTORY
@@ -39,8 +40,9 @@ object PlaylistProcessors {
 
     private fun of(playlist: Playlist): PlaylistProcessor =
         when (val location = playlist.location) {
-            is FilePlaylistLocation    -> FilePlaylistProcessor(location)
-            is VirtualPlaylistLocation -> when (location.type) {
+            is FilePlaylistLocation     -> FilePlaylistProcessor(location)
+            is DatabasePlaylistLocation -> TODO()
+            is VirtualPlaylistLocation  -> when (location.type) {
                 PLAYLIST_TYPE_FAVORITE     -> FavoriteSongsPlaylistProcessor
                 PLAYLIST_TYPE_LAST_ADDED   -> LastAddedPlaylistProcessor
                 PLAYLIST_TYPE_HISTORY      -> HistoryPlaylistProcessor
@@ -50,8 +52,6 @@ object PlaylistProcessors {
             }
         }
 
-    const val OPTION_DELETE_WITH_SAF = "SAF"
-    const val OPTION_DELETE_WITH_MEDIASTORE = "MEDIASTORE"
 }
 
 sealed interface PlaylistProcessor
@@ -86,10 +86,10 @@ sealed interface PlaylistWriter : PlaylistProcessor {
 private class FilePlaylistProcessor(val location: FilePlaylistLocation) : PlaylistReader, PlaylistWriter {
 
     override suspend fun allSongs(context: Context): List<Song> =
-        MediaStorePlaylists.songs(context, location.mediastoreId).map { it.song }
+        MediaStorePlaylists.songs(context, location).map { it.song }
 
     override suspend fun containsSong(context: Context, songId: Long): Boolean =
-        MediaStorePlaylists.contains(context, location.storageVolume, location.mediastoreId, songId)
+        MediaStorePlaylists.contains(context, location, songId)
 
     override suspend fun removeSong(context: Context, song: Song, index: Long): Boolean =
         removeFromPlaylistViaMediastore(context, location.storageVolume, location.mediastoreId, song.id, index) > 0

@@ -21,6 +21,7 @@ import org.koin.core.parameter.parametersOf
 import player.phonograph.R
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
 import player.phonograph.model.getReadableDurationString
@@ -45,6 +46,8 @@ import androidx.activity.addCallback
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withCreated
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
@@ -55,6 +58,7 @@ import android.view.Menu
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PlaylistDetailActivity :
@@ -96,6 +100,8 @@ class PlaylistDetailActivity :
         )
 
         lifecycle.addObserver(MediaStoreListener())
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(playlistsModifiedReceiver, PlaylistsModifiedReceiver.filter)
 
         super.onCreate(savedInstanceState)
         setUpToolbar()
@@ -121,7 +127,6 @@ class PlaylistDetailActivity :
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun observeData() {
         lifecycleScope.launch {
             model.items.collect { songs ->
@@ -137,12 +142,15 @@ class PlaylistDetailActivity :
                     else
                         model.playlist.name
                 updateBannerVisibility(mode)
+                @SuppressLint("NotifyDataSetChanged")
                 adapter.notifyDataSetChanged()
+                if (mode == UIMode.Common) execute(Refresh(true))
             }
         }
         lifecycleScope.launch {
             model.totalCount.collect {
                 with(binding) {
+                    @SuppressLint("SetTextI18n")
                     songCountText.text = it.toString()
                 }
             }
@@ -348,6 +356,7 @@ class PlaylistDetailActivity :
             WrapperAdapterUtils.releaseAll(it)
             wrappedAdapter = null
         }
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(playlistsModifiedReceiver)
         binding.recyclerView.adapter = null
     }
 
@@ -356,17 +365,28 @@ class PlaylistDetailActivity :
         recyclerViewDragDropManager?.cancelDrag()
     }
 
-    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
-        override fun onMediaStoreChanged() {
+    private fun refreshIfInNeed() {
+        lifecycleScope.launch(Dispatchers.IO) {
             if (model.currentMode.value != UIMode.Editor) {
-                adapter.dataset = emptyList()
-                execute(Refresh(fetch = true))
+                lifecycle.withCreated {
+                    // adapter.dataset = emptyList()
+                    execute(Refresh(fetch = true))
+                }
             }
         }
     }
 
+
+    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
+        override fun onMediaStoreChanged() = refreshIfInNeed()
+    }
+
+    private val playlistsModifiedReceiver = object : PlaylistsModifiedReceiver() {
+        override fun onPlaylistChanged(context: Context, intent: Intent) = refreshIfInNeed()
+    }
+
     private suspend fun checkExistence(playlist: Playlist): Boolean =
-        !(playlist.location is FilePlaylistLocation && !Playlists.checkExistence(this, playlist.location))
+        !(playlist.location is FilePlaylistLocation && !Playlists.exists(this, playlist.location))
 
     /* *******************
      *   companion object

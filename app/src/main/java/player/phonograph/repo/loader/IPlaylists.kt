@@ -13,20 +13,16 @@ interface IPlaylists {
 
     suspend fun all(context: Context): List<Playlist>
 
-    suspend fun id(context: Context, id: Long): Playlist?
+    suspend fun of(context: Context, location: PlaylistLocation): Playlist?
 
-    suspend fun songs(context: Context, playlistId: Long): List<PlaylistSong>
+    suspend fun songs(context: Context, location: PlaylistLocation): List<PlaylistSong>
 
-    suspend fun contains(context: Context, volume: String, playlistId: Long, songId: Long): Boolean
+    suspend fun contains(context: Context, location: PlaylistLocation, songId: Long): Boolean
 
-    suspend fun playlistName(context: Context, playlistName: String): Playlist?
+    suspend fun named(context: Context, name: String): Playlist?
 
-    suspend fun searchByPath(context: Context, path: String): Playlist?
+    suspend fun exists(context: Context, location: PlaylistLocation): Boolean
 
-    suspend fun searchByName(context: Context, name: String): List<Playlist>
-
-    suspend fun checkExistence(context: Context, name: String): Boolean
-
-    suspend fun checkExistence(context: Context, location: PlaylistLocation): Boolean
+    suspend fun searchByName(context: Context, query: String): List<Playlist>
 
 }

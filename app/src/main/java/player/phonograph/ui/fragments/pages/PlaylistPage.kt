@@ -6,7 +6,6 @@ package player.phonograph.ui.fragments.pages
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.App
-import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.misc.PlaylistsModifiedReceiver
@@ -26,7 +25,7 @@ import util.theme.color.lightenColor
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.content.Context
-import android.content.IntentFilter
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
@@ -74,10 +73,13 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // PlaylistsModifiedReceiver
-        playlistsModifiedReceiver = PlaylistsModifiedReceiver(adapter::notifyDataSetChanged)
+        playlistsModifiedReceiver = object : PlaylistsModifiedReceiver() {
+            override fun onPlaylistChanged(context: Context, intent: Intent) {
+                viewModel.loadDataset(requireContext())
+            }
+        }
         LocalBroadcastManager.getInstance(App.instance).registerReceiver(
-            playlistsModifiedReceiver,
-            IntentFilter().also { it.addAction(BROADCAST_PLAYLISTS_CHANGED) }
+            playlistsModifiedReceiver, PlaylistsModifiedReceiver.filter
         )
         // AddNewItemButton
         setUpFloatingActionButton()

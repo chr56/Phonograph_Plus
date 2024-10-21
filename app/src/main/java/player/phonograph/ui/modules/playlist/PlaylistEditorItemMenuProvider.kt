@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import android.content.Context
 import android.view.Menu
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -44,14 +45,18 @@ class PlaylistEditorItemMenuProvider(
         menuItem {
             titleRes(R.string.action_remove_from_playlist)
             onClick {
-                activity.lifecycleScope.launch { deleteSong(bindingAdapterPosition) }
+                activity.lifecycleScope.launch(Dispatchers.IO) {
+                    deleteSong(bindingAdapterPosition)
+                }
                 true
             }
         }
         menuItem {
             titleRes(R.string.move_to_top)
             onClick {
-                activity.lifecycleScope.launch { moveSong(bindingAdapterPosition, 0) }
+                activity.lifecycleScope.launch(Dispatchers.IO) {
+                    moveSong(bindingAdapterPosition, 0)
+                }
                 true
             }
         }
@@ -59,7 +64,9 @@ class PlaylistEditorItemMenuProvider(
             titleRes(R.string.move_up)
             onClick {
                 if (bindingAdapterPosition != 0) {
-                    activity.lifecycleScope.launch { moveSong(bindingAdapterPosition, bindingAdapterPosition - 1) }
+                    activity.lifecycleScope.launch(Dispatchers.IO) {
+                        moveSong(bindingAdapterPosition, bindingAdapterPosition - 1)
+                    }
                     true
                 } else false
             }
@@ -68,7 +75,9 @@ class PlaylistEditorItemMenuProvider(
             titleRes(R.string.move_down)
             onClick {
                 if (bindingAdapterPosition != dataset.size - 1) {
-                    activity.lifecycleScope.launch { moveSong(bindingAdapterPosition, bindingAdapterPosition + 1) }
+                    activity.lifecycleScope.launch(Dispatchers.IO) {
+                        moveSong(bindingAdapterPosition, bindingAdapterPosition + 1)
+                    }
                     true
                 } else false
             }
@@ -76,7 +85,9 @@ class PlaylistEditorItemMenuProvider(
         menuItem {
             titleRes(R.string.move_to_bottom)
             onClick {
-                activity.lifecycleScope.launch { moveSong(bindingAdapterPosition, dataset.size - 1) }
+                activity.lifecycleScope.launch(Dispatchers.IO) {
+                    moveSong(bindingAdapterPosition, dataset.size - 1)
+                }
                 true
             }
         }
