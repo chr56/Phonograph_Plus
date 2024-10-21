@@ -7,7 +7,6 @@ package player.phonograph
 const val ACTUAL_PACKAGE_NAME = BuildConfig.APPLICATION_ID
 
 const val PACKAGE_NAME = "player.phonograph"
-const val BROADCAST_PLAYLISTS_CHANGED = "$PACKAGE_NAME.playlists_changed"
 
 const val ISSUE_TRACKER_LINK = "https://github.com/chr56/Phonograph_Plus/issues"
 
