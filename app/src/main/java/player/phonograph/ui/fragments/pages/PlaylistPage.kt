@@ -24,7 +24,6 @@ import player.phonograph.util.theme.primaryColor
 import util.theme.color.lightenColor
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -76,8 +75,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
         // PlaylistsModifiedReceiver
         playlistsModifiedReceiver = object : PlaylistsModifiedReceiver() {
             override fun onPlaylistChanged(context: Context, intent: Intent) {
-                @SuppressLint("NotifyDataSetChanged")
-                adapter.notifyDataSetChanged()
+                viewModel.loadDataset(requireContext())
             }
         }
         LocalBroadcastManager.getInstance(App.instance).registerReceiver(
