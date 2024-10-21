@@ -144,6 +144,7 @@ class PlaylistDetailActivity :
                 updateBannerVisibility(mode)
                 @SuppressLint("NotifyDataSetChanged")
                 adapter.notifyDataSetChanged()
+                if (mode == UIMode.Common) execute(Refresh(true))
             }
         }
         lifecycleScope.launch {
