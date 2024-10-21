@@ -127,7 +127,6 @@ class PlaylistDetailActivity :
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun observeData() {
         lifecycleScope.launch {
             model.items.collect { songs ->
@@ -143,12 +142,14 @@ class PlaylistDetailActivity :
                     else
                         model.playlist.name
                 updateBannerVisibility(mode)
+                @SuppressLint("NotifyDataSetChanged")
                 adapter.notifyDataSetChanged()
             }
         }
         lifecycleScope.launch {
             model.totalCount.collect {
                 with(binding) {
+                    @SuppressLint("SetTextI18n")
                     songCountText.text = it.toString()
                 }
             }
