@@ -23,6 +23,8 @@ import player.phonograph.util.permissions.StoragePermissionChecker
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import kotlin.math.max
+import kotlin.math.min
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -129,15 +131,17 @@ object LyricsLoader {
 
 
     private fun parse(raw: String, lyricsSource: LyricsSource = LyricsSource.Unknown()): AbsLyrics {
-        val lines = raw.take(120).lines()
+        val rawLength = raw.length
+        val sampleLineCount = max(rawLength / 100, 10)
+        val sampleLength = max(min(rawLength / 8, 480), 60)
+
+        val lines = raw.take(sampleLength).splitToSequence("\r\n", "\n", "\r", limit = sampleLineCount)
         val regex = Regex("""(\[.+\])+\s*.*""")
 
-        for (line in lines) {
-            if (regex.matches(line)) {
-                return LrcLyrics.from(raw, lyricsSource)
-            }
-        }
-        return TextLyrics.from(raw, lyricsSource)
+        var score = 0
+        for (line in lines) score += if (regex.matches(line)) 1 else -1
+
+        return if (score > 1) LrcLyrics.from(raw, lyricsSource) else TextLyrics.from(raw, lyricsSource)
     }
 
     fun getExternalPreciseLyricsFile(songFile: File): List<File> {
