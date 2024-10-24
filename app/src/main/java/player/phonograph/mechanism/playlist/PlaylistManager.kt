@@ -34,7 +34,7 @@ object PlaylistManager {
             writePlaylist(context, uri, songs)
 
         suspend fun fromMediaStore(context: Context, name: String): Long {
-            if (MediaStorePlaylists.named(context, name) != null) {
+            if (MediaStorePlaylists.named(context, name) == null) {
                 val id = createPlaylistViaMediastore(context, name, songs)
                 return id
             } else {
