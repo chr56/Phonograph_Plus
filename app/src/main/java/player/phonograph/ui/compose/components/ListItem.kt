@@ -21,6 +21,7 @@ import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.stringResource
@@ -33,8 +34,9 @@ fun ListItem(
     title: String,
     subtitle: String,
     onClick: () -> Unit,
-    onMenuClick: () -> Unit,
+    onMenuClick: (() -> Unit)?,
     painter: Painter? = null,
+    colorFilter: ColorFilter? = null,
 ) {
     ItemRowLayout(modifier.wrapContentHeight(Alignment.Top)) {
         Box(
@@ -49,7 +51,8 @@ fun ListItem(
                     modifier
                         .align(Alignment.Center)
                         .padding(8.dp)
-                        .fillMaxSize()
+                        .fillMaxSize(),
+                    colorFilter = colorFilter
                 )
         }
         Column(
@@ -64,7 +67,7 @@ fun ListItem(
             Text(title, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.body1)
             Text(subtitle, style = MaterialTheme.typography.body1)
         }
-        Icon(
+        if (onMenuClick != null) Icon(
             Icons.Outlined.MoreVert, stringResource(id = R.string.more_actions),
             Modifier
                 .maxPercentage(0.15f)
