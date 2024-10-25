@@ -137,6 +137,13 @@
             android:theme="@style/Theme.Phonograph.DialogActivity.Auto"
             />
         <activity
+            android:name="player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:label="@string/new_playlist_title"
+            android:theme="@style/Theme.Phonograph.DialogActivity.Auto"
+            />
+        <activity
             android:name=".ui.modules.tag.TagBrowserActivity"
             android:label="@string/action_details"
             android:exported="true"
