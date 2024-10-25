@@ -134,7 +134,10 @@ class AddToPlaylistDialogActivity : ComposeThemeActivity(),
         }
 
         fun createNewPlaylist(activity: FragmentActivity) {
-            CreatePlaylistDialog.create(songs).show(activity.supportFragmentManager, "CREATE_PLAYLIST")
+            activity.startActivity(
+                CreatePlaylistDialogActivity.Parameter.buildLaunchingIntentForCreating(activity, songs)
+            )
+            activity.finish()
         }
 
         fun addToExistedPlaylist(context: Context, position: Int) {

@@ -12,7 +12,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity
 import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialog
-import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialog
+import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
 import player.phonograph.ui.modules.playlist.dialogs.RenamePlaylistDialog
 import player.phonograph.util.fragmentActivity
 import androidx.fragment.app.FragmentActivity
@@ -75,7 +75,12 @@ fun Playlist.actionSavePlaylist(activity: FragmentActivity) {
     activity.lifecycleScope.launch(Dispatchers.IO) {
         val songs = PlaylistProcessors.reader(this@actionSavePlaylist).allSongs(activity)
         withContext(Dispatchers.Main) {
-            CreatePlaylistDialog.duplicate(songs, name).show(activity.supportFragmentManager, "DUPLICATE_PLAYLIST")
+            activity.startActivity(
+                CreatePlaylistDialogActivity.Parameter.buildLaunchingIntentForDuplicate(
+                    activity,
+                    songs, name
+                )
+            )
         }
     }
 }
@@ -83,8 +88,12 @@ fun Playlist.actionSavePlaylist(activity: FragmentActivity) {
 fun List<Playlist>.actionSavePlaylists(context: Context) = fragmentActivity(context) { activity ->
     activity.lifecycleScope.launch(Dispatchers.IO) {
         withContext(Dispatchers.Main) {
-            CreatePlaylistDialog.duplicate(this@actionSavePlaylists)
-                .show(activity.supportFragmentManager, "DUPLICATE_PLAYLISTS")
+            activity.startActivity(
+                CreatePlaylistDialogActivity.Parameter.buildLaunchingIntentForDuplicate(
+                    activity,
+                    this@actionSavePlaylists
+                )
+            )
         }
     }
     true
