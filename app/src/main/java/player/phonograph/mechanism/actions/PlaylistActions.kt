@@ -13,7 +13,7 @@ import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity
 import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialog
 import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
-import player.phonograph.ui.modules.playlist.dialogs.RenamePlaylistDialog
+import player.phonograph.ui.modules.playlist.dialogs.RenamePlaylistDialogActivity
 import player.phonograph.util.fragmentActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
@@ -59,7 +59,9 @@ fun Playlist.actionAddToPlaylist(activity: FragmentActivity) = activity.lifecycl
 }
 
 fun Playlist.actionRenamePlaylist(activity: FragmentActivity) {
-    RenamePlaylistDialog.create(this).show(activity.supportFragmentManager, "RENAME_PLAYLIST")
+    activity.startActivity(
+        RenamePlaylistDialogActivity.Parameter.buildLaunchingIntent(activity, this)
+    )
 }
 
 fun Playlist.actionDeletePlaylist(activity: FragmentActivity) {
