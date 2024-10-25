@@ -10,7 +10,7 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialog
+import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity
 import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialog
 import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialog
 import player.phonograph.ui.modules.playlist.dialogs.RenamePlaylistDialog
@@ -53,7 +53,9 @@ fun Playlist.actionAddToCurrentQueue(context: Context): Boolean = runBlocking {
 fun Playlist.actionAddToPlaylist(activity: FragmentActivity) = activity.lifecycleScope.launch {
     val songs = withContext(Dispatchers.IO) { songs(activity) }
     val playlists = withContext(Dispatchers.IO) { Playlists.all(activity) }
-    AddToPlaylistDialog.create(songs, playlists).show(activity.supportFragmentManager, "ADD_PLAYLIST")
+    activity.startActivity(
+        AddToPlaylistDialogActivity.Parameter.buildLaunchingIntent(activity, songs, playlists)
+    )
 }
 
 fun Playlist.actionRenamePlaylist(activity: FragmentActivity) {

@@ -12,7 +12,7 @@ import player.phonograph.repo.loader.Playlists
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.dialogs.DeletionDialog
-import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialog
+import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity
 import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.fragmentActivity
@@ -116,7 +116,9 @@ fun List<Song>.actionAddToPlaylist(context: Context) =
         activity.lifecycleScope.launch {
             val songs = this@actionAddToPlaylist
             val playlists = withContext(Dispatchers.IO) { Playlists.all(activity) }
-            AddToPlaylistDialog.create(songs, playlists).show(activity.supportFragmentManager, "ADD_PLAYLIST")
+            activity.startActivity(
+                AddToPlaylistDialogActivity.Parameter.buildLaunchingIntent(activity, songs, playlists)
+            )
         }
         true
     }
