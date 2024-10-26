@@ -11,7 +11,7 @@ import player.phonograph.repo.loader.Playlists
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity
-import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialog
+import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialogActivity
 import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
 import player.phonograph.ui.modules.playlist.dialogs.RenamePlaylistDialogActivity
 import player.phonograph.util.fragmentActivity
@@ -65,11 +65,15 @@ fun Playlist.actionRenamePlaylist(activity: FragmentActivity) {
 }
 
 fun Playlist.actionDeletePlaylist(activity: FragmentActivity) {
-    ClearPlaylistDialog.create(listOf(this)).show(activity.supportFragmentManager, "CLEAR_PLAYLIST")
+    activity.startActivity(
+        ClearPlaylistDialogActivity.Parameter.buildLaunchingIntent(activity, listOf(this))
+    )
 }
 
 fun List<Playlist>.actionDeletePlaylists(context: Context): Boolean = fragmentActivity(context) { activity ->
-    ClearPlaylistDialog.create(this).show(activity.supportFragmentManager, "CLEAR_PLAYLIST")
+    activity.startActivity(
+        ClearPlaylistDialogActivity.Parameter.buildLaunchingIntent(activity, this)
+    )
     true
 }
 
