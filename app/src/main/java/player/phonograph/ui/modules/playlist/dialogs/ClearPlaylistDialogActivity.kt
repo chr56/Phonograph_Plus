@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.modules.playlist.dialogs
 
-import com.afollestad.materialdialogs.MaterialDialog
 import lib.activityresultcontract.registerActivityResultLauncherDelegate
 import lib.storage.documentProviderUriAbsolutePath
 import lib.storage.launcher.IOpenDirStorageAccessible
@@ -16,26 +15,24 @@ import player.phonograph.mechanism.playlist.PlaylistManager
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.ui.compose.ComposeThemeActivity
 import player.phonograph.ui.compose.PhonographTheme
+import player.phonograph.ui.compose.components.ButtonPanel
+import player.phonograph.ui.compose.components.CheckBoxItem
 import player.phonograph.ui.compose.components.ListItem
-import player.phonograph.util.coroutineToast
-import player.phonograph.util.file.selectDocumentUris
+import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialogActivity.ClearPlaylistViewModel.State.ConfirmToDelete
+import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialogActivity.ClearPlaylistViewModel.State.PreparedToDelete
+import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialogActivity.ClearPlaylistViewModel.State.Success
 import player.phonograph.util.parcelableArrayListExtra
 import player.phonograph.util.permissions.StoragePermissionChecker
-import player.phonograph.util.reportError
-import player.phonograph.util.sentPlaylistChangedLocalBoardCast
-import player.phonograph.util.text.ItemGroup
-import player.phonograph.util.text.buildDeletionMessage
-import player.phonograph.util.theme.tintButtons
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -51,27 +48,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
-import android.app.Activity
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
-import android.provider.DocumentsContract
 import android.provider.Settings
 import kotlin.getValue
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ClearPlaylistDialogActivity : ComposeThemeActivity(),
                                     IOpenFileStorageAccessible,
@@ -83,7 +74,7 @@ class ClearPlaylistDialogActivity : ComposeThemeActivity(),
     override val openDirStorageAccessDelegate: OpenDirStorageAccessDelegate = OpenDirStorageAccessDelegate()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModel.parameter = Parameter.fromLaunchingIntent(intent)
+        viewModel.init(intent)
         super.onCreate(savedInstanceState)
         registerActivityResultLauncherDelegate(
             openFileStorageAccessDelegate,
@@ -99,9 +90,8 @@ class ClearPlaylistDialogActivity : ComposeThemeActivity(),
 
     @Composable
     private fun RootContent() {
-        val context = LocalContext.current
-        val playlists = remember { viewModel.targetPlaylists }
-        val useSAF by viewModel.useSAF.collectAsState()
+
+        val currentState by viewModel.state.collectAsState()
 
         Column(Modifier.padding(8.dp)) {
             Text(
@@ -110,20 +100,108 @@ class ClearPlaylistDialogActivity : ComposeThemeActivity(),
                 style = MaterialTheme.typography.h5
             )
             PermissionNotice()
-            DisplayPlaylist(playlists)
-            // CheckBoxItem(stringResource(R.string.behaviour_force_saf), useSAF, true, viewModel::flipUseSAF)
-            Buttons(::finish, stringResource(R.string.delete_action)) {
-                lifecycleScope.launch {
-                    viewModel.delete(this@ClearPlaylistDialogActivity, playlists)
+
+            when (val state = currentState) {
+                is PreparedToDelete -> ScreenPrepare(state)
+                is ConfirmToDelete  -> ScreenConfirm(state)
+                is Success          -> ScreenSuccess()
+            }
+
+        }
+    }
+
+    @Composable
+    private fun ScreenSuccess() {
+        Text(stringResource(R.string.success), Modifier.padding(16.dp))
+        ButtonPanel(stringResource(android.R.string.ok), ::finish)
+    }
+
+    @Composable
+    private fun ScreenPrepare(state: PreparedToDelete) {
+        val context = LocalContext.current
+        val useSAF by viewModel.useSAF.collectAsState()
+
+        ReportResult(state)
+        DisplayPlaylist(state.targetPlaylists)
+        CheckBoxItem(stringResource(R.string.behaviour_force_saf), useSAF, true, viewModel::flipUseSAF)
+
+        val text = stringResource(if (state.failedLastTime) R.string.retry else android.R.string.ok)
+        ButtonPanel(stringResource(android.R.string.cancel), ::finish, text, {
+            lifecycleScope.launch { viewModel.startDelete(context) }
+        })
+    }
+
+    @Composable
+    private fun ReportResult(state: PreparedToDelete) {
+        val context = LocalContext.current
+        if (state.failedLastTime) {
+            val report = remember {
+                val total = viewModel.targetPlaylists.size
+                val failed = state.targetPlaylists.size
+                context.resources.getQuantityString(
+                    R.plurals.msg_deletion_result, total, total - failed, total
+                )
+            }
+            Text(report, Modifier.padding(8.dp))
+            Text(stringResource(R.string.failed_to_delete), Modifier.padding(8.dp))
+        } else {
+            Text(stringResource(R.string.delete_action), Modifier.padding(8.dp))
+        }
+    }
+
+
+    @Composable
+    private fun ScreenConfirm(state: ConfirmToDelete) {
+        val context = LocalContext.current
+        val playlists = state.targetPlaylists
+        val text = remember { resources.getQuantityString(R.plurals.item_files, playlists.size, playlists.size) }
+        Text(text, Modifier.padding(8.dp))
+
+        LazyColumn(Modifier.heightIn(max = 480.dp)) {
+            items(playlists) { (playlist, uri) ->
+
+                val actualPath =
+                    if (uri != null) {
+                        documentProviderUriAbsolutePath(uri, context) ?: uri.toString()
+                    } else {
+                        "N/A"
+                    }
+                Column(
+                    Modifier
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .wrapContentHeight()
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        playlist.name,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.body1
+                    )
+                    Text(
+                        actualPath,
+                        style = MaterialTheme.typography.body2,
+                        color = if (uri == null) MaterialTheme.colors.error else Color.DarkGray
+                    )
                 }
+
             }
         }
+
+        ButtonPanel(stringResource(android.R.string.cancel), ::finish, stringResource(R.string.delete_action), {
+            lifecycleScope.launch { viewModel.finalDelete(context) }
+        })
     }
 
     @Composable
     private fun DisplayPlaylist(playlists: List<Playlist>) {
         val context = LocalContext.current
-        val hint = remember { resources.getQuantityString(R.plurals.item_playlists, playlists.size, playlists.size) }
+        val hint = remember(playlists) {
+            resources.getQuantityString(
+                R.plurals.item_playlists,
+                playlists.size,
+                playlists.size
+            )
+        }
         Text(hint, Modifier.padding(8.dp))
         LazyColumn(Modifier.heightIn(max = 480.dp)) {
             for (playlist in playlists) {
@@ -135,7 +213,6 @@ class ClearPlaylistDialogActivity : ComposeThemeActivity(),
                         title = name,
                         subtitle = description,
                         onClick = {},
-                        onMenuClick = null,
                         painter = painterResource(playlist.iconRes),
                         colorFilter = BlendModeColorFilter(Color.Black, BlendMode.SrcIn)
                     )
@@ -147,7 +224,7 @@ class ClearPlaylistDialogActivity : ComposeThemeActivity(),
     @Composable
     private fun PermissionNotice() {
         val context = LocalContext.current
-        val hasPermission = remember { StoragePermissionChecker.hasStorageWritePermission(context) }
+        val hasPermission = remember { viewModel.checkPermission(context) }
         if (SDK_INT >= VERSION_CODES.R && !hasPermission) {
             Card(Modifier.padding(8.dp), elevation = 4.dp) {
                 Column {
@@ -163,150 +240,80 @@ class ClearPlaylistDialogActivity : ComposeThemeActivity(),
         }
     }
 
-    @Composable
-    private fun Buttons(onCanceled: () -> Unit, confirmText: String, onConfirmed: () -> Unit) {
-        Row {
-            TextButton(onCanceled) {
-                Text(
-                    stringResource(android.R.string.cancel),
-                    style = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
-                )
-            }
-            Spacer(Modifier.weight(1f))
-            TextButton(onConfirmed) {
-                Text(
-                    confirmText,
-                    style = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
-                )
-            }
-        }
-    }
-
     class ClearPlaylistViewModel : ViewModel() {
-        lateinit var parameter: Parameter
+        lateinit var parameter: Parameter private set
         val targetPlaylists: List<Playlist> get() = parameter.playlists
 
-        private val _useSAF: MutableStateFlow<Boolean> = MutableStateFlow(true)
+        private lateinit var session: PlaylistManager.BatchDeleteSession
+
+        fun init(intent: Intent) {
+            parameter = Parameter.fromLaunchingIntent(intent)
+            session = PlaylistManager.BatchDeleteSession(targetPlaylists)
+            _state.value = PreparedToDelete(targetPlaylists, false)
+        }
+
+        private val _state: MutableStateFlow<State> = MutableStateFlow(Success)
+        val state get() = _state.asStateFlow()
+
+        sealed interface State {
+            class PreparedToDelete(val targetPlaylists: List<Playlist>, val failedLastTime: Boolean) : State
+            class ConfirmToDelete(val targetPlaylists: List<Pair<Playlist, Uri?>>) : State
+            object Success : State
+        }
+
+
+        private val _useSAF: MutableStateFlow<Boolean> = MutableStateFlow(false)
         val useSAF get() = _useSAF.asStateFlow()
         fun flipUseSAF() {
             _useSAF.value = !_useSAF.value
         }
 
+        suspend fun startDelete(context: Context): Boolean {
 
-        suspend fun delete(context: FragmentActivity, playlists: List<Playlist>) {
+            session.useSAF = _useSAF.value
 
-            /* Normally Delete (MediaStore + Internal database) */
-            val results = playlists.map { playlist ->
-                PlaylistManager.delete(playlist, false).delete(context)
+            //Phase 1
+            if (session.currentPhrase != 1) return false
+
+            // Phase 1 -> 2 (other playlists delete)
+            if (session.execute(context) != 2) return false
+
+            // Phase 2 -> 3 or 4 (file playlists delete)
+            if (session.execute(context) <= 2) return false
+
+            // Checks
+            if (session.currentPhrase == 4) { // Media Store Result
+                val failed = session.failed
+                _state.value = if (failed.isNotEmpty()) PreparedToDelete(failed, true) else Success
+                return true
+            } else if (session.currentPhrase == 3) { // SAF Confirmation
+                _state.value = ConfirmToDelete(session.linkedUris)
+                return true
+            } else {
+                return false
             }
 
-            /* Check */
-            val allCount = results.size
-            val failureCount = results.count { !it }
-            val failures = results.mapIndexedNotNull { index, result -> if (!result) playlists[index] else null }
-            val errorMessages = buildString {
-                appendLine(
-                    context.resources.getQuantityString(
-                        R.plurals.msg_deletion_result,
-                        allCount, allCount - failureCount, allCount
-                    )
-                )
-                if (failureCount > 0) {
-                    appendLine(
-                        "${context.getString(R.string.failed_to_delete)}: "
-                    )
-                    for (failure in failures) {
-                        appendLine("${failure.name}(${failure.location})")
-                    }
-                }
-            }
-
-            /* Again */
-            withContext(Dispatchers.Main) {
-                MaterialDialog(context)
-                    .title(R.string.action_delete_from_device)
-                    .message(text = errorMessages)
-                    .positiveButton(android.R.string.ok)
-                    .apply {
-                        if (failureCount > 0) negativeButton(R.string.delete_with_saf) {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                if (context is IOpenDirStorageAccessible) {
-                                    deleteViaSAF(context, failures)
-                                } else {
-                                    coroutineToast(context, R.string.failed)
-                                }
-                            }
-                        }
-                    }
-                    .tintButtons()
-                    .show()
-            }
         }
 
-        /**
-         * use SAF to choose a directory, and delete playlist inside this directory with user's confirmation
-         * @param activity host Activity
-         * @param playlists playlists to delete
-         */
-        suspend fun deleteViaSAF(activity: Activity, playlists: List<Playlist>) {
-            require(activity is IOpenDirStorageAccessible)
+        suspend fun finalDelete(context: Context): Boolean {
+            // Phase 3
+            if (session.currentPhrase != 3) return false
+            // Phase 3 -> 4
+            if (session.execute(context) != 4) return false
 
-            val paths = playlists.mapNotNull { playlist -> playlist.path() }
-            val uris = selectDocumentUris(activity, paths)
-
-            val warnings = buildDeletionMessage(
-                context = activity,
-                itemSize = uris.size,
-                "",
-                ItemGroup(
-                    activity.resources.getQuantityString(R.plurals.item_files, playlists.size, playlists.size),
-                    uris.mapNotNull { uri -> documentProviderUriAbsolutePath(uri, activity) ?: uri.path }
-                )
-            )
-
-            withContext(Dispatchers.Main) {
-                val dialog = AlertDialog.Builder(activity)
-                    .setTitle(R.string.delete_action)
-                    .setMessage(warnings)
-                    .setPositiveButton(R.string.delete_action) { dialog, _ ->
-                        val failed = deleteUri(activity, uris)
-                        sentPlaylistChangedLocalBoardCast()
-                        dialog.dismiss()
-                        if (failed.isNotEmpty()) {
-                            val msg = failed.fold("Failed to delete: ") { acc, uri ->
-                                val absolutePath = documentProviderUriAbsolutePath(uri, activity) ?: uri.path
-                                "$acc, $absolutePath"
-                            }
-                            reportError(Exception(msg), TAG, msg)
-                        }
-                    }
-                    .setNegativeButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
-                    .create().tintButtons()
-
-                dialog.also {
-                    it.getButton(DialogInterface.BUTTON_POSITIVE)
-                        ?.setTextColor(activity.getColor(util.theme.materials.R.color.md_red_800))
-                    it.getButton(DialogInterface.BUTTON_NEGATIVE)
-                        ?.setTextColor(activity.getColor(util.theme.materials.R.color.md_grey_500))
-                }
-
-                dialog.show()
-            }
-        }
-
-        /**
-         * Delete Document Uri
-         * @return failed list
-         */
-        private fun deleteUri(context: Context, uris: Collection<Uri>): Collection<Uri> {
-            return uris.mapNotNull { uri ->
-                if (!DocumentsContract.deleteDocument(context.contentResolver, uri)) {
-                    uri
+            // Checks
+            val failed = session.failed
+            _state.value =
+                if (failed.isEmpty()) {
+                    Success
                 } else {
-                    null
+                    PreparedToDelete(failed, true)
                 }
-            }
+            return true
         }
+
+
+        fun checkPermission(context: Context): Boolean = StoragePermissionChecker.hasStorageWritePermission(context)
 
         @RequiresApi(VERSION_CODES.R)
         fun requirePermission(context: Context) {
@@ -336,7 +343,4 @@ class ClearPlaylistDialogActivity : ComposeThemeActivity(),
         }
     }
 
-    companion object {
-        private const val TAG = "ClearPlaylistDialog"
-    }
 }
