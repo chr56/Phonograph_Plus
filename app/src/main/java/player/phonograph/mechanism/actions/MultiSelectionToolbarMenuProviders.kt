@@ -43,6 +43,7 @@ object MultiSelectionToolbarMenuProviders {
                         context.lifecycleScopeOrNewOne().launch {
                             convertToSongs(controller.selected, context).actionPlay(ShuffleMode.NONE, 0)
                         }
+                        controller.unselectedAll()
                         true
                     }
                 }
@@ -53,6 +54,7 @@ object MultiSelectionToolbarMenuProviders {
                         context.lifecycleScopeOrNewOne().launch {
                             convertToSongs(controller.selected, context).actionPlayNext()
                         }
+                        controller.unselectedAll()
                         true
                     }
                 }
@@ -64,6 +66,7 @@ object MultiSelectionToolbarMenuProviders {
                             convertToSongs(controller.selected, context)
                                 .actionPlay(ShuffleMode.SHUFFLE, Random().nextInt(controller.selected.size))
                         }
+                        controller.unselectedAll()
                         true
                     }
                 }
@@ -74,6 +77,7 @@ object MultiSelectionToolbarMenuProviders {
                         context.lifecycleScopeOrNewOne().launch {
                             convertToSongs(controller.selected, context).actionEnqueue()
                         }
+                        controller.unselectedAll()
                         true
                     }
                 }
@@ -84,6 +88,7 @@ object MultiSelectionToolbarMenuProviders {
                         context.lifecycleScopeOrNewOne().launch {
                             convertToSongs(controller.selected, context).actionAddToPlaylist(context)
                         }
+                        controller.unselectedAll()
                         true
                     }
                 }
@@ -99,6 +104,7 @@ object MultiSelectionToolbarMenuProviders {
                             else
                                 TagBrowserActivity.launch(context, songs.first().data)
                         }
+                        controller.unselectedAll()
                         true
                     }
                 }
@@ -118,6 +124,7 @@ object MultiSelectionToolbarMenuProviders {
                                 playlists.actionDeletePlaylists(context)
                             }
                         }
+                        controller.unselectedAll()
                         true
                     }
                 }
@@ -128,6 +135,7 @@ object MultiSelectionToolbarMenuProviders {
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                         onClick {
                             playlists.actionSavePlaylists(context)
+                            controller.unselectedAll()
                             true
                         }
                     }
