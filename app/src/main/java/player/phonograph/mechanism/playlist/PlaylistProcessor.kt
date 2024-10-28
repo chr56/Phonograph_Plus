@@ -7,6 +7,7 @@ package player.phonograph.mechanism.playlist
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.mechanism.IFavorite
+import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.mechanism.playlist.mediastore.addToPlaylistViaMediastore
 import player.phonograph.mechanism.playlist.mediastore.moveItemViaMediastore
 import player.phonograph.mechanism.playlist.mediastore.removeFromPlaylistViaMediastore
@@ -192,5 +193,7 @@ private data object ShuffleAllPlaylistProcessor : PlaylistReader {
     override suspend fun allSongs(context: Context): List<Song> = Songs.all(context)
     override suspend fun containsSong(context: Context, songId: Long): Boolean = true
 }
+
+private fun notifyMediaStoreChanged() = GlobalContext.get().get<MediaStoreTracker>().notifyAllListeners()
 
 private const val TAG = "PlaylistProcessors"
