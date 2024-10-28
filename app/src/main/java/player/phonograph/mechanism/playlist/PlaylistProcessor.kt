@@ -4,7 +4,6 @@
 
 package player.phonograph.mechanism.playlist
 
-import lib.storage.launcher.IOpenFileStorageAccessible
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.mechanism.IFavorite
@@ -36,11 +35,12 @@ import android.content.Context
 object PlaylistProcessors {
 
     fun reader(playlist: Playlist): PlaylistReader = of(playlist) as PlaylistReader
-    fun writer(playlist: Playlist): PlaylistWriter? = of(playlist) as? PlaylistWriter
+    fun writer(playlist: Playlist, preferSAF: Boolean = true): PlaylistWriter? =
+        of(playlist, preferSAF) as? PlaylistWriter
 
-    private fun of(playlist: Playlist): PlaylistProcessor =
+    private fun of(playlist: Playlist, preferSAF: Boolean = true): PlaylistProcessor =
         when (val location = playlist.location) {
-            is FilePlaylistLocation     -> FilePlaylistProcessor(location)
+            is FilePlaylistLocation     -> FilePlaylistProcessor.by(location, preferSAF)
             is DatabasePlaylistLocation -> TODO()
             is VirtualPlaylistLocation  -> when (location.type) {
                 PLAYLIST_TYPE_FAVORITE     -> FavoriteSongsPlaylistProcessor
@@ -83,7 +83,7 @@ sealed interface PlaylistWriter : PlaylistProcessor {
 }
 
 
-private class FilePlaylistProcessor(val location: FilePlaylistLocation) : PlaylistReader, PlaylistWriter {
+private sealed class FilePlaylistProcessor(val location: FilePlaylistLocation) : PlaylistReader, PlaylistWriter {
 
     override suspend fun allSongs(context: Context): List<Song> =
         MediaStorePlaylists.songs(context, location).map { it.song }
@@ -98,27 +98,32 @@ private class FilePlaylistProcessor(val location: FilePlaylistLocation) : Playli
         return moveItemViaMediastore(context, location.mediastoreId, from, to)
     }
 
-    override suspend fun appendSong(context: Context, song: Song) {
-        if (shouldUseSAF(context) && context is IOpenFileStorageAccessible) {
-            coroutineToast(context, R.string.direction_open_file_with_saf)
-            appendToPlaylistViaSAF(context, listOf(song), location.mediastoreId, location.path)
-        } else {
-            addToPlaylistViaMediastore(context, listOf(song), location.storageVolume, location.mediastoreId, true)
-        }
-    }
+    override suspend fun rename(context: Context, newName: String): Boolean =
+        renamePlaylistViaMediastore(context, location.storageVolume, location.mediastoreId, newName)
 
-    override suspend fun appendSongs(context: Context, songs: List<Song>) {
-        if (shouldUseSAF(context) && context is IOpenFileStorageAccessible) {
-            coroutineToast(context, R.string.direction_open_file_with_saf)
-            appendToPlaylistViaSAF(context, songs, location.mediastoreId, location.path)
-        } else {
+
+    class MediaStoreImplementation(location: FilePlaylistLocation) : FilePlaylistProcessor(location) {
+        override suspend fun appendSong(context: Context, song: Song) = impl(context, listOf(song))
+        override suspend fun appendSongs(context: Context, songs: List<Song>) = impl(context, songs)
+        private suspend fun impl(context: Context, songs: List<Song>) {
             addToPlaylistViaMediastore(context, songs, location.storageVolume, location.mediastoreId, true)
         }
     }
 
-    override suspend fun rename(context: Context, newName: String): Boolean =
-        renamePlaylistViaMediastore(context, location.storageVolume, location.mediastoreId, newName)
+    class SafImplementation(location: FilePlaylistLocation) : FilePlaylistProcessor(location) {
+        override suspend fun appendSong(context: Context, song: Song) = impl(context, listOf(song))
+        override suspend fun appendSongs(context: Context, songs: List<Song>) = impl(context, songs)
+        private suspend fun impl(context: Context, songs: List<Song>) {
+            coroutineToast(context, R.string.direction_open_file_with_saf)
+            appendToPlaylistViaSAF(context, songs, location.mediastoreId, location.path)
+        }
+    }
 
+    companion object {
+        @JvmStatic
+        fun by(location: FilePlaylistLocation, useSaf: Boolean) =
+            if (useSaf) SafImplementation(location) else MediaStoreImplementation(location)
+    }
 
 }
 

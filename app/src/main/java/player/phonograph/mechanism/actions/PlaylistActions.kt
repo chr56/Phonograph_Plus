@@ -10,10 +10,10 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialog
-import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialog
-import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialog
-import player.phonograph.ui.modules.playlist.dialogs.RenamePlaylistDialog
+import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity
+import player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialogActivity
+import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
+import player.phonograph.ui.modules.playlist.dialogs.RenamePlaylistDialogActivity
 import player.phonograph.util.fragmentActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
@@ -53,19 +53,27 @@ fun Playlist.actionAddToCurrentQueue(context: Context): Boolean = runBlocking {
 fun Playlist.actionAddToPlaylist(activity: FragmentActivity) = activity.lifecycleScope.launch {
     val songs = withContext(Dispatchers.IO) { songs(activity) }
     val playlists = withContext(Dispatchers.IO) { Playlists.all(activity) }
-    AddToPlaylistDialog.create(songs, playlists).show(activity.supportFragmentManager, "ADD_PLAYLIST")
+    activity.startActivity(
+        AddToPlaylistDialogActivity.Parameter.buildLaunchingIntent(activity, songs, playlists)
+    )
 }
 
 fun Playlist.actionRenamePlaylist(activity: FragmentActivity) {
-    RenamePlaylistDialog.create(this).show(activity.supportFragmentManager, "RENAME_PLAYLIST")
+    activity.startActivity(
+        RenamePlaylistDialogActivity.Parameter.buildLaunchingIntent(activity, this)
+    )
 }
 
 fun Playlist.actionDeletePlaylist(activity: FragmentActivity) {
-    ClearPlaylistDialog.create(listOf(this)).show(activity.supportFragmentManager, "CLEAR_PLAYLIST")
+    activity.startActivity(
+        ClearPlaylistDialogActivity.Parameter.buildLaunchingIntent(activity, listOf(this))
+    )
 }
 
 fun List<Playlist>.actionDeletePlaylists(context: Context): Boolean = fragmentActivity(context) { activity ->
-    ClearPlaylistDialog.create(this).show(activity.supportFragmentManager, "CLEAR_PLAYLIST")
+    activity.startActivity(
+        ClearPlaylistDialogActivity.Parameter.buildLaunchingIntent(activity, this)
+    )
     true
 }
 
@@ -73,7 +81,12 @@ fun Playlist.actionSavePlaylist(activity: FragmentActivity) {
     activity.lifecycleScope.launch(Dispatchers.IO) {
         val songs = PlaylistProcessors.reader(this@actionSavePlaylist).allSongs(activity)
         withContext(Dispatchers.Main) {
-            CreatePlaylistDialog.duplicate(songs, name).show(activity.supportFragmentManager, "DUPLICATE_PLAYLIST")
+            activity.startActivity(
+                CreatePlaylistDialogActivity.Parameter.buildLaunchingIntentForDuplicate(
+                    activity,
+                    songs, name
+                )
+            )
         }
     }
 }
@@ -81,8 +94,12 @@ fun Playlist.actionSavePlaylist(activity: FragmentActivity) {
 fun List<Playlist>.actionSavePlaylists(context: Context) = fragmentActivity(context) { activity ->
     activity.lifecycleScope.launch(Dispatchers.IO) {
         withContext(Dispatchers.Main) {
-            CreatePlaylistDialog.duplicate(this@actionSavePlaylists)
-                .show(activity.supportFragmentManager, "DUPLICATE_PLAYLISTS")
+            activity.startActivity(
+                CreatePlaylistDialogActivity.Parameter.buildLaunchingIntentForDuplicate(
+                    activity,
+                    this@actionSavePlaylists
+                )
+            )
         }
     }
     true

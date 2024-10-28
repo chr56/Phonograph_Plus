@@ -130,6 +130,33 @@
         <activity android:name=".ui.activities.GenreDetailActivity" />
         <activity android:name=".ui.modules.playlist.PlaylistDetailActivity" />
         <activity
+            android:name="player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:label="@string/add_playlist_title"
+            android:theme="@style/Theme.Phonograph.DialogActivity.Auto"
+            />
+        <activity
+            android:name="player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:label="@string/new_playlist_title"
+            android:theme="@style/Theme.Phonograph.DialogActivity.Auto"
+            />
+        <activity
+            android:name="player.phonograph.ui.modules.playlist.dialogs.RenamePlaylistDialogActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:label="@string/rename_playlist_title"
+            android:theme="@style/Theme.Phonograph.DialogActivity.Auto"
+            />
+        <activity
+            android:name="player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialogActivity" android:excludeFromRecents="true"
+            android:exported="false"
+            android:label="@string/clear_action"
+            android:theme="@style/Theme.Phonograph.DialogActivity.Auto"
+            />
+        <activity
             android:name=".ui.modules.tag.TagBrowserActivity"
             android:label="@string/action_details"
             android:exported="true"

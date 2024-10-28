@@ -24,7 +24,7 @@ import player.phonograph.ui.dialogs.SleepTimerDialog
 import player.phonograph.ui.dialogs.SpeedControlDialog
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
-import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialog
+import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.themeFooterColor
@@ -192,8 +192,11 @@ abstract class AbsPlayerFragment :
                 title = getString(R.string.action_save_playing_queue)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick {
-                    CreatePlaylistDialog.create(MusicPlayerRemote.playingQueue)
-                        .show(childFragmentManager, "ADD_TO_PLAYLIST")
+                    startActivity(
+                        CreatePlaylistDialogActivity.Parameter.buildLaunchingIntentForCreating(
+                            requireContext(), MusicPlayerRemote.playingQueue
+                        )
+                    )
                     true
                 }
             }

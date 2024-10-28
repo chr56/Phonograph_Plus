@@ -18,7 +18,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.fragments.pages.adapter.PlaylistDisplayAdapter
-import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialog
+import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.primaryColor
 import util.theme.color.lightenColor
@@ -115,7 +115,11 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
         )
         addNewItemButton.visibility = View.VISIBLE
         addNewItemButton.setOnClickListener {
-            CreatePlaylistDialog.create(emptyList()).show(childFragmentManager, "CREATE_NEW_PLAYLIST")
+            startActivity(
+                CreatePlaylistDialogActivity.Parameter.buildLaunchingIntentForCreating(
+                    requireContext(), emptyList()
+                )
+            )
         }
     }
 
