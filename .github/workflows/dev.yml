@@ -18,6 +18,7 @@ on:
       - 'fdroid.properties'
       - '*.json'
       - '**.md'
+      - 'ReleaseNote*'
   workflow_dispatch:
   pull_request:
     branches:
