@@ -362,23 +362,6 @@ fun PhonographPreferenceScreen() {
                 summaryRes = R.string.pref_summary_disable_real_time_search,
                 defaultValue = false,
             )
-            ListPref(
-                titleRes = R.string.pref_title_playlist_files_operation_behaviour,
-                summaryRes = R.string.pref_summary_playlist_files_operation_behaviour,
-                options = OptionGroupModel(
-                    PLAYLIST_FILES_OPERATION_BEHAVIOUR,
-                    listOf(
-                        PLAYLIST_OPS_BEHAVIOUR_AUTO,
-                        PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF,
-                        PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY,
-                    ),
-                    listOf(
-                        R.string.behaviour_auto,
-                        R.string.behaviour_force_saf,
-                        R.string.behaviour_force_legacy,
-                    )
-                )
-            )
         }
 
         SettingsGroup(title = header(R.string.check_for_updates)) {
