@@ -43,7 +43,7 @@ fun VerticalTextFieldItem(
     onTextChanged: (String) -> Unit,
     extraTrailingIcon: @Composable (() -> Unit)? = null,
     allowReset: Boolean = false,
-    allowClear: Boolean = true
+    allowClear: Boolean = true,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
@@ -69,7 +69,9 @@ fun VerticalTextFieldItem(
             value = currentValue,
             placeholder = { Text(text = hint) },
             onValueChange = changeCurrentValue,
-            modifier = Modifier.align(Alignment.Start).fillMaxWidth(),
+            modifier = Modifier
+                .align(Alignment.Start)
+                .fillMaxWidth(),
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = MaterialTheme.colors.background,
                 textColor = MaterialTheme.colors.onSurface,
@@ -98,22 +100,25 @@ private fun TrailingIcon(
     onReset: () -> Unit,
     allowReset: Boolean,
     onClear: () -> Unit,
-    allowClear: Boolean
+    allowClear: Boolean,
 ) {
     Row {
         if (allowReset)
             Icon(
                 Icons.Default.Refresh,
                 contentDescription = stringResource(id = R.string.reset_action),
-                modifier = Modifier.padding(8.dp).clickable { onReset() })
+                modifier = Modifier
+                    .padding(8.dp)
+                    .clickable { onReset() })
         if (allowClear)
             Icon(
                 Icons.Default.Close,
                 contentDescription = stringResource(id = R.string.clear_action),
-                modifier = Modifier.padding(8.dp).clickable { onClear() })
+                modifier = Modifier
+                    .padding(8.dp)
+                    .clickable { onClear() })
     }
 }
-
 
 
 @Composable
@@ -121,7 +126,7 @@ fun VerticalTextFieldItem(
     title: String,
     value: MutableStateFlow<String>,
     hint: String,
-    trailingIcon: @Composable (() -> Unit)? = null
+    trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),

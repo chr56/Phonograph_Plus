@@ -18,7 +18,7 @@ import player.phonograph.R
 import player.phonograph.ui.compose.components.CascadeFlowRow
 import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.Chip
-import player.phonograph.ui.compose.components.Item
+import player.phonograph.ui.compose.components.TextItem
 import player.phonograph.util.text.bracketedIfAny
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -83,7 +83,7 @@ fun DetailMusicBrainz(
 fun ColumnScope.MusicBrainzReleaseGroup(releaseGroup: MusicBrainzReleaseGroup, embed: Boolean) {
     EntityTitle(Target.ReleaseGroup, releaseGroup.id, releaseGroup.title)
     MusicBrainzArtistCredits(releaseGroup.artistCredit)
-    Item(stringResource(R.string.key_date), releaseGroup.firstReleaseDate)
+    TextItem(stringResource(R.string.key_date), releaseGroup.firstReleaseDate)
 
     if (!embed) {
         MusicBrainzMultipleTypes(releaseGroup.primaryType, releaseGroup.secondaryTypes)
@@ -120,12 +120,12 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease, embed: Boolean) 
             }
         }
     }
-    Item(stringResource(R.string.year), release.date)
+    TextItem(stringResource(R.string.year), release.date)
     if (!embed) {
-        Item(stringResource(R.string.status), release.status)
-        Item(stringResource(R.string.key_country), release.country)
+        TextItem(stringResource(R.string.status), release.status)
+        TextItem(stringResource(R.string.key_country), release.country)
         MusicBrainzMedias(release.media)
-        Item(stringResource(R.string.key_barcode), release.barcode)
+        TextItem(stringResource(R.string.key_barcode), release.barcode)
         if (release.labelInfo.isNotEmpty()) {
             CascadeVerticalItem(stringResource(R.string.key_record_label)) {
                 for (labelInfo in release.labelInfo) {
@@ -138,19 +138,19 @@ fun ColumnScope.MusicBrainzRelease(release: MusicBrainzRelease, embed: Boolean) 
         MusicBrainzGenres(release.genres)
         MusicBrainzTags(release.tags)
     } else {
-        Item(stringResource(R.string.key_barcode), release.barcode)
-        Item(stringResource(R.string.key_country), release.country)
+        TextItem(stringResource(R.string.key_barcode), release.barcode)
+        TextItem(stringResource(R.string.key_country), release.country)
     }
 }
 
 @Composable
 fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
     EntityTitle(Target.Artist, artist.id, artist.name)
-    Item(stringResource(R.string.type), artist.type)
-    Item(stringResource(R.string.key_gender), artist.gender)
+    TextItem(stringResource(R.string.type), artist.type)
+    TextItem(stringResource(R.string.key_gender), artist.gender)
     MusicBrainzLifeSpan(artist.lifeSpan)
-    Item(stringResource(R.string.key_country), artist.country)
-    Item(stringResource(R.string.key_area), artist.area?.name)
+    TextItem(stringResource(R.string.key_country), artist.country)
+    TextItem(stringResource(R.string.key_area), artist.area?.name)
     MusicBrainzDisambiguation(artist.disambiguation)
     MusicBrainzTags(artist.tags)
     if (artist.aliases.isNotEmpty()) {
@@ -174,8 +174,8 @@ fun ColumnScope.MusicBrainzArtist(artist: MusicBrainzArtist) {
             }
         }
     }
-    Item("IPI Code", artist.ipis)
-    Item("ISNI Code", artist.isnis)
+    TextItem("IPI Code", artist.ipis)
+    TextItem("ISNI Code", artist.isnis)
 }
 
 @Composable
@@ -183,7 +183,7 @@ fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording?) {
     if (recording != null) {
         EntityTitle(Target.Recording, recording.id, recording.title)
         MusicBrainzArtistCredits(recording.artistCredit)
-        Item(stringResource(R.string.key_date), recording.firstReleaseDate)
+        TextItem(stringResource(R.string.key_date), recording.firstReleaseDate)
         MusicBrainzDisambiguation(recording.disambiguation)
         MusicBrainzGenres(recording.genres)
         MusicBrainzTags(recording.tags)
@@ -201,10 +201,10 @@ fun ColumnScope.MusicBrainzRecording(recording: MusicBrainzRecording?) {
 
 @Composable
 fun ColumnScope.MusicBrainzTrack(track: MusicBrainzTrack) {
-    Item("Track", track.title)
+    TextItem("Track", track.title)
     MusicBrainzArtistCredits(track.artistCredit)
-    Item(stringResource(R.string.label_track_length), track.length.toString())
-    Item(stringResource(R.string.track), track.number)
+    TextItem(stringResource(R.string.label_track_length), track.length.toString())
+    TextItem(stringResource(R.string.track), track.number)
     if (track.recording != null) {
         CascadeVerticalItem("Recording") {
             MusicBrainzRecording(track.recording)
@@ -270,9 +270,9 @@ private fun MusicBrainzMedias(medias: List<MusicBrainzMedia>?) {
 private fun MusicBrainzMedia(media: MusicBrainzMedia) {
     SelectionContainer {
         CascadeVerticalItem(stringResource(R.string.key_media)) {
-            Item(stringResource(R.string.title), media.title)
-            Item(stringResource(R.string.format), media.format)
-            Item(stringResource(R.string.count), "${media.discCount} * ${media.trackCount}")
+            TextItem(stringResource(R.string.title), media.title)
+            TextItem(stringResource(R.string.format), media.format)
+            TextItem(stringResource(R.string.count), "${media.discCount} * ${media.trackCount}")
             if (!media.tracks.isNullOrEmpty()) {
                 CascadeVerticalItem("Tracks", collapsible = true, collapsed = true) {
                     for (track in media.tracks!!) {
@@ -307,7 +307,7 @@ private fun MusicBrainzLifeSpan(lifeSpan: MusicBrainzArtist.LifeSpan?) {
                 "$begin ~ "
             }
 
-        Item(stringResource(R.string.key_lifespan), text)
+        TextItem(stringResource(R.string.key_lifespan), text)
     }
 }
 
@@ -339,14 +339,14 @@ private fun MusicBrainzMultipleTypes(primaryType: String, secondaryTypes: List<S
     } else {
         primaryType
     }
-    Item(stringResource(R.string.type), text)
+    TextItem(stringResource(R.string.type), text)
 }
 
 
 @Composable
 private fun MusicBrainzDisambiguation(string: String?) {
     if (!string.isNullOrEmpty()) {
-        Item(stringResource(R.string.comment), string)
+        TextItem(stringResource(R.string.comment), string)
     }
 }
 

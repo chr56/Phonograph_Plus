@@ -35,7 +35,7 @@ fun LastFmSearchBox(
         onSearch = { onSearch(queryParameter.toAction()) }
     ) {
         if (queryParameter.target == LastFmAction.Target.Album)
-            HorizontalTextItem(name = stringResource(id = R.string.album)) {
+            HorizontalTextItem(label = stringResource(id = R.string.album)) {
                 SearchTextBox(queryParameter.albumQuery.orEmpty()) {
                     updateQueryParameter { old ->
                         old.copy(albumQuery = it)
@@ -43,7 +43,7 @@ fun LastFmSearchBox(
                 }
             }
         if (queryParameter.target == LastFmAction.Target.Track)
-            HorizontalTextItem(name = stringResource(id = R.string.song)) {
+            HorizontalTextItem(label = stringResource(id = R.string.song)) {
                 SearchTextBox(queryParameter.trackQuery.orEmpty()) {
                     updateQueryParameter { old ->
                         old.copy(trackQuery = it)
@@ -51,7 +51,7 @@ fun LastFmSearchBox(
                 }
             }
         if (queryParameter.target == LastFmAction.Target.Artist || queryParameter.target == LastFmAction.Target.Track)
-            HorizontalTextItem(name = stringResource(id = R.string.artist)) {
+            HorizontalTextItem(label = stringResource(id = R.string.artist)) {
                 SearchTextBox(queryParameter.artistQuery.orEmpty()) {
                     updateQueryParameter { old ->
                         old.copy(artistQuery = it)

@@ -54,7 +54,7 @@ fun BaseSearchBox(
             fontWeight = FontWeight.Black,
             style = MaterialTheme.typography.h5
         )
-        HorizontalTextItem(name = stringResource(R.string.target)) {
+        HorizontalTextItem(label = stringResource(R.string.target)) {
             target()
         }
         fields()

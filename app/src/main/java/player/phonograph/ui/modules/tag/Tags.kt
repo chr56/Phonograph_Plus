@@ -321,4 +321,4 @@ internal fun RawTag(key: String, rawTag: RawTag) {
 internal fun Item(@StringRes tagStringRes: Int, value: String) = Item(stringResource(tagStringRes), value)
 
 @Composable
-internal fun Item(tag: String, value: String) = VerticalTextItem(title = tag, value = value)
+internal fun Item(tag: String, value: String) = VerticalTextItem(label = tag, value = value)
