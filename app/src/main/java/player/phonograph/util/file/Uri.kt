@@ -8,6 +8,7 @@ import lib.storage.childDocumentUriWithinTree
 import lib.storage.documentProviderUriAbsolutePath
 import lib.storage.launcher.SAFActivityResultContracts.chooseDirViaSAF
 import lib.storage.launcher.SAFActivityResultContracts.chooseFileViaSAF
+import lib.storage.textparser.DocumentUriPathParser
 import lib.storage.textparser.ExternalFilePathParser
 import player.phonograph.R
 import player.phonograph.util.coroutineToast
@@ -23,16 +24,22 @@ import java.io.File
 /**
  * select document content Uri from [filePaths] via SAF
  * @param filePaths absolute POSIX paths of target file
- * @return list of document content Uri (`<EXTERNAL_STORAGE_AUTHORITY>/tree/.../child/...`)
+ * @return list of document content Uri (`<EXTERNAL_STORAGE_AUTHORITY>/tree/.../child/...`),
+ * may null uri if tree uri selected is wrong
  */
 suspend fun selectDocumentUris(
     context: Context,
     filePaths: List<String>,
-): List<Uri> {
+): List<Uri?> {
     val treeUri = selectDocumentTreeUri(context, filePaths) ?: return emptyList()
+    val selectedTreeRoot = DocumentUriPathParser.documentTreeUriBasePath(treeUri.pathSegments)
+        ?: throw IllegalArgumentException("Corrupted tree $treeUri")
     return filePaths.map { filePath ->
-        childDocumentUriWithinTree(context, treeUri, filePath)
-            ?: throw IllegalArgumentException("Corrupted file path $filePath")
+        if (filePath.contains(selectedTreeRoot)) {
+            childDocumentUriWithinTree(context, treeUri, filePath)
+        } else {
+            null
+        }
     }
 }
 
