@@ -55,6 +55,7 @@ fun migrate(context: Context, from: Int, to: Int) {
             migrate(ThemeStoreMigration())
             migrate(GeneralThemeMigration())
             migrate(LegacyDetailDialogMigration())
+            migrate(PlaylistFilesOperationBehaviourMigration())
         }
 
         Log.i(TAG, "End Migration")
@@ -195,6 +196,15 @@ private class GeneralThemeMigration : Migration(introduced = 1064) {
 private class LegacyDetailDialogMigration : Migration(introduced = 1081) {
     override fun doMigrate(context: Context) {
         removePreference(context, DeprecatedPreference.LegacyDetailDialog.USE_LEGACY_DETAIL_DIALOG)
+    }
+}
+
+private class PlaylistFilesOperationBehaviourMigration : Migration(introduced = 1085) {
+    override fun doMigrate(context: Context) {
+        removePreference(
+            context,
+            DeprecatedPreference.PlaylistFilesOperationBehaviour.PLAYLIST_FILES_OPERATION_BEHAVIOUR
+        )
     }
 }
 
@@ -399,5 +409,10 @@ object DeprecatedPreference {
     // "remove fallback since 1081"
     object LegacyDetailDialog {
         const val USE_LEGACY_DETAIL_DIALOG = "use_legacy_detail_dialog"
+    }
+
+    // "removed since 1085"
+    object PlaylistFilesOperationBehaviour {
+        const val PLAYLIST_FILES_OPERATION_BEHAVIOUR = "playlist_files_operation_behaviour"
     }
 }
