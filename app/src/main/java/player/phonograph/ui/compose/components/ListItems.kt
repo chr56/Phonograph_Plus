@@ -45,7 +45,7 @@ fun ListItem(
             TwoLinesContent(title, subtitle, onClick)
         },
         left = {
-            if (painter != null) Icon(painter, colorFilter)
+            Icon(painter, colorFilter)
         },
         right = {
             Menu(onMenuClick)
@@ -88,17 +88,22 @@ private fun TwoLinesContent(title: String, subtitle: String, onClick: () -> Unit
 
 @Composable
 private fun BoxScope.Icon(
-    painter: Painter,
+    painter: Painter?,
     colorFilter: ColorFilter?,
 ) {
-    Image(
-        painter, null,
+    Box(
         Modifier
-            .align(Alignment.Center)
             .padding(8.dp)
-            .fillMaxSize(),
-        colorFilter = colorFilter
-    )
+            .fillMaxSize()
+    ) {
+        if (painter != null)
+            Image(
+                painter, null,
+                Modifier.align(Alignment.Center),
+                colorFilter = colorFilter
+            )
+    }
+
 }
 
 
