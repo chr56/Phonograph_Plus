@@ -69,7 +69,13 @@ private fun AlbumResult(albumResult: AlbumResult?, getDetail: (AlbumResult.Album
                         LastFmImageBundle.from(album, LastFmImage.ImageSize.LARGE),
                         Coil.imageLoader(context)
                     )
-                ListItem(Modifier, album.name, album.artist, { getDetail(album) }, {}, painter)
+                ListItem(
+                    title = album.name,
+                    subtitle = album.artist,
+                    onClick = { getDetail(album) },
+                    onMenuClick = {},
+                    painter = painter,
+                )
             }
         }
     }
@@ -86,7 +92,13 @@ private fun ArtistResult(artistResult: ArtistResult?, getDetail: (ArtistResult.A
                         LastFmImageBundle.from(artist, LastFmImage.ImageSize.LARGE),
                         Coil.imageLoader(context)
                     )
-                ListItem(Modifier, artist.name, artist.mbid.orEmpty(), { getDetail(artist) }, {}, painter)
+                ListItem(
+                    title = artist.name,
+                    subtitle = artist.mbid.orEmpty(),
+                    onClick = { getDetail(artist) },
+                    onMenuClick = {},
+                    painter = painter,
+                )
             }
         }
     }
@@ -96,7 +108,12 @@ private fun TrackResult(trackResult: TrackResult?, getDetail: (TrackResult.Track
     if (trackResult != null && !trackResult.track.isNullOrEmpty()) {
         LazyColumn {
             items(trackResult.track!!) { track ->
-                ListItem(Modifier, track.name, track.artist, { getDetail(track) }, {})
+                ListItem(
+                    title = track.name,
+                    subtitle = track.artist,
+                    onClick = { getDetail(track) },
+                    onMenuClick = {},
+                )
             }
         }
     }

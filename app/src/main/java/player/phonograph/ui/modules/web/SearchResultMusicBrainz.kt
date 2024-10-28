@@ -79,9 +79,14 @@ private fun MusicBrainzSearchResultReleasesGroup(
                 ?: releaseGroup.releases?.firstOrNull()?.title
                 ?: NA
 
-        ListItem(Modifier, releaseGroup.title, subtitle, {
-            getDetail(MusicBrainzAction.View(MusicBrainzAction.Target.ReleaseGroup, releaseGroup.id))
-        }, {}, null)
+        ListItem(
+            title = releaseGroup.title,
+            subtitle = subtitle,
+            onClick = {
+                getDetail(MusicBrainzAction.View(MusicBrainzAction.Target.ReleaseGroup, releaseGroup.id))
+            },
+            onMenuClick = {},
+        )
     }
 }
 @Composable
@@ -98,9 +103,14 @@ private fun MusicBrainzSearchResultReleases(
                 ?: release.date
                 ?: release.media.firstOrNull()?.format
                 ?: NA
-        ListItem(Modifier, release.title, subtitle, {
-            getDetail(MusicBrainzAction.View(MusicBrainzAction.Target.Release, release.id))
-        }, {}, null)
+        ListItem(
+            title = release.title,
+            subtitle = subtitle,
+            onClick = {
+                getDetail(MusicBrainzAction.View(MusicBrainzAction.Target.Release, release.id))
+            },
+            onMenuClick = {},
+        )
     }
 }
 @Composable
@@ -113,9 +123,14 @@ private fun MusicBrainzSearchResultArtists(
         val subtitle = artist.country
             ?: artist.area?.name
             ?: ""
-        ListItem(Modifier, artist.name, subtitle, {
-            getDetail(MusicBrainzAction.View(MusicBrainzAction.Target.Artist, artist.id))
-        }, {}, null)
+        ListItem(
+            title = artist.name,
+            subtitle = subtitle,
+            onClick = {
+                getDetail(MusicBrainzAction.View(MusicBrainzAction.Target.Artist, artist.id))
+            },
+            onMenuClick = {},
+        )
     }
 }
 @Composable
@@ -131,9 +146,14 @@ private fun MusicBrainzSearchResultRecording(
                 ?: recording.firstReleaseDate
                 ?: recording.releases?.firstOrNull()?.title
                 ?: NA
-        ListItem(Modifier, recording.title, subtitle, {
-            getDetail(MusicBrainzAction.View(MusicBrainzAction.Target.Recording, recording.id))
-        }, {}, null)
+        ListItem(
+            title = recording.title,
+            subtitle = subtitle,
+            onClick = {
+                getDetail(MusicBrainzAction.View(MusicBrainzAction.Target.Recording, recording.id))
+            },
+            onMenuClick = {},
+        )
     }
 }
 
