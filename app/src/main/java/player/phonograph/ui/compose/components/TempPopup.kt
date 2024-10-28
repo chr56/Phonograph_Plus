@@ -27,23 +27,13 @@ fun TempPopupContent(dismissPopup: () -> Unit, onClick: () -> Unit, content: @Co
             Box(modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp)) {
                 content()
             }
-            Row(
-                Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-            ) {
-                TextButton(dismissPopup) {
-                    Text(
-                        stringResource(android.R.string.cancel),
-                        style = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
-                    )
-                }
-                Spacer(Modifier.weight(1f))
-                TextButton({ dismissPopup(); onClick() }) {
-                    Text(
-                        stringResource(android.R.string.ok),
-                        style = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
-                    )
-                }
-            }
+            ButtonPanel(
+                stringResource(android.R.string.cancel),
+                dismissPopup,
+                stringResource(android.R.string.ok),
+                { dismissPopup(); onClick() },
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+            )
         }
     }
 }
