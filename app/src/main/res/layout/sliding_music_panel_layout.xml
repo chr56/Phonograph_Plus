@@ -7,7 +7,7 @@
     android:gravity="bottom"
     sothree:umanoOverlay="false"
     sothree:umanoPanelHeight="0dp"
-    sothree:umanoShadowHeight="@dimen/card_elevation">
+    sothree:umanoShadowHeight="0dp">
 
     <FrameLayout
         android:id="@+id/content_container"
