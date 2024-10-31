@@ -23,7 +23,8 @@ import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import util.theme.color.primaryTextColor
-import util.theme.view.menu.tintMenuActionIcons
+import util.theme.view.menu.tintOverflowButtonColor
+import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -120,9 +121,10 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
     }
 
     private fun setupMenu(menu: Menu) {
-        DetailToolbarMenuProviders.GenreEntityToolbarMenuProvider
-            .inflateMenu(menu, this, genre, primaryTextColor(viewModel.activityColor.value))
-        tintMenuActionIcons(binding.toolbar, menu, primaryTextColor(viewModel.activityColor.value))
+        val iconColor = primaryTextColor(viewModel.activityColor.value)
+        DetailToolbarMenuProviders.GenreEntityToolbarMenuProvider.inflateMenu(menu, this, genre, iconColor)
+        tintToolbarMenuActionIcons(menu, iconColor)
+        tintOverflowButtonColor(this, iconColor)
     }
 
 

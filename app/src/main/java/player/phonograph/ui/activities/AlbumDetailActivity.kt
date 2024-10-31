@@ -29,7 +29,8 @@ import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
-import util.theme.view.menu.tintMenuActionIcons
+import util.theme.view.menu.tintOverflowButtonColor
+import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
 import androidx.activity.addCallback
 import androidx.lifecycle.Lifecycle
@@ -199,9 +200,10 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
     }
 
     private fun setupMenu(menu: Menu) {
-        DetailToolbarMenuProviders.AlbumToolbarMenuProvider
-            .inflateMenu(menu, this, model.album.value, primaryTextColor(viewModel.activityColor.value))
-        tintMenuActionIcons(viewBinding.toolbar, menu, primaryTextColor(viewModel.activityColor.value))
+        val iconColor = primaryTextColor(viewModel.activityColor.value)
+        DetailToolbarMenuProviders.AlbumToolbarMenuProvider.inflateMenu(menu, this, model.album.value, iconColor)
+        tintToolbarMenuActionIcons(menu, iconColor)
+        tintOverflowButtonColor(this, iconColor)
     }
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {

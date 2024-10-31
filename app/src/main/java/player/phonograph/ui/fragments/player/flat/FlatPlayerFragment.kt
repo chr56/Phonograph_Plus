@@ -26,8 +26,8 @@ import util.theme.color.darkenColor
 import util.theme.color.lightenColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
-import util.theme.view.menu.applyOverflowMenuTint
-import util.theme.view.menu.tintMenuActionIcons
+import util.theme.view.menu.tintOverflowButtonColor
+import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarTextColor
 import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
@@ -319,8 +319,8 @@ class FlatPlayerFragment :
                 val titleTextColor = context.primaryTextColor(newColor)
                 val subtitleTextColor = context.secondaryTextColor(newColor)
                 playerToolbar.setToolbarTextColor(titleTextColor, titleTextColor, subtitleTextColor)
-                tintMenuActionIcons(playerToolbar, playerToolbar.menu, titleTextColor)
-                applyOverflowMenuTint(context, playerToolbar, titleTextColor)
+                tintToolbarMenuActionIcons(playerToolbar.menu, titleTextColor)
+                tintOverflowButtonColor(context, titleTextColor)
             }
         }
     }

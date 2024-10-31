@@ -39,7 +39,8 @@ import player.phonograph.util.ui.showKeyboard
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryDisabledTextColor
 import util.theme.color.secondaryTextColor
-import util.theme.view.menu.tintMenuActionIcons
+import util.theme.view.menu.tintOverflowButtonColor
+import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.setBackgroundTint
 import util.theme.view.toolbar.setToolbarColor
 import androidx.activity.addCallback
@@ -332,9 +333,9 @@ class PlaylistDetailActivity :
 
     private fun setupMenu(menu: Menu) {
         val iconColor = primaryTextColor(viewModel.activityColor.value)
-        PlaylistToolbarMenuProvider(::execute)
-            .inflateMenu(menu, this, model.playlist, iconColor)
-        tintMenuActionIcons(binding.toolbar, menu, iconColor)
+        PlaylistToolbarMenuProvider(::execute).inflateMenu(menu, this, model.playlist, iconColor)
+        tintToolbarMenuActionIcons(menu, iconColor)
+        tintOverflowButtonColor(this, iconColor)
     }
 
     private fun execute(action: PlaylistAction): Boolean {

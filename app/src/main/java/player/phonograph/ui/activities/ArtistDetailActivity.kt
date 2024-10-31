@@ -35,7 +35,8 @@ import player.phonograph.util.theme.themeFooterColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import util.theme.color.toolbarTitleColor
-import util.theme.view.menu.tintMenuActionIcons
+import util.theme.view.menu.tintOverflowButtonColor
+import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
 import androidx.activity.addCallback
 import androidx.lifecycle.Lifecycle
@@ -205,8 +206,9 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
     }
 
     private fun setupMenu(menu: Menu) {
+        val iconColor = primaryTextColor(viewModel.activityColor.value)
         DetailToolbarMenuProviders.ArtistToolbarMenuProvider.inflateMenu(
-            menu, this, model.artist.value ?: Artist(), primaryTextColor(viewModel.activityColor.value)
+            menu, this, model.artist.value ?: Artist(), iconColor
         )
         attach(menu) {
             menuItem(title = getString(R.string.colored_footers)) {
@@ -220,7 +222,8 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
                 }
             }
         }
-        tintMenuActionIcons(viewBinding.toolbar, menu, primaryTextColor(viewModel.activityColor.value))
+        tintToolbarMenuActionIcons(menu, iconColor)
+        tintOverflowButtonColor(this, iconColor)
     }
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
