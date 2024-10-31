@@ -5,11 +5,10 @@ import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.target.Target
 import org.koin.core.context.GlobalContext
-import player.phonograph.MusicServiceMsgConst
 import player.phonograph.R
-import player.phonograph.appwidgets.AppWidgetUpdateReceiver
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.LauncherActivity
@@ -59,7 +58,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
 
     /**
-     * Update App Widget with [AppWidgetManager]
+     * Update App Widget
      */
     protected fun pushUpdate(context: Context, appWidgetIds: IntArray?, views: RemoteViews) {
         val appWidgetManager = AppWidgetManager.getInstance(context)
@@ -74,30 +73,40 @@ abstract class BaseAppWidget : AppWidgetProvider() {
      * @see android.appwidget.AppWidgetProvider.onUpdate
      */
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        update(context, appWidgetIds, MusicPlayerRemote.isPlaying, queueManager.currentSong)
+    }
 
-        val color = context.primaryTextColor(darkBackground)
+    /**
+     * Update widget
+     */
+    fun update(
+        context: Context, appWidgetIds: IntArray?,
+        isPlaying: Boolean, song: Song? = null,
+    ) {
+        val textColor = context.primaryTextColor(darkBackground)
 
-        val remoteViews = buildRemoteViews(
-            context,
-            isPlaying = false,
-            queueManager.currentSong,
-            color
-        )
-
-        remoteViews.setImageViewResource(R.id.image, R.drawable.default_album_art)
-
-        pushUpdate(context, appWidgetIds, remoteViews)
-
-        startUpdateCover(context, remoteViews, queueManager.currentSong, false, appWidgetIds)
-
-        context.sendBroadcast(
-            Intent(AppWidgetUpdateReceiver.ACTION_APP_WIDGET_UPDATE).apply {
-                putExtra(AppWidgetUpdateReceiver.EXTRA_APP_WIDGET_NAME, name)
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
-                addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY)
-            }
+        drawAndPush(
+            context = context,
+            appWidgetIds = appWidgetIds,
+            song = song ?: queueManager.currentSong,
+            isPlaying = isPlaying,
+            color = textColor,
+            push = true,
+            withCover = true
         )
     }
+
+    private fun drawAndPush(
+        context: Context, appWidgetIds: IntArray?,
+        song: Song, isPlaying: Boolean, color: Int,
+        push: Boolean = true, withCover: Boolean = true,
+    ): RemoteViews =
+        buildRemoteViews(context, isPlaying, song, color).also { remoteViews ->
+            remoteViews.setImageViewResource(R.id.image, R.drawable.default_album_art)
+            if (push) pushUpdate(context, appWidgetIds, remoteViews)
+            if (withCover) startUpdateCover(context, remoteViews, song, isPlaying, appWidgetIds)
+        }
+
 
     private fun buildRemoteViews(
         context: Context,
@@ -108,35 +117,6 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         updateSong(context, song, isPlaying, color)
         setupButtonsClick(context)
         setupLaunchingClick(context)
-    }
-
-    /**
-     * Handle a change notification coming over from [MusicService]
-     */
-    fun notifyChange(context: Context, isPlaying: Boolean, what: String) {
-        val hasInstances = AppWidgetManager.getInstance(context)
-            .getAppWidgetIds(ComponentName(context, javaClass)).isNotEmpty()
-        if (hasInstances) { // update only having widgets
-            if (MusicServiceMsgConst.META_CHANGED == what || MusicServiceMsgConst.PLAY_STATE_CHANGED == what) {
-                performUpdate(context, isPlaying, null)
-            }
-        }
-    }
-
-    /**
-     * Update all active widget instances by pushing changes
-     */
-    fun performUpdate(context: Context, isPlaying: Boolean, appWidgetIds: IntArray?) {
-        isServiceStarted = true
-
-        val textColor = context.primaryTextColor(darkBackground)
-        val song = queueManager.currentSong
-
-        val remoteViews = buildRemoteViews(context, isPlaying, song, textColor)
-
-        pushUpdate(context, appWidgetIds, remoteViews)
-
-        startUpdateCover(context, remoteViews, song, isPlaying, appWidgetIds)
     }
 
     private fun RemoteViews.updateSong(
@@ -194,7 +174,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
      * PendingIntent for launching [MusicService] or [LauncherActivity]
      */
     private fun clickingPendingIntent(context: Context): PendingIntent =
-        if (isServiceStarted)
+        if (MusicPlayerRemote.musicService != null)
             PendingIntent.getActivity(
                 context,
                 0,
@@ -236,5 +216,4 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
     protected val queueManager: QueueManager get() = GlobalContext.get().get()
 
-    private var isServiceStarted: Boolean = false
 }

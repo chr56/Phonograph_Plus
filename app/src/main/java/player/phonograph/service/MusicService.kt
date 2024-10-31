@@ -304,15 +304,15 @@ class MusicService : MediaBrowserServiceCompat() {
 
     private fun sendChangeInternal(what: String) {
         sendBroadcast(Intent(what).apply { `package` = ACTUAL_PACKAGE_NAME })
-        AppWidgetUpdateReceiver.notifyWidget(this, isPlaying, what)
     }
 
     private fun handleChangeInternal(what: String) {
         when (what) {
 
             PLAY_STATE_CHANGED                        -> {
-                // update playing notification
+                // update playing notification & widgets
                 updateNotificationAndMediaSession()
+                AppWidgetUpdateReceiver.notifyWidgets(this, isPlaying)
 
                 // save state
                 if (!isPlaying && songProgressMillis > 0) {
@@ -328,13 +328,15 @@ class MusicService : MediaBrowserServiceCompat() {
             }
 
             REPEAT_MODE_CHANGED, SHUFFLE_MODE_CHANGED -> {
-                // just update playing notification
+                // just update playing notification & widgets
                 updateNotificationAndMediaSession()
+                AppWidgetUpdateReceiver.notifyWidgets(this, isPlaying)
             }
 
             META_CHANGED                              -> {
-                // update playing notification
+                // update playing notification & widgets
                 updateNotificationAndMediaSession()
+                AppWidgetUpdateReceiver.notifyWidgets(this, isPlaying)
 
                 // save state
                 queueManager.post(MSG_SAVE_CFG)
