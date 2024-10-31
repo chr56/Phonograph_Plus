@@ -87,6 +87,8 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
         pushUpdate(context, appWidgetIds, remoteViews)
 
+        startUpdateCover(context, remoteViews, queueManager.currentSong, false, appWidgetIds)
+
         context.sendBroadcast(
             Intent(MusicService.APP_WIDGET_UPDATE).apply {
                 putExtra(MusicService.EXTRA_APP_WIDGET_NAME, name)
