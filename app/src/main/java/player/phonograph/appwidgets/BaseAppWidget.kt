@@ -89,7 +89,6 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         context: Context, appWidgetIds: IntArray?,
         isPlaying: Boolean, song: Song? = null,
     ) {
-        if (isPlaying) serviceCreated = true
         drawAndPush(
             context = context,
             appWidgetIds = appWidgetIds,
@@ -188,15 +187,16 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         )
 
 
-    protected var serviceCreated: Boolean = false
+    var connected: Boolean = false
+
     /**
      * PendingIntent for launching [MusicService] or [LauncherActivity]
      */
     private fun clickingPendingIntent(context: Context): PendingIntent =
-        if (serviceCreated) {
+        if (connected) {
             buildLaunchingPendingIntent(context)
         } else {
-            buildMusicServicePendingIntent(context, MusicService.ACTION_NO_OPS)
+            buildMusicServicePendingIntent(context, MusicService.ACTION_CONNECT_WIDGETS)
         }
 
 

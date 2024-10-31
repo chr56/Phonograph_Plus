@@ -187,6 +187,7 @@ class MusicService : MediaBrowserServiceCompat() {
             ACTION_STOP_AND_QUIT_NOW     -> exitOrStop()
             ACTION_STOP_AND_QUIT_PENDING -> controller.quitAfterFinishCurrentSong = true
             ACTION_CANCEL_PENDING_QUIT   -> controller.quitAfterFinishCurrentSong = false
+            ACTION_CONNECT_WIDGETS       -> AppWidgetUpdateReceiver.connect(this)
         }
     }
 
@@ -425,7 +426,7 @@ class MusicService : MediaBrowserServiceCompat() {
             if (controller.playerState != PlayerState.PLAYING) {
                 when (controller.pauseReason) {
                     PauseReason.PAUSE_BY_MANUAL_ACTION, PauseReason.PAUSE_FOR_QUEUE_ENDED, PauseReason.PAUSE_ERROR,
-                    -> stopForeground(STOP_FOREGROUND_DETACH)
+                        -> stopForeground(STOP_FOREGROUND_DETACH)
                 }
             }
         }
@@ -502,7 +503,6 @@ class MusicService : MediaBrowserServiceCompat() {
 
     @Suppress("SpellCheckingInspection")
     companion object {
-        const val ACTION_NO_OPS = "$ACTUAL_PACKAGE_NAME.no_ops"
         const val ACTION_TOGGLE_PAUSE = "$ACTUAL_PACKAGE_NAME.togglepause"
         const val ACTION_PLAY = "$ACTUAL_PACKAGE_NAME.play"
         const val ACTION_PAUSE = "$ACTUAL_PACKAGE_NAME.pause"
@@ -517,6 +517,7 @@ class MusicService : MediaBrowserServiceCompat() {
         const val ACTION_STOP_AND_QUIT_NOW = "$ACTUAL_PACKAGE_NAME.stop_and_quit_now"
         const val ACTION_STOP_AND_QUIT_PENDING = "$ACTUAL_PACKAGE_NAME.stop_and_quit_pending"
         const val ACTION_CANCEL_PENDING_QUIT = "$ACTUAL_PACKAGE_NAME.cancel_pending_quit"
+        const val ACTION_CONNECT_WIDGETS = "$ACTUAL_PACKAGE_NAME.connect_widgets"
 
         private const val THROTTLE: Long = 500
 
