@@ -14,11 +14,7 @@ import player.phonograph.MusicServiceMsgConst.PLAY_STATE_CHANGED
 import player.phonograph.MusicServiceMsgConst.QUEUE_CHANGED
 import player.phonograph.MusicServiceMsgConst.REPEAT_MODE_CHANGED
 import player.phonograph.MusicServiceMsgConst.SHUFFLE_MODE_CHANGED
-import player.phonograph.R
-import player.phonograph.appwidgets.AppWidgetBig
-import player.phonograph.appwidgets.AppWidgetCard
-import player.phonograph.appwidgets.AppWidgetClassic
-import player.phonograph.appwidgets.AppWidgetSmall
+import player.phonograph.appwidgets.AppWidgetUpdateReceiver
 import player.phonograph.mechanism.IFavorite
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
@@ -46,14 +42,9 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
 import player.phonograph.util.recordThrowable
-import player.phonograph.util.registerReceiverCompat
-import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
-import android.appwidget.AppWidgetManager
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.res.Configuration
 import android.media.audiofx.AudioEffect
 import android.os.Binder
@@ -63,7 +54,6 @@ import android.os.Handler
 import android.os.IBinder
 import android.support.v4.media.MediaBrowserCompat
 import android.util.Log
-import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -131,11 +121,7 @@ class MusicService : MediaBrowserServiceCompat() {
             controller.handler, // todo use other handler
             this@MusicService::handleAndSendChangeInternal
         )
-        registerReceiverCompat(
-            widgetIntentReceiver,
-            IntentFilter(APP_WIDGET_UPDATE),
-            ContextCompat.RECEIVER_NOT_EXPORTED
-        )
+        AppWidgetUpdateReceiver.register(this)
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"))
     }
 
@@ -258,7 +244,7 @@ class MusicService : MediaBrowserServiceCompat() {
         playNotificationManager.onDestroy(this)
         mediaSessionController.onDestroy(this)
         coverLoader.terminate()
-        unregisterReceiver(widgetIntentReceiver)
+        AppWidgetUpdateReceiver.unRegister(this)
         mediaStoreObserverUtil.unregisterMediaStoreObserver(this)
         controller.removeObserver(playerStateObserver)
         controller.onDestroy(this)
@@ -318,7 +304,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
     private fun sendChangeInternal(what: String) {
         sendBroadcast(Intent(what).apply { `package` = ACTUAL_PACKAGE_NAME })
-        notifyWidget(what)
+        AppWidgetUpdateReceiver.notifyWidget(this, isPlaying, what)
     }
 
     private fun handleChangeInternal(what: String) {
@@ -399,29 +385,6 @@ class MusicService : MediaBrowserServiceCompat() {
         )
         mediaSessionController.updatePlaybackState(serviceStatus)
     }
-
-    private val widgetIntentReceiver: BroadcastReceiver =
-        object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                val command = intent.getStringExtra(EXTRA_APP_WIDGET_NAME)
-                val ids = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
-                val service = this@MusicService
-                when (command) {
-                    AppWidgetClassic.NAME -> AppWidgetClassic.instance.performUpdate(service, isPlaying, ids)
-                    AppWidgetSmall.NAME   -> AppWidgetSmall.instance.performUpdate(service, isPlaying, ids)
-                    AppWidgetBig.NAME     -> AppWidgetBig.instance.performUpdate(service, isPlaying, ids)
-                    AppWidgetCard.NAME    -> AppWidgetCard.instance.performUpdate(service, isPlaying, ids)
-                }
-            }
-        }
-
-    private fun notifyWidget(what: String) {
-        AppWidgetBig.instance.notifyChange(this, isPlaying, what)
-        AppWidgetClassic.instance.notifyChange(this, isPlaying, what)
-        AppWidgetSmall.instance.notifyChange(this, isPlaying, what)
-        AppWidgetCard.instance.notifyChange(this, isPlaying, what)
-    }
-
 
     private fun observeSettings() {
         val setting = Setting(this)
@@ -551,9 +514,6 @@ class MusicService : MediaBrowserServiceCompat() {
         const val ACTION_STOP_AND_QUIT_NOW = "$ACTUAL_PACKAGE_NAME.stop_and_quit_now"
         const val ACTION_STOP_AND_QUIT_PENDING = "$ACTUAL_PACKAGE_NAME.stop_and_quit_pending"
         const val ACTION_CANCEL_PENDING_QUIT = "$ACTUAL_PACKAGE_NAME.cancel_pending_quit"
-
-        const val APP_WIDGET_UPDATE = "$ACTUAL_PACKAGE_NAME.appwidgetupdate"
-        const val EXTRA_APP_WIDGET_NAME = ACTUAL_PACKAGE_NAME + "app_widget_name"
 
         private const val THROTTLE: Long = 500
 

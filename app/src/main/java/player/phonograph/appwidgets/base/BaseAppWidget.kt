@@ -7,6 +7,7 @@ import coil.target.Target
 import org.koin.core.context.GlobalContext
 import player.phonograph.MusicServiceMsgConst
 import player.phonograph.R
+import player.phonograph.appwidgets.AppWidgetUpdateReceiver
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicService
@@ -90,8 +91,8 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         startUpdateCover(context, remoteViews, queueManager.currentSong, false, appWidgetIds)
 
         context.sendBroadcast(
-            Intent(MusicService.APP_WIDGET_UPDATE).apply {
-                putExtra(MusicService.EXTRA_APP_WIDGET_NAME, name)
+            Intent(AppWidgetUpdateReceiver.ACTION_APP_WIDGET_UPDATE).apply {
+                putExtra(AppWidgetUpdateReceiver.EXTRA_APP_WIDGET_NAME, name)
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
                 addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY)
             }
