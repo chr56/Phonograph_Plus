@@ -1,4 +1,4 @@
-package player.phonograph.appwidgets.base
+package player.phonograph.appwidgets
 
 import coil.Coil
 import coil.request.Disposable
@@ -28,6 +28,7 @@ import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import android.widget.RemoteViews
@@ -50,10 +51,10 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
     protected abstract fun startUpdateCover(
         context: Context,
+        appWidgetIds: IntArray?,
         view: RemoteViews,
         song: Song,
         isPlaying: Boolean,
-        appWidgetIds: IntArray?,
     )
 
 
@@ -83,14 +84,11 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         context: Context, appWidgetIds: IntArray?,
         isPlaying: Boolean, song: Song? = null,
     ) {
-        val textColor = context.primaryTextColor(darkBackground)
-
         drawAndPush(
             context = context,
             appWidgetIds = appWidgetIds,
             song = song ?: queueManager.currentSong,
             isPlaying = isPlaying,
-            color = textColor,
             push = true,
             withCover = true
         )
@@ -98,13 +96,13 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
     private fun drawAndPush(
         context: Context, appWidgetIds: IntArray?,
-        song: Song, isPlaying: Boolean, color: Int,
+        song: Song, isPlaying: Boolean,
         push: Boolean = true, withCover: Boolean = true,
     ): RemoteViews =
-        buildRemoteViews(context, isPlaying, song, color).also { remoteViews ->
+        buildRemoteViews(context, isPlaying, song).also { remoteViews ->
             remoteViews.setImageViewResource(R.id.image, R.drawable.default_album_art)
             if (push) pushUpdate(context, appWidgetIds, remoteViews)
-            if (withCover) startUpdateCover(context, remoteViews, song, isPlaying, appWidgetIds)
+            if (withCover) startUpdateCover(context, appWidgetIds, remoteViews, song, isPlaying)
         }
 
 
@@ -112,18 +110,18 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         context: Context,
         isPlaying: Boolean,
         song: Song,
-        @ColorInt color: Int,
     ): RemoteViews = RemoteViews(context.packageName, layoutId).apply {
-        updateSong(context, song, isPlaying, color)
+        updateSong(context, song, isPlaying)
         setupButtonsClick(context)
         setupLaunchingClick(context)
     }
 
     private fun RemoteViews.updateSong(
         context: Context,
-        song: Song, isPlaying: Boolean, @ColorInt color: Int,
+        song: Song, isPlaying: Boolean,
     ) {
         updateText(context, this, song)
+        val color = context.primaryTextColor(darkBackground)
         bindDrawable(context, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
         bindDrawable(context, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
         bindDrawable(context, R.id.button_toggle_play_pause, playPauseRes(isPlaying), color)
@@ -186,9 +184,12 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         else
             buildPendingIntent(context, "", ComponentName(context, MusicService::class.java))
 
-    protected fun getAlbumArtDrawable(resources: Resources?, bitmap: Bitmap?) =
-        bitmap?.let { BitmapDrawable(resources, it) }
-            ?: ResourcesCompat.getDrawable(resources!!, R.drawable.default_album_art, null)
+    protected fun getAlbumArtDrawable(resources: Resources, bitmap: Bitmap?): Drawable? =
+        if (bitmap != null) {
+            BitmapDrawable(resources, bitmap)
+        } else {
+            ResourcesCompat.getDrawable(resources, R.drawable.default_album_art, null)
+        }
 
     protected fun playPauseRes(isPlaying: Boolean): Int =
         if (isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp

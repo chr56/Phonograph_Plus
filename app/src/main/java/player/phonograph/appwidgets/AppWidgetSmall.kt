@@ -2,7 +2,6 @@ package player.phonograph.appwidgets
 
 import player.phonograph.R
 import player.phonograph.appwidgets.Util.createRoundedBitmap
-import player.phonograph.appwidgets.base.BaseAppWidget
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
 import util.theme.color.secondaryTextColor
@@ -38,10 +37,10 @@ class AppWidgetSmall : BaseAppWidget() {
 
     override fun startUpdateCover(
         context: Context,
+        appWidgetIds: IntArray?,
         view: RemoteViews,
         song: Song,
         isPlaying: Boolean,
-        appWidgetIds: IntArray?,
     ) {
         if (imageSize == 0) imageSize = context.resources.getDimensionPixelSize(
             R.dimen.app_widget_small_image_size
