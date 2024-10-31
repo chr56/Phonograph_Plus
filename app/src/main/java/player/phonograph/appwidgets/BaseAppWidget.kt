@@ -8,7 +8,6 @@ import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.LauncherActivity
@@ -80,7 +79,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
      * @see android.appwidget.AppWidgetProvider.onUpdate
      */
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        update(context, appWidgetIds, MusicPlayerRemote.isPlaying, queueManager.currentSong)
+        update(context, appWidgetIds, false, queueManager.currentSong)
     }
 
     /**
@@ -90,6 +89,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         context: Context, appWidgetIds: IntArray?,
         isPlaying: Boolean, song: Song? = null,
     ) {
+        if (isPlaying) serviceCreated = true
         drawAndPush(
             context = context,
             appWidgetIds = appWidgetIds,
@@ -147,19 +147,18 @@ abstract class BaseAppWidget : AppWidgetProvider() {
     )
 
     private fun RemoteViews.setupButtonsClick(context: Context) {
-        var pendingIntent: PendingIntent?
-        val serviceName = ComponentName(context, MusicService::class.java)
+        var pendingIntent: PendingIntent? = null
 
         // Previous track
-        pendingIntent = buildPendingIntent(context, MusicService.ACTION_PREVIOUS, serviceName)
+        pendingIntent = buildMusicServicePendingIntent(context, MusicService.ACTION_PREVIOUS)
         setOnClickPendingIntent(R.id.button_prev, pendingIntent)
 
         // Play and pause
-        pendingIntent = buildPendingIntent(context, MusicService.ACTION_TOGGLE_PAUSE, serviceName)
+        pendingIntent = buildMusicServicePendingIntent(context, MusicService.ACTION_TOGGLE_PAUSE)
         setOnClickPendingIntent(R.id.button_toggle_play_pause, pendingIntent)
 
         // Next track
-        pendingIntent = buildPendingIntent(context, MusicService.ACTION_NEXT, serviceName)
+        pendingIntent = buildMusicServicePendingIntent(context, MusicService.ACTION_NEXT)
         setOnClickPendingIntent(R.id.button_next, pendingIntent)
     }
 
@@ -169,8 +168,8 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         }
     }
 
-    private fun buildPendingIntent(context: Context, action: String, serviceName: ComponentName): PendingIntent {
-        val intent = Intent(action).apply { component = serviceName }
+    private fun buildMusicServicePendingIntent(context: Context, action: String): PendingIntent {
+        val intent = Intent(context, MusicService::class.java).also { it.action = action }
         return if (SDK_INT >= VERSION_CODES.O) {
             PendingIntent.getForegroundService(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         } else {
@@ -178,21 +177,28 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         }
     }
 
+    private fun buildLaunchingPendingIntent(context: Context): PendingIntent =
+        PendingIntent.getActivity(
+            context,
+            0,
+            Intent(context, LauncherActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            },
+            PendingIntent.FLAG_IMMUTABLE
+        )
+
+
+    protected var serviceCreated: Boolean = false
     /**
      * PendingIntent for launching [MusicService] or [LauncherActivity]
      */
     private fun clickingPendingIntent(context: Context): PendingIntent =
-        if (MusicPlayerRemote.musicService != null)
-            PendingIntent.getActivity(
-                context,
-                0,
-                Intent(context, LauncherActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                },
-                PendingIntent.FLAG_IMMUTABLE
-            )
-        else
-            buildPendingIntent(context, "", ComponentName(context, MusicService::class.java))
+        if (serviceCreated) {
+            buildLaunchingPendingIntent(context)
+        } else {
+            buildMusicServicePendingIntent(context, MusicService.ACTION_NO_OPS)
+        }
+
 
     protected fun getAlbumArtDrawable(resources: Resources, bitmap: Bitmap?): Drawable? =
         if (bitmap != null) {

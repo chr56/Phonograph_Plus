@@ -502,6 +502,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
     @Suppress("SpellCheckingInspection")
     companion object {
+        const val ACTION_NO_OPS = "$ACTUAL_PACKAGE_NAME.no_ops"
         const val ACTION_TOGGLE_PAUSE = "$ACTUAL_PACKAGE_NAME.togglepause"
         const val ACTION_PLAY = "$ACTUAL_PACKAGE_NAME.play"
         const val ACTION_PAUSE = "$ACTUAL_PACKAGE_NAME.pause"
