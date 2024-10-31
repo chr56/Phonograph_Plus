@@ -3,7 +3,6 @@ package player.phonograph.appwidgets
 
 import coil.target.Target
 import player.phonograph.R
-import player.phonograph.appwidgets.base.BaseAppWidget
 import player.phonograph.model.Song
 import player.phonograph.util.ui.getScreenSize
 import androidx.core.graphics.drawable.toBitmapOrNull
@@ -37,10 +36,10 @@ class AppWidgetBig : BaseAppWidget() {
 
     override fun startUpdateCover(
         context: Context,
+        appWidgetIds: IntArray?,
         view: RemoteViews,
         song: Song,
         isPlaying: Boolean,
-        appWidgetIds: IntArray?,
     ) {
         // Load the album cover async and push the update on completion
         val p = context.getScreenSize()
@@ -65,16 +64,21 @@ class AppWidgetBig : BaseAppWidget() {
                 }
 
                 private fun onUpdate(bitmap: Bitmap?) {
+                    cachedCover = bitmap
                     if (bitmap == null) {
                         view.setImageViewResource(R.id.image, R.drawable.default_album_art)
                     } else {
-                        view.setImageViewBitmap(R.id.image, bitmap)
+                        updateImage(context, view, bitmap)
                     }
                     pushUpdate(context.applicationContext, appWidgetIds, view)
                 }
             }
         )
 
+    }
+
+    override fun updateImage(context: Context, view: RemoteViews, bitmap: Bitmap?) {
+        view.setImageViewBitmap(R.id.image, bitmap)
     }
 
     override val clickableAreas: IntArray = intArrayOf(R.id.clickable_area)

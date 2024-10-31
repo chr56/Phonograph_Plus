@@ -2,7 +2,6 @@ package player.phonograph.appwidgets
 
 import player.phonograph.R
 import player.phonograph.appwidgets.Util.createRoundedBitmap
-import player.phonograph.appwidgets.base.BaseAppWidget
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
 import util.theme.color.secondaryTextColor
@@ -38,10 +37,10 @@ class AppWidgetSmall : BaseAppWidget() {
 
     override fun startUpdateCover(
         context: Context,
+        appWidgetIds: IntArray?,
         view: RemoteViews,
         song: Song,
         isPlaying: Boolean,
-        appWidgetIds: IntArray?,
     ) {
         if (imageSize == 0) imageSize = context.resources.getDimensionPixelSize(
             R.dimen.app_widget_small_image_size
@@ -63,7 +62,9 @@ class AppWidgetSmall : BaseAppWidget() {
                     view.setImageViewResource(R.id.image, R.drawable.default_album_art)
                 }
                 .onResourceReady { result, paletteColor ->
-                    updateWidget(view, context, isPlaying, result.toBitmapOrNull(), paletteColor)
+                    val bitmap = result.toBitmapOrNull()
+                    cachedCover = bitmap
+                    updateWidget(view, context, isPlaying, bitmap, paletteColor)
                     pushUpdate(context, appWidgetIds, view)
                 }
                 .onFail {
@@ -86,19 +87,25 @@ class AppWidgetSmall : BaseAppWidget() {
         appWidgetView.bindDrawable(context, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
         appWidgetView.bindDrawable(context, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
 
-        appWidgetView.setImageViewBitmap(
-            R.id.image,
-            createRoundedBitmap(
-                getAlbumArtDrawable(context.resources, bitmap),
-                imageSize,
-                imageSize,
-                cardRadius,
-                0f,
-                cardRadius,
-                0f
-            )
-        )
+        updateImage(context, appWidgetView, bitmap)
     }
+
+    override fun updateImage(
+        context: Context,
+        view: RemoteViews,
+        bitmap: Bitmap?,
+    ) = view.setImageViewBitmap(
+        R.id.image,
+        createRoundedBitmap(
+            getAlbumArtDrawable(context.resources, bitmap),
+            imageSize,
+            imageSize,
+            cardRadius,
+            0f,
+            cardRadius,
+            0f
+        )
+    )
 
     override val clickableAreas: IntArray = intArrayOf(R.id.image, R.id.media_titles)
 
