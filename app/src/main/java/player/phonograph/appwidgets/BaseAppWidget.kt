@@ -57,6 +57,12 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         isPlaying: Boolean,
     )
 
+    protected abstract fun updateImage(
+        context: Context,
+        view: RemoteViews,
+        bitmap: Bitmap?,
+    )
+
 
     /**
      * Update App Widget
@@ -100,7 +106,11 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         push: Boolean = true, withCover: Boolean = true,
     ): RemoteViews =
         buildRemoteViews(context, isPlaying, song).also { remoteViews ->
-            remoteViews.setImageViewResource(R.id.image, R.drawable.default_album_art)
+            if (cachedCover != null) {
+                updateImage(context, remoteViews, cachedCover)
+            } else {
+                remoteViews.setImageViewResource(R.id.image, R.drawable.default_album_art)
+            }
             if (push) pushUpdate(context, appWidgetIds, remoteViews)
             if (withCover) startUpdateCover(context, appWidgetIds, remoteViews, song, isPlaying)
         }
@@ -196,6 +206,9 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
 
     protected fun getSongArtistAndAlbum(song: Song): String = song.infoString()
+
+
+    protected var cachedCover: Bitmap? = null
 
     private var task: Disposable? = null
     protected fun loadImage(

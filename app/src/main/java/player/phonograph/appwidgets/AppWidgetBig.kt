@@ -64,16 +64,21 @@ class AppWidgetBig : BaseAppWidget() {
                 }
 
                 private fun onUpdate(bitmap: Bitmap?) {
+                    cachedCover = bitmap
                     if (bitmap == null) {
                         view.setImageViewResource(R.id.image, R.drawable.default_album_art)
                     } else {
-                        view.setImageViewBitmap(R.id.image, bitmap)
+                        updateImage(context, view, bitmap)
                     }
                     pushUpdate(context.applicationContext, appWidgetIds, view)
                 }
             }
         )
 
+    }
+
+    override fun updateImage(context: Context, view: RemoteViews, bitmap: Bitmap?) {
+        view.setImageViewBitmap(R.id.image, bitmap)
     }
 
     override val clickableAreas: IntArray = intArrayOf(R.id.clickable_area)
