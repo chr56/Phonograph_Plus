@@ -158,7 +158,7 @@ storageUtilities = { module = "io.github.chr56:android-storage-utilities", versi
 musicMetadataSource = { module = "io.github.phonographplus:music-metadata-source", version = "0.1.1" }
 menuDsl = { module = "io.github.chr56:android-menu-dsl", version = "0.1.3" }
 seekArc = { module = "com.github.chr56:SeekArc", version = "1.0" }
-slidingUpPanel = { module = "com.github.kabouzeid:AndroidSlidingUpPanel", version = "6" }
+slidingUpPanel = { module = "com.github.chr56:AndroidSlidingUpPanel", version = "1.0" }
 recyclerviewFastscroll = { module = "com.simplecityapps:recyclerview-fastscroll", version = "2.0.1" }
 licensesdialog = { module = "de.psdev.licensesdialog:licensesdialog", version = "2.2.0" }
 jaudiotagger = { module = "com.github.chr56:jaudiotagger", version = "0.0.3" }
