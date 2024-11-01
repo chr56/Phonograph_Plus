@@ -5,7 +5,7 @@
 kotlin = "2.0.21"
 ksp = "2.0.21-1.0.26"
 
-agp = "8.7.1"
+agp = "8.7.2"
 
 versionChecker = "0.51.0"
 
