@@ -81,7 +81,7 @@
 
         <item name="md_color_button_text">@color/primary_text_default_lightmode</item>
         <item name="cardBackgroundColor">@color/background_medium_light</item>
-        <item name="colorBackgroundFloating">@color/background_medium_light</item>
+        <item name="colorBackgroundFloating">@color/background_heavy_light</item>
         <item name="defaultFooterColor">@color/background_footer_light</item>
         <item name="dividerColor">@color/divider_light</item>
         <item name="iconColor">@color/secondary_text_default_lightmode</item>
@@ -95,7 +95,7 @@
         <item name="md_background_color">@color/background_medium_lightblack</item>
 
         <item name="cardBackgroundColor">@color/background_medium_lightblack</item>
-        <item name="colorBackgroundFloating">@color/background_medium_lightblack</item>
+        <item name="colorBackgroundFloating">@color/background_heavy_lightblack</item>
         <item name="defaultFooterColor">@color/background_footer_lightblack</item>
         <item name="dividerColor">@color/divider_lightblack</item>
     </style>
