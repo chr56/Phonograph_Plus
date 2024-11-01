@@ -17,7 +17,7 @@ import util.theme.color.darkenColor
 import util.theme.color.isColorLight
 import util.theme.color.lightenColor
 import androidx.activity.ComponentActivity
-import androidx.activity.addCallback
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
 import android.graphics.Color
 import android.util.Log
@@ -120,18 +120,19 @@ class MultiSelectionController<I>(
 
         if (!onBackPressedDispatcherRegistered && cab != null) {
             onBackPressedDispatcherRegistered = true
-            val activity = activity as? ComponentActivity
-            activity?.onBackPressedDispatcher?.addCallback {
-                cab?.hide()
-                unselectedAll()
-                debug {
-                    Log.v("MultiSelectAdapterCallback", "isInQuickSelectMode: $isInQuickSelectMode")
-                }
-                isEnabled = isInQuickSelectMode
-            }
+            activity.onBackPressedDispatcher.addCallback(activity, backPressedCallback)
             debug {
                 Log.v("onBackPressedDispatcher", "onBackPressedDispatcher Callback registered")
             }
+        }
+    }
+
+    val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            cab?.hide()
+            unselectedAll()
+            remove()
+            onBackPressedDispatcherRegistered = false
         }
     }
 
