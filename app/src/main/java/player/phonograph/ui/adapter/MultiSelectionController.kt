@@ -11,6 +11,7 @@ import player.phonograph.R
 import player.phonograph.mechanism.actions.MultiSelectionToolbarMenuProviders
 import player.phonograph.misc.IPaletteColorProvider
 import player.phonograph.util.debug
+import player.phonograph.util.reportError
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
 import util.theme.color.darkenColor
@@ -116,15 +117,27 @@ class MultiSelectionController<I>(
     private var onBackPressedDispatcherRegistered = false
     private fun updateCab() {
 
-        updateCab(_selected.size)
+        val size = _selected.size
+        val currentCab = cab
 
-        if (!onBackPressedDispatcherRegistered && cab != null) {
-            onBackPressedDispatcherRegistered = true
-            activity.onBackPressedDispatcher.addCallback(activity, backPressedCallback)
-            debug {
-                Log.v("onBackPressedDispatcher", "onBackPressedDispatcher Callback registered")
+        if (currentCab != null) {
+            if (size > 0) {
+                currentCab.titleText = currentCab.toolbar.resources.getString(R.string.x_selected, size)
+                currentCab.setupMenu()
+                currentCab.show()
+            } else {
+                currentCab.hide()
+            }
+
+            if (!onBackPressedDispatcherRegistered) {
+                onBackPressedDispatcherRegistered = true
+                activity.onBackPressedDispatcher.addCallback(activity, backPressedCallback)
+                debug {
+                    Log.v(TAG, "onBackPressedDispatcher Callback registered")
+                }
             }
         }
+
     }
 
     val backPressedCallback = object : OnBackPressedCallback(true) {
@@ -173,7 +186,7 @@ class MultiSelectionController<I>(
                     _cab = try {
                         initToolbarCab(activity, targetId, inflatedId).apply { prepare() }
                     } catch (e: IllegalStateException) {
-                        Log.e("Cab", "Failed to create cab", e)
+                        reportError(e, TAG, "Failed to create cab")
                         null
                     }
                     _cab
@@ -200,29 +213,6 @@ class MultiSelectionController<I>(
     private fun ToolbarCab.setupMenu() {
         menuHandler = {
             MultiSelectionToolbarMenuProviders.inflate(it.menu, activity, this@MultiSelectionController)
-        }
-    }
-    /**
-     * @param size selected size
-     */
-    fun updateCab(size: Int) {
-        updateCountText(size)
-        cab?.let { cab ->
-            if (size > 0) {
-                cab.setupMenu()
-                cab.show()
-            } else {
-                cab.hide()
-            }
-        }
-    }
-
-    /**
-     * @param size selected size
-     */
-    private fun updateCountText(size: Int) {
-        cab?.let { cab ->
-            cab.titleText = cab.toolbar.resources.getString(R.string.x_selected, size)
         }
     }
 
@@ -252,3 +242,5 @@ class MultiSelectionController<I>(
     }
 
 }
+
+private const val TAG = "MultiSelectionController"
