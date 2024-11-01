@@ -2,6 +2,30 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "1.8.5-dev3",
+      "versionCode": 1084,
+      "date": 1730430000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.8.5-dev3"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.5-dev3/PhonographPlus_1.8.5-dev3_ModernPreviewRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.5-dev3/PhonographPlus_1.8.5-dev3_LegacyPreviewRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 标签末尾附有省略号 [自 1.8.5-dev1 起]</li><li>修复 创建播放列表时的的一些非预期行为 [自 1.8.5-dev2 起]</li><li>修复 设备重启后应用小部件中的图像不刷新</li><li>修复 退出多选时行为异常</li><li>修复 当邻近文件选项卡时无法正常退出应用程序</li><li>修复 更改后播放列表有时不会自动更新</li><li>修复 使用 SAF 删除播放列表时选择错误目录将会崩溃</li><li>改进 操作播放列表流程</li><li>改进 lrc歌词识别</li><li>开发 使用 SDK 35 编译</li><li>开发 升级 Gradle 至 8.10.2, 升级 AGP 至 8.7.1, 升级 kotlin 至 2.0.21</li><li>开发 升级 Jetpack Compose 至 1.7.4, 更新依赖</li><li>翻译 更新 西班牙语 (Dino RTX (rtxdino36))</li></ol>",
+        "en": "<ol><li>Fix: tags always ending with ellipsis [since 1.8.5-dev1]</li><li>Fix: some unexpected behaviours when creating playlists [since 1.8.5-dev2]</li><li>Fix: Empty images in App Widgets after device rebooting</li><li>Fix: unexpected behaviours when dismissing multi-selection action bar</li><li>Fix: could not exit application properly when Files tab near by</li><li>Fix: sometimes playlists would not be automatically updated after changing</li><li>Fix: crash when deleting playlists using SAF but selecting wrong directory</li><li>Improve: user experience on manipulating playlists</li><li>Improve: lrc format lyric detection</li><li>Development: compile with SDK 35</li><li>Development: upgrade Gradle to 8.10.2, upgrade AGP to 8.7.1, upgrade kotlin to 2.0.21</li><li>Development: upgrade Jetpack Compose to 1.7.4, update dependencies</li><li>Translation: update Spanish (by Dino RTX (rtxdino36))</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.8.5-dev2",
       "versionCode": 1084,
       "date": 1729158000,
@@ -22,30 +46,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>修复 读写某些文件的音乐标签时崩溃</li><li>修复 在搜索结果、专辑详情、艺术家详情、流派详情中，向播放列表增添歌曲时崩溃</li><li>修改 Android N 上，不再开机自启服务，倘若存在任何小组件时</li><li>改进 创建或复制播放列表流程</li><li>改进 在某些设备上专辑中曲目编号的排序顺序</li><li>开发 更新依赖</li><li>开发 清理代码</li></ol>",
         "en": "<ol><li>Fix: crash when reading or editing tags of some certain files</li><li>Fix: crash when adding songs to a playlist in Search Results, Album Detail, Artist Detail, Genre Detail</li><li>Modify: no longer start service after device booting on Android N if any AppWidget exists</li><li>Improve: user experience on creating or duplicating playlists</li><li>Improve: sort order of track number in the album on some devices</li><li>Development: update dependencies</li><li>Development: cleanup code</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.8.5-dev1",
-      "versionCode": 1084,
-      "date": 1727788001,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.8.5-dev1"
-        },
-        {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.5-dev1/PhonographPlus_1.8.5-dev1_ModernPreviewRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK(File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.5-dev1/PhonographPlus_1.8.5-dev1_LegacyPreviewRelease.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 播放列表图标</li><li>修复 在标签编辑器中处理超长标签时卡死或崩溃</li><li>修复 从后台启动时可能的崩溃</li><li>翻译 更新 波兰语(cooky)</li><li>开发 更新 AGP 至 8.6.1, 更新依赖</li><li>开发 清理代码</li></ol>",
-        "en": "<ol><li>Fix: regression of playlists icons</li><li>Fix: frozen or crashes when processing extremely long tag in Tag Editor</li><li>Fix: possible crashes when starting from background</li><li>Translation: update Polish (cooky)</li><li>Development: upgrade AGP to 8.6.1, update dependencies</li><li>Development: cleanup code</li></ol>"
       }
     },
     {
@@ -70,22 +70,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>修复 在搜索结果、专辑详情、艺术家详情、流派详情中，创建播放列表时崩溃</li><li>新增 主抽屉菜单新增“退出”选项</li><li>改进 在任何情形下，都允许使用媒体通知退出</li><li>改进 播放列表内的搜索功能</li><li>翻译 更新 法语(manafy), 葡萄牙语(azilara), 西班牙语(Ulisses_Mello), 德语(jande75), 巴西葡萄牙语(FalaTudo)</li><li>开发 升级 Kotlin 至 2.0.20, 更新 AGP 至 8.6.0, 更新 Jetpack Compose 至 1.7.1, 更新依赖</li><li>开发 重构播放器</li></ol>",
         "en": "<ol><li>Fix: Crash when creating playlists in Search Results, Album Detail, Artist Detail, Genre Detail</li><li>New: add \"Exit\" in Main Drawer Menu</li><li>Improve: quiting from Media Notification in any circumstance</li><li>Improve: Search function in Playlist Detail</li><li>Translation: update French (manafy), Portuguese (by azilara), Spanish (by Ulisses_Mello), German (by jande75), Portuguese, Brazilian (by FalaTudo)</li><li>Development: upgrade kotlin to 2.0.20, upgrade AGP to 8.6.0, upgrade Jetpack Compose to 1.7.1, update dependencies</li><li>Development: refactor player</li></ol>"
-      }
-    },
-    {
-      "channel": "lts",
-      "versionName": "1.4.7",
-      "versionCode": 1047,
-      "date": 1723210000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.4.7.LTS"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 可能的动画导致的罕见崩溃 [移植自 v1.7.0]</li><li>修复 艺术家详情中专辑排序 [移植自 v1.7.0]</li><li>修复 艺术家详情中切换彩色页脚开关时崩溃 [移植自 v1.7.1]</li><li>修复 睡眠定时器失效 [移植自 v1.7.2]</li><li>修复 从外部（如文件资源管理器）启动时未立即播放 [移植自 v1.8.0]</li><li>修复 Android Q 上通知图像质量过低 [移植自 v1.8.1]</li><li>修复 在某些罕见情况下跳转到艺术家详情时崩溃 [移植自 v1.8.2]</li><li>翻译 更新 巴西葡语(FalaTudo)，阿拉伯语(Ruger Blaze (hima_96)), 西班牙语(Dino RTX (rtxdino36))</li><li>开发 更新 Gradle 至 8.8，更新 AGP 至 8.5.1</li></ol>",
-        "en": "<ol><li>Fix: rare crash caused by color animation [backported from v1.7.0]</li><li>Fix: albums sorting in Artist Detail [backported from v1.7.0]</li><li>Fix: crash when toggling Colored Footers in Artist Detail [backported from v1.7.1]</li><li>Fix: Sleep Timer not working [backported from v1.7.2]</li><li>Fix: not instantly start playing from the external source (like file explorer) [backported from v1.8.0]</li><li>Fix: low notification image quality on Android Q [backported from v1.8.1]</li><li>Fix: crash when jumping to Artist detail in some rare circumstance [backported from v1.8.2]</li><li>Translation: update PortugueseBrazilian (by FalaTudo), Arabic (by Ruger Blaze (hima_96)), Spanish (by Dino RTX (rtxdino36))</li><li>Development: update gradle to 8.8, upgrade AGP to 8.5.1</li></ol>"
       }
     }
   ]
