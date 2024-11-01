@@ -84,7 +84,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
         // Back Button
         binding.buttonBack.apply {
             setImageDrawable(requireContext().getThemedDrawable(MDR.drawable.md_nav_back))
-            setOnClickListener { gotoTopLevel(true) }
+            setOnClickListener { navigateUp(true) }
             setOnLongClickListener {
                 onSwitch(Location.HOME)
                 true
@@ -215,8 +215,8 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
      * @param allowToChangeVolume false if not intend to change volume
      * @return success or not
      */
-    protected fun gotoTopLevel(allowToChangeVolume: Boolean): Boolean {
-        if (context == null) return false
+    protected fun navigateUp(allowToChangeVolume: Boolean): Boolean {
+        if (activity == null) return false
         val parent = model.currentLocation.value.parent
         return if (parent != null) {
             onSwitch(parent)
@@ -237,10 +237,9 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
     }
 
     private fun updateBackPressedDispatcher(location: Location) {
-        val hostActivity = requireActivity()
-        val root = location.parent == null
-        if (!root && isResumed) {
-            hostActivity.onBackPressedDispatcher.addCallback(
+        val reachedToRoot = location.parent == null
+        if (!reachedToRoot && isResumed) {
+            requireActivity().onBackPressedDispatcher.addCallback(
                 viewLifecycleOwner, navigateUpBackPressedCallback
             )
         } else {
@@ -251,7 +250,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
     private val navigateUpBackPressedCallback: OnBackPressedCallback =
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                gotoTopLevel(false)
+                navigateUp(false)
             }
         }
 
