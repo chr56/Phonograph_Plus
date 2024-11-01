@@ -239,7 +239,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
     private fun updateBackPressedDispatcher(location: Location) {
         val hostActivity = requireActivity()
         val root = location.parent == null
-        if (!root && isVisible) {
+        if (!root && isResumed) {
             hostActivity.onBackPressedDispatcher.addCallback(
                 viewLifecycleOwner, navigateUpBackPressedCallback
             )
