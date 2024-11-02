@@ -71,7 +71,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
     override val getContentDelegate: GetContentDelegate = GetContentDelegate()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewBinding = ActivityArtistDetailBinding.inflate(layoutInflater)
         model.load(this)
 
         autoSetStatusBarColor = false
@@ -82,8 +81,10 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
             createFileStorageAccessDelegate,
             openFileStorageAccessDelegate,
             openDirStorageAccessDelegate,
+            getContentDelegate,
         )
 
+        viewBinding = ActivityArtistDetailBinding.inflate(layoutInflater)
 
         super.onCreate(savedInstanceState)
 
@@ -92,8 +93,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         observeData()
 
         lifecycle.addObserver(MediaStoreListener())
-
-        registerActivityResultLauncherDelegate(getContentDelegate)
 
         // back-press
         onBackPressedDispatcher.addCallback {
@@ -111,16 +110,13 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
             viewBinding.mainContent.setPaddingTop(verticalOffset)
         }
 
-        songAdapter =
-            SongDisplayAdapter(this, ConstDisplayConfig(ItemLayoutStyle.LIST, false))
+        songAdapter = SongDisplayAdapter(this, ConstDisplayConfig(ItemLayoutStyle.LIST, false))
         with(viewBinding.songsRecycleView) {
             adapter = songAdapter
-            layoutManager =
-                LinearLayoutManager(this@ArtistDetailActivity, VERTICAL, false)
+            layoutManager = LinearLayoutManager(this@ArtistDetailActivity, VERTICAL, false)
         }
 
-        albumAdapter =
-            HorizontalAlbumDisplayAdapter(this)
+        albumAdapter = HorizontalAlbumDisplayAdapter(this)
         with(viewBinding.albumRecycleView) {
             adapter = albumAdapter
             layoutManager = LinearLayoutManager(this@ArtistDetailActivity, HORIZONTAL, false)
@@ -241,8 +237,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
     }
 
 
-    private fun View.setPaddingTop(top: Int) =
-        setPadding(paddingLeft, top, paddingRight, paddingBottom)
+    private fun View.setPaddingTop(top: Int) = setPadding(paddingLeft, top, paddingRight, paddingBottom)
 
     companion object {
         private const val EXTRA_ARTIST_ID = "extra_artist_id"
