@@ -60,7 +60,8 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
     override val openDirStorageAccessDelegate: OpenDirStorageAccessDelegate = OpenDirStorageAccessDelegate()
 
 
-    private lateinit var adapter: SongDisplayAdapter
+    private lateinit var songAdapter: SongDisplayAdapter
+    private lateinit var linearLayoutManager: LinearLayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         model.loadDataSet(this)
@@ -81,10 +82,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         super.onCreate(savedInstanceState)
 
         // activity
-        setSupportActionBar(viewBinding.toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        addMenuProvider(menuProvider(this::setupMenu))
-        setToolbarColor(viewBinding.toolbar, primaryColor())
+        setUpToolbar()
 
         // content
         setUpViews()
@@ -95,16 +93,24 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         // Observer
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                model.album.collect {
-                    if (it.id >= 0) updateAlbumsInfo(it)
+                model.album.collect { album ->
+                    if (album.id >= 0) {
+                        updateAlbumsInfo(album)
+                        model.loadAlbumImage(this@AlbumDetailActivity, album, viewBinding.image)
+                    }
                 }
             }
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 model.songs.collect {
-                    adapter.dataset = it
+                    songAdapter.dataset = it
                 }
+            }
+        }
+        lifecycleScope.launch {
+            model.paletteColor.collect {
+                updateColors(it)
             }
         }
 
@@ -118,16 +124,22 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
 
     override fun createContentView(): View = wrapSlidingMusicPanel(viewBinding.root)
 
+    private fun setUpToolbar() {
+        setSupportActionBar(viewBinding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        addMenuProvider(menuProvider(this::setupMenu))
+        setToolbarColor(viewBinding.toolbar, primaryColor())
+    }
+
     private fun setUpViews() {
-        viewBinding.innerAppBar.addOnOffsetChangedListener { _, verticalOffset ->
-            viewBinding.recyclerView.setPaddingTop(viewBinding.innerAppBar.totalScrollRange + verticalOffset)
+        // Adapter
+        songAdapter = AlbumSongDisplayAdapter(this)
+        linearLayoutManager = LinearLayoutManager(this@AlbumDetailActivity)
+        with(viewBinding.recyclerView) {
+            layoutManager = linearLayoutManager
+            adapter = songAdapter
         }
-        // setUpSongsAdapter
-        adapter = AlbumSongDisplayAdapter(this)
-        viewBinding.recyclerView.layoutManager = LinearLayoutManager(this)
-        viewBinding.recyclerView.adapter = adapter
-        model.isRecyclerViewPrepared = true
-        // jump
+        // Links
         viewBinding.artistText.setOnClickListener {
             val album = model.album.value
             if (album.artistName != null) {
@@ -136,11 +148,9 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
                 goToArtist(this, album.artistId, null)
             }
         }
-        // paletteColor
-        lifecycleScope.launch {
-            model.paletteColor.collect {
-                updateColors(it)
-            }
+        // AppBar
+        viewBinding.innerAppBar.addOnOffsetChangedListener { _, verticalOffset ->
+            viewBinding.recyclerView.setPaddingTop(viewBinding.innerAppBar.totalScrollRange + verticalOffset)
         }
     }
 
@@ -184,12 +194,11 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
     override val paletteColor: StateFlow<Int> get() = model.paletteColor
 
     private suspend fun updateAlbumsInfo(album: Album) {
-        supportActionBar!!.title = album.title
+        viewBinding.toolbar.title = album.title
         viewBinding.artistText.text = album.artistName
         viewBinding.songCountText.text = songCountString(this, album.songCount)
         viewBinding.durationText.text = getReadableDurationString(Songs.album(this, album.id).totalDuration())
         viewBinding.albumYearText.text = getYearString(album.year)
-        model.loadAlbumImage(this, album, viewBinding.image)
     }
 
     private fun setupMenu(menu: Menu) {

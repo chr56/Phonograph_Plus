@@ -24,8 +24,6 @@ import kotlinx.coroutines.launch
 
 class AlbumDetailActivityViewModel(val albumId: Long) : ViewModel() {
 
-    var isRecyclerViewPrepared: Boolean = false
-
     private var _album: MutableStateFlow<Album> = MutableStateFlow(Album())
     val album get() = _album.asStateFlow()
 
