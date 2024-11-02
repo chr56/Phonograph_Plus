@@ -24,8 +24,6 @@ import kotlinx.coroutines.launch
 
 class AlbumDetailActivityViewModel(val albumId: Long) : ViewModel() {
 
-    var isRecyclerViewPrepared: Boolean = false
-
     private var _album: MutableStateFlow<Album> = MutableStateFlow(Album())
     val album get() = _album.asStateFlow()
 
@@ -49,13 +47,13 @@ class AlbumDetailActivityViewModel(val albumId: Long) : ViewModel() {
             .into(
                 PaletteTargetBuilder()
                     .defaultColor(defaultColor)
+                    .onStart {
+                        imageView.setImageResource(R.drawable.default_album_art)
+                        _paletteColor.tryEmit(defaultColor)
+                    }
                     .onResourceReady { result, color ->
                         imageView.setImageDrawable(result)
                         _paletteColor.tryEmit(color)
-                    }
-                    .onFail {
-                        imageView.setImageResource(R.drawable.default_album_art)
-                        _paletteColor.tryEmit(defaultColor)
                     }
                     .build()
             )
