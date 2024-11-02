@@ -1,41 +1,23 @@
-version: "1.8.5-dev3"
+version: "1.8.5-beta1"
 channel: "PREVIEW"
 versionCode: 1084
-timestamp: 1730430000
+timestamp: 1730530000
 notes:
   en:
     highlights: [ ]
     items:
-      - "Fix: tags always ending with ellipsis [since 1.8.5-dev1]"
-      - "Fix: some unexpected behaviours when creating playlists [since 1.8.5-dev2]"
-      - "Fix: Empty images in App Widgets after device rebooting"
-      - "Fix: unexpected behaviours when dismissing multi-selection action bar"
-      - "Fix: could not exit application properly when Files tab near by"
-      - "Fix: sometimes playlists would not be automatically updated after changing"
-      - "Fix: crash when deleting playlists using SAF but selecting wrong directory"
-      - "Improve: user experience on manipulating playlists"
-      - "Improve: lrc format lyric detection"
-      - "Development: compile with SDK 35"
-      - "Development: upgrade Gradle to 8.10.2, upgrade AGP to 8.7.1, upgrade kotlin to 2.0.21"
-      - "Development: upgrade Jetpack Compose to 1.7.4, update dependencies"
-      - "Translation: update Spanish (by Dino RTX (rtxdino36))"
+      - "Fix: sometimes could not enter Album Detail"
+      - "Fix: blank images in Album Detail util fully loaded"
+      - "Modify: minor adjust colors and surface elevations"
+      - "Development: upgrade AGP to 8.7.2, upgrade Jetpack Compose to 1.7.5, update dependencies"
 
   zh:
     highlights: [ ]
     items:
-      - "修复 标签末尾附有省略号 [自 1.8.5-dev1 起]"
-      - "修复 创建播放列表时的的一些非预期行为 [自 1.8.5-dev2 起]"
-      - "修复 设备重启后应用小部件中的图像不刷新"
-      - "修复 退出多选时行为异常"
-      - "修复 当邻近文件选项卡时无法正常退出应用程序"
-      - "修复 更改后播放列表有时不会自动更新"
-      - "修复 使用 SAF 删除播放列表时选择错误目录将会崩溃"
-      - "改进 操作播放列表流程"
-      - "改进 lrc歌词识别"
-      - "开发 使用 SDK 35 编译"
-      - "开发 升级 Gradle 至 8.10.2, 升级 AGP 至 8.7.1, 升级 kotlin 至 2.0.21"
-      - "开发 升级 Jetpack Compose 至 1.7.4, 更新依赖"
-      - "翻译 更新 西班牙语 (Dino RTX (rtxdino36))"
+      - "修复 有时无法进入专辑界面"
+      - "修复 专辑界面空白的图片直至完全载入"
+      - "修改 色彩等微调"
+      - "开发 升级 AGP 至 8.7.2, 升级 Jetpack Compose 至 1.7.5, 更新依赖"
 
-previousVersion: "1.8.5-dev2"
+previousVersion: "1.8.5-dev3"
 previousChannel: "PREVIEW"
