@@ -38,7 +38,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -127,12 +126,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         adapter = AlbumSongDisplayAdapter(this)
         viewBinding.recyclerView.layoutManager = LinearLayoutManager(this)
         viewBinding.recyclerView.adapter = adapter
-        adapter.registerAdapterDataObserver(object : AdapterDataObserver() {
-            override fun onChanged() {
-                super.onChanged()
-                if (adapter.itemCount == 0) finish()
-            }
-        })
         model.isRecyclerViewPrepared = true
         // jump
         viewBinding.artistText.setOnClickListener {
