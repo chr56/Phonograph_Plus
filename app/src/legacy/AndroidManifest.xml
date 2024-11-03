@@ -2,8 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:enableOnBackInvokedCallback="false"
         android:hasFragileUserData="false"
         tools:ignore="MissingApplicationIcon,UnusedAttribute"
-        tools:replace="android:hasFragileUserData" />
+        tools:replace="android:hasFragileUserData, android:enableOnBackInvokedCallback" />
 
 </manifest>
