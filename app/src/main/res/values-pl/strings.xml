@@ -556,4 +556,6 @@
     <string name="pref_option_show_prompt">Pokazuj okno dialogowe za każdym razem</string>
     <string name="pref_option_silence">Wycisz (zachowaj w tle bez przełączania do odtwarzacza)</string>
     <string name="service_disconnected">[Usługa jest rozłączona!]</string>
+    <string name="file_playlists">Lista odtwarzania plików</string>
+    <string name="database_playlists">Listy odtwarzania bazy danych</string>
 </resources>
