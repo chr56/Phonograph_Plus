@@ -1,0 +1,9 @@
+<b>1.8.5(1085) 2024.11.03</b>
+- Fix: regression of playlist icons
+- Fix: sometimes could not enter Album Detail
+- Fix: possibly crash when starting from background
+- Fix: crash when reading or editing tags of some certain files
+- Fix: frozen or crash when processing extremely long tags in Tag Editor
+- Fix: unexpected behaviors when dismissing multi-selection actionbar
+- Fix: could not exit application properly when Files tab nearby
+...(Visit GitHub homepage to see the completed)
