@@ -13,7 +13,8 @@ import android.provider.MediaStore.Audio.AudioColumns
 
 object AlbumSongLoader {
     fun id(context: Context, albumId: Long): List<Song> =
-        querySongs(context, "${AudioColumns.ALBUM_ID}=?", arrayOf(albumId.toString()), AudioColumns.TRACK).intoSongs()
+        querySongs(context, "${AudioColumns.ALBUM_ID}=?", arrayOf(albumId.toString()), AudioColumns.TRACK)
+            .intoSongs().sortedBy { it.trackNumber }
 
     fun Album.allSongs(context: Context) = id(context, id)
     fun List<Album>.allSongs(context: Context): List<Song> = this.flatMap { it.allSongs(context) }
