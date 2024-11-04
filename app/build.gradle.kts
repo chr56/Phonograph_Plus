@@ -170,6 +170,11 @@ android {
         jvmTarget = "17"
     }
 
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
+
 }
 
 androidPublish {
