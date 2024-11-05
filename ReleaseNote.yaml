@@ -1,57 +1,19 @@
-version: "1.8.5"
+version: "1.8.5.1"
 channel: "STABLE"
 versionCode: 1085
-timestamp: 1730630000
+timestamp: 1730780000
 notes:
   en:
     highlights: [ ]
     items:
-      - "Fix: regression of playlist icons"
-      - "Fix: sometimes could not enter Album Detail"
-      - "Fix: possibly crash when starting from background"
-      - "Fix: crash when reading or editing tags of some certain files"
-      - "Fix: frozen or crash when processing extremely long tags in Tag Editor"
-      - "Fix: sometimes playlists would not be automatically updated after changing"
-      - "Fix: crash when deleting playlists using SAF but selecting the wrong directory"
-      - "Fix: crash when adding songs to a playlist in Search Results, Album Detail, Artist Detail, Genre Detail"
-      - "Fix: unexpected behaviors when dismissing multi-selection actionbar"
-      - "Fix: could not exit application properly when Files tab nearby"
-      - "Fix: blank images in App Widgets after device rebooting"
-      - "Fix: blank images in Album Detail util fully loaded"
-      - "Modify: no longer start service after device booting on Android N if any AppWidget exists"
-      - "Improve: sort order of track number in the album on some devices"
-      - "Improve: user experience on manipulating playlists"
-      - "Improve: lrc format lyric detection"
-      - "Translation: update Polish (cooky), Spanish (by Dino RTX (rtxdino36))"
-      - "Development: compile with SDK 35"
-      - "Development: upgrade Gradle to 8.10.2, upgrade AGP to 8.7.2, upgrade kotlin to 2.0.21"
-      - "Development: upgrade Jetpack Compose to 1.7.5, update dependencies"
-      - "Development: cleanup code"
+      - "Note: This is a patch release, with a small fix in building"
+      - "Development: remove DependencyInfo from artifacts (for better reproducible build)"
 
   zh:
     highlights: [ ]
     items:
-      - "修复 播放列表图标"
-      - "修复 有时无法进入专辑界面"
-      - "修复 从后台启动时可能的崩溃"
-      - "修复 读写某些文件的音乐标签时崩溃"
-      - "修复 在标签编辑器中处理超长标签时卡死或崩溃"
-      - "修复 更改后播放列表有时不会自动更新"
-      - "修复 使用 SAF 删除播放列表时选择错误目录将会崩溃"
-      - "修复 在搜索结果、专辑详情、艺术家详情、流派详情中，向播放列表增添歌曲时崩溃"
-      - "修复 退出多选模式时行为异常"
-      - "修复 当邻近文件选项卡时无法正常退出应用程序"
-      - "修复 设备重启后应用小部件中的图像不刷新"
-      - "修复 直至完全载入前专辑界面图片空白"
-      - "修改 Android N 上，不再开机自启服务，倘若存在任何小组件时"
-      - "改进 在某些设备上专辑中曲目编号的排序顺序"
-      - "改进 创建、复制或操纵播放列表的流程"
-      - "改进 lrc格式歌词识别"
-      - "翻译 更新 波兰语(cooky), 西班牙语 (Dino RTX (rtxdino36))"
-      - "开发 使用 SDK 35 编译"
-      - "开发 升级 Gradle 至 8.10.2, 升级 AGP 至 8.7.5, 升级 kotlin 至 2.0.21"
-      - "开发 升级 Jetpack Compose 至 1.7.5, 更新依赖"
-      - "开发 清理代码"
+      - "注意 此为修正版本，修复构建的一个小问题"
+      - "开发 移除 DependencyInfo"
 
-previousVersion: "1.8.4"
+previousVersion: "1.8.5"
 previousChannel: "STABLE"
