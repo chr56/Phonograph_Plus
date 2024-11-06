@@ -37,10 +37,9 @@ import player.phonograph.util.currentVersionCode
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
 import player.phonograph.util.parcelableExtra
+import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.themeIconColor
-import player.phonograph.util.theme.primaryColor
-import player.phonograph.util.theme.accentColor
 import player.phonograph.util.warning
 import util.theme.color.primaryTextColor
 import util.theme.view.navigationview.setItemIconColors
@@ -53,6 +52,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withStarted
+import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -330,6 +331,18 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
     companion object {
         private const val TAG = "MainActivity"
+
+        fun launchingIntent(context: Context, flags: Int = 0): Intent =
+            Intent(context, MainActivity::class.java).apply {
+                if (flags != 0) this.flags = flags
+            }
+
+        fun launchingIntent(context: Context, versionCatalog: VersionCatalog, flags: Int = 0): Intent =
+            Intent(context, MainActivity::class.java).apply {
+                if (flags != 0) this.flags = flags
+                this.putExtra(UPGRADABLE, true)
+                this.putExtra(VERSION_INFO, versionCatalog)
+            }
     }
 
 }

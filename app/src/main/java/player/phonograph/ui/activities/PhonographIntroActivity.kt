@@ -24,16 +24,15 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.Setting
 import player.phonograph.ui.dialogs.BackupImportDialog
-import player.phonograph.util.permissions.necessaryPermissions
 import player.phonograph.util.permissions.PermissionDetail
 import player.phonograph.util.permissions.hasPermission
+import player.phonograph.util.permissions.necessaryPermissions
 import player.phonograph.util.permissions.permissionDescription
 import player.phonograph.util.permissions.permissionName
 import androidx.annotation.StringRes
 import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -106,7 +105,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
 
     override fun onDonePressed(currentFragment: Fragment?) {
         super.onDonePressed(currentFragment)
-        startActivity(Intent(this, MainActivity::class.java))
+        startActivity(MainActivity.launchingIntent(this))
         PrerequisiteSetting.instance(this).introShown = true
         finish()
     }

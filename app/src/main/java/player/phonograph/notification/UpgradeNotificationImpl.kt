@@ -4,6 +4,12 @@
 
 package player.phonograph.notification
 
+import player.phonograph.R
+import player.phonograph.model.version.ReleaseChannel
+import player.phonograph.model.version.Version
+import player.phonograph.model.version.VersionCatalog
+import player.phonograph.ui.activities.MainActivity
+import androidx.core.app.NotificationCompat
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -11,14 +17,6 @@ import android.content.Context
 import android.content.Intent
 import android.text.Html
 import android.text.Spanned
-import androidx.core.app.NotificationCompat
-import player.phonograph.R
-import player.phonograph.UPGRADABLE
-import player.phonograph.VERSION_INFO
-import player.phonograph.model.version.ReleaseChannel
-import player.phonograph.model.version.Version
-import player.phonograph.model.version.VersionCatalog
-import player.phonograph.ui.activities.MainActivity
 import java.util.*
 
 class UpgradeNotificationImpl(context: Context) : AbsNotificationImpl() {
@@ -30,11 +28,9 @@ class UpgradeNotificationImpl(context: Context) : AbsNotificationImpl() {
     fun sendUpgradeNotification(context: Context, versionCatalog: VersionCatalog, channel: ReleaseChannel) {
         execute(context) {
             val version = versionCatalog.versions.filter { it.channel == channel.determiner }.maxByOrNull { it.versionCode } ?: return
-            val action = Intent(context, MainActivity::class.java).apply {
-                this.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                this.putExtra(UPGRADABLE, true)
-                this.putExtra(VERSION_INFO, versionCatalog)
-            }
+            val action =
+                MainActivity.launchingIntent(context, versionCatalog, Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+
             val clickIntent: PendingIntent =
                 PendingIntent.getActivity(context, 0, action, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 

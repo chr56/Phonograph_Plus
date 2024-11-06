@@ -121,9 +121,7 @@ class OpenWithDialog : ComposeViewDialogFragment() {
         super.onDestroy()
         if (gotoMainActivity && confirmed) {
             startActivity(
-                Intent(requireContext(), MainActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                }
+                MainActivity.launchingIntent(requireContext(), Intent.FLAG_ACTIVITY_NEW_TASK)
             )
         }
         requireActivity().finish()

@@ -21,7 +21,6 @@ import player.phonograph.model.PlayRequest.SongsRequest
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.DynamicPlaylists
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.repo.loader.Playlists
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.repo.mediastore.processQuery
@@ -230,9 +229,7 @@ class StarterActivity : AppCompatActivity() {
 
     private fun gotoMainActivity() {
         startActivity(
-            Intent(applicationContext, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            }
+            MainActivity.launchingIntent(this, Intent.FLAG_ACTIVITY_NEW_TASK)
         )
         finish()
     }

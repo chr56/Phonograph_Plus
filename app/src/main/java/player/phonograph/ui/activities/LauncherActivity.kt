@@ -15,7 +15,7 @@ import android.os.Bundle
 class LauncherActivity : Activity() {
 
     private fun gotoMainActivity() {
-        startActivity(Intent(this, MainActivity::class.java))
+        startActivity(MainActivity.launchingIntent(this))
         finish()
     }
 
