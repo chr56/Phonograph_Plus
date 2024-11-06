@@ -18,7 +18,7 @@ import player.phonograph.model.lyrics.TextLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.ui.fragments.player.LyricsViewModel
+import player.phonograph.ui.modules.player.LyricsViewModel
 import player.phonograph.util.reportError
 import player.phonograph.util.text.lyricsTimestamp
 import player.phonograph.util.theme.getTintedDrawable

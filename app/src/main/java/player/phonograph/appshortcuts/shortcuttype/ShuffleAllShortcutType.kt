@@ -6,7 +6,7 @@ import android.content.pm.ShortcutInfo
 import android.os.Build
 import player.phonograph.R
 import player.phonograph.appshortcuts.AppShortcutIconGenerator
-import player.phonograph.ui.activities.StarterActivity
+import player.phonograph.ui.modules.auxiliary.StarterActivity
 
 /**
  * @author Adrian Campos

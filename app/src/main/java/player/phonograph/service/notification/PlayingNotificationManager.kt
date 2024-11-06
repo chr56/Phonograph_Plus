@@ -20,7 +20,7 @@ import player.phonograph.service.player.PlayerState.STOPPED
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
-import player.phonograph.ui.activities.MainActivity
+import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.util.permissions.checkNotificationPermission
 import player.phonograph.util.theme.createTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
@@ -565,9 +565,7 @@ class PlayingNotificationManager : ServiceComponent {
         get() = PendingIntent.getActivity(
             service,
             0,
-            Intent(service, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            },
+            MainActivity.launchingIntent(service, Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
         )
 

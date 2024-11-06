@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.os.Build
-import player.phonograph.ui.activities.StarterActivity
+import player.phonograph.ui.modules.auxiliary.StarterActivity
 import android.os.Bundle
 
 /**

@@ -38,10 +38,10 @@
         <!--               Activities                 -->
         <!--                                          -->
         <activity
-            android:name=".ui.activities.MainActivity"
+            android:name=".ui.modules.main.MainActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.activities.LauncherActivity"
+            android:name=".ui.modules.auxiliary.LauncherActivity"
             android:noHistory="true"
             android:exported="true">
             <intent-filter>
@@ -52,7 +52,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activities.StarterActivity"
+            android:name=".ui.modules.auxiliary.StarterActivity"
             android:excludeFromRecents="true"
             android:exported="true"
             android:label="@string/action_play"
@@ -121,14 +121,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activities.PhonographIntroActivity"
+            android:name=".ui.modules.auxiliary.PhonographIntroActivity"
             android:label="@string/intro_label"
             android:theme="@style/Theme.AppIntro"
             android:exported="true"/>
-        <activity android:name=".ui.activities.AlbumDetailActivity" />
-        <activity android:name=".ui.activities.ArtistDetailActivity" />
-        <activity android:name=".ui.activities.GenreDetailActivity" />
-        <activity android:name=".ui.modules.playlist.PlaylistDetailActivity" />
+        <activity android:name=".ui.modules.album.AlbumDetailActivity"
+            android:label="@string/album" />
+        <activity android:name=".ui.modules.artist.ArtistDetailActivity"
+            android:label="@string/artist" />
+        <activity android:name=".ui.modules.genre.GenreDetailActivity"
+            android:label="@string/genre" />
+        <activity android:name=".ui.modules.playlist.PlaylistDetailActivity"
+            android:label="@string/playlists" />
         <activity
             android:name="player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity"
             android:excludeFromRecents="true"
@@ -183,10 +187,11 @@
             android:exported="true"
             android:label="@string/action_settings" />
         <activity
-            android:name=".ui.activities.AboutActivity"
+            android:name=".ui.modules.auxiliary.AboutActivity"
             android:label="@string/action_about" />
         <activity
-            android:name=".ui.activities.CrashActivity"
+            android:name=".ui.modules.auxiliary.CrashActivity"
+            android:label="@string/crash"
             android:exported="true"
             android:launchMode="singleInstance"
             android:process="player.phonograph.crash" />

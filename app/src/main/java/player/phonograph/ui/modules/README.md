@@ -5,6 +5,13 @@ This is the composite package for the "independent" modules about user interface
 
 _List of modules:_
 
+- `album`: Album Detail
+- `artist`: Artist Detail
+- `explorer`: File Explorer
+- `genre`: Genre Detail
+- `main`: Main Activity
+- `panel`: Sliding Panel
+- `player`: Player UI
 - `playlist`: Playlist Detail
 - `search`: Local Search
 - `setting`: Phonograph Plus Settings

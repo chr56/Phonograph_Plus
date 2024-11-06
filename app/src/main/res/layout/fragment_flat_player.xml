@@ -42,7 +42,7 @@
 
                 <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/player_album_cover_fragment"
-                    android:name="player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment"
+                    android:name="player.phonograph.ui.modules.player.PlayerAlbumCoverFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -71,7 +71,7 @@
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/playback_controls_fragment"
-                android:name="player.phonograph.ui.fragments.player.flat.FlatPlayerControllerFragment"
+                android:name="player.phonograph.ui.modules.player.flat.FlatPlayerControllerFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

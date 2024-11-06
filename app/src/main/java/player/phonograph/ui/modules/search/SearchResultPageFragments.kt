@@ -18,10 +18,10 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.OrderedItemAdapter
-import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
-import player.phonograph.ui.fragments.pages.adapter.ArtistDisplayAdapter
-import player.phonograph.ui.fragments.pages.adapter.PlaylistDisplayAdapter
-import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
+import player.phonograph.ui.modules.main.pages.adapter.AlbumDisplayAdapter
+import player.phonograph.ui.modules.main.pages.adapter.ArtistDisplayAdapter
+import player.phonograph.ui.modules.main.pages.adapter.PlaylistDisplayAdapter
+import player.phonograph.ui.modules.main.pages.adapter.SongDisplayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

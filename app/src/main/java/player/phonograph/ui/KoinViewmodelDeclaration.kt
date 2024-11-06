@@ -1,14 +1,14 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
 
 package player.phonograph.ui
 
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
-import player.phonograph.ui.activities.AlbumDetailActivityViewModel
-import player.phonograph.ui.activities.ArtistDetailActivityViewModel
-import player.phonograph.ui.activities.base.PanelViewModel
+import player.phonograph.ui.modules.album.AlbumDetailActivityViewModel
+import player.phonograph.ui.modules.artist.ArtistDetailActivityViewModel
+import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.modules.playlist.PlaylistDetailViewModel
 
 val moduleViewModels = module {
