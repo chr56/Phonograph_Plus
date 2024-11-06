@@ -10,6 +10,7 @@ _List of modules:_
 - `explorer`: File Explorer
 - `genre`: Genre Detail
 - `main`: Main Activity
+- `panel`: Sliding Panel
 - `playlist`: Playlist Detail
 - `search`: Local Search
 - `setting`: Phonograph Plus Settings

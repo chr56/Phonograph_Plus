@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.fragments.pages
 
-import player.phonograph.ui.fragments.AbsMusicServiceFragment
+import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.ui.modules.main.MainFragment
 import player.phonograph.util.debug

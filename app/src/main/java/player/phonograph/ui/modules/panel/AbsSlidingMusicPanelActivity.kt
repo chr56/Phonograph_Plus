@@ -1,4 +1,4 @@
-package player.phonograph.ui.activities.base
+package player.phonograph.ui.modules.panel
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState

@@ -6,9 +6,9 @@ package player.phonograph.ui
 
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
-import player.phonograph.ui.activities.base.PanelViewModel
 import player.phonograph.ui.modules.album.AlbumDetailActivityViewModel
 import player.phonograph.ui.modules.artist.ArtistDetailActivityViewModel
+import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.modules.playlist.PlaylistDetailViewModel
 
 val moduleViewModels = module {

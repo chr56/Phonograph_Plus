@@ -5,7 +5,7 @@ import player.phonograph.databinding.FragmentMiniPlayerBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
-import player.phonograph.ui.fragments.AbsMusicServiceFragment
+import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable

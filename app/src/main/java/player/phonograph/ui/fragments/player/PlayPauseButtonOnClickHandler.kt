@@ -5,7 +5,7 @@
 package player.phonograph.ui.fragments.player
 
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.ui.activities.base.AbsMusicServiceActivity
+import player.phonograph.ui.modules.panel.AbsMusicServiceActivity
 import androidx.lifecycle.lifecycleScope
 import android.view.View
 import kotlinx.coroutines.launch

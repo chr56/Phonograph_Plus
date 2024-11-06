@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.ui.activities.base
+package player.phonograph.ui.modules.panel
 
 import lib.phonograph.activity.ToolbarActivity
 import org.koin.android.ext.android.inject

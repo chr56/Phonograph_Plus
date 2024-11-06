@@ -1,7 +1,5 @@
-package player.phonograph.ui.fragments
+package player.phonograph.ui.modules.panel
 
-import player.phonograph.ui.activities.base.AbsMusicServiceActivity
-import player.phonograph.ui.activities.base.MusicServiceEventListener
 import androidx.fragment.app.Fragment
 import android.content.Context
 import android.os.Bundle
