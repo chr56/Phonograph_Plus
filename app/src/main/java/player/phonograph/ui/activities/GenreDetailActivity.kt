@@ -121,7 +121,7 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
     }
 
     private fun setupMenu(menu: Menu) {
-        val iconColor = primaryTextColor(viewModel.activityColor.value)
+        val iconColor = primaryTextColor(panelViewModel.activityColor.value)
         DetailToolbarMenuProviders.GenreEntityToolbarMenuProvider.inflateMenu(menu, this, genre, iconColor)
         tintToolbarMenuActionIcons(menu, iconColor)
         tintOverflowButtonColor(this, iconColor)

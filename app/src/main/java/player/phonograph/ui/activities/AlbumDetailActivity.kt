@@ -53,7 +53,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
                             ICreateFileStorageAccessible, IOpenFileStorageAccessible, IOpenDirStorageAccessible {
 
     private lateinit var viewBinding: ActivityAlbumDetailBinding
-    private val model: AlbumDetailActivityViewModel by viewModel { parametersOf(parseIntent(intent)) }
+    private val viewModel: AlbumDetailActivityViewModel by viewModel { parametersOf(parseIntent(intent)) }
 
     override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
     override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
@@ -64,7 +64,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
     private lateinit var linearLayoutManager: LinearLayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        model.loadDataSet(this)
+        viewModel.loadDataSet(this)
 
         viewBinding = ActivityAlbumDetailBinding.inflate(layoutInflater)
 
@@ -93,23 +93,23 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         // Observer
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                model.album.collect { album ->
+                viewModel.album.collect { album ->
                     if (album.id >= 0) {
                         updateAlbumsInfo(album)
-                        model.loadAlbumImage(this@AlbumDetailActivity, album, viewBinding.image)
+                        viewModel.loadAlbumImage(this@AlbumDetailActivity, album, viewBinding.image)
                     }
                 }
             }
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                model.songs.collect {
+                viewModel.songs.collect {
                     songAdapter.dataset = it
                 }
             }
         }
         lifecycleScope.launch {
-            model.paletteColor.collect {
+            viewModel.paletteColor.collect {
                 updateColors(it)
             }
         }
@@ -141,7 +141,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         }
         // Links
         viewBinding.artistText.setOnClickListener {
-            val album = model.album.value
+            val album = viewModel.album.value
             if (album.artistName != null) {
                 goToArtist(this, album.artistName, null)
             } else {
@@ -188,10 +188,10 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         viewBinding.albumYearText.setCompoundDrawablesWithIntrinsicBounds(albumYearIcon, null, null, null)
         viewBinding.albumYearText.compoundDrawablePadding = 16
 
-        viewModel.updateActivityColor(color)
+        panelViewModel.updateActivityColor(color)
     }
 
-    override val paletteColor: StateFlow<Int> get() = model.paletteColor
+    override val paletteColor: StateFlow<Int> get() = viewModel.paletteColor
 
     private suspend fun updateAlbumsInfo(album: Album) {
         viewBinding.toolbar.title = album.title
@@ -202,15 +202,15 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
     }
 
     private fun setupMenu(menu: Menu) {
-        val iconColor = primaryTextColor(viewModel.activityColor.value)
-        DetailToolbarMenuProviders.AlbumToolbarMenuProvider.inflateMenu(menu, this, model.album.value, iconColor)
+        val iconColor = primaryTextColor(panelViewModel.activityColor.value)
+        DetailToolbarMenuProviders.AlbumToolbarMenuProvider.inflateMenu(menu, this, viewModel.album.value, iconColor)
         tintToolbarMenuActionIcons(menu, iconColor)
         tintOverflowButtonColor(this, iconColor)
     }
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
-            model.loadDataSet(this@AlbumDetailActivity)
+            viewModel.loadDataSet(this@AlbumDetailActivity)
         }
     }
 

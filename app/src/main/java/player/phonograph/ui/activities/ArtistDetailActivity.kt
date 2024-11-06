@@ -14,8 +14,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
 import player.phonograph.databinding.ActivityArtistDetailBinding
-import player.phonograph.util.GetContentDelegate
-import player.phonograph.util.IGetContentRequester
 import player.phonograph.mechanism.actions.DetailToolbarMenuProviders
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.misc.IPaletteColorProvider
@@ -29,6 +27,8 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
+import player.phonograph.util.GetContentDelegate
+import player.phonograph.util.IGetContentRequester
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.themeFooterColor
@@ -58,7 +58,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
                              ICreateFileStorageAccessible, IOpenFileStorageAccessible, IOpenDirStorageAccessible {
 
     private lateinit var viewBinding: ActivityArtistDetailBinding
-    private val model: ArtistDetailActivityViewModel by viewModel { parametersOf(parseIntent(intent)) }
+    private val viewModel: ArtistDetailActivityViewModel by viewModel { parametersOf(parseIntent(intent)) }
 
     override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
     override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
@@ -71,7 +71,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
     override val getContentDelegate: GetContentDelegate = GetContentDelegate()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        model.load(this)
+        viewModel.load(this)
 
         autoSetStatusBarColor = false
         autoSetNavigationBarColor = false
@@ -127,7 +127,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
     private fun observeData() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.usePaletteColor.collect {
+                viewModel.usePaletteColor.collect {
                     albumAdapter.config = ConstDisplayConfig(ItemLayoutStyle.GRID_CARD_HORIZONTAL, it)
                     val dataset = albumAdapter.dataset
                     synchronized(albumAdapter) {
@@ -139,28 +139,28 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.artist.collect {
+                viewModel.artist.collect {
                     updateArtistInfo(it ?: Artist())
                 }
             }
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.albums.collect {
+                viewModel.albums.collect {
                     albumAdapter.dataset = it ?: emptyList()
                 }
             }
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.songs.collect {
+                viewModel.songs.collect {
                     songAdapter.dataset = it ?: emptyList()
                 }
             }
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.paletteColor.collect { color ->
+                viewModel.paletteColor.collect { color ->
                     setColors(color)
                 }
             }
@@ -188,10 +188,10 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         viewBinding.durationText.setTextColor(secondaryTextColor)
         viewBinding.songCountText.setTextColor(secondaryTextColor)
         viewBinding.albumCountText.setTextColor(secondaryTextColor)
-        viewModel.updateActivityColor(color)
+        panelViewModel.updateActivityColor(color)
     }
 
-    override val paletteColor: StateFlow<Int> get() = model.paletteColor
+    override val paletteColor: StateFlow<Int> get() = viewModel.paletteColor
 
     private fun setUpToolbar() {
         setSupportActionBar(viewBinding.toolbar)
@@ -202,18 +202,18 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
     }
 
     private fun setupMenu(menu: Menu) {
-        val iconColor = primaryTextColor(viewModel.activityColor.value)
+        val iconColor = primaryTextColor(panelViewModel.activityColor.value)
         DetailToolbarMenuProviders.ArtistToolbarMenuProvider.inflateMenu(
-            menu, this, model.artist.value ?: Artist(), iconColor
+            menu, this, viewModel.artist.value ?: Artist(), iconColor
         )
         attach(menu) {
             menuItem(title = getString(R.string.colored_footers)) {
                 checkable = true
-                checked = model.usePaletteColor.value
+                checked = viewModel.usePaletteColor.value
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick {
                     it.isChecked = !it.isChecked
-                    model.updateUsePaletteColor(it.isChecked)
+                    viewModel.updateUsePaletteColor(it.isChecked)
                     true
                 }
             }
@@ -224,12 +224,12 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
-            model.load(this@ArtistDetailActivity)
+            viewModel.load(this@ArtistDetailActivity)
         }
     }
 
     private suspend fun updateArtistInfo(artist: Artist) {
-        model.loadArtistImage(this, artist, viewBinding.image)
+        viewModel.loadArtistImage(this, artist, viewBinding.image)
         supportActionBar!!.title = artist.name
         viewBinding.songCountText.text = songCountString(this, artist.songCount)
         viewBinding.albumCountText.text = albumCountString(this, artist.albumCount)

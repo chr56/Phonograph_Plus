@@ -70,7 +70,7 @@ class PlaylistDetailActivity :
 
     private lateinit var binding: ActivityPlaylistDetailBinding
 
-    private val model: PlaylistDetailViewModel by viewModel { parametersOf(parseIntent(intent), emptyList<Song>()) }
+    private val viewModel: PlaylistDetailViewModel by viewModel { parametersOf(parseIntent(intent), emptyList<Song>()) }
 
     private lateinit var adapter: PlaylistSongDisplayAdapter // init in OnCreate() -> setUpRecyclerView()
 
@@ -119,7 +119,7 @@ class PlaylistDetailActivity :
 
 
     private fun initialize() {
-        val playlist = model.playlist
+        val playlist = viewModel.playlist
         supportActionBar!!.title = playlist.name
 
         lifecycleScope.launch {
@@ -130,18 +130,18 @@ class PlaylistDetailActivity :
 
     private fun observeData() {
         lifecycleScope.launch {
-            model.items.collect { songs ->
+            viewModel.items.collect { songs ->
                 adapter.dataset = songs
                 binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
             }
         }
         lifecycleScope.launch {
-            model.currentMode.collect { mode ->
+            viewModel.currentMode.collect { mode ->
                 supportActionBar!!.title =
                     if (mode == UIMode.Editor)
-                        "${model.playlist.name} [${getString(R.string.edit)}]"
+                        "${viewModel.playlist.name} [${getString(R.string.edit)}]"
                     else
-                        model.playlist.name
+                        viewModel.playlist.name
                 updateBannerVisibility(mode)
                 @SuppressLint("NotifyDataSetChanged")
                 adapter.notifyDataSetChanged()
@@ -149,7 +149,7 @@ class PlaylistDetailActivity :
             }
         }
         lifecycleScope.launch {
-            model.totalCount.collect {
+            viewModel.totalCount.collect {
                 with(binding) {
                     @SuppressLint("SetTextI18n")
                     songCountText.text = it.toString()
@@ -157,7 +157,7 @@ class PlaylistDetailActivity :
             }
         }
         lifecycleScope.launch {
-            model.totalDuration.collect {
+            viewModel.totalDuration.collect {
                 with(binding) {
                     durationText.text = getReadableDurationString(it)
                 }
@@ -167,7 +167,7 @@ class PlaylistDetailActivity :
 
     private fun setupOnBackPressCallback() {
         onBackPressedDispatcher.addCallback {
-            if (model.currentMode.value != UIMode.Common) {
+            if (viewModel.currentMode.value != UIMode.Common) {
                 execute(UpdateMode(UIMode.Common))
             } else {
                 remove()
@@ -199,7 +199,7 @@ class PlaylistDetailActivity :
             }
         )
         // Adapter
-        adapter = PlaylistSongDisplayAdapter(this, model)
+        adapter = PlaylistSongDisplayAdapter(this, viewModel)
         // DragDropAdapter
         binding.recyclerView.also { recyclerView ->
             recyclerViewDragDropManager = RecyclerViewDragDropManager()
@@ -267,7 +267,7 @@ class PlaylistDetailActivity :
             pathText.setTextColor(textColor)
 
 
-            val playlist = model.playlist
+            val playlist = viewModel.playlist
             nameText.text = playlist.name
             pathText.text = playlist.location.text(this@PlaylistDetailActivity)
 
@@ -332,15 +332,15 @@ class PlaylistDetailActivity :
     }
 
     private fun setupMenu(menu: Menu) {
-        val iconColor = primaryTextColor(viewModel.activityColor.value)
-        PlaylistToolbarMenuProvider(::execute).inflateMenu(menu, this, model.playlist, iconColor)
+        val iconColor = primaryTextColor(panelViewModel.activityColor.value)
+        PlaylistToolbarMenuProvider(::execute).inflateMenu(menu, this, viewModel.playlist, iconColor)
         tintToolbarMenuActionIcons(menu, iconColor)
         tintOverflowButtonColor(this, iconColor)
     }
 
     private fun execute(action: PlaylistAction): Boolean {
         lifecycleScope.launch {
-            model.execute(this@PlaylistDetailActivity, action)
+            viewModel.execute(this@PlaylistDetailActivity, action)
         }
         return true
     }
@@ -368,7 +368,7 @@ class PlaylistDetailActivity :
 
     private fun refreshIfInNeed() {
         lifecycleScope.launch(Dispatchers.IO) {
-            if (model.currentMode.value != UIMode.Editor) {
+            if (viewModel.currentMode.value != UIMode.Editor) {
                 lifecycle.withCreated {
                     // adapter.dataset = emptyList()
                     execute(Refresh(fetch = true))

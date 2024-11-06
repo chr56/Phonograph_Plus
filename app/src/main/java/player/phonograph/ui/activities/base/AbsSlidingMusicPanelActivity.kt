@@ -52,7 +52,7 @@ abstract class AbsSlidingMusicPanelActivity :
     private var panelBinding: SlidingMusicPanelLayoutBinding? = null
     private val slidingUpPanelLayout: SlidingUpPanelLayout? get() = panelBinding?.slidingLayout
 
-    val viewModel: PanelViewModel by viewModel {
+    val panelViewModel: PanelViewModel by viewModel {
         val paletteColor = playerFragment?.paletteColorState?.value ?: 0
         val highlightColor = if (paletteColor > 0) paletteColor else themeFooterColor(this)
         parametersOf(
@@ -117,16 +117,16 @@ abstract class AbsSlidingMusicPanelActivity :
         // states
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.highlightColor.collect { color ->
+                panelViewModel.highlightColor.collect { color ->
                     if (panelState == PanelState.EXPANDED) {
                         animateThemeColorChange(
-                            viewModel.previousHighlightColor.value,
-                            actualStatusbarColor(viewModel.highlightColor.value)
+                            panelViewModel.previousHighlightColor.value,
+                            actualStatusbarColor(panelViewModel.highlightColor.value)
                         ) { animator ->
                             updateStatusbarColor(animator.animatedValue as Int)
                         }
                         animateThemeColorChange(
-                            viewModel.previousHighlightColor.value,
+                            panelViewModel.previousHighlightColor.value,
                             color
                         ) { animator ->
                             updateNavigationbarColor(animator.animatedValue as Int)
@@ -168,7 +168,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                playerFragment?.paletteColorState?.collect { color -> viewModel.updateHighlightColor(color) }
+                playerFragment?.paletteColorState?.collect { color -> panelViewModel.updateHighlightColor(color) }
             }
         }
     }
@@ -180,16 +180,16 @@ abstract class AbsSlidingMusicPanelActivity :
         val color: Int =
             argbEvaluator.evaluate(
                 slideOffset,
-                viewModel.activityColor.value,
-                viewModel.highlightColor.value
+                panelViewModel.activityColor.value,
+                panelViewModel.highlightColor.value
             ) as Int
         updateNavigationbarColor(color)
         updateTaskDescriptionColor(color)
         val statusbarColor: Int =
             argbEvaluator.evaluate(
                 slideOffset,
-                viewModel.activityColor.value,
-                actualStatusbarColor(viewModel.highlightColor.value)
+                panelViewModel.activityColor.value,
+                actualStatusbarColor(panelViewModel.highlightColor.value)
             ) as Int
         updateStatusbarColor(statusbarColor)
     }
