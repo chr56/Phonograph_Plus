@@ -2,12 +2,12 @@
  * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.ui.fragments.player.card
+package player.phonograph.ui.modules.player.card
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import player.phonograph.databinding.FragmentCardPlayerPlaybackControlsBinding
-import player.phonograph.ui.fragments.player.AbsPlayerControllerFragment
-import player.phonograph.ui.fragments.player.PlayPauseButtonOnClickHandler
+import player.phonograph.ui.modules.player.AbsPlayerControllerFragment
+import player.phonograph.ui.modules.player.PlayPauseButtonOnClickHandler
 import player.phonograph.ui.views.PlayPauseDrawable
 import player.phonograph.util.theme.nightMode
 import util.theme.color.secondaryTextColor

@@ -11,10 +11,10 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.ui.fragments.player.AbsPlayerFragment
-import player.phonograph.ui.fragments.player.MiniPlayerFragment
-import player.phonograph.ui.fragments.player.card.CardPlayerFragment
-import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment
+import player.phonograph.ui.modules.player.AbsPlayerFragment
+import player.phonograph.ui.modules.player.MiniPlayerFragment
+import player.phonograph.ui.modules.player.card.CardPlayerFragment
+import player.phonograph.ui.modules.player.flat.FlatPlayerFragment
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.updateNavigationbarColor

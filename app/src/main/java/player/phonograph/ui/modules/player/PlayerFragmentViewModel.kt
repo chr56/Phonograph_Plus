@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.ui.fragments.player
+package player.phonograph.ui.modules.player
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.App

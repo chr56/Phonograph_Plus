@@ -4,8 +4,8 @@
 
 package player.phonograph.ui.modules.panel
 
-import player.phonograph.ui.fragments.player.AbsPlayerFragment
-import player.phonograph.ui.fragments.player.MiniPlayerFragment
+import player.phonograph.ui.modules.player.AbsPlayerFragment
+import player.phonograph.ui.modules.player.MiniPlayerFragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -2,11 +2,11 @@
  * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.ui.fragments.player.flat
+package player.phonograph.ui.modules.player.flat
 
 import player.phonograph.databinding.FragmentFlatPlayerPlaybackControlsBinding
-import player.phonograph.ui.fragments.player.AbsPlayerControllerFragment
-import player.phonograph.ui.fragments.player.PlayPauseButtonOnClickHandler
+import player.phonograph.ui.modules.player.AbsPlayerControllerFragment
+import player.phonograph.ui.modules.player.PlayPauseButtonOnClickHandler
 import player.phonograph.ui.views.PlayPauseDrawable
 import androidx.annotation.ColorInt
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator

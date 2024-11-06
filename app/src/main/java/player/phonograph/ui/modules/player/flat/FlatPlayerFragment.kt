@@ -1,10 +1,14 @@
-package player.phonograph.ui.fragments.player.card
+/*
+ *  Copyright (c) 2022~2024 chr_56
+ */
+
+package player.phonograph.ui.modules.player.flat
 
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import player.phonograph.R
-import player.phonograph.databinding.FragmentCardPlayerBinding
+import player.phonograph.databinding.FragmentFlatPlayerBinding
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.model.Song
@@ -12,10 +16,9 @@ import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
-import player.phonograph.ui.fragments.player.AbsPlayerFragment
+import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.requireDarkenColor
-import player.phonograph.util.theme.themeCardBackgroundColor
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.themeIconColor
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
@@ -34,7 +37,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
 import androidx.appcompat.widget.Toolbar
 import androidx.core.animation.doOnEnd
-import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -42,27 +44,23 @@ import androidx.lifecycle.withCreated
 import androidx.lifecycle.withStarted
 import android.animation.Animator
 import android.animation.AnimatorSet
-import android.annotation.SuppressLint
 import android.graphics.PorterDuff
-import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewAnimationUtils.createCircularReveal
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import kotlin.math.max
 import kotlinx.coroutines.launch
 
-class CardPlayerFragment :
+class FlatPlayerFragment :
         AbsPlayerFragment(),
         SlidingUpPanelLayout.PanelSlideListener {
 
-    private var _viewBinding: FragmentCardPlayerBinding? = null
-    private val viewBinding: FragmentCardPlayerBinding get() = _viewBinding!!
+    private var _viewBinding: FragmentFlatPlayerBinding? = null
+    private val viewBinding: FragmentFlatPlayerBinding get() = _viewBinding!!
 
     override fun getToolBarContainer(): View? = viewBinding.toolbarContainer
 
@@ -73,7 +71,7 @@ class CardPlayerFragment :
         savedInstanceState: Bundle?,
     ): View {
         impl = (if (isLandscape(resources)) LandscapeImpl(this) else PortraitImpl(this))
-        _viewBinding = FragmentCardPlayerBinding.inflate(inflater)
+        _viewBinding = FragmentFlatPlayerBinding.inflate(inflater)
         return viewBinding.root
     }
 
@@ -81,7 +79,7 @@ class CardPlayerFragment :
         super.onViewCreated(view, savedInstanceState)
         impl.init()
 
-        viewBinding.playerSlidingLayout.let { slidingLayout ->
+        viewBinding.playerSlidingLayout?.let { slidingLayout ->
             slidingLayout.addPanelSlideListener(this)
             slidingLayout.setAntiDragView(view.findViewById(R.id.draggable_area))
         }
@@ -100,10 +98,6 @@ class CardPlayerFragment :
             }
         })
 
-        // for some reason the xml attribute doesn't get applied here.
-        viewBinding.playingQueueCard.setCardBackgroundColor(
-            themeCardBackgroundColor(requireContext())
-        )
         observeState()
     }
 
@@ -111,7 +105,9 @@ class CardPlayerFragment :
         observe(CurrentQueueState.position) {
             withStarted {
                 viewBinding.playerQueueSubHeader.text = viewModel.upNextAndQueueTime(resources)
-                if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
+                if (viewBinding.playerSlidingLayout == null ||
+                    viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED
+                ) {
                     resetToCurrentPosition()
                 }
             }
@@ -119,6 +115,9 @@ class CardPlayerFragment :
     }
 
     override fun onDestroyView() {
+        if (viewBinding.playerSlidingLayout != null) {
+            viewBinding.playerSlidingLayout!!.removePanelSlideListener(this)
+        }
         viewBinding.playerRecyclerView.itemAnimator = null
         viewBinding.playerRecyclerView.adapter = null
         viewBinding.playerRecyclerView.layoutManager = null
@@ -132,7 +131,7 @@ class CardPlayerFragment :
         super.updateAdapter()
         lifecycle.withCreated {
             viewBinding.playerQueueSubHeader.text = viewModel.upNextAndQueueTime(resources)
-            if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
+            if (viewBinding.playerSlidingLayout == null || viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED) {
                 resetToCurrentPosition()
             }
         }
@@ -142,23 +141,7 @@ class CardPlayerFragment :
 
     override fun getImplToolbar(): Toolbar = viewBinding.playerToolbar
 
-    @SuppressLint("ObsoleteSdkInt")
-    override fun onPanelSlide(view: View, slide: Float) {
-        if (SDK_INT >= LOLLIPOP) {
-            val density = resources.displayMetrics.density
-            val cardElevation = (6 * slide + 2) * density
-            if (!isValidElevation(cardElevation)) return // we have received some crash reports in setCardElevation()
-            viewBinding.playingQueueCard.cardElevation = cardElevation
-            val buttonElevation = (2 * max(0f, 1 - slide * 16) + 2) * density
-            if (!isValidElevation(buttonElevation)) return
-            (playbackControlsFragment as CardPlayerControllerFragment).playerPlayPauseFab
-                .elevation = buttonElevation
-        }
-    }
-
-    private fun isValidElevation(elevation: Float): Boolean {
-        return elevation >= -Float.MAX_VALUE && elevation <= Float.MAX_VALUE
-    }
+    override fun onPanelSlide(view: View, slide: Float) {}
 
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
         when (newState) {
@@ -181,7 +164,7 @@ class CardPlayerFragment :
     }
 
     override fun collapseToNormal() {
-        viewBinding.playerSlidingLayout.panelState = PanelState.COLLAPSED
+        viewBinding.playerSlidingLayout?.panelState = PanelState.COLLAPSED
     }
 
     private fun resetToCurrentPosition() {
@@ -189,7 +172,7 @@ class CardPlayerFragment :
         layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
     }
 
-    private abstract class BaseImpl(protected var fragment: CardPlayerFragment) : Impl {
+    private abstract class BaseImpl(protected var fragment: FlatPlayerFragment) : Impl {
 
         private fun textColor(@ColorInt color: Int): Int {
             val context = fragment.requireContext()
@@ -199,62 +182,38 @@ class CardPlayerFragment :
             else if (nightMode) lightenColor(color) else darkenColor(color)
         }
 
-
-        @SuppressLint("ObsoleteSdkInt")
         fun defaultColorChangeAnimatorSet(
             @ColorInt oldColor: Int,
             @ColorInt newColor: Int,
             vararg animators: Animator,
             onEnd: ((animator: Animator) -> Unit)? = null,
         ): AnimatorSet {
-            val controllerFragment =
-                (fragment.playbackControlsFragment as CardPlayerControllerFragment)
-            val fab = controllerFragment.playerPlayPauseFab
-            val progressSliderHeight = controllerFragment.progressSliderHeight
-            require(progressSliderHeight >= 0) { "CardPlayer's progressSliderHeight is less than 0: $progressSliderHeight" }
-
-            val backgroundAnimator: Animator =
-                if (SDK_INT >= LOLLIPOP && fragment.viewBinding.root.isAttachedToWindow) {
-                    val x =
-                        fab.x + fab.width / 2 + fragment.playbackControlsFragment.requireView().x
-                    val y =
-                        fab.y + fab.height / 2 + fragment.playbackControlsFragment.requireView().y + progressSliderHeight
-                    val startRadius = max(fab.width / 2, fab.height / 2)
-                    val endRadius = max(
-                        fragment.viewBinding.colorBackground.width,
-                        fragment.viewBinding.colorBackground.height
-                    )
-                    fragment.viewBinding.colorBackground.setBackgroundColor(newColor)
-                    createCircularReveal(
-                        fragment.viewBinding.colorBackground,
-                        x.toInt(), y.toInt(), startRadius.toFloat(), endRadius.toFloat()
-                    )
-                } else {
-                    fragment.viewBinding.colorBackground.backgroundColorTransitionAnimator(
-                        oldColor, newColor
-                    )
-                }
+            val backgroundAnimator =
+                fragment.playbackControlsFragment.requireView().backgroundColorTransitionAnimator(oldColor, newColor)
+            val statusBarAnimator =
+                fragment.viewBinding.playerStatusBar.backgroundColorTransitionAnimator(oldColor, newColor)
             val oldTextColor: Int = textColor(oldColor)
             val newTextColor: Int = textColor(newColor)
             val subHeaderAnimator =
                 fragment.viewBinding.playerQueueSubHeader.textColorTransitionAnimator(oldTextColor, newTextColor)
-            return AnimatorSet()
-                .apply {
-                    duration = PHONOGRAPH_ANIM_TIME / 2
-                    play(backgroundAnimator).with(subHeaderAnimator).apply {
-                        for (animator in animators) {
-                            with(animator)
-                        }
-                    }
-                    if (onEnd != null) {
-                        doOnEnd(onEnd)
+            return AnimatorSet().apply {
+                duration = PHONOGRAPH_ANIM_TIME / 2
+                play(backgroundAnimator).with(statusBarAnimator).with(subHeaderAnimator).apply {
+                    for (animator in animators) {
+                        with(animator)
                     }
                 }
+
+                if (onEnd != null) {
+                    doOnEnd(onEnd)
+                }
+            }
         }
 
         override fun forceChangeColor(newColor: Int) {
             fragment.playbackControlsFragment.requireView().setBackgroundColor(newColor)
             with(fragment.viewBinding) {
+                playerStatusBar.setBackgroundColor(newColor)
                 playerQueueSubHeader.setTextColor(requireDarkenColor(newColor))
             }
         }
@@ -262,7 +221,7 @@ class CardPlayerFragment :
         override fun init() {}
     }
 
-    private class PortraitImpl(fragment: CardPlayerFragment) : BaseImpl(fragment) {
+    private class PortraitImpl(fragment: FlatPlayerFragment) : BaseImpl(fragment) {
         lateinit var currentSongBinding: ItemListBinding
         override fun init() {
             super.init()
@@ -282,10 +241,10 @@ class CardPlayerFragment :
                 image.setImageResource(R.drawable.ic_volume_up_white_24dp)
                 root.setOnClickListener {
                     // toggle the panel
-                    if (fragment.viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
-                        fragment.viewBinding.playerSlidingLayout.panelState = PanelState.EXPANDED
-                    } else if (fragment.viewBinding.playerSlidingLayout.panelState == PanelState.EXPANDED) {
-                        fragment.viewBinding.playerSlidingLayout.panelState = PanelState.COLLAPSED
+                    if (fragment.viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED) {
+                        fragment.viewBinding.playerSlidingLayout!!.panelState = PanelState.EXPANDED
+                    } else if (fragment.viewBinding.playerSlidingLayout!!.panelState == PanelState.EXPANDED) {
+                        fragment.viewBinding.playerSlidingLayout!!.panelState = PanelState.COLLAPSED
                     }
                 }
                 menu.setOnClickListener {
@@ -297,24 +256,26 @@ class CardPlayerFragment :
 
         override fun setUpPanelAndAlbumCoverHeight() {
 
-            val albumCoverContainer: FragmentContainerView = fragment.viewBinding.playerAlbumCoverFragment
+            val albumCoverContainer = fragment.viewBinding.playerAlbumCoverFragment
 
-            val minPanelHeight = convertDpToPixel((72 + 24).toFloat(), fragment.resources).toInt()
+            val minPanelHeight =
+                convertDpToPixel((8 + 72 + 24).toFloat(), fragment.resources).toInt() +
+                        fragment.resources.getDimensionPixelSize(R.dimen.progress_container_height) +
+                        fragment.resources.getDimensionPixelSize(R.dimen.media_controller_container_height)
 
-            val slidingLayout = fragment.viewBinding.playerSlidingLayout
-            val coverContainer = fragment.viewBinding.coverContainer
+            val playerContainer: View = fragment.viewBinding.coverContainer
+            val slidingLayout: SlidingUpPanelLayout? = fragment.viewBinding.playerSlidingLayout
 
-            val availablePanelHeight =
-                slidingLayout.height - coverContainer.height - convertDpToPixel(8f, fragment.resources).toInt()
+            val availablePanelHeight = slidingLayout!!.height - playerContainer.height
 
             if (availablePanelHeight < minPanelHeight) {
                 // shrink AlbumCover
                 val albumCoverHeight = albumCoverContainer.height - (minPanelHeight - availablePanelHeight)
                 albumCoverContainer.layoutParams.height = albumCoverHeight
             }
-            slidingLayout.panelHeight = max(minPanelHeight, availablePanelHeight)
-            (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(
-                slidingLayout.findViewById(R.id.player_panel)
+            fragment.viewBinding.playerSlidingLayout!!.panelHeight = max(minPanelHeight, availablePanelHeight)
+            (fragment.activity as AbsSlidingMusicPanelActivity).setAntiDragView(
+                fragment.viewBinding.playerSlidingLayout!!.findViewById(R.id.player_panel)
             )
         }
 
@@ -325,33 +286,25 @@ class CardPlayerFragment :
 
         override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
             defaultColorChangeAnimatorSet(oldColor, newColor)
-
     }
 
-    private class LandscapeImpl(fragment: CardPlayerFragment) : BaseImpl(fragment) {
-
+    private class LandscapeImpl(fragment: FlatPlayerFragment) : BaseImpl(fragment) {
         override fun setUpPanelAndAlbumCoverHeight() {
-            val panelHeight =
-                fragment.viewBinding.playerSlidingLayout.height - fragment.playbackControlsFragment.requireView()
-                    .height
-            fragment.viewBinding.playerSlidingLayout.panelHeight = panelHeight
             (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(
-                fragment.viewBinding.playerSlidingLayout.findViewById(R.id.player_panel)
+                fragment.requireView().findViewById(R.id.player_panel)
             )
         }
 
         override fun updateCurrentSong(song: Song) {
+
             fragment.viewBinding.playerToolbar.title = song.title
             fragment.viewBinding.playerToolbar.subtitle = song.infoString()
         }
 
-
         override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
             defaultColorChangeAnimatorSet(
                 oldColor, newColor,
-                fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(oldColor, newColor),
-                fragment.requireView().findViewById<View>(R.id.status_bar)
-                    .backgroundColorTransitionAnimator(darkenColor(oldColor), darkenColor(newColor))
+                fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(oldColor, newColor)
             ) {
                 setToolbarWidgetColor(newColor)
             }

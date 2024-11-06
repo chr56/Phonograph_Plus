@@ -1,4 +1,4 @@
-package player.phonograph.ui.fragments.player
+package player.phonograph.ui.modules.player
 
 import player.phonograph.R
 import player.phonograph.databinding.FragmentMiniPlayerBinding
@@ -23,7 +23,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import kotlin.math.abs
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**

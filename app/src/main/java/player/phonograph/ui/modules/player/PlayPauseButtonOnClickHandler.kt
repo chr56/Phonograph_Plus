@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.ui.fragments.player
+package player.phonograph.ui.modules.player
 
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.modules.panel.AbsMusicServiceActivity

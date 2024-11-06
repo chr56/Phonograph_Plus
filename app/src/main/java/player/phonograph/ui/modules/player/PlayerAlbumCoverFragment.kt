@@ -1,4 +1,4 @@
-package player.phonograph.ui.fragments.player
+package player.phonograph.ui.modules.player
 
 import lib.phonograph.misc.SimpleAnimatorListener
 import player.phonograph.App

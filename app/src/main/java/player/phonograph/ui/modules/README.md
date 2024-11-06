@@ -11,6 +11,7 @@ _List of modules:_
 - `genre`: Genre Detail
 - `main`: Main Activity
 - `panel`: Sliding Panel
+- `player`: Player UI
 - `playlist`: Playlist Detail
 - `search`: Local Search
 - `setting`: Phonograph Plus Settings
