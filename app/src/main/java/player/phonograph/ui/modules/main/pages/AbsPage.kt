@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.ui.fragments.pages
+package player.phonograph.ui.modules.main.pages
 
-import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.ui.modules.main.MainFragment
+import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
 

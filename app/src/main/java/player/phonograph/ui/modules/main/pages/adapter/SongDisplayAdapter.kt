@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.ui.fragments.pages.adapter
+package player.phonograph.ui.modules.main.pages.adapter
 
 import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.mechanism.actions.ClickActionProviders

@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.ui.fragments.pages
+package player.phonograph.ui.modules.main.pages
 
 import player.phonograph.App
 import player.phonograph.R
@@ -11,7 +11,7 @@ import player.phonograph.model.Song
 import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.mediastore.loaders.ArtistSongLoader.allSongs
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.fragments.pages.adapter.ArtistDisplayAdapter
+import player.phonograph.ui.modules.main.pages.adapter.ArtistDisplayAdapter
 import androidx.fragment.app.viewModels
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope

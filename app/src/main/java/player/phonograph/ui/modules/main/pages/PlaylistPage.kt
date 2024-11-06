@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.ui.fragments.pages
+package player.phonograph.ui.modules.main.pages
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.App
@@ -17,7 +17,7 @@ import player.phonograph.repo.loader.Playlists
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.fragments.pages.adapter.PlaylistDisplayAdapter
+import player.phonograph.ui.modules.main.pages.adapter.PlaylistDisplayAdapter
 import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.primaryColor

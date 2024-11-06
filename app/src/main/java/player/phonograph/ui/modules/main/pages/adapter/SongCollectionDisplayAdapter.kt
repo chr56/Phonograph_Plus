@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.ui.fragments.pages.adapter
+package player.phonograph.ui.modules.main.pages.adapter
 
 import player.phonograph.R
 import player.phonograph.mechanism.actions.ClickActionProviders

@@ -25,7 +25,7 @@ import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.adapter.ConstDisplayConfig
-import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
+import player.phonograph.ui.modules.main.pages.adapter.SongDisplayAdapter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.util.GetContentDelegate
 import player.phonograph.util.IGetContentRequester

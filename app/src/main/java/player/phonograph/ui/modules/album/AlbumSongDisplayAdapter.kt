@@ -11,7 +11,7 @@ import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayConfig.Companion.IMAGE_TYPE_TEXT
-import player.phonograph.ui.fragments.pages.adapter.SongDisplayAdapter
+import player.phonograph.ui.modules.main.pages.adapter.SongDisplayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.view.ViewGroup

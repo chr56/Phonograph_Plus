@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.ui.fragments.pages
+package player.phonograph.ui.modules.main.pages
 
 import player.phonograph.databinding.RecyclerViewWrappedProperBinding
 import android.os.Bundle

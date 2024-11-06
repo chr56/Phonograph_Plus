@@ -12,7 +12,7 @@ import player.phonograph.model.buildInfoString
 import player.phonograph.model.getYearString
 import player.phonograph.model.songCountString
 import player.phonograph.ui.adapter.ConstDisplayConfig
-import player.phonograph.ui.fragments.pages.adapter.AlbumDisplayAdapter
+import player.phonograph.ui.modules.main.pages.adapter.AlbumDisplayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import android.content.res.Resources
