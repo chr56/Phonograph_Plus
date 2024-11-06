@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.ui.activities
+package player.phonograph.ui.modules.auxiliary
 
 import com.github.appintro.AppIntro
 import com.github.appintro.AppIntroFragment
@@ -56,8 +56,8 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
     private fun config() {
         isWizardMode = true
         showStatusBar(true)
-        setStatusBarColorRes(util.theme.materials.R.color.md_black_1000)
-        setNavBarColorRes(util.theme.materials.R.color.md_black_1000)
+        setStatusBarColorRes(MR.color.md_black_1000)
+        setNavBarColorRes(MR.color.md_black_1000)
         isColorTransitionsEnabled = true
     }
 

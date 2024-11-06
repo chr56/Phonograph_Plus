@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.ui.activities
+package player.phonograph.ui.modules.auxiliary
 
 import legacy.phonograph.MediaStoreCompat
 import org.koin.android.ext.android.get

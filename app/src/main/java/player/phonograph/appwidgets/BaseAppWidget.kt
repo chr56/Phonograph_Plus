@@ -10,7 +10,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.ui.activities.LauncherActivity
+import player.phonograph.ui.modules.auxiliary.LauncherActivity
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
 import util.theme.color.primaryTextColor

@@ -1,4 +1,4 @@
-package player.phonograph.ui.activities
+package player.phonograph.ui.modules.auxiliary
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
@@ -20,7 +20,6 @@ import player.phonograph.util.theme.nightMode
 import util.theme.color.primaryTextColor
 import util.theme.view.toolbar.setToolbarColor
 import androidx.lifecycle.lifecycleScope
-import android.app.Activity
 import android.app.ActivityManager
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -148,7 +147,7 @@ class CrashActivity : ToolbarActivity() {
 
         // button "copy to clipboard"
         binding.copyToClipboard.setOnClickListener {
-            val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
             val clipData = ClipData.newPlainText("CRASH", displayText)
             clipboardManager.setPrimaryClip(clipData)
             Toast.makeText(
@@ -216,7 +215,7 @@ class CrashActivity : ToolbarActivity() {
     companion object {
         private const val CRASH_PROCESS_NAME_SUFFIX = "crash"
         fun isCrashProcess(context: Context): Boolean {
-            val manager = context.getSystemService(Activity.ACTIVITY_SERVICE) as ActivityManager
+            val manager = context.getSystemService(ACTIVITY_SERVICE) as ActivityManager
             val runningProcesses = manager.runningAppProcesses ?: return false
             val processInfo = runningProcesses.first { it.pid == Process.myPid() }
             return processInfo.processName.endsWith(CRASH_PROCESS_NAME_SUFFIX)

@@ -1,4 +1,4 @@
-package player.phonograph.ui.activities
+package player.phonograph.ui.modules.auxiliary
 
 import de.psdev.licensesdialog.LicensesDialog
 import lib.phonograph.activity.ToolbarActivity

@@ -18,8 +18,8 @@ import player.phonograph.coil.createPhonographImageLoader
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.ui.activities.CrashActivity
 import player.phonograph.ui.moduleViewModels
+import player.phonograph.ui.modules.auxiliary.CrashActivity
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
 import player.phonograph.util.postDelayedOnceHandlerCallback
