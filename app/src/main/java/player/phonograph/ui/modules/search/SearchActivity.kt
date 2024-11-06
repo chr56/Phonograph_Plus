@@ -20,7 +20,7 @@ import player.phonograph.databinding.PopupWindowSearchBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.ui.modules.panel.AbsMusicServiceActivity
+import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.modules.popup.OptionsPopup
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
@@ -42,9 +42,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import kotlinx.coroutines.launch
 
-class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener,
+class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextListener,
                        ICreateFileStorageAccessible, IOpenFileStorageAccessible, IOpenDirStorageAccessible {
 
     private var viewBinding: ActivitySearchBinding? = null
@@ -72,8 +73,6 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
 
         super.onCreate(savedInstanceState)
 
-        setContentView(binding.root)
-
         setUpToolBar()
         setUpPager()
 
@@ -95,6 +94,8 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
 
         lifecycle.addObserver(MediaStoreListener())
     }
+
+    override fun createContentView(): View = wrapSlidingMusicPanel(binding.root)
 
     private fun setUpPager() {
         val primaryColor = primaryColor()
