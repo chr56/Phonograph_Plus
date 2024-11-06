@@ -24,6 +24,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.Setting
 import player.phonograph.ui.dialogs.BackupImportDialog
+import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.util.permissions.PermissionDetail
 import player.phonograph.util.permissions.hasPermission
 import player.phonograph.util.permissions.necessaryPermissions

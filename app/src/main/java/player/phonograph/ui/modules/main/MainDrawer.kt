@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.ui.activities
+package player.phonograph.ui.modules.main
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
@@ -24,6 +24,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.settings.THEME_AUTO_LIGHTBLACK
 import player.phonograph.settings.THEME_AUTO_LIGHTDARK
+import player.phonograph.ui.activities.AboutActivity
 import player.phonograph.ui.modules.explorer.PathSelectorContractTool
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import player.phonograph.ui.modules.setting.SettingsActivity

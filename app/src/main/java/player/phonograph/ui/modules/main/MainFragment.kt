@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022 chr_56
+ * Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.ui.fragments
+package player.phonograph.ui.modules.main
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
@@ -17,8 +17,6 @@ import player.phonograph.mechanism.setting.PageConfig
 import player.phonograph.model.pages.Pages
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.ui.activities.MainActivity
-import player.phonograph.ui.activities.MainDrawerViewModel
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.AbsPage
 import player.phonograph.ui.modules.search.SearchActivity

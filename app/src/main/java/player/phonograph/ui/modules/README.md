@@ -9,6 +9,7 @@ _List of modules:_
 - `artist`: Artist Detail
 - `explorer`: File Explorer
 - `genre`: Genre Detail
+- `main`: Main Activity
 - `playlist`: Playlist Detail
 - `search`: Local Search
 - `setting`: Phonograph Plus Settings

@@ -20,7 +20,7 @@ import player.phonograph.service.player.PlayerState.STOPPED
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
-import player.phonograph.ui.activities.MainActivity
+import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.util.permissions.checkNotificationPermission
 import player.phonograph.util.theme.createTintedDrawable
 import player.phonograph.util.ui.BitmapUtil

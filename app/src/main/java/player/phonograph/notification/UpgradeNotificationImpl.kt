@@ -8,7 +8,7 @@ import player.phonograph.R
 import player.phonograph.model.version.ReleaseChannel
 import player.phonograph.model.version.Version
 import player.phonograph.model.version.VersionCatalog
-import player.phonograph.ui.activities.MainActivity
+import player.phonograph.ui.modules.main.MainActivity
 import androidx.core.app.NotificationCompat
 import android.app.Notification
 import android.app.NotificationManager

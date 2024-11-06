@@ -7,6 +7,7 @@ package player.phonograph.ui.activities
 import player.phonograph.App
 import player.phonograph.mechanism.migrate.migrate
 import player.phonograph.settings.PrerequisiteSetting
+import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.util.currentVersionCode
 import android.app.Activity
 import android.content.Intent

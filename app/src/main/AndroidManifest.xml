@@ -38,7 +38,7 @@
         <!--               Activities                 -->
         <!--                                          -->
         <activity
-            android:name=".ui.activities.MainActivity"
+            android:name=".ui.modules.main.MainActivity"
             android:exported="true" />
         <activity
             android:name=".ui.activities.LauncherActivity"

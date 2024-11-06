@@ -1,4 +1,4 @@
-package player.phonograph.ui.activities
+package player.phonograph.ui.modules.main
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import lib.activityresultcontract.registerActivityResultLauncherDelegate
@@ -30,7 +30,6 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.UpgradeInfoDialog
-import player.phonograph.ui.fragments.MainFragment
 import player.phonograph.ui.modules.explorer.PathSelectorContractTool
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import player.phonograph.util.currentVersionCode
