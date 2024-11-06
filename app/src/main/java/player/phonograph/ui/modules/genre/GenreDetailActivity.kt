@@ -1,4 +1,4 @@
-package player.phonograph.ui.activities
+package player.phonograph.ui.modules.genre
 
 import lib.activityresultcontract.registerActivityResultLauncherDelegate
 import lib.phonograph.misc.menuProvider

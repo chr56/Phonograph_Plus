@@ -1,16 +1,21 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.ui.activities
+package player.phonograph.ui.modules.artist
 
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Album
+import player.phonograph.model.Artist
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Albums
+import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.loader.Songs
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import player.phonograph.settings.ThemeSetting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,28 +27,32 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class AlbumDetailActivityViewModel(val albumId: Long) : ViewModel() {
+class ArtistDetailActivityViewModel(var artistId: Long) : ViewModel() {
 
-    private var _album: MutableStateFlow<Album> = MutableStateFlow(Album())
-    val album get() = _album.asStateFlow()
+    private val _artist: MutableStateFlow<Artist?> = MutableStateFlow(null)
+    val artist get() = _artist.asStateFlow()
 
-    private var _songs:MutableStateFlow<List<Song>> = MutableStateFlow(emptyList())
+    private val _albums: MutableStateFlow<List<Album>?> = MutableStateFlow(null)
+    val albums get() = _albums.asStateFlow()
+
+    private val _songs: MutableStateFlow<List<Song>?> = MutableStateFlow(null)
     val songs get() = _songs.asStateFlow()
-
-    fun loadDataSet(context: Context) {
-        viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
-            _album.emit(Albums.id(context, albumId))
-            _songs.emit(Songs.album(context, albumId))
-        }
-    }
 
     private val _paletteColor: MutableStateFlow<Int> = MutableStateFlow(0)
     val paletteColor get() = _paletteColor.asStateFlow()
 
-    fun loadAlbumImage(context: Context, album: Album, imageView: ImageView) {
+    fun load(context: Context) {
+        viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
+            _artist.emit(Artists.id(context, artistId))
+            _albums.emit(Albums.artist(context, artistId))
+            _songs.emit(Songs.artist(context, artistId))
+        }
+    }
+
+    fun loadArtistImage(context: Context, artist: Artist, imageView: ImageView) {
         val defaultColor = ThemeSetting.primaryColor(context)
         loadImage(context)
-            .from(album)
+            .from(artist)
             .into(
                 PaletteTargetBuilder()
                     .defaultColor(defaultColor)
@@ -58,5 +67,12 @@ class AlbumDetailActivityViewModel(val albumId: Long) : ViewModel() {
                     .build()
             )
             .enqueue()
+    }
+
+    private var _usePaletteColor: MutableStateFlow<Boolean> =
+        MutableStateFlow(Setting(App.instance)[Keys.albumArtistColoredFooters].data)
+    val usePaletteColor = _usePaletteColor.asStateFlow()
+    fun updateUsePaletteColor(newValue: Boolean) {
+        _usePaletteColor.value = newValue
     }
 }

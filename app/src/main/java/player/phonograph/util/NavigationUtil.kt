@@ -5,9 +5,9 @@ import player.phonograph.model.Genre
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.loader.Artists
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.ui.activities.AlbumDetailActivity
-import player.phonograph.ui.activities.ArtistDetailActivity
-import player.phonograph.ui.activities.GenreDetailActivity
+import player.phonograph.ui.modules.album.AlbumDetailActivity
+import player.phonograph.ui.modules.artist.ArtistDetailActivity
+import player.phonograph.ui.modules.genre.GenreDetailActivity
 import player.phonograph.ui.modules.playlist.PlaylistDetailActivity
 import player.phonograph.util.text.splitMultiTag
 import player.phonograph.util.theme.tintButtons

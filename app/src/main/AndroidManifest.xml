@@ -125,10 +125,14 @@
             android:label="@string/intro_label"
             android:theme="@style/Theme.AppIntro"
             android:exported="true"/>
-        <activity android:name=".ui.activities.AlbumDetailActivity" />
-        <activity android:name=".ui.activities.ArtistDetailActivity" />
-        <activity android:name=".ui.activities.GenreDetailActivity" />
-        <activity android:name=".ui.modules.playlist.PlaylistDetailActivity" />
+        <activity android:name=".ui.modules.album.AlbumDetailActivity"
+            android:label="@string/album" />
+        <activity android:name=".ui.modules.artist.ArtistDetailActivity"
+            android:label="@string/artist" />
+        <activity android:name=".ui.modules.genre.GenreDetailActivity"
+            android:label="@string/genre" />
+        <activity android:name=".ui.modules.playlist.PlaylistDetailActivity"
+            android:label="@string/playlists" />
         <activity
             android:name="player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity"
             android:excludeFromRecents="true"

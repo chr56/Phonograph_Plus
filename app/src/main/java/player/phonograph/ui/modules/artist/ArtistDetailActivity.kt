@@ -1,4 +1,4 @@
-package player.phonograph.ui.activities
+package player.phonograph.ui.modules.artist
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
