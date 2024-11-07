@@ -10,6 +10,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.WindowDecorActionBar
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.widget.ToolbarWidgetWrapper
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.Menu
 
@@ -60,6 +61,7 @@ abstract class ToolbarActivity : PermissionActivity() {
         return super.onPrepareOptionsMenu(menu)
     }
 
+    @SuppressLint("RestrictedApi")
     private fun reflectSupportActionBarView(ab: ActionBar?): Toolbar? {
         return when {
             ab == null                  -> null
@@ -79,6 +81,7 @@ abstract class ToolbarActivity : PermissionActivity() {
             return try {
                 var field = WindowDecorActionBar::class.java.getDeclaredField("mDecorToolbar")
                 field.isAccessible = true
+                @SuppressLint("RestrictedApi")
                 val wrapper = field[ab] as ToolbarWidgetWrapper
                 field = ToolbarWidgetWrapper::class.java.getDeclaredField("mToolbar")
                 field.isAccessible = true
