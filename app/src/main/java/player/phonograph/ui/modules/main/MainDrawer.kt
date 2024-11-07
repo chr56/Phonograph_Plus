@@ -9,7 +9,6 @@ import com.github.chr56.android.menu_dsl.menuItem
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import lib.phonograph.misc.Reboot
 import player.phonograph.ACTUAL_PACKAGE_NAME
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mechanism.actions.actionPlay
 import player.phonograph.mechanism.scanner.FileScanner
@@ -39,9 +38,7 @@ import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.toggleTheme
 import util.theme.color.primaryTextColor
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
@@ -52,24 +49,8 @@ import android.os.Looper
 import android.view.Menu
 import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
-
-class MainDrawerViewModel : ViewModel() {
-
-    private val _selectedPage: MutableStateFlow<Int> = MutableStateFlow(0)
-    val selectedPage: StateFlow<Int> = _selectedPage.asStateFlow()
-
-    fun switchPageTo(page: Int) {
-        _selectedPage.value = page
-        viewModelScope.launch(Dispatchers.IO) {
-            Setting(App.instance)[Keys.lastPage].edit { page }
-        }
-    }
-}
 
 
 /**
@@ -133,10 +114,9 @@ fun setupDrawerMenu(
             titleRes(R.string.action_shuffle_all)
             onClick {
                 closeDrawer()
-                lifecycleScope.launch {
+                lifecycleScope.launch(Dispatchers.IO) {
                     val songs = Songs.all(activity)
-                    if (songs.isNotEmpty())
-                        songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
+                    if (songs.isNotEmpty()) songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
                 }
                 true
             }
@@ -258,7 +238,7 @@ private fun viewFiles(activity: FragmentActivity) {
                 )
             }
         )
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         try {
             activity.startActivity(
                 Intent(
@@ -266,10 +246,7 @@ private fun viewFiles(activity: FragmentActivity) {
                     uri
                 ).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_DOCUMENT
-                    component = ComponentName(
-                        "com.google.android.documentsui",
-                        activityName,
-                    )
+                    component = ComponentName("com.google.android.documentsui", activityName)
                 }
             )
         } catch (e: Exception) {
