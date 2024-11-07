@@ -1,15 +1,14 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ * Copyright (c) 2022~2024 chr_56
  */
 
 package lib.phonograph.misc
 
+import androidx.core.content.IntentCompat
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Bundle
 import android.os.Process
 
@@ -17,6 +16,7 @@ import android.os.Process
 object Reboot {
 
     private const val REBOOT_PROCESS_NAME_SUFFIX = "reboot"
+    private const val REBOOT_DEFAULT_ACTION = "reboot"
 
     const val RESTART_INTENT = "restart_intent"
     const val PROCESS_PID_TO_KILL = "phoenix_main_process_pid"
@@ -30,14 +30,16 @@ object Reboot {
         restartIntent: Intent = restartIntent(context),
     ) {
         context.startActivity(
-            Intent(context, RebootActivity::class.java)
-                .apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    putExtra(PROCESS_PID_TO_KILL, pid)
-                    putExtra(RESTART_INTENT, restartIntent.also {
-                        it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    })
-                }
+            Intent(context, RebootActivity::class.java).apply {
+                action = REBOOT_DEFAULT_ACTION
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                putExtra(PROCESS_PID_TO_KILL, pid)
+                putExtra(RESTART_INTENT,
+                    restartIntent.also { restartIntent ->
+                        restartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    }
+                )
+            }
         )
     }
 
@@ -47,16 +49,13 @@ object Reboot {
 
             // Kill original process
             val pidToKill = intent.getIntExtra(PROCESS_PID_TO_KILL, -1)
-            require(pidToKill > 0)
-            Process.killProcess(pidToKill)
+            if (pidToKill > 0) {
+                Process.killProcess(pidToKill)
+            }
 
             // Start new one
             startActivity(
-                @Suppress("DEPRECATION")
-                when {
-                    SDK_INT >= TIRAMISU -> intent.getParcelableExtra(RESTART_INTENT, Intent::class.java)
-                    else                -> intent.getParcelableExtra(RESTART_INTENT) as? Intent
-                }
+                IntentCompat.getParcelableExtra<Intent>(intent, RESTART_INTENT, Intent::class.java)
             )
 
 
@@ -73,10 +72,7 @@ object Reboot {
 
         val runningProcesses = manager.runningAppProcesses ?: return false
         val processInfo = runningProcesses.first { it.pid == Process.myPid() }
-        if (processInfo.processName.endsWith(REBOOT_PROCESS_NAME_SUFFIX)) {
-            return true
-        }
-        return false
+        return processInfo.processName.endsWith(REBOOT_PROCESS_NAME_SUFFIX)
     }
 
     /**
@@ -85,11 +81,8 @@ object Reboot {
     fun restartIntent(context: Context): Intent {
         val launchingIntent =
             context.packageManager.getLaunchIntentForPackage(context.packageName)
-        if (launchingIntent != null) {
-            return launchingIntent
-        } else {
-            throw IllegalStateException("No LaunchIntent found")
-        }
+                ?: throw IllegalStateException("No LaunchIntent found")
+        return launchingIntent
     }
 
 }
