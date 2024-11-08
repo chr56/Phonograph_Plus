@@ -49,8 +49,10 @@ abstract class AbsSlidingMusicPanelActivity :
     private var playerFragment: AbsPlayerFragment? = null
     private var miniPlayerFragment: MiniPlayerFragment? = null
 
-    private var panelBinding: SlidingMusicPanelLayoutBinding? = null
-    private val slidingUpPanelLayout: SlidingUpPanelLayout? get() = panelBinding?.slidingLayout
+    private var _panelBinding: SlidingMusicPanelLayoutBinding? = null
+    private val panelBinding: SlidingMusicPanelLayoutBinding get() = _panelBinding!!
+
+    private val slidingUpPanelLayout: SlidingUpPanelLayout get() = panelBinding.slidingLayout
 
     val panelViewModel: PanelViewModel by viewModel {
         val paletteColor = playerFragment?.paletteColorState?.value ?: 0
@@ -71,11 +73,11 @@ abstract class AbsSlidingMusicPanelActivity :
      * @return actual view that should be the "root" view for [setContentView]
      */
     protected fun wrapSlidingMusicPanel(view: View?): View {
-        return SlidingMusicPanelLayoutBinding.inflate(layoutInflater, null, false).let { binding ->
-            panelBinding = binding
-            binding.contentContainer.also { it.addView(view) }
-            binding.slidingLayout // root
-        }
+        _panelBinding =
+            SlidingMusicPanelLayoutBinding.inflate(layoutInflater, null, false).also { binding ->
+                binding.contentContainer.addView(view)
+            }
+        return panelBinding.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,7 +85,8 @@ abstract class AbsSlidingMusicPanelActivity :
 
         // setup panel
         setContentView(createContentView())
-        panelBinding?.slidingLayout?.also { layout ->
+        miniPlayerFragment = panelBinding.miniPlayerFragment.getFragment()
+        panelBinding.slidingLayout.also { layout ->
             layout.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     layout.viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -100,7 +103,6 @@ abstract class AbsSlidingMusicPanelActivity :
             })
             layout.addPanelSlideListener(this)
         }
-        miniPlayerFragment = panelBinding!!.miniPlayerFragment.getFragment()
 
         // add fragment
         lifecycleScope.launch {
@@ -138,7 +140,7 @@ abstract class AbsSlidingMusicPanelActivity :
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 CurrentQueueState.queue.collect { queue ->
-                    hideBottomBar(queue.get()?.isEmpty() ?: false)
+                    hideBottomBar(queue.get()?.isEmpty() == true)
                 }
             }
         }
@@ -226,32 +228,31 @@ abstract class AbsSlidingMusicPanelActivity :
         }
     }
 
-    val panelState: PanelState?
-        get() = slidingUpPanelLayout?.panelState
+    val panelState: PanelState? get() = slidingUpPanelLayout.panelState
 
     fun collapsePanel() {
-        slidingUpPanelLayout?.panelState = PanelState.COLLAPSED
+        slidingUpPanelLayout.panelState = PanelState.COLLAPSED
     }
 
     fun expandPanel() {
-        slidingUpPanelLayout?.panelState = PanelState.EXPANDED
+        slidingUpPanelLayout.panelState = PanelState.EXPANDED
     }
 
     fun hideBottomBar(hide: Boolean) {
         if (hide) {
-            slidingUpPanelLayout?.panelHeight = 0
+            slidingUpPanelLayout.panelHeight = 0
             collapsePanel()
         } else {
-            slidingUpPanelLayout?.panelHeight = resources.getDimensionPixelSize(R.dimen.mini_player_height)
+            slidingUpPanelLayout.panelHeight = resources.getDimensionPixelSize(R.dimen.mini_player_height)
         }
     }
 
     override fun onServiceConnected() {
         super.onServiceConnected()
         if (MusicPlayerRemote.playingQueue.isNotEmpty()) {
-            slidingUpPanelLayout!!.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+            slidingUpPanelLayout.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    slidingUpPanelLayout!!.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    slidingUpPanelLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     hideBottomBar(false)
                 }
             })
@@ -269,13 +270,13 @@ abstract class AbsSlidingMusicPanelActivity :
     }
 
     fun setAntiDragView(antiDragView: View?) {
-        slidingUpPanelLayout?.setAntiDragView(antiDragView)
+        slidingUpPanelLayout.setAntiDragView(antiDragView)
     }
 
     private fun actualStatusbarColor(@ColorInt color: Int): Int =
         if (playerFragment is CardPlayerFragment) Color.TRANSPARENT else color
 
-    override val snackBarContainer: View get() = findViewById(R.id.content_container)
+    override val snackBarContainer: View get() = panelBinding.contentContainer
 
     companion object {
         const val NOW_PLAYING_FRAGMENT = "NowPlayingPlayerFragment"
