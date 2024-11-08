@@ -23,6 +23,9 @@ import player.phonograph.util.theme.updateTaskDescriptionColor
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -30,6 +33,7 @@ import android.animation.ArgbEvaluator
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -102,6 +106,19 @@ abstract class AbsSlidingMusicPanelActivity :
                 }
             })
             layout.addPanelSlideListener(this)
+            ViewCompat.setOnApplyWindowInsetsListener(layout) { view, windowInsets ->
+                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+                view.updateLayoutParams<MarginLayoutParams> {
+                    bottomMargin = insets.bottom
+                }
+                // view.setPadding(
+                //     /* left = */ insets.left,
+                //     /* top = */ insets.top,
+                //     /* right = */ insets.right,
+                //     /* bottom = */ insets.bottom,
+                // )
+                windowInsets
+            }
         }
 
         // add fragment
