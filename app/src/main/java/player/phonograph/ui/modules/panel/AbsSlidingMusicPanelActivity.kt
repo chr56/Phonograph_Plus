@@ -100,9 +100,7 @@ abstract class AbsSlidingMusicPanelActivity :
             })
             layout.addPanelSlideListener(this)
         }
-        miniPlayerFragment =
-            supportFragmentManager.findFragmentById(R.id.mini_player_fragment) as MiniPlayerFragment
-        miniPlayerFragment?.requireView()?.setOnClickListener { expandPanel() }
+        miniPlayerFragment = panelBinding!!.miniPlayerFragment.getFragment()
 
         // add fragment
         lifecycleScope.launch {
@@ -110,6 +108,7 @@ abstract class AbsSlidingMusicPanelActivity :
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 flow.distinctUntilChanged().collect { screen ->
                     setupPlayerFragment(screen)
+                    miniPlayerFragment?.requireView()?.setOnClickListener { expandPanel() }
                 }
             }
         }
