@@ -6,21 +6,34 @@ package player.phonograph.ui.modules.explorer
 
 import player.phonograph.R
 import player.phonograph.settings.ThemeSetting
-import player.phonograph.ui.components.viewcreater.buttonPanel
-import player.phonograph.ui.components.viewcreater.contentPanel
 import player.phonograph.util.permissions.navigateToStorageSetting
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.ButtonBarLayout
+import androidx.core.util.valueIterator
 import androidx.core.view.setMargins
 import androidx.fragment.app.commit
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
+import android.util.SparseArray
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.LinearLayout.LayoutParams
+import android.widget.Space
+import kotlin.collections.iterator
 
 class PathSelectorDialogActivity : AppCompatActivity() {
 
@@ -54,13 +67,11 @@ class PathSelectorDialogActivity : AppCompatActivity() {
         val rootContainer = FrameLayout(this).apply {
             addView(
                 contentPanel.panel, 0, FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP
+                    MATCH_PARENT, WRAP_CONTENT, Gravity.TOP
                 )
             )
             addView(buttonPanel.panel, 1, FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM
+                MATCH_PARENT, WRAP_CONTENT, Gravity.BOTTOM
             ).apply { setMargins(8) })
             supportFragmentManager.commit {
                 replace(R.id.container, explorerFragment, "FilesChooserExplorer")
@@ -92,6 +103,72 @@ class PathSelectorDialogActivity : AppCompatActivity() {
                 Log.w(TAG, "Not selected")
                 null
             }
+    }
+
+    fun contentPanel(context: Context, constructor: FrameLayout.() -> Unit): ContentPanel {
+        val contentPanel = FrameLayout(context).apply(constructor)
+        return ContentPanel(contentPanel)
+    }
+
+    class ContentPanel(val panel: FrameLayout)
+
+    private fun buttonPanel(context: Context, constructor: ButtonPanel.Builder.() -> Unit): ButtonPanel =
+        ButtonPanel.Builder(context).apply(constructor).build()
+
+    @SuppressLint("RestrictedApi")
+    class ButtonPanel(val panel: ButtonBarLayout, val buttons: SparseArray<View> = SparseArray(3)) {
+        class Builder(private val context: Context) {
+
+            private val buttons: SparseArray<View> = SparseArray(2)
+            var orientation: Int = LinearLayout.HORIZONTAL
+
+            fun button(index: Int, buttonText: String, color: Int, onClick: (View) -> Unit): Builder {
+                buttons.put(index, createButton(context, buttonText, color, onClick))
+                return this
+            }
+
+            fun space(index: Int): Builder {
+                buttons.put(index, Space(context))
+                return this
+            }
+
+            fun build(): ButtonPanel {
+                val panel = ButtonBarLayout(context, null)
+                val buttonLayoutParams = LayoutParams(WRAP_CONTENT, WRAP_CONTENT, 0f)
+                val spaceLayoutParams = LayoutParams(WRAP_CONTENT, WRAP_CONTENT, 1f)
+
+                panel.orientation = this.orientation
+
+                //todo
+                for (button in buttons.valueIterator()) {
+                    panel.addView(
+                        button,
+                        if (button is Space) spaceLayoutParams else buttonLayoutParams
+                    )
+                }
+
+                return ButtonPanel(panel, buttons)
+            }
+
+            private fun createButton(
+                context: Context,
+                buttonText: String,
+                color: Int,
+                onClick: (View) -> Unit,
+            ): Button {
+                return AppCompatButton(context).apply {
+                    text = buttonText
+                    textSize = 14f
+                    isSingleLine = true
+                    gravity = Gravity.CENTER
+                    setPadding(12, 0, 12, 0)
+                    minWidth = 64
+                    background = ColorDrawable(Color.TRANSPARENT)
+                    setTextColor(color)
+                    setOnClickListener { onClick(it) }
+                }
+            }
+        }
     }
 }
 
