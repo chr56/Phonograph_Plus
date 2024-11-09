@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.ui.components.popup
+package player.phonograph.ui.modules.popup
 
 import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.theme.nightMode
