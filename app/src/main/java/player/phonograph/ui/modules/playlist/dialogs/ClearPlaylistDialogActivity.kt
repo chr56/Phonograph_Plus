@@ -13,7 +13,7 @@ import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
 import player.phonograph.mechanism.playlist.PlaylistManager
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.ui.compose.ComposeThemeActivity
+import player.phonograph.ui.basis.MultiLanguageActivity
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.ButtonPanel
 import player.phonograph.ui.compose.components.CheckBoxItem
@@ -64,7 +64,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class ClearPlaylistDialogActivity : ComposeThemeActivity(),
+class ClearPlaylistDialogActivity : MultiLanguageActivity(),
                                     IOpenFileStorageAccessible,
                                     IOpenDirStorageAccessible {
 

@@ -13,7 +13,7 @@ import mms.Source
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
-import player.phonograph.ui.compose.ComposeThemeActivity
+import player.phonograph.ui.basis.MultiLanguageActivity
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.modules.web.IWebSearchRequester
 import player.phonograph.ui.modules.web.LastFmDialog
@@ -63,7 +63,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class TagBrowserActivity :
-        ComposeThemeActivity(),
+        MultiLanguageActivity(),
         IWebSearchRequester,
         ICreateFileStorageAccessible,
         IOpenFileStorageAccessible {

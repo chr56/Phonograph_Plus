@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.modules.web
 
-import player.phonograph.ui.compose.ComposeThemeActivity
+import player.phonograph.ui.basis.MultiLanguageActivity
 import player.phonograph.ui.compose.PhonographTheme
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
@@ -14,7 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import android.os.Bundle
 
-class WebSearchActivity : ComposeThemeActivity() {
+class WebSearchActivity : MultiLanguageActivity() {
 
     val viewModel: WebSearchViewModel by viewModels()
 
