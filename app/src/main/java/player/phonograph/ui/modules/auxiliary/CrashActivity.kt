@@ -2,7 +2,6 @@ package player.phonograph.ui.modules.auxiliary
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
-import lib.phonograph.activity.ToolbarActivity
 import lib.phonograph.dialog.alertDialog
 import lib.phonograph.misc.Reboot
 import player.phonograph.R
@@ -11,6 +10,7 @@ import player.phonograph.mechanism.SettingDataManager
 import player.phonograph.notification.ErrorNotification.KEY_IS_A_CRASH
 import player.phonograph.notification.ErrorNotification.KEY_NOTE
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
+import player.phonograph.ui.basis.ToolbarActivity
 import player.phonograph.ui.modules.setting.SettingsActivity
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffixCompat

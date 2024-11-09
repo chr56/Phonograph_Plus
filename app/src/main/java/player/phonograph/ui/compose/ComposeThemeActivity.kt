@@ -4,7 +4,7 @@
 
 package player.phonograph.ui.compose
 
-import lib.phonograph.activity.MultiLanguageActivity
+import player.phonograph.ui.basis.MultiLanguageActivity
 import android.os.Bundle
 
 abstract class ComposeThemeActivity : MultiLanguageActivity() {

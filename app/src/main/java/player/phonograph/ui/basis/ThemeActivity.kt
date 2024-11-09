@@ -2,7 +2,7 @@
  * Copyright (c) 2022~2024 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package lib.phonograph.activity
+package player.phonograph.ui.basis
 
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting

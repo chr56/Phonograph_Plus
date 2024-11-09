@@ -1,17 +1,7 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License, version 3,
- *  as published by the Free Software Foundation.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
+ *  Copyright (c) 2022~2024 chr_56
  */
-package lib.phonograph.activity
+package player.phonograph.ui.basis
 
 import lib.phonograph.localization.LocalizationStore
 import lib.phonograph.localization.LocalizationUtil

@@ -4,13 +4,13 @@
 
 package player.phonograph.ui.modules.panel
 
-import lib.phonograph.activity.ToolbarActivity
 import org.koin.android.ext.android.inject
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
 import player.phonograph.service.MusicServiceConnection
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.service.queue.QueueManager
+import player.phonograph.ui.basis.ToolbarActivity
 import player.phonograph.util.permissions.StoragePermissionChecker
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import androidx.lifecycle.DefaultLifecycleObserver
