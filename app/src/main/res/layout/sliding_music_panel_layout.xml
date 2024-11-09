@@ -25,9 +25,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <fragment
+        <androidx.fragment.app.FragmentContainerView
             android:id="@+id/mini_player_fragment"
-            class="player.phonograph.ui.modules.player.MiniPlayerFragment"
+            android:name="player.phonograph.ui.modules.player.MiniPlayerFragment"
             android:layout_width="match_parent"
             android:layout_height="@dimen/mini_player_height" />
 

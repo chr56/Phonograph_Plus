@@ -9,12 +9,11 @@ import player.phonograph.settings.Setting
 import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.theme.accentColorFlow
 import player.phonograph.util.theme.primaryColorFlow
-import player.phonograph.util.theme.restoreNotFullsScreen
-import player.phonograph.util.theme.setFullScreenAndIncludeStatusBar
 import player.phonograph.util.theme.updateAllSystemUIColors
 import player.phonograph.util.theme.updateNavigationbarColor
 import player.phonograph.util.theme.updateStatusbarColor
 import player.phonograph.util.theme.updateTaskDescriptionColor
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -48,7 +47,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         setTheme(ThemeSetting.themeStyle(this))
 
         // immersive status bar
-        if (fullScreen) updateFullScreenSettings()
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         // color
         if (autoSetStatusBarColor) updateStatusbarColor()
@@ -57,13 +56,6 @@ abstract class ThemeActivity : MultiLanguageActivity() {
 
         observeTheme()
     }
-
-    /** Must call before super */
-    protected var fullScreen: Boolean = true
-        set(value) {
-            field = value
-            updateFullScreenSettings()
-        }
 
     /** Must call before super */
     protected var autoSetStatusBarColor: Boolean = true
@@ -118,14 +110,6 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     //
 
     protected fun updateSystemUIColors(color: Int) = updateAllSystemUIColors(this, color)
-
-    //
-    // User Interface
-    //
-
-    protected fun updateFullScreenSettings() {
-        if (fullScreen) setFullScreenAndIncludeStatusBar() else restoreNotFullsScreen()
-    }
 
     //
     // SnackBar holder

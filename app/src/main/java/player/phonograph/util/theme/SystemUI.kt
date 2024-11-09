@@ -38,15 +38,3 @@ private var coloredNavigationBar: Boolean = Setting(App.instance)[Keys.coloredNa
 fun updateColoredNavigationBarSettingCache(value: Boolean) {
     coloredNavigationBar = value
 }
-
-@Suppress("DEPRECATION")
-fun Activity.setFullScreenAndIncludeStatusBar() {
-    window.decorView.systemUiVisibility =
-        (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
-}
-
-@Suppress("DEPRECATION")
-fun Activity.restoreNotFullsScreen() {
-    window.decorView.systemUiVisibility -=
-        (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
-}
