@@ -8,10 +8,10 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import util.theme.activity.setNavigationBarColor
-import util.theme.activity.setStatusbarColor
 import util.theme.activity.setTaskDescriptionColor
 import util.theme.color.darkenColor
+import util.theme.color.isColorLight
+import androidx.core.view.WindowInsetsControllerCompat
 import android.app.Activity
 import android.graphics.Color
 import android.view.View
@@ -20,15 +20,22 @@ import android.view.View
  * update Statusbar Color following current setting
  */
 fun Activity.updateStatusbarColor(color: Int = darkenColor(primaryColor())) {
-    setStatusbarColor(darkenColor(color), R.id.status_bar)
+    val backgroundColor = darkenColor(color)
+    @Suppress("DEPRECATION")
+    window.statusBarColor = backgroundColor
+    window.decorView.rootView.findViewById<View>(R.id.status_bar)?.setBackgroundColor(backgroundColor)
+    WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = isColorLight(backgroundColor)
 }
 
 /**
  * update Navigation Color following current setting
  */
 fun Activity.updateNavigationbarColor(color: Int = darkenColor(primaryColor())) {
-    val targetColor = if (coloredNavigationBar) color else Color.BLACK
-    setNavigationBarColor(targetColor)
+    val backgroundColor = if (coloredNavigationBar) color else Color.BLACK
+    @Suppress("DEPRECATION")
+    window.navigationBarColor = backgroundColor
+    // window.decorView.rootView.findViewById<View>(R.id.navigation_bar)?.setBackgroundColor(backgroundColor)
+    WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightNavigationBars = isColorLight(backgroundColor)
 }
 
 fun Activity.updateTaskDescriptionColor(color: Int = darkenColor(primaryColor())) = setTaskDescriptionColor(color)
