@@ -18,7 +18,7 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
-import player.phonograph.ui.components.popup.ListOptionsPopup
+import player.phonograph.ui.modules.popup.ListOptionsPopup
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
 import player.phonograph.util.theme.accentColor

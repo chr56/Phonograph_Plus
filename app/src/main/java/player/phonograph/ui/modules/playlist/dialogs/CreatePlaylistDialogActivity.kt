@@ -5,7 +5,6 @@
 package player.phonograph.ui.modules.playlist.dialogs
 
 import lib.activityresultcontract.registerActivityResultLauncherDelegate
-import lib.phonograph.activity.MultiLanguageActivity
 import lib.storage.launcher.CreateFileStorageAccessDelegate
 import lib.storage.launcher.ICreateFileStorageAccessible
 import lib.storage.launcher.IOpenDirStorageAccessible
@@ -22,6 +21,7 @@ import player.phonograph.mechanism.playlist.PlaylistProcessors.reader
 import player.phonograph.mechanism.playlist.mediastore.duplicatePlaylistViaMediaStore
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.ui.basis.MultiLanguageActivity
 import player.phonograph.util.PLAYLIST_MIME_TYPE
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.parcelableArrayListExtra

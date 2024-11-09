@@ -16,9 +16,9 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.modules.explorer.FilesPageExplorerFragment
 import player.phonograph.ui.modules.explorer.FilesPageViewModel
+import player.phonograph.ui.modules.popup.ListOptionsPopup
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode

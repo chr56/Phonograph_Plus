@@ -17,8 +17,8 @@ import player.phonograph.mechanism.setting.PageConfig
 import player.phonograph.model.pages.Pages
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.modules.main.pages.AbsPage
+import player.phonograph.ui.modules.popup.ListOptionsPopup
 import player.phonograph.ui.modules.search.SearchActivity
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics

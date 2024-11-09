@@ -1,7 +1,6 @@
 package player.phonograph.ui.modules.auxiliary
 
 import de.psdev.licensesdialog.LicensesDialog
-import lib.phonograph.activity.ToolbarActivity
 import lib.phonograph.misc.NoticesProcessor
 import player.phonograph.App
 import player.phonograph.R
@@ -10,6 +9,7 @@ import player.phonograph.mechanism.Update
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.ui.basis.ToolbarActivity
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.DebugDialog
 import player.phonograph.ui.dialogs.ReportIssueDialog

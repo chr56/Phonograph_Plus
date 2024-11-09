@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package lib.phonograph.activity
+package player.phonograph.ui.basis
 
 import com.google.android.material.snackbar.Snackbar
 import lib.activityresultcontract.IRequestMultiplePermission

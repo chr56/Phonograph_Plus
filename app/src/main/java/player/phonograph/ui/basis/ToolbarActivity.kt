@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ * Copyright (c) 2022-2024 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package lib.phonograph.activity
+package player.phonograph.ui.basis
 
 import player.phonograph.settings.ThemeSetting
 import util.theme.view.menu.tintOverflowMenuItems
