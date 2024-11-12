@@ -277,9 +277,8 @@ abstract class AbsSlidingMusicPanelActivity :
     }
 
     private fun setMiniPlayerFadingProgress(@FloatRange(from = 0.0, to = 1.0) progress: Float) {
-        val view = miniPlayerFragment?.view ?: return
         val alpha = 1 - progress
-        view.also {
+        panelBinding.miniPlayerFragment.also {
             it.alpha = alpha
             // necessary to make the views below clickable
             it.visibility = if (alpha == 0f) View.GONE else View.VISIBLE
