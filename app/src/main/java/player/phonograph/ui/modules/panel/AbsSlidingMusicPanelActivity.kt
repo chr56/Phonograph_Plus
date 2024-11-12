@@ -130,6 +130,7 @@ abstract class AbsSlidingMusicPanelActivity :
                 flow.distinctUntilChanged().collect { screen ->
                     setupPlayerFragment(screen)
                     miniPlayerFragment?.requireView()?.setOnClickListener { expandPanel() }
+                    panelBinding.navigationBar.setOnClickListener { expandPanel() }
                 }
             }
         }
@@ -237,7 +238,7 @@ abstract class AbsSlidingMusicPanelActivity :
             slidingUpPanelLayout.panelHeight = 0
             collapsePanel()
         } else {
-            slidingUpPanelLayout.panelHeight = resources.getDimensionPixelSize(R.dimen.mini_player_height)
+            slidingUpPanelLayout.panelHeight = panelBinding.miniPlayerDocker.height
         }
     }
 
@@ -259,6 +260,9 @@ abstract class AbsSlidingMusicPanelActivity :
             it.alpha = alpha
             // necessary to make the views below clickable
             it.visibility = if (alpha == 0f) View.GONE else View.VISIBLE
+        }
+        panelBinding.navigationBar.also {
+            it.visibility = if (progress == 0f) View.VISIBLE else View.GONE
         }
     }
 
