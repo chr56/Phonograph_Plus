@@ -17,7 +17,7 @@ import player.phonograph.util.text.dateTimeSuffixCompat
 import player.phonograph.util.text.getDeviceInfo
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
-import player.phonograph.util.theme.updateAllSystemUIColors
+import player.phonograph.util.theme.updateSystemBarsColor
 import util.theme.color.primaryTextColor
 import util.theme.view.toolbar.setToolbarColor
 import androidx.core.view.ViewCompat
@@ -31,6 +31,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -66,7 +67,7 @@ class CrashActivity : ToolbarActivity() {
 
     private fun setupTheme() {
         // System UI
-        updateAllSystemUIColors(colorPrimaryDeep)
+        updateSystemBarsColor(colorPrimaryDeep, Color.TRANSPARENT)
 
         // toolbar theme
         binding.toolbar.apply {
@@ -119,8 +120,6 @@ class CrashActivity : ToolbarActivity() {
 
         printStackTraceText(stackTraceText)
 
-        autoSetStatusBarColor = false
-        autoSetNavigationBarColor = false
         binding = ActivityCrashBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)

@@ -39,10 +39,7 @@ import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
 import player.phonograph.ui.dialogs.PathFilterPreferenceDialog
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.reportError
-import player.phonograph.util.runOnMainHandler
 import player.phonograph.util.theme.tintButtons
-import player.phonograph.util.theme.updateColoredNavigationBarSettingCache
-import player.phonograph.util.theme.updateNavigationbarColor
 import player.phonograph.util.warning
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
@@ -529,10 +526,7 @@ private fun ColoredNavigationBarSetting() {
         summaryRes = R.string.pref_summary_colored_navigation_bar,
         defaultValue = false,
         onCheckedChange = {
-            updateColoredNavigationBarSettingCache(it)
-            runOnMainHandler {
-                (context as? Activity)?.updateNavigationbarColor()
-            }
+
         }
     )
 }

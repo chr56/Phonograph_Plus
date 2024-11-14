@@ -9,11 +9,8 @@ import player.phonograph.settings.Setting
 import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.theme.accentColorFlow
 import player.phonograph.util.theme.primaryColorFlow
-import player.phonograph.util.theme.updateAllSystemUIColors
-import player.phonograph.util.theme.updateNavigationbarColor
-import player.phonograph.util.theme.updateStatusbarColor
+import player.phonograph.util.theme.setupSystemBars
 import player.phonograph.util.theme.updateTaskDescriptionColor
-import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -44,25 +41,12 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         // theme
         setTheme(ThemeSetting.themeStyle(this))
 
-        // immersive status bar
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        setupSystemBars()
 
-        // color
-        if (autoSetStatusBarColor) updateStatusbarColor()
-        if (autoSetNavigationBarColor) updateNavigationbarColor()
-        if (autoSetTaskDescriptionColor) updateTaskDescriptionColor()
+        updateTaskDescriptionColor()
 
         observeTheme()
     }
-
-    /** Must call before super */
-    protected var autoSetStatusBarColor: Boolean = true
-
-    /** Must call before super */
-    protected var autoSetNavigationBarColor: Boolean = true
-
-    /** Must call before super */
-    protected var autoSetTaskDescriptionColor: Boolean = true
 
     private fun observeTheme() {
         lifecycleScope.launch(Dispatchers.IO) {

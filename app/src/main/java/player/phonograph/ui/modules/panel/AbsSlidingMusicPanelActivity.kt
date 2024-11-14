@@ -17,9 +17,8 @@ import player.phonograph.ui.modules.player.card.CardPlayerFragment
 import player.phonograph.ui.modules.player.flat.FlatPlayerFragment
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.themeFooterColor
-import player.phonograph.util.theme.updateNavigationbarColor
-import player.phonograph.util.theme.updateStatusbarColor
-import player.phonograph.util.theme.updateTaskDescriptionColor
+import player.phonograph.util.theme.updateAllSystemUIColors
+import player.phonograph.util.theme.updateSystemBarsColor
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
@@ -87,6 +86,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
         // setup panel
         setContentView(createContentView())
+        updateAllSystemUIColors(primaryColor()) // first setup
         miniPlayerFragment = panelBinding.miniPlayerFragment.getFragment()
         panelBinding.slidingLayout.also { layout ->
             layout.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
@@ -263,13 +263,11 @@ abstract class AbsSlidingMusicPanelActivity :
         @ColorInt from: Int, @ColorInt to: Int,
         @FloatRange(from = 0.0, to = 1.0) progress: Float,
     ) {
-        val statusbarColor: Int =
-            argbEvaluator.evaluate(progress, from, actualStatusbarColor(to)) as Int
-        updateStatusbarColor(statusbarColor)
         val navigationbarColor: Int =
             argbEvaluator.evaluate(progress, from, to) as Int
-        updateNavigationbarColor(navigationbarColor)
-        updateTaskDescriptionColor(navigationbarColor)
+        val statusbarColor: Int =
+            argbEvaluator.evaluate(progress, from, actualStatusbarColor(to)) as Int
+        updateSystemBarsColor(statusbarColor, navigationbarColor)
     }
 
     private fun actualStatusbarColor(@ColorInt color: Int): Int =

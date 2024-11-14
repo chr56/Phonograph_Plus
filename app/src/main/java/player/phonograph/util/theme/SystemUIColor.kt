@@ -43,7 +43,7 @@ fun Activity.setupSystemBars() {
     systemUIModifier.setUp(window, window.decorView)
 }
 
-fun Activity.updateSystemBarsColor(@ColorInt color: Int) = updateSystemBarsColor(color, color)
+fun Activity.updateAllSystemUIColors(@ColorInt color: Int) = updateSystemBarsColor(color, color)
 
 fun Activity.updateSystemBarsColor(@ColorInt statusBarColor: Int, @ColorInt navigationBarColor: Int) {
     systemUIModifier.updateSystemBars(window, window.decorView, statusBarColor, navigationBarColor, nightMode)
@@ -71,7 +71,7 @@ private open class SystemUIModifierBase : SystemUIModifier {
 
     protected fun shouldEnableLightFrontGround(@ColorInt color: Int, nightMode: Boolean): Boolean =
         if (Color.alpha(color) <= 80) { // translucent: base on background
-            nightMode
+            !nightMode
         } else { // colored
             isColorLight(color)
         }

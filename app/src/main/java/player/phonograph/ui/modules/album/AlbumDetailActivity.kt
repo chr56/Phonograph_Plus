@@ -69,10 +69,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
 
         viewBinding = ActivityAlbumDetailBinding.inflate(layoutInflater)
 
-        autoSetStatusBarColor = false
-        autoSetNavigationBarColor = false
-        autoSetTaskDescriptionColor = false
-
 
         registerActivityResultLauncherDelegate(
             createFileStorageAccessDelegate,

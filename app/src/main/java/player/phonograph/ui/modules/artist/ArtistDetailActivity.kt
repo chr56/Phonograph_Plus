@@ -74,10 +74,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel.load(this)
 
-        autoSetStatusBarColor = false
-        autoSetNavigationBarColor = false
-        autoSetTaskDescriptionColor = false
-
         registerActivityResultLauncherDelegate(
             createFileStorageAccessDelegate,
             openFileStorageAccessDelegate,

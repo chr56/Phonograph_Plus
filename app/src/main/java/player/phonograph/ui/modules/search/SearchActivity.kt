@@ -25,7 +25,9 @@ import player.phonograph.ui.modules.popup.OptionsPopup
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
+import player.phonograph.util.theme.updateSystemBarsColor
 import player.phonograph.util.ui.hideKeyboard
+import util.theme.color.darkenColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import util.theme.view.searchview.setSearchViewContentColor
@@ -38,6 +40,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -75,6 +78,8 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
 
         setUpToolBar()
         setUpPager()
+
+        updateSystemBarsColor(darkenColor(primaryColor()), Color.TRANSPARENT)
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
