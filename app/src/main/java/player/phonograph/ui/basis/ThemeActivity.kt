@@ -18,12 +18,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withResumed
-import android.animation.ValueAnimator
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import android.view.animation.PathInterpolator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -116,29 +114,4 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     //
     protected open val snackBarContainer: View get() = window.decorView
 
-    //
-    // Animation
-    //
-    private var colorChangeAnimator: ValueAnimator? = null
-
-    protected fun animateThemeColorChange(
-        oldColor: Int, newColor: Int, action: (ValueAnimator) -> Unit,
-    ) { // todo: make sure lifecycle
-        colorChangeAnimator?.end()
-        colorChangeAnimator?.cancel()
-        colorChangeAnimator = ValueAnimator
-            .ofArgb(oldColor, newColor)
-            .setDuration(600L)
-            .also { animator ->
-                animator.interpolator = PathInterpolator(0.4f, 0f, 1f, 1f)
-                animator.addUpdateListener(action)
-                animator.start()
-            }
-    }
-
-    protected fun cancelThemeColorChange() {
-        colorChangeAnimator?.end()
-        colorChangeAnimator?.cancel()
-        colorChangeAnimator = null
-    }
 }

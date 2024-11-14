@@ -23,18 +23,16 @@ import player.phonograph.util.theme.updateTaskDescriptionColor
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup.MarginLayoutParams
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.view.animation.PathInterpolator
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
@@ -137,19 +135,9 @@ abstract class AbsSlidingMusicPanelActivity :
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 panelViewModel.highlightColor.collect { color ->
                     if (panelState == PanelState.EXPANDED) {
-                        animateThemeColorChange(
-                            panelViewModel.previousHighlightColor.value,
-                            actualStatusbarColor(panelViewModel.highlightColor.value)
-                        ) { animator ->
-                            updateStatusbarColor(animator.animatedValue as Int)
-                        }
-                        animateThemeColorChange(
-                            panelViewModel.previousHighlightColor.value,
-                            color
-                        ) { animator ->
-                            updateNavigationbarColor(animator.animatedValue as Int)
-                            updateTaskDescriptionColor(animator.animatedValue as Int)
-                        }
+                        animateSystemBarsColor(
+                            panelViewModel.previousHighlightColor.value, color
+                        )
                     }
                 }
             }
@@ -165,7 +153,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
     override fun onDestroy() {
         super.onDestroy()
-        cancelThemeColorChange() // just in case
+        cancelSystemBarsColorAnimation() // just in case
     }
 
     private fun setupPlayerFragment(screen: NowPlayingScreen) {
@@ -191,25 +179,10 @@ abstract class AbsSlidingMusicPanelActivity :
         }
     }
 
-    private val argbEvaluator = ArgbEvaluator()
     override fun onPanelSlide(panel: View, @FloatRange(from = 0.0, to = 1.0) slideOffset: Float) {
         setMiniPlayerFadingProgress(slideOffset)
-        cancelThemeColorChange()
-        val color: Int =
-            argbEvaluator.evaluate(
-                slideOffset,
-                panelViewModel.activityColor.value,
-                panelViewModel.highlightColor.value
-            ) as Int
-        updateNavigationbarColor(color)
-        updateTaskDescriptionColor(color)
-        val statusbarColor: Int =
-            argbEvaluator.evaluate(
-                slideOffset,
-                panelViewModel.activityColor.value,
-                actualStatusbarColor(panelViewModel.highlightColor.value)
-            ) as Int
-        updateStatusbarColor(statusbarColor)
+        cancelSystemBarsColorAnimation()
+        moveSystemBarsColor(panelViewModel.activityColor.value, panelViewModel.highlightColor.value, slideOffset)
     }
 
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
@@ -289,8 +262,46 @@ abstract class AbsSlidingMusicPanelActivity :
         slidingUpPanelLayout.setAntiDragView(antiDragView)
     }
 
+    //region SystemBarsColors
+    private val argbEvaluator = ArgbEvaluator()
+    private fun moveSystemBarsColor(
+        @ColorInt from: Int, @ColorInt to: Int,
+        @FloatRange(from = 0.0, to = 1.0) progress: Float,
+    ) {
+        val statusbarColor: Int =
+            argbEvaluator.evaluate(progress, from, actualStatusbarColor(to)) as Int
+        updateStatusbarColor(statusbarColor)
+        val navigationbarColor: Int =
+            argbEvaluator.evaluate(progress, from, to) as Int
+        updateNavigationbarColor(navigationbarColor)
+        updateTaskDescriptionColor(navigationbarColor)
+    }
+
     private fun actualStatusbarColor(@ColorInt color: Int): Int =
         if (playerFragment is CardPlayerFragment) Color.TRANSPARENT else color
+
+    private var animator: ValueAnimator? = null
+
+    private fun animateSystemBarsColor(oldColor: Int, newColor: Int) {
+        cancelSystemBarsColorAnimation()
+        animator = ValueAnimator.ofFloat(0f, 1f)
+            .also { animator ->
+                animator.duration = 600L
+                animator.interpolator = PathInterpolator(0.4f, 0f, 1f, 1f)
+                animator.addUpdateListener {
+                    val progress = animator.animatedValue as Float
+                    moveSystemBarsColor(oldColor, newColor, progress)
+                }
+                animator.start()
+            }
+    }
+
+    private fun cancelSystemBarsColorAnimation() {
+        animator?.end()
+        animator?.cancel()
+        animator = null
+    }
+    //endregion
 
     override val snackBarContainer: View get() = panelBinding.contentContainer
 
