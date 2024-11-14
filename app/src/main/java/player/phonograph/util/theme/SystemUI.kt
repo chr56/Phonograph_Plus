@@ -16,6 +16,13 @@ import android.app.Activity
 import android.graphics.Color
 import android.view.View
 
+
+fun Activity.updateAllSystemUIColors(color: Int) {
+    updateStatusbarColor(color)
+    updateNavigationbarColor(color)
+    updateTaskDescriptionColor(color)
+}
+
 /**
  * update Statusbar Color following current setting
  */

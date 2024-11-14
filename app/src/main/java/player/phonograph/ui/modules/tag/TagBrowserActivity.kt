@@ -93,7 +93,7 @@ class TagBrowserActivity :
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.color.collect { color ->
-                    if (color != null) updateAllSystemUIColors(this@TagBrowserActivity, darkenColor(color.toArgb()))
+                    if (color != null) updateAllSystemUIColors(darkenColor(color.toArgb()))
                 }
             }
         }

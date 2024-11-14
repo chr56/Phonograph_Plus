@@ -104,12 +104,6 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     }
 
     //
-    // System UI Colors
-    //
-
-    protected fun updateSystemUIColors(color: Int) = updateAllSystemUIColors(this, color)
-
-    //
     // SnackBar holder
     //
     protected open val snackBarContainer: View get() = window.decorView

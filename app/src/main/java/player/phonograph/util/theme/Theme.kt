@@ -21,7 +21,6 @@ import androidx.annotation.CheckResult
 import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
 import androidx.fragment.app.Fragment
-import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -120,12 +119,6 @@ fun primaryColorFlow(context: Context): Flow<Int> =
 
 fun accentColorFlow(context: Context): Flow<Int> =
     colorFlow(context, Keys.monetPaletteAccentColor, Keys.selectedAccentColor)
-
-fun updateAllSystemUIColors(activity: Activity, color: Int) = with(activity) {
-    updateStatusbarColor(color)
-    updateNavigationbarColor(color)
-    updateTaskDescriptionColor(color)
-}
 
 object ThemeCacheUpdateDelegate {
 

@@ -26,6 +26,7 @@ import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
+import player.phonograph.util.theme.updateAllSystemUIColors
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
@@ -163,7 +164,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
 
         viewBinding.toolbar.setBackgroundColor(color)
         setSupportActionBar(viewBinding.toolbar) // needed to auto readjust the toolbar content color
-        updateSystemUIColors(color)
+        updateAllSystemUIColors(color)
         setToolbarColor(viewBinding.toolbar, color)
 
         val secondaryTextColor = secondaryTextColor(color)
