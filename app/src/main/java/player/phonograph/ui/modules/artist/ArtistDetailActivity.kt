@@ -32,6 +32,7 @@ import player.phonograph.util.IGetContentRequester
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.themeFooterColor
+import player.phonograph.util.theme.updateAllSystemUIColors
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import util.theme.color.toolbarTitleColor
@@ -174,7 +175,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         setToolbarColor(viewBinding.toolbar, color)
         viewBinding.toolbar.setTitleTextColor(toolbarTitleColor(this, color))
 
-        updateSystemUIColors(color)
+        updateAllSystemUIColors(color)
         val secondaryTextColor = secondaryTextColor(color)
         viewBinding.durationIcon.setImageDrawable(
             getTintedDrawable(R.drawable.ic_timer_white_24dp, secondaryTextColor)

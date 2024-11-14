@@ -103,7 +103,7 @@ private fun PhonographTheme(colors: Colors, content: @Composable () -> Unit) {
 private fun AwareSystemUIColor(primary: Color) {
     val context = LocalContext.current
     LaunchedEffect(primary) {
-        if (context is Activity) updateAllSystemUIColors(context, primary.toArgb())
+        if (context is Activity) context.updateAllSystemUIColors(primary.toArgb())
     }
 }
 

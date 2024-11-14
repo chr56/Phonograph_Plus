@@ -17,6 +17,7 @@ import player.phonograph.util.text.dateTimeSuffixCompat
 import player.phonograph.util.text.getDeviceInfo
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
+import player.phonograph.util.theme.updateAllSystemUIColors
 import util.theme.color.primaryTextColor
 import util.theme.view.toolbar.setToolbarColor
 import androidx.lifecycle.lifecycleScope
@@ -61,7 +62,7 @@ class CrashActivity : ToolbarActivity() {
 
     private fun setupTheme() {
         // System UI
-        updateSystemUIColors(colorPrimaryDeep)
+        updateAllSystemUIColors(colorPrimaryDeep)
 
         // toolbar theme
         binding.toolbar.apply {
