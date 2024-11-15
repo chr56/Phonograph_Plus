@@ -123,9 +123,9 @@ abstract class AbsSlidingMusicPanelActivity :
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 panelViewModel.highlightColor.collect { color ->
                     if (panelState == PanelState.EXPANDED) {
-                        animateSystemBarsColor(
-                            panelViewModel.previousHighlightColor.value, color
-                        )
+                        val from = panelViewModel.previousHighlightColor.value
+                        val to = color
+                        animateSystemBarsColor(from, to)
                     }
                 }
             }
@@ -170,7 +170,9 @@ abstract class AbsSlidingMusicPanelActivity :
     override fun onPanelSlide(panel: View, @FloatRange(from = 0.0, to = 1.0) slideOffset: Float) {
         setMiniPlayerFadingProgress(slideOffset)
         cancelSystemBarsColorAnimation()
-        moveSystemBarsColor(panelViewModel.activityColor.value, panelViewModel.highlightColor.value, slideOffset)
+        val from = panelViewModel.activityColor.value
+        val to = panelViewModel.highlightColor.value
+        moveSystemBarsColor(from, to, slideOffset)
     }
 
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
@@ -264,7 +266,7 @@ abstract class AbsSlidingMusicPanelActivity :
         @FloatRange(from = 0.0, to = 1.0) progress: Float,
     ) {
         val navigationbarColor: Int =
-            argbEvaluator.evaluate(progress, from, to) as Int
+            argbEvaluator.evaluate(progress, actualNavigationbarColor(from), translucentScrim) as Int
         val statusbarColor: Int =
             argbEvaluator.evaluate(progress, from, actualStatusbarColor(to)) as Int
         updateSystemBarsColor(statusbarColor, navigationbarColor)
@@ -272,6 +274,9 @@ abstract class AbsSlidingMusicPanelActivity :
 
     private fun actualStatusbarColor(@ColorInt color: Int): Int =
         if (playerFragment is CardPlayerFragment) Color.TRANSPARENT else color
+
+    private fun actualNavigationbarColor(@ColorInt color: Int): Int =
+        if (isBottomBarHidden) translucentScrim else color
 
     private var animator: ValueAnimator? = null
 
@@ -300,5 +305,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
     companion object {
         const val NOW_PLAYING_FRAGMENT = "NowPlayingPlayerFragment"
+
+        private val translucentScrim = Color.argb(64, 0, 0, 0)
     }
 }
