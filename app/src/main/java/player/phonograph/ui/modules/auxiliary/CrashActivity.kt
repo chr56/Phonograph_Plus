@@ -20,6 +20,9 @@ import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.updateAllSystemUIColors
 import util.theme.color.primaryTextColor
 import util.theme.view.toolbar.setToolbarColor
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.lifecycleScope
 import android.app.ActivityManager
 import android.content.ClipData
@@ -37,6 +40,7 @@ import android.view.Menu
 import android.view.Menu.NONE
 import android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM
 import android.view.MenuItem.SHOW_AS_ACTION_NEVER
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -156,6 +160,13 @@ class CrashActivity : ToolbarActivity() {
                 "${getString(R.string.copy_to_clipboard)}:\n${getString(R.string.success)}",
                 Toast.LENGTH_SHORT
             ).show()
+        }
+        ViewCompat.setOnApplyWindowInsetsListener(binding.copyToClipboard) { view, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            view.updateLayoutParams<MarginLayoutParams> {
+                bottomMargin = insets.bottom
+            }
+            WindowInsetsCompat.CONSUMED
         }
 
         // save crash report
