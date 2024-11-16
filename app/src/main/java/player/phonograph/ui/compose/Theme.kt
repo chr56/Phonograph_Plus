@@ -14,8 +14,9 @@ import player.phonograph.settings.THEME_LIGHT
 import player.phonograph.settings.ThemeSetting
 import player.phonograph.util.theme.accentColorFlow
 import player.phonograph.util.theme.primaryColorFlow
+import player.phonograph.util.theme.setupSystemBars
 import player.phonograph.util.theme.systemDarkmode
-import player.phonograph.util.theme.updateAllSystemUIColors
+import player.phonograph.util.theme.updateSystemBarsColor
 import util.theme.materials.MaterialColor
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Colors
@@ -97,13 +98,16 @@ private fun PhonographTheme(colors: Colors, content: @Composable () -> Unit) {
         shapes = Shapes,
         content = content
     )
-    AwareSystemUIColor(colors.primary)
+    AwareSystemUIColor(colors.primaryVariant)
 }
 @Composable
-private fun AwareSystemUIColor(primary: Color) {
+private fun AwareSystemUIColor(color: Color) {
     val context = LocalContext.current
-    LaunchedEffect(primary) {
-        if (context is Activity) context.updateAllSystemUIColors(primary.toArgb())
+    LaunchedEffect(color) {
+        if (context is Activity) {
+            context.setupSystemBars()
+            context.updateSystemBarsColor(color.toArgb(), 64 shl 24)
+        }
     }
 }
 
