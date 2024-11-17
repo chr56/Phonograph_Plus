@@ -528,4 +528,6 @@
     <string name="service_disconnected">[服務已斷聯!]</string>
     <string name="file_playlists">檔案播放列表</string>
     <string name="database_playlists">數據庫播放列表</string>
+    <string name="version_migration">版本遷移</string>
+    <string name="version_migration_summary">正在從舊版本升級</string>
 </resources>
