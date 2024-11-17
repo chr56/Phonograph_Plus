@@ -49,8 +49,6 @@ fun migrate(context: Context, from: Int, to: Int) {
         Log.i(TAG, "Start Migration: $from -> $to")
 
         MigrateOperator(context, from, to).apply {
-            migrate(AutoDownloadMetadataMigration())
-            migrate(LegacyLastAddedCutoffIntervalMigration())
             migrate(CustomArtistImageStoreMigration())
             migrate(ThemeStoreMigration())
             migrate(GeneralThemeMigration())
@@ -104,18 +102,6 @@ private class MigrateOperator(
 ) {
     fun migrate(migration: Migration) =
         migration.tryMigrate(context, from, to)
-}
-
-private class AutoDownloadMetadataMigration : Migration(introduced = 1011) {
-    override fun doMigrate(context: Context) {
-        removePreference(context, keyName = DeprecatedPreference.AutoDownloadMetadata.AUTO_DOWNLOAD_IMAGES_POLICY)
-    }
-}
-
-private class LegacyLastAddedCutoffIntervalMigration : Migration(introduced = 1011) {
-    override fun doMigrate(context: Context) {
-        removePreference(context, keyName = DeprecatedPreference.LegacyLastAddedCutoffInterval.LEGACY_LAST_ADDED_CUTOFF)
-    }
 }
 
 /**
