@@ -18,7 +18,7 @@ import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.R
 import player.phonograph.mechanism.SettingDataManager
 import player.phonograph.mechanism.backup.Backup
-import player.phonograph.ui.basis.MultiLanguageActivity
+import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.DropDownMenuContent
 import player.phonograph.ui.dialogs.BackupExportDialog
@@ -56,7 +56,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.FileInputStream
 
-class SettingsActivity : MultiLanguageActivity(),
+class SettingsActivity : ComposeActivity(),
                          ICreateFileStorageAccessible, IOpenFileStorageAccessible,
                          PathSelectorRequester {
 

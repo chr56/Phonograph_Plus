@@ -13,7 +13,7 @@ import mms.Source
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
-import player.phonograph.ui.basis.MultiLanguageActivity
+import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.modules.web.IWebSearchRequester
 import player.phonograph.ui.modules.web.WebSearchLauncher
@@ -48,7 +48,7 @@ import android.os.Bundle
 import kotlinx.coroutines.runBlocking
 
 class MultiTagBrowserActivity :
-        MultiLanguageActivity(),
+        ComposeActivity(),
         IWebSearchRequester,
         ICreateFileStorageAccessible,
         IOpenFileStorageAccessible {
