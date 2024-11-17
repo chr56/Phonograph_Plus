@@ -1,19 +1,19 @@
-version: "1.8.5.1"
-channel: "STABLE"
-versionCode: 1085
-timestamp: 1730780000
+version: "1.8.6-dev0"
+channel: "PREVIEW"
+versionCode: 1086
+timestamp: 1731816124
 notes:
   en:
     highlights: [ ]
     items:
-      - "Note: This is a patch release, with a small fix in building"
-      - "Development: remove DependencyInfo from artifacts (for better reproducible build)"
+      - "Modify: change default File Playlist icon"
+      - "Development: update dependencies"
 
   zh:
     highlights: [ ]
     items:
-      - "注意 此为修正版本，修复构建的一个小问题"
-      - "开发 移除 DependencyInfo"
+      - "修改 默认文件播放列表图标"
+      - "开发 更新依赖"
 
-previousVersion: "1.8.5"
+previousVersion: "1.8.5.1"
 previousChannel: "STABLE"
