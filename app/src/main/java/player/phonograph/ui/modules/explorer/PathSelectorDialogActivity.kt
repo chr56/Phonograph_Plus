@@ -6,10 +6,10 @@ package player.phonograph.ui.modules.explorer
 
 import player.phonograph.R
 import player.phonograph.settings.ThemeSetting
+import player.phonograph.ui.basis.DialogActivity
 import player.phonograph.util.permissions.navigateToStorageSetting
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.ButtonBarLayout
 import androidx.core.util.valueIterator
@@ -35,7 +35,7 @@ import android.widget.LinearLayout.LayoutParams
 import android.widget.Space
 import kotlin.collections.iterator
 
-class PathSelectorDialogActivity : AppCompatActivity() {
+class PathSelectorDialogActivity : DialogActivity() {
 
     private val model: FilesChooserViewModel by viewModels()
 

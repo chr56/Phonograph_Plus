@@ -8,7 +8,7 @@ import player.phonograph.R
 import player.phonograph.databinding.DialogRenamePlaylistBinding
 import player.phonograph.mechanism.playlist.PlaylistProcessors
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.ui.basis.MultiLanguageActivity
+import player.phonograph.ui.basis.DialogActivity
 import player.phonograph.util.parcelableExtra
 import player.phonograph.util.ui.getScreenSize
 import android.content.Context
@@ -20,7 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class RenamePlaylistDialogActivity : MultiLanguageActivity() {
+class RenamePlaylistDialogActivity : DialogActivity() {
 
     private lateinit var parameter: Parameter
 

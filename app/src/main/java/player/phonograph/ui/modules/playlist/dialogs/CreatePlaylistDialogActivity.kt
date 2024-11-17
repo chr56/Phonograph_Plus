@@ -21,7 +21,7 @@ import player.phonograph.mechanism.playlist.PlaylistProcessors.reader
 import player.phonograph.mechanism.playlist.mediastore.duplicatePlaylistViaMediaStore
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.ui.basis.MultiLanguageActivity
+import player.phonograph.ui.basis.DialogActivity
 import player.phonograph.util.PLAYLIST_MIME_TYPE
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.parcelableArrayListExtra
@@ -54,7 +54,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class CreatePlaylistDialogActivity : MultiLanguageActivity(),
+class CreatePlaylistDialogActivity : DialogActivity(),
                                      IOpenFileStorageAccessible,
                                      IOpenDirStorageAccessible,
                                      ICreateFileStorageAccessible {
