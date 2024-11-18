@@ -4,15 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="0dp"
-        tools:ignore="UnusedAttribute">
-
-        <include layout="@layout/status_bar" android:id="@+id/status_bar_layout"/>
-
-    </FrameLayout>
+    <include layout="@layout/status_bar"/>
 
     <FrameLayout
         android:id="@+id/fragment_container"
