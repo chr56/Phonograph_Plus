@@ -163,16 +163,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
     private fun setUpDrawer() {
 
-        // padding
-        with(drawerBinding.drawerLayout) {
-            setPadding(
-                paddingLeft,
-                paddingTop + mainBinding.statusBarLayout.statusBar.height,
-                paddingRight,
-                paddingBottom
-            )
-        }
-
         // Preparation
         setupDrawerMenu(
             activity = this@MainActivity,
