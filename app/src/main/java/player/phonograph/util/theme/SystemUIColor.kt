@@ -8,6 +8,8 @@ package player.phonograph.util.theme
 
 import util.theme.color.isColorLight
 import player.phonograph.R
+import util.theme.activity.setTaskDescriptionColor
+import util.theme.color.darkenColor
 import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
 import androidx.core.view.WindowCompat
@@ -52,6 +54,7 @@ fun Activity.updateSystemBarsColor(@ColorInt statusBarColor: Int, @ColorInt navi
     systemUIModifier.updateSystemBars(window, window.decorView, statusBarColor, navigationBarColor, nightMode)
 }
 
+fun Activity.updateTaskDescriptionColor(color: Int = darkenColor(primaryColor())) = setTaskDescriptionColor(color)
 
 interface SystemUIModifier {
     fun setUp(window: Window, view: View)
