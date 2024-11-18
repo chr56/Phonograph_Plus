@@ -17,8 +17,8 @@ import player.phonograph.ui.modules.player.card.CardPlayerFragment
 import player.phonograph.ui.modules.player.flat.FlatPlayerFragment
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.themeFooterColor
-import player.phonograph.util.theme.updateAllSystemUIColors
 import player.phonograph.util.theme.updateSystemBarsColor
+import util.theme.color.darkenColor
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
@@ -86,7 +86,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
         // setup panel
         setContentView(createContentView())
-        updateAllSystemUIColors(primaryColor()) // first setup
+        updateSystemBarsColor(darkenColor(primaryColor()), primaryColor()) // initial values
         miniPlayerFragment = panelBinding.miniPlayerFragment.getFragment()
         panelBinding.slidingLayout.also { layout ->
             layout.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {

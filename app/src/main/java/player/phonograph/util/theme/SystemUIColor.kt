@@ -48,8 +48,6 @@ fun Activity.setupSystemBars() {
     systemUIModifier.setUp(window, window.decorView)
 }
 
-fun Activity.updateAllSystemUIColors(@ColorInt color: Int) = updateSystemBarsColor(color, color)
-
 fun Activity.updateSystemBarsColor(@ColorInt statusBarColor: Int, @ColorInt navigationBarColor: Int) {
     systemUIModifier.updateSystemBars(window, window.decorView, statusBarColor, navigationBarColor, nightMode)
 }

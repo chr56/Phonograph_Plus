@@ -21,7 +21,7 @@ import player.phonograph.ui.modules.web.LastFmDialog
 import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.ui.modules.web.WebSearchTool
 import player.phonograph.util.debug
-import player.phonograph.util.theme.updateAllSystemUIColors
+import player.phonograph.util.theme.updateSystemBarsColor
 import util.theme.color.darkenColor
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.addCallback
@@ -94,7 +94,7 @@ class TagBrowserActivity :
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.color.collect { color ->
-                    if (color != null) updateAllSystemUIColors(darkenColor(color.toArgb()))
+                    if (color != null) updateSystemBarsColor(darkenColor(color.toArgb()), Color.Transparent.toArgb())
                 }
             }
         }
