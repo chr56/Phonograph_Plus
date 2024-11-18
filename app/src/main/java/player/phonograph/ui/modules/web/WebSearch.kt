@@ -5,6 +5,7 @@
 package player.phonograph.ui.modules.web
 
 import player.phonograph.ui.compose.Navigator
+import player.phonograph.ui.compose.components.StatusBarStub
 import player.phonograph.ui.modules.web.PageSearch.LastFmSearch
 import player.phonograph.ui.modules.web.PageSearch.MusicBrainzSearch
 import androidx.compose.foundation.clickable
@@ -42,6 +43,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun WebSearch(viewModel: WebSearchViewModel, scaffoldState: ScaffoldState, page: Page) {
     val context = LocalContext.current
+    StatusBarStub()
     Scaffold(
         Modifier.statusBarsPadding(),
         scaffoldState = scaffoldState,

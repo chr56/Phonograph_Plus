@@ -4,6 +4,7 @@ import player.phonograph.R
 import player.phonograph.mechanism.migrate.MigrationManager
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
+import player.phonograph.ui.compose.components.StatusBarStub
 import player.phonograph.ui.modules.main.MainActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -50,6 +51,7 @@ class MigrationActivity : ComposeActivity() {
             val isComplete by isCompleteFlow.collectAsState()
             val color = remember { derivedStateOf { if (isComplete) colorDone else colorProcess } }
             PhonographTheme(color) {
+                StatusBarStub()
                 Scaffold(
                     Modifier.systemBarsPadding(),
                     topBar = {

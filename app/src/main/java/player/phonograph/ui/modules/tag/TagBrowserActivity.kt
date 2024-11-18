@@ -15,6 +15,7 @@ import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
+import player.phonograph.ui.compose.components.StatusBarStub
 import player.phonograph.ui.modules.web.IWebSearchRequester
 import player.phonograph.ui.modules.web.LastFmDialog
 import player.phonograph.ui.modules.web.WebSearchLauncher
@@ -135,6 +136,7 @@ private fun TagEditor(
     PhonographTheme(highlightColorState) {
         val scaffoldState = rememberScaffoldState()
         val editable by viewModel.editable.collectAsState()
+        StatusBarStub()
         Scaffold(
             Modifier.statusBarsPadding(),
             scaffoldState = scaffoldState,
