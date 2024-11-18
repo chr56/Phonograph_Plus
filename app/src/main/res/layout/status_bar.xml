@@ -5,5 +5,5 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/status_bar_padding"
     android:background="@android:color/transparent"
-    android:elevation="@dimen/toolbar_elevation"
+    android:elevation="0dp"
     tools:ignore="UnusedAttribute" />
