@@ -27,11 +27,11 @@
         android:hasFragileUserData="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:localeConfig="@xml/locales_config"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Phonograph.Auto.LightBlack"
-        android:localeConfig="@xml/locales_config"
         tools:ignore="UnusedAttribute">
 
         <!--                                          -->
@@ -42,8 +42,8 @@
             android:exported="true" />
         <activity
             android:name=".ui.modules.auxiliary.LauncherActivity"
-            android:noHistory="true"
-            android:exported="true">
+            android:exported="true"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -122,53 +122,54 @@
         </activity>
         <activity
             android:name=".ui.modules.auxiliary.PhonographIntroActivity"
+            android:exported="true"
             android:label="@string/intro_label"
-            android:theme="@style/Theme.AppIntro"
-            android:exported="true"/>
-        <activity android:name=".ui.modules.album.AlbumDetailActivity"
+            android:theme="@style/Theme.AppIntro" />
+        <activity
+            android:name=".ui.modules.album.AlbumDetailActivity"
             android:label="@string/album" />
-        <activity android:name=".ui.modules.artist.ArtistDetailActivity"
+        <activity
+            android:name=".ui.modules.artist.ArtistDetailActivity"
             android:label="@string/artist" />
-        <activity android:name=".ui.modules.genre.GenreDetailActivity"
+        <activity
+            android:name=".ui.modules.genre.GenreDetailActivity"
             android:label="@string/genre" />
-        <activity android:name=".ui.modules.playlist.PlaylistDetailActivity"
+        <activity
+            android:name=".ui.modules.playlist.PlaylistDetailActivity"
             android:label="@string/playlists" />
         <activity
             android:name="player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity"
             android:excludeFromRecents="true"
             android:exported="false"
             android:label="@string/add_playlist_title"
-            android:theme="@style/Theme.Phonograph.DialogActivity.Auto"
-            />
+            android:theme="@style/Theme.Phonograph.DialogActivity.Auto" />
         <activity
             android:name="player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity"
             android:excludeFromRecents="true"
             android:exported="false"
             android:label="@string/new_playlist_title"
-            android:theme="@style/Theme.Phonograph.DialogActivity.Auto"
-            />
+            android:theme="@style/Theme.Phonograph.DialogActivity.Auto" />
         <activity
             android:name="player.phonograph.ui.modules.playlist.dialogs.RenamePlaylistDialogActivity"
             android:excludeFromRecents="true"
             android:exported="false"
             android:label="@string/rename_playlist_title"
-            android:theme="@style/Theme.Phonograph.DialogActivity.Auto"
-            />
+            android:theme="@style/Theme.Phonograph.DialogActivity.Auto" />
         <activity
-            android:name="player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialogActivity" android:excludeFromRecents="true"
+            android:name="player.phonograph.ui.modules.playlist.dialogs.ClearPlaylistDialogActivity"
+            android:excludeFromRecents="true"
             android:exported="false"
             android:label="@string/clear_action"
-            android:theme="@style/Theme.Phonograph.DialogActivity.Auto"
-            />
+            android:theme="@style/Theme.Phonograph.DialogActivity.Auto" />
         <activity
             android:name=".ui.modules.tag.TagBrowserActivity"
-            android:label="@string/action_details"
             android:exported="true"
+            android:label="@string/action_details"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.modules.tag.MultiTagBrowserActivity"
-            android:label="@string/action_details"
             android:exported="true"
+            android:label="@string/action_details"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.modules.search.SearchActivity" />
         <activity
@@ -191,8 +192,8 @@
             android:label="@string/action_about" />
         <activity
             android:name=".ui.modules.auxiliary.CrashActivity"
-            android:label="@string/crash"
             android:exported="true"
+            android:label="@string/crash"
             android:launchMode="singleInstance"
             android:process="player.phonograph.crash" />
         <activity
@@ -207,11 +208,11 @@
         <service
             android:name=".service.MusicService"
             android:enabled="true"
+            android:exported="true"
             android:foregroundServiceType="mediaPlayback"
-            android:icon="@mipmap/ic_launcher_foreground"
-            android:exported="true">
+            android:icon="@mipmap/ic_launcher_foreground">
             <intent-filter>
-                <action android:name="android.media.browse.MediaBrowserService"/>
+                <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
 
@@ -300,7 +301,6 @@
         </provider>
 
 
-
         <!--                                          -->
         <!--                metadata                  -->
         <!--                                          -->
@@ -319,8 +319,9 @@
         <meta-data
             android:name="androidx.car.app.TintableAttributionIcon"
             android:resource="@mipmap/ic_launcher_foreground" />
-        <meta-data android:name="com.google.android.gms.car.application"
-            android:resource="@xml/automotive_app_desc"/>
+        <meta-data
+            android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc" />
 
     </application>
 
