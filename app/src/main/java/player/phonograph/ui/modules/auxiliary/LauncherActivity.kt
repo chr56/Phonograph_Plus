@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.modules.auxiliary
 
-import player.phonograph.App
 import player.phonograph.mechanism.migrate.MigrationManager
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.ui.modules.main.MainActivity
@@ -24,15 +23,21 @@ class LauncherActivity : Activity() {
         finish()
     }
 
+    private fun gotoMigration() {
+        startActivity(Intent(this, MigrationActivity::class.java))
+        finish()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (!PrerequisiteSetting.instance(this).introShown) {
             gotoIntro()
         } else {
             if (MigrationManager.shouldMigration(this)) {
-                MigrationManager.migrate(App.instance)
+                gotoMigration()
+            } else {
+                gotoMainActivity()
             }
-            gotoMainActivity()
         }
     }
 }
