@@ -7,6 +7,7 @@
 package player.phonograph.util.theme
 
 import util.theme.color.isColorLight
+import player.phonograph.R
 import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
 import androidx.core.view.WindowCompat
@@ -23,7 +24,9 @@ private var Impl: SystemUIModifier? = null
 
 val systemUIModifier: SystemUIModifier
     get() =
-        Impl ?: if (SDK_INT >= 30) {
+        Impl ?: if (SDK_INT >= 35) {
+            SystemUIModifierApi35()
+        } else if (SDK_INT >= 30) {
             SystemUIModifierApi30()
         } else if (SDK_INT >= 29) {
             SystemUIModifierApi29()
@@ -167,4 +170,40 @@ private open class SystemUIModifierApi30 : SystemUIModifierApi29() {
         window.attributes.layoutInDisplayCutoutMode =
             WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
     }
+}
+
+@RequiresApi(35)
+private open class SystemUIModifierApi35 : SystemUIModifierApi30() {
+
+    override fun setUp(window: Window, view: View) {
+        super.setUp(window, view)
+        makeSureEdgeToEdge(window) // Enforced Edge-to-Edge enforced only when targeting 35
+    }
+
+    @Suppress("DEPRECATION")
+    private fun makeSureEdgeToEdge(window: Window) {
+        window.statusBarColor = Color.TRANSPARENT
+        window.navigationBarColor = Color.TRANSPARENT
+
+        window.isStatusBarContrastEnforced = false
+        window.isNavigationBarContrastEnforced = false
+    }
+
+
+    override fun updateSystemBars(
+        window: Window, view: View,
+        statusBarColor: Int, navigationBarColor: Int,
+        nightMode: Boolean,
+    ) {
+        statusbar(view)?.setBackgroundColor(statusBarColor)
+        navigationbar(view)?.setBackgroundColor(navigationBarColor)
+
+        WindowInsetsControllerCompat(window, view).run {
+            isAppearanceLightStatusBars = shouldEnableLightFrontGround(statusBarColor, nightMode)
+            isAppearanceLightNavigationBars = shouldEnableLightFrontGround(navigationBarColor, nightMode)
+        }
+    }
+
+    private fun statusbar(view: View): View? = view.findViewById<View>(R.id.status_bar)
+    private fun navigationbar(view: View): View? = view.findViewById<View>(R.id.navigation_bar)
 }
