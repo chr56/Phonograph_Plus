@@ -37,7 +37,7 @@ android {
 
     defaultConfig {
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
 
         applicationId = "player.phonograph.plus"
         versionCode = 1085
