@@ -15,12 +15,13 @@ import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
+import player.phonograph.ui.compose.components.StatusBarStub
 import player.phonograph.ui.modules.web.IWebSearchRequester
 import player.phonograph.ui.modules.web.LastFmDialog
 import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.ui.modules.web.WebSearchTool
 import player.phonograph.util.debug
-import player.phonograph.util.theme.updateAllSystemUIColors
+import player.phonograph.util.theme.updateSystemBarsColor
 import util.theme.color.darkenColor
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.addCallback
@@ -93,7 +94,7 @@ class TagBrowserActivity :
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.color.collect { color ->
-                    if (color != null) updateAllSystemUIColors(darkenColor(color.toArgb()))
+                    if (color != null) updateSystemBarsColor(darkenColor(color.toArgb()), Color.Transparent.toArgb())
                 }
             }
         }
@@ -135,6 +136,7 @@ private fun TagEditor(
     PhonographTheme(highlightColorState) {
         val scaffoldState = rememberScaffoldState()
         val editable by viewModel.editable.collectAsState()
+        StatusBarStub()
         Scaffold(
             Modifier.statusBarsPadding(),
             scaffoldState = scaffoldState,

@@ -19,11 +19,14 @@ import player.phonograph.util.gitRevisionHash
 import player.phonograph.util.reportError
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.primaryColor
+import player.phonograph.util.theme.updateSystemBarsColor
+import util.theme.color.darkenColor
 import util.theme.view.toolbar.setToolbarColor
 import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.lifecycleScope
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
@@ -71,6 +74,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         binding()
 
         setContentView(binding.root)
+        updateSystemBarsColor(darkenColor(primaryColor()), Color.TRANSPARENT)
 
         setUpViews()
     }

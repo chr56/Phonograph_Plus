@@ -26,7 +26,7 @@ import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
-import player.phonograph.util.theme.updateAllSystemUIColors
+import player.phonograph.util.theme.updateSystemBarsColor
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
@@ -41,6 +41,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
@@ -68,10 +69,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         viewModel.loadDataSet(this)
 
         viewBinding = ActivityAlbumDetailBinding.inflate(layoutInflater)
-
-        autoSetStatusBarColor = false
-        autoSetNavigationBarColor = false
-        autoSetTaskDescriptionColor = false
 
 
         registerActivityResultLauncherDelegate(
@@ -164,7 +161,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
 
         viewBinding.toolbar.setBackgroundColor(color)
         setSupportActionBar(viewBinding.toolbar) // needed to auto readjust the toolbar content color
-        updateAllSystemUIColors(color)
+        updateSystemBarsColor(color, Color.TRANSPARENT)
         setToolbarColor(viewBinding.toolbar, color)
 
         val secondaryTextColor = secondaryTextColor(color)

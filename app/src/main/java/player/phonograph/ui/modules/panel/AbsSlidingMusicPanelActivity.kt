@@ -17,9 +17,8 @@ import player.phonograph.ui.modules.player.card.CardPlayerFragment
 import player.phonograph.ui.modules.player.flat.FlatPlayerFragment
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.themeFooterColor
-import player.phonograph.util.theme.updateNavigationbarColor
-import player.phonograph.util.theme.updateStatusbarColor
-import player.phonograph.util.theme.updateTaskDescriptionColor
+import player.phonograph.util.theme.updateSystemBarsColor
+import util.theme.color.darkenColor
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
@@ -87,6 +86,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
         // setup panel
         setContentView(createContentView())
+        updateSystemBarsColor(darkenColor(primaryColor()), primaryColor()) // initial values
         miniPlayerFragment = panelBinding.miniPlayerFragment.getFragment()
         panelBinding.slidingLayout.also { layout ->
             layout.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
@@ -123,9 +123,9 @@ abstract class AbsSlidingMusicPanelActivity :
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 panelViewModel.highlightColor.collect { color ->
                     if (panelState == PanelState.EXPANDED) {
-                        animateSystemBarsColor(
-                            panelViewModel.previousHighlightColor.value, color
-                        )
+                        val from = panelViewModel.previousHighlightColor.value
+                        val to = color
+                        animateSystemBarsColor(from, to)
                     }
                 }
             }
@@ -170,7 +170,9 @@ abstract class AbsSlidingMusicPanelActivity :
     override fun onPanelSlide(panel: View, @FloatRange(from = 0.0, to = 1.0) slideOffset: Float) {
         setMiniPlayerFadingProgress(slideOffset)
         cancelSystemBarsColorAnimation()
-        moveSystemBarsColor(panelViewModel.activityColor.value, panelViewModel.highlightColor.value, slideOffset)
+        val from = panelViewModel.activityColor.value
+        val to = panelViewModel.highlightColor.value
+        moveSystemBarsColor(from, to, slideOffset)
     }
 
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
@@ -263,17 +265,18 @@ abstract class AbsSlidingMusicPanelActivity :
         @ColorInt from: Int, @ColorInt to: Int,
         @FloatRange(from = 0.0, to = 1.0) progress: Float,
     ) {
+        val navigationbarColor: Int =
+            argbEvaluator.evaluate(progress, actualNavigationbarColor(from), translucentScrim) as Int
         val statusbarColor: Int =
             argbEvaluator.evaluate(progress, from, actualStatusbarColor(to)) as Int
-        updateStatusbarColor(statusbarColor)
-        val navigationbarColor: Int =
-            argbEvaluator.evaluate(progress, from, to) as Int
-        updateNavigationbarColor(navigationbarColor)
-        updateTaskDescriptionColor(navigationbarColor)
+        updateSystemBarsColor(statusbarColor, navigationbarColor)
     }
 
     private fun actualStatusbarColor(@ColorInt color: Int): Int =
         if (playerFragment is CardPlayerFragment) Color.TRANSPARENT else color
+
+    private fun actualNavigationbarColor(@ColorInt color: Int): Int =
+        if (isBottomBarHidden) translucentScrim else color
 
     private var animator: ValueAnimator? = null
 
@@ -302,5 +305,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
     companion object {
         const val NOW_PLAYING_FRAGMENT = "NowPlayingPlayerFragment"
+
+        private val translucentScrim = Color.argb(64, 0, 0, 0)
     }
 }

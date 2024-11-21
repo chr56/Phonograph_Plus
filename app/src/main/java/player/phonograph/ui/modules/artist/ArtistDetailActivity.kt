@@ -32,7 +32,7 @@ import player.phonograph.util.IGetContentRequester
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.themeFooterColor
-import player.phonograph.util.theme.updateAllSystemUIColors
+import player.phonograph.util.theme.updateSystemBarsColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import util.theme.color.toolbarTitleColor
@@ -48,6 +48,7 @@ import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -73,10 +74,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel.load(this)
-
-        autoSetStatusBarColor = false
-        autoSetNavigationBarColor = false
-        autoSetTaskDescriptionColor = false
 
         registerActivityResultLauncherDelegate(
             createFileStorageAccessDelegate,
@@ -175,7 +172,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         setToolbarColor(viewBinding.toolbar, color)
         viewBinding.toolbar.setTitleTextColor(toolbarTitleColor(this, color))
 
-        updateAllSystemUIColors(color)
+        updateSystemBarsColor(color, Color.TRANSPARENT)
         val secondaryTextColor = secondaryTextColor(color)
         viewBinding.durationIcon.setImageDrawable(
             getTintedDrawable(R.drawable.ic_timer_white_24dp, secondaryTextColor)
