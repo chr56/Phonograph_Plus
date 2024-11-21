@@ -216,6 +216,9 @@ abstract class AbsSlidingMusicPanelActivity :
         slidingUpPanelLayout.panelState = PanelState.EXPANDED
     }
 
+    var isBottomBarHidden: Boolean = false
+        private set
+
     fun hideBottomBar(hide: Boolean) {
         if (hide) {
             slidingUpPanelLayout.panelHeight = 0
@@ -223,6 +226,7 @@ abstract class AbsSlidingMusicPanelActivity :
         } else {
             slidingUpPanelLayout.panelHeight = panelBinding.miniPlayerDocker.height
         }
+        isBottomBarHidden = hide
     }
 
     override fun onServiceConnected() {
