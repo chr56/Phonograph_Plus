@@ -188,6 +188,10 @@
             android:exported="true"
             android:label="@string/action_settings" />
         <activity
+            android:name=".ui.modules.auxiliary.MigrationActivity"
+            android:exported="true"
+            android:label="@string/version_migration" />
+        <activity
             android:name=".ui.modules.auxiliary.AboutActivity"
             android:label="@string/action_about" />
         <activity

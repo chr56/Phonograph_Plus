@@ -9,6 +9,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
+import player.phonograph.util.currentVersionCode
 import player.phonograph.util.debug
 import player.phonograph.util.file.moveFile
 import player.phonograph.util.reportError
@@ -30,42 +31,51 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FilenameFilter
 
-fun migrate(context: Context, from: Int, to: Int) {
+object MigrationManager {
+    fun shouldMigration(context: Context): Boolean {
+        val currentVersion = currentVersionCode(context)
+        val previousVersion = PrerequisiteSetting.instance(context).previousVersion
+        return currentVersion != previousVersion
+    }
 
-    when (from) {
-        in 1 until 1000    -> { // v1.0.0
-            throw IllegalStateException("You are upgrading from a very old version (version $from)! Please Wipe app data!")
+    fun migrate(context: Context) {
+        val from = currentVersionCode(context)
+        val to = PrerequisiteSetting.instance(context).previousVersion
+
+        when (from) {
+            in 1 until 1040    -> { // v1.4.0
+                throw IllegalStateException("You are upgrading from a very old version (version $from)! Please Wipe app data!")
+            }
+
+            in 1040 until 1070 -> { // v1.7.0
+                reportError(
+                    IllegalStateException(), TAG,
+                    "You are upgrading from a very old version (version $from)! Try to wipe app data!"
+                )
+            }
         }
 
-        in 1000 until 1040 -> { // v1.4.0
-            reportError(
-                IllegalStateException(), TAG,
-                "You are upgrading from a very old version (version $from)! Try to wipe app data!"
-            )
+        if (from != to) {
+            Log.i(TAG, "Start Migration: $from -> $to")
+
+            MigrateOperator(context, from, to).apply {
+                migrate(CustomArtistImageStoreMigration())
+                migrate(ThemeStoreMigration())
+                migrate(GeneralThemeMigration())
+                migrate(LegacyDetailDialogMigration())
+                migrate(PlaylistFilesOperationBehaviourMigration())
+            }
+
+            Log.i(TAG, "End Migration")
+
+            PrerequisiteSetting.instance(context).previousVersion = to
+        } else {
+            debug {
+                Log.i(TAG, "No Need to Migrate")
+            }
         }
     }
 
-    if (from != to) {
-        Log.i(TAG, "Start Migration: $from -> $to")
-
-        MigrateOperator(context, from, to).apply {
-            migrate(AutoDownloadMetadataMigration())
-            migrate(LegacyLastAddedCutoffIntervalMigration())
-            migrate(CustomArtistImageStoreMigration())
-            migrate(ThemeStoreMigration())
-            migrate(GeneralThemeMigration())
-            migrate(LegacyDetailDialogMigration())
-            migrate(PlaylistFilesOperationBehaviourMigration())
-        }
-
-        Log.i(TAG, "End Migration")
-
-        PrerequisiteSetting.instance(context).previousVersion = to
-    } else {
-        debug {
-            Log.i(TAG, "No Need to Migrate")
-        }
-    }
 }
 
 /**
@@ -104,18 +114,6 @@ private class MigrateOperator(
 ) {
     fun migrate(migration: Migration) =
         migration.tryMigrate(context, from, to)
-}
-
-private class AutoDownloadMetadataMigration : Migration(introduced = 1011) {
-    override fun doMigrate(context: Context) {
-        removePreference(context, keyName = DeprecatedPreference.AutoDownloadMetadata.AUTO_DOWNLOAD_IMAGES_POLICY)
-    }
-}
-
-private class LegacyLastAddedCutoffIntervalMigration : Migration(introduced = 1011) {
-    override fun doMigrate(context: Context) {
-        removePreference(context, keyName = DeprecatedPreference.LegacyLastAddedCutoffInterval.LEGACY_LAST_ADDED_CUTOFF)
-    }
 }
 
 /**
@@ -208,7 +206,7 @@ private class PlaylistFilesOperationBehaviourMigration : Migration(introduced = 
     }
 }
 
-fun deleteSharedPreferences(context: Context, fileName: String) {
+private fun deleteSharedPreferences(context: Context, fileName: String) {
     val sharedPreferencesFile = File(context.applicationInfo.dataDir + "/shared_prefs/" + fileName + ".xml")
     if (sharedPreferencesFile.exists()) {
         sharedPreferencesFile.delete()

@@ -541,4 +541,6 @@
     <string name="service_disconnected">[Service is disconnected!]</string>
     <string name="file_playlists">File playlists</string>
     <string name="database_playlists">Database Playlists</string>
+    <string name="version_migration">Version Migration</string>
+    <string name="version_migration_summary">Upgrading from old version…</string>
 </resources>
