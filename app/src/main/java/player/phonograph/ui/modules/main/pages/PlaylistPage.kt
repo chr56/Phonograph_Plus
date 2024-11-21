@@ -22,6 +22,10 @@ import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivit
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.primaryColor
 import util.theme.color.lightenColor
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.marginBottom
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.content.Context
@@ -29,6 +33,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
 import kotlinx.coroutines.CoroutineScope
 
 class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
@@ -120,6 +125,21 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
                     requireContext(), emptyList()
                 )
             )
+        }
+        val initialMarginBottom = addNewItemButton.marginBottom
+        ViewCompat.setOnApplyWindowInsetsListener(addNewItemButton) { view, windowInsets ->
+            if (mainActivity.isBottomBarHidden) {
+                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+                view.updateLayoutParams<MarginLayoutParams> {
+                    bottomMargin = initialMarginBottom + insets.bottom
+                }
+                windowInsets
+            } else {
+                view.updateLayoutParams<MarginLayoutParams> {
+                    bottomMargin = initialMarginBottom
+                }
+                WindowInsetsCompat.CONSUMED
+            }
         }
     }
 
