@@ -536,4 +536,8 @@
     <string name="pref_option_show_prompt">Mostrar prompt de aviso sempre</string>
     <string name="pref_option_silence">Silêncio (mantenha em segundo plano sem pular para o reprodutor)</string>
     <string name="service_disconnected">[Serviço desconectado!]</string>
+    <string name="file_playlists">Arquivo de lista de reprodução</string>
+    <string name="database_playlists">Lista de reprodução do Banco de dados</string>
+    <string name="version_migration">Migração de Versão</string>
+    <string name="version_migration_summary">Atualizando a partir da versão antiga…</string>
 </resources>
