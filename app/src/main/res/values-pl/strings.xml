@@ -558,4 +558,6 @@
     <string name="service_disconnected">[Usługa jest rozłączona!]</string>
     <string name="file_playlists">Lista odtwarzania plików</string>
     <string name="database_playlists">Listy odtwarzania bazy danych</string>
+    <string name="version_migration">Migracja wersji</string>
+    <string name="version_migration_summary">Aktualizacja ze starej wersji…</string>
 </resources>
