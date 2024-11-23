@@ -64,6 +64,7 @@ object MigrationManager {
                 migrate(GeneralThemeMigration())
                 migrate(LegacyDetailDialogMigration())
                 migrate(PlaylistFilesOperationBehaviourMigration())
+                migrate(ColoredSystemBarsMigration())
             }
 
             Log.i(TAG, "End Migration")
@@ -154,7 +155,6 @@ private class ThemeStoreMigration : Migration(introduced = 1064) {
                     migrateIntPreferenceToDataStore(pref, Old.KEY_ACCENT_COLOR, Keys.selectedAccentColor)
                     migrateIntPreferenceToDataStore(pref, Old.KEY_MONET_PRIMARY_COLOR, Keys.monetPalettePrimaryColor)
                     migrateIntPreferenceToDataStore(pref, Old.KEY_MONET_ACCENT_COLOR, Keys.monetPaletteAccentColor)
-                    migrateBooleanPreferenceToDataStore(pref, Old.KEY_COLORED_NAVIGATION_BAR, Keys.coloredNavigationBar)
                     migrateBooleanPreferenceToDataStore(pref, Old.KEY_ENABLE_MONET, Keys.enableMonet)
                 }
             }
@@ -203,6 +203,13 @@ private class PlaylistFilesOperationBehaviourMigration : Migration(introduced = 
             context,
             DeprecatedPreference.PlaylistFilesOperationBehaviour.PLAYLIST_FILES_OPERATION_BEHAVIOUR
         )
+    }
+}
+
+private class ColoredSystemBarsMigration : Migration(introduced = 1086) {
+    override fun doMigrate(context: Context) {
+        removePreference(context, DeprecatedPreference.ColoredSystemBars.COLORED_NAVIGATION_BAR)
+        removePreference(context, DeprecatedPreference.ColoredSystemBars.COLORED_STATUSBAR)
     }
 }
 
@@ -412,5 +419,11 @@ object DeprecatedPreference {
     // "removed since 1085"
     object PlaylistFilesOperationBehaviour {
         const val PLAYLIST_FILES_OPERATION_BEHAVIOUR = "playlist_files_operation_behaviour"
+    }
+
+    // "removed since 1086"
+    object ColoredSystemBars {
+        const val COLORED_STATUSBAR = "colored_statusbar"
+        const val COLORED_NAVIGATION_BAR = "colored_navigation_bar"
     }
 }

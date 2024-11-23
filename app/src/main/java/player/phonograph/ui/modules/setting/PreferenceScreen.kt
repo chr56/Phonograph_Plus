@@ -140,7 +140,6 @@ fun PhonographPreferenceScreen() {
             PrimaryColorPref()
             AccentColorPref()
             GeneralThemeSetting()
-            ColoredNavigationBarSetting()
             if (SDK_INT >= N_MR1) ColoredAppShortcuts()
         }
 
@@ -513,20 +512,6 @@ private fun MonetSetting() {
         defaultValue = false,
         onCheckedChange = {
             if (SDK_INT >= N_MR1) DynamicShortcutManager(App.instance).updateDynamicShortcuts()
-        }
-    )
-}
-
-@Composable
-private fun ColoredNavigationBarSetting() {
-    val context = LocalContext.current
-    BooleanPref(
-        key = COLORED_NAVIGATION_BAR,
-        titleRes = R.string.pref_title_navigation_bar,
-        summaryRes = R.string.pref_summary_colored_navigation_bar,
-        defaultValue = false,
-        onCheckedChange = {
-
         }
     )
 }
