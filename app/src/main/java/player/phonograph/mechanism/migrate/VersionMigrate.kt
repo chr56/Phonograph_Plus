@@ -154,7 +154,6 @@ private class ThemeStoreMigration : Migration(introduced = 1064) {
                     migrateIntPreferenceToDataStore(pref, Old.KEY_ACCENT_COLOR, Keys.selectedAccentColor)
                     migrateIntPreferenceToDataStore(pref, Old.KEY_MONET_PRIMARY_COLOR, Keys.monetPalettePrimaryColor)
                     migrateIntPreferenceToDataStore(pref, Old.KEY_MONET_ACCENT_COLOR, Keys.monetPaletteAccentColor)
-                    migrateBooleanPreferenceToDataStore(pref, Old.KEY_COLORED_NAVIGATION_BAR, Keys.coloredNavigationBar)
                     migrateBooleanPreferenceToDataStore(pref, Old.KEY_ENABLE_MONET, Keys.enableMonet)
                 }
             }

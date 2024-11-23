@@ -39,12 +39,6 @@ object Keys {
     object fixedTabLayout :
             PrimitiveKey<Boolean>(booleanPK(FIXED_TAB_LAYOUT), { false })
 
-    object coloredStatusbar :
-            PrimitiveKey<Boolean>(booleanPK(COLORED_STATUSBAR), { true })
-
-    object coloredNavigationBar :
-            PrimitiveKey<Boolean>(booleanPK(COLORED_NAVIGATION_BAR), { false })
-
     object selectedPrimaryColor :
             PrimitiveKey<Int>(intPK(SELECTED_PRIMARY_COLOR), { MaterialColor.Blue._A400.asColor })
 

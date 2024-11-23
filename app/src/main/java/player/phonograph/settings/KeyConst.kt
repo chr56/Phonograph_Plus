@@ -16,8 +16,6 @@ const val HOME_TAB_CONFIG = "home_tab_config"
 const val COLORED_APP_SHORTCUTS = "colored_app_shortcuts"
 const val FIXED_TAB_LAYOUT = "fixed_tab_layout"
 
-const val COLORED_STATUSBAR = "colored_statusbar"
-const val COLORED_NAVIGATION_BAR = "colored_navigation_bar"
 const val ENABLE_MONET = "enable_monet"
 const val SELECTED_PRIMARY_COLOR = "primary_color_selected"
 const val SELECTED_ACCENT_COLOR = "accent_color_selected"
