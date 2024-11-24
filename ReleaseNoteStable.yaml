@@ -1,7 +1,7 @@
-version: "1.9.0-dev1"
-channel: "PREVIEW"
-versionCode: 1086
-timestamp: 1732455000
+version: "1.9.0"
+channel: "STABLE"
+versionCode: 1090
+timestamp: 1735000000
 notes:
   en:
     highlights: [ ]
@@ -25,9 +25,9 @@ notes:
       - "开发 targetSdk 35 (Android 15)"
       - "改进 搜索界面中显示底部滑动面板"
       - "改进 版本迁移用户界面"
-      - "改进 启用新的系统返回手势动画 (Android T及以上)"
+      - "改进 启用新的系统返回手势动画 (Android T 及以上)"
       - "改进 边到边界面"
-      - "删除 设置项“着色导航栏”（已无意义）"
+      - "删除 设置项“着色导航栏” (已无意义)"
       - "修改 默认着色导航栏"
       - "修改 若可行，透明或半透明导航栏"
       - "修改 默认文件播放列表图标"
