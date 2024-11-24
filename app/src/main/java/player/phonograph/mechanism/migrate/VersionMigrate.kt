@@ -39,8 +39,8 @@ object MigrationManager {
     }
 
     fun migrate(context: Context) {
-        val from = currentVersionCode(context)
-        val to = PrerequisiteSetting.instance(context).previousVersion
+        val from = PrerequisiteSetting.instance(context).previousVersion
+        val to = currentVersionCode(context)
 
         when (from) {
             in 1 until 1040    -> { // v1.4.0
