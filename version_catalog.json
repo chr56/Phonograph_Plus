@@ -1,6 +1,30 @@
 {
   "versions": [
     {
+      "channel": "preview",
+      "versionName": "1.9.0-dev1",
+      "versionCode": 1086,
+      "date": 1732455000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.9.0-dev1"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.0-dev1/PhonographPlus_1.9.0-dev1_ModernPreviewRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.0-dev1/PhonographPlus_1.9.0-dev1_LegacyPreviewRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>开发 targetSdk 35 (Android 15)</li><li>改进 搜索界面中显示底部滑动面板</li><li>改进 版本迁移用户界面</li><li>改进 启用新的系统返回手势动画 (Android T及以上)</li><li>改进 边到边界面</li><li>删除 设置项“着色导航栏”（已无意义）</li><li>修改 默认着色导航栏</li><li>修改 若可行，透明或半透明导航栏</li><li>修改 默认文件播放列表图标</li><li>修改 禁止从 v1.4.0 之前的版本升级, 警告从 v1.7.0 之前的版本升级</li><li>翻译 更新 波兰语（Cooky）、巴西葡萄牙语（FalaTudo）</li><li>开发 更新依赖</li></ol>",
+        "en": "<ol><li>Development: Targeting SDK 35 (Android 15)</li><li>Improve: show bottom sliding panel in Search</li><li>Improve: explicit user interface for version migration</li><li>Improve: enable new system back gesture animations for Android T and above</li><li>Improve: edge to edge user interface</li><li>Remove: preference \"colored navigation bar\" (not applicable now)</li><li>Modify: navigation bar would always be colored by default</li><li>Modify: navigation bar would be transparent or translucent if possible now</li><li>Modify: change default File Playlist icon</li><li>Modify: forbid upgrading from prior to v1.4.0 & warn upgrading from prior to v1.7.0</li><li>Translation: update Polish (cooky), Portuguese Brazilian (by FalaTudo)</li><li>Development: update dependencies</li></ol>"
+      }
+    },
+    {
       "channel": "stable",
       "versionName": "1.8.5",
       "versionCode": 1085,
@@ -22,54 +46,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>修复 播放列表图标</li><li>修复 有时无法进入专辑界面</li><li>修复 从后台启动时可能的崩溃</li><li>修复 读写某些文件的音乐标签时崩溃</li><li>修复 在标签编辑器中处理超长标签时卡死或崩溃</li><li>修复 更改后播放列表有时不会自动更新</li><li>修复 使用 SAF 删除播放列表时选择错误目录将会崩溃</li><li>修复 在搜索结果、专辑详情、艺术家详情、流派详情中，向播放列表增添歌曲时崩溃</li><li>修复 退出多选模式时行为异常</li><li>修复 当邻近文件选项卡时无法正常退出应用程序</li><li>修复 设备重启后应用小部件中的图像不刷新</li><li>修复 直至完全载入前专辑界面图片空白</li><li>修改 Android N 上，不再开机自启服务，倘若存在任何小组件时</li><li>改进 在某些设备上专辑中曲目编号的排序顺序</li><li>改进 创建、复制或操纵播放列表的流程</li><li>改进 lrc格式歌词识别</li><li>翻译 更新 波兰语(cooky), 西班牙语 (Dino RTX (rtxdino36))</li><li>开发 使用 SDK 35 编译</li><li>开发 升级 Gradle 至 8.10.2, 升级 AGP 至 8.7.5, 升级 kotlin 至 2.0.21</li><li>开发 升级 Jetpack Compose 至 1.7.5, 更新依赖</li><li>开发 清理代码</li></ol>",
         "en": "<ol><li>Fix: regression of playlist icons</li><li>Fix: sometimes could not enter Album Detail</li><li>Fix: possibly crash when starting from background</li><li>Fix: crash when reading or editing tags of some certain files</li><li>Fix: frozen or crash when processing extremely long tags in Tag Editor</li><li>Fix: sometimes playlists would not be automatically updated after changing</li><li>Fix: crash when deleting playlists using SAF but selecting the wrong directory</li><li>Fix: crash when adding songs to a playlist in Search Results, Album Detail, Artist Detail, Genre Detail</li><li>Fix: unexpected behaviors when dismissing multi-selection actionbar</li><li>Fix: could not exit application properly when Files tab nearby</li><li>Fix: blank images in App Widgets after device rebooting</li><li>Fix: blank images in Album Detail util fully loaded</li><li>Modify: no longer start service after device booting on Android N if any AppWidget exists</li><li>Improve: sort order of track number in the album on some devices</li><li>Improve: user experience on manipulating playlists</li><li>Improve: lrc format lyric detection</li><li>Translation: update Polish (cooky), Spanish (by Dino RTX (rtxdino36))</li><li>Development: compile with SDK 35</li><li>Development: upgrade Gradle to 8.10.2, upgrade AGP to 8.7.2, upgrade kotlin to 2.0.21</li><li>Development: upgrade Jetpack Compose to 1.7.5, update dependencies</li><li>Development: cleanup code</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.8.5-beta1",
-      "versionCode": 1084,
-      "date": 1730530000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.8.5-beta1"
-        },
-        {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.5-beta1/PhonographPlus_1.8.5-beta1_ModernPreviewRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK(File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.8.5-beta1/PhonographPlus_1.8.5-beta1_LegacyPreviewRelease.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 有时无法进入专辑界面</li><li>修复 专辑界面空白的图片直至完全载入</li><li>修改 色彩等微调</li><li>开发 升级 AGP 至 8.7.2, 升级 Jetpack Compose 至 1.7.5, 更新依赖</li></ol>",
-        "en": "<ol><li>Fix: sometimes could not enter Album Detail</li><li>Fix: blank images in Album Detail util fully loaded</li><li>Modify: minor adjust colors and surface elevations</li><li>Development: upgrade AGP to 8.7.2, upgrade Jetpack Compose to 1.7.5, update dependencies</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "1.8.4",
-      "versionCode": 1084,
-      "date": 1726450000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.8.4"
-        },
-        {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.8.4/PhonographPlus_1.8.4_ModernStableRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK(File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.8.4/PhonographPlus_1.8.4_LegacyStableRelease.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 在搜索结果、专辑详情、艺术家详情、流派详情中，创建播放列表时崩溃</li><li>新增 主抽屉菜单新增“退出”选项</li><li>改进 在任何情形下，都允许使用媒体通知退出</li><li>改进 播放列表内的搜索功能</li><li>翻译 更新 法语(manafy), 葡萄牙语(azilara), 西班牙语(Ulisses_Mello), 德语(jande75), 巴西葡萄牙语(FalaTudo)</li><li>开发 升级 Kotlin 至 2.0.20, 更新 AGP 至 8.6.0, 更新 Jetpack Compose 至 1.7.1, 更新依赖</li><li>开发 重构播放器</li></ol>",
-        "en": "<ol><li>Fix: Crash when creating playlists in Search Results, Album Detail, Artist Detail, Genre Detail</li><li>New: add \"Exit\" in Main Drawer Menu</li><li>Improve: quiting from Media Notification in any circumstance</li><li>Improve: Search function in Playlist Detail</li><li>Translation: update French (manafy), Portuguese (by azilara), Spanish (by Ulisses_Mello), German (by jande75), Portuguese, Brazilian (by FalaTudo)</li><li>Development: upgrade kotlin to 2.0.20, upgrade AGP to 8.6.0, upgrade Jetpack Compose to 1.7.1, update dependencies</li><li>Development: refactor player</li></ol>"
       }
     }
   ]
