@@ -20,6 +20,7 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -30,10 +31,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
+import android.content.res.Resources
 import android.os.Bundle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -79,12 +82,41 @@ class MigrationActivity : ComposeActivity() {
 
     @Composable
     private fun ColumnScope.ResultScreen() {
-        SuccessScreen()
+        val code = migrationResultFlow.collectAsState()
+        if (code.value == MigrationManager.CODE_SUCCESSFUL) SuccessScreen() else FailedScreen(code.value)
     }
 
     @Composable
     private fun ColumnScope.SuccessScreen() {
         ResultScreenTemplate(stringResource(R.string.success), Icons.Default.Done, hasButton = true, autoJump = true)
+    }
+
+    @Composable
+    private fun ColumnScope.FailedScreen(code: Int?) {
+        val message = errorMessage(code, LocalContext.current.resources)
+        val ignorable = ignorableError(code)
+        ResultScreenTemplate(message, Icons.Default.Warning, hasButton = ignorable, autoJump = false)
+    }
+
+    private fun errorMessage(code: Int?, resources: Resources): String {
+        return when (code) {
+            MigrationManager.CODE_NO_ACTION -> "No Need to Migrate!"
+            MigrationManager.CODE_WARNING   ->
+                "${resources.getString(R.string.version_migration_hint_too_old)}\n${resources.getString(R.string.version_migration_hint_suggest_to_wipe_data)}"
+
+            MigrationManager.CODE_FORBIDDEN ->
+                "${resources.getString(R.string.version_migration_hint_too_old)}\n${resources.getString(R.string.version_migration_hint_required_to_wipe_data)}"
+
+            else                            -> resources.getString(R.string.failed)
+        }
+    }
+
+    private fun ignorableError(code: Int?): Boolean {
+        return when (code) {
+            MigrationManager.CODE_FORBIDDEN -> false
+            else                            -> true
+        }
+        return true
     }
 
     @Composable
