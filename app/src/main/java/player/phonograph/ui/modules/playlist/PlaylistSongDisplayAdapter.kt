@@ -49,10 +49,10 @@ class PlaylistSongDisplayAdapter(
     }
 
     override fun onCheckCanStartDrag(holder: PlaylistSongViewHolder, position: Int, x: Int, y: Int): Boolean =
-        position >= 0 && (hitTest(holder.dragView!!, x, y) || hitTest(holder.image!!, x, y))
+        viewModel.currentMode.value == UIMode.Editor
+                && (hitTest(holder.dragView!!, x, y) || hitTest(holder.image!!, x, y))
 
-    override fun onGetItemDraggableRange(holder: PlaylistSongViewHolder, position: Int): ItemDraggableRange =
-        ItemDraggableRange(0, dataset.size - 1)
+    override fun onGetItemDraggableRange(holder: PlaylistSongViewHolder, position: Int): ItemDraggableRange? = null
 
     override fun onMoveItem(fromPosition: Int, toPosition: Int) {
         activity.lifecycleScope.launch(Dispatchers.IO) { moveSong(fromPosition, toPosition) }
