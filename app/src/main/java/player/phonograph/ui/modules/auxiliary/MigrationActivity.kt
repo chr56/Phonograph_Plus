@@ -6,6 +6,7 @@ import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.StatusBarStub
 import player.phonograph.ui.modules.main.MainActivity
+import player.phonograph.util.permissions.navigateToAppDetailSetting
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -14,12 +15,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -62,6 +66,7 @@ class MigrationActivity : ComposeActivity() {
                     topBar = {
                         TopAppBar(
                             title = { Text(stringResource(R.string.version_migration)) },
+                            actions = { Options() }
                         )
                     }
                 ) {
@@ -166,6 +171,18 @@ class MigrationActivity : ComposeActivity() {
                 .fillMaxWidth()
                 .align(Alignment.CenterHorizontally),
             textAlign = TextAlign.Center
+        )
+    }
+
+    @Composable
+    private fun Options() {
+        IconButton(
+            content = {
+                Icon(Icons.Default.Info, stringResource(id = R.string.app_info))
+            },
+            onClick = {
+                navigateToAppDetailSetting(this)
+            }
         )
     }
 
