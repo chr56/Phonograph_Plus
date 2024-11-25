@@ -47,16 +47,11 @@ object MigrationManager {
 
         when (from) {
             in 1 until 1040    -> { // v1.4.0
-                // return CODE_FORBIDDEN // todo
-                throw IllegalStateException("You are upgrading from a very old version (version $from)! Please Wipe app data!")
+                return CODE_FORBIDDEN
             }
 
             in 1040 until 1070 -> { // v1.7.0
                 status = CODE_WARNING
-                reportError(
-                    IllegalStateException(), TAG,
-                    "You are upgrading from a very old version (version $from)! Try to wipe app data!"
-                )
             }
         }
 
