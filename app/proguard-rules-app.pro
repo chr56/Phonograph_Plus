@@ -12,12 +12,19 @@
 -keepclassmembernames class lib.phonograph.misc.RestResult$ParseError { <methods>; }
 -keepclassmembernames class lib.phonograph.misc.RestResult$NetworkError { <methods>; }
 
--keepclasseswithmembernames class lib.phonograph.activity.** {public <methods>; public <fields>;}
-
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.activities.** extends android.app.Activity {public <methods>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.player.** extends androidx.fragment.app.Fragment {public <methods>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.** extends androidx.lifecycle.ViewModel {public <methods>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.adapter.MultiSelectionController { void updateCab(); }
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.adapter.DisplayAdapter { protected <methods>; }
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.adapter.DisplayAdapter$DisplayViewHolder { protected <methods>; }
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.basis.** extends android.app.Activity { protected <methods>; }
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.auxiliary.LauncherActivity { void goto*(); }
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.auxiliary.MigrationActivity { void *Impl();}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.auxiliary.PhonographIntroActivity$* { private <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.auxiliary.StarterActivity { private <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.explorer.** { protected <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.main.pages.** { protected <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.main.pages.adapter.** { protected <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.panel.** { protected <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.player.** { protected <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.** extends androidx.lifecycle.ViewModel {public <methods>;}
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.repo.mediastore.internal.QueryKt { public query*(...); }
 
