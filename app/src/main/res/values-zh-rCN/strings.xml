@@ -530,4 +530,7 @@
     <string name="database_playlists">数据库播放列表</string>
     <string name="version_migration">版本迁移</string>
     <string name="version_migration_summary">正在从旧版本升级</string>
+    <string name="version_migration_hint_too_old">您正在从极其陈旧的版本升级！</string>
+    <string name="version_migration_hint_suggest_to_wipe_data">请考虑清除应用数据！</string>
+    <string name="version_migration_hint_required_to_wipe_data">请务必清除应用数据！</string>
 </resources>
