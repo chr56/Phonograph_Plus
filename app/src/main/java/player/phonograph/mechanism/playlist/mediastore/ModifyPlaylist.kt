@@ -14,6 +14,7 @@ import player.phonograph.util.coroutineToast
 import player.phonograph.util.mediastoreUriPlaylist
 import player.phonograph.util.mediastoreUriPlaylistMembers
 import player.phonograph.util.mediastoreUriPlaylists
+import player.phonograph.util.reportError
 import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.warning
 import android.content.ContentValues
@@ -143,11 +144,16 @@ suspend fun moveItemViaMediastore(
     from: Int,
     to: Int,
 ): Boolean = withContext(Dispatchers.IO) {
-    val res = Playlists.Members.moveItem(context.contentResolver, playlistId, from, to)
-    //// Necessary because somehow the MediaStoreObserver doesn't work for playlists
-    //// NOTE: actually for now lets disable this because it messes with the animation (tested on Android 11)
-    // context.contentResolver.notifyChange(getPlaylistUris(context, playlistId), null)
-    res
+    try {
+        val res = Playlists.Members.moveItem(context.contentResolver, playlistId, from, to)
+        //// Necessary because somehow the MediaStoreObserver doesn't work for playlists
+        //// NOTE: actually for now lets disable this because it messes with the animation (tested on Android 11)
+        // context.contentResolver.notifyChange(getPlaylistUris(context, playlistId), null)
+        res
+    } catch (e: Exception) {
+        reportError(e, TAG, "Failed to reorder playlist ($playlistId: $from -> $to)")
+        false
+    }
 }
 
 /**
