@@ -202,9 +202,12 @@ class PlaylistDetailActivity :
         adapter = PlaylistSongDisplayAdapter(this, viewModel)
         // DragDropAdapter
         binding.recyclerView.also { recyclerView ->
-            recyclerViewDragDropManager = RecyclerViewDragDropManager()
-            recyclerViewDragDropManager!!.attachRecyclerView(recyclerView)
-            wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(adapter)
+            recyclerViewDragDropManager = RecyclerViewDragDropManager().apply {
+                attachRecyclerView(recyclerView)
+                setInitiateOnTouch(true)
+                setInitiateOnLongPress(false)
+                wrappedAdapter = createWrappedAdapter(adapter)
+            }
 
             recyclerView.adapter = wrappedAdapter
             recyclerView.layoutManager = LinearLayoutManager(this)
