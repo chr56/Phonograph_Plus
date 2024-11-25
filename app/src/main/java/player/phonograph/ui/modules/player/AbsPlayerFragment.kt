@@ -98,6 +98,8 @@ abstract class AbsPlayerFragment :
         playingQueueAdapter.current = MusicPlayerRemote.position
         _recyclerViewDragDropManager = RecyclerViewDragDropManager()
         _wrappedAdapter = recyclerViewDragDropManager.createWrappedAdapter(playingQueueAdapter)
+        recyclerViewDragDropManager.setInitiateOnTouch(true)
+        recyclerViewDragDropManager.setInitiateOnLongPress(false)
 
         val playerRecyclerView = fetchRecyclerView()
 

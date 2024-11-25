@@ -99,6 +99,7 @@ class PlayingQueueAdapter(
             controller.registerClicking(itemView, position) {
                 onClick(position, dataset, image)
             }
+            itemView.setOnLongClickListener { true }
             menu?.let {
                 prepareMenu(dataset[position], position, it)
             }
