@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -43,23 +44,30 @@ import kotlinx.coroutines.withContext
 
 class MigrationActivity : ComposeActivity() {
 
-    private val isCompleteFlow = MutableStateFlow(false)
+    private val isCompletedFlow = MutableStateFlow(false)
+    private val migrationResultFlow = MutableStateFlow<Int?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val isComplete by isCompleteFlow.collectAsState()
-            val color = remember { derivedStateOf { if (isComplete) colorDone else colorProcess } }
+            val isCompleted by isCompletedFlow.collectAsState()
+            val color = remember { derivedStateOf { if (isCompleted) colorDone else colorProcess } }
             PhonographTheme(color) {
                 StatusBarStub()
                 Scaffold(
                     Modifier.systemBarsPadding(),
                     topBar = {
-                        TopAppBar(title = { Text(stringResource(R.string.version_migration)) })
+                        TopAppBar(
+                            title = { Text(stringResource(R.string.version_migration)) },
+                        )
                     }
                 ) {
                     Column(Modifier.padding(it)) {
-                        ProgressScreen(isComplete)
+                        if (isCompleted) {
+                            ResultScreen()
+                        } else {
+                            OngoingScreen()
+                        }
                     }
                     SideEffect {
                         migrateImpl()
@@ -70,55 +78,74 @@ class MigrationActivity : ComposeActivity() {
     }
 
     @Composable
-    private fun ColumnScope.ProgressScreen(done: Boolean) {
-        if (done) {
-            Image(
-                Icons.Default.Done, stringResource(R.string.success),
-                Modifier
-                    .padding(56.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
+    private fun ColumnScope.ResultScreen() {
+        SuccessScreen()
+    }
+
+    @Composable
+    private fun ColumnScope.SuccessScreen() {
+        ResultScreenTemplate(stringResource(R.string.success), Icons.Default.Done, hasButton = true, autoJump = true)
+    }
+
+    @Composable
+    private fun ColumnScope.ResultScreenTemplate(
+        text: String,
+        icon: ImageVector,
+        hasButton: Boolean = true,
+        autoJump: Boolean = false,
+    ) {
+        Image(
+            icon, text,
+            Modifier
+                .padding(48.dp)
+                .align(Alignment.CenterHorizontally)
+        )
+        Text(
+            text,
+            Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally),
+            textAlign = TextAlign.Center
+        )
+        if (hasButton) TextButton(
+            ::gotoMainActivity,
+            Modifier.align(Alignment.CenterHorizontally),
+        ) {
             Text(
-                stringResource(R.string.success),
-                Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally),
-                textAlign = TextAlign.Center
-            )
-            SideEffect {
-                jumpToMainActivity()
-            }
-            TextButton(
-                ::gotoMainActivity,
-                Modifier.align(Alignment.CenterHorizontally),
-            ) {
-                Text(
-                    stringResource(android.R.string.ok),
-                    Modifier.padding(4.dp)
-                )
-            }
-        } else {
-            CircularProgressIndicator(
-                Modifier
-                    .padding(56.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
-            Text(
-                stringResource(R.string.version_migration_summary),
-                Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally),
-                textAlign = TextAlign.Center
+                stringResource(android.R.string.ok),
+                Modifier.padding(4.dp)
             )
         }
+        if (autoJump) SideEffect {
+            jumpToMainActivity()
+        }
     }
+
+    @Composable
+    private fun ColumnScope.OngoingScreen() {
+        CircularProgressIndicator(
+            Modifier
+                .padding(56.dp)
+                .align(Alignment.CenterHorizontally)
+        )
+        Text(
+            stringResource(R.string.version_migration_summary),
+            Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally),
+            textAlign = TextAlign.Center
+        )
+    }
+
 
     private fun migrateImpl() {
         lifecycleScope.launch {
             delay(1000)
             withContext(Dispatchers.IO) {
-                MigrationManager.migrate(this@MigrationActivity)
-                isCompleteFlow.value = true
+                migrationResultFlow.emit(
+                    MigrationManager.migrate(this@MigrationActivity)
+                )
+                isCompletedFlow.value = true
             }
         }
     }
