@@ -38,16 +38,21 @@ object MigrationManager {
         return currentVersion != previousVersion
     }
 
-    fun migrate(context: Context) {
+    fun migrate(context: Context): Int {
+
         val from = PrerequisiteSetting.instance(context).previousVersion
         val to = currentVersionCode(context)
 
+        var status = CODE_SUCCESSFUL
+
         when (from) {
             in 1 until 1040    -> { // v1.4.0
+                // return CODE_FORBIDDEN // todo
                 throw IllegalStateException("You are upgrading from a very old version (version $from)! Please Wipe app data!")
             }
 
             in 1040 until 1070 -> { // v1.7.0
+                status = CODE_WARNING
                 reportError(
                     IllegalStateException(), TAG,
                     "You are upgrading from a very old version (version $from)! Try to wipe app data!"
@@ -55,9 +60,16 @@ object MigrationManager {
             }
         }
 
-        if (from != to) {
-            Log.i(TAG, "Start Migration: $from -> $to")
+        if (from == to) {
+            debug { Log.i(TAG, "No Need to Migrate") }
+            return CODE_NO_ACTION
+        }
 
+        // Actual migration
+
+        Log.i(TAG, "Start Migration: $from -> $to")
+
+        try {
             MigrateOperator(context, from, to).apply {
                 migrate(CustomArtistImageStoreMigration())
                 migrate(ThemeStoreMigration())
@@ -69,13 +81,21 @@ object MigrationManager {
 
             Log.i(TAG, "End Migration")
 
-            PrerequisiteSetting.instance(context).previousVersion = to
-        } else {
-            debug {
-                Log.i(TAG, "No Need to Migrate")
-            }
+            PrerequisiteSetting.instance(context).previousVersion = to // todo
+
+        } catch (e: Exception) {
+            reportError(e, TAG, "Failed to migrate")
+            return CODE_UNKNOWN_ERROR
         }
+
+        return status
     }
+
+    const val CODE_SUCCESSFUL = 0
+    const val CODE_NO_ACTION = 1
+    const val CODE_WARNING = 100
+    const val CODE_FORBIDDEN = -100
+    const val CODE_UNKNOWN_ERROR = -1
 
 }
 
