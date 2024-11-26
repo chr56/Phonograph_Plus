@@ -560,4 +560,7 @@
     <string name="database_playlists">Listy odtwarzania bazy danych</string>
     <string name="version_migration">Migracja wersji</string>
     <string name="version_migration_summary">Aktualizacja ze starej wersji…</string>
+    <string name="version_migration_hint_too_old">Dokonujesz aktualizacji z bardzo starej wersji!</string>
+    <string name="version_migration_hint_suggest_to_wipe_data">Spróbuj wyczyścić dane aplikacji!</string>
+    <string name="version_migration_hint_required_to_wipe_data">Wyczyść dane aplikacji!</string>
 </resources>
