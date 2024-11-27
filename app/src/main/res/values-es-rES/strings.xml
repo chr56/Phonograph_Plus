@@ -536,4 +536,11 @@
     <string name="pref_option_show_prompt">Mostrar siempre aviso de advertencia</string>
     <string name="pref_option_silence">Silencioso (se mantiene en segundo plano sin pasar al reproductor)</string>
     <string name="service_disconnected">[¡El servicio está desconectado!]</string>
+    <string name="file_playlists">Listas de reproducción de archivos</string>
+    <string name="database_playlists">Listas de reproducción de base de datos</string>
+    <string name="version_migration">Migración de versión</string>
+    <string name="version_migration_summary">Actualizando desde la versión anterior…</string>
+    <string name="version_migration_hint_too_old">¡Estás actualizando desde una versión muy antigua!</string>
+    <string name="version_migration_hint_suggest_to_wipe_data">¡Intenta borrar los datos de la aplicación!</string>
+    <string name="version_migration_hint_required_to_wipe_data">¡Por favor, borra los datos de la aplicación!</string>
 </resources>
