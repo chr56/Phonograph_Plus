@@ -3,6 +3,7 @@ package player.phonograph.ui.modules.auxiliary
 import de.psdev.licensesdialog.LicensesDialog
 import lib.phonograph.misc.NoticesProcessor
 import player.phonograph.App
+import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.databinding.ActivityAboutBinding
 import player.phonograph.mechanism.Update
@@ -25,6 +26,7 @@ import util.theme.view.toolbar.setToolbarColor
 import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.lifecycleScope
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -47,6 +49,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
     private lateinit var appIcon: ImageView
     private lateinit var appVersion: TextView
     private lateinit var appVersionHash: TextView
+    private lateinit var appVariant: TextView
     private lateinit var changelog: LinearLayout
     private lateinit var checkUpgrade: LinearLayout
     private lateinit var intro: LinearLayout
@@ -83,6 +86,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         appIcon = binding.activityAboutMainContent.cardAboutAppLayout.phonographIcon
         appVersion = binding.activityAboutMainContent.cardAboutAppLayout.appVersion
         appVersionHash = binding.activityAboutMainContent.cardAboutAppLayout.appVersionHash
+        appVariant = binding.activityAboutMainContent.cardAboutAppLayout.appVariant
         changelog = binding.activityAboutMainContent.cardAboutAppLayout.changelog
         checkUpgrade = binding.activityAboutMainContent.cardAboutAppLayout.checkUpgrade
         licenses = binding.activityAboutMainContent.cardAboutAppLayout.licenses
@@ -120,6 +124,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
     }
 
     @Keep
+    @SuppressLint("SetTextI18n")
     private fun setUpAppVersion() {
         appVersion.text = currentVersionName(this)
         try {
@@ -127,6 +132,12 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
             appVersionHash.visibility = View.VISIBLE
         } catch (e: Exception) {
             appVersionHash.visibility = View.INVISIBLE
+        }
+        try {
+            val variant = BuildConfig.FLAVOR_target.replaceFirstChar { it.uppercase() }
+            appVariant.text = "$variant Variant"
+        } catch (e: Exception) {
+            appVariant.visibility = View.GONE
         }
     }
 
