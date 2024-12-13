@@ -6,7 +6,6 @@ package player.phonograph.ui.modules.auxiliary
 
 import legacy.phonograph.MediaStoreCompat
 import org.koin.android.ext.android.get
-import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.appshortcuts.DynamicShortcutManager.Companion.reportShortcutUsed
@@ -32,6 +31,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.dialogs.OpenWithDialog
 import player.phonograph.ui.modules.main.MainActivity
+import player.phonograph.util.debug
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
 import android.net.Uri
@@ -46,11 +46,6 @@ import kotlinx.coroutines.runBlocking
 
 class StarterActivity : AppCompatActivity() {
 
-    private fun debugLog(msg: String) {
-        if (BuildConfig.DEBUG) Log.d("Starter", msg)
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -58,11 +53,15 @@ class StarterActivity : AppCompatActivity() {
         val extras = launcherIntent.extras
 
         if (extras != null && extras.getBoolean(EXTRA_SHORTCUT_MODE, false)) {
-            debugLog("ShortCut Mode")
+            debug {
+                Log.d("Starter", "ShortCut Mode")
+            }
             processShortCut(launcherIntent.extras?.getInt(SHORTCUT_TYPE) ?: SHORTCUT_TYPE_NONE)
             finish()
         } else {
-            debugLog("Normal Mode")
+            debug {
+                Log.d("Starter", "Normal Mode")
+            }
             if (SDK_INT >= N_MR1) {
                 DynamicShortcutManager(this).updateDynamicShortcuts()
             }
