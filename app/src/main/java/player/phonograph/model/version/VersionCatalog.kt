@@ -73,11 +73,11 @@ enum class ReleaseChannel(val determiner: String) {
     companion object {
         val currentChannel: ReleaseChannel
             get() {
-                val flavor = BuildConfig.FLAVOR.lowercase()
-                return when {
-                    flavor.contains(Preview.determiner) -> Preview
-                    flavor.contains(Stable.determiner)  -> Stable
-                    else                                -> Stable
+                val flavor = BuildConfig.FLAVOR_channel.lowercase()
+                return when (flavor) {
+                    Preview.determiner -> Preview
+                    Stable.determiner  -> Stable
+                    else               -> Stable
                 }
             }
     }
