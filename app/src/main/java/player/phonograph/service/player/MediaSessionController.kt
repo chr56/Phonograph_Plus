@@ -5,6 +5,7 @@
 package player.phonograph.service.player
 
 import coil.request.Disposable
+import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.BuildConfig
 import player.phonograph.mechanism.setting.NotificationAction
 import player.phonograph.mechanism.setting.NotificationActionsConfig
@@ -74,7 +75,7 @@ class MediaSessionController : ServiceComponent {
         _mediaSession =
             MediaSessionCompat(
                 musicService,
-                BuildConfig.APPLICATION_ID,
+                ACTUAL_PACKAGE_NAME,
                 mediaButtonReceiverComponentName,
                 mediaButtonReceiverPendingIntent
             )
