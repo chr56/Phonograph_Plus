@@ -24,7 +24,6 @@ import android.content.Context
 import android.content.Context.BIND_AUTO_CREATE
 import android.content.ContextWrapper
 import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Build.VERSION_CODES
 import android.os.Handler
 import android.os.HandlerThread
@@ -297,7 +296,7 @@ object MusicPlayerRemote {
         }.isSuccess
 
     fun playNow(song: Song): Boolean {
-        return musicService.tryExecute {
+        return withMusicService {
             if (playingQueue.isEmpty()) {
                 playQueue(listOf(song), 0, false, null)
             } else {
@@ -309,11 +308,12 @@ object MusicPlayerRemote {
                 it.resources.getString(R.string.added_title_to_playing_queue),
                 LENGTH_SHORT
             ).show()
+            true
         }
     }
 
     fun playNow(songs: List<Song>): Boolean {
-        return musicService.tryExecute {
+        return withMusicService {
             if (playingQueue.isEmpty()) {
                 playQueue(songs, 0, false, null)
                 it.play()
@@ -327,11 +327,12 @@ object MusicPlayerRemote {
                 else it.resources.getString(R.string.added_x_titles_to_playing_queue, songs.size),
                 LENGTH_SHORT
             ).show()
+            true
         }
     }
 
     fun playNext(song: Song): Boolean {
-        return musicService.tryExecute {
+        return withMusicService {
             if (playingQueue.isEmpty()) {
                 playQueue(listOf(song), 0, false, null)
             } else {
@@ -342,12 +343,13 @@ object MusicPlayerRemote {
                 it.resources.getString(R.string.added_title_to_playing_queue),
                 LENGTH_SHORT
             ).show()
+            true
         }
     }
 
     @JvmStatic
     fun playNext(songs: List<Song>): Boolean {
-        return musicService.tryExecute {
+        return withMusicService {
             if (playingQueue.isEmpty()) {
                 playQueue(songs, 0, false, null)
             } else {
@@ -360,11 +362,12 @@ object MusicPlayerRemote {
                 else it.resources.getString(R.string.added_x_titles_to_playing_queue, songs.size),
                 LENGTH_SHORT
             ).show()
+            true
         }
     }
 
     fun enqueue(song: Song): Boolean {
-        return musicService.tryExecute {
+        return withMusicService {
             if (playingQueue.isEmpty()) {
                 playQueue(listOf(song), 0, false, null)
             } else {
@@ -376,12 +379,13 @@ object MusicPlayerRemote {
                 it.resources.getString(R.string.added_title_to_playing_queue),
                 LENGTH_SHORT
             ).show()
+            true
         }
     }
 
     @JvmStatic
     fun enqueue(songs: List<Song>): Boolean {
-        return musicService.tryExecute {
+        return withMusicService {
             if (playingQueue.isEmpty()) {
                 playQueue(songs, 0, false, null)
             } else {
@@ -394,26 +398,30 @@ object MusicPlayerRemote {
                 else it.resources.getString(R.string.added_x_titles_to_playing_queue, songs.size),
                 LENGTH_SHORT
             ).show()
+            true
         }
     }
 
     fun removeFromQueue(song: Song): Boolean {
-        return musicService.tryExecute {
+        return withMusicService {
             queueManager.removeSong(song)
+            true
         }
     }
 
     fun removeFromQueue(position: Int): Boolean {
-        return musicService.tryExecute {
+        return withMusicService {
             if (position in 0..playingQueue.size) queueManager.removeSongAt(position)
+            true
         }
     }
 
     fun moveSong(from: Int, to: Int): Boolean {
-        return musicService.tryExecute {
+        return withMusicService {
             if (from in 0..playingQueue.size && to in 0..playingQueue.size) {
                 queueManager.moveSong(from, to)
             }
+            true
         }
     }
 
@@ -435,12 +443,13 @@ object MusicPlayerRemote {
         }
     }
 
-    private inline fun MusicService?.tryExecute(p: (obj: MusicService) -> Unit): Boolean {
-        return if (this != null) {
-            p(this)
-            true
-        } else {
-            false
-        }
-    }
+    /**
+     * run [block] if [musicService] is not null
+     * @return false if failed
+     */
+    @Suppress("NullableBooleanElvis")
+    private inline fun withMusicService(block: (MusicService) -> Boolean): Boolean =
+        musicService?.let { service ->
+            block(service)
+        } ?: false
 }
