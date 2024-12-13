@@ -99,10 +99,11 @@ object MultiSelectionToolbarMenuProviders {
                     onClick {
                         context.lifecycleScopeOrNewOne().launch {
                             val songs = convertToSongs(controller.selected, context)
-                            if (songs.size > 1)
+                            if (songs.size > 1) {
                                 MultiTagBrowserActivity.launch(context, ArrayList(songs.map { it.data }))
-                            else
+                            } else if (songs.size == 1) {
                                 TagBrowserActivity.launch(context, songs.first().data)
+                            }
                         }
                         controller.unselectedAll()
                         true
