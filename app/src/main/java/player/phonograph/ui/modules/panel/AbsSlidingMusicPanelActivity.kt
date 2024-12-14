@@ -240,7 +240,8 @@ abstract class AbsSlidingMusicPanelActivity :
             slidingUpPanelLayout.panelHeight = 0
             collapsePanel()
         } else {
-            slidingUpPanelLayout.panelHeight = panelBinding.miniPlayerDocker.height
+            slidingUpPanelLayout.panelHeight =
+                resources.getDimensionPixelSize(R.dimen.mini_player_height) + panelBinding.navigationBar.height
         }
         isBottomBarHidden = hide
     }
