@@ -37,6 +37,9 @@ import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
 import androidx.appcompat.widget.Toolbar
 import androidx.core.animation.doOnEnd
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -50,6 +53,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import kotlin.math.max
@@ -289,6 +293,17 @@ class FlatPlayerFragment :
     }
 
     private class LandscapeImpl(fragment: FlatPlayerFragment) : BaseImpl(fragment) {
+        override fun init() {
+            super.init()
+            ViewCompat.setOnApplyWindowInsetsListener(fragment.viewBinding.playerFragmentRoot) { view, windowInsets ->
+                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+                view.updateLayoutParams<MarginLayoutParams> {
+                    rightMargin = insets.right
+                }
+                WindowInsetsCompat.CONSUMED
+            }
+        }
+
         override fun setUpPanelAndAlbumCoverHeight() {
             (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(
                 fragment.requireView().findViewById(R.id.player_panel)
