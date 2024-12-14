@@ -22,6 +22,9 @@ import util.theme.color.darkenColor
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -30,6 +33,7 @@ import android.animation.ValueAnimator
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.animation.PathInterpolator
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -136,6 +140,16 @@ abstract class AbsSlidingMusicPanelActivity :
                     hideBottomBar(queue.get()?.isEmpty() == true)
                 }
             }
+        }
+
+        // insets
+        ViewCompat.setOnApplyWindowInsetsListener(panelBinding.miniPlayerDocker) { view, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updateLayoutParams<MarginLayoutParams> {
+                rightMargin = insets.right
+                leftMargin = insets.left
+            }
+            windowInsets
         }
     }
 
