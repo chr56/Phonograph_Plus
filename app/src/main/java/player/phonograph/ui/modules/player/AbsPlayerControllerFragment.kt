@@ -38,7 +38,6 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -73,15 +72,17 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         val context = view.context
         super.onViewCreated(view, savedInstanceState)
 
-        binding.setUpPrevButton { MusicPlayerRemote.back() }
-        binding.setUpNextButton { MusicPlayerRemote.playNextSong() }
-        binding.setUpShuffleButton { MusicPlayerRemote.toggleShuffleMode() }
-        binding.setUpRepeatButton { MusicPlayerRemote.cycleRepeatMode() }
-
         val footerColor = themeFooterColor(requireContext())
         _backgroundColor.value = footerColor
         calculateColor(context, footerColor)
         lightColor = context.primaryTextColor(true)
+
+        setupViews(context)
+
+        observeState()
+    }
+
+    private fun setupViews(context: Context) {
 
         binding.preparePlayPauseButton(context)
         binding.setPlayPauseButton(binding.playPauseDrawable)
@@ -91,7 +92,10 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         binding.setUpProgressSlider(lightColor)
         binding.updateProgressTextColor(lightColor)
 
-        observeState()
+        binding.setUpPrevButton { MusicPlayerRemote.back() }
+        binding.setUpNextButton { MusicPlayerRemote.playNextSong() }
+        binding.setUpShuffleButton { MusicPlayerRemote.toggleShuffleMode() }
+        binding.setUpRepeatButton { MusicPlayerRemote.cycleRepeatMode() }
     }
 
     private fun observeState() {
