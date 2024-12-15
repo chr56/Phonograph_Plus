@@ -254,6 +254,7 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
 
 
         //region Behaviour
+        var disconnectedDrawable: Drawable? = null
         lateinit var playPauseDrawable: PlayPauseDrawable
         abstract fun preparePlayPauseButton(context: Context)
         abstract fun setPlayPauseButton(drawable: Drawable?)

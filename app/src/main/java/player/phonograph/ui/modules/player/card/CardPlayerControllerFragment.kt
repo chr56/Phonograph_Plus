@@ -5,11 +5,14 @@
 package player.phonograph.ui.modules.player.card
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import player.phonograph.R
 import player.phonograph.databinding.FragmentCardPlayerPlaybackControlsBinding
 import player.phonograph.ui.modules.player.AbsPlayerControllerFragment
 import player.phonograph.ui.modules.player.PlayPauseButtonOnClickHandler
 import player.phonograph.ui.views.PlayPauseDrawable
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
+import player.phonograph.util.theme.themeIconColor
 import util.theme.color.secondaryTextColor
 import util.theme.view.tint
 import androidx.core.graphics.BlendModeColorFilterCompat
@@ -95,6 +98,7 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment<FragmentCardPla
                         context.secondaryTextColor(fabColor), BlendModeCompat.SRC_IN
                     )
             }
+            disconnectedDrawable = context.getTintedDrawable(R.drawable.ic_refresh_white_24dp, themeIconColor(context))
             with(viewBinding.playerPlayPauseFab) {
                 tint(fabColor, true, context.nightMode)
                 setOnClickListener(PlayPauseButtonOnClickHandler())

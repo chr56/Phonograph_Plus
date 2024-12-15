@@ -4,10 +4,13 @@
 
 package player.phonograph.ui.modules.player.flat
 
+import player.phonograph.R
 import player.phonograph.databinding.FragmentFlatPlayerPlaybackControlsBinding
 import player.phonograph.ui.modules.player.AbsPlayerControllerFragment
 import player.phonograph.ui.modules.player.PlayPauseButtonOnClickHandler
 import player.phonograph.ui.views.PlayPauseDrawable
+import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.themeIconColor
 import androidx.annotation.ColorInt
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import android.animation.Animator
@@ -108,6 +111,7 @@ class FlatPlayerControllerFragment : AbsPlayerControllerFragment<FragmentFlatPla
 
         override fun preparePlayPauseButton(context: Context) {
             playPauseDrawable = PlayPauseDrawable(context)
+            disconnectedDrawable = context.getTintedDrawable(R.drawable.ic_refresh_white_24dp, themeIconColor(context))
             with(viewBinding.playerPlayPauseButton) {
                 setOnClickListener(PlayPauseButtonOnClickHandler())
                 // pivotX = width.toFloat() / 2
