@@ -1,39 +1,28 @@
-version: "1.9.0-dev1"
+version: "1.9.0-dev2"
 channel: "PREVIEW"
-versionCode: 1086
-timestamp: 1732455000
+versionCode: 1087
+timestamp: 1734240000
 notes:
   en:
     highlights: [ ]
     items:
-      - "Development: Targeting SDK 35 (Android 15)"
-      - "Improve: show bottom sliding panel in Search"
-      - "Improve: explicit user interface for version migration"
-      - "Improve: enable new system back gesture animations for Android T and above"
-      - "Improve: edge to edge user interface"
-      - "Remove: preference \"colored navigation bar\" (not applicable now)"
-      - "Modify: navigation bar would always be colored by default"
-      - "Modify: navigation bar would be transparent or translucent if possible now"
-      - "Modify: change default File Playlist icon"
-      - "Modify: forbid upgrading from prior to v1.4.0 & warn upgrading from prior to v1.7.0"
-      - "Translation: update Polish (cooky), Portuguese Brazilian (by FalaTudo)"
-      - "Development: update dependencies"
+      - "Fix: some edge-to-edge display issues in landscape [since 1.9.0-dev1]"
+      - "Fix: possible crash when dragging items in some circumstances"
+      - "Fix: dragging playlist items but not in Edit Mode"
+      - "Fix: crash when entering Tag Editor from multi-selection mode but the selection contains no song"
+      - "New: display current distribution Variant in About"
+      - "Translation: update Polish (cooky), Spanish (by Ulisses_Mello)"
+
 
   zh:
     highlights: [ ]
     items:
-      - "开发 targetSdk 35 (Android 15)"
-      - "改进 搜索界面中显示底部滑动面板"
-      - "改进 版本迁移用户界面"
-      - "改进 启用新的系统返回手势动画 (Android T及以上)"
-      - "改进 边到边界面"
-      - "删除 设置项“着色导航栏”（已无意义）"
-      - "修改 默认着色导航栏"
-      - "修改 若可行，透明或半透明导航栏"
-      - "修改 默认文件播放列表图标"
-      - "修改 禁止从 v1.4.0 之前的版本升级, 警告从 v1.7.0 之前的版本升级"
-      - "翻译 更新 波兰语（Cooky）、巴西葡萄牙语（FalaTudo）"
-      - "开发 更新依赖"
+      - "修复 横屏下的一些边到边显示问题 [自 1.9.0-dev1 起]"
+      - "修复 某些情况下拖动项目时可能导致崩溃"
+      - "修复 拖动播放列表项目却不在编辑模式下"
+      - "修复 从多选进入标签编辑器但所选内容不含任何歌曲时崩溃"
+      - "新增 关于中显示当前变体版本"
+      - "翻译 更新 波兰语（Cooky）、西班牙语（Ulisses_Mello）"
 
-previousVersion: "1.8.5.1"
-previousChannel: "STABLE"
+previousVersion: "1.9.0-dev1"
+previousChannel: "PREVIEW"
