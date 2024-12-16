@@ -2,6 +2,30 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "1.9.0-dev2",
+      "versionCode": 1087,
+      "date": 1734240000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.9.0-dev2"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.0-dev2/PhonographPlus_1.9.0-dev2_ModernPreviewRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.0-dev2/PhonographPlus_1.9.0-dev2_LegacyPreviewRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 横屏下的一些边到边显示问题 [自 1.9.0-dev1 起]</li><li>修复 某些情况下拖动项目时可能导致崩溃</li><li>修复 拖动播放列表项目却不在编辑模式下</li><li>修复 从多选进入标签编辑器但所选内容不含任何歌曲时崩溃</li><li>新增 关于中显示当前变体版本</li><li>翻译 更新 波兰语（Cooky）、西班牙语（Ulisses_Mello）</li></ol>",
+        "en": "<ol><li>Fix: some edge-to-edge display issues in landscape [since 1.9.0-dev1]</li><li>Fix: possible crash when dragging items in some circumstances</li><li>Fix: dragging playlist items but not in Edit Mode</li><li>Fix: crash when entering Tag Editor from multi-selection mode but the selection contains no song</li><li>New: display current distribution Variant in About</li><li>Translation: update Polish (cooky), Spanish (by Ulisses_Mello)</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.9.0-dev1",
       "versionCode": 1086,
       "date": 1732455000,
