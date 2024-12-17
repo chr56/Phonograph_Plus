@@ -40,7 +40,7 @@ notes:
       - "修改 若可行，透明或半透明导航栏"
       - "修改 默认文件播放列表图标"
       - "修改 禁止从 v1.4.0 之前的版本升级, 警告从 v1.7.0 之前的版本升级"
-      - "翻译 更新 波兰语（Cooky）、巴西葡萄牙语（FalaTudo）、西班牙语（Ulisses_Mello）"
+      - "翻译 更新 波兰语 (cooky), 巴西葡萄牙语 (FalaTudo), 西班牙语 (Ulisses_Mello)"
       - "开发 更新依赖"
 
 previousVersion: "1.8.5.1"
