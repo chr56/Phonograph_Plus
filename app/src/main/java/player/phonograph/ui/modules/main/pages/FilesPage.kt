@@ -11,6 +11,7 @@ import com.google.android.material.appbar.AppBarLayout
 import player.phonograph.R
 import player.phonograph.databinding.FragmentFilePageBinding
 import player.phonograph.mechanism.actions.actionPlay
+import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.service.queue.ShuffleMode
@@ -28,6 +29,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.withResumed
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
@@ -49,6 +51,13 @@ class FilesPage : AbsPage() {
 
     private lateinit var explorer: FilesPageExplorerFragment
     private val model: FilesPageViewModel by viewModels({ requireActivity() })
+
+    private lateinit var listener: MediaStoreListener
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        listener = MediaStoreListener()
+        lifecycle.addObserver(listener)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -217,6 +226,18 @@ class FilesPage : AbsPage() {
             Setting(context)[Keys.showFileImages].data = model.showFilesImages
         }
         model.refreshFiles(context)
+    }
+    //endregion
+
+    //region MediaStore
+    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
+        override fun onMediaStoreChanged() {
+            lifecycleScope.launch {
+                lifecycle.withResumed {
+                    model.refreshFiles(requireContext())
+                }
+            }
+        }
     }
     //endregion
 }
