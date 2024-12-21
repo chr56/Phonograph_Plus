@@ -10,6 +10,7 @@ import com.google.android.material.appbar.AppBarLayout
 import player.phonograph.R
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.mechanism.actions.actionPlay
+import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
@@ -30,6 +31,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withResumed
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.os.Bundle
 import android.view.Gravity
@@ -49,6 +51,12 @@ class FlattenFolderPage : AbsPage() {
 
     private val viewModel: FlattenFolderPageViewModel by viewModels()
 
+    private lateinit var listener: MediaStoreListener
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        listener = MediaStoreListener()
+        lifecycle.addObserver(listener)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -330,4 +338,17 @@ class FlattenFolderPage : AbsPage() {
         binding.panel.removeOnOffsetChangedListener(innerAppbarOffsetListener)
         mainFragment.removeOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
     }
+
+    //region MediaStore
+    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
+        override fun onMediaStoreChanged() {
+            lifecycleScope.launch {
+                lifecycle.withResumed {
+                    viewModel.loadSongs(requireContext(), false)
+                    viewModel.loadFolders(requireContext(), false)
+                }
+            }
+        }
+    }
+    //endregion
 }
