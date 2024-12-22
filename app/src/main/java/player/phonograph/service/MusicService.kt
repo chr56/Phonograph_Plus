@@ -16,6 +16,8 @@ import player.phonograph.MusicServiceMsgConst.REPEAT_MODE_CHANGED
 import player.phonograph.MusicServiceMsgConst.SHUFFLE_MODE_CHANGED
 import player.phonograph.appwidgets.AppWidgetUpdateReceiver
 import player.phonograph.mechanism.IFavorite
+import player.phonograph.mechanism.broadcast.setUpMediaStoreObserver
+import player.phonograph.mechanism.broadcast.unregisterMediaStoreObserver
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.repo.browser.MediaBrowserDelegate
@@ -35,7 +37,6 @@ import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_QUEUE
 import player.phonograph.service.queue.QueueObserver
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.service.util.MediaStoreObserverUtil
 import player.phonograph.service.util.MusicServiceUtil
 import player.phonograph.service.util.SongPlayCountHelper
 import player.phonograph.settings.Keys
@@ -82,8 +83,6 @@ class MusicService : MediaBrowserServiceCompat() {
 
     private lateinit var throttledTimer: ThrottledTimer
 
-    private val mediaStoreObserverUtil = MediaStoreObserverUtil()
-
     lateinit var coverLoader: CoverLoader
 
     val coroutineScope get() = _coroutineScope!!
@@ -116,7 +115,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
         // misc
         observeSettings()
-        mediaStoreObserverUtil.setUpMediaStoreObserver(
+        setUpMediaStoreObserver(
             this,
             controller.handler, // todo use other handler
             this@MusicService::handleAndSendChangeInternal
@@ -246,7 +245,7 @@ class MusicService : MediaBrowserServiceCompat() {
         mediaSessionController.onDestroy(this)
         coverLoader.terminate()
         AppWidgetUpdateReceiver.unRegister(this)
-        mediaStoreObserverUtil.unregisterMediaStoreObserver(this)
+        unregisterMediaStoreObserver(this)
         controller.removeObserver(playerStateObserver)
         controller.onDestroy(this)
         queueManager.removeObserver(queueChangeObserver)
