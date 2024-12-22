@@ -1,15 +1,18 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2024 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.misc
+package player.phonograph.mechanism.broadcast
 
+import player.phonograph.App
+import player.phonograph.PACKAGE_NAME
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import player.phonograph.PACKAGE_NAME
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.content.IntentFilter
+
+fun sentPlaylistChangedLocalBoardCast() = PlaylistsModifiedReceiver.sendBroadcastLocally(App.Companion.instance)
 
 abstract class PlaylistsModifiedReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -21,7 +24,6 @@ abstract class PlaylistsModifiedReceiver : BroadcastReceiver() {
     abstract fun onPlaylistChanged(context: Context, intent: Intent)
 
     companion object {
-        const val ACTION_BROADCAST_PLAYLISTS_CHANGED = "$PACKAGE_NAME.playlists_changed"
 
         val filter: IntentFilter = IntentFilter(ACTION_BROADCAST_PLAYLISTS_CHANGED)
 
@@ -30,3 +32,5 @@ abstract class PlaylistsModifiedReceiver : BroadcastReceiver() {
                 .sendBroadcast(Intent(ACTION_BROADCAST_PLAYLISTS_CHANGED))
     }
 }
+
+private const val ACTION_BROADCAST_PLAYLISTS_CHANGED = "$PACKAGE_NAME.playlists_changed"

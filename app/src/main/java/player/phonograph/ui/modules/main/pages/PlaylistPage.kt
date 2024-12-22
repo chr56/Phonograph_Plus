@@ -7,8 +7,8 @@ package player.phonograph.ui.modules.main.pages
 import org.koin.core.context.GlobalContext
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.mechanism.broadcast.PlaylistsModifiedReceiver
 import player.phonograph.mechanism.playlist.PlaylistProcessors
-import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.DynamicPlaylists
 import player.phonograph.model.playlist.Playlist

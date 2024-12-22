@@ -20,8 +20,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
+import player.phonograph.mechanism.broadcast.PlaylistsModifiedReceiver
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
 import player.phonograph.model.getReadableDurationString
