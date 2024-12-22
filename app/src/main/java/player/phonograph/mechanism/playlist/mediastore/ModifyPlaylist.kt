@@ -7,6 +7,7 @@ package player.phonograph.mechanism.playlist.mediastore
 import legacy.phonograph.MediaStoreCompat
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
 import player.phonograph.R
+import player.phonograph.mechanism.broadcast.sentPlaylistChangedLocalBoardCast
 import player.phonograph.model.Song
 import player.phonograph.repo.mediastore.loaders.PlaylistLoader
 import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
@@ -15,7 +16,6 @@ import player.phonograph.util.mediastoreUriPlaylist
 import player.phonograph.util.mediastoreUriPlaylistMembers
 import player.phonograph.util.mediastoreUriPlaylists
 import player.phonograph.util.reportError
-import player.phonograph.util.sentPlaylistChangedLocalBoardCast
 import player.phonograph.util.warning
 import android.content.ContentValues
 import android.content.Context

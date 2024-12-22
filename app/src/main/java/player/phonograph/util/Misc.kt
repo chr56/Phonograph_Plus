@@ -14,9 +14,7 @@
 
 package player.phonograph.util
 
-import player.phonograph.App
 import player.phonograph.BuildConfig.DEBUG
-import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.Song
 import androidx.annotation.StringRes
 import androidx.core.content.FileProvider
@@ -62,12 +60,6 @@ inline fun debug(crossinline block: () -> Unit) {
 fun Int.testBit(mask: Int): Boolean = (this and mask) != 0
 fun Int.setBit(mask: Int): Int = (this or mask)
 fun Int.unsetBit(mask: Int): Int = (this and mask.inv())
-
-//
-// LocalBoardCast
-//
-
-fun sentPlaylistChangedLocalBoardCast() = PlaylistsModifiedReceiver.sendBroadcastLocally(App.instance)
 
 
 //
