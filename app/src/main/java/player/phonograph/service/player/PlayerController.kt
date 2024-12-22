@@ -385,6 +385,7 @@ class PlayerController : ServiceComponent, Controller {
         }
 
         override fun jumpBackward(force: Boolean) {
+            if (queueManager.playingQueue.isEmpty()) return
             val position =
                 if (force) {
                     queueManager.previousLoopPosition
@@ -403,6 +404,7 @@ class PlayerController : ServiceComponent, Controller {
         }
 
         override fun jumpForward(force: Boolean) {
+            if (queueManager.playingQueue.isEmpty()) return
             val position =
                 if (force) {
                     queueManager.nextLoopPosition
