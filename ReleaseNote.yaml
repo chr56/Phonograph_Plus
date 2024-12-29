@@ -1,28 +1,22 @@
-version: "1.9.0-dev2"
+version: "1.9.0-dev3"
 channel: "PREVIEW"
-versionCode: 1087
-timestamp: 1734240000
+versionCode: 1088
+timestamp: 1737980000
 notes:
   en:
     highlights: [ ]
     items:
-      - "Fix: some edge-to-edge display issues in landscape [since 1.9.0-dev1]"
-      - "Fix: possible crash when dragging items in some circumstances"
-      - "Fix: dragging playlist items but not in Edit Mode"
-      - "Fix: crash when entering Tag Editor from multi-selection mode but the selection contains no song"
-      - "New: display current distribution Variant in About"
-      - "Translation: update Polish (cooky), Spanish (by Ulisses_Mello)"
+      - "Fix: crash after skipping from some notifications or BT devices but queue is empty"
+      - "Fix: missing automatic refresh in Folders tab"
+      - "Translation: Portuguese Brazilian (by Ulisses_Mello)"
 
 
   zh:
     highlights: [ ]
     items:
-      - "修复 横屏下的一些边到边显示问题 [自 1.9.0-dev1 起]"
-      - "修复 某些情况下拖动项目时可能导致崩溃"
-      - "修复 拖动播放列表项目却不在编辑模式下"
-      - "修复 从多选进入标签编辑器但所选内容不含任何歌曲时崩溃"
-      - "新增 关于中显示当前变体版本"
-      - "翻译 更新 波兰语（Cooky）、西班牙语（Ulisses_Mello）"
+      - "修复 播放队列清空后，从某些通知或蓝牙设备切换曲目时崩溃"
+      - "修复 文件夹页缺失自动刷新"
+      - "翻译 更新 巴西葡萄牙语言(Ulisses_Mello)"
 
-previousVersion: "1.9.0-dev1"
+previousVersion: "1.9.0-dev2"
 previousChannel: "PREVIEW"

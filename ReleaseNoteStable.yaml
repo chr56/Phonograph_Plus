@@ -1,7 +1,7 @@
 version: "1.9.0"
 channel: "STABLE"
 versionCode: 1090
-timestamp: 1735000000
+timestamp: 1738000000
 notes:
   en:
     highlights: [ ]
@@ -10,6 +10,8 @@ notes:
       - "Fix: possible crash when dragging items in some circumstances"
       - "Fix: dragging playlist items but not in Edit Mode"
       - "Fix: crash when entering Tag Editor from multi-selection mode but the selection contains no song"
+      - "Fix: crash after skipping from some notifications or BT devices but queue is empty"
+      - "Fix: missing automatic refresh in Folders tab"
       - "New: display current distribution Variant in About"
       - "Improve: show bottom sliding panel in Search"
       - "Improve: explicit user interface for version migration"
@@ -20,7 +22,7 @@ notes:
       - "Modify: navigation bar would be transparent or translucent if possible now"
       - "Modify: change default File Playlist icon"
       - "Modify: forbid upgrading from prior to v1.4.0 & warn upgrading from prior to v1.7.0"
-      - "Translation: update Polish (cooky), Portuguese Brazilian (by FalaTudo), Spanish (by Ulisses_Mello)"
+      - "Translation: update Polish (cooky), Portuguese Brazilian (by FalaTudo), Spanish (by Ulisses_Mello),  Portuguese Brazilian (by Ulisses_Mello)"
       - "Development: update dependencies"
 
   zh:
@@ -30,6 +32,8 @@ notes:
       - "修复 某些情况下拖动项目时可能导致崩溃"
       - "修复 拖动播放列表项目却不在编辑模式下"
       - "修复 从多选进入标签编辑器但所选内容不含任何歌曲时崩溃"
+      - "修复 播放队列清空后, 从某些通知或蓝牙设备切换曲目时崩溃"
+      - "修复 文件夹页缺失自动刷新"
       - "新增 关于中显示当前变体版本"
       - "改进 搜索界面中显示底部滑动面板"
       - "改进 版本迁移用户界面"
@@ -37,10 +41,10 @@ notes:
       - "改进 边到边界面"
       - "删除 设置项“着色导航栏” (已无意义)"
       - "修改 默认着色导航栏"
-      - "修改 若可行，透明或半透明导航栏"
+      - "修改 若可行, 透明或半透明导航栏"
       - "修改 默认文件播放列表图标"
       - "修改 禁止从 v1.4.0 之前的版本升级, 警告从 v1.7.0 之前的版本升级"
-      - "翻译 更新 波兰语 (cooky), 巴西葡萄牙语 (FalaTudo), 西班牙语 (Ulisses_Mello)"
+      - "翻译 更新 波兰语 (cooky), 巴西葡萄牙语 (FalaTudo), 西班牙语 (Ulisses_Mello), 巴西葡萄牙语言 (Ulisses_Mello)"
       - "开发 更新依赖"
 
 previousVersion: "1.8.5.1"
