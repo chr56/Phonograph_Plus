@@ -45,7 +45,7 @@ fun loadSongInfo(context: Context, song: Song): SongInfoModel {
 
         val audioPropertyFields = readAudioPropertyFields(audioFile.audioHeader)
         val tagFields = readTagFields(audioFile)
-        val tagFormat = TagFormat.of(audioFile.tag)
+        val tagFormat = TagFormat.of(audioFile)
         val allTags = readAllTags(audioFile)
 
         return SongInfoModel(
@@ -89,17 +89,18 @@ private fun readAudioPropertyFields(audioHeader: AudioHeader): Map<FilePropertyF
 private fun readTagFields(audioFile: AudioFile): Map<FieldKey, TagField> =
     readTagFieldsImpl(audioFile, allFieldKey)
 
-private fun readTagFieldsImpl(audioFile: AudioFile, keys: Set<FieldKey>): Map<FieldKey, TagField> =
+private fun readTagFieldsImpl(audioFile: AudioFile, keys: Set<FieldKey>): Map<FieldKey, TagField> = run {
+    val fields = audioFile.tag ?: return@run emptyMap()
     keys.associateWith { key ->
         val value = try {
-            val field = audioFile.tag.getFirstField(key)
+            val field = fields.getFirstField(key)
             if (field != null) {
                 if (field.isBinary) {
                     BinaryData
                 } else if (field.isEmpty) {
                     EmptyData
                 } else {
-                    val full = audioFile.tag.getFirst(key)
+                    val full = fields.getFirst(key)
                     val text = if (full.length > 512) "${full.take(512)}\n..." else full
                     TextData(text)
                 }
@@ -111,6 +112,7 @@ private fun readTagFieldsImpl(audioFile: AudioFile, keys: Set<FieldKey>): Map<Fi
         }
         TagField(key, value)
     }
+}
 
 
 private fun readSongInfoFallback(song: Song, songFile: File): SongInfoModel =

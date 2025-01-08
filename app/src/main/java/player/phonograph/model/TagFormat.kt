@@ -4,6 +4,7 @@
 
 package player.phonograph.model
 
+import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.real.RealTag
 import org.jaudiotagger.tag.Tag
 import org.jaudiotagger.tag.aiff.AiffTag
@@ -41,8 +42,13 @@ enum class TagFormat(val clazz: Class<out Tag>, val id: String) {
 
     companion object {
         fun of(type: Class<out Tag>): TagFormat =
-            values().firstOrNull { it.clazz == type } ?: Unknown
+            TagFormat.entries.firstOrNull { it.clazz == type } ?: Unknown
 
         fun of(tag: Tag): TagFormat = of(tag.javaClass)
+
+        fun of(audioFile: AudioFile): TagFormat {
+            val tag: Tag? = audioFile.tag
+            return if (tag != null) of(tag) else Unknown
+        }
     }
 }
