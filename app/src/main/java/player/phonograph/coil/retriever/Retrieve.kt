@@ -165,6 +165,6 @@ internal fun readFromFile(
 }
 
 internal fun AudioFile.retrieveEmbedPicture(size: Size, raw: Boolean): Bitmap? {
-    val artwork = this.tag.firstArtwork
+    val artwork = this.tag?.firstArtwork
     return artwork?.binaryData?.let { if (raw) it.toBitmap() else it.toBitmap(size) }
 }
