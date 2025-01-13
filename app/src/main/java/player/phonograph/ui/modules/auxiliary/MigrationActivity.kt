@@ -4,7 +4,7 @@ import player.phonograph.R
 import player.phonograph.mechanism.migrate.MigrationManager
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.StatusBarStub
+import player.phonograph.ui.compose.components.SystemBarsPadded
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import androidx.activity.compose.setContent
@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -60,25 +59,25 @@ class MigrationActivity : ComposeActivity() {
             val isCompleted by isCompletedFlow.collectAsState()
             val color = remember { derivedStateOf { if (isCompleted) colorDone else colorProcess } }
             PhonographTheme(color) {
-                StatusBarStub()
-                Scaffold(
-                    Modifier.systemBarsPadding(),
-                    topBar = {
-                        TopAppBar(
-                            title = { Text(stringResource(R.string.version_migration)) },
-                            actions = { Options() }
-                        )
-                    }
-                ) {
-                    Column(Modifier.padding(it)) {
-                        if (isCompleted) {
-                            ResultScreen()
-                        } else {
-                            OngoingScreen()
+                SystemBarsPadded {
+                    Scaffold(
+                        topBar = {
+                            TopAppBar(
+                                title = { Text(stringResource(R.string.version_migration)) },
+                                actions = { Options() }
+                            )
                         }
-                    }
-                    SideEffect {
-                        migrateImpl()
+                    ) {
+                        Column(Modifier.padding(it)) {
+                            if (isCompleted) {
+                                ResultScreen()
+                            } else {
+                                OngoingScreen()
+                            }
+                        }
+                        SideEffect {
+                            migrateImpl()
+                        }
                     }
                 }
             }

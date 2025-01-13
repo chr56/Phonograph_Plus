@@ -5,7 +5,7 @@
 package player.phonograph.ui.modules.web
 
 import player.phonograph.ui.compose.Navigator
-import player.phonograph.ui.compose.components.StatusBarStub
+import player.phonograph.ui.compose.components.SystemBarsPadded
 import player.phonograph.ui.modules.web.PageSearch.LastFmSearch
 import player.phonograph.ui.modules.web.PageSearch.MusicBrainzSearch
 import androidx.compose.foundation.clickable
@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.DrawerState
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalTextStyle
@@ -43,51 +42,51 @@ import kotlinx.coroutines.launch
 @Composable
 fun WebSearch(viewModel: WebSearchViewModel, scaffoldState: ScaffoldState, page: Page) {
     val context = LocalContext.current
-    StatusBarStub()
-    Scaffold(
-        Modifier.statusBarsPadding(),
-        scaffoldState = scaffoldState,
-        topBar = {
-            TopAppBar(
-                title = { Text(page.title(context)) },
-                navigationIcon = {
-                    Box(Modifier.padding(16.dp)) {
-                        NavigateButton(scaffoldState.drawerState, viewModel.navigator)
-                    }
-                },
-                actions = {
-                    if (page is PageDetail<*> && viewModel.selectorMode) {
-                        Icon(
-                            Icons.Default.Check, stringResource(android.R.string.ok),
-                            Modifier
-                                .clickable {
-                                    val activity = context as? WebSearchActivity
-                                    if (activity != null) {
-                                        viewModel.exit(activity)
+    SystemBarsPadded {
+        Scaffold(
+            scaffoldState = scaffoldState,
+            topBar = {
+                TopAppBar(
+                    title = { Text(page.title(context)) },
+                    navigationIcon = {
+                        Box(Modifier.padding(16.dp)) {
+                            NavigateButton(scaffoldState.drawerState, viewModel.navigator)
+                        }
+                    },
+                    actions = {
+                        if (page is PageDetail<*> && viewModel.selectorMode) {
+                            Icon(
+                                Icons.Default.Check, stringResource(android.R.string.ok),
+                                Modifier
+                                    .clickable {
+                                        val activity = context as? WebSearchActivity
+                                        if (activity != null) {
+                                            viewModel.exit(activity)
+                                        }
                                     }
-                                }
-                                .padding(8.dp)
-                        )
+                                    .padding(8.dp)
+                            )
+                        }
                     }
-                }
-            )
-        },
-        drawerContent = {
-            Drawer(viewModel)
-        }
-    ) {
-        CompositionLocalProvider(LocalPageNavigator provides viewModel.navigator) {
-            Box(
-                modifier = Modifier
-                    .padding(it)
-                    .fillMaxWidth()
-            ) {
-                when (page) {
-                    PageHome -> Home(viewModel, page)
-                    is LastFmSearch -> LastFmSearch(viewModel, page)
-                    is MusicBrainzSearch -> MusicBrainzSearch(viewModel, page)
-                    is PageDetail.LastFmDetail -> DetailLastFm(viewModel, page)
-                    is PageDetail.MusicBrainzDetail -> DetailMusicBrainz(viewModel, page)
+                )
+            },
+            drawerContent = {
+                Drawer(viewModel)
+            }
+        ) {
+            CompositionLocalProvider(LocalPageNavigator provides viewModel.navigator) {
+                Box(
+                    modifier = Modifier
+                        .padding(it)
+                        .fillMaxWidth()
+                ) {
+                    when (page) {
+                        PageHome -> Home(viewModel, page)
+                        is LastFmSearch -> LastFmSearch(viewModel, page)
+                        is MusicBrainzSearch -> MusicBrainzSearch(viewModel, page)
+                        is PageDetail.LastFmDetail -> DetailLastFm(viewModel, page)
+                        is PageDetail.MusicBrainzDetail -> DetailMusicBrainz(viewModel, page)
+                    }
                 }
             }
         }

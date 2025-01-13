@@ -21,7 +21,7 @@ import player.phonograph.mechanism.backup.Backup
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.DropDownMenuContent
-import player.phonograph.ui.compose.components.StatusBarStub
+import player.phonograph.ui.compose.components.SystemBarsPadded
 import player.phonograph.ui.dialogs.BackupExportDialog
 import player.phonograph.ui.dialogs.BackupImportDialog
 import player.phonograph.ui.modules.explorer.PathSelectorContractTool
@@ -31,7 +31,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -77,45 +76,45 @@ class SettingsActivity : ComposeActivity(),
         setContent {
             val scaffoldState = rememberScaffoldState()
             PhonographTheme {
-                StatusBarStub()
-                Scaffold(
-                    Modifier.statusBarsPadding(),
-                    scaffoldState = scaffoldState,
-                    topBar = {
-                        TopAppBar(
-                            title = {
-                                Text(stringResource(R.string.action_settings))
-                            },
-                            navigationIcon = {
-                                Icon(
-                                    Icons.AutoMirrored.Default.ArrowBack, null,
-                                    Modifier
-                                        .clickable {
-                                            onBackPressedDispatcher.onBackPressed()
+                SystemBarsPadded {
+                    Scaffold(
+                        scaffoldState = scaffoldState,
+                        topBar = {
+                            TopAppBar(
+                                title = {
+                                    Text(stringResource(R.string.action_settings))
+                                },
+                                navigationIcon = {
+                                    Icon(
+                                        Icons.AutoMirrored.Default.ArrowBack, null,
+                                        Modifier
+                                            .clickable {
+                                                onBackPressedDispatcher.onBackPressed()
+                                            }
+                                            .padding(16.dp)
+                                    )
+                                },
+                                actions = {
+                                    IconButton(
+                                        content = {
+                                            Icon(Icons.Default.MoreVert, stringResource(id = R.string.more_actions))
+                                        },
+                                        onClick = {
+                                            dropMenuState.value = true
                                         }
-                                        .padding(16.dp)
-                                )
-                            },
-                            actions = {
-                                IconButton(
-                                    content = {
-                                        Icon(Icons.Default.MoreVert, stringResource(id = R.string.more_actions))
-                                    },
-                                    onClick = {
-                                        dropMenuState.value = true
-                                    }
-                                )
-                            },
-                            backgroundColor = MaterialTheme.colors.primary
-                        )
-                    },
-                ) {
-                    Box(Modifier.padding(it)) {
-                        val state = remember { dropMenuState }
-                        PhonographPreferenceScreen()
-                        Box(modifier = Modifier.align(Alignment.TopEnd)) {
-                            DropdownMenu(expanded = state.value, onDismissRequest = { state.value = false }) {
-                                Menu()
+                                    )
+                                },
+                                backgroundColor = MaterialTheme.colors.primary
+                            )
+                        },
+                    ) {
+                        Box(Modifier.padding(it)) {
+                            val state = remember { dropMenuState }
+                            PhonographPreferenceScreen()
+                            Box(modifier = Modifier.align(Alignment.TopEnd)) {
+                                DropdownMenu(expanded = state.value, onDismissRequest = { state.value = false }) {
+                                    Menu()
+                                }
                             }
                         }
                     }

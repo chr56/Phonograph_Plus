@@ -15,7 +15,7 @@ import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
-import player.phonograph.ui.compose.components.StatusBarStub
+import player.phonograph.ui.compose.components.SystemBarsPadded
 import player.phonograph.ui.modules.web.IWebSearchRequester
 import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.ui.modules.web.WebSearchTool
@@ -26,7 +26,6 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -108,48 +107,55 @@ private fun BatchTagEditor(
     webSearchTool: WebSearchTool,
 ) {
     PhonographTheme {
-        val scaffoldState = rememberScaffoldState()
-        val editable by viewModel.editable.collectAsState()
-        StatusBarStub()
-        Scaffold(
-            Modifier.statusBarsPadding(),
-            scaffoldState = scaffoldState,
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            stringResource(if (editable) R.string.action_tag_editor else R.string.label_details)
-                        )
-                    },
-                    navigationIcon = {
-                        Box(Modifier.padding(16.dp)) {
-                            Icon(
-                                Icons.AutoMirrored.Default.ArrowBack, null,
-                                Modifier.clickable {
-                                    onBackPressedDispatcher.onBackPressed()
-                                }
+        SystemBarsPadded {
+            val scaffoldState = rememberScaffoldState()
+            val editable by viewModel.editable.collectAsState()
+            Scaffold(
+                scaffoldState = scaffoldState,
+                topBar = {
+                    TopAppBar(
+                        title = {
+                            Text(
+                                stringResource(if (editable) R.string.action_tag_editor else R.string.label_details)
                             )
-                        }
-                    },
-                    actions = {
-                        RequestWebSearch(viewModel, webSearchTool)
-                        if (editable) {
-                            IconButton(onClick = { viewModel.saveConfirmationDialogState.show() }) {
-                                Icon(painterResource(id = R.drawable.ic_save_white_24dp), stringResource(R.string.save))
+                        },
+                        navigationIcon = {
+                            Box(Modifier.padding(16.dp)) {
+                                Icon(
+                                    Icons.AutoMirrored.Default.ArrowBack, null,
+                                    Modifier.clickable {
+                                        onBackPressedDispatcher.onBackPressed()
+                                    }
+                                )
                             }
-                        } else {
-                            IconButton(onClick = { viewModel.updateEditable(true) }) {
-                                Icon(painterResource(id = R.drawable.ic_edit_white_24dp), stringResource(R.string.edit))
+                        },
+                        actions = {
+                            RequestWebSearch(viewModel, webSearchTool)
+                            if (editable) {
+                                IconButton(onClick = { viewModel.saveConfirmationDialogState.show() }) {
+                                    Icon(
+                                        painterResource(id = R.drawable.ic_save_white_24dp),
+                                        stringResource(R.string.save)
+                                    )
+                                }
+                            } else {
+                                IconButton(onClick = { viewModel.updateEditable(true) }) {
+                                    Icon(
+                                        painterResource(id = R.drawable.ic_edit_white_24dp),
+                                        stringResource(R.string.edit)
+                                    )
+                                }
                             }
                         }
-                    }
-                )
-            }
-        ) {
-            Box(Modifier.padding(it)) {
-                MultiTagBrowserScreen(viewModel)
+                    )
+                }
+            ) {
+                Box(Modifier.padding(it)) {
+                    MultiTagBrowserScreen(viewModel)
+                }
             }
         }
+
     }
 }
 
