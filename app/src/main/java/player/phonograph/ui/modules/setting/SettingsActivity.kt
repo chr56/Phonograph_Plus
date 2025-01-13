@@ -26,10 +26,10 @@ import player.phonograph.ui.dialogs.BackupExportDialog
 import player.phonograph.ui.dialogs.BackupImportDialog
 import player.phonograph.ui.modules.explorer.PathSelectorContractTool
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
+import util.theme.materials.MaterialColor
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.DropdownMenu
@@ -37,7 +37,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -151,9 +150,7 @@ class SettingsActivity : ComposeActivity(),
                     Reboot.reboot(context)
                 }
                 cancelOnTouchOutside(true)
-                getActionButton(WhichButton.POSITIVE).updateTextColor(
-                    getColor(util.theme.materials.R.color.md_red_A700)
-                )
+                getActionButton(WhichButton.POSITIVE).updateTextColor(MaterialColor.Red._A700.asColor)
             }
         }
 

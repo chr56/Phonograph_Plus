@@ -30,6 +30,7 @@ import player.phonograph.util.permissions.hasPermission
 import player.phonograph.util.permissions.necessaryPermissions
 import player.phonograph.util.permissions.permissionDescription
 import player.phonograph.util.permissions.permissionName
+import util.theme.materials.MaterialColor
 import androidx.annotation.StringRes
 import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
@@ -49,15 +50,14 @@ import android.widget.Toast.LENGTH_LONG
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.FileInputStream
-import util.theme.materials.R as MR
 
 class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequestPermission {
 
     private fun config() {
         isWizardMode = true
         showStatusBar(true)
-        setStatusBarColorRes(MR.color.md_black_1000)
-        setNavBarColorRes(MR.color.md_black_1000)
+        setStatusBarColorRes(MaterialColor.Black._1000.asResource)
+        setNavBarColorRes(MaterialColor.Black._1000.asResource)
         isColorTransitionsEnabled = true
     }
 
@@ -76,7 +76,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
                 title = getString(R.string.app_name),
                 description = getString(R.string.welcome_to_phonograph),
                 imageDrawable = R.drawable.icon_web,
-                backgroundColorRes = MR.color.md_blue_900
+                backgroundColorRes = MaterialColor.Blue._900.asResource
             )
         )
 
@@ -92,7 +92,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
             AppIntroFragment.createInstance(
                 description = getString(R.string.completed),
                 imageDrawable = R.drawable.icon_web,
-                backgroundColorRes = MR.color.md_green_800
+                backgroundColorRes = MaterialColor.Green._800.asResource
             )
         )
 
@@ -168,9 +168,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
         private fun updateItemBackgroundColor(view: View, permission: String) {
             val granted = hasPermission(requireContext(), permission)
             view.setBackgroundColor(
-                resources.getColor(
-                    if (granted) MR.color.md_green_600 else MR.color.md_red_600, null
-                )
+                if (granted) MaterialColor.Green._600.asColor else MaterialColor.Red._600.asColor
             )
         }
 
@@ -190,7 +188,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
         override fun onUserIllegallyRequestedNextPage() {
         }
 
-        override val defaultBackgroundColorRes: Int get() = MR.color.md_yellow_900
+        override val defaultBackgroundColorRes: Int get() = MaterialColor.Yellow._900.asResource
 
         companion object {
             fun newInstance(): PermissionSlideFragment = PermissionSlideFragment()
@@ -259,7 +257,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccessible, IRequest
                 .show()
         }
 
-        override val defaultBackgroundColorRes: Int get() = MR.color.md_deep_purple_800
+        override val defaultBackgroundColorRes: Int get() = MaterialColor.DeepPurple._800.asResource
 
         companion object {
             fun newInstance(): SettingSlideFragment = SettingSlideFragment()
