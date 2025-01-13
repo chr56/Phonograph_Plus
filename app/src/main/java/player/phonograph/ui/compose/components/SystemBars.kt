@@ -7,10 +7,14 @@ package player.phonograph.ui.compose.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.layout.windowInsetsEndWidth
+import androidx.compose.foundation.layout.windowInsetsStartWidth
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -34,5 +38,25 @@ fun NavigationBarStub(color: Color = MaterialTheme.colors.primaryVariant) {
             .background(color)
             .windowInsetsBottomHeight(WindowInsets.navigationBars)
             .fillMaxWidth()
+    )
+}
+
+@Composable
+fun LandscapeLeftBarStub(color: Color = MaterialTheme.colors.primaryVariant) {
+    Box(
+        Modifier
+            .background(color)
+            .windowInsetsStartWidth(WindowInsets.systemBars)
+            .fillMaxHeight()
+    )
+}
+
+@Composable
+fun LandscapeRightBarStub(color: Color = MaterialTheme.colors.primaryVariant) {
+    Box(
+        Modifier
+            .background(color)
+            .windowInsetsEndWidth(WindowInsets.systemBars)
+            .fillMaxHeight()
     )
 }
