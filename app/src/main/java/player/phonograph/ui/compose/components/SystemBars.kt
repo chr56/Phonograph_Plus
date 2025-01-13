@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -31,7 +32,7 @@ fun NavigationBarStub(color: Color = MaterialTheme.colors.primaryVariant) {
     Box(
         Modifier
             .background(color)
-            .windowInsetsTopHeight(WindowInsets.navigationBars)
+            .windowInsetsBottomHeight(WindowInsets.navigationBars)
             .fillMaxWidth()
     )
 }
