@@ -2,6 +2,30 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "1.9.0-dev3",
+      "versionCode": 1088,
+      "date": 1736830000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.9.0-dev3"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.0-dev3/PhonographPlus_1.9.0-dev3_ModernPreviewRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.0-dev3/PhonographPlus_1.9.0-dev3_LegacyPreviewRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 横屏下的一些边到边显示问题 [自 1.9.0-dev1 起]</li><li>修复 播放队列清空后，从某些通知或蓝牙设备切换曲目时崩溃</li><li>修复 文件夹页缺失自动刷新</li><li>翻译 更新 巴西葡萄牙语言(Ulisses_Mello)</li></ol>",
+        "en": "<ol><li>Fix: more edge-to-edge display issues in landscape [since 1.9.0-dev1]</li><li>Fix: crash after skipping from some notifications or BT devices but queue is empty</li><li>Fix: missing automatic refresh in Folders tab</li><li>Translation: Portuguese Brazilian (by Ulisses_Mello)</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.9.0-dev2",
       "versionCode": 1087,
       "date": 1734240000,
