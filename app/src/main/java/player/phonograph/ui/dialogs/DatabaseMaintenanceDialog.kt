@@ -8,6 +8,8 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
+import player.phonograph.repo.room.DatabaseUtil
+import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.util.theme.accentColoredButtonStyle
@@ -79,7 +81,7 @@ private fun OptionItemRefresh(coroutineScope: CoroutineScope, context: Context) 
         stringResource(R.string.description_refresh_database)
     ) {
         coroutineScope.launch(Dispatchers.IO) {
-            // Stub
+            DatabaseUtil.checkAndRefresh(context.applicationContext, MusicDatabase.koinInstance)
         }
     }
 }
@@ -96,7 +98,7 @@ private fun OptionItemDelete(
         stringResource(R.string.description_delete_database)
     ) {
         coroutineScope.launch(Dispatchers.IO) {
-            // Stub
+            DatabaseUtil.deleteEntireDatabase(context.applicationContext, MusicDatabase.koinInstance)
             dismiss()
         }
     }
