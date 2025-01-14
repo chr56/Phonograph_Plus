@@ -17,18 +17,9 @@ import android.provider.BaseColumns
 class TopTracksLoader(private val songPlayCountStore: SongPlayCountStore) :
         DynamicDatabaseLoader(songPlayCountStore) {
 
-    override fun tracks(context: Context): List<Song> =
-        queryAndClearCursor(context).intoSongs().take(NUMBER_OF_TOP_TRACKS)
-
-    override fun queryCursor(context: Context): Cursor? {
-        // first get the top results ids from the internal database
-        return songPlayCountStore.getTopPlayedResults(0)
-            .use { cursor ->
-                cursor.generateSongCursor(
-                    context, cursor.getColumnIndex(SongPlayCountStore.SongPlayCountColumns.ID)
-                )
-            }
-    }
+    override fun queryCursorImpl(context: Context): Cursor? =
+        songPlayCountStore.getTopPlayedResults(NUMBER_OF_TOP_TRACKS)
+            .intoSongCursor(context, SongPlayCountStore.SongPlayCountColumns.ID)
 
     companion object {
         private const val NUMBER_OF_TOP_TRACKS = 150
@@ -39,17 +30,9 @@ class TopTracksLoader(private val songPlayCountStore: SongPlayCountStore) :
 class RecentlyPlayedTracksLoader(private val historyStore: HistoryStore) :
         DynamicDatabaseLoader(historyStore) {
 
-    override fun tracks(context: Context): List<Song> =
-        queryAndClearCursor(context).intoSongs()
-
-    override fun queryCursor(context: Context): Cursor? {
-        // first get the top results ids from the internal database
-        return historyStore.queryRecentIds().use { cursor ->
-            cursor.generateSongCursor(
-                context, cursor.getColumnIndex(HistoryStore.RecentStoreColumns.ID)
-            )
-        }
-    }
+    override fun queryCursorImpl(context: Context): Cursor? =
+        historyStore.queryRecentIds()
+            .intoSongCursor(context, HistoryStore.RecentStoreColumns.ID)
 
     companion object {
         fun get() = GlobalContext.get().get<RecentlyPlayedTracksLoader>()
@@ -58,12 +41,13 @@ class RecentlyPlayedTracksLoader(private val historyStore: HistoryStore) :
 
 abstract class DynamicDatabaseLoader(private val db: Any) {
 
-    abstract fun tracks(context: Context): List<Song>
-    abstract fun queryCursor(context: Context): Cursor?
+    fun tracks(context: Context): List<Song> = queryCursorAndClear(context).intoSongs()
 
-    protected fun queryAndClearCursor(context: Context): Cursor? {
+    protected abstract fun queryCursorImpl(context: Context): Cursor?
 
-        val songCursor = queryCursor(context) ?: return null
+    protected fun queryCursorAndClear(context: Context): Cursor? {
+
+        val songCursor = queryCursorImpl(context) ?: return null
 
         if (db is ShallowDatabase) {
             // clean up the databases with any ids not found
@@ -86,9 +70,16 @@ abstract class DynamicDatabaseLoader(private val db: Any) {
         return exists
     }
 
-    protected fun Cursor.generateSongCursor(context: Context, idColumn: Int): Cursor? {
-        moveToFirst()
+    protected fun Cursor.intoSongCursor(context: Context, idColumnName: String): Cursor? =
+        use { cursor -> generateSongCursor(context, cursor, idColumnName) }
 
+    protected fun generateSongCursor(context: Context, cursor: Cursor, idColumnName: String): Cursor? {
+        val count = cursor.count
+        val idColumnIndex = cursor.getColumnIndex(idColumnName)
+
+        if (count < 0 || idColumnIndex < 0) return null
+
+        cursor.moveToFirst()
         val selectionPlaceHolder = when {
             count > 1  -> "?" + ",?".repeat(count - 1)
             count == 1 -> "?"
@@ -96,7 +87,7 @@ abstract class DynamicDatabaseLoader(private val db: Any) {
         }
 
         val ids = Array(count) {
-            getLong(idColumn).toString().also { moveToNext() }
+            cursor.getLong(idColumnIndex).toString().also { cursor.moveToNext() }
         }
 
         return querySongs(
