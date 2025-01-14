@@ -8,6 +8,7 @@ import player.phonograph.model.Song
 import player.phonograph.repo.database.HistoryStore
 import player.phonograph.repo.database.ShallowDatabase
 import player.phonograph.repo.database.SongPlayCountStore
+import player.phonograph.repo.mediastore.internal.SortedLongCursor
 import player.phonograph.repo.mediastore.internal.intoSongs
 import player.phonograph.repo.mediastore.internal.querySongs
 import android.content.Context
@@ -70,10 +71,10 @@ abstract class DynamicDatabaseLoader(private val db: Any) {
         return exists
     }
 
-    protected fun Cursor.intoSongCursor(context: Context, idColumnName: String): Cursor? =
+    protected fun Cursor.intoSongCursor(context: Context, idColumnName: String): SortedLongCursor? =
         use { cursor -> generateSongCursor(context, cursor, idColumnName) }
 
-    protected fun generateSongCursor(context: Context, cursor: Cursor, idColumnName: String): Cursor? {
+    protected fun generateSongCursor(context: Context, cursor: Cursor, idColumnName: String): SortedLongCursor? {
         val count = cursor.count
         val idColumnIndex = cursor.getColumnIndex(idColumnName)
 
@@ -86,15 +87,17 @@ abstract class DynamicDatabaseLoader(private val db: Any) {
             else       -> return null // empty cursor
         }
 
-        val ids = Array(count) {
-            cursor.getLong(idColumnIndex).toString().also { cursor.moveToNext() }
+        val ids = LongArray(count) {
+            cursor.getLong(idColumnIndex).also { cursor.moveToNext() }
         }
 
-        return querySongs(
+        val songCursor = querySongs(
             context,
             selection = "${BaseColumns._ID}  IN ( $selectionPlaceHolder )",
-            selectionValues = ids
-        )
+            selectionValues = ids.map { it.toString() }.toTypedArray()
+        ) ?: return null
+
+        return SortedLongCursor(songCursor, ids, BaseColumns._ID)
     }
 
 }
