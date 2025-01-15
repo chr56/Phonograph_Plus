@@ -3,7 +3,6 @@ package player.phonograph.ui.modules.auxiliary
 import de.psdev.licensesdialog.LicensesDialog
 import lib.phonograph.misc.NoticesProcessor
 import player.phonograph.App
-import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.databinding.ActivityAboutBinding
 import player.phonograph.mechanism.Update
@@ -15,6 +14,7 @@ import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.DebugDialog
 import player.phonograph.ui.dialogs.ReportIssueDialog
 import player.phonograph.ui.dialogs.UpgradeInfoDialog
+import player.phonograph.util.currentVariant
 import player.phonograph.util.currentVersionName
 import player.phonograph.util.gitRevisionHash
 import player.phonograph.util.reportError
@@ -134,7 +134,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
             appVersionHash.visibility = View.INVISIBLE
         }
         try {
-            val variant = BuildConfig.FLAVOR_target.replaceFirstChar { it.uppercase() }
+            val variant = currentVariant()
             appVariant.text = "$variant Variant"
         } catch (e: Exception) {
             appVariant.visibility = View.GONE

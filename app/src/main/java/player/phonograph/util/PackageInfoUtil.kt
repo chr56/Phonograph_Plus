@@ -14,6 +14,7 @@
 
 package player.phonograph.util
 
+import player.phonograph.BuildConfig
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
@@ -51,6 +52,8 @@ fun currentVersionName(context: Context): String {
     val packageInfo = getPackageInfo(context, context.packageName, 0) ?: return NA
     return packageInfo.versionName ?: NA
 }
+
+fun currentVariant(): String = BuildConfig.FLAVOR_target.replaceFirstChar { it.uppercase() }
 
 fun currentVersionCode(context: Context): Int {
     val packageInfo = getPackageInfo(context, context.packageName, 0) ?: return -1
