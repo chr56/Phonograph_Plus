@@ -1,0 +1,8 @@
+<b>1.9.0(1090) 2025.01.15</b>
+- Development: Targeting SDK 35 (Android 15)
+- Fix: possible crashes when dragging items in some circumstances
+- Fix: dragging playlist items but not in Edit Mode
+- Fix: crash when entering Tag Editor from multi-selection mode but the selection contains no song
+- Fix: crash after skipping from some notifications or BT devices but queue is empty
+- Fix: incorrect sorting order of My Top Tracks and Recently Played
+...(Visit project homepage to see full changelogs)
