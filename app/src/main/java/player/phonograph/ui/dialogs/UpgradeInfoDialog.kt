@@ -22,6 +22,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.TempPopupContent
+import player.phonograph.util.currentVariant
 import player.phonograph.util.parcelable
 import player.phonograph.util.text.dateText
 import player.phonograph.util.theme.accentColoredButtonStyle
@@ -32,6 +33,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
@@ -41,6 +43,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -126,9 +129,10 @@ private fun MainContent(versionCatalog: VersionCatalog, dismiss: () -> Unit) {
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
+                val currentChannel = remember { ReleaseChannel.currentChannel }
                 for (version in versionCatalog.versions) {
                     Card(modifier = Modifier.padding(vertical = 8.dp), elevation = 2.dp) {
-                        Version(version)
+                        Version(version, currentChannel.determiner == version.channel)
                     }
                 }
             }
@@ -137,10 +141,10 @@ private fun MainContent(versionCatalog: VersionCatalog, dismiss: () -> Unit) {
 }
 
 @Composable
-private fun Version(version: Version) {
+private fun Version(version: Version, highlight: Boolean) {
     Box(Modifier.padding(horizontal = 8.dp, vertical = 16.dp)) {
         Column(Modifier) {
-            VersionTitle(version)
+            VersionTitle(version, highlight)
             VersionNote(version)
             DownloadLink(version)
         }
@@ -148,8 +152,11 @@ private fun Version(version: Version) {
 }
 
 @Composable
-private fun VersionTitle(version: Version, modifier: Modifier = Modifier) {
+private fun VersionTitle(version: Version, highlight: Boolean = false, modifier: Modifier = Modifier) {
     Row(modifier) {
+        if (highlight) {
+            Icon(Icons.Default.Star, null, Modifier.weight(2f).align(Alignment.CenterVertically))
+        }
         Column(
             Modifier
                 .padding(horizontal = 8.dp)
@@ -170,8 +177,8 @@ private fun VersionTitle(version: Version, modifier: Modifier = Modifier) {
         Text(
             dateText(version.date),
             Modifier
-                .weight(5f)
-                .padding(horizontal = 8.dp),
+                .padding(horizontal = 8.dp)
+                .weight(6f),
             fontWeight = FontWeight.Bold,
             maxLines = 1,
             textAlign = TextAlign.End,
@@ -241,10 +248,12 @@ private fun VersionPopupContent(version: Version, dismissPopup: () -> Unit) {
     val context = LocalContext.current
     TempPopupContent(dismissPopup = dismissPopup, onClick = dismissPopup) {
         Column {
+            val currentVariant = remember { currentVariant() }
             for (link in version.link) {
                 TextButton(onClick = { context.open(link.uri) }) {
+                    val highlight = link.name.contains(currentVariant, ignoreCase = true)
                     Icon(
-                        Icons.AutoMirrored.Filled.ArrowForward,
+                        if (highlight) Icons.Default.Star else Icons.AutoMirrored.Filled.ArrowForward,
                         null,
                         Modifier
                             .padding(4.dp)
