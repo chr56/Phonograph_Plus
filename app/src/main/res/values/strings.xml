@@ -541,6 +541,11 @@
     <string name="service_disconnected">[Service is disconnected!]</string>
     <string name="file_playlists">File playlists</string>
     <string name="database_playlists">Database Playlists</string>
+    <string name="title_database_maintenance">Internal Database Maintenance</string>
+    <string name="action_refresh_database">Refresh Database</string>
+    <string name="description_refresh_database">Scan songs and index them</string>
+    <string name="action_delete_database">Delete Database</string>
+    <string name="description_delete_database">Delete entire database, including all Database Playlists and indexed songs!</string>
     <string name="version_migration">Version Migration</string>
     <string name="version_migration_summary">Upgrading from old version…</string>
     <string name="version_migration_hint_too_old">You are upgrading from a very old version! </string>

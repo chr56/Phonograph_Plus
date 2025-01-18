@@ -527,7 +527,12 @@
     <string name="pref_option_silence">靜默 (保持後臺不轉跳)</string>
     <string name="service_disconnected">[服務已斷聯!]</string>
     <string name="file_playlists">檔案播放列表</string>
-    <string name="database_playlists">數據庫播放列表</string>
+    <string name="database_playlists">資料庫播放列表</string>
+    <string name="title_database_maintenance">內部資料庫維護</string>
+    <string name="action_refresh_database">重新整理資料庫</string>
+    <string name="description_refresh_database">掃描歌曲並編制索引</string>
+    <string name="action_delete_database">刪除資料庫</string>
+    <string name="description_delete_database">刪除資料庫，包括所有資料庫播放列表和已索引歌曲！</string>
     <string name="version_migration">版本遷移</string>
     <string name="version_migration_summary">正在從舊版本升級</string>
     <string name="version_migration_hint_too_old">您正在從極其陳舊的版本升級！</string>

@@ -528,6 +528,11 @@
     <string name="service_disconnected">[服务已断联!]</string>
     <string name="file_playlists">文件播放列表</string>
     <string name="database_playlists">数据库播放列表</string>
+    <string name="title_database_maintenance">内部数据库维护</string>
+    <string name="action_refresh_database">刷新数据库</string>
+    <string name="description_refresh_database">扫描歌曲并编制索引</string>
+    <string name="action_delete_database">删除数据库</string>
+    <string name="description_delete_database">删除数据库，包括所有数据库播放列表和已索引歌曲！</string>
     <string name="version_migration">版本迁移</string>
     <string name="version_migration_summary">正在从旧版本升级</string>
     <string name="version_migration_hint_too_old">您正在从极其陈旧的版本升级！</string>

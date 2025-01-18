@@ -7,6 +7,7 @@ package player.phonograph.ui.dialogs
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
+import player.phonograph.R
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.util.theme.accentColoredButtonStyle
@@ -22,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import android.content.Context
@@ -59,7 +61,7 @@ private fun MainContent(dismiss: () -> Unit) {
             }
         ) {
             Spacer(Modifier.height(12.dp))
-            title("Internal Database Maintenance")
+            title(stringResource(R.string.title_database_maintenance))
             Spacer(Modifier.height(12.dp))
             Column(Modifier.padding(horizontal = 12.dp)) {
                 OptionItemRefresh(coroutineScope, context)
@@ -73,8 +75,8 @@ private fun MainContent(dismiss: () -> Unit) {
 @Composable
 private fun OptionItemRefresh(coroutineScope: CoroutineScope, context: Context) {
     Option(
-        "Refresh Database",
-        "Scan songs and index them"
+        stringResource(R.string.action_refresh_database),
+        stringResource(R.string.description_refresh_database)
     ) {
         coroutineScope.launch(Dispatchers.IO) {
             // Stub
@@ -90,8 +92,8 @@ private fun OptionItemDelete(
     dismiss: () -> Unit,
 ) {
     Option(
-        "Delete Database",
-        "Delete entire database, including all Database Playlists and indexed songs!"
+        stringResource(R.string.action_delete_database),
+        stringResource(R.string.description_delete_database)
     ) {
         coroutineScope.launch(Dispatchers.IO) {
             // Stub
