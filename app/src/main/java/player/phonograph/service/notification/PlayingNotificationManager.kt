@@ -18,9 +18,8 @@ import player.phonograph.service.player.PlayerState.PLAYING
 import player.phonograph.service.player.PlayerState.PREPARING
 import player.phonograph.service.player.PlayerState.STOPPED
 import player.phonograph.settings.Keys
-import player.phonograph.settings.PrimitiveKey
-import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.main.MainActivity
+import player.phonograph.util.SettingObserver
 import player.phonograph.util.permissions.checkNotificationPermission
 import player.phonograph.util.theme.createTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
@@ -46,10 +45,6 @@ import android.os.Build.VERSION.SDK_INT
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 
 class PlayingNotificationManager : ServiceComponent {
@@ -91,22 +86,19 @@ class PlayingNotificationManager : ServiceComponent {
 
         actionsConfig = NotificationConfig.actions
 
-        fun <T> collect(key: PrimitiveKey<T>, collector: FlowCollector<T>) {
-            service.coroutineScope.launch(SupervisorJob()) {
-                Setting(musicService)[key].flow.distinctUntilChanged().collect(collector)
-            }
-        }
-        collect(Keys.classicNotification) { value ->
+        val settingObserver = SettingObserver(service, service.coroutineScope)
+
+        settingObserver.collect(Keys.classicNotification) { value ->
             classicNotification = value
             implementation = if (value) ClassicNotification() else MediaStyleNotification()
         }
-        collect(Keys.coloredNotification) { value ->
+        settingObserver.collect(Keys.coloredNotification) { value ->
             coloredNotification = value
         }
-        collect(Keys.notificationActionsJsonString) { _ ->
+        settingObserver.collect(Keys.notificationActionsJsonString) { _ ->
             actionsConfig = NotificationConfig.actions
         }
-        collect(Keys.persistentPlaybackNotification) { value ->
+        settingObserver.collect(Keys.persistentPlaybackNotification) { value ->
             persistent = value
             while (implementation == null) yield()
             if (value) { //todo

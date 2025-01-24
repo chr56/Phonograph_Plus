@@ -13,9 +13,8 @@ import player.phonograph.service.util.LyricsUpdater
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Keys
-import player.phonograph.settings.PrimitiveKey
-import player.phonograph.settings.Setting
 import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
+import player.phonograph.util.SettingObserver
 import player.phonograph.util.mediaStoreUriSong
 import player.phonograph.util.registerReceiverCompat
 import androidx.core.content.ContextCompat
@@ -33,8 +32,6 @@ import android.os.PowerManager.WakeLock
 import android.util.Log
 import android.widget.Toast
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -131,21 +128,17 @@ class PlayerController : ServiceComponent, Controller {
 
 
     private fun observeSettings(service: MusicService) {
-        fun <T> collect(key: PrimitiveKey<T>, collector: FlowCollector<T>) {
-            service.coroutineScope.launch(SupervisorJob()) {
-                Setting(service)[key].flow.distinctUntilChanged().collect(collector)
-            }
-        }
-        collect(Keys.audioDucking) { value ->
+        val settingObserver = SettingObserver(service, service.coroutineScope)
+        settingObserver.collect(Keys.audioDucking) { value ->
             audioDucking = value
         }
-        collect(Keys.resumeAfterAudioFocusGain) { value ->
+        settingObserver.collect(Keys.resumeAfterAudioFocusGain) { value ->
             resumeAfterAudioFocusGain = value
         }
-        collect(Keys.alwaysPlay) { value ->
+        settingObserver.collect(Keys.alwaysPlay) { value ->
             ignoreAudioFocus = value
         }
-        collect(Keys.gaplessPlayback) { gaplessPlayback ->
+        settingObserver.collect(Keys.gaplessPlayback) { gaplessPlayback ->
             handler.post {
                 val controllerImpl = _impl
                 if (controllerImpl is VanillaAudioPlayerControllerImpl && controllerImpl.created) {
@@ -156,7 +149,7 @@ class PlayerController : ServiceComponent, Controller {
                 }
             }
         }
-        collect(Keys.broadcastSynchronizedLyrics) { value ->
+        settingObserver.collect(Keys.broadcastSynchronizedLyrics) { value ->
             broadcastSynchronizedLyrics = value
         }
     }
