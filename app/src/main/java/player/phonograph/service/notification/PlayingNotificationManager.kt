@@ -53,6 +53,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 
 class PlayingNotificationManager : ServiceComponent {
+    override var created: Boolean = false
 
     private var _service: MusicService? = null
     private val service: MusicService get() = _service!!
@@ -114,10 +115,13 @@ class PlayingNotificationManager : ServiceComponent {
         }
 
         implementation = if (classicNotification) ClassicNotification() else MediaStyleNotification()
+
+        created = true
     }
 
     override fun onDestroy(musicService: MusicService) {
         removeNotification()
+        created = false
         implementation = null
         _service = null
     }

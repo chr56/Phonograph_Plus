@@ -69,6 +69,8 @@ class PlayerController : ServiceComponent, Controller {
     private var _audioFocusManager: AudioFocusManager? = null
     private val audioFocusManager: AudioFocusManager get() = _audioFocusManager!!
 
+    override var created: Boolean = false
+
     override fun onCreate(musicService: MusicService) {
         _service = musicService
 
@@ -97,10 +99,13 @@ class PlayerController : ServiceComponent, Controller {
         _lyricsUpdater = LyricsUpdater()
         lyricsUpdater.onCreate(service)
 
+        created = true
+
         observeSettings(musicService)
     }
 
     override fun onDestroy(musicService: MusicService) {
+        created = false
 
         lyricsUpdater.onDestroy(musicService)
         _lyricsUpdater = null
@@ -184,9 +189,7 @@ class PlayerController : ServiceComponent, Controller {
         }
 
 
-    interface ControllerInternal : Controller, ServiceComponent {
-        val created: Boolean
-    }
+    interface ControllerInternal : Controller, ServiceComponent
 
     class VanillaAudioPlayerControllerImpl(
         val controller: PlayerController,

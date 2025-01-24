@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 class LyricsUpdater : ServiceComponent {
+    override var created: Boolean = true // stateless
     private var fetcher: LyricsFetcher? = null
 
     suspend fun updateViaSong(song: Song?) {

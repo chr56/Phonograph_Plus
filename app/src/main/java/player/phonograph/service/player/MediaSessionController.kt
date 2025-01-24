@@ -44,6 +44,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 class MediaSessionController : ServiceComponent {
+    override var created: Boolean = false
 
     private var _service: MusicService? = null
     private val service: MusicService get() = _service!!
@@ -82,6 +83,8 @@ class MediaSessionController : ServiceComponent {
 
         mediaSession.setCallback(mediaSessionCallback)
 
+        created = true
+
         service.coroutineScope.launch(SupervisorJob()) {
             Setting(musicService)[Keys.notificationActionsJsonString].flow.distinctUntilChanged().collect {
                 updateCustomActions(NotificationConfig.actions)
@@ -90,6 +93,7 @@ class MediaSessionController : ServiceComponent {
     }
 
     override fun onDestroy(musicService: MusicService) {
+        created = false
         mediaSession.release()
         _mediaSession = null
         _service = null
