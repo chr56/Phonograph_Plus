@@ -18,11 +18,8 @@ import android.util.Log
 class VanillaAudioPlayer(private val context: Context, override var gaplessPlayback: Boolean) :
         Playback, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
-    private var currentMediaPlayer = MediaPlayer().also {
-        it.setWakeMode(
-            context,
-            PowerManager.PARTIAL_WAKE_LOCK
-        )
+    private var currentMediaPlayer = MediaPlayer().also { player ->
+        player.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
     }
 
     override var currentDataSource: String = ""
@@ -111,9 +108,10 @@ class VanillaAudioPlayer(private val context: Context, override var gaplessPlayb
         }
 
         if (gaplessPlayback) {
-            nextMediaPlayer = MediaPlayer()
-            nextMediaPlayer!!.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
-            nextMediaPlayer!!.audioSessionId = audioSessionId
+            nextMediaPlayer = MediaPlayer().also { player ->
+                player.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
+                if (isInitialized) player.audioSessionId = currentMediaPlayer.audioSessionId
+            }
 
             if (setDataSourceImpl(nextMediaPlayer!!, path)) {
                 try {
