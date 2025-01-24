@@ -40,8 +40,7 @@ import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.service.util.MusicServiceUtil
 import player.phonograph.service.util.SongPlayCountHelper
 import player.phonograph.settings.Keys
-import player.phonograph.settings.PrimitiveKey
-import player.phonograph.settings.Setting
+import player.phonograph.util.SettingObserver
 import player.phonograph.util.recordThrowable
 import androidx.media.MediaBrowserServiceCompat
 import android.content.Context
@@ -57,11 +56,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 /**
@@ -113,8 +108,15 @@ class MusicService : MediaBrowserServiceCompat() {
         // process updater
         throttledTimer = ThrottledTimer(controller.handler)
 
+        // setting
+        val settingObserver = SettingObserver(this, coroutineScope)
+        settingObserver.collect(Keys.broadcastCurrentPlayerState) { broadcastCurrentPlayerState ->
+            throttledTimer.broadcastCurrentPlayerState = broadcastCurrentPlayerState
+        }
+        settingObserver.collect(Keys.alwaysUseMediaSessionToDisplayCover) { alwaysUseMediaSessionToDisplayCover ->
+            couldPutCover = SDK_INT >= VERSION_SET_COVER_USING_METADATA || alwaysUseMediaSessionToDisplayCover
+        }
         // misc
-        observeSettings()
         setUpMediaStoreObserver(
             this,
             controller.handler, // todo use other handler
@@ -386,21 +388,6 @@ class MusicService : MediaBrowserServiceCompat() {
             couldPutCover
         )
         mediaSessionController.updatePlaybackState(serviceStatus)
-    }
-
-    private fun observeSettings() {
-        val setting = Setting(this)
-        fun <T> collect(key: PrimitiveKey<T>, collector: FlowCollector<T>) {
-            coroutineScope.launch(SupervisorJob()) {
-                setting[key].flow.distinctUntilChanged().collect(collector)
-            }
-        }
-        collect(Keys.broadcastCurrentPlayerState) { broadcastCurrentPlayerState ->
-            throttledTimer.broadcastCurrentPlayerState = broadcastCurrentPlayerState
-        }
-        collect(Keys.alwaysUseMediaSessionToDisplayCover) { alwaysUseMediaSessionToDisplayCover ->
-            couldPutCover = SDK_INT >= VERSION_SET_COVER_USING_METADATA || alwaysUseMediaSessionToDisplayCover
-        }
     }
 
     private var couldPutCover: Boolean = true
