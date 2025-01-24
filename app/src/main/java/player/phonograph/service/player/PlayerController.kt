@@ -254,7 +254,7 @@ class PlayerController : ServiceComponent, Controller {
          * @param song what to play now
          */
         fun prepareNextPlayer(song: Song?) {
-            audioPlayer.setNextDataSource(
+            if (audioPlayer.isInitialized) audioPlayer.setNextDataSource(
                 if (song != null && song != Song.EMPTY_SONG)
                     mediaStoreUriSong(MEDIASTORE_VOLUME_EXTERNAL, song.id).toString()
                 else null
