@@ -1,6 +1,6 @@
-version: "1.9.1-dev1"
-channel: "PREVIEW"
-versionCode: 1090
+version: "1.9.1"
+channel: "STABLE"
+versionCode: 1091
 timestamp: 1737820000
 notes:
   en:
