@@ -187,8 +187,7 @@ class LrcLyrics : AbsLyrics, Parcelable {
                 if (matcher.find()) {
                     val time: String? = matcher.group(1)
                     val text: String? = matcher.group(2)
-
-                    var ms = 0
+                    var timestamp = 0
 
                     // Time
                     try { // todo: null safe?
@@ -202,14 +201,19 @@ class LrcLyrics : AbsLyrics, Parcelable {
                             } catch (ex: NumberFormatException) {
                                 ex.printStackTrace()
                             }
-                            ms = ((s * LRC_SECONDS_TO_MS_MULTIPLIER).toInt() + m * LRC_MINUTES_TO_MS_MULTIPLIER)
+                            timestamp = ((s * LRC_SECONDS_TO_MS_MULTIPLIER).toInt() + m * LRC_MINUTES_TO_MS_MULTIPLIER)
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
 
                     // Write to var
-                    lyrics.put(ms, text.orEmpty())
+                    val existed = lyrics.get(timestamp)
+                    if (existed == null) {
+                        lyrics.put(timestamp, text.orEmpty())
+                    } else {
+                        lyrics.put(timestamp, existed + '\n' + text)
+                    }
                 }
             } // loop_end
 
