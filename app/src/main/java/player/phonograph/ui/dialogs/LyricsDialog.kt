@@ -193,8 +193,8 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
 
     private fun updateTitle(info: LyricsInfo) {
         val activated = info.activatedLyrics
-        binding.title.text = if (activated != null && activated.getTitle() != DEFAULT_TITLE) {
-            activated.getTitle()
+        binding.title.text = if (activated != null && activated.title != DEFAULT_TITLE) {
+            activated.title
         } else {
             info.linkedSong.title
         }
@@ -372,14 +372,14 @@ private class LyricsAdapter(
     private val dismiss: (() -> Unit)?,
 ) : RecyclerView.Adapter<LyricsAdapter.ViewHolder>() {
 
-    private var lyricLines: Array<String> = lyric.getLyricsLineArray()
-    private var lyricTimestamps: IntArray = lyric.getLyricsTimeArray()
+    private var lyricLines: Array<String> = lyric.lyricsLineArray
+    private var lyricTimestamps: IntArray = lyric.lyricsTimeArray
 
     @SuppressLint("NotifyDataSetChanged")
     fun update(newLyric: AbsLyrics) {
         lyric = newLyric
-        lyricLines = newLyric.getLyricsLineArray()
-        lyricTimestamps = newLyric.getLyricsTimeArray()
+        lyricLines = newLyric.lyricsLineArray
+        lyricTimestamps = newLyric.lyricsTimeArray
         notifyDataSetChanged()
     }
 
@@ -448,6 +448,6 @@ private class LyricsAdapter(
         }
     }
 
-    override fun getItemCount(): Int = lyric.getLength()
+    override fun getItemCount(): Int = lyric.length
 
 }
