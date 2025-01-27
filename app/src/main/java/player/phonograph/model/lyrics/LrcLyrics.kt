@@ -18,7 +18,7 @@ import java.util.Locale
 import java.util.regex.Pattern
 
 class LrcLyrics : AbsLyrics, Parcelable {
-    override val type: Int = LRC
+    override val type: Int = LyricsType.LRC
 
     private constructor(lyrics: SparseArray<String>, source: LyricsSource) {
         this.lyrics = lyrics.also {
@@ -43,37 +43,30 @@ class LrcLyrics : AbsLyrics, Parcelable {
         this.totalTime = totalTime
     }
 
+    override var title: String
+
     private var lyrics: SparseArray<String>
-    private var title: String
     private var offset: Long
     private var totalTime: Long
 
-    override fun getTitle(): String = title
 
-    override fun getRaw(): String {
-        val stringBuilder = StringBuilder()
-        lyrics.forEach { _, line ->
-            stringBuilder.append(line).append("\r\n")
+    override val raw: String
+        get() {
+            val stringBuilder = StringBuilder()
+            lyrics.forEach { _, line ->
+                stringBuilder.append(line).append("\r\n")
+            }
+            return stringBuilder.toString().trim()
         }
-        return stringBuilder.toString().trim()
-    }
 
-    override fun getLength(): Int = lyrics.size()
+    override val length: Int get() = lyrics.size()
 
-    override fun getLyricsLineArray(): Array<String> {
-        return Array(lyrics.size()) {
-            lyrics.valueAt(it)
-        }
-    }
+    override val lyricsLineArray: Array<String>
+        get() = Array(lyrics.size()) { lyrics.valueAt(it) }
+    override val lyricsTimeArray: IntArray
+        get() = IntArray(lyrics.size()) { lyrics.keyAt(it) }
 
-    override fun getLyricsTimeArray(): IntArray {
-        return IntArray(lyrics.size()) {
-            lyrics.keyAt(it)
-        }
-    }
-
-    val rawLyrics: SparseArray<String>
-        get() = lyrics
+    val rawLyrics: SparseArray<String> get() = lyrics
 
     /**
      * get a line of lyrics
@@ -241,7 +234,7 @@ class LrcLyrics : AbsLyrics, Parcelable {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(LRC)
+        parcel.writeInt(type)
         parcel.writeSparseArray(lyrics)
         parcel.writeString(title)
         parcel.writeLong(offset)
@@ -250,7 +243,7 @@ class LrcLyrics : AbsLyrics, Parcelable {
     }
 
     constructor(parcel: Parcel) {
-        parcel.readInt().let { if (it != LRC) throw IllegalStateException("incorrect parcel received") }
+        parcel.readInt().let { if (it != LyricsType.LRC) throw IllegalStateException("incorrect parcel received") }
         this.lyrics = parcel.sparseArray(null) ?: SparseArray()
         this.title = parcel.readString() ?: DEFAULT_TITLE
         this.offset = parcel.readLong()

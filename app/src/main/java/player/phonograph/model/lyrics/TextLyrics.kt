@@ -11,7 +11,7 @@ import android.util.Log
 import java.util.regex.Pattern
 
 class TextLyrics : AbsLyrics, Parcelable {
-    override val type: Int = TXT
+    override val type: Int = LyricsType.TXT
 
     private constructor(parsedLines: MutableList<String>, source: LyricsSource) {
         this.lines = parsedLines
@@ -22,6 +22,7 @@ class TextLyrics : AbsLyrics, Parcelable {
         this.title = DEFAULT_TITLE
         this.source = source
     }
+
     private constructor(lines: MutableList<String>, title: String, source: LyricsSource) {
         this.lines = lines
             .ifEmpty {
@@ -33,18 +34,12 @@ class TextLyrics : AbsLyrics, Parcelable {
     }
 
     private val lines: MutableList<String>
-    private var title: String
 
-    override fun getTitle(): String = title
-
-    override fun getRaw(): String =
-        lines.joinToString(separator = "\r\n") { it.trim() }
-
-    override fun getLength(): Int = lines.size
-
-    override fun getLyricsLineArray(): Array<String> = Array(lines.size) { lines[it] }
-
-    override fun getLyricsTimeArray(): IntArray = IntArray(lines.size) { -1 }
+    override var title: String
+    override val raw: String get() = lines.joinToString(separator = "\r\n") { it.trim() }
+    override val length: Int get() = lines.size
+    override val lyricsLineArray: Array<String> get() = Array(lines.size) { lines[it] }
+    override val lyricsTimeArray: IntArray get() = IntArray(lines.size) { -1 }
 
     override val source: LyricsSource
 
@@ -70,16 +65,18 @@ class TextLyrics : AbsLyrics, Parcelable {
 
     // Parcelable
     constructor(parcel: Parcel) {
-        parcel.readInt().let { if (it != TXT) throw IllegalStateException("incorrect parcel received") }
+        parcel.readInt().let { if (it != LyricsType.TXT) throw IllegalStateException("incorrect parcel received") }
         lines = parcel.array<String>(null)?.toMutableList()!!
         title = parcel.readString() ?: DEFAULT_TITLE
         source = LyricsSource(parcel.readInt())
     }
+
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(type)
-        parcel.writeArray(getLyricsLineArray())
+        parcel.writeArray(lyricsLineArray)
         parcel.writeString(title)
         parcel.writeInt(source.type)
     }
+
     override fun describeContents(): Int = 0
 }
