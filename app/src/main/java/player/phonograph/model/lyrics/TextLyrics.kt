@@ -45,7 +45,7 @@ class TextLyrics : AbsLyrics, Parcelable {
 
     companion object {
         private const val TAG = "TextLyrics"
-        fun from(raw: String, source: LyricsSource = LyricsSource.Unknown()): TextLyrics {
+        fun from(raw: String, source: LyricsSource = LyricsSource.Unknown): TextLyrics {
             val result = raw.split(Pattern.compile("(\r?\n)|(\\\\[nNrR])"))
             return TextLyrics(result.toMutableList(), source)
         }
@@ -68,14 +68,14 @@ class TextLyrics : AbsLyrics, Parcelable {
         parcel.readInt().let { if (it != LyricsType.TXT) throw IllegalStateException("incorrect parcel received") }
         lines = parcel.array<String>(null)?.toMutableList()!!
         title = parcel.readString() ?: DEFAULT_TITLE
-        source = LyricsSource(parcel.readInt())
+        source = LyricsSource.entries[parcel.readInt()]
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(type)
         parcel.writeArray(lyricsLineArray)
         parcel.writeString(title)
-        parcel.writeInt(source.type)
+        parcel.writeInt(source.ordinal)
     }
 
     override fun describeContents(): Int = 0
