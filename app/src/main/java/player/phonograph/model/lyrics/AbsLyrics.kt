@@ -18,6 +18,9 @@ sealed interface AbsLyrics : Parcelable {
     val lyricsLineArray: Array<String>
     val lyricsTimeArray: IntArray
 
+    companion object {
+        const val DEFAULT_TITLE = "Lyrics"
+    }
 }
 
 

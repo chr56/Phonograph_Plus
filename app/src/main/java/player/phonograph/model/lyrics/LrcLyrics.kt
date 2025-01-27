@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 chr_56
+ * Copyright (c) 2022~2025 chr_56
  */
 
 @file:Suppress("RegExpRedundantEscape")
@@ -19,7 +19,7 @@ import java.util.regex.Pattern
 data class LrcLyrics(
     val lyrics: SparseArray<String>,
     override val source: LyricsSource,
-    override var title: String = DEFAULT_TITLE,
+    override var title: String = AbsLyrics.DEFAULT_TITLE,
     val offset: Long = 0,
     val totalTime: Long = -1,
 ) : AbsLyrics, Parcelable {
@@ -119,7 +119,7 @@ data class LrcLyrics(
             val rawLines: List<String> = raw.split(Pattern.compile("\r?\n"))
             var offset: Long = 0
             var totalTime: Long = -1
-            var title: String = DEFAULT_TITLE
+            var title: String = AbsLyrics.DEFAULT_TITLE
             // data to Return:
             //
             val lyrics: SparseArray<String> = SparseArray()

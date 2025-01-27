@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 chr_56
+ * Copyright (c) 2022~2025 chr_56
  */
 
 package player.phonograph.model.lyrics
@@ -11,7 +11,7 @@ import java.util.regex.Pattern
 
 @Parcelize
 data class TextLyrics(
-    val lines: List<String>, override val source: LyricsSource, override var title: String = DEFAULT_TITLE,
+    val lines: List<String>, override val source: LyricsSource, override var title: String = AbsLyrics.DEFAULT_TITLE,
 ) : AbsLyrics, Parcelable {
 
     @IgnoredOnParcel

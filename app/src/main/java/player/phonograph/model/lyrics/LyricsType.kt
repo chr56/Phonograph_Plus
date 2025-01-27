@@ -1,5 +1,8 @@
-package player.phonograph.model.lyrics
+/*
+ *  Copyright (c) 2022~2025 chr_56
+ */
 
+package player.phonograph.model.lyrics
 
 import androidx.annotation.IntDef
 
@@ -10,5 +13,3 @@ annotation class LyricsType {
         const val TXT: Int = 1
     }
 }
-
-const val DEFAULT_TITLE = "Lyrics"
