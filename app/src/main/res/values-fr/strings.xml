@@ -535,4 +535,5 @@
     <string name="pref_summary_external_play_request">Définit ce que le lecteur doit faire lors de la lecture depuis l\'extérieur (exemple : depuis l\'explorateur de fichiers).</string>
     <string name="pref_option_show_prompt">Afficher la boîte de dialogue à chaque fois</string>
     <string name="pref_option_silence">Silencieux (garder en arrière-plan sans rediriger vers le lecteur)</string>
+    <string name="service_disconnected">[Service déconnecté !]</string>
 </resources>
