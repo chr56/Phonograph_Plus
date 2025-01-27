@@ -143,7 +143,7 @@ class LrcLyrics : AbsLyrics, Parcelable {
 
     companion object {
         private const val TAG = "LrcLyrics"
-        fun from(raw: String, source: LyricsSource = LyricsSource.Unknown()): LrcLyrics { // raw data:
+        fun from(raw: String, source: LyricsSource = LyricsSource.Unknown): LrcLyrics { // raw data:
             //
             val rawLines: List<String> = raw.split(Pattern.compile("\r?\n"))
             var offset: Long = 0
@@ -239,7 +239,7 @@ class LrcLyrics : AbsLyrics, Parcelable {
         parcel.writeString(title)
         parcel.writeLong(offset)
         parcel.writeLong(totalTime)
-        parcel.writeInt(source.type)
+        parcel.writeInt(source.ordinal)
     }
 
     constructor(parcel: Parcel) {
@@ -248,7 +248,7 @@ class LrcLyrics : AbsLyrics, Parcelable {
         this.title = parcel.readString() ?: DEFAULT_TITLE
         this.offset = parcel.readLong()
         this.totalTime = parcel.readLong()
-        this.source = LyricsSource(parcel.readInt())
+        this.source = LyricsSource.entries[parcel.readInt()]
     }
 
     override fun describeContents(): Int = 0

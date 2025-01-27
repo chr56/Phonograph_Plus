@@ -52,17 +52,17 @@ object LyricsLoader {
 
         // embedded
         val embedded = backgroundCoroutine.async(Dispatchers.IO) {
-            parseEmbedded(songFile, LyricsSource.Embedded())
+            parseEmbedded(songFile, LyricsSource.Embedded)
         }
 
         // external
         val externalPrecise = backgroundCoroutine.async(Dispatchers.IO) {
             val files = getExternalPreciseLyricsFile(songFile)
-            files.mapNotNull { parseExternal(it, LyricsSource.ExternalPrecise()) }
+            files.mapNotNull { parseExternal(it, LyricsSource.ExternalPrecise) }
         }
         val external = backgroundCoroutine.async(Dispatchers.IO) {
             val files = searchExternalVagueLyricsFiles(songFile, song)
-            files.mapNotNull { parseExternal(it, LyricsSource.ExternalDecorated()) }
+            files.mapNotNull { parseExternal(it, LyricsSource.ExternalDecorated) }
         }
 
         val resultList: ArrayList<AbsLyrics> = ArrayList(4)
@@ -85,7 +85,7 @@ object LyricsLoader {
 
     private fun parseEmbedded(
         songFile: File,
-        lyricsSource: LyricsSource = LyricsSource.Embedded(),
+        lyricsSource: LyricsSource = LyricsSource.Embedded,
     ): AbsLyrics? = tryLoad(songFile) {
         AudioFileIO.read(songFile).tag?.getFirst(FieldKey.LYRICS).let { str ->
             if (str != null && str.trim().isNotBlank()) {
@@ -98,7 +98,7 @@ object LyricsLoader {
 
     private fun parseExternal(
         file: File,
-        lyricsSource: LyricsSource = LyricsSource.Unknown(),
+        lyricsSource: LyricsSource = LyricsSource.Unknown,
     ): AbsLyrics? = tryLoad(file) {
         if (file.exists()) {
             val content = file.readText()
@@ -130,7 +130,7 @@ object LyricsLoader {
         "$ERR_MSG_HEADER $path: ${t?.message}\n${Log.getStackTraceString(t)}"
 
 
-    private fun parse(raw: String, lyricsSource: LyricsSource = LyricsSource.Unknown()): AbsLyrics {
+    private fun parse(raw: String, lyricsSource: LyricsSource = LyricsSource.Unknown): AbsLyrics {
         val rawLength = raw.length
         val sampleLineCount = max(rawLength / 100, 10)
         val sampleLength = max(min(rawLength / 8, 480), 60)
@@ -194,7 +194,7 @@ object LyricsLoader {
     fun parseFromUri(context: Context, uri: Uri): AbsLyrics? {
         return context.contentResolver.openInputStream(uri)?.use { inputStream ->
             inputStream.reader().use {
-                parse(it.readText(), LyricsSource.ManuallyLoaded())
+                parse(it.readText(), LyricsSource.ManuallyLoaded)
             }
         }
     }
