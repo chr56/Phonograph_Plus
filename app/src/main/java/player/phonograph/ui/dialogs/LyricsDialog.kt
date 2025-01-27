@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
 package player.phonograph.ui.dialogs
@@ -11,7 +11,6 @@ import player.phonograph.R
 import player.phonograph.databinding.DialogLyricsBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelper
 import player.phonograph.model.lyrics.AbsLyrics
-import player.phonograph.model.lyrics.DEFAULT_TITLE
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.model.lyrics.TextLyrics
@@ -193,7 +192,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
 
     private fun updateTitle(info: LyricsInfo) {
         val activated = info.activatedLyrics
-        binding.title.text = if (activated != null && activated.title != DEFAULT_TITLE) {
+        binding.title.text = if (activated != null && activated.title != AbsLyrics.DEFAULT_TITLE) {
             activated.title
         } else {
             info.linkedSong.title
