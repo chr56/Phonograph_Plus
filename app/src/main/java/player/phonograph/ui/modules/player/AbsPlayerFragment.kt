@@ -322,6 +322,8 @@ abstract class AbsPlayerFragment :
 
     protected abstract fun collapseToNormal()
 
+    protected abstract fun resetToCurrentPosition()
+
 
     @MainThread
     protected open suspend fun updateAdapter() {

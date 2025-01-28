@@ -172,7 +172,7 @@ class FlatPlayerFragment :
         viewBinding.playerSlidingLayout?.panelState = PanelState.COLLAPSED
     }
 
-    private fun resetToCurrentPosition() {
+    override fun resetToCurrentPosition() {
         lifecycleScope.launch(Dispatchers.Main) {
             withCreated {
                 viewBinding.playerRecyclerView.stopScroll()
