@@ -1,19 +1,25 @@
 version: "1.9.1-dev1"
 channel: "PREVIEW"
 versionCode: 1090
-timestamp: 1737820000
+timestamp: 1738048000
 notes:
   en:
     highlights: [ ]
     items:
       - "Fix: random crashes from background"
       - "Fix: possible crashes after rebooting on some devices"
+      - "Fix: possible crashes after switching back from background on some devices"
+      - "Fix: lrc lyrics with same timestamp would be overridden with last one"
+      - "Translation: update French (by Vividly8487)"
 
   zh:
     highlights: [ ]
     items:
       - "修复 后台随机崩溃"
       - "修复 部分设备上重启后崩溃"
+      - "修复 部分设备上从后台切换回来后崩溃"
+      - "修复 时间戳相同的多行 lrc 歌词将被最后一行覆盖"
+      - "翻译 更新 法语 (Vividly8487)"
 
 previousVersion: "1.9.0"
 previousChannel: "STABLE"
