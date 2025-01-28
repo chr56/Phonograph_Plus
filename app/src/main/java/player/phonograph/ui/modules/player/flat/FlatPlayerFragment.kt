@@ -53,6 +53,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import kotlin.math.max
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FlatPlayerFragment :
@@ -168,8 +169,12 @@ class FlatPlayerFragment :
     }
 
     private fun resetToCurrentPosition() {
-        viewBinding.playerRecyclerView.stopScroll()
-        layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
+        lifecycleScope.launch(Dispatchers.Main) {
+            withCreated {
+                viewBinding.playerRecyclerView.stopScroll()
+                layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
+            }
+        }
     }
 
     private abstract class BaseImpl(protected var fragment: FlatPlayerFragment) : Impl {
