@@ -1,7 +1,6 @@
 package player.phonograph.ui.modules.player.card
 
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import player.phonograph.R
 import player.phonograph.databinding.FragmentCardPlayerBinding
@@ -62,9 +61,7 @@ import kotlin.math.max
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class CardPlayerFragment :
-        AbsPlayerFragment(),
-        SlidingUpPanelLayout.PanelSlideListener {
+class CardPlayerFragment : AbsPlayerFragment() {
 
     private var _viewBinding: FragmentCardPlayerBinding? = null
     private val viewBinding: FragmentCardPlayerBinding get() = _viewBinding!!
@@ -165,37 +162,13 @@ class CardPlayerFragment :
         return elevation >= -Float.MAX_VALUE && elevation <= Float.MAX_VALUE
     }
 
-    override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
-        when (newState) {
-            PanelState.EXPANDED  -> {
-                requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, collapseBackPressedCallback)
-            }
-
-            PanelState.COLLAPSED -> {
-                resetToCurrentPosition()
-                collapseBackPressedCallback.remove()
-            }
-
-            PanelState.ANCHORED  -> {
-                // this fixes a bug where the panel would get stuck for some reason
-                collapseToNormal()
-            }
-
-            else                 -> Unit
-        }
-    }
-
     override fun collapseToNormal() {
         viewBinding.playerSlidingLayout.panelState = PanelState.COLLAPSED
     }
 
     override fun resetToCurrentPosition() {
-        lifecycleScope.launch(Dispatchers.Main) {
-            withCreated {
-                viewBinding.playerRecyclerView.stopScroll()
-                layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
-            }
-        }
+        viewBinding.playerRecyclerView.stopScroll()
+        layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
     }
 
     private abstract class BaseImpl(protected var fragment: CardPlayerFragment) : Impl {

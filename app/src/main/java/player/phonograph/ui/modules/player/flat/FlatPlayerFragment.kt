@@ -60,9 +60,7 @@ import kotlin.math.max
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class FlatPlayerFragment :
-        AbsPlayerFragment(),
-        SlidingUpPanelLayout.PanelSlideListener {
+class FlatPlayerFragment : AbsPlayerFragment() {
 
     private var _viewBinding: FragmentFlatPlayerBinding? = null
     private val viewBinding: FragmentFlatPlayerBinding get() = _viewBinding!!
@@ -148,37 +146,13 @@ class FlatPlayerFragment :
 
     override fun onPanelSlide(view: View, slide: Float) {}
 
-    override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
-        when (newState) {
-            PanelState.EXPANDED  -> {
-                requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, collapseBackPressedCallback)
-            }
-
-            PanelState.COLLAPSED -> {
-                resetToCurrentPosition()
-                collapseBackPressedCallback.remove()
-            }
-
-            PanelState.ANCHORED  -> {
-                // this fixes a bug where the panel would get stuck for some reason
-                collapseToNormal()
-            }
-
-            else                 -> Unit
-        }
-    }
-
     override fun collapseToNormal() {
         viewBinding.playerSlidingLayout?.panelState = PanelState.COLLAPSED
     }
 
     override fun resetToCurrentPosition() {
-        lifecycleScope.launch(Dispatchers.Main) {
-            withCreated {
-                viewBinding.playerRecyclerView.stopScroll()
-                layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
-            }
-        }
+        viewBinding.playerRecyclerView.stopScroll()
+        layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
     }
 
     private abstract class BaseImpl(protected var fragment: FlatPlayerFragment) : Impl {

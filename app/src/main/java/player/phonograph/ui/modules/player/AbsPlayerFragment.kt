@@ -7,6 +7,8 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemA
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+import com.sothree.slidinguppanel.SlidingUpPanelLayout
+import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
 import org.koin.core.context.GlobalContext
@@ -62,7 +64,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 abstract class AbsPlayerFragment :
-        AbsMusicServiceFragment()/* , PaletteColorHolder */ {
+        AbsMusicServiceFragment()/* , PaletteColorHolder */, SlidingUpPanelLayout.PanelSlideListener {
 
     protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment<*>
     protected val viewModel: PlayerFragmentViewModel by viewModels()
@@ -299,17 +301,27 @@ abstract class AbsPlayerFragment :
         collapseToNormal()
     }
 
-    private lateinit var listener: MediaStoreListener
-    override fun onCreate(savedInstanceState: Bundle?) {
-        listener = MediaStoreListener()
-        super.onCreate(savedInstanceState)
-        lifecycle.addObserver(listener)
-    }
+    override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
+        when (newState) {
+            PanelState.EXPANDED  -> {
+                requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, collapseBackPressedCallback)
+            }
 
-    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
-        override fun onMediaStoreChanged() {
-            lifecycleScope.launch(Dispatchers.Main) { updateAdapter() }
-            viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
+            PanelState.COLLAPSED -> {
+                collapseBackPressedCallback.remove()
+                lifecycleScope.launch(Dispatchers.Main) {
+                    withCreated {
+                        resetToCurrentPosition()
+                    }
+                }
+            }
+
+            PanelState.ANCHORED  -> {
+                // this fixes a bug where the panel would get stuck for some reason
+                collapseToNormal()
+            }
+
+            else                 -> Unit
         }
     }
 
@@ -323,6 +335,20 @@ abstract class AbsPlayerFragment :
     protected abstract fun collapseToNormal()
 
     protected abstract fun resetToCurrentPosition()
+
+    private lateinit var listener: MediaStoreListener
+    override fun onCreate(savedInstanceState: Bundle?) {
+        listener = MediaStoreListener()
+        super.onCreate(savedInstanceState)
+        lifecycle.addObserver(listener)
+    }
+
+    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
+        override fun onMediaStoreChanged() {
+            lifecycleScope.launch(Dispatchers.Main) { updateAdapter() }
+            viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
+        }
+    }
 
 
     @MainThread
