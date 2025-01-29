@@ -68,5 +68,23 @@ data class Song(
     override fun defaultSortOrderReference(): String = title
 
     companion object {
+
+        @JvmStatic
+        fun deleted(title: String, path: String) = Song(
+            id = -1,
+            title = title,
+            trackNumber = -1,
+            year = -1,
+            duration = -1,
+            data = path,
+            dateAdded = -1,
+            dateModified = -1,
+            albumId = -1,
+            albumName = "",
+            artistId = -1,
+            artistName = "",
+            albumArtistName = null,
+            composer = null,
+        )
     }
 }
