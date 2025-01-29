@@ -1,12 +1,15 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
 package player.phonograph.repo.database
 
+import lib.storage.textparser.ExternalFilePathParser
 import org.koin.core.context.GlobalContext
+import player.phonograph.R
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.DatabaseConstants.FAVORITE_DB
 import player.phonograph.repo.loader.Songs
@@ -59,13 +62,22 @@ class FavoritesStore constructor(context: Context) :
 
     private suspend fun getAllSongsImpl(context: Context): List<Song> {
         return parseCursorImpl(TABLE_NAME_SONGS) { cursor ->
-            Songs.path(context, cursor.getString(1))
+            val path = cursor.getString(1)
+            val song = Songs.path(context, path)
+            if (song != null) {
+                song
+            } else {
+                val filename = ExternalFilePathParser.bashPath(path) ?: context.getString(R.string.deleted)
+                Song.deleted(filename, path)
+            }
         }
     }
 
     private suspend fun getAllPlaylistsImpl(context: Context): List<Playlist> {
         return parseCursorImpl(TABLE_NAME_PLAYLISTS) { cursor ->
-            MediaStorePlaylists.searchByPath(context, cursor.getString(1))
+            val path = cursor.getString(1)
+            val playlist = MediaStorePlaylists.searchByPath(context, path)
+            if (playlist != null) playlist else Playlist(path, FilePlaylistLocation(path, "", 0))
         }
     }
 
