@@ -1,6 +1,30 @@
 {
   "versions": [
     {
+      "channel": "preview",
+      "versionName": "1.9.1-dev1",
+      "versionCode": 1090,
+      "date": 1738048000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.9.1-dev1"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.1-dev1/PhonographPlus_1.9.1-dev1_ModernPreviewRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.1-dev1/PhonographPlus_1.9.1-dev1_LegacyPreviewRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 后台随机崩溃</li><li>修复 部分设备上重启后崩溃</li><li>修复 部分设备上从后台切换回来后崩溃</li><li>修复 时间戳相同的多行 lrc 歌词将被最后一行覆盖</li><li>翻译 更新 法语 (Vividly8487)</li></ol>",
+        "en": "<ol><li>Fix: random crashes from background</li><li>Fix: possible crashes after rebooting on some devices</li><li>Fix: possible crashes after switching back from background on some devices</li><li>Fix: lrc lyrics with same timestamp would be overridden with last one</li><li>Translation: update French (by Vividly8487)</li></ol>"
+      }
+    },
+    {
       "channel": "stable",
       "versionName": "1.9.0",
       "versionCode": 1090,
@@ -22,30 +46,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>开发 targetSdk 35 (Android 15)</li><li>修复 某些情况下拖动列表项目时可能导致崩溃</li><li>修复 拖动播放列表项目却不在编辑模式下</li><li>修复 从多选进入标签编辑器但所选内容不含任何歌曲时崩溃</li><li>修复 播放队列清空后, 从某些通知或蓝牙设备切换曲目时崩溃</li><li>修复 部分设备上最常听的歌曲和最近播放播放列表乱序</li><li>修复 文件夹页缺失自动刷新</li><li>新增 关于中显示当前变体版本</li><li>新增 更新对话框中标出当前变体版本和通道</li><li>改进 搜索界面中显示底部播放器</li><li>改进 版本迁移用户界面</li><li>改进 启用新的系统返回手势动画 (Android T 及以上)</li><li>改进 边到边界面</li><li>删除 设置项“着色导航栏” (已无意义)</li><li>修改 默认着色导航栏</li><li>修改 若可行, 透明或半透明导航栏</li><li>修改 默认文件播放列表图标</li><li>修改 禁止从 v1.4.0 之前的版本升级, 警告从 v1.7.0 之前的版本升级</li><li>翻译 更新 波兰语 (cooky), 巴西葡萄牙语 (FalaTudo, Ulisses_Mello), 西班牙语 (Ulisses_Mello)</li><li>开发 更新依赖</li></ol>",
         "en": "<ol><li>Development: Targeting SDK 35 (Android 15)</li><li>Fix: possible crashes when dragging items in some circumstances</li><li>Fix: dragging playlist items but not in Edit Mode</li><li>Fix: crash when entering Tag Editor from multi-selection mode but the selection contains no song</li><li>Fix: crash after skipping from some notifications or BT devices but queue is empty</li><li>Fix: incorrect sorting order of My Top Tracks and Recently Played on some devices</li><li>Fix: missing automatic refresh in Folders tab</li><li>New: display current distribution Variant in About</li><li>New: mark current distribution Variant and Channel in Upgrade Dialog</li><li>Improve: show bottom sliding panel in Search</li><li>Improve: explicit user interface for version migration</li><li>Improve: enable new system back gesture animations for Android T and above</li><li>Improve: edge to edge user interface</li><li>Remove: preference \"colored navigation bar\" (not applicable now)</li><li>Modify: navigation bar would always be colored by default</li><li>Modify: navigation bar would be transparent or translucent if possible now</li><li>Modify: change default File Playlist icon</li><li>Modify: forbid upgrading from prior to v1.4.0 & warn upgrading from prior to v1.7.0</li><li>Translation: update Polish (cooky), Portuguese Brazilian (by FalaTudo, Ulisses_Mello), Spanish (by Ulisses_Mello)</li><li>Development: update dependencies</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.9.0-dev3",
-      "versionCode": 1088,
-      "date": 1736830000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.9.0-dev3"
-        },
-        {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.0-dev3/PhonographPlus_1.9.0-dev3_ModernPreviewRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK(File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.0-dev3/PhonographPlus_1.9.0-dev3_LegacyPreviewRelease.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 横屏下的一些边到边显示问题 [自 1.9.0-dev1 起]</li><li>修复 播放队列清空后，从某些通知或蓝牙设备切换曲目时崩溃</li><li>修复 文件夹页缺失自动刷新</li><li>翻译 更新 巴西葡萄牙语言(Ulisses_Mello)</li></ol>",
-        "en": "<ol><li>Fix: more edge-to-edge display issues in landscape [since 1.9.0-dev1]</li><li>Fix: crash after skipping from some notifications or BT devices but queue is empty</li><li>Fix: missing automatic refresh in Folders tab</li><li>Translation: Portuguese Brazilian (by Ulisses_Mello)</li></ol>"
       }
     }
   ]
