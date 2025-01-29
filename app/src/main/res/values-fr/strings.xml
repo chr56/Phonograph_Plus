@@ -536,4 +536,11 @@
     <string name="pref_option_show_prompt">Afficher la boîte de dialogue à chaque fois</string>
     <string name="pref_option_silence">Silencieux (garder en arrière-plan sans rediriger vers le lecteur)</string>
     <string name="service_disconnected">[Service déconnecté !]</string>
+    <string name="file_playlists">Playlists en fichiers</string>
+    <string name="database_playlists">Playlists en base de données</string>
+    <string name="version_migration">Migration de version</string>
+    <string name="version_migration_summary">Mise à jour depuis une ancienne version…</string>
+    <string name="version_migration_hint_too_old">Vous effectuez une mise à jour à partir d\'une très ancienne version !</string>
+    <string name="version_migration_hint_suggest_to_wipe_data">Essayez d\'effacer les données de l\'application !</string>
+    <string name="version_migration_hint_required_to_wipe_data">Veuillez effacer les données de l\'application !</string>
 </resources>
