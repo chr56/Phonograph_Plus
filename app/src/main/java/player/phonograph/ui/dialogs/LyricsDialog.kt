@@ -78,16 +78,12 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val lyricsInfo: LyricsInfo = viewModel.lyricsInfo.value
+        binding.ok.setOnClickListener { requireDialog().dismiss() }
+        binding.viewStub.setOnClickListener { requireDialog().dismiss() }
 
-        updateChips(lyricsInfo)
-        updateTitle(lyricsInfo)
-        setupRecycleView(lyricsInfo)
         scroller = LyricsSmoothScroller(view.context)
         progressUpdater = MusicProgressViewUpdateHelper(this@LyricsDialog, 500, 1000)
         progressUpdater.start()
-
-        // corner
         requireDialog().window!!.setBackgroundDrawable(GradientDrawable().apply {
             this.cornerRadius = 0f
             setColor(
@@ -95,28 +91,19 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
                     .getColor(0, 0)
             )
         })
-        binding.ok.setOnClickListener { requireDialog().dismiss() }
-        binding.viewStub.setOnClickListener { requireDialog().dismiss() }
+
+        val lyricsInfo: LyricsInfo? = viewModel.lyricsInfo.value
+        if (lyricsInfo == null) {
+            dismissNow()
+            return
+        }
+
+        updateChips(lyricsInfo)
+        updateTitle(lyricsInfo)
+        setupRecycleView(lyricsInfo)
+
         setupFollowing(lyricsInfo)
-//        scrollingOffset = binding.root.height / 4
-        observe()
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        progressUpdater.destroy()
-        _viewBinding = null
-    }
-
-    override fun onStart() {
-        super.onStart()
-        applyLargeDialog()
-    }
-
-    //endregion
-
-
-    private fun observe() {
         lifecycleScope.launch {
             viewModel.lyricsInfo.collect { info ->
                 withContext(Dispatchers.Main) {
@@ -134,14 +121,28 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        progressUpdater.destroy()
+        _viewBinding = null
+    }
+
+    override fun onStart() {
+        super.onStart()
+        applyLargeDialog()
+    }
+
+    //endregion
+
 
     //region Chip & Title
 
 
     private var chipSelected: Chip? = null
-    private fun updateChips(info: LyricsInfo) {
+    private fun updateChips(info: LyricsInfo?) {
         binding.types.removeAllViews()
         binding.types.isSingleSelection = true
+        if (info == null) return
         for ((index, lyrics) in info.withIndex()) {
             val requireCheck = info.isActive(index)
             val chip = createChip(
@@ -178,7 +179,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
     }
 
     private fun onChipClicked(chip: Chip, index: Int) {
-        val lyricsInfo = viewModel.lyricsInfo.value
+        val lyricsInfo = viewModel.lyricsInfo.value ?: return
         if (lyricsInfo.isActive(index)) return // do not change
         viewModel.forceReplaceLyrics(lyricsInfo[index])
         chip.isChecked = true
@@ -190,13 +191,9 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         chipSelected = chip
     }
 
-    private fun updateTitle(info: LyricsInfo) {
-        val activated = info.activatedLyrics
-        binding.title.text = if (activated != null && activated.title != AbsLyrics.DEFAULT_TITLE) {
-            activated.title
-        } else {
-            info.linkedSong.title
-        }
+    private fun updateTitle(info: LyricsInfo?) {
+        val activated = info?.activatedLyrics
+        binding.title.text = if (activated != null) activated.title else AbsLyrics.DEFAULT_TITLE
     }
 
     //endregion
@@ -233,9 +230,14 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         }
     }
 
-    private fun updateRecycleView(info: LyricsInfo) {
-        val activated = info.activatedLyrics ?: info.first()
-        lyricsAdapter.update(activated)
+    private fun updateRecycleView(info: LyricsInfo?) {
+        val activated = info?.activatedLyrics
+        if (activated != null) {
+            binding.recyclerViewLyrics.visibility = View.VISIBLE
+            lyricsAdapter.update(activated)
+        } else {
+            binding.recyclerViewLyrics.visibility = View.INVISIBLE
+        }
     }
     //endregion
 
@@ -244,12 +246,12 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
 
     private lateinit var progressUpdater: MusicProgressViewUpdateHelper
 
-    private fun setupFollowing(info: LyricsInfo) {
+    private fun setupFollowing(info: LyricsInfo?) {
         binding.lyricsFollowing.apply {
             buttonTintList = backgroundCsl
             setOnCheckedChangeListener { button: CompoundButton, newValue: Boolean ->
                 viewModel.requireLyricsFollowing.update {
-                    if (info.activatedLyrics is LrcLyrics) {
+                    if (info?.activatedLyrics is LrcLyrics) {
                         newValue
                     } else {
                         // text lyrics can not follow
@@ -262,7 +264,8 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
     }
 
     override fun onUpdateProgressViews(progress: Int, total: Int) {
-        val lrcLyrics = viewModel.lyricsInfo.value.activatedLyrics as? LrcLyrics ?: return
+        val lyrics = viewModel.lyricsInfo.value?.activatedLyrics
+        val lrcLyrics = lyrics as? LrcLyrics ?: return
         val position = lrcLyrics.getPosition(progress)
         if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             updateHighlight(position)
