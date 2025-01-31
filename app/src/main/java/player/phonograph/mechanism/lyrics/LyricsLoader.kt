@@ -34,20 +34,20 @@ object LyricsLoader {
 
     private val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
 
-    suspend fun loadLyrics(songFile: File, song: Song): LyricsInfo {
+    suspend fun loadLyrics(songFile: File, song: Song): LyricsInfo? {
         val preference = Setting(App.instance)[Keys.enableLyrics]
         if (!preference.data) {
             debug {
                 Log.v(TAG, "Lyrics is off for ${song.title}")
             }
-            return LyricsInfo.EMPTY
+            return null
         }
 
         if (!StoragePermissionChecker.hasStorageReadPermission(App.instance)) {
             debug {
                 Log.v(TAG, "No storage read permission to fetch lyrics for ${song.title}")
             }
-            return LyricsInfo.EMPTY
+            return null
         }
 
         // embedded

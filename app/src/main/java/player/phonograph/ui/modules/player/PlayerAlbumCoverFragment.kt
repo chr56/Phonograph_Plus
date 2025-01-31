@@ -234,7 +234,7 @@ class PlayerAlbumCoverFragment :
     }
 
     private suspend fun updateLyrics(progress: Int) {
-        val lyrics = lyricsViewModel.lyricsInfo.value.activatedLyrics
+        val lyrics = lyricsViewModel.lyricsInfo.value?.activatedLyrics
         if (lyrics != null && lyrics is LrcLyrics) {
             lifecycle.withResumed {
                 binding.playerLyrics.apply {

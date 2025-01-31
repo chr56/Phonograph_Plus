@@ -19,19 +19,11 @@ class LyricsUpdater : ServiceComponent {
     private var fetcher: LyricsFetcher? = null
 
     suspend fun updateViaSong(song: Song?) {
-        fetcher =
-            if (song != null) {
-                File(song.data).let { file ->
-                    if (file.exists()) {
-                        val lyrics = LyricsLoader.loadLyrics(file, song)
-                        LyricsFetcher(lyrics.firstLrcLyrics())
-                    } else {
-                        LyricsFetcher(null)
-                    }
-                }
-            } else {
-                LyricsFetcher(null)
-            }
+        if (song == null) return
+        val file = File(song.data)
+        fetcher = LyricsFetcher(
+            if (file.exists()) LyricsLoader.loadLyrics(file, song)?.firstLrcLyrics() else null
+        )
     }
 
     fun updateViaLyrics(lyrics: LrcLyrics) {

@@ -154,8 +154,7 @@ abstract class AbsPlayerFragment :
                 visible = false
                 itemId = R.id.action_show_lyrics
                 onClick {
-                    val lyricsList = lyricsViewModel.lyricsInfo.value
-                    if (lyricsList.isNotEmpty()) {
+                    if (lyricsViewModel.hasLyrics) {
                         LyricsDialog().show(childFragmentManager, "LYRICS")
                     }
                     true
@@ -431,13 +430,11 @@ abstract class AbsPlayerFragment :
                 }
             }
         }
-        observe(lyricsViewModel.lyricsInfo) { lyricsList ->
+        observe(lyricsViewModel.lyricsInfo) { lyricsInfo ->
             withContext(Dispatchers.Main) {
-                val activated = lyricsList.activatedLyrics
-                MusicPlayerRemote.musicService?.replaceLyrics(
-                    if (lyricsList.isNotEmpty() && activated is LrcLyrics) activated else null
-                )
-                lyricsMenuItem?.isVisible = lyricsList.isNotEmpty()
+                lyricsMenuItem?.isVisible = !lyricsInfo.isNullOrEmpty()
+                val activated = lyricsInfo?.activatedLyrics
+                MusicPlayerRemote.musicService?.replaceLyrics(activated as? LrcLyrics)
             }
         }
         observe(viewModel.paletteColor) { newColor ->
