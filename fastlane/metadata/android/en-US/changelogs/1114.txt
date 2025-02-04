@@ -1,5 +1,6 @@
-<b>1.11.4(1114) 2026.01.21</b>
-- Fix: no response in Android Auto (since v1.11.3)
-- Fix: text color of crash report in dark mode (since v1.11.3)
-- Fix: crash when resetting certain setting items by long pressing (since v1.10.0)
-- Development: upgrade AGP to 8.13.2
+<b>1.11.5(1114) 2026.02.05</b>
+- Fix: glitchy Monet colors (since v1.11.3)
+- Fix: inverted text color on some dialogs in non-auto theme
+- Improve: support resetting Path Filter settings
+- New: add the shortcut of 'Scan Media' if no items to display
+- Development: build with JDK 21

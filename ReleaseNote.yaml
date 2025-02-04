@@ -1,11 +1,12 @@
-version: "1.11.5-dev1"
-channel: "PREVIEW"
+version: "1.11.5"
+channel: "STABLE"
 versionCode: 1114
-timestamp: 1769868000
+timestamp: 1770270000
 notes:
   en:
     items:
       - "Fix: glitchy Monet colors (since v1.11.3)"
+      - "Fix: inverted text color on some dialogs in non-auto theme"
       - "Improve: support resetting Path Filter settings"
       - "New: add the shortcut of 'Scan Media' if no items to display"
       - "Development: build with JDK 21"
@@ -13,6 +14,7 @@ notes:
   zh:
     items:
       - "修复 异常 Monet 颜色 (v1.11.3 起存在)"
+      - "修复 非自动主题下，部分对话框文本颜色反转"
       - "改进 支持重置文件过滤器设置"
       - "新增 添加“扫描媒体”快捷方式，若无内容可显示"
       - "开发 使用 JDK 21 构建"
