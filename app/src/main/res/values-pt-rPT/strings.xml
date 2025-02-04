@@ -534,4 +534,12 @@
     <string name="pref_summary_external_play_request">Defina o que o leitor deve fazer quando reproduzir externamente (por exemplo, o explorador de ficheiros).</string>
     <string name="pref_option_show_prompt">Mostrar sempre a caixa de diálogo de aviso</string>
     <string name="pref_option_silence">Silêncio (manter em segundo plano sem saltar para o reprodutor)</string>
+    <string name="service_disconnected">[O serviço está desligado!]</string>
+    <string name="file_playlists">Ficheiro de listas de reprodução</string>
+    <string name="database_playlists">Base de dados de listas de reprodução</string>
+    <string name="version_migration">Migração de versão</string>
+    <string name="version_migration_summary">Atualizando a partir da versão antiga…</string>
+    <string name="version_migration_hint_too_old">Está a atualizar de uma versão muito antiga! </string>
+    <string name="version_migration_hint_suggest_to_wipe_data">Tente limpar os dados da aplicação!</string>
+    <string name="version_migration_hint_required_to_wipe_data">Por favor, limpe os dados da aplicação!</string>
 </resources>
