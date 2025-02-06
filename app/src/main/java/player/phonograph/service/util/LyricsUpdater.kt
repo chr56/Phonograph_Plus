@@ -4,12 +4,15 @@
 
 package player.phonograph.service.util
 
+import player.phonograph.App
 import player.phonograph.mechanism.StatusBarLyric
 import player.phonograph.mechanism.lyrics.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicService
 import player.phonograph.service.ServiceComponent
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.File
@@ -20,6 +23,8 @@ class LyricsUpdater : ServiceComponent {
 
     suspend fun updateViaSong(song: Song?) {
         if (song == null) return
+        val enableLyrics = Setting(App.instance)[Keys.enableLyrics].flowData()
+        if (!enableLyrics) return
         val file = File(song.data)
         fetcher = LyricsFetcher(
             if (file.exists()) LyricsLoader.loadLyrics(file, song)?.firstLrcLyrics() else null

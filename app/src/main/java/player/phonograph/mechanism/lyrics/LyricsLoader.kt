@@ -15,8 +15,6 @@ import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.model.lyrics.LyricsSource
 import player.phonograph.model.lyrics.TextLyrics
-import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
 import player.phonograph.util.debug
 import player.phonograph.util.file.stripExtension
 import player.phonograph.util.permissions.StoragePermissionChecker
@@ -35,13 +33,6 @@ object LyricsLoader {
     private val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
 
     suspend fun loadLyrics(songFile: File, song: Song): LyricsInfo? {
-        val preference = Setting(App.instance)[Keys.enableLyrics]
-        if (!preference.data) {
-            debug {
-                Log.v(TAG, "Lyrics is off for ${song.title}")
-            }
-            return null
-        }
 
         if (!StoragePermissionChecker.hasStorageReadPermission(App.instance)) {
             debug {

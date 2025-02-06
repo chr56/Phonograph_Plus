@@ -6,11 +6,14 @@ package player.phonograph.ui.modules.player
 
 import lib.storage.extension.getBasePath
 import org.koin.core.context.GlobalContext
+import player.phonograph.App
 import player.phonograph.mechanism.lyrics.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.service.queue.QueueManager
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import player.phonograph.util.coroutineToast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -43,13 +46,16 @@ class LyricsViewModel : ViewModel() {
         loadLyricsJob?.cancel()
         // load new lyrics
         loadLyricsJob = viewModelScope.launch {
-            _lyricsInfo.emit(
-                if (song != Song.EMPTY_SONG) {
-                    LyricsLoader.loadLyrics(File(song.data), song)
-                } else {
-                    null
-                }
-            )
+            val enableLyrics = Setting(App.instance)[Keys.enableLyrics].flowData()
+            if (enableLyrics) {
+                _lyricsInfo.emit(
+                    if (song != Song.EMPTY_SONG) {
+                        LyricsLoader.loadLyrics(File(song.data), song)
+                    } else {
+                        null
+                    }
+                )
+            }
         }
     }
 
