@@ -10,7 +10,8 @@ notes:
       - "Fix: possible crashes after rebooting on some devices"
       - "Fix: possible crashes after switching back from background on some devices"
       - "Fix: lrc lyrics with same timestamp would be overridden with last one"
-      - "Translation: update French (by Vividly8487)"
+      - "Fix: crashes of Lyrics Dialog when current song changed but it has no lyrics"
+      - "Translation: update French (by Vividly8487), Portuguese (by azilara)"
 
   zh:
     highlights: [ ]
@@ -19,7 +20,8 @@ notes:
       - "修复 部分设备上重启后崩溃"
       - "修复 部分设备上从后台切换回来后崩溃"
       - "修复 时间戳相同的多行 lrc 歌词将被最后一行覆盖"
-      - "翻译 更新 法语 (Vividly8487)"
+      - "修复 当前播放的歌曲发生改变且无歌词时，歌词对话框崩溃"
+      - "翻译 更新 法语 (Vividly8487), 葡萄牙语 (azilara)"
 
 previousVersion: "1.9.0"
 previousChannel: "STABLE"
