@@ -34,7 +34,7 @@ class LyricsViewModel : ViewModel() {
 
     fun forceReplaceLyrics(lyrics: AbsLyrics) {
         viewModelScope.launch {
-            val new = _lyricsInfo.value?.replaceActivated(lyrics)
+            val new = _lyricsInfo.value?.createWithActivated(lyrics)
             if (new != null) _lyricsInfo.emit(new)
         }
     }
@@ -65,7 +65,7 @@ class LyricsViewModel : ViewModel() {
                 delay(600)
                 val old = _lyricsInfo.value
                 val new = if (old != null) {
-                    old.createAmended(lyrics).replaceActivated(lyrics)
+                    old.createWithAppended(lyrics).createWithActivated(lyrics)
                 } else {
                     val song = GlobalContext.get().get<QueueManager>().currentSong
                     LyricsInfo(song, arrayListOf(lyrics), 0)

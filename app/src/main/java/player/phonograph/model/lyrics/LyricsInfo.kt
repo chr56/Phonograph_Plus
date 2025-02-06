@@ -12,7 +12,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class LyricsInfo(
     val linkedSong: Song,
-    private val lyricsList: ArrayList<AbsLyrics>,
+    private val lyricsList: List<AbsLyrics>,
     private val activatedLyricsNumber: Int,
 ) : Parcelable, List<AbsLyrics> by lyricsList {
 
@@ -33,35 +33,33 @@ data class LyricsInfo(
         return null
     }
 
-    fun createAmended(absLyrics: AbsLyrics): LyricsInfo = insect(this, absLyrics)
+    fun createWithAppended(absLyrics: AbsLyrics): LyricsInfo = withAppended(this, absLyrics)
 
-    fun replaceActivated(index: Int): LyricsInfo = setActive(this, index)
-    fun replaceActivated(lyrics: AbsLyrics): LyricsInfo? = setActive(this, lyrics)
+    fun createWithActivated(index: Int): LyricsInfo = withActivated(this, index)
+    fun createWithActivated(lyrics: AbsLyrics): LyricsInfo? = withActivated(this, lyrics)
 
     companion object {
 
-        private fun insect(old: LyricsInfo, newLyrics: AbsLyrics): LyricsInfo =
+        fun withAppended(old: LyricsInfo, newLyrics: AbsLyrics): LyricsInfo =
             LyricsInfo(
                 old.linkedSong,
-                ArrayList(old.lyricsList).also { it.add(newLyrics) },
+                old.lyricsList + listOf(newLyrics),
                 old.activatedLyricsNumber
             )
 
-        private fun setActive(old: LyricsInfo, index: Int): LyricsInfo =
+        fun withActivated(old: LyricsInfo, index: Int): LyricsInfo =
             LyricsInfo(
                 old.linkedSong,
                 old.lyricsList,
                 index
             )
 
-        private fun setActive(old: LyricsInfo, lyrics: AbsLyrics): LyricsInfo? {
+        fun withActivated(old: LyricsInfo, lyrics: AbsLyrics): LyricsInfo? {
             var index = -1
             for ((i, l) in old.lyricsList.withIndex()) {
-                if (l === lyrics) {
-                    index = i
-                }
+                if (l === lyrics) index = i
             }
-            return if (index > -1) setActive(old, index) else null
+            return if (index > -1) withActivated(old, index) else null
         }
     }
 }

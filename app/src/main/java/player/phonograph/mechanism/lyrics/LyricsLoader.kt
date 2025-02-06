@@ -56,22 +56,21 @@ object LyricsLoader {
             files.mapNotNull { parseExternal(it, LyricsSource.ExternalDecorated) }
         }
 
-        val resultList: ArrayList<AbsLyrics> = ArrayList(4)
-        resultList.apply {
+        // collect
+        val all = buildList {
             val embeddedLyrics = embedded.await()
-            if (embeddedLyrics != null) {
-                add(embeddedLyrics)
-            }
+            if (embeddedLyrics != null) add(embeddedLyrics)
             val preciseLyrics = externalPrecise.await()
             addAll(preciseLyrics)
             val vagueLyrics = external.await()
             addAll(vagueLyrics)
         }
 
-        val activated: Int = resultList.indexOfFirst { it is LrcLyrics }
+
+        val activated: Int = all.indexOfFirst { it is LrcLyrics }
 
         // end of fetching
-        return LyricsInfo(song, resultList, activated)
+        return LyricsInfo(song, all, activated)
     }
 
     private fun parseEmbedded(
