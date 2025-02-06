@@ -207,7 +207,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
             accessor.openFileStorageAccessDelegate.launch(OpenDocumentContract.Config(arrayOf("*/*"))) { uri ->
                 CoroutineScope(Dispatchers.IO).launch {
                     val lyricsViewModel = ViewModelProvider(activity)[LyricsViewModel::class.java]
-                    lyricsViewModel.insert(activity, uri)
+                    lyricsViewModel.loadLyricsFrom(activity, uri)
                 }
             }
         } else {

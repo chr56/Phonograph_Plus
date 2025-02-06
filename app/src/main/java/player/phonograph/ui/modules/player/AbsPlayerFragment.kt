@@ -213,7 +213,7 @@ abstract class AbsPlayerFragment :
                         accessor.openFileStorageAccessDelegate.launch(OpenDocumentContract.Config(arrayOf("*/*"))) { uri ->
                             CoroutineScope(Dispatchers.IO).launch {
                                 val lyricsViewModel = ViewModelProvider(activity)[LyricsViewModel::class.java]
-                                lyricsViewModel.insert(activity, uri)
+                                lyricsViewModel.loadLyricsFrom(activity, uri)
                             }
                         }
                     } else {
@@ -399,7 +399,7 @@ abstract class AbsPlayerFragment :
             withStarted { impl.updateCurrentSong(it) }
         }
         observe(viewModel.currentSong) {
-            lyricsViewModel.loadLyrics(it)
+            lyricsViewModel.loadLyricsFor(requireContext(), it)
         }
         observe(CurrentQueueState.shuffleMode) {
             updateAdapter()

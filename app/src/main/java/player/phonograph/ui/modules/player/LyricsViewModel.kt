@@ -6,7 +6,6 @@ package player.phonograph.ui.modules.player
 
 import lib.storage.extension.getBasePath
 import org.koin.core.context.GlobalContext
-import player.phonograph.App
 import player.phonograph.mechanism.lyrics.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
@@ -41,12 +40,12 @@ class LyricsViewModel : ViewModel() {
     }
 
     private var loadLyricsJob: Job? = null
-    fun loadLyrics(song: Song) {
+    fun loadLyricsFor(context: Context, song: Song) {
         // cancel old song's lyrics after switching
         loadLyricsJob?.cancel()
         // load new lyrics
         loadLyricsJob = viewModelScope.launch {
-            val enableLyrics = Setting(App.instance)[Keys.enableLyrics].flowData()
+            val enableLyrics = Setting(context)[Keys.enableLyrics].flowData()
             if (enableLyrics) {
                 _lyricsInfo.emit(
                     if (song != Song.EMPTY_SONG) {
@@ -59,7 +58,7 @@ class LyricsViewModel : ViewModel() {
         }
     }
 
-    suspend fun insert(context: Context, uri: Uri?) {
+    suspend fun loadLyricsFrom(context: Context, uri: Uri?) {
         if (uri != null) {
             val lyrics = LyricsLoader.parseFromUri(context, uri)
             if (lyrics != null) {
