@@ -5,12 +5,10 @@
 package player.phonograph.ui.modules.player
 
 import lib.storage.extension.getBasePath
-import org.koin.core.context.GlobalContext
 import player.phonograph.mechanism.lyrics.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LyricsInfo
-import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.coroutineToast
@@ -67,8 +65,7 @@ class LyricsViewModel : ViewModel() {
                 val new = if (old != null) {
                     old.createWithAppended(lyrics).createWithActivated(lyrics)
                 } else {
-                    val song = GlobalContext.get().get<QueueManager>().currentSong
-                    LyricsInfo(song, arrayListOf(lyrics), 0)
+                    LyricsInfo(listOf(lyrics), 0)
                 }
                 _lyricsInfo.emit(new)
             } else {

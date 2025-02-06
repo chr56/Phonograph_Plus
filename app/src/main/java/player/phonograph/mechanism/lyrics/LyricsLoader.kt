@@ -70,7 +70,7 @@ object LyricsLoader {
         val activated: Int = all.indexOfFirst { it is LrcLyrics }
 
         // end of fetching
-        return LyricsInfo(song, all, activated)
+        return LyricsInfo(all, activated)
     }
 
     private fun parseEmbedded(

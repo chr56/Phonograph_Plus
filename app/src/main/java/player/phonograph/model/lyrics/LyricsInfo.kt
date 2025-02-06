@@ -4,14 +4,12 @@
 
 package player.phonograph.model.lyrics
 
-import player.phonograph.model.Song
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 
 @Parcelize
 data class LyricsInfo(
-    val linkedSong: Song,
     private val lyricsList: List<AbsLyrics>,
     private val activatedLyricsNumber: Int,
 ) : Parcelable, List<AbsLyrics> by lyricsList {
@@ -42,14 +40,12 @@ data class LyricsInfo(
 
         fun withAppended(old: LyricsInfo, newLyrics: AbsLyrics): LyricsInfo =
             LyricsInfo(
-                old.linkedSong,
                 old.lyricsList + listOf(newLyrics),
                 old.activatedLyricsNumber
             )
 
         fun withActivated(old: LyricsInfo, index: Int): LyricsInfo =
             LyricsInfo(
-                old.linkedSong,
                 old.lyricsList,
                 index
             )
