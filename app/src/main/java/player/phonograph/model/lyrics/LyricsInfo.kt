@@ -39,7 +39,6 @@ data class LyricsInfo(
     fun replaceActivated(lyrics: AbsLyrics): LyricsInfo? = setActive(this, lyrics)
 
     companion object {
-        val EMPTY = LyricsInfo(Song.EMPTY_SONG, ArrayList(), -1)
 
         private fun insect(old: LyricsInfo, newLyrics: AbsLyrics): LyricsInfo =
             LyricsInfo(
