@@ -31,11 +31,6 @@ data class LyricsInfo(
         return null
     }
 
-    fun createWithAppended(absLyrics: AbsLyrics): LyricsInfo = withAppended(this, absLyrics)
-
-    fun createWithActivated(index: Int): LyricsInfo = withActivated(this, index)
-    fun createWithActivated(lyrics: AbsLyrics): LyricsInfo? = withActivated(this, lyrics)
-
     companion object {
 
         fun withAppended(old: LyricsInfo, newLyrics: AbsLyrics): LyricsInfo =

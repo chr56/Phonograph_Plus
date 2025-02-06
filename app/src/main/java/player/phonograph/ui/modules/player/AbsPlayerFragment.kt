@@ -211,9 +211,10 @@ abstract class AbsPlayerFragment :
                     val accessor = activity as? IOpenFileStorageAccessible
                     if (accessor != null) {
                         accessor.openFileStorageAccessDelegate.launch(OpenDocumentContract.Config(arrayOf("*/*"))) { uri ->
+                            if (uri == null) return@launch
                             CoroutineScope(Dispatchers.IO).launch {
                                 val lyricsViewModel = ViewModelProvider(activity)[LyricsViewModel::class.java]
-                                lyricsViewModel.loadLyricsFrom(activity, uri)
+                                lyricsViewModel.appendLyricsFrom(activity, uri)
                             }
                         }
                     } else {

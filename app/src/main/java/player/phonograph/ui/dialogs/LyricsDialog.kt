@@ -181,14 +181,16 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
     private fun onChipClicked(chip: Chip, index: Int) {
         val lyricsInfo = viewModel.lyricsInfo.value ?: return
         if (lyricsInfo.isActive(index)) return // do not change
-        viewModel.forceReplaceLyrics(lyricsInfo[index])
-        chip.isChecked = true
-        chip.chipBackgroundColor = correctChipBackgroundColor(true)
-        chip.setTextColor(correctChipTextColor(true))
-        chipSelected?.isChecked = false
-        chipSelected?.chipBackgroundColor = correctChipBackgroundColor(false)
-        chipSelected?.setTextColor(correctChipTextColor(false))
-        chipSelected = chip
+        lifecycleScope.launch {
+            viewModel.activateLyrics(lyricsInfo[index])
+            chip.isChecked = true
+            chip.chipBackgroundColor = correctChipBackgroundColor(true)
+            chip.setTextColor(correctChipTextColor(true))
+            chipSelected?.isChecked = false
+            chipSelected?.chipBackgroundColor = correctChipBackgroundColor(false)
+            chipSelected?.setTextColor(correctChipTextColor(false))
+            chipSelected = chip
+        }
     }
 
     private fun updateTitle(info: LyricsInfo?) {
@@ -205,9 +207,10 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         val accessor = activity as? IOpenFileStorageAccessible
         if (accessor != null) {
             accessor.openFileStorageAccessDelegate.launch(OpenDocumentContract.Config(arrayOf("*/*"))) { uri ->
+                if (uri == null) return@launch
                 CoroutineScope(Dispatchers.IO).launch {
                     val lyricsViewModel = ViewModelProvider(activity)[LyricsViewModel::class.java]
-                    lyricsViewModel.loadLyricsFrom(activity, uri)
+                    lyricsViewModel.appendLyricsFrom(activity, uri)
                 }
             }
         } else {
@@ -250,7 +253,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         binding.lyricsFollowing.apply {
             buttonTintList = backgroundCsl
             setOnCheckedChangeListener { button: CompoundButton, newValue: Boolean ->
-                viewModel.requireLyricsFollowing.update {
+                viewModel.updateRequireLyricsFollowing(
                     if (info?.activatedLyrics is LrcLyrics) {
                         newValue
                     } else {
@@ -258,7 +261,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
                         button.isChecked = false
                         false
                     }
-                }
+                )
             }
         }
     }
