@@ -15,6 +15,7 @@ import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.net.Uri
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -45,6 +46,7 @@ class LyricsViewModel : ViewModel() {
     }
 
     private suspend fun append(lyrics: AbsLyrics) {
+        delay(1000)
         val existed = this@LyricsViewModel.lyricsInfo.value
         val info = if (existed != null) LyricsInfo.withAppended(existed, lyrics) else LyricsInfo(listOf(lyrics), 0)
         _lyricsInfo.emit(info)
