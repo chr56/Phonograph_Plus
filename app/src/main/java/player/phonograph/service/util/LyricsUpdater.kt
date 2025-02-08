@@ -27,7 +27,7 @@ class LyricsUpdater : ServiceComponent {
         if (!enableLyrics) return
         val file = File(song.data)
         fetcher = LyricsFetcher(
-            if (file.exists()) LyricsLoader.loadLyrics(file, song)?.firstLrcLyrics() else null
+            if (file.exists()) LyricsLoader.loadLyrics(file, song.title)?.firstLrcLyrics() else null
         )
     }
 

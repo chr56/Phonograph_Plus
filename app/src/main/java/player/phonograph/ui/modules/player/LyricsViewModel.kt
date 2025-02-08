@@ -64,11 +64,7 @@ class LyricsViewModel : ViewModel() {
             val enableLyrics = Setting(context)[Keys.enableLyrics].flowData()
             if (enableLyrics) {
                 replace(
-                    if (song != Song.EMPTY_SONG) {
-                        LyricsLoader.loadLyrics(File(song.data), song)
-                    } else {
-                        null
-                    }
+                    LyricsLoader.loadLyrics(File(song.data), song.title)
                 )
             }
         }

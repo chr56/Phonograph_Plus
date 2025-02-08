@@ -9,7 +9,6 @@ import org.jaudiotagger.audio.exceptions.CannotReadException
 import org.jaudiotagger.logging.ErrorMessage
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.App
-import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.lyrics.LyricsInfo
@@ -32,11 +31,11 @@ object LyricsLoader {
 
     private val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
 
-    suspend fun loadLyrics(songFile: File, song: Song): LyricsInfo? {
+    suspend fun loadLyrics(songFile: File, songTitle: String): LyricsInfo? {
 
         if (!StoragePermissionChecker.hasStorageReadPermission(App.instance)) {
             debug {
-                Log.v(TAG, "No storage read permission to fetch lyrics for ${song.title}")
+                Log.v(TAG, "No storage read permission to fetch lyrics for $songTitle")
             }
             return null
         }
@@ -52,7 +51,7 @@ object LyricsLoader {
             files.mapNotNull { parseExternal(it, LyricsSource.ExternalPrecise) }
         }
         val external = backgroundCoroutine.async(Dispatchers.IO) {
-            val files = searchExternalVagueLyricsFiles(songFile, song)
+            val files = searchExternalVagueLyricsFiles(songFile, songTitle)
             files.mapNotNull { parseExternal(it, LyricsSource.ExternalDecorated) }
         }
 
@@ -141,14 +140,14 @@ object LyricsLoader {
         return listOfNotNull(lrc, txt)
     }
 
-    fun searchExternalVagueLyricsFiles(songFile: File, song: Song): List<File> {
+    fun searchExternalVagueLyricsFiles(songFile: File, songTitle: String): List<File> {
         val dir = songFile.absoluteFile.parentFile ?: return emptyList()
 
         if (!dir.exists() || !dir.isDirectory) return emptyList()
 
         val fileName = stripExtension(songFile.name)
         val eFileName = Regex.escape(fileName)
-        val eSongName = Regex.escape(song.title)
+        val eSongName = Regex.escape(songTitle)
 
         // vague pattern
         val vagueRegex =

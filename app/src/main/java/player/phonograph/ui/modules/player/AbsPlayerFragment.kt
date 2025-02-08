@@ -400,7 +400,7 @@ abstract class AbsPlayerFragment :
             withStarted { impl.updateCurrentSong(it) }
         }
         observe(viewModel.currentSong) {
-            lyricsViewModel.loadLyricsFor(requireContext(), it)
+            if (it != Song.EMPTY_SONG) lyricsViewModel.loadLyricsFor(requireContext(), it)
         }
         observe(CurrentQueueState.shuffleMode) {
             updateAdapter()
