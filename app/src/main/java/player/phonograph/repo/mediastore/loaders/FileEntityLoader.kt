@@ -25,12 +25,12 @@ object FileEntityLoader {
         currentLocation: Location,
         context: Context,
         scope: CoroutineScope?,
-    ): Set<FileEntity> {
+    ): List<FileEntity> {
         val fileCursor = querySongFiles(
             context,
             "${MediaStore.MediaColumns.DATA} LIKE ?",
             arrayOf("${currentLocation.absolutePath}%"),
-        ) ?: return emptySet()
+        ) ?: return emptyList()
         return fileCursor.use { cursor ->
             if (cursor.moveToFirst()) {
                 val list: MutableList<FileEntity> = ArrayList()
@@ -40,8 +40,8 @@ object FileEntityLoader {
                     list.put(item)
                 } while (cursor.moveToNext())
                 FileEntity.updateSortRef()
-                list.toSortedSet()
-            } else emptySet()
+                list.sorted()
+            } else emptyList()
         }
     }
 
@@ -68,10 +68,10 @@ object FileEntityLoader {
     fun listFilesLegacy(
         location: Location,
         scope: CoroutineScope?,
-    ): Set<FileEntity> {
-        val directory = File(location.absolutePath).also { if (!it.isDirectory) return emptySet() }
-        val files = directory.listFiles(FileScanner.audioFileFilter) ?: return emptySet()
-        val set = TreeSet<FileEntity>()
+    ): List<FileEntity> {
+        val directory = File(location.absolutePath).also { if (!it.isDirectory) return emptyList() }
+        val files = directory.listFiles(FileScanner.audioFileFilter) ?: return emptyList()
+        val result = ArrayList<FileEntity>()
         for (file in files) {
             val l = Location.fromAbsolutePath(file.absolutePath)
             if (scope?.isActive == false) break
@@ -98,8 +98,9 @@ object FileEntityLoader {
 
                     else             -> null
                 }
-            item?.let { set.add(it) }
+            item?.let { result.add(it) }
         }
-        return set
+        FileEntity.updateSortRef()
+        return result.sorted()
     }
 }

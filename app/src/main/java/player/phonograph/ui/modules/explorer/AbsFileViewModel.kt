@@ -49,7 +49,7 @@ sealed class AbsFileViewModel : ViewModel() {
         }
     }
 
-    private val _currentFiles: MutableStateFlow<Set<FileEntity>> = MutableStateFlow(emptySet())
+    private val _currentFiles: MutableStateFlow<List<FileEntity>> = MutableStateFlow(emptyList())
     val currentFiles = _currentFiles.asStateFlow()
 
     private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -63,5 +63,5 @@ sealed class AbsFileViewModel : ViewModel() {
         context: Context,
         location: Location,
         scope: CoroutineScope?,
-    ): Set<FileEntity>
+    ): List<FileEntity>
 }
