@@ -12,6 +12,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
 import org.koin.core.context.GlobalContext
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mechanism.IFavorite
 import player.phonograph.mechanism.event.MediaStoreTracker
@@ -173,9 +174,10 @@ abstract class AbsPlayerFragment :
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 itemId = R.id.action_toggle_favorite
                 onClick {
-                    lifecycleScope.launch(Dispatchers.IO) {
+                    val song = viewModel.currentSong.value
+                    if (song != null) lifecycleScope.launch(Dispatchers.IO) {
                         val favorite = GlobalContext.get().get<IFavorite>()
-                        favorite.toggleFavorite(context, viewModel.currentSong.value)
+                        favorite.toggleFavorite(context, song)
                     }
                     true
                 }
@@ -346,7 +348,7 @@ abstract class AbsPlayerFragment :
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
             lifecycleScope.launch(Dispatchers.Main) { updateAdapter() }
-            viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
+            viewModel.updateFavoriteState(context ?: App.instance, MusicPlayerRemote.currentSong)
         }
     }
 
@@ -396,17 +398,17 @@ abstract class AbsPlayerFragment :
             playingQueueAdapter.current = position
         }
         observe(CurrentQueueState.currentSong) {
-            viewModel.updateCurrentSong(it, context)
+            viewModel.updateCurrentSong(requireContext(), it)
             withStarted { impl.updateCurrentSong(it) }
         }
         observe(viewModel.currentSong) {
-            if (it != Song.EMPTY_SONG) lyricsViewModel.loadLyricsFor(requireContext(), it)
+            if (it != null) lyricsViewModel.loadLyricsFor(requireContext(), it)
         }
         observe(CurrentQueueState.shuffleMode) {
             updateAdapter()
         }
         observe(viewModel.favoriteState) {
-            if (it.first == viewModel.currentSong.value) {
+            if (it.first != null && it.first == viewModel.currentSong.value) {
                 val isFavorite = it.second
                 lifecycle.withStarted {
                     val res =
