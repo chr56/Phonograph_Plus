@@ -2,6 +2,30 @@
   "versions": [
     {
       "channel": "preview",
+      "versionName": "1.9.1-dev2",
+      "versionCode": 1090,
+      "date": 1739000000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.9.1-dev2"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.1-dev2/PhonographPlus_1.9.1-dev2_ModernPreviewRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.1-dev2/PhonographPlus_1.9.1-dev2_LegacyPreviewRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>改进 文件页加载速度</li><li>修复 排序导致的文件页部分文件不显示</li><li>修复 当前播放的歌曲发生改变且无歌词时，歌词对话框崩溃</li><li>翻译 更新 葡萄牙语 (azilara)</li></ol>",
+        "en": "<ol><li>Improve: performance of loading in Files tab</li><li>Fix: possibly some files are missing in Files tab due to sorting</li><li>Fix: crashes of Lyrics Dialog when current song changed but it has no lyrics</li><li>Translation: update Portuguese (by azilara)</li></ol>"
+      }
+    },
+    {
+      "channel": "preview",
       "versionName": "1.9.1-dev1",
       "versionCode": 1090,
       "date": 1738048000,
