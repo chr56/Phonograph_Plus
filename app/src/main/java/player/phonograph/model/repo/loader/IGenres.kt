@@ -18,4 +18,6 @@ interface IGenres : Endpoint {
 
     suspend fun songs(context: Context, genreId: Long): List<Song>
 
+    suspend fun searchByName(context: Context, query: String): List<Genre>
+
 }

@@ -41,6 +41,13 @@ object MediaStoreGenres : IGenres {
     override suspend fun songs(context: Context, genreId: Long): List<Song> =
         queryGenreSongs(context, genreId).intoSongs()
 
+    override suspend fun searchByName(context: Context, query: String): List<Genre> =
+        queryGenre(
+            context,
+            selection = "${Genres.NAME} LIKE ?",
+            selectionArgs = arrayOf("%$query%")
+        )?.intoGenres(context) ?: emptyList()
+
     private fun List<Genre>.sortAll(context: Context): List<Genre> =
         sortAll(Setting(context)[Keys.genreSortMode].data)
 
