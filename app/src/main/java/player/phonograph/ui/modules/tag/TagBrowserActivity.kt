@@ -106,13 +106,9 @@ class TagBrowserActivity :
     companion object {
 
         private const val PATH = "PATH"
-        private fun parseIntent(context: Context, intent: Intent): Song {
+        private fun parseIntent(context: Context, intent: Intent): Song? {
             val path = intent.extras?.getString(PATH)
-            return if (path != null) {
-                runBlocking { Songs.path(context, path) }
-            } else {
-                Song.EMPTY_SONG
-            }
+            return if (path != null) runBlocking { Songs.path(context, path) } else null
         }
 
         fun launch(context: Context, path: String) {
@@ -203,9 +199,10 @@ private fun RequestWebSearch(viewModel: TagBrowserViewModel, webSearchTool: WebS
     }
 
     fun onShowWikiDialog() {
+        val song = viewModel.song.value ?: return
         val fragmentManager = (context as? FragmentActivity)?.supportFragmentManager
         if (fragmentManager != null) {
-            LastFmDialog.from(viewModel.song.value).show(fragmentManager, "WEB_SEARCH_DIALOG")
+            LastFmDialog.from(song).show(fragmentManager, "WEB_SEARCH_DIALOG")
         }
     }
     RequestWebSearch(webSearchTool, ::search, ::onShowWikiDialog)

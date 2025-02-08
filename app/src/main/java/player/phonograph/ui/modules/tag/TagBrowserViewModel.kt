@@ -40,10 +40,10 @@ class TagBrowserViewModel : ViewModel() {
         _editable.update { editable }
     }
 
-    private val _song: MutableStateFlow<Song> = MutableStateFlow(Song.EMPTY_SONG)
+    private val _song: MutableStateFlow<Song?> = MutableStateFlow(null)
     val song get() = _song.asStateFlow()
-    fun updateSong(context: Context, song: Song) {
-        if (song != Song.EMPTY_SONG) {
+    fun updateSong(context: Context, song: Song?) {
+        if (song != null && song.data.isNotEmpty()) {
             _song.update { song }
             viewModelScope.launch(Dispatchers.IO) {
                 val info = loadSongInfo(context, song)
@@ -69,8 +69,8 @@ class TagBrowserViewModel : ViewModel() {
 
     fun saveArtwork(activity: Context) {
         val bitmap = songBitmap.value ?: return
-        val fileName = fileName(song.value)
-        saveArtwork(viewModelScope, activity, bitmap, fileName)
+        val song = song.value ?: return
+        saveArtwork(viewModelScope, activity, bitmap, fileName(song))
     }
 
 
@@ -170,7 +170,8 @@ class TagBrowserViewModel : ViewModel() {
     }
 
     internal fun save(context: Context) {
-        val songFile = File(song.value.data)
+        val song = song.value ?: return
+        val songFile = File(song.data)
         if (songFile.canWrite()) {
             mergeActions()
             applyEdit(
@@ -183,7 +184,7 @@ class TagBrowserViewModel : ViewModel() {
                 newCoverUri = null
             ) {
                 updateEditable(false)
-                updateSong(context, song.value)
+                updateSong(context, song)
                 _pendingEditRequests.clear()
             }
         } else {
