@@ -242,7 +242,7 @@ class PlayerController : ServiceComponent, Controller {
          * @return true if success
          */
         private fun prepareCurrentPlayer(song: Song): Boolean {
-            return if (song != Song.EMPTY_SONG) {
+            return if (song.data.isNotEmpty()) {
                 audioPlayer.setDataSource(mediaStoreUriSong(MEDIASTORE_VOLUME_EXTERNAL, song.id).toString())
             } else {
                 false
@@ -255,7 +255,7 @@ class PlayerController : ServiceComponent, Controller {
          */
         fun prepareNextPlayer(song: Song?) {
             if (audioPlayer.isInitialized) audioPlayer.setNextDataSource(
-                if (song != null && song != Song.EMPTY_SONG)
+                if (song != null && song.data.isNotEmpty())
                     mediaStoreUriSong(MEDIASTORE_VOLUME_EXTERNAL, song.id).toString()
                 else null
             )
