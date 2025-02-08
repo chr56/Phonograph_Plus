@@ -7,6 +7,7 @@ package player.phonograph.ui.modules.search
 import player.phonograph.databinding.RecyclerViewWrappedProperBinding
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
+import player.phonograph.model.Genre
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
@@ -20,6 +21,7 @@ import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
 import player.phonograph.ui.adapter.ArtistBasicDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
+import player.phonograph.ui.adapter.GenreBasicDisplayPresenter
 import player.phonograph.ui.adapter.PlaylistBasicDisplayPresenter
 import player.phonograph.ui.adapter.QueueSongBasicDisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
@@ -178,6 +180,28 @@ class PlaylistSearchResultPageFragment : SearchResultPageFragment<Playlist>() {
         override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
         override val usePalette: Boolean = false
         override val imageType: Int = DisplayPresenter.IMAGE_TYPE_FIXED_ICON
+    }
+}
+
+class GenreSearchResultPageFragment : SearchResultPageFragment<Genre>() {
+
+    @Suppress("UNCHECKED_CAST")
+    private val adapter: DisplayAdapter<Genre>? get() = actualAdapter as? DisplayAdapter<Genre>
+
+    override fun createAdapter(activity: AppCompatActivity) =
+        DisplayAdapter(activity, GenreSearchResultDisplayPresenter)
+
+
+    override fun targetFlow(): StateFlow<List<Genre>> = viewModel.genres
+
+    override fun updateDataset(newData: List<Genre>) {
+        adapter?.dataset = newData
+    }
+
+    object GenreSearchResultDisplayPresenter : GenreBasicDisplayPresenter(SortMode(SortRef.DISPLAY_NAME)) {
+        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
+        override val usePalette: Boolean = false
+        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_NONE
     }
 }
 

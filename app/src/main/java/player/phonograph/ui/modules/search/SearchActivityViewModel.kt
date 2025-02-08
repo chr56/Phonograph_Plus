@@ -7,11 +7,13 @@ package player.phonograph.ui.modules.search
 import org.koin.core.context.GlobalContext
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
+import player.phonograph.model.Genre
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Artists
+import player.phonograph.repo.loader.Genres
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.queue.QueueManager
@@ -41,6 +43,8 @@ class SearchActivityViewModel : ViewModel() {
     val albums get() = _albums.asStateFlow()
     private var _playlists: MutableStateFlow<List<Playlist>> = MutableStateFlow(emptyList())
     val playlists get() = _playlists.asStateFlow()
+    private var _genres: MutableStateFlow<List<Genre>> = MutableStateFlow(emptyList())
+    val genres get() = _genres.asStateFlow()
     private var _songsInQueue: MutableStateFlow<List<QueueSong>> = MutableStateFlow(emptyList())
     val songsInQueue get() = _songsInQueue.asStateFlow()
 
@@ -49,6 +53,7 @@ class SearchActivityViewModel : ViewModel() {
     private var jobArtists: Job? = null
     private var jobAlbums: Job? = null
     private var jobPlaylists: Job? = null
+    private var jobGenres: Job? = null
     private var jobSongsInQueue: Job? = null
 
     private fun search(context: Context, query: String) {
@@ -69,6 +74,10 @@ class SearchActivityViewModel : ViewModel() {
             jobPlaylists = viewModelScope.launch(Dispatchers.IO) {
                 _playlists.value = Playlists.searchByName(context, query)
             }
+            jobGenres?.cancel()
+            jobGenres = viewModelScope.launch(Dispatchers.IO) {
+                _genres.value = Genres.searchByName(context, query)
+            }
             jobSongsInQueue?.cancel()
             jobSongsInQueue = viewModelScope.launch(Dispatchers.IO) {
                 val queueManager: QueueManager = GlobalContext.get().get()
@@ -86,6 +95,7 @@ class SearchActivityViewModel : ViewModel() {
             _artists.value = emptyList()
             _albums.value = emptyList()
             _playlists.value = emptyList()
+            _genres.value = emptyList()
             _songsInQueue.value = emptyList()
         }
     }

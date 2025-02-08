@@ -7,28 +7,31 @@ package player.phonograph.ui.modules.search
 import player.phonograph.R
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
 class SearchResultPageAdapter(
-    searchActivity: SearchActivity,
-) : FragmentStateAdapter(searchActivity) {
+    activity: FragmentActivity,
+) : FragmentStateAdapter(activity) {
 
     enum class TabType(@param:StringRes val nameRes: Int) {
         SONG(R.string.label_songs),
         ALBUM(R.string.label_albums),
         ARTIST(R.string.label_artists),
         PLAYLIST(R.string.label_playlists),
+        GENRES(R.string.label_genres),
         QUEUE(R.string.label_playing_queue);
     }
 
-    override fun getItemCount(): Int = TabType.values().size
+    override fun getItemCount(): Int = TabType.entries.size
 
     override fun createFragment(position: Int): Fragment {
-        return when (TabType.values()[position]) {
+        return when (TabType.entries[position]) {
             TabType.SONG     -> SongSearchResultPageFragment()
             TabType.ALBUM    -> AlbumSearchResultPageFragment()
             TabType.ARTIST   -> ArtistSearchResultPageFragment()
             TabType.PLAYLIST -> PlaylistSearchResultPageFragment()
+            TabType.GENRES   -> GenreSearchResultPageFragment()
             TabType.QUEUE    -> QueueSearchResultPageFragment()
         }
     }
