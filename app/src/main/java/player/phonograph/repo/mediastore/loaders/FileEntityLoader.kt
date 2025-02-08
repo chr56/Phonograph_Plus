@@ -4,22 +4,26 @@
 
 package player.phonograph.repo.mediastore.loaders
 
+import player.phonograph.App
 import player.phonograph.mechanism.scanner.FileScanner
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
+import player.phonograph.model.sort.SortMode
+import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.mediastore.internal.querySongFiles
 import player.phonograph.repo.mediastore.internal.readFileEntity
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import android.content.Context
 import android.provider.MediaStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
 import java.io.File
-import java.util.TreeSet
 
 object FileEntityLoader {
 
     /**
-     * list files in [location] as format of FileEntity via MediaStore
+     * list files in [currentLocation] as format of FileEntity via MediaStore
      */
     fun listFilesMediaStore(
         currentLocation: Location,
@@ -39,8 +43,8 @@ object FileEntityLoader {
                     val item = readFileEntity(cursor, currentLocation)
                     list.put(item)
                 } while (cursor.moveToNext())
-                FileEntity.updateSortRef()
-                list.sorted()
+                val sortMode = Setting(App.instance).Composites[Keys.fileSortMode].data
+                list.sortedWith(FileEntityComparator(sortMode))
             } else emptyList()
         }
     }
@@ -100,7 +104,29 @@ object FileEntityLoader {
                 }
             item?.let { result.add(it) }
         }
-        FileEntity.updateSortRef()
-        return result.sorted()
+        val sortMode = Setting(App.instance).Composites[Keys.fileSortMode].data
+        return result.sortedWith(FileEntityComparator(sortMode))
+    }
+
+    private class FileEntityComparator(val currentSortRef: SortMode) : Comparator<FileEntity> {
+        override fun compare(a: FileEntity?, b: FileEntity?): Int {
+            if (a == null || b == null) return 0
+            return if ((a is FileEntity.Folder) xor (b is FileEntity.Folder)) {
+                if (a is FileEntity.Folder) -1 else 1
+            } else {
+                when (currentSortRef.sortRef) {
+                    SortRef.MODIFIED_DATE -> a.dateModified.compareTo(b.dateModified)
+                    SortRef.ADDED_DATE    -> a.dateAdded.compareTo(b.dateAdded)
+                    SortRef.SIZE          -> {
+                        if (a is FileEntity.File && b is FileEntity.File) a.size.compareTo(b.size)
+                        else a.name.compareTo(b.name)
+                    }
+
+                    else                  -> a.name.compareTo(b.name)
+                }.let {
+                    if (currentSortRef.revert) -it else it
+                }
+            }
+        }
     }
 }
