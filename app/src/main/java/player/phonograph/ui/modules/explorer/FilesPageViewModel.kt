@@ -42,7 +42,10 @@ class FilesPageViewModel : AbsFileViewModel() {
         val entities = currentFiles.value
         return coroutineScope {
             entities.flatMap {
-                Songs.searchByFileEntity(context, it)
+                when (it) {
+                    is FileEntity.File   -> listOf(Songs.id(context, it.id))
+                    is FileEntity.Folder -> Songs.searchByPath(context, it.location.absolutePath, false)
+                }
             }
         }
     }

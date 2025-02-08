@@ -178,9 +178,16 @@ object MultiSelectionToolbarMenuProviders {
             is Genre           -> Songs.genres(context, it.id)
             is Playlist        -> PlaylistProcessors.reader(it).allSongs(context)
             is SongCollection  -> it.songs
-            is FileEntity.File -> Songs.searchByFileEntity(context, it)
-            // is FileEntity.Folder -> TODO()
+            is FileEntity      -> convertFileEntityToSong(context, it)
             else               -> emptyList()
         }
+    }
+
+    private suspend fun convertFileEntityToSong(context: Context, fileEntity: FileEntity): List<Song> {
+        when (fileEntity) {
+            is FileEntity.File   -> Songs.id(context, fileEntity.id)
+            is FileEntity.Folder -> Songs.searchByPath(context, fileEntity.location.absolutePath, false)
+        }
+        return emptyList()
     }
 }

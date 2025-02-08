@@ -17,14 +17,7 @@ class FileEntityMapper : Mapper<FileEntity.File, SongImage> {
         val available =
             runCatching { File(data.location.absolutePath).exists() }.getOrElse { false } // if file is  available
         return if (available) {
-            runBlocking {
-                val entity = Songs.searchByFileEntity(options.context, data).firstOrNull()
-                if (entity != null) {
-                    SongImage.from(entity)
-                } else {
-                    null
-                }
-            }
+            runBlocking { SongImage.from(Songs.id(options.context, data.id)) }
         } else {
             null
         }

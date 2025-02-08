@@ -1,11 +1,10 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
 package player.phonograph.repo.mediastore
 
 import player.phonograph.model.Song
-import player.phonograph.model.file.FileEntity
 import player.phonograph.repo.loader.ISongs
 import player.phonograph.repo.mediastore.loaders.AlbumSongLoader
 import player.phonograph.repo.mediastore.loaders.ArtistSongLoader
@@ -35,9 +34,6 @@ object MediaStoreSongs : ISongs {
 
     override suspend fun searchByTitle(context: Context, title: String): List<Song> =
         SongLoader.searchByTitle(context, title)
-
-    override suspend fun searchByFileEntity(context: Context, file: FileEntity): List<Song> =
-        SongLoader.searchByFileEntity(context, file)
 
     override suspend fun since(context: Context, timestamp: Long, useModifiedDate: Boolean): List<Song> =
         SongLoader.since(context, timestamp, useModifiedDate)

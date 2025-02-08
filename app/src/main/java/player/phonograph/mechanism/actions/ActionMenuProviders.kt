@@ -227,7 +227,7 @@ object ActionMenuProviders {
                             onClick {
                                 fragmentActivity(context) {
                                     lifecycleScopeOrNewOne().launch {
-                                        Songs.searchByFileEntity(context, file).firstOrNull()?.actionGotoDetail(it)
+                                        Songs.id(context, file.id).actionGotoDetail(it)
                                     }
                                     true
                                 }
@@ -237,7 +237,7 @@ object ActionMenuProviders {
                             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                             onClick {
                                 lifecycleScopeOrNewOne().launch {
-                                    Songs.searchByFileEntity(context, file).firstOrNull()?.actionShare(context)
+                                    Songs.id(context, file.id).actionShare(context)
                                 }
                                 true
                             }
@@ -290,15 +290,12 @@ object ActionMenuProviders {
             crossinline block: (List<Song>) -> Boolean,
         ): Boolean =
             runBlocking {
-                when (fileItem) {
-                    is FileEntity.File   -> {
-                        block(Songs.searchByFileEntity(context, fileItem))
+                block(
+                    when (fileItem) {
+                        is FileEntity.File   -> listOf(Songs.id(context, fileItem.id))
+                        is FileEntity.Folder -> Songs.searchByPath(context, fileItem.location.sqlPattern, false)
                     }
-
-                    is FileEntity.Folder -> {
-                        block(Songs.searchByPath(context, fileItem.location.sqlPattern, false))
-                    }
-                }
+                )
             }
 
         private fun scan(context: Context, dir: FileEntity.Folder) {

@@ -1,11 +1,10 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
 package player.phonograph.repo.loader
 
 import player.phonograph.model.Song
-import player.phonograph.model.file.FileEntity
 import android.content.Context
 
 interface ISongs {
@@ -28,8 +27,6 @@ interface ISongs {
     suspend fun searchByPath(context: Context, path: String, withoutPathFilter: Boolean): List<Song>
 
     suspend fun searchByTitle(context: Context, title: String): List<Song>
-
-    suspend fun searchByFileEntity(context: Context, file: FileEntity): List<Song>
 
     suspend fun since(context: Context, timestamp: Long, useModifiedDate: Boolean = false): List<Song>
 
