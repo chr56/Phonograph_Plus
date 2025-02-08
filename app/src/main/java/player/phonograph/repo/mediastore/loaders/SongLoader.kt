@@ -42,8 +42,8 @@ object SongLoader : Loader<Song> {
         return cursor.intoSongs()
     }
 
-    suspend fun searchByFileEntity(context: Context, file: FileEntity.File): List<Song> {
-        return if (file.id > 0) listOf(id(context, file.id))
+    suspend fun searchByFileEntity(context: Context, file: FileEntity): List<Song> {
+        return if (file is FileEntity.File && file.id > 0) listOf(id(context, file.id))
         else searchByPath(context, file.location.sqlPattern, true)
     }
 

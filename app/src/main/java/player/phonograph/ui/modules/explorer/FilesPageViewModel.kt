@@ -41,21 +41,8 @@ class FilesPageViewModel : AbsFileViewModel() {
     suspend fun currentSongs(context: Context): List<Song> {
         val entities = currentFiles.value
         return coroutineScope {
-            val files = listFilesRecursively(context, entities, this)
-            files.flatMap { Songs.searchByFileEntity(context, it) }
-        }
-    }
-
-    private suspend fun listFilesRecursively(
-        context: Context,
-        fileEntities: Collection<FileEntity>,
-        scope: CoroutineScope?,
-    ): List<FileEntity.File> = fileEntities.flatMap { fileEntity ->
-        when (fileEntity) {
-            is FileEntity.File   -> listOf(fileEntity)
-            is FileEntity.Folder -> {
-                val subEntities = listFiles(context, fileEntity.location, scope)
-                listFilesRecursively(context, subEntities, scope)
+            entities.flatMap {
+                Songs.searchByFileEntity(context, it)
             }
         }
     }
