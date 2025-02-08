@@ -11,6 +11,8 @@ notes:
       - "Fix: possible crashes after switching back from background on some devices"
       - "Fix: lrc lyrics with same timestamp would be overridden with last one"
       - "Fix: crashes of Lyrics Dialog when current song changed but it has no lyrics"
+      - "Fix: possibly some files are missing in Files tab due to sorting"
+      - "Improve: performance of loading in Files tab"
       - "Translation: update French (by Vividly8487), Portuguese (by azilara)"
 
   zh:
@@ -21,6 +23,8 @@ notes:
       - "修复 部分设备上从后台切换回来后崩溃"
       - "修复 时间戳相同的多行 lrc 歌词将被最后一行覆盖"
       - "修复 当前播放的歌曲发生改变且无歌词时，歌词对话框崩溃"
+      - "修复 排序导致的文件页部分文件不显示"
+      - "改进 文件页加载速度"
       - "翻译 更新 法语 (Vividly8487), 葡萄牙语 (azilara)"
 
 previousVersion: "1.9.0"
