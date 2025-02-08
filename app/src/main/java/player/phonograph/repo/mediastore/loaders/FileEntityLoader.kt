@@ -39,6 +39,7 @@ object FileEntityLoader {
                     val item = readFileEntity(cursor, currentLocation)
                     list.put(item)
                 } while (cursor.moveToNext())
+                FileEntity.updateSortRef()
                 list.toSortedSet()
             } else emptySet()
         }

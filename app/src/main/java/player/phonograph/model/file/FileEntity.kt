@@ -5,6 +5,7 @@
 package player.phonograph.model.file
 
 import player.phonograph.App
+import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
@@ -19,12 +20,20 @@ sealed class FileEntity(
     val dateModified: Long = -1,
 ) : Comparable<FileEntity> {
 
+    companion object {
+        private var _currentSortRef: SortMode = SortMode(SortRef.DISPLAY_NAME)
+        val currentSortRef: SortMode get() = _currentSortRef
+        fun updateSortRef() {
+            val preference = Setting(App.instance).Composites[Keys.fileSortMode]
+            _currentSortRef = preference.data
+        }
+    }
+
     override fun compareTo(other: FileEntity): Int {
         return if ((this is Folder) xor (other is Folder)) {
             if (this is Folder) -1 else 1
         } else {
-            val preference = Setting(App.instance).Composites[Keys.fileSortMode]
-            when (preference.data.sortRef) {
+            when (currentSortRef.sortRef) {
                 SortRef.MODIFIED_DATE -> dateModified.compareTo(other.dateModified)
                 SortRef.ADDED_DATE    -> dateAdded.compareTo(other.dateAdded)
                 SortRef.SIZE          -> {
@@ -34,7 +43,7 @@ sealed class FileEntity(
 
                 else                  -> name.compareTo(other.name)
             }.let {
-                if (preference.data.revert) -it else it
+                if (currentSortRef.revert) -it else it
             }
         }
     }
