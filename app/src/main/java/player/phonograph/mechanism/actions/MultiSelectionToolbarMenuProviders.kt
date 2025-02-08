@@ -178,7 +178,7 @@ object MultiSelectionToolbarMenuProviders {
             is Genre           -> Songs.genres(context, it.id)
             is Playlist        -> PlaylistProcessors.reader(it).allSongs(context)
             is SongCollection  -> it.songs
-            is FileEntity.File -> listOf(Songs.searchByFileEntity(context, it))
+            is FileEntity.File -> listOf(Songs.searchByFileEntity(context, it)!!) // TODO
             // is FileEntity.Folder -> TODO()
             else               -> emptyList()
         }

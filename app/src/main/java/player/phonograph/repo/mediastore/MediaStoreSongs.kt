@@ -36,7 +36,7 @@ object MediaStoreSongs : ISongs {
     override suspend fun searchByTitle(context: Context, title: String): List<Song> =
         SongLoader.searchByTitle(context, title)
 
-    override suspend fun searchByFileEntity(context: Context, file: FileEntity.File): Song =
+    override suspend fun searchByFileEntity(context: Context, file: FileEntity.File): Song? =
         SongLoader.searchByFileEntity(context, file)
 
     override suspend fun since(context: Context, timestamp: Long, useModifiedDate: Boolean): List<Song> =

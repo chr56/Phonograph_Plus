@@ -29,7 +29,7 @@ interface ISongs {
 
     suspend fun searchByTitle(context: Context, title: String): List<Song>
 
-    suspend fun searchByFileEntity(context: Context, file: FileEntity.File): Song
+    suspend fun searchByFileEntity(context: Context, file: FileEntity.File): Song?
 
     suspend fun since(context: Context, timestamp: Long, useModifiedDate: Boolean = false): List<Song>
 

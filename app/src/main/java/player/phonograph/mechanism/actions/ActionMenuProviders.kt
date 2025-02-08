@@ -227,7 +227,7 @@ object ActionMenuProviders {
                             onClick {
                                 fragmentActivity(context) {
                                     lifecycleScopeOrNewOne().launch {
-                                        Songs.searchByFileEntity(context, file).actionGotoDetail(it)
+                                        Songs.searchByFileEntity(context, file)?.actionGotoDetail(it)
                                     }
                                     true
                                 }
@@ -237,7 +237,7 @@ object ActionMenuProviders {
                             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                             onClick {
                                 lifecycleScopeOrNewOne().launch {
-                                    Songs.searchByFileEntity(context, file).actionShare(context)
+                                    Songs.searchByFileEntity(context, file)?.actionShare(context)
                                 }
                                 true
                             }
@@ -290,12 +290,20 @@ object ActionMenuProviders {
             crossinline block: (List<Song>) -> Boolean,
         ): Boolean =
             runBlocking {
-                block(
-                    when (fileItem) {
-                        is FileEntity.File   -> listOf(Songs.searchByFileEntity(context, fileItem))
-                        is FileEntity.Folder -> Songs.searchByPath(context, fileItem.location.sqlPattern, false)
+                when (fileItem) {
+                    is FileEntity.File   -> {
+                        val entity = Songs.searchByFileEntity(context, fileItem)
+                        if (entity != null) {
+                            block(listOf(entity))
+                        } else {
+                            false
+                        }
                     }
-                )
+
+                    is FileEntity.Folder -> {
+                        block(Songs.searchByPath(context, fileItem.location.sqlPattern, false))
+                    }
+                }
             }
 
         private fun scan(context: Context, dir: FileEntity.Folder) {

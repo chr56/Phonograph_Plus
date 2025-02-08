@@ -42,7 +42,7 @@ class FilesPageViewModel : AbsFileViewModel() {
         val entities = currentFiles.value
         return coroutineScope {
             val files = listFilesRecursively(context, entities, this)
-            files.map { Songs.searchByFileEntity(context, it) }
+            files.mapNotNull { Songs.searchByFileEntity(context, it) }
         }
     }
 
