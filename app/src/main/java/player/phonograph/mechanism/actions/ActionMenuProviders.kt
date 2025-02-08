@@ -227,7 +227,7 @@ object ActionMenuProviders {
                             onClick {
                                 fragmentActivity(context) {
                                     lifecycleScopeOrNewOne().launch {
-                                        Songs.searchByFileEntity(context, file)?.actionGotoDetail(it)
+                                        Songs.searchByFileEntity(context, file).firstOrNull()?.actionGotoDetail(it)
                                     }
                                     true
                                 }
@@ -237,7 +237,7 @@ object ActionMenuProviders {
                             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                             onClick {
                                 lifecycleScopeOrNewOne().launch {
-                                    Songs.searchByFileEntity(context, file)?.actionShare(context)
+                                    Songs.searchByFileEntity(context, file).firstOrNull()?.actionShare(context)
                                 }
                                 true
                             }
@@ -292,12 +292,7 @@ object ActionMenuProviders {
             runBlocking {
                 when (fileItem) {
                     is FileEntity.File   -> {
-                        val entity = Songs.searchByFileEntity(context, fileItem)
-                        if (entity != null) {
-                            block(listOf(entity))
-                        } else {
-                            false
-                        }
+                        block(Songs.searchByFileEntity(context, fileItem))
                     }
 
                     is FileEntity.Folder -> {
