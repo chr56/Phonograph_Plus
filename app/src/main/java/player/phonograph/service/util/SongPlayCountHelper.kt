@@ -13,16 +13,14 @@ import java.util.Locale
  */
 class SongPlayCountHelper {
 
-    private val stopWatch = StopWatch()
-    var songMonitored = Song.EMPTY_SONG
+    private val stopWatch: StopWatch = StopWatch()
+    var songMonitored: Song? = null
         set(song) {
-            synchronized(field) {
+            synchronized(this) {
                 stopWatch.reset()
                 field = song
             }
         }
-
-    private fun shouldBumpPlayCount(): Boolean = songMonitored.duration * 0.5 < stopWatch.elapsedTime
 
     fun notifyPlayStateChanged(isPlaying: Boolean) {
         synchronized(this) {
@@ -35,8 +33,11 @@ class SongPlayCountHelper {
     }
 
     fun checkForBumpingPlayCount(songPlayCountStore: SongPlayCountStore) {
-        if (shouldBumpPlayCount()) {
-            songPlayCountStore.bumpPlayCount(songMonitored.id)
+        synchronized(this) {
+            val song = songMonitored
+            if (song != null && stopWatch.elapsedTime > song.duration * 0.5) {
+                songPlayCountStore.bumpPlayCount(song.id)
+            }
         }
     }
 
@@ -115,8 +116,6 @@ class SongPlayCountHelper {
                 }
             }
 
-        override fun toString(): String {
-            return String.format(Locale.getDefault(), "%d millis", elapsedTime)
-        }
+        override fun toString(): String = String.format(Locale.getDefault(), "%d millis", elapsedTime)
     }
 }
