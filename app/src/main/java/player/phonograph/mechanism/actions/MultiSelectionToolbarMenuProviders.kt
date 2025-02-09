@@ -20,6 +20,7 @@ import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.ui.modules.tag.TagBrowserActivity
+import player.phonograph.util.asList
 import player.phonograph.util.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.getTintedDrawable
 import android.content.Context
@@ -178,9 +179,15 @@ object MultiSelectionToolbarMenuProviders {
             is Genre           -> Songs.genres(context, it.id)
             is Playlist        -> PlaylistProcessors.reader(it).allSongs(context)
             is SongCollection  -> it.songs
-            is FileEntity.File -> listOf(Songs.searchByFileEntity(context, it))
-            // is FileEntity.Folder -> TODO()
+            is FileEntity      -> convertFileEntityToSong(context, it)
             else               -> emptyList()
+        }
+    }
+
+    private suspend fun convertFileEntityToSong(context: Context, fileEntity: FileEntity): List<Song> {
+        return when (fileEntity) {
+            is FileEntity.File   -> Songs.id(context, fileEntity.id).asList()
+            is FileEntity.Folder -> Songs.searchByPath(context, fileEntity.location.absolutePath, false)
         }
     }
 }
