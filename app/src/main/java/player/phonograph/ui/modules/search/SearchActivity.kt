@@ -53,6 +53,14 @@ import android.view.inputmethod.EditorInfo
 class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextListener,
                        ICreateFileStorageAccessible, IOpenFileStorageAccessible, IOpenDirStorageAccessible {
 
+    companion object {
+        private const val EXTRA_PAGE = "page"
+        fun launchingIntent(context: Context, page: String? = null): Intent =
+            Intent(context, SearchActivity::class.java).apply {
+                this.putExtra(EXTRA_PAGE, page)
+            }
+    }
+
     private var viewBinding: ActivitySearchBinding? = null
     val binding get() = viewBinding!!
 
@@ -132,6 +140,13 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
                     popup = SearchOptionsPopup(this@SearchActivity)
                 }
                 popup?.showAsDropDown(this)
+            }
+        }
+        with(binding.pager) {
+            val page = intent.getStringExtra(EXTRA_PAGE)
+            if (page != null) {
+                val target = searchResultPageAdapter.lookup(page)
+                setCurrentItem(target, false)
             }
         }
     }

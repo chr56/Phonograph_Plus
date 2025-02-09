@@ -5,6 +5,7 @@
 package player.phonograph.ui.modules.search
 
 import player.phonograph.R
+import player.phonograph.model.pages.Pages
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -35,5 +36,15 @@ class SearchResultPageAdapter(
             TabType.QUEUE    -> QueueSearchResultPageFragment()
         }
     }
+
+    fun lookup(name: String?): Int =
+        when (name) {
+            Pages.SONG     -> TabType.SONG.ordinal
+            Pages.ALBUM    -> TabType.ALBUM.ordinal
+            Pages.ARTIST   -> TabType.ARTIST.ordinal
+            Pages.PLAYLIST -> TabType.PLAYLIST.ordinal
+            Pages.GENRE    -> TabType.GENRES.ordinal
+            else           -> 0
+        }
 
 }
