@@ -1,0 +1,9 @@
+<b>1.9.1(1091) 2025.02.09</b>
+- Fix: random crashes from background
+- Fix: possible crashes after rebooting on some devices
+- Fix: possible crashes after switching back from background on some devices
+- Fix: lrc lyrics with same timestamp would be overridden with last one
+- Fix: crashes of Lyrics Dialog when current song changed but it has no lyrics
+- Fix: possibly some files are missing in Files tab
+- Improve: performance of load in Files tab
+...(Visit project homepage to see full changelogs)

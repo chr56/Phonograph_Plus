@@ -1,23 +1,33 @@
-version: "1.9.1-dev2"
-channel: "PREVIEW"
-versionCode: 1090
-timestamp: 1739000000
+version: "1.9.1"
+channel: "STABLE"
+versionCode: 1091
+timestamp: 1739088000
 notes:
   en:
     highlights: [ ]
     items:
-      - "Improve: performance of loading in Files tab"
-      - "Fix: possibly some files are missing in Files tab due to sorting"
+      - "Fix: random crashes from background"
+      - "Fix: possible crashes after rebooting on some devices"
+      - "Fix: possible crashes after switching back from background on some devices"
+      - "Fix: lrc lyrics with same timestamp would be overridden with last one"
       - "Fix: crashes of Lyrics Dialog when current song changed but it has no lyrics"
-      - "Translation: update Portuguese (by azilara)"
+      - "Fix: possibly some files are missing in Files tab due to sorting"
+      - "Improve: performance of loading in Files tab"
+      - "Translation: update French (by Vividly8487), Portuguese (by azilara)"
+      - "Development: update dependencies, cleanup codes"
 
   zh:
     highlights: [ ]
     items:
-      - "改进 文件页加载速度"
-      - "修复 排序导致的文件页部分文件不显示"
+      - "修复 后台随机崩溃"
+      - "修复 部分设备上重启后崩溃"
+      - "修复 部分设备上从后台切换回来后崩溃"
+      - "修复 时间戳相同的多行 lrc 歌词将被最后一行覆盖"
       - "修复 当前播放的歌曲发生改变且无歌词时，歌词对话框崩溃"
-      - "翻译 更新 葡萄牙语 (azilara)"
+      - "修复 排序导致的文件页部分文件不显示"
+      - "改进 文件页加载速度"
+      - "翻译 更新 法语 (Vividly8487), 葡萄牙语 (azilara)"
+      - "开发 更新依赖, 清理代码"
 
-previousVersion: "1.9.1-dev1"
-previousChannel: "PREVIEW"
+previousVersion: "1.9.0"
+previousChannel: "STABLE"
