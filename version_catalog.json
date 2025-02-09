@@ -1,6 +1,30 @@
 {
   "versions": [
     {
+      "channel": "stable",
+      "versionName": "1.9.1",
+      "versionCode": 1091,
+      "date": 1739088000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.9.1"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.9.1/PhonographPlus_1.9.1_ModernStableRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.9.1/PhonographPlus_1.9.1_LegacyStableRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 后台随机崩溃</li><li>修复 部分设备上重启后崩溃</li><li>修复 部分设备上从后台切换回来后崩溃</li><li>修复 时间戳相同的多行 lrc 歌词将被最后一行覆盖</li><li>修复 当前播放的歌曲发生改变且无歌词时，歌词对话框崩溃</li><li>修复 排序导致的文件页部分文件不显示</li><li>改进 文件页加载速度</li><li>翻译 更新 法语 (Vividly8487), 葡萄牙语 (azilara)</li><li>开发 更新依赖, 清理代码</li></ol>",
+        "en": "<ol><li>Fix: random crashes from background</li><li>Fix: possible crashes after rebooting on some devices</li><li>Fix: possible crashes after switching back from background on some devices</li><li>Fix: lrc lyrics with same timestamp would be overridden with last one</li><li>Fix: crashes of Lyrics Dialog when current song changed but it has no lyrics</li><li>Fix: possibly some files are missing in Files tab due to sorting</li><li>Improve: performance of loading in Files tab</li><li>Translation: update French (by Vividly8487), Portuguese (by azilara)</li><li>Development: update dependencies, cleanup codes</li></ol>"
+      }
+    },
+    {
       "channel": "preview",
       "versionName": "1.9.1-dev2",
       "versionCode": 1090,
@@ -22,30 +46,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>改进 文件页加载速度</li><li>修复 排序导致的文件页部分文件不显示</li><li>修复 当前播放的歌曲发生改变且无歌词时，歌词对话框崩溃</li><li>翻译 更新 葡萄牙语 (azilara)</li></ol>",
         "en": "<ol><li>Improve: performance of loading in Files tab</li><li>Fix: possibly some files are missing in Files tab due to sorting</li><li>Fix: crashes of Lyrics Dialog when current song changed but it has no lyrics</li><li>Translation: update Portuguese (by azilara)</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.9.1-dev1",
-      "versionCode": 1090,
-      "date": 1738048000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.9.1-dev1"
-        },
-        {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.1-dev1/PhonographPlus_1.9.1-dev1_ModernPreviewRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK(File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.1-dev1/PhonographPlus_1.9.1-dev1_LegacyPreviewRelease.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 后台随机崩溃</li><li>修复 部分设备上重启后崩溃</li><li>修复 部分设备上从后台切换回来后崩溃</li><li>修复 时间戳相同的多行 lrc 歌词将被最后一行覆盖</li><li>翻译 更新 法语 (Vividly8487)</li></ol>",
-        "en": "<ol><li>Fix: random crashes from background</li><li>Fix: possible crashes after rebooting on some devices</li><li>Fix: possible crashes after switching back from background on some devices</li><li>Fix: lrc lyrics with same timestamp would be overridden with last one</li><li>Translation: update French (by Vividly8487)</li></ol>"
       }
     },
     {
