@@ -16,7 +16,7 @@ object MediaStoreSongs : ISongs {
 
     override suspend fun all(context: Context): List<Song> = SongLoader.all(context)
 
-    override suspend fun id(context: Context, id: Long): Song = SongLoader.id(context, id)
+    override suspend fun id(context: Context, id: Long): Song? = SongLoader.id(context, id)
 
     override suspend fun path(context: Context, path: String): Song? = SongLoader.path(context, path)
 

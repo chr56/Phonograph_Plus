@@ -19,7 +19,7 @@ suspend fun checkEmbeddedIdOverflow(context: Context): Collection<Song> {
     val overflowed = ids.filter { isEmbeddingOverflow(it) }
 
     return if (overflowed.isNotEmpty()) {
-        overflowed.map { Songs.id(context, it) }
+        overflowed.mapNotNull { Songs.id(context, it) }
     } else {
         emptyList()
     }
@@ -32,7 +32,7 @@ suspend fun checkIdConflict(context: Context): Collection<Song> {
     val uniques = safeIds.toSet()
     if (uniques.size != ids.size) {
         val conflicted = ids - uniques
-        return conflicted.map { Songs.id(context, it) }
+        return conflicted.mapNotNull { Songs.id(context, it) }
     } else {
         return emptyList()
     }

@@ -231,7 +231,7 @@ object ClickActionProviders {
                 SONG_SINGLE_PLAY,
                                       -> {
                     val fileEntity = list[position] as? FileEntity.File ?: return false
-                    val song = Songs.id(context, fileEntity.id)
+                    val song = Songs.id(context, fileEntity.id) ?: return false
                     when (base) {
                         SONG_PLAY_NEXT    -> song.actionPlayNext()
                         SONG_PLAY_NOW     -> song.actionPlayNow()
@@ -277,7 +277,8 @@ object ClickActionProviders {
             val actualFileList = ArrayList<Song>(position)
             for ((index, item) in list.withIndex()) {
                 if (item is FileEntity.File) {
-                    actualFileList.add(Songs.id(context, item.id))
+                    val song = Songs.id(context, item.id) ?: continue
+                    actualFileList.add(song)
                 } else {
                     if (index < position) actualPosition--
                 }
