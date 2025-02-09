@@ -92,7 +92,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         drawAndPush(
             context = context,
             appWidgetIds = appWidgetIds,
-            song = song ?: queueManager.currentSong,
+            song = song,
             isPlaying = isPlaying,
             push = true,
             withCover = true
@@ -101,7 +101,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
     private fun drawAndPush(
         context: Context, appWidgetIds: IntArray?,
-        song: Song, isPlaying: Boolean,
+        song: Song?, isPlaying: Boolean,
         push: Boolean = true, withCover: Boolean = true,
     ): RemoteViews =
         buildRemoteViews(context, isPlaying, song).also { remoteViews ->
@@ -111,14 +111,14 @@ abstract class BaseAppWidget : AppWidgetProvider() {
                 remoteViews.setImageViewResource(R.id.image, R.drawable.default_album_art)
             }
             if (push) pushUpdate(context, appWidgetIds, remoteViews)
-            if (withCover) startUpdateCover(context, appWidgetIds, remoteViews, song, isPlaying)
+            if (withCover && song != null) startUpdateCover(context, appWidgetIds, remoteViews, song, isPlaying)
         }
 
 
     private fun buildRemoteViews(
         context: Context,
         isPlaying: Boolean,
-        song: Song,
+        song: Song?,
     ): RemoteViews = RemoteViews(context.packageName, layoutId).apply {
         updateSong(context, song, isPlaying)
         setupButtonsClick(context)
@@ -127,9 +127,9 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
     private fun RemoteViews.updateSong(
         context: Context,
-        song: Song, isPlaying: Boolean,
+        song: Song?, isPlaying: Boolean,
     ) {
-        updateText(context, this, song)
+        if (song != null) updateText(context, this, song)
         val color = context.primaryTextColor(darkBackground)
         bindDrawable(context, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
         bindDrawable(context, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)
