@@ -136,7 +136,10 @@ class MainFragment : Fragment() {
                 icon = getTintedDrawable(R.drawable.ic_search_white_24dp, primaryTextColor)
                 showAsActionFlag = SHOW_AS_ACTION_ALWAYS
                 onClick {
-                    startActivity(Intent(mainActivity, SearchActivity::class.java))
+                    val page = drawerViewModel.pages.value?.getOrNull(drawerViewModel.selectedPage.value)
+                    startActivity(
+                        SearchActivity.launchingIntent(mainActivity, page)
+                    )
                     true
                 }
             }
