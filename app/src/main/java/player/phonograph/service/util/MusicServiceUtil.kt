@@ -15,13 +15,13 @@ import android.content.Intent
 object MusicServiceUtil {
     private const val ANDROID_MUSIC_PACKAGE_NAME = "com.android.music"
     fun sendPublicIntent(service: MusicService, what: String) {
+        val queueManager: QueueManager = service.get()
+        val song: Song = queueManager.currentSong ?: return
         @Suppress("DEPRECATION")
         service.sendStickyBroadcast(
             Intent(
                 what.replace(ACTUAL_PACKAGE_NAME, ANDROID_MUSIC_PACKAGE_NAME)
             ).apply {
-                val queueManager: QueueManager = service.get()
-                val song: Song = queueManager.currentSong
                 putExtra("id", song.id)
                 putExtra("artist", song.artistName)
                 putExtra("album", song.albumName)

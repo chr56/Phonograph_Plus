@@ -46,7 +46,7 @@ object CurrentQueueState {
     private val _current: MutableStateFlow<Song?> = MutableStateFlow(null)
     val currentSong get() = _current.asStateFlow()
 
-    private fun refreshCurrentSong(song: Song) {
+    private fun refreshCurrentSong(song: Song?) {
         _current.update { song }
     }
 

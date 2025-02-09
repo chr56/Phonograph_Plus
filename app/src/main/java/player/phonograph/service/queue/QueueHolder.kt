@@ -67,12 +67,8 @@ class QueueHolder private constructor(
     }
 
 
-    fun getSongAt(position: Int): Song =
-        if (position >= 0 && position < playingQueue.size) {
-            playingQueue[position]
-        } else {
-            Song.EMPTY_SONG
-        }
+    fun getSongAt(position: Int): Song? =
+        if (position >= 0 && position < playingQueue.size) playingQueue[position] else null
 
     /**
      * synchronized
