@@ -107,8 +107,8 @@ class TagBrowserActivity :
 
         private const val PATH = "PATH"
         private fun parseIntent(context: Context, intent: Intent): Song? {
-            val path = intent.extras?.getString(PATH)
-            return if (path != null) runBlocking { Songs.path(context, path) } else null
+            val path = intent.extras?.getString(PATH) ?: return null
+            return runBlocking { Songs.path(context, path) }
         }
 
         fun launch(context: Context, path: String) {
