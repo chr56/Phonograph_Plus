@@ -229,4 +229,5 @@ fun shareFileIntent(context: Context, song: Song): Intent {
     }
 }
 
+fun Song?.asList(): List<Song> = if (this != null) listOf(this) else emptyList()
 
