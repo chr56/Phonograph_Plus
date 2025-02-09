@@ -397,9 +397,9 @@ abstract class AbsPlayerFragment :
         observe(CurrentQueueState.position) { position ->
             playingQueueAdapter.current = position
         }
-        observe(CurrentQueueState.currentSong) {
-            viewModel.updateCurrentSong(requireContext(), it)
-            withStarted { impl.updateCurrentSong(it) }
+        observe(CurrentQueueState.currentSong) { song ->
+            viewModel.updateCurrentSong(requireContext(), song)
+            if (song != null) withStarted { impl.updateCurrentSong(song) }
         }
         observe(viewModel.currentSong) {
             if (it != null) lyricsViewModel.loadLyricsFor(requireContext(), it)

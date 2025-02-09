@@ -78,7 +78,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 CurrentQueueState.currentSong.collect {
-                    replaceText(MusicPlayerRemote.currentSong.title)
+                    replaceText(if (it != null) it.title else getString(R.string.empty))
                 }
             }
         }
