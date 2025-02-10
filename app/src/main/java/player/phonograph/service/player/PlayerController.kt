@@ -726,11 +726,16 @@ class PlayerController : ServiceComponent, Controller {
          */
         private fun broadcastLyrics(): Boolean {
             if (playerController.playerState != PlayerState.PLAYING || playerController.broadcastSynchronizedLyrics) {
-                playerController.broadcastStopLyric()
+                post {
+                    playerController.broadcastStopLyric()
+                }
                 return false
+            } else {
+                post {
+                    playerController.lyricsUpdater.broadcast(playerController.songProgressMillis)
+                }
+                return true
             }
-            playerController.lyricsUpdater.broadcast(playerController.songProgressMillis)
-            return true
         }
 
         /**
