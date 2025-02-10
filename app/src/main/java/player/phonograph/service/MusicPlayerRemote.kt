@@ -271,8 +271,8 @@ object MusicPlayerRemote {
 
     fun getQueueDurationMillis(position: Int): Long = queueManager.getRestSongsDuration(position)
 
-    fun seekTo(millis: Int): Int {
-        return musicService?.seek(millis) ?: -1
+    fun seekTo(millis: Int) {
+        musicService?.seek(millis)
     }
 
     val repeatMode: RepeatMode

@@ -383,8 +383,8 @@ class PlayerController : ServiceComponent, Controller {
             get() = if (audioPlayer.isInitialized) audioPlayer.duration() else -1
 
 
-        override fun seekTo(position: Long): Int {
-            return audioPlayer.seek(position.toInt())
+        override fun seekTo(position: Long) {
+            audioPlayer.seek(position.toInt())
         }
 
         override fun rewindToBeginning() {
@@ -627,7 +627,7 @@ class PlayerController : ServiceComponent, Controller {
      * Move current time to [position]
      * @param position time in millisecond
      */
-    override fun seekTo(position: Long): Int = synchronized(impl) {
+    override fun seekTo(position: Long) = handler.request {
         impl.seekTo(position)
     }
 

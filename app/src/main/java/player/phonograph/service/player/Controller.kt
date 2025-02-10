@@ -69,7 +69,7 @@ interface Controller {
      * Move current time to [position]
      * @param position time in millisecond
      */
-    fun seekTo(position: Long): Int
+    fun seekTo(position: Long)
 
 
     /**

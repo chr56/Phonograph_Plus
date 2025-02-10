@@ -192,19 +192,6 @@ class MusicService : MediaBrowserServiceCompat() {
         }
     }
 
-    private fun fastForward(millis: Int = 10_000) = seekSafely(millis)
-
-    private fun fastRewind(millis: Int = 10_000) = seekSafely(-millis)
-
-    private fun seekSafely(offset: Int): Boolean {
-        val targetMilli = songProgressMillis + offset
-        return if (targetMilli in 0..songDurationMillis) {
-            seek(targetMilli) > 0
-        } else {
-            false
-        }
-    }
-
     private fun exitOrStop() {
         log("serviceUsedInForeground: $serviceUsedInForeground", false)
         if (serviceUsedInForeground > 0) {
@@ -283,15 +270,20 @@ class MusicService : MediaBrowserServiceCompat() {
     val songDurationMillis: Int get() = controller.songDurationMillis
     var speed: Float by controller::playerSpeed
 
-    fun seek(millis: Int): Int = synchronized(this) {
-        return try {
-            val newPosition = controller.seekTo(millis.toLong())
+    fun seek(targetMilli: Int): Boolean = try {
+        if (targetMilli in 0..controller.songDurationMillis) {
+            controller.seekTo(targetMilli.toLong())
             throttledTimer.notifySeek()
-            newPosition
-        } catch (e: Exception) {
-            -1
+            true
+        } else {
+            false
         }
+    } catch (e: Exception) {
+        false
     }
+
+    private fun fastForward(millis: Int = 10_000) = seek(millis)
+    private fun fastRewind(millis: Int = 10_000) = seek(-millis)
 
     val audioSessionId: Int get() = controller.audioSessionId
     val mediaSession get() = mediaSessionController.mediaSession
