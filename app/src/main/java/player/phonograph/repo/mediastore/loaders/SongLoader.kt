@@ -18,10 +18,10 @@ object SongLoader : Loader<Song> {
     override suspend fun all(context: Context): List<Song> =
         querySongs(context).intoSongs()
 
-    override suspend fun id(context: Context, id: Long): Song =
+    override suspend fun id(context: Context, id: Long): Song? =
         querySongs(context, "${MediaStore.Audio.AudioColumns._ID} =? ", arrayOf(id.toString())).intoFirstSong()
 
-    fun path(context: Context, path: String): Song =
+    fun path(context: Context, path: String): Song? =
         querySongs(context, "${MediaStore.Audio.AudioColumns.DATA} =? ", arrayOf(path)).intoFirstSong()
 
     /**

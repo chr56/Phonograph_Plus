@@ -68,7 +68,5 @@ data class Song(
     override fun defaultSortOrderReference(): String = title
 
     companion object {
-        @JvmField
-        val EMPTY_SONG = Song()
     }
 }

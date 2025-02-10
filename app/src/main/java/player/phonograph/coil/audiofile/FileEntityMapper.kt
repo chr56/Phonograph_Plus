@@ -16,10 +16,7 @@ class FileEntityMapper : Mapper<FileEntity.File, SongImage> {
     override fun map(data: FileEntity.File, options: Options): SongImage? {
         val available =
             runCatching { File(data.location.absolutePath).exists() }.getOrElse { false } // if file is  available
-        return if (available) {
-            runBlocking { SongImage.from(Songs.id(options.context, data.id)) }
-        } else {
-            null
-        }
+        val song = runBlocking { Songs.id(options.context, data.id) } ?: return null
+        return if (available) SongImage.from(song) else null
     }
 }

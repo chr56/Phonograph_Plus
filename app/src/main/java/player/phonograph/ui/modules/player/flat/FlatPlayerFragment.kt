@@ -231,8 +231,10 @@ class FlatPlayerFragment : AbsPlayerFragment() {
                     }
                 }
                 menu.setOnClickListener {
-                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = MusicPlayerRemote.position)
-                        .prepareMenu(it, MusicPlayerRemote.currentSong)
+                    val song: Song? = MusicPlayerRemote.currentSong
+                    if (song != null)
+                        ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = MusicPlayerRemote.position)
+                            .prepareMenu(it, song)
                 }
             }
         }

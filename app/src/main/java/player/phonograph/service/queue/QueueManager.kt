@@ -132,9 +132,9 @@ class QueueManager(val context: Application) {
             return if (result >= playingQueue.size) -1 else result
         }
 
-    val currentSong: Song get() = queueHolder.getSongAt(currentSongPosition)
-    val previousSong: Song get() = queueHolder.getSongAt(previousSongPosition)
-    val nextSong: Song get() = queueHolder.getSongAt(nextSongPosition)
+    val currentSong: Song? get() = queueHolder.getSongAt(currentSongPosition)
+    val previousSong: Song? get() = queueHolder.getSongAt(previousSongPosition)
+    val nextSong: Song? get() = queueHolder.getSongAt(nextSongPosition)
 
     fun modifyPosition(
         newPosition: Int,

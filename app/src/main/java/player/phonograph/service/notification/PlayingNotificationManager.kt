@@ -132,8 +132,8 @@ class PlayingNotificationManager : ServiceComponent {
     private var lastSong: Song? = null
     private var lastServiceStatus: ServiceStatus? = null
 
-    fun updateNotification(song: Song, status: ServiceStatus) {
-        if (song.id != -1L) {
+    fun updateNotification(song: Song?, status: ServiceStatus) {
+        if (song != null) {
             if (song != lastSong || status != lastServiceStatus) {
                 // Only update notification for actual changes
                 lastSong = song

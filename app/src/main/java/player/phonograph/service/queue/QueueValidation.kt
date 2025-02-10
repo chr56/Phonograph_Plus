@@ -19,8 +19,7 @@ fun validSongs(context: Context, songs: List<Song>): List<Song> {
 }
 
 private suspend fun findSong(context: Context, song: Song): Song? =
-    Songs.id(context, song.id).takeIf { Song.EMPTY_SONG != it }
-        ?: Songs.path(context, song.data).takeIf { Song.EMPTY_SONG != it }
+    Songs.id(context, song.id) ?: Songs.path(context, song.data)
 
 private fun markDeleted(context: Context, song: Song): Song {
     val prefix = "[${context.getString(R.string.deleted)}]"

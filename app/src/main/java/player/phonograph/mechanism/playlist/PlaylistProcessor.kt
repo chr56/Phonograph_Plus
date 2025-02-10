@@ -135,8 +135,10 @@ private data object FavoriteSongsPlaylistProcessor : PlaylistReader, PlaylistWri
     override suspend fun allSongs(context: Context): List<Song> =
         favorite.allSongs(context)
 
-    override suspend fun containsSong(context: Context, songId: Long): Boolean =
-        favorite.isFavorite(context, Songs.id(context, songId))
+    override suspend fun containsSong(context: Context, songId: Long): Boolean {
+        val song = Songs.id(context, songId) ?: return false
+        return favorite.isFavorite(context, song)
+    }
 
     override suspend fun removeSong(context: Context, song: Song, index: Long): Boolean =
         favorite.toggleFavorite(context, song)

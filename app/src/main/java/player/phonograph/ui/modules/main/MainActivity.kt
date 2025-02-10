@@ -18,6 +18,7 @@ import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.mechanism.Update
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.PageConfig
+import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.model.version.ReleaseChannel
 import player.phonograph.model.version.VersionCatalog
@@ -199,13 +200,11 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
     private fun updateNavigationDrawerHeader() {
         if (MusicPlayerRemote.playingQueue.isNotEmpty()) {
-            val song = MusicPlayerRemote.currentSong
+            val song: Song? = MusicPlayerRemote.currentSong
 
             if (navigationDrawerHeader == null) {
                 navigationDrawerHeader =
-                    drawerBinding.navigationView.inflateHeaderView(
-                        R.layout.navigation_drawer_header
-                    )
+                    drawerBinding.navigationView.inflateHeaderView(R.layout.navigation_drawer_header)
                 (navigationDrawerHeader as View).setOnClickListener {
                     drawerBinding.drawerLayout.closeDrawers()
                     if (panelState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
@@ -214,16 +213,19 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 }
             }
 
-            (navigationDrawerHeader!!.findViewById<View>(R.id.title) as TextView).text = song.title
-            (navigationDrawerHeader!!.findViewById<View>(R.id.text) as TextView).text =
-                song.infoString()
-            val image = navigationDrawerHeader!!.findViewById<ImageView>(R.id.image)
-            loadImage(this) {
-                data(song)
-                target(
-                    onStart = { image.setImageResource(R.drawable.default_album_art) },
-                    onSuccess = { image.setImageDrawable(it) }
-                )
+
+            val navigationDrawerHeader = navigationDrawerHeader
+            if (navigationDrawerHeader != null && song != null) {
+                (navigationDrawerHeader.findViewById<View>(R.id.title) as TextView).text = song.title
+                (navigationDrawerHeader.findViewById<View>(R.id.text) as TextView).text = song.infoString()
+                val image = navigationDrawerHeader.findViewById<ImageView>(R.id.image)
+                loadImage(this) {
+                    data(song)
+                    target(
+                        onStart = { image.setImageResource(R.drawable.default_album_art) },
+                        onSuccess = { image.setImageDrawable(it) }
+                    )
+                }
             }
         } else {
             if (navigationDrawerHeader != null) {

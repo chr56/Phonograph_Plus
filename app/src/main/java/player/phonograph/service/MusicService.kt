@@ -219,8 +219,10 @@ class MusicService : MediaBrowserServiceCompat() {
         }
     }
 
-    private fun toggleFavorite(song: Song) = runBlocking {
-        GlobalContext.get().inject<IFavorite>().value.toggleFavorite(this@MusicService, song)
+
+    private fun toggleFavorite(song: Song?): Boolean {
+        val favoritesStore = GlobalContext.get().inject<IFavorite>()
+        return if (song != null) runBlocking { favoritesStore.value.toggleFavorite(this@MusicService, song) } else false
     }
 
 
@@ -340,16 +342,19 @@ class MusicService : MediaBrowserServiceCompat() {
                 updateNotificationAndMediaSession()
                 AppWidgetUpdateReceiver.notifyWidgets(this, isPlaying)
 
-                // save state
-                queueManager.post(MSG_SAVE_CFG)
-                controller.saveCurrentMills()
+                val currentSong = queueManager.currentSong
+                if (currentSong != null) {
+                    // save state
+                    queueManager.post(MSG_SAVE_CFG)
+                    controller.saveCurrentMills()
 
-                // add to history
-                get<HistoryStore>().addSongId(queueManager.currentSong.id)
+                    // add to history
+                    get<HistoryStore>().addSongId(currentSong.id)
 
-                // check for bumping
-                songPlayCountHelper.checkForBumpingPlayCount(get()) // old
-                songPlayCountHelper.songMonitored = queueManager.currentSong // new
+                    // check for bumping
+                    songPlayCountHelper.checkForBumpingPlayCount(get()) // old
+                    songPlayCountHelper.songMonitored = queueManager.currentSong // new
+                }
             }
 
             QUEUE_CHANGED                             -> {

@@ -123,7 +123,7 @@ class PlayerAlbumCoverFragment :
         }
     }
 
-    private var lastFavoriteState: Pair<Song, Boolean> = Song.EMPTY_SONG to false
+    private var lastFavoriteState: Pair<Song?, Boolean> = null to false
 
     @MainThread
     private suspend fun resetLyricsLayout() {
@@ -211,7 +211,7 @@ class PlayerAlbumCoverFragment :
     }
 
     private fun updateCurrentPaletteColor(song: Song?) {
-        if (song != null && song != Song.EMPTY_SONG) {
+        if (song != null && song.data.isNotEmpty()) {
             playerViewModel.refreshPaletteColor(requireContext(), song)
         } else {
             playerViewModel.refreshPaletteColor(themeFooterColor(requireContext()))

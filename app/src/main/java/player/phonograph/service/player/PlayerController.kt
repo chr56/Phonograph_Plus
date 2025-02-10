@@ -31,6 +31,7 @@ import android.os.PowerManager
 import android.os.PowerManager.WakeLock
 import android.util.Log
 import android.widget.Toast
+import kotlin.math.abs
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.File
@@ -227,8 +228,9 @@ class PlayerController : ServiceComponent, Controller {
 
 
         private fun restore(musicService: MusicService) {
+            val currentSong = queueManager.currentSong ?: return
             handler.post {
-                if (prepareCurrentPlayer(queueManager.currentSong)) {
+                if (prepareCurrentPlayer(currentSong)) {
                     val restored = QueuePreferenceManager(musicService).currentMillisecond
                     if (restored > 0) seekTo(restored.toLong())
                 }
@@ -241,8 +243,8 @@ class PlayerController : ServiceComponent, Controller {
          * @param song what to play now
          * @return true if success
          */
-        private fun prepareCurrentPlayer(song: Song): Boolean {
-            return if (song != Song.EMPTY_SONG) {
+        private fun prepareCurrentPlayer(song: Song?): Boolean {
+            return if (song != null && song.data.isNotEmpty()) {
                 audioPlayer.setDataSource(mediaStoreUriSong(MEDIASTORE_VOLUME_EXTERNAL, song.id).toString())
             } else {
                 false
@@ -255,7 +257,7 @@ class PlayerController : ServiceComponent, Controller {
          */
         fun prepareNextPlayer(song: Song?) {
             if (audioPlayer.isInitialized) audioPlayer.setNextDataSource(
-                if (song != null && song != Song.EMPTY_SONG)
+                if (song != null && song.data.isNotEmpty())
                     mediaStoreUriSong(MEDIASTORE_VOLUME_EXTERNAL, song.id).toString()
                 else null
             )
@@ -290,9 +292,12 @@ class PlayerController : ServiceComponent, Controller {
             if (prepareSongs(position)) {
                 play()
             } else {
-                controller.handler.post { checkFile(queueManager.currentSong.data) }
-                if (queueManager.repeatMode != RepeatMode.REPEAT_SINGLE_SONG) {
-                    jumpForward(false)
+                val currentSong = queueManager.currentSong
+                if (currentSong != null) {
+                    controller.handler.post { checkFile(currentSong.data) }
+                    if (queueManager.repeatMode != RepeatMode.REPEAT_SINGLE_SONG) {
+                        jumpForward(false)
+                    }
                 }
             }
             log("playAtImp", dumpState(position))
@@ -313,7 +318,7 @@ class PlayerController : ServiceComponent, Controller {
                                 controller.playerState = PlayerState.PLAYING
                                 pauseReason = PauseReason.NOT_PAUSED
                                 controller.acquireWakeLock(
-                                    queueManager.currentSong.duration - audioPlayer.position() + 1000L
+                                    abs(songDurationMillis - songProgressMillis) + 1500L
                                 )
                                 handler.removeMessages(ControllerHandler.DUCK)
                                 handler.sendEmptyMessage(ControllerHandler.UNDUCK)
@@ -487,7 +492,7 @@ class PlayerController : ServiceComponent, Controller {
         }
 
         private fun dumpState(position: Int): String =
-            "<@$position> current:${queueManager.currentSong.title}, next:${queueManager.nextSong.title}, state: ${controller.playerState}"
+            "<@$position> current:${queueManager.currentSong?.title}, next:${queueManager.nextSong?.title}, state: ${controller.playerState}"
 
         private fun checkFile(path: String) {
             val exists = try {

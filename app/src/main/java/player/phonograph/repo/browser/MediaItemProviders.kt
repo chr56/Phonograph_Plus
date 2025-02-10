@@ -304,8 +304,10 @@ object MediaItemProviders {
     }
 
     private class SongProvider(val songId: Long) : AbsMediaItemProvider() {
-        override suspend fun play(context: Context): PlayRequest =
-            PlayRequest.SongRequest(Songs.id(context, songId))
+        override suspend fun play(context: Context): PlayRequest {
+            val song = Songs.id(context, songId)
+            return if (song != null) PlayRequest.SongRequest(song) else PlayRequest.EmptyRequest
+        }
     }
 
     private object AlbumsProvider : AbsMediaItemProvider() {

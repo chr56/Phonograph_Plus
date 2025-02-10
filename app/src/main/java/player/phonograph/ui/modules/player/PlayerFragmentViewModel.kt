@@ -31,26 +31,26 @@ import kotlinx.coroutines.launch
 
 class PlayerFragmentViewModel : ViewModel() {
 
-    private val _currentSong: MutableStateFlow<Song> = MutableStateFlow(Song.EMPTY_SONG)
+    private val _currentSong: MutableStateFlow<Song?> = MutableStateFlow(null)
     val currentSong get() = _currentSong.asStateFlow()
 
-    fun updateCurrentSong(song: Song, context: Context?) {
+    fun updateCurrentSong(context: Context, song: Song?) {
         viewModelScope.launch {
             _currentSong.emit(song)
-            updateFavoriteState(song, context)
+            updateFavoriteState(context, song)
         }
     }
 
-    private var _favoriteState: MutableStateFlow<Pair<Song, Boolean>> =
-        MutableStateFlow(Song.EMPTY_SONG to false)
+    private var _favoriteState: MutableStateFlow<Pair<Song?, Boolean>> = MutableStateFlow(null to false)
     val favoriteState get() = _favoriteState.asStateFlow()
 
     private var loadFavoriteStateJob: Job? = null
-    fun updateFavoriteState(song: Song, context: Context?) {
+    fun updateFavoriteState(context: Context, song: Song?) {
         loadFavoriteStateJob?.cancel()
-        loadFavoriteStateJob = viewModelScope.launch {
-            if (song == Song.EMPTY_SONG) return@launch
-            _favoriteState.emit(song to favorite.isFavorite(context ?: App.instance, song))
+        if (song != null && song.id > 0) {
+            loadFavoriteStateJob = viewModelScope.launch {
+                _favoriteState.emit(song to favorite.isFavorite(context, song))
+            }
         }
     }
 

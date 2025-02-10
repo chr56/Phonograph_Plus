@@ -14,15 +14,10 @@ import android.database.Cursor
 /**
  * consume cursor (read & close) and convert into a song that at top of cursor
  */
-fun Cursor?.intoFirstSong(): Song {
-    return this?.use {
-        if (moveToFirst()) {
-            readSong(this)
-        } else {
-            Song.EMPTY_SONG
-        }
-    } ?: Song.EMPTY_SONG
-}
+fun Cursor?.intoFirstSong(): Song? =
+    this?.use {
+        if (moveToFirst()) readSong(this) else null
+    }
 
 /**
  * consume cursor (read & close) and convert into song list

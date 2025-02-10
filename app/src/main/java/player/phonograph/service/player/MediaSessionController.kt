@@ -6,7 +6,6 @@ package player.phonograph.service.player
 
 import coil.request.Disposable
 import player.phonograph.ACTUAL_PACKAGE_NAME
-import player.phonograph.BuildConfig
 import player.phonograph.mechanism.setting.NotificationAction
 import player.phonograph.mechanism.setting.NotificationActionsConfig
 import player.phonograph.mechanism.setting.NotificationConfig
@@ -256,8 +255,8 @@ class MediaSessionController : ServiceComponent {
     private var disposable: Disposable? = null
     private var cachedBitmap: Bitmap? = null
     private var cachedSong: Song? = null
-    fun updateMetaData(song: Song, pos: Long, total: Long, loadCover: Boolean) {
-        if (song.id == -1L) {
+    fun updateMetaData(song: Song?, pos: Long, total: Long, loadCover: Boolean) {
+        if (song == null) {
             mediaSession.setMetadata(null)
         } else {
 

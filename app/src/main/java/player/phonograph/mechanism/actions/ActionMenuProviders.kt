@@ -20,6 +20,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.tag.TagBrowserActivity
+import player.phonograph.util.asList
 import player.phonograph.util.fragmentActivity
 import player.phonograph.util.lifecycleScopeOrNewOne
 import android.content.Context
@@ -227,7 +228,7 @@ object ActionMenuProviders {
                             onClick {
                                 fragmentActivity(context) {
                                     lifecycleScopeOrNewOne().launch {
-                                        Songs.id(context, file.id).actionGotoDetail(it)
+                                        Songs.id(context, file.id)?.actionGotoDetail(it)
                                     }
                                     true
                                 }
@@ -237,7 +238,7 @@ object ActionMenuProviders {
                             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                             onClick {
                                 lifecycleScopeOrNewOne().launch {
-                                    Songs.id(context, file.id).actionShare(context)
+                                    Songs.id(context, file.id)?.actionShare(context)
                                 }
                                 true
                             }
@@ -292,7 +293,7 @@ object ActionMenuProviders {
             runBlocking {
                 block(
                     when (fileItem) {
-                        is FileEntity.File   -> listOf(Songs.id(context, fileItem.id))
+                        is FileEntity.File   -> Songs.id(context, fileItem.id).asList()
                         is FileEntity.Folder -> Songs.searchByPath(context, fileItem.location.sqlPattern, false)
                     }
                 )

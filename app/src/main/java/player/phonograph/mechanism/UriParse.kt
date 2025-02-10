@@ -7,6 +7,7 @@ package player.phonograph.mechanism
 import lib.storage.documentProviderUriAbsolutePath
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
+import player.phonograph.util.asList
 import player.phonograph.util.reportError
 import androidx.core.provider.DocumentsContractCompat
 import android.content.ContentResolver
@@ -34,11 +35,7 @@ private object MediaProviderUriParser : IUriParser<Song> {
 
     override suspend fun parse(context: Context, uri: Uri): Collection<Song> {
         val songId = DocumentsContractCompat.getDocumentId(uri)!!.split(":")[1].toLongOrNull()
-        return if (songId != null) {
-            listOf(Songs.id(context, songId))
-        } else {
-            emptyList()
-        }
+        return if (songId != null) Songs.id(context, songId).asList() else emptyList()
     }
 }
 
@@ -49,11 +46,7 @@ private object MediaUriParser : IUriParser<Song> {
 
     override suspend fun parse(context: Context, uri: Uri): Collection<Song> {
         val songId = uri.lastPathSegment?.toLongOrNull()
-        return if (songId != null) {
-            listOf(Songs.id(context, songId))
-        } else {
-            emptyList()
-        }
+        return if (songId != null) Songs.id(context, songId).asList() else emptyList()
     }
 }
 

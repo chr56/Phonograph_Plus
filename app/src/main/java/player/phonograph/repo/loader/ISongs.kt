@@ -11,9 +11,9 @@ interface ISongs {
 
     suspend fun all(context: Context): List<Song>
 
-    suspend fun id(context: Context, id: Long): Song
+    suspend fun id(context: Context, id: Long): Song?
 
-    suspend fun path(context: Context, path: String): Song
+    suspend fun path(context: Context, path: String): Song?
 
     suspend fun artist(context: Context, artistId: Long): List<Song>
 

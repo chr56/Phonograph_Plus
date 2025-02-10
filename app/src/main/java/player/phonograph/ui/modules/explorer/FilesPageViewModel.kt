@@ -12,6 +12,7 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.loaders.FileEntityLoader
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.util.asList
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
@@ -43,7 +44,7 @@ class FilesPageViewModel : AbsFileViewModel() {
         return coroutineScope {
             entities.flatMap {
                 when (it) {
-                    is FileEntity.File   -> listOf(Songs.id(context, it.id))
+                    is FileEntity.File   -> Songs.id(context, it.id).asList()
                     is FileEntity.Folder -> Songs.searchByPath(context, it.location.absolutePath, false)
                 }
             }

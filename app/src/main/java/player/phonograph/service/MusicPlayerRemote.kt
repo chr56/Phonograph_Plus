@@ -249,9 +249,9 @@ object MusicPlayerRemote {
         return true
     }
 
-    val currentSong: Song get() = queueManager.currentSong
-    val previousSong: Song get() = queueManager.previousSong
-    val nextSong: Song get() = queueManager.nextSong
+    val currentSong: Song? get() = queueManager.currentSong
+    val previousSong: Song? get() = queueManager.previousSong
+    val nextSong: Song? get() = queueManager.nextSong
 
     /**
      * Async

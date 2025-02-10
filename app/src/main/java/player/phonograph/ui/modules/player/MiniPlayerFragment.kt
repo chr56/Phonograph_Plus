@@ -3,6 +3,7 @@ package player.phonograph.ui.modules.player
 import player.phonograph.R
 import player.phonograph.databinding.FragmentMiniPlayerBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
+import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
@@ -78,14 +79,16 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 CurrentQueueState.currentSong.collect {
-                    replaceText(MusicPlayerRemote.currentSong.title)
+                    replaceText(if (it != null) it.title else getString(R.string.empty))
                 }
             }
         }
     }
 
     override fun onServiceConnected() {
-        replaceText(MusicPlayerRemote.currentSong.title)
+        val context = requireContext()
+        val currentSong: Song? = MusicPlayerRemote.currentSong
+        replaceText(currentSong?.title ?: context.getString(R.string.empty))
         replaceDrawable(miniPlayerPlayPauseDrawable)
         updatePlayPauseDrawableState(false)
     }
