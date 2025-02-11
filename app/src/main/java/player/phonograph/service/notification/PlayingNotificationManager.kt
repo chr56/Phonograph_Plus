@@ -112,6 +112,7 @@ class PlayingNotificationManager : ServiceComponent {
     }
 
     override fun onDestroy(musicService: MusicService) {
+        request?.dispose()
         removeNotification()
         created = false
         implementation = null
