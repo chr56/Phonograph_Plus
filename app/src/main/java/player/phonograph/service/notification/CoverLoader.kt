@@ -84,7 +84,6 @@ class CoverLoader(private val context: Context) {
     }
 
     fun terminate() {
-        loader.shutdown()
         cache.evictAll()
     }
 }
