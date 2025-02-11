@@ -94,6 +94,7 @@ class MediaSessionController : ServiceComponent {
 
     override fun onDestroy(musicService: MusicService) {
         created = false
+        disposable?.dispose()
         mediaSession.release()
         _mediaSession = null
         _service = null
