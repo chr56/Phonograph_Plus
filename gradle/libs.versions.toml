@@ -35,7 +35,7 @@ compose = "1.7.7"
 
 
 #### Popular Start
-ktxc = "1.9.0"
+ktxc = "1.10.1"
 ktxs-json = "1.7.3"
 ktxs-ktoml = "0.5.0"
 ktxs-kaml = "0.62.2"
