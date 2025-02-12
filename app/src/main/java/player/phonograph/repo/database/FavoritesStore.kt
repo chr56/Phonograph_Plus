@@ -14,6 +14,7 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.DatabaseConstants.FAVORITE_DB
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
+import player.phonograph.util.debug
 import player.phonograph.util.text.currentTimestamp
 import player.phonograph.util.warning
 import android.content.ContentValues
@@ -225,6 +226,34 @@ class FavoritesStore constructor(context: Context) :
             database.endTransaction()
             mediaStoreTracker.notifyAllListeners()
         }
+    }
+
+    suspend fun cleanMissingSongs(context: Context): Boolean {
+        val paths: List<Pair<Long, String>> =
+            query(TABLE_NAME_SONGS).use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val paths = mutableListOf<Pair<Long, String>>()
+                    do {
+                        try {
+                            val id = cursor.getString(0).toLong()
+                            val path = cursor.getString(1)
+                            if (Songs.path(context, path) == null) {
+                                paths.add(id to path)
+                            } else if (Songs.id(context, id) == null) {
+                                paths.add(id to path)
+                            }
+                        } catch (_: Exception) {
+                        }
+                    } while (cursor.moveToNext())
+                    paths
+                } else {
+                    emptyList()
+                }
+            }
+        for ((id, path) in paths) {
+            removeImpl(TABLE_NAME_SONGS, id, path)
+        }
+        return paths.isNotEmpty()
     }
 
     private val mediaStoreTracker: MediaStoreTracker by GlobalContext.get().inject()
