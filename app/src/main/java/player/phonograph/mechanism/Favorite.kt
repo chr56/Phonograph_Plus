@@ -32,6 +32,14 @@ interface IFavorite {
      */
     suspend fun toggleFavorite(context: Context, song: Song): Boolean
 
+    /**
+     * clean missed (deleted) songs
+     */
+    suspend fun cleanMissed(context: Context): Boolean
+
+    /**
+     * clear all
+     */
     suspend fun clearAll(context: Context): Boolean
 
 }
@@ -52,6 +60,10 @@ class FavoriteDatabaseImpl : IFavorite {
         } else {
             favoritesStore.addSong(song)
         }
+    }
+
+    override suspend fun cleanMissed(context: Context): Boolean {
+        return favoritesStore.cleanMissingSongs(context)
     }
 
     override suspend fun clearAll(context: Context): Boolean {
@@ -107,6 +119,8 @@ class FavoritePlaylistImpl : IFavorite {
             }
         }
     }
+
+    override suspend fun cleanMissed(context: Context): Boolean = false
 
     override suspend fun clearAll(context: Context): Boolean {
         val favoritesPlaylist = getFavoritesPlaylist(context)
