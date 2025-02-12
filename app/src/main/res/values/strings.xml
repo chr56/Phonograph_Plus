@@ -23,6 +23,7 @@
     <string name="action_delete_from_device">Delete from device</string>
     <string name="action_details">Details</string>
     <string name="action_scan">Scan</string>
+    <string name="action_clean">Clean</string>
     <string name="action_set_as_start_directory">Set as start directory</string>
     <string name="albums">Albums</string>
     <string name="artists">Artists</string>
@@ -525,6 +526,7 @@
     <string name="help_notification_actions">You could set up to 5 actions in expanded notification, and up to 3 actions in compact notification. (Left checkboxes are for expanded ones; Right checkboxes are for compact ones.)</string>
     <string name="help_unmatched_notification_actions">Actions in compact notification must be in expanded notification as well.</string>
     <string name="illegal_operation">The operation does not match its requirement.</string>
+    <string name="action_clean_missing_items">Clean all missing items</string>
     <string name="error_unstoppable_service">Can not exit music service in foreground or in use.</string>
     <string name="action_fast_rewind">Fast Rewind</string>
     <string name="action_fast_forward">Fast Forward</string>

@@ -23,6 +23,7 @@
     <string name="action_delete_from_device">从设备中删除</string>
     <string name="action_details">详情</string>
     <string name="action_scan">扫描</string>
+    <string name="action_clean">清理</string>
     <string name="action_set_as_start_directory">设为起始目录</string>
     <string name="albums">专辑</string>
     <string name="artists">艺术家</string>
@@ -512,6 +513,7 @@
     <string name="help_notification_actions">可以在此处自定义播放通知动作：可以在展开通知中设置至多 5 个动作，在紧凑通知中设置至多 3 个动作。（左侧复选框用于紧凑通知；右侧复选框用于紧凑通知。）</string>
     <string name="help_unmatched_notification_actions">紧凑通知中的动作必须同时存在于扩展通知。</string>
     <string name="illegal_operation">操作不满足要求</string>
+    <string name="action_clean_missing_items">清理所有丢失的项目</string>
     <string name="error_unstoppable_service">无法退出前台或正在使用的音乐服务</string>
     <string name="action_fast_rewind">快退</string>
     <string name="action_fast_forward">快进</string>
