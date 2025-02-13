@@ -71,7 +71,7 @@ android {
             isShrinkResources = true
 
             // git revision tracker
-            manifestPlaceholders["GIT_COMMIT_HASH"] = getGitHash(false)
+            manifestPlaceholders["GIT_COMMIT_HASH"] = getGitHash(false) ?: "n/a"
             vcsInfo.include = false // we have our means
         }
         getByName("debug") {
@@ -110,7 +110,7 @@ android {
             applicationIdSuffix = ".checkout"
 
 
-            manifestPlaceholders["GIT_COMMIT_HASH"] = getGitHash(false)
+            manifestPlaceholders["GIT_COMMIT_HASH"] = getGitHash(false) ?: "n/a"
         }
 
         create("modern") {
