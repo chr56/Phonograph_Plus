@@ -23,11 +23,13 @@ import player.phonograph.ui.compose.components.ListItem
 import player.phonograph.util.parcelableArrayListExtra
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -78,7 +80,7 @@ class AddToPlaylistDialogActivity : DialogActivity(),
         )
         setContent {
             PhonographTheme {
-                RootContent()
+                Surface { RootContent() }
             }
         }
     }
