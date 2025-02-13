@@ -129,7 +129,7 @@ class SearchActivity : AbsSlidingMusicPanelActivity(), SearchView.OnQueryTextLis
             }
         }
         mediator = TabLayoutMediator(binding.tabs, binding.pager) { tab: TabLayout.Tab, i: Int ->
-            tab.text = getText(SearchResultPageAdapter.TabType.entries[i].nameRes)
+            tab.text = getText(SearchType.entries[i].nameRes)
         }
         mediator.attach()
         with(binding.config) {
