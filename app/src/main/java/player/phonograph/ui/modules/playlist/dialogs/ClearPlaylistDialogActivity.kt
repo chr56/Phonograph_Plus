@@ -215,7 +215,7 @@ class ClearPlaylistDialogActivity : DialogActivity(),
                         subtitle = description,
                         onClick = {},
                         painter = painterResource(playlist.iconRes),
-                        colorFilter = BlendModeColorFilter(Color.Black, BlendMode.SrcIn)
+                        colorFilter = BlendModeColorFilter(MaterialTheme.colors.onSurface, BlendMode.SrcIn)
                     )
                 }
             }
