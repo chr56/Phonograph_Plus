@@ -6,7 +6,7 @@ package player.phonograph.service.queue
 import player.phonograph.model.Song
 import player.phonograph.repo.database.DatabaseConstants
 import player.phonograph.repo.mediastore.internal.intoSongs
-import player.phonograph.util.reportError
+import player.phonograph.util.warning
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -29,65 +29,25 @@ class MusicPlaybackQueueStore(context: Context?) : SQLiteOpenHelper(
         createTable(db, ORIGINAL_PLAYING_QUEUE_TABLE_NAME)
     }
 
-    private val mainTable: String =
-        "(" + "${BaseColumns._ID} LONG NOT NULL," + "${AudioColumns.TITLE} TEXT NOT NULL," + "${AudioColumns.TRACK} INT NOT NULL," + "${AudioColumns.YEAR} INT NOT NULL," + "${AudioColumns.DURATION} LONG NOT NULL," + "${AudioColumns.DATA} TEXT NOT NULL," + "${AudioColumns.DATE_ADDED} LONG NOT NULL," + "${AudioColumns.DATE_MODIFIED} LONG NOT NULL," + "${AudioColumns.ALBUM_ID} LONG NOT NULL," + "${AudioColumns.ALBUM} TEXT NOT NULL," + "${AudioColumns.ARTIST_ID} LONG NOT NULL," + "${AudioColumns.ARTIST} TEXT NOT NULL," + "${AudioColumns.ALBUM_ARTIST} TEXT," + "${AudioColumns.COMPOSER} TEXT" + ")"
-
     private fun createTable(db: SQLiteDatabase, tableName: String) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS $tableName $mainTable;")
+        db.execSQL("CREATE TABLE IF NOT EXISTS $tableName $TABLE;")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        if (oldVersion == 5 && newVersion == 6) {
-            alterTable5to6(db, PLAYING_QUEUE_TABLE_NAME)
-            alterTable5to6(db, ORIGINAL_PLAYING_QUEUE_TABLE_NAME)
-        } else {
-            // not necessary yet
-            db.execSQL("DROP TABLE IF EXISTS $PLAYING_QUEUE_TABLE_NAME")
-            db.execSQL("DROP TABLE IF EXISTS $ORIGINAL_PLAYING_QUEUE_TABLE_NAME")
-            onCreate(db)
-        }
-    }
-
-    private fun alterTable5to6(db: SQLiteDatabase, tableName: String) {
-        db.beginTransaction()
-        try {
-            val temp = tableName + "_new"
-            db.execSQL("DROP TABLE IF EXISTS $temp")
-            db.execSQL(
-                "CREATE TABLE $temp" + "(" + "${BaseColumns._ID} LONG NOT NULL," + "${AudioColumns.TITLE} TEXT NOT NULL," + "${AudioColumns.TRACK} INT NOT NULL," + "${AudioColumns.YEAR} INT NOT NULL," + "${AudioColumns.DURATION} LONG NOT NULL," + "${AudioColumns.DATA} TEXT NOT NULL," + "${AudioColumns.DATE_ADDED} LONG NOT NULL," + "${AudioColumns.DATE_MODIFIED} LONG NOT NULL," + "${AudioColumns.ALBUM_ID} LONG NOT NULL," + "${AudioColumns.ALBUM} TEXT NOT NULL," + "${AudioColumns.ARTIST_ID} LONG NOT NULL," + "${AudioColumns.ARTIST} TEXT NOT NULL," + "${AudioColumns.ALBUM_ARTIST} TEXT," + "${AudioColumns.COMPOSER} TEXT" + ");"
-            )
-            db.execSQL(
-                "INSERT INTO $temp(${BaseColumns._ID},${AudioColumns.TITLE},${AudioColumns.TRACK},${AudioColumns.YEAR},${AudioColumns.DURATION},${AudioColumns.DATA},${AudioColumns.DATE_ADDED},${AudioColumns.DATE_MODIFIED},${AudioColumns.ALBUM_ID},${AudioColumns.ALBUM},${AudioColumns.ARTIST_ID},${AudioColumns.ARTIST},${AudioColumns.ALBUM_ARTIST},${AudioColumns.COMPOSER}) " + "SELECT ${BaseColumns._ID},${AudioColumns.TITLE},${AudioColumns.TRACK},${AudioColumns.YEAR},${AudioColumns.DURATION},${AudioColumns.DATA},${AudioColumns.DATE_ADDED},${AudioColumns.DATE_MODIFIED},${AudioColumns.ALBUM_ID},${AudioColumns.ALBUM},${AudioColumns.ARTIST_ID},${AudioColumns.ARTIST}, NULL, NULL" + " FROM $tableName"
-            )
-            db.execSQL("DROP TABLE IF EXISTS $tableName ")
-            db.execSQL("ALTER TABLE $temp RENAME TO $tableName")
-            db.setTransactionSuccessful()
-        } catch (e: Exception) {
-
-            reportError(
-                e,
-                "MusicPlaybackQueueStore",
-                "Fail to transaction playback database, playing queue now corrupted!"
-            )
-
-            try {
-                // fallback
-                db.execSQL("ALTER TABLE $tableName ADD ${AudioColumns.ALBUM_ARTIST} TEXT")
-                db.execSQL("ALTER TABLE $tableName ADD ${AudioColumns.COMPOSER} TEXT")
-            } catch (e: Exception) {
-            } finally {
-                db.setTransactionSuccessful()
-            }
-
-
-            throw e
-        } finally {
-            db.endTransaction()
-        }
+        warning(
+            "MusicPlaybackQueueStore",
+            "Upgrade from an already unsupported version ($oldVersion) to the version ($newVersion) , Playing Queue cleaned"
+        )
+        db.execSQL("DROP TABLE IF EXISTS $PLAYING_QUEUE_TABLE_NAME")
+        db.execSQL("DROP TABLE IF EXISTS $ORIGINAL_PLAYING_QUEUE_TABLE_NAME")
+        onCreate(db)
     }
 
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // If we ever have downgrade, drop the table to be safe
+        warning(
+            "MusicPlaybackQueueStore",
+            "Downgrade from the version ($newVersion) to an unsupported version ($oldVersion) , Playing Queue cleaned"
+        )
         db.execSQL("DROP TABLE IF EXISTS $PLAYING_QUEUE_TABLE_NAME")
         db.execSQL("DROP TABLE IF EXISTS $ORIGINAL_PLAYING_QUEUE_TABLE_NAME")
         onCreate(db)
@@ -115,44 +75,43 @@ class MusicPlaybackQueueStore(context: Context?) : SQLiteOpenHelper(
         } finally {
             database.endTransaction()
         }
-        val NUM_PROCESS = 20
+        val concurrent = 20
         var position = 0
         while (position < queue.size) {
             database.beginTransaction()
             try {
                 var i = position
-                while (i < queue.size && i < position + NUM_PROCESS) {
+                while (i < queue.size && i < position + concurrent) {
                     val song = queue[i]
-                    val values = ContentValues(4)
-                    values.put(BaseColumns._ID, song.id)
-                    values.put(AudioColumns.TITLE, song.title)
-                    values.put(AudioColumns.TRACK, song.trackNumber)
-                    values.put(AudioColumns.YEAR, song.year)
-                    values.put(AudioColumns.DURATION, song.duration)
-                    values.put(AudioColumns.DATA, song.data)
-                    values.put(AudioColumns.DATE_ADDED, song.dateAdded)
-                    values.put(AudioColumns.DATE_MODIFIED, song.dateModified)
-                    values.put(AudioColumns.ALBUM_ID, song.albumId)
-                    values.put(AudioColumns.ALBUM, song.albumName)
-                    values.put(AudioColumns.ARTIST_ID, song.artistId)
-                    values.put(AudioColumns.ARTIST, song.artistName)
-                    values.put(AudioColumns.ALBUM_ARTIST, song.albumArtistName)
-                    values.put(AudioColumns.COMPOSER, song.composer)
+                    val values = ContentValues(14).apply {
+                        put(BaseColumns._ID, song.id)
+                        put(AudioColumns.TITLE, song.title)
+                        put(AudioColumns.TRACK, song.trackNumber)
+                        put(AudioColumns.YEAR, song.year)
+                        put(AudioColumns.DURATION, song.duration)
+                        put(AudioColumns.DATA, song.data)
+                        put(AudioColumns.DATE_ADDED, song.dateAdded)
+                        put(AudioColumns.DATE_MODIFIED, song.dateModified)
+                        put(AudioColumns.ALBUM_ID, song.albumId)
+                        put(AudioColumns.ALBUM, song.albumName)
+                        put(AudioColumns.ARTIST_ID, song.artistId)
+                        put(AudioColumns.ARTIST, song.artistName)
+                        put(AudioColumns.ALBUM_ARTIST, song.albumArtistName)
+                        put(AudioColumns.COMPOSER, song.composer)
+                    }
                     database.insert(tableName, null, values)
                     i++
                 }
                 database.setTransactionSuccessful()
             } finally {
                 database.endTransaction()
-                position += NUM_PROCESS
+                position += concurrent
             }
         }
     }
 
-    val savedPlayingQueue: List<Song>
-        get() = getQueue(PLAYING_QUEUE_TABLE_NAME)
-    val savedOriginalPlayingQueue: List<Song>
-        get() = getQueue(ORIGINAL_PLAYING_QUEUE_TABLE_NAME)
+    val savedPlayingQueue: List<Song> get() = getQueue(PLAYING_QUEUE_TABLE_NAME)
+    val savedOriginalPlayingQueue: List<Song> get() = getQueue(ORIGINAL_PLAYING_QUEUE_TABLE_NAME)
 
     private fun getQueue(tableName: String): List<Song> {
         return readableDatabase.query(
@@ -165,6 +124,26 @@ class MusicPlaybackQueueStore(context: Context?) : SQLiteOpenHelper(
 
         const val PLAYING_QUEUE_TABLE_NAME = "playing_queue"
         const val ORIGINAL_PLAYING_QUEUE_TABLE_NAME = "original_playing_queue"
+
+
+        private const val TABLE: String = "(" +
+                "${BaseColumns._ID} LONG NOT NULL, " +
+                "${AudioColumns.TITLE} TEXT NOT NULL, " +
+                "${AudioColumns.TRACK} INT NOT NULL, " +
+                "${AudioColumns.YEAR} INT NOT NULL, " +
+                "${AudioColumns.DURATION} LONG NOT NULL, " +
+                "${AudioColumns.DATA} TEXT NOT NULL, " +
+                "${AudioColumns.DATE_ADDED} LONG NOT NULL, " +
+                "${AudioColumns.DATE_MODIFIED} LONG NOT NULL, " +
+                "${AudioColumns.ALBUM_ID} LONG NOT NULL, " +
+                "${AudioColumns.ALBUM} TEXT NOT NULL, " +
+                "${AudioColumns.ARTIST_ID} LONG NOT NULL, " +
+                "${AudioColumns.ARTIST} TEXT NOT NULL, " +
+                "${AudioColumns.ALBUM_ARTIST} TEXT, " +
+                "${AudioColumns.COMPOSER} TEXT" +
+                ")"
+
+
         private const val VERSION = 6
 
     }
