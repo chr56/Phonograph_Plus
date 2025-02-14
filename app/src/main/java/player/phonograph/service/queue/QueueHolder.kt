@@ -12,6 +12,7 @@ import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.CopyOnWriteArrayList
 
 class QueueHolder private constructor(
@@ -127,20 +128,23 @@ class QueueHolder private constructor(
             (playingQueue as CopyOnWriteArrayList<Song>).clone() as List<Song>
         val previousOriginalPlayingQueue =
             (originalPlayingQueue as CopyOnWriteArrayList<Song>).clone() as List<Song>
-        val validatedQueue = validSongs(context, previousPlayingQueue)
-        val validatedOriginalQueue = validSongs(context, previousOriginalPlayingQueue)
-        val changed = validatedQueue != previousPlayingQueue || validatedOriginalQueue != previousOriginalPlayingQueue
-        synchronized(queueLock) {
-            if (
-                previousPlayingQueue == playingQueue && previousOriginalPlayingQueue == originalPlayingQueue // avoid data race
-            ) {
-                if (changed) {
-                    playingQueue = CopyOnWriteArrayList(validatedQueue)
-                    originalPlayingQueue = CopyOnWriteArrayList(validatedOriginalQueue)
-                }
-            } // cancel if user changes queue before validation
+        return runBlocking {
+            val validatedQueue = QueueValidator.markInvalidSongs(context, previousPlayingQueue)
+            val validatedOriginalQueue = QueueValidator.markInvalidSongs(context, previousOriginalPlayingQueue)
+            val changed =
+                validatedQueue != previousPlayingQueue || validatedOriginalQueue != previousOriginalPlayingQueue
+            synchronized(queueLock) {
+                if (
+                    previousPlayingQueue == playingQueue && previousOriginalPlayingQueue == originalPlayingQueue // avoid data race
+                ) {
+                    if (changed) {
+                        playingQueue = CopyOnWriteArrayList(validatedQueue)
+                        originalPlayingQueue = CopyOnWriteArrayList(validatedOriginalQueue)
+                    }
+                } // cancel if user changes queue before validation
+            }
+            changed
         }
-        return changed
     }
 
     @Suppress("UNCHECKED_CAST")
