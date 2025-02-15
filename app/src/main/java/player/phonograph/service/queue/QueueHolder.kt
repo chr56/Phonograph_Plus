@@ -5,6 +5,7 @@
 package player.phonograph.service.queue
 
 import org.koin.core.context.GlobalContext
+import player.phonograph.model.PlayRequest.SongsRequest
 import player.phonograph.model.Song
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.util.text.currentTimestamp
@@ -144,6 +145,23 @@ class QueueHolder private constructor(
                 } // cancel if user changes queue before validation
             }
             changed
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun clean(context: Context): Boolean {
+        val previousPlayingQueue = (playingQueue as CopyOnWriteArrayList<Song>).clone() as List<Song>
+        val previousOriginalPlayingQueue = (originalPlayingQueue as CopyOnWriteArrayList<Song>).clone() as List<Song>
+        val position = currentSongPosition
+        return runBlocking {
+            val queue = QueueValidator.removeMissingSongs(context, SongsRequest(previousPlayingQueue, position))
+            val origin = QueueValidator.removeMissingSongs(context, SongsRequest(previousOriginalPlayingQueue, 0))
+            synchronized(queueLock) {
+                playingQueue = CopyOnWriteArrayList(queue.songs)
+                originalPlayingQueue = CopyOnWriteArrayList(origin.songs)
+                modifyPosition(queue.position)
+            }
+            previousPlayingQueue.size != queue.songs.size
         }
     }
 
