@@ -250,6 +250,19 @@ class QueueManager(val context: Application) {
     }
 
     /**
+     * remove missing songs
+     */
+    fun clean() {
+        handler.post {
+            val changed = queueHolder.clean(context)
+            if (changed) {
+                observerManager.notifyQueueChanged(queueHolder.playingQueue, queueHolder.originalPlayingQueue)
+                observerManager.notifyCurrentPositionChanged(queueHolder.currentSongPosition)
+            }
+        }
+    }
+
+    /**
      * for queue operations
      * detect queue changes and notify observers effectually
      */
