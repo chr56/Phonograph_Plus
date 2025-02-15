@@ -5,12 +5,23 @@
 package player.phonograph.service.queue
 
 import player.phonograph.R
+import player.phonograph.model.PlayRequest.SongsRequest
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
 import android.content.Context
 
 
 object QueueValidator {
+
+    suspend fun removeMissingSongs(context: Context, queue: SongsRequest): SongsRequest {
+        val all = queue.songs
+        val current = queue.position
+        val left = all.subList(0, current)
+        val right = all.subList(current, all.size)
+        val newLeft = left.mapNotNull { song -> findSong(context, song) }
+        val newRight = right.mapNotNull { song -> findSong(context, song) }
+        return SongsRequest(newLeft + newRight, newLeft.size)
+    }
 
     suspend fun markInvalidSongs(context: Context, songs: List<Song>): List<Song> {
         return songs.map { song ->
