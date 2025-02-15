@@ -1,21 +1,25 @@
 version: "1.9.2"
 channel: "STABLE"
 versionCode: 1092
-timestamp: 1739390000
+timestamp: 1739720000
 notes:
   en:
     highlights: [ ]
     items:
       - "Fix: No images could be displayed once service exits (since v1.9.1)"
+      - "Fix: text color legibility in some dialogs in night mode"
       - "Improve: show paths of the missing (deleted) songs instead of complete blank in Favorites Playlist"
-      - "New: support cleaning the missing (deleted) songs in Favorites Playlist"
+      - "New: support removing the missing (deleted) songs in Favorites Playlist and Playing Queue"
+      - "Development: update dependencies"
 
   zh:
     highlights: [ ]
     items:
       - "修复 服务退出后无法显示任何图像 (自 v1.9.1 起)"
+      - "修复 夜间模式下部分对话框中文本颜色问题"
       - "改进 显示收藏夹中丢失或删除歌曲的路径而不是完全空白"
-      - "新增 支持清理收藏夹中丢失或删除的歌曲"
+      - "新增 支持清理收藏夹和播放队列中丢失或删除的歌曲"
+      - "开发 更新依赖"
 
 previousVersion: "1.9.1"
 previousChannel: "STABLE"
