@@ -2,6 +2,7 @@ package player.phonograph.ui.modules.player
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
@@ -20,6 +21,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
+import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.dialogs.LyricsDialog
 import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
 import player.phonograph.ui.dialogs.QueueSnapshotsDialog
@@ -31,6 +33,7 @@ import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivit
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.themeFooterColor
+import player.phonograph.util.theme.tintButtons
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.warning
 import util.theme.color.toolbarIconColor
@@ -265,6 +268,27 @@ abstract class AbsPlayerFragment :
                 onClick {
                     QueueSnapshotsDialog()
                         .show(childFragmentManager, "QUEUE_SNAPSHOTS")
+                    true
+                }
+            }
+            menuItem {
+                title = getString(R.string.action_clean_missing_items)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    MaterialAlertDialogBuilder(context)
+                        .setTitle(R.string.action_clean)
+                        .setMessage(R.string.action_clean_missing_items)
+                        .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
+                            val queueManager: QueueManager = GlobalContext.get().get()
+                            queueManager.clean()
+                            dialog.dismiss()
+                        }
+                        .setNegativeButton(getString(android.R.string.cancel)) { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .create()
+                        .tintButtons()
+                        .show()
                     true
                 }
             }
