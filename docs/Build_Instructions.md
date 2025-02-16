@@ -4,15 +4,15 @@ _This part is not written very well._
 
 See also [Developer Guide](./Developer_Guide.md).
 
-_Last Update: 2024.11.01_
+_Last Update: 2025.02.16_
 
 ## **Requirement**
 
 **Build**:
 
-1. a PC : any desktop operate system platform (only `Windows` and `Ubuntu 20.04` are tested), I am not sure if it works
+1. a PC : any desktop operate system platform (only `Windows` and `Ubuntu 22.04` are tested), I am not sure if it works
    on `Android(Termux)` because jvm version.
-2. JDK 17 (we are using AGP 8.7.2 with gradle 8.10.2).
+2. JDK 17 (we are using AGP 8.7.2 with gradle 8.12.1).
 3. The connected and fast network.
 
 **Development**:
