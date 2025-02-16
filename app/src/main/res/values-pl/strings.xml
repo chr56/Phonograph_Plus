@@ -23,6 +23,7 @@
     <string name="action_delete_from_device">Usuń z urządzenia</string>
     <string name="action_details">Szczegóły</string>
     <string name="action_scan">Skanuj</string>
+    <string name="action_clean">Wyczyść</string>
     <string name="action_set_as_start_directory">Ustaw jako katalog startowy</string>
     <string name="albums">Albumy</string>
     <string name="artists">Wykonawcy</string>
@@ -542,6 +543,7 @@
     <string name="help_notification_actions">Możesz ustawić do 5 akcji w powiadomieniu rozszerzonym i do 3 akcji w powiadomieniu kompaktowym. (Lewe pola wyboru dotyczą powiadomień rozszerzonych; prawe pola wyboru dotyczą powiadomień kompaktowych).</string>
     <string name="help_unmatched_notification_actions">Działania w powiadomieniu kompaktowym muszą być również dostępne w powiadomieniu rozszerzonym.</string>
     <string name="illegal_operation">Operacja nie spełnia wymagań.</string>
+    <string name="action_clean_missing_items">Wyczyść wszystkie brakujące elementy</string>
     <string name="error_unstoppable_service">Nie można zamknąć usługi muzycznej na pierwszym planie lub w użyciu.</string>
     <string name="action_fast_rewind">Szybkie przewijanie do tyłu</string>
     <string name="action_fast_forward">Szybkie przewijanie do przodu</string>
@@ -558,6 +560,11 @@
     <string name="service_disconnected">[Usługa jest rozłączona!]</string>
     <string name="file_playlists">Lista odtwarzania plików</string>
     <string name="database_playlists">Listy odtwarzania bazy danych</string>
+    <string name="title_database_maintenance">Obsługa wewnętrznej bazy danych</string>
+    <string name="action_refresh_database">Odśwież bazę danych</string>
+    <string name="description_refresh_database">Zeskanuj i zindeksuj piosenki</string>
+    <string name="action_delete_database">Usuń bazę danych</string>
+    <string name="description_delete_database">Usuń całą bazę danych, w tym wszystkie baz danych list odtwarzania i zindeksowane utwory!</string>
     <string name="version_migration">Migracja wersji</string>
     <string name="version_migration_summary">Aktualizacja ze starej wersji…</string>
     <string name="version_migration_hint_too_old">Dokonujesz aktualizacji z bardzo starej wersji!</string>
