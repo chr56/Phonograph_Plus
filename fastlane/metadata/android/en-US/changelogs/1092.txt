@@ -1,0 +1,6 @@
+<b>1.9.2(1092) 2025.02.16</b>
+- Fix: no images could be displayed once service exits (since v1.9.1)
+- Fix: text color legibility in some dialogs in night mode
+- New: support removing the missing (deleted) songs in Favorites Playlist and Playing Queue
+- Improve: show paths of the missing (deleted) songs instead of complete blank in Favorites Playlist
+- Development: update dependencies
