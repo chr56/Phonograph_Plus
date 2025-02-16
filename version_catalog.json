@@ -1,6 +1,30 @@
 {
   "versions": [
     {
+      "channel": "stable",
+      "versionName": "1.9.2",
+      "versionCode": 1092,
+      "date": 1739690000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.9.2"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.9.2/PhonographPlus_1.9.2_ModernStableRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.9.2/PhonographPlus_1.9.2_LegacyStableRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 服务退出后无法显示任何图像 (自 v1.9.1 起)</li><li>修复 夜间模式下部分对话框中文本颜色问题</li><li>新增 支持清理收藏夹和播放队列中丢失或删除的歌曲</li><li>改进 显示收藏夹中丢失或删除歌曲的路径而不是完全空白</li><li>开发 更新依赖</li></ol>",
+        "en": "<ol><li>Fix: no images could be displayed once service exits (since v1.9.1)</li><li>Fix: text color legibility in some dialogs in night mode</li><li>New: support removing the missing (deleted) songs in Favorites Playlist and Playing Queue</li><li>Improve: show paths of the missing (deleted) songs instead of complete blank in Favorites Playlist</li><li>Development: update dependencies</li></ol>"
+      }
+    },
+    {
       "channel": "preview",
       "versionName": "1.9.2-dev2",
       "versionCode": 1092,
@@ -22,30 +46,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>修复 夜间模式下部分对话框中文本颜色问题</li><li>新增 支持清理播放队列中缺失（已删除）的歌曲</li><li>开发 更新依赖</li></ol>",
         "en": "<ol><li>Fix: text color legibility in some dialogs in night mode</li><li>New: support removing the missing (deleted) songs in Playing Queue</li><li>Development: update dependencies</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.9.2-dev1",
-      "versionCode": 1092,
-      "date": 1739350000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.9.2-dev1"
-        },
-        {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.2-dev1/PhonographPlus_1.9.2-dev1_ModernPreviewRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK(File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.2-dev1/PhonographPlus_1.9.2-dev1_LegacyPreviewRelease.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 服务退出后无法显示任何图像 (自 v1.9.1 起)</li><li>改进 显示收藏夹中丢失或删除歌曲的路径而不是完全空白</li><li>新增 支持清理收藏夹中丢失或删除的歌曲</li></ol>",
-        "en": "<ol><li>Fix: No images could be displayed once service exits (since v1.9.1)</li><li>Improve: show paths of the missing (deleted) songs instead of complete blank in Favorites Playlist</li><li>New: support cleaning the missing (deleted) songs in Favorites Playlist</li></ol>"
       }
     },
     {
