@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.net.Uri
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -99,4 +100,26 @@ class LyricsViewModel : ViewModel() {
     fun updateRequireLyricsFollowing(newState: Boolean) {
         _requireLyricsFollowing.update { newState }
     }
+
+    private var _showSynchronizedLyrics: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val showSynchronizedLyrics get() = _showSynchronizedLyrics.asStateFlow()
+
+    private var watchJob: Job? = null
+    fun observeSettings(context: Context) {
+        watchJob?.cancel()
+        watchJob = viewModelScope.launch {
+            val applicationContext = context.applicationContext
+            viewModelScope.launch(Dispatchers.IO) {
+                Setting(applicationContext)[Keys.synchronizedLyricsShow].flow.collect {
+                    _showSynchronizedLyrics.value = it
+                }
+            }
+        }
+    }
+
+    fun stopObservingSettings() {
+        watchJob?.cancel()
+        watchJob = null
+    }
+
 }

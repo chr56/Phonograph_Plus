@@ -3,7 +3,6 @@ package player.phonograph.ui.modules.player
 import coil.request.Disposable
 import coil.request.Parameters
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.coil.PARAMETERS_KEY_PALETTE
 import player.phonograph.coil.PARAMETERS_KEY_QUICK_CACHE
@@ -15,8 +14,6 @@ import player.phonograph.foundation.compat.parcelable
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.util.component.MusicProgressUpdateDelegate
@@ -54,8 +51,7 @@ import kotlinx.coroutines.withContext
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-class PlayerAlbumCoverFragment :
-        AbsMusicServiceFragment() {
+class PlayerAlbumCoverFragment : AbsMusicServiceFragment() {
 
     private var _viewBinding: FragmentPlayerAlbumCoverBinding? = null
     private val binding: FragmentPlayerAlbumCoverBinding get() = _viewBinding!!
@@ -73,42 +69,6 @@ class PlayerAlbumCoverFragment :
         super.onCreate(savedInstanceState)
         lifecycle.addObserver(musicProgressUpdateDelegate)
         defaultColor = themeFooterColor(requireContext())
-    }
-
-    private fun observeState() {
-        observe(queueViewModel.queue) { queue ->
-            val position = MusicPlayerRemote.position
-            refreshAdapter(queue, position)
-        }
-        observe(queueViewModel.shuffleMode) {
-            val queue = MusicPlayerRemote.playingQueue
-            val position = MusicPlayerRemote.position
-            refreshAdapter(queue, position)
-        }
-        observe(queueViewModel.position) { position ->
-            val songs = albumCoverPagerAdapter?.dataSet
-            if (songs != null) {
-                if (position in songs.indices) {
-                    updateCurrentItemPosition(position)
-                    updateCurrentPaletteColor(songs[position])
-                }
-            }
-        }
-        observe(lyricsViewModel.lyricsInfo) {
-            val lyricsShow = Setting(App.instance)[Keys.synchronizedLyricsShow].data
-            withContext(Dispatchers.Main) {
-                if (lyricsShow) {
-                    resetLyricsLayout()
-                } else {
-                    hideLyricsLayout()
-                }
-            }
-        }
-        observe(playerViewModel.favoriteState) { newState ->
-            if (newState.first == lastFavoriteState.first && newState.second && !lastFavoriteState.second)
-                showHeartAnimation()
-            lastFavoriteState = newState
-        }
     }
 
     private var lastFavoriteState: Pair<Song?, Boolean> = null to false
@@ -176,6 +136,41 @@ class PlayerAlbumCoverFragment :
         observeState()
     }
 
+    private fun observeState() {
+        lyricsViewModel.observeSettings(requireContext())
+        observe(queueViewModel.queue) { queue ->
+            val position = MusicPlayerRemote.position
+            refreshAdapter(queue, position)
+        }
+        observe(queueViewModel.shuffleMode) {
+            val queue = MusicPlayerRemote.playingQueue
+            val position = MusicPlayerRemote.position
+            refreshAdapter(queue, position)
+        }
+        observe(queueViewModel.position) { position ->
+            val songs = albumCoverPagerAdapter?.dataset
+            if (songs != null) {
+                if (position in songs.indices) {
+                    updateCurrentItemPosition(position)
+                    updateCurrentPaletteColor(songs[position])
+                }
+            }
+        }
+        observe(lyricsViewModel.lyricsInfo, coroutineContext = Dispatchers.IO) {
+            if (lyricsViewModel.showSynchronizedLyrics.value) {
+                resetLyricsLayout()
+            } else {
+                hideLyricsLayout()
+            }
+        }
+        observe(playerViewModel.favoriteState) { newState ->
+            if (newState.first == lastFavoriteState.first && newState.second && !lastFavoriteState.second)
+                showHeartAnimation()
+            lastFavoriteState = newState
+        }
+    }
+
+
     override fun onDestroyView() {
         super.onDestroyView()
         binding.playerCoverViewpager.unregisterOnPageChangeCallback(pageChangeListener)
@@ -237,9 +232,9 @@ class PlayerAlbumCoverFragment :
         }
     }
 
-    private fun updateLyricsImpl(oldLine: String, line: String) {
+    private fun updateLyricsImpl(oldLine: String, newLine: String) {
         binding.playerLyricsLine1.text = oldLine
-        binding.playerLyricsLine2.text = line
+        binding.playerLyricsLine2.text = newLine
         binding.playerLyricsLine1.visibility = View.VISIBLE
         binding.playerLyricsLine2.visibility = View.VISIBLE
 
@@ -256,18 +251,21 @@ class PlayerAlbumCoverFragment :
         binding.playerLyricsLine1.apply {
             alpha = 1f
             translationY = 0f
-            animate().alpha(0f).translationY(-height.toFloat()).duration =
-                VISIBILITY_ANIM_DURATION
+            animate().alpha(0f).translationY(-height.toFloat()).apply {
+                duration = VISIBILITY_ANIM_DURATION
+            }
         }
         binding.playerLyricsLine2.apply {
             alpha = 0f
             translationY = height.toFloat()
-            animate().alpha(1f).translationY(0f).duration = VISIBILITY_ANIM_DURATION
+            animate().alpha(1f).translationY(0f).apply {
+                duration = VISIBILITY_ANIM_DURATION
+            }
         }
     }
 
     private fun showHeartAnimation() {
-        binding.playerFavoriteIcon.apply {
+        binding.playerFavoriteIcon.run {
             clearAnimation()
             alpha = 0f
             scaleX = 0f
@@ -295,8 +293,7 @@ class PlayerAlbumCoverFragment :
                         .alpha(0f)
                         .start()
                 }
-                .start()
-        }
+        }.start()
     }
 
     private var disposable: Disposable? = null
@@ -337,10 +334,10 @@ class PlayerAlbumCoverFragment :
 
 private class AlbumCoverPagerAdapter(
     fragment: Fragment,
-    dataSet: List<Song>,
+    dataset: List<Song>,
 ) : FragmentStateAdapter(fragment) {
 
-    var dataSet: List<Song> = dataSet
+    var dataset: List<Song> = dataset
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
@@ -348,9 +345,9 @@ private class AlbumCoverPagerAdapter(
         }
 
 
-    override fun createFragment(position: Int): Fragment = coverFragment(dataSet[position])
+    override fun createFragment(position: Int): Fragment = coverFragment(dataset[position])
 
-    override fun getItemCount(): Int = dataSet.size
+    override fun getItemCount(): Int = dataset.size
 
     private fun coverFragment(song: Song): AlbumCoverFragment =
         AlbumCoverFragment().apply {
