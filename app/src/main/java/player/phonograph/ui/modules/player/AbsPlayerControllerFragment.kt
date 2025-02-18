@@ -5,7 +5,6 @@
 package player.phonograph.ui.modules.player
 
 import player.phonograph.R
-import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
@@ -13,6 +12,7 @@ import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
+import player.phonograph.util.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.util.theme.themeFooterColor
 import util.theme.color.isColorLight
 import util.theme.color.primaryTextColor

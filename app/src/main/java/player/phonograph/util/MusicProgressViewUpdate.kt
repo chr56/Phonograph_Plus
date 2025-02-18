@@ -2,7 +2,7 @@
  * Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.misc
+package player.phonograph.util
 
 import player.phonograph.service.MusicPlayerRemote
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -19,27 +19,35 @@ class MusicProgressViewUpdateHelper : Handler {
     private var intervalPlaying: Int
     private var intervalPaused: Int
 
-    fun start() {
-        queueNextRefresh(1)
-    }
-    fun stop() {
-        removeMessages(CMD_REFRESH_PROGRESS_VIEWS)
-    }
-    fun destroy() {
-        stop()
-        if (looper != Looper.getMainLooper()) looper.quit()
-        callback = null
-    }
-
     constructor(callback: Callback, looper: Looper = Looper.getMainLooper()) : super(looper) {
         this.callback = callback
         intervalPlaying = UPDATE_INTERVAL_PLAYING
         intervalPaused = UPDATE_INTERVAL_PAUSED
     }
-    constructor(callback: Callback, intervalPlaying: Int, intervalPaused: Int, looper: Looper = Looper.getMainLooper()) : super(looper) {
+
+    constructor(
+        callback: Callback,
+        intervalPlaying: Int,
+        intervalPaused: Int,
+        looper: Looper = Looper.getMainLooper(),
+    ) : super(looper) {
         this.callback = callback
         this.intervalPlaying = intervalPlaying
         this.intervalPaused = intervalPaused
+    }
+
+    fun start() {
+        queueNextRefresh(1)
+    }
+
+    fun stop() {
+        removeMessages(CMD_REFRESH_PROGRESS_VIEWS)
+    }
+
+    fun destroy() {
+        stop()
+        if (looper != Looper.getMainLooper()) looper.quit()
+        callback = null
     }
 
     override fun handleMessage(msg: Message) {
@@ -81,11 +89,11 @@ class MusicProgressViewUpdateHelper : Handler {
 
 class MusicProgressViewUpdateHelperDelegate(var callback: MusicProgressViewUpdateHelper.Callback?) :
         DefaultLifecycleObserver, MusicProgressViewUpdateHelper.Callback {
+
     private var updateHelper: MusicProgressViewUpdateHelper? = null
 
     override fun onCreate(owner: LifecycleOwner) {
-        updateHelper =
-            MusicProgressViewUpdateHelper(this)
+        updateHelper = MusicProgressViewUpdateHelper(this)
     }
 
     override fun onResume(owner: LifecycleOwner) {
