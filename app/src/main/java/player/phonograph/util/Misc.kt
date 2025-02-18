@@ -25,6 +25,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Environment
 import android.os.Handler
@@ -211,6 +212,14 @@ fun openOutputStreamSafe(context: Context, uri: Uri, mode: String): OutputStream
     }
 
 internal const val PLAYLIST_MIME_TYPE = "audio/x-mpegurl"
+
+fun setRingtone(context: Context, songId: Long) {
+    RingtoneManager.setActualDefaultRingtoneUri(
+        context,
+        RingtoneManager.TYPE_ALARM,
+        mediaStoreUriSong(MEDIASTORE_VOLUME_EXTERNAL, songId)
+    )
+}
 
 fun shareFileIntent(context: Context, song: Song): Intent {
     return try {
