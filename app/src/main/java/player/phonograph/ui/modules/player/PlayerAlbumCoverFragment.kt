@@ -11,7 +11,7 @@ import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
-import player.phonograph.util.MusicProgressViewUpdateHelperDelegate
+import player.phonograph.util.MusicProgressUpdateDelegate
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
@@ -57,12 +57,12 @@ class PlayerAlbumCoverFragment :
 
     private var albumCoverPagerAdapter: AlbumCoverPagerAdapter? = null
 
-    private val progressViewUpdateHelperDelegate =
-        MusicProgressViewUpdateHelperDelegate(::updateProgressViews)
+    private val musicProgressUpdateDelegate =
+        MusicProgressUpdateDelegate(::onUpdateProgress)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycle.addObserver(progressViewUpdateHelperDelegate)
+        lifecycle.addObserver(musicProgressUpdateDelegate)
         playerViewModel.refreshPaletteColor(themeFooterColor(requireContext()))
     }
 
@@ -227,7 +227,7 @@ class PlayerAlbumCoverFragment :
     }
 
     @Suppress("UNUSED_PARAMETER")
-    private fun updateProgressViews(progress: Int, total: Int) {
+    private fun onUpdateProgress(progress: Int, total: Int) {
         lifecycleScope.launch {
             updateLyrics(progress)
         }

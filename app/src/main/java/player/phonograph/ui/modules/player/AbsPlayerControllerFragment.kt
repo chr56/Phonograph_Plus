@@ -12,7 +12,7 @@ import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
-import player.phonograph.util.MusicProgressViewUpdateHelperDelegate
+import player.phonograph.util.MusicProgressUpdateDelegate
 import player.phonograph.util.theme.themeFooterColor
 import util.theme.color.isColorLight
 import util.theme.color.primaryTextColor
@@ -45,12 +45,12 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
 
     abstract val binding: PlayerControllerBinding<V>
 
-    private val progressViewUpdateHelperDelegate =
-        MusicProgressViewUpdateHelperDelegate(::updateProgressViews)
+    private val musicProgressUpdateDelegate =
+        MusicProgressUpdateDelegate(::onUpdateProgress)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycle.addObserver(progressViewUpdateHelperDelegate)
+        lifecycle.addObserver(musicProgressUpdateDelegate)
     }
 
     override fun onCreateView(
@@ -158,7 +158,7 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         disabledControlsColor = context.secondaryDisabledTextColor(darkmode)
     }
 
-    private fun updateProgressViews(progress: Int, total: Int) = binding.updateProgressViews(progress, total)
+    private fun onUpdateProgress(progress: Int, total: Int) = binding.updateProgressViews(progress, total)
 
     fun modifyColor(backgroundColor: Int) {
         _backgroundColor.update { backgroundColor }
