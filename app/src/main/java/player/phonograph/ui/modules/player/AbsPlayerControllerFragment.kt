@@ -6,7 +6,6 @@ package player.phonograph.ui.modules.player
 
 import player.phonograph.R
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
-import player.phonograph.misc.SimpleOnSeekbarChangeListener
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
@@ -14,9 +13,7 @@ import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
-import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.themeFooterColor
-import player.phonograph.util.theme.themeIconColor
 import util.theme.color.isColorLight
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryDisabledTextColor
@@ -37,6 +34,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -283,7 +281,7 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
             val colorFilter = createBlendModeColorFilterCompat(color, BlendModeCompat.SRC_IN)
             progressSlider.thumb.mutate().colorFilter = colorFilter
             progressSlider.progressDrawable.mutate().colorFilter = colorFilter
-            progressSlider.setOnSeekBarChangeListener(object : SimpleOnSeekbarChangeListener() {
+            progressSlider.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                     if (fromUser) {
                         MusicPlayerRemote.seekTo(progress)
@@ -293,6 +291,8 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
                         )
                     }
                 }
+                override fun onStartTrackingTouch(seekBar: SeekBar) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar) {}
             })
         }
         //endregion
