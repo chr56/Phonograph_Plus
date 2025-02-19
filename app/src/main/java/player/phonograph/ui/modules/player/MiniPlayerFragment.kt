@@ -2,12 +2,12 @@ package player.phonograph.ui.modules.player
 
 import player.phonograph.R
 import player.phonograph.databinding.FragmentMiniPlayerBinding
-import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
+import player.phonograph.util.MusicProgressUpdateDelegate
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.themeIconColor
@@ -36,11 +36,11 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
 
     private var miniPlayerPlayPauseDrawable: PlayPauseDrawable? = null
 
-    private val progressViewUpdateHelperDelegate = MusicProgressViewUpdateHelperDelegate(::updateProgressViews)
+    private val musicProgressUpdateDelegate = MusicProgressUpdateDelegate(::onUpdateProgress)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewBinding = FragmentMiniPlayerBinding.inflate(layoutInflater)
-        lifecycle.addObserver(progressViewUpdateHelperDelegate)
+        lifecycle.addObserver(musicProgressUpdateDelegate)
         super.onCreate(savedInstanceState)
     }
 
@@ -99,7 +99,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         replaceDrawable(context.getTintedDrawable(R.drawable.ic_refresh_white_24dp, themeIconColor(context)))
     }
 
-    private fun updateProgressViews(progress: Int, total: Int) {
+    private fun onUpdateProgress(progress: Int, total: Int) {
         binding.progressIndicator.max = total
         binding.progressIndicator.progress = progress
         binding.progressIndicator.show()

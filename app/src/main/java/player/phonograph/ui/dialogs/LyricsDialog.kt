@@ -9,7 +9,6 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
 import player.phonograph.R
 import player.phonograph.databinding.DialogLyricsBinding
-import player.phonograph.misc.MusicProgressViewUpdateHelper
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.lyrics.LyricsInfo
@@ -18,6 +17,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.player.LyricsViewModel
+import player.phonograph.util.MusicProgressUpdateDelegate
 import player.phonograph.util.reportError
 import player.phonograph.util.text.lyricsTimestamp
 import player.phonograph.util.theme.getTintedDrawable
@@ -53,7 +53,6 @@ import android.widget.TextView
 import kotlin.math.abs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.regex.Pattern
@@ -63,7 +62,7 @@ import java.util.regex.Pattern
  *
  * **MUST** be created from a view-model owner possessing [LyricsViewModel]
  */
-class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
+class LyricsDialog : DialogFragment() {
 
     private var _viewBinding: DialogLyricsBinding? = null
     val binding: DialogLyricsBinding get() = _viewBinding!!
@@ -71,6 +70,10 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
     private val viewModel: LyricsViewModel by viewModels({ requireActivity() })
 
     //region Fragment LifeCycle
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lifecycle.addObserver(progressUpdateDelegate)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _viewBinding = DialogLyricsBinding.inflate(layoutInflater)
@@ -82,8 +85,6 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         binding.viewStub.setOnClickListener { requireDialog().dismiss() }
 
         scroller = LyricsSmoothScroller(view.context)
-        progressUpdater = MusicProgressViewUpdateHelper(this@LyricsDialog, 500, 1000)
-        progressUpdater.start()
         requireDialog().window!!.setBackgroundDrawable(GradientDrawable().apply {
             this.cornerRadius = 0f
             setColor(
@@ -123,7 +124,6 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        progressUpdater.destroy()
         _viewBinding = null
     }
 
@@ -247,8 +247,6 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
 
     //region Scroll
 
-    private lateinit var progressUpdater: MusicProgressViewUpdateHelper
-
     private fun setupFollowing(info: LyricsInfo?) {
         binding.lyricsFollowing.apply {
             buttonTintList = backgroundCsl
@@ -266,7 +264,9 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         }
     }
 
-    override fun onUpdateProgressViews(progress: Int, total: Int) {
+
+    private val progressUpdateDelegate = MusicProgressUpdateDelegate(::onUpdateProgress, 500, 1000)
+    private fun onUpdateProgress(progress: Int, total: Int) {
         val lyrics = viewModel.lyricsInfo.value?.activatedLyrics
         val lrcLyrics = lyrics as? LrcLyrics ?: return
         val position = lrcLyrics.getPosition(progress)

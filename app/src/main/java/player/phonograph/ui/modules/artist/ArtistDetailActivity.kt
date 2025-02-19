@@ -16,8 +16,8 @@ import player.phonograph.R
 import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.mechanism.actions.DetailToolbarMenuProviders
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.misc.IPaletteColorProvider
 import player.phonograph.model.Artist
+import player.phonograph.model.IPaletteColorProvider
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.albumCountString
 import player.phonograph.model.getReadableDurationString

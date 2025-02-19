@@ -6,7 +6,6 @@ package player.phonograph.mechanism.actions
 
 import player.phonograph.R
 import player.phonograph.mechanism.PathFilter
-import player.phonograph.misc.RingtoneManager
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.service.MusicPlayerRemote
@@ -16,12 +15,18 @@ import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity
 import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.fragmentActivity
+import player.phonograph.util.permissions.checkModificationSystemSettingsPermission
+import player.phonograph.util.setRingtone
 import player.phonograph.util.shareFileIntent
+import player.phonograph.util.theme.tintButtons
+import androidx.appcompat.app.AlertDialog
 import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.view.View
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -99,7 +104,14 @@ fun Song.actionShare(context: Context): Boolean {
 }
 
 fun Song.actionSetAsRingtone(context: Context): Boolean =
-    RingtoneManager.setRingtone(context, id)
+    if (checkModificationSystemSettingsPermission(context)) {
+        showRingtoneDialog(context)
+        true
+    } else {
+        setRingtone(context, id)
+        true
+    }
+
 
 fun Song.actionAddToBlacklist(context: Context): Boolean {
     PathFilter.addToBlacklist(context, this)
@@ -129,3 +141,17 @@ fun List<Song>.actionDelete(context: Context) =
             .create(ArrayList(this)).show(it.supportFragmentManager, "ADD_DELETE")
         true
     }
+
+private fun showRingtoneDialog(context: Context): AlertDialog =
+    AlertDialog.Builder(context)
+        .setTitle(R.string.dialog_ringtone_title)
+        .setMessage(R.string.dialog_ringtone_title)
+        .setNegativeButton(android.R.string.cancel) { d, _ -> d.dismiss() }
+        .setPositiveButton(android.R.string.ok) { _, _ ->
+            context.startActivity(
+                Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).apply {
+                    data = Uri.parse("package:${context.packageName}")
+                }
+            )
+        }
+        .create().tintButtons()

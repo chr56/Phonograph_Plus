@@ -14,8 +14,8 @@ import player.phonograph.R
 import player.phonograph.databinding.ActivityAlbumDetailBinding
 import player.phonograph.mechanism.actions.DetailToolbarMenuProviders
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.misc.IPaletteColorProvider
 import player.phonograph.model.Album
+import player.phonograph.model.IPaletteColorProvider
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
 import player.phonograph.model.songCountString

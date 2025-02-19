@@ -12,6 +12,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.TIRAMISU
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 
@@ -41,3 +42,5 @@ fun checkNotificationPermission(context: Context) {
         }
     }
 }
+
+fun checkModificationSystemSettingsPermission(context: Context): Boolean = !Settings.System.canWrite(context)
