@@ -45,8 +45,9 @@ object MusicPlayerRemote {
 
     //region Service
 
-    var musicService: MusicService? = null
-        private set
+    private var musicService: MusicService? = null
+    fun accessMusicService(): MusicService? = musicService
+
     private val mConnectionMap = WeakHashMap<Context, MusicServiceConnection>()
 
     suspend fun bindToService(

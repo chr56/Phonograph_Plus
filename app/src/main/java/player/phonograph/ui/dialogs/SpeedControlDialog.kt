@@ -29,7 +29,7 @@ class SpeedControlDialog : DialogFragment() {
 
     private val speedData: MutableStateFlow<Float> = MutableStateFlow(-1f)
     private fun applySpeed() {
-        val service = MusicPlayerRemote.musicService ?: return
+        val service = MusicPlayerRemote.accessMusicService() ?: return
         val currentSpeed = service.speed
         val targetSpeed = speedData.value
         if (targetSpeed > 0f && targetSpeed != currentSpeed)
@@ -38,11 +38,13 @@ class SpeedControlDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        val service: MusicService? = MusicPlayerRemote.musicService
+        val service: MusicService? = MusicPlayerRemote.accessMusicService()
 
         if (service == null) {
             Log.e(TAG, "Service unavailable!")
-            return AlertDialog.Builder(requireContext()).setMessage(R.string.not_available_now).create().tintButtons()
+            return AlertDialog.Builder(requireContext())
+                .setMessage(R.string.service_disconnected)
+                .create().tintButtons()
         }
 
         _binding = DialogSpeedControlBinding.inflate(layoutInflater)

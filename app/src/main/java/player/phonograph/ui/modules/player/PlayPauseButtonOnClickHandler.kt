@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class PlayPauseButtonOnClickHandler : View.OnClickListener {
     override fun onClick(v: View) {
-        if (MusicPlayerRemote.musicService != null) {
+        if (MusicPlayerRemote.isServiceConnected) {
             if (MusicPlayerRemote.isPlaying) {
                 MusicPlayerRemote.pauseSong()
             } else {
