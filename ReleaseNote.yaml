@@ -1,17 +1,31 @@
-version: "1.8.6-dev0"
-channel: "PREVIEW"
+version: "1.8.6-LTS"
+channel: "LTS"
 versionCode: 1086
-timestamp: 1731816124
+timestamp: 1740019084
 notes:
   en:
     highlights: [ ]
     items:
+      - "Fix: possible crashes when dragging items in some circumstances (backported from v1.9.0)"
+      - "Fix: dragging playlist items but not in Edit Mode (backported from v1.9.0)"
+      - "Fix: crash when entering Tag Editor from multi-selection mode but the selection contains no song (backported from v1.9.0)"
+      - "Fix: crash after skipping from some notifications or BT devices but queue is empty (backported from v1.9.0)"
+      - "Fix: incorrect sorting order of My Top Tracks and Recently Played on some devices (backported from v1.9.0)"
+      - "Fix: missing automatic refresh in Folders tab (backported from v1.9.0)"
+      - "Improve: show bottom sliding panel in Search (backported from v1.9.0)"
       - "Modify: change default File Playlist icon"
       - "Development: update dependencies"
 
   zh:
     highlights: [ ]
     items:
+      - "修复 某些情况下拖动列表项目时可能导致崩溃 (移植自 v1.9.0)"
+      - "修复 拖动播放列表项目却不在编辑模式下 (移植自 v1.9.0)"
+      - "修复 从多选进入标签编辑器但所选内容不含任何歌曲时崩溃 (移植自 v1.9.0)"
+      - "修复 播放队列清空后, 从某些通知或蓝牙设备切换曲目时崩溃 (移植自 v1.9.0)"
+      - "修复 部分设备上最常听的歌曲和最近播放播放列表乱序 (移植自 v1.9.0)"
+      - "修复 文件夹页缺失自动刷新 (移植自 v1.9.0)"
+      - "改进 搜索界面中显示底部播放器 (移植自 v1.9.0)"
       - "修改 默认文件播放列表图标"
       - "开发 更新依赖"
 
