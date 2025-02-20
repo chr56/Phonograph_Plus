@@ -41,11 +41,12 @@ import java.util.WeakHashMap
  * @author Karim Abou Zeid (kabouzeid)
  */
 object MusicPlayerRemote {
+
+    //region Service
+
     var musicService: MusicService? = null
         private set
     private val mConnectionMap = WeakHashMap<Context, MusicServiceConnection>()
-
-    val queueManager: QueueManager by GlobalContext.get().inject()
 
     suspend fun bindToService(
         activity: ComponentActivity,
@@ -92,6 +93,7 @@ object MusicPlayerRemote {
 
         mContextWrapper.unbindService(mBinder)
 
+        @Suppress("UsePropertyAccessSyntax")
         if (mConnectionMap.isEmpty()) {
             musicService = null
         }
@@ -143,24 +145,22 @@ object MusicPlayerRemote {
     }
 
     class ServiceToken(var mWrappedContext: ContextWrapper)
+    //endregion
 
-    /**
-     * Async
-     */
-    fun playSongAt(position: Int) {
-        musicService?.playSongAt(position)
-    }
+
+
+    //region State
+
+    val isServiceConnected: Boolean get() = musicService != null
 
     val isPlaying: Boolean get() = musicService != null && musicService!!.isPlaying
 
-    fun pauseSong() {
-        musicService?.pause()
-    }
+    val audioSessionId: Int get() = musicService?.audioSessionId ?: -1
 
-    fun resumePlaying() {
-        musicService?.play()
-    }
-
+    val songProgressMillis: Int
+        get() = musicService?.songProgressMillis ?: -1
+    val songDurationMillis: Int
+        get() = musicService?.songDurationMillis ?: -1
 
     private val _currentState: MutableStateFlow<PlayerState> = MutableStateFlow(PlayerState.PREPARING)
     val currentState: StateFlow<PlayerState> = _currentState.asStateFlow()
@@ -171,6 +171,48 @@ object MusicPlayerRemote {
         }
 
         override fun onReceivingMessage(msg: Int) {}
+    }
+
+
+    val queueManager: QueueManager by GlobalContext.get().inject()
+
+    val currentSong: Song? get() = queueManager.currentSong
+    val previousSong: Song? get() = queueManager.previousSong
+    val nextSong: Song? get() = queueManager.nextSong
+
+    /**
+     * Async
+     */
+    var position: Int
+        get() = queueManager.currentSongPosition
+        set(position) {
+            queueManager.modifyPosition(position, false)
+        }
+
+    val playingQueue: List<Song>
+        get() = queueManager.playingQueue
+
+    val repeatMode: RepeatMode
+        get() = queueManager.repeatMode
+    val shuffleMode: ShuffleMode
+        get() = queueManager.shuffleMode
+
+    fun getQueueDurationMillis(position: Int): Long = queueManager.getRestSongsDuration(position)
+    //endregion
+
+
+    //region Control
+
+    fun playSongAt(position: Int) {
+        musicService?.playSongAt(position)
+    }
+
+    fun pauseSong() {
+        musicService?.pause()
+    }
+
+    fun resumePlaying() {
+        musicService?.play()
     }
 
     private var resumeInstantlyIfReady: Boolean = false
@@ -208,6 +250,25 @@ object MusicPlayerRemote {
     fun back() {
         musicService?.back(true)
     }
+
+    fun seekTo(millis: Int) {
+        musicService?.seek(millis)
+    }
+
+    fun cycleRepeatMode(): Boolean =
+        runCatching {
+            queueManager.cycleRepeatMode()
+        }.isSuccess
+
+    fun toggleShuffleMode(): Boolean =
+        runCatching {
+            queueManager.toggleShuffle()
+        }.isSuccess
+
+    fun setShuffleMode(shuffleMode: ShuffleMode): Boolean =
+        runCatching {
+            queueManager.modifyShuffleMode(shuffleMode)
+        }.isSuccess
 
     /**
      * Play a queue (asynchronous)
@@ -248,52 +309,6 @@ object MusicPlayerRemote {
         }
         return true
     }
-
-    val currentSong: Song? get() = queueManager.currentSong
-    val previousSong: Song? get() = queueManager.previousSong
-    val nextSong: Song? get() = queueManager.nextSong
-
-    /**
-     * Async
-     */
-    var position: Int
-        get() = queueManager.currentSongPosition
-        set(position) {
-            queueManager.modifyPosition(position, false)
-        }
-
-    val playingQueue: List<Song>
-        get() = queueManager.playingQueue
-    val songProgressMillis: Int
-        get() = musicService?.songProgressMillis ?: -1
-    val songDurationMillis: Int
-        get() = musicService?.songDurationMillis ?: -1
-
-    fun getQueueDurationMillis(position: Int): Long = queueManager.getRestSongsDuration(position)
-
-    fun seekTo(millis: Int) {
-        musicService?.seek(millis)
-    }
-
-    val repeatMode: RepeatMode
-        get() = queueManager.repeatMode
-    val shuffleMode: ShuffleMode
-        get() = queueManager.shuffleMode
-
-    fun cycleRepeatMode(): Boolean =
-        runCatching {
-            queueManager.cycleRepeatMode()
-        }.isSuccess
-
-    fun toggleShuffleMode(): Boolean =
-        runCatching {
-            queueManager.toggleShuffle()
-        }.isSuccess
-
-    fun setShuffleMode(shuffleMode: ShuffleMode): Boolean =
-        runCatching {
-            queueManager.modifyShuffleMode(shuffleMode)
-        }.isSuccess
 
     fun playNow(song: Song): Boolean {
         return withMusicService {
@@ -429,12 +444,9 @@ object MusicPlayerRemote {
         runCatching {
             queueManager.clearQueue()
         }.isSuccess
+    //endregion
 
-    val audioSessionId: Int get() = musicService?.audioSessionId ?: -1
-
-    val isServiceConnected: Boolean get() = musicService != null
-
-    const val TAG = "MusicPlayerRemote"
+    //region Internal Utils
 
     val operatorHandler: Handler by lazy {
         HandlerThread("worker").let {
@@ -452,4 +464,7 @@ object MusicPlayerRemote {
         musicService?.let { service ->
             block(service)
         } ?: false
+
+    const val TAG = "MusicPlayerRemote"
+    //endregion
 }
