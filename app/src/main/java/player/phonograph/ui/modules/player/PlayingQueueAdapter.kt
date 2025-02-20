@@ -134,7 +134,7 @@ class PlayingQueueAdapter(
     override fun onGetItemDraggableRange(holder: PlayingQueueViewHolder, position: Int): ItemDraggableRange? = null
 
     override fun onMoveItem(fromPosition: Int, toPosition: Int) {
-        MusicPlayerRemote.moveSong(fromPosition, toPosition)
+        MusicPlayerRemote.queueManager.moveSong(fromPosition, toPosition)
     }
 
     override fun onCheckCanDrop(draggingPosition: Int, dropPosition: Int): Boolean = true

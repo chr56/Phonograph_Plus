@@ -419,34 +419,6 @@ object MusicPlayerRemote {
         }
     }
 
-    fun removeFromQueue(song: Song): Boolean {
-        return withMusicService {
-            queueManager.removeSong(song)
-            true
-        }
-    }
-
-    fun removeFromQueue(position: Int): Boolean {
-        return withMusicService {
-            if (position in 0..playingQueue.size) queueManager.removeSongAt(position)
-            true
-        }
-    }
-
-    fun moveSong(from: Int, to: Int): Boolean {
-        return withMusicService {
-            if (from in 0..playingQueue.size && to in 0..playingQueue.size) {
-                queueManager.moveSong(from, to)
-            }
-            true
-        }
-    }
-
-    fun clearQueue(): Boolean =
-        runCatching {
-            queueManager.clearQueue()
-        }.isSuccess
-
     fun replaceLyrics(lyrics: LrcLyrics?) = musicService?.replaceLyrics(lyrics)
 
     //endregion

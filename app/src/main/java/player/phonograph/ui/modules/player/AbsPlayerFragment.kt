@@ -193,7 +193,8 @@ abstract class AbsPlayerFragment :
                 title = getString(R.string.action_clear_playing_queue)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick {
-                    MusicPlayerRemote.clearQueue()
+                    MusicPlayerRemote.queueManager.clearQueue()
+                    true
                 }
             }
             menuItem {
