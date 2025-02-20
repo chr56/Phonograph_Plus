@@ -1,11 +1,17 @@
-version: "1.8.6-LTS"
+version: "1.8.6.LTS"
 channel: "LTS"
 versionCode: 1086
-timestamp: 1740019084
+timestamp: 1740250000
 notes:
   en:
     highlights: [ ]
     items:
+      - "Fix: text color legibility in some dialogs in night mode (backported from v1.9.2)"
+      - "Fix: random crashes from background (backported from v1.9.1)"
+      - "Fix: possible crashes after rebooting on some devices (backported from v1.9.1)"
+      - "Fix: possible crashes after switching back from background on some devices (backported from v1.9.1)"
+      - "Fix: lrc lyrics with same timestamp would be overridden with last one (backported from v1.9.1)"
+      - "Fix: possibly some files are missing in Files tab due to sorting (backported from v1.9.1)"
       - "Fix: possible crashes when dragging items in some circumstances (backported from v1.9.0)"
       - "Fix: dragging playlist items but not in Edit Mode (backported from v1.9.0)"
       - "Fix: crash when entering Tag Editor from multi-selection mode but the selection contains no song (backported from v1.9.0)"
@@ -19,6 +25,12 @@ notes:
   zh:
     highlights: [ ]
     items:
+      - "修复 夜间模式下部分对话框中文本颜色问题 (移植自 v1.9.2)"
+      - "修复 后台随机崩溃 (移植自 v1.9.1)"
+      - "修复 部分设备上重启后崩溃 (移植自 v1.9.1)"
+      - "修复 部分设备上从后台切换回来后崩溃 (移植自 v1.9.1)"
+      - "修复 时间戳相同的多行 lrc 歌词将被最后一行覆盖 (移植自 v1.9.1)"
+      - "修复 排序导致的文件页部分文件不显示 (移植自 v1.9.1)"
       - "修复 某些情况下拖动列表项目时可能导致崩溃 (移植自 v1.9.0)"
       - "修复 拖动播放列表项目却不在编辑模式下 (移植自 v1.9.0)"
       - "修复 从多选进入标签编辑器但所选内容不含任何歌曲时崩溃 (移植自 v1.9.0)"
