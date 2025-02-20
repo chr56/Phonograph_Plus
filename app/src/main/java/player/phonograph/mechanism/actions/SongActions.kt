@@ -61,9 +61,6 @@ fun List<Song>.actionEnqueue(): Boolean =
     MusicPlayerRemote.enqueue(this)
 
 
-internal fun actionRemoveFromQueue(index: Int): Boolean =
-    MusicPlayerRemote.removeFromQueue(index)
-
 fun Song.actionGotoDetail(activity: FragmentActivity): Boolean {
     TagBrowserActivity.launch(activity, data)
     return true

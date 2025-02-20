@@ -68,7 +68,7 @@ object ActionMenuProviders {
                 if (index >= 0) {
                     menuItem(title = getString(R.string.action_remove_from_playing_queue)) {
                         showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                        onClick { actionRemoveFromQueue(index) }
+                        onClick { MusicPlayerRemote.queueManager.removeSongAt(index); true }
                     }
                 } else {
                     menuItem(title = getString(R.string.action_add_to_playing_queue)) { // id = R.id.action_add_to_current_playing

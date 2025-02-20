@@ -7,6 +7,7 @@ package player.phonograph.service
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.model.Song
+import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicService.MusicBinder
 import player.phonograph.service.player.PlayerState
 import player.phonograph.service.player.PlayerStateObserver
@@ -41,11 +42,13 @@ import java.util.WeakHashMap
  * @author Karim Abou Zeid (kabouzeid)
  */
 object MusicPlayerRemote {
-    var musicService: MusicService? = null
-        private set
-    private val mConnectionMap = WeakHashMap<Context, MusicServiceConnection>()
 
-    val queueManager: QueueManager by GlobalContext.get().inject()
+    //region Service
+
+    private var musicService: MusicService? = null
+    fun accessMusicService(): MusicService? = musicService
+
+    private val mConnectionMap = WeakHashMap<Context, MusicServiceConnection>()
 
     suspend fun bindToService(
         activity: ComponentActivity,
@@ -92,6 +95,7 @@ object MusicPlayerRemote {
 
         mContextWrapper.unbindService(mBinder)
 
+        @Suppress("UsePropertyAccessSyntax")
         if (mConnectionMap.isEmpty()) {
             musicService = null
         }
@@ -143,24 +147,21 @@ object MusicPlayerRemote {
     }
 
     class ServiceToken(var mWrappedContext: ContextWrapper)
+    //endregion
 
-    /**
-     * Async
-     */
-    fun playSongAt(position: Int) {
-        musicService?.playSongAt(position)
-    }
+
+    //region State
+
+    val isServiceConnected: Boolean get() = musicService != null
 
     val isPlaying: Boolean get() = musicService != null && musicService!!.isPlaying
 
-    fun pauseSong() {
-        musicService?.pause()
-    }
+    val audioSessionId: Int get() = musicService?.audioSessionId ?: -1
 
-    fun resumePlaying() {
-        musicService?.play()
-    }
-
+    val songProgressMillis: Int
+        get() = musicService?.songProgressMillis ?: -1
+    val songDurationMillis: Int
+        get() = musicService?.songDurationMillis ?: -1
 
     private val _currentState: MutableStateFlow<PlayerState> = MutableStateFlow(PlayerState.PREPARING)
     val currentState: StateFlow<PlayerState> = _currentState.asStateFlow()
@@ -171,6 +172,50 @@ object MusicPlayerRemote {
         }
 
         override fun onReceivingMessage(msg: Int) {}
+    }
+
+
+    val queueManager: QueueManager by GlobalContext.get().inject()
+
+    val currentSong: Song? get() = queueManager.currentSong
+    val previousSong: Song? get() = queueManager.previousSong
+    val nextSong: Song? get() = queueManager.nextSong
+
+    /**
+     * Async
+     */
+    var position: Int
+        get() = queueManager.currentSongPosition
+        set(position) {
+            queueManager.modifyPosition(position, false)
+        }
+
+    val playingQueue: List<Song>
+        get() = queueManager.playingQueue
+
+    val repeatMode: RepeatMode
+        get() = queueManager.repeatMode
+    val shuffleMode: ShuffleMode
+        get() = queueManager.shuffleMode
+
+    fun getQueueDurationMillis(position: Int): Long = queueManager.getRestSongsDuration(position)
+    //endregion
+
+
+    //region Control
+
+    fun playSongAt(position: Int) {
+        musicService?.playSongAt(position) ?: run {
+            queueManager.modifyPosition(position)
+        }
+    }
+
+    fun pauseSong() {
+        musicService?.pause()
+    }
+
+    fun resumePlaying() {
+        musicService?.play()
     }
 
     private var resumeInstantlyIfReady: Boolean = false
@@ -192,93 +237,32 @@ object MusicPlayerRemote {
      * Async
      */
     fun playNextSong() {
-        musicService?.playNextSong(true)
+        musicService?.playNextSong(true) ?: run {
+            queueManager.modifyPosition(queueManager.nextSongPosition)
+        }
     }
 
     /**
      * Async
      */
     fun playPreviousSong() {
-        musicService?.playPreviousSong(true)
+        musicService?.playPreviousSong(true) ?: run {
+            queueManager.modifyPosition(queueManager.previousSongPosition)
+        }
     }
 
     /**
      * Async
      */
     fun back() {
-        musicService?.back(true)
+        musicService?.back(true) ?: run {
+            queueManager.modifyPosition(queueManager.previousSongPosition)
+        }
     }
-
-    /**
-     * Play a queue (asynchronous)
-     * @param queue new queue
-     * @param startPlaying true if to play now, false if to pause
-     * @param shuffleMode new preferred shuffle mode, null if no intend to change
-     * @param startPosition * if Shuffle Mode on, selected position as first song; if off, position in queue when starting playing
-     * @return request success or not
-     */
-    fun playQueue(
-        queue: List<Song>,
-        startPosition: Int,
-        startPlaying: Boolean,
-        shuffleMode: ShuffleMode?,
-    ): Boolean {
-        if (queue.isEmpty() || startPosition !in queue.indices) {
-            warning(
-                TAG,
-                "Queue(size:${queue.size}) submitted is empty or start position ($startPosition) is out ranged"
-            )
-            return false
-        }
-        operatorHandler.post {
-            // check whether queue already sits there
-            if (queueManager.playingQueue === queue) {
-                if (startPlaying) {
-                    playSongAt(startPosition)
-                } else {
-                    queueManager.modifyPosition(startPosition, false)
-                }
-                return@post
-            }
-            // swap queue
-            shuffleMode?.let { queueManager.modifyShuffleMode(shuffleMode, false) }
-            queueManager.swapQueue(queue, startPosition, false)
-            if (startPlaying) musicService?.playSongAt(queueManager.currentSongPosition)
-            else musicService?.pause()
-        }
-        return true
-    }
-
-    val currentSong: Song? get() = queueManager.currentSong
-    val previousSong: Song? get() = queueManager.previousSong
-    val nextSong: Song? get() = queueManager.nextSong
-
-    /**
-     * Async
-     */
-    var position: Int
-        get() = queueManager.currentSongPosition
-        set(position) {
-            queueManager.modifyPosition(position, false)
-        }
-
-    val playingQueue: List<Song>
-        get() = queueManager.playingQueue
-    val songProgressMillis: Int
-        get() = musicService?.songProgressMillis ?: -1
-    val songDurationMillis: Int
-        get() = musicService?.songDurationMillis ?: -1
-
-    fun getQueueDurationMillis(position: Int): Long = queueManager.getRestSongsDuration(position)
 
     fun seekTo(millis: Int) {
         musicService?.seek(millis)
     }
-
-    val repeatMode: RepeatMode
-        get() = queueManager.repeatMode
-    val shuffleMode: ShuffleMode
-        get() = queueManager.shuffleMode
 
     fun cycleRepeatMode(): Boolean =
         runCatching {
@@ -295,146 +279,137 @@ object MusicPlayerRemote {
             queueManager.modifyShuffleMode(shuffleMode)
         }.isSuccess
 
-    fun playNow(song: Song): Boolean {
-        return withMusicService {
-            if (playingQueue.isEmpty()) {
-                playQueue(listOf(song), 0, false, null)
+    /**
+     * Play a queue (asynchronous)
+     * @param queue new queue
+     * @param startPlaying true if to play now, false if to pause
+     * @param shuffleMode new preferred shuffle mode, null if no intend to change
+     * @param startPosition if Shuffle Mode on, selected position as first song; if off, position in queue when starting playing
+     * @return request success or not
+     */
+    fun playQueue(
+        queue: List<Song>,
+        startPosition: Int,
+        startPlaying: Boolean,
+        shuffleMode: ShuffleMode?,
+    ): Boolean {
+        if (queue.isEmpty()) {
+            warning(TAG, "Summited Queue is empty")
+            return false
+        }
+        if (startPosition !in queue.indices) {
+            warning(TAG, "Start position ($startPosition) is out ranged (total: ${queue.size})")
+            return false
+        }
+
+        // check whether queue already sits there
+        if (queueManager.playingQueue === queue) {
+            if (startPlaying) {
+                playSongAt(startPosition)
             } else {
-                queueManager.addSong(song, position)
+                queueManager.modifyPosition(startPosition, true)
+            }
+        } else {
+            operatorHandler.post {
+                // swap queue
+                if (shuffleMode != null) queueManager.modifyShuffleMode(shuffleMode, alongWithQueue = false)
+                queueManager.swapQueue(queue, startPosition, false)
+                if (startPlaying) musicService?.playSongAt(queueManager.currentSongPosition) else musicService?.pause()
+            }
+        }
+        return true
+    }
+
+    fun playNow(song: Song): Boolean {
+        if (playingQueue.isEmpty()) {
+            playQueue(listOf(song), 0, false, null)
+        } else {
+            queueManager.addSong(song, position)
+            withMusicService {
                 it.playSongAt(position)
             }
-            Toast.makeText(
-                musicService,
-                it.resources.getString(R.string.added_title_to_playing_queue),
-                LENGTH_SHORT
-            ).show()
-            true
         }
+        toastWithService {
+            it.getString(R.string.added_title_to_playing_queue)
+        }
+        return true
     }
 
     fun playNow(songs: List<Song>): Boolean {
-        return withMusicService {
-            if (playingQueue.isEmpty()) {
-                playQueue(songs, 0, false, null)
+        if (playingQueue.isEmpty()) {
+            playQueue(songs, 0, false, null)
+            withMusicService {
                 it.play()
-            } else {
-                queueManager.addSongs(songs, position)
+            }
+        } else {
+            queueManager.addSongs(songs, position)
+            withMusicService {
                 it.playSongAt(position)
             }
-            Toast.makeText(
-                musicService,
-                if (songs.size == 1) it.resources.getString(R.string.added_title_to_playing_queue)
-                else it.resources.getString(R.string.added_x_titles_to_playing_queue, songs.size),
-                LENGTH_SHORT
-            ).show()
-            true
         }
+        toastWithService {
+            if (songs.size == 1) it.getString(R.string.added_title_to_playing_queue)
+            else it.getString(R.string.added_x_titles_to_playing_queue, songs.size)
+        }
+        return true
     }
 
     fun playNext(song: Song): Boolean {
-        return withMusicService {
-            if (playingQueue.isEmpty()) {
-                playQueue(listOf(song), 0, false, null)
-            } else {
-                queueManager.addSong(song, position + 1)
-            }
-            Toast.makeText(
-                musicService,
-                it.resources.getString(R.string.added_title_to_playing_queue),
-                LENGTH_SHORT
-            ).show()
-            true
+        if (playingQueue.isEmpty()) {
+            playQueue(listOf(song), 0, false, null)
+        } else {
+            queueManager.addSong(song, position + 1)
         }
+        toastWithService {
+            it.getString(R.string.added_title_to_playing_queue)
+        }
+        return true
     }
 
     @JvmStatic
     fun playNext(songs: List<Song>): Boolean {
-        return withMusicService {
-            if (playingQueue.isEmpty()) {
-                playQueue(songs, 0, false, null)
-            } else {
-                queueManager.addSongs(songs, position + 1)
-            }
-
-            Toast.makeText(
-                musicService,
-                if (songs.size == 1) it.resources.getString(R.string.added_title_to_playing_queue)
-                else it.resources.getString(R.string.added_x_titles_to_playing_queue, songs.size),
-                LENGTH_SHORT
-            ).show()
-            true
+        if (playingQueue.isEmpty()) {
+            playQueue(songs, 0, false, null)
+        } else {
+            queueManager.addSongs(songs, position + 1)
         }
+        toastWithService {
+            if (songs.size == 1) it.getString(R.string.added_title_to_playing_queue)
+            else it.getString(R.string.added_x_titles_to_playing_queue, songs.size)
+        }
+        return true
     }
 
     fun enqueue(song: Song): Boolean {
-        return withMusicService {
-            if (playingQueue.isEmpty()) {
-                playQueue(listOf(song), 0, false, null)
-            } else {
-                queueManager.addSong(song)
-            }
-
-            Toast.makeText(
-                musicService,
-                it.resources.getString(R.string.added_title_to_playing_queue),
-                LENGTH_SHORT
-            ).show()
-            true
+        if (playingQueue.isEmpty()) {
+            playQueue(listOf(song), 0, false, null)
+        } else {
+            queueManager.addSong(song)
         }
+        toastWithService {
+            it.getString(R.string.added_title_to_playing_queue)
+        }
+        return true
     }
 
-    @JvmStatic
     fun enqueue(songs: List<Song>): Boolean {
-        return withMusicService {
-            if (playingQueue.isEmpty()) {
-                playQueue(songs, 0, false, null)
-            } else {
-                queueManager.addSongs(songs)
-            }
-
-            Toast.makeText(
-                musicService,
-                if (songs.size == 1) it.resources.getString(R.string.added_title_to_playing_queue)
-                else it.resources.getString(R.string.added_x_titles_to_playing_queue, songs.size),
-                LENGTH_SHORT
-            ).show()
-            true
+        if (playingQueue.isEmpty()) {
+            playQueue(songs, 0, false, null)
+        } else {
+            queueManager.addSongs(songs)
         }
+        toastWithService {
+            if (songs.size == 1) it.getString(R.string.added_title_to_playing_queue)
+            else it.getString(R.string.added_x_titles_to_playing_queue, songs.size)
+        }
+        return true
     }
 
-    fun removeFromQueue(song: Song): Boolean {
-        return withMusicService {
-            queueManager.removeSong(song)
-            true
-        }
-    }
+    fun replaceLyrics(lyrics: LrcLyrics?) = musicService?.replaceLyrics(lyrics)
 
-    fun removeFromQueue(position: Int): Boolean {
-        return withMusicService {
-            if (position in 0..playingQueue.size) queueManager.removeSongAt(position)
-            true
-        }
-    }
+    //endregion
 
-    fun moveSong(from: Int, to: Int): Boolean {
-        return withMusicService {
-            if (from in 0..playingQueue.size && to in 0..playingQueue.size) {
-                queueManager.moveSong(from, to)
-            }
-            true
-        }
-    }
-
-    fun clearQueue(): Boolean =
-        runCatching {
-            queueManager.clearQueue()
-        }.isSuccess
-
-    val audioSessionId: Int get() = musicService?.audioSessionId ?: -1
-
-    val isServiceConnected: Boolean get() = musicService != null
-
-    const val TAG = "MusicPlayerRemote"
+    //region Internal Utils
 
     val operatorHandler: Handler by lazy {
         HandlerThread("worker").let {
@@ -445,11 +420,19 @@ object MusicPlayerRemote {
 
     /**
      * run [block] if [musicService] is not null
-     * @return false if failed
      */
-    @Suppress("NullableBooleanElvis")
-    private inline fun withMusicService(block: (MusicService) -> Boolean): Boolean =
-        musicService?.let { service ->
-            block(service)
-        } ?: false
+    private inline fun <T> withMusicService(block: (MusicService) -> T) =
+        musicService?.let { service -> block(service) }
+
+    /**
+     * toast if [musicService] is not null
+     */
+    private fun toastWithService(text: (Context) -> String) {
+        withMusicService {
+            Toast.makeText(it, text(it), LENGTH_SHORT).show()
+        }
+    }
+
+    const val TAG = "MusicPlayerRemote"
+    //endregion
 }

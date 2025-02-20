@@ -15,6 +15,7 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.tintAlertDialogButtons
+import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import android.app.Dialog
@@ -65,8 +66,11 @@ class SleepTimerDialog : DialogFragment() {
     }
 
     private fun startTimer() {
-        val service = MusicPlayerRemote.musicService
-        require(service != null)
+        val service = MusicPlayerRemote.accessMusicService()
+        if (service == null) {
+            showDisconnectedDialog()
+            return
+        }
 
         val minutesToQuit = progress.toLong()
         val shouldFinishLastSong = Setting(service)[Keys.sleepTimerFinishMusic].data
@@ -74,10 +78,19 @@ class SleepTimerDialog : DialogFragment() {
     }
 
     private fun cancelTimer() {
-        val service = MusicPlayerRemote.musicService
-        require(service != null)
+        val service = MusicPlayerRemote.accessMusicService()
+        if (service == null) {
+            showDisconnectedDialog()
+            return
+        }
 
         SleepTimer.instance().cancelTimer(service)
+    }
+
+    private fun showDisconnectedDialog() {
+        AlertDialog.Builder(requireContext())
+            .setMessage(R.string.service_disconnected)
+            .create().tintButtons()
     }
 
     private fun setupMainView(alertDialog: AlertDialog) {
@@ -148,9 +161,11 @@ class SleepTimerDialog : DialogFragment() {
 
         private fun setNegativeButtonText(time: Long) {
             val text = requireContext().getString(R.string.cancel_current_timer).plus(
-                MusicPlayerRemote.musicService?.let {
+                if (MusicPlayerRemote.isServiceConnected) {
                     if (time > 0 && SleepTimer.instance().hasTimer()) "(${getReadableDurationString(time)})" else ""
-                } ?: "(N/A)"
+                } else {
+                    requireContext().getString(R.string.service_disconnected)
+                }
             )
             dialog.getButton(DialogInterface.BUTTON_NEGATIVE)?.text = text
         }

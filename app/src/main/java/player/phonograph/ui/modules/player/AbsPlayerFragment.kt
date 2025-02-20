@@ -193,7 +193,8 @@ abstract class AbsPlayerFragment :
                 title = getString(R.string.action_clear_playing_queue)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick {
-                    MusicPlayerRemote.clearQueue()
+                    MusicPlayerRemote.queueManager.clearQueue()
+                    true
                 }
             }
             menuItem {
@@ -461,7 +462,7 @@ abstract class AbsPlayerFragment :
             withContext(Dispatchers.Main) {
                 lyricsMenuItem?.isVisible = !lyricsInfo.isNullOrEmpty()
                 val activated = lyricsInfo?.activatedLyrics
-                MusicPlayerRemote.musicService?.replaceLyrics(activated as? LrcLyrics)
+                MusicPlayerRemote.replaceLyrics(activated as? LrcLyrics)
             }
         }
         observe(viewModel.paletteColor) { newColor ->
