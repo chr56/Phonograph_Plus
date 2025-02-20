@@ -7,6 +7,7 @@ package player.phonograph.service
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.model.Song
+import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicService.MusicBinder
 import player.phonograph.service.player.PlayerState
 import player.phonograph.service.player.PlayerStateObserver
@@ -444,6 +445,9 @@ object MusicPlayerRemote {
         runCatching {
             queueManager.clearQueue()
         }.isSuccess
+
+    fun replaceLyrics(lyrics: LrcLyrics?) = musicService?.replaceLyrics(lyrics)
+
     //endregion
 
     //region Internal Utils

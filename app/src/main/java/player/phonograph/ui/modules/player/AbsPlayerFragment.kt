@@ -461,7 +461,7 @@ abstract class AbsPlayerFragment :
             withContext(Dispatchers.Main) {
                 lyricsMenuItem?.isVisible = !lyricsInfo.isNullOrEmpty()
                 val activated = lyricsInfo?.activatedLyrics
-                MusicPlayerRemote.musicService?.replaceLyrics(activated as? LrcLyrics)
+                MusicPlayerRemote.replaceLyrics(activated as? LrcLyrics)
             }
         }
         observe(viewModel.paletteColor) { newColor ->
