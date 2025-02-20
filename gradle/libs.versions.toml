@@ -48,7 +48,7 @@ koin = "4.0.2"
 #### Others Start
 materialDialogs = "3.3.0"
 composeMaterialDialogs = "0.9.0"
-themeUtil = "0.3.0"
+themeUtil = "0.3.2"
 #### Others End
 
 ## Test
