@@ -23,6 +23,7 @@
     <string name="action_delete_from_device">Excluir do dispositivo</string>
     <string name="action_details">Detalhes</string>
     <string name="action_scan">Escanear</string>
+    <string name="action_clean">Limpar</string>
     <string name="action_set_as_start_directory">Definir como tela inicial</string>
     <string name="albums">Álbuns</string>
     <string name="artists">Artistas</string>
@@ -522,6 +523,7 @@
     <string name="help_notification_actions">Você pode configurar até 5 ações na notificação expandida, e até 3 ações na notificação compacta. (As caixas de seleção da esquerda são expandidas; as caixas de seleção da direita são para as compactas.)</string>
     <string name="help_unmatched_notification_actions">As ações na notificação compacta também devem estar na notificação expandida.</string>
     <string name="illegal_operation">A operação não atende aos seus requisitos.</string>
+    <string name="action_clean_missing_items">Limpar todos os itens que faltam</string>
     <string name="error_unstoppable_service">Não é possível sair do serviço de música em primeiro plano ou em uso.</string>
     <string name="action_fast_rewind">Retroceder Rapidamente</string>
     <string name="action_fast_forward">Avançar rapidamente</string>
@@ -538,6 +540,11 @@
     <string name="service_disconnected">[Serviço desconectado!]</string>
     <string name="file_playlists">Arquivo de lista de reprodução</string>
     <string name="database_playlists">Lista de reprodução do Banco de dados</string>
+    <string name="title_database_maintenance">Manutenção do banco de dados interno</string>
+    <string name="action_refresh_database">Atualizar Bancos de Dados</string>
+    <string name="description_refresh_database">Escanear músicas e indexá-las</string>
+    <string name="action_delete_database">Apagar o Banco de Dados</string>
+    <string name="description_delete_database">Apagar todo o banco de dados, incluindo todas as playlists do banco de dados e músicas indexadas!</string>
     <string name="version_migration">Migração de Versão</string>
     <string name="version_migration_summary">Atualizando a partir da versão antiga…</string>
     <string name="version_migration_hint_too_old">Você está fazendo a atualização de uma versão muito antiga!</string>
