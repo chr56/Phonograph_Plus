@@ -7,12 +7,22 @@ package player.phonograph.mechanism.tag
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
+import org.jaudiotagger.audio.generic.AbstractTag
 import org.jaudiotagger.logging.ErrorMessage
 import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.KeyNotFoundException
+import org.jaudiotagger.tag.aiff.AiffTag
+import org.jaudiotagger.tag.flac.FlacTag
+import org.jaudiotagger.tag.id3.AbstractID3v2Tag
+import org.jaudiotagger.tag.id3.ID3v11Tag
+import org.jaudiotagger.tag.id3.ID3v1Tag
+import org.jaudiotagger.tag.mp4.Mp4Tag
+import org.jaudiotagger.tag.vorbiscomment.VorbisCommentTag
+import org.jaudiotagger.tag.wav.WavTag
 import player.phonograph.R
 import player.phonograph.model.FilePropertyField
 import player.phonograph.model.LongFilePropertyField
+import player.phonograph.model.RawTag
 import player.phonograph.model.Song
 import player.phonograph.model.SongInfoModel
 import player.phonograph.model.StringFilePropertyField
@@ -56,7 +66,7 @@ object JAudioTaggerExtractor : MetadataExtractor {
             val audioPropertyFields = readAudioPropertyFields(audioFile.audioHeader)
             val tagFields = readTagFields(audioFile)
             val tagFormat = TagFormat.of(audioFile)
-            val allTags = readAllTags(audioFile)
+            val allTags = readAllTagFields(audioFile)
 
             return SongInfoModel(
                 fileName = StringFilePropertyField(fileName),
@@ -118,6 +128,27 @@ object JAudioTaggerExtractor : MetadataExtractor {
             }
             TagField(key, value)
         }
+    }
+
+    fun readAllTagFields(audioFile: AudioFile): Map<String, RawTag> {
+        val items: Map<String, RawTag> = try {
+            when (val tag = audioFile.tag) {
+                is AbstractID3v2Tag -> ID3v2Readers.ID3v2Reader.read(tag)
+                is AiffTag          -> ID3v2Readers.AiffTagReader.read(tag)
+                is WavTag           -> ID3v2Readers.WavTagReader.read(tag)
+                is ID3v11Tag        -> ID3v1TagReaders.ID3v11TagReader.read(tag)
+                is ID3v1Tag         -> ID3v1TagReaders.ID3v1TagReader.read(tag)
+                is FlacTag          -> FlacTagReader.read(tag)
+                is Mp4Tag           -> Mp4TagReader.read(tag)
+                is VorbisCommentTag -> VorbisCommentTagReader.read(tag)
+                is AbstractTag      -> SimpleKeyValueReader.read(tag)
+                else                -> emptyMap()
+            }
+        } catch (e: Exception) {
+            reportError(e, "TagReader", "Failed to read all tags for ${audioFile.file.absolutePath}")
+            emptyMap()
+        }
+        return items
     }
 
     private const val TAG = "JAudioTaggerExtractor"

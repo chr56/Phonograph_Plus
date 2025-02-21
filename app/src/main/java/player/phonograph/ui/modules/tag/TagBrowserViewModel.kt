@@ -7,9 +7,10 @@ package player.phonograph.ui.modules.tag
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
+import player.phonograph.mechanism.tag.DefaultMetadataExtractor
 import player.phonograph.mechanism.tag.EditAction
+import player.phonograph.mechanism.tag.JAudioTaggerExtractor
 import player.phonograph.mechanism.tag.edit.applyEdit
-import player.phonograph.mechanism.tag.loadSongInfo
 import player.phonograph.model.Song
 import player.phonograph.model.SongInfoModel
 import player.phonograph.model.TagData
@@ -46,7 +47,8 @@ class TagBrowserViewModel : ViewModel() {
         if (song != null && song.data.isNotEmpty()) {
             _song.update { song }
             viewModelScope.launch(Dispatchers.IO) {
-                val info = loadSongInfo(context, song)
+                val info = JAudioTaggerExtractor.extractSongMetadata(context, song)
+                    ?: DefaultMetadataExtractor.extractSongMetadata(context, song)
                 val (bitmap, paletteColor) = loadCover(context, song)
                 _originalSongInfo.emit(info)
                 _currentSongInfo.emit(info)
