@@ -4,7 +4,6 @@
 
 package player.phonograph.mechanism.tag
 
-import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.generic.AbstractTag
 import org.jaudiotagger.tag.Tag
 import org.jaudiotagger.tag.TagField
@@ -35,27 +34,6 @@ import player.phonograph.model.TagData.TextData
 import player.phonograph.util.reportError
 import java.io.UnsupportedEncodingException
 
-
-fun readAllTags(audioFile: AudioFile): Map<String, RawTag> {
-    val items: Map<String, RawTag> = try {
-        when (val tag = audioFile.tag) {
-            is AbstractID3v2Tag -> ID3v2Readers.ID3v2Reader.read(tag)
-            is AiffTag          -> ID3v2Readers.AiffTagReader.read(tag)
-            is WavTag           -> ID3v2Readers.WavTagReader.read(tag)
-            is ID3v11Tag        -> ID3v1TagReaders.ID3v11TagReader.read(tag)
-            is ID3v1Tag         -> ID3v1TagReaders.ID3v1TagReader.read(tag)
-            is FlacTag          -> FlacTagReader.read(tag)
-            is Mp4Tag           -> Mp4TagReader.read(tag)
-            is VorbisCommentTag -> VorbisCommentTagReader.read(tag)
-            is AbstractTag      -> SimpleKeyValueReader.read(tag)
-            else                -> emptyMap()
-        }
-    } catch (e: Exception) {
-        reportError(e, "TagReader", "Failed to read all tags for ${audioFile.file.absolutePath}")
-        emptyMap()
-    }
-    return items
-}
 
 sealed interface TagReader<T : Tag> {
     fun read(tag: T): Map<String, RawTag>

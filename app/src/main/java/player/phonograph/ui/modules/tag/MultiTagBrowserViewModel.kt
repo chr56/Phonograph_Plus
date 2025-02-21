@@ -7,9 +7,10 @@ package player.phonograph.ui.modules.tag
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
-import player.phonograph.mechanism.tag.EditAction
+import player.phonograph.mechanism.tag.DefaultMetadataExtractor
+import player.phonograph.mechanism.tag.JAudioTaggerExtractor
+import player.phonograph.mechanism.tag.edit.EditAction
 import player.phonograph.mechanism.tag.edit.applyEdit
-import player.phonograph.mechanism.tag.loadSongInfo
 import player.phonograph.model.Song
 import player.phonograph.model.SongInfoModel
 import player.phonograph.model.TagField
@@ -44,7 +45,8 @@ class MultiTagBrowserViewModel : ViewModel() {
             viewModelScope.launch(Dispatchers.IO) {
                 val infos = mutableListOf<SongInfoModel>()
                 for (song in songs) {
-                    val info = loadSongInfo(context, song)
+                    val info = JAudioTaggerExtractor.extractSongMetadata(context, song)
+                        ?: DefaultMetadataExtractor.extractSongMetadata(context, song)
                     infos.add(info)
                 }
                 _originalSongInfos.emit(infos)
