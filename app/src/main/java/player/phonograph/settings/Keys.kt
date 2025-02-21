@@ -145,6 +145,8 @@ object Keys {
         get() = PrimitiveKey<Float>(floatPK("cover_lyrics_size")) { 22f }
     val coverLyricsAlign
         get() = PrimitiveKey<String>(stringPK("cover_lyrics_align")) { LYRICS_ALIGN_CENTER }
+    val dialogLyricsSize
+        get() = PrimitiveKey<Float>(floatPK("dialog_lyrics_size")) { 18f }
     //</editor-fold>
 
     //</editor-fold>
