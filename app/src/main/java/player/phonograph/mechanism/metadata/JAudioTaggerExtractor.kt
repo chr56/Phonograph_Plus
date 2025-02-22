@@ -203,4 +203,16 @@ object JAudioTaggerExtractor : MetadataExtractor {
             }
         }
     }
+
+    /**
+     * read embed images via JAudioTagger
+     */
+    fun readImage(file: File): ByteArray? {
+        try {
+            val artwork = AudioFileIO.read(file).tag?.firstArtwork
+            return artwork?.binaryData
+        } catch (e: CannotReadException) {
+            return null
+        }
+    }
 }
