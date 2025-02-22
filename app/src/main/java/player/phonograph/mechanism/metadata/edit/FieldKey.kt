@@ -29,21 +29,3 @@ fun FieldKey.text(resources: Resources): String {
     }
     return if (stringRes > 0) resources.getString(stringRes) else name
 }
-
-val allFieldKey =
-    setOf(
-        FieldKey.TITLE,
-        FieldKey.ARTIST,
-        FieldKey.ALBUM,
-        FieldKey.ALBUM_ARTIST,
-        FieldKey.COMPOSER,
-        FieldKey.LYRICIST,
-        FieldKey.YEAR,
-        FieldKey.GENRE,
-        FieldKey.DISC_NO,
-        FieldKey.DISC_TOTAL,
-        FieldKey.TRACK,
-        FieldKey.TRACK_TOTAL,
-        FieldKey.RATING,
-        FieldKey.COMMENT,
-    ) + FieldKey.entries

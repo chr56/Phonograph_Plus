@@ -11,7 +11,6 @@ import player.phonograph.R
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
 import player.phonograph.mechanism.metadata.edit.selectImage
 import player.phonograph.model.getFileSizeString
-import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.Metadata
 import player.phonograph.mechanism.metadata.edit.text
 import player.phonograph.ui.compose.components.CascadeVerticalItem
@@ -144,17 +143,9 @@ fun Artwork(viewModel: TagBrowserViewModel, bitmap: Bitmap?, editable: Boolean) 
 @Composable
 private fun AddMoreButton(model: TagBrowserViewModel) {
     val metadata by model.currentSongMetadata.collectAsState()
-    val allFieldKey = ConventionalMusicMetadataKey.entries.map { FieldKey.entries[it.ordinal] }
-    val existKeys = run {
-        val musicMetadata = metadata.musicMetadata
-        if (musicMetadata is JAudioTaggerMetadata) {
-            musicMetadata.textOnlyTagFields.keys
-        } else {
-            emptySet()
-        }
-    }
-    val remainedKeys = allFieldKey.subtract(existKeys)
-    AddMoreButton(remainedKeys, model::process)
+    val musicMetadata = metadata.musicMetadata
+    val existKeys = if (musicMetadata is JAudioTaggerMetadata) musicMetadata.textOnlyTagFields.keys else emptySet()
+    AddMoreButtonWithoutExistedKeys(existKeys, model::process)
 }
 
 

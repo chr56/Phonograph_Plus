@@ -8,7 +8,6 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.mechanism.metadata.edit.selectImage
-import player.phonograph.mechanism.metadata.edit.allFieldKey
 import player.phonograph.mechanism.metadata.edit.text
 import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.Title
@@ -89,7 +88,7 @@ private fun CommonTags(viewModel: MultiTagBrowserViewModel) {
             viewModel::process
         )
     }
-    if (editable) AddMoreButton(allFieldKey.subtract(reducedTags.keys), viewModel::process)
+    if (editable) AddMoreButtonWithoutExistedKeys(reducedTags.keys, viewModel::process)
 }
 
 @Composable

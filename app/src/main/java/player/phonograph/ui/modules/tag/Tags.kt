@@ -8,6 +8,7 @@ import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
 import player.phonograph.mechanism.metadata.edit.text
+import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.Metadata
 import player.phonograph.ui.compose.components.VerticalTextItem
 import androidx.annotation.StringRes
@@ -55,8 +56,21 @@ import androidx.compose.ui.unit.sp
 import android.content.Context
 
 
+/**
+ * @param existKeys keys already existed
+ */
 @Composable
-internal fun AddMoreButton(keys: Set<FieldKey>, onEdit: (Context, TagEditEvent) -> Unit) {
+fun AddMoreButtonWithoutExistedKeys(existKeys: Set<FieldKey>, onEdit: (Context, TagEditEvent) -> Unit) {
+    val allFieldKey = ConventionalMusicMetadataKey.entries.map { FieldKey.entries[it.ordinal] }
+    val remainedKeys = allFieldKey.subtract(existKeys)
+    AddMoreButton(remainedKeys, onEdit)
+}
+
+/**
+ * @param keys keys to display
+ */
+@Composable
+private fun AddMoreButton(keys: Set<FieldKey>, onEdit: (Context, TagEditEvent) -> Unit) {
     Box(Modifier.fillMaxWidth()) {
         var showed by remember { mutableStateOf(false) }
         DropdownMenu(expanded = showed, onDismissRequest = { showed = false }) {
