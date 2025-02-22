@@ -4,11 +4,9 @@
 
 package player.phonograph.ui.modules.tag
 
-import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
-import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.AllFieldKey
-import player.phonograph.mechanism.metadata.edit.text
+import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.Metadata
 import player.phonograph.ui.compose.components.VerticalTextItem
 import androidx.annotation.StringRes
@@ -60,8 +58,8 @@ import android.content.Context
  * @param existKeys keys already existed
  */
 @Composable
-fun AddMoreButtonWithoutExistedKeys(existKeys: Set<FieldKey>, onEdit: (Context, TagEditEvent) -> Unit) {
-    val remainedKeys = AllFieldKey.subtract(existKeys)
+fun AddMoreButtonWithoutExistedKeys(existKeys: Set<ConventionalMusicMetadataKey>, onEdit: (Context, TagEditEvent) -> Unit) {
+    val remainedKeys = ConventionalMusicMetadataKey.entries.subtract(existKeys)
     AddMoreButton(remainedKeys, onEdit)
 }
 
@@ -69,7 +67,7 @@ fun AddMoreButtonWithoutExistedKeys(existKeys: Set<FieldKey>, onEdit: (Context, 
  * @param keys keys to display
  */
 @Composable
-private fun AddMoreButton(keys: Set<FieldKey>, onEdit: (Context, TagEditEvent) -> Unit) {
+private fun AddMoreButton(keys: Set<ConventionalMusicMetadataKey>, onEdit: (Context, TagEditEvent) -> Unit) {
     Box(Modifier.fillMaxWidth()) {
         var showed by remember { mutableStateOf(false) }
         DropdownMenu(expanded = showed, onDismissRequest = { showed = false }) {
@@ -84,7 +82,7 @@ private fun AddMoreButton(keys: Set<FieldKey>, onEdit: (Context, TagEditEvent) -
                     .padding(8.dp, 16.dp)
                 ) {
                     Text(
-                        text = fieldKey.text(context.resources),
+                        text = if (fieldKey.res > 0 ) stringResource(fieldKey.res) else fieldKey.name,
                         // modifier = Modifier.align(Alignment.Start),
                     )
                     Text(
@@ -132,7 +130,7 @@ private fun AddMoreButton(keys: Set<FieldKey>, onEdit: (Context, TagEditEvent) -
 }
 @Composable
 internal fun EditableItem(
-    key: FieldKey,
+    key: ConventionalMusicMetadataKey,
     tagName: String,
     value: String,
     alternatives: Collection<String> = emptyList(),

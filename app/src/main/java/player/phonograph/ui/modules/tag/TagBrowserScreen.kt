@@ -6,13 +6,13 @@ package player.phonograph.ui.modules.tag
 
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import lib.storage.launcher.IOpenFileStorageAccessible
-import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
+import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toMusicMetadataKey
 import player.phonograph.mechanism.metadata.edit.selectImage
 import player.phonograph.model.getFileSizeString
+import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.Metadata
-import player.phonograph.mechanism.metadata.edit.text
 import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.CoverImage
 import player.phonograph.ui.compose.components.Title
@@ -80,7 +80,8 @@ fun TagBrowserScreen(viewModel: TagBrowserViewModel) {
                 val updateKey by viewModel.prefillUpdateKey
                 val prefillsMap = remember(updateKey) { viewModel.prefillsMap }
                 for ((key, field) in musicMetadata.textOnlyTagFields) {
-                    CommonTag(key, field, editable, prefillsMap[key], viewModel::process)
+                    val realKey = key.toMusicMetadataKey()
+                    CommonTag(realKey, field, editable, prefillsMap[realKey], viewModel::process)
                 }
                 if (editable) AddMoreButton(viewModel)
                 Spacer(modifier = Modifier.height(16.dp))
@@ -144,21 +145,25 @@ fun Artwork(viewModel: TagBrowserViewModel, bitmap: Bitmap?, editable: Boolean) 
 private fun AddMoreButton(model: TagBrowserViewModel) {
     val metadata by model.currentSongMetadata.collectAsState()
     val musicMetadata = metadata.musicMetadata
-    val existKeys = if (musicMetadata is JAudioTaggerMetadata) musicMetadata.textOnlyTagFields.keys else emptySet()
+    val existKeys = if (musicMetadata is JAudioTaggerMetadata) {
+        musicMetadata.textOnlyTagFields.keys.map { it.toMusicMetadataKey() }.toSet()
+    } else {
+        emptySet()
+    }
     AddMoreButtonWithoutExistedKeys(existKeys, model::process)
 }
 
 
 @Composable
 private fun CommonTag(
-    key: FieldKey,
+    key: ConventionalMusicMetadataKey,
     field: Metadata.Field,
     editable: Boolean,
     prefills: Collection<String>?,
     onEdit: (Context, TagEditEvent) -> Unit,
 ) {
     val context = LocalContext.current
-    val tagName = key.text(context.resources)
+    val tagName = if (key.res > 0 ) stringResource(key.res) else key.name
     val tagValue = field.text().toString()
 
     Box(modifier = Modifier.fillMaxWidth()) {

@@ -5,24 +5,25 @@
 package player.phonograph.mechanism.metadata.edit
 
 import org.jaudiotagger.audio.AudioFile
-import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.TagNotFoundException
+import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toFieldKey
+import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import java.io.File
 
 sealed interface EditAction {
 
-    val key: FieldKey
+    val key: ConventionalMusicMetadataKey
 
     val description: String
 
     fun valid(audioFile: AudioFile): ValidResult
 
-    data class Delete(override val key: FieldKey) : EditAction {
+    data class Delete(override val key: ConventionalMusicMetadataKey) : EditAction {
         override val description: String get() = "Delete $key"
         override fun valid(audioFile: AudioFile): ValidResult {
             val tag = audioFile.tag ?: return ValidResult.NoSuchKey
             val target = try {
-                tag.getFirst(key)
+                tag.getFirst(key.toFieldKey())
             } catch (e: TagNotFoundException) {
                 null
             }
@@ -34,7 +35,7 @@ sealed interface EditAction {
     }
 
     object ImageDelete : EditAction {
-        override val key: FieldKey = FieldKey.COVER_ART
+        override val key: ConventionalMusicMetadataKey = ConventionalMusicMetadataKey.COVER_ART
         override val description: String get() = "Delete Cover Art"
         override fun valid(audioFile: AudioFile): ValidResult {
             val size = audioFile.tag?.artworkList?.size ?: 0
@@ -42,12 +43,12 @@ sealed interface EditAction {
         }
     }
 
-    data class Update(override val key: FieldKey, val newValue: String) : EditAction {
+    data class Update(override val key: ConventionalMusicMetadataKey, val newValue: String) : EditAction {
         override val description: String get() = "Update $key to $newValue"
         override fun valid(audioFile: AudioFile): ValidResult {
             val tag = audioFile.tag ?: return ValidResult.NoSuchKey
             val target = try {
-                tag.getFirst(key)
+                tag.getFirst(key.toFieldKey())
             } catch (e: TagNotFoundException) {
                 null
             }
@@ -60,7 +61,7 @@ sealed interface EditAction {
     }
 
     class ImageReplace(val file: File) : EditAction {
-        override val key: FieldKey = FieldKey.COVER_ART
+        override val key: ConventionalMusicMetadataKey = ConventionalMusicMetadataKey.COVER_ART
         override val description: String get() = "Replace Cover Art to ${file.path}"
         override fun valid(audioFile: AudioFile): ValidResult {
             return ValidResult.Valid

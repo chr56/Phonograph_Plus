@@ -4,16 +4,16 @@
 
 package player.phonograph.ui.modules.tag
 
-import org.jaudiotagger.tag.FieldKey
+import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.util.warning
 import android.content.Context
 import android.net.Uri
 import java.io.File
 
 sealed interface TagEditEvent {
-    data class UpdateTag(val fieldKey: FieldKey, val newValue: String) : TagEditEvent
-    data class AddNewTag(val fieldKey: FieldKey) : TagEditEvent
-    data class RemoveTag(val fieldKey: FieldKey) : TagEditEvent
+    data class UpdateTag(val fieldKey: ConventionalMusicMetadataKey, val newValue: String) : TagEditEvent
+    data class AddNewTag(val fieldKey: ConventionalMusicMetadataKey) : TagEditEvent
+    data class RemoveTag(val fieldKey: ConventionalMusicMetadataKey) : TagEditEvent
 
     object RemoveArtwork : TagEditEvent
     data class UpdateArtwork(val file: File) : TagEditEvent {

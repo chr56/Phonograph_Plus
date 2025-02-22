@@ -19,6 +19,7 @@ import org.jaudiotagger.tag.TagException
 import org.jaudiotagger.tag.images.AndroidArtwork
 import org.jaudiotagger.tag.images.Artwork
 import org.jaudiotagger.tag.images.ArtworkFactory
+import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toFieldKey
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import androidx.compose.runtime.MutableState
@@ -95,9 +96,10 @@ private fun writeTags(file: AudioFile, requests: List<EditAction>) {
 
 private fun writeTag(tagsHeader: Tag, action: EditAction) {
     try {
+        val key = action.key.toFieldKey()
         when (action) {
-            is EditAction.Delete       -> tagsHeader.deleteField(action.key)
-            is EditAction.Update       -> tagsHeader.setField(action.key, action.newValue)
+            is EditAction.Delete       -> tagsHeader.deleteField(key)
+            is EditAction.Update       -> tagsHeader.setField(key, action.newValue)
             is EditAction.ImageReplace -> tagsHeader.addField(AndroidArtwork.createArtworkFromFile(action.file))
             EditAction.ImageDelete     -> tagsHeader.deleteArtworkField()
         }

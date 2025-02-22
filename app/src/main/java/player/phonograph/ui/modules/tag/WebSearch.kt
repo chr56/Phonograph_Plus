@@ -7,8 +7,8 @@ package player.phonograph.ui.modules.tag
 import mms.Source
 import mms.lastfm.LastFmTrack
 import mms.musicbrainz.MusicBrainzRecording
-import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
+import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.ui.modules.web.WebSearchTool
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DropdownMenu
@@ -66,47 +66,47 @@ internal fun importResult(viewModel: TagBrowserViewModel, item: Any) {
 private fun insert(tableViewModel: TagBrowserViewModel, track: LastFmTrack) =
     with(ProcessScope(tableViewModel)) {
 
-        link(FieldKey.MUSICBRAINZ_TRACK_ID, track.mbid)
-        link(FieldKey.TITLE, track.name)
-        link(FieldKey.ARTIST, track.artist?.name)
-        link(FieldKey.ALBUM, track.album?.name)
+        link(ConventionalMusicMetadataKey.MUSICBRAINZ_TRACK_ID, track.mbid)
+        link(ConventionalMusicMetadataKey.TITLE, track.name)
+        link(ConventionalMusicMetadataKey.ARTIST, track.artist?.name)
+        link(ConventionalMusicMetadataKey.ALBUM, track.album?.name)
 
         val tags = track.toptags?.tag?.map { it.name }
-        link(FieldKey.COMMENT, tags)
-        link(FieldKey.GENRE, tags)
+        link(ConventionalMusicMetadataKey.COMMENT, tags)
+        link(ConventionalMusicMetadataKey.GENRE, tags)
 
     }
 
 private fun insert(tableViewModel: TagBrowserViewModel, recording: MusicBrainzRecording) =
     with(ProcessScope(tableViewModel)) {
-        link(FieldKey.MUSICBRAINZ_TRACK_ID, recording.id)
-        link(FieldKey.TITLE, recording.title)
+        link(ConventionalMusicMetadataKey.MUSICBRAINZ_TRACK_ID, recording.id)
+        link(ConventionalMusicMetadataKey.TITLE, recording.title)
 
         for (artistCredit in recording.artistCredit) {
-            link(FieldKey.ARTIST, artistCredit.name)
-            link(FieldKey.MUSICBRAINZ_ARTISTID, artistCredit.artist?.id)
+            link(ConventionalMusicMetadataKey.ARTIST, artistCredit.name)
+            link(ConventionalMusicMetadataKey.MUSICBRAINZ_ARTISTID, artistCredit.artist?.id)
         }
         recording.releases?.forEach { release ->
-            link(FieldKey.ALBUM, release.title)
-            link(FieldKey.MUSICBRAINZ_RELEASEID, release.id)
-            link(FieldKey.MUSICBRAINZ_RELEASE_STATUS, release.status)
-            link(FieldKey.MUSICBRAINZ_RELEASE_COUNTRY, release.country)
+            link(ConventionalMusicMetadataKey.ALBUM, release.title)
+            link(ConventionalMusicMetadataKey.MUSICBRAINZ_RELEASEID, release.id)
+            link(ConventionalMusicMetadataKey.MUSICBRAINZ_RELEASE_STATUS, release.status)
+            link(ConventionalMusicMetadataKey.MUSICBRAINZ_RELEASE_COUNTRY, release.country)
         }
 
         val genre = recording.genres.map { it.name }
         val tags = recording.tags?.map { it.name }
-        link(FieldKey.GENRE, genre)
-        link(FieldKey.COMMENT, tags)
-        link(FieldKey.COMMENT, recording.disambiguation)
-        link(FieldKey.YEAR, recording.firstReleaseDate)
+        link(ConventionalMusicMetadataKey.GENRE, genre)
+        link(ConventionalMusicMetadataKey.COMMENT, tags)
+        link(ConventionalMusicMetadataKey.COMMENT, recording.disambiguation)
+        link(ConventionalMusicMetadataKey.YEAR, recording.firstReleaseDate)
     }
 
 private class ProcessScope(val tableViewModel: TagBrowserViewModel) {
-    fun link(fieldKey: FieldKey, value: String?) {
+    fun link(fieldKey: ConventionalMusicMetadataKey, value: String?) {
         if (value != null) tableViewModel.insertPrefill(fieldKey, value)
     }
 
-    fun link(fieldKey: FieldKey, values: List<String>?) {
+    fun link(fieldKey: ConventionalMusicMetadataKey, values: List<String>?) {
         if (values != null) tableViewModel.insertPrefill(fieldKey, values)
     }
 }

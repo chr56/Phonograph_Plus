@@ -5,10 +5,9 @@
 package player.phonograph.ui.modules.tag
 
 import lib.storage.launcher.IOpenFileStorageAccessible
-import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.mechanism.metadata.edit.selectImage
-import player.phonograph.mechanism.metadata.edit.text
+import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextItem
@@ -93,14 +92,14 @@ private fun CommonTags(viewModel: MultiTagBrowserViewModel) {
 
 @Composable
 private fun CommonTag(
-    key: FieldKey,
+    key: ConventionalMusicMetadataKey,
     allValues: List<String>?,
     editorValue: String?,
     editable: Boolean,
     onEdit: (Context, TagEditEvent) -> Unit,
 ) {
     val context = LocalContext.current
-    val tagName = key.text(context.resources)
+    val tagName = if (key.res > 0 ) stringResource(key.res) else key.name
 
     Box(modifier = Modifier.fillMaxWidth()) {
         if (editable) {

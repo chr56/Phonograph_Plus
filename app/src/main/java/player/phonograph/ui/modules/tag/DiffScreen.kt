@@ -6,7 +6,6 @@ package player.phonograph.ui.modules.tag
 
 import player.phonograph.R
 import player.phonograph.mechanism.metadata.edit.EditAction
-import player.phonograph.mechanism.metadata.edit.text
 import player.phonograph.ui.compose.components.Title
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +18,6 @@ import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
@@ -53,7 +51,8 @@ internal fun DiffScreen(diff: TagDiff) {
 private fun TagDiff(tag: Pair<EditAction, String?>) {
     val (action, old) = tag
     Column(Modifier.padding(vertical = 16.dp)) {
-        Title(action.key.text(LocalContext.current.resources), horizontalPadding = 0.dp)
+        val text = if (action.key.res > 0) stringResource(action.key.res) else action.key.name
+        Title(text, horizontalPadding = 0.dp)
         DiffText(old)
         Icon(Icons.Outlined.ArrowDropDown, contentDescription = null)
         DiffText(

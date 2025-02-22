@@ -5,7 +5,6 @@
 package player.phonograph.ui.modules.tag
 
 import com.vanpra.composematerialdialogs.MaterialDialogState
-import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.mechanism.metadata.DefaultMetadataExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
@@ -63,30 +62,30 @@ class MultiTagBrowserViewModel : ViewModel() {
     val originalSongInfos get() = _originalSongInfos.asStateFlow()
 
 
-    fun reducedOriginalTags(): Flow<Map<FieldKey, List<Metadata.Field>>> =
+    fun reducedOriginalTags(): Flow<Map<ConventionalMusicMetadataKey, List<Metadata.Field>>> =
         originalSongInfos.map {
             reducedOriginalTagsImpl(it)
         }
 
-    private fun reducedOriginalTagsImpl(list: List<AudioMetadata>): MutableMap<FieldKey, List<Metadata.Field>> =
+    private fun reducedOriginalTagsImpl(list: List<AudioMetadata>): MutableMap<ConventionalMusicMetadataKey, List<Metadata.Field>> =
         list.fold(mutableMapOf()) { acc, model ->
             val musicMetadata = model.musicMetadata
             if (musicMetadata is JAudioTaggerMetadata)
                 for ((key, value) in musicMetadata.textOnlyTagFields) {
-                    val oldValue = acc[key]
+                    val oldValue = acc[key.toMusicMetadataKey()]
                     val newValue = if (oldValue != null) {
                         oldValue + listOf(value)
                     } else {
                         listOf(value)
                     }
-                    acc[key] = newValue
+                    acc[key.toMusicMetadataKey()] = newValue
                 }
             acc
         }
 
 
 
-    private val _displayTags: MutableStateFlow<Map<FieldKey, String?>> = MutableStateFlow(emptyMap())
+    private val _displayTags: MutableStateFlow<Map<ConventionalMusicMetadataKey, String?>> = MutableStateFlow(emptyMap())
     val displayTags get() = _displayTags.asStateFlow()
 
     val saveConfirmationDialogState = MaterialDialogState(false)
@@ -146,7 +145,7 @@ class MultiTagBrowserViewModel : ViewModel() {
         }
     }
 
-    private fun modifyView(action: (old: MutableMap<FieldKey, String?>) -> Map<FieldKey, String?>) {
+    private fun modifyView(action: (old: MutableMap<ConventionalMusicMetadataKey, String?>) -> Map<ConventionalMusicMetadataKey, String?>) {
         viewModelScope.launch(Dispatchers.Default) {
             val old = _displayTags.value.toMutableMap()
             val new = action(old)
@@ -160,7 +159,7 @@ class MultiTagBrowserViewModel : ViewModel() {
         val tagDiff = pendingEditRequests.map { action ->
             val oldValues =
                 original.mapNotNull { metadata ->
-                   val field = (metadata.musicMetadata as JAudioTaggerMetadata)[action.key.toMusicMetadataKey()]
+                   val field = (metadata.musicMetadata as JAudioTaggerMetadata)[action.key]
                     field?.text()?.toString()
                 }.filterNot { it.isEmpty() }.reduce { a, b -> "$a,$b" }
             Pair(action, oldValues)

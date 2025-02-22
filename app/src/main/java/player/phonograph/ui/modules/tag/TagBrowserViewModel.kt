@@ -5,11 +5,11 @@
 package player.phonograph.ui.modules.tag
 
 import com.vanpra.composematerialdialogs.MaterialDialogState
-import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.mechanism.metadata.DefaultMetadataExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
+import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toFieldKey
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toMusicMetadataKey
 import player.phonograph.mechanism.metadata.edit.EditAction
 import player.phonograph.mechanism.metadata.edit.applyEdit
@@ -88,21 +88,21 @@ class TagBrowserViewModel : ViewModel() {
     fun process(context: Context, event: TagEditEvent) {
         viewModelScope.launch {
             when (event) {
-                is TagEditEvent.UpdateTag     -> {
+                is TagEditEvent.UpdateTag -> {
                     modifyView { old ->
                         old.toMutableMap().apply { put(event.fieldKey, Metadata.PlainStringField(event.newValue)) }
                     }
                     modifyEditRequest(EditAction.Update(event.fieldKey, event.newValue))
                 }
 
-                is TagEditEvent.AddNewTag     -> {
+                is TagEditEvent.AddNewTag -> {
                     modifyView { old ->
                         old + (event.fieldKey to Metadata.PlainStringField(""))
                     }
                     modifyEditRequest(EditAction.Update(event.fieldKey, ""))
                 }
 
-                is TagEditEvent.RemoveTag     -> {
+                is TagEditEvent.RemoveTag -> {
                     modifyView { old ->
                         old.toMutableMap().apply { remove(event.fieldKey) }
                     }
@@ -115,7 +115,7 @@ class TagBrowserViewModel : ViewModel() {
                     modifyEditRequest(EditAction.ImageReplace(event.file))
                 }
 
-                TagEditEvent.RemoveArtwork    -> {
+                TagEditEvent.RemoveArtwork -> {
                     _songBitmap.emit(null)
                     modifyEditRequest(EditAction.ImageDelete)
                 }
@@ -137,30 +137,39 @@ class TagBrowserViewModel : ViewModel() {
         }
     }
 
-    private fun modifyView(action: (old: Map<FieldKey, Metadata.Field>) -> Map<FieldKey, Metadata.Field>) {
+    private fun modifyView(action: (old: Map<ConventionalMusicMetadataKey, Metadata.Field>) -> Map<ConventionalMusicMetadataKey, Metadata.Field>) {
         viewModelScope.launch(Dispatchers.Default) {
             val oldAudioMetadata = currentSongMetadata.value
-            val oldMusicMetadata = oldAudioMetadata.musicMetadata as JAudioTaggerMetadata
-            val newFields = action(oldMusicMetadata.genericTagFields)
-            val newMusicMetadata = JAudioTaggerMetadata(newFields, oldMusicMetadata.allTagFields)
-            val new = oldAudioMetadata.copy(musicMetadata = newMusicMetadata)
-            _currentSongMetadata.emit(new)
+            val oldMusicMetadata = oldAudioMetadata.musicMetadata
+            val newAudioMetadata = if (oldMusicMetadata is JAudioTaggerMetadata) {
+                val newFields =
+                    action(
+                        oldMusicMetadata.genericTagFields.mapKeys { it.key.toMusicMetadataKey() }
+                    ).mapKeys {
+                        it.key.toFieldKey()
+                    }
+                val newMusicMetadata = JAudioTaggerMetadata(newFields, oldMusicMetadata.allTagFields)
+                oldAudioMetadata.copy(musicMetadata = newMusicMetadata)
+            } else {
+                oldAudioMetadata
+            }
+            _currentSongMetadata.emit(newAudioMetadata)
         }
     }
 
 
-    private val _prefillsMap: MutableMap<FieldKey, List<String>> = mutableMapOf()
+    private val _prefillsMap: MutableMap<ConventionalMusicMetadataKey, List<String>> = mutableMapOf()
     val prefillsMap get() = _prefillsMap.toMap()
     private val _prefillUpdateKey: MutableState<Int> = mutableStateOf(0)
     val prefillUpdateKey get() = _prefillUpdateKey as State<Int>
 
-    fun insertPrefill(key: FieldKey, value: String) {
+    fun insertPrefill(key: ConventionalMusicMetadataKey, value: String) {
         val newList = (_prefillsMap[key] ?: listOf()) + value
         _prefillsMap.also { it[key] = newList }
         _prefillUpdateKey.value += 1
     }
 
-    fun insertPrefill(key: FieldKey, values: List<String>) {
+    fun insertPrefill(key: ConventionalMusicMetadataKey, values: List<String>) {
         val newList = (_prefillsMap[key] ?: listOf()) + values
         _prefillsMap.also { it[key] = newList }
         _prefillUpdateKey.value += 1
@@ -170,7 +179,7 @@ class TagBrowserViewModel : ViewModel() {
         mergeActions()
         val original = originalSongMetadata.value
         val tagDiff = pendingEditRequests.map { action ->
-            val text: CharSequence? = original.musicMetadata[action.key.toMusicMetadataKey()]?.text()
+            val text: CharSequence? = original.musicMetadata[action.key]?.text()
             Pair(action, text?.toString())
         }
         return TagDiff(tagDiff)
