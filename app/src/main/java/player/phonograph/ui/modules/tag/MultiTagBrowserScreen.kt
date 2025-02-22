@@ -7,9 +7,9 @@ package player.phonograph.ui.modules.tag
 import lib.storage.launcher.IOpenFileStorageAccessible
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
-import player.phonograph.mechanism.tag.edit.selectImage
-import player.phonograph.model.allFieldKey
-import player.phonograph.model.text
+import player.phonograph.mechanism.metadata.edit.selectImage
+import player.phonograph.mechanism.metadata.edit.allFieldKey
+import player.phonograph.mechanism.metadata.edit.text
 import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextItem

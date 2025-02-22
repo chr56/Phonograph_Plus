@@ -2,20 +2,15 @@
  * Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.model
+package player.phonograph.mechanism.metadata.edit
 
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
-import androidx.annotation.StringRes
 import android.content.res.Resources
 
 
-/**
- * retrieve corresponding a tag name string resource id for a music tag
- */
-@StringRes
-fun FieldKey.res(): Int =
-    when (this) {
+fun FieldKey.text(resources: Resources): String {
+    val stringRes = when (this) {
         FieldKey.TITLE        -> R.string.title
         FieldKey.ARTIST       -> R.string.artist
         FieldKey.ALBUM        -> R.string.album
@@ -32,9 +27,6 @@ fun FieldKey.res(): Int =
         FieldKey.COMMENT      -> R.string.comment
         else                  -> -1
     }
-
-fun FieldKey.text(resources: Resources): String {
-    val stringRes = res()
     return if (stringRes > 0) resources.getString(stringRes) else name
 }
 
@@ -54,4 +46,4 @@ val allFieldKey =
         FieldKey.TRACK_TOTAL,
         FieldKey.RATING,
         FieldKey.COMMENT,
-    ) + FieldKey.values()
+    ) + FieldKey.entries

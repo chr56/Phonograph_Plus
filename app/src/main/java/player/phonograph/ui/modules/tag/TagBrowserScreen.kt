@@ -9,11 +9,11 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
-import player.phonograph.mechanism.tag.edit.selectImage
+import player.phonograph.mechanism.metadata.edit.selectImage
 import player.phonograph.model.getFileSizeString
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.Metadata
-import player.phonograph.model.text
+import player.phonograph.mechanism.metadata.edit.text
 import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.CoverImage
 import player.phonograph.ui.compose.components.Title

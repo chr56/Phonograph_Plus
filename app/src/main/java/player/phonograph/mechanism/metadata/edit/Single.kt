@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.mechanism.tag.edit
+package player.phonograph.mechanism.metadata.edit
 
 import player.phonograph.App
 import player.phonograph.R
@@ -17,11 +17,12 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import java.io.File
 
+
 fun applyEdit(
     scope: CoroutineScope,
     context: Context,
-    songFiles: List<File>,
-    allEditRequest: List<EditAction>,
+    songFile: File,
+    editRequests: List<EditAction>,
     needDeleteCover: Boolean,
     needReplaceCover: Boolean,
     newCoverUri: Uri?,
@@ -36,25 +37,22 @@ fun applyEdit(
         )
         // process
         withContext(Dispatchers.IO) {
-            for (songFile in songFiles) {
-                applyEditImpl(
-                    context,
-                    songFile,
-                    allEditRequest,
-                    needDeleteCover,
-                    needReplaceCover,
-                    newCoverUri
-                )
-            }
+            applyEditImpl(
+                context,
+                songFile,
+                editRequests,
+                needDeleteCover,
+                needReplaceCover,
+                newCoverUri
+            )
         }
         // notify user
         BackgroundNotification.remove(TAG_EDITOR_NOTIFICATION_CODE)
         // refresh media store
-        val paths = songFiles.map { it.path }.toTypedArray()
         yield()
-        MediaStoreScanner(context).scan(paths)
+        MediaStoreScanner(context).scan(songFile.path)
         onComplete()
     }
 }
 
-private const val TAG_EDITOR_NOTIFICATION_CODE = 824_3348_6
+private const val TAG_EDITOR_NOTIFICATION_CODE = 824_3348_7

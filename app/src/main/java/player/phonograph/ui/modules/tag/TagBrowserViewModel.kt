@@ -10,8 +10,8 @@ import player.phonograph.R
 import player.phonograph.mechanism.metadata.DefaultMetadataExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
-import player.phonograph.mechanism.tag.edit.EditAction
-import player.phonograph.mechanism.tag.edit.applyEdit
+import player.phonograph.mechanism.metadata.edit.EditAction
+import player.phonograph.mechanism.metadata.edit.applyEdit
 import player.phonograph.model.Song
 import player.phonograph.model.metadata.AudioMetadata
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey

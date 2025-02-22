@@ -7,8 +7,8 @@ package player.phonograph.ui.modules.tag
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
+import player.phonograph.mechanism.metadata.edit.text
 import player.phonograph.model.metadata.Metadata
-import player.phonograph.model.text
 import player.phonograph.ui.compose.components.VerticalTextItem
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
