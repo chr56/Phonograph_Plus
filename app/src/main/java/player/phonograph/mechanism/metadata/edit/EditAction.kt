@@ -6,6 +6,7 @@ package player.phonograph.mechanism.metadata.edit
 
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.tag.TagNotFoundException
+import org.jaudiotagger.tag.images.AndroidArtwork
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toFieldKey
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import java.io.File
@@ -18,8 +19,11 @@ sealed interface EditAction {
 
     fun valid(audioFile: AudioFile): ValidResult
 
+    fun execute(audioFile: AudioFile)
+
     data class Delete(override val key: ConventionalMusicMetadataKey) : EditAction {
         override val description: String get() = "Delete $key"
+
         override fun valid(audioFile: AudioFile): ValidResult {
             val tag = audioFile.tag ?: return ValidResult.NoSuchKey
             val target = try {
@@ -32,19 +36,30 @@ sealed interface EditAction {
                 else -> ValidResult.Valid
             }
         }
+
+        override fun execute(audioFile: AudioFile) {
+            audioFile.tagOrCreateAndSetDefault.deleteField(key.toFieldKey())
+        }
+
     }
 
     object ImageDelete : EditAction {
         override val key: ConventionalMusicMetadataKey = ConventionalMusicMetadataKey.COVER_ART
         override val description: String get() = "Delete Cover Art"
+
         override fun valid(audioFile: AudioFile): ValidResult {
             val size = audioFile.tag?.artworkList?.size ?: 0
             return if (size > 0) ValidResult.Valid else ValidResult.NoSuchKey
+        }
+
+        override fun execute(audioFile: AudioFile) {
+            audioFile.tagOrCreateAndSetDefault.deleteArtworkField()
         }
     }
 
     data class Update(override val key: ConventionalMusicMetadataKey, val newValue: String) : EditAction {
         override val description: String get() = "Update $key to $newValue"
+
         override fun valid(audioFile: AudioFile): ValidResult {
             val tag = audioFile.tag ?: return ValidResult.NoSuchKey
             val target = try {
@@ -58,14 +73,24 @@ sealed interface EditAction {
                 else     -> ValidResult.Valid
             }
         }
+
+        override fun execute(audioFile: AudioFile) {
+            audioFile.tagOrCreateAndSetDefault.setField(key.toFieldKey(), newValue)
+        }
     }
 
     class ImageReplace(val file: File) : EditAction {
         override val key: ConventionalMusicMetadataKey = ConventionalMusicMetadataKey.COVER_ART
         override val description: String get() = "Replace Cover Art to ${file.path}"
+
         override fun valid(audioFile: AudioFile): ValidResult {
             return ValidResult.Valid
         }
+
+        override fun execute(audioFile: AudioFile) {
+            audioFile.tagOrCreateAndSetDefault.addField(AndroidArtwork.createArtworkFromFile(file))
+        }
+
     }
 
 

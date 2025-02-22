@@ -14,12 +14,9 @@ import org.jaudiotagger.audio.exceptions.CannotWriteException
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException
 import org.jaudiotagger.tag.KeyNotFoundException
-import org.jaudiotagger.tag.Tag
 import org.jaudiotagger.tag.TagException
-import org.jaudiotagger.tag.images.AndroidArtwork
 import org.jaudiotagger.tag.images.Artwork
 import org.jaudiotagger.tag.images.ArtworkFactory
-import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toFieldKey
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import androidx.compose.runtime.MutableState
@@ -80,33 +77,22 @@ fun selectNewArtwork(activity: Context): MutableState<Uri?> {
 }
 
 private fun writeTags(file: AudioFile, requests: List<EditAction>) {
-    val tagsHeader = file.tagOrCreateAndSetDefault
     for (action in requests) {
         val validResult = action.valid(file)
         if (validResult == EditAction.ValidResult.Valid) {
-            writeTag(tagsHeader, action)
+            try {
+                action.execute(file)
+            } catch (e: KeyNotFoundException) {
+                e.report("Unknown FieldKey: ${action.key}")
+            } catch (e: TagException) {
+                e.report("Failed to execute step: ${action.description}")
+            }
         } else {
             warning(
                 LOGTAG,
                 "Failed to execute step action(${action.description}) due to [${validResult.message}], ignored the step!"
             )
         }
-    }
-}
-
-private fun writeTag(tagsHeader: Tag, action: EditAction) {
-    try {
-        val key = action.key.toFieldKey()
-        when (action) {
-            is EditAction.Delete       -> tagsHeader.deleteField(key)
-            is EditAction.Update       -> tagsHeader.setField(key, action.newValue)
-            is EditAction.ImageReplace -> tagsHeader.addField(AndroidArtwork.createArtworkFromFile(action.file))
-            EditAction.ImageDelete     -> tagsHeader.deleteArtworkField()
-        }
-    } catch (e: KeyNotFoundException) {
-        e.report("Unknown FieldKey: ${action.key}")
-    } catch (e: TagException) {
-        e.report("Failed to execute step: ${action.description}")
     }
 }
 
