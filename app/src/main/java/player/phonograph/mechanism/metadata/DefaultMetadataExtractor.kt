@@ -5,7 +5,6 @@
 package player.phonograph.mechanism.metadata
 
 import player.phonograph.model.Song
-import player.phonograph.model.TagFormat
 import player.phonograph.model.metadata.AudioMetadata
 import player.phonograph.model.metadata.AudioProperties
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
@@ -20,6 +19,7 @@ import player.phonograph.model.metadata.FileProperties
 import player.phonograph.model.metadata.Metadata
 import player.phonograph.model.metadata.Metadata.PlainStringField
 import player.phonograph.model.metadata.MusicMetadata
+import player.phonograph.model.metadata.MusicTagFormat
 import android.content.Context
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -36,7 +36,7 @@ object DefaultMetadataExtractor : MetadataExtractor {
         return AudioMetadata(
             fileProperties = FileProperties(songFile.name, songFile.absolutePath, songFile.length()),
             audioProperties = AudioProperties(songFile.extension, song.duration, "-", "-"),
-            audioMetadataFormat = TagFormat.Unknown,
+            audioMetadataFormat = MusicTagFormat.Unknown,
             musicMetadata = PlainMusicMetadata(
                 mapOf(
                     TITLE to PlainStringField(song.title),

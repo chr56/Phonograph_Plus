@@ -8,29 +8,35 @@ import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
 import org.jaudiotagger.audio.generic.AbstractTag
+import org.jaudiotagger.audio.real.RealTag
 import org.jaudiotagger.logging.ErrorMessage
 import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.KeyNotFoundException
 import org.jaudiotagger.tag.TagField
 import org.jaudiotagger.tag.TagTextField
 import org.jaudiotagger.tag.aiff.AiffTag
+import org.jaudiotagger.tag.asf.AsfTag
 import org.jaudiotagger.tag.flac.FlacTag
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag
 import org.jaudiotagger.tag.id3.ID3v11Tag
 import org.jaudiotagger.tag.id3.ID3v1Tag
+import org.jaudiotagger.tag.id3.ID3v22Tag
+import org.jaudiotagger.tag.id3.ID3v23Tag
+import org.jaudiotagger.tag.id3.ID3v24Tag
 import org.jaudiotagger.tag.mp4.Mp4Tag
 import org.jaudiotagger.tag.vorbiscomment.VorbisCommentTag
+import org.jaudiotagger.tag.wav.WavInfoTag
 import org.jaudiotagger.tag.wav.WavTag
 import player.phonograph.R
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata.Field
 import player.phonograph.model.Song
-import player.phonograph.model.TagFormat
 import player.phonograph.model.metadata.AudioMetadata
 import player.phonograph.model.metadata.AudioProperties
 import player.phonograph.model.metadata.EmptyMusicMetadata
 import player.phonograph.model.metadata.FileProperties
 import player.phonograph.model.metadata.Metadata
 import player.phonograph.model.metadata.MusicMetadata
+import player.phonograph.model.metadata.MusicTagFormat
 import player.phonograph.util.reportError
 import android.content.Context
 import android.os.Handler
@@ -64,7 +70,7 @@ object JAudioTaggerExtractor : MetadataExtractor {
             val audioFile: AudioFile = AudioFileIO.read(songFile)
 
             val audioPropertyFields = readAudioProperties(audioFile.audioHeader)
-            val tagFormat = TagFormat.of(audioFile)
+            val tagFormat = readTagFormat(audioFile)
             val musicMetadata = readMusicMetadata(audioFile)
             return AudioMetadata(
                 fileProperties = FileProperties(fileName, filePath, fileSize),
@@ -149,6 +155,25 @@ object JAudioTaggerExtractor : MetadataExtractor {
         } else {
             Metadata.EmptyField
         }
+
+    private fun readTagFormat(audioFile: AudioFile): MusicTagFormat {
+        return when (audioFile.tag) {
+            (ID3v1Tag::class.java)         -> MusicTagFormat.ID3v1
+            (ID3v11Tag::class.java)        -> MusicTagFormat.ID3v11
+            (ID3v24Tag::class.java)        -> MusicTagFormat.ID3v24
+            (ID3v22Tag::class.java)        -> MusicTagFormat.ID3v22
+            (ID3v23Tag::class.java)        -> MusicTagFormat.ID3v23
+            (Mp4Tag::class.java)           -> MusicTagFormat.Mp4
+            (VorbisCommentTag::class.java) -> MusicTagFormat.VorbisComment
+            (FlacTag::class.java)          -> MusicTagFormat.Flac
+            (AiffTag::class.java)          -> MusicTagFormat.Aiff
+            (AsfTag::class.java)           -> MusicTagFormat.Asf
+            (RealTag::class.java)          -> MusicTagFormat.Real
+            (WavTag::class.java)           -> MusicTagFormat.Wav
+            (WavInfoTag::class.java)       -> MusicTagFormat.WavInfo
+            else                           -> MusicTagFormat.Unknown
+        }
+    }
 
 
     private const val TAG = "JAudioTaggerExtractor"

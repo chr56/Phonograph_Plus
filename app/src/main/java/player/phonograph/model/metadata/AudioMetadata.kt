@@ -4,13 +4,10 @@
 
 package player.phonograph.model.metadata
 
-import player.phonograph.model.TagFormat
-
-
 data class AudioMetadata(
     val fileProperties: FileProperties,
     val audioProperties: AudioProperties,
-    val audioMetadataFormat: TagFormat,
+    val audioMetadataFormat: MusicTagFormat,
     val musicMetadata: MusicMetadata,
 ) {
     companion object {
@@ -18,7 +15,7 @@ data class AudioMetadata(
             get() = AudioMetadata(
                 FileProperties("-", "", -1),
                 AudioProperties("", 0, "", ""),
-                TagFormat.Unknown,
+                MusicTagFormat.Unknown,
                 EmptyMusicMetadata,
             )
     }
