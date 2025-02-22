@@ -10,6 +10,7 @@ import player.phonograph.R
 import player.phonograph.mechanism.metadata.DefaultMetadataExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
+import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toMusicMetadataKey
 import player.phonograph.mechanism.metadata.edit.EditAction
 import player.phonograph.mechanism.metadata.edit.applyEdit
 import player.phonograph.model.Song
@@ -169,8 +170,7 @@ class TagBrowserViewModel : ViewModel() {
         mergeActions()
         val original = originalSongMetadata.value
         val tagDiff = pendingEditRequests.map { action ->
-            val key = ConventionalMusicMetadataKey.entries[action.key.ordinal]
-            val text: CharSequence? = original.musicMetadata[key]?.text()
+            val text: CharSequence? = original.musicMetadata[action.key.toMusicMetadataKey()]?.text()
             Pair(action, text?.toString())
         }
         return TagDiff(tagDiff)

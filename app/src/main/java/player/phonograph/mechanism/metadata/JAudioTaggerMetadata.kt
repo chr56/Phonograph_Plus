@@ -5,6 +5,7 @@
 package player.phonograph.mechanism.metadata
 
 import org.jaudiotagger.tag.FieldKey
+import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toFieldKey
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.Metadata
 import player.phonograph.model.metadata.MusicMetadata
@@ -29,13 +30,13 @@ class JAudioTaggerMetadata(
 
 
     override fun get(key: Metadata.Key): Metadata.Field? = when (key) {
-        is ConventionalMusicMetadataKey -> genericTagFields[FieldKey.entries[key.ordinal]]
+        is ConventionalMusicMetadataKey -> genericTagFields[key.toFieldKey()]
         is Key                          -> allTagFields[key.id]
         else                            -> null
     }
 
     override fun contains(key: Metadata.Key): Boolean = when (key) {
-        is ConventionalMusicMetadataKey -> genericTagFields.containsKey(FieldKey.entries[key.ordinal])
+        is ConventionalMusicMetadataKey -> genericTagFields.containsKey(key.toFieldKey())
         is Key                          -> allTagFields.containsKey(key.id)
         else                            -> false
     }

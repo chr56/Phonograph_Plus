@@ -7,8 +7,8 @@ package player.phonograph.ui.modules.tag
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
+import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.AllFieldKey
 import player.phonograph.mechanism.metadata.edit.text
-import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.Metadata
 import player.phonograph.ui.compose.components.VerticalTextItem
 import androidx.annotation.StringRes
@@ -61,8 +61,7 @@ import android.content.Context
  */
 @Composable
 fun AddMoreButtonWithoutExistedKeys(existKeys: Set<FieldKey>, onEdit: (Context, TagEditEvent) -> Unit) {
-    val allFieldKey = ConventionalMusicMetadataKey.entries.map { FieldKey.entries[it.ordinal] }
-    val remainedKeys = allFieldKey.subtract(existKeys)
+    val remainedKeys = AllFieldKey.subtract(existKeys)
     AddMoreButton(remainedKeys, onEdit)
 }
 
