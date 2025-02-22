@@ -9,37 +9,6 @@ import player.phonograph.R
 import androidx.annotation.StringRes
 import android.content.res.Resources
 
-/**
- * class describing a song file
- */
-data class SongInfoModel(
-    val fileName: StringFilePropertyField,
-    val filePath: StringFilePropertyField,
-    val fileSize: LongFilePropertyField,
-    val audioPropertyFields: Map<FilePropertyField.Key, FilePropertyField<out Any>>,
-    val tagFields: Map<FieldKey, TagField>,
-    val tagFormat: TagFormat,
-    val allTags: Map<String, RawTag>,
-) {
-
-    val tagTextOnlyFields get() = tagFields.filter { it.value.content is TagData.TextData }
-
-    companion object {
-        @Suppress("FunctionName")
-        fun EMPTY(): SongInfoModel =
-            SongInfoModel(
-                StringFilePropertyField(null),
-                StringFilePropertyField(null),
-                LongFilePropertyField(-1),
-                emptyMap(),
-                emptyMap(),
-                TagFormat.Unknown,
-                emptyMap(),
-            )
-    }
-
-}
-
 
 /**
  * retrieve corresponding a tag name string resource id for a music tag
@@ -86,67 +55,3 @@ val allFieldKey =
         FieldKey.RATING,
         FieldKey.COMMENT,
     ) + FieldKey.values()
-
-sealed interface Field<T> {
-    fun value(): T
-}
-
-abstract class FilePropertyField<T> : Field<T> {
-    enum class Key(@StringRes val res: Int) {
-        TRACK_LENGTH(R.string.label_track_length),
-        FILE_FORMAT(R.string.label_file_format),
-        BIT_RATE(R.string.label_bit_rate),
-        SAMPLING_RATE(R.string.label_sampling_rate),
-        ;
-
-        fun label(resources: Resources): String = resources.getString(res)
-    }
-}
-
-class StringFilePropertyField(private val _value: String?) : FilePropertyField<String>() {
-    override fun value(): String = _value ?: ""
-}
-
-class LongFilePropertyField(private val _value: Long) : FilePropertyField<Long>() {
-    override fun value(): Long = _value
-}
-
-class TagField(val key: FieldKey, val content: TagData) : Field<String> {
-    override fun value(): String = content.text()
-}
-
-
-sealed interface TagData {
-
-    fun text(): String
-
-    data class TextData(val content: String) : TagData {
-        override fun text(): String = content
-    }
-
-    data class MultipleData(val contents: Collection<TagData>) : TagData {
-        override fun text(): String {
-            return contents.map(TagData::text).joinToString(separator = "\n") { it }
-        }
-    }
-
-    object EmptyData : TagData {
-        override fun text(): String = "<Empty>"
-    }
-
-    object BinaryData : TagData {
-        override fun text(): String = "<Binary>"
-    }
-
-    class ErrData(val message: CharSequence) : TagData {
-        override fun text(): String = "<Error: $message>"
-    }
-}
-
-
-data class RawTag(
-    val id: String,
-    val name: String,
-    val value: TagData,
-    val description: String?,
-)
