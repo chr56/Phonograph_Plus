@@ -4,11 +4,8 @@
 
 package player.phonograph.mechanism.lyrics
 
-import org.jaudiotagger.audio.AudioFileIO
-import org.jaudiotagger.audio.exceptions.CannotReadException
-import org.jaudiotagger.logging.ErrorMessage
-import org.jaudiotagger.tag.FieldKey
 import player.phonograph.App
+import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.lyrics.LyricsInfo
@@ -76,13 +73,8 @@ object LyricsLoader {
         songFile: File,
         lyricsSource: LyricsSource = LyricsSource.Embedded,
     ): AbsLyrics? = tryLoad(songFile) {
-        AudioFileIO.read(songFile).tag?.getFirst(FieldKey.LYRICS).let { str ->
-            if (str != null && str.trim().isNotBlank()) {
-                parse(str, lyricsSource)
-            } else {
-                null
-            }
-        }
+        val lyrics = JAudioTaggerExtractor.readLyrics(songFile)
+        if (lyrics != null) parse(lyrics, lyricsSource) else null
     }
 
     private fun parseExternal(
@@ -100,15 +92,6 @@ object LyricsLoader {
     private fun tryLoad(songFile: File, block: () -> AbsLyrics?): AbsLyrics? =
         try {
             block()
-        } catch (e: CannotReadException) {
-            val errorMsg = errorMsg(songFile.path, e)
-            val suffix = songFile.name.substringAfterLast('.', "")
-            if (ErrorMessage.NO_READER_FOR_THIS_FORMAT.getMsg(suffix) == e.message) {
-                // ignore
-            } else {
-                Log.i(TAG, errorMsg)
-            }
-            TextLyrics.from(errorMsg)
         } catch (e: Exception) {
             val errorMsg = errorMsg(songFile.path, e)
             Log.i(TAG, errorMsg)

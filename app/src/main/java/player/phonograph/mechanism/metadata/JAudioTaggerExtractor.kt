@@ -7,6 +7,7 @@ package player.phonograph.mechanism.metadata
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
+import org.jaudiotagger.audio.exceptions.CannotReadException
 import org.jaudiotagger.audio.generic.AbstractTag
 import org.jaudiotagger.audio.real.RealTag
 import org.jaudiotagger.logging.ErrorMessage
@@ -41,6 +42,7 @@ import player.phonograph.util.reportError
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import kotlin.collections.associateWith
 import java.io.File
@@ -181,4 +183,24 @@ object JAudioTaggerExtractor : MetadataExtractor {
         "Failed to read metadata of song (%s). This might cause by: " +
                 "1) storage permission is not fully granted. " +
                 "2) the format (%s) is not supported."
+
+    /**
+     * read embed lyrics via JAudioTagger
+     */
+    fun readLyrics(file: File): String? {
+        try {
+            val value = AudioFileIO.read(file).tag?.getFirst(FieldKey.LYRICS)
+            return if (!value.isNullOrBlank()) value else null
+        } catch (e: CannotReadException) {
+            val message = "Error: Failed to read ${file.path}: ${e.message}\n${Log.getStackTraceString(e)}"
+            val suffix = file.name.substringAfterLast('.', "")
+            return if (ErrorMessage.NO_READER_FOR_THIS_FORMAT.getMsg(suffix) == e.message) {
+                // ignore
+                null
+            } else {
+                Log.i(TAG, message)
+                message
+            }
+        }
+    }
 }
