@@ -11,8 +11,8 @@ import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toFieldKey
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toMusicMetadataKey
+import player.phonograph.mechanism.metadata.edit.AudioMetadataEditor
 import player.phonograph.mechanism.metadata.edit.EditAction
-import player.phonograph.mechanism.metadata.edit.applyEdit
 import player.phonograph.model.Song
 import player.phonograph.model.metadata.AudioMetadata
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
@@ -190,15 +190,8 @@ class TagBrowserViewModel : ViewModel() {
         val songFile = File(song.data)
         if (songFile.canWrite()) {
             mergeActions()
-            applyEdit(
-                scope = CoroutineScope(Dispatchers.Unconfined),
-                context = context,
-                songFile = songFile,
-                editRequests = pendingEditRequests,
-                needDeleteCover = false,
-                needReplaceCover = false,
-                newCoverUri = null
-            ) {
+            CoroutineScope(Dispatchers.Unconfined).launch {
+                AudioMetadataEditor(listOf(songFile), pendingEditRequests).execute(context)
                 updateEditable(false)
                 updateSong(context, song)
                 _pendingEditRequests.clear()
