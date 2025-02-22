@@ -9,7 +9,6 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import player.phonograph.R
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toMusicMetadataKey
-import player.phonograph.mechanism.metadata.edit.selectImage
 import player.phonograph.model.getFileSizeString
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.Metadata

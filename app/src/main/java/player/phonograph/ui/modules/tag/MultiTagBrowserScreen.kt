@@ -6,7 +6,6 @@ package player.phonograph.ui.modules.tag
 
 import lib.storage.launcher.IOpenFileStorageAccessible
 import player.phonograph.R
-import player.phonograph.mechanism.metadata.edit.selectImage
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.Title

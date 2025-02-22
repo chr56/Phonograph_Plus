@@ -5,6 +5,8 @@
 package player.phonograph.ui.modules.tag
 
 import lib.storage.launcher.ICreateFileStorageAccessible
+import lib.storage.launcher.OpenDocumentContract
+import lib.storage.launcher.OpenFileStorageAccessDelegate
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.retriever.PARAMETERS_RAW
 import player.phonograph.coil.target.PaletteTargetBuilder
@@ -87,6 +89,15 @@ private fun writeArtwork(
     coroutineScope.launch(Dispatchers.IO) {
         outputStream.buffered(4096).use { outputStream ->
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        }
+    }
+}
+
+suspend fun selectImage(accessTool: OpenFileStorageAccessDelegate): Uri? {
+    val cfg = OpenDocumentContract.Config(mimeTypes = arrayOf("image/*"))
+    return suspendCancellableCoroutine {
+        accessTool.launch(cfg) { uri: Uri? ->
+            it.resume(uri) { _, _, _ -> }
         }
     }
 }
