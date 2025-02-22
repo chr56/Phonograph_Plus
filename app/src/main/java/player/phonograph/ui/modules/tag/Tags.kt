@@ -6,8 +6,8 @@ package player.phonograph.ui.modules.tag
 
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
-import player.phonograph.model.RawTag
-import player.phonograph.model.TagData
+import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
+import player.phonograph.model.metadata.Metadata
 import player.phonograph.model.text
 import player.phonograph.ui.compose.components.VerticalTextItem
 import androidx.annotation.StringRes
@@ -252,13 +252,13 @@ internal fun EditableItem(
 }
 @Composable
 @Suppress("UNUSED_PARAMETER")
-internal fun RawTag(key: String, rawTag: RawTag) {
+internal fun RawTag(key: String, rawField: JAudioTaggerMetadata.Field) {
     val (
         id: String,
         name: String,
-        value: TagData,
+        value: Metadata.Field,
         description: String?,
-    ) = rawTag
+    ) = rawField
 
     Column(
         modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
@@ -305,7 +305,7 @@ internal fun RawTag(key: String, rawTag: RawTag) {
         // content
         SelectionContainer {
             Text(
-                text = value.text(),
+                text = value.text().toString(),
                 style = TextStyle(
                     color = MaterialTheme.colors.onSurface.copy(alpha = 0.92f),
                     fontSize = 14.sp,

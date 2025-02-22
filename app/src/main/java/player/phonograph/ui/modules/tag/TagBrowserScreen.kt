@@ -8,10 +8,11 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import lib.storage.launcher.IOpenFileStorageAccessible
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
+import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
 import player.phonograph.mechanism.tag.edit.selectImage
-import player.phonograph.model.TagData
-import player.phonograph.model.allFieldKey
 import player.phonograph.model.getFileSizeString
+import player.phonograph.model.metadata.ConventionalMusicMetadataKey
+import player.phonograph.model.metadata.Metadata
 import player.phonograph.model.text
 import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.CoverImage
@@ -19,7 +20,6 @@ import player.phonograph.ui.compose.components.Title
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -47,7 +47,7 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun TagBrowserScreen(viewModel: TagBrowserViewModel) {
-    val info by viewModel.currentSongInfo.collectAsState()
+    val metadata by viewModel.currentSongMetadata.collectAsState()
     val bitmap by viewModel.songBitmap.collectAsState()
     val editable by viewModel.editable.collectAsState()
     Column(
@@ -61,30 +61,37 @@ fun TagBrowserScreen(viewModel: TagBrowserViewModel) {
         Column(
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
+            val fileProperties = metadata.fileProperties
+            val audioProperties = metadata.audioProperties
             Spacer(modifier = Modifier.height(16.dp))
             Title(stringResource(R.string.file), color = MaterialTheme.colors.primary)
-            Item(R.string.label_file_name, info.fileName.value())
-            Item(R.string.label_file_path, info.filePath.value())
-            Item(R.string.label_file_size, getFileSizeString(info.fileSize.value()))
-            for ((key, field) in info.audioPropertyFields) {
-                Item(stringResource(key.res), value = field.value().toString())
+            Item(R.string.label_file_name, fileProperties.fileName)
+            Item(R.string.label_file_path, fileProperties.filePath)
+            Item(R.string.label_file_size, getFileSizeString(fileProperties.fileSize))
+            for (audioProperty in audioProperties.fields) {
+                Item(stringResource(audioProperty.key.res), value = audioProperty.field.text().toString())
             }
             // music tags
             Spacer(modifier = Modifier.height(16.dp))
             Title(stringResource(R.string.music_tags), color = MaterialTheme.colors.primary)
-            Item(stringResource(R.string.tag_format), info.tagFormat.id)
-            Spacer(modifier = Modifier.height(8.dp))
-            val updateKey by viewModel.prefillUpdateKey
-            val prefillsMap = remember(updateKey) { viewModel.prefillsMap }
-            for ((key, field) in info.tagTextOnlyFields) {
-                CommonTag(key, field.content, editable, prefillsMap[key], viewModel::process)
-            }
-            if (editable) AddMoreButton(viewModel)
-            Spacer(modifier = Modifier.height(16.dp))
-            CascadeVerticalItem(stringResource(R.string.raw_tags)) {
-                for ((key, rawTag) in info.allTags) {
-                    RawTag(key, rawTag)
+            Item(stringResource(R.string.tag_format), metadata.audioMetadataFormat.id)
+            val musicMetadata = metadata.musicMetadata
+            if (musicMetadata is JAudioTaggerMetadata) {
+                Spacer(modifier = Modifier.height(8.dp))
+                val updateKey by viewModel.prefillUpdateKey
+                val prefillsMap = remember(updateKey) { viewModel.prefillsMap }
+                for ((key, field) in musicMetadata.textOnlyTagFields) {
+                    CommonTag(key, field, editable, prefillsMap[key], viewModel::process)
                 }
+                if (editable) AddMoreButton(viewModel)
+                Spacer(modifier = Modifier.height(16.dp))
+                CascadeVerticalItem(stringResource(R.string.raw_tags)) {
+                    for ((key, field) in musicMetadata.allTagFields) {
+                        RawTag(key, field)
+                    }
+                }
+            } else {
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
@@ -102,7 +109,7 @@ fun TagBrowserScreen(viewModel: TagBrowserViewModel) {
 @Composable
 fun Artwork(viewModel: TagBrowserViewModel, bitmap: Bitmap?, editable: Boolean) {
     val context = LocalContext.current
-    BoxWithConstraints {
+    Box {
         val coverImageDetailDialogState = remember { MaterialDialogState(false) }
         if (bitmap != null || editable) {
             CoverImage(bitmap, MaterialTheme.colors.primary, Modifier.clickable {
@@ -136,8 +143,16 @@ fun Artwork(viewModel: TagBrowserViewModel, bitmap: Bitmap?, editable: Boolean) 
 
 @Composable
 private fun AddMoreButton(model: TagBrowserViewModel) {
-    val songInfoModel by model.currentSongInfo.collectAsState()
-    val existKeys = songInfoModel.tagTextOnlyFields.keys
+    val metadata by model.currentSongMetadata.collectAsState()
+    val allFieldKey = ConventionalMusicMetadataKey.entries.map { FieldKey.entries[it.ordinal] }
+    val existKeys = run {
+        val musicMetadata = metadata.musicMetadata
+        if (musicMetadata is JAudioTaggerMetadata) {
+            musicMetadata.textOnlyTagFields.keys
+        } else {
+            emptySet()
+        }
+    }
     val remainedKeys = allFieldKey.subtract(existKeys)
     AddMoreButton(remainedKeys, model::process)
 }
@@ -146,14 +161,14 @@ private fun AddMoreButton(model: TagBrowserViewModel) {
 @Composable
 private fun CommonTag(
     key: FieldKey,
-    field: TagData,
+    field: Metadata.Field,
     editable: Boolean,
     prefills: Collection<String>?,
     onEdit: (Context, TagEditEvent) -> Unit,
 ) {
     val context = LocalContext.current
     val tagName = key.text(context.resources)
-    val tagValue = field.text()
+    val tagValue = field.text().toString()
 
     Box(modifier = Modifier.fillMaxWidth()) {
         if (editable) {

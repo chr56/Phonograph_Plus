@@ -7,13 +7,15 @@ package player.phonograph.ui.modules.tag
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
-import player.phonograph.mechanism.tag.DefaultMetadataExtractor
-import player.phonograph.mechanism.tag.JAudioTaggerExtractor
+import player.phonograph.mechanism.metadata.DefaultMetadataExtractor
+import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
+import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
 import player.phonograph.mechanism.tag.edit.EditAction
 import player.phonograph.mechanism.tag.edit.applyEdit
 import player.phonograph.model.Song
-import player.phonograph.model.SongInfoModel
-import player.phonograph.model.TagField
+import player.phonograph.model.metadata.AudioMetadata
+import player.phonograph.model.metadata.ConventionalMusicMetadataKey
+import player.phonograph.model.metadata.Metadata
 import player.phonograph.util.permissions.navigateToStorageSetting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -43,7 +45,7 @@ class MultiTagBrowserViewModel : ViewModel() {
         if (songs.isNotEmpty()) {
             _songs.update { songs }
             viewModelScope.launch(Dispatchers.IO) {
-                val infos = mutableListOf<SongInfoModel>()
+                val infos = mutableListOf<AudioMetadata>()
                 for (song in songs) {
                     val info = JAudioTaggerExtractor.extractSongMetadata(context, song)
                         ?: DefaultMetadataExtractor.extractSongMetadata(context, song)
@@ -56,26 +58,28 @@ class MultiTagBrowserViewModel : ViewModel() {
         }
     }
 
-    private val _originalSongInfos: MutableStateFlow<List<SongInfoModel>> = MutableStateFlow(emptyList())
+    private val _originalSongInfos: MutableStateFlow<List<AudioMetadata>> = MutableStateFlow(emptyList())
     val originalSongInfos get() = _originalSongInfos.asStateFlow()
 
 
-    fun reducedOriginalTags(): Flow<Map<FieldKey, List<TagField>>> =
+    fun reducedOriginalTags(): Flow<Map<FieldKey, List<Metadata.Field>>> =
         originalSongInfos.map {
             reducedOriginalTagsImpl(it)
         }
 
-    private fun reducedOriginalTagsImpl(list: List<SongInfoModel>): MutableMap<FieldKey, List<TagField>> =
+    private fun reducedOriginalTagsImpl(list: List<AudioMetadata>): MutableMap<FieldKey, List<Metadata.Field>> =
         list.fold(mutableMapOf()) { acc, model ->
-            for ((key, value) in model.tagTextOnlyFields) {
-                val oldValue = acc[key]
-                val newValue = if (oldValue != null) {
-                    oldValue + listOf(value)
-                } else {
-                    listOf(value)
+            val musicMetadata = model.musicMetadata
+            if (musicMetadata is JAudioTaggerMetadata)
+                for ((key, value) in musicMetadata.textOnlyTagFields) {
+                    val oldValue = acc[key]
+                    val newValue = if (oldValue != null) {
+                        oldValue + listOf(value)
+                    } else {
+                        listOf(value)
+                    }
+                    acc[key] = newValue
                 }
-                acc[key] = newValue
-            }
             acc
         }
 
@@ -92,7 +96,7 @@ class MultiTagBrowserViewModel : ViewModel() {
     private var _pendingEditRequests: MutableList<EditAction> = mutableListOf()
     val pendingEditRequests: List<EditAction> get() = _pendingEditRequests.toList()
 
-    fun process(@Suppress("UNUSED_PARAMETER") context: Context, event: TagEditEvent) {
+    fun process(@Suppress("unused") context: Context, event: TagEditEvent) {
         viewModelScope.launch {
             when (event) {
                 is TagEditEvent.UpdateTag     -> {
@@ -154,9 +158,10 @@ class MultiTagBrowserViewModel : ViewModel() {
         val original = originalSongInfos.value
         val tagDiff = pendingEditRequests.map { action ->
             val oldValues =
-                original.mapNotNull { it.tagFields[action.key]?.value() }
-                    .filterNot { it.isEmpty() }
-                    .reduce { a, b -> "$a,$b" }
+                original.mapNotNull { metadata ->
+                    val key = ConventionalMusicMetadataKey.entries[action.key.ordinal]
+                    (metadata.musicMetadata as JAudioTaggerMetadata)[key]?.text()?.toString()
+                }.filterNot { it.isEmpty() }.reduce { a, b -> "$a,$b" }
             Pair(action, oldValues)
         }
         return TagDiff(tagDiff)

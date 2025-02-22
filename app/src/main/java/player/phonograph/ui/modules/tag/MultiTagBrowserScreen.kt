@@ -79,7 +79,7 @@ private fun CommonTags(viewModel: MultiTagBrowserViewModel) {
     val displayTags by viewModel.displayTags.collectAsState()
     val reducedTags by viewModel.reducedOriginalTags().collectAsState(mutableMapOf())
     for ((key, _) in displayTags) {
-        val reducedValues = reducedTags[key]?.map { it.content.text() }
+        val reducedValues = reducedTags[key]?.map { it.text().toString() }
         val editorValue = displayTags[key]
         CommonTag(
             key,
