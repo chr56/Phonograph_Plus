@@ -2,8 +2,10 @@ name: lts_release
 on:
   workflow_dispatch:
   push:
-    branches:
-      - "LTS*"
+    tags:
+      - "*LTS"
+    paths-ignore:
+      - '.github/**'
 
 jobs:
 
