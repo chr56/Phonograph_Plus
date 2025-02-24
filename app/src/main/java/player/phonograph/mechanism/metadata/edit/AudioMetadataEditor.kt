@@ -63,7 +63,7 @@ class AudioMetadataEditor(
 
     private fun applyEditActions(file: File, requests: List<EditAction>) {
         safeEditTag(file.path) {
-            val audioFile = AudioFileIO.read(file)
+            val audioFile = readAudioFile(file) ?: return
             for (action in requests) {
                 applyEditAction(audioFile, action)
             }
@@ -86,6 +86,17 @@ class AudioMetadataEditor(
                 "Failed to execute step action(${action.description}) due to [${validResult.message}], ignored!"
             )
         }
+    }
+
+    private fun readAudioFile(file: File): AudioFile? = try {
+        if (file.extension.isNotEmpty()) {
+            AudioFileIO.read(file)
+        } else {
+            AudioFileIO.readMagic(file)
+        }
+    } catch (e: CannotReadException) {
+        logs.add("Failed to read file, $HINT! \n${summaryThrowable(e)}")
+        null
     }
 
     private inline fun safeEditTag(path: String, block: () -> Unit) {
