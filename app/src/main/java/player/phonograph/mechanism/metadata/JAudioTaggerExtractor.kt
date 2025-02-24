@@ -69,7 +69,7 @@ object JAudioTaggerExtractor : MetadataExtractor {
         val fileSize = songFile.length()
 
         try {
-            val audioFile: AudioFile = AudioFileIO.read(songFile)
+            val audioFile: AudioFile = readAudioFile(songFile) ?: return null
 
             val audioPropertyFields = readAudioProperties(audioFile.audioHeader)
             val tagFormat = readTagFormat(audioFile)
@@ -81,15 +81,7 @@ object JAudioTaggerExtractor : MetadataExtractor {
                 musicMetadata = musicMetadata,
             )
         } catch (e: Exception) {
-            val suffix = songFile.extension
-            if (ErrorMessage.NO_READER_FOR_THIS_FORMAT.getMsg(suffix) == e.message) {
-                Handler(Looper.getMainLooper()).post {
-                    Toast.makeText(context, context.getString(R.string.unsupported_format, suffix), Toast.LENGTH_SHORT)
-                        .show()
-                }
-            } else {
-                reportError(e, TAG, String.format(ERR_MSG_FAILED_TO_READ, filePath, suffix))
-            }
+            reportError(e, TAG, analyzeException(e, songFile))
             return null
         }
     }
@@ -177,27 +169,20 @@ object JAudioTaggerExtractor : MetadataExtractor {
         }
     }
 
-
-    private const val TAG = "JAudioTaggerExtractor"
-    private const val ERR_MSG_FAILED_TO_READ =
-        "Failed to read metadata of song (%s). This might cause by: " +
-                "1) storage permission is not fully granted. " +
-                "2) the format (%s) is not supported."
-
     /**
      * read embed lyrics via JAudioTagger
      */
     fun readLyrics(file: File): String? {
         try {
-            val value = AudioFileIO.read(file).tag?.getFirst(FieldKey.LYRICS)
+            val metadata = readAudioFile(file)?.tag ?: return null
+            val value = metadata.getFirst(FieldKey.LYRICS)
             return if (!value.isNullOrBlank()) value else null
         } catch (e: CannotReadException) {
-            val message = "Error: Failed to read ${file.path}: ${e.message}\n${Log.getStackTraceString(e)}"
-            val suffix = file.name.substringAfterLast('.', "")
-            return if (ErrorMessage.NO_READER_FOR_THIS_FORMAT.getMsg(suffix) == e.message) {
+            return if (ErrorMessage.NO_READER_FOR_THIS_FORMAT.getMsg(file.extension) == e.message) {
                 // ignore
                 null
             } else {
+                val message = "Error: Failed to read ${file.path}: ${e.message}\n${Log.getStackTraceString(e)}"
                 Log.i(TAG, message)
                 message
             }
@@ -209,10 +194,39 @@ object JAudioTaggerExtractor : MetadataExtractor {
      */
     fun readImage(file: File): ByteArray? {
         try {
-            val artwork = AudioFileIO.read(file).tag?.firstArtwork
-            return artwork?.binaryData
-        } catch (e: CannotReadException) {
+            val metadata = readAudioFile(file)?.tag ?: return null
+            return metadata.firstArtwork?.binaryData
+        } catch (e: Exception) {
             return null
         }
     }
+
+    private fun readAudioFile(file: File): AudioFile? {
+        return try {
+            if (file.extension.isNotEmpty()) {
+                AudioFileIO.read(file)
+            } else {
+                AudioFileIO.readMagic(file)
+            }
+        } catch (e: CannotReadException) {
+            reportError(e, TAG, analyzeException(e, file))
+            null
+        }
+    }
+
+    /**
+     * @return error message
+     */
+    private fun analyzeException(e: Exception, file: File): String =
+        if (ErrorMessage.NO_READER_FOR_THIS_FORMAT.getMsg(file.extension) == e.message) {
+            String.format(ERR_MSG_UNSUPPORTED_FILE_FORMAT, file.path, file.extension)
+        } else {
+            String.format(ERR_MSG_FAILED_TO_READ, file.path)
+        }
+
+    private const val TAG = "JAudioTaggerExtractor"
+    private const val ERR_MSG_UNSUPPORTED_FILE_FORMAT =
+        "Failed to read metadata of song (%s): format (%s) is not supported."
+    private const val ERR_MSG_FAILED_TO_READ =
+        "Failed to read metadata of song (%s): storage permission may not be fully granted."
 }
