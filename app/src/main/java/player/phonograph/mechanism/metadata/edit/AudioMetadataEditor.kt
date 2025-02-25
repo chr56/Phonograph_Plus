@@ -4,34 +4,24 @@
 
 package player.phonograph.mechanism.metadata.edit
 
-import org.jaudiotagger.audio.AudioFile
-import org.jaudiotagger.audio.AudioFileIO
-import org.jaudiotagger.audio.exceptions.CannotReadException
-import org.jaudiotagger.audio.exceptions.CannotWriteException
-import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException
-import org.jaudiotagger.audio.exceptions.ReadOnlyFileException
-import org.jaudiotagger.tag.KeyNotFoundException
-import org.jaudiotagger.tag.TagException
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.notification.BackgroundNotification
 import player.phonograph.util.warning
 import android.content.Context
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import java.io.File
-import java.io.IOException
 
-class AudioMetadataEditor(
-    private val songFiles: List<File>,
-    private val editRequest: List<EditAction>,
+abstract class AudioMetadataEditor(
+    protected val songFiles: List<File>,
+    protected val editRequest: List<EditAction>,
 ) {
-
-    private val logs: MutableList<String> = mutableListOf()
-
+    /**
+     * execute [editRequest] on [songFiles]
+     */
     suspend fun execute(context: Context) {
         if (editRequest.isEmpty()) return
         withContext(Dispatchers.Default) {
@@ -47,7 +37,7 @@ class AudioMetadataEditor(
                     if (songFile.canWrite()) {
                         applyEditActions(songFile, editRequest)
                     } else {
-                        logs.add("Could not write file ${songFile.path}, $HINT")
+                        logs.add("Could not write file ${songFile.path}, please check file or storage permission")
                     }
                 }
             }
@@ -61,68 +51,15 @@ class AudioMetadataEditor(
         }
     }
 
-    private fun applyEditActions(file: File, requests: List<EditAction>) {
-        safeEditTag(file.path) {
-            val audioFile = readAudioFile(file) ?: return
-            for (action in requests) {
-                applyEditAction(audioFile, action)
-            }
-            audioFile.commit()
-        }
-    }
+    /**
+     * actual execute [editRequest] on [songFiles]
+     */
+    abstract fun applyEditActions(file: File, requests: List<EditAction>)
 
-    private fun applyEditAction(audioFile: AudioFile, action: EditAction) {
-        val validResult = action.valid(audioFile)
-        if (validResult == EditAction.ValidResult.Valid) {
-            try {
-                action.execute(audioFile)
-            } catch (e: KeyNotFoundException) {
-                logs.add("Unknown FieldKey: ${action.key} \n${summaryThrowable(e)}")
-            } catch (e: TagException) {
-                logs.add("Failed to execute step: ${action.description} \n${summaryThrowable(e)}")
-            }
-        } else {
-            logs.add(
-                "Failed to execute step action(${action.description}) due to [${validResult.message}], ignored!"
-            )
-        }
-    }
+    protected val logs: MutableList<String> = mutableListOf()
 
-    private fun readAudioFile(file: File): AudioFile? = try {
-        if (file.extension.isNotEmpty()) {
-            AudioFileIO.read(file)
-        } else {
-            AudioFileIO.readMagic(file)
-        }
-    } catch (e: CannotReadException) {
-        logs.add("Failed to read file, $HINT! \n${summaryThrowable(e)}")
-        null
-    }
-
-    private inline fun safeEditTag(path: String, block: () -> Unit) {
-        try {
-            block()
-        } catch (e: CannotReadException) {
-            logs.add("Failed to read file, $HINT! \n${summaryThrowable(e)}")
-        } catch (e: CannotWriteException) {
-            logs.add("Failed to write file, $HINT! \n${summaryThrowable(e)}")
-        } catch (e: IOException) {
-            logs.add("IO error, $HINT! \n${summaryThrowable(e)}")
-        } catch (e: ReadOnlyFileException) {
-            logs.add("File is read only: $path! \n${summaryThrowable(e)}")
-        } catch (e: InvalidAudioFrameException) {
-            logs.add("File maybe corrupted, $HINT! \n${summaryThrowable(e)}")
-        } catch (e: TagException) {
-            logs.add("Tag(s) may have glitches, $HINT! \n${summaryThrowable(e)}")
-        }
-    }
-
-    private fun summaryThrowable(throwable: Throwable): String =
-        "${throwable.javaClass.name}: ${throwable.message}:\n${Log.getStackTraceString(throwable)}"
-
-    companion object {
-        private const val LOG_TAG = "MetadataEditor"
-        private const val HINT = "please check file or storage permission"
+    companion object{
+        private const val LOG_TAG = "AudioMetadataEditor"
 
         private const val TAG_EDITOR_NOTIFICATION_CODE = 824_3348
     }

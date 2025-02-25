@@ -9,7 +9,7 @@ import player.phonograph.R
 import player.phonograph.mechanism.metadata.DefaultMetadataExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
-import player.phonograph.mechanism.metadata.edit.AudioMetadataEditor
+import player.phonograph.mechanism.metadata.edit.JAudioTaggerAudioMetadataEditor
 import player.phonograph.mechanism.metadata.edit.EditAction
 import player.phonograph.model.Song
 import player.phonograph.model.metadata.AudioMetadata
@@ -172,7 +172,7 @@ class MultiTagBrowserViewModel : ViewModel() {
             if (songFiles.first().canWrite()) {
                 mergeActions()
                 CoroutineScope(Dispatchers.Unconfined).launch {
-                    AudioMetadataEditor(songFiles, pendingEditRequests).execute(context)
+                    JAudioTaggerAudioMetadataEditor(songFiles, pendingEditRequests).execute(context)
                     updateEditable(false)
                     updateSong(context, _songs.value)
                     _pendingEditRequests.clear()

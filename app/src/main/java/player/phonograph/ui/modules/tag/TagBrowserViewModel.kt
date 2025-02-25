@@ -10,7 +10,7 @@ import player.phonograph.mechanism.metadata.DefaultMetadataExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toFieldKey
-import player.phonograph.mechanism.metadata.edit.AudioMetadataEditor
+import player.phonograph.mechanism.metadata.edit.JAudioTaggerAudioMetadataEditor
 import player.phonograph.mechanism.metadata.edit.EditAction
 import player.phonograph.model.Song
 import player.phonograph.model.metadata.AudioMetadata
@@ -185,7 +185,7 @@ class TagBrowserViewModel : ViewModel() {
         if (songFile.canWrite()) {
             mergeActions()
             CoroutineScope(Dispatchers.Unconfined).launch {
-                AudioMetadataEditor(listOf(songFile), pendingEditRequests).execute(context)
+                JAudioTaggerAudioMetadataEditor(listOf(songFile), pendingEditRequests).execute(context)
                 updateEditable(false)
                 updateSong(context, song)
                 _pendingEditRequests.clear()
