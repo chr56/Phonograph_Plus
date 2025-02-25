@@ -15,8 +15,9 @@ import org.jaudiotagger.tag.TagException
 import org.jaudiotagger.tag.TagNotFoundException
 import org.jaudiotagger.tag.images.AndroidArtwork
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toFieldKey
-import player.phonograph.mechanism.metadata.edit.EditAction.Executor
-import player.phonograph.mechanism.metadata.edit.EditAction.Executor.ValidResult
+import player.phonograph.model.metadata.EditAction
+import player.phonograph.model.metadata.EditAction.Executor
+import player.phonograph.model.metadata.EditAction.Executor.ValidResult
 import android.util.Log
 import java.io.File
 import java.io.IOException

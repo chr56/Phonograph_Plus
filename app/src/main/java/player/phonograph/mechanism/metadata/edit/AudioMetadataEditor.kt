@@ -7,6 +7,7 @@ package player.phonograph.mechanism.metadata.edit
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mechanism.scanner.MediaStoreScanner
+import player.phonograph.model.metadata.EditAction
 import player.phonograph.notification.BackgroundNotification
 import player.phonograph.util.warning
 import android.content.Context

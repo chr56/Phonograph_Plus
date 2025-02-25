@@ -2,9 +2,8 @@
  *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.mechanism.metadata.edit
+package player.phonograph.model.metadata
 
-import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import java.io.File
 
 sealed interface EditAction {

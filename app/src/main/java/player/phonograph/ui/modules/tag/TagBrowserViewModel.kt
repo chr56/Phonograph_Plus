@@ -11,10 +11,10 @@ import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toFieldKey
 import player.phonograph.mechanism.metadata.edit.JAudioTaggerAudioMetadataEditor
-import player.phonograph.mechanism.metadata.edit.EditAction
 import player.phonograph.model.Song
 import player.phonograph.model.metadata.AudioMetadata
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
+import player.phonograph.model.metadata.EditAction
 import player.phonograph.model.metadata.Metadata
 import player.phonograph.util.permissions.navigateToStorageSetting
 import androidx.compose.runtime.MutableState
