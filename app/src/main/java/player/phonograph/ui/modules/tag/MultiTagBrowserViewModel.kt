@@ -9,7 +9,6 @@ import player.phonograph.R
 import player.phonograph.mechanism.metadata.DefaultMetadataExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
-import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toMusicMetadataKey
 import player.phonograph.mechanism.metadata.edit.AudioMetadataEditor
 import player.phonograph.mechanism.metadata.edit.EditAction
 import player.phonograph.model.Song
@@ -71,14 +70,14 @@ class MultiTagBrowserViewModel : ViewModel() {
         list.fold(mutableMapOf()) { acc, model ->
             val musicMetadata = model.musicMetadata
             if (musicMetadata is JAudioTaggerMetadata)
-                for ((key, value) in musicMetadata.textOnlyTagFields) {
-                    val oldValue = acc[key.toMusicMetadataKey()]
+                for ((key, value) in musicMetadata.textTagFields) {
+                    val oldValue = acc[key]
                     val newValue = if (oldValue != null) {
                         oldValue + listOf(value)
                     } else {
                         listOf(value)
                     }
-                    acc[key.toMusicMetadataKey()] = newValue
+                    acc[key] = newValue
                 }
             acc
         }

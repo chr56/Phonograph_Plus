@@ -6,7 +6,11 @@ package player.phonograph.model.metadata
 
 import player.phonograph.R
 
-interface MusicMetadata : Metadata {}
+interface MusicMetadata : Metadata {
+    val genericTagFields: Map<ConventionalMusicMetadataKey, Metadata.Field>
+    val textTagFields: Map<ConventionalMusicMetadataKey, Metadata.Field>
+    val allTagFields: Map<String, Metadata.Field>
+}
 
 object EmptyMusicMetadata : MusicMetadata {
 
@@ -15,6 +19,11 @@ object EmptyMusicMetadata : MusicMetadata {
     override fun contains(key: Metadata.Key): Boolean = false
 
     override val fields: List<Metadata.Entry> get() = listOf()
+
+    override val genericTagFields: Map<ConventionalMusicMetadataKey, Metadata.Field> get() = emptyMap()
+    override val textTagFields: Map<ConventionalMusicMetadataKey, Metadata.Field> get() = emptyMap()
+    override val allTagFields: Map<String, Metadata.Field> get() = emptyMap()
+
 }
 
 //region Keys

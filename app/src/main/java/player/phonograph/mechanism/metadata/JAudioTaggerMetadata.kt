@@ -6,17 +6,21 @@ package player.phonograph.mechanism.metadata
 
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toFieldKey
+import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toMusicMetadataKey
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.Metadata
 import player.phonograph.model.metadata.MusicMetadata
 import player.phonograph.model.metadata.TagMetadataKey
 
-class JAudioTaggerMetadata(
-    val genericTagFields: Map<FieldKey, Metadata.Field>,
-    val allTagFields: Map<String, Field>,
+data class JAudioTaggerMetadata(
+    private val _genericTagFields: Map<FieldKey, Metadata.Field>,
+    override val allTagFields: Map<String, Field>,
 ) : MusicMetadata {
 
-    val textOnlyTagFields: Map<FieldKey, Metadata.Field>
+    override val genericTagFields: Map<ConventionalMusicMetadataKey, Metadata.Field>
+        get() = _genericTagFields.mapKeys { it.key.toMusicMetadataKey() }
+
+    override val textTagFields: Map<ConventionalMusicMetadataKey, Metadata.Field>
         get() = genericTagFields.filter { it.value is Metadata.PlainStringField }
 
     data class Key(val id: String, override val res: Int = 0) : TagMetadataKey
@@ -28,15 +32,14 @@ class JAudioTaggerMetadata(
         val description: String?,
     ) : Metadata.Field by value
 
-
     override fun get(key: Metadata.Key): Metadata.Field? = when (key) {
-        is ConventionalMusicMetadataKey -> genericTagFields[key.toFieldKey()]
+        is ConventionalMusicMetadataKey -> _genericTagFields[key.toFieldKey()]
         is Key                          -> allTagFields[key.id]
         else                            -> null
     }
 
     override fun contains(key: Metadata.Key): Boolean = when (key) {
-        is ConventionalMusicMetadataKey -> genericTagFields.containsKey(key.toFieldKey())
+        is ConventionalMusicMetadataKey -> _genericTagFields.containsKey(key.toFieldKey())
         is Key                          -> allTagFields.containsKey(key.id)
         else                            -> false
     }

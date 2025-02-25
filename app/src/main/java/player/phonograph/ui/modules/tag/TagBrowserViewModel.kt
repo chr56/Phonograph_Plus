@@ -10,7 +10,6 @@ import player.phonograph.mechanism.metadata.DefaultMetadataExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toFieldKey
-import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toMusicMetadataKey
 import player.phonograph.mechanism.metadata.edit.AudioMetadataEditor
 import player.phonograph.mechanism.metadata.edit.EditAction
 import player.phonograph.model.Song
@@ -88,21 +87,21 @@ class TagBrowserViewModel : ViewModel() {
     fun process(context: Context, event: TagEditEvent) {
         viewModelScope.launch {
             when (event) {
-                is TagEditEvent.UpdateTag -> {
+                is TagEditEvent.UpdateTag     -> {
                     modifyView { old ->
                         old.toMutableMap().apply { put(event.fieldKey, Metadata.PlainStringField(event.newValue)) }
                     }
                     modifyEditRequest(EditAction.Update(event.fieldKey, event.newValue))
                 }
 
-                is TagEditEvent.AddNewTag -> {
+                is TagEditEvent.AddNewTag     -> {
                     modifyView { old ->
                         old + (event.fieldKey to Metadata.PlainStringField(""))
                     }
                     modifyEditRequest(EditAction.Update(event.fieldKey, ""))
                 }
 
-                is TagEditEvent.RemoveTag -> {
+                is TagEditEvent.RemoveTag     -> {
                     modifyView { old ->
                         old.toMutableMap().apply { remove(event.fieldKey) }
                     }
@@ -115,7 +114,7 @@ class TagBrowserViewModel : ViewModel() {
                     modifyEditRequest(EditAction.ImageReplace(event.file))
                 }
 
-                TagEditEvent.RemoveArtwork -> {
+                TagEditEvent.RemoveArtwork    -> {
                     _songBitmap.emit(null)
                     modifyEditRequest(EditAction.ImageDelete)
                 }
@@ -141,18 +140,13 @@ class TagBrowserViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.Default) {
             val oldAudioMetadata = currentSongMetadata.value
             val oldMusicMetadata = oldAudioMetadata.musicMetadata
-            val newAudioMetadata = if (oldMusicMetadata is JAudioTaggerMetadata) {
-                val newFields =
-                    action(
-                        oldMusicMetadata.genericTagFields.mapKeys { it.key.toMusicMetadataKey() }
-                    ).mapKeys {
-                        it.key.toFieldKey()
-                    }
-                val newMusicMetadata = JAudioTaggerMetadata(newFields, oldMusicMetadata.allTagFields)
-                oldAudioMetadata.copy(musicMetadata = newMusicMetadata)
-            } else {
-                oldAudioMetadata
-            }
+            val newFields = action(oldMusicMetadata.genericTagFields).mapKeys { it.key.toFieldKey() }
+            val newAudioMetadata =
+                if (oldMusicMetadata is JAudioTaggerMetadata) {
+                    oldAudioMetadata.copy(musicMetadata = oldMusicMetadata.copy(_genericTagFields = newFields))
+                } else {
+                    oldAudioMetadata
+                }
             _currentSongMetadata.emit(newAudioMetadata)
         }
     }

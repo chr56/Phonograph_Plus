@@ -8,7 +8,6 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import lib.storage.launcher.IOpenFileStorageAccessible
 import player.phonograph.R
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
-import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toMusicMetadataKey
 import player.phonograph.model.getFileSizeString
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.Metadata
@@ -78,9 +77,8 @@ fun TagBrowserScreen(viewModel: TagBrowserViewModel) {
                 Spacer(modifier = Modifier.height(8.dp))
                 val updateKey by viewModel.prefillUpdateKey
                 val prefillsMap = remember(updateKey) { viewModel.prefillsMap }
-                for ((key, field) in musicMetadata.textOnlyTagFields) {
-                    val realKey = key.toMusicMetadataKey()
-                    CommonTag(realKey, field, editable, prefillsMap[realKey], viewModel::process)
+                for ((key, field) in musicMetadata.textTagFields) {
+                    CommonTag(key, field, editable, prefillsMap[key], viewModel::process)
                 }
                 if (editable) AddMoreButton(viewModel)
                 Spacer(modifier = Modifier.height(16.dp))
@@ -145,7 +143,7 @@ private fun AddMoreButton(model: TagBrowserViewModel) {
     val metadata by model.currentSongMetadata.collectAsState()
     val musicMetadata = metadata.musicMetadata
     val existKeys = if (musicMetadata is JAudioTaggerMetadata) {
-        musicMetadata.textOnlyTagFields.keys.map { it.toMusicMetadataKey() }.toSet()
+        musicMetadata.textTagFields.keys.toSet()
     } else {
         emptySet()
     }
