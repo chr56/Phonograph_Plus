@@ -12,6 +12,11 @@ import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException
 import org.jaudiotagger.tag.KeyNotFoundException
 import org.jaudiotagger.tag.TagException
+import org.jaudiotagger.tag.TagNotFoundException
+import org.jaudiotagger.tag.images.AndroidArtwork
+import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toFieldKey
+import player.phonograph.mechanism.metadata.edit.EditAction.Executor
+import player.phonograph.mechanism.metadata.edit.EditAction.Executor.ValidResult
 import android.util.Log
 import java.io.File
 import java.io.IOException
@@ -30,10 +35,11 @@ class JAudioTaggerAudioMetadataEditor(songFiles: List<File>, editRequest: List<E
     }
 
     private fun applyEditAction(audioFile: AudioFile, action: EditAction) {
-        val validResult = action.valid(audioFile)
-        if (validResult == EditAction.ValidResult.Valid) {
+        val executor = executorFor(audioFile, action)
+        val validResult = executor.valid()
+        if (validResult == ValidResult.Valid) {
             try {
-                action.execute(audioFile)
+                executor.execute()
             } catch (e: KeyNotFoundException) {
                 logs.add("Unknown FieldKey: ${action.key} \n${summaryThrowable(e)}")
             } catch (e: TagException) {
@@ -57,6 +63,78 @@ class JAudioTaggerAudioMetadataEditor(songFiles: List<File>, editRequest: List<E
         null
     }
 
+
+    //region Executors
+
+    private fun executorFor(file: AudioFile, action: EditAction): Executor = when (action) {
+        is EditAction.Delete       -> DeleteExecutor(file, action)
+        is EditAction.ImageDelete  -> ImageDeleteExecutor(file, action)
+        is EditAction.ImageReplace -> ImageReplaceExecutor(file, action)
+        is EditAction.Update       -> UpdateExecutor(file, action)
+    }
+
+    class DeleteExecutor(val audioFile: AudioFile, val action: EditAction.Delete) : Executor {
+        override fun valid(): ValidResult {
+            val tag = audioFile.tag ?: return ValidResult.NoSuchKey
+            val target = try {
+                tag.getFirst(action.key.toFieldKey())
+            } catch (e: TagNotFoundException) {
+                null
+            }
+            return when (target) {
+                null -> ValidResult.NoSuchKey
+                else -> ValidResult.Valid
+            }
+        }
+
+        override fun execute() {
+            audioFile.tagOrCreateAndSetDefault.deleteField(action.key.toFieldKey())
+        }
+    }
+
+    class ImageDeleteExecutor(val audioFile: AudioFile, val action: EditAction.ImageDelete) : Executor {
+        override fun valid(): ValidResult {
+            val size = audioFile.tag?.artworkList?.size ?: 0
+            return if (size > 0) ValidResult.Valid else ValidResult.NoSuchKey
+        }
+
+        override fun execute() {
+            audioFile.tagOrCreateAndSetDefault.deleteArtworkField()
+        }
+    }
+
+    class UpdateExecutor(val audioFile: AudioFile, val action: EditAction.Update) : Executor {
+        override fun valid(): ValidResult {
+            val tag = audioFile.tag ?: return ValidResult.NoSuchKey
+            val target = try {
+                tag.getFirst(action.key.toFieldKey())
+            } catch (e: TagNotFoundException) {
+                null
+            }
+            return when (target) {
+                null            -> ValidResult.NoSuchKey
+                action.newValue -> ValidResult.NoChange
+                else            -> ValidResult.Valid
+            }
+        }
+
+        override fun execute() {
+            audioFile.tagOrCreateAndSetDefault.setField(action.key.toFieldKey(), action.newValue)
+        }
+    }
+
+    class ImageReplaceExecutor(val audioFile: AudioFile, val action: EditAction.ImageReplace) : Executor {
+        override fun valid(): ValidResult {
+            return ValidResult.Valid
+        }
+
+        override fun execute() {
+            audioFile.tagOrCreateAndSetDefault.addField(AndroidArtwork.createArtworkFromFile(action.file))
+        }
+    }
+    //endregion
+
+    //region Utils
     private inline fun safeEditTag(path: String, block: () -> Unit) {
         try {
             block()
@@ -77,6 +155,7 @@ class JAudioTaggerAudioMetadataEditor(songFiles: List<File>, editRequest: List<E
 
     private fun summaryThrowable(throwable: Throwable): String =
         "${throwable.javaClass.name}: ${throwable.message}:\n${Log.getStackTraceString(throwable)}"
+    //endregion
 
     companion object {
         private const val HINT = "please check file or storage permission"
