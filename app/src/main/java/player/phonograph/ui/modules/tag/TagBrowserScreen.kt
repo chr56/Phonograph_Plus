@@ -84,7 +84,7 @@ fun TagBrowserScreen(viewModel: AudioMetadataViewModel) {
         val context = LocalContext.current
         SaveConfirmationDialog(
             viewModel.saveConfirmationDialogState,
-            viewModel::generateTagDiff
+            viewModel::generateMetadataDifference
         ) { viewModel.save(context) }
         val activity = context as? ComponentActivity
         ExitWithoutSavingDialog(viewModel.exitWithoutSavingDialogState) { activity?.finish() }
@@ -142,16 +142,15 @@ private fun RawTagItems(musicMetadata: JAudioTaggerMetadata) {
 
 @Composable
 private fun Artwork(viewModel: AudioMetadataViewModel, bitmap: Bitmap?, editable: Boolean) {
-    val context = LocalContext.current
     Box {
-        val coverImageDetailDialogState = remember { MaterialDialogState(false) }
         if (bitmap != null || editable) {
             CoverImage(bitmap, MaterialTheme.colors.primary, Modifier.clickable {
-                coverImageDetailDialogState.show()
+                viewModel.coverImageDetailDialogState.show()
             })
         }
+        val context = LocalContext.current
         CoverImageDetailDialog(
-            state = coverImageDetailDialogState,
+            state = viewModel.coverImageDetailDialogState,
             artworkExist = bitmap != null,
             onSave = { viewModel.saveArtwork(context) },
             onDelete = { viewModel.submitEditEvent(context, TagEditEvent.RemoveArtwork) },
@@ -169,7 +168,7 @@ private fun Artwork(viewModel: AudioMetadataViewModel, bitmap: Bitmap?, editable
                         }
                     }
                 }
-                coverImageDetailDialogState.hide()
+                viewModel.coverImageDetailDialogState.hide()
             },
             editMode = editable
         )

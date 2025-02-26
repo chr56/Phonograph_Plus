@@ -138,13 +138,13 @@ class AudioMetadataViewModel : AbsMetadataViewModel() {
         }
     }
 
-    override fun generateTagDiff(): TagDiff {
+    override fun generateMetadataDifference(): MetadataChanges {
         val original = originalState?.metadata?.musicMetadata
         val tagDiff = pendingEditRequests.map { action ->
             val text = if (original != null) original[action.key]?.text().toString() else ""
             Pair(action, text)
         }
-        return TagDiff(tagDiff)
+        return MetadataChanges(tagDiff)
     }
 
     override fun save(context: Context) {

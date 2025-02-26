@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 internal fun SaveConfirmationDialog(
     dialogState: MaterialDialogState,
-    diff: () -> TagDiff,
+    changes: () -> MetadataChanges,
     onSave: () -> Unit,
 ) {
     val dismiss = { dialogState.hide() }
@@ -35,7 +35,7 @@ internal fun SaveConfirmationDialog(
     ) {
         title(res = R.string.save)
         customView {
-            DiffScreen(diff = diff())
+            MetadataDifferenceScreen(diff = changes())
         }
     }
 }

@@ -63,7 +63,7 @@ internal fun MultiTagBrowserScreen(viewModel: MultiAudioMetadataViewModel) {
         val context = LocalContext.current
         SaveConfirmationDialog(
             viewModel.saveConfirmationDialogState,
-            viewModel::generateTagDiff
+            viewModel::generateMetadataDifference
         ) { viewModel.save(context) }
         val activity = context as? ComponentActivity
         ExitWithoutSavingDialog(viewModel.exitWithoutSavingDialogState) { activity?.finish() }
@@ -87,7 +87,10 @@ private fun GenericTagItems(viewModel: MultiAudioMetadataViewModel) {
             viewModel::submitEditEvent
         )
     }
-    if (editable) AddMoreButtonWithoutExistedKeys(reducedTags.keys, viewModel::submitEditEvent)
+    if (editable){
+        val remainedKeys = ConventionalMusicMetadataKey.entries.subtract(reducedTags.keys)
+        AddMoreButton(remainedKeys, viewModel::submitEditEvent)
+    }
 }
 
 @Composable

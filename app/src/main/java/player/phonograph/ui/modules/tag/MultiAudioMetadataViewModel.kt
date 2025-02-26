@@ -122,7 +122,7 @@ class MultiAudioMetadataViewModel : AbsMetadataViewModel() {
         }
     }
 
-    override fun generateTagDiff(): TagDiff {
+    override fun generateMetadataDifference(): MetadataChanges {
         val original = originalState?.metadata
         val tagDiff = pendingEditRequests.map { action ->
             val text =
@@ -130,7 +130,7 @@ class MultiAudioMetadataViewModel : AbsMetadataViewModel() {
                     ?.reduce { a, b -> "$a,$b" } ?: ""
             Pair(action, text.toString())
         }
-        return TagDiff(tagDiff)
+        return MetadataChanges(tagDiff)
     }
 
     override fun save(context: Context) {

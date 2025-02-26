@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 
 
 
-internal class TagDiff(
+class MetadataChanges(
     /**
      * <EditAction, oldValue> pair
      */
@@ -34,28 +34,28 @@ internal class TagDiff(
 
 
 @Composable
-internal fun DiffScreen(diff: TagDiff) {
-    if (diff.noChange())
+fun MetadataDifferenceScreen(diff: MetadataChanges) {
+    if (diff.noChange()) {
         Text(text = stringResource(id = R.string.no_changes))
-    else
+    } else {
         LazyColumn(Modifier.padding(8.dp)) {
             for (tag in diff.tagDiff) {
                 item {
-                    TagDiff(tag)
+                    MetadataDifferenceItem(tag.first, tag.second)
                 }
             }
         }
+    }
 }
 
 @Composable
-private fun TagDiff(tag: Pair<EditAction, String?>) {
-    val (action, old) = tag
+private fun MetadataDifferenceItem(action: EditAction, old: String?) {
     Column(Modifier.padding(vertical = 16.dp)) {
         val text = if (action.key.res > 0) stringResource(action.key.res) else action.key.name
         Title(text, horizontalPadding = 0.dp)
-        DiffText(old)
+        NullableText(old)
         Icon(Icons.Outlined.ArrowDropDown, contentDescription = null)
-        DiffText(
+        NullableText(
             when (action) {
                 is EditAction.Update       -> action.newValue
                 is EditAction.Delete       -> stringResource(id = R.string.empty)
@@ -67,7 +67,7 @@ private fun TagDiff(tag: Pair<EditAction, String?>) {
 }
 
 @Composable
-private fun DiffText(string: String?, modifier: Modifier = Modifier) {
+private fun NullableText(string: String?, modifier: Modifier = Modifier) {
     if (string.isNullOrEmpty()) {
         Text(
             stringResource(id = R.string.empty),
