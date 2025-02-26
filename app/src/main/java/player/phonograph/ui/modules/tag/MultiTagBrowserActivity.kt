@@ -53,7 +53,7 @@ class MultiTagBrowserActivity :
         ICreateFileStorageAccessible,
         IOpenFileStorageAccessible {
 
-    private val viewModel: MultiTagBrowserViewModel by viewModels()
+    private val viewModel: MultiAudioMetadataViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         registerActivityResultLauncherDelegate(
@@ -62,18 +62,17 @@ class MultiTagBrowserActivity :
         )
         webSearchTool.register(this)
         val songs = parseIntent(this, intent)
-        viewModel.updateSong(this, songs)
+        viewModel.load(this, songs, true)
         super.onCreate(savedInstanceState)
-
-        setContent {
-            BatchTagEditor(viewModel, onBackPressedDispatcher, webSearchTool)
-        }
         onBackPressedDispatcher.addCallback {
-            if (viewModel.pendingEditRequests.isNotEmpty()) {
+            if (viewModel.hasChanges) {
                 viewModel.exitWithoutSavingDialogState.show()
             } else {
                 finish()
             }
+        }
+        setContent {
+            BatchTagEditor(viewModel, onBackPressedDispatcher, webSearchTool)
         }
     }
     override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
@@ -102,7 +101,7 @@ class MultiTagBrowserActivity :
 
 @Composable
 private fun BatchTagEditor(
-    viewModel: MultiTagBrowserViewModel,
+    viewModel: MultiAudioMetadataViewModel,
     onBackPressedDispatcher: OnBackPressedDispatcher,
     webSearchTool: WebSearchTool,
 ) {
@@ -139,7 +138,7 @@ private fun BatchTagEditor(
                                     )
                                 }
                             } else {
-                                IconButton(onClick = { viewModel.updateEditable(true) }) {
+                                IconButton(onClick = { viewModel.enterEditMode() }) {
                                     Icon(
                                         painterResource(id = R.drawable.ic_edit_white_24dp),
                                         stringResource(R.string.edit)
@@ -161,7 +160,7 @@ private fun BatchTagEditor(
 
 @Composable
 @Suppress("UNUSED_PARAMETER")
-private fun RequestWebSearch(viewModel: MultiTagBrowserViewModel, webSearchTool: WebSearchTool) {
+private fun RequestWebSearch(viewModel: MultiAudioMetadataViewModel, webSearchTool: WebSearchTool) {
     val context = LocalContext.current
     fun search(source: Source) {
         val intent = when (source) {

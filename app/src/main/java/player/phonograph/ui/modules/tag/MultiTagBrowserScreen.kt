@@ -43,7 +43,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
-internal fun MultiTagBrowserScreen(viewModel: MultiTagBrowserViewModel) {
+internal fun MultiTagBrowserScreen(viewModel: MultiAudioMetadataViewModel) {
     Column(
         modifier = Modifier
             .verticalScroll(state = rememberScrollState())
@@ -56,14 +56,14 @@ internal fun MultiTagBrowserScreen(viewModel: MultiTagBrowserViewModel) {
         CoverUpdater(viewModel)
         Spacer(modifier = Modifier.height(16.dp))
         Title(stringResource(R.string.music_tags), color = MaterialTheme.colors.primary)
-        CommonTags(viewModel)
+        GenericTagItems(viewModel)
     }
     val editable by viewModel.editable.collectAsState()
     if (editable) {
         val context = LocalContext.current
         SaveConfirmationDialog(
             viewModel.saveConfirmationDialogState,
-            viewModel::diff
+            viewModel::generateTagDiff
         ) { viewModel.save(context) }
         val activity = context as? ComponentActivity
         ExitWithoutSavingDialog(viewModel.exitWithoutSavingDialogState) { activity?.finish() }
@@ -71,26 +71,27 @@ internal fun MultiTagBrowserScreen(viewModel: MultiTagBrowserViewModel) {
 }
 
 @Composable
-private fun CommonTags(viewModel: MultiTagBrowserViewModel) {
+private fun GenericTagItems(viewModel: MultiAudioMetadataViewModel) {
     val editable by viewModel.editable.collectAsState()
-    val displayTags by viewModel.displayTags.collectAsState()
-    val reducedTags by viewModel.reducedOriginalTags().collectAsState(mutableMapOf())
+    val state by viewModel.state.collectAsState()
+    val displayTags = state?.displayed ?: emptyMap()
+    val reducedTags = state?.fields ?: emptyMap()
     for ((key, _) in displayTags) {
         val reducedValues = reducedTags[key]?.map { it.text().toString() }
         val editorValue = displayTags[key]
-        CommonTag(
+        GenericTagItem(
             key,
             reducedValues,
             editorValue,
             editable,
-            viewModel::process
+            viewModel::submitEditEvent
         )
     }
-    if (editable) AddMoreButtonWithoutExistedKeys(reducedTags.keys, viewModel::process)
+    if (editable) AddMoreButtonWithoutExistedKeys(reducedTags.keys, viewModel::submitEditEvent)
 }
 
 @Composable
-private fun CommonTag(
+private fun GenericTagItem(
     key: ConventionalMusicMetadataKey,
     allValues: List<String>?,
     editorValue: String?,
@@ -98,7 +99,7 @@ private fun CommonTag(
     onEdit: (Context, TagEditEvent) -> Unit,
 ) {
     val context = LocalContext.current
-    val tagName = if (key.res > 0 ) stringResource(key.res) else key.name
+    val tagName = if (key.res > 0) stringResource(key.res) else key.name
 
     Box(modifier = Modifier.fillMaxWidth()) {
         if (editable) {
@@ -113,7 +114,7 @@ private fun CommonTag(
 
 
 @Composable
-private fun CoverUpdater(viewModel: MultiTagBrowserViewModel) {
+private fun CoverUpdater(viewModel: MultiAudioMetadataViewModel) {
     Text(
         text = stringResource(R.string.update_image),
         Modifier
@@ -127,13 +128,13 @@ private fun CoverUpdater(viewModel: MultiTagBrowserViewModel) {
     CoverImageDetailDialog(
         state = viewModel.coverImageDetailDialogState,
         artworkExist = false,
-        onSave = { }, onDelete = { viewModel.process(context, TagEditEvent.RemoveArtwork) },
+        onSave = { }, onDelete = { viewModel.submitEditEvent(context, TagEditEvent.RemoveArtwork) },
         onUpdate = {
             viewModel.viewModelScope.launch(Dispatchers.IO) {
                 val uri = selectImage((context as IOpenFileStorageAccessible).openFileStorageAccessDelegate)
                 if (uri != null) {
-                    viewModel.process(
-                        context, TagEditEvent.UpdateArtwork.from(context, uri, viewModel.songs.hashCode().toString())
+                    viewModel.submitEditEvent(
+                        context, TagEditEvent.UpdateArtwork.from(context, uri, viewModel.state.hashCode().toString())
                     )
                 } else {
                     withContext(Dispatchers.Main) {
@@ -149,37 +150,41 @@ private fun CoverUpdater(viewModel: MultiTagBrowserViewModel) {
 
 @Composable
 @Suppress("UNUSED_PARAMETER")
-private fun FileList(viewModel: MultiTagBrowserViewModel, modifier: Modifier = Modifier) {
-    val songs by viewModel.songs.collectAsState()
-    CascadeVerticalItem(
-        stringResource(R.string.files),
-        collapsible = true,
-        collapsed = false
-    ) {
-        for ((index, song) in songs.withIndex()) {
-            Row(modifier = Modifier.fillMaxWidth(), Arrangement.Start) {
-                Box(
-                    Modifier
-                        .align(Alignment.Top)
-                        .padding(top = 8.dp)) {
-                    Icon(
-                        painterResource(R.drawable.ic_music_note_white_24dp), null
-                    )
-                    Text(
-                        "${index + 1}",
-                        Modifier.align(Alignment.BottomEnd),
-                        style = MaterialTheme.typography.overline
-                    )
-                }
-                Column {
-                    VerticalTextItem(
-                        stringResource(R.string.title),
-                        song.title
-                    )
-                    VerticalTextItem(
-                        stringResource(R.string.label_file_path),
-                        song.data
-                    )
+private fun FileList(viewModel: MultiAudioMetadataViewModel, modifier: Modifier = Modifier) {
+    val state by viewModel.state.collectAsState()
+    val songs = state?.songs
+    if (songs != null) {
+        CascadeVerticalItem(
+            stringResource(R.string.files),
+            collapsible = true,
+            collapsed = false
+        ) {
+            for ((index, song) in songs.withIndex()) {
+                Row(modifier = Modifier.fillMaxWidth(), Arrangement.Start) {
+                    Box(
+                        Modifier
+                            .align(Alignment.Top)
+                            .padding(top = 8.dp)
+                    ) {
+                        Icon(
+                            painterResource(R.drawable.ic_music_note_white_24dp), null
+                        )
+                        Text(
+                            "${index + 1}",
+                            Modifier.align(Alignment.BottomEnd),
+                            style = MaterialTheme.typography.overline
+                        )
+                    }
+                    Column {
+                        VerticalTextItem(
+                            stringResource(R.string.title),
+                            song.title
+                        )
+                        VerticalTextItem(
+                            stringResource(R.string.label_file_path),
+                            song.data
+                        )
+                    }
                 }
             }
         }
