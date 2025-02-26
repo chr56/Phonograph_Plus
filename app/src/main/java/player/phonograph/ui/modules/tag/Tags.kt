@@ -67,7 +67,7 @@ fun AddMoreButtonWithoutExistedKeys(existKeys: Set<ConventionalMusicMetadataKey>
  * @param keys keys to display
  */
 @Composable
-private fun AddMoreButton(keys: Set<ConventionalMusicMetadataKey>, onEdit: (Context, TagEditEvent) -> Unit) {
+fun AddMoreButton(keys: Set<ConventionalMusicMetadataKey>, onEdit: (Context, TagEditEvent) -> Unit) {
     Box(Modifier.fillMaxWidth()) {
         var showed by remember { mutableStateOf(false) }
         DropdownMenu(expanded = showed, onDismissRequest = { showed = false }) {
@@ -261,72 +261,6 @@ internal fun EditableItem(
     }
 
 }
-@Composable
-@Suppress("UNUSED_PARAMETER")
-internal fun RawTag(key: String, rawField: JAudioTaggerMetadata.Field) {
-    val (
-        id: String,
-        name: String,
-        value: Metadata.Field,
-        description: String?,
-    ) = rawField
-
-    Column(
-        modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.SpaceEvenly
-    ) {
-        // name and id
-        Row(
-            modifier = Modifier
-                .align(Alignment.Start)
-                .fillMaxWidth()
-                .wrapContentHeight()
-        ) {
-            Text(
-                text = name,
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                ),
-                textAlign = TextAlign.Left,
-                modifier = Modifier.weight(8f),
-            )
-            Text(
-                text = id,
-                style = TextStyle(
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 12.sp,
-                ),
-                textAlign = TextAlign.Right,
-                modifier = Modifier.weight(2f),
-            )
-        }
-        // description
-        if (description != null) {
-            Text(
-                text = description,
-                style = TextStyle(
-                    fontWeight = FontWeight.Light,
-                    fontSize = 9.sp,
-                ),
-                modifier = Modifier.align(Alignment.Start),
-            )
-        }
-        Spacer(modifier = Modifier.height(4.dp))
-        // content
-        SelectionContainer {
-            Text(
-                text = value.text().toString(),
-                style = TextStyle(
-                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.92f),
-                    fontSize = 14.sp,
-                ),
-                modifier = Modifier.align(Alignment.Start)
-            )
-        }
-    }
-}
-
 
 @Composable
 internal fun Item(@StringRes tagStringRes: Int, value: String) = Item(stringResource(tagStringRes), value)
