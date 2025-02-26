@@ -22,6 +22,7 @@ import player.phonograph.ui.modules.tag.MetadataUIEvent.ExtractArtwork
 import player.phonograph.ui.modules.tag.MetadataUIEvent.Save
 import player.phonograph.ui.modules.tag.util.fileName
 import player.phonograph.ui.modules.tag.util.loadCover
+import player.phonograph.ui.modules.tag.util.readImage
 import player.phonograph.util.lifecycleScopeOrNewOne
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.warning
@@ -53,11 +54,11 @@ class TagBrowserActivityViewModel : AbsMetadataViewModel() {
         val color: Color?,
     ) {
         companion object {
-            suspend fun from(context: Context, song: Song): State {
+            suspend fun from(context: Context, song: Song): State = withContext(Dispatchers.IO) {
                 val info = JAudioTaggerExtractor.extractSongMetadata(context, song)
                     ?: DefaultMetadataExtractor.extractSongMetadata(context, song)
-                val (bitmap, paletteColor) = loadCover(context, song)
-                return State(song, info, bitmap, paletteColor)
+                val (bitmap, paletteColor) = readImage(song.data)
+                State(song, info, bitmap, paletteColor)
             }
         }
 
