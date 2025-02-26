@@ -56,14 +56,14 @@ internal fun RequestWebSearch(
     }
 }
 
-internal fun importResult(viewModel: TagBrowserViewModel, item: Any) {
+internal fun importResult(viewModel: AudioMetadataViewModel, item: Any) {
     when (item) {
         is LastFmTrack          -> insert(viewModel, item)
         is MusicBrainzRecording -> insert(viewModel, item)
     }
 }
 
-private fun insert(tableViewModel: TagBrowserViewModel, track: LastFmTrack) =
+private fun insert(tableViewModel: AudioMetadataViewModel, track: LastFmTrack) =
     with(ProcessScope(tableViewModel)) {
 
         link(ConventionalMusicMetadataKey.MUSICBRAINZ_TRACK_ID, track.mbid)
@@ -77,7 +77,7 @@ private fun insert(tableViewModel: TagBrowserViewModel, track: LastFmTrack) =
 
     }
 
-private fun insert(tableViewModel: TagBrowserViewModel, recording: MusicBrainzRecording) =
+private fun insert(tableViewModel: AudioMetadataViewModel, recording: MusicBrainzRecording) =
     with(ProcessScope(tableViewModel)) {
         link(ConventionalMusicMetadataKey.MUSICBRAINZ_TRACK_ID, recording.id)
         link(ConventionalMusicMetadataKey.TITLE, recording.title)
@@ -101,7 +101,7 @@ private fun insert(tableViewModel: TagBrowserViewModel, recording: MusicBrainzRe
         link(ConventionalMusicMetadataKey.YEAR, recording.firstReleaseDate)
     }
 
-private class ProcessScope(val tableViewModel: TagBrowserViewModel) {
+private class ProcessScope(val tableViewModel: AudioMetadataViewModel) {
     fun link(fieldKey: ConventionalMusicMetadataKey, value: String?) {
         if (value != null) tableViewModel.insertPrefill(fieldKey, value)
     }

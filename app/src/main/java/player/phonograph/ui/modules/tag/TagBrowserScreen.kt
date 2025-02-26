@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
 package player.phonograph.ui.modules.tag
@@ -43,9 +43,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
-fun TagBrowserScreen(viewModel: TagBrowserViewModel) {
-    val metadata by viewModel.currentSongMetadata.collectAsState()
-    val bitmap by viewModel.songBitmap.collectAsState()
+fun TagBrowserScreen(viewModel: AudioMetadataViewModel) {
+    val state by viewModel.state.collectAsState()
     val editable by viewModel.editable.collectAsState()
     Column(
         modifier = Modifier
@@ -53,9 +52,10 @@ fun TagBrowserScreen(viewModel: TagBrowserViewModel) {
             .fillMaxSize()
     ) {
         // cover
-        Artwork(viewModel, bitmap, editable)
+        Artwork(viewModel, state?.image, editable)
         // file
-        Column(
+        val metadata = state?.metadata
+        if (metadata != null) Column(
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
             val fileProperties = metadata.fileProperties
@@ -78,7 +78,7 @@ fun TagBrowserScreen(viewModel: TagBrowserViewModel) {
                 val updateKey by viewModel.prefillUpdateKey
                 val prefillsMap = remember(updateKey) { viewModel.prefillsMap }
                 for ((key, field) in musicMetadata.textTagFields) {
-                    CommonTag(key, field, editable, prefillsMap[key], viewModel::process)
+                    CommonTag(key, field, editable, prefillsMap[key], viewModel::submitEditEvent)
                 }
                 if (editable) AddMoreButton(viewModel)
                 Spacer(modifier = Modifier.height(16.dp))
@@ -96,7 +96,7 @@ fun TagBrowserScreen(viewModel: TagBrowserViewModel) {
         val context = LocalContext.current
         SaveConfirmationDialog(
             viewModel.saveConfirmationDialogState,
-            viewModel::diff
+            viewModel::generateTagDiff
         ) { viewModel.save(context) }
         val activity = context as? ComponentActivity
         ExitWithoutSavingDialog(viewModel.exitWithoutSavingDialogState) { activity?.finish() }
@@ -104,7 +104,7 @@ fun TagBrowserScreen(viewModel: TagBrowserViewModel) {
 }
 
 @Composable
-fun Artwork(viewModel: TagBrowserViewModel, bitmap: Bitmap?, editable: Boolean) {
+fun Artwork(viewModel: AudioMetadataViewModel, bitmap: Bitmap?, editable: Boolean) {
     val context = LocalContext.current
     Box {
         val coverImageDetailDialogState = remember { MaterialDialogState(false) }
@@ -117,13 +117,14 @@ fun Artwork(viewModel: TagBrowserViewModel, bitmap: Bitmap?, editable: Boolean) 
             state = coverImageDetailDialogState,
             artworkExist = bitmap != null,
             onSave = { viewModel.saveArtwork(context) },
-            onDelete = { viewModel.process(context, TagEditEvent.RemoveArtwork) },
+            onDelete = { viewModel.submitEditEvent(context, TagEditEvent.RemoveArtwork) },
             onUpdate = {
                 viewModel.viewModelScope.launch(Dispatchers.IO) {
                     val uri = selectImage((context as IOpenFileStorageAccessible).openFileStorageAccessDelegate)
                     if (uri != null) {
-                        viewModel.process(
-                            context, TagEditEvent.UpdateArtwork.from(context, uri, viewModel.song.value?.title ?: "")
+                        val name = viewModel.state.value?.song?.title ?: ""
+                        viewModel.submitEditEvent(
+                            context, TagEditEvent.UpdateArtwork.from(context, uri, name)
                         )
                     } else {
                         withContext(Dispatchers.Main) {
@@ -139,15 +140,18 @@ fun Artwork(viewModel: TagBrowserViewModel, bitmap: Bitmap?, editable: Boolean) 
 }
 
 @Composable
-private fun AddMoreButton(model: TagBrowserViewModel) {
-    val metadata by model.currentSongMetadata.collectAsState()
-    val musicMetadata = metadata.musicMetadata
-    val existKeys = if (musicMetadata is JAudioTaggerMetadata) {
-        musicMetadata.textTagFields.keys.toSet()
-    } else {
-        emptySet()
-    }
-    AddMoreButtonWithoutExistedKeys(existKeys, model::process)
+private fun AddMoreButton(model: AudioMetadataViewModel) {
+    val state by model.state.collectAsState()
+    val metadata = state?.metadata
+    val existKeys = if (metadata != null) {
+        val musicMetadata = metadata.musicMetadata
+        if (musicMetadata is JAudioTaggerMetadata) {
+            musicMetadata.textTagFields.keys.toSet()
+        } else {
+            emptySet()
+        }
+    } else emptySet()
+    AddMoreButtonWithoutExistedKeys(existKeys, model::submitEditEvent)
 }
 
 
@@ -160,7 +164,7 @@ private fun CommonTag(
     onEdit: (Context, TagEditEvent) -> Unit,
 ) {
     val context = LocalContext.current
-    val tagName = if (key.res > 0 ) stringResource(key.res) else key.name
+    val tagName = if (key.res > 0) stringResource(key.res) else key.name
     val tagValue = field.text().toString()
 
     Box(modifier = Modifier.fillMaxWidth()) {
