@@ -51,7 +51,7 @@ import android.content.Context
  * @param keys keys to display
  */
 @Composable
-fun AddMoreButton(keys: Set<ConventionalMusicMetadataKey>, onEdit: (Context, TagEditEvent) -> Unit) {
+fun AddMoreButton(keys: Set<ConventionalMusicMetadataKey>, onEdit: (Context, MetadataUIEvent.Edit) -> Unit) {
     Box(Modifier.fillMaxWidth()) {
         var showed by remember { mutableStateOf(false) }
         DropdownMenu(expanded = showed, onDismissRequest = { showed = false }) {
@@ -61,12 +61,12 @@ fun AddMoreButton(keys: Set<ConventionalMusicMetadataKey>, onEdit: (Context, Tag
                     .fillMaxWidth()
                     .clickable {
                         showed = false
-                        onEdit(context, TagEditEvent.AddNewTag(fieldKey))
+                        onEdit(context, MetadataUIEvent.Edit.AddNewTag(fieldKey))
                     }
                     .padding(8.dp, 16.dp)
                 ) {
                     Text(
-                        text = if (fieldKey.res > 0 ) stringResource(fieldKey.res) else fieldKey.name,
+                        text = if (fieldKey.res > 0) stringResource(fieldKey.res) else fieldKey.name,
                         // modifier = Modifier.align(Alignment.Start),
                     )
                     Text(
@@ -118,7 +118,7 @@ internal fun EditableItem(
     tagName: String,
     value: String,
     alternatives: Collection<String> = emptyList(),
-    onEdit: (TagEditEvent) -> Unit,
+    onEdit: (MetadataUIEvent.Edit) -> Unit,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
@@ -153,7 +153,7 @@ internal fun EditableItem(
 
         fun submit() {
             onEdit.invoke(
-                TagEditEvent.UpdateTag(key, currentValue)
+                MetadataUIEvent.Edit.UpdateTag(key, currentValue)
             )
             hasEdited = false
             indicatorColor = Color(0xFF00C72C)
@@ -198,7 +198,7 @@ internal fun EditableItem(
                         modifier = Modifier
                             .padding(8.dp)
                             .clickable {
-                                onEdit.invoke(TagEditEvent.RemoveTag(key))
+                                onEdit.invoke(MetadataUIEvent.Edit.RemoveTag(key))
                             }
                     )
                 }

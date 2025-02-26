@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.modules.tag
 
-import com.vanpra.composematerialdialogs.MaterialDialogState
 import lib.storage.launcher.IOpenFileStorageAccessible
 import player.phonograph.R
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
@@ -16,6 +15,7 @@ import player.phonograph.model.metadata.MusicMetadata
 import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.CoverImage
 import player.phonograph.ui.compose.components.Title
+import player.phonograph.ui.modules.tag.MetadataUIEvent.Edit
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -85,7 +85,7 @@ fun TagBrowserScreen(viewModel: AudioMetadataViewModel) {
         SaveConfirmationDialog(
             viewModel.saveConfirmationDialogState,
             viewModel::generateMetadataDifference
-        ) { viewModel.save(context) }
+        ) { viewModel.submitEvent(context, MetadataUIEvent.Save) }
         val activity = context as? ComponentActivity
         ExitWithoutSavingDialog(viewModel.exitWithoutSavingDialogState) { activity?.finish() }
     }
@@ -126,9 +126,9 @@ private fun GenericTagItems(viewModel: AudioMetadataViewModel, musicMetadata: Mu
     val updateKey by viewModel.prefillUpdateKey
     val prefillsMap = remember(updateKey) { viewModel.prefillsMap }
     for ((key, field) in musicMetadata.textTagFields) {
-        GenericTagItem(key, field, editable, prefillsMap[key], viewModel::submitEditEvent)
+        GenericTagItem(key, field, editable, prefillsMap[key], viewModel::submitEvent)
     }
-    if (editable) AddMoreButton(musicMetadata, viewModel::submitEditEvent)
+    if (editable) AddMoreButton(musicMetadata, viewModel::submitEvent)
 }
 
 @Composable
@@ -152,15 +152,15 @@ private fun Artwork(viewModel: AudioMetadataViewModel, bitmap: Bitmap?, editable
         CoverImageDetailDialog(
             state = viewModel.coverImageDetailDialogState,
             artworkExist = bitmap != null,
-            onSave = { viewModel.saveArtwork(context) },
-            onDelete = { viewModel.submitEditEvent(context, TagEditEvent.RemoveArtwork) },
+            onSave = { viewModel.submitEvent(context, MetadataUIEvent.ExtractArtwork) },
+            onDelete = { viewModel.submitEvent(context, Edit.RemoveArtwork) },
             onUpdate = {
                 viewModel.viewModelScope.launch(Dispatchers.IO) {
                     val uri = selectImage((context as IOpenFileStorageAccessible).openFileStorageAccessDelegate)
                     if (uri != null) {
                         val name = viewModel.state.value?.song?.title ?: ""
-                        viewModel.submitEditEvent(
-                            context, TagEditEvent.UpdateArtwork.from(context, uri, name)
+                        viewModel.submitEvent(
+                            context, Edit.UpdateArtwork.from(context, uri, name)
                         )
                     } else {
                         withContext(Dispatchers.Main) {
@@ -176,7 +176,7 @@ private fun Artwork(viewModel: AudioMetadataViewModel, bitmap: Bitmap?, editable
 }
 
 @Composable
-private fun AddMoreButton(musicMetadata: MusicMetadata, onApplied: (Context, TagEditEvent) -> Unit) {
+private fun AddMoreButton(musicMetadata: MusicMetadata, onApplied: (Context, Edit) -> Unit) {
     val existKeys = musicMetadata.textTagFields.keys.toSet()
     val remainedKeys = ConventionalMusicMetadataKey.entries.subtract(existKeys)
     AddMoreButton(remainedKeys, onApplied)
@@ -189,7 +189,7 @@ private fun GenericTagItem(
     field: Metadata.Field,
     editable: Boolean,
     prefills: Collection<String>?,
-    onEdit: (Context, TagEditEvent) -> Unit,
+    onEdit: (Context, Edit) -> Unit,
 ) {
     val context = LocalContext.current
     val tagName = if (key.res > 0) stringResource(key.res) else key.name

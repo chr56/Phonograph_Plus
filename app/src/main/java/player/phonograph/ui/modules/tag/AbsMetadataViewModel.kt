@@ -35,10 +35,10 @@ sealed class AbsMetadataViewModel : ViewModel() {
         _pendingEditRequests.add(action)
     }
 
-    abstract fun submitEditEvent(context: Context, event: TagEditEvent)
+    abstract fun submitEvent(context: Context, event: MetadataUIEvent)
 
     protected var saveJob: Job? = null
-    abstract fun save(context: Context)
+    protected abstract fun save(context: Context)
 
     val saveConfirmationDialogState = MaterialDialogState(false)
     val exitWithoutSavingDialogState = MaterialDialogState(false)

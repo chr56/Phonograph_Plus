@@ -14,6 +14,9 @@ import player.phonograph.model.metadata.AudioMetadata
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.EditAction
 import player.phonograph.model.metadata.Metadata
+import player.phonograph.ui.modules.tag.MetadataUIEvent.Edit
+import player.phonograph.ui.modules.tag.MetadataUIEvent.ExtractArtwork
+import player.phonograph.ui.modules.tag.MetadataUIEvent.Save
 import player.phonograph.util.permissions.navigateToStorageSetting
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -69,28 +72,28 @@ class MultiAudioMetadataViewModel : AbsMetadataViewModel() {
         }
 
         @Suppress("UNUSED_PARAMETER")
-        fun modify(context: Context, event: TagEditEvent): State = when (event) {
-            is TagEditEvent.AddNewTag     -> {
+        fun modify(context: Context, event: Edit): State = when (event) {
+            is Edit.AddNewTag     -> {
                 val data = displayed + (event.fieldKey to "")
                 copy(displayed = data)
             }
 
-            is TagEditEvent.UpdateTag     -> {
+            is Edit.UpdateTag     -> {
                 val data = displayed.toMutableMap().also { map ->
                     map[event.fieldKey] = event.newValue
                 }
                 copy(displayed = data)
             }
 
-            is TagEditEvent.RemoveTag     -> {
+            is Edit.RemoveTag     -> {
                 val data = displayed.toMutableMap().also { map ->
                     map.remove(event.fieldKey)
                 }
                 copy(displayed = data)
             }
 
-            is TagEditEvent.RemoveArtwork -> this
-            is TagEditEvent.UpdateArtwork -> this
+            is Edit.RemoveArtwork -> this
+            is Edit.UpdateArtwork -> this
         }
     }
 
@@ -102,23 +105,29 @@ class MultiAudioMetadataViewModel : AbsMetadataViewModel() {
         }
     }
 
-    private fun modifyContent(context: Context, event: TagEditEvent) {
+    private fun modifyContent(context: Context, event: Edit) {
         viewModelScope.launch { _state.emit(_state.value?.modify(context, event)) }
     }
 
-    override fun submitEditEvent(context: Context, event: TagEditEvent) {
+    override fun submitEvent(context: Context, event: MetadataUIEvent) {
         viewModelScope.launch {
             if (!editable.value) return@launch
-            modifyContent(context, event)
-            enqueueEditRequest(
-                when (event) {
-                    is TagEditEvent.AddNewTag     -> EditAction.Update(event.fieldKey, "")
-                    is TagEditEvent.UpdateTag     -> EditAction.Update(event.fieldKey, event.newValue)
-                    is TagEditEvent.RemoveTag     -> EditAction.Delete(event.fieldKey)
-                    is TagEditEvent.RemoveArtwork -> EditAction.ImageDelete
-                    is TagEditEvent.UpdateArtwork -> EditAction.ImageReplace(event.file)
+            when (event) {
+                Save           -> save(context)
+                ExtractArtwork -> {}
+                is Edit        -> {
+                    modifyContent(context, event)
+                    enqueueEditRequest(
+                        when (event) {
+                            is Edit.AddNewTag     -> EditAction.Update(event.fieldKey, "")
+                            is Edit.UpdateTag     -> EditAction.Update(event.fieldKey, event.newValue)
+                            is Edit.RemoveTag     -> EditAction.Delete(event.fieldKey)
+                            is Edit.RemoveArtwork -> EditAction.ImageDelete
+                            is Edit.UpdateArtwork -> EditAction.ImageReplace(event.file)
+                        }
+                    )
                 }
-            )
+            }
         }
     }
 

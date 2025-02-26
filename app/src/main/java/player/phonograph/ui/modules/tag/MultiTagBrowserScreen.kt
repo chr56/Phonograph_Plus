@@ -10,6 +10,7 @@ import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextItem
+import player.phonograph.ui.modules.tag.MetadataUIEvent.Edit
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -64,7 +65,7 @@ internal fun MultiTagBrowserScreen(viewModel: MultiAudioMetadataViewModel) {
         SaveConfirmationDialog(
             viewModel.saveConfirmationDialogState,
             viewModel::generateMetadataDifference
-        ) { viewModel.save(context) }
+        ) { viewModel.submitEvent(context, MetadataUIEvent.Save) }
         val activity = context as? ComponentActivity
         ExitWithoutSavingDialog(viewModel.exitWithoutSavingDialogState) { activity?.finish() }
     }
@@ -84,12 +85,12 @@ private fun GenericTagItems(viewModel: MultiAudioMetadataViewModel) {
             reducedValues,
             editorValue,
             editable,
-            viewModel::submitEditEvent
+            viewModel::submitEvent
         )
     }
     if (editable){
         val remainedKeys = ConventionalMusicMetadataKey.entries.subtract(reducedTags.keys)
-        AddMoreButton(remainedKeys, viewModel::submitEditEvent)
+        AddMoreButton(remainedKeys, viewModel::submitEvent)
     }
 }
 
@@ -99,7 +100,7 @@ private fun GenericTagItem(
     allValues: List<String>?,
     editorValue: String?,
     editable: Boolean,
-    onEdit: (Context, TagEditEvent) -> Unit,
+    onEdit: (Context, Edit) -> Unit,
 ) {
     val context = LocalContext.current
     val tagName = if (key.res > 0) stringResource(key.res) else key.name
@@ -131,13 +132,13 @@ private fun CoverUpdater(viewModel: MultiAudioMetadataViewModel) {
     CoverImageDetailDialog(
         state = viewModel.coverImageDetailDialogState,
         artworkExist = false,
-        onSave = { }, onDelete = { viewModel.submitEditEvent(context, TagEditEvent.RemoveArtwork) },
+        onSave = { }, onDelete = { viewModel.submitEvent(context, Edit.RemoveArtwork) },
         onUpdate = {
             viewModel.viewModelScope.launch(Dispatchers.IO) {
                 val uri = selectImage((context as IOpenFileStorageAccessible).openFileStorageAccessDelegate)
                 if (uri != null) {
-                    viewModel.submitEditEvent(
-                        context, TagEditEvent.UpdateArtwork.from(context, uri, viewModel.state.hashCode().toString())
+                    viewModel.submitEvent(
+                        context, Edit.UpdateArtwork.from(context, uri, viewModel.state.hashCode().toString())
                     )
                 } else {
                     withContext(Dispatchers.Main) {

@@ -17,6 +17,9 @@ import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.EditAction
 import player.phonograph.model.metadata.Metadata
 import player.phonograph.model.metadata.MusicMetadata
+import player.phonograph.ui.modules.tag.MetadataUIEvent.Edit
+import player.phonograph.ui.modules.tag.MetadataUIEvent.ExtractArtwork
+import player.phonograph.ui.modules.tag.MetadataUIEvent.Save
 import player.phonograph.util.lifecycleScopeOrNewOne
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.warning
@@ -58,15 +61,15 @@ class AudioMetadataViewModel : AbsMetadataViewModel() {
         /**
          * create new state by [event]
          */
-        suspend fun modify(context: Context, event: TagEditEvent): State = when (event) {
-            is TagEditEvent.AddNewTag     -> {
+        suspend fun modify(context: Context, event: Edit): State = when (event) {
+            is Edit.AddNewTag     -> {
                 val audioMetadata = modifyMusicMetadataField { musicMetadata ->
                     musicMetadata.genericTagFields + (event.fieldKey to Metadata.PlainStringField(""))
                 }
                 copy(metadata = audioMetadata)
             }
 
-            is TagEditEvent.UpdateTag     -> {
+            is Edit.UpdateTag     -> {
                 val audioMetadata = modifyMusicMetadataField { musicMetadata ->
                     musicMetadata.genericTagFields.toMutableMap().also { genericTagFields ->
                         genericTagFields[event.fieldKey] = Metadata.PlainStringField(event.newValue)
@@ -75,7 +78,7 @@ class AudioMetadataViewModel : AbsMetadataViewModel() {
                 copy(metadata = audioMetadata)
             }
 
-            is TagEditEvent.RemoveTag     -> {
+            is Edit.RemoveTag     -> {
                 val audioMetadata = modifyMusicMetadataField { musicMetadata ->
                     musicMetadata.genericTagFields.toMutableMap().also { genericTagFields ->
                         genericTagFields.remove(event.fieldKey)
@@ -84,12 +87,12 @@ class AudioMetadataViewModel : AbsMetadataViewModel() {
                 copy(metadata = audioMetadata)
             }
 
-            is TagEditEvent.UpdateArtwork -> {
+            is Edit.UpdateArtwork -> {
                 val (bitmap, _) = loadCover(context, event.file)
                 copy(image = bitmap)
             }
 
-            is TagEditEvent.RemoveArtwork -> {
+            is Edit.RemoveArtwork -> {
                 copy(image = null)
             }
 
@@ -118,23 +121,29 @@ class AudioMetadataViewModel : AbsMetadataViewModel() {
         }
     }
 
-    private fun modifyContent(context: Context, event: TagEditEvent) {
+    private fun modifyContent(context: Context, event: Edit) {
         viewModelScope.launch { _state.emit(_state.value?.modify(context, event)) }
     }
 
-    override fun submitEditEvent(context: Context, event: TagEditEvent) {
+    override fun submitEvent(context: Context, event: MetadataUIEvent) {
         viewModelScope.launch {
             if (!editable.value) return@launch
-            modifyContent(context, event)
-            enqueueEditRequest(
-                when (event) {
-                    is TagEditEvent.AddNewTag     -> EditAction.Update(event.fieldKey, "")
-                    is TagEditEvent.UpdateTag     -> EditAction.Update(event.fieldKey, event.newValue)
-                    is TagEditEvent.RemoveTag     -> EditAction.Delete(event.fieldKey)
-                    is TagEditEvent.RemoveArtwork -> EditAction.ImageDelete
-                    is TagEditEvent.UpdateArtwork -> EditAction.ImageReplace(event.file)
+            when (event) {
+                Save           -> save(context)
+                ExtractArtwork -> extractArtwork(context)
+                is Edit        -> {
+                    modifyContent(context, event)
+                    enqueueEditRequest(
+                        when (event) {
+                            is Edit.AddNewTag     -> EditAction.Update(event.fieldKey, "")
+                            is Edit.UpdateTag     -> EditAction.Update(event.fieldKey, event.newValue)
+                            is Edit.RemoveTag     -> EditAction.Delete(event.fieldKey)
+                            is Edit.RemoveArtwork -> EditAction.ImageDelete
+                            is Edit.UpdateArtwork -> EditAction.ImageReplace(event.file)
+                        }
+                    )
                 }
-            )
+            }
         }
     }
 
@@ -167,7 +176,7 @@ class AudioMetadataViewModel : AbsMetadataViewModel() {
         }
     }
 
-    fun saveArtwork(activity: Context) {
+    private fun extractArtwork(activity: Context) {
         val currentState = _state.value ?: return
         val image = currentState.image ?: return
         val fileName = fileName(currentState.song)
