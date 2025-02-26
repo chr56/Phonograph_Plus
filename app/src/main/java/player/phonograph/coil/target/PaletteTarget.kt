@@ -6,7 +6,7 @@ package player.phonograph.coil.target
 
 import coil.target.Target
 import coil.target.ViewTarget
-import player.phonograph.coil.target.PaletteUtil.paletteColor
+import player.phonograph.util.PaletteUtil.paletteColor
 import player.phonograph.util.debug
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 interface PaletteTarget {
     fun onStart(placeholder: Drawable?) {}
@@ -46,7 +47,7 @@ class PaletteDelegateTarget(
                 }
                 defaultColor
             }
-            coroutineScope.launch(Dispatchers.Main.immediate) {
+            withContext(Dispatchers.Main.immediate) {
                 delegate.onSuccess(result, paletteColor)
             }
         }
@@ -92,7 +93,7 @@ class ViewPaletteDelegateTarget<T : View>(
                 }
                 defaultColor
             }
-            coroutineScope.launch(Dispatchers.Main.immediate) {
+            withContext(Dispatchers.Main.immediate) {
                 delegate.onSuccess(result, paletteColor)
             }
         }

@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.tag.util
 
 import lib.storage.launcher.OpenDocumentContract
 import lib.storage.launcher.OpenFileStorageAccessDelegate
-import player.phonograph.coil.target.PaletteUtil
+import player.phonograph.util.PaletteUtil
 import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
