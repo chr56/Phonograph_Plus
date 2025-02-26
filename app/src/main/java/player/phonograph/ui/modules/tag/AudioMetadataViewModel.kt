@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.modules.tag
 
-import com.vanpra.composematerialdialogs.MaterialDialogState
 import lib.storage.launcher.ICreateFileStorageAccessible
 import player.phonograph.R
 import player.phonograph.mechanism.metadata.DefaultMetadataExtractor
@@ -24,21 +23,18 @@ import player.phonograph.util.warning
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.graphics.Bitmap
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 
-class AudioMetadataViewModel : ViewModel() {
+class AudioMetadataViewModel : AbsMetadataViewModel() {
 
     private var originalState: State? = null
     private val _state: MutableStateFlow<State?> = MutableStateFlow(null)
@@ -126,29 +122,7 @@ class AudioMetadataViewModel : ViewModel() {
         viewModelScope.launch { _state.emit(_state.value?.modify(context, event)) }
     }
 
-
-
-    private val _editable: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val editable get() = _editable.asStateFlow()
-
-    fun enterEditMode() {
-        if (saveJob?.isActive == true) return
-        _editable.update { true }
-    }
-
-    fun exitEditMode() {
-        _editable.update { false }
-    }
-
-    val hasChanges: Boolean get() = _pendingEditRequests.isNotEmpty()
-    private var _pendingEditRequests: MutableList<EditAction> = mutableListOf()
-    private val pendingEditRequests: List<EditAction> get() = EditAction.merge(_pendingEditRequests)
-
-    private fun enqueueEditRequest(action: EditAction) {
-        _pendingEditRequests.add(action)
-    }
-
-    fun submitEditEvent(context: Context, event: TagEditEvent) {
+    override fun submitEditEvent(context: Context, event: TagEditEvent) {
         viewModelScope.launch {
             if (!editable.value) return@launch
             modifyContent(context, event)
@@ -164,7 +138,7 @@ class AudioMetadataViewModel : ViewModel() {
         }
     }
 
-    internal fun generateTagDiff(): TagDiff {
+    override fun generateTagDiff(): TagDiff {
         val original = originalState?.metadata?.musicMetadata
         val tagDiff = pendingEditRequests.map { action ->
             val text = if (original != null) original[action.key]?.text().toString() else ""
@@ -173,8 +147,7 @@ class AudioMetadataViewModel : ViewModel() {
         return TagDiff(tagDiff)
     }
 
-    private var saveJob: Job? = null
-    fun save(context: Context) {
+    override fun save(context: Context) {
         val song = _state.value?.song ?: return
         val songFile = File(song.data)
         if (songFile.canWrite()) {
@@ -228,9 +201,6 @@ class AudioMetadataViewModel : ViewModel() {
         _prefillsMap.also { it[key] = newList }
         _prefillUpdateKey.value += 1
     }
-
-    val saveConfirmationDialogState = MaterialDialogState(false)
-    val exitWithoutSavingDialogState = MaterialDialogState(false)
 
     companion object {
         private const val TAG = "AudioMetadataViewModel"
