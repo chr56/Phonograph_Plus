@@ -16,6 +16,8 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.SystemBarsPadded
+import player.phonograph.ui.modules.tag.components.RequestWebSearchButton
+import player.phonograph.ui.modules.tag.util.importWebSearchResult
 import player.phonograph.ui.modules.web.IWebSearchRequester
 import player.phonograph.ui.modules.web.LastFmDialog
 import player.phonograph.ui.modules.web.WebSearchLauncher
@@ -69,7 +71,7 @@ class TagBrowserActivity :
         ICreateFileStorageAccessible,
         IOpenFileStorageAccessible {
 
-    private val viewModel: AudioMetadataViewModel by viewModels()
+    private val viewModel: TagBrowserActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         registerActivityResultLauncherDelegate(
@@ -133,7 +135,7 @@ class TagBrowserActivity :
 
 @Composable
 private fun TagBrowserActivityMainContent(
-    viewModel: AudioMetadataViewModel,
+    viewModel: TagBrowserActivityViewModel,
     webSearchTool: WebSearchTool,
     onBackPressedDispatcher: OnBackPressedDispatcher,
 ) {
@@ -168,8 +170,8 @@ private fun TagBrowserActivityMainContent(
 }
 
 @Composable
-private fun OptionMenu(viewModel: AudioMetadataViewModel, webSearchTool: WebSearchTool) {
-    RequestWebSearch(viewModel, webSearchTool)
+private fun OptionMenu(viewModel: TagBrowserActivityViewModel, webSearchTool: WebSearchTool) {
+    RequestWebSearchButton(viewModel, webSearchTool)
     val editable by viewModel.editable.collectAsState()
     if (editable) {
         IconButton(onClick = { viewModel.saveConfirmationDialogState.show() }) {
@@ -189,7 +191,7 @@ private fun OptionMenu(viewModel: AudioMetadataViewModel, webSearchTool: WebSear
 }
 
 @Composable
-private fun RequestWebSearch(viewModel: AudioMetadataViewModel, webSearchTool: WebSearchTool) {
+private fun RequestWebSearchButton(viewModel: TagBrowserActivityViewModel, webSearchTool: WebSearchTool) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
 
@@ -203,7 +205,7 @@ private fun RequestWebSearch(viewModel: AudioMetadataViewModel, webSearchTool: W
             if (it != null) {
                 viewModel.viewModelScope.launch(Dispatchers.Default) {
                     debug { Log.v("TagEditor", it.toString()) }
-                    importResult(viewModel, it)
+                    importWebSearchResult(viewModel, it)
                 }
             }
         }
@@ -216,6 +218,6 @@ private fun RequestWebSearch(viewModel: AudioMetadataViewModel, webSearchTool: W
             LastFmDialog.from(song).show(fragmentManager, "WEB_SEARCH_DIALOG")
         }
     }
-    RequestWebSearch(webSearchTool, ::search, ::onShowWikiDialog)
+    RequestWebSearchButton(::search, ::onShowWikiDialog)
 }
 

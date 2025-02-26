@@ -1,12 +1,13 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.ui.modules.tag
+package player.phonograph.ui.modules.tag.dialogs
 
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.title
+import player.phonograph.R
 import player.phonograph.util.theme.accentColoredButtonStyle
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
@@ -44,13 +45,13 @@ internal fun CoverImageDetailDialog(
             .wrapContentWidth()
     ) {
         if (artworkExist) {
-            MenuItem(textRes = player.phonograph.R.string.save, onSave)
+            MenuItem(textRes = R.string.save, onSave)
             if (editMode) {
-                MenuItem(textRes = player.phonograph.R.string.remove_cover, onDelete)
+                MenuItem(textRes = R.string.remove_cover, onDelete)
             }
         }
         if (editMode) {
-            MenuItem(textRes = player.phonograph.R.string.update_image, onUpdate)
+            MenuItem(textRes = R.string.update_image, onUpdate)
         }
     }
 }

@@ -16,6 +16,13 @@ import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.CoverImage
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.modules.tag.MetadataUIEvent.Edit
+import player.phonograph.ui.modules.tag.components.EditableTagItem
+import player.phonograph.ui.modules.tag.components.InsertNewButton
+import player.phonograph.ui.modules.tag.components.ReadonlyTagItem
+import player.phonograph.ui.modules.tag.dialogs.CoverImageDetailDialog
+import player.phonograph.ui.modules.tag.dialogs.ExitWithoutSavingDialog
+import player.phonograph.ui.modules.tag.dialogs.SaveConfirmationDialog
+import player.phonograph.ui.modules.tag.util.selectImage
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -55,7 +62,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
-fun TagBrowserScreen(viewModel: AudioMetadataViewModel) {
+fun TagBrowserScreen(viewModel: TagBrowserActivityViewModel) {
     val state by viewModel.state.collectAsState()
     val editable by viewModel.editable.collectAsState()
     Column(
@@ -96,18 +103,18 @@ fun TagBrowserScreen(viewModel: AudioMetadataViewModel) {
 private fun AudioProperties(metadata: AudioMetadata) {
     val fileProperties = metadata.fileProperties
     val audioProperties = metadata.audioProperties
-    Item(R.string.label_file_name, fileProperties.fileName)
-    Item(R.string.label_file_path, fileProperties.filePath)
-    Item(R.string.label_file_size, getFileSizeString(fileProperties.fileSize))
+    ReadonlyTagItem(stringResource(R.string.label_file_name), fileProperties.fileName)
+    ReadonlyTagItem(stringResource(R.string.label_file_path), fileProperties.filePath)
+    ReadonlyTagItem(stringResource(R.string.label_file_size), getFileSizeString(fileProperties.fileSize))
     for (audioProperty in audioProperties.fields) {
-        Item(stringResource(audioProperty.key.res), value = audioProperty.field.text().toString())
+        ReadonlyTagItem(stringResource(audioProperty.key.res), value = audioProperty.field.text().toString())
     }
 }
 
 @Composable
-private fun MusicTags(metadata: AudioMetadata, viewModel: AudioMetadataViewModel, editable: Boolean) {
+private fun MusicTags(metadata: AudioMetadata, viewModel: TagBrowserActivityViewModel, editable: Boolean) {
     // Format
-    Item(stringResource(R.string.tag_format), metadata.audioMetadataFormat.id)
+    ReadonlyTagItem(stringResource(R.string.tag_format), metadata.audioMetadataFormat.id)
     // Generic Tags
     Spacer(modifier = Modifier.height(8.dp))
     GenericTagItems(viewModel, metadata.musicMetadata, editable)
@@ -122,7 +129,7 @@ private fun MusicTags(metadata: AudioMetadata, viewModel: AudioMetadataViewModel
 }
 
 @Composable
-private fun GenericTagItems(viewModel: AudioMetadataViewModel, musicMetadata: MusicMetadata, editable: Boolean) {
+private fun GenericTagItems(viewModel: TagBrowserActivityViewModel, musicMetadata: MusicMetadata, editable: Boolean) {
     val updateKey by viewModel.prefillUpdateKey
     val prefillsMap = remember(updateKey) { viewModel.prefillsMap }
     for ((key, field) in musicMetadata.textTagFields) {
@@ -141,7 +148,7 @@ private fun RawTagItems(musicMetadata: JAudioTaggerMetadata) {
 }
 
 @Composable
-private fun Artwork(viewModel: AudioMetadataViewModel, bitmap: Bitmap?, editable: Boolean) {
+private fun Artwork(viewModel: TagBrowserActivityViewModel, bitmap: Bitmap?, editable: Boolean) {
     Box {
         if (bitmap != null || editable) {
             CoverImage(bitmap, MaterialTheme.colors.primary, Modifier.clickable {
@@ -179,7 +186,7 @@ private fun Artwork(viewModel: AudioMetadataViewModel, bitmap: Bitmap?, editable
 private fun AddMoreButton(musicMetadata: MusicMetadata, onApplied: (Context, Edit) -> Unit) {
     val existKeys = musicMetadata.textTagFields.keys.toSet()
     val remainedKeys = ConventionalMusicMetadataKey.entries.subtract(existKeys)
-    AddMoreButton(remainedKeys, onApplied)
+    InsertNewButton(remainedKeys, onApplied)
 }
 
 
@@ -197,9 +204,9 @@ private fun GenericTagItem(
 
     Box(modifier = Modifier.fillMaxWidth()) {
         if (editable) {
-            EditableItem(key, tagName, tagValue, prefills.orEmpty(), onEdit = { onEdit(context, it) })
+            EditableTagItem(key, tagName, tagValue, prefills.orEmpty(), onEdit = { onEdit(context, it) })
         } else {
-            if (tagValue.isNotEmpty()) Item(tagName, tagValue)
+            ReadonlyTagItem(tagName, tagValue)
         }
     }
 }

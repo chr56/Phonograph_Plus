@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.ui.modules.tag
+package player.phonograph.ui.modules.tag.dialogs
 
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState

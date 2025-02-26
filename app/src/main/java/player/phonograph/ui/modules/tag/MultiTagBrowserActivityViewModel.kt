@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
 
-class MultiAudioMetadataViewModel : AbsMetadataViewModel() {
+class MultiTagBrowserActivityViewModel : AbsMetadataViewModel() {
 
     private var originalState: State? = null
     private val _state: MutableStateFlow<State?> = MutableStateFlow(null)

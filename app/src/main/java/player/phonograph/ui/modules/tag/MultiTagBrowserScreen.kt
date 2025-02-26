@@ -11,6 +11,13 @@ import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextItem
 import player.phonograph.ui.modules.tag.MetadataUIEvent.Edit
+import player.phonograph.ui.modules.tag.components.EditableTagItem
+import player.phonograph.ui.modules.tag.components.InsertNewButton
+import player.phonograph.ui.modules.tag.components.ReadonlyTagItem
+import player.phonograph.ui.modules.tag.dialogs.CoverImageDetailDialog
+import player.phonograph.ui.modules.tag.dialogs.ExitWithoutSavingDialog
+import player.phonograph.ui.modules.tag.dialogs.SaveConfirmationDialog
+import player.phonograph.ui.modules.tag.util.selectImage
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,7 +51,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
-internal fun MultiTagBrowserScreen(viewModel: MultiAudioMetadataViewModel) {
+internal fun MultiTagBrowserScreen(viewModel: MultiTagBrowserActivityViewModel) {
     Column(
         modifier = Modifier
             .verticalScroll(state = rememberScrollState())
@@ -72,7 +79,7 @@ internal fun MultiTagBrowserScreen(viewModel: MultiAudioMetadataViewModel) {
 }
 
 @Composable
-private fun GenericTagItems(viewModel: MultiAudioMetadataViewModel) {
+private fun GenericTagItems(viewModel: MultiTagBrowserActivityViewModel) {
     val editable by viewModel.editable.collectAsState()
     val state by viewModel.state.collectAsState()
     val displayTags = state?.displayed ?: emptyMap()
@@ -90,7 +97,7 @@ private fun GenericTagItems(viewModel: MultiAudioMetadataViewModel) {
     }
     if (editable){
         val remainedKeys = ConventionalMusicMetadataKey.entries.subtract(reducedTags.keys)
-        AddMoreButton(remainedKeys, viewModel::submitEvent)
+        InsertNewButton(remainedKeys, viewModel::submitEvent)
     }
 }
 
@@ -107,18 +114,16 @@ private fun GenericTagItem(
 
     Box(modifier = Modifier.fillMaxWidth()) {
         if (editable) {
-            EditableItem(key, tagName, editorValue.orEmpty(), allValues.orEmpty(), onEdit = { onEdit(context, it) })
+            EditableTagItem(key, tagName, editorValue.orEmpty(), allValues.orEmpty(), onEdit = { onEdit(context, it) })
         } else {
-            if (!allValues.isNullOrEmpty()) {
-                Item(tagName, allValues.joinToString(",\n"))
-            }
+            ReadonlyTagItem(tagName, allValues.orEmpty())
         }
     }
 }
 
 
 @Composable
-private fun CoverUpdater(viewModel: MultiAudioMetadataViewModel) {
+private fun CoverUpdater(viewModel: MultiTagBrowserActivityViewModel) {
     Text(
         text = stringResource(R.string.update_image),
         Modifier
@@ -154,7 +159,7 @@ private fun CoverUpdater(viewModel: MultiAudioMetadataViewModel) {
 
 @Composable
 @Suppress("UNUSED_PARAMETER")
-private fun FileList(viewModel: MultiAudioMetadataViewModel, modifier: Modifier = Modifier) {
+private fun FileList(viewModel: MultiTagBrowserActivityViewModel, modifier: Modifier = Modifier) {
     val state by viewModel.state.collectAsState()
     val songs = state?.songs
     if (songs != null) {

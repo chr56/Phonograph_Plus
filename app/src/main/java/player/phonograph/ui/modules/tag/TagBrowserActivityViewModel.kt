@@ -20,6 +20,8 @@ import player.phonograph.model.metadata.MusicMetadata
 import player.phonograph.ui.modules.tag.MetadataUIEvent.Edit
 import player.phonograph.ui.modules.tag.MetadataUIEvent.ExtractArtwork
 import player.phonograph.ui.modules.tag.MetadataUIEvent.Save
+import player.phonograph.ui.modules.tag.util.fileName
+import player.phonograph.ui.modules.tag.util.loadCover
 import player.phonograph.util.lifecycleScopeOrNewOne
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.warning
@@ -35,9 +37,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
-class AudioMetadataViewModel : AbsMetadataViewModel() {
+class TagBrowserActivityViewModel : AbsMetadataViewModel() {
 
     private var originalState: State? = null
     private val _state: MutableStateFlow<State?> = MutableStateFlow(null)
@@ -185,7 +188,16 @@ class AudioMetadataViewModel : AbsMetadataViewModel() {
             delegate.launch("$fileName.jpg") { uri ->
                 if (uri != null) {
                     activity.lifecycleScopeOrNewOne().launch {
-                        saveArtwork(activity, uri, image)
+                        withContext(Dispatchers.IO) {
+                            val stream = activity.contentResolver.openOutputStream(uri, "wt")
+                            if (stream != null) {
+                                stream.buffered(4096).use { outputStream ->
+                                    image.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                                }
+                            } else {
+                                warning(TAG, "Failed to open File")
+                            }
+                        }
                     }
                 } else {
                     warning(TAG, "Failed to create File")

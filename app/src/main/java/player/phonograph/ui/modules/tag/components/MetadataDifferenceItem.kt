@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.ui.modules.tag
+package player.phonograph.ui.modules.tag.components
 
 import player.phonograph.R
 import player.phonograph.model.metadata.EditAction
@@ -10,7 +10,6 @@ import player.phonograph.ui.compose.components.Title
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -22,34 +21,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 
-
-class MetadataChanges(
-    /**
-     * <EditAction, oldValue> pair
-     */
-    val tagDiff: List<Pair<EditAction, String?>>,
-) {
-    fun noChange() = tagDiff.isEmpty()
-}
-
-
 @Composable
-fun MetadataDifferenceScreen(diff: MetadataChanges) {
-    if (diff.noChange()) {
-        Text(text = stringResource(id = R.string.no_changes))
-    } else {
-        LazyColumn(Modifier.padding(8.dp)) {
-            for (tag in diff.tagDiff) {
-                item {
-                    MetadataDifferenceItem(tag.first, tag.second)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun MetadataDifferenceItem(action: EditAction, old: String?) {
+fun MetadataDifferenceItem(action: EditAction, old: String?) {
     Column(Modifier.padding(vertical = 16.dp)) {
         val text = if (action.key.res > 0) stringResource(action.key.res) else action.key.name
         Title(text, horizontalPadding = 0.dp)

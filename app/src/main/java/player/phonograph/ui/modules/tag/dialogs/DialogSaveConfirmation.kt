@@ -1,20 +1,27 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.ui.modules.tag
+package player.phonograph.ui.modules.tag.dialogs
 
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.customView
 import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
+import player.phonograph.ui.modules.tag.MetadataChanges
+import player.phonograph.ui.modules.tag.components.MetadataDifferenceItem
 import player.phonograph.util.theme.accentColoredButtonStyle
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-internal fun SaveConfirmationDialog(
+fun SaveConfirmationDialog(
     dialogState: MaterialDialogState,
     changes: () -> MetadataChanges,
     onSave: () -> Unit,
@@ -35,7 +42,23 @@ internal fun SaveConfirmationDialog(
     ) {
         title(res = R.string.save)
         customView {
-            MetadataDifferenceScreen(diff = changes())
+            MetadataDifferenceScreen(changes = changes())
+        }
+    }
+}
+
+
+@Composable
+private fun MetadataDifferenceScreen(changes: MetadataChanges) {
+    if (changes.changes.isEmpty()) {
+        Text(text = stringResource(id = R.string.no_changes))
+    } else {
+        LazyColumn(Modifier.padding(8.dp)) {
+            for (change in changes.changes) {
+                item {
+                    MetadataDifferenceItem(change.first, change.second)
+                }
+            }
         }
     }
 }

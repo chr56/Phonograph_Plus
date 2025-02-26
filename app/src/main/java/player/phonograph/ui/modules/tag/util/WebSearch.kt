@@ -1,69 +1,22 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.ui.modules.tag
+package player.phonograph.ui.modules.tag.util
 
-import mms.Source
 import mms.lastfm.LastFmTrack
 import mms.musicbrainz.MusicBrainzRecording
-import player.phonograph.R
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
-import player.phonograph.ui.modules.web.WebSearchTool
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import player.phonograph.ui.modules.tag.TagBrowserActivityViewModel
 
-@Composable
-@Suppress("UNUSED_PARAMETER")
-internal fun RequestWebSearch(
-    webSearchTool: WebSearchTool,
-    onSearch: (Source) -> Unit,
-    onShowWikiDialog: (() -> Unit)?,
-) {
-    var expanded by remember { mutableStateOf(false) }
-    IconButton(onClick = { expanded = !expanded }) {
-        Icon(painterResource(id = R.drawable.ic_search_white_24dp), null)
-    }
-    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-        DropdownMenuItem(onClick = { onSearch(Source.MusicBrainz) }
-        ) {
-            Text(Source.MusicBrainz.name, Modifier.padding(8.dp))
-        }
-        DropdownMenuItem(onClick = { onSearch(Source.LastFm) }
-        ) {
-            Text(Source.LastFm.name, Modifier.padding(8.dp))
-        }
-        if (onShowWikiDialog != null) {
-            DropdownMenuItem(onClick = {
-                onShowWikiDialog.invoke()
-            }) {
-                Text(stringResource(R.string.wiki), Modifier.padding(8.dp))
-            }
-        }
-    }
-}
-
-internal fun importResult(viewModel: AudioMetadataViewModel, item: Any) {
+fun importWebSearchResult(viewModel: TagBrowserActivityViewModel, item: Any) {
     when (item) {
         is LastFmTrack          -> insert(viewModel, item)
         is MusicBrainzRecording -> insert(viewModel, item)
     }
 }
 
-private fun insert(tableViewModel: AudioMetadataViewModel, track: LastFmTrack) =
+private fun insert(tableViewModel: TagBrowserActivityViewModel, track: LastFmTrack) =
     with(ProcessScope(tableViewModel)) {
 
         link(ConventionalMusicMetadataKey.MUSICBRAINZ_TRACK_ID, track.mbid)
@@ -77,7 +30,7 @@ private fun insert(tableViewModel: AudioMetadataViewModel, track: LastFmTrack) =
 
     }
 
-private fun insert(tableViewModel: AudioMetadataViewModel, recording: MusicBrainzRecording) =
+private fun insert(tableViewModel: TagBrowserActivityViewModel, recording: MusicBrainzRecording) =
     with(ProcessScope(tableViewModel)) {
         link(ConventionalMusicMetadataKey.MUSICBRAINZ_TRACK_ID, recording.id)
         link(ConventionalMusicMetadataKey.TITLE, recording.title)
@@ -101,7 +54,7 @@ private fun insert(tableViewModel: AudioMetadataViewModel, recording: MusicBrain
         link(ConventionalMusicMetadataKey.YEAR, recording.firstReleaseDate)
     }
 
-private class ProcessScope(val tableViewModel: AudioMetadataViewModel) {
+private class ProcessScope(val tableViewModel: TagBrowserActivityViewModel) {
     fun link(fieldKey: ConventionalMusicMetadataKey, value: String?) {
         if (value != null) tableViewModel.insertPrefill(fieldKey, value)
     }
