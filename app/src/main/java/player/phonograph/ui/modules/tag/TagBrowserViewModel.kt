@@ -73,7 +73,7 @@ class TagBrowserViewModel : ViewModel() {
     fun saveArtwork(activity: Context) {
         val bitmap = songBitmap.value ?: return
         val song = song.value ?: return
-        saveArtwork(viewModelScope, activity, bitmap, fileName(song))
+        saveArtwork(activity, bitmap, fileName(song))
     }
 
 
