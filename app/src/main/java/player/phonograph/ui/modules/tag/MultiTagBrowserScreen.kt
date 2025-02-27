@@ -115,9 +115,12 @@ private fun GenericTagItem(
 
     Box(modifier = Modifier.fillMaxWidth()) {
         if (editable) {
-            EditableTagItem(key, tagName, editorValue.orEmpty(), allValues.orEmpty(), onEdit = { onEdit(context, it) })
+            val value = editorValue.orEmpty()
+            val options = allValues.orEmpty()
+            EditableTagItem(key, tagName, value, options, onEdit = { onEdit(context, it) })
         } else {
-            ReadonlyTagItem(tagName, allValues.orEmpty())
+            val value = allValues?.toSet()?.joinToString("\n") ?: stringResource(R.string.empty)
+            ReadonlyTagItem(tagName, value)
         }
     }
 }
