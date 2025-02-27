@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.modules.tag
 
-import lib.storage.launcher.IOpenFileStorageAccessible
 import player.phonograph.R
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
 import player.phonograph.model.getFileSizeString
@@ -13,31 +12,23 @@ import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.Metadata
 import player.phonograph.model.metadata.MusicMetadata
 import player.phonograph.ui.compose.components.CascadeVerticalItem
-import player.phonograph.ui.compose.components.CoverImage
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.modules.tag.MetadataUIEvent.Edit
+import player.phonograph.ui.modules.tag.components.ArtworkSection
+import player.phonograph.ui.modules.tag.components.AudioImage
 import player.phonograph.ui.modules.tag.components.EditableTagItem
 import player.phonograph.ui.modules.tag.components.InsertNewButton
 import player.phonograph.ui.modules.tag.components.ReadonlyTagItem
-import player.phonograph.ui.modules.tag.dialogs.CoverImageDetailDialog
-import player.phonograph.ui.modules.tag.dialogs.ExitWithoutSavingDialog
-import player.phonograph.ui.modules.tag.dialogs.SaveConfirmationDialog
-import player.phonograph.ui.modules.tag.util.selectImage
-import androidx.activity.ComponentActivity
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -53,49 +44,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewModelScope
 import android.content.Context
-import android.graphics.Bitmap
-import android.widget.Toast
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @Composable
 fun TagBrowserScreen(viewModel: TagBrowserActivityViewModel) {
-    val state by viewModel.state.collectAsState()
-    val editable by viewModel.editable.collectAsState()
-    Column(
-        modifier = Modifier
-            .verticalScroll(state = rememberScrollState())
-            .fillMaxSize()
+    BrowserScreenFrame(viewModel,
+        null,
+        { ArtworkSection(viewModel) }
     ) {
-        // cover
-        Artwork(viewModel, state?.image, editable)
-        // text
+        val editable by viewModel.editable.collectAsState()
+        val state by viewModel.state.collectAsState()
         val metadata = state?.metadata
         if (metadata != null) {
-            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Title(stringResource(R.string.file), color = MaterialTheme.colors.primary)
+            AudioProperties(metadata)
 
-                Spacer(modifier = Modifier.height(16.dp))
-                Title(stringResource(R.string.file), color = MaterialTheme.colors.primary)
-                AudioProperties(metadata)
-
-                Spacer(modifier = Modifier.height(16.dp))
-                Title(stringResource(R.string.music_tags), color = MaterialTheme.colors.primary)
-                MusicTags(metadata, viewModel, editable)
-                Spacer(modifier = Modifier.height(64.dp))
-            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Title(stringResource(R.string.music_tags), color = MaterialTheme.colors.primary)
+            MusicTagItems(viewModel, metadata, editable)
         }
-    }
-    if (editable) {
-        val context = LocalContext.current
-        SaveConfirmationDialog(
-            viewModel.saveConfirmationDialogState,
-            viewModel::generateMetadataDifference
-        ) { viewModel.submitEvent(context, MetadataUIEvent.Save) }
-        val activity = context as? ComponentActivity
-        ExitWithoutSavingDialog(viewModel.exitWithoutSavingDialogState) { activity?.finish() }
     }
 }
 
@@ -113,7 +81,7 @@ private fun AudioProperties(metadata: AudioMetadata) {
 }
 
 @Composable
-private fun MusicTags(metadata: AudioMetadata, viewModel: TagBrowserActivityViewModel, editable: Boolean) {
+private fun MusicTagItems(viewModel: TagBrowserActivityViewModel, metadata: AudioMetadata, editable: Boolean) {
     // Format
     ReadonlyTagItem(stringResource(R.string.tag_format), metadata.audioMetadataFormat.id)
     // Generic Tags
@@ -149,37 +117,15 @@ private fun RawTagItems(musicMetadata: JAudioTaggerMetadata) {
 }
 
 @Composable
-private fun Artwork(viewModel: TagBrowserActivityViewModel, bitmap: Bitmap?, editable: Boolean) {
-    Box {
+private fun ArtworkSection(viewModel: TagBrowserActivityViewModel) {
+    val state by viewModel.state.collectAsState()
+    val editable by viewModel.editable.collectAsState()
+    val bitmap = state?.image
+    val song = state?.song
+    ArtworkSection(viewModel, bitmap != null, editable, song?.title ?: "") {
         if (bitmap != null || editable) {
-            CoverImage(bitmap, MaterialTheme.colors.primary, Modifier.clickable {
-                viewModel.coverImageDetailDialogState.show()
-            })
+            AudioImage(bitmap, MaterialTheme.colors.primary)
         }
-        val context = LocalContext.current
-        CoverImageDetailDialog(
-            state = viewModel.coverImageDetailDialogState,
-            artworkExist = bitmap != null,
-            onSave = { viewModel.submitEvent(context, MetadataUIEvent.ExtractArtwork) },
-            onDelete = { viewModel.submitEvent(context, Edit.RemoveArtwork) },
-            onUpdate = {
-                viewModel.viewModelScope.launch(Dispatchers.IO) {
-                    val uri = selectImage((context as IOpenFileStorageAccessible).openFileStorageAccessDelegate)
-                    if (uri != null) {
-                        val name = viewModel.state.value?.song?.title ?: ""
-                        viewModel.submitEvent(
-                            context, Edit.UpdateArtwork.from(context, uri, name)
-                        )
-                    } else {
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(context, android.R.string.cancel, Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-                viewModel.coverImageDetailDialogState.hide()
-            },
-            editMode = editable
-        )
     }
 }
 
