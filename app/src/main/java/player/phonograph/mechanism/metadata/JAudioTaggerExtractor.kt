@@ -12,7 +12,6 @@ import org.jaudiotagger.audio.generic.AbstractTag
 import org.jaudiotagger.audio.real.RealTag
 import org.jaudiotagger.logging.ErrorMessage
 import org.jaudiotagger.tag.FieldKey
-import org.jaudiotagger.tag.KeyNotFoundException
 import org.jaudiotagger.tag.TagField
 import org.jaudiotagger.tag.TagTextField
 import org.jaudiotagger.tag.aiff.AiffTag
@@ -44,7 +43,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
-import kotlin.collections.associateWith
 import java.io.File
 
 /**
@@ -104,14 +102,11 @@ object JAudioTaggerExtractor : MetadataExtractor {
         // Generic
         val genericTagFields: Map<FieldKey, Metadata.Field> =
             try {
-                FieldKey.entries.associateWith { key ->
-                    try {
-                        val field: TagField? = fields.getFirstField(key)
-                        readGenericTagFields(field)
-                    } catch (_: KeyNotFoundException) {
-                        Metadata.EmptyField
-                    }
-                }
+                FieldKey.entries.mapNotNull { key ->
+                    val tagField: TagField? = fields.getFirstField(key)
+                    val value = readGenericTagFields(tagField)
+                    if (value != null) key to value else null
+                }.toMap()
             } catch (e: Exception) {
                 reportError(e, TAG, "Failed to read all tags for ${audioFile.file.absolutePath}")
                 emptyMap()
@@ -139,15 +134,16 @@ object JAudioTaggerExtractor : MetadataExtractor {
         return JAudioTaggerMetadata(genericTagFields, allTagFields)
     }
 
-    private fun readGenericTagFields(field: TagField?): Metadata.Field =
+    private fun readGenericTagFields(field: TagField?): Metadata.Field? =
         if (field != null) {
             when {
-                field.isEmpty         -> Metadata.EmptyField
+                field.isEmpty         -> null
+                field.isBinary        -> RawBinaryField(field.rawContent)
                 field is TagTextField -> Metadata.PlainStringField(field.content)
                 else                  -> RawBinaryField(field.rawContent)
             }
         } else {
-            Metadata.EmptyField
+            null
         }
 
     private fun readTagFormat(audioFile: AudioFile): MusicTagFormat = when (audioFile.tag) {
