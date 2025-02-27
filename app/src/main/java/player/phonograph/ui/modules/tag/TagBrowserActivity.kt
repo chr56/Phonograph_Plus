@@ -16,6 +16,8 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.SystemBarsPadded
+import player.phonograph.ui.modules.tag.components.RequestWebSearchButton
+import player.phonograph.ui.modules.tag.util.importWebSearchResult
 import player.phonograph.ui.modules.web.IWebSearchRequester
 import player.phonograph.ui.modules.web.LastFmDialog
 import player.phonograph.ui.modules.web.WebSearchLauncher
@@ -59,6 +61,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -68,31 +71,40 @@ class TagBrowserActivity :
         ICreateFileStorageAccessible,
         IOpenFileStorageAccessible {
 
-    private val viewModel: TagBrowserViewModel by viewModels()
+    private val viewModel: TagBrowserActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         registerActivityResultLauncherDelegate(
             openFileStorageAccessDelegate,
             createFileStorageAccessDelegate,
+            webSearchTool,
         )
-        webSearchTool.register(this)
         val song = parseIntent(this, intent)
-        viewModel.updateSong(this, song)
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            TagEditor(viewModel, onBackPressedDispatcher, webSearchTool)
+        if (song != null) {
+            viewModel.load(this, song, true)
         }
+        super.onCreate(savedInstanceState)
         onBackPressedDispatcher.addCallback {
-            if (viewModel.pendingEditRequests.isNotEmpty()) {
+            if (viewModel.hasChanges) {
                 viewModel.exitWithoutSavingDialogState.show()
             } else {
                 finish()
             }
         }
+
+        setContent {
+            val highlightColorState: State<Color?> = viewModel.state.map { it?.color }.collectAsState(null)
+            PhonographTheme(highlightColorState) {
+                SystemBarsPadded {
+                    TagBrowserActivityMainContent(viewModel, webSearchTool, onBackPressedDispatcher)
+                }
+            }
+        }
+
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.color.collect { color ->
+                viewModel.state.collect { state ->
+                    val color = state?.color
                     if (color != null) updateSystemBarsColor(darkenColor(color.toArgb()), Color.Transparent.toArgb())
                 }
             }
@@ -122,89 +134,90 @@ class TagBrowserActivity :
 }
 
 @Composable
-private fun TagEditor(
-    viewModel: TagBrowserViewModel,
-    onBackPressedDispatcher: OnBackPressedDispatcher,
+private fun TagBrowserActivityMainContent(
+    viewModel: TagBrowserActivityViewModel,
     webSearchTool: WebSearchTool,
+    onBackPressedDispatcher: OnBackPressedDispatcher,
 ) {
-    val highlightColorState: State<Color?> = viewModel.color.collectAsState()
-    PhonographTheme(highlightColorState) {
-        SystemBarsPadded {
-            val scaffoldState = rememberScaffoldState()
-            val editable by viewModel.editable.collectAsState()
-            Scaffold(
-                scaffoldState = scaffoldState,
-                topBar = {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                stringResource(if (editable) R.string.action_tag_editor else R.string.label_details)
-                            )
-                        },
-                        navigationIcon = {
-                            Box(Modifier.padding(16.dp)) {
-                                Icon(
-                                    Icons.AutoMirrored.Default.ArrowBack, null,
-                                    Modifier.clickable {
-                                        onBackPressedDispatcher.onBackPressed()
-                                    }
-                                )
-                            }
-                        },
-                        actions = {
-                            RequestWebSearch(viewModel, webSearchTool)
-                            if (editable) {
-                                IconButton(onClick = { viewModel.saveConfirmationDialogState.show() }) {
-                                    Icon(
-                                        painterResource(id = R.drawable.ic_save_white_24dp),
-                                        stringResource(R.string.save)
-                                    )
-                                }
-                            } else {
-                                IconButton(onClick = { viewModel.updateEditable(true) }) {
-                                    Icon(
-                                        painterResource(id = R.drawable.ic_edit_white_24dp),
-                                        stringResource(R.string.edit)
-                                    )
-                                }
-                            }
-                        }
+    Scaffold(
+        scaffoldState = rememberScaffoldState(),
+        topBar = {
+            TopAppBar(
+                title = {
+                    val editable by viewModel.editable.collectAsState()
+                    Text(
+                        stringResource(if (editable) R.string.action_tag_editor else R.string.label_details)
                     )
-                }
-            ) {
-                Box(Modifier.padding(it)) {
-                    TagBrowserScreen(viewModel)
-                }
-            }
+                },
+                navigationIcon = {
+                    Box(Modifier.padding(16.dp)) {
+                        Icon(
+                            Icons.AutoMirrored.Default.ArrowBack, null,
+                            Modifier.clickable {
+                                onBackPressedDispatcher.onBackPressed()
+                            }
+                        )
+                    }
+                },
+                actions = { OptionMenu(viewModel, webSearchTool) }
+            )
+        }
+    ) {
+        Box(Modifier.padding(it)) {
+            TagBrowserScreen(viewModel)
         }
     }
 }
 
 @Composable
-private fun RequestWebSearch(viewModel: TagBrowserViewModel, webSearchTool: WebSearchTool) {
+private fun OptionMenu(viewModel: TagBrowserActivityViewModel, webSearchTool: WebSearchTool) {
+    RequestWebSearchButton(viewModel, webSearchTool)
+    val editable by viewModel.editable.collectAsState()
+    if (editable) {
+        IconButton(onClick = { viewModel.saveConfirmationDialogState.show() }) {
+            Icon(
+                painterResource(id = R.drawable.ic_save_white_24dp),
+                stringResource(R.string.save)
+            )
+        }
+    } else {
+        IconButton(onClick = { viewModel.enterEditMode() }) {
+            Icon(
+                painterResource(id = R.drawable.ic_edit_white_24dp),
+                stringResource(R.string.edit)
+            )
+        }
+    }
+}
+
+@Composable
+private fun RequestWebSearchButton(viewModel: TagBrowserActivityViewModel, webSearchTool: WebSearchTool) {
     val context = LocalContext.current
+    val state by viewModel.state.collectAsState()
+
     fun search(source: Source) {
+        val song = state?.song ?: return
         val intent = when (source) {
-            Source.LastFm -> WebSearchLauncher.searchLastFmSong(context, viewModel.song.value)
-            Source.MusicBrainz -> WebSearchLauncher.searchMusicBrainzSong(context, viewModel.song.value)
+            Source.LastFm -> WebSearchLauncher.searchLastFmSong(context, song)
+            Source.MusicBrainz -> WebSearchLauncher.searchMusicBrainzSong(context, song)
         }
         webSearchTool.launch(intent) {
             if (it != null) {
                 viewModel.viewModelScope.launch(Dispatchers.Default) {
                     debug { Log.v("TagEditor", it.toString()) }
-                    importResult(viewModel, it)
+                    importWebSearchResult(viewModel, it)
                 }
             }
         }
     }
 
     fun onShowWikiDialog() {
-        val song = viewModel.song.value ?: return
+        val song = state?.song ?: return
         val fragmentManager = (context as? FragmentActivity)?.supportFragmentManager
         if (fragmentManager != null) {
             LastFmDialog.from(song).show(fragmentManager, "WEB_SEARCH_DIALOG")
         }
     }
-    RequestWebSearch(webSearchTool, ::search, ::onShowWikiDialog)
+    RequestWebSearchButton(::search, ::onShowWikiDialog)
 }
 

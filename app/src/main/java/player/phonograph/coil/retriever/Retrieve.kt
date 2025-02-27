@@ -17,8 +17,7 @@ import coil.size.pxOrElse
 import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.source
-import org.jaudiotagger.audio.AudioFile
-import org.jaudiotagger.audio.AudioFileIO
+import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
 import player.phonograph.util.debug
 import player.phonograph.util.mediaStoreUriAlbumArt
 import player.phonograph.util.mediastoreUriAlbum
@@ -71,7 +70,12 @@ internal fun retrieveFromJAudioTagger(
     size: Size,
     raw: Boolean,
 ): Bitmap? = runCatching {
-    AudioFileIO.read(File(filepath)).retrieveEmbedPicture(size, raw)
+    val bytes = JAudioTaggerExtractor.readImage(File(filepath))
+    if (bytes != null) {
+        if (raw) bytes.toBitmap() else bytes.toBitmap(size)
+    } else {
+        null
+    }
 }.getOrNull()
 
 internal fun retrieveFromExternalFile(
@@ -162,9 +166,4 @@ internal fun readFromFile(
         mimeType = mimeType,
         dataSource = DataSource.DISK
     )
-}
-
-internal fun AudioFile.retrieveEmbedPicture(size: Size, raw: Boolean): Bitmap? {
-    val artwork = this.tag?.firstArtwork
-    return artwork?.binaryData?.let { if (raw) it.toBitmap() else it.toBitmap(size) }
 }

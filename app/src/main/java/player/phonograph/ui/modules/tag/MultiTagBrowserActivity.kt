@@ -16,6 +16,7 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.basis.ComposeActivity
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.SystemBarsPadded
+import player.phonograph.ui.modules.tag.components.RequestWebSearchButton
 import player.phonograph.ui.modules.web.IWebSearchRequester
 import player.phonograph.ui.modules.web.WebSearchLauncher
 import player.phonograph.ui.modules.web.WebSearchTool
@@ -53,7 +54,7 @@ class MultiTagBrowserActivity :
         ICreateFileStorageAccessible,
         IOpenFileStorageAccessible {
 
-    private val viewModel: MultiTagBrowserViewModel by viewModels()
+    private val viewModel: MultiTagBrowserActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         registerActivityResultLauncherDelegate(
@@ -62,20 +63,20 @@ class MultiTagBrowserActivity :
         )
         webSearchTool.register(this)
         val songs = parseIntent(this, intent)
-        viewModel.updateSong(this, songs)
+        viewModel.load(this, songs, true)
         super.onCreate(savedInstanceState)
-
-        setContent {
-            BatchTagEditor(viewModel, onBackPressedDispatcher, webSearchTool)
-        }
         onBackPressedDispatcher.addCallback {
-            if (viewModel.pendingEditRequests.isNotEmpty()) {
+            if (viewModel.hasChanges) {
                 viewModel.exitWithoutSavingDialogState.show()
             } else {
                 finish()
             }
         }
+        setContent {
+            BatchTagEditor(viewModel, onBackPressedDispatcher, webSearchTool)
+        }
     }
+
     override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
     override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
 
@@ -102,7 +103,7 @@ class MultiTagBrowserActivity :
 
 @Composable
 private fun BatchTagEditor(
-    viewModel: MultiTagBrowserViewModel,
+    viewModel: MultiTagBrowserActivityViewModel,
     onBackPressedDispatcher: OnBackPressedDispatcher,
     webSearchTool: WebSearchTool,
 ) {
@@ -130,7 +131,7 @@ private fun BatchTagEditor(
                             }
                         },
                         actions = {
-                            RequestWebSearch(viewModel, webSearchTool)
+                            RequestWebSearchButton(viewModel, webSearchTool)
                             if (editable) {
                                 IconButton(onClick = { viewModel.saveConfirmationDialogState.show() }) {
                                     Icon(
@@ -139,7 +140,7 @@ private fun BatchTagEditor(
                                     )
                                 }
                             } else {
-                                IconButton(onClick = { viewModel.updateEditable(true) }) {
+                                IconButton(onClick = { viewModel.enterEditMode() }) {
                                     Icon(
                                         painterResource(id = R.drawable.ic_edit_white_24dp),
                                         stringResource(R.string.edit)
@@ -161,7 +162,7 @@ private fun BatchTagEditor(
 
 @Composable
 @Suppress("UNUSED_PARAMETER")
-private fun RequestWebSearch(viewModel: MultiTagBrowserViewModel, webSearchTool: WebSearchTool) {
+private fun RequestWebSearchButton(viewModel: MultiTagBrowserActivityViewModel, webSearchTool: WebSearchTool) {
     val context = LocalContext.current
     fun search(source: Source) {
         val intent = when (source) {
@@ -172,6 +173,6 @@ private fun RequestWebSearch(viewModel: MultiTagBrowserViewModel, webSearchTool:
             // Log.v("TagEditor", it.toString()) //todo
         }
     }
-    RequestWebSearch(webSearchTool, ::search, null)
+    RequestWebSearchButton(::search, null)
 }
 

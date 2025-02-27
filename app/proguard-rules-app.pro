@@ -48,10 +48,9 @@
  	java.io.InputStream data(android.content.Context);
 }
 
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.tag.* extends player.phonograph.mechanism.tag.MetadataExtractor { public <methods>; }
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.tag.* extends player.phonograph.mechanism.tag.TagReader { public *** read(...); }
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.tag.edit.* extends player.phonograph.mechanism.tag.edit.EditAction { public *** valid(...); }
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.tag.edit.CommonKt { void applyEditImpl(...); }
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.metadata.* extends player.phonograph.mechanism.metadata.MetadataExtractor { public <methods>; }
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.metadata.* extends player.phonograph.mechanism.metadata.TagReader { public *** read(...); }
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.metadata.edit.* extends player.phonograph.model.metadata.EditAction$Executor { public <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.* extends player.phonograph.mechanism.IFavorite { public <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.* extends player.phonograph.mechanism.IUriParser { public <methods>; }
 

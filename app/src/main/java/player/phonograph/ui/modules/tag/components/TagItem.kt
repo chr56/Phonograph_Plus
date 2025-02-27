@@ -1,33 +1,24 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.ui.modules.tag
+package player.phonograph.ui.modules.tag.components
 
-import org.jaudiotagger.tag.FieldKey
 import player.phonograph.R
-import player.phonograph.model.RawTag
-import player.phonograph.model.TagData
-import player.phonograph.model.text
+import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.ui.compose.components.VerticalTextItem
-import androidx.annotation.StringRes
+import player.phonograph.ui.modules.tag.MetadataUIEvent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
@@ -43,87 +34,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import android.content.Context
 
 
 @Composable
-internal fun AddMoreButton(keys: Set<FieldKey>, onEdit: (Context, TagEditEvent) -> Unit) {
-    Box(Modifier.fillMaxWidth()) {
-        var showed by remember { mutableStateOf(false) }
-        DropdownMenu(expanded = showed, onDismissRequest = { showed = false }) {
-            val context = LocalContext.current
-            for (fieldKey in keys) {
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        showed = false
-                        onEdit(context, TagEditEvent.AddNewTag(fieldKey))
-                    }
-                    .padding(8.dp, 16.dp)
-                ) {
-                    Text(
-                        text = fieldKey.text(context.resources),
-                        // modifier = Modifier.align(Alignment.Start),
-                    )
-                    Text(
-                        text = fieldKey.name,
-                        // modifier = Modifier.align(Alignment.End),
-                        fontFamily = FontFamily.Monospace,
-                        style = TextStyle(
-                            color = MaterialTheme.colors.onSurface.copy(alpha = 0.77f),
-                            fontSize = 8.sp,
-                        )
-                    )
-                }
-            }
-        }
-        TextButton(
-            modifier = Modifier
-                .fillMaxWidth(0.5f)
-                .padding(0.dp, 16.dp),
-            onClick = {
-                showed = true
-            }
-        ) {
-            Row(
-                Modifier.fillMaxWidth()
-            )
-            {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_add_white_24dp),
-                    contentDescription = stringResource(id = R.string.add_action),
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .align(Alignment.CenterVertically),
-                    tint = MaterialTheme.colors.onSurface
-                )
-                Text(
-                    text = stringResource(id = R.string.add_action),
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .fillMaxWidth(),
-                    color = MaterialTheme.colors.onSurface
-                )
-            }
-        }
-    }
-}
-@Composable
-internal fun EditableItem(
-    key: FieldKey,
+fun EditableTagItem(
+    key: ConventionalMusicMetadataKey,
     tagName: String,
     value: String,
     alternatives: Collection<String> = emptyList(),
-    onEdit: (TagEditEvent) -> Unit,
+    onEdit: (MetadataUIEvent.Edit) -> Unit,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
@@ -158,7 +82,7 @@ internal fun EditableItem(
 
         fun submit() {
             onEdit.invoke(
-                TagEditEvent.UpdateTag(key, currentValue)
+                MetadataUIEvent.Edit.UpdateTag(key, currentValue)
             )
             hasEdited = false
             indicatorColor = Color(0xFF00C72C)
@@ -203,7 +127,7 @@ internal fun EditableItem(
                         modifier = Modifier
                             .padding(8.dp)
                             .clickable {
-                                onEdit.invoke(TagEditEvent.RemoveTag(key))
+                                onEdit.invoke(MetadataUIEvent.Edit.RemoveTag(key))
                             }
                     )
                 }
@@ -250,75 +174,9 @@ internal fun EditableItem(
     }
 
 }
-@Composable
-@Suppress("UNUSED_PARAMETER")
-internal fun RawTag(key: String, rawTag: RawTag) {
-    val (
-        id: String,
-        name: String,
-        value: TagData,
-        description: String?,
-    ) = rawTag
-
-    Column(
-        modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.SpaceEvenly
-    ) {
-        // name and id
-        Row(
-            modifier = Modifier
-                .align(Alignment.Start)
-                .fillMaxWidth()
-                .wrapContentHeight()
-        ) {
-            Text(
-                text = name,
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                ),
-                textAlign = TextAlign.Left,
-                modifier = Modifier.weight(8f),
-            )
-            Text(
-                text = id,
-                style = TextStyle(
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 12.sp,
-                ),
-                textAlign = TextAlign.Right,
-                modifier = Modifier.weight(2f),
-            )
-        }
-        // description
-        if (description != null) {
-            Text(
-                text = description,
-                style = TextStyle(
-                    fontWeight = FontWeight.Light,
-                    fontSize = 9.sp,
-                ),
-                modifier = Modifier.align(Alignment.Start),
-            )
-        }
-        Spacer(modifier = Modifier.height(4.dp))
-        // content
-        SelectionContainer {
-            Text(
-                text = value.text(),
-                style = TextStyle(
-                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.92f),
-                    fontSize = 14.sp,
-                ),
-                modifier = Modifier.align(Alignment.Start)
-            )
-        }
-    }
-}
-
 
 @Composable
-internal fun Item(@StringRes tagStringRes: Int, value: String) = Item(stringResource(tagStringRes), value)
+fun ReadonlyTagItem(label: String, value: String) = VerticalTextItem(label, value)
 
 @Composable
-internal fun Item(tag: String, value: String) = VerticalTextItem(label = tag, value = value)
+fun ReadonlyTagItem(label: String, value: List<String>) = VerticalTextItem(label, value.joinToString(",\n"))
