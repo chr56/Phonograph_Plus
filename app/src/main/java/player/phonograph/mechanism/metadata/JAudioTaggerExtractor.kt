@@ -102,7 +102,7 @@ object JAudioTaggerExtractor : MetadataExtractor {
         // Generic
         val genericTagFields: Map<FieldKey, Metadata.Field> =
             try {
-                FieldKey.entries.mapNotNull { key ->
+                GenericFieldsWithPriority.mapNotNull { key ->
                     val tagField: TagField? = fields.getFirstField(key)
                     val value = readGenericTagFields(tagField)
                     if (value != null) key to value else null
@@ -145,6 +145,24 @@ object JAudioTaggerExtractor : MetadataExtractor {
         } else {
             null
         }
+
+    private val GenericFieldsWithPriority = setOf(
+        FieldKey.TITLE,
+        FieldKey.ARTIST,
+        FieldKey.ALBUM,
+        FieldKey.ALBUM_ARTIST,
+        FieldKey.YEAR,
+        FieldKey.TRACK,
+        FieldKey.TRACK_TOTAL,
+        FieldKey.DISC_NO,
+        FieldKey.DISC_TOTAL,
+        FieldKey.GENRE,
+        FieldKey.COMPOSER,
+        FieldKey.LYRICIST,
+        FieldKey.RATING,
+        FieldKey.COMMENT,
+        FieldKey.LYRICS,
+    ) + FieldKey.entries
 
     private fun readTagFormat(audioFile: AudioFile): MusicTagFormat = when (audioFile.tag) {
         is Mp4Tag           -> MusicTagFormat.Mp4
