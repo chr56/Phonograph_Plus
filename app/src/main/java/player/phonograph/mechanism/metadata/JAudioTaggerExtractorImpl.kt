@@ -6,6 +6,7 @@ package player.phonograph.mechanism.metadata
 
 import org.jaudiotagger.audio.generic.AbstractTag
 import org.jaudiotagger.tag.Tag
+import org.jaudiotagger.tag.TagException
 import org.jaudiotagger.tag.TagField
 import org.jaudiotagger.tag.TagTextField
 import org.jaudiotagger.tag.aiff.AiffTag
@@ -68,70 +69,100 @@ object ID3v2Readers {
 
     object ID3v2Reader : TagReader<AbstractID3v2Tag> {
 
-        override fun read(tag: AbstractID3v2Tag): Map<String, Field> {
-            return tag.frameMap.map { (key, data) ->
-
-                val name = when (tag) {
-                    is ID3v24Tag -> ID3v24FieldKey.entries.firstOrNull { key == it.frameId }?.name
-                    is ID3v23Tag -> ID3v23FieldKey.entries.firstOrNull { key == it.frameId }?.name
-                    is ID3v22Tag -> ID3v22FieldKey.entries.firstOrNull { key == it.frameId }?.name
-                    else         -> null
-                }
-
-
-                val frames = when (tag) {
-                    is ID3v24Tag -> ID3v24Frames.getInstanceOf()
-                    is ID3v23Tag -> ID3v23Frames.getInstanceOf()
-                    is ID3v22Tag -> ID3v22Frames.getInstanceOf()
-                    else         -> null
-                }
-
-                val description: String? = frames?.idToValueMap?.getOrDefault(key, null)
-
-
-                val value = when (data) {
-                    is TagField -> {
-                        preprocessTagField(data) {
-                            if (data is AbstractID3v2Frame) {
-                                parseID3v2Frame(data)
-                            } else {
-                                PlainStringField(FieldOf(data))
-                            }
-                        }
-                    }
-
-                    is List<*>  -> {
-                        data.map { item ->
-                            if (item is TagField)
-                                preprocessTagField(item) {
-                                    if (it is AbstractID3v2Frame) {
-                                        parseID3v2Frame(it)
-                                    } else {
-                                        PlainStringField(FieldOf(it))
-                                    }
-                                }
-                            else
-                                PlainStringField(item.toString())
-                        }.let { MultipleField(it) }
-                    }
-
-                    else        -> PlainStringField(data.toString())
-                }
-                key to Field(key, name ?: "?", value, description)
-            }.toMap()
+        override fun read(tag: AbstractID3v2Tag): Map<String, Field> = when (tag) {
+            is ID3v24Tag -> ID3v24Reader.read(tag)
+            is ID3v23Tag -> ID3v23Reader.read(tag)
+            is ID3v22Tag -> ID3v22Reader.read(tag)
+            else         -> emptyMap()
         }
 
-        private fun parseID3v2Frame(frame: AbstractID3v2Frame): PlainStringField {
-            return try {
-                val text = when (val frameBody = frame.body) {
-                    is FrameBodyTXXX -> "${frameBody.description}:\t${frameBody.userFriendlyValue}"
-                    else             -> frameBody.userFriendlyValue
+        private sealed class ID3v2ReaderImpl<T : AbstractID3v2Tag> : TagReader<AbstractID3v2Tag> {
+            abstract fun queryName(id: String): String
+            abstract fun queryDescription(id: String): String?
+            abstract fun isCustomKey(id: String): Boolean
+
+            override fun read(tag: AbstractID3v2Tag): Map<String, Field> =
+                tag.frameMap.map { (id: String, data) -> id to parse(id, data) }.toMap()
+
+            private fun parse(id: String, frame: Any): Field = when (frame) {
+                is TagField -> {
+                    parseTagField(id, frame)
                 }
-                PlainStringField(text)
-            } catch (e: Exception) {
-                reportError(e, "readID3v2Tags", "Failed to read $frame")
-                PlainStringField("Failed to read $frame")
+
+                is List<*>  -> {
+                    val multiple = MultipleField(
+                        frame.map { item ->
+                            if (item is TagField) {
+                                parseTagField(id, item)
+                            } else {
+                                otherField(id, frame)
+                            }
+                        }
+                    )
+                    val name = if (isCustomKey(id)) "USER DEFINED FIELDS" else queryName(id)
+                    Field(id, name, multiple, null)
+                }
+
+                else        -> otherField(id, frame)
             }
+
+            private fun parseTagField(id: String, frame: TagField): Field = try {
+                if (frame is AbstractID3v2Frame) {
+                    val identifier = frame.identifier
+                    val name = when (val frameBody = frame.body) {
+                        is FrameBodyTXXX -> frameBody.description
+                        else             -> queryName(identifier)
+                    }
+                    val description = queryDescription(identifier)
+                    val field = when (val frameBody = frame.body) {
+                        is FrameBodyTXXX -> PlainStringField("${frameBody.description}:\t${frameBody.userFriendlyValue}")
+                        else             -> preprocessTagField(frame) { PlainStringField(frameBody.userFriendlyValue) }
+                    }
+                    Field(identifier, name, field, description)
+                } else {
+                    val field = preprocessTagField(frame) {
+                        PlainStringField(FieldOf(frame))
+                    }
+                    Field(id, id, field, null)
+                }
+            } catch (e: TagException) {
+                reportError(e, "ID3v2Reader", "Failed to process Frame $frame")
+                Field(id, id, PlainStringField(frame.toString()), null)
+            }
+
+            private fun otherField(id: String, frame: Any) =
+                Field(id, id, PlainStringField(frame.toString()), null)
+        }
+
+        private object ID3v24Reader : ID3v2ReaderImpl<ID3v23Tag>() {
+            override fun queryName(id: String): String =
+                ID3v24FieldKey.entries.firstOrNull { id == it.frameId }?.name ?: id
+
+            override fun queryDescription(id: String): String? =
+                ID3v24Frames.getInstanceOf().idToValueMap?.getOrDefault(id, null)
+
+            override fun isCustomKey(id: String): Boolean = id == ID3v24Frames.FRAME_ID_USER_DEFINED_INFO
+
+        }
+
+        private object ID3v23Reader : ID3v2ReaderImpl<ID3v23Tag>() {
+            override fun queryName(id: String): String =
+                ID3v23FieldKey.entries.firstOrNull { id == it.frameId }?.name ?: id
+
+            override fun queryDescription(id: String): String? =
+                ID3v23Frames.getInstanceOf().idToValueMap?.getOrDefault(id, null)
+
+            override fun isCustomKey(id: String): Boolean = id == ID3v23Frames.FRAME_ID_V3_USER_DEFINED_INFO
+        }
+
+        private object ID3v22Reader : ID3v2ReaderImpl<ID3v22Tag>() {
+            override fun queryName(id: String): String =
+                ID3v22FieldKey.entries.firstOrNull { id == it.frameId }?.name ?: id
+
+            override fun queryDescription(id: String): String? =
+                ID3v22Frames.getInstanceOf().idToValueMap?.getOrDefault(id, null)
+
+            override fun isCustomKey(id: String): Boolean = id == ID3v22Frames.FRAME_ID_V2_USER_DEFINED_INFO
         }
     }
 
@@ -190,12 +221,12 @@ object Mp4TagReader : TagReader<Mp4Tag> {
             val name = fieldKey?.name ?: field.id
             val description = fieldKey?.identifier ?: field.fieldType.let { "${it.name}(type${it.fileClassId})" }
             val value = when (field) {
-                is Mp4TagCoverField      -> PlainStringField(field.toString())
+                is Mp4TagCoverField -> PlainStringField(field.toString())
                 is Mp4TagReverseDnsField -> PlainStringField("${field.descriptor}: ${field.content}")
-                is Mp4TagTextField       -> PlainStringField(field.content)
-                is Mp4TagBinaryField     -> RawBinaryField(field.rawContent)
-                is Mp4TagRawBinaryField  -> RawBinaryField(field.rawContent)
-                else                     -> PlainStringField("Unknown: $field")
+                is Mp4TagTextField -> PlainStringField(field.content)
+                is Mp4TagBinaryField -> RawBinaryField(field.rawContent)
+                is Mp4TagRawBinaryField -> RawBinaryField(field.rawContent)
+                else -> PlainStringField("Unknown: $field")
             }
             id to Field(id, name, value, description)
         }
