@@ -150,23 +150,21 @@ object JAudioTaggerExtractor : MetadataExtractor {
             Metadata.EmptyField
         }
 
-    private fun readTagFormat(audioFile: AudioFile): MusicTagFormat {
-        return when (audioFile.tag) {
-            (ID3v1Tag::class.java)         -> MusicTagFormat.ID3v1
-            (ID3v11Tag::class.java)        -> MusicTagFormat.ID3v11
-            (ID3v24Tag::class.java)        -> MusicTagFormat.ID3v24
-            (ID3v22Tag::class.java)        -> MusicTagFormat.ID3v22
-            (ID3v23Tag::class.java)        -> MusicTagFormat.ID3v23
-            (Mp4Tag::class.java)           -> MusicTagFormat.Mp4
-            (VorbisCommentTag::class.java) -> MusicTagFormat.VorbisComment
-            (FlacTag::class.java)          -> MusicTagFormat.Flac
-            (AiffTag::class.java)          -> MusicTagFormat.Aiff
-            (AsfTag::class.java)           -> MusicTagFormat.Asf
-            (RealTag::class.java)          -> MusicTagFormat.Real
-            (WavTag::class.java)           -> MusicTagFormat.Wav
-            (WavInfoTag::class.java)       -> MusicTagFormat.WavInfo
-            else                           -> MusicTagFormat.Unknown
-        }
+    private fun readTagFormat(audioFile: AudioFile): MusicTagFormat = when (audioFile.tag) {
+        is Mp4Tag           -> MusicTagFormat.Mp4
+        is ID3v24Tag        -> MusicTagFormat.ID3v24
+        is ID3v23Tag        -> MusicTagFormat.ID3v23
+        is ID3v22Tag        -> MusicTagFormat.ID3v22
+        is ID3v11Tag        -> MusicTagFormat.ID3v11
+        is ID3v1Tag         -> MusicTagFormat.ID3v1
+        is FlacTag          -> MusicTagFormat.Flac
+        is AiffTag          -> MusicTagFormat.Aiff
+        is AsfTag           -> MusicTagFormat.Asf
+        is RealTag          -> MusicTagFormat.Real
+        is WavTag           -> MusicTagFormat.Wav
+        is WavInfoTag       -> MusicTagFormat.WavInfo
+        is VorbisCommentTag -> MusicTagFormat.VorbisComment
+        else                -> MusicTagFormat.Unknown
     }
 
     /**
