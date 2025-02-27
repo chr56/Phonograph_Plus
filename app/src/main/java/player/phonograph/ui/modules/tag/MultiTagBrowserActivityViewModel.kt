@@ -49,7 +49,10 @@ class MultiTagBrowserActivityViewModel : AbsMetadataViewModel() {
                         ?: DefaultMetadataExtractor.extractSongMetadata(context, song)
                 }
                 val fields = reducedTagFields(items.values)
-                val displayed = fields.mapValues { "" }
+                val displayed = fields.mapValues {
+                    val set = it.value.toSet()
+                    if (set.size == 1) set.first().text().toString() else ""
+                }
                 return State(items, fields, displayed)
             }
 
