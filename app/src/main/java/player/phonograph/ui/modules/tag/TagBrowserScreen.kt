@@ -84,6 +84,7 @@ fun TagBrowserScreen(viewModel: TagBrowserActivityViewModel) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Title(stringResource(R.string.music_tags), color = MaterialTheme.colors.primary)
                 MusicTags(metadata, viewModel, editable)
+                Spacer(modifier = Modifier.height(64.dp))
             }
         }
     }

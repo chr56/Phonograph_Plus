@@ -65,6 +65,7 @@ internal fun MultiTagBrowserScreen(viewModel: MultiTagBrowserActivityViewModel) 
         Spacer(modifier = Modifier.height(16.dp))
         Title(stringResource(R.string.music_tags), color = MaterialTheme.colors.primary)
         GenericTagItems(viewModel)
+        Spacer(modifier = Modifier.height(64.dp))
     }
     val editable by viewModel.editable.collectAsState()
     if (editable) {
