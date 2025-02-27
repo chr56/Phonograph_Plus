@@ -151,7 +151,9 @@ private fun GenericTagItem(
 
     Box(modifier = Modifier.fillMaxWidth()) {
         if (editable) {
-            EditableTagItem(key, tagName, tagValue, prefills.orEmpty(), onEdit = { onEdit(context, it) })
+            if (field !is Metadata.BinaryField) {
+                EditableTagItem(key, tagName, tagValue, prefills.orEmpty(), onEdit = { onEdit(context, it) })
+            }
         } else {
             ReadonlyTagItem(tagName, tagValue)
         }
