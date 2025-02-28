@@ -1,6 +1,30 @@
 {
   "versions": [
     {
+      "channel": "preview",
+      "versionName": "1.9.3-dev1",
+      "versionCode": 1092,
+      "date": 1740667000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.9.3-dev1"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.3-dev1/PhonographPlus_1.9.3-dev1_ModernPreviewRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.3-dev1/PhonographPlus_1.9.3-dev1_LegacyPreviewRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>改进 支持服务退出后仍然可以修改当前播放队列</li><li>改进 音乐标签编辑的稳定性和可用性</li><li>翻译 更新 波兰语 (cooky), 巴西葡萄牙语 (FalaTudo)</li></ol>",
+        "en": "<ol><li>Improve: support modifying playing queue even if service quits</li><li>Improve: enhance stability and usability of music tag viewer or editor</li><li>Translation: update Polish (by cooky), Brazilian Portuguese (by FalaTudo)</li></ol>"
+      }
+    },
+    {
       "channel": "stable",
       "versionName": "1.9.2",
       "versionCode": 1092,
@@ -22,54 +46,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>修复 服务退出后无法显示任何图像 (自 v1.9.1 起)</li><li>修复 夜间模式下部分对话框中文本颜色问题</li><li>新增 支持清理收藏夹和播放队列中丢失或删除的歌曲</li><li>改进 显示收藏夹中丢失或删除歌曲的路径而不是完全空白</li><li>开发 更新依赖</li></ol>",
         "en": "<ol><li>Fix: no images could be displayed once service exits (since v1.9.1)</li><li>Fix: text color legibility in some dialogs in night mode</li><li>New: support removing the missing (deleted) songs in Favorites Playlist and Playing Queue</li><li>Improve: show paths of the missing (deleted) songs instead of complete blank in Favorites Playlist</li><li>Development: update dependencies</li></ol>"
-      }
-    },
-    {
-      "channel": "preview",
-      "versionName": "1.9.2-dev2",
-      "versionCode": 1092,
-      "date": 1739620000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_1.9.2-dev2"
-        },
-        {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.2-dev2/PhonographPlus_1.9.2-dev2_ModernPreviewRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK(File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/preview_1.9.2-dev2/PhonographPlus_1.9.2-dev2_LegacyPreviewRelease.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 夜间模式下部分对话框中文本颜色问题</li><li>新增 支持清理播放队列中缺失（已删除）的歌曲</li><li>开发 更新依赖</li></ol>",
-        "en": "<ol><li>Fix: text color legibility in some dialogs in night mode</li><li>New: support removing the missing (deleted) songs in Playing Queue</li><li>Development: update dependencies</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "1.9.1",
-      "versionCode": 1091,
-      "date": 1739088000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.9.1"
-        },
-        {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.9.1/PhonographPlus_1.9.1_ModernStableRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK(File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.9.1/PhonographPlus_1.9.1_LegacyStableRelease.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 后台随机崩溃</li><li>修复 部分设备上重启后崩溃</li><li>修复 部分设备上从后台切换回来后崩溃</li><li>修复 时间戳相同的多行 lrc 歌词将被最后一行覆盖</li><li>修复 当前播放的歌曲发生改变且无歌词时，歌词对话框崩溃</li><li>修复 排序导致的文件页部分文件不显示</li><li>改进 文件页加载速度</li><li>翻译 更新 法语 (Vividly8487), 葡萄牙语 (azilara)</li><li>开发 更新依赖, 清理代码</li></ol>",
-        "en": "<ol><li>Fix: random crashes from background</li><li>Fix: possible crashes after rebooting on some devices</li><li>Fix: possible crashes after switching back from background on some devices</li><li>Fix: lrc lyrics with same timestamp would be overridden with last one</li><li>Fix: crashes of Lyrics Dialog when current song changed but it has no lyrics</li><li>Fix: possibly some files are missing in Files tab due to sorting</li><li>Improve: performance of loading in Files tab</li><li>Translation: update French (by Vividly8487), Portuguese (by azilara)</li><li>Development: update dependencies, cleanup codes</li></ol>"
       }
     }
   ]
