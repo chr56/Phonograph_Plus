@@ -5,7 +5,9 @@
 package player.phonograph.coil
 
 import coil.Coil
+import coil.request.Disposable
 import coil.request.ImageRequest
+import coil.request.ImageResult
 import coil.size.Dimension
 import coil.size.Size
 import coil.target.Target
@@ -24,6 +26,7 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -121,17 +124,12 @@ class ChainBuilder internal constructor(context: Context) {
     }
 
     private val request get() = requestBuilder.build()
-    fun enqueue() {
-        loader.enqueue(request)
-    }
+    fun enqueue(): Disposable = loader.enqueue(request)
 
-    suspend fun execute() {
-        loader.execute(request)
-    }
+    suspend fun execute(): ImageResult = loader.execute(request)
 
-    fun execute(coroutineScope: CoroutineScope) {
+    fun execute(coroutineScope: CoroutineScope): Job =
         coroutineScope.launch {
             loader.execute(request)
         }
-    }
 }
