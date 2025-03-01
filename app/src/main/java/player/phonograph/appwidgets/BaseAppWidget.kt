@@ -92,7 +92,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         drawAndPush(
             context = context,
             appWidgetIds = appWidgetIds,
-            song = song,
+            song = song ?: queueManager.currentSong,
             isPlaying = isPlaying,
             push = true,
             withCover = true
