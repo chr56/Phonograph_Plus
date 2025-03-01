@@ -87,49 +87,24 @@ abstract class BaseAppWidget : AppWidgetProvider() {
      */
     fun update(
         context: Context, appWidgetIds: IntArray?,
-        isPlaying: Boolean, song: Song? = null,
+        isPlaying: Boolean, song: Song? = queueManager.currentSong,
     ) {
-        drawAndPush(
-            context = context,
-            appWidgetIds = appWidgetIds,
-            song = song ?: queueManager.currentSong,
-            isPlaying = isPlaying,
-            push = true,
-            withCover = true
-        )
-    }
-
-    private fun drawAndPush(
-        context: Context, appWidgetIds: IntArray?,
-        song: Song?, isPlaying: Boolean,
-        push: Boolean = true, withCover: Boolean = true,
-    ): RemoteViews =
-        buildRemoteViews(context, isPlaying, song).also { remoteViews ->
+        RemoteViews(context.packageName, layoutId).also { remoteViews ->
+            remoteViews.updateButtons(context, isPlaying)
+            remoteViews.setupButtonsClick(context)
+            remoteViews.setupLaunchingClick(context)
+            if (song != null) updateText(context, remoteViews, song)
             if (cachedCover != null) {
                 updateImage(context, remoteViews, cachedCover)
             } else {
                 remoteViews.setImageViewResource(R.id.image, R.drawable.default_album_art)
             }
-            if (push) pushUpdate(context, appWidgetIds, remoteViews)
-            if (withCover && song != null) startUpdateCover(context, appWidgetIds, remoteViews, song, isPlaying)
+            pushUpdate(context, appWidgetIds, remoteViews)
+            if (song != null) startUpdateCover(context, appWidgetIds, remoteViews, song, isPlaying)
         }
-
-
-    private fun buildRemoteViews(
-        context: Context,
-        isPlaying: Boolean,
-        song: Song?,
-    ): RemoteViews = RemoteViews(context.packageName, layoutId).apply {
-        updateSong(context, song, isPlaying)
-        setupButtonsClick(context)
-        setupLaunchingClick(context)
     }
 
-    private fun RemoteViews.updateSong(
-        context: Context,
-        song: Song?, isPlaying: Boolean,
-    ) {
-        if (song != null) updateText(context, this, song)
+    private fun RemoteViews.updateButtons(context: Context, isPlaying: Boolean) {
         val color = context.primaryTextColor(darkBackground)
         bindDrawable(context, R.id.button_next, R.drawable.ic_skip_next_white_24dp, color)
         bindDrawable(context, R.id.button_prev, R.drawable.ic_skip_previous_white_24dp, color)

@@ -25,28 +25,17 @@ class AppWidgetUpdateReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun updateWidgets(intent: Intent, context: Context) {
-        val widget = intent.getStringExtra(EXTRA_APPWIDGET_NAME)
-        val ids = intent.getIntArrayExtra(EXTRA_APPWIDGET_IDS)
-        val isPlaying = intent.getBooleanExtra(EXTRA_APPWIDGET_IS_PLAYING, MusicPlayerRemote.isPlaying)
-        when (widget) {
-            AppWidgetClassic.NAME -> AppWidgetClassic.instance.update(context, ids, isPlaying)
-            AppWidgetSmall.NAME   -> AppWidgetSmall.instance.update(context, ids, isPlaying)
-            AppWidgetBig.NAME     -> AppWidgetBig.instance.update(context, ids, isPlaying)
-            AppWidgetCard.NAME    -> AppWidgetCard.instance.update(context, ids, isPlaying)
-        }
+    private fun connectWidgets(intent: Intent, context: Context) {
+        val widget = findWidget(intent.getStringExtra(EXTRA_APPWIDGET_NAME)) ?: return
+        widget.connected = true
+        updateWidgets(intent, context)
     }
 
-
-    private fun connectWidgets(intent: Intent, context: Context) {
-        val widget = intent.getStringExtra(EXTRA_APPWIDGET_NAME)
-        when (widget) {
-            AppWidgetClassic.NAME -> AppWidgetClassic.instance.connected = true
-            AppWidgetSmall.NAME   -> AppWidgetSmall.instance.connected = true
-            AppWidgetBig.NAME     -> AppWidgetBig.instance.connected = true
-            AppWidgetCard.NAME    -> AppWidgetCard.instance.connected = true
-        }
-        updateWidgets(intent, context)
+    private fun updateWidgets(intent: Intent, context: Context) {
+        val widget = findWidget(intent.getStringExtra(EXTRA_APPWIDGET_NAME)) ?: return
+        val ids = intent.getIntArrayExtra(EXTRA_APPWIDGET_IDS)
+        val isPlaying = intent.getBooleanExtra(EXTRA_APPWIDGET_IS_PLAYING, MusicPlayerRemote.isPlaying)
+        widget.update(context, ids, isPlaying)
     }
 
 
@@ -64,6 +53,15 @@ class AppWidgetUpdateReceiver : BroadcastReceiver() {
             AppWidgetBig.NAME to AppWidgetBig::class.java,
             AppWidgetCard.NAME to AppWidgetCard::class.java,
         )
+
+        private fun findWidget(name: String?): BaseAppWidget? =
+            when (name) {
+                AppWidgetClassic.NAME -> AppWidgetClassic.instance
+                AppWidgetSmall.NAME   -> AppWidgetSmall.instance
+                AppWidgetBig.NAME     -> AppWidgetBig.instance
+                AppWidgetCard.NAME    -> AppWidgetCard.instance
+                else                  -> null
+            }
 
         private var _instance: AppWidgetUpdateReceiver? = null
         val instant: AppWidgetUpdateReceiver
