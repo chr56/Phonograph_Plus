@@ -219,13 +219,12 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 (navigationDrawerHeader.findViewById<View>(R.id.title) as TextView).text = song.title
                 (navigationDrawerHeader.findViewById<View>(R.id.text) as TextView).text = song.infoString()
                 val image = navigationDrawerHeader.findViewById<ImageView>(R.id.image)
-                loadImage(this) {
-                    data(song)
-                    target(
+                loadImage(this)
+                    .from(song)
+                    .into(
                         onStart = { image.setImageResource(R.drawable.default_album_art) },
                         onSuccess = { image.setImageDrawable(it) }
                     )
-                }
             }
         } else {
             if (navigationDrawerHeader != null) {
