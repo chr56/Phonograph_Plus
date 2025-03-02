@@ -10,9 +10,9 @@ import coil.fetch.Fetcher
 import coil.request.Options
 import coil.size.Size
 import player.phonograph.coil.model.SongImage
+import player.phonograph.coil.raw
 import player.phonograph.coil.retriever.AudioFileImageFetcherDelegate
 import player.phonograph.coil.retriever.ImageRetriever
-import player.phonograph.coil.retriever.raw
 import player.phonograph.coil.retriever.retrieverFromConfig
 import player.phonograph.util.debug
 import android.content.Context
@@ -32,7 +32,7 @@ class AudioFileFetcher private constructor(
                 data,
                 options.context,
                 options.size,
-                options.raw(false),
+                options.parameters.raw(false),
                 delegates
             )
 

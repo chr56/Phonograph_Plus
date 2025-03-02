@@ -5,10 +5,10 @@
 package player.phonograph.ui.modules.tag.util
 
 import coil.request.Parameters
+import player.phonograph.coil.PARAMETERS_KEY_PALETTE
+import player.phonograph.coil.PARAMETERS_KEY_RAW
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.palette.PaletteColorTarget
-import player.phonograph.coil.palette.PaletteInterceptor.Companion.PARAMETERS_KEY_PALETTE
-import player.phonograph.coil.retriever.PARA_KEY_RAW
 import player.phonograph.util.theme.themeFooterColor
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.drawable.toBitmap
@@ -21,7 +21,7 @@ suspend fun loadCover(context: Context, data: Any): Pair<Bitmap?, Color?> =
     suspendCancellableCoroutine { continuation ->
         loadImage(context)
             .from(data)
-            .parameters(Parameters.Builder().set(PARA_KEY_RAW, true).set(PARAMETERS_KEY_PALETTE, true).build())
+            .parameters(Parameters.Builder().set(PARAMETERS_KEY_RAW, true).set(PARAMETERS_KEY_PALETTE, true).build())
             .into(
                 PaletteColorTarget(
                     defaultColor = themeFooterColor(context),

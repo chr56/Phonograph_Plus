@@ -14,7 +14,6 @@ import coil.size.Size
 import coil.target.Target
 import player.phonograph.R
 import player.phonograph.coil.palette.PaletteColorTarget
-import player.phonograph.coil.palette.PaletteInterceptor
 import player.phonograph.model.PaletteBitmap
 import player.phonograph.model.Song
 import player.phonograph.util.theme.themeFooterColor
@@ -132,7 +131,7 @@ class ChainBuilder internal constructor(context: Context) {
     }
 
     fun withPalette(): ChainBuilder {
-        requestBuilder.parameters(PaletteInterceptor.PARAMETERS_PALETTE)
+        requestBuilder.parameters(Parameters.Builder().set(PARAMETERS_KEY_PALETTE, true).build())
         return this
     }
 

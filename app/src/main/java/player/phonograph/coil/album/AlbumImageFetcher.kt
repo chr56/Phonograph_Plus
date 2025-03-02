@@ -10,9 +10,9 @@ import coil.fetch.Fetcher
 import coil.request.Options
 import coil.size.Size
 import player.phonograph.coil.model.AlbumImage
+import player.phonograph.coil.raw
 import player.phonograph.coil.retriever.AlbumImageFetcherDelegate
 import player.phonograph.coil.retriever.ImageRetriever
-import player.phonograph.coil.retriever.raw
 import player.phonograph.coil.retriever.retrieverFromConfig
 import player.phonograph.util.debug
 import android.content.Context
@@ -32,7 +32,7 @@ class AlbumImageFetcher(
             options: Options,
             imageLoader: ImageLoader,
         ) =
-            AlbumImageFetcher(data, options.context, options.size, options.raw(false), delegates)
+            AlbumImageFetcher(data, options.context, options.size, options.parameters.raw(false), delegates)
 
         private val delegates: List<AlbumImageFetcherDelegate<ImageRetriever>> =
             retrieverFromConfig.map { AlbumImageFetcherDelegate(context.applicationContext, it) }

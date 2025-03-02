@@ -7,10 +7,11 @@ package player.phonograph.service.notification
 import coil.Coil
 import coil.request.Disposable
 import coil.request.ImageRequest
+import coil.request.Parameters
 import coil.size.Size
 import player.phonograph.R
+import player.phonograph.coil.PARAMETERS_KEY_PALETTE
 import player.phonograph.coil.palette.PaletteColorTarget
-import player.phonograph.coil.palette.PaletteInterceptor
 import player.phonograph.model.PaletteBitmap
 import player.phonograph.model.Song
 import player.phonograph.util.theme.themeFooterColor
@@ -43,7 +44,7 @@ class CoverLoader(private val context: Context) {
                 ImageRequest.Builder(context)
                     .data(song)
                     .properSize()
-                    .parameters(PaletteInterceptor.PARAMETERS_PALETTE)
+                    .parameters(Parameters.Builder().set(PARAMETERS_KEY_PALETTE, true).build())
                     .target(
                         PaletteColorTarget(
                             defaultColor = themeFooterColor(context),
