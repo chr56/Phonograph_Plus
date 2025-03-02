@@ -51,15 +51,18 @@ class MediaMetadataRetriever : ImageRetriever {
         size: Size,
         raw: Boolean,
     ): FetchResult? {
-        val bitmap = MediaMetadataRetriever().use {
-            retrieveFromMediaMetadataRetriever(path, it, size, raw)
-        }
-        return bitmap?.let {
-            DrawableResult(
-                BitmapDrawable(context.resources, bitmap),
-                false,
-                DataSource.DISK
-            )
+        val retriever = MediaMetadataRetriever()
+        return try {
+            val bitmap = retrieveFromMediaMetadataRetriever(path, retriever, size, raw)
+            bitmap?.let {
+                DrawableResult(
+                    BitmapDrawable(context.resources, bitmap),
+                    false,
+                    DataSource.DISK
+                )
+            }
+        } finally {
+            retriever.close()
         }
     }
 }
