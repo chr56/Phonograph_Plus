@@ -8,10 +8,12 @@ import coil.Coil
 import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.request.ImageResult
+import coil.request.Parameters
 import coil.size.Dimension
 import coil.size.Size
 import coil.target.Target
 import player.phonograph.R
+import player.phonograph.coil.palette.PaletteInterceptor
 import player.phonograph.coil.target.PaletteBitmap
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
@@ -105,11 +107,13 @@ class ChainBuilder internal constructor(context: Context) {
 
     fun default(@DrawableRes res: Int): ChainBuilder {
         requestBuilder.placeholder(res)
+        requestBuilder.error(res)
         return this
     }
 
-    fun default(drawable: Drawable): ChainBuilder {
+    fun default(drawable: Drawable?): ChainBuilder {
         requestBuilder.placeholder(drawable)
+        requestBuilder.error(drawable)
         return this
     }
 
@@ -120,6 +124,16 @@ class ChainBuilder internal constructor(context: Context) {
 
     fun size(width: Dimension, height: Dimension): ChainBuilder {
         requestBuilder.size(Size(width, height))
+        return this
+    }
+
+    fun parameters(parameters: Parameters): ChainBuilder {
+        requestBuilder.parameters(parameters)
+        return this
+    }
+
+    fun withPalette(): ChainBuilder {
+        requestBuilder.parameters(PaletteInterceptor.PARAMETERS_PALETTE)
         return this
     }
 
