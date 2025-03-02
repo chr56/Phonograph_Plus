@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.adapter
 
-import coil.request.Disposable
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.App
 import player.phonograph.R
@@ -186,8 +185,7 @@ abstract class DisplayAdapter<I : Displayable>(
                 if (usePalette) setPaletteColors(cached.paletteColor)
             } else {
                 coroutineScope.launch {
-                    loadJob?.dispose()
-                    loadJob = loadImage(context)
+                    loadImage(context)
                         .from(item)
                         .into(
                             PaletteTargetBuilder()
@@ -228,8 +226,6 @@ abstract class DisplayAdapter<I : Displayable>(
                 textTertiary?.setTextColor(context.secondaryTextColor(color))
             }
         }
-
-        private var loadJob: Disposable? = null
 
         companion object {
             val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
