@@ -71,9 +71,9 @@ class StarterActivity : AppCompatActivity() {
 
     private fun processFrontGroundMode(intent: Intent) {
         val playRequest = runBlocking { lookupSongsFromIntent(intent) }
-        if (playRequest == null) {
+        if (playRequest is PlayRequest.EmptyRequest) {
             Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show()
-            gotoMainActivity()
+            finish()
         } else {
             val showPrompt: Boolean = Setting(this.applicationContext)[Keys.externalPlayRequestShowPrompt].data
             val silence: Boolean = Setting(this.applicationContext)[Keys.externalPlayRequestSilence].data
@@ -99,7 +99,7 @@ class StarterActivity : AppCompatActivity() {
     }
 
 
-    private suspend fun lookupSongsFromIntent(intent: Intent): PlayRequest? {
+    private suspend fun lookupSongsFromIntent(intent: Intent): PlayRequest {
         var playRequest: PlayRequest?
         // uri first
         playRequest = handleUriPlayRequest(intent)
@@ -113,7 +113,7 @@ class StarterActivity : AppCompatActivity() {
             playRequest = handleExtra(intent)
         }
 
-        return playRequest
+        return playRequest ?: PlayRequest.EmptyRequest
     }
 
     private suspend fun handleUriPlayRequest(intent: Intent): PlayRequest? {
