@@ -1,9 +1,10 @@
 /*
- *  Copyright (c) 2022~2024 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.coil.retriever
+package player.phonograph.coil.cache
 
+import player.phonograph.coil.retriever.RetrieverId
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase

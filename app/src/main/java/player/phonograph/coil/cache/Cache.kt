@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.coil.retriever
+package player.phonograph.coil.cache
 
 import coil.decode.DataSource
 import coil.decode.ImageSource

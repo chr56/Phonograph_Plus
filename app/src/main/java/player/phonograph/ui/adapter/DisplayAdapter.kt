@@ -8,7 +8,7 @@ import coil.target.Target
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.coil.AbsPreloadImageCache
+import player.phonograph.coil.cache.AbsPreloadImageCache
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.palette.PaletteColorTarget
 import player.phonograph.coil.palette.PaletteColorViewTarget
