@@ -7,7 +7,7 @@ package player.phonograph.ui.modules.artist
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.coil.loadImage
-import player.phonograph.coil.target.PaletteTargetBuilder
+import player.phonograph.coil.palette.PaletteColorTarget
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
@@ -53,18 +53,19 @@ class ArtistDetailActivityViewModel(var artistId: Long) : ViewModel() {
         val defaultColor = ThemeSetting.primaryColor(context)
         loadImage(context)
             .from(artist)
+            .withPalette()
             .into(
-                PaletteTargetBuilder()
-                    .defaultColor(defaultColor)
-                    .onStart {
+                PaletteColorTarget(
+                    defaultColor = defaultColor,
+                    start = { _, _ ->
                         imageView.setImageResource(R.drawable.default_album_art)
                         _paletteColor.tryEmit(defaultColor)
-                    }
-                    .onResourceReady { result, color ->
+                    },
+                    success = { result, color ->
                         imageView.setImageDrawable(result)
                         _paletteColor.tryEmit(color)
-                    }
-                    .build()
+                    },
+                )
             )
             .enqueue()
     }

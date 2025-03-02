@@ -2,7 +2,7 @@ package player.phonograph.appwidgets
 
 import player.phonograph.R
 import player.phonograph.appwidgets.Util.createRoundedBitmap
-import player.phonograph.coil.target.PaletteTargetBuilder
+import player.phonograph.coil.palette.PaletteColorTarget
 import player.phonograph.model.Song
 import util.theme.color.secondaryTextColor
 import androidx.core.graphics.drawable.toBitmapOrNull
@@ -52,22 +52,22 @@ class AppWidgetCard : BaseAppWidget() {
             context = context.applicationContext,
             song = song,
             widgetImageSize = imageSize,
-            target = PaletteTargetBuilder()
-                .defaultColor(fallbackColor)
-                .onStart {
+            target = PaletteColorTarget(
+                defaultColor = fallbackColor,
+                start = { _, _ ->
                     view.setImageViewResource(R.id.image, R.drawable.default_album_art)
-                }
-                .onResourceReady { result, paletteColor ->
+                },
+                success = { result, paletteColor ->
                     val bitmap = result.toBitmapOrNull()
                     cachedCover = bitmap
                     updateWidget(view, context, isPlaying, bitmap, paletteColor)
                     pushUpdate(context, appWidgetIds, view)
-                }
-                .onFail {
+                },
+                error = { _, _ ->
                     updateWidget(view, context, isPlaying, null, fallbackColor)
                     pushUpdate(context, appWidgetIds, view)
-                }
-                .build()
+                },
+            )
         )
     }
 

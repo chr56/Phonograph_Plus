@@ -13,9 +13,9 @@ import coil.size.Dimension
 import coil.size.Size
 import coil.target.Target
 import player.phonograph.R
+import player.phonograph.coil.palette.PaletteColorTarget
 import player.phonograph.coil.palette.PaletteInterceptor
 import player.phonograph.coil.target.PaletteBitmap
-import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.withTimeoutOrNot
@@ -62,13 +62,12 @@ fun loadImage(
 ) {
     loadImage(context)
         .from(song)
+        .withPalette()
         .into(
-            PaletteTargetBuilder()
-                .defaultColor(themeFooterColor(context))
-                .onResourceReady { result, palette ->
-                    colorCallback(song, result, palette)
-                }
-                .build()
+            PaletteColorTarget(
+                success = { result, palette -> colorCallback(song, result, palette) },
+                defaultColor = themeFooterColor(context),
+            )
         )
         .enqueue()
 }

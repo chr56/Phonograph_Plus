@@ -6,6 +6,7 @@ import coil.request.ImageRequest
 import coil.target.Target
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
+import player.phonograph.coil.palette.PaletteInterceptor
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicService
@@ -204,6 +205,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
             ImageRequest.Builder(context)
                 .data(song)
                 .size(widgetImageSize)
+                .parameters(PaletteInterceptor.PARAMETERS_PALETTE)
                 .target(target)
                 .build()
         )

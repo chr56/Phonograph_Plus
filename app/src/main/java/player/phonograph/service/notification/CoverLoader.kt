@@ -9,8 +9,9 @@ import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.size.Size
 import player.phonograph.R
+import player.phonograph.coil.palette.PaletteColorTarget
+import player.phonograph.coil.palette.PaletteInterceptor
 import player.phonograph.coil.target.PaletteBitmap
-import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
 import player.phonograph.util.theme.themeFooterColor
 import androidx.core.graphics.drawable.toBitmapOrNull
@@ -42,18 +43,19 @@ class CoverLoader(private val context: Context) {
                 ImageRequest.Builder(context)
                     .data(song)
                     .properSize()
+                    .parameters(PaletteInterceptor.PARAMETERS_PALETTE)
                     .target(
-                        PaletteTargetBuilder()
-                            .defaultColor(themeFooterColor(context))
-                            .onResourceReady { result, paletteColor ->
+                        PaletteColorTarget(
+                            defaultColor = themeFooterColor(context),
+                            success = { result, paletteColor ->
                                 val bitmap =
                                     if (result is BitmapDrawable) result.bitmap else result.toBitmapOrNull()
                                 if (bitmap != null) {
                                     cache.put(song.id, PaletteBitmap(bitmap, paletteColor))
                                 }
                                 callback(bitmap, paletteColor)
-                            }
-                            .build()
+                            },
+                        )
                     )
                     .build()
             return loader.enqueue(imageRequest)
