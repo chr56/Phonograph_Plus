@@ -5,12 +5,11 @@
 package player.phonograph.ui.modules.player
 
 import org.koin.core.context.GlobalContext
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.coil.AbsPreloadImageCache
 import player.phonograph.coil.loadImage
-import player.phonograph.coil.target.PaletteBitmap
 import player.phonograph.mechanism.IFavorite
+import player.phonograph.model.PaletteBitmap
 import player.phonograph.model.Song
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString

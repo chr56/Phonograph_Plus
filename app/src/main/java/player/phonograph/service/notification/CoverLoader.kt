@@ -11,7 +11,7 @@ import coil.size.Size
 import player.phonograph.R
 import player.phonograph.coil.palette.PaletteColorTarget
 import player.phonograph.coil.palette.PaletteInterceptor
-import player.phonograph.coil.target.PaletteBitmap
+import player.phonograph.model.PaletteBitmap
 import player.phonograph.model.Song
 import player.phonograph.util.theme.themeFooterColor
 import androidx.core.graphics.drawable.toBitmapOrNull
