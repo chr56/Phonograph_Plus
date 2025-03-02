@@ -29,7 +29,7 @@ fun prepareTask(task: JavaExec) {
         classpath = sourceSets.named("main").get().runtimeClasspath
         mainClass.set("util.phonograph.MainKt")
 
-        dependsOn(tasks.findByPath("build"))
+        dependsOn(tasks.findByPath("build")!!)
     }
 }
 
