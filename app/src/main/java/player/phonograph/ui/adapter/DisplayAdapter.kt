@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.adapter
 
+import coil.target.Target
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.App
 import player.phonograph.R
@@ -184,27 +185,30 @@ abstract class DisplayAdapter<I : Displayable>(
                 imageView.setImageBitmap(cached.bitmap)
                 if (usePalette) setPaletteColors(cached.paletteColor)
             } else {
-                coroutineScope.launch {
-                    loadImage(context)
-                        .from(item)
-                        .into(
-                            PaletteTargetBuilder()
-                                .defaultColor(themeFooterColor(context))
-                                .view(imageView)
-                                .onStart {
-                                    imageView.setImageDrawable(defaultIcon)
-                                    setPaletteColors(themeFooterColor(itemView.context))
-                                }
-                                .onResourceReady { result, paletteColor ->
-                                    imageView.setImageDrawable(result)
-                                    if (usePalette) setPaletteColors(paletteColor)
-                                }
-                                .build()
-                        )
-                        .enqueue()
-                }
+                loadImage(context)
+                    .from(item)
+                    .into(targetOf(imageView, defaultIcon, themeFooterColor(context), usePalette))
+                    .enqueue()
             }
         }
+
+        private fun targetOf(
+            imageView: ImageView,
+            defaultIcon: Drawable?,
+            defaultColor: Int,
+            usePalette: Boolean,
+        ): Target = PaletteTargetBuilder()
+            .defaultColor(defaultColor)
+            .view(imageView)
+            .onStart {
+                imageView.setImageDrawable(defaultIcon)
+                setPaletteColors(defaultColor)
+            }
+            .onResourceReady { result, paletteColor ->
+                imageView.setImageDrawable(result)
+                if (usePalette) setPaletteColors(paletteColor)
+            }
+            .build()
 
 
         protected open fun getIcon(item: I): Drawable? = defaultIcon
@@ -227,9 +231,6 @@ abstract class DisplayAdapter<I : Displayable>(
             }
         }
 
-        companion object {
-            val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-        }
     }
 
     class ImageCacheDelegate<I : Displayable>(val config: DisplayConfig) {
