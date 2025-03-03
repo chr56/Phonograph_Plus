@@ -87,6 +87,7 @@ class FilesPageAdapter(
                                 onStart = { image.setImageDrawable(iconFile(image.context)) },
                                 onSuccess = { image.setImageDrawable(it) },
                             )
+                            .enqueue()
                     } else {
                         image.setImageDrawable(iconFile(image.context))
                     }
