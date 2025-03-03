@@ -20,7 +20,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.explorer.FilesPageExplorerFragment
 import player.phonograph.ui.modules.explorer.FilesPageViewModel
 import player.phonograph.ui.modules.popup.ListOptionsPopup
-import player.phonograph.util.coroutineToast
+import player.phonograph.util.concurrent.coroutineToast
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import util.theme.color.primaryTextColor

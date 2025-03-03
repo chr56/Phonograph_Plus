@@ -12,7 +12,7 @@ import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
-import player.phonograph.util.MusicProgressUpdateDelegate
+import player.phonograph.util.component.MusicProgressUpdateDelegate
 import player.phonograph.util.theme.themeFooterColor
 import util.theme.color.isColorLight
 import util.theme.color.primaryTextColor

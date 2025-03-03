@@ -16,7 +16,7 @@ import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.theme.themeFooterColor
-import player.phonograph.util.withTimeoutOrNot
+import player.phonograph.util.concurrent.withTimeoutOrNot
 import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap

@@ -30,7 +30,7 @@ import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.util.coroutineToast
+import player.phonograph.util.concurrent.coroutineToast
 import android.content.Context
 
 object PlaylistProcessors {

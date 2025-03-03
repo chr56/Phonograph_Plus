@@ -13,7 +13,7 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.repo.mediastore.checkEmbeddedIdOverflow
 import player.phonograph.repo.mediastore.checkIdConflict
-import player.phonograph.util.coroutineToast
+import player.phonograph.util.concurrent.coroutineToast
 import player.phonograph.util.theme.tintButtons
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment

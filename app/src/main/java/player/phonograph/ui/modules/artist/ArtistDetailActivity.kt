@@ -27,8 +27,8 @@ import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.modules.main.pages.adapter.SongDisplayAdapter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
-import player.phonograph.util.GetContentDelegate
-import player.phonograph.util.IGetContentRequester
+import player.phonograph.util.component.GetContentDelegate
+import player.phonograph.util.component.IGetContentRequester
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.themeFooterColor

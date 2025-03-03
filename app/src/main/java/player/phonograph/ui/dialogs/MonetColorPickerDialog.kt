@@ -16,7 +16,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.MonetColorPicker
-import player.phonograph.util.lifecycleScopeOrNewOne
+import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.accentColoredButtonStyle
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Spacer

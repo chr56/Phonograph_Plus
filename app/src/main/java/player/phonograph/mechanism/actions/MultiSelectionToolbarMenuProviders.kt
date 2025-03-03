@@ -21,7 +21,7 @@ import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.util.asList
-import player.phonograph.util.lifecycleScopeOrNewOne
+import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.theme.getTintedDrawable
 import android.content.Context
 import android.view.Menu

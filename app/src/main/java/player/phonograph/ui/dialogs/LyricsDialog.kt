@@ -17,7 +17,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.player.LyricsViewModel
-import player.phonograph.util.MusicProgressUpdateDelegate
+import player.phonograph.util.component.MusicProgressUpdateDelegate
 import player.phonograph.util.reportError
 import player.phonograph.util.text.lyricsTimestamp
 import player.phonograph.util.theme.getTintedDrawable

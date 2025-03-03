@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.util
+package player.phonograph.util.component
 
 import player.phonograph.model.ProgressUpdateCallback
 import player.phonograph.service.MusicPlayerRemote

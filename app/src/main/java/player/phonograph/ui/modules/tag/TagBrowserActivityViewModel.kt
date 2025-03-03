@@ -23,7 +23,7 @@ import player.phonograph.ui.modules.tag.MetadataUIEvent.Save
 import player.phonograph.ui.modules.tag.util.fileName
 import player.phonograph.ui.modules.tag.util.loadCover
 import player.phonograph.ui.modules.tag.util.readImage
-import player.phonograph.util.lifecycleScopeOrNewOne
+import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.warning
 import androidx.compose.runtime.MutableState

@@ -21,8 +21,8 @@ import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.util.asList
+import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.fragmentActivity
-import player.phonograph.util.lifecycleScopeOrNewOne
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
