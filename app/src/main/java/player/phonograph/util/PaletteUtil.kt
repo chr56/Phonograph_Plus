@@ -11,7 +11,7 @@ import android.graphics.Bitmap
 
 object PaletteUtil {
 
-    fun paletteColor(bitmap: Bitmap, @ColorInt fallbackColor: Int): Int {
+    fun generatePalette(bitmap: Bitmap): Palette {
         val builder = Palette
             .from(bitmap)
             .clearTargets()
@@ -19,7 +19,11 @@ object PaletteUtil {
             .addTarget(Target.MUTED)
 
         val palette = builder.generate()
+        return palette
+    }
 
+    fun paletteColor(bitmap: Bitmap, @ColorInt fallbackColor: Int): Int {
+        val palette = generatePalette(bitmap)
         val swatch = with(palette) { vibrantSwatch ?: mutedSwatch }
         return swatch?.rgb ?: fallbackColor
     }
