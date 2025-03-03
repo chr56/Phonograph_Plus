@@ -11,7 +11,7 @@ import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
-import player.phonograph.util.MusicProgressUpdateDelegate
+import player.phonograph.util.component.MusicProgressUpdateDelegate
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
