@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.util
+package player.phonograph.util.component
 
 import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
