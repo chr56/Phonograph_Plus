@@ -17,6 +17,7 @@ import player.phonograph.coil.audiofile.AudioFileMapper
 import player.phonograph.coil.audiofile.FileEntityMapper
 import player.phonograph.coil.lastfm.LastFmImageBundleKeyer
 import player.phonograph.coil.lastfm.LastFmImageBundleMapper
+import player.phonograph.coil.palette.PaletteInterceptor
 import android.content.Context
 
 fun createPhonographImageLoader(context: Context): ImageLoader {
@@ -39,6 +40,8 @@ fun createPhonographImageLoader(context: Context): ImageLoader {
             // last.fm
             add(LastFmImageBundleKeyer())
             add(LastFmImageBundleMapper())
+            // interceptors
+            add(PaletteInterceptor())
         }
         .crossfade(true)
         .build()

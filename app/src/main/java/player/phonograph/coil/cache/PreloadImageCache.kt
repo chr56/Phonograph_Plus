@@ -2,14 +2,13 @@
  *  Copyright (c) 2022~2024 chr_56
  */
 
-package player.phonograph.coil
+package player.phonograph.coil.cache
 
 import androidx.annotation.IntDef
 import androidx.collection.LruCache
 import androidx.collection.MutableScatterMap
 import android.content.Context
 import android.util.LongSparseArray
-import android.view.View
 
 abstract class AbsPreloadImageCache<K, G : Any>(size: Int, @CacheImplementation type: Int) {
 

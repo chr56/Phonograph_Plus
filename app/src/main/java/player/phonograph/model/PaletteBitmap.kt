@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.coil.target
+package player.phonograph.model
 
 import androidx.annotation.ColorInt
 import android.graphics.Bitmap

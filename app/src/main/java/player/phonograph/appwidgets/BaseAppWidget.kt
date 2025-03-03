@@ -3,9 +3,11 @@ package player.phonograph.appwidgets
 import coil.Coil
 import coil.request.Disposable
 import coil.request.ImageRequest
+import coil.request.Parameters
 import coil.target.Target
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
+import player.phonograph.coil.PARAMETERS_KEY_PALETTE
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicService
@@ -204,6 +206,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
             ImageRequest.Builder(context)
                 .data(song)
                 .size(widgetImageSize)
+                .parameters(Parameters.Builder().set(PARAMETERS_KEY_PALETTE, true).build())
                 .target(target)
                 .build()
         )

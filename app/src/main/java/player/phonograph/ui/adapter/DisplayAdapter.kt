@@ -8,14 +8,15 @@ import coil.target.Target
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.coil.AbsPreloadImageCache
+import player.phonograph.coil.cache.AbsPreloadImageCache
 import player.phonograph.coil.loadImage
-import player.phonograph.coil.target.PaletteBitmap
-import player.phonograph.coil.target.PaletteTargetBuilder
+import player.phonograph.coil.palette.PaletteColorTarget
+import player.phonograph.coil.palette.PaletteColorViewTarget
 import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.model.Displayable
 import player.phonograph.model.ItemLayoutStyle
+import player.phonograph.model.PaletteBitmap
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.DisplayConfig.Companion.IMAGE_TYPE_FIXED_ICON
@@ -187,28 +188,18 @@ abstract class DisplayAdapter<I : Displayable>(
             } else {
                 loadImage(context)
                     .from(item)
-                    .into(targetOf(imageView, defaultIcon, themeFooterColor(context), usePalette))
+                    .withPalette()
+                    .default(defaultIcon)
+                    .into(targetOf(imageView, themeFooterColor(context), usePalette))
                     .enqueue()
             }
         }
 
         private fun targetOf(
             imageView: ImageView,
-            defaultIcon: Drawable?,
             defaultColor: Int,
             usePalette: Boolean,
-        ): Target = PaletteTargetBuilder()
-            .defaultColor(defaultColor)
-            .view(imageView)
-            .onStart {
-                imageView.setImageDrawable(defaultIcon)
-                setPaletteColors(defaultColor)
-            }
-            .onResourceReady { result, paletteColor ->
-                imageView.setImageDrawable(result)
-                if (usePalette) setPaletteColors(paletteColor)
-            }
-            .build()
+        ): Target = PaletteColorViewTarget(imageView, ::setPaletteColors, defaultColor, usePalette)
 
 
         protected open fun getIcon(item: I): Drawable? = defaultIcon
@@ -270,10 +261,11 @@ abstract class DisplayAdapter<I : Displayable>(
             suspendCancellableCoroutine { continuation ->
                 loadImage(context)
                     .from(key)
+                    .withPalette()
                     .into(
-                        PaletteTargetBuilder()
-                            .defaultColor(themeFooterColor(context))
-                            .onResourceReady { result, palette ->
+                        PaletteColorTarget(
+                            defaultColor = themeFooterColor(context),
+                            success = { result, palette ->
                                 if (result is BitmapDrawable) {
                                     continuation.resume(
                                         PaletteBitmap(result.bitmap, palette)
@@ -283,8 +275,9 @@ abstract class DisplayAdapter<I : Displayable>(
                                 } else {
                                     continuation.cancel()
                                 }
-                            }
-                            .build()
+
+                            },
+                        )
                     )
                     .enqueue()
             }

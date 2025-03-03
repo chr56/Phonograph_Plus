@@ -8,74 +8,19 @@ import coil.Coil
 import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.request.ImageResult
+import coil.request.Parameters
 import coil.size.Dimension
 import coil.size.Size
+import coil.size.SizeResolver
 import coil.target.Target
-import player.phonograph.R
-import player.phonograph.coil.target.PaletteBitmap
-import player.phonograph.coil.target.PaletteTargetBuilder
-import player.phonograph.model.Song
-import player.phonograph.util.theme.themeFooterColor
-import player.phonograph.util.withTimeoutOrNot
 import androidx.annotation.DrawableRes
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.graphics.drawable.toBitmap
 import android.content.Context
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 
-suspend fun loadImage(context: Context, song: Song, timeout: Long): PaletteBitmap =
-    try {
-        withTimeoutOrNot(timeout, Dispatchers.IO) {
-            suspendCancellableCoroutine { continuation ->
-                loadImage(context, song) { _, drawable, color ->
-                    if (drawable is BitmapDrawable) {
-                        continuation.resume(PaletteBitmap(drawable.bitmap, color)) { tr, _, _ -> cancel("", tr) }
-                    } else {
-                        continuation.cancel()
-                    }
-                }
-            }
-        }
-    } catch (e: TimeoutCancellationException) {
-        PaletteBitmap(
-            AppCompatResources.getDrawable(context, R.drawable.default_album_art)!!.toBitmap(),
-            themeFooterColor(context)
-        )
-    }
-
-
-fun loadImage(
-    context: Context,
-    song: Song,
-    colorCallback: (Song, Drawable, Int) -> Unit,
-) {
-    loadImage(context)
-        .from(song)
-        .into(
-            PaletteTargetBuilder()
-                .defaultColor(themeFooterColor(context))
-                .onResourceReady { result, palette ->
-                    colorCallback(song, result, palette)
-                }
-                .build()
-        )
-        .enqueue()
-}
-
-inline fun loadImage(context: Context, cfg: ImageRequest.Builder.() -> Unit) {
-    Coil.imageLoader(context).enqueue(
-        ImageRequest.Builder(context).apply(cfg).build()
-    )
-}
 
 fun loadImage(context: Context): ChainBuilder = ChainBuilder(context)
 
@@ -98,6 +43,15 @@ class ChainBuilder internal constructor(context: Context) {
         return this
     }
 
+    fun into(
+        onStart: (placeholder: Drawable?) -> Unit = {},
+        onError: (error: Drawable?) -> Unit = {},
+        onSuccess: (result: Drawable) -> Unit = {},
+    ): ChainBuilder {
+        requestBuilder.target(onStart, onError, onSuccess)
+        return this
+    }
+
     fun config(block: ImageRequest.Builder.() -> Unit): ChainBuilder {
         requestBuilder.apply(block)
         return this
@@ -105,11 +59,13 @@ class ChainBuilder internal constructor(context: Context) {
 
     fun default(@DrawableRes res: Int): ChainBuilder {
         requestBuilder.placeholder(res)
+        requestBuilder.error(res)
         return this
     }
 
-    fun default(drawable: Drawable): ChainBuilder {
+    fun default(drawable: Drawable?): ChainBuilder {
         requestBuilder.placeholder(drawable)
+        requestBuilder.error(drawable)
         return this
     }
 
@@ -120,6 +76,21 @@ class ChainBuilder internal constructor(context: Context) {
 
     fun size(width: Dimension, height: Dimension): ChainBuilder {
         requestBuilder.size(Size(width, height))
+        return this
+    }
+
+    fun size(resolver: SizeResolver): ChainBuilder {
+        requestBuilder.size(resolver)
+        return this
+    }
+
+    fun parameters(parameters: Parameters): ChainBuilder {
+        requestBuilder.parameters(parameters)
+        return this
+    }
+
+    fun withPalette(): ChainBuilder {
+        requestBuilder.parameters(Parameters.Builder().set(PARAMETERS_KEY_PALETTE, true).build())
         return this
     }
 

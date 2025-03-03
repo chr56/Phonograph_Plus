@@ -5,29 +5,38 @@
 package player.phonograph.ui.modules.player
 
 import org.koin.core.context.GlobalContext
-import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.coil.AbsPreloadImageCache
+import player.phonograph.coil.cache.AbsPreloadImageCache
 import player.phonograph.coil.loadImage
-import player.phonograph.coil.target.PaletteBitmap
+import player.phonograph.coil.palette.PaletteColorTarget
 import player.phonograph.mechanism.IFavorite
+import player.phonograph.model.PaletteBitmap
 import player.phonograph.model.Song
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.util.theme.themeFooterColor
+import player.phonograph.util.withTimeoutOrNot
 import androidx.annotation.ColorInt
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 class PlayerFragmentViewModel : ViewModel() {
 
@@ -110,6 +119,38 @@ class PlayerFragmentViewModel : ViewModel() {
             loadImage(context, key, 2000)
 
         override fun id(key: Song): Long = key.id
+
+        private suspend fun loadImage(context: Context, song: Song, timeout: Long): PaletteBitmap =
+            try {
+                withTimeoutOrNot(timeout, Dispatchers.IO) {
+                    suspendCancellableCoroutine { continuation ->
+                        loadImage(context)
+                            .from(song)
+                            .withPalette()
+                            .into(
+                                PaletteColorTarget(
+                                    success = { drawable, color ->
+                                        if (drawable is BitmapDrawable) {
+                                            continuation.resume(PaletteBitmap(drawable.bitmap, color)) { tr, _, _ ->
+                                                cancel("", tr)
+                                            }
+                                        } else {
+                                            continuation.cancel()
+                                        }
+                                    },
+                                    defaultColor = themeFooterColor(context),
+                                )
+                            )
+                            .enqueue()
+                    }
+                }
+            } catch (e: TimeoutCancellationException) {
+                PaletteBitmap(
+                    AppCompatResources.getDrawable(context, R.drawable.default_album_art)!!.toBitmap(),
+                    themeFooterColor(context)
+                )
+            }
+
     }
 
     suspend fun fetchBitmap(context: Context, song: Song): Bitmap =

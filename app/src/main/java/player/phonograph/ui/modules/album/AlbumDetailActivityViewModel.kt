@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.album
 
 import player.phonograph.R
 import player.phonograph.coil.loadImage
-import player.phonograph.coil.target.PaletteTargetBuilder
+import player.phonograph.coil.palette.PaletteColorTarget
 import player.phonograph.model.Album
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Albums
@@ -27,7 +27,7 @@ class AlbumDetailActivityViewModel(val albumId: Long) : ViewModel() {
     private var _album: MutableStateFlow<Album> = MutableStateFlow(Album())
     val album get() = _album.asStateFlow()
 
-    private var _songs:MutableStateFlow<List<Song>> = MutableStateFlow(emptyList())
+    private var _songs: MutableStateFlow<List<Song>> = MutableStateFlow(emptyList())
     val songs get() = _songs.asStateFlow()
 
     fun loadDataSet(context: Context) {
@@ -44,18 +44,19 @@ class AlbumDetailActivityViewModel(val albumId: Long) : ViewModel() {
         val defaultColor = ThemeSetting.primaryColor(context)
         loadImage(context)
             .from(album)
+            .withPalette()
             .into(
-                PaletteTargetBuilder()
-                    .defaultColor(defaultColor)
-                    .onStart {
+                PaletteColorTarget(
+                    defaultColor = defaultColor,
+                    start = { _, _ ->
                         imageView.setImageResource(R.drawable.default_album_art)
                         _paletteColor.tryEmit(defaultColor)
-                    }
-                    .onResourceReady { result, color ->
+                    },
+                    success = { result, color ->
                         imageView.setImageDrawable(result)
                         _paletteColor.tryEmit(color)
-                    }
-                    .build()
+                    },
+                )
             )
             .enqueue()
     }

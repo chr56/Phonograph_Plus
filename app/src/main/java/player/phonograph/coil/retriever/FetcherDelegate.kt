@@ -6,6 +6,7 @@ package player.phonograph.coil.retriever
 
 import coil.fetch.FetchResult
 import coil.size.Size
+import player.phonograph.coil.cache.CacheStore
 import player.phonograph.coil.model.AlbumImage
 import player.phonograph.coil.model.ArtistImage
 import player.phonograph.coil.model.CompositeLoaderTarget

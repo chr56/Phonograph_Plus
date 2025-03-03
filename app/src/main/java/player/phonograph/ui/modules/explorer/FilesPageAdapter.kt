@@ -80,14 +80,13 @@ class FilesPageAdapter(
             when (item) {
                 is FileEntity.File   -> {
                     if (loadCover) {
-                        loadImage(image.context) {
-                            data(item)
-                            size(ViewSizeResolver(image))
-                            target(
+                        loadImage(image.context)
+                            .from(item)
+                            .size(ViewSizeResolver(image))
+                            .into(
                                 onStart = { image.setImageDrawable(iconFile(image.context)) },
-                                onSuccess = { image.setImageDrawable(it) }
+                                onSuccess = { image.setImageDrawable(it) },
                             )
-                        }
                     } else {
                         image.setImageDrawable(iconFile(image.context))
                     }
