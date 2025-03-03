@@ -55,4 +55,4 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.* extends player.phonograph.mechanism.IUriParser { public <methods>; }
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.coil.retriever.FetcherDelegate { abstract <methods>; }
--keepclassmembernames,allowoptimization,allowshrinking interface player.phonograph.coil.retriever.CacheStore$Cache { public <methods>; }
+-keepclassmembernames,allowoptimization,allowshrinking interface player.phonograph.coil.cache.CacheStore$Cache { public <methods>; }
