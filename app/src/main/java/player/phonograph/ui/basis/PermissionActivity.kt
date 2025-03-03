@@ -9,11 +9,11 @@ import lib.activityresultcontract.IRequestMultiplePermission
 import lib.activityresultcontract.RequestMultiplePermissionsDelegate
 import player.phonograph.R
 import player.phonograph.settings.ThemeSetting
+import player.phonograph.util.concurrent.runOnMainHandler
 import player.phonograph.util.permissions.hasPermissions
 import player.phonograph.util.permissions.navigateToAppDetailSetting
 import player.phonograph.util.permissions.permissionDescription
 import player.phonograph.util.permissions.permissionName
-import player.phonograph.util.runOnMainHandler
 import android.os.Bundle
 
 /**

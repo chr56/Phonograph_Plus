@@ -14,7 +14,7 @@ import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.mediastore.MediaStorePlaylists
-import player.phonograph.util.coroutineToast
+import player.phonograph.util.concurrent.coroutineToast
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking

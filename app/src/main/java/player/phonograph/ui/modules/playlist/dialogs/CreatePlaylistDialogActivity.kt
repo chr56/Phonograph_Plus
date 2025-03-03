@@ -23,7 +23,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.ui.basis.DialogActivity
 import player.phonograph.util.PLAYLIST_MIME_TYPE
-import player.phonograph.util.coroutineToast
+import player.phonograph.util.concurrent.coroutineToast
 import player.phonograph.util.parcelableArrayListExtra
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffix

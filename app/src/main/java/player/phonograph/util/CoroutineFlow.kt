@@ -6,6 +6,7 @@ package player.phonograph.util
 
 import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
+import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import android.content.Context
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
