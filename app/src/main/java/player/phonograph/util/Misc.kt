@@ -24,7 +24,6 @@ import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
-import android.os.Environment
 import android.util.Log
 import java.io.File
 import java.io.FileNotFoundException
@@ -107,8 +106,6 @@ fun logMetrics(stage: String) {
 //
 // Other
 //
-
-val primaryExternalStoragePath: String = Environment.getExternalStorageDirectory().absolutePath
 
 
 fun openOutputStreamSafe(context: Context, uri: Uri, mode: String): OutputStream? =

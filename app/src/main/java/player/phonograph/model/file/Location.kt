@@ -6,10 +6,10 @@ package player.phonograph.model.file
 
 import lib.storage.extension.rootDirectory
 import player.phonograph.App
-import player.phonograph.util.primaryExternalStoragePath
 import player.phonograph.util.warning
 import androidx.core.content.getSystemService
 import android.content.Context
+import android.os.Environment
 import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.util.Log
@@ -82,6 +82,9 @@ class Location private constructor(val basePath: String, val storageVolume: Stor
         private fun File.getBasePath(root: File): String {
             return path.substringAfter(root.path)
         }
+
+        val primaryExternalStoragePath: String get() = Environment.getExternalStorageDirectory().absolutePath
+
     }
 
     init {
