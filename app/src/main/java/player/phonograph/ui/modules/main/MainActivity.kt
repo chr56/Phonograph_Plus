@@ -225,6 +225,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                         onStart = { image.setImageResource(R.drawable.default_album_art) },
                         onSuccess = { image.setImageDrawable(it) }
                     )
+                    .enqueue()
             }
         } else {
             if (navigationDrawerHeader != null) {
