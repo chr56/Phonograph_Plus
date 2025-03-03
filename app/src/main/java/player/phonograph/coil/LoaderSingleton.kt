@@ -43,6 +43,5 @@ fun createPhonographImageLoader(context: Context): ImageLoader {
             // interceptors
             add(PaletteInterceptor())
         }
-        .crossfade(true)
         .build()
 }
