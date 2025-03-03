@@ -4,7 +4,7 @@
 
 package player.phonograph.coil.palette
 
-import player.phonograph.util.PaletteUtil
+import player.phonograph.util.ui.generatePalette
 import androidx.palette.graphics.Palette
 import android.content.res.Resources
 import android.graphics.Bitmap
@@ -27,7 +27,7 @@ class PaletteBitmapDrawable(
     companion object {
         @JvmStatic
         fun from(resources: Resources, bitmap: Bitmap): PaletteBitmapDrawable {
-            val palette = PaletteUtil.generatePalette(bitmap)
+            val palette = bitmap.generatePalette()
             return PaletteBitmapDrawable(resources, bitmap, palette)
         }
     }

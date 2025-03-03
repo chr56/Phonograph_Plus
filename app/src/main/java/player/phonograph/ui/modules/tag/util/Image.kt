@@ -6,8 +6,8 @@ package player.phonograph.ui.modules.tag.util
 
 import lib.storage.launcher.OpenDocumentContract
 import lib.storage.launcher.OpenFileStorageAccessDelegate
-import player.phonograph.util.PaletteUtil
 import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
+import player.phonograph.util.ui.paletteColor
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import android.graphics.Bitmap
@@ -30,7 +30,7 @@ suspend fun readImage(path: String): Pair<Bitmap?, Color?> {
     if (imageBytes == null || imageBytes.isEmpty()) return Pair(null, null)
     return try {
         val bitmap: Bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size) ?: return Pair(null, null)
-        val paletteColor = PaletteUtil.paletteColor(bitmap, Color.Gray.toArgb())
+        val paletteColor = paletteColor(bitmap, Color.Gray.toArgb())
         Pair(bitmap, Color(paletteColor))
     } catch (e: Exception) {
         Pair(null, null)
