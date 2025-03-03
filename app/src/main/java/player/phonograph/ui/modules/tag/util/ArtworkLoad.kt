@@ -33,4 +33,5 @@ suspend fun loadCover(context: Context, data: Any): Pair<Bitmap?, Color?> =
                     },
                 )
             )
+            .enqueue()
     }
