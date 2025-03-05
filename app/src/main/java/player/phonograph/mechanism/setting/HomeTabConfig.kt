@@ -9,18 +9,8 @@ import player.phonograph.mechanism.setting.HomeTabConfig.PageConfigUtil.toJson
 import player.phonograph.model.pages.Pages
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.ui.modules.main.pages.AbsPage
-import player.phonograph.ui.modules.main.pages.AlbumPage
-import player.phonograph.ui.modules.main.pages.ArtistPage
-import player.phonograph.ui.modules.main.pages.EmptyPage
-import player.phonograph.ui.modules.main.pages.FilesPage
-import player.phonograph.ui.modules.main.pages.FlattenFolderPage
-import player.phonograph.ui.modules.main.pages.GenrePage
-import player.phonograph.ui.modules.main.pages.PlaylistPage
-import player.phonograph.ui.modules.main.pages.SongPage
 import player.phonograph.util.reportError
 import android.util.Log
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -124,7 +114,7 @@ object HomeTabConfig {
             val array = (json[KEY] as? JsonArray)
                 ?: throw IllegalStateException("KEY(\"PageCfg\") doesn't exist")
 
-            if (array.size <= 0) throw IllegalStateException("No Value")
+            if (array.isEmpty()) throw IllegalStateException("No Value")
 
             val data = array.mapNotNull { (it as? JsonPrimitive)?.content }.filter { it.isNotBlank() }
 
@@ -150,21 +140,6 @@ class PageConfig private constructor(pages: List<String>) : Iterable<String> {
      * get page identifier by [index]
      */
     operator fun get(index: Int): String = _tabs[index]
-
-    /**
-     * create instance of AbsPage by [index]
-     */
-    fun initiate(index: Int): AbsPage =
-        when (get(index)) {
-            Pages.SONG     -> SongPage()
-            Pages.ALBUM    -> AlbumPage()
-            Pages.ARTIST   -> ArtistPage()
-            Pages.PLAYLIST -> PlaylistPage()
-            Pages.GENRE    -> GenrePage()
-            Pages.FILES    -> FilesPage()
-            Pages.FOLDER   -> FlattenFolderPage()
-            else           -> EmptyPage()
-        }
 
     companion object {
 

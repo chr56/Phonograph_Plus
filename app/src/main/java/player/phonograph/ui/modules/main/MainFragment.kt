@@ -18,6 +18,14 @@ import player.phonograph.model.pages.Pages
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.main.pages.AbsPage
+import player.phonograph.ui.modules.main.pages.AlbumPage
+import player.phonograph.ui.modules.main.pages.ArtistPage
+import player.phonograph.ui.modules.main.pages.EmptyPage
+import player.phonograph.ui.modules.main.pages.FilesPage
+import player.phonograph.ui.modules.main.pages.FlattenFolderPage
+import player.phonograph.ui.modules.main.pages.GenrePage
+import player.phonograph.ui.modules.main.pages.PlaylistPage
+import player.phonograph.ui.modules.main.pages.SongPage
 import player.phonograph.ui.modules.popup.ListOptionsPopup
 import player.phonograph.ui.modules.search.SearchActivity
 import player.phonograph.util.debug
@@ -279,8 +287,21 @@ class MainFragment : Fragment() {
         override fun getItemCount(): Int = pageConfig.size
 
         override fun createFragment(position: Int): Fragment =
-            pageConfig.initiate(position).also { fragment -> current[position] = WeakReference(fragment) } // registry
+            createPage(pageConfig[position]).also { fragment -> current[position] = WeakReference(fragment) } // registry
 
         fun fetch(index: Int): AbsPage? = current[index]?.get()
+
+        private fun createPage(type: String): AbsPage {
+            return when (type) {
+                Pages.SONG     -> SongPage()
+                Pages.ALBUM    -> AlbumPage()
+                Pages.ARTIST   -> ArtistPage()
+                Pages.PLAYLIST -> PlaylistPage()
+                Pages.GENRE    -> GenrePage()
+                Pages.FILES    -> FilesPage()
+                Pages.FOLDER   -> FlattenFolderPage()
+                else           -> EmptyPage()
+            }
+        }
     }
 }
