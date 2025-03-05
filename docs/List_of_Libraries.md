@@ -1,9 +1,9 @@
 ## List of Libraries and Gradle Plugins in Use
 
-_Last Update at 2025.02.16_
+_Last Update at 2025.03.05_
 
-- androidx.activity:activity-compose:1.10.0
-- androidx.activity:activity-ktx:1.10.0
+- androidx.activity:activity-compose:1.10.1
+- androidx.activity:activity-ktx:1.10.1
 - androidx.annotation:annotation:1.9.1
 - androidx.appcompat:appcompat:1.7.0
 - androidx.cardview:cardview:1.0.0
@@ -13,12 +13,12 @@ _Last Update at 2025.02.16_
 - androidx.compose.runtime:runtime:1.7.8
 - androidx.compose.ui:ui:1.7.8
 - androidx.compose.ui:ui-tooling:1.7.8
-- androidx.constraintlayout:constraintlayout:2.2.0
+- androidx.constraintlayout:constraintlayout:2.2.1
 - androidx.core:core-ktx:1.15.0
-- androidx.datastore:datastore:1.1.2
-- androidx.datastore:datastore-core:1.1.2
-- androidx.datastore:datastore-preferences:1.1.2
-- androidx.datastore:datastore-preferences-core:1.1.2
+- androidx.datastore:datastore:1.1.3
+- androidx.datastore:datastore-core:1.1.3
+- androidx.datastore:datastore-preferences:1.1.3
+- androidx.datastore:datastore-preferences-core:1.1.3
 - androidx.fragment:fragment-ktx:1.8.6
 - androidx.lifecycle:lifecycle-runtime-ktx:2.8.7
 - androidx.media:media:1.7.0
@@ -37,9 +37,9 @@ _Last Update at 2025.02.16_
 - com.github.chr56:AndroidSlidingUpPanel:1.0
 - com.github.chr56:SeekArc:1.0
 - com.github.chr56:jaudiotagger:0.0.3
-- com.github.chr56.ThemeUtils:color-util:0.2.0
-- com.github.chr56.ThemeUtils:materials-util:0.2.0
-- com.github.chr56.ThemeUtils:tint-util:0.2.0
+- com.github.chr56.ThemeUtils:color-util:0.3.2
+- com.github.chr56.ThemeUtils:materials-util:0.3.2
+- com.github.chr56.ThemeUtils:tint-util:0.3.2
 - com.github.xiaowine:Lyric-Getter-Api:6.0.0
 - com.google.android.material:material:1.12.0
 - com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:1.0.0
