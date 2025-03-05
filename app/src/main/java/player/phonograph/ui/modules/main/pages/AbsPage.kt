@@ -6,12 +6,11 @@ package player.phonograph.ui.modules.main.pages
 
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.ui.modules.main.MainFragment
-import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
+import androidx.fragment.app.Fragment
 
-// todo: remove AbsMusicServiceFragment
-abstract class AbsPage : AbsMusicServiceFragment() {
+abstract class AbsPage : Fragment() {
 
     protected val mainFragment: MainFragment
         get() = (parentFragment as? MainFragment)
