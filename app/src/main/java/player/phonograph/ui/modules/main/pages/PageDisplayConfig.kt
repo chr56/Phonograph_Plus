@@ -251,3 +251,47 @@ class GenrePageDisplayConfig(context: Context) : PageDisplayConfig(context) {
     override val allowColoredFooter: Boolean
         get() = false
 }
+
+class FolderPageDisplayConfig(context: Context) : PageDisplayConfig(context) {
+    override val availableSortRefs: Array<SortRef> get() = arrayOf(SortRef.DISPLAY_NAME) //todo: support SortRef.ADDED_DATE, SortRef.MODIFIED_DATE, SortRef.SIZE)
+
+    override val availableLayouts: Array<ItemLayoutStyle>
+        get() = arrayOf(
+            ItemLayoutStyle.LIST,
+            ItemLayoutStyle.LIST_EXTENDED,
+            ItemLayoutStyle.LIST_3L,
+            ItemLayoutStyle.LIST_3L_EXTENDED,
+        )
+    override var layout: ItemLayoutStyle
+        get() =
+            if (isLandscape) {
+                setting.Composites[Keys.folderItemLayoutLand].data
+            } else {
+                setting.Composites[Keys.folderItemLayout].data
+            }
+        set(value) {
+            if (isLandscape) {
+                setting.Composites[Keys.folderItemLayoutLand].data = value
+            } else {
+                setting.Composites[Keys.folderItemLayout].data = value
+            }
+        }
+
+    override val maxGridSize: Int get() = if (isLandscape) 4 else 2
+    override var gridSize: Int
+        get() = if (isLandscape) setting[Keys.folderGridSizeLand].data else setting[Keys.folderGridSize].data
+        set(value) {
+            if (value <= 0) return
+            if (isLandscape) setting[Keys.folderGridSizeLand].data = value
+            else setting[Keys.folderGridSize].data = value
+        }
+
+    override var sortMode: SortMode
+        get() = setting.Composites[Keys.collectionSortMode].data
+        set(value) {
+            setting.Composites[Keys.collectionSortMode].data = value
+        }
+    override var colorFooter: Boolean = false
+    override val allowColoredFooter: Boolean get() = false
+
+}
