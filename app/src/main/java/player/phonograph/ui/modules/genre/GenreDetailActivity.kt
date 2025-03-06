@@ -14,9 +14,12 @@ import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Genre
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.Song
+import player.phonograph.model.sort.SortMode
+import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.loader.Songs
-import player.phonograph.ui.adapter.ConstDisplayConfig
-import player.phonograph.ui.modules.main.pages.adapter.SongDisplayAdapter
+import player.phonograph.ui.adapter.DisplayPresenter
+import player.phonograph.ui.adapter.GenericDisplayAdapter
+import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.accentColor
@@ -46,7 +49,7 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
     private val binding: ActivityGenreDetailBinding get() = _viewBinding!!
 
     private lateinit var genre: Genre
-    private lateinit var adapter: SongDisplayAdapter
+    private lateinit var adapter: GenericDisplayAdapter<Song>
 
     override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
     override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
@@ -92,11 +95,7 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
     }
 
     private fun setUpRecyclerView() {
-        adapter =
-            SongDisplayAdapter(
-                this,
-                ConstDisplayConfig(layoutStyle = ItemLayoutStyle.LIST, usePalette = false, showSectionName = false)
-            )
+        adapter = GenericDisplayAdapter(this, GenreSongDisplayPresenter)
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@GenreDetailActivity)
             adapter = this@GenreDetailActivity.adapter
@@ -152,5 +151,15 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
             }
 
         private fun parseIntent(intent: Intent) = intent.extras?.parcelable<Genre>(EXTRA_GENRE)
+    }
+
+    object GenreSongDisplayPresenter : SongBasicDisplayPresenter(SortMode(SortRef.ID)) {
+
+        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
+
+        override val usePalette: Boolean get() = false
+
+        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
+
     }
 }
