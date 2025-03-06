@@ -4,12 +4,8 @@
 
 package player.phonograph.coil.retriever
 
-import player.phonograph.model.IMAGE_SOURCE_EXTERNAL_FILE
-import player.phonograph.model.IMAGE_SOURCE_J_AUDIO_TAGGER
-import player.phonograph.model.IMAGE_SOURCE_MEDIA_METADATA_RETRIEVER
-import player.phonograph.model.IMAGE_SOURCE_MEDIA_STORE
-import player.phonograph.model.ImageSource
 import player.phonograph.mechanism.setting.CoilImageConfig
+import player.phonograph.model.coil.ImageSource
 
 internal val retrieverFromConfig: List<ImageRetriever>
     get() {
@@ -18,9 +14,9 @@ internal val retrieverFromConfig: List<ImageRetriever>
     }
 
 internal fun ImageSource.retriever(): ImageRetriever = when (key) {
-    IMAGE_SOURCE_MEDIA_STORE              -> MediaStoreRetriever()
-    IMAGE_SOURCE_MEDIA_METADATA_RETRIEVER -> MediaMetadataRetriever()
-    IMAGE_SOURCE_J_AUDIO_TAGGER           -> JAudioTaggerRetriever()
-    IMAGE_SOURCE_EXTERNAL_FILE            -> ExternalFileRetriever()
+    ImageSource.IMAGE_SOURCE_MEDIA_STORE              -> MediaStoreRetriever()
+    ImageSource.IMAGE_SOURCE_MEDIA_METADATA_RETRIEVER -> MediaMetadataRetriever()
+    ImageSource.IMAGE_SOURCE_J_AUDIO_TAGGER           -> JAudioTaggerRetriever()
+    ImageSource.IMAGE_SOURCE_EXTERNAL_FILE            -> ExternalFileRetriever()
     else                                  -> throw IllegalArgumentException("Unknown ImageSource: $key")
 }

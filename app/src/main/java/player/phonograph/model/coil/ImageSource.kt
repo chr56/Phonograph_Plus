@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.model
+package player.phonograph.model.coil
 
 import player.phonograph.R
 import android.content.Context
@@ -52,11 +52,10 @@ sealed interface ImageSource {
                 else                                  -> throw IllegalArgumentException("Unknown ImageSource: $key")
             }
         }
+        const val IMAGE_SOURCE_MEDIA_STORE = "MediaStore"
+        const val IMAGE_SOURCE_MEDIA_METADATA_RETRIEVER = "MediaMetadataRetriever"
+        const val IMAGE_SOURCE_J_AUDIO_TAGGER = "JAudioTagger"
+        const val IMAGE_SOURCE_EXTERNAL_FILE = "ExternalFile"
 
     }
 }
-
-const val IMAGE_SOURCE_MEDIA_STORE = "MediaStore"
-const val IMAGE_SOURCE_MEDIA_METADATA_RETRIEVER = "MediaMetadataRetriever"
-const val IMAGE_SOURCE_J_AUDIO_TAGGER = "JAudioTagger"
-const val IMAGE_SOURCE_EXTERNAL_FILE = "ExternalFile"

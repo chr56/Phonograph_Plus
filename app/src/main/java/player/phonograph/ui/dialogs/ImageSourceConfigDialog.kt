@@ -10,8 +10,8 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.R
 import player.phonograph.mechanism.setting.CoilImageConfig
-import player.phonograph.model.ImageSource
-import player.phonograph.model.config.ImageSourceConfig
+import player.phonograph.model.coil.ImageSource
+import player.phonograph.model.coil.ImageSourceConfig
 import player.phonograph.ui.adapter.SortableListAdapter
 import player.phonograph.util.theme.tintButtons
 import androidx.fragment.app.DialogFragment

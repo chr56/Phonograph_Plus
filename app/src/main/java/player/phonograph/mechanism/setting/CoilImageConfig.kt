@@ -6,7 +6,7 @@ package player.phonograph.mechanism.setting
 
 import player.phonograph.App
 import player.phonograph.coil.cache.CacheStore
-import player.phonograph.model.config.ImageSourceConfig
+import player.phonograph.model.coil.ImageSourceConfig
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import android.content.Context
