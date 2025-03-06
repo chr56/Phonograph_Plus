@@ -13,9 +13,9 @@ import player.phonograph.R
 import player.phonograph.mechanism.actions.actionPlay
 import player.phonograph.mechanism.scanner.FileScanner
 import player.phonograph.mechanism.scanner.MediaStoreScanner
-import player.phonograph.mechanism.setting.PageConfig
 import player.phonograph.model.DirectoryInfo
 import player.phonograph.model.pages.Pages
+import player.phonograph.model.pages.PagesConfig
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.ShuffleMode
@@ -61,7 +61,7 @@ fun setupDrawerMenu(
     menu: Menu,
     switchPageTo: (Int) -> Unit,
     closeDrawer: () -> Unit,
-    pageConfig: PageConfig?,
+    pagesConfig: PagesConfig?,
 ): Unit = with(activity) {
     menu.clear()
     attach(activity, menu) {
@@ -69,9 +69,9 @@ fun setupDrawerMenu(
         val textColorPrimary: Int = primaryTextColor(nightMode)
 
         // page chooser
-        if (pageConfig != null) {
+        if (pagesConfig != null) {
             val mainGroupId = 999999
-            for ((page, tab) in pageConfig.withIndex()) {
+            for ((page, tab) in pagesConfig.withIndex()) {
                 menuItem {
                     groupId = mainGroupId
                     icon = activity.getTintedDrawable(Pages.getTintedIconRes(tab), textColorPrimary)

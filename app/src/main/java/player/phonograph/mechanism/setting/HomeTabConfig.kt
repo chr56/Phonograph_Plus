@@ -6,7 +6,7 @@ package player.phonograph.mechanism.setting
 
 import player.phonograph.App
 import player.phonograph.mechanism.setting.HomeTabConfig.PageConfigUtil.toJson
-import player.phonograph.model.pages.Pages
+import player.phonograph.model.pages.PagesConfig
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.reportError
@@ -20,22 +20,22 @@ import kotlinx.serialization.json.JsonPrimitive
 object HomeTabConfig {
     private val parser = Json { ignoreUnknownKeys = true; isLenient = true }
 
-    private var cachedPageConfig: PageConfig? = null
+    private var cachedPagesConfig: PagesConfig? = null
     private var cachedRawPageConfig: String? = null
 
-    var homeTabConfig: PageConfig
+    var homeTabConfig: PagesConfig
         @Synchronized get() {
             val rawString = Setting(App.instance)[Keys.homeTabConfigJsonString].data
 
             // Fetch Cache
-            val cached: PageConfig? = cachedPageConfig
+            val cached: PagesConfig? = cachedPagesConfig
             if (rawString == cachedRawPageConfig && cached != null) {
                 return cached
             }
 
             // Then Parse
-            val config: PageConfig = parseHomeTabConfig(rawString)
-            cachedPageConfig = config
+            val config: PagesConfig = parseHomeTabConfig(rawString)
+            cachedPagesConfig = config
             cachedRawPageConfig = rawString
 
             return config
@@ -47,7 +47,7 @@ object HomeTabConfig {
                 } catch (e: Exception) {
                     Log.e("Preference", "Save home tab config failed, use default. \n${e.message}")
                     // return default
-                    PageConfig.DEFAULT_CONFIG.toJson()
+                    PagesConfig.Companion.DEFAULT_CONFIG.toJson()
                 }
             val str = parser.encodeToString(json)
             synchronized(this) {
@@ -55,11 +55,11 @@ object HomeTabConfig {
             }
         }
 
-    fun parseHomeTabConfig(raw: String): PageConfig {
-        val config: PageConfig? = PageConfigUtil.from(raw)
+    fun parseHomeTabConfig(raw: String): PagesConfig {
+        val config: PagesConfig? = PageConfigUtil.from(raw)
         return if (config == null) {
             resetHomeTabConfig()
-            PageConfig.DEFAULT_CONFIG
+            PagesConfig.Companion.DEFAULT_CONFIG
         } else {
             config
         }
@@ -71,17 +71,17 @@ object HomeTabConfig {
     fun append(page: String) {
         val list = homeTabConfig.tabs.toMutableList()
         list.add(page)
-        homeTabConfig = PageConfig.from(list)
+        homeTabConfig = PagesConfig(list)
     }
 
     fun resetHomeTabConfig() {
         Setting(App.instance)[Keys.homeTabConfigJsonString].data =
-            Json.encodeToString(PageConfig.DEFAULT_CONFIG.toJson())
+            Json.encodeToString(PagesConfig.Companion.DEFAULT_CONFIG.toJson())
     }
 
     object PageConfigUtil {
 
-        fun PageConfig.toJson(): JsonObject = JsonObject(
+        fun PagesConfig.toJson(): JsonObject = JsonObject(
             mapOf(KEY to JsonArray(tabs.map { JsonPrimitive(it) }))
         )
 
@@ -89,10 +89,10 @@ object HomeTabConfig {
          * Parse from raw json
          * @return null if failed
          */
-        fun from(raw: String): PageConfig? {
+        fun from(raw: String): PagesConfig? {
             if (raw.isEmpty()) return null
 
-            val config: PageConfig? = try {
+            val config: PagesConfig? = try {
                 val json: JsonElement = parser.parseToJsonElement(raw)
                 fromJson(json as JsonObject)
             } catch (e: Exception) {
@@ -110,7 +110,7 @@ object HomeTabConfig {
          * Parse from [JsonObject]
          */
         @Throws(IllegalStateException::class)
-        fun fromJson(json: JsonObject): PageConfig {
+        fun fromJson(json: JsonObject): PagesConfig {
             val array = (json[KEY] as? JsonArray)
                 ?: throw IllegalStateException("KEY(\"PageCfg\") doesn't exist")
 
@@ -118,52 +118,10 @@ object HomeTabConfig {
 
             val data = array.mapNotNull { (it as? JsonPrimitive)?.content }.filter { it.isNotBlank() }
 
-            return PageConfig.from(data)
+            return PagesConfig(data)
         }
 
         private const val KEY = "PageCfg"
 
     }
-}
-
-class PageConfig private constructor(pages: List<String>) : Iterable<String> {
-
-    private val _tabs: MutableList<String> = pages.toMutableList()
-    val tabs: List<String> get() = _tabs.toList()
-
-    /**
-     * total count of tabs
-     */
-    val size: Int get() = _tabs.size
-
-    /**
-     * get page identifier by [index]
-     */
-    operator fun get(index: Int): String = _tabs[index]
-
-    companion object {
-
-        fun from(tabs: List<String>) = PageConfig(tabs)
-
-        val DEFAULT_CONFIG = PageConfig(
-            mutableListOf(
-                Pages.SONG,
-                Pages.FOLDER,
-                Pages.FILES,
-                Pages.PLAYLIST,
-                Pages.ALBUM,
-                Pages.ARTIST,
-                Pages.GENRE,
-            )
-        )
-    }
-
-    override fun iterator(): Iterator<String> =
-        object : Iterator<String> {
-            var current = 0
-            override fun hasNext(): Boolean = current < _tabs.size
-            override fun next(): String = _tabs[current++]
-        }
-
-    override fun toString(): String = _tabs.fold("PagerConfig:") { acc, i -> "$acc, $i" }
 }

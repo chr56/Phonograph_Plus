@@ -8,8 +8,8 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.R
 import player.phonograph.mechanism.setting.HomeTabConfig
-import player.phonograph.mechanism.setting.PageConfig
 import player.phonograph.model.pages.Pages
+import player.phonograph.model.pages.PagesConfig
 import player.phonograph.ui.adapter.SortableListAdapter
 import player.phonograph.util.theme.tintButtons
 import player.phonograph.util.warning
@@ -33,7 +33,7 @@ class HomeTabConfigDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = requireActivity().layoutInflater.inflate(R.layout.recycler_view_wrapped, null)
 
-        val config: PageConfig = HomeTabConfig.homeTabConfig
+        val config: PagesConfig = HomeTabConfig.homeTabConfig
 
         adapter = PageTabConfigAdapter(config).also { it.init() }
         recyclerView = view.findViewById(R.id.recycler_view)
@@ -63,7 +63,7 @@ class HomeTabConfigDialog : DialogFragment() {
             }
             .negativeButton(android.R.string.cancel) { dismiss(); Log.i(TAG, adapter.getState()) }
             .neutralButton(R.string.reset_action) {
-                HomeTabConfig.homeTabConfig = PageConfig.DEFAULT_CONFIG
+                HomeTabConfig.homeTabConfig = PagesConfig.DEFAULT_CONFIG
                 Log.v(TAG, adapter.getState())
                 dismiss()
             }
@@ -77,13 +77,13 @@ class HomeTabConfigDialog : DialogFragment() {
         fun newInstance(): HomeTabConfigDialog = HomeTabConfigDialog()
     }
 
-    private class PageTabConfigAdapter(private val pageConfig: PageConfig) : SortableListAdapter<String>() {
+    private class PageTabConfigAdapter(private val pagesConfig: PagesConfig) : SortableListAdapter<String>() {
 
 
         override fun fetchDataset(): SortableList<String> {
-            val all = PageConfig.DEFAULT_CONFIG.toMutableSet()
-            all.removeAll(pageConfig.tabs.toSet()).report("Strange PageConfig: $pageConfig")
-            val visible = pageConfig.map { SortableList.Item(it, true) }
+            val all = PagesConfig.DEFAULT_CONFIG.toMutableSet()
+            all.removeAll(pagesConfig.tabs.toSet()).report("Strange PageConfig: $pagesConfig")
+            val visible = pagesConfig.map { SortableList.Item(it, true) }
             val invisible = all.toList().map { SortableList.Item(it, false) }
             return SortableList(visible + invisible)
         }
@@ -101,8 +101,8 @@ class HomeTabConfigDialog : DialogFragment() {
             contentView.text = Pages.getDisplayName(dataset[holder.bindingAdapterPosition].content, contentView.context)
         }
 
-        val currentConfig: PageConfig?
-            get() = PageConfig.from(dataset.checkedItems.map { it.content }.ifEmpty { return null })
+        val currentConfig: PagesConfig?
+            get() = PagesConfig(dataset.checkedItems.map { it.content }.ifEmpty { return null })
 
         companion object {
             private const val TAG = "PageTabConfigAdapter"

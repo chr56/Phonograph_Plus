@@ -13,8 +13,8 @@ import lib.phonograph.misc.menuProvider
 import player.phonograph.R
 import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.mechanism.setting.HomeTabConfig
-import player.phonograph.mechanism.setting.PageConfig
 import player.phonograph.model.pages.Pages
+import player.phonograph.model.pages.PagesConfig
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.main.pages.AbsPage
@@ -111,7 +111,7 @@ class MainFragment : Fragment() {
                 val homeTabConfigFlow = store[Keys.homeTabConfigJsonString].flow.distinctUntilChanged()
 
                 homeTabConfigFlow.collect { raw ->
-                    val pageConfig: PageConfig = HomeTabConfig.parseHomeTabConfig(raw)
+                    val pagesConfig: PagesConfig = HomeTabConfig.parseHomeTabConfig(raw)
 
                     val rememberLastTab = lifecycleScope.async(Dispatchers.IO) {
                         Setting(requireContext())[Keys.rememberLastTab].flowData()
@@ -121,7 +121,7 @@ class MainFragment : Fragment() {
                     }.await()
 
                     withStarted {
-                        loadPages(pageConfig, if (rememberLastTab) lastPage else -1)
+                        loadPages(pagesConfig, if (rememberLastTab) lastPage else -1)
                     }
                 }
             }
@@ -181,30 +181,30 @@ class MainFragment : Fragment() {
     //region Pages
     private var pagerAdapter: HomePagerAdapter? = null
 
-    private fun loadPages(pageConfig: PageConfig, preferredPosition: Int) {
+    private fun loadPages(pagesConfig: PagesConfig, preferredPosition: Int) {
 
         val oldAdapter: HomePagerAdapter? = pagerAdapter
 
         val targetPosition = if (oldAdapter != null) {
             // from old adapter
             val oldPosition = binding.pager.currentItem.coerceAtLeast(0)
-            val currentPage = oldAdapter.pageConfig[oldPosition]
-            val newPosition = pageConfig.tabs.indexOf(currentPage)
-            newPosition.coerceIn(0, pageConfig.size - 1)
+            val currentPage = oldAdapter.pagesConfig[oldPosition]
+            val newPosition = pagesConfig.tabs.indexOf(currentPage)
+            newPosition.coerceIn(0, pagesConfig.size - 1)
         } else if (preferredPosition > -1) {
             // from Argument
-            preferredPosition.coerceIn(0, pageConfig.size - 1)
+            preferredPosition.coerceIn(0, pagesConfig.size - 1)
         } else {
             // first page by default
             0
         }
 
-        setupViewPager(pageConfig)
+        setupViewPager(pagesConfig)
         binding.pager.setCurrentItem(targetPosition, false)
         drawerViewModel.switchPageTo(targetPosition)
     }
 
-    private fun setupViewPager(homeTabConfig: PageConfig) {
+    private fun setupViewPager(homeTabConfig: PagesConfig) {
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -280,16 +280,14 @@ class MainFragment : Fragment() {
         fun newInstance(): MainFragment = MainFragment()
     }
 
-    private class HomePagerAdapter(fragment: Fragment, var pageConfig: PageConfig) : FragmentStateAdapter(fragment) {
+    private class HomePagerAdapter(fragment: Fragment, var pagesConfig: PagesConfig) : FragmentStateAdapter(fragment) {
 
-        private val current: MutableMap<Int, WeakReference<AbsPage>> = ArrayMap(pageConfig.size)
+        private val current: MutableMap<Int, WeakReference<AbsPage>> = ArrayMap(pagesConfig.size)
 
-        override fun getItemCount(): Int = pageConfig.size
+        override fun getItemCount(): Int = pagesConfig.size
 
         override fun createFragment(position: Int): Fragment =
-            createPage(pageConfig[position]).also { fragment -> current[position] = WeakReference(fragment) } // registry
-
-        fun fetch(index: Int): AbsPage? = current[index]?.get()
+            createPage(pagesConfig[position]).also { fragment -> current[position] = WeakReference(fragment) } // registry
 
         private fun createPage(type: String): AbsPage {
             return when (type) {

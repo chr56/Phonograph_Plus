@@ -17,9 +17,9 @@ import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.mechanism.Update
 import player.phonograph.mechanism.setting.HomeTabConfig
-import player.phonograph.mechanism.setting.PageConfig
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
+import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.version.ReleaseChannel
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.notification.UpgradeNotification
@@ -112,14 +112,14 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 lifecycleScope.launch(Dispatchers.Main) {
                     lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                         setting[Keys.homeTabConfigJsonString].flow.distinctUntilChanged().collect { raw ->
-                            val pageConfig: PageConfig = HomeTabConfig.parseHomeTabConfig(raw)
+                            val pagesConfig: PagesConfig = HomeTabConfig.parseHomeTabConfig(raw)
                             withStarted {
                                 setupDrawerMenu(
                                     activity = this@MainActivity,
                                     menu = drawerBinding.navigationView.menu,
                                     switchPageTo = { drawerViewModel.switchPageTo(it) },
                                     closeDrawer = { drawerBinding.drawerLayout.closeDrawers() },
-                                    pageConfig = pageConfig
+                                    pagesConfig = pagesConfig
                                 )
                             }
                         }
@@ -170,7 +170,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
             menu = drawerBinding.navigationView.menu,
             switchPageTo = { drawerViewModel.switchPageTo(it) },
             closeDrawer = { drawerBinding.drawerLayout.closeDrawers() },
-            pageConfig = null
+            pagesConfig = null
         )
 
         // color
