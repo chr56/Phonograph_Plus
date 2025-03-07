@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.adapter
 
+import coil.request.Disposable
 import coil.target.Target
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.App
@@ -174,6 +175,7 @@ abstract class DisplayAdapter<I : Displayable>(
             }
         }
 
+        private var disposable: Disposable? = null
         protected open fun fetchImage(
             item: I,
             imageView: ImageView,
@@ -186,7 +188,8 @@ abstract class DisplayAdapter<I : Displayable>(
                 imageView.setImageBitmap(cached.bitmap)
                 if (usePalette) setPaletteColors(cached.paletteColor)
             } else {
-                loadImage(context)
+                disposable?.dispose()
+                disposable = loadImage(context)
                     .from(item)
                     .withPalette()
                     .default(defaultIcon)
