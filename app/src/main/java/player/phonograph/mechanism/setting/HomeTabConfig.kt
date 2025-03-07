@@ -5,17 +5,16 @@
 package player.phonograph.mechanism.setting
 
 import player.phonograph.App
-import player.phonograph.mechanism.setting.HomeTabConfig.PageConfigUtil.toJson
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.reportError
-import android.util.Log
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.jsonObject
 
 object HomeTabConfig {
     private val parser = Json { ignoreUnknownKeys = true; isLenient = true }
@@ -41,87 +40,54 @@ object HomeTabConfig {
             return config
         }
         set(value) {
-            val json =
-                try {
-                    value.toJson()
-                } catch (e: Exception) {
-                    Log.e("Preference", "Save home tab config failed, use default. \n${e.message}")
-                    // return default
-                    PagesConfig.Companion.DEFAULT_CONFIG.toJson()
-                }
-            val str = parser.encodeToString(json)
+            val json = try {
+                value.toJson()
+            } catch (e: Exception) {
+                reportError(e, "Preference", "Failed to save home tab config, using default config")
+                PagesConfig.DEFAULT_CONFIG.toJson()
+            }
+
+            val str = Json.encodeToString(json)
             synchronized(this) {
                 Setting(App.instance)[Keys.homeTabConfigJsonString].data = str
             }
         }
 
-    fun parseHomeTabConfig(raw: String): PagesConfig {
-        val config: PagesConfig? = PageConfigUtil.from(raw)
-        return if (config == null) {
+    fun parseHomeTabConfig(raw: String): PagesConfig =
+        fromJson(raw) ?: run {
             resetHomeTabConfig()
-            PagesConfig.Companion.DEFAULT_CONFIG
-        } else {
-            config
         }
-    }
 
     /**
-     * add a new [page] at the end of setting
+     * @return default config
      */
-    fun append(page: String) {
-        val list = homeTabConfig.tabs.toMutableList()
-        list.add(page)
-        homeTabConfig = PagesConfig(list)
-    }
+    fun resetHomeTabConfig(): PagesConfig = PagesConfig.DEFAULT_CONFIG.also { homeTabConfig = it }
 
-    fun resetHomeTabConfig() {
-        Setting(App.instance)[Keys.homeTabConfigJsonString].data =
-            Json.encodeToString(PagesConfig.Companion.DEFAULT_CONFIG.toJson())
-    }
+    private fun fromJson(raw: String): PagesConfig? {
+        if (raw.isEmpty()) return null
 
-    object PageConfigUtil {
-
-        fun PagesConfig.toJson(): JsonObject = JsonObject(
-            mapOf(KEY to JsonArray(tabs.map { JsonPrimitive(it) }))
-        )
-
-        /**
-         * Parse from raw json
-         * @return null if failed
-         */
-        fun from(raw: String): PagesConfig? {
-            if (raw.isEmpty()) return null
-
-            val config: PagesConfig? = try {
-                val json: JsonElement = parser.parseToJsonElement(raw)
-                fromJson(json as JsonObject)
-            } catch (e: Exception) {
-                reportError(e, "Preference", "Fail to parse home tab config string $raw")
-                null
-            }
-
-            // valid
-            // TODO
-
-            return config
+        return try {
+            val jsonElement: JsonElement = parser.parseToJsonElement(raw)
+            fromJsonElement(jsonElement)
+        } catch (e: Exception) {
+            reportError(e, "Preference", "Failed to parse home tab config string: $raw")
+            null
         }
-
-        /**
-         * Parse from [JsonObject]
-         */
-        @Throws(IllegalStateException::class)
-        fun fromJson(json: JsonObject): PagesConfig {
-            val array = (json[KEY] as? JsonArray)
-                ?: throw IllegalStateException("KEY(\"PageCfg\") doesn't exist")
-
-            if (array.isEmpty()) throw IllegalStateException("No Value")
-
-            val data = array.mapNotNull { (it as? JsonPrimitive)?.content }.filter { it.isNotBlank() }
-
-            return PagesConfig(data)
-        }
-
-        private const val KEY = "PageCfg"
-
     }
+
+    private fun fromJsonElement(json: JsonElement): PagesConfig? {
+        val array = json.jsonObject[KEY] as? JsonArray ?: return null
+
+        if (array.isEmpty()) return null
+
+        val data = array.mapNotNull { (it as? JsonPrimitive)?.content?.takeIf { it.isNotBlank() } }
+
+        return PagesConfig(data)
+    }
+
+
+    private fun PagesConfig.toJson(): JsonObject =
+        JsonObject(mapOf(KEY to JsonArray(tabs.map { JsonPrimitive(it) })))
+
+    private const val KEY = "PageCfg"
 }
