@@ -10,13 +10,18 @@ import com.github.chr56.android.menu_dsl.submenu
 import player.phonograph.R
 import player.phonograph.mechanism.PathFilter
 import player.phonograph.mechanism.scanner.MediaStoreScanner
+import player.phonograph.model.Album
+import player.phonograph.model.Artist
+import player.phonograph.model.Genre
 import player.phonograph.model.Song
+import player.phonograph.model.SongCollection
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.tag.TagBrowserActivity
@@ -118,6 +123,92 @@ object ActionMenuProviders {
                 }
             }
         }
+    }
+
+    sealed class CompositeActionMenuProvider<I> : ActionMenuProvider<I> {
+        abstract suspend fun readSongs(context: Context, item: I): List<Song>
+        override fun inflateMenu(menu: Menu, context: Context, item: I) = context.run {
+            attach(menu) {
+                menuItem {
+                    title = getString(R.string.action_play)
+                    onClick {
+                        lifecycleScopeOrNewOne().launch {
+                            val songs = readSongs(context, item)
+                            songs.actionPlay(ShuffleMode.NONE, 0)
+                        }
+                        true
+                    }
+                }
+                menuItem {
+                    title = getString(R.string.action_play_next)
+                    onClick {
+                        lifecycleScopeOrNewOne().launch {
+                            val songs = readSongs(context, item)
+                            songs.actionPlayNext()
+                        }
+                        true
+                    }
+                }
+                menuItem {
+                    title = getString(R.string.action_add_to_playing_queue)
+                    onClick {
+                        lifecycleScopeOrNewOne().launch {
+                            val songs = readSongs(context, item)
+                            songs.actionEnqueue()
+                        }
+                        true
+                    }
+                }
+                menuItem {
+                    title = getString(R.string.add_playlist_title)
+                    onClick {
+                        fragmentActivity(context) {
+                            lifecycleScopeOrNewOne().launch {
+                                val songs = readSongs(context, item)
+                                songs.actionAddToPlaylist(it)
+                            }
+                            true
+                        }
+                    }
+                }
+                submenu(context.getString(R.string.more_actions)) {
+                    menuItem(title = getString(R.string.action_delete_from_device)) {
+                        onClick {
+                            fragmentActivity(context) {
+                                lifecycleScopeOrNewOne().launch {
+                                    val songs = readSongs(context, item)
+                                    songs.actionDelete(it)
+                                }
+                                true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    object AlbumActionMenuProvider : CompositeActionMenuProvider<Album>() {
+        override suspend fun readSongs(context: Context, album: Album): List<Song> {
+            return Songs.album(context, album.id)
+        }
+    }
+
+
+    object ArtistActionMenuProvider : CompositeActionMenuProvider<Artist>() {
+        override suspend fun readSongs(context: Context, artist: Artist): List<Song> {
+            return Songs.artist(context, artist.id)
+        }
+    }
+
+    object GenreActionMenuProvider : CompositeActionMenuProvider<Genre>() {
+        override suspend fun readSongs(context: Context, genre: Genre): List<Song> {
+            return Songs.genres(context, genre.id)
+        }
+    }
+
+    object SongCollectionActionMenuProvider : CompositeActionMenuProvider<SongCollection>() {
+        override suspend fun readSongs(context: Context, collection: SongCollection): List<Song> = collection.songs
     }
 
     object PlaylistActionMenuProvider : ActionMenuProvider<Playlist> {
