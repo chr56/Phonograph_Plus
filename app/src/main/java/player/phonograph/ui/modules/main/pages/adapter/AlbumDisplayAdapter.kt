@@ -5,6 +5,7 @@
 package player.phonograph.ui.modules.main.pages.adapter
 
 import player.phonograph.R
+import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.model.Album
 import player.phonograph.model.getYearString
@@ -28,11 +29,11 @@ open class AlbumDisplayAdapter(
         val sortMode = Setting(activity).Composites[Keys.albumSortMode].data
         val sectionName: String =
             when (sortMode.sortRef) {
-                SortRef.ALBUM_NAME -> makeSectionName(album.title)
+                SortRef.ALBUM_NAME  -> makeSectionName(album.title)
                 SortRef.ARTIST_NAME -> makeSectionName(album.artistName)
-                SortRef.YEAR -> getYearString(album.year)
-                SortRef.SONG_COUNT -> album.songCount.toString()
-                else -> ""
+                SortRef.YEAR        -> getYearString(album.year)
+                SortRef.SONG_COUNT  -> album.songCount.toString()
+                else                -> ""
             }
         return sectionName
     }
@@ -48,7 +49,9 @@ open class AlbumDisplayAdapter(
 
         override fun getRelativeOrdinalText(item: Album): String = item.songCount.toString()
 
-        override val clickActionProvider: ClickActionProviders.ClickActionProvider<Album>
-            get() = ClickActionProviders.AlbumClickActionProvider()
+        override val clickActionProvider: ClickActionProviders.ClickActionProvider<Album> =
+            ClickActionProviders.AlbumClickActionProvider()
+        override val menuProvider: ActionMenuProviders.ActionMenuProvider<Album> =
+            ActionMenuProviders.AlbumActionMenuProvider
     }
 }

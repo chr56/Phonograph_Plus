@@ -5,7 +5,7 @@
 package player.phonograph.ui.modules.main.pages.adapter
 
 import player.phonograph.R
-import player.phonograph.mechanism.actions.ClickActionProviders
+import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.SongCollection
 import player.phonograph.ui.adapter.ConstDisplayConfig
@@ -35,13 +35,13 @@ class SongCollectionDisplayAdapter(
         private val onClick: (bindingAdapterPosition: Int) -> Unit,
     ) : DisplayViewHolder<SongCollection>(itemView) {
 
-        override val clickActionProvider: ClickActionProviders.ClickActionProvider<SongCollection>
-            get() = super.clickActionProvider
-
         override fun onClick(position: Int, dataset: List<SongCollection>, imageView: ImageView?): Boolean {
             onClick(position)
             return true
         }
+
+        override val menuProvider: ActionMenuProviders.ActionMenuProvider<SongCollection> =
+            ActionMenuProviders.SongCollectionActionMenuProvider
 
         override fun getIcon(item: SongCollection): Drawable? {
             val context = itemView.context

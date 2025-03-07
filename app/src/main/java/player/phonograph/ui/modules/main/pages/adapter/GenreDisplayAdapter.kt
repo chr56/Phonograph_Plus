@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.modules.main.pages.adapter
 
+import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.model.Genre
 import player.phonograph.model.ItemLayoutStyle
@@ -34,8 +35,10 @@ class GenreDisplayAdapter(
         GenreViewHolder(inflatedView(parent, viewType))
 
     class GenreViewHolder(itemView: View) : DisplayViewHolder<Genre>(itemView) {
-        override val clickActionProvider: ClickActionProviders.ClickActionProvider<Genre>
-            get() = ClickActionProviders.GenreClickActionProvider()
+        override val clickActionProvider: ClickActionProviders.ClickActionProvider<Genre> =
+            ClickActionProviders.GenreClickActionProvider()
+        override val menuProvider: ActionMenuProviders.ActionMenuProvider<Genre>? =
+            ActionMenuProviders.GenreActionMenuProvider
     }
 
 }

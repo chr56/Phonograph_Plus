@@ -5,6 +5,7 @@
 package player.phonograph.ui.modules.main.pages.adapter
 
 import player.phonograph.R
+import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.model.Artist
 import player.phonograph.model.sort.SortRef
@@ -48,10 +49,13 @@ class ArtistDisplayAdapter(
 
         override fun getRelativeOrdinalText(item: Artist): String = item.songCount.toString()
 
-        override val defaultIcon: Drawable?
-            get() = AppCompatResources.getDrawable(itemView.context, R.drawable.default_artist_image)
+        override val defaultIcon: Drawable? =
+            AppCompatResources.getDrawable(itemView.context, R.drawable.default_artist_image)
 
-        override val clickActionProvider: ClickActionProviders.ClickActionProvider<Artist>
-            get() = ClickActionProviders.ArtistClickActionProvider()
+        override val clickActionProvider: ClickActionProviders.ClickActionProvider<Artist> =
+            ClickActionProviders.ArtistClickActionProvider()
+
+        override val menuProvider: ActionMenuProviders.ActionMenuProvider<Artist>? =
+            ActionMenuProviders.ArtistActionMenuProvider
     }
 }
