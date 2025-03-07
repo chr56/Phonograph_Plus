@@ -23,7 +23,6 @@ import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.version.ReleaseChannel
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.notification.UpgradeNotification
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSetting
@@ -73,8 +72,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
     private lateinit var mainBinding: ActivityMainBinding
     private lateinit var drawerBinding: LayoutDrawerBinding
-
-    private var navigationDrawerHeader: View? = null
 
     private val drawerViewModel: MainDrawerViewModel by viewModels()
 
@@ -130,8 +127,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                CurrentQueueState.currentSong.collect {
-                    updateNavigationDrawerHeader()
+                CurrentQueueState.currentSong.collect { song ->
+                    updateNavigationDrawerHeader(song)
                 }
             }
         }
@@ -198,27 +195,28 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         }
     }
 
-    private fun updateNavigationDrawerHeader() {
-        if (MusicPlayerRemote.playingQueue.isNotEmpty()) {
-            val song: Song? = MusicPlayerRemote.currentSong
+
+    private var navigationDrawerHeader: View? = null
+    private fun updateNavigationDrawerHeader(song: Song?) {
+        if (song != null) {
 
             if (navigationDrawerHeader == null) {
                 navigationDrawerHeader =
-                    drawerBinding.navigationView.inflateHeaderView(R.layout.navigation_drawer_header)
-                (navigationDrawerHeader as View).setOnClickListener {
-                    drawerBinding.drawerLayout.closeDrawers()
-                    if (panelState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-                        expandPanel()
+                    drawerBinding.navigationView.inflateHeaderView(R.layout.navigation_drawer_header).also { view ->
+                        view.setOnClickListener {
+                            drawerBinding.drawerLayout.closeDrawers()
+                            if (panelState == SlidingUpPanelLayout.PanelState.COLLAPSED) expandPanel()
+                        }
                     }
-                }
             }
 
-
             val navigationDrawerHeader = navigationDrawerHeader
-            if (navigationDrawerHeader != null && song != null) {
-                (navigationDrawerHeader.findViewById<View>(R.id.title) as TextView).text = song.title
-                (navigationDrawerHeader.findViewById<View>(R.id.text) as TextView).text = song.infoString()
+            if (navigationDrawerHeader != null) {
+                val title = navigationDrawerHeader.findViewById<TextView>(R.id.title)
+                val text = navigationDrawerHeader.findViewById<TextView>(R.id.text)
                 val image = navigationDrawerHeader.findViewById<ImageView>(R.id.image)
+                title.text = song.title
+                text.text = song.infoString()
                 loadImage(this)
                     .from(song)
                     .into(
@@ -233,11 +231,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 navigationDrawerHeader = null
             }
         }
-    }
-
-    override fun onServiceConnected() {
-        super.onServiceConnected()
-        updateNavigationDrawerHeader()
     }
 
     override fun navigateUp() {
