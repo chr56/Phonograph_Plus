@@ -4,6 +4,7 @@
 
 package player.phonograph.mechanism.backup
 
+import player.phonograph.BuildConfig
 import player.phonograph.util.file.createOrOverrideFile
 import player.phonograph.util.text.currentTimestamp
 import player.phonograph.util.transferToOutputStream
@@ -11,7 +12,6 @@ import player.phonograph.util.warning
 import player.phonograph.util.zip.ZipUtil.addToZipFile
 import player.phonograph.util.zip.ZipUtil.extractZipFile
 import android.content.Context
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.FileInputStream
@@ -73,7 +73,7 @@ object Backup {
             // generate manifest file
             val manifestFile = File(destination, ManifestFile.BACKUP_MANIFEST_FILENAME).createOrOverrideFile()
             manifestFile.outputStream().bufferedWriter().use {
-                val manifest = ManifestFile(timestamp, fileList)
+                val manifest = ManifestFile(timestamp, fileList, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
                 val raw = parser.encodeToString(manifest)
                 it.write(raw)
                 it.flush()
@@ -168,7 +168,7 @@ object Backup {
                     }
 
                 }
-                return ManifestFile(dir.lastModified(), map)
+                return ManifestFile(dir.lastModified(), map, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
             }
             warning(TAG, "Couldn't analysis the content of this backup")
             return null

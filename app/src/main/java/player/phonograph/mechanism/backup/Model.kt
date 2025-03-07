@@ -6,7 +6,6 @@ package player.phonograph.mechanism.backup
 
 import okio.Buffer
 import okio.BufferedSink
-import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.mechanism.SettingDataManager
 import player.phonograph.repo.database.DatabaseConstants
@@ -26,21 +25,18 @@ import java.io.InputStream
 
 @Keep
 @Serializable
-class ManifestFile constructor(
+class ManifestFile(
     @SerialName(KEY_BACKUP_TIME)
     val timestamp: Long,
     @SerialName(KEY_FILES)
     val files: Map<BackupItem, String>,
     @SerialName(KEY_PHONOGRAPH_VERSION)
-    val phonographVersion: String = BuildConfig.VERSION_NAME,
+    val phonographVersion: String,
     @SerialName(KEY_PHONOGRAPH_VERSION_CODE)
-    val phonographVersionCode: Int = BuildConfig.VERSION_CODE,
+    val phonographVersionCode: Int,
     @SerialName(KEY_VERSION)
     val version: Int = VERSION,
 ) {
-
-    constructor(timestamp: Long, files: Map<BackupItem, String>) :
-            this(timestamp, files, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, VERSION)
 
     companion object {
         const val BACKUP_MANIFEST_FILENAME = "MANIFEST.json"
