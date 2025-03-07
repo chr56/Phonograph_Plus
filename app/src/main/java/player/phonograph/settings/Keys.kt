@@ -276,6 +276,18 @@ object Keys {
     object artistItemLayoutLand :
             CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandArtistItemLayoutProvider)
 
+    object _folderItemLayout :
+            PrimitiveKey<Int>(intPK(FOLDER_ITEM_LAYOUT), { ItemLayoutStyle.LIST.ordinal })
+
+    object folderItemLayout :
+            CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.FolderItemLayoutProvider)
+
+    object _folderItemLayoutLand :
+            PrimitiveKey<Int>(intPK(FOLDER_ITEM_LAYOUT_LAND), { ItemLayoutStyle.LIST_3L.ordinal })
+
+    object folderItemLayoutLand :
+            CompositeKey<ItemLayoutStyle>(ItemLayoutProvider.LandFolderItemLayoutProvider)
+
     object songGridSize :
             PrimitiveKey<Int>(intPK(SONG_GRID_SIZE), { 1 })
 
@@ -305,6 +317,12 @@ object Keys {
 
     object playlistGridSizeLand :
             PrimitiveKey<Int>(intPK(PLAYLIST_GRID_SIZE_LAND), { 2 })
+
+    object folderGridSize :
+            PrimitiveKey<Int>(intPK(FOLDER_GRID_SIZE), { 1 })
+
+    object folderGridSizeLand :
+            PrimitiveKey<Int>(intPK(FOLDER_GRID_SIZE_LAND), { 2 })
 
     // SleepTimer
     object lastSleepTimerValue :

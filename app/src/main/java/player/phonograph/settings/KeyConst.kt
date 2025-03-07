@@ -96,6 +96,8 @@ const val ALBUM_ITEM_LAYOUT = "album_item_layout"
 const val ALBUM_ITEM_LAYOUT_LAND = "album_item_layout_land"
 const val ARTIST_ITEM_LAYOUT = "artist_item_layout"
 const val ARTIST_ITEM_LAYOUT_LAND = "artist_item_layout_land"
+const val FOLDER_ITEM_LAYOUT = "folder_item_layout"
+const val FOLDER_ITEM_LAYOUT_LAND = "folder_item_layout_land"
 
 const val ALBUM_GRID_SIZE = "album_grid_size"
 const val ALBUM_GRID_SIZE_LAND = "album_grid_size_land"
@@ -107,6 +109,8 @@ const val GENRE_GRID_SIZE = "genre_grid_size"
 const val GENRE_GRID_SIZE_LAND = "genre_grid_size_land"
 const val PLAYLIST_GRID_SIZE = "playlist_grid_size"
 const val PLAYLIST_GRID_SIZE_LAND = "playlist_grid_size_land"
+const val FOLDER_GRID_SIZE = "folder_grid_size"
+const val FOLDER_GRID_SIZE_LAND = "folder_grid_size_land"
 
 
 // SleepTimer

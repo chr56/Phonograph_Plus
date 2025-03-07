@@ -117,14 +117,22 @@ sealed class ItemLayoutProvider(backField: PrimitiveKey<Int>, default: () -> Ite
     override fun read(flow: Flow<Int>): Flow<ItemLayoutStyle> = flow.map { ItemLayoutStyle.from(it) }
     override fun save(data: ItemLayoutStyle): Int = data.ordinal
 
-    data object SongItemLayoutProvider : ItemLayoutProvider(Keys._songItemLayout, { ItemLayoutStyle.LIST_EXTENDED })
-    data object AlbumItemLayoutProvider : ItemLayoutProvider(Keys._albumItemLayout, { ItemLayoutStyle.LIST_3L })
-    data object ArtistItemLayoutProvider : ItemLayoutProvider(Keys._artistItemLayout, { ItemLayoutStyle.LIST })
-    data object LandSongItemLayoutProvider : ItemLayoutProvider(Keys._songItemLayoutLand, { ItemLayoutStyle.LIST })
-    data object LandAlbumItemLayoutProvider : ItemLayoutProvider(Keys._albumItemLayoutLand, { ItemLayoutStyle.LIST_3L })
-    data object LandArtistItemLayoutProvider : ItemLayoutProvider(
-        Keys._artistItemLayoutLand,
-        { ItemLayoutStyle.LIST_3L })
+    data object SongItemLayoutProvider :
+            ItemLayoutProvider(Keys._songItemLayout, { ItemLayoutStyle.LIST_EXTENDED })
+    data object AlbumItemLayoutProvider :
+            ItemLayoutProvider(Keys._albumItemLayout, { ItemLayoutStyle.LIST_3L })
+    data object ArtistItemLayoutProvider :
+            ItemLayoutProvider(Keys._artistItemLayout, { ItemLayoutStyle.LIST })
+    data object FolderItemLayoutProvider :
+            ItemLayoutProvider(Keys._folderItemLayout, { ItemLayoutStyle.LIST })
+    data object LandSongItemLayoutProvider :
+            ItemLayoutProvider(Keys._songItemLayoutLand, { ItemLayoutStyle.LIST })
+    data object LandAlbumItemLayoutProvider :
+            ItemLayoutProvider(Keys._albumItemLayoutLand, { ItemLayoutStyle.LIST_3L })
+    data object LandArtistItemLayoutProvider :
+            ItemLayoutProvider(Keys._artistItemLayoutLand, { ItemLayoutStyle.LIST_3L })
+    data object LandFolderItemLayoutProvider :
+            ItemLayoutProvider(Keys._folderItemLayoutLand, { ItemLayoutStyle.LIST })
 }
 
 object LastAddedCutOffDurationPreferenceProvider : CompositePreferenceProvider<Long> {
