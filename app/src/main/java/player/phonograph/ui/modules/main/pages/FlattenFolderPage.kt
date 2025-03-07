@@ -220,7 +220,11 @@ class FlattenFolderPage : AbsPage() {
             arrayOf(
                 SortRef.SONG_NAME,
                 SortRef.ALBUM_NAME,
-                SortRef.ARTIST_NAME, SortRef.YEAR, SortRef.ADDED_DATE,
+                SortRef.ARTIST_NAME,
+                SortRef.ALBUM_ARTIST_NAME,
+                SortRef.COMPOSER,
+                SortRef.YEAR,
+                SortRef.ADDED_DATE,
                 SortRef.MODIFIED_DATE,
                 SortRef.DURATION,
             )
