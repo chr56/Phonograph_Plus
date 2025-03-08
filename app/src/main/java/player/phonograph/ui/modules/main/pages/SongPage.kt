@@ -8,6 +8,7 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Songs
+import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.modules.main.pages.adapter.SongDisplayAdapter
 import androidx.fragment.app.viewModels
@@ -36,7 +37,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>>() {
         val displayConfig = displayConfig()
         return SongDisplayAdapter(
             mainActivity,
-            adapterDisplayConfig.copy(layoutStyle = displayConfig.layout, usePalette = displayConfig.colorFooter),
+            ConstDisplayConfig(layoutStyle = displayConfig.layout, usePalette = displayConfig.colorFooter),
         )
     }
 

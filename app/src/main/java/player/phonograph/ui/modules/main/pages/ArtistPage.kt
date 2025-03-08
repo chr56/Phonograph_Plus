@@ -10,6 +10,7 @@ import player.phonograph.model.Artist
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.mediastore.loaders.ArtistSongLoader.allSongs
+import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.modules.main.pages.adapter.ArtistDisplayAdapter
 import androidx.fragment.app.viewModels
@@ -38,7 +39,7 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>>() {
         val displayConfig = displayConfig()
         return ArtistDisplayAdapter(
             mainActivity,
-            adapterDisplayConfig.copy(layoutStyle = displayConfig.layout, usePalette = displayConfig.colorFooter),
+            ConstDisplayConfig(layoutStyle = displayConfig.layout, usePalette = displayConfig.colorFooter),
         )
     }
 

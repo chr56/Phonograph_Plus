@@ -9,6 +9,7 @@ import player.phonograph.model.Album
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.mediastore.loaders.AlbumSongLoader.allSongs
+import player.phonograph.ui.adapter.ConstDisplayConfig
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.modules.main.pages.adapter.AlbumDisplayAdapter
 import androidx.fragment.app.viewModels
@@ -37,7 +38,7 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>>() {
         val displayConfig = displayConfig()
         return AlbumDisplayAdapter(
             mainActivity,
-            adapterDisplayConfig.copy(layoutStyle = displayConfig.layout, usePalette = displayConfig.colorFooter),
+            ConstDisplayConfig(layoutStyle = displayConfig.layout, usePalette = displayConfig.colorFooter),
         )
     }
 

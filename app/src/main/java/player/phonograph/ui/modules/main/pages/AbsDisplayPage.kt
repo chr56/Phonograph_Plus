@@ -137,7 +137,6 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
     protected abstract fun initAdapter(): A
 
     protected abstract fun displayConfig(): PageDisplayConfig
-    protected var adapterDisplayConfig: ConstDisplayConfig = ConstDisplayConfig(ItemLayoutStyle.LIST)
 
     private fun initRecyclerView() {
 
@@ -239,6 +238,7 @@ sealed class AbsDisplayPage<IT : Displayable, A : DisplayAdapter<IT>> : AbsPage(
         val displayConfig = displayConfig()
         var update = false
 
+        var adapterDisplayConfig = adapter.config as ConstDisplayConfig
         // layout
         val layoutSelected = popup.itemLayout
         if (displayConfig.updateItemLayout(layoutSelected)) {
