@@ -1,35 +1,46 @@
-<androidx.percentlayout.widget.PercentFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
+    android:focusable="true"
     android:foreground="?rectSelectorStrong">
 
-    <!--suppress AndroidDomInspection -->
     <ImageView
         android:id="@+id/image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:scaleType="centerCrop"
         android:src="@drawable/default_album_art"
         android:transitionName="@string/transition_album_art"
-        app:layout_aspectRatio="178%"
-        app:layout_widthPercent="100%"
-        tools:ignore="ContentDescription,UnusedAttribute" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="1.66"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription,VisualLintBounds" />
 
     <View
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="112dp"
-        android:layout_gravity="bottom"
-        android:background="@drawable/shadow_up" />
+        android:layout_marginTop="48dp"
+        android:background="@drawable/shadow_up"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="56dp"
-        android:layout_gravity="bottom"
         android:layout_marginBottom="8dp"
         android:gravity="center_vertical"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/title"
@@ -41,7 +52,8 @@
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@color/primary_text_dark"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            tools:text="title" />
 
         <TextView
             android:id="@+id/text"
@@ -53,8 +65,9 @@
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/secondary_text_dark"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            tools:text="text" />
 
     </LinearLayout>
 
-</androidx.percentlayout.widget.PercentFrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
