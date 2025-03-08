@@ -1,6 +1,30 @@
 {
   "versions": [
     {
+      "channel": "stable",
+      "versionName": "1.9.3",
+      "versionCode": 1093,
+      "date": 1741410000,
+      "link": [
+        {
+          "name": "Github Release (Website)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.9.3"
+        },
+        {
+          "name": "Github Release Modern Variant APK (File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.9.3/PhonographPlus_1.9.3_ModernStableRelease.apk"
+        },
+        {
+          "name": "Github Release Legacy Variant APK(File Download Link)",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.9.3/PhonographPlus_1.9.3_LegacyStableRelease.apk"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 小部件上的文本不更新 (v1.9.2 起存在)</li><li>修复 更改项目显示设置特别是艺术家页面上时出现一些异常行为</li><li>修复 快速滚动时可能存在的图片加载错乱</li><li>改进 专辑和艺术家的图片加载速度</li><li>改进 支持服务退出后仍然可以修改当前播放队列</li><li>改进 音乐标签编辑的稳定性和可用性</li><li>新增 专辑、艺术家、流派和文件夹的弹出菜单</li><li>翻译 更新 波兰语 (cooky), 巴西葡萄牙语 (FalaTudo)</li><li>开发 清理代码, 更新依赖, 更新 AGP 至 8.8.2</li></ol>",
+        "en": "<ol><li>Fix: text on widgets not updated since v1.9.2</li><li>Fix: some abnormal behaviors when changing items display settings especially on Artist Page</li><li>Fix: potentially wrong images loaded when fast scrolling</li><li>Improve: performance of image loading for albums and artists</li><li>Improve: support modifying playing queue even if service quits</li><li>Improve: enhance stability and usability of music tag viewer or editor</li><li>New: pop-up menu options for albums, artist, genres and folders</li><li>Translation: update Polish (by cooky), Brazilian Portuguese (by FalaTudo)</li><li>Development: cleanup codes, update dependencies, upgrade AGP to 8.8.2</li></ol>"
+      }
+    },
+    {
       "channel": "preview",
       "versionName": "1.9.3-dev2",
       "versionCode": 1092,
@@ -46,30 +70,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>改进 支持服务退出后仍然可以修改当前播放队列</li><li>改进 音乐标签编辑的稳定性和可用性</li><li>翻译 更新 波兰语 (cooky), 巴西葡萄牙语 (FalaTudo)</li></ol>",
         "en": "<ol><li>Improve: support modifying playing queue even if service quits</li><li>Improve: enhance stability and usability of music tag viewer or editor</li><li>Translation: update Polish (by cooky), Brazilian Portuguese (by FalaTudo)</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "1.9.2",
-      "versionCode": 1092,
-      "date": 1739690000,
-      "link": [
-        {
-          "name": "Github Release (Website)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v1.9.2"
-        },
-        {
-          "name": "Github Release Modern Variant APK (File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.9.2/PhonographPlus_1.9.2_ModernStableRelease.apk"
-        },
-        {
-          "name": "Github Release Legacy Variant APK(File Download Link)",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/download/v1.9.2/PhonographPlus_1.9.2_LegacyStableRelease.apk"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 服务退出后无法显示任何图像 (自 v1.9.1 起)</li><li>修复 夜间模式下部分对话框中文本颜色问题</li><li>新增 支持清理收藏夹和播放队列中丢失或删除的歌曲</li><li>改进 显示收藏夹中丢失或删除歌曲的路径而不是完全空白</li><li>开发 更新依赖</li></ol>",
-        "en": "<ol><li>Fix: no images could be displayed once service exits (since v1.9.1)</li><li>Fix: text color legibility in some dialogs in night mode</li><li>New: support removing the missing (deleted) songs in Favorites Playlist and Playing Queue</li><li>Improve: show paths of the missing (deleted) songs instead of complete blank in Favorites Playlist</li><li>Development: update dependencies</li></ol>"
       }
     }
   ]
