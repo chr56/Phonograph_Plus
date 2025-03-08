@@ -1,0 +1,8 @@
+<b>1.9.3(1093) 2025.03.08</b>
+- Fix: text on widgets not updated since v1.9.2
+- Fix: some abnormal behaviors when changing items display settings especially on Artist Page
+- Fix: potentially wrong images loaded when fast scrolling
+- Improve: performance of image loading for albums and artists
+- Improve: support modifying playing queue even if service quits
+- Improve: enhance stability and usability of music tag viewer or editor
+...(Visit project homepage to see full changelogs)

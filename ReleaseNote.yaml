@@ -1,27 +1,33 @@
-version: "1.9.3-dev2"
-channel: "PREVIEW"
-versionCode: 1092
-timestamp: 1741350000
+version: "1.9.3"
+channel: "STABLE"
+versionCode: 1093
+timestamp: 1741410000
 notes:
   en:
     highlights: [ ]
     items:
       - "Fix: text on widgets not updated since v1.9.2"
+      - "Fix: some abnormal behaviors when changing items display settings especially on Artist Page"
       - "Fix: potentially wrong images loaded when fast scrolling"
       - "Improve: performance of image loading for albums and artists"
+      - "Improve: support modifying playing queue even if service quits"
+      - "Improve: enhance stability and usability of music tag viewer or editor"
       - "New: pop-up menu options for albums, artist, genres and folders"
-      - "Development: update dependencies, upgrade AGP to 8.8.2"
-      - "Development: cleanup codes"
+      - "Translation: update Polish (by cooky), Brazilian Portuguese (by FalaTudo)"
+      - "Development: cleanup codes, update dependencies, upgrade AGP to 8.8.2"
 
   zh:
     highlights: [ ]
     items:
-      - "修复 小部件上的文本不更新 (v1.9.2起)"
+      - "修复 小部件上的文本不更新 (v1.9.2 起存在)"
+      - "修复 更改项目显示设置特别是艺术家页面上时出现一些异常行为"
       - "修复 快速滚动时可能存在的图片加载错乱"
       - "改进 专辑和艺术家的图片加载速度"
-      - "新增 专辑、艺术家、流派和文件夹的项目菜单"
-      - "开发 更新依赖, 更新 AGP 至 8.8.2"
-      - "开发 清理代码"
+      - "改进 支持服务退出后仍然可以修改当前播放队列"
+      - "改进 音乐标签编辑的稳定性和可用性"
+      - "新增 专辑、艺术家、流派和文件夹的弹出菜单"
+      - "翻译 更新 波兰语 (cooky), 巴西葡萄牙语 (FalaTudo)"
+      - "开发 清理代码, 更新依赖, 更新 AGP 至 8.8.2"
 
-previousVersion: "1.9.3-dev1"
-previousChannel: "PREVIEW"
+previousVersion: "1.9.2"
+previousChannel: "STABLE"
