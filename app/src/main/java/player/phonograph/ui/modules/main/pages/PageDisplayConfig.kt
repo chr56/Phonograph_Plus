@@ -183,7 +183,7 @@ class ArtistPageDisplayConfig(context: Context) : ImagePageDisplayConfig(context
             setting.Composites[Keys.artistSortMode].data = value
         }
     override var colorFooter: Boolean
-        get() = setting[Keys.albumColoredFooters].data
+        get() = setting[Keys.artistColoredFooters].data
         set(value) {
             setting[Keys.artistColoredFooters].data = value
         }
