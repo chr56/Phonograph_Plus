@@ -8,8 +8,6 @@ import player.phonograph.R
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.sort.SortRef
-import player.phonograph.ui.modules.main.pages.PageDisplayConfig
-import player.phonograph.util.ui.isLandscape
 import androidx.annotation.IdRes
 import androidx.core.view.forEach
 import androidx.core.view.get
@@ -68,42 +66,6 @@ class ListOptionsPopup private constructor(
             titleGridSize.visibility = GONE
 
             actionColoredFooters.visibility = GONE
-        }
-    }
-
-    fun setup(displayConfig: PageDisplayConfig) {
-        viewBinding.titleGridSize.text =
-            if (isLandscape(resources)) {
-                resources.getText(R.string.action_grid_size_land)
-            } else {
-                resources.getText(R.string.action_grid_size)
-            }
-        maxGridSize = displayConfig.maxGridSize
-        gridSize = displayConfig.gridSize
-
-        colorFooterVisibility = displayConfig.allowColoredFooter
-        if (displayConfig.allowColoredFooter) {
-            colorFooterEnability = displayConfig.layout == ItemLayoutStyle.GRID // available in grid mode
-            colorFooter = displayConfig.colorFooter
-        }
-
-        if (displayConfig.availableSortRefs.isNotEmpty()) {
-
-            val currentSortMode = displayConfig.sortMode
-
-            sortRef = currentSortMode.sortRef
-            sortRefAvailable = displayConfig.availableSortRefs
-
-            allowRevert = displayConfig.allowRevertSort
-            revert = currentSortMode.revert
-        }
-
-        if (displayConfig.availableLayouts.isNotEmpty()) {
-
-            val currentLayout = displayConfig.layout
-
-            itemLayout = currentLayout
-            itemLayoutAvailable = displayConfig.availableLayouts
         }
     }
 

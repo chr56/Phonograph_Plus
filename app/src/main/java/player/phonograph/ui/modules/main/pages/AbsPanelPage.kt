@@ -18,6 +18,7 @@ import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
+import player.phonograph.util.ui.isLandscape
 import util.theme.color.primaryTextColor
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -190,7 +191,41 @@ sealed class AbsPanelPage : AbsPage() {
     protected abstract val displayConfig: PageDisplayConfig
 
     protected open fun preparePopup(popup: ListOptionsPopup) {
-        popup.setup(displayConfig)
+        with(popup) {
+            viewBinding.titleGridSize.text =
+                if (isLandscape(resources)) {
+                    resources.getText(R.string.action_grid_size_land)
+                } else {
+                    resources.getText(R.string.action_grid_size)
+                }
+            maxGridSize = displayConfig.maxGridSize
+            gridSize = displayConfig.gridSize
+
+            colorFooterVisibility = displayConfig.allowColoredFooter
+            if (displayConfig.allowColoredFooter) {
+                colorFooterEnability = displayConfig.layout == ItemLayoutStyle.GRID // available in grid mode
+                colorFooter = displayConfig.colorFooter
+            }
+
+            if (displayConfig.availableSortRefs.isNotEmpty()) {
+
+                val currentSortMode = displayConfig.sortMode
+
+                sortRef = currentSortMode.sortRef
+                sortRefAvailable = displayConfig.availableSortRefs
+
+                allowRevert = displayConfig.allowRevertSort
+                revert = currentSortMode.revert
+            }
+
+            if (displayConfig.availableLayouts.isNotEmpty()) {
+
+                val currentLayout = displayConfig.layout
+
+                itemLayout = currentLayout
+                itemLayoutAvailable = displayConfig.availableLayouts
+            }
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
