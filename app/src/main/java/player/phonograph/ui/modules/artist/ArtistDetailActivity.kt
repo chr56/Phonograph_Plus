@@ -31,8 +31,8 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.model.totalDuration
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
+import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
-import player.phonograph.ui.adapter.GenericDisplayAdapter
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
@@ -83,7 +83,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
 
 
     private lateinit var albumAdapter: ArtistAlbumDisplayAdapter
-    private lateinit var songAdapter: GenericDisplayAdapter<Song>
+    private lateinit var songAdapter: DisplayAdapter<Song>
 
     override val getContentDelegate: GetContentDelegate = GetContentDelegate()
 
@@ -123,7 +123,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
             viewBinding.mainContent.setPaddingTop(verticalOffset)
         }
 
-        songAdapter = GenericDisplayAdapter(this, ArtistSongDisplayPresenter)
+        songAdapter = DisplayAdapter(this, ArtistSongDisplayPresenter)
         with(viewBinding.songsRecycleView) {
             adapter = songAdapter
             layoutManager = LinearLayoutManager(this@ArtistDetailActivity, VERTICAL, false)
@@ -265,7 +265,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
 
 
     private class ArtistAlbumDisplayAdapter(activity: FragmentActivity, presenter: DisplayPresenter<Album>) :
-            GenericDisplayAdapter<Album>(activity, presenter) {
+            DisplayAdapter<Album>(activity, presenter) {
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Album> {

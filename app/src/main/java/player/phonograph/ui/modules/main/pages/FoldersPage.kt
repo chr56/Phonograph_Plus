@@ -18,8 +18,8 @@ import player.phonograph.repo.mediastore.loaders.SongCollectionLoader
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
-import player.phonograph.ui.adapter.GenericDisplayAdapter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.adapter.SongCollectionBasicDisplayPresenter
 import player.phonograph.util.theme.accentColor
@@ -79,8 +79,8 @@ class FoldersPage : AbsPanelPage() {
     }
 
 
-    private lateinit var songCollectionDisplayAdapter: GenericDisplayAdapter<SongCollection>
-    private lateinit var songAdapter: GenericDisplayAdapter<Song>
+    private lateinit var songCollectionDisplayAdapter: DisplayAdapter<SongCollection>
+    private lateinit var songAdapter: DisplayAdapter<Song>
     private lateinit var layoutManager: GridLayoutManager
 
 
@@ -103,11 +103,11 @@ class FoldersPage : AbsPanelPage() {
 
     private fun prepareAdaptersAndData() {
 
-        songCollectionDisplayAdapter = GenericDisplayAdapter(
+        songCollectionDisplayAdapter = DisplayAdapter(
             requireActivity(), buildFolderDisplayPresenter(layoutManager.findLastVisibleItemPosition())
         )
 
-        songAdapter = GenericDisplayAdapter(requireActivity(), buildSongDisplayPresenter())
+        songAdapter = DisplayAdapter(requireActivity(), buildSongDisplayPresenter())
         binding.recyclerView.adapter = songCollectionDisplayAdapter
 
         lifecycleScope.launch {
@@ -177,7 +177,7 @@ class FoldersPage : AbsPanelPage() {
             }
             val presenter = buildFolderDisplayPresenter(layoutManager.findLastVisibleItemPosition())
             if (shouldRecreate) {
-                songCollectionDisplayAdapter = GenericDisplayAdapter(requireActivity(), presenter)
+                songCollectionDisplayAdapter = DisplayAdapter(requireActivity(), presenter)
                 songCollectionDisplayAdapter.dataset = viewModel.folders.value
                 binding.recyclerView.adapter = songCollectionDisplayAdapter
             } else {
@@ -190,7 +190,7 @@ class FoldersPage : AbsPanelPage() {
             }
             val presenter = buildSongDisplayPresenter()
             if (shouldRecreate) {
-                songAdapter = GenericDisplayAdapter(requireActivity(), presenter)
+                songAdapter = DisplayAdapter(requireActivity(), presenter)
                 songAdapter.dataset = viewModel.currentSongs.value
                 binding.recyclerView.adapter = songAdapter
             } else {

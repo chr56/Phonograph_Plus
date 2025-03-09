@@ -17,8 +17,8 @@ import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.repo.loader.Songs
+import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
-import player.phonograph.ui.adapter.GenericDisplayAdapter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.util.parcelable
@@ -49,7 +49,7 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
     private val binding: ActivityGenreDetailBinding get() = _viewBinding!!
 
     private lateinit var genre: Genre
-    private lateinit var adapter: GenericDisplayAdapter<Song>
+    private lateinit var adapter: DisplayAdapter<Song>
 
     override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
     override val openFileStorageAccessDelegate: OpenFileStorageAccessDelegate = OpenFileStorageAccessDelegate()
@@ -95,7 +95,7 @@ class GenreDetailActivity : AbsSlidingMusicPanelActivity(),
     }
 
     private fun setUpRecyclerView() {
-        adapter = GenericDisplayAdapter(this, GenreSongDisplayPresenter)
+        adapter = DisplayAdapter(this, GenreSongDisplayPresenter)
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@GenreDetailActivity)
             adapter = this@GenreDetailActivity.adapter

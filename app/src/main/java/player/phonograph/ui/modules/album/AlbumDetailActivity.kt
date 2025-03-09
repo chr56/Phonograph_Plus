@@ -26,8 +26,8 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.totalDuration
 import player.phonograph.repo.loader.Songs
+import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
-import player.phonograph.ui.adapter.GenericDisplayAdapter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.util.NavigationUtil.goToArtist
@@ -69,7 +69,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
     override val openDirStorageAccessDelegate: OpenDirStorageAccessDelegate = OpenDirStorageAccessDelegate()
 
 
-    private lateinit var songAdapter: GenericDisplayAdapter<Song>
+    private lateinit var songAdapter: DisplayAdapter<Song>
     private lateinit var linearLayoutManager: LinearLayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -138,7 +138,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
 
     private fun setUpViews() {
         // Adapter
-        songAdapter = GenericDisplayAdapter(this, AlbumSongDisplayPresenter)
+        songAdapter = DisplayAdapter(this, AlbumSongDisplayPresenter)
         linearLayoutManager = LinearLayoutManager(this@AlbumDetailActivity)
         with(viewBinding.recyclerView) {
             layoutManager = linearLayoutManager

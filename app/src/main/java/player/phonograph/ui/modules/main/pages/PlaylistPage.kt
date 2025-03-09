@@ -18,8 +18,8 @@ import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
-import player.phonograph.ui.adapter.GenericDisplayAdapter
 import player.phonograph.ui.adapter.PlaylistBasicDisplayPresenter
 import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
 import player.phonograph.util.theme.accentColor
@@ -44,7 +44,7 @@ import android.view.ViewGroup.MarginLayoutParams
 import kotlin.getValue
 import kotlinx.coroutines.CoroutineScope
 
-class PlaylistPage : AbsDisplayPage<Playlist, GenericDisplayAdapter<Playlist>>() {
+class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
 
     private val _viewModel: PlaylistPageViewModel by viewModels()
     override val viewModel: AbsDisplayPageViewModel<Playlist> get() = _viewModel
@@ -81,7 +81,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, GenericDisplayAdapter<Playlist>>()
 
     override val displayConfig: PageDisplayConfig get() = PlaylistPageDisplayConfig(requireContext())
 
-    override fun createAdapter(): GenericDisplayAdapter<Playlist> {
+    override fun createAdapter(): DisplayAdapter<Playlist> {
         return PlaylistAdapter(requireActivity(), PlaylistDisplayPresenter.from(displayConfig))
     }
 
@@ -131,7 +131,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, GenericDisplayAdapter<Playlist>>()
     }
 
     private class PlaylistAdapter(activity: FragmentActivity, presenter: DisplayPresenter<Playlist>) :
-            GenericDisplayAdapter<Playlist>(activity, presenter) {
+            DisplayAdapter<Playlist>(activity, presenter) {
 
         override fun getItemViewType(position: Int): Int =
             if (dataset[position].isVirtual()) DYNAMIC_PLAYLIST else DEFAULT_PLAYLIST

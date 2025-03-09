@@ -19,8 +19,8 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
 import player.phonograph.ui.adapter.ArtistBasicDisplayPresenter
+import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
-import player.phonograph.ui.adapter.GenericDisplayAdapter
 import player.phonograph.ui.adapter.OrderedItemAdapter
 import player.phonograph.ui.adapter.PlaylistBasicDisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
@@ -102,10 +102,10 @@ abstract class SearchResultPageFragment<T : Displayable> : Fragment() {
 class SongSearchResultPageFragment : SearchResultPageFragment<Song>() {
 
     @Suppress("UNCHECKED_CAST")
-    private val adapter: GenericDisplayAdapter<Song>? get() = actualAdapter as? GenericDisplayAdapter<Song>
+    private val adapter: DisplayAdapter<Song>? get() = actualAdapter as? DisplayAdapter<Song>
 
     override fun createAdapter(activity: AppCompatActivity) =
-        GenericDisplayAdapter(activity, SongSearchResultDisplayPresenter)
+        DisplayAdapter(activity, SongSearchResultDisplayPresenter)
 
     override fun targetFlow(): StateFlow<List<Song>> = viewModel.songs
 
@@ -123,10 +123,10 @@ class SongSearchResultPageFragment : SearchResultPageFragment<Song>() {
 class AlbumSearchResultPageFragment : SearchResultPageFragment<Album>() {
 
     @Suppress("UNCHECKED_CAST")
-    private val adapter: GenericDisplayAdapter<Album>? get() = actualAdapter as? GenericDisplayAdapter<Album>
+    private val adapter: DisplayAdapter<Album>? get() = actualAdapter as? DisplayAdapter<Album>
 
     override fun createAdapter(activity: AppCompatActivity) =
-        GenericDisplayAdapter(activity, AlbumSearchResultDisplayPresenter)
+        DisplayAdapter(activity, AlbumSearchResultDisplayPresenter)
 
     override fun targetFlow(): StateFlow<List<Album>> = viewModel.albums
 
@@ -143,10 +143,10 @@ class AlbumSearchResultPageFragment : SearchResultPageFragment<Album>() {
 
 class ArtistSearchResultPageFragment : SearchResultPageFragment<Artist>() {
     @Suppress("UNCHECKED_CAST")
-    private val adapter: GenericDisplayAdapter<Artist>? get() = actualAdapter as? GenericDisplayAdapter<Artist>
+    private val adapter: DisplayAdapter<Artist>? get() = actualAdapter as? DisplayAdapter<Artist>
 
     override fun createAdapter(activity: AppCompatActivity) =
-        GenericDisplayAdapter(activity, ArtistSearchResultDisplayPresenter)
+        DisplayAdapter(activity, ArtistSearchResultDisplayPresenter)
 
     override fun targetFlow(): StateFlow<List<Artist>> = viewModel.artists
 
@@ -164,10 +164,10 @@ class ArtistSearchResultPageFragment : SearchResultPageFragment<Artist>() {
 class PlaylistSearchResultPageFragment : SearchResultPageFragment<Playlist>() {
 
     @Suppress("UNCHECKED_CAST")
-    private val adapter: GenericDisplayAdapter<Playlist>? get() = actualAdapter as? GenericDisplayAdapter<Playlist>
+    private val adapter: DisplayAdapter<Playlist>? get() = actualAdapter as? DisplayAdapter<Playlist>
 
     override fun createAdapter(activity: AppCompatActivity) =
-        GenericDisplayAdapter(activity, PlaylistSearchResultDisplayPresenter)
+        DisplayAdapter(activity, PlaylistSearchResultDisplayPresenter)
 
 
     override fun targetFlow(): StateFlow<List<Playlist>> = viewModel.playlists

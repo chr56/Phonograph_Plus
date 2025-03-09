@@ -12,14 +12,14 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.mediastore.loaders.ArtistSongLoader.allSongs
 import player.phonograph.ui.adapter.ArtistBasicDisplayPresenter
+import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
-import player.phonograph.ui.adapter.GenericDisplayAdapter
 import androidx.fragment.app.viewModels
 import android.content.Context
 import kotlin.getValue
 import kotlinx.coroutines.CoroutineScope
 
-class ArtistPage : AbsDisplayPage<Artist, GenericDisplayAdapter<Artist>>() {
+class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>>() {
 
     private val _viewModel: ArtistPageViewModel by viewModels()
     override val viewModel: AbsDisplayPageViewModel<Artist> get() = _viewModel
@@ -38,8 +38,8 @@ class ArtistPage : AbsDisplayPage<Artist, GenericDisplayAdapter<Artist>>() {
 
     override val displayConfig: PageDisplayConfig get() = ArtistPageDisplayConfig(requireContext())
 
-    override fun createAdapter(): GenericDisplayAdapter<Artist> {
-        return GenericDisplayAdapter(requireActivity(), ArtistDisplayPresenter.from(displayConfig))
+    override fun createAdapter(): DisplayAdapter<Artist> {
+        return DisplayAdapter(requireActivity(), ArtistDisplayPresenter.from(displayConfig))
     }
 
     override fun updateDisplayedItems(items: List<Artist>) {

@@ -22,10 +22,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 
 
-open class GenericDisplayAdapter<I>(
+open class DisplayAdapter<I>(
     val activity: FragmentActivity,
     var presenter: DisplayPresenter<I>,
-) : RecyclerView.Adapter<GenericDisplayAdapter.DisplayViewHolder<I>>(),
+) : RecyclerView.Adapter<DisplayAdapter.DisplayViewHolder<I>>(),
     FastScrollRecyclerView.SectionedAdapter,
     IMultiSelectableAdapter<I> {
 
