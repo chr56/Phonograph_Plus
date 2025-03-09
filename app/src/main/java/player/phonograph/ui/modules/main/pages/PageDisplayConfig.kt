@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022~2024 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
 package player.phonograph.ui.modules.main.pages
@@ -10,18 +10,16 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
-import player.phonograph.util.debug
 import player.phonograph.util.ui.isLandscape
 import android.content.Context
 import android.content.res.Resources
-import android.util.Log
 
+// todo valid input
 sealed class PageDisplayConfig(context: Context) {
 
     protected val res: Resources = context.resources
     protected val isLandscape: Boolean get() = isLandscape(res)
 
-    // todo valid input
     abstract var sortMode: SortMode
     abstract val availableSortRefs: Array<SortRef>
 
@@ -35,29 +33,6 @@ sealed class PageDisplayConfig(context: Context) {
 
     open val allowColoredFooter: Boolean = true
     open val allowRevertSort: Boolean = true
-
-    /**
-     * @return true if success
-     */
-    fun updateSortMode(mode: SortMode): Boolean =
-        if (mode != sortMode) {
-            debug { Log.d("DisplayConfig", "SortMode $sortMode -> $mode") }
-            sortMode = mode
-            true
-        } else {
-            false
-        }
-    /**
-     * @return true if success
-     */
-    fun updateItemLayout(itemLayoutStyle: ItemLayoutStyle): Boolean =
-        if (itemLayoutStyle != layout) {
-            debug { Log.d("DisplayConfig", "Layout $layout -> $itemLayoutStyle") }
-            layout = itemLayoutStyle
-            true
-        } else {
-            false
-        }
 
     protected val setting = Setting(context)
 }

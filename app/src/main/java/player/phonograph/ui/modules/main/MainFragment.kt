@@ -18,11 +18,11 @@ import player.phonograph.model.pages.PagesConfig
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.main.pages.AbsPage
-import player.phonograph.ui.modules.main.pages.AlbumPage
-import player.phonograph.ui.modules.main.pages.ArtistPage
 import player.phonograph.ui.modules.main.pages.EmptyPage
 import player.phonograph.ui.modules.main.pages.FilesPage
-import player.phonograph.ui.modules.main.pages.FlattenFolderPage
+import player.phonograph.ui.modules.main.pages.AlbumPage
+import player.phonograph.ui.modules.main.pages.ArtistPage
+import player.phonograph.ui.modules.main.pages.FoldersPage
 import player.phonograph.ui.modules.main.pages.GenrePage
 import player.phonograph.ui.modules.main.pages.PlaylistPage
 import player.phonograph.ui.modules.main.pages.SongPage
@@ -296,8 +296,8 @@ class MainFragment : Fragment() {
                 Pages.ARTIST   -> ArtistPage()
                 Pages.PLAYLIST -> PlaylistPage()
                 Pages.GENRE    -> GenrePage()
+                Pages.FOLDER   -> FoldersPage()
                 Pages.FILES    -> FilesPage()
-                Pages.FOLDER   -> FlattenFolderPage()
                 else           -> EmptyPage()
             }
         }

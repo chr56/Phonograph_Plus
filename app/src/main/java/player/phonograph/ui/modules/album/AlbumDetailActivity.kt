@@ -16,12 +16,19 @@ import player.phonograph.mechanism.actions.DetailToolbarMenuProviders
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Album
 import player.phonograph.model.IPaletteColorProvider
+import player.phonograph.model.ItemLayoutStyle
+import player.phonograph.model.Song
+import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
 import player.phonograph.model.songCountString
+import player.phonograph.model.sort.SortMode
+import player.phonograph.model.sort.SortRef
 import player.phonograph.model.totalDuration
 import player.phonograph.repo.loader.Songs
-import player.phonograph.ui.modules.main.pages.adapter.SongDisplayAdapter
+import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.DisplayPresenter
+import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.theme.getTintedDrawable
@@ -62,7 +69,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
     override val openDirStorageAccessDelegate: OpenDirStorageAccessDelegate = OpenDirStorageAccessDelegate()
 
 
-    private lateinit var songAdapter: SongDisplayAdapter
+    private lateinit var songAdapter: DisplayAdapter<Song>
     private lateinit var linearLayoutManager: LinearLayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -131,7 +138,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
 
     private fun setUpViews() {
         // Adapter
-        songAdapter = AlbumSongDisplayAdapter(this)
+        songAdapter = DisplayAdapter(this, AlbumSongDisplayPresenter)
         linearLayoutManager = LinearLayoutManager(this@AlbumDetailActivity)
         with(viewBinding.recyclerView) {
             layoutManager = linearLayoutManager
@@ -221,6 +228,30 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
             }
 
         private fun parseIntent(intent: Intent): Long = intent.extras?.getLong(EXTRA_ALBUM_ID) ?: -1
+    }
+
+    object AlbumSongDisplayPresenter : SongBasicDisplayPresenter(SortMode(SortRef.ID)) {
+
+        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
+
+        override val usePalette: Boolean get() = false
+
+        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_TEXT
+
+        override fun getRelativeOrdinalText(item: Song): String = trackNumber(item)
+
+        override fun getSortOrderReference(item: Song, sortMode: SortMode): String = trackNumber(item)
+
+        override fun getNonSortOrderReference(item: Song): String = trackNumber(item)
+
+        override fun getDescription(context: Context, item: Song): CharSequence =
+            buildInfoString(getReadableDurationString(item.duration), item.artistName)
+
+        private fun trackNumber(item: Song): String {
+            // iTunes uses for example 1002 for track 2 CD1 or 3011 for track 11 CD3.
+            val num = item.trackNumber % 1000
+            return if (num > 0) num.toString() else "-"
+        }
     }
 
 }

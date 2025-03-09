@@ -1,63 +1,39 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
 package player.phonograph.ui.adapter
 
 import coil.request.Disposable
-import coil.target.Target
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-import player.phonograph.App
-import player.phonograph.R
-import player.phonograph.coil.cache.AbsPreloadImageCache
-import player.phonograph.coil.loadImage
-import player.phonograph.coil.palette.PaletteColorTarget
 import player.phonograph.coil.palette.PaletteColorViewTarget
-import player.phonograph.mechanism.actions.ActionMenuProviders
-import player.phonograph.mechanism.actions.ClickActionProviders
-import player.phonograph.model.Displayable
 import player.phonograph.model.ItemLayoutStyle
-import player.phonograph.model.PaletteBitmap
-import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
-import player.phonograph.ui.adapter.DisplayConfig.Companion.IMAGE_TYPE_FIXED_ICON
-import player.phonograph.ui.adapter.DisplayConfig.Companion.IMAGE_TYPE_IMAGE
-import player.phonograph.ui.adapter.DisplayConfig.Companion.IMAGE_TYPE_TEXT
-import player.phonograph.ui.adapter.DisplayConfig.Companion.ImageType
 import player.phonograph.util.theme.themeFooterColor
+import player.phonograph.util.theme.themeIconColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.Q
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 
-abstract class DisplayAdapter<I : Displayable>(
-    protected val activity: FragmentActivity,
-    var config: DisplayConfig,
+
+open class DisplayAdapter<I>(
+    val activity: FragmentActivity,
+    var presenter: DisplayPresenter<I>,
 ) : RecyclerView.Adapter<DisplayAdapter.DisplayViewHolder<I>>(),
     FastScrollRecyclerView.SectionedAdapter,
     IMultiSelectableAdapter<I> {
+
 
     var dataset: List<I> = emptyList()
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
-            if (config.layoutStyle.hasImage) imageCacheDelegate.startPreloadImages(activity, value)
             notifyDataSetChanged()
         }
 
@@ -66,155 +42,122 @@ abstract class DisplayAdapter<I : Displayable>(
         setHasStableIds(true)
     }
 
-    private val imageCacheDelegate: ImageCacheDelegate<I> = ImageCacheDelegate(config)
-
     protected val controller: MultiSelectionController<I>
-            by lazy { MultiSelectionController(this, activity, allowMultiSelection) }
+            by lazy { MultiSelectionController(this, activity, true) }
 
-    protected open val allowMultiSelection: Boolean get() = true
-
-    override fun getItemId(position: Int): Long = dataset[position].getItemID() // shl 3 + layoutType
+    override fun getItemId(position: Int): Long = presenter.getItemID(dataset[position])
     override fun getItem(datasetPosition: Int): I = dataset[datasetPosition]
-
-
-    override fun getItemViewType(position: Int): Int = config.layoutStyle.ordinal
-
-    protected open fun inflatedView(parent: ViewGroup, viewType: Int): View =
-        LayoutInflater.from(activity).inflate(ItemLayoutStyle.from(viewType).layout(), parent, false)
-
-    override fun onBindViewHolder(holder: DisplayViewHolder<I>, position: Int) {
-        val item: I = dataset[position]
-        holder.bind(item, position, dataset, controller, config.imageType, config.usePalette, imageCacheDelegate)
-    }
 
     override fun getItemCount(): Int = dataset.size
 
+    override fun getItemViewType(position: Int): Int = presenter.layoutStyle.ordinal
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<I> {
+        val view = LayoutInflater.from(activity).inflate(ItemLayoutStyle.from(viewType).layout(), parent, false)
+        return DisplayViewHolder(view)
+    }
+
+
+    override fun onBindViewHolder(holder: DisplayViewHolder<I>, position: Int) {
+        holder.bind(dataset[position], position, dataset, presenter, controller)
+    }
+
     override fun getSectionName(position: Int): String =
-        if (config.showSectionName) getSectionNameImp(position) else ""
+        if (presenter.showSectionName) getSectionNameImp(position) else ""
 
-    // for inheriting
-    open fun getSectionNameImp(position: Int): String =
-        dataset[position].defaultSortOrderReference()?.substring(0..1) ?: ""
+    open fun getSectionNameImp(position: Int): String {
+        val item = dataset[position]
+        val sortMode = presenter.getSortOrderKey(activity)
+        val text = if (sortMode != null) {
+            presenter.getSortOrderReference(item, sortMode)
+        } else {
+            presenter.getNonSortOrderReference(item)
+        }
+        return text ?: "-"
+    }
 
-    open class DisplayViewHolder<I : Displayable>(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
 
+    open class DisplayViewHolder<I>(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
         open fun bind(
             item: I,
             position: Int,
             dataset: List<I>,
+            presenter: DisplayPresenter<I>,
             controller: MultiSelectionController<I>,
-            @ImageType imageType: Int,
-            usePalette: Boolean,
-            imageCacheDelegate: ImageCacheDelegate<I>,
         ) {
             shortSeparator?.visibility = View.VISIBLE
             itemView.isActivated = controller.isSelected(item)
-            title?.text = item.getDisplayTitle(context = itemView.context)
-            text?.text = getDescription(item)
-            textSecondary?.text = item.getSecondaryText(itemView.context)
-            textTertiary?.text = item.getTertiaryText(itemView.context)
 
-            prepareImage(imageType, item, usePalette, imageCacheDelegate)
+            // Text
+            title?.text = presenter.getDisplayTitle(itemView.context, item)
+            text?.text = presenter.getDescription(itemView.context, item)
+            textSecondary?.text = presenter.getSecondaryText(itemView.context, item)
+            textTertiary?.text = presenter.getTertiaryText(itemView.context, item)
 
+            // Click
+            val clickActionProvider = presenter.clickActionProvider
             controller.registerClicking(itemView, position) {
-                onClick(position, dataset, image)
+                clickActionProvider.listClick(dataset, position, itemView.context, image)
             }
-            menu?.let {
-                prepareMenu(item, it)
-            }
-        }
 
-        @Suppress("UNCHECKED_CAST")
-        open val clickActionProvider: ClickActionProviders.ClickActionProvider<I> =
-            ClickActionProviders.EmptyClickActionProvider as ClickActionProviders.ClickActionProvider<I>
-
-        protected open fun onClick(position: Int, dataset: List<I>, imageView: ImageView?): Boolean {
-            return clickActionProvider.listClick(dataset, position, itemView.context, imageView)
-        }
-
-        open val menuProvider: ActionMenuProviders.ActionMenuProvider<I>? = null
-
-        private fun prepareMenu(item: I, menuButtonView: View) {
-            val provider = menuProvider
-            if (provider != null) {
-                menuButtonView.visibility = View.VISIBLE
-                menuButtonView.setOnClickListener {
-                    provider.prepareMenu(menuButtonView, item)
+            // Menu
+            val menuButtonView = menu
+            val menuProvider = presenter.menuProvider
+            if (menuButtonView != null) {
+                if (menuProvider != null) {
+                    menuButtonView.visibility = View.VISIBLE
+                    menuButtonView.setOnClickListener {
+                        menuProvider.prepareMenu(menuButtonView, item)
+                    }
+                } else {
+                    menuButtonView.visibility = View.GONE
                 }
-            } else {
-                menuButtonView.visibility = View.GONE
             }
+
+            // Image
+            loadImage(item, presenter.imageType, image, presenter)
         }
 
-
-        protected open fun getRelativeOrdinalText(item: I): String = "-"
-        protected open fun getDescription(item: I): CharSequence? =
-            item.getDescription(context = itemView.context)
-
-        protected open fun prepareImage(
-            @ImageType imageType: Int,
+        protected fun loadImage(
             item: I,
-            usePalette: Boolean,
-            imageCacheDelegate: ImageCacheDelegate<I>,
+            imageType: Int,
+            imageView: ImageView?,
+            presenter: DisplayPresenter<I>,
         ) {
             when (imageType) {
-                IMAGE_TYPE_FIXED_ICON -> {
-                    image?.visibility = View.VISIBLE
-                    image?.setImageDrawable(getIcon(item))
+                DisplayPresenter.IMAGE_TYPE_FIXED_ICON -> {
+                    val icon = presenter.getIcon(itemView.context, item)
+                    if (imageView != null) {
+                        imageView.visibility = View.VISIBLE
+                        imageView.setColorFilter(themeIconColor(itemView.context), PorterDuff.Mode.SRC_IN)
+                        imageView.setImageDrawable(icon)
+                    }
                 }
 
-                IMAGE_TYPE_IMAGE      -> {
-                    image?.visibility = View.VISIBLE
-                    image?.let { imageView -> fetchImage(item, imageView, usePalette, imageCacheDelegate) }
+                DisplayPresenter.IMAGE_TYPE_IMAGE      -> {
+                    if (imageView != null) {
+                        image?.visibility = View.VISIBLE
+                        loadJob?.dispose()
+                        loadJob = presenter.startLoadingImage(
+                            itemView.context, item,
+                            PaletteColorViewTarget(
+                                imageView,
+                                ::setPaletteColors,
+                                themeFooterColor(itemView.context),
+                                presenter.usePalette
+                            )
+                        )
+                    }
                 }
 
-                IMAGE_TYPE_TEXT       -> {
+                DisplayPresenter.IMAGE_TYPE_TEXT       -> {
+                    val ordinalText = presenter.getRelativeOrdinalText(item) ?: "-"
                     imageText?.visibility = View.VISIBLE
-                    setImageText(getRelativeOrdinalText(item))
+                    imageText?.text = ordinalText
                 }
             }
         }
 
-        private var disposable: Disposable? = null
-        protected open fun fetchImage(
-            item: I,
-            imageView: ImageView,
-            usePalette: Boolean,
-            imageCacheDelegate: ImageCacheDelegate<I>,
-        ) {
-            val context = imageView.context
-            val cached = imageCacheDelegate.peek(item)
-            if (cached != null) {
-                imageView.setImageBitmap(cached.bitmap)
-                if (usePalette) setPaletteColors(cached.paletteColor)
-            } else {
-                disposable?.dispose()
-                disposable = loadImage(context)
-                    .from(item)
-                    .withPalette()
-                    .default(defaultIcon)
-                    .into(targetOf(imageView, themeFooterColor(context), usePalette))
-                    .enqueue()
-            }
-        }
-
-        private fun targetOf(
-            imageView: ImageView,
-            defaultColor: Int,
-            usePalette: Boolean,
-        ): Target = PaletteColorViewTarget(imageView, ::setPaletteColors, defaultColor, usePalette)
-
-
-        protected open fun getIcon(item: I): Drawable? = defaultIcon
-
-        protected open fun setImageText(text: String) {
-            imageText?.text = text
-        }
-
-        protected open val defaultIcon =
-            AppCompatResources.getDrawable(itemView.context, R.drawable.default_album_art)
-
-        open fun setPaletteColors(color: Int) {
+        protected open fun setPaletteColors(color: Int) {
             paletteColorContainer?.let { paletteColorContainer ->
                 val context = itemView.context
                 paletteColorContainer.setBackgroundColor(color)
@@ -225,69 +168,6 @@ abstract class DisplayAdapter<I : Displayable>(
             }
         }
 
+        private var loadJob: Disposable? = null
     }
-
-    class ImageCacheDelegate<I : Displayable>(val config: DisplayConfig) {
-
-        private var _imageCache: DisplayPreloadImageCache<I>? = null
-        private var imageCache: DisplayPreloadImageCache<I>
-            get() {
-                if (_imageCache == null) {
-                    _imageCache = DisplayPreloadImageCache(1)
-                }
-                return _imageCache!!
-            }
-            set(value) {
-                _imageCache = value
-            }
-
-        fun startPreloadImages(context: Context, items: Collection<I>) {
-            if (!enabledPreload || config.imageType != IMAGE_TYPE_IMAGE) return
-
-            imageCache = DisplayPreloadImageCache(items.size.coerceAtLeast(1))
-            imageCache.imageLoaderScope.launch {
-                for (item: I in items) {
-                    imageCache.preload(context, item)
-                }
-            }
-        }
-
-        fun peek(item: I): PaletteBitmap? = imageCache.peek(item)
-
-        private val enabledPreload: Boolean = Setting(App.instance)[Keys.preloadImages].data
-    }
-
-    class DisplayPreloadImageCache<I : Displayable>(size: Int) :
-            AbsPreloadImageCache<I, PaletteBitmap>(size, if (SDK_INT >= Q) IMPL_SPARSE_ARRAY else IMPL_SCATTER_MAP) {
-
-        override suspend fun load(context: Context, key: I): PaletteBitmap =
-            suspendCancellableCoroutine { continuation ->
-                loadImage(context)
-                    .from(key)
-                    .withPalette()
-                    .into(
-                        PaletteColorTarget(
-                            defaultColor = themeFooterColor(context),
-                            success = { result, palette ->
-                                if (result is BitmapDrawable) {
-                                    continuation.resume(
-                                        PaletteBitmap(result.bitmap, palette)
-                                    ) { cause, _, _ ->
-                                        continuation.cancel(cause)
-                                    }
-                                } else {
-                                    continuation.cancel()
-                                }
-
-                            },
-                        )
-                    )
-                    .enqueue()
-            }
-
-        override fun id(key: I): Long = key.getItemID()
-
-        val imageLoaderScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    }
-
 }

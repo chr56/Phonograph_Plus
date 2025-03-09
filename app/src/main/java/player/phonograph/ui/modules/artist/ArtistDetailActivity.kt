@@ -16,16 +16,25 @@ import player.phonograph.R
 import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.mechanism.actions.DetailToolbarMenuProviders
 import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.IPaletteColorProvider
 import player.phonograph.model.ItemLayoutStyle
+import player.phonograph.model.Song
 import player.phonograph.model.albumCountString
+import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
+import player.phonograph.model.getYearString
 import player.phonograph.model.songCountString
+import player.phonograph.model.sort.SortMode
+import player.phonograph.model.sort.SortRef
 import player.phonograph.model.totalDuration
 import player.phonograph.repo.loader.Songs
-import player.phonograph.ui.adapter.ConstDisplayConfig
-import player.phonograph.ui.modules.main.pages.adapter.SongDisplayAdapter
+import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
+import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.DisplayPresenter
+import player.phonograph.ui.adapter.MultiSelectionController
+import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.util.component.GetContentDelegate
 import player.phonograph.util.component.IGetContentRequester
@@ -40,6 +49,8 @@ import util.theme.view.menu.tintOverflowButtonColor
 import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarColor
 import androidx.activity.addCallback
+import androidx.cardview.widget.CardView
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -48,11 +59,15 @@ import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -67,8 +82,8 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
     override val openDirStorageAccessDelegate: OpenDirStorageAccessDelegate = OpenDirStorageAccessDelegate()
 
 
-    private lateinit var albumAdapter: HorizontalAlbumDisplayAdapter
-    private lateinit var songAdapter: SongDisplayAdapter
+    private lateinit var albumAdapter: ArtistAlbumDisplayAdapter
+    private lateinit var songAdapter: DisplayAdapter<Song>
 
     override val getContentDelegate: GetContentDelegate = GetContentDelegate()
 
@@ -108,13 +123,13 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
             viewBinding.mainContent.setPaddingTop(verticalOffset)
         }
 
-        songAdapter = SongDisplayAdapter(this, ConstDisplayConfig(ItemLayoutStyle.LIST, false))
+        songAdapter = DisplayAdapter(this, ArtistSongDisplayPresenter)
         with(viewBinding.songsRecycleView) {
             adapter = songAdapter
             layoutManager = LinearLayoutManager(this@ArtistDetailActivity, VERTICAL, false)
         }
 
-        albumAdapter = HorizontalAlbumDisplayAdapter(this)
+        albumAdapter = ArtistAlbumDisplayAdapter(this, ArtistAlbumDisplayPresenter(false))
         with(viewBinding.albumRecycleView) {
             adapter = albumAdapter
             layoutManager = LinearLayoutManager(this@ArtistDetailActivity, HORIZONTAL, false)
@@ -126,7 +141,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.usePaletteColor.collect {
-                    albumAdapter.config = ConstDisplayConfig(ItemLayoutStyle.GRID_CARD_HORIZONTAL, it)
+                    albumAdapter.presenter = ArtistAlbumDisplayPresenter(it)
                     val dataset = albumAdapter.dataset
                     synchronized(albumAdapter) {
                         albumAdapter.dataset = emptyList()
@@ -246,5 +261,73 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
             }
 
         private fun parseIntent(intent: Intent): Long = intent.extras?.getLong(EXTRA_ARTIST_ID) ?: -1
+    }
+
+
+    private class ArtistAlbumDisplayAdapter(activity: FragmentActivity, presenter: DisplayPresenter<Album>) :
+            DisplayAdapter<Album>(activity, presenter) {
+
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder<Album> {
+            val view = LayoutInflater.from(activity).inflate(ItemLayoutStyle.from(viewType).layout(), parent, false)
+            return HorizontalAlbumViewHolder(view)
+        }
+
+        class HorizontalAlbumViewHolder(itemView: View) : DisplayViewHolder<Album>(itemView) {
+
+            override fun bind(
+                item: Album,
+                position: Int,
+                dataset: List<Album>,
+                presenter: DisplayPresenter<Album>,
+                controller: MultiSelectionController<Album>,
+            ) {
+                super.bind(item, position, dataset, presenter, controller)
+                with(itemView) {
+                    (layoutParams as MarginLayoutParams).updateMargin(
+                        resources,
+                        position == 0,
+                        position == dataset.size - 1
+                    )
+                }
+            }
+
+            private fun MarginLayoutParams.updateMargin(resources: Resources, left: Boolean, right: Boolean) {
+                val listMargin = resources.getDimensionPixelSize(R.dimen.default_item_margin)
+                marginStart = 8
+                marginEnd = 8
+                if (left) {
+                    marginStart += listMargin
+                } else if (right) {
+                    marginEnd += listMargin
+                }
+            }
+
+            override fun setPaletteColors(color: Int) {
+                super.setPaletteColors(color)
+                (itemView as CardView).setCardBackgroundColor(color)
+            }
+        }
+    }
+
+    class ArtistAlbumDisplayPresenter(override val usePalette: Boolean) : AlbumBasicDisplayPresenter(SortMode(SortRef.YEAR)) {
+
+        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.GRID_CARD_HORIZONTAL
+
+        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
+
+        override fun getDescription(context: Context, item: Album): CharSequence =
+            buildInfoString(getYearString(item.year), songCountString(context, item.songCount))
+    }
+
+
+    object ArtistSongDisplayPresenter : SongBasicDisplayPresenter(SortMode(SortRef.YEAR)) {
+
+        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
+
+        override val usePalette: Boolean get() = false
+
+        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
+
     }
 }

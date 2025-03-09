@@ -14,14 +14,16 @@ import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.sort.SortMode
+import player.phonograph.model.sort.SortRef
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.ui.adapter.ConstDisplayConfig
+import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
+import player.phonograph.ui.adapter.ArtistBasicDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
+import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.OrderedItemAdapter
-import player.phonograph.ui.modules.main.pages.adapter.AlbumDisplayAdapter
-import player.phonograph.ui.modules.main.pages.adapter.ArtistDisplayAdapter
-import player.phonograph.ui.modules.main.pages.adapter.PlaylistDisplayAdapter
-import player.phonograph.ui.modules.main.pages.adapter.SongDisplayAdapter
+import player.phonograph.ui.adapter.PlaylistBasicDisplayPresenter
+import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -102,13 +104,19 @@ class SongSearchResultPageFragment : SearchResultPageFragment<Song>() {
     @Suppress("UNCHECKED_CAST")
     private val adapter: DisplayAdapter<Song>? get() = actualAdapter as? DisplayAdapter<Song>
 
-    override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Song> =
-        SongDisplayAdapter(activity, ConstDisplayConfig(ItemLayoutStyle.LIST, false))
+    override fun createAdapter(activity: AppCompatActivity) =
+        DisplayAdapter(activity, SongSearchResultDisplayPresenter)
 
     override fun targetFlow(): StateFlow<List<Song>> = viewModel.songs
 
     override fun updateDataset(newData: List<Song>) {
         adapter?.dataset = newData
+    }
+
+    object SongSearchResultDisplayPresenter : SongBasicDisplayPresenter(SortMode(SortRef.DISPLAY_NAME)) {
+        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
+        override val usePalette: Boolean get() = false
+        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
     }
 }
 
@@ -117,13 +125,19 @@ class AlbumSearchResultPageFragment : SearchResultPageFragment<Album>() {
     @Suppress("UNCHECKED_CAST")
     private val adapter: DisplayAdapter<Album>? get() = actualAdapter as? DisplayAdapter<Album>
 
-    override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Album> =
-        AlbumDisplayAdapter(activity, ConstDisplayConfig(ItemLayoutStyle.LIST))
+    override fun createAdapter(activity: AppCompatActivity) =
+        DisplayAdapter(activity, AlbumSearchResultDisplayPresenter)
 
     override fun targetFlow(): StateFlow<List<Album>> = viewModel.albums
 
     override fun updateDataset(newData: List<Album>) {
         adapter?.dataset = newData
+    }
+
+    object AlbumSearchResultDisplayPresenter : AlbumBasicDisplayPresenter(SortMode(SortRef.DISPLAY_NAME)) {
+        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
+        override val usePalette: Boolean get() = false
+        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
     }
 }
 
@@ -131,14 +145,19 @@ class ArtistSearchResultPageFragment : SearchResultPageFragment<Artist>() {
     @Suppress("UNCHECKED_CAST")
     private val adapter: DisplayAdapter<Artist>? get() = actualAdapter as? DisplayAdapter<Artist>
 
-
-    override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Artist> =
-        ArtistDisplayAdapter(activity, ConstDisplayConfig(ItemLayoutStyle.LIST))
+    override fun createAdapter(activity: AppCompatActivity) =
+        DisplayAdapter(activity, ArtistSearchResultDisplayPresenter)
 
     override fun targetFlow(): StateFlow<List<Artist>> = viewModel.artists
 
     override fun updateDataset(newData: List<Artist>) {
         adapter?.dataset = newData
+    }
+
+    object ArtistSearchResultDisplayPresenter : ArtistBasicDisplayPresenter(SortMode(SortRef.DISPLAY_NAME)) {
+        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
+        override val usePalette: Boolean get() = false
+        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
     }
 }
 
@@ -147,14 +166,21 @@ class PlaylistSearchResultPageFragment : SearchResultPageFragment<Playlist>() {
     @Suppress("UNCHECKED_CAST")
     private val adapter: DisplayAdapter<Playlist>? get() = actualAdapter as? DisplayAdapter<Playlist>
 
-    override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<Playlist> {
-        return PlaylistDisplayAdapter(activity)
-    }
+    override fun createAdapter(activity: AppCompatActivity) =
+        DisplayAdapter(activity, PlaylistSearchResultDisplayPresenter)
+
 
     override fun targetFlow(): StateFlow<List<Playlist>> = viewModel.playlists
 
     override fun updateDataset(newData: List<Playlist>) {
         adapter?.dataset = newData
+    }
+
+    object PlaylistSearchResultDisplayPresenter : PlaylistBasicDisplayPresenter(SortMode(SortRef.DISPLAY_NAME)) {
+        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
+        override val usePalette: Boolean = false
+        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_FIXED_ICON
+        override fun getIconRes(playlist: Playlist): Int = playlist.iconRes
     }
 }
 

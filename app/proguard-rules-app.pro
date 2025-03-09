@@ -12,16 +12,17 @@
 -keepclassmembernames class lib.phonograph.misc.RestResult$ParseError { <methods>; }
 -keepclassmembernames class lib.phonograph.misc.RestResult$NetworkError { <methods>; }
 
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.adapter.DisplayPresenter { public <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.adapter.DisplayAdapter { protected <methods>; }
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.adapter.DisplayAdapter$DisplayViewHolder { protected <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.basis.** extends android.app.Activity { protected <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.auxiliary.LauncherActivity { void goto*(); }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.auxiliary.MigrationActivity { void *Impl();}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.auxiliary.PhonographIntroActivity$* { private <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.auxiliary.StarterActivity { private <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.explorer.** { protected <methods>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.main.pages.** { protected <methods>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.main.pages.adapter.** { protected <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.main.pages.AbsPanelPage { protected <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.main.pages.AbsDisplayPage { protected <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.main.pages.AbsDisplayPage$AbsDisplayPageViewModel { public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.panel.** { protected <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.player.** { protected <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.** extends androidx.lifecycle.ViewModel {public <methods>;}
