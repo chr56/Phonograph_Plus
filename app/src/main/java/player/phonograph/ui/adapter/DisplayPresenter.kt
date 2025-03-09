@@ -27,8 +27,6 @@ interface DisplayPresenter<T> {
     val clickActionProvider: ClickActionProviders.ClickActionProvider<T>
     val menuProvider: ActionMenuProviders.ActionMenuProvider<T>? get() = null
 
-    val allowMultiSelection: Boolean get() = true
-
     fun getRelativeOrdinalText(item: T): String? = null
 
     val showSectionName: Boolean get() = true
