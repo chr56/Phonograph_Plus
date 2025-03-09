@@ -44,7 +44,7 @@ import android.view.ViewGroup.MarginLayoutParams
 import kotlin.getValue
 import kotlinx.coroutines.CoroutineScope
 
-class NeoPlaylistPage : BasicDisplayPage<Playlist, GenericDisplayAdapter<Playlist>>() {
+class PlaylistPage : AbsDisplayPage<Playlist, GenericDisplayAdapter<Playlist>>() {
 
     private val _viewModel: PlaylistPageViewModel by viewModels()
     override val viewModel: AbsDisplayPageViewModel<Playlist> get() = _viewModel

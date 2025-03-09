@@ -20,12 +20,12 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.main.pages.AbsPage
 import player.phonograph.ui.modules.main.pages.EmptyPage
 import player.phonograph.ui.modules.main.pages.FilesPage
-import player.phonograph.ui.modules.main.pages.NeoAlbumPage
-import player.phonograph.ui.modules.main.pages.NeoArtistPage
-import player.phonograph.ui.modules.main.pages.NeoFlattenFolderPage
-import player.phonograph.ui.modules.main.pages.NeoGenrePage
-import player.phonograph.ui.modules.main.pages.NeoPlaylistPage
-import player.phonograph.ui.modules.main.pages.NeoSongPage
+import player.phonograph.ui.modules.main.pages.AlbumPage
+import player.phonograph.ui.modules.main.pages.ArtistPage
+import player.phonograph.ui.modules.main.pages.FoldersPage
+import player.phonograph.ui.modules.main.pages.GenrePage
+import player.phonograph.ui.modules.main.pages.PlaylistPage
+import player.phonograph.ui.modules.main.pages.SongPage
 import player.phonograph.ui.modules.popup.ListOptionsPopup
 import player.phonograph.ui.modules.search.SearchActivity
 import player.phonograph.util.debug
@@ -291,12 +291,12 @@ class MainFragment : Fragment() {
 
         private fun createPage(type: String): AbsPage {
             return when (type) {
-                Pages.SONG     -> NeoSongPage()
-                Pages.ALBUM    -> NeoAlbumPage()
-                Pages.ARTIST   -> NeoArtistPage()
-                Pages.PLAYLIST -> NeoPlaylistPage()
-                Pages.GENRE    -> NeoGenrePage()
-                Pages.FOLDER   -> NeoFlattenFolderPage()
+                Pages.SONG     -> SongPage()
+                Pages.ALBUM    -> AlbumPage()
+                Pages.ARTIST   -> ArtistPage()
+                Pages.PLAYLIST -> PlaylistPage()
+                Pages.GENRE    -> GenrePage()
+                Pages.FOLDER   -> FoldersPage()
                 Pages.FILES    -> FilesPage()
                 else           -> EmptyPage()
             }

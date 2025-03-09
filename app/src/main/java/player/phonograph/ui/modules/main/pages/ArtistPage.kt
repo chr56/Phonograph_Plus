@@ -19,7 +19,7 @@ import android.content.Context
 import kotlin.getValue
 import kotlinx.coroutines.CoroutineScope
 
-class NeoArtistPage : BasicDisplayPage<Artist, GenericDisplayAdapter<Artist>>() {
+class ArtistPage : AbsDisplayPage<Artist, GenericDisplayAdapter<Artist>>() {
 
     private val _viewModel: ArtistPageViewModel by viewModels()
     override val viewModel: AbsDisplayPageViewModel<Artist> get() = _viewModel

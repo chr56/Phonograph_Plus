@@ -19,7 +19,7 @@ import android.content.Context
 import kotlin.getValue
 import kotlinx.coroutines.CoroutineScope
 
-class NeoAlbumPage : BasicDisplayPage<Album, GenericDisplayAdapter<Album>>() {
+class AlbumPage : AbsDisplayPage<Album, GenericDisplayAdapter<Album>>() {
 
     private val _viewModel: AlbumPageViewModel by viewModels()
     override val viewModel: AbsDisplayPageViewModel<Album> get() = _viewModel

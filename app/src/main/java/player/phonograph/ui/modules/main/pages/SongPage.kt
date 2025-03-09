@@ -17,7 +17,7 @@ import android.content.Context
 import kotlin.getValue
 import kotlinx.coroutines.CoroutineScope
 
-class NeoSongPage : BasicDisplayPage<Song, GenericDisplayAdapter<Song>>() {
+class SongPage : AbsDisplayPage<Song, GenericDisplayAdapter<Song>>() {
 
     private val _viewModel: SongPageViewModel by viewModels()
     override val viewModel: AbsDisplayPageViewModel<Song> get() = _viewModel

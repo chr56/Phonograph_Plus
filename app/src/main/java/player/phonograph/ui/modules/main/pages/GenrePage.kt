@@ -18,7 +18,7 @@ import android.content.Context
 import kotlin.getValue
 import kotlinx.coroutines.CoroutineScope
 
-class NeoGenrePage : BasicDisplayPage<Genre, GenericDisplayAdapter<Genre>>() {
+class GenrePage : AbsDisplayPage<Genre, GenericDisplayAdapter<Genre>>() {
 
     private val _viewModel: GenrePageViewModel by viewModels()
     override val viewModel: AbsDisplayPageViewModel<Genre> get() = _viewModel

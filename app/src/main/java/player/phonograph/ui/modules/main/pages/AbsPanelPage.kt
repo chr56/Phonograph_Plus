@@ -33,7 +33,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import kotlinx.coroutines.launch
 
-sealed class PanelDisplayPage : AbsPage() {
+sealed class AbsPanelPage : AbsPage() {
 
     private var _viewBinding: FragmentDisplayPageBinding? = null
     protected val binding get() = _viewBinding!!
