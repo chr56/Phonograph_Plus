@@ -30,7 +30,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>>() {
         }
 
         override suspend fun collectAllSongs(context: Context): List<Song> =
-            dataSet.value.toList().flatMap { Genres.songs(context, it.id) }
+            dataset.value.toList().flatMap { Genres.songs(context, it.id) }
 
         override val headerTextRes: Int get() = R.plurals.item_genres
     }

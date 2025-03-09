@@ -90,9 +90,6 @@ sealed class AbsPanelPage : AbsPage() {
         shouldReload: Boolean,
     )
 
-    protected fun updateHeaderText(text: CharSequence?) {
-        binding.panelText.text = text
-    }
     //endregion
 
     //region PlayerBar and Header

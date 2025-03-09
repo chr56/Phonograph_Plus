@@ -77,11 +77,16 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>> : AbsPanelPage() {
         binding.recyclerView.adapter = adapter
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.dataSet.collect { items ->
+                viewModel.dataset.collect { items ->
                     updateDisplayedItems(items.toList())
-                    updateHeaderText(viewModel.headerText(requireContext()))
+
                     binding.empty.text = resources.getText(R.string.empty)
-                    binding.empty.visibility = if (viewModel.isEmpty) View.VISIBLE else View.GONE
+                    binding.empty.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
+
+                    val headerTextRes = viewModel.headerTextRes
+                    if (headerTextRes != 0) {
+                        binding.panelText.text = resources.getQuantityString(headerTextRes, items.size, items.size)
+                    }
                 }
             }
         }
@@ -129,7 +134,7 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>> : AbsPanelPage() {
         if (shouldRecreate) {
             adapter = createAdapter()
             binding.recyclerView.adapter = adapter
-            updateDisplayedItems(viewModel.dataSet.value.toList())
+            updateDisplayedItems(viewModel.dataset.value.toList())
         } else {
             updatePresenterSettings(sortMode, coloredFooter, layout)
         }
@@ -145,14 +150,11 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>> : AbsPanelPage() {
 
     abstract class AbsDisplayPageViewModel<IT> : ViewModel() {
 
-        private val _dataSet: MutableStateFlow<Collection<IT>> = MutableStateFlow(emptyList())
-        val dataSet: StateFlow<Collection<IT>> get() = _dataSet.asStateFlow()
+        private val _dataset: MutableStateFlow<Collection<IT>> = MutableStateFlow(emptyList())
+        val dataset: StateFlow<Collection<IT>> get() = _dataset.asStateFlow()
 
         private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
         val loading get() = _loading.asStateFlow()
-
-        val isEmpty get() = dataSet.value.isEmpty()
-        // val isEmptyFlow: Flow<Boolean> = _dataSet.map { it.isEmpty() }
 
         private var job: Job? = null
         fun loadDataset(context: Context) {
@@ -160,7 +162,7 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>> : AbsPanelPage() {
             job = viewModelScope.launch(Dispatchers.IO) {
                 _loading.value = true
                 val items = loadDataSetImpl(context, this)
-                _dataSet.emit(items)
+                _dataset.emit(items)
                 _loading.value = false
             }
         }
@@ -173,11 +175,6 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>> : AbsPanelPage() {
         abstract suspend fun collectAllSongs(context: Context): List<Song>
 
         abstract val headerTextRes: Int
-        fun headerText(context: Context): CharSequence? {
-            if (headerTextRes <= 0) return null
-            val n = dataSet.value.size
-            return context.resources.getQuantityString(headerTextRes, n, n)
-        }
 
     }
 }

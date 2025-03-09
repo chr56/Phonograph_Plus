@@ -30,7 +30,7 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>>() {
             return Artists.all(context)
         }
 
-        override suspend fun collectAllSongs(context: Context): List<Song> = dataSet.value.toList().allSongs(context)
+        override suspend fun collectAllSongs(context: Context): List<Song> = dataset.value.toList().allSongs(context)
 
         override val headerTextRes: Int get() = R.plurals.item_artists
     }
