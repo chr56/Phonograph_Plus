@@ -1,0 +1,9 @@
+<b>1.12.0(1120) 2026.03.11</b>
+- Fix: incorrect album artist extraction
+- Improve: sync initial search tab with the current tab
+- Improve: slightly faster search response
+- Improve: genre search support
+- Improve: support adjusting lyrics fonts size and alignment
+- Translation: update Ukrainian (by Max Leonidov), Spanish (by Dino RTX (rtxdino36)), remove Bulgarian and Croatian
+- Remove: queue validating and marking at start up
+...(Visit project homepage to see full changelogs)
