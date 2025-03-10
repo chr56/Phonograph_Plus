@@ -9,6 +9,7 @@ import player.phonograph.model.PlayRequest.SongsRequest
 import player.phonograph.model.Song
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.util.text.currentTimestamp
+import player.phonograph.util.text.totalDuration
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -98,8 +99,7 @@ class QueueHolder private constructor(
     }
 
     fun getRestSongsDuration(position: Int): Long =
-        playingQueue.takeLast(getRestSongsCount(position))
-            .fold(0L) { acc, song -> acc + song.duration }
+        totalDuration(playingQueue.takeLast(getRestSongsCount(position)))
 
     private fun getRestSongsCount(currentPosition: Int): Int =
         if (playingQueue.isEmpty() || playingQueue.size - currentPosition < 0) 0

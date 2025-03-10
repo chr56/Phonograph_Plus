@@ -17,16 +17,16 @@ import player.phonograph.model.Artist
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
-import player.phonograph.model.albumCountString
-import player.phonograph.model.getReadableDurationString
-import player.phonograph.model.getYearString
-import player.phonograph.model.infoString
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.songCountString
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
+import player.phonograph.util.text.albumCountString
 import player.phonograph.util.text.dateTextShortText
+import player.phonograph.util.text.infoString
 import player.phonograph.util.text.makeSectionName
+import player.phonograph.util.text.readableDuration
+import player.phonograph.util.text.readableYear
+import player.phonograph.util.text.songCountString
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.getSystemService
 import android.content.Context
@@ -63,8 +63,8 @@ abstract class SongBasicDisplayPresenter(
             SortRef.ALBUM_NAME        -> makeSectionName(item.albumName)
             SortRef.ALBUM_ARTIST_NAME -> makeSectionName(item.albumArtistName)
             SortRef.COMPOSER          -> makeSectionName(item.composer)
-            SortRef.YEAR              -> getYearString(item.year)
-            SortRef.DURATION          -> getReadableDurationString(item.duration)
+            SortRef.YEAR              -> readableYear(item.year)
+            SortRef.DURATION          -> readableDuration(item.duration)
             SortRef.MODIFIED_DATE     -> dateTextShortText(item.dateModified)
             SortRef.ADDED_DATE        -> dateTextShortText(item.dateAdded)
             else                      -> ""
@@ -109,7 +109,7 @@ abstract class AlbumBasicDisplayPresenter(
         when (sortMode.sortRef) {
             SortRef.ALBUM_NAME  -> makeSectionName(item.title)
             SortRef.ARTIST_NAME -> makeSectionName(item.artistName)
-            SortRef.YEAR        -> getYearString(item.year)
+            SortRef.YEAR        -> readableYear(item.year)
             SortRef.SONG_COUNT  -> item.songCount.toString()
             else                -> ""
         }

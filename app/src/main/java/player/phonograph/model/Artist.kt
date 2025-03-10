@@ -1,5 +1,8 @@
 package player.phonograph.model
 
+import player.phonograph.util.text.albumCountString
+import player.phonograph.util.text.infoString
+import player.phonograph.util.text.songCountString
 import android.content.Context
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

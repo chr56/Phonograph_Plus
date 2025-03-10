@@ -8,11 +8,11 @@ import com.triggertrap.seekarc.SeekArc
 import lib.phonograph.view.CheckBoxX
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.model.getReadableDurationString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.util.SleepTimer
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.util.text.readableDuration
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.tintAlertDialogButtons
 import player.phonograph.util.theme.tintButtons
@@ -162,7 +162,7 @@ class SleepTimerDialog : DialogFragment() {
         private fun setNegativeButtonText(time: Long) {
             val text = requireContext().getString(R.string.cancel_current_timer).plus(
                 if (MusicPlayerRemote.isServiceConnected) {
-                    if (time > 0 && SleepTimer.instance().hasTimer()) "(${getReadableDurationString(time)})" else ""
+                    if (time > 0 && SleepTimer.instance().hasTimer()) "(${readableDuration(time)})" else ""
                 } else {
                     requireContext().getString(R.string.service_disconnected)
                 }

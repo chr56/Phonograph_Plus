@@ -24,12 +24,12 @@ import player.phonograph.mechanism.broadcast.PlaylistsModifiedReceiver
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.UIMode
-import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.util.parcelable
+import player.phonograph.util.text.readableDuration
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
@@ -159,7 +159,7 @@ class PlaylistDetailActivity :
         lifecycleScope.launch {
             viewModel.totalDuration.collect {
                 with(binding) {
-                    durationText.text = getReadableDurationString(it)
+                    durationText.text = readableDuration(it)
                 }
             }
         }

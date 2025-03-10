@@ -9,10 +9,10 @@ import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.coil.PARAMETERS_KEY_PALETTE
 import player.phonograph.model.Song
-import player.phonograph.model.infoString
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.modules.auxiliary.LauncherActivity
+import player.phonograph.util.text.infoString
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.ui.BitmapUtil
 import util.theme.color.primaryTextColor

@@ -1,5 +1,6 @@
 package player.phonograph.model
 
+import player.phonograph.util.text.infoString
 import android.content.Context
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

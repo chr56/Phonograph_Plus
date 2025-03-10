@@ -12,11 +12,11 @@ import player.phonograph.databinding.FragmentFlatPlayerBinding
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.model.Song
-import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.modules.player.AbsPlayerFragment
+import player.phonograph.util.text.infoString
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.requireDarkenColor
 import player.phonograph.util.theme.themeFooterColor
@@ -57,7 +57,6 @@ import android.view.ViewGroup.MarginLayoutParams
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import kotlin.math.max
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FlatPlayerFragment : AbsPlayerFragment() {

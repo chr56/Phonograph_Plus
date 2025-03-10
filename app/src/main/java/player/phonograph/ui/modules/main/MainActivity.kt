@@ -18,7 +18,6 @@ import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.mechanism.Update
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.model.Song
-import player.phonograph.model.infoString
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.version.ReleaseChannel
 import player.phonograph.model.version.VersionCatalog
@@ -36,6 +35,7 @@ import player.phonograph.util.currentVersionCode
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
 import player.phonograph.util.parcelableExtra
+import player.phonograph.util.text.infoString
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.themeIconColor

@@ -6,7 +6,6 @@ package player.phonograph.ui.modules.tag
 
 import player.phonograph.R
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
-import player.phonograph.model.getFileSizeString
 import player.phonograph.model.metadata.AudioMetadata
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.Metadata
@@ -19,6 +18,7 @@ import player.phonograph.ui.modules.tag.components.AudioImage
 import player.phonograph.ui.modules.tag.components.EditableTagItem
 import player.phonograph.ui.modules.tag.components.InsertNewButton
 import player.phonograph.ui.modules.tag.components.ReadonlyTagItem
+import player.phonograph.util.text.getFileSizeString
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

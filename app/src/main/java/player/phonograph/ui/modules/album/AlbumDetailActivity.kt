@@ -18,19 +18,19 @@ import player.phonograph.model.Album
 import player.phonograph.model.IPaletteColorProvider
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.Song
-import player.phonograph.model.buildInfoString
-import player.phonograph.model.getReadableDurationString
-import player.phonograph.model.getYearString
-import player.phonograph.model.songCountString
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.model.totalDuration
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.util.NavigationUtil.goToArtist
+import player.phonograph.util.text.buildInfoString
+import player.phonograph.util.text.readableDuration
+import player.phonograph.util.text.readableYear
+import player.phonograph.util.text.songCountString
+import player.phonograph.util.text.totalDuration
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.updateSystemBarsColor
@@ -202,8 +202,8 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         viewBinding.toolbar.title = album.title
         viewBinding.artistText.text = album.artistName
         viewBinding.songCountText.text = songCountString(this, album.songCount)
-        viewBinding.durationText.text = getReadableDurationString(Songs.album(this, album.id).totalDuration())
-        viewBinding.albumYearText.text = getYearString(album.year)
+        viewBinding.durationText.text = readableDuration(totalDuration(Songs.album(this, album.id)))
+        viewBinding.albumYearText.text = readableYear(album.year)
     }
 
     private fun setupMenu(menu: Menu) {
@@ -245,7 +245,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvide
         override fun getNonSortOrderReference(item: Song): String = trackNumber(item)
 
         override fun getDescription(context: Context, item: Song): CharSequence =
-            buildInfoString(getReadableDurationString(item.duration), item.artistName)
+            buildInfoString(readableDuration(item.duration), item.artistName)
 
         private fun trackNumber(item: Song): String {
             // iTunes uses for example 1002 for track 2 CD1 or 3011 for track 11 CD3.

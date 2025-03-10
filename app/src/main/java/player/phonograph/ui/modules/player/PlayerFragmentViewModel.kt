@@ -12,11 +12,11 @@ import player.phonograph.coil.palette.PaletteColorTarget
 import player.phonograph.mechanism.IFavorite
 import player.phonograph.model.PaletteBitmap
 import player.phonograph.model.Song
-import player.phonograph.model.buildInfoString
-import player.phonograph.model.getReadableDurationString
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.concurrent.withTimeoutOrNot
+import player.phonograph.util.text.buildInfoString
+import player.phonograph.util.text.readableDuration
+import player.phonograph.util.theme.themeFooterColor
 import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap
@@ -77,7 +77,7 @@ class PlayerFragmentViewModel : ViewModel() {
         val duration = MusicPlayerRemote.getQueueDurationMillis(MusicPlayerRemote.position)
         return buildInfoString(
             resources.getString(R.string.up_next),
-            getReadableDurationString(duration)
+            readableDuration(duration)
         )
     }
 

@@ -21,14 +21,8 @@ import player.phonograph.model.Artist
 import player.phonograph.model.IPaletteColorProvider
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.Song
-import player.phonograph.model.albumCountString
-import player.phonograph.model.buildInfoString
-import player.phonograph.model.getReadableDurationString
-import player.phonograph.model.getYearString
-import player.phonograph.model.songCountString
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.model.totalDuration
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
@@ -38,6 +32,12 @@ import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.util.component.GetContentDelegate
 import player.phonograph.util.component.IGetContentRequester
+import player.phonograph.util.text.albumCountString
+import player.phonograph.util.text.buildInfoString
+import player.phonograph.util.text.readableDuration
+import player.phonograph.util.text.readableYear
+import player.phonograph.util.text.songCountString
+import player.phonograph.util.text.totalDuration
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.primaryColor
 import player.phonograph.util.theme.themeFooterColor
@@ -246,7 +246,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         supportActionBar!!.title = artist.name
         viewBinding.songCountText.text = songCountString(this, artist.songCount)
         viewBinding.albumCountText.text = albumCountString(this, artist.albumCount)
-        viewBinding.durationText.text = getReadableDurationString(Songs.artist(this, artist.id).totalDuration())
+        viewBinding.durationText.text = readableDuration(totalDuration(Songs.artist(this, artist.id)))
     }
 
 
@@ -317,7 +317,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvid
         override val imageType: Int = DisplayPresenter.IMAGE_TYPE_IMAGE
 
         override fun getDescription(context: Context, item: Album): CharSequence =
-            buildInfoString(getYearString(item.year), songCountString(context, item.songCount))
+            buildInfoString(readableYear(item.year), songCountString(context, item.songCount))
     }
 
 
