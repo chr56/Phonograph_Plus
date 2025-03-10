@@ -15,6 +15,8 @@ import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
+import player.phonograph.model.ItemLayoutStyle
+import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
 import player.phonograph.model.playlist.Playlist
@@ -277,4 +279,21 @@ abstract class SongCollectionBasicDisplayPresenter(
             storageVolume.rootDirectory()?.absolutePath ?: ""
         }
     }
+}
+
+abstract class QueueSongBasicDisplayPresenter : DisplayPresenter<QueueSong> {
+    override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
+    override val usePalette: Boolean = false
+    override val imageType: Int = DisplayPresenter.IMAGE_TYPE_TEXT
+
+    override fun getItemID(item: QueueSong): Long = item.song.id
+
+    override fun getDisplayTitle(context: Context, item: QueueSong) = item.song.title
+
+    override fun getDescription(context: Context, item: QueueSong) = item.song.infoString()
+    override fun getSecondaryText(context: Context, item: QueueSong) = item.song.albumName ?: "N/A"
+    override fun getTertiaryText(context: Context, item: QueueSong) = item.song.artistName
+
+    override fun getNonSortOrderReference(item: QueueSong): String? = item.index.toString()
+    override fun getRelativeOrdinalText(item: QueueSong): String? = item.index.toString()
 }

@@ -4,9 +4,9 @@
 
 package player.phonograph.ui.modules.search
 
-import player.phonograph.R
 import player.phonograph.databinding.RecyclerViewWrappedProperBinding
 import player.phonograph.mechanism.actions.ActionMenuProviders
+import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.ItemLayoutStyle
@@ -20,20 +20,21 @@ import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
 import player.phonograph.ui.adapter.ArtistBasicDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter
-import player.phonograph.ui.adapter.OrderedItemAdapter
 import player.phonograph.ui.adapter.PlaylistBasicDisplayPresenter
+import player.phonograph.ui.adapter.QueueSongBasicDisplayPresenter
 import player.phonograph.ui.adapter.SongBasicDisplayPresenter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -185,10 +186,11 @@ class PlaylistSearchResultPageFragment : SearchResultPageFragment<Playlist>() {
 
 class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
 
-    private val adapter: QueueSongAdapter? get() = actualAdapter as? QueueSongAdapter
+    @Suppress("UNCHECKED_CAST")
+    private val adapter: DisplayAdapter<QueueSong>? get() = actualAdapter as? DisplayAdapter<QueueSong>
 
-    override fun createAdapter(activity: AppCompatActivity): QueueSongAdapter =
-        QueueSongAdapter(activity)
+    override fun createAdapter(activity: AppCompatActivity): DisplayAdapter<QueueSong> =
+        DisplayAdapter<QueueSong>(activity, PlaylistSearchResultDisplayPresenter)
 
     override fun targetFlow(): StateFlow<List<QueueSong>> = viewModel.songsInQueue
 
@@ -196,35 +198,29 @@ class QueueSearchResultPageFragment : SearchResultPageFragment<QueueSong>() {
         adapter?.dataset = newData
     }
 
-    class QueueSongAdapter(
-        activity: FragmentActivity,
-    ) : OrderedItemAdapter<QueueSong>(activity, R.layout.item_list, showSectionName = true) {
+    object PlaylistSearchResultDisplayPresenter : QueueSongBasicDisplayPresenter() {
 
-        override fun getSectionNameImp(position: Int): String {
-            return dataset[position].index.toString()
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderedItemViewHolder<QueueSong> =
-            QueueSongViewHolder(inflatedView(parent, viewType))
-
-        inner class QueueSongViewHolder(itemView: View) : OrderedItemViewHolder<QueueSong>(itemView) {
-
-            override fun getRelativeOrdinalText(item: QueueSong, position: Int): String {
-                return item.index.toString()
-            }
-
-            override fun onClick(position: Int, dataset: List<QueueSong>, imageView: ImageView?): Boolean {
-                MusicPlayerRemote.playSongAt(dataset[position].index)
-                return true
-            }
-
-            override fun prepareMenu(item: QueueSong, position: Int, menuButtonView: View) {
-                menuButtonView.setOnClickListener {
-                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = position)
-                        .prepareMenu(menuButtonView, item.song)
+        override val clickActionProvider: ClickActionProviders.ClickActionProvider<QueueSong> =
+            object : ClickActionProviders.ClickActionProvider<QueueSong> {
+                override fun listClick(
+                    list: List<QueueSong>,
+                    position: Int,
+                    context: Context,
+                    imageView: ImageView?,
+                ): Boolean {
+                    MusicPlayerRemote.playSongAt(list[position].index)
+                    return true
                 }
             }
-        }
+
+        override val menuProvider: ActionMenuProviders.ActionMenuProvider<QueueSong> =
+            object : ActionMenuProviders.ActionMenuProvider<QueueSong> {
+                override fun inflateMenu(menu: Menu, context: Context, item: QueueSong, position: Int) {
+                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = item.index)
+                        .inflateMenu(menu, context, item.song, position)
+                }
+            }
+
     }
 
 }
