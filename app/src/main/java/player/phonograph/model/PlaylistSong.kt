@@ -8,4 +8,4 @@ class PlaylistSong(
     val song: Song,
     val playlistId: Long,
     val idInPlayList: Long,
-) : Parcelable, Displayable by song
+) : Parcelable

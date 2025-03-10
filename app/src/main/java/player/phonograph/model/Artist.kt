@@ -1,9 +1,5 @@
 package player.phonograph.model
 
-import player.phonograph.util.text.albumCountString
-import player.phonograph.util.text.infoString
-import player.phonograph.util.text.songCountString
-import android.content.Context
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
@@ -16,7 +12,7 @@ data class Artist(
     val name: String,
     val albumCount: Int,
     val songCount: Int,
-) : Parcelable, Displayable {
+) : Parcelable {
 
     constructor() : this(-1, UNKNOWN_ARTIST_DISPLAY_NAME, -1, -1)
 
@@ -33,16 +29,6 @@ data class Artist(
     }
 
     override fun hashCode(): Int = id.toInt() * 101 + name.hashCode()
-
-    override fun getItemID(): Long = id
-
-    override fun getDisplayTitle(context: Context): CharSequence = name
-
-    override fun getDescription(context: Context): CharSequence = infoString(context)
-    override fun getSecondaryText(context: Context): CharSequence = albumCountString(context, albumCount)
-    override fun getTertiaryText(context: Context): CharSequence = songCountString(context, songCount)
-
-    override fun defaultSortOrderReference(): String = name
 
     companion object {
         const val UNKNOWN_ARTIST_DISPLAY_NAME = "Unknown Artist"
