@@ -4,35 +4,31 @@
 
 package player.phonograph.ui.modules.player
 
-import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter
-import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemState
-import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder
-import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
-import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
-import player.phonograph.R
 import player.phonograph.mechanism.actions.ActionMenuProviders
+import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.ui.adapter.DisplayPresenter
+import player.phonograph.ui.adapter.DraggableDisplayAdapter
 import player.phonograph.ui.adapter.MultiSelectionController
-import player.phonograph.ui.adapter.OrderedItemAdapter
 import player.phonograph.util.produceSafeId
 import player.phonograph.util.text.infoString
 import player.phonograph.util.ui.hitTest
 import androidx.fragment.app.FragmentActivity
 import android.annotation.SuppressLint
+import android.content.Context
 import android.text.TextUtils
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
 
-class PlayingQueueAdapter(
-    activity: FragmentActivity,
-) : OrderedItemAdapter<Song>(activity, R.layout.item_list, useImageText = true),
-    DraggableItemAdapter<PlayingQueueAdapter.PlayingQueueViewHolder> {
+class PlayingQueueAdapter(activity: FragmentActivity) :
+        DraggableDisplayAdapter<Song>(activity, PlayingQueuePresenter) {
 
     var current: Int = -1
         @SuppressLint("NotifyDataSetChanged") // number 0 is moving, meaning all items' number is changing
@@ -41,71 +37,40 @@ class PlayingQueueAdapter(
             notifyDataSetChanged()
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderedItemViewHolder<Song> {
-        val view =
-            LayoutInflater.from(activity).inflate(ItemLayoutStyle.LIST.layout(), parent, false)
+    override val allowMultiSelection: Boolean get() = false
+
+    override fun getItemId(position: Int): Long = produceSafeId(presenter.getItemID(dataset[position]), position)
+
+    override fun getItemViewType(position: Int): Int = when {
+        position < current -> HISTORY
+        position > current -> UP_NEXT
+        else               -> CURRENT
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DraggableViewHolder<Song> {
+        val view = LayoutInflater.from(activity).inflate(ItemLayoutStyle.LIST.layout(), parent, false)
         return PlayingQueueViewHolder(view)
     }
 
-    override fun getItemViewType(position: Int): Int =
-        when {
-            position < current -> HISTORY
-            position > current -> UP_NEXT
-            else               -> CURRENT
-        }
-
-    override val allowMultiSelection: Boolean get() = false
-
-    inner class PlayingQueueViewHolder(itemView: View) :
-            OrderedItemViewHolder<Song>(itemView), DraggableItemViewHolder {
-
-        override fun onClick(position: Int, dataset: List<Song>, imageView: ImageView?): Boolean {
-            MusicPlayerRemote.playSongAt(position)
-            return true
-        }
-
-        override fun prepareMenu(item: Song, position: Int, menuButtonView: View) {
-            menuButtonView.setOnClickListener {
-                ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = position)
-                    .prepareMenu(menuButtonView, item, position)
-            }
-        }
+    inner class PlayingQueueViewHolder(itemView: View) : DraggableViewHolder<Song>(itemView) {
 
         override fun bind(
             item: Song,
             position: Int,
             dataset: List<Song>,
+            presenter: DisplayPresenter<Song>,
             controller: MultiSelectionController<Song>,
-            useImageText: Boolean,
         ) {
-
-            val song = dataset[position]
-
-            itemView.isActivated = false
-            title?.text = song.title
-            text?.text = song.infoString()
             title?.ellipsize = TextUtils.TruncateAt.MIDDLE
             text?.ellipsize = TextUtils.TruncateAt.MIDDLE
-            image?.visibility = GONE
-            imageText?.isSingleLine = false
-            imageText?.maxLines = 2
-            imageText?.visibility = VISIBLE
-            imageText?.text = (position - current).toString()
+            super.bind(item, position, dataset, presenter, controller)
 
-            shortSeparator?.visibility = if (bindingAdapterPosition == itemCount - 1) GONE else VISIBLE
-            setAlpha(
-                if (itemViewType == HISTORY || itemViewType == CURRENT) 0.5f else 1f
-            )
-            controller.registerClicking(itemView, position) {
-                onClick(position, dataset, image)
-            }
-            itemView.setOnLongClickListener { true }
-            menu?.let {
-                prepareMenu(dataset[position], position, it)
-            }
+            shortSeparator?.visibility = if (bindingAdapterPosition == dataset.size - 1) GONE else VISIBLE
+
+            applyAlpha(if (itemViewType == HISTORY || itemViewType == CURRENT) 0.5f else 1f)
         }
 
-        private fun setAlpha(alpha: Float) {
+        private fun applyAlpha(alpha: Float) {
             image?.alpha = alpha
             title?.alpha = alpha
             text?.alpha = alpha
@@ -113,33 +78,71 @@ class PlayingQueueAdapter(
             paletteColorContainer?.alpha = alpha
         }
 
-        @DraggableItemStateFlags
-        private var mDragStateFlags = 0
-
-        @DraggableItemStateFlags
-        override fun getDragStateFlags(): Int = mDragStateFlags
-        override fun setDragStateFlags(@DraggableItemStateFlags flags: Int) {
-            mDragStateFlags = flags
+        override fun loadImage(
+            item: Song,
+            imageType: Int,
+            imageView: ImageView?,
+            presenter: DisplayPresenter<Song>,
+        ) {
+            image?.visibility = GONE
+            imageText?.visibility = VISIBLE
+            imageText?.text = String.format(null, "%d", bindingAdapterPosition - current)
+            imageText?.isSingleLine = false
+            imageText?.maxLines = 2
         }
 
-        override fun getDragState(): DraggableItemState =
-            DraggableItemState().apply {
-                this.flags = mDragStateFlags
+        override fun isSelected(item: Song, controller: MultiSelectionController<Song>): Boolean = false
+    }
+
+    object PlayingQueuePresenter : DisplayPresenter<Song> {
+
+        override fun getItemID(item: Song): Long = item.id
+
+        override fun getDisplayTitle(context: Context, item: Song): CharSequence = item.title
+
+        override fun getDescription(context: Context, item: Song): CharSequence = item.infoString()
+        override fun getSecondaryText(context: Context, item: Song): CharSequence = item.albumName ?: "N/A"
+        override fun getTertiaryText(context: Context, item: Song): CharSequence? = item.artistName
+
+        override val layoutStyle: ItemLayoutStyle = ItemLayoutStyle.LIST
+        override val imageType: Int = DisplayPresenter.IMAGE_TYPE_NONE // custom
+        override val usePalette: Boolean = false
+
+        override val clickActionProvider: ClickActionProviders.ClickActionProvider<Song> =
+            object : ClickActionProviders.ClickActionProvider<Song> {
+                override fun listClick(
+                    list: List<Song>, position: Int, context: Context, imageView: ImageView?,
+                ): Boolean {
+                    MusicPlayerRemote.playSongAt(position)
+                    return true
+                }
+            }
+
+        override val menuProvider: ActionMenuProviders.ActionMenuProvider<Song>
+            get() = object : ActionMenuProviders.ActionMenuProvider<Song> {
+                override fun inflateMenu(menu: Menu, context: Context, item: Song, position: Int) {}
+                override fun prepareMenu(
+                    menuButtonView: View,
+                    item: Song,
+                    bindingPosition: Int,
+                ) {
+                    ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = bindingPosition)
+                        .prepareMenu(menuButtonView, item, bindingPosition)
+                }
             }
     }
 
-    override fun onCheckCanStartDrag(holder: PlayingQueueViewHolder, position: Int, x: Int, y: Int): Boolean =
-        hitTest(holder.imageText as View, x, y)
+    //region Draggable
+    override fun editableMode(): Boolean = true
 
-    override fun onGetItemDraggableRange(holder: PlayingQueueViewHolder, position: Int): ItemDraggableRange? = null
+    override fun onCheckCanStartDrag(holder: DraggableViewHolder<Song>, position: Int, x: Int, y: Int): Boolean =
+        hitTest(holder.imageText as View, x, y)
 
     override fun onMoveItem(fromPosition: Int, toPosition: Int) {
         MusicPlayerRemote.queueManager.moveSong(fromPosition, toPosition)
     }
 
     override fun onCheckCanDrop(draggingPosition: Int, dropPosition: Int): Boolean = true
-
-    override fun onItemDragStarted(position: Int) {}
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onItemDragFinished(fromPosition: Int, toPosition: Int, result: Boolean) {
@@ -155,10 +158,7 @@ class PlayingQueueAdapter(
             }
         }
     }
-
-    override fun getItemId(position: Int): Long =
-        produceSafeId(dataset[position].getItemID(), position)
-
+    //endregion
 
     companion object {
         private const val HISTORY = 0
