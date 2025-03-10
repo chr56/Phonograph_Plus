@@ -28,7 +28,7 @@ class PlaylistEditorItemMenuProvider(
     private val deleteSong: suspend (Int) -> Unit,
     private val moveSong: suspend (Int, Int) -> Unit,
 ) : ActionMenuProvider<QueueSong> {
-    override fun inflateMenu(menu: Menu, context: Context, item: QueueSong) {
+    override fun inflateMenu(menu: Menu, context: Context, item: QueueSong, position: Int) {
         editorItemMenu(menu, context as FragmentActivity, dataset(), bindingAdapterPosition, deleteSong, moveSong)
     }
 

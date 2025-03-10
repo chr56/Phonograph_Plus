@@ -125,10 +125,10 @@ class PlaylistSongDisplayAdapter(
             menuButtonView.setOnClickListener {
                 if (viewModel.currentMode.value == UIMode.Editor) {
                     PlaylistEditorItemMenuProvider(position, ::dataset, ::deleteSong, ::moveSong)
-                        .prepareMenu(menuButtonView, item)
+                        .prepareMenu(menuButtonView, item, position)
                 } else {
                     ActionMenuProviders.SongActionMenuProvider(showPlay = false)
-                        .prepareMenu(menuButtonView, item.song)
+                        .prepareMenu(menuButtonView, item.song, position)
                 }
             }
         }

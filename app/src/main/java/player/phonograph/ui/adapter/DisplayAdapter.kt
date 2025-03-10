@@ -108,7 +108,7 @@ open class DisplayAdapter<I>(
                 if (menuProvider != null) {
                     menuButtonView.visibility = View.VISIBLE
                     menuButtonView.setOnClickListener {
-                        menuProvider.prepareMenu(menuButtonView, item)
+                        menuProvider.prepareMenu(menuButtonView, item, position)
                     }
                 } else {
                     menuButtonView.visibility = View.GONE
