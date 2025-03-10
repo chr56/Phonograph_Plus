@@ -43,7 +43,9 @@ open class DisplayAdapter<I>(
     }
 
     protected val controller: MultiSelectionController<I>
-            by lazy { MultiSelectionController(this, activity, true) }
+            by lazy { MultiSelectionController(this, activity, allowMultiSelection) }
+
+    protected open val allowMultiSelection: Boolean get() = true
 
     override fun getItemId(position: Int): Long = presenter.getItemID(dataset[position])
     override fun getItem(datasetPosition: Int): I = dataset[datasetPosition]
