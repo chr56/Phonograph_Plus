@@ -9,7 +9,6 @@ import player.phonograph.databinding.RecyclerViewWrappedProperBinding
 import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
-import player.phonograph.model.Displayable
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
@@ -46,7 +45,7 @@ import kotlinx.coroutines.launch
  *
  * **NOTE**: must create from [SearchActivity] (as host activity)
  */
-abstract class SearchResultPageFragment<T : Displayable> : Fragment() {
+abstract class SearchResultPageFragment<T> : Fragment() {
 
     private var _viewBinding: RecyclerViewWrappedProperBinding? = null
     private val binding get() = _viewBinding!!
