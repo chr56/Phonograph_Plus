@@ -4,6 +4,7 @@
 
 package player.phonograph.repo.mediastore.internal
 
+import player.phonograph.mechanism.explorer.Locations
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
@@ -94,7 +95,7 @@ fun readFileEntity(cursor: Cursor, currentLocation: Location): FileEntity {
         val folderName = songRelativePath.substringBefore('/')
         // folder
         FileEntity.Folder(
-            location = currentLocation.changeTo("$basePath/$folderName"),
+            location = withSameVolume("$basePath/$folderName", currentLocation),
             name = folderName,
             dateAdded = dateAdded,
             dateModified = dateModified
@@ -102,7 +103,7 @@ fun readFileEntity(cursor: Cursor, currentLocation: Location): FileEntity {
     } else {
         // file
         FileEntity.File(
-            location = currentLocation.changeTo("$basePath/$songRelativePath"),
+            location = withSameVolume("$basePath/$songRelativePath", currentLocation),
             name = displayName,
             id = id,
             size = size,
@@ -111,6 +112,9 @@ fun readFileEntity(cursor: Cursor, currentLocation: Location): FileEntity {
         )
     }
 }
+
+private fun withSameVolume(basePath: String, kin: Location) =
+    Locations.from(basePath.ifBlank { "/" }, kin.storageVolume)
 
 private fun String.stripToRelativePath(currentLocationAbsolutePath: String) =
     substringAfter(currentLocationAbsolutePath).removePrefix("/")

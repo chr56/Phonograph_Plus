@@ -82,10 +82,8 @@ object Locations {
             get() {
                 if (basePath == "/") return null // root
                 val parentPath = basePath.dropLastWhile { it != '/' }.removeSuffix("/")
-                return changeTo(parentPath)
+                return ActualLocation(parentPath.ifBlank { "/" }, storageVolume)
             }
-
-        override fun changeTo(basePath: String): Location = ActualLocation(basePath.ifBlank { "/" }, storageVolume)
 
         override fun toString(): String = "${storageVolume.uuid}:$basePath"
         override fun hashCode(): Int = storageVolume.hashCode() * 31 + basePath.hashCode()

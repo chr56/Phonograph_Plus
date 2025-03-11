@@ -33,8 +33,4 @@ interface Location {
      */
     val parent: Location?
 
-    /**
-     * another base path on same volume
-     */
-    fun changeTo(basePath: String): Location
 }
