@@ -37,14 +37,16 @@ object Locations {
         }
 
     fun from(basePath: String, storageVolume: StorageVolume): Location {
-        return Location(basePath.ifBlank { "/" }, storageVolume)
+        return ActualLocation(basePath.ifBlank { "/" }, storageVolume)
     }
 
     fun from(file: File, context: Context = App.instance): Location {
         val storageManager = context.getSystemService<StorageManager>()!!
 
         val storageVolume = file.getStorageVolume(storageManager)
-        val basePath = file.getBasePath(storageVolume.rootDirectory() ?: throw IllegalStateException("unavailable for $storageManager"))
+        val basePath = file.getBasePath(
+            storageVolume.rootDirectory() ?: throw IllegalStateException("unavailable for $storageManager")
+        )
 
         return from(basePath, storageVolume)
     }
@@ -65,4 +67,37 @@ object Locations {
         return path.substringAfter(root.path)
     }
 
+    private class ActualLocation(
+        override val basePath: String,
+        override val storageVolume: StorageVolume,
+    ) : Location {
+
+        override val absolutePath: String
+            get() {
+                val prefix = storageVolume.rootDirectory()?.path ?: Environment.getExternalStorageDirectory().absolutePath
+                return "$prefix$basePath"
+            }
+
+        override val parent: Location?
+            get() {
+                if (basePath == "/") return null // root
+                val parentPath = basePath.dropLastWhile { it != '/' }.removeSuffix("/")
+                return changeTo(parentPath)
+            }
+
+        override fun changeTo(basePath: String): Location = ActualLocation(basePath.ifBlank { "/" }, storageVolume)
+
+        override fun toString(): String = "${storageVolume.uuid}:$basePath"
+        override fun hashCode(): Int = storageVolume.hashCode() * 31 + basePath.hashCode()
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Location) return false
+
+            if (basePath != other.basePath) return false
+            if (storageVolume != other.storageVolume) return false
+
+            return true
+        }
+
+    }
 }

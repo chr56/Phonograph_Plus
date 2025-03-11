@@ -16,6 +16,7 @@ import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
 import player.phonograph.model.file.FileEntity
+import player.phonograph.model.file.Location
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.FavoritesStore
@@ -385,7 +386,7 @@ object ActionMenuProviders {
                 block(
                     when (fileItem) {
                         is FileEntity.File   -> Songs.id(context, fileItem.id).asList()
-                        is FileEntity.Folder -> Songs.searchByPath(context, fileItem.location.sqlPattern, false)
+                        is FileEntity.Folder -> Songs.searchByPath(context, sqlQuery(fileItem.location), false)
                     }
                 )
             }
@@ -409,6 +410,8 @@ object ActionMenuProviders {
             ).show()
             return true
         }
+
+        private fun sqlQuery(location: Location): String = "%${location.absolutePath}%"
     }
 
     object EmptyActionMenuProvider : ActionMenuProvider<Any> {
