@@ -5,15 +5,8 @@
 package player.phonograph.model.file
 
 import lib.storage.extension.rootDirectory
-import player.phonograph.App
-import player.phonograph.util.warning
-import androidx.core.content.getSystemService
-import android.content.Context
 import android.os.Environment
-import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
-import android.util.Log
-import java.io.File
 
 /**
  * Presenting a path
@@ -21,11 +14,11 @@ import java.io.File
  *  **starting with '/', ending without '/'**
  * @param storageVolume StorageVolume where file locate
  */
-class Location private constructor(val basePath: String, val storageVolume: StorageVolume) {
+class Location(val basePath: String, val storageVolume: StorageVolume) {
 
     val absolutePath: String
         get() {
-            val prefix = storageVolume.rootDirectory()?.path ?: primaryExternalStoragePath
+            val prefix = storageVolume.rootDirectory()?.path ?: Environment.getExternalStorageDirectory().absolutePath
             return "$prefix$basePath"
         }
 
@@ -42,56 +35,7 @@ class Location private constructor(val basePath: String, val storageVolume: Stor
     /**
      * another base path on same volume
      */
-    fun changeTo(basePath: String): Location = from(basePath, storageVolume)
-
-    companion object {
-        private const val TAG = "Location"
-
-        fun from(basePath: String, storageVolume: StorageVolume): Location {
-            return Location(basePath.ifBlank { "/" }, storageVolume)
-        }
-
-        fun from(file: File) = fromAbsolutePath(file.absolutePath)
-
-        /**
-         * @param path absolute path
-         */
-        fun fromAbsolutePath(path: String, context: Context = App.instance): Location {
-            val file = File(path)
-            val storageManager = context.getSystemService<StorageManager>()!!
-
-            val storageVolume = file.getStorageVolume(storageManager)
-            val basePath = file.getBasePath(storageVolume.rootDirectory() ?: throw IllegalStateException("unavailable for $storageManager"))
-            // path.substringAfter(storageVolume.root()?.path ?: file.getBasePath(context))
-
-            return from(basePath, storageVolume)
-        }
-
-        val HOME: Location get() = fromAbsolutePath(defaultStartDirectory.absolutePath)
-
-        private fun File.getStorageVolume(storageManager: StorageManager): StorageVolume {
-            val volume = storageManager.getStorageVolume(this)
-            return if (volume != null) {
-                volume
-            } else {
-                Log.e(TAG, "can't find storage volume for file $path")
-                storageManager.primaryStorageVolume
-            }
-        }
-
-        private fun File.getBasePath(root: File): String {
-            return path.substringAfter(root.path)
-        }
-
-        val primaryExternalStoragePath: String get() = Environment.getExternalStorageDirectory().absolutePath
-
-    }
-
-    init {
-        if (basePath.isBlank()) {
-            warning(TAG, "base path is null!")
-        }
-    }
+    fun changeTo(basePath: String): Location = Location(basePath.ifBlank { "/" }, storageVolume)
 
     override fun hashCode(): Int = storageVolume.hashCode() * 31 + basePath.hashCode()
     override fun equals(other: Any?): Boolean {

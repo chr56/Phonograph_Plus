@@ -5,6 +5,7 @@
 package player.phonograph.ui.modules.explorer
 
 import player.phonograph.App
+import player.phonograph.mechanism.explorer.Locations
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.settings.Keys
@@ -17,14 +18,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 sealed class AbsFileViewModel : ViewModel() {
 
 
     private val _currentLocation: MutableStateFlow<Location> =
-        MutableStateFlow(Location.from(Setting(App.instance).Composites[Keys.startDirectory].data))
+        MutableStateFlow(Locations.from(Setting(App.instance).Composites[Keys.startDirectory].data))
 
     val currentLocation = _currentLocation.asStateFlow()
 

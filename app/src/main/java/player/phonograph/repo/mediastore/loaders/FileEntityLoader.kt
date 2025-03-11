@@ -5,6 +5,7 @@
 package player.phonograph.repo.mediastore.loaders
 
 import player.phonograph.App
+import player.phonograph.mechanism.explorer.Locations
 import player.phonograph.mechanism.scanner.FileScanner
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
@@ -77,7 +78,7 @@ object FileEntityLoader {
         val files = directory.listFiles(FileScanner.audioFileFilter) ?: return emptyList()
         val result = ArrayList<FileEntity>()
         for (file in files) {
-            val l = Location.fromAbsolutePath(file.absolutePath)
+            val l = Locations.from(file.absolutePath)
             if (scope?.isActive == false) break
             val item =
                 when {

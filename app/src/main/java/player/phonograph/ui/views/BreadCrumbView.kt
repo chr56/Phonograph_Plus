@@ -6,6 +6,7 @@ package player.phonograph.ui.views
 
 import player.phonograph.R
 import player.phonograph.databinding.ItemTextBinding
+import player.phonograph.mechanism.explorer.Locations
 import player.phonograph.model.file.Location
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
@@ -39,7 +40,7 @@ class BreadCrumbView : FrameLayout {
             adapter.callBack = value
         }
 
-    var location: Location = Location.HOME
+    var location: Location = Locations.default
         set(value) {
             field = value
             adapter.location = value
@@ -96,7 +97,7 @@ class BreadCrumbView : FrameLayout {
             }
             holder.itemView.setOnClickListener {
                 callBack(
-                    Location.from(
+                    Locations.from(
                         crumbs.subList(0, position).fold("") { acc, s -> "$acc/$s" },
                         location.storageVolume
                     )

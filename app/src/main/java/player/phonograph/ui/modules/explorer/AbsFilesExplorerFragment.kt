@@ -8,6 +8,7 @@ import com.google.android.material.snackbar.Snackbar
 import lib.storage.extension.rootDirectory
 import player.phonograph.R
 import player.phonograph.databinding.FragmentFileExploreBinding
+import player.phonograph.mechanism.explorer.Locations
 import player.phonograph.model.file.Location
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
@@ -86,7 +87,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
             setImageDrawable(requireContext().getThemedDrawable(MDR.drawable.md_nav_back))
             setOnClickListener { navigateUp(true) }
             setOnLongClickListener {
-                onSwitch(Location.HOME)
+                onSwitch(Locations.default)
                 true
             }
         }
@@ -204,7 +205,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
                 if (path == null) {
                     Toast.makeText(context, R.string.not_available_now, Toast.LENGTH_SHORT).show()
                 } else {
-                    onSwitch(Location.fromAbsolutePath("$path/")) // todo
+                    onSwitch(Locations.from("$path/")) // todo
                 }
             }
             .show().tintButtons()

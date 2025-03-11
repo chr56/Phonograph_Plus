@@ -4,13 +4,13 @@
 
 package player.phonograph.settings
 
+import player.phonograph.mechanism.explorer.Locations
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.NowPlayingScreen
-import player.phonograph.model.file.defaultStartDirectory
 import player.phonograph.util.file.safeGetCanonicalPath
 import player.phonograph.util.time.TimeInterval
 import androidx.datastore.core.DataStore
@@ -86,7 +86,7 @@ data object NowPlayingScreenPreferenceProvider :
 
 data object StartDirectoryPreferenceProvider :
         MonoPreferenceProvider<File, String>(
-            Keys._startDirectoryPath, { defaultStartDirectory }
+            Keys._startDirectoryPath, { Locations.defaultStartDirectory }
         ) {
 
     override fun read(flow: Flow<String>): Flow<File> = flow.map { path ->
