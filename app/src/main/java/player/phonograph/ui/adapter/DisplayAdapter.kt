@@ -43,7 +43,9 @@ open class DisplayAdapter<I>(
     }
 
     protected val controller: MultiSelectionController<I>
-            by lazy { MultiSelectionController(this, activity, true) }
+            by lazy { MultiSelectionController(this, activity, allowMultiSelection) }
+
+    protected open val allowMultiSelection: Boolean get() = true
 
     override fun getItemId(position: Int): Long = presenter.getItemID(dataset[position])
     override fun getItem(datasetPosition: Int): I = dataset[datasetPosition]
@@ -77,6 +79,7 @@ open class DisplayAdapter<I>(
 
 
     open class DisplayViewHolder<I>(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
+
         open fun bind(
             item: I,
             position: Int,
@@ -84,14 +87,16 @@ open class DisplayAdapter<I>(
             presenter: DisplayPresenter<I>,
             controller: MultiSelectionController<I>,
         ) {
-            shortSeparator?.visibility = View.VISIBLE
-            itemView.isActivated = controller.isSelected(item)
 
             // Text
             title?.text = presenter.getDisplayTitle(itemView.context, item)
             text?.text = presenter.getDescription(itemView.context, item)
             textSecondary?.text = presenter.getSecondaryText(itemView.context, item)
             textTertiary?.text = presenter.getTertiaryText(itemView.context, item)
+
+            // Decorations
+            shortSeparator?.visibility = View.VISIBLE
+            itemView.isActivated = isSelected(item, controller)
 
             // Click
             val clickActionProvider = presenter.clickActionProvider
@@ -106,7 +111,7 @@ open class DisplayAdapter<I>(
                 if (menuProvider != null) {
                     menuButtonView.visibility = View.VISIBLE
                     menuButtonView.setOnClickListener {
-                        menuProvider.prepareMenu(menuButtonView, item)
+                        menuProvider.prepareMenu(menuButtonView, item, position)
                     }
                 } else {
                     menuButtonView.visibility = View.GONE
@@ -117,7 +122,7 @@ open class DisplayAdapter<I>(
             loadImage(item, presenter.imageType, image, presenter)
         }
 
-        protected fun loadImage(
+        protected open fun loadImage(
             item: I,
             imageType: Int,
             imageView: ImageView?,
@@ -167,6 +172,8 @@ open class DisplayAdapter<I>(
                 textTertiary?.setTextColor(context.secondaryTextColor(color))
             }
         }
+
+        open fun isSelected(item: I, controller: MultiSelectionController<I>): Boolean = controller.isSelected(item)
 
         private var loadJob: Disposable? = null
     }

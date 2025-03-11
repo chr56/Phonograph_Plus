@@ -58,7 +58,7 @@ class FilesPageAdapter(
                 setImage(image, item)
 
                 menu.setOnClickListener {
-                    ActionMenuProviders.FileEntityActionMenuProvider.prepareMenu(it, item)
+                    ActionMenuProviders.FileEntityActionMenuProvider.prepareMenu(it, item, position)
                 }
             }
             controller.registerClicking(itemView, bindingAdapterPosition) {

@@ -1,7 +1,5 @@
 package player.phonograph.model
 
-import player.phonograph.util.text.infoString
-import android.content.Context
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
@@ -39,7 +37,7 @@ data class Song(
     val albumArtistName: String?,
     @JvmField
     val composer: String?,
-) : Parcelable, Displayable {
+) : Parcelable {
 
     private constructor() : this(
         id = -1,
@@ -57,16 +55,6 @@ data class Song(
         albumArtistName = null,
         composer = null,
     )
-
-    override fun getItemID(): Long = id
-
-    override fun getDisplayTitle(context: Context): CharSequence = title
-
-    override fun getDescription(context: Context): CharSequence = infoString()
-    override fun getSecondaryText(context: Context): CharSequence? = albumName
-    override fun getTertiaryText(context: Context): CharSequence? = artistName
-
-    override fun defaultSortOrderReference(): String = title
 
     companion object {
 

@@ -11,7 +11,6 @@ import player.phonograph.R
 import player.phonograph.mechanism.actions.ActionMenuProviders.ActionMenuProvider
 import player.phonograph.mechanism.actions.actionGotoDetail
 import player.phonograph.model.QueueSong
-import player.phonograph.model.Song
 import player.phonograph.ui.dialogs.DeletionDialog
 import player.phonograph.ui.modules.tag.TagBrowserActivity
 import androidx.fragment.app.FragmentActivity
@@ -22,31 +21,29 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
+interface PlaylistEditorAdapterLinage {
+
+    fun at(position: Int): QueueSong
+    fun size(): Int
+
+    suspend fun deleteSong(position: Int)
+    suspend fun moveSong(from: Int, to: Int)
+}
+
 class PlaylistEditorItemMenuProvider(
-    private val bindingAdapterPosition: Int,
-    private val dataset: () -> List<QueueSong>,
-    private val deleteSong: suspend (Int) -> Unit,
-    private val moveSong: suspend (Int, Int) -> Unit,
+    private val adapter: PlaylistEditorAdapterLinage,
 ) : ActionMenuProvider<QueueSong> {
-    override fun inflateMenu(menu: Menu, context: Context, item: QueueSong) {
-        editorItemMenu(menu, context as FragmentActivity, dataset(), bindingAdapterPosition, deleteSong, moveSong)
+    override fun inflateMenu(menu: Menu, context: Context, item: QueueSong, position: Int) {
+        editorItemMenu(menu, context as FragmentActivity, position)
     }
 
-
-    private fun editorItemMenu(
-        menu: Menu,
-        activity: FragmentActivity,
-        dataset: List<QueueSong>,
-        bindingAdapterPosition: Int,
-        deleteSong: suspend (Int) -> Unit,
-        moveSong: suspend (Int, Int) -> Unit,
-    ) = attach(activity, menu) {
-        val queueSong = dataset[bindingAdapterPosition]
+    private fun editorItemMenu(menu: Menu, activity: FragmentActivity, bindingAdapterPosition: Int) = attach(activity, menu) {
+        val queueSong = adapter.at(bindingAdapterPosition)
         menuItem {
             titleRes(R.string.action_remove_from_playlist)
             onClick {
                 activity.lifecycleScope.launch(Dispatchers.IO) {
-                    deleteSong(bindingAdapterPosition)
+                    adapter.deleteSong(bindingAdapterPosition)
                 }
                 true
             }
@@ -55,7 +52,7 @@ class PlaylistEditorItemMenuProvider(
             titleRes(R.string.move_to_top)
             onClick {
                 activity.lifecycleScope.launch(Dispatchers.IO) {
-                    moveSong(bindingAdapterPosition, 0)
+                    adapter.moveSong(bindingAdapterPosition, 0)
                 }
                 true
             }
@@ -65,7 +62,7 @@ class PlaylistEditorItemMenuProvider(
             onClick {
                 if (bindingAdapterPosition != 0) {
                     activity.lifecycleScope.launch(Dispatchers.IO) {
-                        moveSong(bindingAdapterPosition, bindingAdapterPosition - 1)
+                        adapter.moveSong(bindingAdapterPosition, bindingAdapterPosition - 1)
                     }
                     true
                 } else false
@@ -74,9 +71,9 @@ class PlaylistEditorItemMenuProvider(
         menuItem {
             titleRes(R.string.move_down)
             onClick {
-                if (bindingAdapterPosition != dataset.size - 1) {
+                if (bindingAdapterPosition != adapter.size() - 1) {
                     activity.lifecycleScope.launch(Dispatchers.IO) {
-                        moveSong(bindingAdapterPosition, bindingAdapterPosition + 1)
+                        adapter.moveSong(bindingAdapterPosition, bindingAdapterPosition + 1)
                     }
                     true
                 } else false
@@ -86,7 +83,7 @@ class PlaylistEditorItemMenuProvider(
             titleRes(R.string.move_to_bottom)
             onClick {
                 activity.lifecycleScope.launch(Dispatchers.IO) {
-                    moveSong(bindingAdapterPosition, dataset.size - 1)
+                    adapter.moveSong(bindingAdapterPosition, adapter.size())
                 }
                 true
             }

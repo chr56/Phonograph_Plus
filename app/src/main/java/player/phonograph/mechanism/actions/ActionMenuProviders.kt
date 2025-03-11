@@ -43,16 +43,16 @@ import java.io.File
 object ActionMenuProviders {
     interface ActionMenuProvider<I> {
 
-        fun prepareMenu(menuButtonView: View, item: I) {
+        fun prepareMenu(menuButtonView: View, item: I, bindingPosition: Int = -1) {
             PopupMenu(menuButtonView.context, menuButtonView).apply {
-                inflateMenu(menu, menuButtonView.context, item)
+                inflateMenu(menu, menuButtonView.context, item, bindingPosition)
             }.show()
         }
 
         /**
          * inflate [menu] of this [item]
          */
-        fun inflateMenu(menu: Menu, context: Context, item: I)
+        fun inflateMenu(menu: Menu, context: Context, item: I, position: Int)
     }
 
     class SongActionMenuProvider(
@@ -60,7 +60,7 @@ object ActionMenuProviders {
         private val index: Int = Int.MIN_VALUE,
         private val transitionView: View? = null,
     ) : ActionMenuProvider<Song> {
-        override fun inflateMenu(menu: Menu, context: Context, song: Song) = context.run {
+        override fun inflateMenu(menu: Menu, context: Context, song: Song, position: Int) = context.run {
             attach(menu) {
                 if (showPlay) menuItem(title = getString(R.string.action_play)) { // id = R.id.action_play_
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
@@ -127,7 +127,7 @@ object ActionMenuProviders {
 
     sealed class CompositeActionMenuProvider<I> : ActionMenuProvider<I> {
         abstract suspend fun readSongs(context: Context, item: I): List<Song>
-        override fun inflateMenu(menu: Menu, context: Context, item: I) = context.run {
+        override fun inflateMenu(menu: Menu, context: Context, item: I, position: Int) = context.run {
             attach(menu) {
                 menuItem {
                     title = getString(R.string.action_play)
@@ -212,7 +212,7 @@ object ActionMenuProviders {
     }
 
     object PlaylistActionMenuProvider : ActionMenuProvider<Playlist> {
-        override fun inflateMenu(menu: Menu, context: Context, playlist: Playlist) = context.run {
+        override fun inflateMenu(menu: Menu, context: Context, playlist: Playlist, position: Int) = context.run {
             attach(menu) {
                 val location = playlist.location
                 menuItem {
@@ -286,7 +286,7 @@ object ActionMenuProviders {
     }
 
     object FileEntityActionMenuProvider : ActionMenuProvider<FileEntity> {
-        override fun inflateMenu(menu: Menu, context: Context, file: FileEntity) = context.run {
+        override fun inflateMenu(menu: Menu, context: Context, file: FileEntity, position: Int) = context.run {
             attach(menu) {
                 menuItem(title = getString(R.string.action_play)) { // id = R.id.action_play
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
@@ -412,6 +412,6 @@ object ActionMenuProviders {
     }
 
     object EmptyActionMenuProvider : ActionMenuProvider<Any> {
-        override fun inflateMenu(menu: Menu, context: Context, item: Any) = menu.clear()
+        override fun inflateMenu(menu: Menu, context: Context, item: Any, position: Int) = menu.clear()
     }
 }
