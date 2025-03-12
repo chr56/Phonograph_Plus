@@ -13,7 +13,7 @@ import player.phonograph.coil.model.SongImage
 import player.phonograph.coil.raw
 import player.phonograph.coil.retriever.AudioFileImageFetcherDelegate
 import player.phonograph.coil.retriever.ImageRetriever
-import player.phonograph.coil.retriever.retrieverFromConfig
+import player.phonograph.coil.retriever.retrievers
 import player.phonograph.util.debug
 import android.content.Context
 import android.util.Log
@@ -26,18 +26,17 @@ class AudioFileFetcher private constructor(
     private val delegates: List<AudioFileImageFetcherDelegate<ImageRetriever>>,
 ) : Fetcher {
 
-    class Factory(context: Context) : Fetcher.Factory<SongImage> {
+    class Factory() : Fetcher.Factory<SongImage> {
         override fun create(data: SongImage, options: Options, imageLoader: ImageLoader): Fetcher =
             AudioFileFetcher(
                 data,
                 options.context,
                 options.size,
                 options.parameters.raw(false),
-                delegates
+                options.parameters.retrievers().map {
+                    AudioFileImageFetcherDelegate(options.context, it)
+                }
             )
-
-        private val delegates: List<AudioFileImageFetcherDelegate<ImageRetriever>> =
-            retrieverFromConfig.map { AudioFileImageFetcherDelegate(context.applicationContext, it) }
     }
 
     override suspend fun fetch(): FetchResult? {
@@ -63,7 +62,6 @@ class AudioFileFetcher private constructor(
     }
 
     companion object {
-        val retriever = retrieverFromConfig
         private const val TAG = "ImageRetriever"
     }
 }

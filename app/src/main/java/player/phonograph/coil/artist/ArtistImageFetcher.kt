@@ -16,7 +16,7 @@ import player.phonograph.coil.retriever.ArtistImageFetcherDelegate
 import player.phonograph.coil.retriever.ExternalFileRetriever
 import player.phonograph.coil.retriever.ImageRetriever
 import player.phonograph.coil.retriever.readFromFile
-import player.phonograph.coil.retriever.retrieverFromConfig
+import player.phonograph.coil.retriever.retrievers
 import player.phonograph.util.debug
 import android.content.Context
 import android.util.Log
@@ -29,18 +29,23 @@ class ArtistImageFetcher(
     private val delegates: List<ArtistImageFetcherDelegate<ImageRetriever>>,
 ) : Fetcher {
 
-    class Factory(context: Context) : Fetcher.Factory<ArtistImage> {
+    class Factory() : Fetcher.Factory<ArtistImage> {
         override fun create(
             data: ArtistImage,
             options: Options,
             imageLoader: ImageLoader,
-        ) =
-            ArtistImageFetcher(data, options.context, options.size, options.parameters.raw(false), delegates)
-
-        private val delegates: List<ArtistImageFetcherDelegate<ImageRetriever>> =
-            retrieverFromConfig
+        ) = ArtistImageFetcher(
+            data,
+            options.context,
+            options.size,
+            options.parameters.raw(false),
+            options.parameters.retrievers()
                 .filter { it !is ExternalFileRetriever }  // ExternalFileRetriever is not suitable for artist
-                .map { ArtistImageFetcherDelegate(context.applicationContext, it) }
+                .map {
+                    ArtistImageFetcherDelegate(options.context, it)
+                }
+        )
+
     }
 
     override suspend fun fetch(): FetchResult? {

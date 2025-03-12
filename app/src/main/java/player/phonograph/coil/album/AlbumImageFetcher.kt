@@ -13,7 +13,7 @@ import player.phonograph.coil.model.AlbumImage
 import player.phonograph.coil.raw
 import player.phonograph.coil.retriever.AlbumImageFetcherDelegate
 import player.phonograph.coil.retriever.ImageRetriever
-import player.phonograph.coil.retriever.retrieverFromConfig
+import player.phonograph.coil.retriever.retrievers
 import player.phonograph.util.debug
 import android.content.Context
 import android.util.Log
@@ -26,16 +26,20 @@ class AlbumImageFetcher(
     private val delegates: List<AlbumImageFetcherDelegate<ImageRetriever>>,
 ) : Fetcher {
 
-    class Factory(context: Context) : Fetcher.Factory<AlbumImage> {
+    class Factory() : Fetcher.Factory<AlbumImage> {
         override fun create(
             data: AlbumImage,
             options: Options,
             imageLoader: ImageLoader,
-        ) =
-            AlbumImageFetcher(data, options.context, options.size, options.parameters.raw(false), delegates)
-
-        private val delegates: List<AlbumImageFetcherDelegate<ImageRetriever>> =
-            retrieverFromConfig.map { AlbumImageFetcherDelegate(context.applicationContext, it) }
+        ) = AlbumImageFetcher(
+            data,
+            options.context,
+            options.size,
+            options.parameters.raw(false),
+            options.parameters.retrievers().map {
+                AlbumImageFetcherDelegate(options.context, it)
+            }
+        )
     }
 
     override suspend fun fetch(): FetchResult? {
