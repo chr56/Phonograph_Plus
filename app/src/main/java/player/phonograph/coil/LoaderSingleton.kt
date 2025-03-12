@@ -19,6 +19,7 @@ import player.phonograph.coil.cache.CacheInterceptor
 import player.phonograph.coil.lastfm.LastFmImageBundleKeyer
 import player.phonograph.coil.lastfm.LastFmImageBundleMapper
 import player.phonograph.coil.palette.PaletteInterceptor
+import player.phonograph.coil.retriever.RetrieverConfigInterceptor
 import android.content.Context
 
 fun createPhonographImageLoader(context: Context): ImageLoader {
@@ -44,6 +45,7 @@ fun createPhonographImageLoader(context: Context): ImageLoader {
             // interceptors
             add(CacheInterceptor())
             add(PaletteInterceptor())
+            add(RetrieverConfigInterceptor())
         }
         .build()
 }
