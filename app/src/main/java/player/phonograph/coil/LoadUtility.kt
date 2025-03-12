@@ -90,7 +90,7 @@ class ChainBuilder internal constructor(context: Context) {
     }
 
     fun withPalette(): ChainBuilder {
-        requestBuilder.parameters(Parameters.Builder().set(PARAMETERS_KEY_PALETTE, true).build())
+        requestBuilder.setParameter(PARAMETERS_KEY_PALETTE, true)
         return this
     }
 
