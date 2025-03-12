@@ -540,4 +540,5 @@
     <string name="version_migration_hint_too_old">您正在从极其陈旧的版本升级！</string>
     <string name="version_migration_hint_suggest_to_wipe_data">请考虑清除应用数据！</string>
     <string name="version_migration_hint_required_to_wipe_data">请务必清除应用数据！</string>
+    <string name="hint_long_press_to_proceed">请长按以继续！</string>
 </resources>

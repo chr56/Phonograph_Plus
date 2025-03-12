@@ -11,7 +11,8 @@ import player.phonograph.R
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.util.theme.accentColoredButtonStyle
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,8 +21,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -93,7 +99,8 @@ private fun OptionItemDelete(
 ) {
     Option(
         stringResource(R.string.action_delete_database),
-        stringResource(R.string.description_delete_database)
+        stringResource(R.string.description_delete_database),
+        requireConfirm = true
     ) {
         coroutineScope.launch(Dispatchers.IO) {
             // Stub
@@ -103,14 +110,28 @@ private fun OptionItemDelete(
 }
 
 @Composable
-private fun Option(name: String, description: String, action: () -> Unit) {
+@OptIn(ExperimentalFoundationApi::class)
+private fun Option(name: String, description: String, requireConfirm: Boolean = false, action: () -> Unit) {
+    var hint by remember { mutableStateOf(false) }
+    val base =
+        if (requireConfirm) {
+            Modifier.combinedClickable(onLongClick = action, onClick = { hint = true })
+        } else {
+            Modifier.combinedClickable(onClick = action)
+        }
+
     Column(
-        Modifier
-            .clickable { action() }
+        base
             .padding(vertical = 12.dp, horizontal = 16.dp)
             .fillMaxWidth()
     ) {
         Text(name, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.body1)
         Text(description, style = MaterialTheme.typography.body2)
+        if (requireConfirm) {
+            Text(
+                stringResource(R.string.hint_long_press_to_proceed),
+                style = MaterialTheme.typography.body2, color = if (hint) Color.Red else Color.LightGray
+            )
+        }
     }
 }

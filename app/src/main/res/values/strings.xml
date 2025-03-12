@@ -553,4 +553,5 @@
     <string name="version_migration_hint_too_old">You are upgrading from a very old version! </string>
     <string name="version_migration_hint_suggest_to_wipe_data">Try to wipe app data!</string>
     <string name="version_migration_hint_required_to_wipe_data">Please wipe app data!</string>
+    <string name="hint_long_press_to_proceed">Please long press to proceed!</string>
 </resources>
