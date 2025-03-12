@@ -1,31 +1,29 @@
 /*
- * Copyright (c) 2022~2025 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
 @file:Suppress("RegExpRedundantEscape")
 
-package player.phonograph.model.lyrics
+package player.phonograph.mechanism.lyrics
 
+import player.phonograph.model.lyrics.AbsLyrics
+import player.phonograph.model.lyrics.LrcLyrics
+import player.phonograph.model.lyrics.LyricsSource
 import player.phonograph.util.warning
 import androidx.core.util.forEach
-import android.os.Parcelable
 import android.util.SparseArray
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import java.util.Locale
 import java.util.regex.Pattern
 
 @Parcelize
-data class LrcLyrics(
-    val lyrics: SparseArray<String>,
+data class ActualLrcLyrics(
+    private val lyrics: SparseArray<String>,
     override val source: LyricsSource,
     override var title: String = AbsLyrics.DEFAULT_TITLE,
-    val offset: Long = 0,
-    val totalTime: Long = -1,
-) : AbsLyrics, Parcelable {
-
-    @IgnoredOnParcel
-    override val type: Int = LyricsType.LRC
+    override val offset: Long = 0,
+    override val totalTime: Long = -1,
+) : LrcLyrics {
 
     override val raw: String
         get() {
@@ -41,13 +39,8 @@ data class LrcLyrics(
     override val lyricsTimeArray: IntArray get() = IntArray(lyrics.size()) { lyrics.keyAt(it) }
 
 
-    /**
-     * get a line of lyrics
-     * @param timeStamp current rime in millisecond
-     * @return Pair<LyricsLine:[String],Length:[Long]>
-     */
-    fun getLine(timeStamp: Int): Pair<String, Long> {
-        val index = getPosition(timeStamp)
+    override fun getLine(timestamp: Int): Pair<String, Long> {
+        val index = getLineNumber(timestamp)
         if (index in 0..lyrics.size()) {
             val currentLine = lyrics.valueAt(index)
                 .replace(Regex("""\\[nNrR]"""), "\n")
@@ -66,10 +59,10 @@ data class LrcLyrics(
         return Pair("", -1)
     }
 
-    fun getPosition(timeStamp: Int): Int {
+    override fun getLineNumber(timestamp: Int): Int {
         var index = -1
         if (totalTime != -1L) { // -1 means " no length info in lyrics"
-            if (timeStamp >= totalTime) {
+            if (timestamp >= totalTime) {
                 warning(
                     "LrcLyrics",
                     "TimeStamp is over the total lyrics length: lyrics might be mismatched, please check up."
@@ -78,7 +71,7 @@ data class LrcLyrics(
             }
         }
 
-        val ms = timeStamp + offset + TIME_OFFSET_MS
+        val ms = timestamp + offset + TIME_OFFSET_MS
         index = binSearch(ms, 0, lyrics.size())
         return index
     }
@@ -114,7 +107,7 @@ data class LrcLyrics(
 
     companion object {
         private const val TAG = "LrcLyrics"
-        fun from(raw: String, source: LyricsSource = LyricsSource.Unknown): LrcLyrics { // raw data:
+        fun from(raw: String, source: LyricsSource = LyricsSource.Unknown): ActualLrcLyrics { // raw data:
             //
             val rawLines: List<String> = raw.split(Pattern.compile("\r?\n"))
             var offset: Long = 0
@@ -182,7 +175,7 @@ data class LrcLyrics(
             } // loop_end
 
             // create lyrics
-            return LrcLyrics(lyrics, source, title, offset, totalTime)
+            return ActualLrcLyrics(lyrics, source, title, offset, totalTime)
         }
 
         private val LRC_LINE_PATTERN = Pattern.compile("((?:\\[.*?\\])+)(.*)")

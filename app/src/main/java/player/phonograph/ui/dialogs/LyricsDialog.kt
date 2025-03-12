@@ -9,6 +9,7 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
 import player.phonograph.R
 import player.phonograph.databinding.DialogLyricsBinding
+import player.phonograph.mechanism.lyrics.ActualTextLyrics
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.lyrics.LyricsInfo
@@ -224,7 +225,7 @@ class LyricsDialog : DialogFragment() {
     private lateinit var linearLayoutManager: LinearLayoutManager
     private fun setupRecycleView(lyricsInfo: LyricsInfo) {
         val lyrics =
-            lyricsInfo.activatedLyrics ?: lyricsInfo.getOrElse(0) { TextLyrics.from("NOT FOUND!?") }
+            lyricsInfo.activatedLyrics ?: lyricsInfo.getOrElse(0) { ActualTextLyrics.from("NOT FOUND!?") }
         linearLayoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
         lyricsAdapter = LyricsAdapter(requireContext(), lyrics) { dialog?.dismiss() }
         binding.recyclerViewLyrics.apply {
@@ -269,7 +270,7 @@ class LyricsDialog : DialogFragment() {
     private fun onUpdateProgress(progress: Int, total: Int) {
         val lyrics = viewModel.lyricsInfo.value?.activatedLyrics
         val lrcLyrics = lyrics as? LrcLyrics ?: return
-        val position = lrcLyrics.getPosition(progress)
+        val position = lrcLyrics.getLineNumber(progress)
         if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             updateHighlight(position)
             if (viewModel.requireLyricsFollowing.value) {

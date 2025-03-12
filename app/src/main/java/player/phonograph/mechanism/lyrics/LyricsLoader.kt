@@ -10,7 +10,6 @@ import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.model.lyrics.LyricsSource
-import player.phonograph.model.lyrics.TextLyrics
 import player.phonograph.util.debug
 import player.phonograph.util.file.stripExtension
 import player.phonograph.util.permissions.StoragePermissionChecker
@@ -95,7 +94,7 @@ object LyricsLoader {
         } catch (e: Exception) {
             val errorMsg = errorMsg(songFile.path, e)
             Log.i(TAG, errorMsg)
-            TextLyrics.from(errorMsg)
+            ActualTextLyrics.from(errorMsg)
         }
 
     private fun errorMsg(path: String, t: Throwable?) =
@@ -113,7 +112,7 @@ object LyricsLoader {
         var score = 0
         for (line in lines) score += if (regex.matches(line)) 1 else -1
 
-        return if (score > 1) LrcLyrics.from(raw, lyricsSource) else TextLyrics.from(raw, lyricsSource)
+        return if (score > 1) ActualLrcLyrics.from(raw, lyricsSource) else ActualTextLyrics.from(raw, lyricsSource)
     }
 
     fun getExternalPreciseLyricsFile(songFile: File): List<File> {
