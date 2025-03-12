@@ -15,6 +15,7 @@ import player.phonograph.coil.audiofile.AudioFileFetcher
 import player.phonograph.coil.audiofile.AudioFileKeyer
 import player.phonograph.coil.audiofile.AudioFileMapper
 import player.phonograph.coil.audiofile.FileEntityMapper
+import player.phonograph.coil.cache.CacheInterceptor
 import player.phonograph.coil.lastfm.LastFmImageBundleKeyer
 import player.phonograph.coil.lastfm.LastFmImageBundleMapper
 import player.phonograph.coil.palette.PaletteInterceptor
@@ -41,6 +42,7 @@ fun createPhonographImageLoader(context: Context): ImageLoader {
             add(LastFmImageBundleKeyer())
             add(LastFmImageBundleMapper())
             // interceptors
+            add(CacheInterceptor())
             add(PaletteInterceptor())
         }
         .build()
