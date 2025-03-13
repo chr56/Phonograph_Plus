@@ -31,8 +31,6 @@ import android.media.MediaMetadataRetriever
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -72,7 +70,7 @@ class MediaStoreRetriever : ImageRetriever {
     }
 
     @OptIn(ExperimentalCoilApi::class)
-    private fun retrieveFromAlbumUri(albumId: Long, context: Context, size: Size): SourceResult? {
+    private fun retrieveFromAlbumUri(albumId: Long, context: Context, size: Size): FetchResult? {
         val contentResolver = context.contentResolver
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val uri = mediastoreUriAlbum(MediaStore.VOLUME_EXTERNAL, albumId)
@@ -80,17 +78,10 @@ class MediaStoreRetriever : ImageRetriever {
             val height = size.height.pxOrElse { -1 }
             try {
                 val bitmap = contentResolver.loadThumbnail(uri, AndroidSize(width, height), null)
-                val outputStream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream).let { if (!it) return null }
-                val inputStream = ByteArrayInputStream(outputStream.toByteArray())
-                val source = inputStream.source().buffer()
-                SourceResult(
-                    source = ImageSource(
-                        source = source,
-                        context = context,
-                        metadata = ContentMetadata(uri)
-                    ),
-                    mimeType = "image/png",
+                val drawable = BitmapDrawable(context.resources, bitmap)
+                DrawableResult(
+                    drawable = drawable,
+                    isSampled = false,
                     dataSource = DataSource.DISK
                 )
             } catch (e: IOException) {
@@ -241,13 +232,6 @@ const val RETRIEVER_ID_MEDIA_STORE = 0
 const val RETRIEVER_ID_MEDIA_METADATA = 1
 const val RETRIEVER_ID_J_AUDIO_TAGGER = 4
 const val RETRIEVER_ID_EXTERNAL_FILE = 7
-
-fun allRetrieverId() = intArrayOf(
-    RETRIEVER_ID_MEDIA_STORE,
-    RETRIEVER_ID_MEDIA_METADATA,
-    RETRIEVER_ID_J_AUDIO_TAGGER,
-    RETRIEVER_ID_EXTERNAL_FILE,
-)
 
 
 @IntDef(RETRIEVER_ID_MEDIA_STORE, RETRIEVER_ID_MEDIA_METADATA, RETRIEVER_ID_J_AUDIO_TAGGER, RETRIEVER_ID_EXTERNAL_FILE)
