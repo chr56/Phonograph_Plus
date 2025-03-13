@@ -17,8 +17,8 @@ import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.coil.model.ArtistImage
 import player.phonograph.coil.raw
 import player.phonograph.coil.retriever.ArtistImageFetcherDelegate
-import player.phonograph.coil.retriever.ExternalFileRetriever
 import player.phonograph.coil.retriever.ImageRetriever
+import player.phonograph.coil.retriever.ImageRetrievers.ExternalFileRetriever
 import player.phonograph.coil.retriever.retrievers
 import player.phonograph.util.debug
 import android.content.Context

@@ -19,10 +19,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 private fun ImageSource.retriever(): ImageRetriever = when (key) {
-    ImageSource.IMAGE_SOURCE_MEDIA_STORE              -> MediaStoreRetriever()
-    ImageSource.IMAGE_SOURCE_MEDIA_METADATA_RETRIEVER -> MediaMetadataRetriever()
-    ImageSource.IMAGE_SOURCE_J_AUDIO_TAGGER           -> JAudioTaggerRetriever()
-    ImageSource.IMAGE_SOURCE_EXTERNAL_FILE            -> ExternalFileRetriever()
+    ImageSource.IMAGE_SOURCE_MEDIA_STORE              -> ImageRetrievers.MediaStoreRetriever()
+    ImageSource.IMAGE_SOURCE_MEDIA_METADATA_RETRIEVER -> ImageRetrievers.MediaMetadataRetriever()
+    ImageSource.IMAGE_SOURCE_J_AUDIO_TAGGER           -> ImageRetrievers.JAudioTaggerRetriever()
+    ImageSource.IMAGE_SOURCE_EXTERNAL_FILE            -> ImageRetrievers.ExternalFileRetriever()
     else                                              -> throw IllegalArgumentException("Unknown ImageSource: $key")
 }
 
