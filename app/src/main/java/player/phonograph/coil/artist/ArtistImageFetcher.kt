@@ -14,6 +14,7 @@ import coil.request.Options
 import coil.size.Size
 import okio.Path.Companion.toOkioPath
 import player.phonograph.coil.CustomArtistImageStore
+import player.phonograph.coil.cache
 import player.phonograph.coil.model.ArtistImage
 import player.phonograph.coil.raw
 import player.phonograph.coil.retriever.ArtistImageFetcherDelegate
@@ -29,6 +30,7 @@ class ArtistImageFetcher(
     private val context: Context,
     private val size: Size,
     private val raw: Boolean,
+    private val cache: Boolean,
     private val delegates: List<ArtistImageFetcherDelegate<ImageRetriever>>,
 ) : Fetcher {
 
@@ -42,6 +44,7 @@ class ArtistImageFetcher(
             options.context,
             options.size,
             options.parameters.raw(false),
+            options.parameters.cache(false),
             options.parameters.retrievers()
                 .filter { it !is ExternalFileRetriever }  // ExternalFileRetriever is not suitable for artist
                 .map {
@@ -70,7 +73,7 @@ class ArtistImageFetcher(
         if (noImage) return null // skipping
         */
         for (delegate in delegates) {
-            val result = delegate.retrieve(data, context, size, raw)
+            val result = delegate.retrieve(data, context, size, raw, cache)
             if (result != null) {
                 return result
             } else {

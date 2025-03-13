@@ -22,7 +22,13 @@ class AudioFileImageFetcherDelegate<R : ImageRetriever>(
 
     override val cacheStore: CacheStore.Cache<SongImage> = CacheStore.AudioFiles(context.applicationContext)
 
-    override suspend fun retrieveImpl(target: SongImage, context: Context, size: Size, rawImage: Boolean): FetchResult? {
+    override suspend fun retrieveImpl(
+        target: SongImage,
+        context: Context,
+        size: Size,
+        rawImage: Boolean,
+        withCache: Boolean,
+    ): FetchResult? {
         return retriever.retrieve(target.path, target.albumId, context, size, rawImage)
     }
 }
@@ -31,13 +37,19 @@ sealed class CompositeFetcherDelegate<T : CompositeLoaderTarget<SongImage>, R : 
     override val retriever: R,
 ) : FetcherDelegate<T, R>() {
 
-    override suspend fun retrieveImpl(target: T, context: Context, size: Size, rawImage: Boolean): FetchResult? {
+    override suspend fun retrieveImpl(
+        target: T,
+        context: Context,
+        size: Size,
+        rawImage: Boolean,
+        withCache: Boolean,
+    ): FetchResult? {
 
         val audioFilesCache = CacheStore.AudioFiles(context.applicationContext)
 
         for (file in target.items(context)) {
 
-            if (enableCache(context)) {
+            if (withCache) {
                 val noSpecificImage = audioFilesCache.isNoImage(file, retriever.id)
                 if (noSpecificImage) continue
             }

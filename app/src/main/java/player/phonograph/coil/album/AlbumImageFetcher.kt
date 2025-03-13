@@ -9,6 +9,7 @@ import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.request.Options
 import coil.size.Size
+import player.phonograph.coil.cache
 import player.phonograph.coil.model.AlbumImage
 import player.phonograph.coil.raw
 import player.phonograph.coil.retriever.AlbumImageFetcherDelegate
@@ -23,6 +24,7 @@ class AlbumImageFetcher(
     private val context: Context,
     private val size: Size,
     private val raw: Boolean,
+    private val cache: Boolean,
     private val delegates: List<AlbumImageFetcherDelegate<ImageRetriever>>,
 ) : Fetcher {
 
@@ -36,6 +38,7 @@ class AlbumImageFetcher(
             options.context,
             options.size,
             options.parameters.raw(false),
+            options.parameters.cache(false),
             options.parameters.retrievers().map {
                 AlbumImageFetcherDelegate(options.context, it)
             }
@@ -48,7 +51,7 @@ class AlbumImageFetcher(
         if (noImage) return null // skipping
         */
         for (delegate in delegates) {
-            val result = delegate.retrieve(data, context, size, raw)
+            val result = delegate.retrieve(data, context, size, raw, cache)
             if (result != null) {
                 return result
             } else {

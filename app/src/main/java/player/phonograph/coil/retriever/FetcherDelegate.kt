@@ -8,7 +8,6 @@ import coil.fetch.FetchResult
 import coil.size.Size
 import player.phonograph.coil.cache.CacheStore
 import player.phonograph.coil.model.LoaderTarget
-import player.phonograph.mechanism.setting.CoilImageConfig
 import player.phonograph.util.debug
 import android.content.Context
 import android.util.Log
@@ -17,9 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 sealed class FetcherDelegate<T : LoaderTarget, R : ImageRetriever> {
-
-    @Suppress("unused")
-    protected fun enableCache(context: Context): Boolean = CoilImageConfig.enableImageCache
 
     abstract val retriever: R
 
@@ -30,9 +26,10 @@ sealed class FetcherDelegate<T : LoaderTarget, R : ImageRetriever> {
         context: Context,
         size: Size,
         rawImage: Boolean,
+        withCache: Boolean = false,
     ): FetchResult? {
 
-        if (enableCache(context)) {
+        if (withCache) {
             val noSpecificImage = cacheStore.isNoImage(target, retriever.id)
             if (noSpecificImage) return null
 
@@ -49,7 +46,7 @@ sealed class FetcherDelegate<T : LoaderTarget, R : ImageRetriever> {
         val result = retrieveImpl(target, context, size, rawImage)
         return if (result != null) {
 
-            if (enableCache(context)) {
+            if (withCache) {
                 coroutineScope.launch {
                     cacheStore.set(target, result, retriever.id)
                 }
@@ -61,7 +58,7 @@ sealed class FetcherDelegate<T : LoaderTarget, R : ImageRetriever> {
                 Log.v(TAG, "Image not available from ${retriever.name} for $target")
             }
 
-            if (enableCache(context)) {
+            if (withCache) {
                 cacheStore.markNoImage(target, retriever.id)
             }
 
@@ -74,6 +71,7 @@ sealed class FetcherDelegate<T : LoaderTarget, R : ImageRetriever> {
         context: Context,
         size: Size,
         rawImage: Boolean,
+        withCache: Boolean = false,
     ): FetchResult?
 
     protected val coroutineScope: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
