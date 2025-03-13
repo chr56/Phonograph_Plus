@@ -33,16 +33,6 @@ sealed class CompositeFetcherDelegate<T : CompositeLoaderTarget<SongImage>, R : 
 
     override suspend fun retrieveImpl(target: T, context: Context, size: Size, rawImage: Boolean): FetchResult? {
 
-        if (enableCache(context)) {
-            val noImage = cacheStore.isNoImage(target, retriever.id)
-            if (noImage) return null
-
-            val cached = cacheStore.get(target, retriever.id)
-            if (cached != null) {
-                return cached
-            }
-        }
-
         val audioFilesCache = CacheStore.AudioFiles(context.applicationContext)
 
         for (file in target.items(context)) {
@@ -53,22 +43,7 @@ sealed class CompositeFetcherDelegate<T : CompositeLoaderTarget<SongImage>, R : 
             }
 
             val result = retriever.retrieve(file.path, file.albumId, context, size, rawImage)
-            if (result != null) {
-
-                if (enableCache(context)) {
-                    CacherCoroutineScope.launch {
-                        cacheStore.set(target, result, retriever.id)
-                    }
-                }
-
-                return result
-            } else {
-                continue
-            }
-        }
-
-        if (enableCache(context)) {
-            cacheStore.markNoImage(target, retriever.id)
+            if (result != null) return result else continue
         }
 
         return null
