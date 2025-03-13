@@ -52,3 +52,18 @@ suspend fun collectSourceConfig(context: Context): ImageSourceConfig = sourceCon
     }
     return withContext(Dispatchers.IO) { imageSourceConfigFlow.first() }
 }
+
+private var isCacheEnabled: Boolean? = null
+private var isCacheEnabledJob: Job? = null
+
+suspend fun collectCacheSetting(context: Context): Boolean = isCacheEnabled ?: run {
+    val enableImageCacheFlow = CoilImageConfig.enableImageCache(context)
+    if (isCacheEnabledJob == null) {
+        isCacheEnabledJob = CoroutineScope(Dispatchers.IO).launch {
+            enableImageCacheFlow.collect { isCacheEnabled = it }
+        }
+    } else {
+        Log.d("ImageCache", "`isCacheEnabled` is already called once!")
+    }
+    return withContext(Dispatchers.IO) { enableImageCacheFlow.first() }
+}

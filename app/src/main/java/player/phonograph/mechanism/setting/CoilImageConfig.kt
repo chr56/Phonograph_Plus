@@ -62,14 +62,22 @@ object CoilImageConfig {
     var enableImageCache: Boolean
         get() {
             if (_enableImageCache == null) {
-                _enableImageCache = Setting(App.instance)[Keys.imageCache].data
+                _enableImageCache = imageCacheSetting().data
             }
             return _enableImageCache ?: false
         }
         set(value) {
-            Setting(App.instance)[Keys.imageCache].data = value
+            imageCacheSetting().data = value
             _enableImageCache = value
         }
+
+    fun enableImageCache(context: Context): Flow<Boolean>{
+        val preference = imageCacheSetting(context.applicationContext)
+        return preference.flow
+    }
+
+    private fun imageCacheSetting(context: Context = App.instance): PrimitivePreference<Boolean> =
+        Setting(context)[Keys.imageCache]
 
     fun clearImageCache(context: Context) = CacheStore.clear(context)
 
