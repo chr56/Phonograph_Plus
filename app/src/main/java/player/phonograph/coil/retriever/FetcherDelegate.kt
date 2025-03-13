@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 
 sealed class FetcherDelegate<T : LoaderTarget, R : ImageRetriever> {
 
-    @Suppress("UNUSED_PARAMETER")
+    @Suppress("unused")
     protected fun enableCache(context: Context): Boolean = CoilImageConfig.enableImageCache
 
     abstract val retriever: R
@@ -50,7 +50,7 @@ sealed class FetcherDelegate<T : LoaderTarget, R : ImageRetriever> {
         return if (result != null) {
 
             if (enableCache(context)) {
-                CacherCoroutineScope.launch {
+                coroutineScope.launch {
                     cacheStore.set(target, result, retriever.id)
                 }
             }
@@ -69,14 +69,14 @@ sealed class FetcherDelegate<T : LoaderTarget, R : ImageRetriever> {
         }
     }
 
-    abstract suspend fun retrieveImpl(
+    protected abstract suspend fun retrieveImpl(
         target: T,
         context: Context,
         size: Size,
         rawImage: Boolean,
     ): FetchResult?
 
-    protected val CacherCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    protected val coroutineScope: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
 
     companion object {
         private const val TAG = "FetcherDelegate"
