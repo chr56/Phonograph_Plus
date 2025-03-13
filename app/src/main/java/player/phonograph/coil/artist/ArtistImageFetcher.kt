@@ -5,18 +5,22 @@
 package player.phonograph.coil.artist
 
 import coil.ImageLoader
+import coil.decode.DataSource
+import coil.decode.ImageSource
 import coil.fetch.FetchResult
 import coil.fetch.Fetcher
+import coil.fetch.SourceResult
 import coil.request.Options
 import coil.size.Size
+import okio.Path.Companion.toOkioPath
 import player.phonograph.coil.CustomArtistImageStore
+import player.phonograph.coil.cache
 import player.phonograph.coil.model.ArtistImage
 import player.phonograph.coil.raw
 import player.phonograph.coil.retriever.ArtistImageFetcherDelegate
-import player.phonograph.coil.retriever.ExternalFileRetriever
 import player.phonograph.coil.retriever.ImageRetriever
-import player.phonograph.coil.retriever.readFromFile
-import player.phonograph.coil.retriever.retrieverFromConfig
+import player.phonograph.coil.retriever.ImageRetrievers.ExternalFileRetriever
+import player.phonograph.coil.retriever.retrievers
 import player.phonograph.util.debug
 import android.content.Context
 import android.util.Log
@@ -26,28 +30,42 @@ class ArtistImageFetcher(
     private val context: Context,
     private val size: Size,
     private val raw: Boolean,
+    private val cache: Boolean,
     private val delegates: List<ArtistImageFetcherDelegate<ImageRetriever>>,
 ) : Fetcher {
 
-    class Factory(context: Context) : Fetcher.Factory<ArtistImage> {
+    class Factory() : Fetcher.Factory<ArtistImage> {
         override fun create(
             data: ArtistImage,
             options: Options,
             imageLoader: ImageLoader,
-        ) =
-            ArtistImageFetcher(data, options.context, options.size, options.parameters.raw(false), delegates)
-
-        private val delegates: List<ArtistImageFetcherDelegate<ImageRetriever>> =
-            retrieverFromConfig
+        ) = ArtistImageFetcher(
+            data,
+            options.context,
+            options.size,
+            options.parameters.raw(false),
+            options.parameters.cache(false),
+            options.parameters.retrievers()
                 .filter { it !is ExternalFileRetriever }  // ExternalFileRetriever is not suitable for artist
-                .map { ArtistImageFetcherDelegate(context.applicationContext, it) }
+                .map {
+                    ArtistImageFetcherDelegate(options.context, it)
+                }
+        )
+
     }
 
     override suspend fun fetch(): FetchResult? {
         // first check if the custom artist image exist
         val file = CustomArtistImageStore.instance(context).getCustomArtistImageFile(data.id, data.name)
         if (file != null) {
-            return readFromFile(file, "#${data.id}#${data.name}", "image/jpeg")
+            return SourceResult(
+                source = ImageSource(
+                    file = file.toOkioPath(true),
+                    diskCacheKey = "#${data.id}#${data.name}"
+                ),
+                mimeType = "image/jpeg",
+                dataSource = DataSource.DISK
+            )
         }
         // then try to receive from delegates
         /*
@@ -55,7 +73,7 @@ class ArtistImageFetcher(
         if (noImage) return null // skipping
         */
         for (delegate in delegates) {
-            val result = delegate.retrieve(data, context, size, raw)
+            val result = delegate.retrieve(data, context, size, raw, cache)
             if (result != null) {
                 return result
             } else {

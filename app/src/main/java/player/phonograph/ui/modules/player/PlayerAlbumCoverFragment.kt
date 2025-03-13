@@ -1,7 +1,13 @@
 package player.phonograph.ui.modules.player
 
+import coil.request.Disposable
+import coil.request.Parameters
 import lib.phonograph.misc.SimpleAnimatorListener
 import player.phonograph.App
+import player.phonograph.R
+import player.phonograph.coil.PARAMETERS_KEY_PALETTE
+import player.phonograph.coil.PARAMETERS_KEY_QUICK_CACHE
+import player.phonograph.coil.loadImage
 import player.phonograph.databinding.FragmentAlbumCoverBinding
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.model.Song
@@ -349,9 +355,8 @@ class AlbumCoverPagerAdapter(
         private var _binding: FragmentAlbumCoverBinding? = null
         val binding get() = _binding!!
 
-        private val viewModel: PlayerFragmentViewModel by viewModels({ requireParentFragment() })
-
         private lateinit var song: Song
+        private var disposable: Disposable? = null
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -370,16 +375,22 @@ class AlbumCoverPagerAdapter(
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
             forceSquareAlbumCover(false)
-            lifecycleScope.launch {
-                val bitmap = viewModel.fetchBitmap(requireContext(), song)
-                withContext(Dispatchers.Main) {
-                    binding.playerImage.setImageBitmap(bitmap)
-                }
-            }
+            disposable = loadImage(view.context)
+                .from(song)
+                .parameters(
+                    Parameters.Builder()
+                        .set(PARAMETERS_KEY_PALETTE, true)
+                        .set(PARAMETERS_KEY_QUICK_CACHE, true)
+                        .build()
+                )
+                .default(R.drawable.default_album_art)
+                .into(binding.playerImage)
+                .enqueue()
         }
 
         override fun onDestroyView() {
             super.onDestroyView()
+            disposable?.dispose()
             _binding = null
         }
 

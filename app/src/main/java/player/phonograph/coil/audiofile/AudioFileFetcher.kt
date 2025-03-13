@@ -9,11 +9,12 @@ import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.request.Options
 import coil.size.Size
+import player.phonograph.coil.cache
 import player.phonograph.coil.model.SongImage
 import player.phonograph.coil.raw
 import player.phonograph.coil.retriever.AudioFileImageFetcherDelegate
 import player.phonograph.coil.retriever.ImageRetriever
-import player.phonograph.coil.retriever.retrieverFromConfig
+import player.phonograph.coil.retriever.retrievers
 import player.phonograph.util.debug
 import android.content.Context
 import android.util.Log
@@ -23,21 +24,22 @@ class AudioFileFetcher private constructor(
     private val context: Context,
     private val size: Size,
     private val rawImage: Boolean,
+    private val withCache: Boolean,
     private val delegates: List<AudioFileImageFetcherDelegate<ImageRetriever>>,
 ) : Fetcher {
 
-    class Factory(context: Context) : Fetcher.Factory<SongImage> {
+    class Factory() : Fetcher.Factory<SongImage> {
         override fun create(data: SongImage, options: Options, imageLoader: ImageLoader): Fetcher =
             AudioFileFetcher(
                 data,
                 options.context,
                 options.size,
                 options.parameters.raw(false),
-                delegates
+                options.parameters.cache(false),
+                options.parameters.retrievers().map {
+                    AudioFileImageFetcherDelegate(options.context, it)
+                }
             )
-
-        private val delegates: List<AudioFileImageFetcherDelegate<ImageRetriever>> =
-            retrieverFromConfig.map { AudioFileImageFetcherDelegate(context.applicationContext, it) }
     }
 
     override suspend fun fetch(): FetchResult? {
@@ -46,7 +48,7 @@ class AudioFileFetcher private constructor(
         if (noImage) return null // skipping
          */
         for (delegate in delegates) {
-            val result = delegate.retrieve(songImage, context, size, rawImage)
+            val result = delegate.retrieve(songImage, context, size, rawImage, withCache)
             if (result != null) {
                 return result
             } else {
@@ -63,7 +65,6 @@ class AudioFileFetcher private constructor(
     }
 
     companion object {
-        val retriever = retrieverFromConfig
         private const val TAG = "ImageRetriever"
     }
 }

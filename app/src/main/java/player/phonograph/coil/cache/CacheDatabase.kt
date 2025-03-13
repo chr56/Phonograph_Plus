@@ -4,7 +4,7 @@
 
 package player.phonograph.coil.cache
 
-import player.phonograph.coil.retriever.RetrieverId
+import player.phonograph.coil.retriever.ImageRetrievers.RetrieverId
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase

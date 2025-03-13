@@ -84,11 +84,3 @@ fun ByteArray.toBitmap(): Bitmap = BitmapFactory.decodeByteArray(this, 0, this.s
 fun ByteArray.toBitmap(size: Size): Bitmap = toBitmap().cropAndScaleTo(size)
 
 
-internal val folderCoverFiles = arrayOf(
-    "cover.jpg",
-    "album.jpg",
-    "folder.jpg",
-    "cover.png",
-    "album.png",
-    "folder.png"
-)
