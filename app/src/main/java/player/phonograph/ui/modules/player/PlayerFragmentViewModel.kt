@@ -6,15 +6,13 @@ package player.phonograph.ui.modules.player
 
 import coil.request.Disposable
 import coil.request.Parameters
-import coil.target.Target
-import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.coil.PARAMETERS_KEY_PALETTE
 import player.phonograph.coil.PARAMETERS_KEY_QUICK_CACHE
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.palette.PaletteColorTarget
-import player.phonograph.mechanism.IFavorite
 import player.phonograph.model.Song
+import player.phonograph.repo.loader.FavoriteSongs
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.text.buildInfoString
 import player.phonograph.util.text.readableDuration
@@ -50,12 +48,10 @@ class PlayerFragmentViewModel : ViewModel() {
         loadFavoriteStateJob?.cancel()
         if (song != null && song.id > 0) {
             loadFavoriteStateJob = viewModelScope.launch {
-                _favoriteState.emit(song to favorite.isFavorite(context, song))
+                _favoriteState.emit(song to FavoriteSongs.isFavorite(context, song))
             }
         }
     }
-
-    val favorite: IFavorite by GlobalContext.get().inject()
 
     private var _shownToolbar: MutableStateFlow<Boolean> = MutableStateFlow(true)
     val showToolbar get() = _shownToolbar.asStateFlow()

@@ -1,9 +1,8 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
-package player.phonograph.mechanism
+package player.phonograph.repo.mediastore.loaders
 
-import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.mechanism.playlist.PlaylistManager
 import player.phonograph.mechanism.playlist.PlaylistProcessors
@@ -12,7 +11,7 @@ import player.phonograph.mechanism.playlist.mediastore.createPlaylistViaMediasto
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.repo.database.store.FavoritesStore
+import player.phonograph.repo.loader.IFavoriteSongs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.util.concurrent.coroutineToast
 import android.content.Context
@@ -21,58 +20,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 
-interface IFavorite {
-
-    suspend fun allSongs(context: Context): List<Song>
-
-    suspend fun isFavorite(context: Context, song: Song): Boolean
-
-    /**
-     * @return new favorite state
-     */
-    suspend fun toggleFavorite(context: Context, song: Song): Boolean
-
-    /**
-     * clean missed (deleted) songs
-     */
-    suspend fun cleanMissed(context: Context): Boolean
-
-    /**
-     * clear all
-     */
-    suspend fun clearAll(context: Context): Boolean
-
-}
-
-class FavoriteDatabaseImpl : IFavorite {
-
-    private val favoritesStore by GlobalContext.get().inject<FavoritesStore>()
-
-    override suspend fun allSongs(context: Context): List<Song> =
-        favoritesStore.getAllSongs(context)
-
-    override suspend fun isFavorite(context: Context, song: Song): Boolean =
-        favoritesStore.containsSong(song.id, song.data)
-
-    override suspend fun toggleFavorite(context: Context, song: Song): Boolean = runBlocking {
-        if (isFavorite(context, song)) {
-            !favoritesStore.removeSong(song)
-        } else {
-            favoritesStore.addSong(song)
-        }
-    }
-
-    override suspend fun cleanMissed(context: Context): Boolean {
-        return favoritesStore.cleanMissingSongs(context)
-    }
-
-    override suspend fun clearAll(context: Context): Boolean {
-        favoritesStore.clearAll()
-        return true
-    }
-}
-
-class FavoritePlaylistImpl : IFavorite {
+class PlaylistFavoriteSongLoader : IFavoriteSongs {
 
 
     override suspend fun allSongs(context: Context): List<Song> {

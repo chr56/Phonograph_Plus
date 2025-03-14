@@ -5,15 +5,15 @@
 package player.phonograph
 
 import org.koin.dsl.module
-import player.phonograph.mechanism.FavoriteDatabaseImpl
-import player.phonograph.mechanism.FavoritePlaylistImpl
 import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.repo.database.loaders.DatabaseFavoriteSongLoader
 import player.phonograph.repo.database.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.database.loaders.TopTracksLoader
 import player.phonograph.repo.database.store.FavoritesStore
 import player.phonograph.repo.database.store.HistoryStore
 import player.phonograph.repo.database.store.PathFilterStore
 import player.phonograph.repo.database.store.SongPlayCountStore
+import player.phonograph.repo.mediastore.loaders.PlaylistFavoriteSongLoader
 import player.phonograph.service.queue.MusicPlaybackQueueStore
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.Keys
@@ -33,7 +33,7 @@ val moduleLoaders = module {
 
     factory {
         val preference = Setting(get())[Keys.useLegacyFavoritePlaylistImpl]
-        if (preference.data) FavoritePlaylistImpl() else FavoriteDatabaseImpl()
+        if (preference.data) PlaylistFavoriteSongLoader() else DatabaseFavoriteSongLoader()
     }
 
     factory { TopTracksLoader(get()) }

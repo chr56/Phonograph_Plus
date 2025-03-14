@@ -6,7 +6,6 @@ package player.phonograph.mechanism.playlist
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
-import player.phonograph.mechanism.IFavorite
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.mechanism.playlist.mediastore.addToPlaylistViaMediastore
 import player.phonograph.mechanism.playlist.mediastore.moveItemViaMediastore
@@ -26,6 +25,7 @@ import player.phonograph.model.playlist.VirtualPlaylistLocation
 import player.phonograph.repo.database.loaders.RecentlyPlayedTracksLoader
 import player.phonograph.repo.database.loaders.TopTracksLoader
 import player.phonograph.repo.database.store.SongPlayCountStore
+import player.phonograph.repo.loader.FavoriteSongs
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.settings.Keys
@@ -130,26 +130,24 @@ private sealed class FilePlaylistProcessor(val location: FilePlaylistLocation) :
 
 private data object FavoriteSongsPlaylistProcessor : PlaylistReader, PlaylistWriter {
 
-    val favorite: IFavorite by GlobalContext.get().inject()
-
     override suspend fun allSongs(context: Context): List<Song> =
-        favorite.allSongs(context)
+        FavoriteSongs.allSongs(context)
 
     override suspend fun containsSong(context: Context, songId: Long): Boolean {
         val song = Songs.id(context, songId) ?: return false
-        return favorite.isFavorite(context, song)
+        return FavoriteSongs.isFavorite(context, song)
     }
 
     override suspend fun removeSong(context: Context, song: Song, index: Long): Boolean =
-        favorite.toggleFavorite(context, song)
+        FavoriteSongs.toggleFavorite(context, song)
 
     override suspend fun appendSong(context: Context, song: Song) {
-        favorite.toggleFavorite(context, song)
+        FavoriteSongs.toggleFavorite(context, song)
         notifyMediaStoreChanged()
     }
 
     override suspend fun appendSongs(context: Context, songs: List<Song>) {
-        for (song in songs) favorite.toggleFavorite(context, song)
+        for (song in songs) FavoriteSongs.toggleFavorite(context, song)
         notifyMediaStoreChanged()
     }
 

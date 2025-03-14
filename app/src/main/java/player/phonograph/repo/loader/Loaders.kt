@@ -4,6 +4,7 @@
 
 package player.phonograph.repo.loader
 
+import org.koin.core.context.GlobalContext
 import player.phonograph.repo.mediastore.MediaStoreAlbums
 import player.phonograph.repo.mediastore.MediaStoreArtists
 import player.phonograph.repo.mediastore.MediaStoreGenres
@@ -19,3 +20,5 @@ object Genres : IGenres by MediaStoreGenres
 object Playlists : IPlaylists by MediaStorePlaylists
 
 object Songs : ISongs by MediaStoreSongs
+
+val FavoriteSongs: IFavoriteSongs by GlobalContext.get().inject()
