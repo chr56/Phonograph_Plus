@@ -21,7 +21,7 @@ import player.phonograph.mechanism.broadcast.unregisterMediaStoreObserver
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.repo.browser.MediaBrowserDelegate
-import player.phonograph.repo.database.HistoryStore
+import player.phonograph.repo.database.store.HistoryStore
 import player.phonograph.service.notification.CoverLoader
 import player.phonograph.service.notification.PlayingNotificationManager
 import player.phonograph.service.notification.PlayingNotificationManager.Companion.VERSION_SET_COVER_USING_METADATA

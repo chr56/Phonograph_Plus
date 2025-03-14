@@ -1,13 +1,13 @@
 /*
  *  Copyright (c) 2022~2023 chr_56
  */
-package player.phonograph.repo.database
+package player.phonograph.repo.database.store
 
 import org.koin.core.context.GlobalContext
 import player.phonograph.repo.database.DatabaseConstants.HISTORY_DB
-import player.phonograph.repo.database.HistoryStore.RecentStoreColumns.Companion.ID
-import player.phonograph.repo.database.HistoryStore.RecentStoreColumns.Companion.NAME
-import player.phonograph.repo.database.HistoryStore.RecentStoreColumns.Companion.TIME_PLAYED
+import player.phonograph.repo.database.store.HistoryStore.RecentStoreColumns.Companion.ID
+import player.phonograph.repo.database.store.HistoryStore.RecentStoreColumns.Companion.NAME
+import player.phonograph.repo.database.store.HistoryStore.RecentStoreColumns.Companion.TIME_PLAYED
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
@@ -15,7 +15,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 class HistoryStore(context: Context) :
-        SQLiteOpenHelper(context, HISTORY_DB, null, VERSION), ShallowDatabase {
+        SQLiteOpenHelper(context, HISTORY_DB, null, VERSION), Cleanable {
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(

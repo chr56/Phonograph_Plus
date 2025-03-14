@@ -14,7 +14,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.DynamicPlaylists
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortMode
-import player.phonograph.repo.database.FavoritesStore
+import player.phonograph.repo.database.store.FavoritesStore
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting

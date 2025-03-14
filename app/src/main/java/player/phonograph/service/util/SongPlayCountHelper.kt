@@ -5,7 +5,7 @@
 package player.phonograph.service.util
 
 import player.phonograph.model.Song
-import player.phonograph.repo.database.SongPlayCountStore
+import player.phonograph.repo.database.store.SongPlayCountStore
 import java.util.Locale
 
 /**

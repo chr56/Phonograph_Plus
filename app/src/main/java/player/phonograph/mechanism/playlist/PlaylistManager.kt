@@ -17,8 +17,8 @@ import player.phonograph.model.playlist.PLAYLIST_TYPE_HISTORY
 import player.phonograph.model.playlist.PLAYLIST_TYPE_MY_TOP_TRACK
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.VirtualPlaylistLocation
-import player.phonograph.repo.database.HistoryStore
-import player.phonograph.repo.database.SongPlayCountStore
+import player.phonograph.repo.database.store.HistoryStore
+import player.phonograph.repo.database.store.SongPlayCountStore
 import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.util.file.selectDocumentUris
 import android.content.Context
