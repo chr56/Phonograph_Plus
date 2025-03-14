@@ -10,10 +10,10 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import org.koin.android.ext.android.inject
 import player.phonograph.R
+import player.phonograph.model.service.RepeatMode
+import player.phonograph.model.service.ShuffleMode
 import player.phonograph.service.queue.QueueHolder
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.service.queue.RepeatMode
-import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.util.text.songCountString

@@ -13,6 +13,12 @@
 package player.phonograph.service.util
 
 import player.phonograph.BuildConfig
+import player.phonograph.model.service.ACTION_NEXT
+import player.phonograph.model.service.ACTION_PAUSE
+import player.phonograph.model.service.ACTION_PLAY
+import player.phonograph.model.service.ACTION_PREVIOUS
+import player.phonograph.model.service.ACTION_STOP_AND_QUIT_NOW
+import player.phonograph.model.service.ACTION_TOGGLE_PAUSE
 import player.phonograph.service.MusicService
 import player.phonograph.util.parcelableExtra
 import androidx.core.content.ContextCompat
@@ -67,10 +73,10 @@ class MediaButtonIntentReceiver : BroadcastReceiver() {
                             startService(
                                 msg.obj as Context,
                                 when (clickCount) {
-                                    1 -> MusicService.ACTION_TOGGLE_PAUSE
-                                    2 -> MusicService.ACTION_NEXT
-                                    3 -> MusicService.ACTION_PREVIOUS
-                                    else -> MusicService.ACTION_TOGGLE_PAUSE // impossible
+                                    1    -> ACTION_TOGGLE_PAUSE
+                                    2    -> ACTION_NEXT
+                                    3    -> ACTION_PREVIOUS
+                                    else -> ACTION_TOGGLE_PAUSE // impossible
                                 }
                             )
                     }
@@ -88,13 +94,13 @@ class MediaButtonIntentReceiver : BroadcastReceiver() {
                 // Fallback to system time if event time was not available.
                 var command: String? = null
                 when (keycode) {
-                    KeyEvent.KEYCODE_MEDIA_STOP -> command = MusicService.ACTION_STOP_AND_QUIT_NOW
-                    KeyEvent.KEYCODE_HEADSETHOOK, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE ->
-                        command = MusicService.ACTION_TOGGLE_PAUSE
-                    KeyEvent.KEYCODE_MEDIA_NEXT -> command = MusicService.ACTION_NEXT
-                    KeyEvent.KEYCODE_MEDIA_PREVIOUS -> command = MusicService.ACTION_PREVIOUS
-                    KeyEvent.KEYCODE_MEDIA_PAUSE -> command = MusicService.ACTION_PAUSE
-                    KeyEvent.KEYCODE_MEDIA_PLAY -> command = MusicService.ACTION_PLAY
+                    KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> command = ACTION_TOGGLE_PAUSE
+                    KeyEvent.KEYCODE_MEDIA_PAUSE      -> command = ACTION_PAUSE
+                    KeyEvent.KEYCODE_MEDIA_PLAY       -> command = ACTION_PLAY
+                    KeyEvent.KEYCODE_MEDIA_PREVIOUS   -> command = ACTION_PREVIOUS
+                    KeyEvent.KEYCODE_MEDIA_NEXT       -> command = ACTION_NEXT
+                    KeyEvent.KEYCODE_MEDIA_STOP       -> command = ACTION_STOP_AND_QUIT_NOW
+                    KeyEvent.KEYCODE_HEADSETHOOK      -> command = ACTION_TOGGLE_PAUSE
                 }
                 if (command != null) {
                     if (action == KeyEvent.ACTION_DOWN) {

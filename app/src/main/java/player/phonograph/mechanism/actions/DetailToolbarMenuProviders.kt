@@ -13,8 +13,8 @@ import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.Songs
-import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.ui.modules.web.LastFmDialog
 import player.phonograph.util.NavigationUtil

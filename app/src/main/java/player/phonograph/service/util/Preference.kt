@@ -4,8 +4,8 @@
 
 package player.phonograph.service.util
 
-import player.phonograph.service.queue.RepeatMode
-import player.phonograph.service.queue.ShuffleMode
+import player.phonograph.model.service.RepeatMode
+import player.phonograph.model.service.ShuffleMode
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 

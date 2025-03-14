@@ -19,10 +19,10 @@ import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.database.store.FavoritesStore
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.tag.TagBrowserActivity

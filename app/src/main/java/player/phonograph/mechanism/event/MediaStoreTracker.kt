@@ -5,8 +5,8 @@
 package player.phonograph.mechanism.event
 
 import org.koin.core.context.GlobalContext
-import player.phonograph.MusicServiceMsgConst
 import player.phonograph.model.listener.MediaStoreChangedListener
+import player.phonograph.model.service.EVENT_MEDIA_STORE_CHANGED
 import player.phonograph.util.registerReceiverCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -69,7 +69,7 @@ class MediaStoreTracker(context: Context) {
     class EventReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
-                MusicServiceMsgConst.MEDIA_STORE_CHANGED -> GlobalContext.get().get<MediaStoreTracker>().dispatch()
+                EVENT_MEDIA_STORE_CHANGED -> GlobalContext.get().get<MediaStoreTracker>().dispatch()
             }
         }
 
@@ -81,7 +81,7 @@ class MediaStoreTracker(context: Context) {
                     eventReceiver = EventReceiver()
                     context.applicationContext.registerReceiverCompat(
                         eventReceiver,
-                        IntentFilter(MusicServiceMsgConst.MEDIA_STORE_CHANGED),
+                        IntentFilter(EVENT_MEDIA_STORE_CHANGED),
                         ContextCompat.RECEIVER_NOT_EXPORTED
                     )
                     initialed = true

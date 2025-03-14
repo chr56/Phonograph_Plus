@@ -15,8 +15,8 @@ import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.Songs
-import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.adapter.MultiSelectionController
 import player.phonograph.ui.modules.tag.MultiTagBrowserActivity
 import player.phonograph.ui.modules.tag.TagBrowserActivity

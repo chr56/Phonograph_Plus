@@ -7,6 +7,8 @@ package player.phonograph.service.queue
 import org.koin.core.context.GlobalContext
 import player.phonograph.model.PlayRequest.SongsRequest
 import player.phonograph.model.Song
+import player.phonograph.model.service.RepeatMode
+import player.phonograph.model.service.ShuffleMode
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.util.text.currentTimestamp
 import player.phonograph.util.text.totalDuration

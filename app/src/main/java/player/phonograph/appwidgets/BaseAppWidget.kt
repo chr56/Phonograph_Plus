@@ -9,6 +9,10 @@ import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.coil.PARAMETERS_KEY_PALETTE
 import player.phonograph.model.Song
+import player.phonograph.model.service.ACTION_CONNECT_WIDGETS
+import player.phonograph.model.service.ACTION_NEXT
+import player.phonograph.model.service.ACTION_PREVIOUS
+import player.phonograph.model.service.ACTION_TOGGLE_PAUSE
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.modules.auxiliary.LauncherActivity
@@ -126,15 +130,15 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         var pendingIntent: PendingIntent? = null
 
         // Previous track
-        pendingIntent = buildMusicServicePendingIntent(context, MusicService.ACTION_PREVIOUS)
+        pendingIntent = buildMusicServicePendingIntent(context, ACTION_PREVIOUS)
         setOnClickPendingIntent(R.id.button_prev, pendingIntent)
 
         // Play and pause
-        pendingIntent = buildMusicServicePendingIntent(context, MusicService.ACTION_TOGGLE_PAUSE)
+        pendingIntent = buildMusicServicePendingIntent(context, ACTION_TOGGLE_PAUSE)
         setOnClickPendingIntent(R.id.button_toggle_play_pause, pendingIntent)
 
         // Next track
-        pendingIntent = buildMusicServicePendingIntent(context, MusicService.ACTION_NEXT)
+        pendingIntent = buildMusicServicePendingIntent(context, ACTION_NEXT)
         setOnClickPendingIntent(R.id.button_next, pendingIntent)
     }
 
@@ -173,7 +177,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         if (connected) {
             buildLaunchingPendingIntent(context)
         } else {
-            buildMusicServicePendingIntent(context, MusicService.ACTION_CONNECT_WIDGETS)
+            buildMusicServicePendingIntent(context, ACTION_CONNECT_WIDGETS)
         }
 
 

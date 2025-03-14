@@ -10,13 +10,14 @@ import player.phonograph.mechanism.setting.NotificationAction
 import player.phonograph.mechanism.setting.NotificationActionsConfig
 import player.phonograph.mechanism.setting.NotificationConfig
 import player.phonograph.model.Song
+import player.phonograph.model.service.ACTION_STOP_AND_QUIT_NOW
+import player.phonograph.model.service.MusicServiceStatus
+import player.phonograph.model.service.PlayerState.PAUSED
+import player.phonograph.model.service.PlayerState.PLAYING
+import player.phonograph.model.service.PlayerState.PREPARING
+import player.phonograph.model.service.PlayerState.STOPPED
 import player.phonograph.service.MusicService
-import player.phonograph.service.MusicService.ServiceStatus
 import player.phonograph.service.ServiceComponent
-import player.phonograph.service.player.PlayerState.PAUSED
-import player.phonograph.service.player.PlayerState.PLAYING
-import player.phonograph.service.player.PlayerState.PREPARING
-import player.phonograph.service.player.PlayerState.STOPPED
 import player.phonograph.settings.Keys
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.util.component.SettingObserver
@@ -131,9 +132,9 @@ class PlayingNotificationManager : ServiceComponent {
             .setCategory(NotificationCompat.CATEGORY_TRANSPORT)
 
     private var lastSong: Song? = null
-    private var lastServiceStatus: ServiceStatus? = null
+    private var lastServiceStatus: MusicServiceStatus? = null
 
-    fun updateNotification(song: Song?, status: ServiceStatus) {
+    fun updateNotification(song: Song?, status: MusicServiceStatus) {
         if (song != null) {
             if (song != lastSong || status != lastServiceStatus) {
                 // Only update notification for actual changes
@@ -187,8 +188,8 @@ class PlayingNotificationManager : ServiceComponent {
     //region Impl
 
     internal interface Implementation {
-        fun update(song: Song, status: ServiceStatus, config: NotificationActionsConfig)
-        fun empty(status: ServiceStatus, config: NotificationActionsConfig)
+        fun update(song: Song, status: MusicServiceStatus, config: NotificationActionsConfig)
+        fun empty(status: MusicServiceStatus, config: NotificationActionsConfig)
     }
 
     /** Disposable ImageRequest for Cover Art **/
@@ -206,7 +207,7 @@ class PlayingNotificationManager : ServiceComponent {
         private var cachedBitmap: Bitmap? = null
         private var cachedPaletteColor: Int = -1
 
-        override fun update(song: Song, status: ServiceStatus, config: NotificationActionsConfig) {
+        override fun update(song: Song, status: MusicServiceStatus, config: NotificationActionsConfig) {
             val notificationBuilder = prepareNotification(
                 builder = notificationBuilder(service),
                 title = song.title,
@@ -246,7 +247,7 @@ class PlayingNotificationManager : ServiceComponent {
             content: String?,
             subText: String?,
             config: NotificationActionsConfig,
-            status: ServiceStatus,
+            status: MusicServiceStatus,
         ): NotificationCompat.Builder {
 
             val base = builder
@@ -272,7 +273,7 @@ class PlayingNotificationManager : ServiceComponent {
                 .setStyle(mediaStyle().setShowActionsInCompactView(*positions))
         }
 
-        private fun processActions(action: NotificationAction?, status: ServiceStatus): Action {
+        private fun processActions(action: NotificationAction?, status: MusicServiceStatus): Action {
             return if (action != null)
                 Action(
                     action.icon(status),
@@ -303,7 +304,7 @@ class PlayingNotificationManager : ServiceComponent {
         }
 
         private fun emptyNotification(
-            status: ServiceStatus,
+            status: MusicServiceStatus,
             config: NotificationActionsConfig,
         ): NotificationCompat.Builder =
             prepareNotification(
@@ -315,7 +316,7 @@ class PlayingNotificationManager : ServiceComponent {
                 status = status
             )
 
-        override fun empty(status: ServiceStatus, config: NotificationActionsConfig) {
+        override fun empty(status: MusicServiceStatus, config: NotificationActionsConfig) {
             postNotification(emptyNotification(status, config).build())
         }
     }
@@ -336,7 +337,7 @@ class PlayingNotificationManager : ServiceComponent {
             text2: String?,
             backgroundColor: Int,
             song: Song?,
-            status: ServiceStatus,
+            status: MusicServiceStatus,
             config: NotificationActionsConfig,
         ) {
 
@@ -396,7 +397,7 @@ class PlayingNotificationManager : ServiceComponent {
             }
         }
 
-        override fun empty(status: ServiceStatus, config: NotificationActionsConfig) {
+        override fun empty(status: MusicServiceStatus, config: NotificationActionsConfig) {
             common(
                 notificationBuilder = notificationBuilder(service),
                 title = service.getString(R.string.empty), text1 = null, text2 = null,
@@ -406,7 +407,7 @@ class PlayingNotificationManager : ServiceComponent {
             )
         }
 
-        override fun update(song: Song, status: ServiceStatus, config: NotificationActionsConfig) {
+        override fun update(song: Song, status: MusicServiceStatus, config: NotificationActionsConfig) {
             common(
                 notificationBuilder = notificationBuilder(service),
                 title = song.title, text1 = song.artistName, text2 = song.albumName,
@@ -469,7 +470,7 @@ class PlayingNotificationManager : ServiceComponent {
         private fun RemoteViews.updateNotificationImages(
             bitmap: Bitmap,
             color: Int,
-            status: ServiceStatus,
+            status: MusicServiceStatus,
             config: NotificationActionsConfig,
             compatMode: Boolean,
         ) {
@@ -504,7 +505,7 @@ class PlayingNotificationManager : ServiceComponent {
 
         private fun RemoteViews.updateNotificationAction(
             backgroundColor: Int,
-            status: ServiceStatus,
+            status: MusicServiceStatus,
             config: NotificationActionsConfig,
             compatMode: Boolean,
         ) {
@@ -533,7 +534,7 @@ class PlayingNotificationManager : ServiceComponent {
         /**
          * @return Icon Bitmap of this [action]
          */
-        private fun icon(action: NotificationAction, status: ServiceStatus, backgroundColor: Int): Bitmap =
+        private fun icon(action: NotificationAction, status: MusicServiceStatus, backgroundColor: Int): Bitmap =
             BitmapUtil.createBitmap(
                 service.createTintedDrawable(action.icon(status), service.primaryTextColor(backgroundColor))!!, 1.5f
             )
@@ -570,7 +571,7 @@ class PlayingNotificationManager : ServiceComponent {
      * PendingIntent to quit/stop
      */
     private val deletePendingIntent: PendingIntent
-        get() = buildPlaybackPendingIntent(MusicService.ACTION_STOP_AND_QUIT_NOW)
+        get() = buildPlaybackPendingIntent(ACTION_STOP_AND_QUIT_NOW)
     //endregion
 
     companion object {

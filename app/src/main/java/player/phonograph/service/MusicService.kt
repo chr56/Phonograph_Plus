@@ -8,34 +8,49 @@ import lib.phonograph.localization.ContextLocaleDelegate
 import org.koin.android.ext.android.get
 import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.BuildConfig
-import player.phonograph.MusicServiceMsgConst.META_CHANGED
-import player.phonograph.MusicServiceMsgConst.PLAY_STATE_CHANGED
-import player.phonograph.MusicServiceMsgConst.QUEUE_CHANGED
-import player.phonograph.MusicServiceMsgConst.REPEAT_MODE_CHANGED
-import player.phonograph.MusicServiceMsgConst.SHUFFLE_MODE_CHANGED
 import player.phonograph.appwidgets.AppWidgetUpdateReceiver
 import player.phonograph.mechanism.broadcast.setUpMediaStoreObserver
 import player.phonograph.mechanism.broadcast.unregisterMediaStoreObserver
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
+import player.phonograph.model.service.ACTION_CANCEL_PENDING_QUIT
+import player.phonograph.model.service.ACTION_CONNECT_WIDGETS
+import player.phonograph.model.service.ACTION_EXIT_OR_STOP
+import player.phonograph.model.service.ACTION_FAST_FORWARD
+import player.phonograph.model.service.ACTION_FAST_REWIND
+import player.phonograph.model.service.ACTION_FAV
+import player.phonograph.model.service.ACTION_NEXT
+import player.phonograph.model.service.ACTION_PAUSE
+import player.phonograph.model.service.ACTION_PLAY
+import player.phonograph.model.service.ACTION_PREVIOUS
+import player.phonograph.model.service.ACTION_REPEAT
+import player.phonograph.model.service.ACTION_SHUFFLE
+import player.phonograph.model.service.ACTION_STOP_AND_QUIT_NOW
+import player.phonograph.model.service.ACTION_STOP_AND_QUIT_PENDING
+import player.phonograph.model.service.ACTION_TOGGLE_PAUSE
+import player.phonograph.model.service.EVENT_META_CHANGED
+import player.phonograph.model.service.EVENT_PLAY_STATE_CHANGED
+import player.phonograph.model.service.EVENT_QUEUE_CHANGED
+import player.phonograph.model.service.EVENT_REPEAT_MODE_CHANGED
+import player.phonograph.model.service.EVENT_SHUFFLE_MODE_CHANGED
+import player.phonograph.model.service.MusicServiceStatus
+import player.phonograph.model.service.PlayerState
+import player.phonograph.model.service.PlayerStateObserver
+import player.phonograph.model.service.QueueObserver
+import player.phonograph.model.service.RepeatMode
+import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.browser.MediaBrowserDelegate
 import player.phonograph.repo.database.store.HistoryStore
 import player.phonograph.repo.loader.FavoriteSongs
 import player.phonograph.service.notification.CoverLoader
 import player.phonograph.service.notification.PlayingNotificationManager
 import player.phonograph.service.notification.PlayingNotificationManager.Companion.VERSION_SET_COVER_USING_METADATA
-import player.phonograph.service.player.MSG_NOW_PLAYING_CHANGED
 import player.phonograph.service.player.MediaSessionController
 import player.phonograph.service.player.PauseReason
 import player.phonograph.service.player.PlayerController
-import player.phonograph.service.player.PlayerState
-import player.phonograph.service.player.PlayerStateObserver
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_CFG
 import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_QUEUE
-import player.phonograph.service.queue.QueueObserver
-import player.phonograph.service.queue.RepeatMode
-import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.service.util.MusicServiceUtil
 import player.phonograph.service.util.SongPlayCountHelper
 import player.phonograph.settings.Keys
@@ -91,8 +106,8 @@ class MusicService : MediaBrowserServiceCompat() {
         controller.onCreate(this)
 
         // observers & messages
-        sendChangeInternal(META_CHANGED) // notify manually for first setting up queueManager
-        sendChangeInternal(QUEUE_CHANGED) // notify manually for first setting up queueManager
+        sendChangeInternal(EVENT_META_CHANGED) // notify manually for first setting up queueManager
+        sendChangeInternal(EVENT_QUEUE_CHANGED) // notify manually for first setting up queueManager
         queueManager.addObserver(queueChangeObserver)
         controller.addObserver(playerStateObserver)
 
@@ -127,24 +142,24 @@ class MusicService : MediaBrowserServiceCompat() {
 
     private fun initQueueChangeObserver(): QueueObserver = object : QueueObserver {
         override fun onCurrentPositionChanged(newPosition: Int) {
-            notifyChange(META_CHANGED)
+            notifyChange(EVENT_META_CHANGED)
             rePrepareNextSong()
         }
 
         override fun onQueueChanged(newPlayingQueue: List<Song>, newOriginalQueue: List<Song>) {
-            handleAndSendChangeInternal(QUEUE_CHANGED)
-            notifyChange(META_CHANGED)
+            handleAndSendChangeInternal(EVENT_QUEUE_CHANGED)
+            notifyChange(EVENT_META_CHANGED)
             rePrepareNextSong()
         }
 
         override fun onShuffleModeChanged(newMode: ShuffleMode) {
             rePrepareNextSong()
-            handleAndSendChangeInternal(SHUFFLE_MODE_CHANGED)
+            handleAndSendChangeInternal(EVENT_SHUFFLE_MODE_CHANGED)
         }
 
         override fun onRepeatModeChanged(newMode: RepeatMode) {
             rePrepareNextSong()
-            handleAndSendChangeInternal(REPEAT_MODE_CHANGED)
+            handleAndSendChangeInternal(EVENT_REPEAT_MODE_CHANGED)
         }
 
         private fun rePrepareNextSong() {
@@ -154,12 +169,12 @@ class MusicService : MediaBrowserServiceCompat() {
 
     private fun initPlayerStateObserver(): PlayerStateObserver = object : PlayerStateObserver {
         override fun onPlayerStateChanged(oldState: PlayerState, newState: PlayerState) {
-            notifyChange(PLAY_STATE_CHANGED)
+            notifyChange(EVENT_PLAY_STATE_CHANGED)
         }
 
         override fun onReceivingMessage(msg: Int) {
             when (msg) {
-                MSG_NOW_PLAYING_CHANGED -> notifyChange(META_CHANGED)
+                PlayerStateObserver.MSG_NOW_PLAYING_CHANGED -> notifyChange(EVENT_META_CHANGED)
             }
         }
     }
@@ -303,7 +318,7 @@ class MusicService : MediaBrowserServiceCompat() {
     private fun handleChangeInternal(what: String) {
         when (what) {
 
-            PLAY_STATE_CHANGED                        -> {
+            EVENT_PLAY_STATE_CHANGED -> {
                 // update playing notification & widgets
                 updateNotificationAndMediaSession()
                 AppWidgetUpdateReceiver.notifyWidgets(this, isPlaying)
@@ -321,13 +336,13 @@ class MusicService : MediaBrowserServiceCompat() {
                 }
             }
 
-            REPEAT_MODE_CHANGED, SHUFFLE_MODE_CHANGED -> {
+            EVENT_REPEAT_MODE_CHANGED, EVENT_SHUFFLE_MODE_CHANGED -> {
                 // just update playing notification & widgets
                 updateNotificationAndMediaSession()
                 AppWidgetUpdateReceiver.notifyWidgets(this, isPlaying)
             }
 
-            META_CHANGED                              -> {
+            EVENT_META_CHANGED -> {
                 // update playing notification & widgets
                 updateNotificationAndMediaSession()
                 AppWidgetUpdateReceiver.notifyWidgets(this, isPlaying)
@@ -347,7 +362,7 @@ class MusicService : MediaBrowserServiceCompat() {
                 }
             }
 
-            QUEUE_CHANGED                             -> {
+            EVENT_QUEUE_CHANGED -> {
                 // update playing notification
                 mediaSessionController.updateMetaData(
                     queueManager.currentSong,
@@ -420,23 +435,17 @@ class MusicService : MediaBrowserServiceCompat() {
         override fun run() {
             controller.saveCurrentMills()
             if (broadcastCurrentPlayerState) {
-                MusicServiceUtil.sendPublicIntent(this@MusicService, PLAY_STATE_CHANGED) // for musixmatch synced lyrics
+                MusicServiceUtil.sendPublicIntent(this@MusicService, EVENT_PLAY_STATE_CHANGED) // for musixmatch synced lyrics
             }
         }
     }
 
-    val statusForNotification: ServiceStatus
-        get() = ServiceStatus(
+    val statusForNotification: MusicServiceStatus
+        get() = MusicServiceStatus(
             isPlaying,
             queueManager.shuffleMode,
             queueManager.repeatMode
         )
-
-    data class ServiceStatus(
-        val isPlaying: Boolean,
-        val shuffleMode: ShuffleMode,
-        val repeatMode: RepeatMode,
-    )
 
     internal fun requireRefreshMediaSessionState() {
         mediaSessionController.updatePlaybackState(statusForNotification)
@@ -482,24 +491,7 @@ class MusicService : MediaBrowserServiceCompat() {
         )
     }
 
-    @Suppress("SpellCheckingInspection")
     companion object {
-        const val ACTION_TOGGLE_PAUSE = "$ACTUAL_PACKAGE_NAME.togglepause"
-        const val ACTION_PLAY = "$ACTUAL_PACKAGE_NAME.play"
-        const val ACTION_PAUSE = "$ACTUAL_PACKAGE_NAME.pause"
-        const val ACTION_NEXT = "$ACTUAL_PACKAGE_NAME.skip_to_next"
-        const val ACTION_PREVIOUS = "$ACTUAL_PACKAGE_NAME.skip_to_previous"
-        const val ACTION_FAST_REWIND = "$ACTUAL_PACKAGE_NAME.fast_rewind"
-        const val ACTION_FAST_FORWARD = "$ACTUAL_PACKAGE_NAME.fast_forward"
-        const val ACTION_SHUFFLE = "$ACTUAL_PACKAGE_NAME.toggle_shuffle"
-        const val ACTION_REPEAT = "$ACTUAL_PACKAGE_NAME.toggle_repeat"
-        const val ACTION_FAV = "$ACTUAL_PACKAGE_NAME.fav"
-        const val ACTION_EXIT_OR_STOP = "$ACTUAL_PACKAGE_NAME.exit_or_stop"
-        const val ACTION_STOP_AND_QUIT_NOW = "$ACTUAL_PACKAGE_NAME.stop_and_quit_now"
-        const val ACTION_STOP_AND_QUIT_PENDING = "$ACTUAL_PACKAGE_NAME.stop_and_quit_pending"
-        const val ACTION_CANCEL_PENDING_QUIT = "$ACTUAL_PACKAGE_NAME.cancel_pending_quit"
-        const val ACTION_CONNECT_WIDGETS = "$ACTUAL_PACKAGE_NAME.connect_widgets"
-
         private const val THROTTLE: Long = 500
 
         fun log(msg: String, force: Boolean) {

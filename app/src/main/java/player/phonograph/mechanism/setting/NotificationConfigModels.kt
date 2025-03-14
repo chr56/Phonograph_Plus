@@ -5,10 +5,18 @@
 package player.phonograph.mechanism.setting
 
 import player.phonograph.R
-import player.phonograph.service.MusicService
-import player.phonograph.service.MusicService.ServiceStatus
-import player.phonograph.service.queue.RepeatMode
-import player.phonograph.service.queue.ShuffleMode
+import player.phonograph.model.service.ACTION_EXIT_OR_STOP
+import player.phonograph.model.service.ACTION_FAST_FORWARD
+import player.phonograph.model.service.ACTION_FAST_REWIND
+import player.phonograph.model.service.ACTION_FAV
+import player.phonograph.model.service.ACTION_NEXT
+import player.phonograph.model.service.ACTION_PREVIOUS
+import player.phonograph.model.service.ACTION_REPEAT
+import player.phonograph.model.service.ACTION_SHUFFLE
+import player.phonograph.model.service.ACTION_TOGGLE_PAUSE
+import player.phonograph.model.service.MusicServiceStatus
+import player.phonograph.model.service.RepeatMode
+import player.phonograph.model.service.ShuffleMode
 import androidx.annotation.DrawableRes
 import androidx.annotation.Keep
 import androidx.annotation.StringDef
@@ -74,35 +82,35 @@ sealed class NotificationAction(
     }
 
     @DrawableRes
-    abstract fun icon(status: ServiceStatus): Int
+    abstract fun icon(status: MusicServiceStatus): Int
 
     object PlayPause : NotificationAction(
         ACTION_KEY_PLAY_PAUSE,
         R.string.action_play_pause,
-        MusicService.ACTION_TOGGLE_PAUSE
+        ACTION_TOGGLE_PAUSE
     ) {
-        override fun icon(status: ServiceStatus): Int =
+        override fun icon(status: MusicServiceStatus): Int =
             if (status.isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp
     }
 
-    object Prev : NotificationAction(ACTION_KEY_PREV, R.string.action_previous, MusicService.ACTION_PREVIOUS) {
-        override fun icon(status: ServiceStatus): Int = R.drawable.ic_skip_previous_white_24dp
+    object Prev : NotificationAction(ACTION_KEY_PREV, R.string.action_previous, ACTION_PREVIOUS) {
+        override fun icon(status: MusicServiceStatus): Int = R.drawable.ic_skip_previous_white_24dp
     }
 
-    object Next : NotificationAction(ACTION_KEY_NEXT, R.string.action_next, MusicService.ACTION_NEXT) {
-        override fun icon(status: ServiceStatus): Int = R.drawable.ic_skip_next_white_24dp
+    object Next : NotificationAction(ACTION_KEY_NEXT, R.string.action_next, ACTION_NEXT) {
+        override fun icon(status: MusicServiceStatus): Int = R.drawable.ic_skip_next_white_24dp
     }
 
-    object Repeat : NotificationAction(ACTION_KEY_REPEAT, R.string.action_repeat_mode, MusicService.ACTION_REPEAT) {
-        override fun icon(status: ServiceStatus): Int = when (status.repeatMode) {
+    object Repeat : NotificationAction(ACTION_KEY_REPEAT, R.string.action_repeat_mode, ACTION_REPEAT) {
+        override fun icon(status: MusicServiceStatus): Int = when (status.repeatMode) {
             RepeatMode.NONE               -> R.drawable.ic_repeat_off_white_24dp
             RepeatMode.REPEAT_QUEUE       -> R.drawable.ic_repeat_white_24dp
             RepeatMode.REPEAT_SINGLE_SONG -> R.drawable.ic_repeat_one_white_24dp
         }
     }
 
-    object Shuffle : NotificationAction(ACTION_KEY_SHUFFLE, R.string.action_shuffle_mode, MusicService.ACTION_SHUFFLE) {
-        override fun icon(status: ServiceStatus): Int = when (status.shuffleMode) {
+    object Shuffle : NotificationAction(ACTION_KEY_SHUFFLE, R.string.action_shuffle_mode, ACTION_SHUFFLE) {
+        override fun icon(status: MusicServiceStatus): Int = when (status.shuffleMode) {
             ShuffleMode.NONE    -> R.drawable.ic_shuffle_disabled_white_24dp
             ShuffleMode.SHUFFLE -> R.drawable.ic_shuffle_white_24dp
         }
@@ -111,29 +119,29 @@ sealed class NotificationAction(
     object FastRewind : NotificationAction(
         ACTION_KEY_FAST_REWIND,
         R.string.action_fast_rewind,
-        MusicService.ACTION_FAST_REWIND
+        ACTION_FAST_REWIND
     ) {
-        override fun icon(status: ServiceStatus): Int = R.drawable.ic_fast_rewind_white_24dp
+        override fun icon(status: MusicServiceStatus): Int = R.drawable.ic_fast_rewind_white_24dp
     }
 
     object FastForward : NotificationAction(
         ACTION_KEY_FAST_FORWARD,
         R.string.action_fast_forward,
-        MusicService.ACTION_FAST_FORWARD
+        ACTION_FAST_FORWARD
     ) {
-        override fun icon(status: ServiceStatus): Int = R.drawable.ic_fast_forward_white_24dp
+        override fun icon(status: MusicServiceStatus): Int = R.drawable.ic_fast_forward_white_24dp
     }
 
-    object Fav : NotificationAction(ACTION_KEY_FAV, R.string.favorites, MusicService.ACTION_FAV) {
-        override fun icon(status: ServiceStatus): Int = R.drawable.ic_favorite_border_white_24dp
+    object Fav : NotificationAction(ACTION_KEY_FAV, R.string.favorites, ACTION_FAV) {
+        override fun icon(status: MusicServiceStatus): Int = R.drawable.ic_favorite_border_white_24dp
     }
 
-    object Close : NotificationAction(ACTION_KEY_CLOSE, R.string.exit, MusicService.ACTION_EXIT_OR_STOP) {
-        override fun icon(status: ServiceStatus): Int = R.drawable.ic_close_white_24dp
+    object Close : NotificationAction(ACTION_KEY_CLOSE, R.string.exit, ACTION_EXIT_OR_STOP) {
+        override fun icon(status: MusicServiceStatus): Int = R.drawable.ic_close_white_24dp
     }
 
     private object Invalid : NotificationAction(ACTION_KEY_UNKNOWN, R.string.empty, ".") {
-        override fun icon(status: ServiceStatus): Int = R.drawable.ic_notification
+        override fun icon(status: MusicServiceStatus): Int = R.drawable.ic_notification
     }
 
     companion object {

@@ -16,9 +16,10 @@ import player.phonograph.mechanism.scanner.MediaStoreScanner
 import player.phonograph.model.DirectoryInfo
 import player.phonograph.model.pages.Pages
 import player.phonograph.model.pages.PagesConfig
+import player.phonograph.model.service.ACTION_EXIT_OR_STOP
+import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicService
-import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.settings.THEME_AUTO_LIGHTBLACK
@@ -192,7 +193,7 @@ fun setupDrawerMenu(
                     context.getString(R.string.exit) to {
                         val pendingIntent = PendingIntent.getService(
                             context, 0,
-                            Intent(MusicService.ACTION_EXIT_OR_STOP).apply {
+                            Intent(ACTION_EXIT_OR_STOP).apply {
                                 component = ComponentName(context, MusicService::class.java)
                             }, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
                         )

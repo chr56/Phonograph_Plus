@@ -20,12 +20,13 @@ import player.phonograph.model.PlayRequest.SongsRequest
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.DynamicPlaylists
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.service.ACTION_PLAY
+import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.repo.mediastore.processQuery
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.service.queue.executePlayRequest
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
@@ -218,9 +219,7 @@ class StarterActivity : AppCompatActivity() {
             queueManager.modifyShuffleMode(shuffleMode, false)
             queueManager.modifyPosition(0, false)
             startService(
-                Intent(this, MusicService::class.java).apply {
-                    action = MusicService.ACTION_PLAY
-                }
+                Intent(this, MusicService::class.java).apply { action = ACTION_PLAY }
             )
         } else {
             Toast.makeText(this, R.string.playlist_empty_text, Toast.LENGTH_SHORT).show()

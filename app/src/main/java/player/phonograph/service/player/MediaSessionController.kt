@@ -11,12 +11,13 @@ import player.phonograph.mechanism.setting.NotificationActionsConfig
 import player.phonograph.mechanism.setting.NotificationConfig
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
+import player.phonograph.model.service.MusicServiceStatus
+import player.phonograph.model.service.RepeatMode
+import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.browser.MediaBrowserDelegate
 import player.phonograph.service.MusicService
 import player.phonograph.service.ServiceComponent
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.service.queue.RepeatMode
-import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.service.util.MediaButtonIntentReceiver
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
@@ -207,7 +208,7 @@ class MediaSessionController : ServiceComponent {
             }
         }
 
-    fun updatePlaybackState(status: MusicService.ServiceStatus) {
+    fun updatePlaybackState(status: MusicServiceStatus) {
         mediaSession.setPlaybackState(
             sessionPlaybackStateBuilder.setCustomActions(service, status)
                 .setState(
@@ -219,10 +220,8 @@ class MediaSessionController : ServiceComponent {
         )
     }
 
-    private fun PlaybackStateCompat.Builder.setCustomActions(
-        musicService: MusicService,
-        status: MusicService.ServiceStatus,
-    ): PlaybackStateCompat.Builder {
+    private fun PlaybackStateCompat.Builder.setCustomActions(musicService: MusicService, status: MusicServiceStatus):
+            PlaybackStateCompat.Builder {
         for (action in customActions) {
             addCustomAction(
                 action.action,

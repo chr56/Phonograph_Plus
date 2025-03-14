@@ -5,7 +5,7 @@
 package player.phonograph.mechanism.broadcast
 
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists
-import player.phonograph.MusicServiceMsgConst
+import player.phonograph.model.service.EVENT_MEDIA_STORE_CHANGED
 import android.content.Context
 import android.database.ContentObserver
 import android.os.Handler
@@ -31,7 +31,7 @@ class MediaStoreObserver(
     override fun run() {
         // actually call refresh when the delayed callback fires
         // do not send a sticky broadcast here
-        handleAndSendChangeInternalCallback(MusicServiceMsgConst.MEDIA_STORE_CHANGED)
+        handleAndSendChangeInternalCallback(EVENT_MEDIA_STORE_CHANGED)
     }
 
     companion object {

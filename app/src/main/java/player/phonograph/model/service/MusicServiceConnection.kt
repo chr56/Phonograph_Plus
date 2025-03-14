@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2024 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.service
+package player.phonograph.model.service
 
 import android.content.ServiceConnection
 

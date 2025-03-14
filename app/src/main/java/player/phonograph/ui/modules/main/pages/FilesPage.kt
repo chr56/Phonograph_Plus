@@ -12,9 +12,9 @@ import player.phonograph.R
 import player.phonograph.databinding.FragmentFilePageBinding
 import player.phonograph.mechanism.actions.actionPlay
 import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.explorer.FilesPageExplorerFragment

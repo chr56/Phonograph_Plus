@@ -25,9 +25,9 @@ import player.phonograph.model.SongClickMode.SONG_PLAY_NOW
 import player.phonograph.model.SongClickMode.SONG_SINGLE_PLAY
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.NavigationUtil

@@ -7,9 +7,9 @@ package player.phonograph.mechanism.actions
 import player.phonograph.R
 import player.phonograph.mechanism.PathFilter
 import player.phonograph.model.Song
+import player.phonograph.model.service.ShuffleMode
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.dialogs.DeletionDialog
 import player.phonograph.ui.modules.playlist.dialogs.AddToPlaylistDialogActivity
 import player.phonograph.ui.modules.tag.TagBrowserActivity

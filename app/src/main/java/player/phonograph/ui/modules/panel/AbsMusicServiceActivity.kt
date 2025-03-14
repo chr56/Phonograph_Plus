@@ -5,9 +5,9 @@
 package player.phonograph.ui.modules.panel
 
 import org.koin.android.ext.android.inject
+import player.phonograph.model.service.MusicServiceConnection
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
-import player.phonograph.service.MusicServiceConnection
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.basis.ToolbarActivity

@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.service.queue
+package player.phonograph.model.service
 
 import player.phonograph.model.Song
 

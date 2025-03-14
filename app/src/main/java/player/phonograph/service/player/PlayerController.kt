@@ -5,10 +5,12 @@ import player.phonograph.R
 import player.phonograph.mechanism.StatusBarLyric
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
+import player.phonograph.model.service.PlayerState
+import player.phonograph.model.service.PlayerStateObserver
+import player.phonograph.model.service.RepeatMode
 import player.phonograph.service.MusicService
 import player.phonograph.service.ServiceComponent
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.util.LyricsUpdater
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
@@ -178,7 +180,9 @@ class PlayerController : ServiceComponent, Controller {
             synchronized(field) {
                 val oldState = field
                 field = value
-                observers.executeForEach { onPlayerStateChanged(oldState, value) }
+                for (observer in observers) {
+                    observer.onPlayerStateChanged(oldState, value)
+                }
             }
         }
 
@@ -357,8 +361,8 @@ class PlayerController : ServiceComponent, Controller {
             controller.broadcastStopLyric()
             controller.playerState = PlayerState.STOPPED
             controller.releaseTakenResources()
-            controller.observers.executeForEach {
-                onReceivingMessage(MSG_PLAYER_STOPPED)
+            for (observer in controller.observers) {
+                observer.onReceivingMessage(PlayerStateObserver.Companion.MSG_PLAYER_STOPPED)
             }
         }
 
@@ -423,8 +427,8 @@ class PlayerController : ServiceComponent, Controller {
                 playAt(position)
             } else {
                 pause(false, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED)
-                controller.observers.executeForEach {
-                    onReceivingMessage(MSG_NO_MORE_SONGS)
+                for (observer in controller.observers) {
+                    observer.onReceivingMessage(PlayerStateObserver.Companion.MSG_NO_MORE_SONGS)
                 }
             }
         }
@@ -471,8 +475,8 @@ class PlayerController : ServiceComponent, Controller {
                     pause(true, reason = PauseReason.PAUSE_FOR_QUEUE_ENDED)
                 }
                 controller.broadcastStopLyric()
-                controller.observers.executeForEach {
-                    onReceivingMessage(MSG_NO_MORE_SONGS)
+                for (observer in controller.observers) {
+                    observer.onReceivingMessage(PlayerStateObserver.Companion.MSG_NO_MORE_SONGS)
                 }
             } else {
                 handler.request {
@@ -545,8 +549,8 @@ class PlayerController : ServiceComponent, Controller {
     }
 
     private fun notifyNowPlayingChanged() {
-        observers.executeForEach {
-            onReceivingMessage(MSG_NOW_PLAYING_CHANGED)
+        for (observer in observers) {
+            observer.onReceivingMessage(PlayerStateObserver.Companion.MSG_NOW_PLAYING_CHANGED)
         }
         service.coroutineScope.launch(SupervisorJob()) {
             lyricsUpdater.updateViaSong(queueManager.currentSong)

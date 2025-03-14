@@ -5,6 +5,9 @@
 package player.phonograph.service.util
 
 import player.phonograph.R
+import player.phonograph.model.service.ACTION_CANCEL_PENDING_QUIT
+import player.phonograph.model.service.ACTION_STOP_AND_QUIT_NOW
+import player.phonograph.model.service.ACTION_STOP_AND_QUIT_PENDING
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
@@ -120,14 +123,14 @@ class SleepTimer private constructor() {
         ): Intent =
             Intent(context.applicationContext, MusicService::class.java).apply {
                 action =
-                    if (shouldFinishLastSong) MusicService.ACTION_STOP_AND_QUIT_PENDING
-                    else MusicService.ACTION_STOP_AND_QUIT_NOW
+                    if (shouldFinishLastSong) ACTION_STOP_AND_QUIT_PENDING
+                    else ACTION_STOP_AND_QUIT_NOW
             }
 
 
         private fun cancelTimerIntent(context: Context): Intent =
             Intent(context.applicationContext, MusicService::class.java).apply {
-                action = MusicService.ACTION_CANCEL_PENDING_QUIT
+                action = ACTION_CANCEL_PENDING_QUIT
             }
 
         private const val TAG = "SleepTimer"
