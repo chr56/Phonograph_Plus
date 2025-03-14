@@ -23,11 +23,11 @@ import player.phonograph.model.playlist.PLAYLIST_TYPE_MY_TOP_TRACK
 import player.phonograph.model.playlist.PLAYLIST_TYPE_RANDOM
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.VirtualPlaylistLocation
+import player.phonograph.repo.database.RecentlyPlayedTracksLoader
 import player.phonograph.repo.database.SongPlayCountStore
+import player.phonograph.repo.database.TopTracksLoader
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
-import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
-import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.concurrent.coroutineToast

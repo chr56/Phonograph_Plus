@@ -11,9 +11,9 @@ import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.repo.database.FavoritesStore
 import player.phonograph.repo.database.HistoryStore
 import player.phonograph.repo.database.PathFilterStore
+import player.phonograph.repo.database.RecentlyPlayedTracksLoader
 import player.phonograph.repo.database.SongPlayCountStore
-import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
-import player.phonograph.repo.mediastore.loaders.TopTracksLoader
+import player.phonograph.repo.database.TopTracksLoader
 import player.phonograph.service.queue.MusicPlaybackQueueStore
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.Keys

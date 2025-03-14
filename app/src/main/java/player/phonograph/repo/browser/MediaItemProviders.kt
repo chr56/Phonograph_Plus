@@ -20,8 +20,8 @@ import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.loader.Genres
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
-import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
-import player.phonograph.repo.mediastore.loaders.TopTracksLoader
+import player.phonograph.repo.database.RecentlyPlayedTracksLoader
+import player.phonograph.repo.database.TopTracksLoader
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
