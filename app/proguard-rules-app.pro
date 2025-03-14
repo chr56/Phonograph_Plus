@@ -27,6 +27,7 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.player.** { protected <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.modules.** extends androidx.lifecycle.ViewModel {public <methods>;}
 
+-keepclassmembernames,allowoptimization,allowshrinking interface player.phonograph.repo.loader.IFavoriteSongs { public <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.repo.mediastore.internal.QueryKt { public query*(...); }
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.MusicService { public <methods>;public <fields>; }
@@ -52,7 +53,6 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.metadata.* extends player.phonograph.mechanism.metadata.MetadataExtractor { public <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.metadata.* extends player.phonograph.mechanism.metadata.TagReader { public *** read(...); }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.metadata.edit.* extends player.phonograph.model.metadata.EditAction$Executor { public <methods>; }
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.* extends player.phonograph.mechanism.IFavorite { public <methods>; }
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.* extends player.phonograph.mechanism.IUriParser { public <methods>; }
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.coil.retriever.FetcherDelegate { abstract <methods>; }
