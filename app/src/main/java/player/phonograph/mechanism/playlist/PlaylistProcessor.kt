@@ -183,11 +183,8 @@ private data object MyTopTracksPlaylistProcessor : PlaylistReader {
     override suspend fun containsSong(context: Context, songId: Long): Boolean = false // todo
 
     override suspend fun refresh(context: Context) {
-        songPlayCountStore.reCalculateScore(context)
+        SongPlayCountStore.get().reCalculateScore(context)
     }
-
-    private val songPlayCountStore: SongPlayCountStore
-        get() = GlobalContext.get().get()
 
 }
 

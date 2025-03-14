@@ -4,6 +4,7 @@
 
 package player.phonograph.repo.database.store
 
+import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.notification.BackgroundNotification
 import player.phonograph.repo.database.store.SongPlayCountStore.SongPlayCountColumns.Companion.ID
@@ -468,5 +469,7 @@ class SongPlayCountStore(context: Context) :
         fun Int.requireNotNegative(): Int = if (this < 0) throw IllegalStateException("Must be non-negative!") else this
 
         private const val NOTIFICATION_ID = 7727
+
+        fun get() = GlobalContext.get().get<SongPlayCountStore>()
     }
 }

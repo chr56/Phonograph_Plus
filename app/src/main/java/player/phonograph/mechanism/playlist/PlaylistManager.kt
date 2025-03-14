@@ -74,7 +74,7 @@ object PlaylistManager {
                 return when (location.type) {
                     PLAYLIST_TYPE_HISTORY      -> HistoryStore.get().clear()
                     PLAYLIST_TYPE_FAVORITE     -> GlobalContext.get().get<IFavorite>().clearAll(context)
-                    PLAYLIST_TYPE_MY_TOP_TRACK -> GlobalContext.get().get<SongPlayCountStore>().clear()
+                    PLAYLIST_TYPE_MY_TOP_TRACK -> SongPlayCountStore.get().clear()
                     else                       -> false
                 }
             }
@@ -203,7 +203,7 @@ object PlaylistManager {
             when (location.type) {
                 PLAYLIST_TYPE_HISTORY      -> HistoryStore.get().clear()
                 PLAYLIST_TYPE_FAVORITE     -> GlobalContext.get().get<IFavorite>().clearAll(context)
-                PLAYLIST_TYPE_MY_TOP_TRACK -> GlobalContext.get().get<SongPlayCountStore>().clear()
+                PLAYLIST_TYPE_MY_TOP_TRACK -> SongPlayCountStore.get().clear()
                 else                       -> false
             }
 
