@@ -292,7 +292,7 @@ class QueueManager(val context: Application) {
             snapShotsItemCount += queueHolder.playingQueue.size
             queueHolderSnapshots.add(0, queueHolder.clone())
             if (queueHolderSnapshots.size > 10 || snapShotsItemCount >= 150_000) {
-                val removed = queueHolderSnapshots.removeLast()
+                val removed = queueHolderSnapshots.removeAt(queueHolderSnapshots.lastIndex)
                 snapShotsItemCount -= removed.playingQueue.size
             }
         }
