@@ -1,13 +1,10 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
-package player.phonograph.repo.mediastore.loaders
 
-import org.koin.core.context.GlobalContext
+package player.phonograph.repo.mediastore
+
 import player.phonograph.model.Song
-import player.phonograph.repo.database.HistoryStore
-import player.phonograph.repo.database.ShallowDatabase
-import player.phonograph.repo.database.SongPlayCountStore
 import player.phonograph.repo.mediastore.internal.SortedLongCursor
 import player.phonograph.repo.mediastore.internal.intoSongs
 import player.phonograph.repo.mediastore.internal.querySongs
@@ -15,54 +12,49 @@ import android.content.Context
 import android.database.Cursor
 import android.provider.BaseColumns
 
-class TopTracksLoader(private val songPlayCountStore: SongPlayCountStore) :
-        DynamicDatabaseLoader(songPlayCountStore) {
+/**
+ * intermediate loader to help query database songs with mediastore
+ */
+abstract class DatabaseAgentLoader {
 
-    override fun queryCursorImpl(context: Context): Cursor? =
-        songPlayCountStore.getTopPlayedResults(NUMBER_OF_TOP_TRACKS)
-            .intoSongCursor(context, SongPlayCountStore.SongPlayCountColumns.ID)
-
-    companion object {
-        private const val NUMBER_OF_TOP_TRACKS = 150
-        fun get() = GlobalContext.get().get<TopTracksLoader>()
-    }
-}
-
-class RecentlyPlayedTracksLoader(private val historyStore: HistoryStore) :
-        DynamicDatabaseLoader(historyStore) {
-
-    override fun queryCursorImpl(context: Context): Cursor? =
-        historyStore.queryRecentIds()
-            .intoSongCursor(context, HistoryStore.RecentStoreColumns.ID)
-
-    companion object {
-        fun get() = GlobalContext.get().get<RecentlyPlayedTracksLoader>()
-    }
-}
-
-abstract class DynamicDatabaseLoader(private val db: Any) {
-
+    /**
+     * @return all songs the loader can be provided
+     */
     fun tracks(context: Context): List<Song> = queryCursorAndClear(context).intoSongs()
 
+    /**
+     * query the database and return a Song cursor
+     * @return Song cursor supporting (see [intoSongCursor])
+     */
     protected abstract fun queryCursorImpl(context: Context): Cursor?
 
-    protected fun queryCursorAndClear(context: Context): Cursor? {
+    /**
+     * clean the database
+     * @param existed ids that existed in MediaStore
+     */
+    protected abstract fun clean(context: Context, existed: List<Long>)
+
+    /**
+     * whether this loader needs to be cleaned frequently
+     */
+    protected abstract val cleanable: Boolean
+
+    private fun queryCursorAndClear(context: Context): Cursor? {
 
         val songCursor = queryCursorImpl(context) ?: return null
 
-        if (db is ShallowDatabase) {
+        if (cleanable) {
             // clean up the databases with any ids not found
-            val exists = songIds(songCursor)
-            db.gc(exists)
+            clean(context, songIds(songCursor))
         }
 
         return songCursor
     }
 
-    private fun songIds(songCursor: Cursor): List<Long> {
+    private fun songIds(songCursor: Cursor, idColumnName: String = BaseColumns._ID): List<Long> {
         val exists = mutableListOf<Long>()
         if (songCursor.moveToFirst()) {
-            val index = songCursor.getColumnIndex(BaseColumns._ID)
+            val index = songCursor.getColumnIndex(idColumnName)
             do {
                 val id = songCursor.getLong(index)
                 if (id > 0) exists.add(id)
@@ -71,10 +63,14 @@ abstract class DynamicDatabaseLoader(private val db: Any) {
         return exists
     }
 
+    /**
+     * Convert Database cursor to Song cursor
+     * @param idColumnName foreign key to MediaStore song id, in Database cursor
+     */
     protected fun Cursor.intoSongCursor(context: Context, idColumnName: String): SortedLongCursor? =
         use { cursor -> generateSongCursor(context, cursor, idColumnName) }
 
-    protected fun generateSongCursor(context: Context, cursor: Cursor, idColumnName: String): SortedLongCursor? {
+    private fun generateSongCursor(context: Context, cursor: Cursor, idColumnName: String): SortedLongCursor? {
         val count = cursor.count
         val idColumnIndex = cursor.getColumnIndex(idColumnName)
 

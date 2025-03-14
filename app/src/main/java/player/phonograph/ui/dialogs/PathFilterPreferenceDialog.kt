@@ -11,7 +11,7 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
-import player.phonograph.repo.database.PathFilterStore
+import player.phonograph.repo.database.store.PathFilterStore
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrimitivePreference
 import player.phonograph.settings.Setting

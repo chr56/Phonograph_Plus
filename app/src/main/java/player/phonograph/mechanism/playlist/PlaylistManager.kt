@@ -4,8 +4,6 @@
 
 package player.phonograph.mechanism.playlist
 
-import org.koin.core.context.GlobalContext
-import player.phonograph.mechanism.IFavorite
 import player.phonograph.mechanism.playlist.mediastore.createPlaylistViaMediastore
 import player.phonograph.mechanism.playlist.mediastore.deletePlaylistsViaMediastore
 import player.phonograph.mechanism.playlist.saf.writePlaylist
@@ -17,8 +15,9 @@ import player.phonograph.model.playlist.PLAYLIST_TYPE_HISTORY
 import player.phonograph.model.playlist.PLAYLIST_TYPE_MY_TOP_TRACK
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.VirtualPlaylistLocation
-import player.phonograph.repo.database.HistoryStore
-import player.phonograph.repo.database.SongPlayCountStore
+import player.phonograph.repo.database.store.HistoryStore
+import player.phonograph.repo.database.store.SongPlayCountStore
+import player.phonograph.repo.loader.FavoriteSongs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.util.file.selectDocumentUris
 import android.content.Context
@@ -73,8 +72,8 @@ object PlaylistManager {
                 if (location !is VirtualPlaylistLocation) return false
                 return when (location.type) {
                     PLAYLIST_TYPE_HISTORY      -> HistoryStore.get().clear()
-                    PLAYLIST_TYPE_FAVORITE     -> GlobalContext.get().get<IFavorite>().clearAll(context)
-                    PLAYLIST_TYPE_MY_TOP_TRACK -> GlobalContext.get().get<SongPlayCountStore>().clear()
+                    PLAYLIST_TYPE_MY_TOP_TRACK -> SongPlayCountStore.get().clear()
+                    PLAYLIST_TYPE_FAVORITE     -> FavoriteSongs.clearAll(context)
                     else                       -> false
                 }
             }
@@ -202,8 +201,8 @@ object PlaylistManager {
         private suspend fun deleteVirtual(context: Context, location: VirtualPlaylistLocation): Boolean =
             when (location.type) {
                 PLAYLIST_TYPE_HISTORY      -> HistoryStore.get().clear()
-                PLAYLIST_TYPE_FAVORITE     -> GlobalContext.get().get<IFavorite>().clearAll(context)
-                PLAYLIST_TYPE_MY_TOP_TRACK -> GlobalContext.get().get<SongPlayCountStore>().clear()
+                PLAYLIST_TYPE_MY_TOP_TRACK -> SongPlayCountStore.get().clear()
+                PLAYLIST_TYPE_FAVORITE     -> FavoriteSongs.clearAll(context)
                 else                       -> false
             }
 

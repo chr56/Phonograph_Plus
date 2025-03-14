@@ -19,7 +19,7 @@ import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.repo.database.FavoritesStore
+import player.phonograph.repo.database.store.FavoritesStore
 import player.phonograph.repo.loader.Songs
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode

@@ -15,10 +15,10 @@ import lib.storage.launcher.OpenDocumentContract
 import org.koin.core.context.GlobalContext
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.mechanism.IFavorite
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
+import player.phonograph.repo.loader.FavoriteSongs
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.service.queue.QueueManager
@@ -179,8 +179,7 @@ abstract class AbsPlayerFragment :
                 onClick {
                     val song = viewModel.currentSong.value
                     if (song != null) lifecycleScope.launch(Dispatchers.IO) {
-                        val favorite = GlobalContext.get().get<IFavorite>()
-                        favorite.toggleFavorite(context, song)
+                        FavoriteSongs.toggleFavorite(context, song)
                     }
                     true
                 }

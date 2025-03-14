@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.repo.database
+package player.phonograph.repo.database.store
 
 import player.phonograph.util.debug
 import player.phonograph.util.reportError
@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 
 
-interface ShallowDatabase {
+interface Cleanable {
     fun gc(idsExists: List<Long>)
 }
 

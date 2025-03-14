@@ -14,14 +14,14 @@ import player.phonograph.model.PlayRequest
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.repo.database.FavoritesStore
+import player.phonograph.repo.database.loaders.RecentlyPlayedTracksLoader
+import player.phonograph.repo.database.loaders.TopTracksLoader
+import player.phonograph.repo.database.store.FavoritesStore
 import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.loader.Artists
 import player.phonograph.repo.loader.Genres
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
-import player.phonograph.repo.mediastore.loaders.RecentlyPlayedTracksLoader
-import player.phonograph.repo.mediastore.loaders.TopTracksLoader
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting

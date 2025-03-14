@@ -7,15 +7,14 @@ package player.phonograph.ui.modules.playlist
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.koin.core.context.GlobalContext
 import player.phonograph.R
-import player.phonograph.mechanism.IFavorite
 import player.phonograph.mechanism.actions.DetailToolbarMenuProviders
 import player.phonograph.model.UIMode
 import player.phonograph.model.playlist.PLAYLIST_TYPE_FAVORITE
 import player.phonograph.model.playlist.PLAYLIST_TYPE_LAST_ADDED
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.VirtualPlaylistLocation
+import player.phonograph.repo.loader.FavoriteSongs
 import player.phonograph.ui.dialogs.LastAddedPlaylistIntervalDialog
 import player.phonograph.util.fragmentActivity
 import player.phonograph.util.theme.getTintedDrawable
@@ -99,8 +98,7 @@ class PlaylistToolbarMenuProvider(
                                                 .setMessage(R.string.action_clean_missing_items)
                                                 .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
                                                     context.lifecycleScope.launch {
-                                                        val favorite = GlobalContext.get().get<IFavorite>()
-                                                        favorite.cleanMissed(context)
+                                                        FavoriteSongs.cleanMissed(context)
                                                     }
                                                     dialog.dismiss()
                                                 }

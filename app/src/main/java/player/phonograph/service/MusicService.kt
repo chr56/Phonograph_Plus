@@ -6,7 +6,6 @@ package player.phonograph.service
 
 import lib.phonograph.localization.ContextLocaleDelegate
 import org.koin.android.ext.android.get
-import org.koin.core.context.GlobalContext
 import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.BuildConfig
 import player.phonograph.MusicServiceMsgConst.META_CHANGED
@@ -15,13 +14,13 @@ import player.phonograph.MusicServiceMsgConst.QUEUE_CHANGED
 import player.phonograph.MusicServiceMsgConst.REPEAT_MODE_CHANGED
 import player.phonograph.MusicServiceMsgConst.SHUFFLE_MODE_CHANGED
 import player.phonograph.appwidgets.AppWidgetUpdateReceiver
-import player.phonograph.mechanism.IFavorite
 import player.phonograph.mechanism.broadcast.setUpMediaStoreObserver
 import player.phonograph.mechanism.broadcast.unregisterMediaStoreObserver
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.repo.browser.MediaBrowserDelegate
-import player.phonograph.repo.database.HistoryStore
+import player.phonograph.repo.database.store.HistoryStore
+import player.phonograph.repo.loader.FavoriteSongs
 import player.phonograph.service.notification.CoverLoader
 import player.phonograph.service.notification.PlayingNotificationManager
 import player.phonograph.service.notification.PlayingNotificationManager.Companion.VERSION_SET_COVER_USING_METADATA
@@ -208,8 +207,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
 
     private fun toggleFavorite(song: Song?): Boolean {
-        val favoritesStore = GlobalContext.get().inject<IFavorite>()
-        return if (song != null) runBlocking { favoritesStore.value.toggleFavorite(this@MusicService, song) } else false
+        return if (song != null) runBlocking { FavoriteSongs.toggleFavorite(this@MusicService, song) } else false
     }
 
 

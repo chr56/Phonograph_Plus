@@ -1,16 +1,18 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.repo.database
+package player.phonograph.repo.database.store
 
+import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.notification.BackgroundNotification
-import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.ID
-import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.LAST_UPDATED_WEEK_INDEX
-import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.NAME
-import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.PLAY_COUNT_SCORE
-import player.phonograph.repo.database.SongPlayCountStore.SongPlayCountColumns.Companion.WEEK
+import player.phonograph.repo.database.store.SongPlayCountStore.SongPlayCountColumns.Companion.ID
+import player.phonograph.repo.database.store.SongPlayCountStore.SongPlayCountColumns.Companion.LAST_UPDATED_WEEK_INDEX
+import player.phonograph.repo.database.store.SongPlayCountStore.SongPlayCountColumns.Companion.NAME
+import player.phonograph.repo.database.store.SongPlayCountStore.SongPlayCountColumns.Companion.PLAY_COUNT_SCORE
+import player.phonograph.repo.database.store.SongPlayCountStore.SongPlayCountColumns.Companion.WEEK
+import player.phonograph.repo.database.DatabaseConstants
 import player.phonograph.util.reportError
 import android.content.ContentValues
 import android.content.Context
@@ -25,7 +27,7 @@ import kotlin.math.min
  * the top played tracks as well as the playlist images
  */
 class SongPlayCountStore(context: Context) :
-        SQLiteOpenHelper(context, DatabaseConstants.SONG_PLAY_COUNT_DB, null, VERSION), ShallowDatabase {
+        SQLiteOpenHelper(context, DatabaseConstants.SONG_PLAY_COUNT_DB, null, VERSION), Cleanable {
 
     /** number of weeks since epoch time **/
     private val mCurrentWeekNumber: Int get() = (System.currentTimeMillis() / ONE_WEEK_IN_MS).toInt()
@@ -467,5 +469,7 @@ class SongPlayCountStore(context: Context) :
         fun Int.requireNotNegative(): Int = if (this < 0) throw IllegalStateException("Must be non-negative!") else this
 
         private const val NOTIFICATION_ID = 7727
+
+        fun get() = GlobalContext.get().get<SongPlayCountStore>()
     }
 }

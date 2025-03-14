@@ -5,7 +5,7 @@
 package player.phonograph.repo.mediastore.internal
 
 import org.koin.core.context.GlobalContext
-import player.phonograph.repo.database.PathFilterStore
+import player.phonograph.repo.database.store.PathFilterStore
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import android.content.Context
