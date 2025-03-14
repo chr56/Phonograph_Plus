@@ -42,7 +42,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -91,8 +90,8 @@ class TagBrowserActivity :
         }
 
         setContent {
-            val highlightColorState: State<Color?> = viewModel.state.map { it?.color }.collectAsState(null)
-            PhonographTheme(highlightColorState) {
+            val state by viewModel.state.collectAsState()
+            PhonographTheme(state?.color) {
                 SystemBarsPadded {
                     TagBrowserActivityMainContent(viewModel, webSearchTool, onBackPressedDispatcher)
                 }

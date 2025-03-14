@@ -18,7 +18,6 @@ import androidx.compose.material.Shapes
 import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
@@ -35,44 +34,14 @@ import android.app.Activity
 @Composable
 fun PhonographTheme(content: @Composable () -> Unit) {
     val colors = phonographColors()
-    PhonographTheme(colors) {
+    PhonographTheme(colors = colors) {
         content()
     }
 }
-
-@Composable
-fun PhonographTheme(highLightColorState: State<Color?>, content: @Composable () -> Unit) {
-    val highLightColor by highLightColorState
-    val color = highLightColor
-    val colors =
-        if (color != null)
-            phonographColors().copy(
-                primary = color,
-                primaryVariant = color.darker(),
-                onPrimary = textColorOn(LocalContext.current, color),
-            ) else {
-            phonographColors()
-        }
-    PhonographTheme(colors) {
-        content()
-    }
-}
-
 
 @Composable
 fun PhonographTheme(primary: Color?, content: @Composable () -> Unit) {
-    val colors = phonographColors().let { colors ->
-        if (primary != null) {
-            colors.copy(
-                primary = primary,
-                primaryVariant = primary.darker().darker(),
-                onPrimary = textColorOn(LocalContext.current, primary),
-            )
-        } else {
-            colors
-        }
-    }
-
+    val colors = tweakColors(phonographColors(), primary)
     MaterialTheme(colors = colors) {
         content()
     }
@@ -88,25 +57,18 @@ private fun PhonographTheme(colors: Colors, content: @Composable () -> Unit) {
     )
     AwareSystemUIColor(colors.primaryVariant)
 }
-@Composable
-private fun AwareSystemUIColor(color: Color) {
-    val context = LocalContext.current
-    LaunchedEffect(color) {
-        if (context is Activity) {
-            context.setupSystemBars()
-            context.updateSystemBarsColor(color.toArgb(), 64 shl 24)
-        }
-    }
-}
 
 @Composable
 fun ExperimentalContentThemeOverride(content: @Composable (() -> Unit)) {
     MaterialTheme(
         colors = experimentalContentColors(),
+        typography = Typography,
+        shapes = Shapes,
         content = content
     )
 }
 
+/////////////
 
 @Composable
 private fun phonographColors(): Colors {
@@ -149,8 +111,34 @@ private fun experimentalContentColors(): Colors {
     }
 }
 
+@Composable
+private fun tweakColors(
+    colors: Colors,
+    primary: Color?,
+): Colors = if (primary != null) {
+    colors.copy(
+        primary = primary,
+        primaryVariant = primary.darker().darker(),
+        onPrimary = textColorOn(LocalContext.current, primary),
+    )
+} else {
+    colors
+}
 
-// Set of Material typography styles to start with
+
+@Composable
+private fun AwareSystemUIColor(color: Color) {
+    val context = LocalContext.current
+    LaunchedEffect(color) {
+        if (context is Activity) {
+            context.setupSystemBars()
+            context.updateSystemBarsColor(color.toArgb(), 64 shl 24)
+        }
+    }
+}
+
+///////////////////////////////
+
 val Typography = Typography(
     body1 = TextStyle(
         fontFamily = FontFamily.Default,

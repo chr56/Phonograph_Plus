@@ -58,7 +58,7 @@ class MigrationActivity : ComposeActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val result by migrationResultFlow.collectAsState()
-            val color = remember { derivedStateOf { if (result != null) colorDone else colorProcess } }
+            val color by remember { derivedStateOf { if (result != null) colorDone else colorProcess } }
             PhonographTheme(color) {
                 SystemBarsPadded {
                     Scaffold(
