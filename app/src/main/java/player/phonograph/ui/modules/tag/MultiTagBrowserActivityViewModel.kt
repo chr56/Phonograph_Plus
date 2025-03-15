@@ -39,6 +39,7 @@ class MultiTagBrowserActivityViewModel : AbsMetadataViewModel() {
         val raw: Map<Song, AudioMetadata>,
         val fields: Map<ConventionalMusicMetadataKey, List<Metadata.Field>>,
         val displayed: Map<ConventionalMusicMetadataKey, String>,
+        var errors: Map<Song, List<Throwable>>,
     ) {
         val songs get() = raw.keys
         val metadata get() = raw.values
@@ -54,7 +55,7 @@ class MultiTagBrowserActivityViewModel : AbsMetadataViewModel() {
                     val set = values.toSet()
                     if (set.size == 1) display(context, values.first()) else ""
                 }
-                return State(items, fields, displayed)
+                return State(items, fields, displayed, emptyMap())
             }
 
             private fun reducedTagFields(all: Collection<AudioMetadata>)

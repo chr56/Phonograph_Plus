@@ -14,6 +14,7 @@ import player.phonograph.ui.modules.tag.components.EditableTagItem
 import player.phonograph.ui.modules.tag.components.FileItems
 import player.phonograph.ui.modules.tag.components.InsertNewButton
 import player.phonograph.ui.modules.tag.components.ReadonlyTagItem
+import player.phonograph.ui.modules.tag.util.ErrorMessage
 import player.phonograph.ui.modules.tag.util.display
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -34,11 +35,13 @@ import android.content.Context
 @Composable
 fun MultiTagBrowserScreen(viewModel: MultiTagBrowserActivityViewModel) {
     val state by viewModel.state.collectAsState()
-    BrowserScreenFrame(viewModel, {
-        FileListSection(state?.songs)
-    }, {
-        ArtworkSection(viewModel)
-    }) {
+    val errors = state?.errors
+    BrowserScreenFrame(
+        viewModel = viewModel,
+        warningSection = { if (!errors.isNullOrEmpty()) ErrorMessage(errors) },
+        fileListSection = { FileListSection(state?.songs) },
+        artworkSection = { ArtworkSection(viewModel) },
+    ) {
         Spacer(modifier = Modifier.height(16.dp))
         Title(stringResource(R.string.label_music_tags), color = MaterialTheme.colors.primary)
         GenericTagItems(viewModel)

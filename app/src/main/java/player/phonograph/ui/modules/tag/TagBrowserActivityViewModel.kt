@@ -55,13 +55,14 @@ class TagBrowserActivityViewModel : AbsMetadataViewModel() {
         val metadata: AudioMetadata,
         val image: Bitmap?,
         val color: Color?,
+        var errors: List<Throwable>,
     ) {
         companion object {
             suspend fun from(context: Context, song: Song): State = withContext(Dispatchers.IO) {
                 val info = JAudioTaggerExtractor.extractSongMetadata(context, song)
                     ?: DefaultMetadataExtractor.extractSongMetadata(context, song)
                 val (bitmap, paletteColor) = readEmbeddedImage(song.data, themeFooterColor(context))
-                State(song, info, bitmap, paletteColor)
+                State(song, info, bitmap, paletteColor, emptyList())
             }
         }
 

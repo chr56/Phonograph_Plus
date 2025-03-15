@@ -18,6 +18,7 @@ import player.phonograph.ui.modules.tag.components.AudioImage
 import player.phonograph.ui.modules.tag.components.EditableTagItem
 import player.phonograph.ui.modules.tag.components.InsertNewButton
 import player.phonograph.ui.modules.tag.components.ReadonlyTagItem
+import player.phonograph.ui.modules.tag.util.ErrorMessage
 import player.phonograph.ui.modules.tag.util.display
 import player.phonograph.util.text.dateTimeTextPrecise
 import player.phonograph.util.text.getFileSizeString
@@ -52,12 +53,15 @@ import android.content.Context
 @Composable
 fun TagBrowserScreen(viewModel: TagBrowserActivityViewModel) {
     BrowserScreenFrame(
-        viewModel,
-        null,
-        { ArtworkSection(viewModel) }
+        viewModel = viewModel,
+        warningSection = null,
+        fileListSection = null,
+        artworkSection = { ArtworkSection(viewModel) }
     ) {
         val editable by viewModel.editable.collectAsState()
         val state by viewModel.state.collectAsState()
+        val errors = state?.errors
+        if (!errors.isNullOrEmpty()) ErrorMessage(errors)
         val metadata = state?.metadata
         if (metadata != null) {
             Spacer(modifier = Modifier.height(16.dp))

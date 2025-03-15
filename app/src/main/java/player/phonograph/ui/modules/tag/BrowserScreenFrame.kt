@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun <VM : AbsMetadataViewModel> BrowserScreenFrame(
     viewModel: VM,
+    warningSection: (@Composable (ColumnScope.() -> Unit))?,
     fileListSection: (@Composable (ColumnScope.() -> Unit))?,
     artworkSection: @Composable (ColumnScope.() -> Unit),
     block: @Composable (ColumnScope.() -> Unit),
@@ -45,7 +46,9 @@ fun <VM : AbsMetadataViewModel> BrowserScreenFrame(
             .verticalScroll(state = rememberScrollState())
             .fillMaxSize(),
     ) {
-
+        if (warningSection != null) {
+            warningSection(this)
+        }
         if (fileListSection != null) {
             Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                 Spacer(modifier = Modifier.height(16.dp))
