@@ -15,7 +15,7 @@ import player.phonograph.model.playlist.PLAYLIST_TYPE_LAST_ADDED
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.VirtualPlaylistLocation
 import player.phonograph.repo.loader.FavoriteSongs
-import player.phonograph.ui.dialogs.LastAddedPlaylistIntervalDialog
+import player.phonograph.ui.modules.setting.dialog.LastAddedPlaylistIntervalDialog
 import player.phonograph.util.fragmentActivity
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.tintButtons
