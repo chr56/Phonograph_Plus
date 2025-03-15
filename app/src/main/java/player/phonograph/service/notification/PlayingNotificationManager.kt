@@ -19,8 +19,8 @@ import player.phonograph.model.service.PlayerState.STOPPED
 import player.phonograph.service.MusicService
 import player.phonograph.service.ServiceComponent
 import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingObserver
 import player.phonograph.ui.modules.main.MainActivity
-import player.phonograph.util.component.SettingObserver
 import player.phonograph.util.permissions.checkNotificationPermission
 import player.phonograph.util.theme.createTintedDrawable
 import player.phonograph.util.ui.BitmapUtil

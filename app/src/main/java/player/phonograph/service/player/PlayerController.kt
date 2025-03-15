@@ -15,8 +15,8 @@ import player.phonograph.service.util.LyricsUpdater
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Keys
+import player.phonograph.settings.SettingObserver
 import player.phonograph.util.MEDIASTORE_VOLUME_EXTERNAL
-import player.phonograph.util.component.SettingObserver
 import player.phonograph.util.mediaStoreUriSong
 import player.phonograph.util.registerReceiverCompat
 import androidx.core.content.ContextCompat

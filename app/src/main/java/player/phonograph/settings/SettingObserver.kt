@@ -2,11 +2,8 @@
  *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.util.component
+package player.phonograph.settings
 
-import player.phonograph.settings.CompositeKey
-import player.phonograph.settings.PrimitiveKey
-import player.phonograph.settings.Setting
 import android.content.Context
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
