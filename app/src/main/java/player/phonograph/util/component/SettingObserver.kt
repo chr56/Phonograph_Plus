@@ -4,9 +4,9 @@
 
 package player.phonograph.util.component
 
+import player.phonograph.settings.CompositeKey
 import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
-import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import android.content.Context
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
@@ -17,8 +17,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 class SettingObserver(
-    val context: Context,
-    private val coroutineScope: CoroutineScope = context.lifecycleScopeOrNewOne(Dispatchers.IO),
+    context: Context,
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
     private val setting: Setting = Setting(context),
 ) {
     fun <T> collect(
@@ -30,4 +30,17 @@ class SettingObserver(
             setting[key].flow.distinctUntilChanged().collect(collector)
         }
     }
+
+    fun <T> collect(
+        key: CompositeKey<T>,
+        coroutineContext: CoroutineContext = SupervisorJob(),
+        collector: FlowCollector<T>,
+    ) {
+        coroutineScope.launch(coroutineContext) {
+            setting.Composites[key].flow().distinctUntilChanged().collect(collector)
+        }
+    }
+
+    fun <T> blocking(key: PrimitiveKey<T>): T = setting[key].data
+    fun <T> blocking(key: CompositeKey<T>): T = setting.Composites[key].data
 }
