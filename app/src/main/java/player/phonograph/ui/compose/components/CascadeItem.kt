@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 
@@ -38,13 +39,22 @@ import androidx.compose.ui.unit.dp
 fun CascadeVerticalItem(
     title: String,
     modifier: Modifier = Modifier,
+    textColor: Color = Color.Unspecified,
     textStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
     innerColumnModifier: Modifier = Modifier,
     collapsible: Boolean = true,
     collapsed: Boolean = false,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    CascadeItem(modifier.padding(vertical = 8.dp), title, textStyle, Modifier, collapsible, collapsed) {
+    CascadeItem(
+        modifier.padding(vertical = 8.dp),
+        title,
+        textColor = textColor,
+        textStyle = textStyle,
+        textModifier = Modifier,
+        collapsible = collapsible,
+        collapsed = collapsed
+    ) {
         Column(innerColumnModifier.padding(start = 8.dp)) {
             content()
         }
@@ -54,11 +64,20 @@ fun CascadeVerticalItem(
 fun CascadeHorizontalItem(
     title: String,
     modifier: Modifier = Modifier,
+    textColor: Color = Color.Unspecified,
     textStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
     innerRowModifier: Modifier = Modifier,
     content: @Composable RowScope.() -> Unit,
 ) {
-    CascadeItem(modifier.padding(vertical = 4.dp), title, textStyle, Modifier, collapsible = false, collapsed = false) {
+    CascadeItem(
+        modifier.padding(vertical = 4.dp),
+        title,
+        textColor = textColor,
+        textStyle = textStyle,
+        textModifier = Modifier,
+        collapsible = false,
+        collapsed = false
+    ) {
         Row(
             innerRowModifier
                 .padding(horizontal = 8.dp)
@@ -73,17 +92,19 @@ fun CascadeHorizontalItem(
 fun CascadeFlowRow(
     title: String,
     modifier: Modifier = Modifier,
+    textColor: Color = Color.Unspecified,
     textStyle: TextStyle = LabeledItemLayoutDefault.titleStyle,
     innerRowModifier: Modifier = Modifier,
     content: @Composable RowScope.() -> Unit,
 ) {
     CascadeItem(
-        modifier = modifier,
-        title = title,
+        modifier,
+        title,
+        textColor = textColor,
         textStyle = textStyle,
         textModifier = innerRowModifier,
         collapsible = true,
-        collapsed = false
+        collapsed = false,
     ) {
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -96,6 +117,7 @@ fun CascadeFlowRow(
 fun CascadeItem(
     modifier: Modifier,
     title: String,
+    textColor: Color,
     textStyle: TextStyle,
     textModifier: Modifier,
     collapsible: Boolean,
@@ -126,6 +148,7 @@ fun CascadeItem(
                     .align(Alignment.Top)
                     .fillMaxWidth(),
                 style = textStyle,
+                color = textColor,
             )
         }
         AnimatedVisibility(!collapsible || !collapseState) {
