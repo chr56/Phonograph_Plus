@@ -12,7 +12,7 @@ import player.phonograph.R
 import player.phonograph.ui.modules.tag.AbsMetadataViewModel
 import player.phonograph.ui.modules.tag.MetadataUIEvent
 import player.phonograph.ui.modules.tag.MetadataUIEvent.Edit
-import player.phonograph.ui.modules.tag.util.selectImage
+import player.phonograph.util.file.selectImage
 import player.phonograph.util.theme.accentColoredButtonStyle
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

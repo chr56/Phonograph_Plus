@@ -11,10 +11,10 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.auxiliary.StarterActivity
 import player.phonograph.util.theme.ThemeSettingsDelegate.primaryColor
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.ui.BitmapUtil
 import util.theme.color.isColorLight
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.IconCompat
+import androidx.core.graphics.drawable.toBitmap
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ShortcutInfo
@@ -154,12 +154,12 @@ object PhonographShortcutManager {
         val backgroundDrawable = context.getTintedDrawable(R.drawable.ic_app_shortcut_background, backgroundColor)
         return if (SDK_INT >= VERSION_CODES.O) {
             val adaptiveIconDrawable = AdaptiveIconDrawable(backgroundDrawable, foregroundDrawable)
-            IconCompat.createWithAdaptiveBitmap(BitmapUtil.createBitmap(adaptiveIconDrawable))
+            IconCompat.createWithAdaptiveBitmap(adaptiveIconDrawable.toBitmap())
         } else {
             // Squash the two drawables together
             val layerDrawable = LayerDrawable(arrayOf(backgroundDrawable, foregroundDrawable))
             // Return as an Icon
-            IconCompat.createWithBitmap(BitmapUtil.createBitmap(layerDrawable))
+            IconCompat.createWithBitmap(layerDrawable.toBitmap())
         }
     }
 

@@ -6,6 +6,8 @@ package player.phonograph.util.file
 
 import lib.storage.childDocumentUriWithinTree
 import lib.storage.documentProviderUriAbsolutePath
+import lib.storage.launcher.OpenDocumentContract
+import lib.storage.launcher.OpenFileStorageAccessDelegate
 import lib.storage.launcher.SAFActivityResultContracts.chooseDirViaSAF
 import lib.storage.launcher.SAFActivityResultContracts.chooseFileViaSAF
 import lib.storage.textparser.DocumentUriPathParser
@@ -18,8 +20,17 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.util.Log
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
 
+suspend fun selectImage(accessTool: OpenFileStorageAccessDelegate): Uri? {
+    val cfg = OpenDocumentContract.Config(mimeTypes = arrayOf("image/*"))
+    return suspendCancellableCoroutine {
+        accessTool.launch(cfg) { uri: Uri? ->
+            it.resume(uri) { _, _, _ -> }
+        }
+    }
+}
 
 /**
  * select document content Uri from [filePaths] via SAF

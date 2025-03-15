@@ -11,7 +11,7 @@ import player.phonograph.foundation.compat.MEDIASTORE_VOLUME_EXTERNAL
 import player.phonograph.foundation.error.warning
 import player.phonograph.foundation.mediastore.mediastoreUriArtists
 import player.phonograph.util.file.createOrOverrideFileRecursive
-import player.phonograph.util.ui.BitmapUtil.restraintBitmapSize
+import player.phonograph.util.image.restraintBitmapSize
 import androidx.core.graphics.drawable.toBitmap
 import android.content.Context
 import android.content.SharedPreferences

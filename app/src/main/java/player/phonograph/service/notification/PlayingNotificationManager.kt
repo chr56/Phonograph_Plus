@@ -22,7 +22,6 @@ import player.phonograph.settings.SettingObserver
 import player.phonograph.ui.modules.main.MainActivity
 import player.phonograph.util.permissions.checkNotificationPermission
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.ui.BitmapUtil
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import androidx.annotation.LayoutRes
@@ -30,6 +29,7 @@ import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.Action
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.media.app.NotificationCompat.MediaStyle
 import android.app.Notification
 import android.app.PendingIntent
@@ -538,10 +538,14 @@ class PlayingNotificationManager : ServiceComponent {
         /**
          * @return Icon Bitmap of this [action]
          */
-        private fun icon(action: NotificationAction, status: MusicServiceStatus, backgroundColor: Int): Bitmap =
-            BitmapUtil.createBitmap(
-                service.getTintedDrawable(action.icon(status), service.primaryTextColor(backgroundColor))!!, 1.5f
+        private fun icon(action: NotificationAction, status: MusicServiceStatus, backgroundColor: Int): Bitmap {
+            val color = service.primaryTextColor(backgroundColor)
+            val drawable = service.getTintedDrawable(action.icon(status), color)!!
+            return drawable.toBitmap(
+                width = (drawable.intrinsicWidth * 1.5f).toInt(),
+                height = (drawable.intrinsicHeight * 1.5f).toInt()
             )
+        }
 
     }
     //endregion

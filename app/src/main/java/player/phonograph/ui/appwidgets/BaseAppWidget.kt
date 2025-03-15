@@ -22,13 +22,13 @@ import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.modules.auxiliary.LauncherActivity
 import player.phonograph.util.text.infoString
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.ui.BitmapUtil
 import util.theme.color.primaryTextColor
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.scale
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -149,7 +149,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         @DrawableRes drawable: Int,
         @ColorInt textColor: Int,
     ) = setImageViewBitmap(
-        id, BitmapUtil.createBitmap(context.getTintedDrawable(drawable, textColor)!!)
+        id, context.getTintedDrawable(drawable, textColor)!!.toBitmap()
     )
 
     private fun RemoteViews.setupButtonsClick(context: Context) {
