@@ -6,6 +6,7 @@ package player.phonograph.ui.modules.tag
 
 import lib.storage.launcher.ICreateFileStorageAccessible
 import player.phonograph.R
+import player.phonograph.coil.loadImage
 import player.phonograph.foundation.error.warning
 import player.phonograph.mechanism.metadata.DefaultMetadataExtractor
 import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
@@ -23,7 +24,6 @@ import player.phonograph.ui.modules.tag.MetadataUIEvent.ExtractArtwork
 import player.phonograph.ui.modules.tag.MetadataUIEvent.Save
 import player.phonograph.ui.modules.tag.util.display
 import player.phonograph.ui.modules.tag.util.fileName
-import player.phonograph.ui.modules.tag.util.loadCover
 import player.phonograph.ui.modules.tag.util.readEmbeddedImage
 import player.phonograph.ui.modules.tag.util.readRawEmbeddedImage
 import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
@@ -95,7 +95,7 @@ class TagBrowserActivityViewModel : AbsMetadataViewModel() {
             }
 
             is Edit.UpdateArtwork -> {
-                val (bitmap, _) = loadCover(context, event.file)
+                val (bitmap, _) = loadImage(context, event.file, themeFooterColor(context))
                 copy(image = bitmap)
             }
 

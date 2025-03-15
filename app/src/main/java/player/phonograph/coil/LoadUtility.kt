@@ -13,13 +13,18 @@ import coil.size.Dimension
 import coil.size.Size
 import coil.size.SizeResolver
 import coil.target.Target
+import player.phonograph.coil.palette.PaletteColorTarget
 import androidx.annotation.DrawableRes
+import androidx.compose.ui.graphics.Color
+import androidx.core.graphics.drawable.toBitmap
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 
 fun loadImage(context: Context): ChainBuilder = ChainBuilder(context)
@@ -104,3 +109,28 @@ class ChainBuilder internal constructor(context: Context) {
             loader.execute(request)
         }
 }
+
+
+suspend fun loadImage(context: Context, data: Any, defaultColor: Int, raw: Boolean = true): Pair<Bitmap?, Color?> =
+    suspendCancellableCoroutine { continuation ->
+        loadImage(context)
+            .from(data)
+            .parameters(
+                Parameters.Builder()
+                    .set(PARAMETERS_KEY_RAW, raw)
+                    .set(PARAMETERS_KEY_PALETTE, true)
+                    .build()
+            )
+            .into(
+                PaletteColorTarget(
+                    defaultColor = defaultColor,
+                    success = { result: Drawable, paletteColor: Int ->
+                        continuation.resume(result.toBitmap() to Color(paletteColor)) { _, _, _ -> }
+                    },
+                    error = { _, _ ->
+                        continuation.resume(null to null) { _, _, _ -> }
+                    },
+                )
+            )
+            .enqueue()
+    }
