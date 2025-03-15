@@ -8,9 +8,9 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.R
 import player.phonograph.databinding.ItemRightCheckboxBinding
-import player.phonograph.mechanism.setting.NotificationAction
-import player.phonograph.mechanism.setting.NotificationActionsConfig
 import player.phonograph.mechanism.setting.NotificationConfig
+import player.phonograph.model.notification.NotificationAction
+import player.phonograph.model.notification.NotificationActionsConfig
 import player.phonograph.ui.adapter.SortableListAdapter
 import player.phonograph.util.theme.tintButtons
 import androidx.fragment.app.DialogFragment

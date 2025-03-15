@@ -6,11 +6,11 @@ package player.phonograph.service.player
 
 import coil.request.Disposable
 import player.phonograph.ACTUAL_PACKAGE_NAME
-import player.phonograph.mechanism.setting.NotificationAction
-import player.phonograph.mechanism.setting.NotificationActionsConfig
 import player.phonograph.mechanism.setting.NotificationConfig
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
+import player.phonograph.model.notification.NotificationAction
+import player.phonograph.model.notification.NotificationActionsConfig
 import player.phonograph.model.service.MusicServiceStatus
 import player.phonograph.model.service.RepeatMode
 import player.phonograph.model.service.ShuffleMode

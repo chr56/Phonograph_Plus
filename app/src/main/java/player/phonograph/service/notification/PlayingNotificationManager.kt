@@ -6,10 +6,10 @@ package player.phonograph.service.notification
 
 import coil.request.Disposable
 import player.phonograph.R
-import player.phonograph.mechanism.setting.NotificationAction
-import player.phonograph.mechanism.setting.NotificationActionsConfig
 import player.phonograph.mechanism.setting.NotificationConfig
 import player.phonograph.model.Song
+import player.phonograph.model.notification.NotificationAction
+import player.phonograph.model.notification.NotificationActionsConfig
 import player.phonograph.model.service.ACTION_STOP_AND_QUIT_NOW
 import player.phonograph.model.service.MusicServiceStatus
 import player.phonograph.model.service.PlayerState.PAUSED

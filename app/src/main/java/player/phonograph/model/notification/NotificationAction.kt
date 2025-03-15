@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2024 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.mechanism.setting
+package player.phonograph.model.notification
 
 import player.phonograph.R
 import player.phonograph.model.service.ACTION_EXIT_OR_STOP
@@ -18,51 +18,7 @@ import player.phonograph.model.service.MusicServiceStatus
 import player.phonograph.model.service.RepeatMode
 import player.phonograph.model.service.ShuffleMode
 import androidx.annotation.DrawableRes
-import androidx.annotation.Keep
-import androidx.annotation.StringDef
 import androidx.annotation.StringRes
-import android.os.Parcelable
-import kotlinx.parcelize.IgnoredOnParcel
-import kotlinx.parcelize.Parcelize
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-
-@Keep
-@Parcelize
-@Serializable
-data class NotificationActionsConfig(
-    @SerialName("actions") val actions: List<Item>,
-    @SerialName("version") val version: Int = VERSION,
-) : Parcelable {
-
-    constructor(vararg sources: Item) : this(sources.asList(), VERSION)
-
-    @Keep
-    @Parcelize
-    @Serializable
-    data class Item(
-        @SerialName("key") @NotificationActionName val key: String,
-        @SerialName("compat") var displayInCompat: Boolean = false,
-    ) : Parcelable {
-
-        @Contextual
-        @IgnoredOnParcel
-        val notificationAction: NotificationAction = NotificationAction.from(key)
-    }
-
-    companion object {
-        val DEFAULT: NotificationActionsConfig
-            get() = NotificationActionsConfig(
-                Item(ACTION_KEY_REPEAT),
-                Item(ACTION_KEY_PREV, displayInCompat = true),
-                Item(ACTION_KEY_PLAY_PAUSE, displayInCompat = true),
-                Item(ACTION_KEY_NEXT, displayInCompat = true),
-                Item(ACTION_KEY_SHUFFLE),
-            )
-        const val VERSION = 1
-    }
-}
 
 sealed class NotificationAction(
     @NotificationActionName val key: String,
@@ -177,28 +133,4 @@ sealed class NotificationAction(
     }
 }
 
-@StringDef(
-    ACTION_KEY_PLAY_PAUSE,
-    ACTION_KEY_PREV,
-    ACTION_KEY_NEXT,
-    ACTION_KEY_REPEAT,
-    ACTION_KEY_SHUFFLE,
-    ACTION_KEY_FAST_REWIND,
-    ACTION_KEY_FAST_FORWARD,
-    ACTION_KEY_FAV,
-    ACTION_KEY_CLOSE,
-    ACTION_KEY_UNKNOWN,
-)
-@Retention(AnnotationRetention.SOURCE)
-annotation class NotificationActionName
 
-private const val ACTION_KEY_PLAY_PAUSE = "PLAY_PAUSE"
-private const val ACTION_KEY_PREV = "PREV"
-private const val ACTION_KEY_NEXT = "NEXT"
-private const val ACTION_KEY_REPEAT = "REPEAT"
-private const val ACTION_KEY_SHUFFLE = "SHUFFLE"
-private const val ACTION_KEY_FAST_REWIND = "FAST_REWIND"
-private const val ACTION_KEY_FAST_FORWARD = "FAST_FORWARD"
-private const val ACTION_KEY_FAV = "FAV"
-private const val ACTION_KEY_CLOSE = "CLOSE"
-private const val ACTION_KEY_UNKNOWN = "UNKNOWN"
