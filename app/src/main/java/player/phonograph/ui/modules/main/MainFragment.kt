@@ -12,16 +12,15 @@ import com.google.android.material.tabs.TabLayoutMediator
 import lib.phonograph.misc.menuProvider
 import player.phonograph.R
 import player.phonograph.databinding.FragmentHomeBinding
-import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.model.pages.Pages
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.SettingObserver
 import player.phonograph.ui.modules.main.pages.AbsPage
-import player.phonograph.ui.modules.main.pages.EmptyPage
-import player.phonograph.ui.modules.main.pages.FilesPage
 import player.phonograph.ui.modules.main.pages.AlbumPage
 import player.phonograph.ui.modules.main.pages.ArtistPage
+import player.phonograph.ui.modules.main.pages.EmptyPage
+import player.phonograph.ui.modules.main.pages.FilesPage
 import player.phonograph.ui.modules.main.pages.FoldersPage
 import player.phonograph.ui.modules.main.pages.GenrePage
 import player.phonograph.ui.modules.main.pages.PlaylistPage
@@ -56,9 +55,6 @@ import android.view.Menu
 import android.view.MenuItem.SHOW_AS_ACTION_ALWAYS
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
@@ -104,31 +100,17 @@ class MainFragment : Fragment() {
 
     //region Settings
     private fun readSettings() {
-        val store = Setting(requireContext())
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-
-                val homeTabConfigFlow = store[Keys.homeTabConfigJsonString].flow.distinctUntilChanged()
-
-                homeTabConfigFlow.collect { raw ->
-                    val pagesConfig: PagesConfig = HomeTabConfig.parseHomeTabConfig(raw)
-
-                    val rememberLastTab = lifecycleScope.async(Dispatchers.IO) {
-                        Setting(requireContext())[Keys.rememberLastTab].flowData()
-                    }.await()
-                    val lastPage = lifecycleScope.async(Dispatchers.IO) {
-                        Setting(requireContext())[Keys.lastPage].flowData()
-                    }.await()
-
+                val settingObserver = SettingObserver(requireContext(), lifecycleScope)
+                settingObserver.collect(Keys.homeTabConfig) { pagesConfig ->
+                    val rememberLastTab = settingObserver.blocking(Keys.rememberLastTab)
+                    val lastPage = settingObserver.blocking(Keys.lastPage)
                     withStarted {
                         loadPages(pagesConfig, if (rememberLastTab) lastPage else -1)
                     }
                 }
-            }
-        }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                store[Keys.fixedTabLayout].flow.distinctUntilChanged().collect { fixedTabLayout ->
+                settingObserver.collect(Keys.fixedTabLayout) { fixedTabLayout ->
                     withStarted {
                         binding.tabs.tabMode = if (fixedTabLayout) TabLayout.MODE_FIXED else TabLayout.MODE_SCROLLABLE
                     }
@@ -287,7 +269,9 @@ class MainFragment : Fragment() {
         override fun getItemCount(): Int = pagesConfig.size
 
         override fun createFragment(position: Int): Fragment =
-            createPage(pagesConfig[position]).also { fragment -> current[position] = WeakReference(fragment) } // registry
+            createPage(pagesConfig[position]).also { fragment ->
+                current[position] = WeakReference(fragment)
+            } // registry
 
         private fun createPage(type: String): AbsPage {
             return when (type) {

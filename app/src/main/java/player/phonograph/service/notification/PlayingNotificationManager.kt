@@ -6,7 +6,6 @@ package player.phonograph.service.notification
 
 import coil.request.Disposable
 import player.phonograph.R
-import player.phonograph.mechanism.setting.NotificationConfig
 import player.phonograph.model.Song
 import player.phonograph.model.notification.NotificationAction
 import player.phonograph.model.notification.NotificationActionsConfig
@@ -56,10 +55,12 @@ class PlayingNotificationManager : ServiceComponent {
 
     private lateinit var notificationManager: NotificationManagerCompat
 
+    private lateinit var settingObserver: SettingObserver
+
     private var classicNotification: Boolean = false
     private var coloredNotification: Boolean = true
 
-    private lateinit var actionsConfig: NotificationActionsConfig
+    private var actionsConfig: NotificationActionsConfig? = null
 
     var persistent: Boolean = false
         private set
@@ -85,9 +86,7 @@ class PlayingNotificationManager : ServiceComponent {
             )
         }
 
-        actionsConfig = NotificationConfig.actions
-
-        val settingObserver = SettingObserver(service, service.coroutineScope)
+        settingObserver = SettingObserver(service, service.coroutineScope)
 
         settingObserver.collect(Keys.classicNotification) { value ->
             classicNotification = value
@@ -96,8 +95,8 @@ class PlayingNotificationManager : ServiceComponent {
         settingObserver.collect(Keys.coloredNotification) { value ->
             coloredNotification = value
         }
-        settingObserver.collect(Keys.notificationActionsJsonString) { _ ->
-            actionsConfig = NotificationConfig.actions
+        settingObserver.collect(Keys.notificationActions) { config ->
+            actionsConfig = config
         }
         settingObserver.collect(Keys.persistentPlaybackNotification) { value ->
             persistent = value
@@ -137,14 +136,16 @@ class PlayingNotificationManager : ServiceComponent {
     fun updateNotification(song: Song?, status: MusicServiceStatus) {
         if (song != null) {
             if (song != lastSong || status != lastServiceStatus) {
+                val actions = actionsConfig ?: settingObserver.blocking(Keys.notificationActions)
                 // Only update notification for actual changes
                 lastSong = song
                 lastServiceStatus = status
-                implementation?.update(song, status, actionsConfig)
+                implementation?.update(song, status, actions)
             }
         } else {
             if (persistent) {
-                implementation?.empty(status, actionsConfig)
+                val actions = actionsConfig ?: settingObserver.blocking(Keys.notificationActions)
+                implementation?.empty(status, actions)
             } else {
                 removeNotification()
             }

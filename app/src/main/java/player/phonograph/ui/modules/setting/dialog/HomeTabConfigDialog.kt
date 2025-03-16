@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
 package player.phonograph.ui.modules.setting.dialog
@@ -7,9 +7,10 @@ package player.phonograph.ui.modules.setting.dialog
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.R
-import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.model.pages.Pages
 import player.phonograph.model.pages.PagesConfig
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.SortableListAdapter
 import player.phonograph.util.theme.tintButtons
 import player.phonograph.util.warning
@@ -33,7 +34,8 @@ class HomeTabConfigDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = requireActivity().layoutInflater.inflate(R.layout.recycler_view_wrapped, null)
 
-        val config: PagesConfig = HomeTabConfig.homeTabConfig
+
+        val config: PagesConfig = Setting(requireContext()).Composites[Keys.homeTabConfig].data
 
         adapter = PageTabConfigAdapter(config).also { it.init() }
         recyclerView = view.findViewById(R.id.recycler_view)
@@ -51,7 +53,7 @@ class HomeTabConfigDialog : DialogFragment() {
                 Log.v(TAG, adapter.getState())
                 val pageConfig = adapter.currentConfig
                 if (pageConfig != null) {
-                    HomeTabConfig.homeTabConfig = pageConfig
+                    Setting(requireContext()).Composites[Keys.homeTabConfig].data = pageConfig
                     dismiss()
                 } else {
                     Toast.makeText(
@@ -63,7 +65,7 @@ class HomeTabConfigDialog : DialogFragment() {
             }
             .negativeButton(android.R.string.cancel) { dismiss(); Log.i(TAG, adapter.getState()) }
             .neutralButton(R.string.reset_action) {
-                HomeTabConfig.homeTabConfig = PagesConfig.DEFAULT_CONFIG
+                Setting(requireContext()).Composites[Keys.homeTabConfig].data = PagesConfig.DEFAULT_CONFIG
                 Log.v(TAG, adapter.getState())
                 dismiss()
             }

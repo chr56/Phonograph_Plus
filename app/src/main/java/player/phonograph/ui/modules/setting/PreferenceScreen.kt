@@ -18,9 +18,9 @@ import lib.phonograph.preference.ui.SettingsSwitch
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
+import player.phonograph.coil.cache.CacheStore
 import player.phonograph.mechanism.StatusBarLyric
-import player.phonograph.mechanism.setting.CoilImageConfig
-import player.phonograph.mechanism.setting.HomeTabConfig
+import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.time.displayText
@@ -214,13 +214,11 @@ fun PhonographPreferenceScreen() {
                 summaryRes = R.string.pref_summary_image_cache,
                 titleRes = R.string.pref_title_image_cache,
                 defaultValue = false
-            ) {
-                CoilImageConfig.enableImageCache = it
-            }
+            )
             SettingsMenuLink(
                 title = title(R.string.clear_image_cache)
             ) {
-                CoilImageConfig.clearImageCache(App.instance)
+                CacheStore.clear(App.instance)
             }
         }
 
@@ -409,7 +407,9 @@ private fun LibraryCategoriesSetting() {
                             "${context.getString(R.string.pref_summary_reset_home_pages_tab_config)}\n" +
                                     "${context.getString(R.string.are_you_sure)}\n"
                         )
-                        .setPositiveButton(android.R.string.ok) { _, _ -> HomeTabConfig.resetHomeTabConfig() }
+                        .setPositiveButton(android.R.string.ok) { _, _ ->
+                            Setting(context).Composites[Keys.homeTabConfig].data = PagesConfig.DEFAULT_CONFIG
+                        }
                         .setNegativeButton(android.R.string.cancel) { _, _ -> }
                         .show().tintButtons()
                 },
