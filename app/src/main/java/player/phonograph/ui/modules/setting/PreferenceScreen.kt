@@ -41,6 +41,7 @@ import player.phonograph.util.NavigationUtil
 import player.phonograph.util.reportError
 import player.phonograph.util.theme.tintButtons
 import player.phonograph.util.warning
+import androidx.activity.compose.LocalActivity
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.Box
@@ -78,7 +79,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface.OnDismissListener
 import android.content.Intent
@@ -531,7 +531,7 @@ private fun ColoredAppShortcuts() {
 
 @Composable
 private fun EqualizerSetting() {
-    val activity = if (!LocalInspectionMode.current) LocalContext.current as? Activity else null
+    val activity = if (!LocalInspectionMode.current) LocalActivity.current else null
 
     val hasEqualizer = remember { mutableStateOf(false) }
     if (!LocalInspectionMode.current) {
