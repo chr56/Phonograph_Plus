@@ -30,6 +30,7 @@ class ImageSourceConfigDialog : DialogFragment() {
     private lateinit var adapter: ImageSourceConfigAdapter
     private lateinit var recyclerView: RecyclerView
 
+    @Suppress("DEPRECATION")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = requireActivity().layoutInflater.inflate(R.layout.recycler_view_wrapped, null)
 
