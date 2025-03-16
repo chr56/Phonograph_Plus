@@ -8,6 +8,7 @@ import player.phonograph.mechanism.explorer.Locations
 import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.NowPlayingScreen
 import player.phonograph.model.coil.ImageSourceConfig
+import player.phonograph.model.file.defaultStartDirectory
 import player.phonograph.model.notification.NotificationActionsConfig
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.sort.SortMode
@@ -91,9 +92,7 @@ data object NowPlayingScreenPreferenceProvider :
 }
 
 data object StartDirectoryPreferenceProvider :
-        MonoPreferenceProvider<File, String>(
-            Keys._startDirectoryPath, { Locations.defaultStartDirectory }
-        ) {
+        MonoPreferenceProvider<File, String>(Keys._startDirectoryPath, { defaultStartDirectory }) {
 
     override fun read(flow: Flow<String>): Flow<File> = flow.map { path ->
         File(path)

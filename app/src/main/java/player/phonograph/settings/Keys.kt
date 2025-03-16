@@ -10,6 +10,7 @@ import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.NowPlayingScreen
 import player.phonograph.model.SongClickMode
 import player.phonograph.model.coil.ImageSourceConfig
+import player.phonograph.model.file.defaultStartDirectory
 import player.phonograph.model.notification.NotificationActionsConfig
 import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.sort.SortMode
@@ -91,7 +92,7 @@ object Keys {
 
     // Behavior-File
     object _startDirectoryPath :
-            PrimitiveKey<String>(stringPK(START_DIRECTORY), { Locations.defaultStartDirectory.path })
+            PrimitiveKey<String>(stringPK(START_DIRECTORY), { defaultStartDirectory.path })
 
     object startDirectory :
             CompositeKey<File>(StartDirectoryPreferenceProvider)

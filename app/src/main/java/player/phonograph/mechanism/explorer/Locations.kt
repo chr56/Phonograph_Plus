@@ -7,6 +7,7 @@ package player.phonograph.mechanism.explorer
 import lib.storage.extension.rootDirectory
 import player.phonograph.App
 import player.phonograph.model.file.Location
+import player.phonograph.model.file.defaultStartDirectory
 import androidx.core.content.getSystemService
 import android.content.Context
 import android.os.Environment
@@ -20,21 +21,6 @@ object Locations {
     private const val TAG = "Locations"
 
     val default: Location get() = from(defaultStartDirectory.absolutePath)
-
-    val defaultStartDirectory: File
-        get() {
-            val musicDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
-            return if (musicDir != null && musicDir.exists() && musicDir.isDirectory) {
-                musicDir
-            } else {
-                val externalStorage = Environment.getExternalStorageDirectory()
-                if (externalStorage.exists() && externalStorage.isDirectory) {
-                    externalStorage
-                } else {
-                    App.instance.getExternalFilesDir(Environment.DIRECTORY_MUSIC) ?: File("/") // root
-                }
-            }
-        }
 
     fun from(basePath: String, storageVolume: StorageVolume): Location {
         return ActualLocation(basePath.ifBlank { "/" }, storageVolume)
