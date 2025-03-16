@@ -6,13 +6,16 @@ package player.phonograph.settings
 
 import lib.phonograph.misc.MonetColor
 import player.phonograph.mechanism.explorer.Locations
+import player.phonograph.model.ItemLayoutStyle
+import player.phonograph.model.NowPlayingScreen
 import player.phonograph.model.SongClickMode
+import player.phonograph.model.coil.ImageSourceConfig
+import player.phonograph.model.notification.NotificationActionsConfig
+import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
-import player.phonograph.model.ItemLayoutStyle
-import player.phonograph.model.NowPlayingScreen
 import util.theme.materials.MaterialColor
 import java.io.File
 import androidx.datastore.preferences.core.booleanPreferencesKey as booleanPK
@@ -30,8 +33,11 @@ object Keys {
     object theme :
             PrimitiveKey<String>(stringPK(THEME), { THEME_AUTO_LIGHTBLACK })
 
-    object homeTabConfigJsonString :
+    object _homeTabConfigJson :
             PrimitiveKey<String>(stringPK(HOME_TAB_CONFIG), { "" })
+
+    object homeTabConfig :
+            CompositeKey<PagesConfig>(HomeTabConfigPreferenceProvider)
 
     object coloredAppShortcuts :
             PrimitiveKey<Boolean>(booleanPK(COLORED_APP_SHORTCUTS), { true })
@@ -62,8 +68,11 @@ object Keys {
     object classicNotification :
             PrimitiveKey<Boolean>(booleanPK(CLASSIC_NOTIFICATION), { false })
 
-    object notificationActionsJsonString :
+    object _notificationActionsJson :
             PrimitiveKey<String>(stringPK(NOTIFICATION_ACTIONS), { "{}" })
+
+    object notificationActions :
+            CompositeKey<NotificationActionsConfig>(NotificationActionsPreferenceProvider)
 
     // Behavior-Retention
     object rememberLastTab :
@@ -90,8 +99,11 @@ object Keys {
     object preloadImages :
             PrimitiveKey<Boolean>(booleanPK(PRELOAD_IMAGES), { true })
 
-    object imageSourceConfigJsonString :
+    object _imageSourceConfigJson :
             PrimitiveKey<String>(stringPK(IMAGE_SOURCE_CONFIG), { "{}" })
+
+    object imageSourceConfig :
+            CompositeKey<ImageSourceConfig>(CoilImageSourcePreferenceProvider)
 
     object imageCache :
             PrimitiveKey<Boolean>(booleanPK(IMAGE_CACHE), { false })
