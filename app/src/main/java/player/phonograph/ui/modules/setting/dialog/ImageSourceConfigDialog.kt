@@ -1,17 +1,16 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-@file:Suppress("DEPRECATION")
-
-package player.phonograph.ui.dialogs
+package player.phonograph.ui.modules.setting.dialog
 
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.R
-import player.phonograph.mechanism.setting.CoilImageConfig
 import player.phonograph.model.coil.ImageSource
 import player.phonograph.model.coil.ImageSourceConfig
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.SortableListAdapter
 import player.phonograph.util.theme.tintButtons
 import androidx.fragment.app.DialogFragment
@@ -31,10 +30,11 @@ class ImageSourceConfigDialog : DialogFragment() {
     private lateinit var adapter: ImageSourceConfigAdapter
     private lateinit var recyclerView: RecyclerView
 
+    @Suppress("DEPRECATION")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = requireActivity().layoutInflater.inflate(R.layout.recycler_view_wrapped, null)
 
-        val config: ImageSourceConfig = CoilImageConfig.currentImageSourceConfig
+        val config: ImageSourceConfig = Setting(requireContext()).Composites[Keys.imageSourceConfig].data
         adapter = ImageSourceConfigAdapter(config).also { it.init() }
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -54,12 +54,12 @@ class ImageSourceConfigDialog : DialogFragment() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                CoilImageConfig.currentImageSourceConfig = sourceConfig
+                Setting(requireContext()).Composites[Keys.imageSourceConfig].data = sourceConfig
                 dismiss()
             }
             .negativeButton(android.R.string.cancel) { dismiss(); }
             .neutralButton(R.string.reset_action) {
-                CoilImageConfig.resetImageSourceToDefault()
+                Setting(requireContext()).Composites[Keys.imageSourceConfig].data = ImageSourceConfig.DEFAULT
                 dismiss()
             }
             .tintButtons()

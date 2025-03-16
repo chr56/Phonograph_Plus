@@ -6,11 +6,10 @@ package player.phonograph.service.player
 
 import coil.request.Disposable
 import player.phonograph.ACTUAL_PACKAGE_NAME
-import player.phonograph.mechanism.setting.NotificationAction
-import player.phonograph.mechanism.setting.NotificationActionsConfig
-import player.phonograph.mechanism.setting.NotificationConfig
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
+import player.phonograph.model.notification.NotificationAction
+import player.phonograph.model.notification.NotificationActionsConfig
 import player.phonograph.model.service.MusicServiceStatus
 import player.phonograph.model.service.RepeatMode
 import player.phonograph.model.service.ShuffleMode
@@ -20,7 +19,7 @@ import player.phonograph.service.ServiceComponent
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.util.MediaButtonIntentReceiver
 import player.phonograph.settings.Keys
-import player.phonograph.settings.Setting
+import player.phonograph.settings.SettingObserver
 import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Intent
@@ -40,8 +39,6 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 class MediaSessionController : ServiceComponent {
@@ -56,8 +53,6 @@ class MediaSessionController : ServiceComponent {
 
     override fun onCreate(musicService: MusicService) {
         _service = musicService
-
-        updateCustomActions(NotificationConfig.actions)
 
         val mediaButtonReceiverComponentName = ComponentName(
             musicService.applicationContext,
@@ -86,11 +81,11 @@ class MediaSessionController : ServiceComponent {
 
         created = true
 
-        service.coroutineScope.launch(SupervisorJob()) {
-            Setting(musicService)[Keys.notificationActionsJsonString].flow.distinctUntilChanged().collect {
-                updateCustomActions(NotificationConfig.actions)
-            }
+        val settingObserver = SettingObserver(musicService, musicService.coroutineScope)
+        settingObserver.collect(Keys.notificationActions) { config ->
+            updateCustomActions(config)
         }
+
     }
 
     override fun onDestroy(musicService: MusicService) {
@@ -232,7 +227,7 @@ class MediaSessionController : ServiceComponent {
         return this
     }
 
-    private lateinit var customActions: List<NotificationAction>
+    private var customActions: List<NotificationAction> = emptyList()
     private fun updateCustomActions(config: NotificationActionsConfig) {
         customActions = config.actions.sortedBy { it.displayInCompat }.map { it.notificationAction }
             .filterNot { it in NotificationAction.COMMON_ACTIONS }

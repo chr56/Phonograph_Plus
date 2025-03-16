@@ -1,16 +1,17 @@
 /*
- *  Copyright (c) 2022~2024 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.ui.dialogs
+package player.phonograph.ui.modules.setting.dialog
 
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.R
 import player.phonograph.databinding.ItemRightCheckboxBinding
-import player.phonograph.mechanism.setting.NotificationAction
-import player.phonograph.mechanism.setting.NotificationActionsConfig
-import player.phonograph.mechanism.setting.NotificationConfig
+import player.phonograph.model.notification.NotificationAction
+import player.phonograph.model.notification.NotificationActionsConfig
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import player.phonograph.ui.adapter.SortableListAdapter
 import player.phonograph.util.theme.tintButtons
 import androidx.fragment.app.DialogFragment
@@ -32,7 +33,7 @@ class NotificationActionsConfigDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = requireActivity().layoutInflater.inflate(R.layout.recycler_view_wrapped, null)
 
-        val config: NotificationActionsConfig = NotificationConfig.actions
+        val config: NotificationActionsConfig = Setting(requireContext()).Composites[Keys.notificationActions].data
 
         adapter = ActionConfigAdapter(config).also { it.init() }
         recyclerView = view.findViewById(R.id.recycler_view)
@@ -53,7 +54,7 @@ class NotificationActionsConfigDialog : DialogFragment() {
             .positiveButton(android.R.string.ok) {
                 val actionsConfig = adapter.currentConfig
                 if (actionsConfig != null) {
-                    NotificationConfig.actions = actionsConfig
+                    Setting(requireContext()).Composites[Keys.notificationActions].data = actionsConfig
                     dismiss()
                 } else {
                     Toast.makeText(
@@ -65,7 +66,7 @@ class NotificationActionsConfigDialog : DialogFragment() {
             }
             .negativeButton(android.R.string.cancel) { dismiss() }
             .neutralButton(R.string.reset_action) {
-                NotificationConfig.actions = NotificationActionsConfig.DEFAULT
+                Setting(requireContext()).Composites[Keys.notificationActions].data = NotificationActionsConfig.DEFAULT
                 dismiss()
             }
             .tintButtons()

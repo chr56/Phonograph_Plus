@@ -18,29 +18,30 @@ import lib.phonograph.preference.ui.SettingsSwitch
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
+import player.phonograph.coil.cache.CacheStore
 import player.phonograph.mechanism.StatusBarLyric
-import player.phonograph.mechanism.setting.CoilImageConfig
-import player.phonograph.mechanism.setting.HomeTabConfig
+import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.time.displayText
 import player.phonograph.settings.*
 import player.phonograph.ui.compose.components.ColorCircle
-import player.phonograph.ui.dialogs.CheckUpdateIntervalDialog
-import player.phonograph.ui.dialogs.ClickModeSettingDialog
-import player.phonograph.ui.dialogs.ExternalPlayRequestSettingDialog
-import player.phonograph.ui.dialogs.HomeTabConfigDialog
-import player.phonograph.ui.dialogs.ImageSourceConfigDialog
-import player.phonograph.ui.dialogs.LastAddedPlaylistIntervalDialog
-import player.phonograph.ui.dialogs.MaterialColorPickerDialog
-import player.phonograph.ui.dialogs.MonetColorPickerDialog
-import player.phonograph.ui.dialogs.NotificationActionsConfigDialog
-import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
-import player.phonograph.ui.dialogs.PathFilterPreferenceDialog
+import player.phonograph.ui.modules.setting.dialog.CheckUpdateIntervalDialog
+import player.phonograph.ui.modules.setting.dialog.ClickModeSettingDialog
+import player.phonograph.ui.modules.setting.dialog.ExternalPlayRequestSettingDialog
+import player.phonograph.ui.modules.setting.dialog.HomeTabConfigDialog
+import player.phonograph.ui.modules.setting.dialog.ImageSourceConfigDialog
+import player.phonograph.ui.modules.setting.dialog.LastAddedPlaylistIntervalDialog
+import player.phonograph.ui.modules.setting.dialog.MaterialColorPickerDialog
+import player.phonograph.ui.modules.setting.dialog.MonetColorPickerDialog
+import player.phonograph.ui.modules.setting.dialog.NotificationActionsConfigDialog
+import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenPreferenceDialog
+import player.phonograph.ui.modules.setting.dialog.PathFilterPreferenceDialog
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.reportError
 import player.phonograph.util.theme.tintButtons
 import player.phonograph.util.warning
+import androidx.activity.compose.LocalActivity
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.Box
@@ -78,7 +79,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface.OnDismissListener
 import android.content.Intent
@@ -214,13 +214,11 @@ fun PhonographPreferenceScreen() {
                 summaryRes = R.string.pref_summary_image_cache,
                 titleRes = R.string.pref_title_image_cache,
                 defaultValue = false
-            ) {
-                CoilImageConfig.enableImageCache = it
-            }
+            )
             SettingsMenuLink(
                 title = title(R.string.clear_image_cache)
             ) {
-                CoilImageConfig.clearImageCache(App.instance)
+                CacheStore.clear(App.instance)
             }
         }
 
@@ -409,7 +407,9 @@ private fun LibraryCategoriesSetting() {
                             "${context.getString(R.string.pref_summary_reset_home_pages_tab_config)}\n" +
                                     "${context.getString(R.string.are_you_sure)}\n"
                         )
-                        .setPositiveButton(android.R.string.ok) { _, _ -> HomeTabConfig.resetHomeTabConfig() }
+                        .setPositiveButton(android.R.string.ok) { _, _ ->
+                            Setting(context).Composites[Keys.homeTabConfig].data = PagesConfig.DEFAULT_CONFIG
+                        }
                         .setNegativeButton(android.R.string.cancel) { _, _ -> }
                         .show().tintButtons()
                 },
@@ -531,7 +531,7 @@ private fun ColoredAppShortcuts() {
 
 @Composable
 private fun EqualizerSetting() {
-    val activity = if (!LocalInspectionMode.current) LocalContext.current as? Activity else null
+    val activity = if (!LocalInspectionMode.current) LocalActivity.current else null
 
     val hasEqualizer = remember { mutableStateOf(false) }
     if (!LocalInspectionMode.current) {

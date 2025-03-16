@@ -16,9 +16,7 @@ import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.mechanism.Update
-import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.model.Song
-import player.phonograph.model.pages.PagesConfig
 import player.phonograph.model.version.ReleaseChannel
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.notification.UpgradeNotification
@@ -26,6 +24,7 @@ import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.Setting
+import player.phonograph.settings.SettingObserver
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.ui.dialogs.UpgradeInfoDialog
 import player.phonograph.ui.modules.explorer.PathSelectorContractTool
@@ -63,7 +62,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 class MainActivity : AbsSlidingMusicPanelActivity(),
@@ -105,21 +103,15 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 if (showUpgradeDialog) {
                     showUpgradeDialog(intent.parcelableExtra(VERSION_INFO) as? VersionCatalog)
                 }
-                val setting = Setting(this)
-                lifecycleScope.launch(Dispatchers.Main) {
-                    lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                        setting[Keys.homeTabConfigJsonString].flow.distinctUntilChanged().collect { raw ->
-                            val pagesConfig: PagesConfig = HomeTabConfig.parseHomeTabConfig(raw)
-                            withStarted {
-                                setupDrawerMenu(
-                                    activity = this@MainActivity,
-                                    menu = drawerBinding.navigationView.menu,
-                                    switchPageTo = { drawerViewModel.switchPageTo(it) },
-                                    closeDrawer = { drawerBinding.drawerLayout.closeDrawers() },
-                                    pagesConfig = pagesConfig
-                                )
-                            }
-                        }
+                SettingObserver(this, lifecycleScope).collect(Keys.homeTabConfig, Dispatchers.Main) { pagesConfig ->
+                    withStarted {
+                        setupDrawerMenu(
+                            activity = this@MainActivity,
+                            menu = drawerBinding.navigationView.menu,
+                            switchPageTo = { drawerViewModel.switchPageTo(it) },
+                            closeDrawer = { drawerBinding.drawerLayout.closeDrawers() },
+                            pagesConfig = pagesConfig
+                        )
                     }
                 }
             }, 900

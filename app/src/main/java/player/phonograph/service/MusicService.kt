@@ -54,7 +54,7 @@ import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_QUEUE
 import player.phonograph.service.util.MusicServiceUtil
 import player.phonograph.service.util.SongPlayCountHelper
 import player.phonograph.settings.Keys
-import player.phonograph.util.component.SettingObserver
+import player.phonograph.settings.SettingObserver
 import player.phonograph.util.recordThrowable
 import androidx.media.MediaBrowserServiceCompat
 import android.content.Context

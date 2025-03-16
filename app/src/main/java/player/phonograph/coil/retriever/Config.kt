@@ -6,9 +6,10 @@ package player.phonograph.coil.retriever
 
 import coil.request.Parameters
 import player.phonograph.coil.PARAMETERS_KEY_IMAGE_SOURCE_CONFIG
-import player.phonograph.mechanism.setting.CoilImageConfig
 import player.phonograph.model.coil.ImageSource
 import player.phonograph.model.coil.ImageSourceConfig
+import player.phonograph.settings.Keys
+import player.phonograph.settings.Setting
 import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
@@ -42,7 +43,7 @@ private var sourceConfig: ImageSourceConfig? = null
 private var sourceConfigJob: Job? = null
 
 suspend fun collectSourceConfig(context: Context): ImageSourceConfig = sourceConfig ?: run {
-    val imageSourceConfigFlow = CoilImageConfig.currentImageSourceConfig(context)
+    val imageSourceConfigFlow = Setting(context).Composites[Keys.imageSourceConfig].flow()
     if (sourceConfigJob == null) {
         sourceConfigJob = CoroutineScope(Dispatchers.IO).launch {
             imageSourceConfigFlow.collect { sourceConfig = it }
@@ -57,7 +58,7 @@ private var isCacheEnabled: Boolean? = null
 private var isCacheEnabledJob: Job? = null
 
 suspend fun collectCacheSetting(context: Context): Boolean = isCacheEnabled ?: run {
-    val enableImageCacheFlow = CoilImageConfig.enableImageCache(context)
+    val enableImageCacheFlow = Setting(context)[Keys.imageCache].flow
     if (isCacheEnabledJob == null) {
         isCacheEnabledJob = CoroutineScope(Dispatchers.IO).launch {
             enableImageCacheFlow.collect { isCacheEnabled = it }

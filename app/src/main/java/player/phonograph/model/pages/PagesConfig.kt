@@ -4,7 +4,18 @@
 
 package player.phonograph.model.pages
 
-data class PagesConfig(val tabs: List<String>) : List<String> by tabs {
+import androidx.annotation.Keep
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Keep
+@Parcelize
+@Serializable
+data class PagesConfig(
+    @SerialName("tabs") val tabs: List<String>,
+) : List<String> by tabs, Parcelable {
 
     companion object {
         val DEFAULT_CONFIG = PagesConfig(
