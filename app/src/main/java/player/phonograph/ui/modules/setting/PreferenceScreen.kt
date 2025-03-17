@@ -204,12 +204,6 @@ fun PhonographPreferenceScreen() {
                 )
             )
             BooleanPref(
-                key = PRELOAD_IMAGES,
-                summaryRes = R.string.pref_summary_preload_images,
-                titleRes = R.string.pref_title_preload_images,
-                defaultValue = true
-            )
-            BooleanPref(
                 key = IMAGE_CACHE,
                 summaryRes = R.string.pref_summary_image_cache,
                 titleRes = R.string.pref_title_image_cache,
