@@ -17,6 +17,7 @@ import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.NetworkUtil.invokeRequest
+import player.phonograph.util.currentChannel
 import player.phonograph.util.debug
 import player.phonograph.util.text.dateText
 import android.util.Log
@@ -151,20 +152,22 @@ private fun checkUpgradable(versionCatalog: VersionCatalog, force: Boolean): Boo
 
     val currentVersionCode = BuildConfig.VERSION_CODE
 
-    // filter current channel & latest
-    val versions = versionCatalog.channelVersions
-    val latestVersion = versions.maxByOrNull { version -> version.versionCode }
-
-    if (versions.isEmpty() || latestVersion == null) {
+    if (versionCatalog.versions.isEmpty()) {
         Log.e(TAG, "VersionCatalog seems corrupted: $versionCatalog")
+        return false
+    }
+
+    // filter current channel & latest
+    val latestVersion = versionCatalog.latest(currentChannel) ?: versionCatalog.latest
+    if (latestVersion == null) {
+        Log.e(TAG, "Empty VersionCatalog: $versionCatalog")
         return false
     }
 
     // check if ignored
     val ignoredDate = Setting(App.instance)[Keys.ignoreUpgradeDate].data
-    val latestVersionByTime = versionCatalog.currentLatestChannelVersionBy { it.date }
-    if (ignoredDate >= latestVersionByTime.date && !force) {
-        Log.d(TAG, "ignore this upgrade: ${latestVersionByTime.date}(${dateText(latestVersionByTime.date)})")
+    if (ignoredDate >= latestVersion.date && !force) {
+        Log.d(TAG, "ignore this upgrade: ${latestVersion.date}(${dateText(latestVersion.date)})")
         return false
     }
 

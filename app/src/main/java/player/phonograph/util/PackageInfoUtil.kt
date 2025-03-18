@@ -15,6 +15,9 @@
 package player.phonograph.util
 
 import player.phonograph.BuildConfig
+import player.phonograph.model.version.ReleaseChannel
+import player.phonograph.model.version.ReleaseChannel.Preview
+import player.phonograph.model.version.ReleaseChannel.Stable
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
@@ -52,6 +55,13 @@ fun currentVersionName(context: Context): String {
     val packageInfo = getPackageInfo(context, context.packageName, 0) ?: return NA
     return packageInfo.versionName ?: NA
 }
+
+val currentChannel: ReleaseChannel
+    get() = when (BuildConfig.FLAVOR_channel.lowercase()) {
+        Preview.determiner -> Preview
+        Stable.determiner  -> Stable
+        else               -> Stable
+    }
 
 fun currentVariant(): String = BuildConfig.FLAVOR_target.replaceFirstChar { it.uppercase() }
 

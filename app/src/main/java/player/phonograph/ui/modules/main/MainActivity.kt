@@ -17,7 +17,6 @@ import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.mechanism.Update
 import player.phonograph.model.Song
-import player.phonograph.model.version.ReleaseChannel
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.service.queue.CurrentQueueState
@@ -30,6 +29,7 @@ import player.phonograph.ui.dialogs.UpgradeInfoDialog
 import player.phonograph.ui.modules.explorer.PathSelectorContractTool
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
+import player.phonograph.util.currentChannel
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
@@ -251,7 +251,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         lifecycleScope.launch(SupervisorJob()) {
             Update.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
                 if (upgradable) {
-                    UpgradeNotification.sendUpgradeNotification(versionCatalog, ReleaseChannel.currentChannel)
+                    UpgradeNotification.sendUpgradeNotification(versionCatalog, currentChannel)
                 }
             }
             Setting(this@MainActivity)[Keys.lastCheckUpgradeTimeStamp].data = System.currentTimeMillis()

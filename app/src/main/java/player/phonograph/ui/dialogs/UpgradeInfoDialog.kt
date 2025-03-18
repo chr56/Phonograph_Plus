@@ -22,6 +22,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.ui.compose.components.TempPopupContent
+import player.phonograph.util.currentChannel
 import player.phonograph.util.currentVariant
 import player.phonograph.util.parcelable
 import player.phonograph.util.text.dateText
@@ -33,7 +34,6 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
@@ -129,7 +129,7 @@ private fun MainContent(versionCatalog: VersionCatalog, dismiss: () -> Unit) {
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                val currentChannel = remember { ReleaseChannel.currentChannel }
+                val currentChannel = remember { currentChannel }
                 for (version in versionCatalog.versions) {
                     Card(modifier = Modifier.padding(vertical = 8.dp), elevation = 2.dp) {
                         Version(version, currentChannel.determiner == version.channel)
@@ -155,7 +155,11 @@ private fun Version(version: Version, highlight: Boolean) {
 private fun VersionTitle(version: Version, highlight: Boolean = false, modifier: Modifier = Modifier) {
     Row(modifier) {
         if (highlight) {
-            Icon(Icons.Default.Star, null, Modifier.weight(2f).align(Alignment.CenterVertically))
+            Icon(
+                Icons.Default.Star, null, Modifier
+                    .weight(2f)
+                    .align(Alignment.CenterVertically)
+            )
         }
         Column(
             Modifier
@@ -271,8 +275,11 @@ private fun VersionPopupContent(version: Version, dismissPopup: () -> Unit) {
 }
 
 private fun actionIgnore(context: Context, versionCatalog: VersionCatalog) {
-    Setting(context)[Keys.ignoreUpgradeDate].data = versionCatalog.currentLatestChannelVersionBy { it.date }.date
-    Toast.makeText(context, R.string.ignored_update, Toast.LENGTH_SHORT).show()
+    val current = versionCatalog.latest(currentChannel)
+    if (current != null) {
+        Setting(context)[Keys.ignoreUpgradeDate].data = current.date
+        Toast.makeText(context, R.string.ignored_update, Toast.LENGTH_SHORT).show()
+    }
 }
 
 private fun actionMore(context: Context) {
