@@ -4,8 +4,6 @@
 
 package player.phonograph.model.metadata
 
-import java.io.File
-
 sealed interface EditAction {
 
     val key: ConventionalMusicMetadataKey
@@ -25,9 +23,9 @@ sealed interface EditAction {
         override val description: String get() = "Update $key to $newValue"
     }
 
-    class ImageReplace(val file: File) : EditAction {
+    class ImageReplace(val path: String) : EditAction {
         override val key: ConventionalMusicMetadataKey = ConventionalMusicMetadataKey.COVER_ART
-        override val description: String get() = "Replace Cover Art to ${file.path}"
+        override val description: String get() = "Replace Cover Art to $path"
     }
 
 

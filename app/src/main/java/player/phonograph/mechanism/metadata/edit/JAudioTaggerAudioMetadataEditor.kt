@@ -130,7 +130,7 @@ class JAudioTaggerAudioMetadataEditor(songFiles: List<File>, editRequest: List<E
         }
 
         override fun execute() {
-            audioFile.tagOrCreateAndSetDefault.addField(AndroidArtwork.createArtworkFromFile(action.file))
+            audioFile.tagOrCreateAndSetDefault.addField(AndroidArtwork.createArtworkFromFile(File(action.path)))
         }
     }
     //endregion

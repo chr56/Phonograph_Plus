@@ -6,35 +6,26 @@ package player.phonograph.ui.modules.tag
 
 import lib.storage.launcher.ICreateFileStorageAccessible
 import player.phonograph.R
-import player.phonograph.coil.loadImage
 import player.phonograph.foundation.error.warning
-import player.phonograph.mechanism.metadata.DefaultMetadataExtractor
-import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
-import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
-import player.phonograph.mechanism.metadata.JAudioTaggerMetadataKeyTranslator.toFieldKey
 import player.phonograph.mechanism.metadata.edit.JAudioTaggerAudioMetadataEditor
+import player.phonograph.mechanism.metadata.read.MetadataExtractors
+import player.phonograph.mechanism.metadata.read.SongDetail
 import player.phonograph.model.Song
-import player.phonograph.model.metadata.AudioMetadata
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.EditAction
-import player.phonograph.model.metadata.Metadata
-import player.phonograph.model.metadata.MusicMetadata
-import player.phonograph.ui.modules.tag.MetadataUIEvent.Edit
-import player.phonograph.ui.modules.tag.MetadataUIEvent.ExtractArtwork
-import player.phonograph.ui.modules.tag.MetadataUIEvent.Save
+import player.phonograph.model.metadata.InteractiveAction
+import player.phonograph.model.metadata.InteractiveAction.Edit
+import player.phonograph.model.metadata.InteractiveAction.ExtractArtwork
+import player.phonograph.model.metadata.InteractiveAction.Save
 import player.phonograph.ui.modules.tag.util.display
-import player.phonograph.ui.modules.tag.util.fileName
-import player.phonograph.ui.modules.tag.util.readEmbeddedImage
-import player.phonograph.ui.modules.tag.util.readRawEmbeddedImage
 import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.permissions.navigateToStorageSetting
-import player.phonograph.util.theme.themeFooterColor
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,94 +37,23 @@ import java.io.File
 
 class TagBrowserActivityViewModel : AbsMetadataViewModel() {
 
-    private var originalState: State? = null
-    private val _state: MutableStateFlow<State?> = MutableStateFlow(null)
+    private var originalState: SongDetail? = null
+    private val _state: MutableStateFlow<SongDetail?> = MutableStateFlow(null)
     val state get() = _state.asStateFlow()
-
-    data class State(
-        val song: Song,
-        val metadata: AudioMetadata,
-        val image: Bitmap?,
-        val color: Color?,
-        var errors: List<Throwable>,
-    ) {
-        companion object {
-            suspend fun from(context: Context, song: Song): State = withContext(Dispatchers.IO) {
-                val info = JAudioTaggerExtractor.extractSongMetadata(context, song)
-                    ?: DefaultMetadataExtractor.extractSongMetadata(context, song)
-                val (bitmap, paletteColor) = readEmbeddedImage(song.data, themeFooterColor(context))
-                State(song, info, bitmap, paletteColor, emptyList())
-            }
-        }
-
-        /**
-         * create new state by [event]
-         */
-        suspend fun modify(context: Context, event: Edit): State = when (event) {
-            is Edit.AddNewTag     -> {
-                val audioMetadata = modifyMusicMetadataField { musicMetadata ->
-                    musicMetadata.genericTagFields + (event.fieldKey to Metadata.TextualField(""))
-                }
-                copy(metadata = audioMetadata)
-            }
-
-            is Edit.UpdateTag     -> {
-                val audioMetadata = modifyMusicMetadataField { musicMetadata ->
-                    musicMetadata.genericTagFields.toMutableMap().also { genericTagFields ->
-                        genericTagFields[event.fieldKey] = Metadata.TextualField(event.newValue)
-                    }
-                }
-                copy(metadata = audioMetadata)
-            }
-
-            is Edit.RemoveTag     -> {
-                val audioMetadata = modifyMusicMetadataField { musicMetadata ->
-                    musicMetadata.genericTagFields.toMutableMap().also { genericTagFields ->
-                        genericTagFields.remove(event.fieldKey)
-                    }
-                }
-                copy(metadata = audioMetadata)
-            }
-
-            is Edit.UpdateArtwork -> {
-                val (bitmap, _) = loadImage(context, event.file, themeFooterColor(context))
-                copy(image = bitmap)
-            }
-
-            is Edit.RemoveArtwork -> {
-                copy(image = null)
-            }
-
-        }
-
-        private fun modifyMusicMetadataField(
-            block: (MusicMetadata) -> Map<ConventionalMusicMetadataKey, Metadata.Field>,
-        ): AudioMetadata = modifyMusicMetadata { musicMetadata ->
-            val fields = block(musicMetadata)
-            if (musicMetadata is JAudioTaggerMetadata) {
-                musicMetadata.copy(_genericTagFields = fields.mapKeys { it.key.toFieldKey() })
-            } else {
-                musicMetadata
-            }
-        }
-
-        private fun modifyMusicMetadata(block: (MusicMetadata) -> MusicMetadata): AudioMetadata =
-            metadata.copy(musicMetadata = block(metadata.musicMetadata))
-    }
 
     fun load(context: Context, song: Song, asOriginal: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            val data = State.from(context, song)
-            if (asOriginal) originalState = data
-            _state.emit(data)
+            val detail = MetadataExtractors.extractMetadata(context, song)
+            if (asOriginal) originalState = detail
+            _state.emit(detail)
         }
     }
 
     private fun modifyContent(context: Context, event: Edit) {
-        viewModelScope.launch(Dispatchers.IO) { _state.emit(_state.value?.modify(context, event)) }
+        viewModelScope.launch(Dispatchers.IO) { _state.emit(_state.value?.edit(context, event)) }
     }
 
-    override fun submitEvent(context: Context, event: MetadataUIEvent) {
+    override fun submitEvent(context: Context, event: InteractiveAction) {
         viewModelScope.launch {
             when (event) {
                 ExtractArtwork -> extractArtwork(context)
@@ -151,7 +71,7 @@ class TagBrowserActivityViewModel : AbsMetadataViewModel() {
                                 is Edit.UpdateTag     -> EditAction.Update(event.fieldKey, event.newValue)
                                 is Edit.RemoveTag     -> EditAction.Delete(event.fieldKey)
                                 is Edit.RemoveArtwork -> EditAction.ImageDelete
-                                is Edit.UpdateArtwork -> EditAction.ImageReplace(event.file)
+                                is Edit.UpdateArtwork -> EditAction.ImageReplace(event.path)
                             }
                         )
                     }
@@ -192,8 +112,13 @@ class TagBrowserActivityViewModel : AbsMetadataViewModel() {
 
     private suspend fun extractArtwork(activity: Context) {
         val currentState = _state.value ?: return
-        val image = readRawEmbeddedImage(currentState.song.data) ?: return
-        val fileName = fileName(currentState.song)
+
+        val path = currentState.song.data
+        val fileName = path.substringAfterLast('/').substringBeforeLast('.')
+        val imageBytes = withContext(Dispatchers.IO) { MetadataExtractors.extractRawImage(path) } ?: return
+        val image = withContext(Dispatchers.Default) {
+            BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size, null)
+        }
         if (activity is ICreateFileStorageAccessible) {
             val delegate = activity.createFileStorageAccessDelegate
             delegate.launch("$fileName.jpg") { uri ->

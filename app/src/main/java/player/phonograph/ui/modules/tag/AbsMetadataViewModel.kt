@@ -6,6 +6,7 @@ package player.phonograph.ui.modules.tag
 
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import player.phonograph.model.metadata.EditAction
+import player.phonograph.model.metadata.InteractiveAction
 import androidx.lifecycle.ViewModel
 import android.content.Context
 import kotlinx.coroutines.Job
@@ -35,7 +36,7 @@ sealed class AbsMetadataViewModel : ViewModel() {
         _pendingEditRequests.add(action)
     }
 
-    abstract fun submitEvent(context: Context, event: MetadataUIEvent)
+    abstract fun submitEvent(context: Context, event: InteractiveAction)
 
     protected var saveJob: Job? = null
     protected abstract fun save(context: Context)

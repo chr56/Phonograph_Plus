@@ -7,8 +7,8 @@ package player.phonograph.ui.modules.tag
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
+import player.phonograph.model.metadata.InteractiveAction.Edit
 import player.phonograph.ui.compose.components.Title
-import player.phonograph.ui.modules.tag.MetadataUIEvent.Edit
 import player.phonograph.ui.modules.tag.components.ArtworkSection
 import player.phonograph.ui.modules.tag.components.EditableTagItem
 import player.phonograph.ui.modules.tag.components.FileItems
@@ -35,7 +35,7 @@ import android.content.Context
 @Composable
 fun MultiTagBrowserScreen(viewModel: MultiTagBrowserActivityViewModel) {
     val state by viewModel.state.collectAsState()
-    val errors = state?.errors
+    val errors = state?.details?.errors
     BrowserScreenFrame(
         viewModel = viewModel,
         warningSection = { if (!errors.isNullOrEmpty()) ErrorMessage(errors) },
@@ -53,13 +53,14 @@ private fun GenericTagItems(viewModel: MultiTagBrowserActivityViewModel) {
     val context = LocalContext.current
     val editable by viewModel.editable.collectAsState()
     val state by viewModel.state.collectAsState()
+    val keys = state?.keys ?: emptySet()
+    val reducedTags = state?.details?.fields ?: emptyMap()
     val displayTags = state?.displayed ?: emptyMap()
-    val reducedTags = state?.fields ?: emptyMap()
-    for ((key, _) in displayTags) {
-        val reducedValues = reducedTags[key]?.map { display(context, it) }
+    for (key in keys) {
+        val allValues = reducedTags[key]?.map { display(context, it) }
         val editorValue = displayTags[key]
         GenericTagItem(
-            key, reducedValues, editorValue, editable, viewModel::submitEvent
+            key, allValues, editorValue, editable, viewModel::submitEvent
         )
     }
     if (editable) {

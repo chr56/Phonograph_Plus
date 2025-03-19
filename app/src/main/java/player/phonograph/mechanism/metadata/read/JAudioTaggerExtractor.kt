@@ -1,15 +1,15 @@
 /*
- *  Copyright (c) 2022~2025 chr_56
+ *  Copyright (c) 2022~2026 chr_56
  */
 
-package player.phonograph.mechanism.metadata
+package player.phonograph.mechanism.metadata.read
 
-import okhttp3.internal.toLongOrDefault
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
 import org.jaudiotagger.audio.exceptions.CannotReadException
 import org.jaudiotagger.audio.generic.AbstractTag
+import org.jaudiotagger.audio.generic.Utils
 import org.jaudiotagger.audio.real.RealTag
 import org.jaudiotagger.logging.ErrorMessage
 import org.jaudiotagger.tag.FieldKey
@@ -28,22 +28,24 @@ import org.jaudiotagger.tag.mp4.Mp4Tag
 import org.jaudiotagger.tag.vorbiscomment.VorbisCommentTag
 import org.jaudiotagger.tag.wav.WavInfoTag
 import org.jaudiotagger.tag.wav.WavTag
-import player.phonograph.R
-import player.phonograph.foundation.error.warning
+import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata.Field
 import player.phonograph.model.Song
 import player.phonograph.model.metadata.AudioMetadata
 import player.phonograph.model.metadata.AudioProperties
 import player.phonograph.model.metadata.EmptyMusicMetadata
+import player.phonograph.model.metadata.ExceptionCollector
 import player.phonograph.model.metadata.FileProperties
 import player.phonograph.model.metadata.Metadata
+import player.phonograph.model.metadata.MetadataExtractor
 import player.phonograph.model.metadata.MusicMetadata
 import player.phonograph.model.metadata.MusicTagFormat
-import android.content.Context
-import android.os.Handler
-import android.os.Looper
-import android.widget.Toast
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
 import java.io.File
+import java.io.FileNotFoundException
+import java.nio.file.Files
+import java.nio.file.attribute.BasicFileAttributes
 
 /**
  * **JAudioTagger Metadata Extractor**
@@ -52,40 +54,73 @@ import java.io.File
  */
 object JAudioTaggerExtractor : MetadataExtractor {
 
-    override fun extractSongMetadata(context: Context, song: Song): AudioMetadata? {
-        val songFile = File(song.data)
+    override fun extractMetadata(path: String, collector: ExceptionCollector?): AudioMetadata? {
+        val songFile = File(path)
         if (!songFile.exists()) {
-            Handler(Looper.getMainLooper()).post {
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.err_file_not_found, songFile.path),
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
-            }
+            collector?.collect(FileNotFoundException(path))
             return null
         }
 
-        val fileName = songFile.name
-        val filePath = songFile.absolutePath
-        val fileSize = songFile.length()
-        val dateAdded = song.dateAdded
+        val (dateAdded, dateModified) =
+            if (SDK_INT >= VERSION_CODES.O) {
+                val attributes: BasicFileAttributes =
+                    Files.readAttributes(songFile.toPath(), BasicFileAttributes::class.java)
+                attributes.creationTime().toMillis() to attributes.lastModifiedTime().toMillis()
+            } else {
+                songFile.lastModified() to songFile.lastModified()
+            }
+
+        return extractAll(
+            file = songFile,
+            dateAdded = dateAdded,
+            dateModified = dateModified,
+            collector = collector
+        )
+    }
+
+    override fun extractMetadata(song: Song, collector: ExceptionCollector?): AudioMetadata? {
+        val songFile = File(song.data)
+        if (!songFile.exists()) {
+            collector?.collect(FileNotFoundException(song.data))
+            return null
+        }
+
         val dateModified = song.dateModified
+        val dateAdded = song.dateAdded
+
+        return extractAll(
+            file = songFile,
+            dateAdded = dateAdded,
+            dateModified = dateModified,
+            collector = collector
+        )
+    }
+
+    private fun extractAll(
+        file: File,
+        dateAdded: Long,
+        dateModified: Long,
+        collector: ExceptionCollector?,
+    ): AudioMetadata? {
+        val fileName = file.name
+        val filePath = file.absolutePath
+        val fileSize = file.length()
 
         try {
-            val audioFile: AudioFile = readAudioFile(songFile) ?: return null
-
+            val audioFile: AudioFile = readAudioFile(file).getOrThrow()
             val audioPropertyFields = readAudioProperties(audioFile.audioHeader)
             val tagFormat = readTagFormat(audioFile)
-            val musicMetadata = readMusicMetadata(context, audioFile)
-            return AudioMetadata(
+            val musicMetadata = readMusicMetadata(audioFile, collector)
+
+            val metadata = AudioMetadata(
                 fileProperties = FileProperties(fileName, filePath, fileSize, dateAdded, dateModified),
                 audioProperties = audioPropertyFields,
                 audioMetadataFormat = tagFormat,
                 musicMetadata = musicMetadata,
             )
+            return metadata
         } catch (e: Exception) {
-            warning(context, TAG, analyzeException(e, songFile), e)
+            collector?.collect(MetadataExtractingException(analyzeException(e, file), e))
             return null
         }
     }
@@ -93,8 +128,8 @@ object JAudioTaggerExtractor : MetadataExtractor {
     private fun readAudioProperties(audioHeader: AudioHeader): AudioProperties {
         val audioFormat = audioHeader.format
         val trackLength = (audioHeader.trackLength * 1000).toLong()
-        val bitRate = audioHeader.bitRate.toLongOrDefault(-1)
-        val samplingRate = audioHeader.sampleRate.toLongOrDefault(-1)
+        val bitRate = audioHeader.bitRate.toLongOrNull() ?: -1
+        val samplingRate = audioHeader.sampleRate.toLongOrNull() ?: -1
         return AudioProperties(
             audioFormat = audioFormat,
             trackLength = trackLength,
@@ -103,7 +138,7 @@ object JAudioTaggerExtractor : MetadataExtractor {
         )
     }
 
-    private fun readMusicMetadata(context: Context, audioFile: AudioFile): MusicMetadata {
+    private fun readMusicMetadata(audioFile: AudioFile, collector: ExceptionCollector?): MusicMetadata {
         val fields = audioFile.tag ?: return EmptyMusicMetadata
         // Generic
         val genericTagFields: Map<FieldKey, Metadata.Field> =
@@ -114,7 +149,7 @@ object JAudioTaggerExtractor : MetadataExtractor {
                     if (value != null) key to value else null
                 }.toMap()
             } catch (e: Exception) {
-                warning(context, TAG, "Failed to read all tags for ${audioFile.file.absolutePath}", e)
+                collector?.collect(e)
                 emptyMap()
             }
         // all
@@ -133,7 +168,7 @@ object JAudioTaggerExtractor : MetadataExtractor {
                     else                -> emptyMap()
                 }
             } catch (e: Exception) {
-                warning(context, TAG, "Failed to read all tags for ${audioFile.file.absolutePath}", e)
+                collector?.collect(e)
                 emptyMap()
             }
 
@@ -187,44 +222,53 @@ object JAudioTaggerExtractor : MetadataExtractor {
         else                -> MusicTagFormat.Unknown
     }
 
-    /**
-     * read embed lyrics via JAudioTagger,
-     * throw various exceptions if fails
-     */
-    fun readLyrics(file: File): String? {
+    override fun extractLyrics(path: String, collector: ExceptionCollector?): String? {
+        val file = File(path)
+        if (!file.exists()) return null
         return try {
-            val metadata = readAudioFile(file)?.tag ?: return null
+            val metadata = readAudioFile(file).getOrThrow().tag
             val value = metadata.getFirst(FieldKey.LYRICS)
             if (!value.isNullOrBlank()) value else null
         } catch (e: CannotReadException) {
-            if (ErrorMessage.NO_READER_FOR_THIS_FORMAT.getMsg(file.extension) == e.message) {
-                // ignore
-                null
-            } else {
-                throw e
+            // ignore unsupported format
+            if (ErrorMessage.NO_READER_FOR_THIS_FORMAT.getMsg(file.extension) != e.message) {
+                collector?.collect(MetadataExtractingException(e))
             }
+            null
+        } catch (e: Exception) {
+            collector?.collect(MetadataExtractingException(e))
+            null
         }
     }
 
-    /**
-     * read embed images via JAudioTagger
-     */
-    fun readImage(file: File): ByteArray? {
-        try {
-            val metadata = readAudioFile(file)?.tag ?: return null
-            return metadata.firstArtwork?.binaryData
-        } catch (_: Exception) {
-            return null
+    override fun extractRawImage(path: String, collector: ExceptionCollector?): ByteArray? {
+        val file = File(path)
+        if (!file.exists()) return null
+        return try {
+            val metadata = readAudioFile(file).getOrThrow().tag
+            metadata.firstArtwork?.binaryData
+        } catch (e: Exception) {
+            collector?.collect(e)
+            null
         }
     }
 
-    @Throws(CannotReadException::class)
-    private fun readAudioFile(file: File): AudioFile? =
-        if (file.extension.isNotEmpty()) {
-            AudioFileIO.read(file)
+    private fun readAudioFile(file: File): Result<AudioFile> {
+        var extension: String = Utils.getExtension(file)
+        if (extension.isEmpty()) {
+            extension = Utils.getMagicExtension(file)
+        }
+        return if (extension.isNotEmpty()) {
+            try {
+                val audioFile = AudioFileIO.readAs(file, extension)
+                Result.success(audioFile)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
         } else {
-            AudioFileIO.readMagic(file)
+            Result.failure(IllegalStateException("Unable to determine type type for ${file.path}"))
         }
+    }
 
     /**
      * @return error message

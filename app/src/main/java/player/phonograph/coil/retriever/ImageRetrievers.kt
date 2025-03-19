@@ -19,7 +19,7 @@ import okio.source
 import player.phonograph.foundation.error.record
 import player.phonograph.foundation.mediastore.mediaStoreUriAlbumArt
 import player.phonograph.foundation.mediastore.mediastoreUriAlbum
-import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
+import player.phonograph.mechanism.metadata.read.JAudioTaggerExtractor
 import player.phonograph.util.debug
 import androidx.annotation.IntDef
 import android.annotation.SuppressLint
@@ -177,20 +177,22 @@ object ImageRetrievers {
             }
         }
 
-        private fun retrieveFromJAudioTagger(filepath: String, size: Size, raw: Boolean): Bitmap? =
-            try {
-                val bytes = JAudioTaggerExtractor.readImage(File(filepath))
-                if (bytes != null) {
-                    if (raw) bytes.toBitmap() else bytes.toBitmap(size)
-                } else {
-                    null
-                }
-            } catch (e: Exception) {
+        private fun retrieveFromJAudioTagger(filepath: String, size: Size, raw: Boolean): Bitmap? {
+            val errors = mutableListOf<Throwable>()
+            val bytes = JAudioTaggerExtractor.extractRawImage(filepath) { errors.add(it) }
+            return if (bytes != null) {
+                if (raw) bytes.toBitmap() else bytes.toBitmap(size)
+            } else {
                 debug {
-                    Log.i(name, "${e.javaClass.name}: ${e.message}")
+                    if (errors.isNotEmpty()) {
+                        for (error in errors) {
+                            Log.v(name, "${error.javaClass.name}: ${error.message}")
+                        }
+                    }
                 }
                 null
             }
+        }
     }
 
     class ExternalFileRetriever : ImageRetriever {

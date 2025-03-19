@@ -9,6 +9,7 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.customView
 import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
+import player.phonograph.model.metadata.InteractiveAction
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.modules.tag.components.MetadataDifferenceItem
 import player.phonograph.util.theme.accentColoredButtonStyle
@@ -71,7 +72,7 @@ fun <VM : AbsMetadataViewModel> BrowserScreenFrame(
         SaveConfirmationDialog(
             viewModel.saveConfirmationDialogState,
             changes = { viewModel.generateMetadataDifference(context) },
-            onSave = { viewModel.submitEvent(context, MetadataUIEvent.Save) }
+            onSave = { viewModel.submitEvent(context, InteractiveAction.Save) }
         )
         val activity = LocalActivity.current
         ExitWithoutSavingDialog(viewModel.exitWithoutSavingDialogState) { activity?.finish() }

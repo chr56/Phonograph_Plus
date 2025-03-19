@@ -5,18 +5,17 @@
 package player.phonograph.ui.modules.tag
 
 import player.phonograph.R
-import player.phonograph.mechanism.metadata.DefaultMetadataExtractor
-import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
-import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
 import player.phonograph.mechanism.metadata.edit.JAudioTaggerAudioMetadataEditor
+import player.phonograph.mechanism.metadata.read.MetadataExtractors
+import player.phonograph.mechanism.metadata.read.SongDetailCollection
 import player.phonograph.model.Song
-import player.phonograph.model.metadata.AudioMetadata
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
 import player.phonograph.model.metadata.EditAction
+import player.phonograph.model.metadata.InteractiveAction
+import player.phonograph.model.metadata.InteractiveAction.Edit
+import player.phonograph.model.metadata.InteractiveAction.ExtractArtwork
+import player.phonograph.model.metadata.InteractiveAction.Save
 import player.phonograph.model.metadata.Metadata
-import player.phonograph.ui.modules.tag.MetadataUIEvent.Edit
-import player.phonograph.ui.modules.tag.MetadataUIEvent.ExtractArtwork
-import player.phonograph.ui.modules.tag.MetadataUIEvent.Save
 import player.phonograph.ui.modules.tag.util.display
 import player.phonograph.util.permissions.navigateToStorageSetting
 import androidx.lifecycle.viewModelScope
@@ -36,44 +35,28 @@ class MultiTagBrowserActivityViewModel : AbsMetadataViewModel() {
     val state get() = _state.asStateFlow()
 
     data class State(
-        val raw: Map<Song, AudioMetadata>,
-        val fields: Map<ConventionalMusicMetadataKey, List<Metadata.Field>>,
+        val details: SongDetailCollection,
         val displayed: Map<ConventionalMusicMetadataKey, String>,
-        var errors: Map<Song, List<Throwable>>,
     ) {
-        val songs get() = raw.keys
-        val metadata get() = raw.values
+        val songs get() = details.raw.keys
+        val metadata get() = details.raw.values
+        val keys get() = details.fields.keys
 
         companion object {
             fun from(context: Context, songs: List<Song>): State {
-                val items = songs.associateWith { song ->
-                    JAudioTaggerExtractor.extractSongMetadata(context, song)
-                        ?: DefaultMetadataExtractor.extractSongMetadata(context, song)
-                }
-                val fields = reducedTagFields(items.values)
-                val displayed = fields.mapValues { (_, values) ->
-                    val set = values.toSet()
-                    if (set.size == 1) display(context, values.first()) else ""
-                }
-                return State(items, fields, displayed, emptyMap())
+                val details = MetadataExtractors.extractMetadata(context, songs)
+                val displayed = reduceToDisplayable(context, details.fields)
+                return State(details, displayed)
             }
 
-            private fun reducedTagFields(all: Collection<AudioMetadata>)
-                    : Map<ConventionalMusicMetadataKey, List<Metadata.Field>> =
-                all.fold(mutableMapOf()) { acc, model ->
-                    val musicMetadata = model.musicMetadata
-                    if (musicMetadata is JAudioTaggerMetadata)
-                        for ((key, value) in musicMetadata.textTagFields) {
-                            val oldValue = acc[key]
-                            val newValue = if (oldValue != null) {
-                                oldValue + listOf(value)
-                            } else {
-                                listOf(value)
-                            }
-                            acc[key] = newValue
-                        }
-                    acc
-                }
+            private fun reduceToDisplayable(
+                context: Context,
+                fields: Map<ConventionalMusicMetadataKey, List<Metadata.Field>>,
+            ): Map<ConventionalMusicMetadataKey, String> = fields.mapValues { (_, values) ->
+                val set = values.toSet()
+                if (set.size == 1) display(context, values.first()) else ""
+            }
+
         }
 
         @Suppress("UNUSED_PARAMETER")
@@ -114,7 +97,7 @@ class MultiTagBrowserActivityViewModel : AbsMetadataViewModel() {
         viewModelScope.launch(Dispatchers.IO) { _state.emit(_state.value?.modify(context, event)) }
     }
 
-    override fun submitEvent(context: Context, event: MetadataUIEvent) {
+    override fun submitEvent(context: Context, event: InteractiveAction) {
         viewModelScope.launch {
             if (!editable.value) return@launch
             when (event) {
@@ -128,7 +111,7 @@ class MultiTagBrowserActivityViewModel : AbsMetadataViewModel() {
                             is Edit.UpdateTag     -> EditAction.Update(event.fieldKey, event.newValue)
                             is Edit.RemoveTag     -> EditAction.Delete(event.fieldKey)
                             is Edit.RemoveArtwork -> EditAction.ImageDelete
-                            is Edit.UpdateArtwork -> EditAction.ImageReplace(event.file)
+                            is Edit.UpdateArtwork -> EditAction.ImageReplace(event.path)
                         }
                     )
                 }

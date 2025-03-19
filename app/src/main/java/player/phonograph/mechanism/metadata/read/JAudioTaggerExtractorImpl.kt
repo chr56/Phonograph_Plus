@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2026 chr_56
  */
 
-package player.phonograph.mechanism.metadata
+package player.phonograph.mechanism.metadata.read
 
 import org.jaudiotagger.audio.generic.AbstractTag
 import org.jaudiotagger.tag.Tag

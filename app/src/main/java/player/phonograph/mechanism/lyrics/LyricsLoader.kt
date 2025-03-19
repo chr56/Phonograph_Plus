@@ -4,7 +4,7 @@
 
 package player.phonograph.mechanism.lyrics
 
-import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
+import player.phonograph.mechanism.metadata.read.JAudioTaggerExtractor
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.lyrics.LyricsInfo
@@ -16,7 +16,7 @@ import android.net.Uri
 import android.util.Log
 import kotlin.math.max
 import kotlin.math.min
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
@@ -55,20 +55,23 @@ object LyricsLoader {
      */
     suspend fun search(songFile: File, songTitle: String): LyricsInfo {
         // embedded
-        val embedded = withContext(SupervisorJob()) {
-            val lyrics = try {
-                JAudioTaggerExtractor.readLyrics(songFile)
-            } catch (e: Exception) {
-                val message = "Error: Failed to read ${songFile.path}: ${e.javaClass.simpleName} ${e.message}"
-                Log.i(TAG, message)
-                Log.v(TAG, Log.getStackTraceString(e))
-                message
+        val embedded = withContext(Dispatchers.IO) {
+            val errors = mutableListOf<Throwable>()
+            var lyrics = JAudioTaggerExtractor.extractLyrics(songFile.absolutePath) { errors.add(it) }
+            if (errors.isNotEmpty()) {
+                lyrics = "Failed to extract lyrics from ${songFile.path}:"
+                for (error in errors) {
+                    val message = "\n${error.javaClass.simpleName}: ${error.message}"
+                    Log.i(TAG, message)
+                    Log.v(TAG, Log.getStackTraceString(error))
+                    lyrics += message
+                }
             }
             if (lyrics != null) parse(lyrics, LyricsSource.Embedded) else null
         }
 
         // external
-        val externalPrecise = withContext(SupervisorJob()) {
+        val externalPrecise = withContext(Dispatchers.IO) {
             trySearch {
                 searchExternalPreciseLyricsFiles(songFile).mapNotNull { file ->
                     val content = file.readText()
@@ -76,7 +79,7 @@ object LyricsLoader {
                 }
             }
         }
-        val externalVague = withContext(SupervisorJob()) {
+        val externalVague = withContext(Dispatchers.IO) {
             trySearch {
                 searchExternalVagueLyricsFiles(songFile, songTitle).mapNotNull { file ->
                     val content = file.readText()

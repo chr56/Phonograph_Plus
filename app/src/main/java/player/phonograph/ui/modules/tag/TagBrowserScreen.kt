@@ -8,11 +8,11 @@ import player.phonograph.R
 import player.phonograph.mechanism.metadata.JAudioTaggerMetadata
 import player.phonograph.model.metadata.AudioMetadata
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
+import player.phonograph.model.metadata.InteractiveAction.Edit
 import player.phonograph.model.metadata.Metadata
 import player.phonograph.model.metadata.MusicMetadata
 import player.phonograph.ui.compose.components.CascadeVerticalItem
 import player.phonograph.ui.compose.components.Title
-import player.phonograph.ui.modules.tag.MetadataUIEvent.Edit
 import player.phonograph.ui.modules.tag.components.ArtworkSection
 import player.phonograph.ui.modules.tag.components.AudioImage
 import player.phonograph.ui.modules.tag.components.EditableTagItem

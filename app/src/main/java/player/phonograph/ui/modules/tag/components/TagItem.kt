@@ -6,8 +6,8 @@ package player.phonograph.ui.modules.tag.components
 
 import player.phonograph.R
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
+import player.phonograph.model.metadata.InteractiveAction
 import player.phonograph.ui.compose.components.VerticalTextItem
-import player.phonograph.ui.modules.tag.MetadataUIEvent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -47,7 +47,7 @@ fun EditableTagItem(
     tagName: String,
     value: String,
     alternatives: Collection<String> = emptyList(),
-    onEdit: (MetadataUIEvent.Edit) -> Unit,
+    onEdit: (InteractiveAction.Edit) -> Unit,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
@@ -82,7 +82,7 @@ fun EditableTagItem(
 
         fun submit() {
             onEdit.invoke(
-                MetadataUIEvent.Edit.UpdateTag(key, currentValue)
+                InteractiveAction.Edit.UpdateTag(key, currentValue)
             )
             hasEdited = false
             indicatorColor = Color(0xFF00C72C)
@@ -127,7 +127,7 @@ fun EditableTagItem(
                         modifier = Modifier
                             .padding(8.dp)
                             .clickable {
-                                onEdit.invoke(MetadataUIEvent.Edit.RemoveTag(key))
+                                onEdit.invoke(InteractiveAction.Edit.RemoveTag(key))
                             }
                     )
                 }

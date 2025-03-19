@@ -9,9 +9,10 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import lib.storage.launcher.IOpenFileStorageAccessible
 import player.phonograph.R
+import player.phonograph.foundation.error.warning
+import player.phonograph.model.metadata.InteractiveAction
+import player.phonograph.model.metadata.InteractiveAction.Edit
 import player.phonograph.ui.modules.tag.AbsMetadataViewModel
-import player.phonograph.ui.modules.tag.MetadataUIEvent
-import player.phonograph.ui.modules.tag.MetadataUIEvent.Edit
 import player.phonograph.util.file.selectImage
 import player.phonograph.util.theme.accentColoredButtonStyle
 import androidx.compose.foundation.clickable
@@ -21,10 +22,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewModelScope
+import android.content.Context
+import android.net.Uri
 import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 
 
 @Composable
@@ -40,23 +44,55 @@ fun <VM : AbsMetadataViewModel> ArtworkSection(
     ImageActionMenuDialog(
         state = viewModel.coverImageDetailDialogState,
         artworkExist = artworkExist,
-        onSave = { viewModel.submitEvent(context, MetadataUIEvent.ExtractArtwork) },
+        onSave = { viewModel.submitEvent(context, InteractiveAction.ExtractArtwork) },
         onDelete = { viewModel.submitEvent(context, Edit.RemoveArtwork) },
         onUpdate = {
             viewModel.viewModelScope.launch(Dispatchers.IO) {
-                val uri = selectImage((context as IOpenFileStorageAccessible).openFileStorageAccessDelegate)
-                if (uri != null) {
-                    viewModel.submitEvent(context, Edit.UpdateArtwork.from(context, uri, cacheFileName))
-                } else {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(context, android.R.string.cancel, Toast.LENGTH_SHORT).show()
-                    }
-                }
+                select(context, cacheFileName, viewModel::submitEvent)
             }
             viewModel.coverImageDetailDialogState.hide()
         },
         editMode = editMode
     )
+}
+
+private suspend fun select(
+    context: Context, fileName: String,
+    submitEvent: (context: Context, event: InteractiveAction) -> Unit,
+) {
+    val uri = selectImage((context as IOpenFileStorageAccessible).openFileStorageAccessDelegate)
+    if (uri != null) {
+        val file = createCacheFile(context, uri, fileName)
+        submitEvent(context, Edit.UpdateArtwork(file.absolutePath))
+    } else {
+        withContext(Dispatchers.Main) {
+            Toast.makeText(context, android.R.string.cancel, Toast.LENGTH_SHORT).show()
+        }
+    }
+}
+
+private fun createCacheFile(context: Context, uri: Uri, name: String): File {
+    val cacheFile = File(context.externalCacheDir, "Cover_$name.png")
+    if (cacheFile.exists()) cacheFile.delete() else cacheFile.createNewFile()
+    context.contentResolver.openInputStream(uri).use { inputStream ->
+        if (inputStream != null) {
+            inputStream.buffered(8192).use { bufferedInputStream ->
+                cacheFile.outputStream().buffered(8192).use { outputStream ->
+                    // transfer stream
+                    val buffer = ByteArray(8192)
+                    var read: Int
+                    while (bufferedInputStream.read(buffer, 0, 8192).also { read = it } >= 0
+                    ) {
+                        outputStream.write(buffer, 0, read)
+                    }
+                }
+            }
+        } else {
+            warning(context, "Cache", "Can not open selected file! (uri: $uri)")
+        }
+    }
+    cacheFile.deleteOnExit()
+    return cacheFile
 }
 
 

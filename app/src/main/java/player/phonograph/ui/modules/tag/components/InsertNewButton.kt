@@ -6,7 +6,7 @@ package player.phonograph.ui.modules.tag.components
 
 import player.phonograph.R
 import player.phonograph.model.metadata.ConventionalMusicMetadataKey
-import player.phonograph.ui.modules.tag.MetadataUIEvent
+import player.phonograph.model.metadata.InteractiveAction
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,7 +40,7 @@ import android.content.Context
 @Composable
 fun InsertNewButton(
     keys: Set<ConventionalMusicMetadataKey>,
-    onEdit: (Context, MetadataUIEvent.Edit) -> Unit,
+    onEdit: (Context, InteractiveAction.Edit) -> Unit,
 ) {
     Box(Modifier.fillMaxWidth()) {
         var showed by remember { mutableStateOf(false) }
@@ -51,7 +51,7 @@ fun InsertNewButton(
                     .fillMaxWidth()
                     .clickable {
                         showed = false
-                        onEdit(context, MetadataUIEvent.Edit.AddNewTag(fieldKey))
+                        onEdit(context, InteractiveAction.Edit.AddNewTag(fieldKey))
                     }
                     .padding(8.dp, 16.dp)
                 ) {
