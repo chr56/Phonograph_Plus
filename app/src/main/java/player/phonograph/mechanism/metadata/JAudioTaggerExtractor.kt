@@ -208,23 +208,18 @@ object JAudioTaggerExtractor : MetadataExtractor {
         try {
             val metadata = readAudioFile(file)?.tag ?: return null
             return metadata.firstArtwork?.binaryData
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return null
         }
     }
 
-    private fun readAudioFile(file: File): AudioFile? {
-        return try {
-            if (file.extension.isNotEmpty()) {
-                AudioFileIO.read(file)
-            } else {
-                AudioFileIO.readMagic(file)
-            }
-        } catch (e: CannotReadException) {
-            reportError(e, TAG, analyzeException(e, file))
-            null
+    @Throws(CannotReadException::class)
+    private fun readAudioFile(file: File): AudioFile? =
+        if (file.extension.isNotEmpty()) {
+            AudioFileIO.read(file)
+        } else {
+            AudioFileIO.readMagic(file)
         }
-    }
 
     /**
      * @return error message
