@@ -38,7 +38,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import com.afollestad.materialdialogs.R as MDR
 
 sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<*>> : Fragment() {
 
@@ -83,7 +82,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
 
         // Back Button
         binding.buttonBack.apply {
-            setImageDrawable(requireContext().getThemedDrawable(MDR.drawable.md_nav_back))
+            setImageDrawable(requireContext().getThemedDrawable(R.drawable.ic_nav_back_white_24dp))
             setOnClickListener { navigateUp(true) }
             setOnLongClickListener {
                 onSwitch(Location.HOME)
@@ -140,7 +139,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
                                 if (newLocation.parent == null) {
                                     R.drawable.ic_sdcard_white_24dp
                                 } else {
-                                    MDR.drawable.md_nav_back
+                                    R.drawable.ic_nav_back_white_24dp
                                 }
                             )
                         )
