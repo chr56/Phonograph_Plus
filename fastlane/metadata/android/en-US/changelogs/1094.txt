@@ -1,0 +1,3 @@
+<b>1.9.4(1094) 2025.03.20</b>
+- Fix: flooding internal error notifications, due to image loading for certain files
+- Fix: possible crashes after replacing playing queue on some circumstance
