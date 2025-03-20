@@ -553,7 +553,7 @@ class PlayerController : ServiceComponent, Controller {
             observer.onReceivingMessage(PlayerStateObserver.Companion.MSG_NOW_PLAYING_CHANGED)
         }
         service.coroutineScope.launch(SupervisorJob()) {
-            lyricsUpdater.updateViaSong(queueManager.currentSong)
+            lyricsUpdater.updateViaSong(service, queueManager.currentSong)
         }
     }
 

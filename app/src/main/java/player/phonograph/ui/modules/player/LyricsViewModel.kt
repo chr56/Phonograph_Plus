@@ -10,6 +10,7 @@ import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.util.permissions.StoragePermissionChecker
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
@@ -63,9 +64,9 @@ class LyricsViewModel : ViewModel() {
         loadLyricsJob = viewModelScope.launch {
             val enableLyrics = Setting(context)[Keys.enableLyrics].flowData()
             if (enableLyrics) {
-                replace(
-                    LyricsLoader.loadLyrics(File(song.data), song.title)
-                )
+                if (StoragePermissionChecker.hasStorageReadPermission(context)) {
+                    replace(LyricsLoader.search(File(song.data), song.title))
+                }
             }
         }
     }
@@ -88,7 +89,7 @@ class LyricsViewModel : ViewModel() {
      * append a new lyrics from [uri] to current
      */
     suspend fun appendLyricsFrom(context: Context, uri: Uri) {
-        val lyrics = LyricsLoader.parseFromUri(context, uri)
+        val lyrics = LyricsLoader.parse(context.contentResolver, uri)
         if (lyrics != null) append(lyrics)
     }
 

@@ -4,7 +4,6 @@
 
 package player.phonograph.mechanism.lyrics
 
-import player.phonograph.App
 import player.phonograph.mechanism.metadata.JAudioTaggerExtractor
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
@@ -12,102 +11,27 @@ import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.model.lyrics.LyricsSource
 import player.phonograph.util.debug
 import player.phonograph.util.file.stripExtension
-import player.phonograph.util.permissions.StoragePermissionChecker
-import android.content.Context
+import android.content.ContentResolver
 import android.net.Uri
 import android.util.Log
 import kotlin.math.max
 import kotlin.math.min
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import java.io.File
 
 object LyricsLoader {
 
-    private val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
-
-    suspend fun loadLyrics(songFile: File, songTitle: String): LyricsInfo? {
-
-        if (!StoragePermissionChecker.hasStorageReadPermission(App.instance)) {
-            debug {
-                Log.v(TAG, "No storage read permission to fetch lyrics for $songTitle")
-            }
-            return null
-        }
-
-        // embedded
-        val embedded = backgroundCoroutine.async(Dispatchers.IO) {
-            parseEmbedded(songFile, LyricsSource.Embedded)
-        }
-
-        // external
-        val externalPrecise = backgroundCoroutine.async(Dispatchers.IO) {
-            val files = getExternalPreciseLyricsFile(songFile)
-            files.mapNotNull { parseExternal(it, LyricsSource.ExternalPrecise) }
-        }
-        val external = backgroundCoroutine.async(Dispatchers.IO) {
-            val files = searchExternalVagueLyricsFiles(songFile, songTitle)
-            files.mapNotNull { parseExternal(it, LyricsSource.ExternalDecorated) }
-        }
-
-        // collect
-        val all = buildList {
-            val embeddedLyrics = embedded.await()
-            if (embeddedLyrics != null) add(embeddedLyrics)
-            val preciseLyrics = externalPrecise.await()
-            addAll(preciseLyrics)
-            val vagueLyrics = external.await()
-            addAll(vagueLyrics)
-        }
-
-
-        val activated: Int = all.indexOfFirst { it is LrcLyrics }
-
-        // end of fetching
-        return LyricsInfo(all, activated)
-    }
-
-    private fun parseEmbedded(
-        songFile: File,
-        lyricsSource: LyricsSource = LyricsSource.Embedded,
-    ): AbsLyrics? = tryLoad(songFile) {
-        val lyrics = JAudioTaggerExtractor.readLyrics(songFile)
-        if (lyrics != null) parse(lyrics, lyricsSource) else null
-    }
-
-    private fun parseExternal(
-        file: File,
-        lyricsSource: LyricsSource = LyricsSource.Unknown,
-    ): AbsLyrics? = tryLoad(file) {
-        if (file.exists()) {
-            val content = file.readText()
-            if (content.isNotEmpty()) parse(content, lyricsSource) else null
-        } else {
-            null
-        }
-    }
-
-    private fun tryLoad(songFile: File, block: () -> AbsLyrics?): AbsLyrics? =
-        try {
-            block()
-        } catch (e: Exception) {
-            val errorMsg = errorMsg(songFile.path, e)
-            Log.i(TAG, errorMsg)
-            ActualTextLyrics.from(errorMsg)
-        }
-
-    private fun errorMsg(path: String, t: Throwable?) =
-        "$ERR_MSG_HEADER $path: ${t?.message}\n${Log.getStackTraceString(t)}"
-
-
-    private fun parse(raw: String, lyricsSource: LyricsSource = LyricsSource.Unknown): AbsLyrics {
+    /**
+     * Parse raw lyrics content into AbsLyrics
+     */
+    fun parse(raw: String, lyricsSource: LyricsSource = LyricsSource.Unknown): AbsLyrics {
         val rawLength = raw.length
         val sampleLineCount = max(rawLength / 100, 10)
         val sampleLength = max(min(rawLength / 8, 480), 60)
 
         val lines = raw.take(sampleLength).splitToSequence("\r\n", "\n", "\r", limit = sampleLineCount)
-        val regex = Regex("""(\[.+\])+\s*.*""")
+        @Suppress("RegExpRedundantEscape") val regex = Regex("""(\[.+\])+\s*.*""")
 
         var score = 0
         for (line in lines) score += if (regex.matches(line)) 1 else -1
@@ -115,13 +39,76 @@ object LyricsLoader {
         return if (score > 1) ActualLrcLyrics.from(raw, lyricsSource) else ActualTextLyrics.from(raw, lyricsSource)
     }
 
-    fun getExternalPreciseLyricsFile(songFile: File): List<File> {
+
+    /**
+     * Parse lyrics from [uri]
+     */
+    fun parse(contentResolver: ContentResolver, uri: Uri): AbsLyrics? =
+        contentResolver.openInputStream(uri)?.use { inputStream ->
+            inputStream.reader().use {
+                parse(it.readText(), LyricsSource.ManuallyLoaded)
+            }
+        }
+
+    /**
+     * Search lyrics for [songFile]
+     */
+    suspend fun search(songFile: File, songTitle: String): LyricsInfo {
+        // embedded
+        val embedded = withContext(SupervisorJob()) {
+            val lyrics = JAudioTaggerExtractor.readLyrics(songFile)
+            if (lyrics != null) parse(lyrics, LyricsSource.Embedded) else null
+        }
+
+        // external
+        val externalPrecise = withContext(SupervisorJob()) {
+            trySearch {
+                searchExternalPreciseLyricsFiles(songFile).mapNotNull { file ->
+                    val content = file.readText()
+                    if (content.isNotEmpty()) parse(content, LyricsSource.ExternalPrecise) else null
+                }
+            }
+        }
+        val externalVague = withContext(SupervisorJob()) {
+            trySearch {
+                searchExternalVagueLyricsFiles(songFile, songTitle).mapNotNull { file ->
+                    val content = file.readText()
+                    if (content.isNotEmpty()) parse(content, LyricsSource.ExternalDecorated) else null
+                }
+            }
+        }
+
+        // collect
+        val all = listOfNotNull(embedded) + externalPrecise + externalVague
+        val activated: Int = all.indexOfFirst { it is LrcLyrics }
+
+        // end of fetching
+        return LyricsInfo(all, activated)
+    }
+
+    private fun <T> trySearch(block: () -> List<T>): List<T> =
+        try {
+            block()
+        } catch (e: Exception) {
+            debug {
+                Log.e(TAG, "Failed to fetch lyrics", e)
+            }
+            emptyList<T>()
+        }
+
+    /**
+     * search lyrics files associated with [songFile] precisely
+     */
+    fun searchExternalPreciseLyricsFiles(songFile: File): List<File> {
         val filename = stripExtension(songFile.absolutePath)
         val lrc = File("$filename.lrc").takeIf { it.exists() }
         val txt = File("$filename.txt").takeIf { it.exists() }
         return listOfNotNull(lrc, txt)
     }
 
+    /**
+     * search lyrics files associated with [songFile] vaguely
+     */
     fun searchExternalVagueLyricsFiles(songFile: File, songTitle: String): List<File> {
         val dir = songFile.absoluteFile.parentFile ?: return emptyList()
 
@@ -161,16 +148,6 @@ object LyricsLoader {
         }
     }
 
-
-    fun parseFromUri(context: Context, uri: Uri): AbsLyrics? {
-        return context.contentResolver.openInputStream(uri)?.use { inputStream ->
-            inputStream.reader().use {
-                parse(it.readText(), LyricsSource.ManuallyLoaded)
-            }
-        }
-    }
-
-
     private const val TAG = "LyricsLoader"
-    private const val ERR_MSG_HEADER = "Failed to read "
+
 }

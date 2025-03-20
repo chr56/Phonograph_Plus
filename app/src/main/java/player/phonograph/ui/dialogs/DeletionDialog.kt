@@ -233,7 +233,7 @@ private fun delete(context: Context, songs: List<Song>) {
 private fun deleteLyrics(activity: Context, songs: Collection<Song>) {
     for (song in songs) {
         val file = File(song.data)
-        val preciseFiles = LyricsLoader.getExternalPreciseLyricsFile(file)
+        val preciseFiles = LyricsLoader.searchExternalPreciseLyricsFiles(file)
         val fails = mutableListOf<String>()
         preciseFiles.forEach {
             val result = it.delete()

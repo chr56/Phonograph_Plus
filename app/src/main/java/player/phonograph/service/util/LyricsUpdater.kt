@@ -4,7 +4,6 @@
 
 package player.phonograph.service.util
 
-import player.phonograph.App
 import player.phonograph.mechanism.StatusBarLyric
 import player.phonograph.mechanism.lyrics.LyricsLoader
 import player.phonograph.model.Song
@@ -13,32 +12,40 @@ import player.phonograph.service.MusicService
 import player.phonograph.service.ServiceComponent
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import player.phonograph.util.permissions.StoragePermissionChecker
+import android.content.Context
+import kotlin.math.max
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.File
 
 class LyricsUpdater : ServiceComponent {
-    override var created: Boolean = true // stateless
-    private var fetcher: LyricsFetcher? = null
 
-    suspend fun updateViaSong(song: Song?) {
+    override var created: Boolean = true // stateless
+
+    private var lyrics: LrcLyrics? = null
+
+    suspend fun updateViaSong(context: Context, song: Song?) {
         if (song == null) return
-        val enableLyrics = Setting(App.instance)[Keys.enableLyrics].flowData()
+        val enableLyrics = Setting(context)[Keys.enableLyrics].flowData()
         if (!enableLyrics) return
         val file = File(song.data)
-        fetcher = LyricsFetcher(
-            if (file.exists()) LyricsLoader.loadLyrics(file, song.title)?.firstLrcLyrics() else null
-        )
+        lyrics =
+            if (StoragePermissionChecker.hasStorageReadPermission(context) && file.exists()) {
+                LyricsLoader.search(file, song.title).firstLrcLyrics()
+            } else {
+                null
+            }
     }
 
-    fun updateViaLyrics(lyrics: LrcLyrics) {
-        fetcher = LyricsFetcher(lyrics)
+    fun updateViaLyrics(new: LrcLyrics) {
+        lyrics = new
     }
 
     override fun onCreate(musicService: MusicService) {
         val song = musicService.queueManager.currentSong
         musicService.coroutineScope.launch(SupervisorJob()) {
-            updateViaSong(song)
+            updateViaSong(musicService, song)
         }
     }
 
@@ -55,8 +62,7 @@ class LyricsUpdater : ServiceComponent {
      * broadcast lyrics
      */
     fun broadcast(processInMills: Int) {
-        val newLine = fetcher?.getLine(processInMills)
-
+        val newLine = lyrics?.getLine(max(processInMills - 100, 0))?.first
         if (newLine != null) {
             if (newLine != cache) {
                 cache = newLine // update cache
@@ -70,13 +76,7 @@ class LyricsUpdater : ServiceComponent {
 
     fun clear() {
         cache = ""
-        fetcher = null
+        lyrics = null
     }
 
-    class LyricsFetcher(private val lyrics: LrcLyrics?) {
-        fun getLine(time: Int): String? {
-            val offsetTime = if (time > 100) time - 100 else time
-            return lyrics?.getLine(offsetTime)?.first
-        }
-    }
 }
