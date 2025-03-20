@@ -19,6 +19,7 @@ import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.updateSystemBarsColor
 import util.theme.color.primaryTextColor
+import util.theme.materials.MaterialColor
 import util.theme.view.toolbar.setToolbarColor
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -47,7 +48,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.File
-import util.theme.materials.R as MR
 
 class CrashActivity : ToolbarActivity() {
 
@@ -56,13 +56,9 @@ class CrashActivity : ToolbarActivity() {
     private var crashReportMode = true
 
     private val colorPrimaryDeep
-        get() = resources.getColor(
-            if (crashReportMode) MR.color.md_deep_orange_900 else MR.color.md_grey_800, theme
-        )
+        get() = if (crashReportMode) MaterialColor.DeepOrange._900.asColor else MaterialColor.Grey._800.asColor
     private val colorPrimary
-        get() = resources.getColor(
-            if (crashReportMode) MR.color.md_deep_orange_700 else MR.color.md_grey_700, theme
-        )
+        get() = if (crashReportMode) MaterialColor.DeepOrange._700.asColor else MaterialColor.Grey._700.asColor
 
 
     private fun setupTheme() {
@@ -215,7 +211,7 @@ class CrashActivity : ToolbarActivity() {
                     }
                     dialog.show()
                     dialog.getButton(DialogInterface.BUTTON_POSITIVE)
-                        ?.setTextColor(getColor(MR.color.md_red_A700))
+                        ?.setTextColor(MaterialColor.Red._A700.asColor)
                     true
                 }
             }
