@@ -5,9 +5,7 @@
 package player.phonograph.notification
 
 import player.phonograph.R
-import player.phonograph.notification.ErrorNotification.KEY_IS_A_CRASH
-import player.phonograph.notification.ErrorNotification.KEY_NOTE
-import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
+import player.phonograph.model.CrashReport
 import androidx.core.app.NotificationCompat
 import android.app.Activity
 import android.app.Notification
@@ -24,11 +22,21 @@ class ErrorNotificationImpl(context: Context, private val crashActivity: Class<o
     override val channelName: CharSequence = context.getString(R.string.error_notification_name)
     override val importance: Int = NotificationManager.IMPORTANCE_HIGH
 
-    fun send(note: String, throwable: Throwable? = null, title: String? = null, context: Context) {
+    fun send(
+        context: Context,
+        title: String,
+        note: String,
+        type: Int,
+        throwable: Throwable? = null,
+    ) {
         val action = Intent(context, crashActivity).apply {
-            putExtra(KEY_NOTE, note)
-            putExtra(KEY_STACK_TRACE, throwable?.stackTraceToString())
-            putExtra(KEY_IS_A_CRASH, false)
+            putExtra(
+                CrashReport.KEY, CrashReport(
+                    type = type,
+                    note = note,
+                    stackTrace = throwable?.stackTraceToString() ?: "",
+                )
+            )
         }
 
         val clickIntent: PendingIntent =

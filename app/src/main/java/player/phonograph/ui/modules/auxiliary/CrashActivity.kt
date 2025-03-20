@@ -7,20 +7,21 @@ import lib.phonograph.misc.Reboot
 import player.phonograph.R
 import player.phonograph.databinding.ActivityCrashBinding
 import player.phonograph.mechanism.SettingDataManager
-import player.phonograph.notification.ErrorNotification.KEY_IS_A_CRASH
-import player.phonograph.notification.ErrorNotification.KEY_NOTE
-import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
+import player.phonograph.model.CrashReport
+import player.phonograph.model.CrashReport.Constant.CRASH_TYPE_CORRUPTED_DATA
+import player.phonograph.model.CrashReport.Constant.CRASH_TYPE_INTERNAL_ERROR
 import player.phonograph.ui.basis.ToolbarActivity
 import player.phonograph.ui.modules.setting.SettingsActivity
 import player.phonograph.util.text.currentDate
 import player.phonograph.util.text.dateTimeSuffixCompat
 import player.phonograph.util.text.getDeviceInfo
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.nightMode
+import player.phonograph.util.theme.systemDarkmode
 import player.phonograph.util.theme.updateSystemBarsColor
 import util.theme.color.primaryTextColor
 import util.theme.materials.MaterialColor
 import util.theme.view.toolbar.setToolbarColor
+import androidx.core.content.IntentCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -53,87 +54,42 @@ class CrashActivity : ToolbarActivity() {
 
     private lateinit var binding: ActivityCrashBinding
 
-    private var crashReportMode = true
 
-    private val colorPrimaryDeep
-        get() = if (crashReportMode) MaterialColor.Orange._900.asColor else MaterialColor.Grey._800.asColor
-    private val colorPrimary
-        get() = if (crashReportMode) MaterialColor.Orange._700.asColor else MaterialColor.Grey._700.asColor
+    private var _report: CrashReport? = null
+    private val report get() = _report!!
 
-
-    private fun setupTheme() {
-        // System UI
-        updateSystemBarsColor(colorPrimaryDeep, Color.TRANSPARENT)
-
-        // toolbar theme
-        binding.toolbar.apply {
-            setToolbarColor(this, colorPrimary)
-            title = if (crashReportMode) getString(R.string.crash) else getString(R.string.internal_error)
-            setSupportActionBar(this)
-        }
-        // float button
-        binding.copyToClipboard.apply {
-            backgroundTintList = ColorStateList(
-                arrayOf(
-                    intArrayOf(-android.R.attr.state_pressed),
-                    intArrayOf(android.R.attr.state_pressed)
-                ),
-                intArrayOf(
-                    colorPrimary,
-                    colorPrimaryDeep
-                )
-            )
-            setColorFilter(primaryTextColor(colorPrimary))
-        }
-
-    }
-
-    /**
-     * note
-     */
-    private lateinit var note: String
-
-    /**
-     * stack trace text
-     */
-    private lateinit var stackTraceText: String
-
-    /**
-     * device data
-     */
-    private lateinit var deviceInfo: String
-
-    /**
-     *  full report
-     */
-    private lateinit var displayText: String
+    private lateinit var deviceInfoText: String
+    private lateinit var fullReportText: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        note = intent.getStringExtra(KEY_NOTE) ?: ""
-        stackTraceText = intent.getStringExtra(KEY_STACK_TRACE) ?: ""
-        crashReportMode = intent.getBooleanExtra(KEY_IS_A_CRASH, true)
+        _report = IntentCompat.getParcelableExtra(intent, CrashReport.KEY, CrashReport::class.java)
 
-        printStackTraceText(stackTraceText)
+        if (_report == null) {
+            finish()
+            return
+        }
+
+        printStackTraceText(report.stackTrace)
 
         binding = ActivityCrashBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setupTheme()
 
-        deviceInfo = getDeviceInfo(this)
-        displayText = buildString {
-            append("${if (crashReportMode) "Crash Report" else "Internal Error"}:\n\n")
-            append("$deviceInfo\n")
-            val isNoteEmpty = note.isEmpty()
-            val isStacktraceEmpty = stackTraceText.isEmpty()
+        deviceInfoText = getDeviceInfo(this)
+        fullReportText = buildString {
+            append("$reportHead:\n\n")
+            append("$deviceInfoText\n")
+            val isNoteEmpty = report.note.isEmpty()
+            val isStacktraceEmpty = report.stackTrace.isEmpty()
             if (!isNoteEmpty) {
                 append("\nNote:\n")
-                append("$note\n")
+                append("${report.note}\n")
             }
             if (!isStacktraceEmpty) {
                 append("\nStacktrace:\n")
-                append("$stackTraceText\n")
+                append("${report.stackTrace}\n")
             }
             if (isNoteEmpty && isStacktraceEmpty) {
                 append("\n\nNo message or stacktrace?\n")
@@ -142,13 +98,13 @@ class CrashActivity : ToolbarActivity() {
         }
 
         // display textview
-        binding.crashText.text = displayText
-        binding.crashText.setTextColor(primaryTextColor(nightMode))
+        binding.crashText.text = fullReportText
+        binding.crashText.setTextColor(primaryTextColor(systemDarkmode(resources)))
 
         // button "copy to clipboard"
         binding.copyToClipboard.setOnClickListener {
             val clipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-            val clipData = ClipData.newPlainText("CRASH", displayText)
+            val clipData = ClipData.newPlainText("CRASH", fullReportText)
             clipboardManager.setPrimaryClip(clipData)
             Toast.makeText(
                 this,
@@ -169,7 +125,7 @@ class CrashActivity : ToolbarActivity() {
             lifecycleScope.launch(Dispatchers.IO + SupervisorJob()) {
                 val file = File(cacheDir, "Error_Report_${dateTimeSuffixCompat(currentDate())}.txt")
                 file.writer().use { writer ->
-                    writer.write(displayText)
+                    writer.write(fullReportText)
                     writer.flush()
                 }
             }
@@ -233,4 +189,62 @@ class CrashActivity : ToolbarActivity() {
             Log.i("Crash", stackTraceText)
         }
     }
+
+    //region Theme
+
+    private fun setupTheme() {
+        // System UI
+        updateSystemBarsColor(colorPrimaryDeep, Color.TRANSPARENT)
+
+        // toolbar theme
+        binding.toolbar.apply {
+            setToolbarColor(this, colorPrimary)
+            title = getString(titleRes)
+            setSupportActionBar(this)
+        }
+        // float button
+        binding.copyToClipboard.apply {
+            backgroundTintList = ColorStateList(
+                arrayOf(
+                    intArrayOf(-android.R.attr.state_pressed),
+                    intArrayOf(android.R.attr.state_pressed)
+                ),
+                intArrayOf(
+                    colorPrimary,
+                    colorPrimaryDeep
+                )
+            )
+            setColorFilter(primaryTextColor(colorPrimary))
+        }
+
+    }
+
+    private val colorPrimaryDeep: Int
+        get() = when (report.type) {
+            CRASH_TYPE_INTERNAL_ERROR -> MaterialColor.Grey._800.asColor
+            CRASH_TYPE_CORRUPTED_DATA -> MaterialColor.Purple._800.asColor
+            else                      -> MaterialColor.DeepOrange._900.asColor
+        }
+
+    private val colorPrimary: Int
+        get() = when (report.type) {
+            CRASH_TYPE_INTERNAL_ERROR -> MaterialColor.Grey._700.asColor
+            CRASH_TYPE_CORRUPTED_DATA -> MaterialColor.Purple._700.asColor
+            else                      -> MaterialColor.DeepOrange._700.asColor
+        }
+
+    private val titleRes: Int
+        get() = when (report.type) {
+            CRASH_TYPE_INTERNAL_ERROR -> R.string.internal_error
+            CRASH_TYPE_CORRUPTED_DATA -> R.string.internal_error
+            else                      -> R.string.crash
+        }
+
+    private val reportHead: String
+        get() = when (report.type) {
+            CRASH_TYPE_INTERNAL_ERROR -> "Internal Error"
+            CRASH_TYPE_CORRUPTED_DATA -> "Corrupted Data"
+            else                      -> "Crash Report"
+        }
+    //endregion
 }

@@ -4,6 +4,7 @@
 
 package player.phonograph.util
 
+import player.phonograph.model.CrashReport
 import player.phonograph.notification.ErrorNotification
 import android.content.Context
 import android.util.Log
@@ -15,12 +16,12 @@ private const val ERROR_STACKS_FILE = "errors.txt"
 
 fun reportError(e: Throwable, tag: String, message: String) {
     Log.e(tag, message, e)
-    ErrorNotification.postErrorNotification(e, message)
+    ErrorNotification.postErrorNotification(e, message, CrashReport.CRASH_TYPE_INTERNAL_ERROR)
 }
 
 fun warning(tag: String, message: String) {
     Log.w(tag, message)
-    ErrorNotification.postErrorNotification(message)
+    ErrorNotification.postErrorNotification(message, CrashReport.CRASH_TYPE_INTERNAL_ERROR)
 }
 
 fun recordThrowable(context: Context?, tag: String, e: Throwable) {

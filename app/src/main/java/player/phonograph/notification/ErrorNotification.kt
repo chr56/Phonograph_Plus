@@ -6,13 +6,12 @@ package player.phonograph.notification
 
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.model.CrashReport
 import android.app.Activity
 import android.content.Context
 
 object ErrorNotification {
-    /**
-     * Target Error Report Activity, which can handler extra [KEY_STACK_TRACE] in start intent
-     */
+
     lateinit var crashActivity: Class<out Activity>
 
     private var impl: ErrorNotificationImpl? = null
@@ -20,25 +19,33 @@ object ErrorNotification {
         impl ?: ErrorNotificationImpl(context, crashActivity).also { impl = it }
 
     @JvmOverloads
-    fun postErrorNotification(e: Throwable, note: String? = null, context: Context = App.instance) {
+    fun postErrorNotification(
+        exception: Throwable,
+        note: String? = null,
+        type: Int = CrashReport.CRASH_TYPE_INTERNAL_ERROR,
+        context: Context = App.instance,
+    ) {
         getImpl(context, crashActivity).send(
-            note = note ?: e.message ?: "",
-            throwable = e,
-            title = "${e::class.simpleName}",
-            context = context
+            context = context,
+            title = "${exception::class.simpleName}",
+            note = note ?: exception.message ?: "",
+            type = type,
+            throwable = exception,
         )
     }
 
     @JvmOverloads
-    fun postErrorNotification(note: String, context: Context = App.instance) {
+    fun postErrorNotification(
+        note: String,
+        type: Int,
+        context: Context = App.instance,
+    ) {
         getImpl(context, crashActivity).send(
-            note = note,
+            context = context,
             title = App.instance.getString(R.string.internal_error),
-            context = context
+            note = note,
+            type = type,
         )
     }
 
-    const val KEY_NOTE = "note"
-    const val KEY_STACK_TRACE = "stack_trace"
-    const val KEY_IS_A_CRASH = "is_a_crash"
 }
