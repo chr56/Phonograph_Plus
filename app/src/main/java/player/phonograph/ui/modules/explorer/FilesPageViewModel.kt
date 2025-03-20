@@ -33,7 +33,7 @@ class FilesPageViewModel : AbsFileViewModel() {
 
     override suspend fun listFiles(context: Context, location: Location, scope: CoroutineScope?): List<FileEntity> =
         if (useLegacyListFile) {
-            FileEntityLoader.listFilesLegacy(location, scope)
+            FileEntityLoader.listFilesLegacy(location, context, scope)
         } else {
             FileEntityLoader.listFilesMediaStore(location, context, scope)
         }

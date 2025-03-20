@@ -4,19 +4,10 @@
 
 package player.phonograph.model.file
 
-import android.os.storage.StorageVolume
-
 /**
  * Presenting a path
  */
 interface Location {
-
-    /**
-     * relative path without prefix likes `/storage/emulated/0` or `/storage/69F4-242C`,
-     * **starting with '/', ending without '/'**
-     */
-    val basePath: String
-
 
     /**
      * absolute path from filesystem root
@@ -24,13 +15,30 @@ interface Location {
     val absolutePath: String
 
     /**
-     * storageVolume StorageVolume where file locate
+     * StorageVolume UUID where this locates
      */
-    val storageVolume: StorageVolume
+    val volumeUUID: String
 
     /**
-     *  null if no parent (root location)
+     * StorageVolume name where this locates
      */
-    val parent: Location?
+    val volumeName: String
+
+    /**
+     * root path of current StorageVolume where this locates
+     * (it should be like `/storage/emulated/0` or `/storage/69F4-242C`)
+     */
+    val volumeRootPath: String
+
+    /**
+     * relative path from [volumeRootPath],
+     * **starting with '/', ending without '/'**
+     */
+    val basePath: String
+
+    /**
+     * true if this is root of current StorageVolume
+     */
+    val isRoot: Boolean
 
 }

@@ -7,10 +7,8 @@ package player.phonograph.mechanism.explorer
 import lib.storage.extension.rootDirectory
 import player.phonograph.App
 import player.phonograph.model.file.Location
-import player.phonograph.model.file.defaultStartDirectory
 import androidx.core.content.getSystemService
 import android.content.Context
-import android.os.Environment
 import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.util.Log
@@ -20,24 +18,39 @@ import java.io.File
 object Locations {
     private const val TAG = "Locations"
 
-    val default: Location get() = from(defaultStartDirectory.absolutePath)
+    fun from(path: String, context: Context): Location =
+        from(File(path), context)
 
-    fun from(basePath: String, storageVolume: StorageVolume): Location {
-        return ActualLocation(basePath.ifBlank { "/" }, storageVolume)
-    }
+    fun from(file: File, context: Context): Location =
+        from(file, context.getSystemService<StorageManager>()!!)
 
-    fun from(file: File, context: Context = App.instance): Location {
-        val storageManager = context.getSystemService<StorageManager>()!!
+    fun from(path: String, storageManager: StorageManager): Location =
+        from(File(path), storageManager)
 
+    fun from(file: File, storageManager: StorageManager): Location {
         val storageVolume = file.getStorageVolume(storageManager)
-        val basePath = file.getBasePath(
-            storageVolume.rootDirectory() ?: throw IllegalStateException("unavailable for $storageManager")
-        )
-
-        return from(basePath, storageVolume)
+        val absolutePath = file.absolutePath.ifBlank { "/" }
+        return ActualLocation(absolutePath, storageVolume)
     }
 
-    fun from(path: String, context: Context = App.instance): Location = from(File(path), context)
+    /**
+     * get parent of current [location]
+     * @return parent Location, null if it is root
+     */
+    fun parent(location: Location, context: Context): Location? =
+        parent(location, context.getSystemService<StorageManager>()!!)
+
+    /**
+     * get parent of current [location]
+     * @return parent Location, null if it is root
+     */
+    fun parent(location: Location, storageManager: StorageManager): Location? {
+        if (location.isRoot) return null
+        val file = File(location.absolutePath)
+        val parent = file.parentFile ?: return null
+        val storageVolume = parent.getStorageVolume(storageManager)
+        return ActualLocation(parent.absolutePath, storageVolume)
+    }
 
     private fun File.getStorageVolume(storageManager: StorageManager): StorageVolume {
         val volume = storageManager.getStorageVolume(this)
@@ -49,39 +62,33 @@ object Locations {
         }
     }
 
-    private fun File.getBasePath(root: File): String {
-        return path.substringAfter(root.path)
-    }
-
     private class ActualLocation(
-        override val basePath: String,
-        override val storageVolume: StorageVolume,
+        override val absolutePath: String,
+        storageVolume: StorageVolume,
     ) : Location {
 
-        override val absolutePath: String
-            get() {
-                val prefix = storageVolume.rootDirectory()?.path ?: Environment.getExternalStorageDirectory().absolutePath
-                return "$prefix$basePath"
-            }
+        override val volumeUUID: String = storageVolume.uuid ?: ""
 
-        override val parent: Location?
-            get() {
-                if (basePath == "/") return null // root
-                val parentPath = basePath.dropLastWhile { it != '/' }.removeSuffix("/")
-                return ActualLocation(parentPath.ifBlank { "/" }, storageVolume)
-            }
+        override val volumeName: String = storageVolume.getDescription(App.instance)
 
-        override fun toString(): String = "${storageVolume.uuid}:$basePath"
-        override fun hashCode(): Int = storageVolume.hashCode() * 31 + basePath.hashCode()
+        override val volumeRootPath: String = storageVolume.rootDirectory()?.path ?: "/"
+
+        override val basePath: String
+            get() = absolutePath.substringAfter(volumeRootPath)
+
+        override val isRoot: Boolean
+            get() = absolutePath == volumeRootPath
+
+        override fun toString(): String = absolutePath
+        override fun hashCode(): Int = volumeUUID.hashCode() * 31 + absolutePath.hashCode()
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is Location) return false
 
-            if (basePath != other.basePath) return false
-            if (storageVolume != other.storageVolume) return false
+            if (absolutePath != other.absolutePath) return false
+            if (volumeUUID != other.volumeUUID) return false
 
             return true
         }
-
     }
 }

@@ -10,6 +10,7 @@ import player.phonograph.R
 import player.phonograph.databinding.FragmentFileExploreBinding
 import player.phonograph.mechanism.explorer.Locations
 import player.phonograph.model.file.Location
+import player.phonograph.model.file.defaultStartDirectory
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
@@ -87,7 +88,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
             setImageDrawable(requireContext().getThemedDrawable(MDR.drawable.md_nav_back))
             setOnClickListener { navigateUp(true) }
             setOnLongClickListener {
-                onSwitch(Locations.default)
+                onSwitch(Locations.from(defaultStartDirectory.absolutePath, requireContext()))
                 true
             }
         }
@@ -138,7 +139,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
                         }
                         binding.buttonBack.setImageDrawable(
                             requireContext().getThemedDrawable(
-                                if (newLocation.parent == null) {
+                                if (newLocation.isRoot) {
                                     R.drawable.ic_sdcard_white_24dp
                                 } else {
                                     MDR.drawable.md_nav_back
@@ -196,16 +197,18 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
             return false
         }
         val volumesNames = volumes.map { "${it.getDescription(context)}\n(${it.rootDirectory()?.path ?: "N/A"})" }
-        val selected = volumes.indexOf(model.currentLocation.value.storageVolume)
+        val currentLocation = model.currentLocation.value
+        val currentVolume = volumes.find { it.uuid.orEmpty() == currentLocation.volumeUUID }
+        val selected = volumes.indexOf(currentVolume)
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.storage_volumes)
             .setSingleChoiceItems(volumesNames.toTypedArray(), selected) { dialog, choice ->
                 dialog.dismiss()
-                val path = volumes[choice].rootDirectory()?.absolutePath
-                if (path == null) {
+                val rootDirectory = volumes[choice].rootDirectory()
+                if (rootDirectory == null) {
                     Toast.makeText(context, R.string.not_available_now, Toast.LENGTH_SHORT).show()
                 } else {
-                    onSwitch(Locations.from("$path/")) // todo
+                    onSwitch(Locations.from(rootDirectory, requireContext())) // todo
                 }
             }
             .show().tintButtons()
@@ -218,7 +221,8 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
      */
     protected fun navigateUp(allowToChangeVolume: Boolean): Boolean {
         if (activity == null) return false
-        val parent = model.currentLocation.value.parent
+        val current = model.currentLocation.value
+        val parent = Locations.parent(current, requireContext())
         return if (parent != null) {
             onSwitch(parent)
             true
@@ -238,8 +242,7 @@ sealed class AbsFilesExplorerFragment<M : AbsFileViewModel, A : AbsFilesAdapter<
     }
 
     private fun updateBackPressedDispatcher(location: Location) {
-        val reachedToRoot = location.parent == null
-        if (!reachedToRoot && isResumed) {
+        if (!location.isRoot && isResumed) {
             requireActivity().onBackPressedDispatcher.addCallback(
                 viewLifecycleOwner, navigateUpBackPressedCallback
             )

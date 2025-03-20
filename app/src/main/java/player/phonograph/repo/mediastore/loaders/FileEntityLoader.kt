@@ -15,7 +15,9 @@ import player.phonograph.repo.mediastore.internal.querySongFiles
 import player.phonograph.repo.mediastore.internal.readFileEntity
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
+import androidx.core.content.getSystemService
 import android.content.Context
+import android.os.storage.StorageManager
 import android.provider.MediaStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
@@ -36,12 +38,13 @@ object FileEntityLoader {
             "${MediaStore.MediaColumns.DATA} LIKE ?",
             arrayOf("${currentLocation.absolutePath}%"),
         ) ?: return emptyList()
+        val storageManager = context.getSystemService<StorageManager>()!!
         return fileCursor.use { cursor ->
             if (cursor.moveToFirst()) {
                 val list: MutableList<FileEntity> = ArrayList()
                 do {
                     if (scope?.isActive == false) break
-                    val item = readFileEntity(cursor, currentLocation)
+                    val item = readFileEntity(cursor, currentLocation, storageManager)
                     list.put(item)
                 } while (cursor.moveToNext())
                 val sortMode = Setting(App.instance).Composites[Keys.fileSortMode].data
@@ -52,16 +55,14 @@ object FileEntityLoader {
 
     private fun MutableList<FileEntity>.put(item: FileEntity) {
         when (item) {
-            is FileEntity.File -> {
-                this.add(item)
-            }
+            is FileEntity.File   -> this.add(item)
             is FileEntity.Folder -> {
                 // count songs for folder
                 val i = this.indexOf(item)
                 if (i < 0) {
                     this.add(item.apply { songCount = 1 })
                 } else {
-                    (this[i] as FileEntity.Folder).songCount ++
+                    (this[i] as FileEntity.Folder).songCount++
                 }
             }
         }
@@ -72,13 +73,15 @@ object FileEntityLoader {
      */
     fun listFilesLegacy(
         location: Location,
+        context: Context,
         scope: CoroutineScope?,
     ): List<FileEntity> {
         val directory = File(location.absolutePath).also { if (!it.isDirectory) return emptyList() }
         val files = directory.listFiles(FileScanner.audioFileFilter) ?: return emptyList()
         val result = ArrayList<FileEntity>()
+        val storageManager = context.getSystemService<StorageManager>()!!
         for (file in files) {
-            val l = Locations.from(file.absolutePath)
+            val l = Locations.from(file.absolutePath, storageManager)
             if (scope?.isActive == false) break
             val item =
                 when {
@@ -105,7 +108,7 @@ object FileEntityLoader {
                 }
             item?.let { result.add(it) }
         }
-        val sortMode = Setting(App.instance).Composites[Keys.fileSortMode].data
+        val sortMode = Setting(context).Composites[Keys.fileSortMode].data
         return result.sortedWith(FileEntityComparator(sortMode))
     }
 
