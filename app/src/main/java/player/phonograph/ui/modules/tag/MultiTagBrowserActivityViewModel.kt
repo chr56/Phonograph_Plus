@@ -139,7 +139,7 @@ class MultiTagBrowserActivityViewModel : AbsMetadataViewModel() {
         val tagDiff = pendingEditRequests.map { action ->
             val text =
                 original?.mapNotNull { metadata -> metadata.musicMetadata[action.key]?.text() }
-                    ?.reduce { a, b -> "$a,$b" } ?: ""
+                    ?.fold("") { a, b -> "$a\n$b" } ?: ""
             Pair(action, text.toString())
         }
         return MetadataChanges(tagDiff)
