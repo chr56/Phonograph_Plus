@@ -42,7 +42,7 @@ fun PhonographTheme(content: @Composable () -> Unit) {
 @Composable
 fun PhonographTheme(primary: Color?, content: @Composable () -> Unit) {
     val colors = tweakColors(phonographColors(), primary)
-    MaterialTheme(colors = colors) {
+    PhonographTheme(colors = colors) {
         content()
     }
 }

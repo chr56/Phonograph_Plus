@@ -97,11 +97,6 @@ class TagBrowserActivity :
                 }
             }
         }
-
-        observe(viewModel.state) { state ->
-            val color = state?.color
-            if (color != null) updateSystemBarsColor(darkenColor(color.toArgb()), Color.Transparent.toArgb())
-        }
     }
 
     override val createFileStorageAccessDelegate: CreateFileStorageAccessDelegate = CreateFileStorageAccessDelegate()
