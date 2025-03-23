@@ -73,7 +73,14 @@ object LyricsLoader {
         songFile: File,
         lyricsSource: LyricsSource = LyricsSource.Embedded,
     ): AbsLyrics? = tryLoad(songFile) {
-        val lyrics = JAudioTaggerExtractor.readLyrics(songFile)
+        val lyrics = try {
+            JAudioTaggerExtractor.readLyrics(songFile)
+        } catch (e: Exception) {
+            val message = "Error: Failed to read ${songFile.path}: ${e.javaClass.simpleName} ${e.message}"
+            Log.i(TAG, message)
+            Log.v(TAG, Log.getStackTraceString(e))
+            message
+        }
         if (lyrics != null) parse(lyrics, lyricsSource) else null
     }
 
