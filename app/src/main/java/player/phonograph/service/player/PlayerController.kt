@@ -540,9 +540,6 @@ class PlayerController : ServiceComponent, Controller {
     }
 
     private fun notifyNowPlayingChanged() {
-        observers.executeForEach {
-            onReceivingMessage(MSG_NOW_PLAYING_CHANGED)
-        }
         service.coroutineScope.launch(SupervisorJob()) {
             lyricsUpdater.updateViaSong(queueManager.currentSong)
         }

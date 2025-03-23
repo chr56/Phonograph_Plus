@@ -17,6 +17,5 @@ inline fun MutableList<PlayerStateObserver>.executeForEach(
     }
 }
 
-const val MSG_NOW_PLAYING_CHANGED = 8
 const val MSG_NO_MORE_SONGS = 16
 const val MSG_PLAYER_STOPPED = 128

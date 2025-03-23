@@ -25,7 +25,6 @@ import player.phonograph.repo.database.HistoryStore
 import player.phonograph.service.notification.CoverLoader
 import player.phonograph.service.notification.PlayingNotificationManager
 import player.phonograph.service.notification.PlayingNotificationManager.Companion.VERSION_SET_COVER_USING_METADATA
-import player.phonograph.service.player.MSG_NOW_PLAYING_CHANGED
 import player.phonograph.service.player.MediaSessionController
 import player.phonograph.service.player.PauseReason
 import player.phonograph.service.player.PlayerController
@@ -62,15 +61,14 @@ import kotlinx.coroutines.runBlocking
 /**
  * @author Karim Abou Zeid (kabouzeid), Andrew Neal
  */
-class MusicService : MediaBrowserServiceCompat() {
+class MusicService : MediaBrowserServiceCompat(),
+                     QueueObserver, PlayerStateObserver {
 
     private val songPlayCountHelper = SongPlayCountHelper()
 
     val queueManager: QueueManager = get()
-    private val queueChangeObserver: QueueObserver = initQueueChangeObserver()
 
     private val controller: PlayerController = PlayerController()
-    private var playerStateObserver: PlayerStateObserver = initPlayerStateObserver()
 
     private val playNotificationManager: PlayingNotificationManager = PlayingNotificationManager()
 
@@ -94,8 +92,8 @@ class MusicService : MediaBrowserServiceCompat() {
         // observers & messages
         sendChangeInternal(META_CHANGED) // notify manually for first setting up queueManager
         sendChangeInternal(QUEUE_CHANGED) // notify manually for first setting up queueManager
-        queueManager.addObserver(queueChangeObserver)
-        controller.addObserver(playerStateObserver)
+        queueManager.addObserver(this)
+        controller.addObserver(this)
 
         // notifications & media session
         coverLoader = CoverLoader(this)
@@ -124,45 +122,6 @@ class MusicService : MediaBrowserServiceCompat() {
         )
         AppWidgetUpdateReceiver.register(this)
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"))
-    }
-
-    private fun initQueueChangeObserver(): QueueObserver = object : QueueObserver {
-        override fun onCurrentPositionChanged(newPosition: Int) {
-            notifyChange(META_CHANGED)
-            rePrepareNextSong()
-        }
-
-        override fun onQueueChanged(newPlayingQueue: List<Song>, newOriginalQueue: List<Song>) {
-            handleAndSendChangeInternal(QUEUE_CHANGED)
-            notifyChange(META_CHANGED)
-            rePrepareNextSong()
-        }
-
-        override fun onShuffleModeChanged(newMode: ShuffleMode) {
-            rePrepareNextSong()
-            handleAndSendChangeInternal(SHUFFLE_MODE_CHANGED)
-        }
-
-        override fun onRepeatModeChanged(newMode: RepeatMode) {
-            rePrepareNextSong()
-            handleAndSendChangeInternal(REPEAT_MODE_CHANGED)
-        }
-
-        private fun rePrepareNextSong() {
-            controller.prepareNext()
-        }
-    }
-
-    private fun initPlayerStateObserver(): PlayerStateObserver = object : PlayerStateObserver {
-        override fun onPlayerStateChanged(oldState: PlayerState, newState: PlayerState) {
-            notifyChange(PLAY_STATE_CHANGED)
-        }
-
-        override fun onReceivingMessage(msg: Int) {
-            when (msg) {
-                MSG_NOW_PLAYING_CHANGED -> notifyChange(META_CHANGED)
-            }
-        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -248,9 +207,9 @@ class MusicService : MediaBrowserServiceCompat() {
         coverLoader.terminate()
         AppWidgetUpdateReceiver.unRegister(this)
         unregisterMediaStoreObserver(this)
-        controller.removeObserver(playerStateObserver)
+        controller.removeObserver(this)
         controller.onDestroy(this)
-        queueManager.removeObserver(queueChangeObserver)
+        queueManager.removeObserver(this)
         queueManager.apply {
             // todo
             post(MSG_SAVE_QUEUE)
@@ -293,6 +252,39 @@ class MusicService : MediaBrowserServiceCompat() {
 
     val audioSessionId: Int get() = controller.audioSessionId
     val mediaSession get() = mediaSessionController.mediaSession
+
+    override fun onPlayerStateChanged(oldState: PlayerState, newState: PlayerState) {
+        notifyChange(PLAY_STATE_CHANGED)
+    }
+
+    override fun onReceivingMessage(msg: Int) {
+    }
+
+    override fun onCurrentPositionChanged(newPosition: Int) {
+        notifyChange(META_CHANGED)
+        controller.prepareNext()
+    }
+
+    override fun onCurrentSongChanged(newSong: Song) {
+        notifyChange(META_CHANGED)
+        controller.prepareNext()
+    }
+
+    override fun onQueueChanged(newPlayingQueue: List<Song>) {
+        handleAndSendChangeInternal(QUEUE_CHANGED)
+        notifyChange(META_CHANGED)
+        controller.prepareNext()
+    }
+
+    override fun onShuffleModeChanged(newMode: ShuffleMode) {
+        controller.prepareNext()
+        handleAndSendChangeInternal(SHUFFLE_MODE_CHANGED)
+    }
+
+    override fun onRepeatModeChanged(newMode: RepeatMode) {
+        controller.prepareNext()
+        handleAndSendChangeInternal(REPEAT_MODE_CHANGED)
+    }
 
     private fun notifyChange(what: String) {
         handleAndSendChangeInternal(what)
