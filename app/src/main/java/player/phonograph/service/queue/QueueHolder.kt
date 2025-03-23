@@ -87,8 +87,8 @@ class QueueHolder private constructor(
         }
     }
 
-
     fun getSongAt(position: Int): Song? = playingQueue.getOrNull(position)
+    val currentSong: Song? = getSongAt(currentSongPosition)
 
     fun getRestSongsDuration(position: Int): Long =
         totalDuration(playingQueue.takeLast(getRestSongsCount(position)))

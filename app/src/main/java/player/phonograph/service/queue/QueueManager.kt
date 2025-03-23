@@ -19,23 +19,22 @@ import android.os.Message
 import android.os.Process.THREAD_PRIORITY_BACKGROUND
 import kotlin.concurrent.thread
 
+@Suppress("unused")
 class QueueManager(val context: Application) {
 
     private val handler: QueueManagerHandler
     private val thread = HandlerThread("QueueManagerHandler", THREAD_PRIORITY_BACKGROUND)
     private var queueHolder: QueueHolder
-    private val observerManager: ObserverManager
 
     init {
         thread.start()
         handler = QueueManagerHandler(thread.looper)
         queueHolder = QueueHolder.fromPersistence(context)
-        observerManager = ObserverManager()
 
 
         thread(name = "queue_validation", priority = THREAD_PRIORITY_BACKGROUND) {
             if (validQueueChanges(context, queueHolder)) {
-                observerManager.notifyQueueChanged(queueHolder.playingQueue, queueHolder.originalPlayingQueue)
+                notifyQueueChanged(queueHolder.playingQueue)
             }
         }
     }
@@ -147,7 +146,8 @@ class QueueManager(val context: Application) {
     ) = async(async) {
         queueHolder.modifyPosition(newPosition)
         handler.post {
-            observerManager.notifyCurrentPositionChanged(newPosition)
+            notifyCurrentPositionChanged(newPosition)
+            notifyCurrentSongChanged(currentSong)
             queueHolder.saveConfig(context)
         }
     }
@@ -164,7 +164,11 @@ class QueueManager(val context: Application) {
         queueHolder.modifyShuffleMode(newShuffleMode)
         if (alongWithQueue) shuffle(queueHolder, queueHolder.shuffleMode)
         handler.post {
-            observerManager.notifyShuffleModeChanged(newShuffleMode ?: queueHolder.shuffleMode)
+            notifyShuffleModeChanged(newShuffleMode ?: queueHolder.shuffleMode)
+            if (alongWithQueue) {
+                notifyCurrentPositionChanged(queueHolder.currentSongPosition)
+                notifyQueueChanged(queueHolder.playingQueue)
+            }
             queueHolder.saveConfig(context)
             if (alongWithQueue) queueHolder.saveQueue(context)
         }
@@ -179,7 +183,7 @@ class QueueManager(val context: Application) {
     ) = async(async) {
         queueHolder.modifyRepeatMode(newRepeatMode)
         handler.post {
-            observerManager.notifyRepeatModeChanged(newRepeatMode ?: queueHolder.repeatMode)
+            notifyRepeatModeChanged(newRepeatMode ?: queueHolder.repeatMode)
             queueHolder.saveConfig(context)
         }
     }
@@ -237,7 +241,8 @@ class QueueManager(val context: Application) {
     fun moveToNextSong(async: Boolean = true) = async(async) {
         queueHolder.modifyPosition(nextSongPosition)
         handler.post {
-            observerManager.notifyCurrentPositionChanged(queueHolder.currentSongPosition)
+            notifyCurrentPositionChanged(queueHolder.currentSongPosition)
+            notifyCurrentSongChanged(queueHolder.playingQueue[queueHolder.currentSongPosition])
         }
     }
 
@@ -260,8 +265,9 @@ class QueueManager(val context: Application) {
         handler.post {
             val changed = queueHolder.clean(context)
             if (changed) {
-                observerManager.notifyQueueChanged(queueHolder.playingQueue, queueHolder.originalPlayingQueue)
-                observerManager.notifyCurrentPositionChanged(queueHolder.currentSongPosition)
+                notifyQueueChanged(queueHolder.playingQueue)
+                notifyCurrentPositionChanged(queueHolder.currentSongPosition)
+                notifyCurrentSongChanged(queueHolder.playingQueue[queueHolder.currentSongPosition])
             }
         }
     }
@@ -279,11 +285,11 @@ class QueueManager(val context: Application) {
         val oldPosition = queueHolder.currentSongPosition
         block()
         handler.post {
-            with(observerManager) {
-                with(queueHolder) {
-                    notifyQueueChanged(playingQueue, originalPlayingQueue) // always changes
-                    if (oldPosition != currentSongPosition || createSnapshot)
-                        notifyCurrentPositionChanged(currentSongPosition)
+            with(queueHolder) {
+                notifyQueueChanged(playingQueue) // always changes
+                if (oldPosition != currentSongPosition || createSnapshot) {
+                    notifyCurrentPositionChanged(currentSongPosition)
+                    notifyCurrentSongChanged(currentSong)
                 }
             }
             queueHolder.saveQueue(context)
@@ -291,7 +297,7 @@ class QueueManager(val context: Application) {
     }
 
     fun createSnapshot() {
-        if (queueHolder.playingQueue.size <= 0) return
+        if (queueHolder.playingQueue.isEmpty()) return
         synchronized(queueHolderSnapshots) {
             snapShotsItemCount += queueHolder.playingQueue.size
             queueHolderSnapshots.add(0, queueHolder.clone())
@@ -314,45 +320,44 @@ class QueueManager(val context: Application) {
     }
 
 
-    fun addObserver(observer: QueueObserver) = observerManager.addObserver(observer)
-    fun removeObserver(observer: QueueObserver) = observerManager.removeObserver(observer)
+    private val observers: MutableList<QueueObserver> = ArrayList()
+    fun addObserver(observer: QueueObserver) = synchronized(observers) { observers.add(observer) }
+    fun removeObserver(observer: QueueObserver) = synchronized(observers) { observers.remove(observer) }
 
-    private inner class ObserverManager {
-        private val observers: MutableList<QueueObserver> = ArrayList()
-        fun addObserver(observer: QueueObserver) = synchronized(observers) { observers.add(observer) }
-        fun removeObserver(observer: QueueObserver): Boolean = synchronized(observers) { observers.remove(observer) }
+    private fun notifyQueueChanged(newPlayingQueue: List<Song>) =
+        notifyAllObservers {
+            onQueueChanged(newPlayingQueue)
+        }
 
-        fun notifyQueueChanged(newPlayingQueue: List<Song>, newOriginalQueue: List<Song>) =
-            notifyAllObservers {
-                onQueueChanged(newPlayingQueue, newOriginalQueue)
-            }
+    private fun notifyCurrentPositionChanged(newPosition: Int) =
+        notifyAllObservers {
+            onCurrentPositionChanged(newPosition)
+        }
 
-        fun notifyCurrentPositionChanged(newPosition: Int) =
-            notifyAllObservers {
-                onCurrentPositionChanged(newPosition)
-            }
+    private fun notifyCurrentSongChanged(newSong: Song?) =
+        notifyAllObservers {
+            onCurrentSongChanged(newSong)
+        }
 
-        fun notifyShuffleModeChanged(newMode: ShuffleMode) =
-            notifyAllObservers {
-                onShuffleModeChanged(newMode)
-            }
+    private fun notifyShuffleModeChanged(newMode: ShuffleMode) =
+        notifyAllObservers {
+            onShuffleModeChanged(newMode)
+        }
 
-        fun notifyRepeatModeChanged(newMode: RepeatMode) =
-            notifyAllObservers {
-                onRepeatModeChanged(newMode)
-            }
+    private fun notifyRepeatModeChanged(newMode: RepeatMode) =
+        notifyAllObservers {
+            onRepeatModeChanged(newMode)
+        }
 
-        private inline fun notifyAllObservers(block: QueueObserver.() -> Unit) {
-            synchronized(observers) {
-                for (observer in observers) {
-                    block(observer)
-                }
+    private inline fun notifyAllObservers(block: QueueObserver.() -> Unit) {
+        synchronized(observers) {
+            for (observer in observers) {
+                block(observer)
             }
         }
     }
 
     companion object {
-        const val MSG_STATE_RESTORE_ALL = 1
         const val MSG_SAVE_QUEUE = 2
         const val MSG_SAVE_CFG = 4
 

@@ -146,7 +146,12 @@ class MusicService : MediaBrowserServiceCompat() {
             rePrepareNextSong()
         }
 
-        override fun onQueueChanged(newPlayingQueue: List<Song>, newOriginalQueue: List<Song>) {
+        override fun onCurrentSongChanged(newSong: Song?) {
+            notifyChange(EVENT_META_CHANGED)
+            rePrepareNextSong()
+        }
+
+        override fun onQueueChanged(newPlayingQueue: List<Song>) {
             handleAndSendChangeInternal(EVENT_QUEUE_CHANGED)
             notifyChange(EVENT_META_CHANGED)
             rePrepareNextSong()
