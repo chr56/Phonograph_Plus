@@ -41,7 +41,6 @@ import player.phonograph.util.reportError
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import java.io.File
 
@@ -182,21 +181,20 @@ object JAudioTaggerExtractor : MetadataExtractor {
     }
 
     /**
-     * read embed lyrics via JAudioTagger
+     * read embed lyrics via JAudioTagger,
+     * throw various exceptions if fails
      */
     fun readLyrics(file: File): String? {
-        try {
+        return try {
             val metadata = readAudioFile(file)?.tag ?: return null
             val value = metadata.getFirst(FieldKey.LYRICS)
-            return if (!value.isNullOrBlank()) value else null
+            if (!value.isNullOrBlank()) value else null
         } catch (e: CannotReadException) {
-            return if (ErrorMessage.NO_READER_FOR_THIS_FORMAT.getMsg(file.extension) == e.message) {
+            if (ErrorMessage.NO_READER_FOR_THIS_FORMAT.getMsg(file.extension) == e.message) {
                 // ignore
                 null
             } else {
-                val message = "Error: Failed to read ${file.path}: ${e.message}\n${Log.getStackTraceString(e)}"
-                Log.i(TAG, message)
-                message
+                throw e
             }
         }
     }
