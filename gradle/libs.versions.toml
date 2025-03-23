@@ -2,7 +2,7 @@
 
 ## Plugins
 
-kotlin = "2.3.10"
+kotlin = "2.3.20"
 ksp = "2.3.6"
 
 agp = "8.13.2"
