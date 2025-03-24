@@ -134,7 +134,7 @@ class FlattenFolderPage : AbsPage() {
         context.attach(binding.panelToolbar.menu) {
             menuItem(Menu.NONE, Menu.NONE, 999, getString(R.string.action_settings)) {
                 icon = context.getTintedDrawable(
-                    R.drawable.ic_sort_variant_white_24dp,
+                    R.drawable.ic_tune_white_24dp,
                     context.primaryTextColor(context.nightMode),
                 )
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
