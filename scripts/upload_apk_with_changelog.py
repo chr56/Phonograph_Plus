@@ -11,11 +11,13 @@ GIT_COMMIT = os.environ["GIT_COMMIT"]
 
 APK_SUFFIX = "apk"
 CHANGE_LOG_FILE = "EscapedReleaseNote.md"
+GITHUB_RELEASE_URL = "github.com/chr56/Phonograph_Plus/releases/tag/"
 
 import telebot
 from telebot.types import InputMediaDocument
 from telebot.types import ReplyParameters
 from telebot.formatting import escape_markdown
+from datetime import datetime
 
 tb = telebot.TeleBot(TOKEN)
 
@@ -31,10 +33,18 @@ def collect_files(relative_root, files_names: list) -> list[InputMediaDocument]:
         print(f" ++ {file_name}")
         return os.path.join(relative_root, file_name)
 
-    input_media_documents = [
-        file_to_document(relative_path(filename))
-        for filename in files_names
-    ]
+    input_media_documents = []
+    for i, filename in enumerate(sorted(files_names, reverse=True)):
+        if i == len(files_names) - 1:
+            current_date = escape_markdown(datetime.now().strftime("%Y.%m.%d"))
+            version_name = escape_markdown(VERSION)
+            url = escape_markdown(GITHUB_RELEASE_URL + VERSION)
+            caption = f"*{version_name} {current_date}* \n\n[GitHub]({url})"
+            doc = file_to_document(relative_path(filename), caption=caption)
+        else:
+            doc = file_to_document(relative_path(filename))
+        input_media_documents.append(doc)
+
     return input_media_documents
 
 
@@ -44,7 +54,7 @@ print(f"Collecting files in {ARTIFACTS_DIRECTORY}...")
 for root, dirs, files in os.walk(ARTIFACTS_DIRECTORY):
     apks_files = list(filter(lambda name: name.endswith(APK_SUFFIX), files))
     if len(apks_files) > 0:
-        documents += collect_files(relative_root=root, files_names=sorted(apks_files))
+        documents += collect_files(relative_root=root, files_names=apks_files)
 print(f"Collected {len(documents)} files")
 
 if len(documents) <= 0:
@@ -60,7 +70,7 @@ print(f"{len(media_messages)} files have been sent")
 print("Sending changelogs...")
 changelog_file = open(CHANGE_LOG_FILE, "r", encoding="utf-8")
 text = changelog_file.read()
-reply_parameters = ReplyParameters(media_messages[-1].message_id, CHAT_ID)
+reply_parameters = ReplyParameters(media_messages[0].message_id, CHAT_ID)
 text_message = tb.send_message(CHAT_ID,
                                text,
                                parse_mode="MarkdownV2",
