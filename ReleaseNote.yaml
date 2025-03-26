@@ -1,13 +1,15 @@
-version: "1.10.0-dev0"
+version: "1.10.0-dev1"
 channel: "PREVIEW"
-versionCode: 1093
-timestamp: 1742368811
+versionCode: 1094
+timestamp: 1742990000
 notes:
   en:
     highlights: [ ]
     items:
       - "Fix: occasionally incorrect folder content after changing sort order in Folders Page"
+      - "Fix: crash when loading lyric for nonexistent file"
       - "Remove: preference Preload Images"
+      - "Modify: replace icon for display page settings"
       - "Improvement: improve performance of image loading"
       - "Improvement: support custom grid size and layout for Folders Page"
       - "Development: cleanup codes"
@@ -16,7 +18,9 @@ notes:
     highlights: [ ]
     items:
       - "修复 在文件夹页面中更改排序顺序后偶尔内容不正确"
+      - "修复 加载不存在的文件歌词时崩溃"
       - "移除 选项 图片预加载"
+      - "修改 页码显示设置显示图标"
       - "改进 提高图像加载性能"
       - "改进 支持文件夹页面的自定义网格大小和布局"
       - "开发 清理代码"
