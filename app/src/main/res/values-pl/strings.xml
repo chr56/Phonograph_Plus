@@ -570,4 +570,5 @@
     <string name="version_migration_hint_too_old">Dokonujesz aktualizacji z bardzo starej wersji!</string>
     <string name="version_migration_hint_suggest_to_wipe_data">Spróbuj wyczyścić dane aplikacji!</string>
     <string name="version_migration_hint_required_to_wipe_data">Wyczyść dane aplikacji!</string>
+    <string name="hint_long_press_to_proceed">Przytrzymaj aby kontynuować!</string>
 </resources>
