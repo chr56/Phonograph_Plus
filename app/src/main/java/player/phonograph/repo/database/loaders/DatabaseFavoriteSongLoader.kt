@@ -31,7 +31,7 @@ class DatabaseFavoriteSongLoader : IFavoriteSongs {
     }
 
     override suspend fun clearAll(context: Context): Boolean {
-        favoritesStore.clearAll()
+        favoritesStore.clearAllSongs()
         return true
     }
 }
