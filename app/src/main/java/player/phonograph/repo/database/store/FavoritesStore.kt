@@ -4,17 +4,13 @@
 
 package player.phonograph.repo.database.store
 
-import lib.storage.textparser.ExternalFilePathParser
 import org.koin.core.context.GlobalContext
-import player.phonograph.R
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.DatabasePlaylistLocation
 import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.repo.database.DatabaseConstants
 import player.phonograph.repo.database.DatabaseConstants.FAVORITE_DB
-import player.phonograph.repo.loader.Songs
-import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.util.text.currentTimestamp
 import player.phonograph.util.warning
 import android.content.ContentValues
@@ -23,7 +19,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class FavoritesStore constructor(context: Context) :
+class FavoritesStore(context: Context) :
         SQLiteOpenHelper(context, FAVORITE_DB, null, VERSION) {
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -32,55 +28,37 @@ class FavoritesStore constructor(context: Context) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        if (oldVersion == 1 && newVersion == 2) {
-            db.execSQL(creatingPlaylistsTableSQL)
-        } else {
-            warning(FAVORITE_DB, "Can not upgrade database `favorite.db` from $oldVersion to $newVersion ")
-            // db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_SONGS")
-            // db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_PLAYLISTS")
-            onCreate(db)
-        }
-    }
-
-    fun clearAll() {
-        clearAllSongs()
-        clearAllPlaylists()
+        warning(FAVORITE_DB, "Can not upgrade database `favorite.db` from $oldVersion to $newVersion ")
+        onCreate(db)
     }
 
     fun clearAllSongs() = clearTable(TABLE_NAME_SONGS)
     fun clearAllPlaylists() = clearTable(TABLE_NAME_PLAYLISTS)
 
     private fun clearTable(tableName: String) {
-        val database = writableDatabase
-        database.delete(tableName, null, null)
+        writableDatabase.delete(tableName, null, null)
         mediaStoreTracker.notifyAllListeners()
     }
 
-    suspend fun getAllSongs(context: Context): List<Song> = getAllSongsImpl(context)
-
-    suspend fun getAllPlaylists(context: Context): List<Playlist> = getAllPlaylistsImpl(context)
-
-
-    private suspend fun getAllSongsImpl(context: Context): List<Song> {
-        return parseCursorImpl(TABLE_NAME_SONGS) { cursor ->
-            val path = cursor.getString(1)
-            val song = Songs.path(context, path)
-            if (song != null) {
-                song
-            } else {
-                val filename = ExternalFilePathParser.bashPath(path) ?: context.getString(R.string.deleted)
-                Song.deleted(filename, path)
-            }
+    suspend fun getAllSongs(parser: suspend (Long, String, String, Long) -> Song?): List<Song> =
+        parseCursorImpl(TABLE_NAME_SONGS) { cursor ->
+            parser(
+                cursor.getLong(0),
+                cursor.getString(1),
+                cursor.getString(2),
+                cursor.getLong(3),
+            )
         }
-    }
 
-    private suspend fun getAllPlaylistsImpl(context: Context): List<Playlist> {
-        return parseCursorImpl(TABLE_NAME_PLAYLISTS) { cursor ->
-            val path = cursor.getString(1)
-            val playlist = MediaStorePlaylists.searchByPath(context, path)
-            if (playlist != null) playlist else Playlist(path, FilePlaylistLocation(path, "", 0))
+    suspend fun getAllPlaylists(parser: suspend (Long, String, String, Long) -> Playlist?): List<Playlist> =
+        parseCursorImpl(TABLE_NAME_PLAYLISTS) { cursor ->
+            parser(
+                cursor.getLong(0),
+                cursor.getString(1),
+                cursor.getString(2),
+                cursor.getLong(3),
+            )
         }
-    }
 
     private suspend fun <T> parseCursorImpl(tableName: String, operation: suspend (Cursor) -> T?): List<T> {
         return query(tableName).use { cursor ->
@@ -116,9 +94,6 @@ class FavoritesStore constructor(context: Context) :
         if (!playlist.isVirtual()) containsImpl(TABLE_NAME_PLAYLISTS, playlist.mediaStoreId(), playlist.path())
         else false
 
-    fun containsPlaylist(playlistId: Long?, path: String?): Boolean =
-        containsImpl(TABLE_NAME_PLAYLISTS, playlistId, path)
-
     private fun containsImpl(table: String, id: Long?, path: String?): Boolean {
         val database = readableDatabase
         val cursor = database.query(
@@ -135,7 +110,23 @@ class FavoritesStore constructor(context: Context) :
         addImpl(TABLE_NAME_SONGS, song.id, song.data, song.title)
 
     fun addPlaylist(playlist: Playlist): Boolean =
-        addImpl(TABLE_NAME_PLAYLISTS, playlist.mediaStoreId() ?: playlist.id, playlist.path()!!, playlist.name)
+        when (val location = playlist.location) {
+            is DatabasePlaylistLocation -> addImpl(
+                TABLE_NAME_PLAYLISTS,
+                location.id(),
+                location.databaseId.toString(),
+                playlist.name
+            )
+
+            is FilePlaylistLocation     -> addImpl(
+                TABLE_NAME_PLAYLISTS,
+                location.mediastoreId,
+                location.path,
+                playlist.name
+            )
+
+            else                        -> false // unsupported
+        }
 
     private fun addImpl(tableName: String, id: Long, path: String, name: String?): Boolean {
         val database = writableDatabase
@@ -173,12 +164,25 @@ class FavoritesStore constructor(context: Context) :
     }
 
     fun addPlaylists(playlists: Collection<Playlist>): Boolean {
-        val data = playlists.map {
+        val data = playlists.filter { !it.isVirtual() }.map { playlist ->
             ContentValues(4).apply {
-                put(COLUMNS_ID, it.mediaStoreId() ?: it.id)
-                put(COLUMNS_PATH, it.path()!!)
-                put(COLUMNS_TITLE, it.name)
-                put(COLUMNS_TIMESTAMP, currentTimestamp())
+                when (val location = playlist.location) {
+                    is FilePlaylistLocation     -> {
+                        put(COLUMNS_ID, location.mediastoreId)
+                        put(COLUMNS_PATH, location.path)
+                        put(COLUMNS_TITLE, playlist.name)
+                        put(COLUMNS_TIMESTAMP, currentTimestamp())
+                    }
+
+                    is DatabasePlaylistLocation -> {
+                        put(COLUMNS_ID, location.id())
+                        put(COLUMNS_PATH, location.databaseId.toString())
+                        put(COLUMNS_TITLE, playlist.name)
+                        put(COLUMNS_TIMESTAMP, currentTimestamp())
+                    }
+
+                    else                        -> {}
+                }
             }
         }
         return addMultipleImpl(TABLE_NAME_PLAYLISTS, data)
@@ -206,7 +210,21 @@ class FavoritesStore constructor(context: Context) :
         removeImpl(TABLE_NAME_SONGS, song.id, song.data)
 
     fun removePlaylist(playlist: Playlist): Boolean =
-        removeImpl(TABLE_NAME_PLAYLISTS, playlist.mediaStoreId() ?: playlist.id, playlist.path()!!)
+        when (val location = playlist.location) {
+            is DatabasePlaylistLocation -> removeImpl(
+                TABLE_NAME_PLAYLISTS,
+                location.id(),
+                location.databaseId.toString(),
+            )
+
+            is FilePlaylistLocation     -> removeImpl(
+                TABLE_NAME_PLAYLISTS,
+                location.mediastoreId,
+                location.path,
+            )
+
+            else                        -> false // unsupported
+        }
 
     private fun removeImpl(table: String, id: Long, path: String): Boolean {
         val database = writableDatabase
@@ -228,7 +246,11 @@ class FavoritesStore constructor(context: Context) :
         }
     }
 
-    suspend fun cleanMissingSongs(context: Context): Boolean {
+    /**
+     * cleaning mission songs
+     * @param checker check id and path, return true if invalid
+     */
+    suspend fun cleanMissingSongs(checker: suspend (Long, String) -> Boolean): Boolean {
         val paths: List<Pair<Long, String>> =
             query(TABLE_NAME_SONGS).use { cursor ->
                 if (cursor.moveToFirst()) {
@@ -237,9 +259,8 @@ class FavoritesStore constructor(context: Context) :
                         try {
                             val id = cursor.getString(0).toLong()
                             val path = cursor.getString(1)
-                            if (Songs.path(context, path) == null) {
-                                paths.add(id to path)
-                            } else if (Songs.id(context, id) == null) {
+                            val result = checker(id, path)
+                            if (result) {
                                 paths.add(id to path)
                             }
                         } catch (_: Exception) {

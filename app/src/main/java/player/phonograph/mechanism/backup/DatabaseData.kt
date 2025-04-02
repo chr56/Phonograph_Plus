@@ -4,10 +4,13 @@
 
 package player.phonograph.mechanism.backup
 
+import lib.storage.textparser.ExternalFilePathParser
 import okio.BufferedSink
 import org.koin.core.context.GlobalContext
+import player.phonograph.R
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.FilePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.store.FavoritesStore
 import player.phonograph.repo.database.store.PathFilterStore
@@ -169,9 +172,15 @@ object DatabaseDataManger {
     private fun exportFavorites(context: Context): JsonObject? {
         val db = favoritesStore
         val songs =
-            runBlocking { db.getAllSongs(context).map(DatabaseDataManger::persistentSong) }
+            runBlocking {
+                db.getAllSongs { _, path, _, _ -> lookupSong(context, path) }
+                    .map(DatabaseDataManger::persistentSong)
+            }
         val playlists =
-            runBlocking { db.getAllPlaylists(context).map(DatabaseDataManger::persistentPlaylist) }
+            runBlocking {
+                db.getAllPlaylists { id, path, _, _ -> lookupPlaylist(context, id, path) }
+                    .map(DatabaseDataManger::persistentPlaylist)
+            }
         return if (songs.isNotEmpty()) {
             JsonObject(
                 mapOf(
@@ -183,6 +192,28 @@ object DatabaseDataManger {
         } else {
             null
         }
+    }
+
+    private suspend fun lookupSong(context: Context, path: String): Song {
+        val song = Songs.path(context, path)
+        return if (song == null) {
+            val filename = ExternalFilePathParser.bashPath(path) ?: context.getString(R.string.deleted)
+            Song.deleted(filename, path)
+        } else {
+            song
+        }
+    }
+
+    private fun lookupPlaylist(context: Context, id: Long, path: String): Playlist? {
+
+        val filePlaylist = MediaStorePlaylists.searchByPath(context, path)
+        if (filePlaylist != null) return filePlaylist
+
+        val databasePlaylist = null // Playlists.of(context, DatabasePlaylistLocation(path.toLongOrDefault(0)))
+        @Suppress("SENSELESS_COMPARISON")
+        if (databasePlaylist != null) return databasePlaylist
+
+        return null
     }
 
     fun importFavorites(context: Context, inputStream: InputStream): Boolean {
