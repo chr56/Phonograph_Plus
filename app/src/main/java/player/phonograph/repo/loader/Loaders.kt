@@ -22,3 +22,5 @@ object Playlists : IPlaylists by MediaStorePlaylists
 object Songs : ISongs by MediaStoreSongs
 
 val FavoriteSongs: IFavoriteSongs by GlobalContext.get().inject()
+
+val FavoritePlaylists: IFavoritePlaylists by GlobalContext.get().inject()

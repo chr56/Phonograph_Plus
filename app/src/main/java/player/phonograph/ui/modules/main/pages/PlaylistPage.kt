@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.modules.main.pages
 
-import org.koin.core.context.GlobalContext
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mechanism.broadcast.PlaylistsModifiedReceiver
@@ -14,7 +13,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.DynamicPlaylists
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortMode
-import player.phonograph.repo.database.store.FavoritesStore
+import player.phonograph.repo.loader.FavoritePlaylists
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
@@ -43,6 +42,7 @@ import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import kotlin.getValue
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.runBlocking
 
 class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
 
@@ -51,7 +51,6 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
 
 
     class PlaylistPageViewModel : AbsDisplayPageViewModel<Playlist>() {
-        private val favoritesStore by GlobalContext.get().inject<FavoritesStore>()
         override suspend fun loadDataSetImpl(context: Context, scope: CoroutineScope): Collection<Playlist> {
             val resources = context.resources
             return mutableListOf<Playlist>(
@@ -65,7 +64,7 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
             }.also { playlists ->
                 val (pined, normal) =
                     Playlists.all(context).partition { playlist ->
-                        favoritesStore.containsPlaylist(playlist.mediaStoreId(), playlist.path())
+                        FavoritePlaylists.isFavorite(context, playlist)
                     }
                 playlists.addAll(pined)
                 playlists.addAll(normal)
@@ -107,14 +106,10 @@ class PlaylistPage : AbsDisplayPage<Playlist, DisplayAdapter<Playlist>>() {
         override val usePalette: Boolean = false
 
         override fun getIconRes(playlist: Playlist): Int = when {
-            favoritesStore.containsPlaylist(playlist)  -> R.drawable.ic_pin_white_24dp
-            isFavoritePlaylist(App.instance, playlist) -> R.drawable.ic_favorite_white_24dp
-            else                                       -> playlist.iconRes
+            runBlocking { FavoritePlaylists.isFavorite(App.instance, playlist) } -> R.drawable.ic_pin_white_24dp
+            isFavoritePlaylist(App.instance, playlist)                           -> R.drawable.ic_favorite_white_24dp
+            else                                                                 -> playlist.iconRes
         }
-
-
-
-        private val favoritesStore by GlobalContext.get().inject<FavoritesStore>()
 
         private fun isFavoritePlaylist(context: Context, playlist: Playlist): Boolean {
             return playlist.name == context.getString(R.string.favorites)
