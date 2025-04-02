@@ -19,14 +19,20 @@ class DatabaseFavoriteSongLoader : IFavoriteSongs {
     override suspend fun isFavorite(context: Context, song: Song): Boolean =
         favoritesStore.containsSong(song.id, song.data)
 
+    override suspend fun addToFavorites(context: Context, song: Song): Boolean =
+        favoritesStore.addSong(song)
+
+    override suspend fun removeFromFavorites(context: Context, song: Song): Boolean =
+        favoritesStore.removeSong(song)
+
     override suspend fun toggleFavorite(context: Context, song: Song): Boolean =
         if (isFavorite(context, song)) {
-            !favoritesStore.removeSong(song)
+            !removeFromFavorites(context, song)
         } else {
-            favoritesStore.addSong(song)
+            addToFavorites(context, song)
         }
 
-    override suspend fun cleanMissed(context: Context): Boolean {
+    override suspend fun cleanMissing(context: Context): Boolean {
         return favoritesStore.cleanMissingSongs(context)
     }
 
