@@ -236,7 +236,7 @@ class CrashActivity : ToolbarActivity() {
     private val titleRes: Int
         get() = when (report.type) {
             CRASH_TYPE_INTERNAL_ERROR -> R.string.internal_error
-            CRASH_TYPE_CORRUPTED_DATA -> R.string.internal_error
+            CRASH_TYPE_CORRUPTED_DATA -> R.string.corrupted_data_error
             else                      -> R.string.crash
         }
 

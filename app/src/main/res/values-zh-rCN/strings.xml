@@ -541,4 +541,5 @@
     <string name="version_migration_hint_suggest_to_wipe_data">请考虑清除应用数据！</string>
     <string name="version_migration_hint_required_to_wipe_data">请务必清除应用数据！</string>
     <string name="hint_long_press_to_proceed">请长按以继续！</string>
+    <string name="corrupted_data_error">内部数据错误</string>
 </resources>
