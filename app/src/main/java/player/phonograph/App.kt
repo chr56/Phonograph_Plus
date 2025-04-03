@@ -15,7 +15,6 @@ import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.coil.createPhonographImageLoader
-import player.phonograph.model.CrashReport
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.moduleViewModels
@@ -23,13 +22,13 @@ import player.phonograph.ui.modules.auxiliary.CrashActivity
 import player.phonograph.util.concurrent.postDelayedOnceHandlerCallback
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics
+import player.phonograph.util.startCrashActivity
 import player.phonograph.util.theme.ThemeCacheUpdateDelegate
 import player.phonograph.util.theme.changeGlobalNightMode
 import player.phonograph.util.theme.checkNightMode
 import androidx.appcompat.app.AppCompatDelegate
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Handler
 import android.os.Looper
@@ -78,19 +77,7 @@ class App : Application(), ImageLoaderFactory {
         ErrorNotification.crashActivity = CrashActivity::class.java
         Thread.setDefaultUncaughtExceptionHandler { _, exception ->
             if (!CrashActivity.isCrashProcess(this)) {
-                this.startActivity(
-                    Intent(this, CrashActivity::class.java)
-                        .apply {
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            putExtra(
-                                CrashReport.KEY, CrashReport(
-                                    type = CrashReport.CRASH_TYPE_CRASH,
-                                    note = "",
-                                    stackTrace = Log.getStackTraceString(exception),
-                                )
-                            )
-                        }
-                )
+                startCrashActivity(this, exception, CrashActivity::class.java)
             } else {
                 Log.e("Phonograph", "Recursively crash!", exception)
             }

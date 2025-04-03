@@ -7,6 +7,7 @@ package player.phonograph.notification
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.CrashReport
+import player.phonograph.model.CrashReport.Type
 import android.app.Activity
 import android.content.Context
 
@@ -22,7 +23,7 @@ object ErrorNotification {
     fun postErrorNotification(
         exception: Throwable,
         note: String? = null,
-        type: Int = CrashReport.CRASH_TYPE_INTERNAL_ERROR,
+        @Type type: Int = CrashReport.CRASH_TYPE_INTERNAL_ERROR,
         context: Context = App.instance,
     ) {
         getImpl(context, crashActivity).send(
@@ -37,7 +38,7 @@ object ErrorNotification {
     @JvmOverloads
     fun postErrorNotification(
         note: String,
-        type: Int,
+        @Type type: Int,
         context: Context = App.instance,
     ) {
         getImpl(context, crashActivity).send(

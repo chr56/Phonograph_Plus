@@ -4,13 +4,14 @@
 
 package player.phonograph.model
 
+import androidx.annotation.IntDef
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 
 @Parcelize
 data class CrashReport(
-    val type: Int,
+    @Type val type: Int,
     val note: String,
     val stackTrace: String,
 ) : Parcelable {
@@ -21,4 +22,15 @@ data class CrashReport(
         const val CRASH_TYPE_INTERNAL_ERROR = 2
         const val CRASH_TYPE_CORRUPTED_DATA = 8
     }
+
+
+    @IntDef(
+        value = [
+            CRASH_TYPE_CRASH,
+            CRASH_TYPE_INTERNAL_ERROR,
+            CRASH_TYPE_CORRUPTED_DATA,
+        ]
+    )
+    @Retention(AnnotationRetention.SOURCE)
+    annotation class Type
 }
