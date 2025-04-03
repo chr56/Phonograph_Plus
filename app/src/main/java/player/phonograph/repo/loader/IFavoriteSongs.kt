@@ -13,15 +13,19 @@ interface IFavoriteSongs {
 
     suspend fun isFavorite(context: Context, song: Song): Boolean
 
+    suspend fun addToFavorites(context: Context, song: Song): Boolean
+
+    suspend fun removeFromFavorites(context: Context, song: Song): Boolean
+
     /**
      * @return new favorite state
      */
     suspend fun toggleFavorite(context: Context, song: Song): Boolean
 
     /**
-     * clean missed (deleted) songs
+     * clean missing (deleted) songs
      */
-    suspend fun cleanMissed(context: Context): Boolean
+    suspend fun cleanMissing(context: Context): Boolean
 
     /**
      * clear all

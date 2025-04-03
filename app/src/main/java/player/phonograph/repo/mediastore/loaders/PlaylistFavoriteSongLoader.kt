@@ -16,7 +16,6 @@ import player.phonograph.repo.mediastore.MediaStorePlaylists
 import player.phonograph.util.concurrent.coroutineToast
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 
@@ -41,34 +40,39 @@ class PlaylistFavoriteSongLoader : IFavoriteSongs {
         }
     }
 
-    override suspend fun toggleFavorite(context: Context, song: Song): Boolean {
-        return runBlocking {
-            if (isFavorite(context, song)) {
-                val favoritesPlaylist = getFavoritesPlaylist(context)
-                if (favoritesPlaylist != null)
-                    PlaylistProcessors.writer(favoritesPlaylist)!!.removeSong(context, song, -1)
+    override suspend fun addToFavorites(context: Context, song: Song): Boolean {
+        val favoritesPlaylist = getOrCreateFavoritesPlaylist(context)
+        return if (favoritesPlaylist != null) {
+            val location = favoritesPlaylist.location as FilePlaylistLocation
+            addToPlaylistViaMediastore(
+                context,
+                song,
+                location.storageVolume,
+                location.mediastoreId,
                 false
-            } else {
-                val favoritesPlaylist = getOrCreateFavoritesPlaylist(context)
-                if (favoritesPlaylist != null) {
-                    val location = favoritesPlaylist.location as FilePlaylistLocation
-                    addToPlaylistViaMediastore(
-                        context,
-                        song,
-                        location.storageVolume,
-                        location.mediastoreId,
-                        false
-                    )
-                    true
-                } else {
-                    coroutineToast(context, R.string.failed)
-                    false
-                }
-            }
+            )
+            true
+        } else {
+            val message =
+                "${context.getString(R.string.failed)}\n${context.getString(R.string.could_not_create_playlist)}"
+            coroutineToast(context, message)
+            false
         }
     }
 
-    override suspend fun cleanMissed(context: Context): Boolean = false
+    override suspend fun removeFromFavorites(context: Context, song: Song): Boolean {
+        val favoritesPlaylist = getFavoritesPlaylist(context)
+        return if (favoritesPlaylist != null) {
+            !PlaylistProcessors.writer(favoritesPlaylist)!!.removeSong(context, song, -1)
+        } else {
+            true
+        }
+    }
+
+    override suspend fun toggleFavorite(context: Context, song: Song): Boolean =
+        if (isFavorite(context, song)) removeFromFavorites(context, song) else addToFavorites(context, song)
+
+    override suspend fun cleanMissing(context: Context): Boolean = false
 
     override suspend fun clearAll(context: Context): Boolean {
         val favoritesPlaylist = getFavoritesPlaylist(context)

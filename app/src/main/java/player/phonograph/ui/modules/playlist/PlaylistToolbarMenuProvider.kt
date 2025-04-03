@@ -98,7 +98,7 @@ class PlaylistToolbarMenuProvider(
                                                 .setMessage(R.string.action_clean_missing_items)
                                                 .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
                                                     context.lifecycleScope.launch {
-                                                        FavoriteSongs.cleanMissed(context)
+                                                        FavoriteSongs.cleanMissing(context)
                                                     }
                                                     dialog.dismiss()
                                                 }

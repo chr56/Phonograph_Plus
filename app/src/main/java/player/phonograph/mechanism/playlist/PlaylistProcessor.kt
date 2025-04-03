@@ -139,15 +139,15 @@ private data object FavoriteSongsPlaylistProcessor : PlaylistReader, PlaylistWri
     }
 
     override suspend fun removeSong(context: Context, song: Song, index: Long): Boolean =
-        FavoriteSongs.toggleFavorite(context, song)
+        FavoriteSongs.removeFromFavorites(context, song)
 
     override suspend fun appendSong(context: Context, song: Song) {
-        FavoriteSongs.toggleFavorite(context, song)
+        FavoriteSongs.addToFavorites(context, song)
         notifyMediaStoreChanged()
     }
 
     override suspend fun appendSongs(context: Context, songs: List<Song>) {
-        for (song in songs) FavoriteSongs.toggleFavorite(context, song)
+        for (song in songs) FavoriteSongs.addToFavorites(context, song)
         notifyMediaStoreChanged()
     }
 
