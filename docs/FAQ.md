@@ -1,5 +1,12 @@
 # Trouble Shooting & FAQ
 
+## Could not edit playlist
+
+Check your storage permission:
+- on Android 10, use `Legacy` variant;
+- on Android 11 and above, make sure "Manage All Files" is granted (You can check it from Main Drawer `Menu` -> `More` -> `Grant External Storage Permission`);
+
+
 ## Can not find Phonograph Plus in Android Auto
 
 Well, it is because Phonograph Plus is an _Unknown Source_ application (Well, looks like that _only_ applications installed by Google Play can be
@@ -59,6 +66,17 @@ And Phonograph Plus is currently relaying on OS to decode media.
    But this is temporarily planning on late 2024 or early 2025.
 
 _See Also Issue: #112_
+
+
+## New audio file could not instantly update
+
+You may need to use _Scan Media_, manually on some devices.
+
+## Problems with typing Chinese/Japanese/Korean/etc in SearchBox
+
+Caused by your IME's Inline Composing, please disable _real time local search_ option.
+
+_See Also Issue: #285 #122_
 
 ## Problems with uninstalling?
 
