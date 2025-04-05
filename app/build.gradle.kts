@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.artifactsRelease)
 }
 
@@ -46,6 +47,12 @@ android {
 
         proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
 
+
+
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
+            // arg("room.incremental", "true")
+        }
 
         manifestPlaceholders["GIT_COMMIT_HASH"] = "-"
     }
@@ -205,7 +212,9 @@ dependencies {
     implementation(libs.androidx.media)
     implementation(libs.androidx.cardview)
     implementation(libs.androidx.palette)
+    implementation(libs.bundles.androidx.room)
     implementation(libs.bundles.androidx.datastore)
+    ksp(libs.androidx.room.compiler)
 
     implementation(libs.google.material)
 

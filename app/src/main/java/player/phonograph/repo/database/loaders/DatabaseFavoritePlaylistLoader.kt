@@ -4,9 +4,12 @@
 
 package player.phonograph.repo.database.loaders
 
+import okhttp3.internal.toLongOrDefault
+import player.phonograph.model.playlist.DatabasePlaylistLocation
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.repo.database.store.FavoritesStore
 import player.phonograph.repo.loader.IFavoritePlaylists
+import player.phonograph.repo.loader.Playlists
 import player.phonograph.repo.mediastore.MediaStorePlaylists
 import android.content.Context
 
@@ -44,8 +47,7 @@ class DatabaseFavoritePlaylistLoader : IFavoritePlaylists {
             val filePlaylist = MediaStorePlaylists.searchByPath(context, path)
             if (filePlaylist != null) return filePlaylist
 
-            val databasePlaylist = null // Playlists.of(context, DatabasePlaylistLocation(path.toLongOrDefault(0)))
-            @Suppress("SENSELESS_COMPARISON")
+            val databasePlaylist = Playlists.of(context, DatabasePlaylistLocation(path.toLongOrDefault(0)))
             if (databasePlaylist != null) return databasePlaylist
 
             return null

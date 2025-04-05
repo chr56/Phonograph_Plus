@@ -28,6 +28,9 @@ import player.phonograph.repo.database.store.SongPlayCountStore
 import player.phonograph.repo.loader.FavoriteSongs
 import player.phonograph.repo.loader.Songs
 import player.phonograph.repo.mediastore.MediaStorePlaylists
+import player.phonograph.repo.room.MusicDatabase
+import player.phonograph.repo.room.domain.PlaylistActions
+import player.phonograph.repo.room.domain.RoomPlaylists
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.concurrent.coroutineToast
@@ -42,7 +45,7 @@ object PlaylistProcessors {
     private fun of(playlist: Playlist, preferSAF: Boolean = true): PlaylistProcessor =
         when (val location = playlist.location) {
             is FilePlaylistLocation     -> FilePlaylistProcessor.by(location, preferSAF)
-            is DatabasePlaylistLocation -> TODO()
+            is DatabasePlaylistLocation -> DatabasePlaylistProcessor(location)
             is VirtualPlaylistLocation  -> when (location.type) {
                 PLAYLIST_TYPE_FAVORITE     -> FavoriteSongsPlaylistProcessor
                 PLAYLIST_TYPE_LAST_ADDED   -> LastAddedPlaylistProcessor
@@ -126,6 +129,34 @@ private sealed class FilePlaylistProcessor(val location: FilePlaylistLocation) :
             if (useSaf) SafImplementation(location) else MediaStoreImplementation(location)
     }
 
+}
+
+private class DatabasePlaylistProcessor(val location: DatabasePlaylistLocation) : PlaylistReader, PlaylistWriter {
+    private val database get() = MusicDatabase.koinInstance
+    private val id get() = location.databaseId
+
+    override suspend fun allSongs(context: Context): List<Song> =
+        RoomPlaylists.songs(context, location).map { it.song }
+
+    override suspend fun containsSong(context: Context, songId: Long): Boolean =
+        RoomPlaylists.contains(context, location, songId)
+
+    override suspend fun removeSong(context: Context, song: Song, index: Long): Boolean =
+        PlaylistActions.removeSongFromPlaylist(database, id, song.id, index.toInt())
+
+    override suspend fun moveSong(context: Context, from: Int, to: Int): Boolean =
+        PlaylistActions.moveSongFromPlaylist(database, id, from, to)
+
+    override suspend fun appendSong(context: Context, song: Song) {
+        PlaylistActions.amendPlaylist(database, id, listOf(song))
+    }
+
+    override suspend fun appendSongs(context: Context, songs: List<Song>) {
+        PlaylistActions.amendPlaylist(database, id, songs)
+    }
+
+    override suspend fun rename(context: Context, newName: String): Boolean =
+        PlaylistActions.renamePlaylist(database, id, newName)
 }
 
 private data object FavoriteSongsPlaylistProcessor : PlaylistReader, PlaylistWriter {

@@ -8,6 +8,8 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import player.phonograph.R
+import player.phonograph.repo.room.DatabaseUtil
+import player.phonograph.repo.room.MusicDatabase
 import player.phonograph.ui.compose.ComposeViewDialogFragment
 import player.phonograph.ui.compose.PhonographTheme
 import player.phonograph.util.theme.accentColoredButtonStyle
@@ -21,11 +23,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -85,7 +87,7 @@ private fun OptionItemRefresh(coroutineScope: CoroutineScope, context: Context) 
         stringResource(R.string.description_refresh_database)
     ) {
         coroutineScope.launch(Dispatchers.IO) {
-            // Stub
+            DatabaseUtil.checkAndRefresh(context.applicationContext, MusicDatabase.koinInstance)
         }
     }
 }
@@ -103,7 +105,7 @@ private fun OptionItemDelete(
         requireConfirm = true
     ) {
         coroutineScope.launch(Dispatchers.IO) {
-            // Stub
+            DatabaseUtil.deleteEntireDatabase(context.applicationContext, MusicDatabase.koinInstance)
             dismiss()
         }
     }

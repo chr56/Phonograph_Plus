@@ -24,6 +24,7 @@ import player.phonograph.ui.compose.components.DropDownMenuContent
 import player.phonograph.ui.compose.components.SystemBarsPadded
 import player.phonograph.ui.dialogs.BackupExportDialog
 import player.phonograph.ui.dialogs.BackupImportDialog
+import player.phonograph.ui.dialogs.DatabaseMaintenanceDialog
 import player.phonograph.ui.modules.explorer.PathSelectorContractTool
 import player.phonograph.ui.modules.explorer.PathSelectorRequester
 import util.theme.materials.MaterialColor
@@ -132,6 +133,7 @@ class SettingsActivity : ComposeActivity(),
                 menuItemClearAll(context),
                 menuItemImport(context),
                 menuItemExport(),
+                menuItemDeleteDatabase(),
             )
         )
     }
@@ -177,6 +179,12 @@ class SettingsActivity : ComposeActivity(),
     private fun menuItemExport(): Pair<String, Function0<Unit>> =
         stringResource(id = R.string.action_export).format(stringResource(id = R.string.action_backup)) to {
             BackupExportDialog().show(supportFragmentManager, "EXPORT")
+        }
+
+    @Composable
+    private fun menuItemDeleteDatabase(): Pair<String, Function0<Unit>> =
+        stringResource(R.string.title_database_maintenance) to {
+            DatabaseMaintenanceDialog.create().show(supportFragmentManager, "DATABASE_MAINTENANCE")
         }
 
 
