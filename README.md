@@ -31,82 +31,42 @@ Phonograph Plus is available on GitHub Releases (Stable Channel and Preview Chan
 [^2]: Reproducible Builds are enabled on F-droid, Apks from F-droid shall be exactly equivalent to ones from GitHub Releases, byte by byte.
 
 
-## **Additional Features**
+## **Features**
 
-Here is a list of _notable_ changes or enhancements compared with the original Phonograph.
+Phonograph Plus inherits all features from [Phonograph](https://github.com/kabouzeid/Phonograph). Here is a notable feature list:
 
-### User Interface
+If you're familiar with original Phonograph, please see [Additional Features or Enhancements Compared to Original Phonograph](./docs/Feature_Comparison.md).
 
-- Automatic dark mode based on system datk mode.
-
-- Unlock pro, supporting all themes.
-
-- <del>Poor</del> support of Monet.
-
-- Brand-new File tab with new design.
-
-- Brand-new App Intro with new design.
-
-- Improve "Library" pages user experience.
-
-... and more user interface changes.
-
-### Improvements
-
-- Change language in application manually.
-
-- Show Time Axis in "Lyrics" Dialog and allow seeking basing lyric's time axis and support lyrics following.
-
-- Support more sort orders.
-
-- Path filter, support "exclude mode" (blacklist) and "include mode" (whitelist).
-
-- Add song menu shortcuts to add new items to excluded-list (blacklist).
-
-- Better Notification Image Quality for Android T and above.
-
-- Improved experience of storage management for Android 11 and above.
-
-- Allow deleting songs file along with its external lyrics file.
-
-- Increase history played tracks and top played tracks entries capacity (100->150).
-
-- Enhance multi-selecting.
-
-- Better Playlist support.
-
-- Improve menu experience, collapse less frequently used options.
-
-- Allow tabs fixed.
-
-### Enhancements
-
-- Playback speed control.
-
-- User-defined click behavior for songs.
-
-- Support history of playing queue.
-
-- Brand-new Detail page with more information like tags.
-
-- Brand-new Tag Editor supporting more tags.
-
-- Support for Android Auto.
-
-- Resume playing after interruptions.
-
-- Allow collecting app crash report.
-
-- Co-work-with/Support [StatusBar Lyric Xposed Module (api)](https://github.com/Block-Network/StatusBarLyric).
-
-- Export internal databases and settings for backups.
-
-...
-
-and more small features/fixes.
+- Light weight
+- totally offline for privacy, and AD-free
+- Classic Material Design 2
+- Night mode (Light, Dark, Black) supporting automatically switching
+- Customizable theme color (primary, accent) with Monet support
+- Foundational audio playing function (including speed control, sleep timer and equalizer externally provided by system)
+- Flexible queue management (shuffle, repeat, freely rearrange by dragging, queue snapshots)
+- Lyrics support (both synchronized .lrc lyrics and text lyrics, embed or external)
+- Flexible playback notifications that are highly customizable
+- Flexible music organization, organised by songs, artist, albums, genres and folders (flatten or treed), ordered by various orders, with
+  multiple selection support, viewed in grid or list with various layout style
+- Android Auto support
+- Highly customizable behaviours for clicking
+- Path filter (excluded mode or included mode)
+- Search support
+- Favorite songs support
+- File Playlist support (viewing and basic editing; also pin-able)
+- Play history and frequency record, and last added songs by flexible time intervals
+- Enhanced audio metadata viewer and tag editor
+- App shortcut and widgets
+- Multiple source of artwork
+- Backup support of settings and data
+- In-app language switch
+- ...
 
 It is suggested to browser the [Changelog](https://phonographplus.github.io/changelogs/changeslogs/changelog.html) to
-view all changes, improvements and new features completely.
+view all recent changes, improvements and new features.
+
+## **Screenshot**
+See [Gallery](docs/Gallery.md)
 
 ## **Translation**
 
@@ -116,9 +76,6 @@ We have removed Swedish and Norwegian Nynorsk translations due to missing too ma
 
 ## **Trouble Shooting & FAQ**
 See [Trouble Shooting & FAQ](docs/FAQ.md)
-
-## **Screenshot**
-See [Gallery](docs/Gallery.md)
 
 ## **Build Instructions & Developer Guide**
 
