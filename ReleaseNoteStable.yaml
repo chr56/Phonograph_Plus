@@ -8,10 +8,12 @@ notes:
     items:
       - "Fix: occasionally incorrect folder content after changing sort order in Folders Page"
       - "Fix: crash when loading lyric for nonexistent file"
+      - "New: experimental playlists in internal database (no guarantee of its availability and compatibility in future till it reaches a stable state)"
       - "Remove: preference Preload Images"
       - "Modify: replace icon for display page settings"
-      - "Improvement: improve performance of image loading"
-      - "Improvement: support custom grid size and layout for Folders Page"
+      - "Improve: improve performance of image loading"
+      - "Improve: support custom grid size and layout for Folders Page"
+      - "Translation: update Polish (by cooky)"
       - "Development: cleanup codes"
 
   zh:
@@ -19,10 +21,12 @@ notes:
     items:
       - "修复 在文件夹页面中更改排序顺序后偶尔内容不正确"
       - "修复 加载不存在的文件歌词时崩溃"
+      - "新增 实验性基于内部数据库存储的播放列表 (在宣告稳定前，不保证其可用性和兼容性)"
       - "移除 选项 图片预加载"
       - "修改 页码显示设置显示图标"
       - "改进 提高图像加载性能"
       - "改进 支持文件夹页面的自定义网格大小和布局"
+      - "翻译 更新 波兰语 (cooky)"
       - "开发 清理代码"
 
 previousVersion: "1.9.3"
