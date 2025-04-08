@@ -31,7 +31,6 @@ import android.view.MenuItem
 import android.widget.Toast
 import kotlin.random.Random
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 object DetailToolbarMenuProviders {
 
@@ -373,31 +372,53 @@ object DetailToolbarMenuProviders {
                     title = getString(R.string.action_play)
                     icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
-                    onClick { item.actionPlay(context) }
+                    onClick {
+                        context.lifecycleScope.launch {
+                            item.actionPlay(context)
+                        }
+                        true
+                    }
                 }
                 menuItem {
                     title = getString(R.string.action_shuffle_playlist)
                     icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
-                    onClick { item.actionShuffleAndPlay(context) }
+                    onClick {
+                        context.lifecycleScope.launch {
+                            item.actionShuffleAndPlay(context)
+                        }
+                        true
+                    }
                 }
                 menuItem {
                     title = getString(R.string.action_play_next)
                     icon = getTintedDrawable(R.drawable.ic_redo_white_24dp, iconColor)
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-                    onClick { item.actionPlayNext(context) }
+                    onClick {
+                        context.lifecycleScope.launch {
+                            item.actionPlayNext(context)
+                        }
+                        true
+                    }
                 }
                 menuItem {
                     title = getString(R.string.action_add_to_playing_queue)
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                    onClick { item.actionAddToCurrentQueue(context) }
+                    onClick {
+                        context.lifecycleScope.launch {
+                            item.actionAddToCurrentQueue(context)
+                        }
+                        true
+                    }
                 }
                 menuItem {
                     title = getString(R.string.action_add_to_playlist)
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
                         fragmentActivity(context) {
-                            item.actionAddToPlaylist(it)
+                            context.lifecycleScope.launch {
+                                item.actionAddToPlaylist(it)
+                            }
                             true
                         }
                     }
@@ -429,7 +450,7 @@ object DetailToolbarMenuProviders {
                 menuItem(title = getString(R.string.action_tag_editor)) { //id = R.id.action_tag_editor
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                     onClick {
-                        runBlocking {
+                        context.lifecycleScope.launch {
                             val paths = PlaylistProcessors.reader(item).allSongs(context).map { it.data }
                             MultiTagBrowserActivity.launch(context, ArrayList(paths))
                         }
@@ -441,7 +462,9 @@ object DetailToolbarMenuProviders {
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
                         fragmentActivity(context) {
-                            item.actionSavePlaylist(it)
+                            it.lifecycleScope.launch {
+                                item.actionSavePlaylist(it)
+                            }
                             true
                         }
                     }

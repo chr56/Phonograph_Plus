@@ -29,6 +29,7 @@ import player.phonograph.ui.modules.tag.TagBrowserActivity
 import player.phonograph.util.asList
 import player.phonograph.util.concurrent.lifecycleScopeOrNewOne
 import player.phonograph.util.fragmentActivity
+import androidx.lifecycle.lifecycleScope
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
@@ -218,21 +219,38 @@ object ActionMenuProviders {
                 val location = playlist.location
                 menuItem {
                     title = getString(R.string.action_play)
-                    onClick { playlist.actionPlay(context) }
+                    onClick {
+                        context.lifecycleScopeOrNewOne().launch {
+                            playlist.actionPlay(context)
+                        }
+                        true
+                    }
                 }
                 menuItem {
                     title = getString(R.string.action_play_next)
-                    onClick { playlist.actionPlayNext(context) }
+                    onClick {
+                        context.lifecycleScopeOrNewOne().launch {
+                            playlist.actionPlayNext(context)
+                        }
+                        true
+                    }
                 }
                 menuItem {
                     title = getString(R.string.action_add_to_playing_queue)
-                    onClick { playlist.actionAddToCurrentQueue(context) }
+                    onClick {
+                        context.lifecycleScopeOrNewOne().launch {
+                            playlist.actionAddToCurrentQueue(context)
+                        }
+                        true
+                    }
                 }
                 menuItem {
                     title = getString(R.string.add_playlist_title)
                     onClick {
                         fragmentActivity(context) {
-                            playlist.actionAddToPlaylist(it)
+                            it.lifecycleScope.launch {
+                                playlist.actionAddToPlaylist(it)
+                            }
                             true
                         }
                     }

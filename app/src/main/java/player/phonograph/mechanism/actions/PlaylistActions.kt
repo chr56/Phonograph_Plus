@@ -21,36 +21,31 @@ import android.content.Context
 import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
-fun Playlist.actionPlay(context: Context): Boolean = runBlocking {
+suspend fun Playlist.actionPlay(context: Context): Boolean =
     songs(context).let { songs ->
         if (songs.isNotEmpty())
             songs.actionPlay(ShuffleMode.NONE, 0)
         else
             false
     }
-}
 
-fun Playlist.actionShuffleAndPlay(context: Context) = runBlocking {
+suspend fun Playlist.actionShuffleAndPlay(context: Context) =
     songs(context).let { songs ->
         if (songs.isNotEmpty())
             songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
         else
             false
     }
-}
 
-fun Playlist.actionPlayNext(context: Context): Boolean = runBlocking {
+suspend fun Playlist.actionPlayNext(context: Context): Boolean =
     MusicPlayerRemote.playNext(ArrayList(songs(context)))
-}
 
-fun Playlist.actionAddToCurrentQueue(context: Context): Boolean = runBlocking {
+suspend fun Playlist.actionAddToCurrentQueue(context: Context): Boolean =
     MusicPlayerRemote.enqueue(ArrayList(songs(context)))
-}
 
-fun Playlist.actionAddToPlaylist(activity: FragmentActivity) = activity.lifecycleScope.launch {
+suspend fun Playlist.actionAddToPlaylist(activity: FragmentActivity) = run {
     val songs = withContext(Dispatchers.IO) { songs(activity) }
     val playlists = withContext(Dispatchers.IO) { Playlists.all(activity) }
     activity.startActivity(
@@ -106,4 +101,4 @@ fun List<Playlist>.actionSavePlaylists(context: Context) = fragmentActivity(cont
 }
 
 private suspend fun Playlist.songs(context: Context): List<Song> =
-    PlaylistProcessors.reader(this).allSongs(context)
+   withContext(Dispatchers.IO) { PlaylistProcessors.reader(this@songs).allSongs(context) }
