@@ -263,9 +263,16 @@ class FlatPlayerFragment : AbsPlayerFragment() {
             )
         }
 
-        override fun updateCurrentSong(song: Song) {
-            currentSongBinding.title.text = song.title
-            currentSongBinding.text.text = song.infoString()
+        override fun updateCurrentSong(song: Song?) {
+            with(currentSongBinding) {
+                if (song != null) {
+                    title.text = song.title
+                    text.text = song.infoString()
+                } else {
+                    title.text = "-"
+                    text.text = "-"
+                }
+            }
         }
 
         override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
@@ -290,10 +297,16 @@ class FlatPlayerFragment : AbsPlayerFragment() {
             )
         }
 
-        override fun updateCurrentSong(song: Song) {
-
-            fragment.viewBinding.playerToolbar.title = song.title
-            fragment.viewBinding.playerToolbar.subtitle = song.infoString()
+        override fun updateCurrentSong(song: Song?) {
+            with(fragment.viewBinding.playerToolbar) {
+                if (song != null) {
+                    title = song.title
+                    subtitle = song.infoString()
+                } else {
+                    title = "-"
+                    subtitle = "-"
+                }
+            }
         }
 
         override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
