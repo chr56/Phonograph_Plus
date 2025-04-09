@@ -7,8 +7,9 @@ package player.phonograph.model.service
 import player.phonograph.model.Song
 
 interface QueueObserver {
-    fun onQueueChanged(newPlayingQueue: List<Song>, newOriginalQueue: List<Song>) {}
+    fun onQueueChanged(newPlayingQueue: List<Song>) {}
     fun onCurrentPositionChanged(newPosition: Int) {}
+    fun onCurrentSongChanged(newSong: Song?) {}
     fun onShuffleModeChanged(newMode: ShuffleMode) {}
     fun onRepeatModeChanged(newMode: RepeatMode) {}
 }
