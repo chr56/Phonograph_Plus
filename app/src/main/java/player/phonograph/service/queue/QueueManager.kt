@@ -8,6 +8,7 @@ import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.recordThrowable
 import android.app.Application
+import android.content.Context
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
@@ -15,6 +16,7 @@ import android.os.Message
 import android.os.Process.THREAD_PRIORITY_BACKGROUND
 import kotlin.concurrent.thread
 
+@Suppress("unused")
 class QueueManager(val context: Application) {
 
     private val handler: QueueManagerHandler
@@ -30,16 +32,17 @@ class QueueManager(val context: Application) {
 
 
         thread(name = "queue_validation", priority = THREAD_PRIORITY_BACKGROUND) {
-            try {
-                val changed = queueHolder.valid(context)
-                if (changed) {
-                    observerManager.notifyQueueChanged(queueHolder.playingQueue, queueHolder.originalPlayingQueue)
-                }
-            } catch (e: Throwable) {
-                // validation is optional
-                recordThrowable(context, TAG, e)
+            if (validQueueChanges(context, queueHolder)) {
+                observerManager.notifyQueueChanged(queueHolder.playingQueue, queueHolder.originalPlayingQueue)
             }
         }
+    }
+
+    private fun validQueueChanges(context: Context, queueHolder: QueueHolder): Boolean = try {
+        queueHolder.valid(context)
+    } catch (e: Throwable) {
+        recordThrowable(context, TAG, e)  // validation is optional
+        false
     }
 
     private var snapShotsItemCount: Long = 0
@@ -57,8 +60,8 @@ class QueueManager(val context: Application) {
     private inner class QueueManagerHandler(looper: Looper) : Handler(looper) {
         override fun handleMessage(msg: Message) {
             when (msg.what) {
-                MSG_SAVE_QUEUE -> saveQueue()
-                MSG_SAVE_CFG   -> saveCfg()
+                MSG_SAVE_QUEUE -> queueHolder.saveQueue(context)
+                MSG_SAVE_CFG   -> queueHolder.saveConfig(context)
             }
         }
     }
@@ -143,32 +146,39 @@ class QueueManager(val context: Application) {
         queueHolder.modifyPosition(newPosition)
         handler.post {
             observerManager.notifyCurrentPositionChanged(newPosition)
-            saveCfg()
+            queueHolder.saveConfig(context)
         }
     }
 
+    /**
+     * @param newShuffleMode null for cycling mode
+     * @param alongWithQueue shuffle queue along as well
+     */
     fun modifyShuffleMode(
-        newShuffleMode: ShuffleMode,
+        newShuffleMode: ShuffleMode? = null,
         alongWithQueue: Boolean = true,
         async: Boolean = true,
     ) = async(async) {
         queueHolder.modifyShuffleMode(newShuffleMode)
-        if (alongWithQueue) shuffleQueue()
+        if (alongWithQueue) shuffle(queueHolder, queueHolder.shuffleMode)
         handler.post {
-            observerManager.notifyShuffleModeChanged(newShuffleMode)
-            saveCfg()
-            if (alongWithQueue) saveQueue()
+            observerManager.notifyShuffleModeChanged(newShuffleMode ?: queueHolder.shuffleMode)
+            queueHolder.saveConfig(context)
+            if (alongWithQueue) queueHolder.saveQueue(context)
         }
     }
 
+    /**
+     * @param newRepeatMode null for cycling mode
+     */
     fun modifyRepeatMode(
-        newRepeatMode: RepeatMode,
+        newRepeatMode: RepeatMode?,
         async: Boolean = true,
     ) = async(async) {
         queueHolder.modifyRepeatMode(newRepeatMode)
         handler.post {
-            observerManager.notifyRepeatModeChanged(newRepeatMode)
-            saveCfg()
+            observerManager.notifyRepeatModeChanged(newRepeatMode ?: queueHolder.repeatMode)
+            queueHolder.saveConfig(context)
         }
     }
 
@@ -178,10 +188,6 @@ class QueueManager(val context: Application) {
     fun isQueueEnded(): Boolean = nextSongPosition == -1 && isLastTrack()
 
     fun getRestSongsDuration(position: Int): Long = queueHolder.getRestSongsDuration(position)
-
-
-    private fun saveQueue() = queueHolder.saveQueue(context)
-    private fun saveCfg() = queueHolder.saveCfg(context)
 
 
     fun swapQueue(newQueue: List<Song>, newPosition: Int, async: Boolean = true) = async(async) {
@@ -226,10 +232,6 @@ class QueueManager(val context: Application) {
         }
     }
 
-    private fun shuffleQueue() {
-        shuffle(queueHolder, queueHolder.shuffleMode)
-    }
-
     fun moveToNextSong(async: Boolean = true) = async(async) {
         queueHolder.modifyPosition(nextSongPosition)
         handler.post {
@@ -269,17 +271,17 @@ class QueueManager(val context: Application) {
                         notifyCurrentPositionChanged(currentSongPosition)
                 }
             }
-            saveQueue()
+            queueHolder.saveQueue(context)
         }
     }
 
     fun createSnapshot() {
-        if (queueHolder.playingQueue.size <= 0) return
+        if (queueHolder.playingQueue.isEmpty()) return
         synchronized(queueHolderSnapshots) {
             snapShotsItemCount += queueHolder.playingQueue.size
             queueHolderSnapshots.add(0, queueHolder.clone())
             if (queueHolderSnapshots.size > 10 || snapShotsItemCount >= 150_000) {
-                val removed = queueHolderSnapshots.removeLast()
+                val removed = queueHolderSnapshots.removeAt(queueHolderSnapshots.lastIndex)
                 snapShotsItemCount -= removed.playingQueue.size
             }
         }
@@ -296,27 +298,6 @@ class QueueManager(val context: Application) {
         MusicPlayerRemote.playSongAt(queueHolder.currentSongPosition)
     }
 
-
-    fun cycleRepeatMode(async: Boolean = true) = async(async) {
-        queueHolder.cycleRepeatMode()
-        handler.post {
-            observerManager.notifyRepeatModeChanged(queueHolder.repeatMode)
-            saveCfg()
-        }
-    }
-
-    fun toggleShuffle(
-        alongWithQueue: Boolean = true,
-        async: Boolean = true,
-    ) = async(async) {
-        queueHolder.toggleShuffle()
-        if (alongWithQueue) shuffleQueue()
-        handler.post {
-            observerManager.notifyShuffleModeChanged(queueHolder.shuffleMode)
-            saveCfg()
-            if (alongWithQueue) saveQueue()
-        }
-    }
 
     fun addObserver(observer: QueueObserver) = observerManager.addObserver(observer)
     fun removeObserver(observer: QueueObserver) = observerManager.removeObserver(observer)

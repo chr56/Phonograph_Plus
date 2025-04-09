@@ -9,106 +9,143 @@ import player.phonograph.model.Song
 import player.phonograph.model.SongClickMode
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.warning
+import kotlin.random.Random
 
 
 
 fun swapQueue(queueHolder: QueueHolder, newQueue: List<Song>, newPosition: Int) {
-    require(newQueue.isNotEmpty() && newPosition in newQueue.indices) {
-        "illegal queue or position"
-    }
     if (newQueue.isNotEmpty() && newPosition in newQueue.indices) {
-        queueHolder.modifyQueue { _playingQueue, _originalPlayingQueue ->
-            _originalPlayingQueue.clear()
-            _originalPlayingQueue.addAll(newQueue)
-            _playingQueue.clear()
-            _playingQueue.addAll(newQueue)
+        queueHolder.modify {
             if (queueHolder.shuffleMode == ShuffleMode.SHUFFLE) {
-                shuffle(_playingQueue, newPosition)
-                queueHolder.modifyPosition(0)
+                QueueHolder.QueuesAndPosition(
+                    playingQueue = shuffle(newQueue, newPosition),
+                    originalPlayingQueue = newQueue,
+                    currentSongPosition = 0
+                )
             } else {
-                queueHolder.modifyPosition(newPosition)
+                QueueHolder.QueuesAndPosition(
+                    playingQueue = newQueue,
+                    originalPlayingQueue = newQueue,
+                    currentSongPosition = newPosition
+                )
             }
         }
+    } else {
+        warning(TAG, "Illegal queue or position")
     }
 }
 
 fun addSong(queueHolder: QueueHolder, song: Song, position: Int = -1) {
-    queueHolder.modifyQueue { _playingQueue, _originalPlayingQueue ->
-        if (position < 0 || position >= _playingQueue.size || position >= _originalPlayingQueue.size) {
-            _playingQueue.add(song)
-            _originalPlayingQueue.add(song)
+    queueHolder.modify { original ->
+        if (position !in original.originalPlayingQueue.indices) {
+            QueueHolder.QueuesAndPosition(
+                playingQueue = original.playingQueue + song,
+                originalPlayingQueue = original.originalPlayingQueue + song,
+                currentSongPosition = original.currentSongPosition
+            )
         } else {
-            _playingQueue.add(position, song)
-            _originalPlayingQueue.add(position, song)
-        }
-    }
-}
-
-fun addSongs(queueHolder: QueueHolder, songs: List<Song>, position: Int = -1) {
-    queueHolder.modifyQueue { _playingQueue, _originalPlayingQueue ->
-        if (position < 0 || position >= _playingQueue.size || position >= _originalPlayingQueue.size) {
-            _playingQueue.addAll(songs)
-            _originalPlayingQueue.addAll(songs)
-        } else {
-            _playingQueue.addAll(position, songs)
-            _originalPlayingQueue.addAll(position, songs)
-        }
-    }
-}
-
-/**
- * Change current position after deletion
- */
-private fun rePosition(queueHolder: QueueHolder, deletedSongPosition: Int) {
-    val currentSongPosition = queueHolder.currentSongPosition
-    val newPosition: Int =
-        if (deletedSongPosition < currentSongPosition) {
-            currentSongPosition - 1
-        } else if (deletedSongPosition == currentSongPosition) {
-            if (queueHolder.playingQueue.size > deletedSongPosition) {
-                currentSongPosition
+            val playingQueue = original.playingQueue.toMutableList().apply { add(position, song) }
+            val originalPlayingQueue = original.originalPlayingQueue.toMutableList().apply { add(position, song) }
+            val newPosition = if (position < original.currentSongPosition) {
+                original.currentSongPosition + 1
             } else {
-                currentSongPosition - 1
+                original.currentSongPosition
             }
-        } else return
-    queueHolder.modifyPosition(newPosition)
-
-}
-
-fun removeSongAt(queueHolder: QueueHolder, position: Int) {
-    queueHolder.modifyQueue { _playingQueue, _originalPlayingQueue ->
-        if (position in _originalPlayingQueue.indices) {
-            if (queueHolder.shuffleMode == ShuffleMode.NONE) {
-                _playingQueue.removeAt(position)
-                _originalPlayingQueue.removeAt(position)
-            } else {
-                _originalPlayingQueue.remove(_playingQueue.removeAt(position))
-            }
-            rePosition(queueHolder, position)
-        } else {
-            warning(
-                TAG,
-                "Warning: removing song at position$position,but we only have ${_originalPlayingQueue.size} songs"
+            QueueHolder.QueuesAndPosition(
+                playingQueue = playingQueue,
+                originalPlayingQueue = originalPlayingQueue,
+                currentSongPosition = newPosition
             )
         }
     }
 }
 
+fun addSongs(queueHolder: QueueHolder, songs: List<Song>, position: Int = -1) {
+    queueHolder.modify { original ->
+        if (position !in original.originalPlayingQueue.indices) {
+            QueueHolder.QueuesAndPosition(
+                playingQueue = original.playingQueue + songs,
+                originalPlayingQueue = original.originalPlayingQueue + songs,
+                currentSongPosition = original.currentSongPosition
+            )
+        } else {
+            val playingQueue = original.playingQueue.toMutableList().apply { addAll(position, songs) }
+            val originalPlayingQueue = original.originalPlayingQueue.toMutableList().apply { addAll(position, songs) }
+            val newPosition = if (position < original.currentSongPosition) {
+                original.currentSongPosition + songs.size
+            } else {
+                original.currentSongPosition
+            }
+            QueueHolder.QueuesAndPosition(
+                playingQueue = playingQueue,
+                originalPlayingQueue = originalPlayingQueue,
+                currentSongPosition = newPosition
+            )
+        }
+    }
+}
+
+fun removeSongAt(queueHolder: QueueHolder, position: Int) {
+    queueHolder.modify { original ->
+        if (position in original.originalPlayingQueue.indices) {
+            val playingQueue = original.playingQueue.toMutableList()
+            val removedSong = playingQueue.removeAt(position)
+
+            val originalPlayingQueue = original.originalPlayingQueue.toMutableList()
+            if (queueHolder.shuffleMode == ShuffleMode.SHUFFLE) {
+                originalPlayingQueue.remove(removedSong)
+            } else {
+                originalPlayingQueue.removeAt(position)
+            }
+
+            val position =
+                if (position < original.currentSongPosition || (queueHolder.playingQueue.size - 1 == position)) {
+                    original.currentSongPosition - 1
+                } else {
+                    original.currentSongPosition
+                }
+            QueueHolder.QueuesAndPosition(
+                playingQueue = playingQueue,
+                originalPlayingQueue = originalPlayingQueue,
+                currentSongPosition = position
+            )
+        } else {
+            warning(
+                TAG,
+                "Removing a song at position $position, but out-ranged (${original.originalPlayingQueue.size})"
+            )
+            original
+        }
+    }
+}
+
 fun removeSong(queueHolder: QueueHolder, song: Song) {
-    queueHolder.modifyQueue { _playingQueue, _originalPlayingQueue ->
-        for (i in _playingQueue.indices) {
-            if (_playingQueue[i].id == song.id) {
-                _playingQueue.removeAt(i)
-                rePosition(queueHolder, i)
-            }
+    queueHolder.modify { original ->
+        val playingQueue = original.playingQueue.toMutableList()
+        val originalPlayingQueue = original.originalPlayingQueue.toMutableList()
+
+        var deletedPosition = -1
+        for ((i, item) in playingQueue.withIndex()) {
+            if (item == song) deletedPosition = i
         }
-        for (i in queueHolder.playingQueue.indices) {
-            if (_originalPlayingQueue[i].id == song.id) {
-                _originalPlayingQueue.removeAt(i)
-            }
+
+        if (deletedPosition > -1) {
+            playingQueue.removeAt(deletedPosition)
+            originalPlayingQueue.remove(song)
         }
-        _playingQueue.remove(song)
-        _originalPlayingQueue.remove(song)
+
+        val newPosition =
+            if (deletedPosition < original.currentSongPosition || (queueHolder.playingQueue.size - 1 == deletedPosition)) {
+                original.currentSongPosition - 1
+            } else {
+                original.currentSongPosition
+            }
+
+        QueueHolder.QueuesAndPosition(
+            playingQueue = playingQueue,
+            originalPlayingQueue = originalPlayingQueue,
+            currentSongPosition = newPosition
+        )
     }
 }
 
@@ -120,13 +157,16 @@ fun moveSong(queueHolder: QueueHolder, from: Int, to: Int) {
         return
     }
     // start moving
-    queueHolder.modifyQueue { _playingQueue, _originalPlayingQueue ->
+    queueHolder.modify { original ->
+        val playingQueue = original.playingQueue.toMutableList()
+        val originalPlayingQueue = original.originalPlayingQueue.toMutableList()
+
         val oldPosition: Int = queueHolder.currentSongPosition
-        val songToMove: Song = _playingQueue.removeAt(from)
-        _playingQueue.add(to, songToMove)
+        val songToMove: Song = playingQueue.removeAt(from)
+        playingQueue.add(to, songToMove)
         if (queueHolder.shuffleMode == ShuffleMode.NONE) {
-            val tmpSong: Song = _originalPlayingQueue.removeAt(from)
-            _originalPlayingQueue.add(to, tmpSong)
+            val tmpSong: Song = originalPlayingQueue.removeAt(from)
+            originalPlayingQueue.add(to, tmpSong)
         }
         val newPosition =
             when {
@@ -135,57 +175,71 @@ fun moveSong(queueHolder: QueueHolder, from: Int, to: Int) {
                 oldPosition in (from + 1)..to -> oldPosition - 1
                 else                          -> oldPosition
             }
-        queueHolder.modifyPosition(newPosition)
+        QueueHolder.QueuesAndPosition(
+            playingQueue = playingQueue,
+            originalPlayingQueue = originalPlayingQueue,
+            currentSongPosition = newPosition
+        )
     }
 }
 
 fun clearQueue(queueHolder: QueueHolder) {
-    queueHolder.modifyQueue { _playingQueue, _originalPlayingQueue ->
-        _playingQueue.clear()
-        _originalPlayingQueue.clear()
-        queueHolder.modifyPosition(-1)
+    queueHolder.modify { original ->
+        QueueHolder.QueuesAndPosition(
+            playingQueue = emptyList(),
+            originalPlayingQueue = emptyList(),
+            currentSongPosition = -1
+        )
     }
 }
 
 fun shuffle(queueHolder: QueueHolder, newShuffleMode: ShuffleMode) {
-    queueHolder.modifyQueue { _playingQueue, _originalPlayingQueue ->
+    queueHolder.modify { original ->
         when (newShuffleMode) {
             ShuffleMode.SHUFFLE -> {
-                shuffle(_playingQueue, queueHolder.currentSongPosition)
-                queueHolder.modifyPosition(0)
+                val playingQueue = shuffle(original.playingQueue, queueHolder.currentSongPosition)
+                QueueHolder.QueuesAndPosition(
+                    playingQueue = playingQueue,
+                    originalPlayingQueue = original.originalPlayingQueue,
+                    currentSongPosition = 0
+                )
             }
+
             ShuffleMode.NONE    -> {
-                val currentSongId = queueHolder.getSongAt(queueHolder.currentSongPosition).id
-                _playingQueue.clear()
-                _playingQueue.addAll(_originalPlayingQueue)
-                for (song in _playingQueue) {
-                    if (song.id == currentSongId) {
-                        queueHolder.modifyPosition(_playingQueue.indexOf(song))
-                        break
-                    }
-                }
+                val current = original.playingQueue[original.currentSongPosition]
+                val recovered = original.originalPlayingQueue.indexOf(current)
+                QueueHolder.QueuesAndPosition(
+                    playingQueue = original.originalPlayingQueue,
+                    originalPlayingQueue = original.originalPlayingQueue,
+                    currentSongPosition = recovered.coerceAtLeast(0)
+                )
             }
         }
     }
 }
 
-private fun shuffle(songs: MutableList<Song>, current: Int) {
-    if (songs.isEmpty()) return
-    if (current in 0 until songs.size) {
-        val song: Song = songs.removeAt(current)
-        songs.shuffle()
-        songs.add(0, song)
+private val random by lazy { Random(42) }
+private fun shuffle(songs: List<Song>, current: Int): List<Song> {
+    if (songs.isEmpty()) return emptyList()
+
+    val result = songs.toMutableList()
+
+    if (current in result.indices) {
+        val currentSong = result.removeAt(current)
+        result.shuffle(random)
+        result.add(0, currentSong)
     } else {
-        songs.shuffle()
+        result.shuffle(random)
     }
+
+    return result
 }
 
-
 fun executePlayRequest(queueManager: QueueManager, request: PlayRequest, mode: Int) {
-    when(request) {
-        is PlayRequest.SongRequest   -> executePlayRequest(queueManager, request, mode)
-        is PlayRequest.SongsRequest  -> executePlayRequest(queueManager, request, mode)
-        else                         -> {}
+    when (request) {
+        is PlayRequest.SongRequest  -> executePlayRequest(queueManager, request, mode)
+        is PlayRequest.SongsRequest -> executePlayRequest(queueManager, request, mode)
+        else                        -> {}
     }
     if (mode in SongClickMode.modesRequiringInstantlyChangingState) {
         MusicPlayerRemote.requireResumeInstantlyIfReady()
@@ -211,7 +265,7 @@ private fun executePlayRequest(queueManager: QueueManager, request: PlayRequest.
             queueManager.modifyShuffleMode(ShuffleMode.SHUFFLE, false)
         }
 
-        else  /* invalided */     -> {}
+        else  /* invalided */                   -> {}
     }
 }
 
@@ -219,11 +273,11 @@ private fun executePlayRequest(queueManager: QueueManager, request: PlayRequest.
     val currentPosition = queueManager.currentSongPosition
     val song = request.song
     when (mode) {
-        SongClickMode.SONG_PLAY_NEXT            -> queueManager.addSong(song, currentPosition + 1)
-        SongClickMode.SONG_PLAY_NOW             -> queueManager.addSong(song, currentPosition)
-        SongClickMode.SONG_APPEND_QUEUE         -> queueManager.addSong(song)
-        SongClickMode.SONG_SINGLE_PLAY          -> queueManager.swapQueue(listOf(song), 0, false)
-        else  /* invalided */     -> {}
+        SongClickMode.SONG_PLAY_NEXT    -> queueManager.addSong(song, currentPosition + 1)
+        SongClickMode.SONG_PLAY_NOW     -> queueManager.addSong(song, currentPosition)
+        SongClickMode.SONG_APPEND_QUEUE -> queueManager.addSong(song)
+        SongClickMode.SONG_SINGLE_PLAY  -> queueManager.swapQueue(listOf(song), 0, false)
+        else  /* invalided */           -> {}
     }
 }
 

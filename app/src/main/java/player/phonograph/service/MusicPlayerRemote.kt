@@ -283,12 +283,12 @@ object MusicPlayerRemote {
 
     fun cycleRepeatMode(): Boolean =
         runCatching {
-            queueManager.cycleRepeatMode()
+            queueManager.modifyRepeatMode(null)
         }.isSuccess
 
     fun toggleShuffleMode(): Boolean =
         runCatching {
-            queueManager.toggleShuffle()
+            queueManager.modifyShuffleMode(null)
         }.isSuccess
 
     fun setShuffleMode(shuffleMode: ShuffleMode): Boolean =

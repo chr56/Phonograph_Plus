@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.lang.ref.SoftReference
 
-@Suppress("ObjectPropertyName")
 object CurrentQueueState {
     private const val TAG = "QueueState"
 
@@ -43,11 +42,11 @@ object CurrentQueueState {
         _position.update { newPosition }
     }
 
-    private val _current = MutableStateFlow(Song.EMPTY_SONG)
-    val currentSong get() = _current.asStateFlow()
+    private val _currentSong = MutableStateFlow(Song.EMPTY_SONG)
+    val currentSong get() = _currentSong.asStateFlow()
 
     private fun refreshCurrentSong(song: Song) {
-        _current.update { song }
+        _currentSong.update { song }
     }
 
     private fun refreshAll(queueManager: QueueManager) {
