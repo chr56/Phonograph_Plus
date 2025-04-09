@@ -13,9 +13,6 @@ import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.util.text.currentTimestamp
 import player.phonograph.util.text.totalDuration
 import android.content.Context
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -59,46 +56,29 @@ class QueueHolder private constructor(
 
     /**
      * synchronized
+     * @param newShuffleMode null for cycling mode
      */
-    fun modifyShuffleMode(newShuffleMode: ShuffleMode) = synchronized(shuffleMode) {
-        shuffleMode = newShuffleMode
+    fun modifyShuffleMode(newShuffleMode: ShuffleMode?) = synchronized(shuffleMode) {
+        shuffleMode = newShuffleMode ?: when (shuffleMode) {
+            ShuffleMode.NONE    -> ShuffleMode.SHUFFLE
+            ShuffleMode.SHUFFLE -> ShuffleMode.NONE
+        }
     }
 
     /**
      * synchronized
+     * @param newRepeatMode null for cycling mode
      */
-    fun modifyRepeatMode(newRepeatMode: RepeatMode) = synchronized(repeatMode) {
-        repeatMode = newRepeatMode
+    fun modifyRepeatMode(newRepeatMode: RepeatMode?) = synchronized(repeatMode) {
+        repeatMode = newRepeatMode ?: when (repeatMode) {
+            RepeatMode.NONE               -> RepeatMode.REPEAT_QUEUE
+            RepeatMode.REPEAT_QUEUE       -> RepeatMode.REPEAT_SINGLE_SONG
+            RepeatMode.REPEAT_SINGLE_SONG -> RepeatMode.NONE
+        }
     }
 
 
-    fun getSongAt(position: Int): Song? =
-        if (position >= 0 && position < playingQueue.size) playingQueue[position] else null
-
-    /**
-     * synchronized
-     */
-    fun cycleRepeatMode() {
-        modifyRepeatMode(
-            when (repeatMode) {
-                RepeatMode.NONE               -> RepeatMode.REPEAT_QUEUE
-                RepeatMode.REPEAT_QUEUE       -> RepeatMode.REPEAT_SINGLE_SONG
-                RepeatMode.REPEAT_SINGLE_SONG -> RepeatMode.NONE
-            }
-        )
-    }
-
-    /**
-     * synchronized
-     */
-    fun toggleShuffle() {
-        modifyShuffleMode(
-            when (shuffleMode) {
-                ShuffleMode.NONE    -> ShuffleMode.SHUFFLE
-                ShuffleMode.SHUFFLE -> ShuffleMode.NONE
-            }
-        )
-    }
+    fun getSongAt(position: Int): Song? = playingQueue.getOrNull(position)
 
     fun getRestSongsDuration(position: Int): Long =
         totalDuration(playingQueue.takeLast(getRestSongsCount(position)))
@@ -110,15 +90,14 @@ class QueueHolder private constructor(
 
     fun saveAll(context: Context) {
         saveQueue(context)
-        saveCfg(context)
+        saveConfig(context)
     }
 
-    @Suppress("UNUSED_PARAMETER")
     fun saveQueue(context: Context) = synchronized(persistenceLock) {
         GlobalContext.get().get<MusicPlaybackQueueStore>().saveQueues(playingQueue, originalPlayingQueue)
     }
 
-    fun saveCfg(context: Context) = synchronized(persistenceLock) {
+    fun saveConfig(context: Context) = synchronized(persistenceLock) {
         val queuePreferenceManager = QueuePreferenceManager(context)
         queuePreferenceManager.currentPosition = currentSongPosition
         queuePreferenceManager.repeatMode = repeatMode
@@ -200,15 +179,5 @@ class QueueHolder private constructor(
             }
         }
 
-        private var _coroutineScope: CoroutineScope? = null
-        private val coroutineScope: CoroutineScope
-            get() {
-                val scope = _coroutineScope
-                return if (scope != null && scope.isActive) {
-                    scope
-                } else {
-                    CoroutineScope(Dispatchers.IO).also { _coroutineScope = it }
-                }
-            }
     }
 }
