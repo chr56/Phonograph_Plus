@@ -13,7 +13,6 @@ import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
@@ -75,8 +74,7 @@ class PlayerAlbumCoverFragment :
     private fun observeState() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                CurrentQueueState.queue.collect {
-                    val queue = it.get() ?: MusicPlayerRemote.playingQueue
+                queueViewModel.queue.collect { queue ->
                     val position = MusicPlayerRemote.position
                     refreshAdapter(queue, position)
                 }
@@ -84,7 +82,7 @@ class PlayerAlbumCoverFragment :
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                CurrentQueueState.shuffleMode.collect {
+                queueViewModel.shuffleMode.collect {
                     val queue = MusicPlayerRemote.playingQueue
                     val position = MusicPlayerRemote.position
                     refreshAdapter(queue, position)
@@ -93,7 +91,7 @@ class PlayerAlbumCoverFragment :
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                CurrentQueueState.position.collect { position ->
+                queueViewModel.position.collect { position ->
                     val songs = albumCoverPagerAdapter?.dataSet
                     if (songs != null) {
                         if (position in songs.indices) {
@@ -326,8 +324,8 @@ class PlayerAlbumCoverFragment :
     }
 }
 
-class AlbumCoverPagerAdapter(
-    val fragment: Fragment,
+private class AlbumCoverPagerAdapter(
+    fragment: Fragment,
     dataSet: List<Song>,
 ) : FragmentStateAdapter(fragment) {
 

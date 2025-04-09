@@ -20,7 +20,6 @@ import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.repo.loader.FavoriteSongs
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.dialogs.LyricsDialog
 import player.phonograph.ui.dialogs.QueueSnapshotsDialog
@@ -414,21 +413,21 @@ abstract class AbsPlayerFragment :
     }
 
     private fun observeState() {
-        observe(CurrentQueueState.queue) { queue ->
-            playingQueueAdapter.dataset = queue.get() ?: MusicPlayerRemote.playingQueue
+        observe(queueViewModel.queue) { queue ->
+            playingQueueAdapter.dataset = queue
             playingQueueAdapter.current = MusicPlayerRemote.position
         }
-        observe(CurrentQueueState.position) { position ->
+        observe(queueViewModel.position) { position ->
             playingQueueAdapter.current = position
         }
-        observe(CurrentQueueState.currentSong) { song ->
+        observe(queueViewModel.currentSong) { song ->
             viewModel.updateCurrentSong(requireContext(), song)
             if (song != null) withStarted { impl.updateCurrentSong(song) }
         }
         observe(viewModel.currentSong) {
             if (it != null) lyricsViewModel.loadLyricsFor(requireContext(), it)
         }
-        observe(CurrentQueueState.shuffleMode) {
+        observe(queueViewModel.shuffleMode) {
             updateAdapter()
         }
         observe(viewModel.favoriteState) {

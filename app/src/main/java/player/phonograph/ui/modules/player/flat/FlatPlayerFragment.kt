@@ -13,7 +13,6 @@ import player.phonograph.databinding.ItemListBinding
 import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.util.text.infoString
@@ -104,7 +103,7 @@ class FlatPlayerFragment : AbsPlayerFragment() {
     }
 
     private fun observeState() {
-        observe(CurrentQueueState.position) {
+        observe(queueViewModel.position) {
             withStarted {
                 viewBinding.playerQueueSubHeader.text = viewModel.upNextAndQueueTime(resources)
                 if (viewBinding.playerSlidingLayout == null ||

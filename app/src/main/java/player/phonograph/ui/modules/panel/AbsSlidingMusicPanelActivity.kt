@@ -8,7 +8,6 @@ import player.phonograph.R
 import player.phonograph.databinding.SlidingMusicPanelLayoutBinding
 import player.phonograph.model.NowPlayingScreen
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.player.AbsPlayerFragment
@@ -136,8 +135,8 @@ abstract class AbsSlidingMusicPanelActivity :
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                CurrentQueueState.queue.collect { queue ->
-                    hideBottomBar(queue.get()?.isEmpty() == true)
+                queueViewModel.queue.collect { queue ->
+                    hideBottomBar(queue.isEmpty() == true)
                 }
             }
         }

@@ -4,7 +4,6 @@ import player.phonograph.R
 import player.phonograph.databinding.FragmentMiniPlayerBinding
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
 import player.phonograph.util.component.MusicProgressUpdateDelegate
@@ -78,7 +77,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                CurrentQueueState.currentSong.collect {
+                queueViewModel.currentSong.collect {
                     replaceText(if (it != null) it.title else getString(R.string.empty))
                 }
             }
