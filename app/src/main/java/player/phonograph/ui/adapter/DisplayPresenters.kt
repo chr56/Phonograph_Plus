@@ -15,13 +15,13 @@ import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
-import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
+import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.util.text.albumCountString
 import player.phonograph.util.text.dateTextShortText
 import player.phonograph.util.text.infoString

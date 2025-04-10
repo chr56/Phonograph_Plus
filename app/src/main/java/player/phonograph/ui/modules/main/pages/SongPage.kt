@@ -5,9 +5,9 @@
 package player.phonograph.ui.modules.main.pages
 
 import player.phonograph.R
-import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
+import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.adapter.DisplayAdapter
 import player.phonograph.ui.adapter.DisplayPresenter

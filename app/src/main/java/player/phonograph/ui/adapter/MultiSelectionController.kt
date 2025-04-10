@@ -9,7 +9,7 @@ import lib.phonograph.cab.ToolbarCab.Companion.STATUS_ACTIVE
 import lib.phonograph.cab.initToolbarCab
 import player.phonograph.R
 import player.phonograph.mechanism.actions.MultiSelectionToolbarMenuProviders
-import player.phonograph.model.IPaletteColorProvider
+import player.phonograph.model.ui.PaletteColorProvider
 import player.phonograph.util.debug
 import player.phonograph.util.reportError
 import player.phonograph.util.theme.getTintedDrawable
@@ -154,7 +154,7 @@ class MultiSelectionController<I>(
     val cabColor: Int
         get() {
             var color =
-                (activity as? IPaletteColorProvider)?.paletteColor?.value ?: activity.primaryColor()
+                (activity as? PaletteColorProvider)?.paletteColor?.value ?: activity.primaryColor()
             if (isColorLight(color)) {
                 // light to dark
                 for (it in 0 until 3) {

@@ -12,9 +12,9 @@ import coil.size.Size
 import player.phonograph.R
 import player.phonograph.coil.PARAMETERS_KEY_PALETTE
 import player.phonograph.coil.palette.PaletteColorTarget
-import player.phonograph.model.PaletteBitmap
 import player.phonograph.model.Song
 import player.phonograph.util.theme.themeFooterColor
+import androidx.annotation.ColorInt
 import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
 import android.graphics.Bitmap
@@ -28,6 +28,8 @@ import android.util.LruCache
  * Component handling image load
  */
 class CoverLoader(private val context: Context) {
+
+    data class PaletteBitmap(val bitmap: Bitmap, @ColorInt val paletteColor: Int)
 
     private val cache = LruCache<Long, PaletteBitmap>(4)
     private val loader = Coil.imageLoader(context)

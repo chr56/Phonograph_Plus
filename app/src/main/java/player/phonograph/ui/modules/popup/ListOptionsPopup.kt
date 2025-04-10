@@ -6,8 +6,8 @@ package player.phonograph.ui.modules.popup
 
 import player.phonograph.R
 import player.phonograph.databinding.PopupWindowMainBinding
-import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.sort.SortRef
+import player.phonograph.model.ui.ItemLayoutStyle
 import androidx.annotation.IdRes
 import androidx.core.view.forEach
 import androidx.core.view.get

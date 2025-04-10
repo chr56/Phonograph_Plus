@@ -9,7 +9,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemState
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
-import player.phonograph.model.ItemLayoutStyle
+import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.util.ui.hitTest
 import androidx.fragment.app.FragmentActivity
 import android.view.LayoutInflater

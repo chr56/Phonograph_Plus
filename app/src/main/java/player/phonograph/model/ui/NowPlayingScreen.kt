@@ -1,4 +1,4 @@
-package player.phonograph.model
+package player.phonograph.model.ui
 
 import player.phonograph.R
 import androidx.annotation.DrawableRes

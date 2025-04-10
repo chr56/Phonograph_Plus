@@ -8,11 +8,11 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mechanism.broadcast.PlaylistsModifiedReceiver
 import player.phonograph.mechanism.playlist.PlaylistProcessors
-import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.DynamicPlaylists
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortMode
+import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.loader.FavoritePlaylists
 import player.phonograph.repo.loader.Playlists
 import player.phonograph.settings.Keys

@@ -4,7 +4,7 @@
 
 package player.phonograph.util.component
 
-import player.phonograph.model.ProgressUpdateCallback
+import player.phonograph.model.ui.ProgressUpdateCallback
 import player.phonograph.service.MusicPlayerRemote
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner

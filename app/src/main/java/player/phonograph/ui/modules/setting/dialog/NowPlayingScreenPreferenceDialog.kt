@@ -8,7 +8,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.github.appintro.indicator.DotIndicatorController
 import player.phonograph.R
-import player.phonograph.model.NowPlayingScreen
+import player.phonograph.model.ui.NowPlayingScreen
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.settings.ThemeSetting

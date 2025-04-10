@@ -6,9 +6,9 @@ package player.phonograph.ui.modules.main.pages
 
 import player.phonograph.R
 import player.phonograph.model.Album
-import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
+import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.loader.Albums
 import player.phonograph.repo.mediastore.loaders.AlbumSongLoader.allSongs
 import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter

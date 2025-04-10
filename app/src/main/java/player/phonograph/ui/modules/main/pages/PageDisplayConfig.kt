@@ -5,9 +5,9 @@
 package player.phonograph.ui.modules.main.pages
 
 import player.phonograph.R
-import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
+import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.util.ui.isLandscape

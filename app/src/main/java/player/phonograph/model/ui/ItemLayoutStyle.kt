@@ -1,27 +1,13 @@
 /*
- *  Copyright (c) 2022~2024 chr_56
+ *  Copyright (c) 2022~2025 chr_56
  */
 
-package player.phonograph.model
+package player.phonograph.model.ui
 
 import player.phonograph.R
 import androidx.annotation.IntDef
 import androidx.annotation.LayoutRes
 
-@IntDef(
-    ItemLayoutStyle.TYPE_CUSTOM,
-    ItemLayoutStyle.TYPE_LIST,
-    ItemLayoutStyle.TYPE_LIST_EXTENDED,
-    ItemLayoutStyle.TYPE_LIST_SINGLE_ROW,
-    ItemLayoutStyle.TYPE_LIST_NO_IMAGE,
-    ItemLayoutStyle.TYPE_LIST_3L,
-    ItemLayoutStyle.TYPE_LIST_3L_EXTENDED,
-    ItemLayoutStyle.TYPE_LIST_3L_NO_IMAGE,
-    ItemLayoutStyle.TYPE_GRID,
-    ItemLayoutStyle.TYPE_GRID_CARD_HORIZONTAL,
-)
-@Retention(AnnotationRetention.BINARY)
-annotation class ViewHolderType
 
 /**
  * value class for ViewHolder's layout
@@ -102,6 +88,21 @@ value class ItemLayoutStyle private constructor(@ViewHolderType val ordinal: Int
             TYPE_GRID_CARD_HORIZONTAL -> GRID_CARD_HORIZONTAL
             else                      -> ItemLayoutStyle(TYPE_CUSTOM)
         }
+
+        @IntDef(
+            TYPE_CUSTOM,
+            TYPE_LIST,
+            TYPE_LIST_EXTENDED,
+            TYPE_LIST_SINGLE_ROW,
+            TYPE_LIST_NO_IMAGE,
+            TYPE_LIST_3L,
+            TYPE_LIST_3L_EXTENDED,
+            TYPE_LIST_3L_NO_IMAGE,
+            TYPE_GRID,
+            TYPE_GRID_CARD_HORIZONTAL,
+        )
+        @Retention(AnnotationRetention.SOURCE)
+        annotation class ViewHolderType
 
     }
 }

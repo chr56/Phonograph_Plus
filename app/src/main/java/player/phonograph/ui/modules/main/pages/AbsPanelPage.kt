@@ -11,8 +11,8 @@ import com.google.android.material.appbar.AppBarLayout
 import player.phonograph.R
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.sort.SortMode
+import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.ui.modules.popup.ListOptionsPopup
 import player.phonograph.util.debug
 import player.phonograph.util.logMetrics

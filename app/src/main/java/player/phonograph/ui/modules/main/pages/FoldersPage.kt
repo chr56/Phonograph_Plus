@@ -9,12 +9,12 @@ import player.phonograph.R
 import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.mechanism.actions.actionPlay
-import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.Song
 import player.phonograph.model.SongCollection
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
+import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.mediastore.loaders.SongCollectionLoader
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting

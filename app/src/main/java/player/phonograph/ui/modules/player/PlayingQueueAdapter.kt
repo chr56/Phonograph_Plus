@@ -6,8 +6,8 @@ package player.phonograph.ui.modules.player
 
 import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.mechanism.actions.ClickActionProviders
-import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.Song
+import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.adapter.DisplayPresenter
 import player.phonograph.ui.adapter.DraggableDisplayAdapter

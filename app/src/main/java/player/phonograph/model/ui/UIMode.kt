@@ -2,7 +2,7 @@
  *  Copyright (c) 2023 chr_56
  */
 
-package player.phonograph.model
+package player.phonograph.model.ui
 
 @JvmInline
 value class UIMode(val ordinal: Int) {

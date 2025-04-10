@@ -9,12 +9,12 @@ import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.mechanism.actions.ClickActionProviders
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
-import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.QueueSong
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
+import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
 import player.phonograph.ui.adapter.ArtistBasicDisplayPresenter

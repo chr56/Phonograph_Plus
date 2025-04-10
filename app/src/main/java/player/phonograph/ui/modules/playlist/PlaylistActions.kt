@@ -7,7 +7,7 @@
 package player.phonograph.ui.modules.playlist
 
 import player.phonograph.model.Song
-import player.phonograph.model.UIMode
+import player.phonograph.model.ui.UIMode
 
 sealed interface PlaylistAction
 

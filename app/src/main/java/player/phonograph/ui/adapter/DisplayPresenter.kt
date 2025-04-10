@@ -8,8 +8,8 @@ import coil.request.Disposable
 import coil.target.Target
 import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.mechanism.actions.ClickActionProviders
-import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.sort.SortMode
+import player.phonograph.model.ui.ItemLayoutStyle
 import androidx.annotation.IntDef
 import android.content.Context
 import android.graphics.drawable.Drawable

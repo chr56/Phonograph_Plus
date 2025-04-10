@@ -18,11 +18,11 @@ import player.phonograph.mechanism.actions.DetailToolbarMenuProviders
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
-import player.phonograph.model.IPaletteColorProvider
-import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
+import player.phonograph.model.ui.PaletteColorProvider
+import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.repo.loader.Songs
 import player.phonograph.ui.adapter.AlbumBasicDisplayPresenter
 import player.phonograph.ui.adapter.DisplayAdapter
@@ -71,7 +71,7 @@ import android.view.ViewGroup.MarginLayoutParams
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), IPaletteColorProvider, IGetContentRequester,
+class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorProvider, IGetContentRequester,
                              ICreateFileStorageAccessible, IOpenFileStorageAccessible, IOpenDirStorageAccessible {
 
     private lateinit var viewBinding: ActivityArtistDetailBinding

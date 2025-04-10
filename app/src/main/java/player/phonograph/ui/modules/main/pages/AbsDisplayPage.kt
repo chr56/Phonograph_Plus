@@ -7,10 +7,10 @@ package player.phonograph.ui.modules.main.pages
 import com.github.chr56.android.menu_model.MenuContext
 import player.phonograph.R
 import player.phonograph.mechanism.actions.actionPlay
-import player.phonograph.model.ItemLayoutStyle
 import player.phonograph.model.Song
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.sort.SortMode
+import player.phonograph.model.ui.ItemLayoutStyle
 import player.phonograph.util.theme.accentColor
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.lifecycle.Lifecycle

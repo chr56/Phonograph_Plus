@@ -6,7 +6,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
 import player.phonograph.databinding.SlidingMusicPanelLayoutBinding
-import player.phonograph.model.NowPlayingScreen
+import player.phonograph.model.ui.NowPlayingScreen
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
