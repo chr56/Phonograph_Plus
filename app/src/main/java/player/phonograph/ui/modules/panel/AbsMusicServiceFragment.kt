@@ -1,5 +1,6 @@
 package player.phonograph.ui.modules.panel
 
+import player.phonograph.util.warning
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import android.content.Context
@@ -8,37 +9,43 @@ import android.view.View
 import kotlin.getValue
 
 /**
- * @author Karim Abou Zeid (kabouzeid)
+ * Fragments that supports receiving service binding events.
+ *
+ * This Fragment must be attached to a proper [AbsMusicServiceActivity] to work!
+ *
  */
 abstract class AbsMusicServiceFragment : Fragment(), MusicServiceEventListener {
 
-    private var _bindingActivity: AbsMusicServiceActivity? = null
-    val bindingActivity get() = _bindingActivity!!
+    private var attachedContext: Context? = null
+    val attachedMusicServiceActivity get() = attachedContext as? AbsMusicServiceActivity
 
     protected val queueViewModel: QueueViewModel by viewModels({ requireActivity() })
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        require(context is AbsMusicServiceActivity) {
-            "${context.javaClass.simpleName} must be `${AbsMusicServiceActivity::class.java.simpleName}`," +
-                    " so `AbsMusicServiceFragment` can be bind!"
+        if (context is AbsMusicServiceActivity) {
+            attachedContext = context
+        } else {
+            warning(
+                javaClass.simpleName,
+                "Parent ${context.javaClass.simpleName} is not `${AbsMusicServiceActivity::class.java.simpleName}`!"
+            )
         }
-        _bindingActivity = context
     }
 
     override fun onDetach() {
-        _bindingActivity = null
+        attachedContext = null
         super.onDetach()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bindingActivity.addMusicServiceEventListener(this)
+        (attachedContext as? AbsMusicServiceActivity)?.addMusicServiceEventListener(this)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        bindingActivity.removeMusicServiceEventListener(this)
+        (attachedContext as? AbsMusicServiceActivity)?.removeMusicServiceEventListener(this)
     }
 
     override fun onServiceConnected() {}
