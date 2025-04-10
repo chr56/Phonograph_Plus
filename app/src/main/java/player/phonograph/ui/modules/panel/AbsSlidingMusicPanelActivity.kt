@@ -58,10 +58,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
     private val slidingUpPanelLayout: SlidingUpPanelLayout get() = panelBinding.slidingLayout
 
-    val panelViewModel: PanelViewModel by viewModel {
-        val default = themeFooterColor(this)
-        parametersOf(primaryColor(), default, default)
-    }
+    val panelViewModel: PanelViewModel by viewModel { parametersOf(primaryColor(), themeFooterColor(this)) }
 
     /**
      * See [wrapSlidingMusicPanel]
@@ -121,12 +118,8 @@ abstract class AbsSlidingMusicPanelActivity :
         // states
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                panelViewModel.highlightColor.collect { color ->
-                    if (panelState == PanelState.EXPANDED) {
-                        val from = panelViewModel.previousHighlightColor.value
-                        val to = color
-                        animateSystemBarsColor(from, to)
-                    }
+                panelViewModel.colorChange.collect { (oldColor, newColor) ->
+                    if (panelState == PanelState.EXPANDED) animateSystemBarsColor(oldColor, newColor)
                 }
             }
         }

@@ -329,7 +329,7 @@ abstract class AbsPlayerFragment :
 
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
         when (newState) {
-            PanelState.EXPANDED -> {
+            PanelState.EXPANDED  -> {
                 requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, collapseBackPressedCallback)
             }
 
@@ -342,12 +342,12 @@ abstract class AbsPlayerFragment :
                 }
             }
 
-            PanelState.ANCHORED -> {
+            PanelState.ANCHORED  -> {
                 // this fixes a bug where the panel would get stuck for some reason
                 collapseToNormal()
             }
 
-            else -> Unit
+            else                 -> Unit
         }
     }
 
@@ -464,15 +464,16 @@ abstract class AbsPlayerFragment :
                 MusicPlayerRemote.replaceLyrics(activated as? LrcLyrics)
             }
         }
-        observe(panelViewModel.highlightColor) { newColor ->
+        observe(panelViewModel.colorChange) { (oldColor, newColor) ->
             playbackControlsFragment.modifyColor(newColor)
             withResumed {
                 changeHighlightColor(
-                    panelViewModel.previousHighlightColor.value,
+                    oldColor,
                     newColor,
                     lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
                 )
             }
+
         }
     }
 
