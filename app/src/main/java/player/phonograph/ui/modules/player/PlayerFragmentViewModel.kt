@@ -6,22 +6,17 @@ package player.phonograph.ui.modules.player
 
 import coil.request.Disposable
 import coil.request.Parameters
-import player.phonograph.R
 import player.phonograph.coil.PARAMETERS_KEY_PALETTE
 import player.phonograph.coil.PARAMETERS_KEY_QUICK_CACHE
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.palette.PaletteColorTarget
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.FavoriteSongs
-import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.util.text.buildInfoString
-import player.phonograph.util.text.readableDuration
 import player.phonograph.util.theme.themeFooterColor
 import androidx.annotation.ColorInt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Color
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,16 +24,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class PlayerFragmentViewModel : ViewModel() {
-
-    private val _currentSong: MutableStateFlow<Song?> = MutableStateFlow(null)
-    val currentSong get() = _currentSong.asStateFlow()
-
-    fun updateCurrentSong(context: Context, song: Song?) {
-        viewModelScope.launch {
-            _currentSong.emit(song)
-            updateFavoriteState(context, song)
-        }
-    }
 
     private var _favoriteState: MutableStateFlow<Pair<Song?, Boolean>> = MutableStateFlow(null to false)
     val favoriteState get() = _favoriteState.asStateFlow()
@@ -60,15 +45,6 @@ class PlayerFragmentViewModel : ViewModel() {
         _shownToolbar.tryEmit(
             !_shownToolbar.value
         )
-
-    fun upNextAndQueueTime(resources: Resources): String {
-        val duration = MusicPlayerRemote.getQueueDurationMillis(MusicPlayerRemote.position)
-        return buildInfoString(
-            resources.getString(R.string.up_next),
-            readableDuration(duration)
-        )
-    }
-
 
     //region Image & PaletteColor
 

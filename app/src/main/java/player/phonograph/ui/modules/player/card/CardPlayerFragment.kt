@@ -64,7 +64,9 @@ class CardPlayerFragment : AbsPlayerFragment() {
     private var _viewBinding: FragmentCardPlayerBinding? = null
     private val viewBinding: FragmentCardPlayerBinding get() = _viewBinding!!
 
-    override fun getToolBarContainer(): View? = viewBinding.toolbarContainer
+    override fun requireQueueRecyclerView(): FastScrollRecyclerView = viewBinding.playerRecyclerView
+    override fun requireToolBarContainer(): View? = viewBinding.toolbarContainer
+    override fun requireToolbar(): Toolbar = viewBinding.playerToolbar
 
 
     override fun onCreateView(
@@ -110,7 +112,7 @@ class CardPlayerFragment : AbsPlayerFragment() {
     private fun observeState() {
         observe(queueViewModel.position) {
             withStarted {
-                viewBinding.playerQueueSubHeader.text = viewModel.upNextAndQueueTime(resources)
+                viewBinding.playerQueueSubHeader.text = buildUpNextAndQueueTime(resources)
                 if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
                     resetToCurrentPosition()
                 }
@@ -131,16 +133,12 @@ class CardPlayerFragment : AbsPlayerFragment() {
     override suspend fun updateAdapter() {
         super.updateAdapter()
         lifecycle.withCreated {
-            viewBinding.playerQueueSubHeader.text = viewModel.upNextAndQueueTime(resources)
+            viewBinding.playerQueueSubHeader.text = buildUpNextAndQueueTime(resources)
             if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
                 resetToCurrentPosition()
             }
         }
     }
-
-    override fun fetchRecyclerView(): FastScrollRecyclerView = viewBinding.playerRecyclerView
-
-    override fun getImplToolbar(): Toolbar = viewBinding.playerToolbar
 
     @SuppressLint("ObsoleteSdkInt")
     override fun onPanelSlide(view: View, slide: Float) {

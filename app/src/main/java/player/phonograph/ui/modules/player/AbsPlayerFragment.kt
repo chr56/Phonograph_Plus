@@ -3,7 +3,6 @@ package player.phonograph.ui.modules.player
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
@@ -30,6 +29,8 @@ import player.phonograph.ui.modules.player.PlayerAlbumCoverFragment.Companion.VI
 import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
 import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenPreferenceDialog
 import player.phonograph.util.NavigationUtil
+import player.phonograph.util.text.buildInfoString
+import player.phonograph.util.text.readableDuration
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.tintButtons
@@ -55,6 +56,7 @@ import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.animation.AnimatorSet
+import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
@@ -67,23 +69,30 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 abstract class AbsPlayerFragment :
-        AbsMusicServiceFragment()/* , PaletteColorHolder */, SlidingUpPanelLayout.PanelSlideListener {
+        AbsMusicServiceFragment(), SlidingUpPanelLayout.PanelSlideListener {
 
-    protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment<*>
     protected val viewModel: PlayerFragmentViewModel by viewModels()
     protected val lyricsViewModel: LyricsViewModel by viewModels({ requireActivity() })
+
+    protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment<*>
+
+    protected lateinit var playerToolbar: Toolbar
+
+    protected lateinit var impl: Impl
 
     // recycle view
     protected lateinit var layoutManager: LinearLayoutManager
     protected lateinit var playingQueueAdapter: PlayingQueueAdapter
+
     private var _wrappedAdapter: RecyclerView.Adapter<*>? = null
     protected val wrappedAdapter: RecyclerView.Adapter<*> get() = _wrappedAdapter!!
+
     private var _recyclerViewDragDropManager: RecyclerViewDragDropManager? = null
     protected val recyclerViewDragDropManager: RecyclerViewDragDropManager get() = _recyclerViewDragDropManager!!
 
-    protected lateinit var playerToolbar: Toolbar
-
-    internal lateinit var impl: Impl
+    protected abstract fun requireQueueRecyclerView(): FastScrollRecyclerView
+    protected abstract fun requireToolBarContainer(): View?
+    protected abstract fun requireToolbar(): Toolbar
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -106,18 +115,15 @@ abstract class AbsPlayerFragment :
         recyclerViewDragDropManager.setInitiateOnTouch(true)
         recyclerViewDragDropManager.setInitiateOnLongPress(false)
 
-        val playerRecyclerView = fetchRecyclerView()
+        val playerRecyclerView = requireQueueRecyclerView()
 
-        val animator: GeneralItemAnimator = RefactoredDefaultItemAnimator()
         playerRecyclerView.setUpFastScrollRecyclerViewColor(requireContext(), MaterialColor.Grey._500.asColor)
         playerRecyclerView.layoutManager = layoutManager
         playerRecyclerView.adapter = wrappedAdapter
-        playerRecyclerView.itemAnimator = animator
+        playerRecyclerView.itemAnimator = RefactoredDefaultItemAnimator()
         recyclerViewDragDropManager.attachRecyclerView(playerRecyclerView)
         layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
     }
-
-    protected abstract fun fetchRecyclerView(): FastScrollRecyclerView
 
     override fun onDestroyView() {
         favoriteMenuItem = null
@@ -140,9 +146,10 @@ abstract class AbsPlayerFragment :
     //
 
     private var lyricsMenuItem: MenuItem? = null
+    private var favoriteMenuItem: MenuItem? = null
 
     private fun initToolbar() {
-        playerToolbar = getImplToolbar()
+        playerToolbar = requireToolbar()
         playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
         playerToolbar.setNavigationOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
@@ -176,7 +183,7 @@ abstract class AbsPlayerFragment :
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 itemId = R.id.action_toggle_favorite
                 onClick {
-                    val song = viewModel.currentSong.value
+                    val song = queueViewModel.currentSong.value
                     if (song != null) lifecycleScope.launch(Dispatchers.IO) {
                         FavoriteSongs.toggleFavorite(context, song)
                     }
@@ -296,11 +303,9 @@ abstract class AbsPlayerFragment :
 
     }
 
-    protected abstract fun getImplToolbar(): Toolbar
-
     private fun showToolbar(toolbar: View) {
         toolbar.visibility = View.VISIBLE
-        toolbar.animate().alpha(1f).duration = VISIBILITY_ANIM_DURATION
+        toolbar.animate().alpha(1f).setDuration(VISIBILITY_ANIM_DURATION)
     }
 
     private fun hideToolbar(toolbar: View) {
@@ -308,20 +313,16 @@ abstract class AbsPlayerFragment :
             .withEndAction { toolbar.visibility = View.GONE }
     }
 
-    protected abstract fun getToolBarContainer(): View?
-
-    var favoriteMenuItem: MenuItem? = null
-
     override fun onPause() {
         recyclerViewDragDropManager.cancelDrag()
         super.onPause()
     }
 
-    open fun onShow() {
+    fun onShow() {
         playbackControlsFragment.show()
     }
 
-    open fun onHide() {
+    fun onHide() {
         playbackControlsFragment.hide()
         collapseToNormal()
     }
@@ -361,6 +362,11 @@ abstract class AbsPlayerFragment :
 
     protected abstract fun resetToCurrentPosition()
 
+    protected fun buildUpNextAndQueueTime(resources: Resources): String {
+        val duration = MusicPlayerRemote.getQueueDurationMillis(MusicPlayerRemote.position)
+        return buildInfoString(resources.getString(R.string.up_next), readableDuration(duration))
+    }
+
     private lateinit var listener: MediaStoreListener
     override fun onCreate(savedInstanceState: Bundle?) {
         listener = MediaStoreListener()
@@ -384,7 +390,7 @@ abstract class AbsPlayerFragment :
         }
     }
 
-    internal interface Impl {
+    protected interface Impl {
         fun init()
         fun updateCurrentSong(song: Song?)
         fun setUpPanelAndAlbumCoverHeight()
@@ -421,17 +427,17 @@ abstract class AbsPlayerFragment :
             playingQueueAdapter.current = position
         }
         observe(queueViewModel.currentSong) { song ->
-            viewModel.updateCurrentSong(requireContext(), song)
-            if (song != null) withStarted { impl.updateCurrentSong(song) }
-        }
-        observe(viewModel.currentSong) {
-            if (it != null) lyricsViewModel.loadLyricsFor(requireContext(), it)
+            if (song != null) {
+                withStarted { impl.updateCurrentSong(song) }
+                lyricsViewModel.loadLyricsFor(requireContext(), song)
+                viewModel.updateFavoriteState(requireContext(), song)
+            }
         }
         observe(queueViewModel.shuffleMode) {
             updateAdapter()
         }
         observe(viewModel.favoriteState) {
-            if (it.first != null && it.first == viewModel.currentSong.value) {
+            if (it.first != null && it.first == queueViewModel.currentSong.value) {
                 val isFavorite = it.second
                 lifecycle.withStarted {
                     val res =
@@ -447,7 +453,7 @@ abstract class AbsPlayerFragment :
             }
         }
         observe(viewModel.showToolbar) {
-            val container = getToolBarContainer() ?: return@observe
+            val container = requireToolBarContainer() ?: return@observe
             withStarted {
                 if (it) {
                     showToolbar(container)
@@ -471,7 +477,6 @@ abstract class AbsPlayerFragment :
         }
     }
 
-    /* override val paletteColor @ColorInt get() = viewModel.paletteColor.value */
     val paletteColorState get() = viewModel.paletteColor
 
 
