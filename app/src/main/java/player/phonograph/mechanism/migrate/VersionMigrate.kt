@@ -46,11 +46,11 @@ object MigrationManager {
         var status = CODE_SUCCESSFUL
 
         when (from) {
-            in 1 until 1040    -> { // v1.4.0
+            in 1 until 1064    -> { // v1.7.0 (dev2)
                 return CODE_FORBIDDEN
             }
 
-            in 1040 until 1070 -> { // v1.7.0
+            in 1064 until 1084 -> { // v1.8.4
                 status = CODE_WARNING
             }
         }
