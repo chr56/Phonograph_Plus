@@ -13,7 +13,6 @@ import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.GlobalContext
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
@@ -27,6 +26,7 @@ import player.phonograph.ui.dialogs.SleepTimerDialog
 import player.phonograph.ui.dialogs.SpeedControlDialog
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
+import player.phonograph.ui.modules.panel.QueueViewModel
 import player.phonograph.ui.modules.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
 import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
 import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenPreferenceDialog
@@ -44,6 +44,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -56,7 +58,6 @@ import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.animation.AnimatorSet
-import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
@@ -76,10 +77,6 @@ abstract class AbsPlayerFragment :
     protected val panelViewModel: PanelViewModel by viewModel(ownerProducer = { requireActivity() })
 
     protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment<*>
-
-    protected lateinit var playerToolbar: Toolbar
-
-    protected lateinit var impl: Impl
 
     // recycle view
     protected lateinit var layoutManager: LinearLayoutManager
@@ -149,158 +146,17 @@ abstract class AbsPlayerFragment :
     private var favoriteMenuItem: MenuItem? = null
 
     private fun initToolbar() {
-        playerToolbar = requireToolbar()
-        playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
-        playerToolbar.setNavigationOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+        buildPlayerToolbar(
+            requireActivity(),
+            requireToolbar(),
+            lifecycle,
+            childFragmentManager,
+            lyricsViewModel,
+            queueViewModel
+        ).also {
+            lyricsMenuItem = it.first
+            favoriteMenuItem = it.second
         }
-        requireContext().attach(playerToolbar.menu) {
-            // visible
-            menuItem(getString(R.string.lyrics)) {
-                order = 0
-                icon = requireContext()
-                    .getTintedDrawable(R.drawable.ic_comment_text_outline_white_24dp, Color.WHITE)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
-                visible = false
-                itemId = R.id.action_show_lyrics
-                onClick {
-                    if (lyricsViewModel.hasLyrics) {
-                        LyricsDialog().show(childFragmentManager, "LYRICS")
-                    }
-                    true
-                }
-            }.also {
-                lyricsMenuItem = it
-            }
-
-            menuItem(getString(R.string.action_add_to_favorites)) {
-                order = 1
-                icon =
-                    requireContext().getTintedDrawable(
-                        R.drawable.ic_favorite_border_white_24dp, Color.WHITE
-                    )
-                // default state
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
-                itemId = R.id.action_toggle_favorite
-                onClick {
-                    val song = queueViewModel.currentSong.value
-                    if (song != null) lifecycleScope.launch(Dispatchers.IO) {
-                        FavoriteSongs.toggleFavorite(context, song)
-                    }
-                    true
-                }
-            }.apply {
-                favoriteMenuItem = this
-            }
-
-            // collapsed
-            menuItem {
-                title = getString(R.string.action_clear_playing_queue)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                onClick {
-                    MusicPlayerRemote.queueManager.clearQueue()
-                    true
-                }
-            }
-            menuItem {
-                title = getString(R.string.action_save_playing_queue)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                onClick {
-                    startActivity(
-                        CreatePlaylistDialogActivity.Parameter.buildLaunchingIntentForCreating(
-                            requireContext(), MusicPlayerRemote.playingQueue
-                        )
-                    )
-                    true
-                }
-            }
-            menuItem {
-                title = getString(R.string.action_choose_lyrics)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                onClick {
-                    val activity = requireActivity()
-                    val accessor = activity as? IOpenFileStorageAccessible
-                    if (accessor != null) {
-                        accessor.openFileStorageAccessDelegate.launch(OpenDocumentContract.Config(arrayOf("*/*"))) { uri ->
-                            if (uri == null) return@launch
-                            CoroutineScope(Dispatchers.IO).launch {
-                                val lyricsViewModel = ViewModelProvider(activity)[LyricsViewModel::class.java]
-                                lyricsViewModel.appendLyricsFrom(activity, uri)
-                            }
-                        }
-                    } else {
-                        warning("Lyrics", "Can not open file from $activity")
-                    }
-                    true
-                }
-            }
-            menuItem {
-                title = getString(R.string.action_sleep_timer)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                onClick {
-                    SleepTimerDialog()
-                        .show(childFragmentManager, "SET_SLEEP_TIMER")
-                    true
-                }
-            }
-            menuItem {
-                title = getString(R.string.equalizer)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                onClick {
-                    NavigationUtil.openEqualizer(requireActivity())
-                    true
-                }
-            }
-            menuItem {
-                title = getString(R.string.action_speed)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                onClick {
-                    SpeedControlDialog().show(childFragmentManager, "SPEED_CONTROL_DIALOG")
-                    true
-                }
-            }
-            menuItem {
-                title = getString(R.string.change_now_playing_screen)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                onClick {
-                    NowPlayingScreenPreferenceDialog()
-                        .show(childFragmentManager, "NOW_PLAYING_SCREEN")
-                    true
-                }
-            }
-            menuItem {
-                title = context.getString(R.string.playing_queue_history)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                onClick {
-                    QueueSnapshotsDialog()
-                        .show(childFragmentManager, "QUEUE_SNAPSHOTS")
-                    true
-                }
-            }
-            menuItem {
-                title = getString(R.string.action_clean_missing_items)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                onClick {
-                    MaterialAlertDialogBuilder(context)
-                        .setTitle(R.string.action_clean)
-                        .setMessage(R.string.action_clean_missing_items)
-                        .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
-                            val queueManager: QueueManager = GlobalContext.get().get()
-                            queueManager.clean()
-                            dialog.dismiss()
-                        }
-                        .setNegativeButton(getString(android.R.string.cancel)) { dialog, _ ->
-                            dialog.dismiss()
-                        }
-                        .create()
-                        .tintButtons()
-                        .show()
-                    true
-                }
-            }
-        }
-        setMenuColor(requireContext(), playerToolbar, playerToolbar.menu, Color.WHITE)
-
     }
 
     private fun showToolbar(toolbar: View) {
@@ -337,7 +193,7 @@ abstract class AbsPlayerFragment :
                 collapseBackPressedCallback.remove()
                 lifecycleScope.launch(Dispatchers.Main) {
                     withCreated {
-                        resetToCurrentPosition()
+                        resetToCurrentPosition(true)
                     }
                 }
             }
@@ -360,11 +216,16 @@ abstract class AbsPlayerFragment :
 
     protected abstract fun collapseToNormal()
 
-    protected abstract fun resetToCurrentPosition()
+    protected abstract fun resetToCurrentPosition(force: Boolean)
 
-    protected fun buildUpNextAndQueueTime(resources: Resources): String {
-        val duration = MusicPlayerRemote.getQueueDurationMillis(MusicPlayerRemote.position)
-        return buildInfoString(resources.getString(R.string.up_next), readableDuration(duration))
+    protected abstract fun updateQueueTime(position: Int)
+
+    protected fun buildUpNextAndQueueTimeText(position: Int): String {
+        val duration = MusicPlayerRemote.getQueueDurationMillis(position)
+        return buildInfoString(
+            resources.getString(R.string.up_next),
+            readableDuration(duration)
+        )
     }
 
     private lateinit var listener: MediaStoreListener
@@ -376,17 +237,15 @@ abstract class AbsPlayerFragment :
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
-            lifecycleScope.launch(Dispatchers.Main) { updateAdapter() }
-            viewModel.updateFavoriteState(context ?: App.instance, MusicPlayerRemote.currentSong)
-        }
-    }
-
-
-    @MainThread
-    protected open suspend fun updateAdapter() {
-        lifecycle.withCreated {
-            playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
-            playingQueueAdapter.current = MusicPlayerRemote.position
+            viewModel.updateFavoriteState(requireContext(), MusicPlayerRemote.currentSong)
+            lifecycleScope.launch(Dispatchers.Main) {
+                withStarted {
+                    playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
+                    playingQueueAdapter.current = MusicPlayerRemote.position
+                    updateQueueTime(MusicPlayerRemote.position)
+                    resetToCurrentPosition(false)
+                }
+            }
         }
     }
 
@@ -398,6 +257,10 @@ abstract class AbsPlayerFragment :
         fun forceChangeColor(@ColorInt newColor: Int)
     }
 
+    protected abstract fun updateCurrentSong(song: Song?)
+    protected abstract fun generateAnimators(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet
+    protected abstract fun forceChangeColor(@ColorInt newColor: Int)
+
     protected var currentAnimatorSet: AnimatorSet? = null
 
 
@@ -406,10 +269,9 @@ abstract class AbsPlayerFragment :
         if (animated) {
             currentAnimatorSet?.end()
             currentAnimatorSet?.cancel()
-            currentAnimatorSet =
-                impl.generateAnimators(oldColor, newColor).also { it.start() }
+            currentAnimatorSet = generateAnimators(oldColor, newColor).also { it.start() }
         } else {
-            impl.forceChangeColor(newColor)
+            forceChangeColor(newColor)
         }
     }
 
@@ -420,16 +282,25 @@ abstract class AbsPlayerFragment :
         }
         observe(queueViewModel.position) { position ->
             playingQueueAdapter.current = position
+            withStarted {
+                updateQueueTime(position)
+                resetToCurrentPosition(false)
+            }
         }
         observe(queueViewModel.currentSong) { song ->
             if (song != null) {
-                withStarted { impl.updateCurrentSong(song) }
+                withStarted { updateCurrentSong(song) }
                 lyricsViewModel.loadLyricsFor(requireContext(), song)
                 viewModel.updateFavoriteState(requireContext(), song)
             }
         }
         observe(queueViewModel.shuffleMode) {
-            updateAdapter()
+            lifecycle.withCreated {
+                playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
+                playingQueueAdapter.current = MusicPlayerRemote.position
+                updateQueueTime(MusicPlayerRemote.position)
+                resetToCurrentPosition(false)
+            }
         }
         observe(viewModel.favoriteState) {
             if (it.first != null && it.first == queueViewModel.currentSong.value) {
@@ -491,4 +362,164 @@ abstract class AbsPlayerFragment :
         }
     }
 
+}
+
+private fun buildPlayerToolbar(
+    activity: FragmentActivity,
+    playerToolbar: Toolbar,
+    lifecycle: Lifecycle,
+    childFragmentManager: FragmentManager,
+    lyricsViewModel: LyricsViewModel,
+    queueViewModel: QueueViewModel,
+): Pair<MenuItem?, MenuItem?> {
+    var lyricsMenuItem: MenuItem? = null
+    var favoriteMenuItem: MenuItem? = null
+    attach(activity, playerToolbar.menu) {
+        // visible
+        lyricsMenuItem = menuItem(activity.getString(R.string.lyrics)) {
+            order = 0
+            icon = activity.getTintedDrawable(R.drawable.ic_comment_text_outline_white_24dp, Color.WHITE)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+            visible = false
+            itemId = R.id.action_show_lyrics
+            onClick {
+                if (lyricsViewModel.hasLyrics) {
+                    LyricsDialog().show(childFragmentManager, "LYRICS")
+                }
+                true
+            }
+        }
+
+        favoriteMenuItem = menuItem(activity.getString(R.string.action_add_to_favorites)) {
+            order = 1
+            icon =
+                activity.getTintedDrawable(
+                    R.drawable.ic_favorite_border_white_24dp, Color.WHITE
+                )
+            // default state
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+            itemId = R.id.action_toggle_favorite
+            onClick {
+                val song = queueViewModel.currentSong.value
+                if (song != null) lifecycle.coroutineScope.launch(Dispatchers.IO) {
+                    FavoriteSongs.toggleFavorite(context, song)
+                }
+                true
+            }
+        }
+
+        // collapsed
+        menuItem {
+            title = activity.getString(R.string.action_clear_playing_queue)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+            onClick {
+                MusicPlayerRemote.pauseSong()
+                MusicPlayerRemote.queueManager.clearQueue()
+                true
+            }
+        }
+        menuItem {
+            title = activity.getString(R.string.action_save_playing_queue)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+            onClick {
+                activity.startActivity(
+                    CreatePlaylistDialogActivity.Parameter.buildLaunchingIntentForCreating(
+                        activity, MusicPlayerRemote.playingQueue
+                    )
+                )
+                true
+            }
+        }
+        menuItem {
+            title = activity.getString(R.string.action_choose_lyrics)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+            onClick {
+                val activity = activity
+                val accessor = activity as? IOpenFileStorageAccessible
+                if (accessor != null) {
+                    accessor.openFileStorageAccessDelegate.launch(OpenDocumentContract.Config(arrayOf("*/*"))) { uri ->
+                        if (uri == null) return@launch
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val lyricsViewModel = ViewModelProvider(activity)[LyricsViewModel::class.java]
+                            lyricsViewModel.appendLyricsFrom(activity, uri)
+                        }
+                    }
+                } else {
+                    warning("Lyrics", "Can not open file from $activity")
+                }
+                true
+            }
+        }
+        menuItem {
+            title = activity.getString(R.string.action_sleep_timer)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+            onClick {
+                SleepTimerDialog()
+                    .show(childFragmentManager, "SET_SLEEP_TIMER")
+                true
+            }
+        }
+        menuItem {
+            title = activity.getString(R.string.equalizer)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+            onClick {
+                NavigationUtil.openEqualizer(activity)
+                true
+            }
+        }
+        menuItem {
+            title = activity.getString(R.string.action_speed)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+            onClick {
+                SpeedControlDialog().show(childFragmentManager, "SPEED_CONTROL_DIALOG")
+                true
+            }
+        }
+        menuItem {
+            title = activity.getString(R.string.change_now_playing_screen)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+            onClick {
+                NowPlayingScreenPreferenceDialog()
+                    .show(childFragmentManager, "NOW_PLAYING_SCREEN")
+                true
+            }
+        }
+        menuItem {
+            title = context.getString(R.string.playing_queue_history)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+            onClick {
+                QueueSnapshotsDialog()
+                    .show(childFragmentManager, "QUEUE_SNAPSHOTS")
+                true
+            }
+        }
+        menuItem {
+            title = activity.getString(R.string.action_clean_missing_items)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+            onClick {
+                MaterialAlertDialogBuilder(context)
+                    .setTitle(R.string.action_clean)
+                    .setMessage(R.string.action_clean_missing_items)
+                    .setPositiveButton(activity.getString(android.R.string.ok)) { dialog, _ ->
+                        val queueManager: QueueManager = GlobalContext.get().get()
+                        queueManager.clean()
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton(activity.getString(android.R.string.cancel)) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .create()
+                    .tintButtons()
+                    .show()
+                true
+            }
+        }
+    }
+
+    playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
+    playerToolbar.setNavigationOnClickListener {
+        activity.onBackPressedDispatcher.onBackPressed()
+    }
+    setMenuColor(activity, playerToolbar, playerToolbar.menu, Color.WHITE)
+    return lyricsMenuItem to favoriteMenuItem
 }
