@@ -19,7 +19,6 @@ import player.phonograph.mechanism.Update
 import player.phonograph.model.Song
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.notification.UpgradeNotification
-import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSetting
 import player.phonograph.settings.Setting
@@ -119,7 +118,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                CurrentQueueState.currentSong.collect { song ->
+                queueViewModel.currentSong.collect { song ->
                     updateNavigationDrawerHeader(song)
                 }
             }

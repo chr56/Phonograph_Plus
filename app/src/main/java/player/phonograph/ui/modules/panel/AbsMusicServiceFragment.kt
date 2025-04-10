@@ -1,17 +1,21 @@
 package player.phonograph.ui.modules.panel
 
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import kotlin.getValue
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-open class AbsMusicServiceFragment : Fragment(), MusicServiceEventListener {
+abstract class AbsMusicServiceFragment : Fragment(), MusicServiceEventListener {
 
     private var _bindingActivity: AbsMusicServiceActivity? = null
     val bindingActivity get() = _bindingActivity!!
+
+    protected val queueViewModel: QueueViewModel by viewModels({ requireActivity() })
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

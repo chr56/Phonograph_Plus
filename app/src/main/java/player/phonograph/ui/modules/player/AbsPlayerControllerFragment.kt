@@ -8,7 +8,6 @@ import player.phonograph.R
 import player.phonograph.model.service.RepeatMode
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
 import player.phonograph.util.component.MusicProgressUpdateDelegate
@@ -101,14 +100,14 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
     private fun observeState() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                CurrentQueueState.repeatMode.collect { repeatMode ->
+                queueViewModel.repeatMode.collect { repeatMode ->
                     binding.updateRepeatModeIcon(repeatMode)
                 }
             }
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                CurrentQueueState.shuffleMode.collect { shuffleMode ->
+                queueViewModel.shuffleMode.collect { shuffleMode ->
                     binding.updateShuffleModeIcon(shuffleMode)
                 }
             }

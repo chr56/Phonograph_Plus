@@ -8,13 +8,11 @@ import org.koin.android.ext.android.inject
 import player.phonograph.model.service.MusicServiceConnection
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
-import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.basis.ToolbarActivity
 import player.phonograph.util.permissions.StoragePermissionChecker
 import player.phonograph.util.permissions.navigateToAppDetailSetting
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
+import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withResumed
 import android.content.ComponentName
@@ -29,11 +27,15 @@ import kotlinx.coroutines.launch
 abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventListener {
 
     protected val queueManager: QueueManager by inject()
+    protected val queueViewModel: QueueViewModel by viewModels()
 
     private var serviceToken: ServiceToken? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        queueViewModel.refresh(queueManager)
+        queueViewModel.register(queueManager)
 
         lifecycleScope.launch {
             connectToService()
@@ -42,12 +44,12 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
             checkStorageReadPermission()
         }
         volumeControlStream = AudioManager.STREAM_MUSIC
-        lifecycle.addObserver(QueueStateLifeCycleObserver())
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        MusicPlayerRemote.unbindFromService(serviceToken)
+        queueViewModel.unregister(queueManager)
+        disconnectFromService()
     }
 
     suspend fun connectToService() {
@@ -70,12 +72,16 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
             )
     }
 
+    fun disconnectFromService() {
+        MusicPlayerRemote.unbindFromService(serviceToken)
+    }
+
     private suspend fun checkStorageReadPermission() {
-        val result = StoragePermissionChecker.hasStorageReadPermission(this@AbsMusicServiceActivity)
+        val result = StoragePermissionChecker.hasStorageReadPermission(this)
         if (!result) {
             withResumed {
                 notifyPermissionDeniedUser(listOf(StoragePermissionChecker.necessaryStorageReadPermission)) {
-                    navigateToAppDetailSetting(this@AbsMusicServiceActivity)
+                    navigateToAppDetailSetting(this)
                 }
             }
         }
@@ -96,32 +102,6 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
     }
 
     //
-    // CurrentQueueState
-    //
-
-    private inner class QueueStateLifeCycleObserver : DefaultLifecycleObserver {
-
-        private var registered = false
-
-        private val shouldUnregister get() = mMusicServiceEventListeners.isEmpty()
-
-        override fun onCreate(owner: LifecycleOwner) {
-            if (!registered) {
-                registered = true
-                CurrentQueueState.init(queueManager)
-                CurrentQueueState.register(queueManager)
-            }
-        }
-
-        override fun onDestroy(owner: LifecycleOwner) {
-            if (shouldUnregister) {
-                CurrentQueueState.unregister(queueManager)
-                registered = false
-            }
-        }
-    }
-
-    //
     // MusicServiceEventListener Callbacks
     //
 
@@ -139,7 +119,3 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
 
 }
 
-interface MusicServiceEventListener {
-    fun onServiceConnected()
-    fun onServiceDisconnected()
-}

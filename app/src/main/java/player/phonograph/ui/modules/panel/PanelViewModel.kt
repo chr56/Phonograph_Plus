@@ -4,19 +4,15 @@
 
 package player.phonograph.ui.modules.panel
 
-import player.phonograph.ui.modules.player.AbsPlayerFragment
-import player.phonograph.ui.modules.player.MiniPlayerFragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.lang.ref.WeakReference
 
 class PanelViewModel(
     initialActivityColor: Int,
     initialHighlightColor: Int,
-    val defaultColor: Int,
 ) : ViewModel() {
 
     // original color of this activity
@@ -30,19 +26,15 @@ class PanelViewModel(
     private val _highlightColor: MutableStateFlow<Int> = MutableStateFlow(initialHighlightColor)
     val highlightColor get() = _highlightColor.asStateFlow()
 
-    private val _previousHighlightColor: MutableStateFlow<Int> = MutableStateFlow(initialHighlightColor)
-    val previousHighlightColor get() = _previousHighlightColor.asStateFlow()
+    private val _colorChange = MutableStateFlow(initialHighlightColor to initialHighlightColor)
+    val colorChange get() = _colorChange.asStateFlow()
 
     fun updateHighlightColor(newColor: Int) {
         viewModelScope.launch {
             val oldColor = _highlightColor.value
-            _previousHighlightColor.emit(oldColor)
+            _colorChange.emit(oldColor to newColor)
             _highlightColor.emit(newColor)
         }
     }
-
-    val playerFragment: WeakReference<AbsPlayerFragment?> = WeakReference(null)
-    val miniPlayerFragment: WeakReference<MiniPlayerFragment?> = WeakReference(null)
-
 
 }

@@ -12,7 +12,7 @@ import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.modules.playlist.PlaylistDetailViewModel
 
 val moduleViewModels = module {
-    viewModel { param -> PanelViewModel(param.get(), param.get(), param.get()) }
+    viewModel { param -> PanelViewModel(param.get(), param.get()) }
     viewModel { param -> ArtistDetailActivityViewModel(param.get()) }
     viewModel { param -> AlbumDetailActivityViewModel(param.get()) }
     viewModel { param -> PlaylistDetailViewModel(param.get(), param.get()) }

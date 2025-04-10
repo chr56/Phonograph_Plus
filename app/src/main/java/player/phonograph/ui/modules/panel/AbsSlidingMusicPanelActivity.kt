@@ -8,7 +8,6 @@ import player.phonograph.R
 import player.phonograph.databinding.SlidingMusicPanelLayoutBinding
 import player.phonograph.model.NowPlayingScreen
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.player.AbsPlayerFragment
@@ -59,13 +58,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
     private val slidingUpPanelLayout: SlidingUpPanelLayout get() = panelBinding.slidingLayout
 
-    val panelViewModel: PanelViewModel by viewModel {
-        val paletteColor = playerFragment?.paletteColorState?.value ?: 0
-        val highlightColor = if (paletteColor > 0) paletteColor else themeFooterColor(this)
-        parametersOf(
-            primaryColor(), highlightColor, themeFooterColor(this)
-        )
-    }
+    val panelViewModel: PanelViewModel by viewModel { parametersOf(primaryColor(), themeFooterColor(this)) }
 
     /**
      * See [wrapSlidingMusicPanel]
@@ -125,19 +118,15 @@ abstract class AbsSlidingMusicPanelActivity :
         // states
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                panelViewModel.highlightColor.collect { color ->
-                    if (panelState == PanelState.EXPANDED) {
-                        val from = panelViewModel.previousHighlightColor.value
-                        val to = color
-                        animateSystemBarsColor(from, to)
-                    }
+                panelViewModel.colorChange.collect { (oldColor, newColor) ->
+                    if (panelState == PanelState.EXPANDED) animateSystemBarsColor(oldColor, newColor)
                 }
             }
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                CurrentQueueState.queue.collect { queue ->
-                    hideBottomBar(queue.get()?.isEmpty() == true)
+                queueViewModel.queue.collect { queue ->
+                    hideBottomBar(queue.isEmpty() == true)
                 }
             }
         }
@@ -174,11 +163,6 @@ abstract class AbsSlidingMusicPanelActivity :
         playerFragment =
             supportFragmentManager.findFragmentById(R.id.player_fragment_container) as AbsPlayerFragment
 
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                playerFragment?.paletteColorState?.collect { color -> panelViewModel.updateHighlightColor(color) }
-            }
-        }
     }
 
     override fun onPanelSlide(panel: View, @FloatRange(from = 0.0, to = 1.0) slideOffset: Float) {

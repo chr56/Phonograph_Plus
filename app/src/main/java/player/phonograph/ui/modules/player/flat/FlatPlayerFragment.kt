@@ -13,7 +13,6 @@ import player.phonograph.databinding.ItemListBinding
 import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.util.text.infoString
@@ -34,7 +33,6 @@ import util.theme.view.menu.tintOverflowButtonColor
 import util.theme.view.menu.tintToolbarMenuActionIcons
 import util.theme.view.toolbar.setToolbarTextColor
 import androidx.annotation.ColorInt
-import androidx.annotation.MainThread
 import androidx.appcompat.widget.Toolbar
 import androidx.core.animation.doOnEnd
 import androidx.core.view.ViewCompat
@@ -43,8 +41,6 @@ import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.withCreated
-import androidx.lifecycle.withStarted
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.graphics.PorterDuff
@@ -64,8 +60,11 @@ class FlatPlayerFragment : AbsPlayerFragment() {
     private var _viewBinding: FragmentFlatPlayerBinding? = null
     private val viewBinding: FragmentFlatPlayerBinding get() = _viewBinding!!
 
-    override fun getToolBarContainer(): View? = viewBinding.toolbarContainer
+    override fun requireQueueRecyclerView(): FastScrollRecyclerView = viewBinding.playerRecyclerView
+    override fun requireToolBarContainer(): View? = viewBinding.toolbarContainer
+    override fun requireToolbar(): Toolbar = viewBinding.playerToolbar
 
+    private lateinit var impl: Impl
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -99,21 +98,6 @@ class FlatPlayerFragment : AbsPlayerFragment() {
                 impl.setUpPanelAndAlbumCoverHeight()
             }
         })
-
-        observeState()
-    }
-
-    private fun observeState() {
-        observe(CurrentQueueState.position) {
-            withStarted {
-                viewBinding.playerQueueSubHeader.text = viewModel.upNextAndQueueTime(resources)
-                if (viewBinding.playerSlidingLayout == null ||
-                    viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED
-                ) {
-                    resetToCurrentPosition()
-                }
-            }
-        }
     }
 
     override fun onDestroyView() {
@@ -128,70 +112,35 @@ class FlatPlayerFragment : AbsPlayerFragment() {
     }
 
 
-    @MainThread
-    override suspend fun updateAdapter() {
-        super.updateAdapter()
-        lifecycle.withCreated {
-            viewBinding.playerQueueSubHeader.text = viewModel.upNextAndQueueTime(resources)
-            if (viewBinding.playerSlidingLayout == null || viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED) {
-                resetToCurrentPosition()
-            }
-        }
-    }
-
-    override fun fetchRecyclerView(): FastScrollRecyclerView = viewBinding.playerRecyclerView
-
-    override fun getImplToolbar(): Toolbar = viewBinding.playerToolbar
-
     override fun onPanelSlide(view: View, slide: Float) {}
+
+    override fun forceChangeColor(newColor: Int) = impl.forceChangeColor(newColor)
+
+    override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
+        impl.generateAnimators(oldColor, newColor)
+
+    override fun updateCurrentSong(song: Song?): Unit = impl.updateCurrentSong(song)
 
     override fun collapseToNormal() {
         viewBinding.playerSlidingLayout?.panelState = PanelState.COLLAPSED
     }
 
-    override fun resetToCurrentPosition() {
-        viewBinding.playerRecyclerView.stopScroll()
-        layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
+    override fun resetToCurrentPosition(force: Boolean) {
+        val condition =
+            viewBinding.playerSlidingLayout == null || viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED
+        if (condition || force) {
+            viewBinding.playerRecyclerView.stopScroll()
+            layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
+        }
     }
 
-    private abstract class BaseImpl(protected var fragment: FlatPlayerFragment) : Impl {
-
-        private fun textColor(@ColorInt color: Int): Int {
-            val context = fragment.requireContext()
-            val defaultFooterColor = themeFooterColor(fragment.requireContext())
-            val nightMode = context.nightMode
-            return if (color == defaultFooterColor) context.secondaryTextColor(nightMode)
-            else if (nightMode) lightenColor(color) else darkenColor(color)
+    override fun updateQueueTime(position: Int) {
+        with(viewBinding) {
+            playerQueueSubHeader.text = buildUpNextAndQueueTimeText(position)
         }
+    }
 
-        fun defaultColorChangeAnimatorSet(
-            @ColorInt oldColor: Int,
-            @ColorInt newColor: Int,
-            vararg animators: Animator,
-            onEnd: ((animator: Animator) -> Unit)? = null,
-        ): AnimatorSet {
-            val backgroundAnimator =
-                fragment.playbackControlsFragment.requireView().backgroundColorTransitionAnimator(oldColor, newColor)
-            val statusBarAnimator =
-                fragment.viewBinding.playerStatusBar.backgroundColorTransitionAnimator(oldColor, newColor)
-            val oldTextColor: Int = textColor(oldColor)
-            val newTextColor: Int = textColor(newColor)
-            val subHeaderAnimator =
-                fragment.viewBinding.playerQueueSubHeader.textColorTransitionAnimator(oldTextColor, newTextColor)
-            return AnimatorSet().apply {
-                duration = PHONOGRAPH_ANIM_TIME / 2
-                play(backgroundAnimator).with(statusBarAnimator).with(subHeaderAnimator).apply {
-                    for (animator in animators) {
-                        with(animator)
-                    }
-                }
-
-                if (onEnd != null) {
-                    doOnEnd(onEnd)
-                }
-            }
-        }
-
+    private abstract class BaseImpl(val fragment: FlatPlayerFragment) : Impl {
         override fun forceChangeColor(newColor: Int) {
             fragment.playbackControlsFragment.requireView().setBackgroundColor(newColor)
             with(fragment.viewBinding) {
@@ -276,7 +225,7 @@ class FlatPlayerFragment : AbsPlayerFragment() {
         }
 
         override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
-            defaultColorChangeAnimatorSet(oldColor, newColor)
+            fragment.defaultColorChangeAnimatorSet(oldColor, newColor)
     }
 
     private class LandscapeImpl(fragment: FlatPlayerFragment) : BaseImpl(fragment) {
@@ -310,7 +259,7 @@ class FlatPlayerFragment : AbsPlayerFragment() {
         }
 
         override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
-            defaultColorChangeAnimatorSet(
+            fragment.defaultColorChangeAnimatorSet(
                 oldColor, newColor,
                 fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(oldColor, newColor)
             ) {
@@ -336,4 +285,39 @@ class FlatPlayerFragment : AbsPlayerFragment() {
             }
         }
     }
+
+    fun defaultColorChangeAnimatorSet(
+        @ColorInt oldColor: Int,
+        @ColorInt newColor: Int,
+        vararg animators: Animator,
+        onEnd: ((animator: Animator) -> Unit)? = null,
+    ): AnimatorSet {
+        val backgroundAnimator =
+            playbackControlsFragment.requireView().backgroundColorTransitionAnimator(oldColor, newColor)
+        val statusBarAnimator =
+            viewBinding.playerStatusBar.backgroundColorTransitionAnimator(oldColor, newColor)
+        val oldTextColor: Int = textColor(oldColor)
+        val newTextColor: Int = textColor(newColor)
+        val subHeaderAnimator = viewBinding.playerQueueSubHeader.textColorTransitionAnimator(oldTextColor, newTextColor)
+        return AnimatorSet().apply {
+            duration = PHONOGRAPH_ANIM_TIME / 2
+            play(backgroundAnimator).with(statusBarAnimator).with(subHeaderAnimator).apply {
+                for (animator in animators) {
+                    with(animator)
+                }
+            }
+
+            if (onEnd != null) {
+                doOnEnd(onEnd)
+            }
+        }
+    }
+
+    private fun textColor(@ColorInt color: Int): Int {
+        val defaultFooterColor = themeFooterColor(requireContext())
+        val nightMode = requireContext().nightMode
+        return if (color == defaultFooterColor) requireContext().secondaryTextColor(nightMode)
+        else if (nightMode) lightenColor(color) else darkenColor(color)
+    }
+
 }
