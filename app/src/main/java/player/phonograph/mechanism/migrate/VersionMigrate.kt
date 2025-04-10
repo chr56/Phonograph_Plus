@@ -4,32 +4,22 @@
 
 package player.phonograph.mechanism.migrate
 
-import player.phonograph.coil.CustomArtistImageStore
-import player.phonograph.settings.Keys
 import player.phonograph.settings.PrerequisiteSetting
-import player.phonograph.settings.PrimitiveKey
 import player.phonograph.settings.Setting
 import player.phonograph.util.currentVersionCode
 import player.phonograph.util.debug
-import player.phonograph.util.file.moveFile
 import player.phonograph.util.reportError
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.preference.PreferenceManager
-import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.FilenameFilter
 
 object MigrationManager {
     fun shouldMigration(context: Context): Boolean {
@@ -66,9 +56,6 @@ object MigrationManager {
 
         try {
             MigrateOperator(context, from, to).apply {
-                migrate(CustomArtistImageStoreMigration())
-                migrate(ThemeStoreMigration())
-                migrate(GeneralThemeMigration())
                 migrate(LegacyDetailDialogMigration())
                 migrate(PlaylistFilesOperationBehaviourMigration())
                 migrate(ColoredSystemBarsMigration())
@@ -132,80 +119,6 @@ private class MigrateOperator(
         migration.tryMigrate(context, from, to)
 }
 
-/**
- * Custom Artist images have been moved to external storage from internal storage
- */
-private class CustomArtistImageStoreMigration : Migration(introduced = 1053) {
-    override fun doMigrate(context: Context) {
-        val newLocation = CustomArtistImageStore.directory(context) ?: return // no external storage
-        val oldLocation = CustomArtistImageStore.directoryFallback(context)
-        if (!oldLocation.exists()) oldLocation.mkdirs()
-        try {
-            val files: Array<File> = oldLocation.listFiles(imageNameFilter) ?: return // empty
-            for (file in files) {
-                moveFile(file, File(newLocation, file.name))
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    private val imageNameFilter = FilenameFilter { _, name -> name.endsWith("jpeg") }
-}
-
-
-private class ThemeStoreMigration : Migration(introduced = 1064) {
-    @SuppressLint("ApplySharedPref")
-    override fun doMigrate(context: Context) {
-        @Suppress("LocalVariableName")
-        val Old = DeprecatedPreference.ThemeColorKeys
-        val pref = context.getSharedPreferences(
-            Old.THEME_CONFIG_PREFERENCE_NAME,
-            Context.MODE_PRIVATE
-        )
-        CoroutineScope(Dispatchers.IO).launch {
-            if (pref.getBoolean(Old.KEY_IS_CONFIGURED, false)) {
-                with(context) {
-                    migrateIntPreferenceToDataStore(pref, Old.KEY_PRIMARY_COLOR, Keys.selectedPrimaryColor)
-                    migrateIntPreferenceToDataStore(pref, Old.KEY_ACCENT_COLOR, Keys.selectedAccentColor)
-                    migrateIntPreferenceToDataStore(pref, Old.KEY_MONET_PRIMARY_COLOR, Keys.monetPalettePrimaryColor)
-                    migrateIntPreferenceToDataStore(pref, Old.KEY_MONET_ACCENT_COLOR, Keys.monetPaletteAccentColor)
-                    migrateBooleanPreferenceToDataStore(pref, Old.KEY_ENABLE_MONET, Keys.enableMonet)
-                }
-            }
-            pref.edit().clear().commit()
-            delay(100)
-            deleteSharedPreferences(context, Old.THEME_CONFIG_PREFERENCE_NAME)
-        }
-    }
-}
-
-private class GeneralThemeMigration : Migration(introduced = 1064) {
-    @SuppressLint("ApplySharedPref")
-    override fun doMigrate(context: Context) {
-        @Suppress("LocalVariableName")
-        val Old = DeprecatedPreference.StyleConfigKeys
-        val pref = context.getSharedPreferences(
-            Old.PREFERENCE_NAME,
-            Context.MODE_PRIVATE
-        )
-        CoroutineScope(Dispatchers.IO).launch {
-            context.migrateStringPreferenceToDataStore(pref, Old.KEY_THEME, Keys.theme)
-            pref.edit().clear().commit()
-            delay(100)
-            deleteSharedPreferences(context, Old.PREFERENCE_NAME)
-            // change "auto"
-            delay(100)
-            Setting.settingsDatastore(context).edit { preferences ->
-                val theme = preferences[Keys.theme.preferenceKey]
-                if (theme == "auto") {
-                    preferences[Keys.theme.preferenceKey] = Keys.theme.defaultValue()
-                }
-            }
-        }
-    }
-}
-
 private class LegacyDetailDialogMigration : Migration(introduced = 1081) {
     override fun doMigrate(context: Context) {
         removePreference(context, DeprecatedPreference.LegacyDetailDialog.USE_LEGACY_DETAIL_DIALOG)
@@ -235,73 +148,7 @@ private fun deleteSharedPreferences(context: Context, fileName: String) {
     }
 }
 
-private suspend fun Context.migrateIntPreferenceToDataStore(
-    oldPreference: SharedPreferences,
-    oldKeyName: String,
-    newKeyName: PrimitiveKey<Int>,
-) {
-    try {
-        val value = oldPreference.getInt(oldKeyName, -1)
-        if (value != -1) {
-            Setting.settingsDatastore(this).edit {
-                it[newKeyName.preferenceKey] = value
-            }
-        }
-    } catch (e: Exception) {
-        Log.e(TAG, "Failed to migrate int preference $oldKeyName", e)
-    }
-}
-
-private suspend fun Context.migrateBooleanPreferenceToDataStore(
-    oldPreference: SharedPreferences,
-    oldKeyName: String,
-    newKeyName: PrimitiveKey<Boolean>,
-) {
-    try {
-        val value = oldPreference.getBoolean(oldKeyName, false)
-        Setting.settingsDatastore(this).edit { it[newKeyName.preferenceKey] = value }
-    } catch (e: Exception) {
-        Log.e(TAG, "Failed to migrate bool preference $oldKeyName", e)
-    }
-}
-
-private suspend fun Context.migrateStringPreferenceToDataStore(
-    oldPreference: SharedPreferences,
-    oldKeyName: String,
-    newKeyName: PrimitiveKey<String>,
-) {
-    try {
-        val value = oldPreference.getString(oldKeyName, null)
-        if (value != null) {
-            Setting.settingsDatastore(this).edit {
-                it[newKeyName.preferenceKey] = value
-            }
-        }
-    } catch (e: Exception) {
-        Log.e(TAG, "Failed to migrate int preference $oldKeyName", e)
-    }
-}
-
-private fun moveIntPreference(
-    oldPreference: SharedPreferences,
-    oldKeyName: String,
-    newPreference: SharedPreferences,
-    newKeyName: String,
-) {
-    try {
-        val value = oldPreference.getInt(oldKeyName, 0)
-        newPreference.edit().putInt(newKeyName, value).apply()
-        oldPreference.edit().remove(oldKeyName).apply()
-        Log.i(TAG, "Success: $oldKeyName -> $newKeyName")
-    } catch (e: Exception) {
-        Log.i(TAG, "Fail: $oldKeyName -> $newKeyName")
-    }
-}
-
-
 private fun removePreference(context: Context, keyName: String) {
-    var type: Int = -1
-    var exception: Exception? = null
     try {
         CoroutineScope(SupervisorJob()).launch {
             Setting.settingsDatastore(context).edit {
@@ -319,27 +166,9 @@ private fun removePreference(context: Context, keyName: String) {
             }
         }
     } catch (e: Exception) {
-        exception = e
-        type = DATASTORE
-    }
-    try {
-        val pref = PreferenceManager.getDefaultSharedPreferences(context)
-        pref.edit().remove(keyName).apply()
-    } catch (e: Exception) {
-        exception = e
-        type = PREFERENCE
-    }
-    if (exception != null) {
-        reportError(
-            exception,
-            TAG,
-            "Failed to remove legacy preference item `$keyName` via ${if (type == DATASTORE) "datastore" else "preference"}"
-        )
+        reportError(e, TAG, "Failed to remove legacy preference item `$keyName` via datastore")
     }
 }
-
-private const val PREFERENCE = 1
-private const val DATASTORE = 2
 
 private const val TAG = "VersionMigrate"
 
