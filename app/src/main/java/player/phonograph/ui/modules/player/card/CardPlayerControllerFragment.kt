@@ -37,7 +37,6 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment<FragmentCardPla
         super.onViewCreated(view, savedInstanceState)
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
         progressSliderHeight = -1
@@ -45,7 +44,7 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment<FragmentCardPla
 
     val playerPlayPauseFab get() = binding.playerPlayPauseFab
 
-    override fun show() {
+    override fun onShow() {
         if (isResumed) binding.viewBinding.playerPlayPauseFab.animate()
             .scaleX(1f)
             .scaleY(1f)
@@ -54,7 +53,7 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment<FragmentCardPla
             .start()
     }
 
-    override fun hide() {
+    override fun onHide() {
         if (isResumed) binding.viewBinding.playerPlayPauseFab.apply {
             scaleX = 0f
             scaleY = 0f

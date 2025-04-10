@@ -4,18 +4,19 @@
 
 package player.phonograph.ui.modules.player
 
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import player.phonograph.R
 import player.phonograph.model.service.RepeatMode
 import player.phonograph.model.service.ShuffleMode
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
+import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.views.PlayPauseDrawable
 import player.phonograph.util.component.MusicProgressUpdateDelegate
 import player.phonograph.util.text.readableDuration
 import player.phonograph.util.theme.themeFooterColor
 import util.theme.color.isColorLight
 import util.theme.color.primaryTextColor
-import util.theme.color.secondaryDisabledTextColor
 import util.theme.color.secondaryTextColor
 import androidx.annotation.ColorInt
 import androidx.core.graphics.BlendModeColorFilterCompat.createBlendModeColorFilterCompat
@@ -35,17 +36,14 @@ import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlin.getValue
 import kotlinx.coroutines.launch
 
 abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFragment() {
 
-    abstract val binding: PlayerControllerBinding<V>
+    protected abstract val binding: PlayerControllerBinding<V>
 
-    private val musicProgressUpdateDelegate =
-        MusicProgressUpdateDelegate(::onUpdateProgress)
+    protected val panelViewModel: PanelViewModel by viewModel(ownerProducer = { requireActivity() })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,23 +58,17 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         return binding.inflate(inflater)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupViews(view.context)
+
+        observeState()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         binding.unbind()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val context = view.context
-        super.onViewCreated(view, savedInstanceState)
-
-        val footerColor = themeFooterColor(requireContext())
-        _backgroundColor.value = footerColor
-        calculateColor(context, footerColor)
-        lightColor = context.primaryTextColor(true)
-
-        setupViews(context)
-
-        observeState()
     }
 
     private fun setupViews(context: Context) {
@@ -85,6 +77,10 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         binding.setPlayPauseButton(
             if (MusicPlayerRemote.isServiceConnected) binding.playPauseDrawable else binding.disconnectedDrawable
         )
+
+        val controlsColor = context.secondaryTextColor(!isColorLight(themeFooterColor(context)))
+        val lightColor = context.primaryTextColor(true)
+
         binding.updatePlayPauseColor(controlsColor)
         binding.updateButtonsColor(controlsColor)
 
@@ -123,8 +119,9 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                backgroundColor.collect { newColor ->
-                    calculateColor(requireContext(), newColor)
+                panelViewModel.highlightColor.collect { newColor ->
+                    val context = requireContext()
+                    val controlsColor = context.secondaryTextColor(!isColorLight(newColor))
                     binding.updatePlayPauseColor(controlsColor)
                     binding.updateButtonsColor(controlsColor)
                     binding.updateRepeatModeIcon(MusicPlayerRemote.repeatMode)
@@ -145,26 +142,13 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
         binding.setPlayPauseButton(binding.disconnectedDrawable)
     }
 
-    private val _backgroundColor: MutableStateFlow<Int> = MutableStateFlow(0)
-    protected val backgroundColor get() = _backgroundColor.asStateFlow()
+    abstract fun onShow()
+    abstract fun onHide()
 
-    private var lightColor = 0
-    private var controlsColor = 0
-    private var disabledControlsColor = 0
-    private fun calculateColor(context: Context, backgroundColor: Int) {
-        val darkmode = !isColorLight(backgroundColor)
-        controlsColor = context.secondaryTextColor(darkmode)
-        disabledControlsColor = context.secondaryDisabledTextColor(darkmode)
-    }
-
+    //region Progress
+    private val musicProgressUpdateDelegate = MusicProgressUpdateDelegate(::onUpdateProgress)
     private fun onUpdateProgress(progress: Int, total: Int) = binding.updateProgressViews(progress, total)
-
-    fun modifyColor(backgroundColor: Int) {
-        _backgroundColor.update { backgroundColor }
-    }
-
-    abstract fun show()
-    abstract fun hide()
+    //endregion
 
 
     @Suppress("PropertyName", "MemberVisibilityCanBePrivate")
@@ -290,6 +274,7 @@ abstract class AbsPlayerControllerFragment<V : ViewBinding> : AbsMusicServiceFra
                         )
                     }
                 }
+
                 override fun onStartTrackingTouch(seekBar: SeekBar) {}
                 override fun onStopTrackingTouch(seekBar: SeekBar) {}
             })

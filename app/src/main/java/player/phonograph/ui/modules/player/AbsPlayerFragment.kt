@@ -175,11 +175,11 @@ abstract class AbsPlayerFragment :
     }
 
     fun onShow() {
-        playbackControlsFragment.show()
+        playbackControlsFragment.onShow()
     }
 
     fun onHide() {
-        playbackControlsFragment.hide()
+        playbackControlsFragment.onHide()
         collapseToNormal()
     }
 
@@ -336,7 +336,6 @@ abstract class AbsPlayerFragment :
             }
         }
         observe(panelViewModel.colorChange) { (oldColor, newColor) ->
-            playbackControlsFragment.modifyColor(newColor)
             withResumed {
                 changeHighlightColor(
                     oldColor,
