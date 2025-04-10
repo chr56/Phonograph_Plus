@@ -3,11 +3,13 @@ package player.phonograph.ui.modules.player
 import coil.request.Disposable
 import coil.request.Parameters
 import lib.phonograph.misc.SimpleAnimatorListener
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.coil.PARAMETERS_KEY_PALETTE
 import player.phonograph.coil.PARAMETERS_KEY_QUICK_CACHE
 import player.phonograph.coil.loadImage
+import player.phonograph.coil.palette.PaletteColorTarget
 import player.phonograph.databinding.FragmentAlbumCoverBinding
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.model.Song
@@ -16,16 +18,19 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
+import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.util.component.MusicProgressUpdateDelegate
 import player.phonograph.util.parcelable
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
+import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.withCreated
 import androidx.lifecycle.withResumed
 import androidx.lifecycle.withStarted
@@ -33,6 +38,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import android.animation.Animator
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
@@ -44,6 +50,7 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
+import kotlin.getValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -59,6 +66,7 @@ class PlayerAlbumCoverFragment :
 
     private val playerViewModel: PlayerFragmentViewModel by viewModels({ requireParentFragment() })
     private val lyricsViewModel: LyricsViewModel by viewModels({ requireActivity() })
+    private val panelViewModel: PanelViewModel by viewModel(ownerProducer = { requireActivity() })
 
     private var albumCoverPagerAdapter: AlbumCoverPagerAdapter? = null
 
@@ -68,7 +76,7 @@ class PlayerAlbumCoverFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycle.addObserver(musicProgressUpdateDelegate)
-        playerViewModel.refreshPaletteColor(themeFooterColor(requireContext()))
+        refreshPaletteColor(themeFooterColor(requireContext()))
     }
 
     private fun observeState() {
@@ -216,9 +224,9 @@ class PlayerAlbumCoverFragment :
 
     private fun updateCurrentPaletteColor(song: Song?) {
         if (song != null && song.data.isNotEmpty()) {
-            playerViewModel.refreshPaletteColor(requireContext(), song)
+            refreshPaletteColor(requireContext(), song)
         } else {
-            playerViewModel.refreshPaletteColor(themeFooterColor(requireContext()))
+            refreshPaletteColor(themeFooterColor(requireContext()))
         }
     }
 
@@ -317,6 +325,35 @@ class PlayerAlbumCoverFragment :
                 }
                 .start()
         }
+    }
+
+    private var disposable: Disposable? = null
+    private fun refreshPaletteColor(context: Context, song: Song) {
+        disposable?.dispose()
+        disposable = loadImage(context)
+            .from(song)
+            .parameters(
+                Parameters.Builder()
+                    .set(PARAMETERS_KEY_PALETTE, true)
+                    .set(PARAMETERS_KEY_QUICK_CACHE, true)
+                    .build()
+            )
+            .into(
+                PaletteColorTarget(
+                    start = { _, color ->
+                        panelViewModel.updateHighlightColor(color)
+                    },
+                    success = { _, color ->
+                        panelViewModel.updateHighlightColor(color)
+                    },
+                    defaultColor = themeFooterColor(context),
+                )
+            )
+            .enqueue()
+    }
+
+    private fun refreshPaletteColor(@ColorInt color: Int) {
+        panelViewModel.updateHighlightColor(color)
     }
 
     companion object {

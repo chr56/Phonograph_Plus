@@ -11,6 +11,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import lib.storage.launcher.IOpenFileStorageAccessible
 import lib.storage.launcher.OpenDocumentContract
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.GlobalContext
 import player.phonograph.App
 import player.phonograph.R
@@ -25,6 +26,7 @@ import player.phonograph.ui.dialogs.QueueSnapshotsDialog
 import player.phonograph.ui.dialogs.SleepTimerDialog
 import player.phonograph.ui.dialogs.SpeedControlDialog
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
+import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.modules.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
 import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
 import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenPreferenceDialog
@@ -32,7 +34,6 @@ import player.phonograph.util.NavigationUtil
 import player.phonograph.util.text.buildInfoString
 import player.phonograph.util.text.readableDuration
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.tintButtons
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.warning
@@ -43,7 +44,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
 import androidx.appcompat.widget.Toolbar
-import androidx.core.animation.doOnEnd
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -73,6 +73,7 @@ abstract class AbsPlayerFragment :
 
     protected val viewModel: PlayerFragmentViewModel by viewModels()
     protected val lyricsViewModel: LyricsViewModel by viewModels({ requireActivity() })
+    protected val panelViewModel: PanelViewModel by viewModel(ownerProducer = { requireActivity() })
 
     protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment<*>
 
@@ -102,7 +103,6 @@ abstract class AbsPlayerFragment :
             childFragmentManager.findFragmentById(R.id.playback_controls_fragment) as AbsPlayerControllerFragment<*>
 
         observeState()
-        lastPaletteColor = themeFooterColor(view.context)
     }
 
     private fun initRecyclerView() {
@@ -329,7 +329,7 @@ abstract class AbsPlayerFragment :
 
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
         when (newState) {
-            PanelState.EXPANDED  -> {
+            PanelState.EXPANDED -> {
                 requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, collapseBackPressedCallback)
             }
 
@@ -342,12 +342,12 @@ abstract class AbsPlayerFragment :
                 }
             }
 
-            PanelState.ANCHORED  -> {
+            PanelState.ANCHORED -> {
                 // this fixes a bug where the panel would get stuck for some reason
                 collapseToNormal()
             }
 
-            else                 -> Unit
+            else -> Unit
         }
     }
 
@@ -398,21 +398,16 @@ abstract class AbsPlayerFragment :
         fun forceChangeColor(@ColorInt newColor: Int)
     }
 
-    protected var lastPaletteColor = 0
     protected var currentAnimatorSet: AnimatorSet? = null
 
 
     @MainThread
-    private fun changeHighlightColor(newColor: Int, animated: Boolean = true) {
+    private fun changeHighlightColor(oldColor: Int, newColor: Int, animated: Boolean = true) {
         if (animated) {
             currentAnimatorSet?.end()
             currentAnimatorSet?.cancel()
-            currentAnimatorSet = impl.generateAnimators(lastPaletteColor, newColor).also {
-                it.doOnEnd {
-                    lastPaletteColor = newColor
-                }
-                it.start()
-            }
+            currentAnimatorSet =
+                impl.generateAnimators(oldColor, newColor).also { it.start() }
         } else {
             impl.forceChangeColor(newColor)
         }
@@ -469,16 +464,17 @@ abstract class AbsPlayerFragment :
                 MusicPlayerRemote.replaceLyrics(activated as? LrcLyrics)
             }
         }
-        observe(viewModel.paletteColor) { newColor ->
+        observe(panelViewModel.highlightColor) { newColor ->
             playbackControlsFragment.modifyColor(newColor)
             withResumed {
-                changeHighlightColor(newColor, lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED))
+                changeHighlightColor(
+                    panelViewModel.previousHighlightColor.value,
+                    newColor,
+                    lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+                )
             }
         }
     }
-
-    val paletteColorState get() = viewModel.paletteColor
-
 
     protected inline fun <reified T> observe(
         flow: StateFlow<T>,

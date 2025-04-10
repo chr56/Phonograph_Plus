@@ -59,11 +59,8 @@ abstract class AbsSlidingMusicPanelActivity :
     private val slidingUpPanelLayout: SlidingUpPanelLayout get() = panelBinding.slidingLayout
 
     val panelViewModel: PanelViewModel by viewModel {
-        val paletteColor = playerFragment?.paletteColorState?.value ?: 0
-        val highlightColor = if (paletteColor > 0) paletteColor else themeFooterColor(this)
-        parametersOf(
-            primaryColor(), highlightColor, themeFooterColor(this)
-        )
+        val default = themeFooterColor(this)
+        parametersOf(primaryColor(), default, default)
     }
 
     /**
@@ -173,11 +170,6 @@ abstract class AbsSlidingMusicPanelActivity :
         playerFragment =
             supportFragmentManager.findFragmentById(R.id.player_fragment_container) as AbsPlayerFragment
 
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                playerFragment?.paletteColorState?.collect { color -> panelViewModel.updateHighlightColor(color) }
-            }
-        }
     }
 
     override fun onPanelSlide(panel: View, @FloatRange(from = 0.0, to = 1.0) slideOffset: Float) {

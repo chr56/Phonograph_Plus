@@ -4,20 +4,11 @@
 
 package player.phonograph.ui.modules.player
 
-import coil.request.Disposable
-import coil.request.Parameters
-import player.phonograph.coil.PARAMETERS_KEY_PALETTE
-import player.phonograph.coil.PARAMETERS_KEY_QUICK_CACHE
-import player.phonograph.coil.loadImage
-import player.phonograph.coil.palette.PaletteColorTarget
 import player.phonograph.model.Song
 import player.phonograph.repo.loader.FavoriteSongs
-import player.phonograph.util.theme.themeFooterColor
-import androidx.annotation.ColorInt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
-import android.graphics.Color
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,43 +36,5 @@ class PlayerFragmentViewModel : ViewModel() {
         _shownToolbar.tryEmit(
             !_shownToolbar.value
         )
-
-    //region Image & PaletteColor
-
-    private val _paletteColor: MutableStateFlow<Int> = MutableStateFlow(Color.GRAY)
-    val paletteColor get() = _paletteColor.asStateFlow()
-
-    private var disposable: Disposable? = null
-    fun refreshPaletteColor(context: Context, song: Song) {
-        disposable?.dispose()
-        disposable = loadImage(context)
-            .from(song)
-            .parameters(
-                Parameters.Builder()
-                    .set(PARAMETERS_KEY_PALETTE, true)
-                    .set(PARAMETERS_KEY_QUICK_CACHE, true)
-                    .build()
-            )
-            .into(
-                PaletteColorTarget(
-                    start = { _, color ->
-                        _paletteColor.value = color
-                    },
-                    success = { _, color ->
-                        _paletteColor.value = color
-                    },
-                    defaultColor = themeFooterColor(context),
-                )
-            )
-            .enqueue()
-    }
-
-    fun refreshPaletteColor(@ColorInt color: Int) {
-        viewModelScope.launch {
-            _paletteColor.emit(color)
-        }
-    }
-
-    //endregion
 
 }
