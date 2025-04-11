@@ -4,7 +4,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import player.phonograph.R
 import player.phonograph.databinding.FragmentCardPlayerBinding
 import player.phonograph.model.Song
-import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
+import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.util.text.infoString
 import player.phonograph.util.theme.themeCardBackgroundColor
@@ -100,6 +100,36 @@ class CardPlayerFragment : AbsPlayerFragment() {
         _viewBinding = null
     }
 
+    override fun requestToCollapse(): Boolean {
+        with(viewBinding.playerSlidingLayout) {
+            if (panelState != PanelState.COLLAPSED) panelState = PanelState.COLLAPSED
+        }
+        return true
+    }
+
+    override fun requestToExpand(): Boolean {
+        with(viewBinding.playerSlidingLayout) {
+            if (panelState != PanelState.EXPANDED) panelState = PanelState.EXPANDED
+        }
+        return true
+    }
+
+    override fun requestToSwitchState() {
+        with(viewBinding.playerSlidingLayout) {
+            if (panelState == PanelState.EXPANDED) {
+                panelState = PanelState.COLLAPSED
+            } else if (panelState == PanelState.COLLAPSED) {
+                panelState = PanelState.EXPANDED
+            }
+        }
+    }
+
+    override fun requestToSetAntiDragView(view: View?): Boolean {
+        val slidingLayout = viewBinding.playerSlidingLayout
+        slidingLayout.setAntiDragView(view)
+        return true
+    }
+
     @SuppressLint("ObsoleteSdkInt")
     override fun onPanelSlide(view: View, slide: Float) {
         if (SDK_INT >= LOLLIPOP) {
@@ -156,9 +186,10 @@ class CardPlayerFragment : AbsPlayerFragment() {
                 albumCoverContainer.layoutParams.height = albumCoverHeight
             }
             slidingLayout.panelHeight = max(minPanelHeight, availablePanelHeight)
-            (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(
-                slidingLayout.findViewById(R.id.player_panel)
-            )
+            val fragmentActivity = fragment.activity
+            if (fragmentActivity is UnarySlidingUpPanelProvider) {
+                fragmentActivity.requestToSetAntiDragView(fragment.viewBinding.playerPanel)
+            }
         }
 
         override fun updateCurrentSong(song: Song?) {}
@@ -184,9 +215,11 @@ class CardPlayerFragment : AbsPlayerFragment() {
                 fragment.viewBinding.playerSlidingLayout.height - fragment.playbackControlsFragment.requireView()
                     .height
             fragment.viewBinding.playerSlidingLayout.panelHeight = panelHeight
-            (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(
-                fragment.viewBinding.playerSlidingLayout.findViewById(R.id.player_panel)
-            )
+
+            val fragmentActivity = fragment.activity
+            if (fragmentActivity is UnarySlidingUpPanelProvider) {
+                fragmentActivity.requestToSetAntiDragView(fragment.viewBinding.playerPanel)
+            }
         }
 
         override fun updateCurrentSong(song: Song?) {

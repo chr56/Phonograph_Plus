@@ -9,7 +9,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import player.phonograph.R
 import player.phonograph.databinding.FragmentFlatPlayerBinding
 import player.phonograph.model.Song
-import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
+import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.util.text.infoString
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
@@ -74,7 +74,14 @@ class FlatPlayerFragment : AbsPlayerFragment() {
                         prepareHeight()
                         // queueFragment.currentSongItemVisibility = !isLandscape(resources)
                         // queueFragment.shadowItemVisibility = true
-                        viewBinding.playerSlidingLayout?.setAntiDragView(queueFragment.antiDragArea)
+
+                        val parent = parentFragment ?: activity
+                        val slidingLayout = viewBinding.playerSlidingLayout
+                        if (slidingLayout != null) {
+                            slidingLayout.setAntiDragView(queueFragment.antiDragArea)
+                        } else if (parent is UnarySlidingUpPanelProvider) {
+                            parent.requestToSetAntiDragView(queueFragment.antiDragArea)
+                        }
                     }
                 }
             }
@@ -94,6 +101,36 @@ class FlatPlayerFragment : AbsPlayerFragment() {
         _viewBinding = null
     }
 
+
+    override fun requestToCollapse(): Boolean {
+        with(viewBinding.playerSlidingLayout ?: return false) {
+            if (panelState != PanelState.COLLAPSED) panelState = PanelState.COLLAPSED
+        }
+        return true
+    }
+
+    override fun requestToExpand(): Boolean {
+        with(viewBinding.playerSlidingLayout ?: return false) {
+            if (panelState != PanelState.EXPANDED) panelState = PanelState.EXPANDED
+        }
+        return true
+    }
+
+    override fun requestToSwitchState() {
+        with(viewBinding.playerSlidingLayout ?: return) {
+            if (panelState == PanelState.EXPANDED) {
+                panelState = PanelState.COLLAPSED
+            } else if (panelState == PanelState.COLLAPSED) {
+                panelState = PanelState.EXPANDED
+            }
+        }
+    }
+
+    override fun requestToSetAntiDragView(view: View?): Boolean {
+        val slidingLayout = viewBinding.playerSlidingLayout ?: return false
+        slidingLayout.setAntiDragView(view)
+        return true
+    }
 
     override fun onPanelSlide(view: View, slide: Float) {}
 
@@ -139,9 +176,10 @@ class FlatPlayerFragment : AbsPlayerFragment() {
                 albumCoverContainer.layoutParams.height = albumCoverHeight
             }
             fragment.viewBinding.playerSlidingLayout!!.panelHeight = max(minPanelHeight, availablePanelHeight)
-            (fragment.activity as AbsSlidingMusicPanelActivity).setAntiDragView(
-                fragment.viewBinding.playerSlidingLayout!!.findViewById(R.id.player_panel)
-            )
+            val fragmentActivity = fragment.activity
+            if (fragmentActivity is UnarySlidingUpPanelProvider) {
+                fragmentActivity.requestToSetAntiDragView(fragment.viewBinding.playerPanel)
+            }
         }
 
         override fun updateCurrentSong(song: Song?) {}
@@ -162,9 +200,10 @@ class FlatPlayerFragment : AbsPlayerFragment() {
         }
 
         override fun setUpPanelAndAlbumCoverHeight() {
-            (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(
-                fragment.requireView().findViewById(R.id.player_panel)
-            )
+            val fragmentActivity = fragment.activity
+            if (fragmentActivity is UnarySlidingUpPanelProvider) {
+                fragmentActivity.requestToSetAntiDragView(fragment.viewBinding.playerPanel)
+            }
         }
 
         override fun updateCurrentSong(song: Song?) {

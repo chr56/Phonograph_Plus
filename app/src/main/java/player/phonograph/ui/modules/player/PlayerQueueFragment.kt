@@ -13,6 +13,7 @@ import player.phonograph.databinding.FragmentQueueBinding
 import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
+import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
@@ -175,8 +176,8 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
             image.setImageResource(R.drawable.ic_volume_up_white_24dp)
 
             root.setOnClickListener {
-                // toggle the panel
-                // todo
+                val parent = parentFragment
+                if (parent is UnarySlidingUpPanelProvider) parent.requestToSwitchState() // toggle the panel
             }
             menu.setOnClickListener {
                 val song: Song? = MusicPlayerRemote.currentSong

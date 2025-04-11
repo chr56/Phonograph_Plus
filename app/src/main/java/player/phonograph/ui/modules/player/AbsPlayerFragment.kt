@@ -13,6 +13,7 @@ import player.phonograph.R
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
+import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.repo.loader.FavoriteSongs
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.QueueManager
@@ -60,7 +61,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 abstract class AbsPlayerFragment :
-        AbsMusicServiceFragment(), SlidingUpPanelLayout.PanelSlideListener {
+        AbsMusicServiceFragment(), UnarySlidingUpPanelProvider, SlidingUpPanelLayout.PanelSlideListener {
 
     protected val viewModel: PlayerFragmentViewModel by viewModels()
     protected val lyricsViewModel: LyricsViewModel by viewModels({ requireActivity() })

@@ -7,6 +7,7 @@ import org.koin.core.parameter.parametersOf
 import player.phonograph.R
 import player.phonograph.databinding.SlidingMusicPanelLayoutBinding
 import player.phonograph.model.ui.NowPlayingScreen
+import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
 import player.phonograph.settings.Setting
@@ -48,6 +49,7 @@ import kotlinx.coroutines.launch
  */
 abstract class AbsSlidingMusicPanelActivity :
         AbsMusicServiceActivity(),
+        UnarySlidingUpPanelProvider,
         SlidingUpPanelLayout.PanelSlideListener {
 
     private var playerFragment: AbsPlayerFragment? = null
@@ -89,7 +91,7 @@ abstract class AbsSlidingMusicPanelActivity :
             layout.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     layout.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    when (panelState) {
+                    when (slidingUpPanelLayout.panelState) {
                         PanelState.EXPANDED  -> {
                             onPanelSlide(layout, 1f)
                             onPanelExpanded(layout)
@@ -109,8 +111,8 @@ abstract class AbsSlidingMusicPanelActivity :
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 flow.distinctUntilChanged().collect { screen ->
                     setupPlayerFragment(screen)
-                    miniPlayerFragment?.requireView()?.setOnClickListener { expandPanel() }
-                    panelBinding.navigationBar.setOnClickListener { expandPanel() }
+                    miniPlayerFragment?.requireView()?.setOnClickListener { requestToExpand() }
+                    panelBinding.navigationBar.setOnClickListener { requestToExpand() }
                 }
             }
         }
@@ -119,7 +121,9 @@ abstract class AbsSlidingMusicPanelActivity :
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 panelViewModel.colorChange.collect { (oldColor, newColor) ->
-                    if (panelState == PanelState.EXPANDED) animateSystemBarsColor(oldColor, newColor)
+                    if (slidingUpPanelLayout.panelState == PanelState.EXPANDED) {
+                        animateSystemBarsColor(oldColor, newColor)
+                    }
                 }
             }
         }
@@ -177,7 +181,7 @@ abstract class AbsSlidingMusicPanelActivity :
         when (newState) {
             PanelState.COLLAPSED -> onPanelCollapsed(panel)
             PanelState.EXPANDED  -> onPanelExpanded(panel)
-            PanelState.ANCHORED  -> collapsePanel() // this fixes a bug where the panel would get stuck for some reason
+            PanelState.ANCHORED  -> requestToCollapse() // this fixes a bug where the panel would get stuck for some reason
             else                 -> {}
         }
     }
@@ -202,18 +206,37 @@ abstract class AbsSlidingMusicPanelActivity :
 
     private val panelBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            collapsePanel()
+            requestToCollapse()
         }
     }
 
-    val panelState: PanelState? get() = slidingUpPanelLayout.panelState
-
-    fun collapsePanel() {
-        slidingUpPanelLayout.panelState = PanelState.COLLAPSED
+    override fun requestToCollapse(): Boolean {
+        with(slidingUpPanelLayout) {
+            if (panelState != PanelState.COLLAPSED) panelState = PanelState.COLLAPSED
+        }
+        return true
     }
 
-    fun expandPanel() {
-        slidingUpPanelLayout.panelState = PanelState.EXPANDED
+    override fun requestToExpand(): Boolean {
+        with(slidingUpPanelLayout) {
+            if (panelState != PanelState.EXPANDED) panelState = PanelState.EXPANDED
+        }
+        return true
+    }
+
+    override fun requestToSwitchState() {
+        with(slidingUpPanelLayout) {
+            if (panelState == PanelState.EXPANDED) {
+                panelState = PanelState.COLLAPSED
+            } else if (panelState == PanelState.COLLAPSED) {
+                panelState = PanelState.EXPANDED
+            }
+        }
+    }
+
+    override fun requestToSetAntiDragView(view: View?): Boolean {
+        slidingUpPanelLayout.setAntiDragView(view)
+        return true
     }
 
     var isBottomBarHidden: Boolean = false
@@ -222,7 +245,7 @@ abstract class AbsSlidingMusicPanelActivity :
     fun hideBottomBar(hide: Boolean) {
         if (hide) {
             slidingUpPanelLayout.panelHeight = 0
-            collapsePanel()
+            requestToCollapse()
         } else {
             slidingUpPanelLayout.panelHeight =
                 resources.getDimensionPixelSize(R.dimen.mini_player_height) + panelBinding.navigationBar.height
@@ -252,10 +275,6 @@ abstract class AbsSlidingMusicPanelActivity :
         panelBinding.navigationBar.also {
             it.visibility = if (progress == 0f) View.VISIBLE else View.GONE
         }
-    }
-
-    fun setAntiDragView(antiDragView: View?) {
-        slidingUpPanelLayout.setAntiDragView(antiDragView)
     }
 
     //region SystemBarsColors
