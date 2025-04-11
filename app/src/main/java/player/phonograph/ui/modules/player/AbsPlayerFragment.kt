@@ -3,10 +3,6 @@ package player.phonograph.ui.modules.player
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
-import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
-import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
-import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import lib.storage.launcher.IOpenFileStorageAccessible
@@ -31,14 +27,10 @@ import player.phonograph.ui.modules.player.PlayerAlbumCoverFragment.Companion.VI
 import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
 import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenPreferenceDialog
 import player.phonograph.util.NavigationUtil
-import player.phonograph.util.text.buildInfoString
-import player.phonograph.util.text.readableDuration
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.tintButtons
-import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.warning
 import util.theme.color.toolbarIconColor
-import util.theme.materials.MaterialColor
 import util.theme.view.menu.setMenuColor
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
@@ -55,8 +47,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withCreated
 import androidx.lifecycle.withResumed
 import androidx.lifecycle.withStarted
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.animation.AnimatorSet
 import android.graphics.Color
 import android.os.Bundle
@@ -77,63 +67,26 @@ abstract class AbsPlayerFragment :
     protected val panelViewModel: PanelViewModel by viewModel(ownerProducer = { requireActivity() })
 
     protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment<*>
+    protected lateinit var queueFragment: PlayerQueueFragment
 
-    // recycle view
-    protected lateinit var layoutManager: LinearLayoutManager
-    protected lateinit var playingQueueAdapter: PlayingQueueAdapter
-
-    private var _wrappedAdapter: RecyclerView.Adapter<*>? = null
-    protected val wrappedAdapter: RecyclerView.Adapter<*> get() = _wrappedAdapter!!
-
-    private var _recyclerViewDragDropManager: RecyclerViewDragDropManager? = null
-    protected val recyclerViewDragDropManager: RecyclerViewDragDropManager get() = _recyclerViewDragDropManager!!
-
-    protected abstract fun requireQueueRecyclerView(): FastScrollRecyclerView
     protected abstract fun requireToolBarContainer(): View?
     protected abstract fun requireToolbar(): Toolbar
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecyclerView()
         initToolbar()
         playbackControlsFragment =
             childFragmentManager.findFragmentById(R.id.playback_controls_fragment) as AbsPlayerControllerFragment<*>
 
+        queueFragment = childFragmentManager.findFragmentById(R.id.player_queue_fragment) as PlayerQueueFragment
+
         observeState()
-    }
-
-    private fun initRecyclerView() {
-        layoutManager = LinearLayoutManager(requireActivity())
-        playingQueueAdapter = PlayingQueueAdapter(requireActivity())
-        playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
-        playingQueueAdapter.current = MusicPlayerRemote.position
-        _recyclerViewDragDropManager = RecyclerViewDragDropManager()
-        _wrappedAdapter = recyclerViewDragDropManager.createWrappedAdapter(playingQueueAdapter)
-        recyclerViewDragDropManager.setInitiateOnTouch(true)
-        recyclerViewDragDropManager.setInitiateOnLongPress(false)
-
-        val playerRecyclerView = requireQueueRecyclerView()
-
-        playerRecyclerView.setUpFastScrollRecyclerViewColor(requireContext(), MaterialColor.Grey._500.asColor)
-        playerRecyclerView.layoutManager = layoutManager
-        playerRecyclerView.adapter = wrappedAdapter
-        playerRecyclerView.itemAnimator = RefactoredDefaultItemAnimator()
-        recyclerViewDragDropManager.attachRecyclerView(playerRecyclerView)
-        layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
     }
 
     override fun onDestroyView() {
         favoriteMenuItem = null
         lyricsMenuItem = null
         super.onDestroyView()
-        _recyclerViewDragDropManager?.let {
-            recyclerViewDragDropManager.release()
-            _recyclerViewDragDropManager = null
-        }
-        _wrappedAdapter?.let {
-            WrapperAdapterUtils.releaseAll(wrappedAdapter)
-            _wrappedAdapter = null
-        }
         currentAnimatorSet?.end()
         currentAnimatorSet?.cancel()
     }
@@ -169,11 +122,6 @@ abstract class AbsPlayerFragment :
             .withEndAction { toolbar.visibility = View.GONE }
     }
 
-    override fun onPause() {
-        recyclerViewDragDropManager.cancelDrag()
-        super.onPause()
-    }
-
     fun onShow() {
         playbackControlsFragment.onShow()
     }
@@ -187,15 +135,17 @@ abstract class AbsPlayerFragment :
         when (newState) {
             PanelState.EXPANDED  -> {
                 requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, collapseBackPressedCallback)
+                if (panel.id == R.id.player_sliding_layout) queueFragment.positionLockState = true
             }
 
             PanelState.COLLAPSED -> {
                 collapseBackPressedCallback.remove()
                 lifecycleScope.launch(Dispatchers.Main) {
                     withCreated {
-                        resetToCurrentPosition(true)
+                        queueFragment.resetToCurrentPosition(true)
                     }
                 }
+                if (panel.id == R.id.player_sliding_layout) queueFragment.positionLockState = false
             }
 
             PanelState.ANCHORED  -> {
@@ -216,18 +166,6 @@ abstract class AbsPlayerFragment :
 
     protected abstract fun collapseToNormal()
 
-    protected abstract fun resetToCurrentPosition(force: Boolean)
-
-    protected abstract fun updateQueueTime(position: Int)
-
-    protected fun buildUpNextAndQueueTimeText(position: Int): String {
-        val duration = MusicPlayerRemote.getQueueDurationMillis(position)
-        return buildInfoString(
-            resources.getString(R.string.up_next),
-            readableDuration(duration)
-        )
-    }
-
     private lateinit var listener: MediaStoreListener
     override fun onCreate(savedInstanceState: Bundle?) {
         listener = MediaStoreListener()
@@ -238,14 +176,6 @@ abstract class AbsPlayerFragment :
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
             viewModel.updateFavoriteState(requireContext(), MusicPlayerRemote.currentSong)
-            lifecycleScope.launch(Dispatchers.Main) {
-                withStarted {
-                    playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
-                    playingQueueAdapter.current = MusicPlayerRemote.position
-                    updateQueueTime(MusicPlayerRemote.position)
-                    resetToCurrentPosition(false)
-                }
-            }
         }
     }
 
@@ -276,30 +206,11 @@ abstract class AbsPlayerFragment :
     }
 
     private fun observeState() {
-        observe(queueViewModel.queue) { queue ->
-            playingQueueAdapter.dataset = queue
-            playingQueueAdapter.current = MusicPlayerRemote.position
-        }
-        observe(queueViewModel.position) { position ->
-            playingQueueAdapter.current = position
-            withStarted {
-                updateQueueTime(position)
-                resetToCurrentPosition(false)
-            }
-        }
         observe(queueViewModel.currentSong) { song ->
             if (song != null) {
                 withStarted { updateCurrentSong(song) }
                 lyricsViewModel.loadLyricsFor(requireContext(), song)
                 viewModel.updateFavoriteState(requireContext(), song)
-            }
-        }
-        observe(queueViewModel.shuffleMode) {
-            lifecycle.withCreated {
-                playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
-                playingQueueAdapter.current = MusicPlayerRemote.position
-                updateQueueTime(MusicPlayerRemote.position)
-                resetToCurrentPosition(false)
             }
         }
         observe(viewModel.favoriteState) {

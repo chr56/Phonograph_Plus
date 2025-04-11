@@ -96,52 +96,11 @@
                 app:cardElevation="@dimen/card_elevation"
                 app:cardUseCompatPadding="false">
 
-                <RelativeLayout
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/player_queue_fragment"
+                    android:name="player.phonograph.ui.modules.player.PlayerQueueFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <!--This is necessary for the drag sorting to work at the top-->
-                    <View
-                        android:id="@+id/draggable_area"
-                        android:layout_width="72dp"
-                        android:layout_height="wrap_content"
-                        android:layout_alignTop="@+id/card_content"
-                        android:layout_alignBottom="@+id/card_content"
-                        android:layout_marginTop="120dp" />
-
-                    <LinearLayout
-                        android:id="@+id/card_content"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <include
-                            android:id="@+id/current_song"
-                            layout="@layout/item_list" />
-
-                        <TextView
-                            android:id="@+id/player_queue_sub_header"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/player_queue_sub_header_height"
-                            android:gravity="center_vertical"
-                            android:paddingLeft="16dp"
-                            android:paddingRight="16dp"
-                            android:text="@string/up_next"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                            android:textColor="?android:textColorSecondary" />
-
-                        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-                            android:id="@+id/player_recycler_view"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clipToPadding="false"
-                            android:paddingBottom="8dp"
-                            android:requiresFadingEdge="vertical"
-                            android:scrollbars="none" />
-
-                    </LinearLayout>
-
-                </RelativeLayout>
+                    android:layout_height="wrap_content" />
 
             </androidx.cardview.widget.CardView>
 
