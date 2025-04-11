@@ -49,7 +49,14 @@ class FlatPlayerFragment : AbsPlayerFragment() {
     override fun requireToolBarContainer(): View? = viewBinding.toolbarContainer
     override fun requireToolbar(): Toolbar = viewBinding.playerToolbar
 
-    private lateinit var impl: Impl
+    private lateinit var impl: FlatImpl
+
+    private interface FlatImpl {
+        fun init()
+        fun postInit()
+        fun forceChangeColor(@ColorInt newColor: Int)
+        fun generateAnimators(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,7 +78,8 @@ class FlatPlayerFragment : AbsPlayerFragment() {
             override fun onGlobalLayout() {
                 lifecycleScope.launch {
                     lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        prepareHeight()
+                        // view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        impl.postInit()
                         // queueFragment.currentSongItemVisibility = !isLandscape(resources)
                         // queueFragment.shadowItemVisibility = true
 
@@ -85,19 +93,14 @@ class FlatPlayerFragment : AbsPlayerFragment() {
                     }
                 }
             }
-
-            fun prepareHeight() {
-                // view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                impl.setUpPanelAndAlbumCoverHeight()
-            }
         })
     }
 
     override fun onDestroyView() {
-        if (viewBinding.playerSlidingLayout != null) {
-            viewBinding.playerSlidingLayout!!.removePanelSlideListener(this)
-        }
         super.onDestroyView()
+        viewBinding.playerSlidingLayout?.removePanelSlideListener(this)
+        currentAnimatorSet?.end()
+        currentAnimatorSet?.cancel()
         _viewBinding = null
     }
 
@@ -136,27 +139,22 @@ class FlatPlayerFragment : AbsPlayerFragment() {
 
     override fun forceChangeColor(newColor: Int) = impl.forceChangeColor(newColor)
 
-    override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
-        impl.generateAnimators(oldColor, newColor)
+    private var currentAnimatorSet: AnimatorSet? = null
+    override fun changeColorWithAnimations(oldColor: Int, newColor: Int) {
+        currentAnimatorSet?.end()
+        currentAnimatorSet?.cancel()
+        currentAnimatorSet = impl.generateAnimators(oldColor, newColor).also { it.start() }
+    }
 
-    override fun updateCurrentSong(song: Song?): Unit = impl.updateCurrentSong(song)
 
     override fun collapseToNormal() {
         viewBinding.playerSlidingLayout?.panelState = PanelState.COLLAPSED
     }
 
-    private abstract class BaseImpl(val fragment: FlatPlayerFragment) : Impl {
-        override fun forceChangeColor(newColor: Int) {
-            fragment.playbackControlsFragment.requireView().setBackgroundColor(newColor)
-            fragment.viewBinding.playerStatusBar.setBackgroundColor(newColor)
-        }
-
-    }
-
-    private class PortraitImpl(fragment: FlatPlayerFragment) : BaseImpl(fragment) {
+    private class PortraitImpl(val fragment: FlatPlayerFragment) : FlatImpl {
         override fun init() {}
 
-        override fun setUpPanelAndAlbumCoverHeight() {
+        override fun postInit() {
 
             val albumCoverContainer = fragment.viewBinding.playerAlbumCoverFragment
 
@@ -182,39 +180,44 @@ class FlatPlayerFragment : AbsPlayerFragment() {
             }
         }
 
-        override fun updateCurrentSong(song: Song?) {}
+        override fun forceChangeColor(newColor: Int) {
+            fragment.playbackControlsFragment.requireView().setBackgroundColor(newColor)
+            fragment.viewBinding.playerStatusBar.setBackgroundColor(newColor)
+        }
 
         override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
             fragment.defaultColorChangeAnimatorSet(oldColor, newColor)
     }
 
-    private class LandscapeImpl(fragment: FlatPlayerFragment) : BaseImpl(fragment) {
+    private class LandscapeImpl(val fragment: FlatPlayerFragment) : FlatImpl {
         override fun init() {
-            ViewCompat.setOnApplyWindowInsetsListener(fragment.viewBinding.playerFragmentRoot) { view, windowInsets ->
-                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
-                view.updateLayoutParams<MarginLayoutParams> {
-                    rightMargin = insets.right
+            with(fragment) {
+                // WindowInsets
+                ViewCompat.setOnApplyWindowInsetsListener(viewBinding.playerFragmentRoot) { view, windowInsets ->
+                    val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+                    view.updateLayoutParams<MarginLayoutParams> {
+                        rightMargin = insets.right
+                    }
+                    WindowInsetsCompat.CONSUMED
                 }
-                WindowInsetsCompat.CONSUMED
+                // Current Song
+                lifecycleScope.launch {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        queueViewModel.currentSong.collect { song: Song? ->
+                            with(viewBinding) {
+                                playerToolbar.title = song?.title ?: "-"
+                                playerToolbar.subtitle = song?.infoString() ?: "-"
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        override fun setUpPanelAndAlbumCoverHeight() {
+        override fun postInit() {
             val fragmentActivity = fragment.activity
             if (fragmentActivity is UnarySlidingUpPanelProvider) {
                 fragmentActivity.requestToSetAntiDragView(fragment.viewBinding.playerPanel)
-            }
-        }
-
-        override fun updateCurrentSong(song: Song?) {
-            with(fragment.viewBinding.playerToolbar) {
-                if (song != null) {
-                    title = song.title
-                    subtitle = song.infoString()
-                } else {
-                    title = "-"
-                    subtitle = "-"
-                }
             }
         }
 
@@ -227,7 +230,8 @@ class FlatPlayerFragment : AbsPlayerFragment() {
             }
 
         override fun forceChangeColor(newColor: Int) {
-            super.forceChangeColor(newColor)
+            fragment.playbackControlsFragment.requireView().setBackgroundColor(newColor)
+            fragment.viewBinding.playerStatusBar.setBackgroundColor(newColor)
             with(fragment.viewBinding) {
                 playerToolbar.setBackgroundColor(newColor)
                 setToolbarWidgetColor(newColor)

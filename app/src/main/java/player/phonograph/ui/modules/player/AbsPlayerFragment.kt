@@ -11,7 +11,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.repo.loader.FavoriteSongs
@@ -35,7 +34,6 @@ import util.theme.color.toolbarIconColor
 import util.theme.view.menu.setMenuColor
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
-import androidx.annotation.MainThread
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -48,7 +46,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withCreated
 import androidx.lifecycle.withResumed
 import androidx.lifecycle.withStarted
-import android.animation.AnimatorSet
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
@@ -88,8 +85,6 @@ abstract class AbsPlayerFragment :
         favoriteMenuItem = null
         lyricsMenuItem = null
         super.onDestroyView()
-        currentAnimatorSet?.end()
-        currentAnimatorSet?.cancel()
     }
 
     //
@@ -180,36 +175,12 @@ abstract class AbsPlayerFragment :
         }
     }
 
-    protected interface Impl {
-        fun init()
-        fun updateCurrentSong(song: Song?)
-        fun setUpPanelAndAlbumCoverHeight()
-        fun generateAnimators(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet
-        fun forceChangeColor(@ColorInt newColor: Int)
-    }
-
-    protected abstract fun updateCurrentSong(song: Song?)
-    protected abstract fun generateAnimators(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet
     protected abstract fun forceChangeColor(@ColorInt newColor: Int)
-
-    protected var currentAnimatorSet: AnimatorSet? = null
-
-
-    @MainThread
-    private fun changeHighlightColor(oldColor: Int, newColor: Int, animated: Boolean = true) {
-        if (animated) {
-            currentAnimatorSet?.end()
-            currentAnimatorSet?.cancel()
-            currentAnimatorSet = generateAnimators(oldColor, newColor).also { it.start() }
-        } else {
-            forceChangeColor(newColor)
-        }
-    }
+    protected abstract fun changeColorWithAnimations(@ColorInt oldColor: Int, @ColorInt newColor: Int)
 
     private fun observeState() {
         observe(queueViewModel.currentSong) { song ->
             if (song != null) {
-                withStarted { updateCurrentSong(song) }
                 lyricsViewModel.loadLyricsFor(requireContext(), song)
                 viewModel.updateFavoriteState(requireContext(), song)
             }
@@ -249,11 +220,12 @@ abstract class AbsPlayerFragment :
         }
         observe(panelViewModel.colorChange) { (oldColor, newColor) ->
             withResumed {
-                changeHighlightColor(
-                    oldColor,
-                    newColor,
-                    lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-                )
+                val animated = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+                if (animated) {
+                    changeColorWithAnimations(oldColor, newColor)
+                } else {
+                    forceChangeColor(newColor)
+                }
             }
 
         }
