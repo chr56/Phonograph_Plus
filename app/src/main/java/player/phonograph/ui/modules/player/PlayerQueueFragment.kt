@@ -73,12 +73,31 @@ import kotlinx.coroutines.launch
 
 class PlayerQueueFragment : AbsMusicServiceFragment() {
 
+    companion object {
+        private const val ARGUMENT_WITH_SHADOW = "arg_with_shadow"
+        private const val ARGUMENT_WITH_ACTION_BUTTONS = "arg_with_action_buttons"
+        private const val ARGUMENT_DISPLAY_CURRENT_SONG = "arg_display_current_song"
+
+        fun newInstance(
+            withShadow: Boolean = false,
+            withActionButtons: Boolean = true,
+            displayCurrentSong: Boolean = true,
+        ) = PlayerQueueFragment().apply {
+            arguments = Bundle().apply {
+                putBoolean(ARGUMENT_WITH_SHADOW, withShadow)
+                putBoolean(ARGUMENT_WITH_ACTION_BUTTONS, withActionButtons)
+                putBoolean(ARGUMENT_DISPLAY_CURRENT_SONG, displayCurrentSong)
+            }
+        }
+    }
+
     private var _viewBinding: FragmentQueueBinding? = null
     private val binding: FragmentQueueBinding get() = _viewBinding!!
 
     private val panelViewModel: PanelViewModel by viewModel(ownerProducer = { requireActivity() })
 
     private var argumentWithShadow: Boolean = false
+    private var argumentWithActionButtons: Boolean = true
     private var argumentDisplayCurrentSong: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,6 +105,7 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
         lifecycle.addObserver(MediaStoreListener())
         arguments?.let { args ->
             argumentWithShadow = args.getBoolean(ARGUMENT_WITH_SHADOW, false)
+            argumentWithActionButtons = args.getBoolean(ARGUMENT_WITH_ACTION_BUTTONS, true)
             argumentDisplayCurrentSong = args.getBoolean(ARGUMENT_DISPLAY_CURRENT_SONG, true)
         }
     }
@@ -99,6 +119,7 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.player_queue)
         try {
             argumentWithShadow = typedArray.getBoolean(R.styleable.player_queue_withShadow, false)
+            argumentWithActionButtons = typedArray.getBoolean(R.styleable.player_queue_withActionButtons, true)
             argumentDisplayCurrentSong = typedArray.getBoolean(R.styleable.player_queue_displayCurrentSong, true)
         } finally {
             typedArray.recycle()
@@ -241,7 +262,7 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
         binding.playerQueueSubHeader.setTextColor(color)
         context.attach(binding.playerQueueToolbar.menu) {
             rootMenu.clear()
-            setupToolbarModeActions(
+            if (argumentWithActionButtons) setupToolbarModeActions(
                 repeatMode,
                 { MusicPlayerRemote.cycleRepeatMode() },
                 shuffleMode,
@@ -495,18 +516,5 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
         }
     }
     //endregion
-
-    companion object {
-        private const val ARGUMENT_WITH_SHADOW = "arg_with_shadow"
-        private const val ARGUMENT_DISPLAY_CURRENT_SONG = "arg_display_current_song"
-
-        fun newInstance(withShadow: Boolean = false, displayCurrentSong: Boolean = true) =
-            PlayerQueueFragment().apply {
-                arguments = Bundle().apply {
-                    putBoolean(ARGUMENT_WITH_SHADOW, withShadow)
-                    putBoolean(ARGUMENT_DISPLAY_CURRENT_SONG, displayCurrentSong)
-                }
-            }
-    }
 
 }
