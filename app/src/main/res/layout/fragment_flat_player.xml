@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/player_fragment_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -81,7 +82,9 @@
                 android:id="@+id/player_queue_fragment"
                 android:name="player.phonograph.ui.modules.player.PlayerQueueFragment"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:displayCurrentSong="true"
+                app:withShadow="true" />
 
         </LinearLayout>
 

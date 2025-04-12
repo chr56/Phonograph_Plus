@@ -40,9 +40,11 @@ import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.animation.Animator
+import android.content.Context
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,6 +63,33 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
 
     private val panelViewModel: PanelViewModel by viewModel(ownerProducer = { requireActivity() })
 
+    private var argumentWithShadow: Boolean = false
+    private var argumentDisplayCurrentSong: Boolean = true
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lifecycle.addObserver(MediaStoreListener())
+        arguments?.let { args ->
+            argumentWithShadow = args.getBoolean(ARGUMENT_WITH_SHADOW, false)
+            argumentDisplayCurrentSong = args.getBoolean(ARGUMENT_DISPLAY_CURRENT_SONG, true)
+        }
+    }
+
+    override fun onInflate(
+        context: Context,
+        attrs: AttributeSet,
+        savedInstanceState: Bundle?,
+    ) {
+        super.onInflate(context, attrs, savedInstanceState)
+        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.player_queue)
+        try {
+            argumentWithShadow = typedArray.getBoolean(R.styleable.player_queue_withShadow, false)
+            argumentDisplayCurrentSong = typedArray.getBoolean(R.styleable.player_queue_displayCurrentSong, true)
+        } finally {
+            typedArray.recycle()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -74,6 +103,10 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
         initCurrentSong()
+
+        binding.currentSong.root.visibility = if (!argumentDisplayCurrentSong) View.GONE else View.VISIBLE
+        binding.queueTopShadow.visibility = if (!argumentWithShadow) View.GONE else View.VISIBLE
+
         observeState()
     }
 
@@ -107,13 +140,6 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
     fun onShow() {}
 
     fun onHide() {}
-
-    private lateinit var listener: MediaStoreListener
-    override fun onCreate(savedInstanceState: Bundle?) {
-        listener = MediaStoreListener()
-        super.onCreate(savedInstanceState)
-        lifecycle.addObserver(listener)
-    }
 
     private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
         override fun onMediaStoreChanged() {
@@ -319,6 +345,19 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
                 flow.collect(flowCollector)
             }
         }
+    }
+
+    companion object {
+        private const val ARGUMENT_WITH_SHADOW = "arg_with_shadow"
+        private const val ARGUMENT_DISPLAY_CURRENT_SONG = "arg_display_current_song"
+
+        fun newInstance(withShadow: Boolean = false, displayCurrentSong: Boolean = true) =
+            PlayerQueueFragment().apply {
+                arguments = Bundle().apply {
+                    putBoolean(ARGUMENT_WITH_SHADOW, withShadow)
+                    putBoolean(ARGUMENT_DISPLAY_CURRENT_SONG, displayCurrentSong)
+                }
+            }
     }
 
 }
