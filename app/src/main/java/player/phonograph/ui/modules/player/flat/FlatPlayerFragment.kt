@@ -86,9 +86,9 @@ class FlatPlayerFragment : AbsPlayerFragment() {
                         val parent = parentFragment ?: activity
                         val slidingLayout = viewBinding.playerSlidingLayout
                         if (slidingLayout != null) {
-                            slidingLayout.setAntiDragView(queueFragment.antiDragArea)
+                            slidingLayout.setScrollableView(queueFragment.scrollableArea)
                         } else if (parent is UnarySlidingUpPanelProvider) {
-                            parent.requestToSetAntiDragView(queueFragment.antiDragArea)
+                            parent.requestToSetScrollableView(queueFragment.scrollableArea)
                         }
                     }
                 }
@@ -132,6 +132,12 @@ class FlatPlayerFragment : AbsPlayerFragment() {
     override fun requestToSetAntiDragView(view: View?): Boolean {
         val slidingLayout = viewBinding.playerSlidingLayout ?: return false
         slidingLayout.setAntiDragView(view)
+        return true
+    }
+
+    override fun requestToSetScrollableView(view: View?): Boolean {
+        val slidingLayout = viewBinding.playerSlidingLayout ?: return false
+        slidingLayout.setScrollableView(view)
         return true
     }
 

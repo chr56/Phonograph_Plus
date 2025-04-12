@@ -13,4 +13,5 @@ interface UnarySlidingUpPanelProvider {
     fun requestToSwitchState()
 
     fun requestToSetAntiDragView(view: View?): Boolean
+    fun requestToSetScrollableView(view: View?): Boolean
 }

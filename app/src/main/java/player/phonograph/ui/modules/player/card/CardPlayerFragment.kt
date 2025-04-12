@@ -86,7 +86,7 @@ class CardPlayerFragment : AbsPlayerFragment() {
                         // queueFragment.currentSongItemVisibility = !isLandscape(resources)
                         // queueFragment.shadowItemVisibility = false
 
-                        viewBinding.playerSlidingLayout.setAntiDragView(queueFragment.antiDragArea)
+                        viewBinding.playerSlidingLayout.setScrollableView(queueFragment.scrollableArea)
                     }
                 }
             }
@@ -131,6 +131,12 @@ class CardPlayerFragment : AbsPlayerFragment() {
     override fun requestToSetAntiDragView(view: View?): Boolean {
         val slidingLayout = viewBinding.playerSlidingLayout
         slidingLayout.setAntiDragView(view)
+        return true
+    }
+
+    override fun requestToSetScrollableView(view: View?): Boolean {
+        val slidingLayout = viewBinding.playerSlidingLayout
+        slidingLayout.setScrollableView(view)
         return true
     }
 

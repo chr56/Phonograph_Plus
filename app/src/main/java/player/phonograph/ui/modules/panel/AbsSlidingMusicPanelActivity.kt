@@ -239,6 +239,11 @@ abstract class AbsSlidingMusicPanelActivity :
         return true
     }
 
+    override fun requestToSetScrollableView(view: View?): Boolean {
+        slidingUpPanelLayout.setScrollableView(view)
+        return true
+    }
+
     var isBottomBarHidden: Boolean = false
         private set
 

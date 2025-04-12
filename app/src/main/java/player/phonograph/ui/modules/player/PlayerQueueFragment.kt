@@ -242,7 +242,7 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
         )
     }
 
-    val antiDragArea: View? get() = binding.playerRecyclerView
+    val scrollableArea: View? get() = binding.playerRecyclerView
 
     var shadowItemVisibility: Boolean
         get() = binding.queueTopShadow.visibility == View.VISIBLE
