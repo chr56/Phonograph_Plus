@@ -8,6 +8,7 @@ import androidx.annotation.ColorInt
 import android.animation.Animator
 import android.animation.ArgbEvaluator
 import android.animation.ObjectAnimator
+import android.animation.TimeInterpolator
 import android.annotation.SuppressLint
 import android.os.Build
 import android.view.View
@@ -43,4 +44,20 @@ private fun createColorAnimator(
         }
     }.apply {
         duration = PHONOGRAPH_ANIM_TIME
+    }
+
+fun createScaleAnimator(
+    target: View,
+    axis: Boolean,
+    interpolator: TimeInterpolator,
+    delay: Long = 0,
+    duration: Long = PHONOGRAPH_ANIM_TIME / 3,
+): Animator =
+    ObjectAnimator.ofFloat(
+        target, if (axis) View.SCALE_X else View.SCALE_Y,
+        0f, 1f
+    ).also {
+        it.interpolator = interpolator
+        it.startDelay = delay
+        it.duration = duration
     }

@@ -1,0 +1,196 @@
+/*
+ *  Copyright (c) 2022~2025 chr_56
+ */
+
+package player.phonograph.ui.modules.player.controller
+
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import player.phonograph.model.service.PlayerState
+import player.phonograph.model.ui.PlayerControllerStyle
+import player.phonograph.model.ui.PlayerControllerStyle.Companion.ButtonPosition
+import player.phonograph.model.ui.PlayerControllerStyle.Companion.FunctionType
+import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
+import player.phonograph.ui.modules.panel.PanelViewModel
+import player.phonograph.util.component.MusicProgressUpdateDelegate
+import player.phonograph.util.parcelable
+import util.theme.color.isColorLight
+import util.theme.color.primaryTextColor
+import util.theme.color.secondaryTextColor
+import androidx.annotation.ColorInt
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import android.animation.Animator
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewAnimationUtils.createCircularReveal
+import android.view.ViewGroup
+import kotlin.getValue
+import kotlin.math.max
+import kotlinx.coroutines.launch
+
+abstract class PlayerControllerFragment<B : PlayerControllerBinding> : AbsMusicServiceFragment() {
+
+    companion object {
+        private const val ARGUMENT_BUTTONS = "arg_buttons"
+
+        fun newInstance(configuration: PlayerControllerStyle): PlayerControllerFragment<*> {
+            val controllerFragment = when (configuration.style) {
+                PlayerControllerStyle.STYLE_FLAT    -> FlatStyled()
+                PlayerControllerStyle.STYLE_CLASSIC -> ClassicStyled()
+                else /* Default */                  -> FlatStyled()
+            }
+            controllerFragment.arguments = Bundle().apply {
+                putParcelable(ARGUMENT_BUTTONS, configuration)
+            }
+            return controllerFragment
+        }
+    }
+
+    protected abstract val binding: B
+
+    protected var argumentConfiguration: PlayerControllerStyle? = null
+
+    protected val panelViewModel: PanelViewModel by viewModel(ownerProducer = { requireActivity() })
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lifecycle.addObserver(musicProgressUpdateDelegate)
+        argumentConfiguration = arguments?.parcelable<PlayerControllerStyle>(ARGUMENT_BUTTONS)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
+        return binding.createView(inflater)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.setupPlayPauseButton(view.context)
+        binding.setUpProgressSlider()
+        binding.setupProgressBarTextColor(view.context.primaryTextColor(true))
+
+        for ((position, function) in readButtonConfiguration()) {
+            binding.designate(function, position)
+        }
+
+        binding.commit(requireContext())
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                queueViewModel.repeatMode.collect { repeatMode ->
+                    binding.onUpdateRepeatModeIcon(repeatMode)
+                }
+            }
+        }
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                queueViewModel.shuffleMode.collect { shuffleMode ->
+                    binding.onUpdateShuffleModeIcon(shuffleMode)
+                }
+            }
+        }
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                MusicPlayerRemote.currentState.collect {
+                    binding.onUpdatePlayerState(
+                        when (it) {
+                            PlayerState.PAUSED    -> PlayerControllerBinding.STATE_PAUSED
+                            PlayerState.PLAYING   -> PlayerControllerBinding.STATE_PLAYING
+                            PlayerState.STOPPED   -> PlayerControllerBinding.STATE_STOPPED
+                            PlayerState.PREPARING -> PlayerControllerBinding.STATE_BUFFERING
+                        }, shouldWithAnimation
+                    )
+                }
+            }
+        }
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                panelViewModel.colorChange.collect { (oldColor, newColor) ->
+                    val context = requireContext()
+                    val oldControlsColor = context.secondaryTextColor(!isColorLight(oldColor))
+                    val newControlsColor = context.secondaryTextColor(!isColorLight(newColor))
+                    binding.onUpdateColor(oldControlsColor, newControlsColor, false)
+                }
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.destroyView()
+    }
+
+    override fun onServiceConnected() {
+        super.onServiceConnected()
+        binding.onUpdatePlayerState(PlayerControllerBinding.STATE_BUFFERING, shouldWithAnimation)
+    }
+
+    override fun onServiceDisconnected() {
+        super.onServiceDisconnected()
+        binding.onUpdatePlayerState(PlayerControllerBinding.STATE_STOPPED, shouldWithAnimation)
+    }
+
+    protected val shouldWithAnimation get() = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+
+    fun onShow() {
+        binding.onShow(isResumed)
+    }
+
+    fun onHide() {
+        binding.onHide(isResumed)
+    }
+
+    protected fun readButtonConfiguration(): Map<@ButtonPosition Int, @FunctionType Int> =
+        argumentConfiguration?.buttons ?: PlayerControllerStyle.DEFAULT_BUTTONS
+
+    //region Progress
+    private val musicProgressUpdateDelegate = MusicProgressUpdateDelegate(::onUpdateProgress)
+    private fun onUpdateProgress(progress: Int, total: Int) = binding.onUpdateProgressViews(progress, total)
+    //endregion
+
+
+    class FlatStyled : PlayerControllerFragment<PlayerControllerFlatStyledBinding>() {
+        override val binding: PlayerControllerFlatStyledBinding = PlayerControllerFlatStyledBinding()
+    }
+
+    class ClassicStyled : PlayerControllerFragment<PlayerControllerClassicStyledBinding>() {
+        override val binding: PlayerControllerClassicStyledBinding = PlayerControllerClassicStyledBinding()
+
+        var fabElevation: Float
+            get() = binding.centralButton.elevation
+            set(value) {
+                binding.centralButton.elevation = value
+            }
+
+        fun createRippleColorAnimator(
+            background: View,
+            @ColorInt oldColor: Int,
+            @ColorInt newColor: Int,
+        ): Animator {
+            val root = binding.root
+            val fab = binding.centralButton
+
+            val x = fab.x + fab.width / 2 + root.x
+            val y = fab.y + fab.height / 2 + root.y
+            val startRadius = max(fab.width / 2, fab.height / 2)
+            val endRadius = max(background.width, background.height)
+
+            return createCircularReveal(
+                background,
+                x.toInt(), y.toInt(),
+                startRadius.toFloat(), endRadius.toFloat()
+            ).apply {
+                doOnEnd {
+                    background.setBackgroundColor(newColor)
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:background="@color/md_blue_600">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/progress_container_height"
+        android:background="@color/twenty_percent_black_overlay">
+
+        <TextView
+            android:id="@+id/player_song_current_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical|start"
+            android:paddingLeft="8dp"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textColor="@color/primary_text_dark"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="RtlHardcoded,RtlSymmetry"
+            tools:text="0:00" />
+
+        <TextView
+            android:id="@+id/player_song_total_time"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical|end"
+            android:paddingRight="8dp"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textColor="@color/primary_text_dark"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="RtlHardcoded,RtlSymmetry"
+            tools:text="3:14" />
+
+        <SeekBar
+            android:id="@+id/player_progress_slider"
+            style="@style/Widget.Phonograph.MusicProgressSlider"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/player_song_total_time"
+            app:layout_constraintStart_toEndOf="@id/player_song_current_progress"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="RtlHardcoded,UnusedAttribute" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/player_media_controller_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layoutDirection="ltr">
+
+        <ImageButton
+            android:id="@+id/player_button_center"
+            android:layout_width="48dp"
+            android:layout_height="72dp"
+            android:background="?attr/roundSelector"
+            android:contentDescription="@string/action_play_pause"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="12dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingPrefix"
+            tools:src="@drawable/ic_pause_white_24dp" />
+
+        <ImageButton
+            android:id="@+id/player_button_tertiary_left"
+            android:layout_width="48dp"
+            android:layout_height="72dp"
+            android:layout_marginStart="16dp"
+            android:background="?attr/roundSelector"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="12dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription,SpeakableTextPresentCheck"
+            tools:src="@drawable/ic_repeat_white_24dp" />
+
+        <ImageButton
+            android:id="@+id/player_button_tertiary_right"
+            android:layout_width="48dp"
+            android:layout_height="72dp"
+            android:layout_marginEnd="16dp"
+            android:background="?attr/roundSelector"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="12dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription,SpeakableTextPresentCheck"
+            tools:src="@drawable/ic_shuffle_white_24dp" />
+
+        <ImageButton
+            android:id="@+id/player_button_secondary_left"
+            android:layout_width="48dp"
+            android:layout_height="72dp"
+            android:background="?attr/roundSelector"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="12dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/player_button_primary_left"
+            app:layout_constraintStart_toEndOf="@+id/player_button_tertiary_left"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription,SpeakableTextPresentCheck"
+            tools:src="@drawable/ic_skip_previous_white_24dp" />
+
+        <ImageButton
+            android:id="@+id/player_button_secondary_right"
+            android:layout_width="48dp"
+            android:layout_height="72dp"
+            android:background="?attr/roundSelector"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="12dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/player_button_tertiary_right"
+            app:layout_constraintStart_toEndOf="@+id/player_button_primary_right"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription,SpeakableTextPresentCheck"
+            tools:src="@drawable/ic_skip_next_white_24dp" />
+
+        <ImageButton
+            android:id="@+id/player_button_primary_left"
+            android:layout_width="48dp"
+            android:layout_height="72dp"
+            android:background="?attr/roundSelector"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="12dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/player_button_center"
+            app:layout_constraintStart_toEndOf="@+id/player_button_secondary_left"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription,SpeakableTextPresentCheck"
+            tools:src="@drawable/ic_fast_rewind_white_24dp" />
+
+        <ImageButton
+            android:id="@+id/player_button_primary_right"
+            android:layout_width="48dp"
+            android:layout_height="72dp"
+            android:background="?attr/roundSelector"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="12dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/player_button_secondary_right"
+            app:layout_constraintStart_toEndOf="@+id/player_button_center"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription,SpeakableTextPresentCheck"
+            tools:src="@drawable/ic_fast_forward_white_24dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
