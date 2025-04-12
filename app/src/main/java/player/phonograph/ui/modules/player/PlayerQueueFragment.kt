@@ -4,30 +4,43 @@
 
 package player.phonograph.ui.modules.player
 
+import com.github.chr56.android.menu_dsl.attach
+import com.github.chr56.android.menu_dsl.menuItem
+import com.github.chr56.android.menu_model.MenuContext
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.context.GlobalContext
 import player.phonograph.R
 import player.phonograph.databinding.FragmentQueueBinding
 import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Song
+import player.phonograph.model.service.RepeatMode
+import player.phonograph.model.service.ShuffleMode
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.service.queue.QueueManager
+import player.phonograph.ui.dialogs.QueueSnapshotsDialog
 import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
+import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
 import player.phonograph.util.text.buildInfoString
 import player.phonograph.util.text.infoString
 import player.phonograph.util.text.readableDuration
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.themeFooterColor
 import player.phonograph.util.theme.themeIconColor
+import player.phonograph.util.theme.tintButtons
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.ui.textColorTransitionAnimator
 import util.theme.color.darkenColor
 import util.theme.color.lightenColor
+import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import util.theme.materials.MaterialColor
 import androidx.annotation.ColorInt
@@ -42,10 +55,12 @@ import androidx.recyclerview.widget.RecyclerView
 import android.animation.Animator
 import android.content.Context
 import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -103,6 +118,7 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
         initCurrentSong()
+        initHeaderToolbar()
 
         binding.currentSong.root.visibility = if (!argumentDisplayCurrentSong) View.GONE else View.VISIBLE
         binding.queueTopShadow.visibility = if (!argumentWithShadow) View.GONE else View.VISIBLE
@@ -214,6 +230,28 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
         }
     }
 
+
+    private fun initHeaderToolbar() {
+        val context = requireContext()
+
+        val color = context.primaryTextColor(context.nightMode)
+        val repeatMode = queueViewModel.repeatMode.value
+        val shuffleMode = queueViewModel.shuffleMode.value
+
+        binding.playerQueueSubHeader.setTextColor(color)
+        context.attach(binding.playerQueueToolbar.menu) {
+            rootMenu.clear()
+            setupToolbarModeActions(
+                repeatMode,
+                { MusicPlayerRemote.cycleRepeatMode() },
+                shuffleMode,
+                { MusicPlayerRemote.toggleShuffleMode() },
+                color
+            )
+            setupToolbarOverflowMenu()
+        }
+    }
+
     //endregion
 
 
@@ -320,12 +358,21 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
         }
         observe(queueViewModel.shuffleMode) {
             lifecycle.withCreated {
+                val context = requireContext()
                 playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
                 playingQueueAdapter.current = MusicPlayerRemote.position
                 updateQueueTime(MusicPlayerRemote.position)
                 resetToCurrentPosition(false)
+                updateShuffleModeIcon(context, it, context.primaryTextColor(context.nightMode))
             }
         }
+        observe(queueViewModel.repeatMode) {
+            lifecycle.withCreated {
+                val context = requireContext()
+                updateRepeatModeIcon(context, it, context.primaryTextColor(context.nightMode))
+            }
+        }
+
         observe(panelViewModel.colorChange) { (oldColor, newColor) ->
             withStarted {
                 changeHighlightColor(oldColor, newColor, lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED))
@@ -346,6 +393,108 @@ class PlayerQueueFragment : AbsMusicServiceFragment() {
             }
         }
     }
+
+    //region Toolbar Actions
+    private fun lookupRepeatModeIcon(context: Context, repeatMode: RepeatMode, color: Int): Drawable? =
+        context.getTintedDrawable(
+            when (repeatMode) {
+                RepeatMode.NONE               -> R.drawable.ic_repeat_off_white_24dp
+                RepeatMode.REPEAT_QUEUE       -> R.drawable.ic_repeat_white_24dp
+                RepeatMode.REPEAT_SINGLE_SONG -> R.drawable.ic_repeat_one_white_24dp
+            }, color
+        )
+
+    private fun lookupShuffleModeIcon(context: Context, shuffleMode: ShuffleMode, color: Int): Drawable? =
+        context.getTintedDrawable(
+            when (shuffleMode) {
+                ShuffleMode.NONE    -> R.drawable.ic_shuffle_disabled_white_24dp
+                ShuffleMode.SHUFFLE -> R.drawable.ic_shuffle_white_24dp
+            }, color
+        )
+
+    private var repeatModeItem: MenuItem? = null
+    private var shuffleModeItem: MenuItem? = null
+
+    private fun MenuContext.setupToolbarModeActions(
+        repeatMode: RepeatMode,
+        toggleRepeatMode: () -> Boolean,
+        shuffleMode: ShuffleMode,
+        toggleShuffleMode: () -> Boolean,
+        color: Int,
+    ) {
+        repeatModeItem = menuItem(getString(R.string.action_repeat_mode)) {
+            icon = lookupRepeatModeIcon(context, repeatMode, color)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+            onClick { toggleRepeatMode() }
+        }
+        shuffleModeItem = menuItem(getString(R.string.action_shuffle_mode)) {
+            icon = lookupShuffleModeIcon(context, shuffleMode, color)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+            onClick { toggleShuffleMode() }
+        }
+    }
+
+    private fun updateRepeatModeIcon(context: Context, repeatMode: RepeatMode, color: Int) {
+        repeatModeItem?.icon = lookupRepeatModeIcon(context, repeatMode, color)
+    }
+
+    private fun updateShuffleModeIcon(context: Context, shuffleMode: ShuffleMode, color: Int) {
+        shuffleModeItem?.icon = lookupShuffleModeIcon(context, shuffleMode, color)
+    }
+
+    private fun MenuContext.setupToolbarOverflowMenu() {
+        menuItem {
+            title = context.getString(R.string.action_clear_playing_queue)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+            onClick {
+                MusicPlayerRemote.pauseSong()
+                MusicPlayerRemote.queueManager.clearQueue()
+                true
+            }
+        }
+        menuItem {
+            title = context.getString(R.string.action_save_playing_queue)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+            onClick {
+                context.startActivity(
+                    CreatePlaylistDialogActivity.Parameter.buildLaunchingIntentForCreating(
+                        context, MusicPlayerRemote.playingQueue
+                    )
+                )
+                true
+            }
+        }
+        menuItem {
+            title = context.getString(R.string.playing_queue_history)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+            onClick {
+                QueueSnapshotsDialog().show(childFragmentManager, "QUEUE_SNAPSHOTS")
+                true
+            }
+        }
+        menuItem {
+            title = context.getString(R.string.action_clean_missing_items)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+            onClick {
+                MaterialAlertDialogBuilder(context)
+                    .setTitle(R.string.action_clean)
+                    .setMessage(R.string.action_clean_missing_items)
+                    .setPositiveButton(context.getString(android.R.string.ok)) { dialog, _ ->
+                        val queueManager: QueueManager = GlobalContext.get().get()
+                        queueManager.clean()
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton(context.getString(android.R.string.cancel)) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .create()
+                    .tintButtons()
+                    .show()
+                true
+            }
+        }
+    }
+    //endregion
 
     companion object {
         private const val ARGUMENT_WITH_SHADOW = "arg_with_shadow"
