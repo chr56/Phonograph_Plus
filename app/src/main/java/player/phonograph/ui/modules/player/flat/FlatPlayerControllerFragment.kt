@@ -31,7 +31,7 @@ class FlatPlayerControllerFragment : AbsPlayerControllerFragment<FragmentFlatPla
     private var hidden = false
     private var musicControllerAnimationSet: AnimatorSet? = null
 
-    override fun show() {
+    override fun onShow() {
         if (hidden && isResumed) {
             if (musicControllerAnimationSet == null) {
                 val interpolator: TimeInterpolator = FastOutSlowInInterpolator()
@@ -52,7 +52,7 @@ class FlatPlayerControllerFragment : AbsPlayerControllerFragment<FragmentFlatPla
         hidden = false
     }
 
-    override fun hide() {
+    override fun onHide() {
         musicControllerAnimationSet?.cancel()
         if (isResumed) {
             prepareForAnimation(binding.viewBinding.playerPlayPauseButton)

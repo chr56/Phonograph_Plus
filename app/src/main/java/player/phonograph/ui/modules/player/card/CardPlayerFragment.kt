@@ -1,28 +1,18 @@
 package player.phonograph.ui.modules.player.card
 
-import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import player.phonograph.R
 import player.phonograph.databinding.FragmentCardPlayerBinding
-import player.phonograph.databinding.ItemListBinding
-import player.phonograph.mechanism.actions.ActionMenuProviders
 import player.phonograph.model.Song
-import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.ui.modules.panel.AbsSlidingMusicPanelActivity
+import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.ui.modules.player.AbsPlayerFragment
 import player.phonograph.util.text.infoString
-import player.phonograph.util.theme.nightMode
-import player.phonograph.util.theme.requireDarkenColor
 import player.phonograph.util.theme.themeCardBackgroundColor
-import player.phonograph.util.theme.themeFooterColor
-import player.phonograph.util.theme.themeIconColor
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.ui.backgroundColorTransitionAnimator
 import player.phonograph.util.ui.convertDpToPixel
 import player.phonograph.util.ui.isLandscape
-import player.phonograph.util.ui.textColorTransitionAnimator
 import util.theme.color.darkenColor
-import util.theme.color.lightenColor
 import util.theme.color.primaryTextColor
 import util.theme.color.secondaryTextColor
 import util.theme.view.menu.tintOverflowButtonColor
@@ -41,18 +31,15 @@ import androidx.lifecycle.repeatOnLifecycle
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.annotation.SuppressLint
-import android.graphics.PorterDuff
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewAnimationUtils.createCircularReveal
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import android.widget.ImageView
 import kotlin.math.max
 import kotlinx.coroutines.launch
 
@@ -61,11 +48,17 @@ class CardPlayerFragment : AbsPlayerFragment() {
     private var _viewBinding: FragmentCardPlayerBinding? = null
     private val viewBinding: FragmentCardPlayerBinding get() = _viewBinding!!
 
-    override fun requireQueueRecyclerView(): FastScrollRecyclerView = viewBinding.playerRecyclerView
     override fun requireToolBarContainer(): View? = viewBinding.toolbarContainer
     override fun requireToolbar(): Toolbar = viewBinding.playerToolbar
 
-    private lateinit var impl: Impl
+    private lateinit var impl: CardImpl
+
+    private interface CardImpl {
+        fun init()
+        fun postInit()
+        fun generateAnimators(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet
+        fun forceChangeColor(@ColorInt newColor: Int)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -81,37 +74,70 @@ class CardPlayerFragment : AbsPlayerFragment() {
         super.onViewCreated(view, savedInstanceState)
         impl.init()
 
-        viewBinding.playerSlidingLayout.let { slidingLayout ->
-            slidingLayout.addPanelSlideListener(this)
-            slidingLayout.setAntiDragView(view.findViewById(R.id.draggable_area))
-        }
+        viewBinding.playerSlidingLayout.addPanelSlideListener(this)
+
         view.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 lifecycleScope.launch {
                     lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        prepareHeight()
+                        // view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        impl.postInit()
+
+                        // queueFragment.currentSongItemVisibility = !isLandscape(resources)
+                        // queueFragment.shadowItemVisibility = false
+
+                        viewBinding.playerSlidingLayout.setScrollableView(queueFragment.scrollableArea)
                     }
                 }
-            }
-
-            fun prepareHeight() {
-                // view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                impl.setUpPanelAndAlbumCoverHeight()
             }
         })
 
         // for some reason the xml attribute doesn't get applied here.
-        viewBinding.playingQueueCard.setCardBackgroundColor(
-            themeCardBackgroundColor(requireContext())
-        )
+        viewBinding.playingQueueCard.setCardBackgroundColor(themeCardBackgroundColor(requireContext()))
     }
 
     override fun onDestroyView() {
-        viewBinding.playerRecyclerView.itemAnimator = null
-        viewBinding.playerRecyclerView.adapter = null
-        viewBinding.playerRecyclerView.layoutManager = null
         super.onDestroyView()
+        viewBinding.playerSlidingLayout.removePanelSlideListener(this)
+        currentAnimatorSet?.end()
+        currentAnimatorSet?.cancel()
         _viewBinding = null
+    }
+
+    override fun requestToCollapse(): Boolean {
+        with(viewBinding.playerSlidingLayout) {
+            if (panelState != PanelState.COLLAPSED) panelState = PanelState.COLLAPSED
+        }
+        return true
+    }
+
+    override fun requestToExpand(): Boolean {
+        with(viewBinding.playerSlidingLayout) {
+            if (panelState != PanelState.EXPANDED) panelState = PanelState.EXPANDED
+        }
+        return true
+    }
+
+    override fun requestToSwitchState() {
+        with(viewBinding.playerSlidingLayout) {
+            if (panelState == PanelState.EXPANDED) {
+                panelState = PanelState.COLLAPSED
+            } else if (panelState == PanelState.COLLAPSED) {
+                panelState = PanelState.EXPANDED
+            }
+        }
+    }
+
+    override fun requestToSetAntiDragView(view: View?): Boolean {
+        val slidingLayout = viewBinding.playerSlidingLayout
+        slidingLayout.setAntiDragView(view)
+        return true
+    }
+
+    override fun requestToSetScrollableView(view: View?): Boolean {
+        val slidingLayout = viewBinding.playerSlidingLayout
+        slidingLayout.setScrollableView(view)
+        return true
     }
 
     @SuppressLint("ObsoleteSdkInt")
@@ -134,76 +160,21 @@ class CardPlayerFragment : AbsPlayerFragment() {
 
     override fun forceChangeColor(newColor: Int) = impl.forceChangeColor(newColor)
 
-    override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
-        impl.generateAnimators(oldColor, newColor)
-
-    override fun updateCurrentSong(song: Song?): Unit = impl.updateCurrentSong(song)
+    private var currentAnimatorSet: AnimatorSet? = null
+    override fun changeColorWithAnimations(oldColor: Int, newColor: Int) {
+        currentAnimatorSet?.end()
+        currentAnimatorSet?.cancel()
+        currentAnimatorSet = impl.generateAnimators(oldColor, newColor).also { it.start() }
+    }
 
     override fun collapseToNormal() {
         viewBinding.playerSlidingLayout.panelState = PanelState.COLLAPSED
     }
 
-    override fun resetToCurrentPosition(force: Boolean) {
-        val condition = viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED
-        if (condition || force) {
-            viewBinding.playerRecyclerView.stopScroll()
-            layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
-        }
-    }
-
-    override fun updateQueueTime(position: Int) {
-        with(viewBinding) {
-            playerQueueSubHeader.text = buildUpNextAndQueueTimeText(position)
-        }
-    }
-
-    private abstract class BaseImpl(val fragment: CardPlayerFragment) : Impl {
-        override fun forceChangeColor(newColor: Int) {
-            fragment.playbackControlsFragment.requireView().setBackgroundColor(newColor)
-            with(fragment.viewBinding) {
-                playerQueueSubHeader.setTextColor(requireDarkenColor(newColor))
-            }
-        }
-
+    private class PortraitImpl(val fragment: CardPlayerFragment) : CardImpl {
         override fun init() {}
-    }
 
-    private class PortraitImpl(fragment: CardPlayerFragment) : BaseImpl(fragment) {
-        lateinit var currentSongBinding: ItemListBinding
-        override fun init() {
-            super.init()
-            currentSongBinding = ItemListBinding.bind(fragment.requireView().findViewById(R.id.current_song))
-            with(currentSongBinding) {
-                title.isSingleLine = false
-                title.maxLines = 2
-                text.ellipsize = TextUtils.TruncateAt.MARQUEE
-                text.isSelected = true
-                separator.visibility = View.VISIBLE
-                shortSeparator.visibility = View.GONE
-                image.scaleType = ImageView.ScaleType.CENTER
-                image.setColorFilter(
-                    themeIconColor(image.context),
-                    PorterDuff.Mode.SRC_IN
-                )
-                image.setImageResource(R.drawable.ic_volume_up_white_24dp)
-                root.setOnClickListener {
-                    // toggle the panel
-                    if (fragment.viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
-                        fragment.viewBinding.playerSlidingLayout.panelState = PanelState.EXPANDED
-                    } else if (fragment.viewBinding.playerSlidingLayout.panelState == PanelState.EXPANDED) {
-                        fragment.viewBinding.playerSlidingLayout.panelState = PanelState.COLLAPSED
-                    }
-                }
-                menu.setOnClickListener {
-                    val song: Song? = MusicPlayerRemote.currentSong
-                    if (song != null)
-                        ActionMenuProviders.SongActionMenuProvider(showPlay = false, index = MusicPlayerRemote.position)
-                            .prepareMenu(it, song)
-                }
-            }
-        }
-
-        override fun setUpPanelAndAlbumCoverHeight() {
+        override fun postInit() {
 
             val albumCoverContainer: FragmentContainerView = fragment.viewBinding.playerAlbumCoverFragment
 
@@ -221,62 +192,56 @@ class CardPlayerFragment : AbsPlayerFragment() {
                 albumCoverContainer.layoutParams.height = albumCoverHeight
             }
             slidingLayout.panelHeight = max(minPanelHeight, availablePanelHeight)
-            (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(
-                slidingLayout.findViewById(R.id.player_panel)
-            )
-        }
-
-        override fun updateCurrentSong(song: Song?) {
-            with(currentSongBinding) {
-                if (song != null) {
-                    title.text = song.title
-                    text.text = song.infoString()
-                } else {
-                    title.text = "-"
-                    text.text = "-"
-                }
+            val fragmentActivity = fragment.activity
+            if (fragmentActivity is UnarySlidingUpPanelProvider) {
+                fragmentActivity.requestToSetAntiDragView(fragment.viewBinding.playerPanel)
             }
         }
 
         override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
             fragment.defaultColorChangeAnimatorSet(oldColor, newColor)
 
+        override fun forceChangeColor(newColor: Int) {
+            fragment.playbackControlsFragment.requireView().setBackgroundColor(newColor)
+        }
     }
 
-    private class LandscapeImpl(fragment: CardPlayerFragment) : BaseImpl(fragment) {
+    private class LandscapeImpl(val fragment: CardPlayerFragment) : CardImpl {
         override fun init() {
-            super.init()
-            ViewCompat.setOnApplyWindowInsetsListener(fragment.viewBinding.playerFragmentRoot) { view, windowInsets ->
-                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
-                view.updateLayoutParams<MarginLayoutParams> {
-                    rightMargin = insets.right
+            with(fragment) {
+                // WindowInsets
+                ViewCompat.setOnApplyWindowInsetsListener(viewBinding.playerFragmentRoot) { view, windowInsets ->
+                    val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+                    view.updateLayoutParams<MarginLayoutParams> {
+                        rightMargin = insets.right
+                    }
+                    WindowInsetsCompat.CONSUMED
                 }
-                WindowInsetsCompat.CONSUMED
-            }
-        }
-
-        override fun setUpPanelAndAlbumCoverHeight() {
-            val panelHeight =
-                fragment.viewBinding.playerSlidingLayout.height - fragment.playbackControlsFragment.requireView()
-                    .height
-            fragment.viewBinding.playerSlidingLayout.panelHeight = panelHeight
-            (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(
-                fragment.viewBinding.playerSlidingLayout.findViewById(R.id.player_panel)
-            )
-        }
-
-        override fun updateCurrentSong(song: Song?) {
-            with(fragment.viewBinding.playerToolbar) {
-                if (song != null) {
-                    title = song.title
-                    subtitle = song.infoString()
-                } else {
-                    title = "-"
-                    subtitle = "-"
+                // Current Song
+                lifecycleScope.launch {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        queueViewModel.currentSong.collect { song: Song? ->
+                            with(viewBinding) {
+                                playerToolbar.title = song?.title ?: "-"
+                                playerToolbar.subtitle = song?.infoString() ?: "-"
+                            }
+                        }
+                    }
                 }
             }
         }
 
+        override fun postInit() {
+            with(fragment) {
+                val controllerHeight = playbackControlsFragment.requireView().height
+                val playerSlidingLayout = viewBinding.playerSlidingLayout
+                playerSlidingLayout.panelHeight = playerSlidingLayout.height - controllerHeight
+            }
+            val fragmentActivity = fragment.activity
+            if (fragmentActivity is UnarySlidingUpPanelProvider) {
+                fragmentActivity.requestToSetAntiDragView(fragment.viewBinding.playerPanel)
+            }
+        }
 
         override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
             fragment.defaultColorChangeAnimatorSet(
@@ -289,7 +254,7 @@ class CardPlayerFragment : AbsPlayerFragment() {
             }
 
         override fun forceChangeColor(newColor: Int) {
-            super.forceChangeColor(newColor)
+            fragment.playbackControlsFragment.requireView().setBackgroundColor(newColor)
             with(fragment.viewBinding) {
                 playerToolbar.setBackgroundColor(newColor)
                 setToolbarWidgetColor(newColor)
@@ -340,14 +305,10 @@ class CardPlayerFragment : AbsPlayerFragment() {
             } else {
                 viewBinding.colorBackground.backgroundColorTransitionAnimator(oldColor, newColor)
             }
-        val oldTextColor: Int = textColor(oldColor)
-        val newTextColor: Int = textColor(newColor)
-        val subHeaderAnimator =
-            viewBinding.playerQueueSubHeader.textColorTransitionAnimator(oldTextColor, newTextColor)
         return AnimatorSet()
             .apply {
                 duration = PHONOGRAPH_ANIM_TIME / 2
-                play(backgroundAnimator).with(subHeaderAnimator).apply {
+                play(backgroundAnimator).apply {
                     for (animator in animators) {
                         with(animator)
                     }
@@ -358,10 +319,4 @@ class CardPlayerFragment : AbsPlayerFragment() {
             }
     }
 
-    private fun textColor(@ColorInt color: Int): Int {
-        val defaultFooterColor = themeFooterColor(requireContext())
-        val nightMode = requireContext().nightMode
-        return if (color == defaultFooterColor) requireContext().secondaryTextColor(nightMode)
-        else if (nightMode) lightenColor(color) else darkenColor(color)
-    }
 }

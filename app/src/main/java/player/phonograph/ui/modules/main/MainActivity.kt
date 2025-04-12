@@ -196,7 +196,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                     drawerBinding.navigationView.inflateHeaderView(R.layout.navigation_drawer_header).also { view ->
                         view.setOnClickListener {
                             drawerBinding.drawerLayout.closeDrawers()
-                            if (panelState == SlidingUpPanelLayout.PanelState.COLLAPSED) expandPanel()
+                            requestToExpand()
                         }
                     }
             }

@@ -12,4 +12,9 @@
     <attr name="iconColor" format="color" />
     <attr name="dividerColor" format="color" />
 
+    <declare-styleable name="player_queue">
+        <attr name="displayCurrentSong" format="boolean" />
+        <attr name="withShadow" format="boolean" />
+    </declare-styleable>
+
 </resources>
