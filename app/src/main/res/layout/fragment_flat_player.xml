@@ -74,7 +74,7 @@
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/playback_controls_fragment"
-                android:name="player.phonograph.ui.modules.player.flat.FlatPlayerControllerFragment"
+                android:name="player.phonograph.ui.modules.player.controller.PlayerControllerFragment$FlatStyled"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

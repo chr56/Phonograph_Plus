@@ -182,15 +182,12 @@ abstract class PlayerControllerFragment<B : PlayerControllerBinding> : AbsMusicS
             val startRadius = max(fab.width / 2, fab.height / 2)
             val endRadius = max(background.width, background.height)
 
+            background.setBackgroundColor(newColor)
             return createCircularReveal(
                 background,
                 x.toInt(), y.toInt(),
                 startRadius.toFloat(), endRadius.toFloat()
-            ).apply {
-                doOnEnd {
-                    background.setBackgroundColor(newColor)
-                }
-            }
+            )
         }
     }
 }

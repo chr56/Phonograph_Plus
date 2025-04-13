@@ -24,6 +24,7 @@ import player.phonograph.ui.modules.panel.AbsMusicServiceFragment
 import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.modules.panel.QueueViewModel
 import player.phonograph.ui.modules.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
+import player.phonograph.ui.modules.player.controller.PlayerControllerFragment
 import player.phonograph.ui.modules.playlist.dialogs.CreatePlaylistDialogActivity
 import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenPreferenceDialog
 import player.phonograph.util.NavigationUtil
@@ -64,7 +65,7 @@ abstract class AbsPlayerFragment :
     protected val lyricsViewModel: LyricsViewModel by viewModels({ requireActivity() })
     protected val panelViewModel: PanelViewModel by viewModel(ownerProducer = { requireActivity() })
 
-    protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment<*>
+    protected lateinit var playbackControlsFragment: PlayerControllerFragment<*>
     protected lateinit var queueFragment: PlayerQueueFragment
 
     protected abstract fun requireToolBarContainer(): View?
@@ -74,7 +75,7 @@ abstract class AbsPlayerFragment :
         super.onViewCreated(view, savedInstanceState)
         initToolbar()
         playbackControlsFragment =
-            childFragmentManager.findFragmentById(R.id.playback_controls_fragment) as AbsPlayerControllerFragment<*>
+            childFragmentManager.findFragmentById(R.id.playback_controls_fragment) as PlayerControllerFragment<*>
 
         queueFragment = childFragmentManager.findFragmentById(R.id.player_queue_fragment) as PlayerQueueFragment
 

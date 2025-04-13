@@ -6,6 +6,7 @@ import player.phonograph.databinding.FragmentCardPlayerBinding
 import player.phonograph.model.Song
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.ui.modules.player.AbsPlayerFragment
+import player.phonograph.ui.modules.player.controller.PlayerControllerFragment
 import player.phonograph.util.text.infoString
 import player.phonograph.util.theme.themeCardBackgroundColor
 import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
@@ -149,8 +150,8 @@ class CardPlayerFragment : AbsPlayerFragment() {
             viewBinding.playingQueueCard.cardElevation = cardElevation
             val buttonElevation = (2 * max(0f, 1 - slide * 16) + 2) * density
             if (!isValidElevation(buttonElevation)) return
-            (playbackControlsFragment as CardPlayerControllerFragment).playerPlayPauseFab
-                .elevation = buttonElevation
+
+            (playbackControlsFragment as? PlayerControllerFragment.ClassicStyled)?.fabElevation = buttonElevation
         }
     }
 
@@ -273,35 +274,17 @@ class CardPlayerFragment : AbsPlayerFragment() {
         }
     }
 
-
-    @SuppressLint("ObsoleteSdkInt")
     fun defaultColorChangeAnimatorSet(
         @ColorInt oldColor: Int,
         @ColorInt newColor: Int,
         vararg animators: Animator,
         onEnd: ((animator: Animator) -> Unit)? = null,
     ): AnimatorSet {
-        val controllerFragment = playbackControlsFragment as CardPlayerControllerFragment
-        val fab = controllerFragment.playerPlayPauseFab
-        val progressSliderHeight = controllerFragment.progressSliderHeight
-        require(progressSliderHeight >= 0) { "CardPlayer's progressSliderHeight is less than 0: $progressSliderHeight" }
 
-        val backgroundAnimator: Animator =
-            if (SDK_INT >= LOLLIPOP && viewBinding.root.isAttachedToWindow) {
-                val x =
-                    fab.x + fab.width / 2 + playbackControlsFragment.requireView().x
-                val y =
-                    fab.y + fab.height / 2 + playbackControlsFragment.requireView().y + progressSliderHeight
-                val startRadius = max(fab.width / 2, fab.height / 2)
-                val endRadius = max(
-                    viewBinding.colorBackground.width,
-                    viewBinding.colorBackground.height
-                )
-                viewBinding.colorBackground.setBackgroundColor(newColor)
-                createCircularReveal(
-                    viewBinding.colorBackground,
-                    x.toInt(), y.toInt(), startRadius.toFloat(), endRadius.toFloat()
-                )
+        val controlsFragment = playbackControlsFragment
+        val backgroundAnimator: Animator? =
+            if (controlsFragment is PlayerControllerFragment.ClassicStyled && viewBinding.root.isAttachedToWindow) {
+                controlsFragment.createRippleColorAnimator(viewBinding.colorBackground, oldColor, newColor)
             } else {
                 viewBinding.colorBackground.backgroundColorTransitionAnimator(oldColor, newColor)
             }
