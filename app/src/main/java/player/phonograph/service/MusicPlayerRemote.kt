@@ -265,6 +265,10 @@ object MusicPlayerRemote {
         musicService?.seek(millis)
     }
 
+    fun fastForward(millis: Int) : Boolean = musicService?.fastForward(millis) == true
+
+    fun fastRewind(millis: Int): Boolean = musicService?.fastRewind(millis) == true
+
     fun cycleRepeatMode(): Boolean =
         runCatching {
             queueManager.modifyRepeatMode(null)

@@ -255,8 +255,8 @@ class MusicService : MediaBrowserServiceCompat(),
         false
     }
 
-    private fun fastForward(millis: Int = 10_000) = seek(millis)
-    private fun fastRewind(millis: Int = 10_000) = seek(-millis)
+    fun fastForward(millis: Int = 10_000) = seek(songProgressMillis + millis)
+    fun fastRewind(millis: Int = 10_000) = seek(songProgressMillis - millis)
 
     val audioSessionId: Int get() = controller.audioSessionId
     val mediaSession get() = mediaSessionController.mediaSession
