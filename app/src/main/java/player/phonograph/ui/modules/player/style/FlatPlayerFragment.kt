@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2022~2024 chr_56
+ *  Copyright (c) 2022~2025 chr_56, kabouzeid
  */
 
-package player.phonograph.ui.modules.player.flat
+package player.phonograph.ui.modules.player.style
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
@@ -35,7 +35,6 @@ import android.animation.AnimatorSet
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import kotlin.math.max
@@ -48,6 +47,7 @@ class FlatPlayerFragment : AbsPlayerFragment() {
 
     override fun requireToolBarContainer(): View? = viewBinding.toolbarContainer
     override fun requireToolbar(): Toolbar = viewBinding.playerToolbar
+    override val slidingUpPanel: SlidingUpPanelLayout? get() = viewBinding.playerSlidingLayout
 
     private lateinit var impl: FlatImpl
 
@@ -58,11 +58,7 @@ class FlatPlayerFragment : AbsPlayerFragment() {
         fun generateAnimators(@ColorInt oldColor: Int, @ColorInt newColor: Int): AnimatorSet
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
+    override fun inflateView(inflater: LayoutInflater): View {
         impl = (if (isLandscape(resources)) LandscapeImpl(this) else PortraitImpl(this))
         _viewBinding = FragmentFlatPlayerBinding.inflate(inflater)
         return viewBinding.root
@@ -72,24 +68,13 @@ class FlatPlayerFragment : AbsPlayerFragment() {
         super.onViewCreated(view, savedInstanceState)
         impl.init()
 
-        viewBinding.playerSlidingLayout?.addPanelSlideListener(this)
-
         view.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 lifecycleScope.launch {
                     lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                         // view.viewTreeObserver.removeOnGlobalLayoutListener(this)
                         impl.postInit()
-                        // queueFragment.currentSongItemVisibility = !isLandscape(resources)
-                        // queueFragment.shadowItemVisibility = true
-
-                        val parent = parentFragment ?: activity
-                        val slidingLayout = viewBinding.playerSlidingLayout
-                        if (slidingLayout != null) {
-                            slidingLayout.setScrollableView(queueFragment.scrollableArea)
-                        } else if (parent is UnarySlidingUpPanelProvider) {
-                            parent.requestToSetScrollableView(queueFragment.scrollableArea)
-                        }
+                        fixPanelNestedScrolling()
                     }
                 }
             }
@@ -102,6 +87,21 @@ class FlatPlayerFragment : AbsPlayerFragment() {
         currentAnimatorSet?.end()
         currentAnimatorSet?.cancel()
         _viewBinding = null
+    }
+
+    private fun fixPanelNestedScrolling() {
+        val parent = parentFragment ?: activity
+        val slidingLayout = viewBinding.playerSlidingLayout
+        if (slidingLayout != null) {
+            slidingLayout.setScrollableView(queueFragment.scrollableArea)
+        } else if (parent is UnarySlidingUpPanelProvider) {
+            parent.requestToSetScrollableView(queueFragment.scrollableArea)
+        }
+
+        val fragmentActivity = activity
+        if (fragmentActivity is UnarySlidingUpPanelProvider) {
+            fragmentActivity.requestToSetAntiDragView(viewBinding.playerPanel)
+        }
     }
 
 
@@ -141,8 +141,6 @@ class FlatPlayerFragment : AbsPlayerFragment() {
         return true
     }
 
-    override fun onPanelSlide(view: View, slide: Float) {}
-
     override fun forceChangeColor(newColor: Int) = impl.forceChangeColor(newColor)
 
     private var currentAnimatorSet: AnimatorSet? = null
@@ -180,10 +178,6 @@ class FlatPlayerFragment : AbsPlayerFragment() {
                 albumCoverContainer.layoutParams.height = albumCoverHeight
             }
             fragment.viewBinding.playerSlidingLayout!!.panelHeight = max(minPanelHeight, availablePanelHeight)
-            val fragmentActivity = fragment.activity
-            if (fragmentActivity is UnarySlidingUpPanelProvider) {
-                fragmentActivity.requestToSetAntiDragView(fragment.viewBinding.playerPanel)
-            }
         }
 
         override fun forceChangeColor(newColor: Int) {
@@ -220,12 +214,7 @@ class FlatPlayerFragment : AbsPlayerFragment() {
             }
         }
 
-        override fun postInit() {
-            val fragmentActivity = fragment.activity
-            if (fragmentActivity is UnarySlidingUpPanelProvider) {
-                fragmentActivity.requestToSetAntiDragView(fragment.viewBinding.playerPanel)
-            }
-        }
+        override fun postInit() {}
 
         override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
             fragment.defaultColorChangeAnimatorSet(

@@ -1,5 +1,10 @@
-package player.phonograph.ui.modules.player.card
+/*
+ *  Copyright (c) 2022~2025 chr_56, kabouzeid
+ */
 
+package player.phonograph.ui.modules.player.style
+
+import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import player.phonograph.R
 import player.phonograph.databinding.FragmentCardPlayerBinding
@@ -31,14 +36,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import android.animation.Animator
 import android.animation.AnimatorSet
-import android.annotation.SuppressLint
-import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewAnimationUtils.createCircularReveal
-import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import kotlin.math.max
@@ -52,6 +52,8 @@ class CardPlayerFragment : AbsPlayerFragment() {
     override fun requireToolBarContainer(): View? = viewBinding.toolbarContainer
     override fun requireToolbar(): Toolbar = viewBinding.playerToolbar
 
+    override val slidingUpPanel: SlidingUpPanelLayout get() = viewBinding.playerSlidingLayout
+
     private lateinit var impl: CardImpl
 
     private interface CardImpl {
@@ -61,11 +63,7 @@ class CardPlayerFragment : AbsPlayerFragment() {
         fun forceChangeColor(@ColorInt newColor: Int)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
+    override fun inflateView(inflater: LayoutInflater): View {
         impl = (if (isLandscape(resources)) LandscapeImpl(this) else PortraitImpl(this))
         _viewBinding = FragmentCardPlayerBinding.inflate(inflater)
         return viewBinding.root
@@ -75,19 +73,13 @@ class CardPlayerFragment : AbsPlayerFragment() {
         super.onViewCreated(view, savedInstanceState)
         impl.init()
 
-        viewBinding.playerSlidingLayout.addPanelSlideListener(this)
-
         view.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 lifecycleScope.launch {
                     lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                         // view.viewTreeObserver.removeOnGlobalLayoutListener(this)
                         impl.postInit()
-
-                        // queueFragment.currentSongItemVisibility = !isLandscape(resources)
-                        // queueFragment.shadowItemVisibility = false
-
-                        viewBinding.playerSlidingLayout.setScrollableView(queueFragment.scrollableArea)
+                        fixPanelNestedScrolling()
                     }
                 }
             }
@@ -103,6 +95,15 @@ class CardPlayerFragment : AbsPlayerFragment() {
         currentAnimatorSet?.end()
         currentAnimatorSet?.cancel()
         _viewBinding = null
+    }
+
+    private fun fixPanelNestedScrolling() {
+        viewBinding.playerSlidingLayout.setScrollableView(queueFragment.scrollableArea)
+
+        val fragmentActivity = activity
+        if (fragmentActivity is UnarySlidingUpPanelProvider) {
+            fragmentActivity.requestToSetAntiDragView(viewBinding.playerPanel)
+        }
     }
 
     override fun requestToCollapse(): Boolean {
@@ -141,23 +142,27 @@ class CardPlayerFragment : AbsPlayerFragment() {
         return true
     }
 
-    @SuppressLint("ObsoleteSdkInt")
     override fun onPanelSlide(view: View, slide: Float) {
-        if (SDK_INT >= LOLLIPOP) {
-            val density = resources.displayMetrics.density
-            val cardElevation = (6 * slide + 2) * density
-            if (!isValidElevation(cardElevation)) return // we have received some crash reports in setCardElevation()
-            viewBinding.playingQueueCard.cardElevation = cardElevation
-            val buttonElevation = (2 * max(0f, 1 - slide * 16) + 2) * density
-            if (!isValidElevation(buttonElevation)) return
+        updateElevation(view, slide)
+    }
 
-            (playbackControlsFragment as? PlayerControllerFragment.ClassicStyled)?.fabElevation = buttonElevation
-        }
+    private fun updateElevation(view: View, slide: Float) {
+        val density = resources.displayMetrics.density
+
+        val cardElevation = (6 * slide + 2) * density
+        if (!isValidElevation(cardElevation)) return // we have received some crash reports in setCardElevation()
+        viewBinding.playingQueueCard.cardElevation = cardElevation
+
+        val buttonElevation = (2 * max(0f, 1 - slide * 16) + 2) * density
+        if (!isValidElevation(buttonElevation)) return
+        (playbackControlsFragment as? PlayerControllerFragment.ClassicStyled)?.fabElevation = buttonElevation
     }
 
     private fun isValidElevation(elevation: Float): Boolean {
         return elevation >= -Float.MAX_VALUE && elevation <= Float.MAX_VALUE
     }
+
+    override val useTransparentStatusbar: Boolean = true
 
     override fun forceChangeColor(newColor: Int) = impl.forceChangeColor(newColor)
 
@@ -193,10 +198,6 @@ class CardPlayerFragment : AbsPlayerFragment() {
                 albumCoverContainer.layoutParams.height = albumCoverHeight
             }
             slidingLayout.panelHeight = max(minPanelHeight, availablePanelHeight)
-            val fragmentActivity = fragment.activity
-            if (fragmentActivity is UnarySlidingUpPanelProvider) {
-                fragmentActivity.requestToSetAntiDragView(fragment.viewBinding.playerPanel)
-            }
         }
 
         override fun generateAnimators(oldColor: Int, newColor: Int): AnimatorSet =
@@ -237,10 +238,6 @@ class CardPlayerFragment : AbsPlayerFragment() {
                 val controllerHeight = playbackControlsFragment.requireView().height
                 val playerSlidingLayout = viewBinding.playerSlidingLayout
                 playerSlidingLayout.panelHeight = playerSlidingLayout.height - controllerHeight
-            }
-            val fragmentActivity = fragment.activity
-            if (fragmentActivity is UnarySlidingUpPanelProvider) {
-                fragmentActivity.requestToSetAntiDragView(fragment.viewBinding.playerPanel)
             }
         }
 
