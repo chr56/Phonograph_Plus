@@ -22,6 +22,8 @@ const val SELECTED_ACCENT_COLOR = "accent_color_selected"
 const val MONET_PALETTE_PRIMARY_COLOR = "primary_color_monet_palette"
 const val MONET_PALETTE_ACCENT_COLOR = "accent_color_monet_palette"
 
+const val NOW_PLAYING_SCREEN_STYLE = "now_playing_screen_style"
+
 // Appearance - Notification
 const val COLORED_NOTIFICATION = "colored_notification"
 const val CLASSIC_NOTIFICATION = "classic_notification"
