@@ -15,7 +15,6 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.model.time.Duration
 import player.phonograph.model.time.TimeIntervalCalculationMode
 import player.phonograph.model.ui.ItemLayoutStyle
-import player.phonograph.model.ui.NowPlayingScreen
 import player.phonograph.model.ui.NowPlayingScreenStyle
 import util.theme.materials.MaterialColor
 import java.io.File
@@ -81,12 +80,6 @@ object Keys {
 
     object lastPage :
             PrimitiveKey<Int>(intPK(LAST_PAGE), { 0 })
-
-    object _nowPlayingScreenIndex :
-            PrimitiveKey<Int>(intPK(NOW_PLAYING_SCREEN_ID), { 0 })
-
-    object nowPlayingScreen :
-            CompositeKey<NowPlayingScreen>(NowPlayingScreenPreferenceProvider)
 
     object _nowPlayingScreenStyle :
             PrimitiveKey<String>(stringPK(NOW_PLAYING_SCREEN_STYLE), { "" })

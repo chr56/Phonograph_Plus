@@ -32,7 +32,6 @@ const val NOTIFICATION_ACTIONS = "notification_actions"
 // Behavior-Retention
 const val REMEMBER_LAST_TAB = "remember_last_tab"
 const val LAST_PAGE = "last_start_page"
-const val NOW_PLAYING_SCREEN_ID = "now_playing_screen_id"
 
 // Database
 
