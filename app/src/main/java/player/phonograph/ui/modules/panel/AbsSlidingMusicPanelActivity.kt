@@ -6,7 +6,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import player.phonograph.R
 import player.phonograph.databinding.SlidingMusicPanelLayoutBinding
-import player.phonograph.model.ui.NowPlayingScreen
+import player.phonograph.model.ui.NowPlayingScreenStyle
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Keys
@@ -107,7 +107,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
         // add fragment
         lifecycleScope.launch {
-            val flow = Setting(this@AbsSlidingMusicPanelActivity).Composites[Keys.nowPlayingScreen].flow()
+            val flow = Setting(this@AbsSlidingMusicPanelActivity).Composites[Keys.nowPlayingScreenStyle].flow()
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 flow.distinctUntilChanged().collect { screen ->
                     setupPlayerFragment(screen)
@@ -151,11 +151,11 @@ abstract class AbsSlidingMusicPanelActivity :
         cancelSystemBarsColorAnimation() // just in case
     }
 
-    private fun setupPlayerFragment(screen: NowPlayingScreen) {
+    private fun setupPlayerFragment(style: NowPlayingScreenStyle) {
         supportFragmentManager.commit {
             replace(
                 R.id.player_fragment_container,
-                buildPlayerFragment(screen),
+                buildPlayerFragment(style),
                 NOW_PLAYING_FRAGMENT
             )
         }

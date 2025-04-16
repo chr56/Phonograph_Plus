@@ -43,7 +43,6 @@
 
                 <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/playback_controls_fragment"
-                    android:name="player.phonograph.ui.modules.player.controller.PlayerControllerFragment$ClassicStyled"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -98,11 +97,8 @@
 
                 <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/player_queue_fragment"
-                    android:name="player.phonograph.ui.modules.player.PlayerQueueFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:displayCurrentSong="true"
-                    app:withShadow="false" />
+                    android:layout_height="wrap_content" />
 
             </androidx.cardview.widget.CardView>
 

@@ -43,7 +43,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_toEndOf="@+id/cover_container"
-                android:layout_toRightOf="@+id/cover_container"
                 android:clickable="false"
                 android:focusable="true"
                 android:gravity="bottom"
@@ -64,37 +63,34 @@
 
                     <androidx.fragment.app.FragmentContainerView
                         android:id="@+id/playback_controls_fragment"
-                        android:name="player.phonograph.ui.modules.player.controller.PlayerControllerFragment$ClassicStyled"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                 </FrameLayout>
 
                 <FrameLayout
-                    android:layout_marginTop="24dp"
                     android:id="@+id/player_panel"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp">
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/playing_queue_card"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="-8dp"
                         android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
                         android:layout_marginTop="0dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="-8dp"
                         app:cardBackgroundColor="?cardBackgroundColor"
                         app:cardElevation="@dimen/card_elevation"
                         app:cardUseCompatPadding="false">
 
                         <androidx.fragment.app.FragmentContainerView
                             android:id="@+id/player_queue_fragment"
-                            android:name="player.phonograph.ui.modules.player.PlayerQueueFragment"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:displayCurrentSong="false"
-                            app:withShadow="false" />
+                            app:displayCurrentSong="false" />
 
                     </androidx.cardview.widget.CardView>
 

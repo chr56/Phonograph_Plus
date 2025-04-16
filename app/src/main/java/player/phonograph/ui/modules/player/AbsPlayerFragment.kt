@@ -10,6 +10,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import player.phonograph.R
 import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.lyrics.LrcLyrics
+import player.phonograph.model.ui.NowPlayingScreenStyle
+import player.phonograph.model.ui.PlayerBaseStyle
+import player.phonograph.model.ui.PlayerControllerStyle
 import player.phonograph.model.ui.UnarySlidingUpPanelProvider
 import player.phonograph.repo.loader.FavoriteSongs
 import player.phonograph.service.MusicPlayerRemote
@@ -21,9 +24,11 @@ import player.phonograph.ui.modules.panel.PanelViewModel
 import player.phonograph.ui.modules.panel.QueueViewModel
 import player.phonograph.ui.modules.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
 import player.phonograph.ui.modules.player.controller.PlayerControllerFragment
-import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenPreferenceDialog
+import player.phonograph.ui.modules.setting.dialog.NowPlayingScreenStylePreferenceDialog
 import player.phonograph.util.NavigationUtil
+import player.phonograph.util.parcelable
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.ui.isLandscape
 import player.phonograph.util.warning
 import util.theme.color.toolbarIconColor
 import util.theme.view.menu.setMenuColor
@@ -32,6 +37,7 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -53,6 +59,12 @@ import kotlinx.coroutines.launch
 abstract class AbsPlayerFragment :
         AbsMusicServiceFragment(), UnarySlidingUpPanelProvider, SlidingUpPanelLayout.PanelSlideListener {
 
+    companion object {
+        const val ARGUMENT_STYLE = "player_style"
+    }
+
+    protected var argumentStyle: NowPlayingScreenStyle? = null
+
     protected val viewModel: PlayerFragmentViewModel by viewModels()
     protected val lyricsViewModel: LyricsViewModel by viewModels({ requireActivity() })
     protected val panelViewModel: PanelViewModel by viewModel(ownerProducer = { requireActivity() })
@@ -70,6 +82,8 @@ abstract class AbsPlayerFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycle.addObserver(MediaStoreListener())
+
+        argumentStyle = arguments?.parcelable<NowPlayingScreenStyle>(ARGUMENT_STYLE)
     }
 
     override fun onCreateView(
@@ -78,10 +92,20 @@ abstract class AbsPlayerFragment :
         savedInstanceState: Bundle?,
     ): View? {
         val inflated = inflateView(inflater)
-        playbackControlsFragment =
-            childFragmentManager.findFragmentById(R.id.playback_controls_fragment) as PlayerControllerFragment<*>
-        queueFragment =
-            childFragmentManager.findFragmentById(R.id.player_queue_fragment) as PlayerQueueFragment
+        val controller =
+            PlayerControllerFragment.newInstance(argumentStyle?.controllerStyle ?: PlayerControllerStyle.DEFAULT)
+        val queue = PlayerQueueFragment.newInstance(
+            withShadow = argumentStyle?.baseStyle == PlayerBaseStyle.FLAT, // todo
+            withActionButtons = argumentStyle?.options?.showModeButtonsForQueue == true,
+            displayCurrentSong = !isLandscape(resources)
+        )
+        childFragmentManager.commit {
+            replace(R.id.playback_controls_fragment, controller)
+            replace(R.id.player_queue_fragment, queue)
+        }
+        childFragmentManager.executePendingTransactions()
+        playbackControlsFragment = controller
+        queueFragment = queue
         return inflated
     }
 
@@ -290,8 +314,7 @@ private fun buildPlayerToolbar(
             title = activity.getString(R.string.change_now_playing_screen)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
             onClick {
-                NowPlayingScreenPreferenceDialog()
-                    .show(childFragmentManager, "NOW_PLAYING_SCREEN")
+                NowPlayingScreenStylePreferenceDialog().show(childFragmentManager, "NOW_PLAYING_SCREEN")
                 true
             }
         }
